@@ -131,7 +131,7 @@ public class DpSiUploadDelegate {
 
     private void preapreDate(String pageStage, HttpServletRequest request) {
         Map<String, String> maxCountMap = IaisCommonUtils.genNewHashMap(1);
-        maxCountMap.put("maxCount", Formatter.formatNumber(DataSubmissionHelper.getFileRecordMaxNumber(), "#,##0"));
+        maxCountMap.put("maxCount", Formatter.formatNumber(10000, "#,##0"));
         ParamUtil.setRequestAttr(request, "maxCountMap", maxCountMap);
         ParamUtil.setRequestAttr(request, DataSubmissionConstant.CURRENT_PAGE_STAGE, pageStage);
         Integer fileItemSize = (Integer) request.getAttribute(FILE_ITEM_SIZE);
@@ -438,9 +438,9 @@ public class DpSiUploadDelegate {
                 fileItemSize = sovenorInventoryExcelDtos.size();
                 if (fileItemSize == 0) {
                     errorMap.put("uploadFileError", "PRF_ERR006");
-                } else if (fileItemSize > DataSubmissionHelper.getFileRecordMaxNumber()) {
+                } else if (fileItemSize > 10000) {
                     errorMap.put("uploadFileError", MessageUtil.replaceMessage("GENERAL_ERR0052",
-                            Formatter.formatNumber(DataSubmissionHelper.getFileRecordMaxNumber(), "#,##0"), "maxCount"));
+                            Formatter.formatNumber(10000, "#,##0"), "maxCount"));
                 } else {
                     dpSovenorInventoryDtos = getSovenorInventoryList(sovenorInventoryExcelDtos);
                     Map<String, ExcelPropertyDto> fieldCellMap = ExcelValidatorHelper.getFieldCellMap(SovenorInventoryExcelDto.class);
