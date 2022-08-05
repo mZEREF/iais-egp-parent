@@ -185,25 +185,12 @@
 
                                                                                 <option value="deleteDraft<iais:mask name='deleteId' value='${app.id}'/>">Delete</option>
                                                                             </c:if>
-                                                                            <c:if test="${app.status eq MasterCodeConstants.APP_STATUS_PEND_CHECKLIST_SUBMISSION}">
-                                                                                <option value="/bsb-web/eservice/INTERNET/MohBsbSubmitSelfAssessment?appId=<iais:mask name='selfAssessAppId' value='${app.id}'/>">Self-Assessment</option>
-                                                                            </c:if>
+
+                                                                            <%--Withdraw at the selection bottom--%>
+                                                                            <%--@elvariable id="AppWithdrawableJudge" type="java.lang.Boolean"--%>
                                                                             <c:if test="${AppWithdrawableJudge}">
                                                                                 <option value="/bsb-web/eservice/INTERNET/BsbWithDrawn?withdrawnAppId=<iais:mask name='id' value='${app.id}'/>&from=application">Withdraw</option>
                                                                             </c:if>
-                                                                            <c:if test="${InsAppointmentJudge}">
-                                                                                <option value="/bsb-web/eservice/INTERNET/ApplicantSubmitInspectionDate?appId=<iais:mask name='indicateInsDateAppId' value='${app.id}'/>">Indicate Preferred Inspection Date</option>
-                                                                            </c:if>
-                                                                            <c:if test="${app.status eq MasterCodeConstants.APP_STATUS_PEND_APPLICANT_INPUT or app.status eq MasterCodeConstants.APP_STATUS_PEND_APPLICANT_CLARIFICATION}">
-                                                                                <option value="/bsb-web/eservice/INTERNET/MohBsbRfi?appId=<iais:mask name='rfiAppId' value='${app.id}'/>">Request For Information</option>
-                                                                            </c:if>
-                                                                            <c:if test="${AFCUploadReportJudge}">
-                                                                                <option value="/bsb-web/eservice/INTERNET/InsAfcCertification?appId=<iais:mask name='afcCertReportAppId' value='${app.id}'/>">Upload Certification Report</option>
-                                                                            </c:if>
-                                                                            <c:if test="${ApplicantUploadCertReportJudge}">
-                                                                                <option value="/bsb-web/eservice/INTERNET/InsApplicantCertification?appId=<iais:mask name='applicantCertReportAppId' value='${app.id}'/>">Upload Certification Report</option>
-                                                                            </c:if>
-
                                                                         </select>
                                                                     </c:otherwise>
                                                                 </c:choose>
@@ -217,6 +204,7 @@
 
                                         <iais:confirm msg="Are you sure you want to delete?" needFungDuoJi="false" popupOrder="deleteDraftModal" callBack="delDraftCancelBtn()" title=" " cancelFunc="delDraftYesBtn()" cancelBtnDesc="OK" yesBtnDesc="Cancel" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"  />
                                         <iais:confirm msg="The draft application is deleted" needFungDuoJi="false" popupOrder="deleteDraftMessage"  title=" " callBack="delDraftMsgYesBtn()"  needCancel="false" />
+                                        <%--@elvariable id="AFTER_DELETE_DRAFT_APP" type="java.lang.Boolean"--%>
                                         <input type="hidden" id="afterDeleteDraftApp" name="afterDeleteDraftApp" value="${AFTER_DELETE_DRAFT_APP}" readonly disabled/>
 
                                     </div>
