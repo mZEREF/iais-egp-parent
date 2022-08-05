@@ -38,7 +38,6 @@ import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionServic
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -60,9 +59,6 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public final class DataSubmissionHelper {
-
-    @Autowired
-    private ArDataSubmissionService arDataSubmissionService;
 
     public static void clearSession(HttpServletRequest request) {
         HttpSession session = request.getSession();
