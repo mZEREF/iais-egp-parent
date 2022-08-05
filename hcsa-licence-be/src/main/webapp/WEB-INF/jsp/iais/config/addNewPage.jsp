@@ -1000,7 +1000,7 @@
             <label class="col-xs-12 col-md-7 control-label" >Category / Discipline (Section Header)</label>
             <div class="col-xs-10 col-md-4">
               <div class="components">
-                <input type="text" maxlength="100" value="${pageName}" name="permanent-SectionHeader">
+                <input type="text" maxlength="100" value="${hcsaServiceConfigDto.permanentHscdDto.categoryDisciplines}" name="PERMANENT-sectionHeader">
                 <span name="iaisErrorMsg" class="error-msg" id="error_pageName"></span>
               </div>
             </div>
@@ -1009,7 +1009,7 @@
             <label class="col-xs-12 col-md-7 control-label" >Category / Discipline</label>
             <div class="col-xs-10 col-md-4">
               <div class="components">
-                <input type="text" maxlength="100" value="${categoryPermanent}" name="permanent-categoryDiscipline">
+                <input type="text" maxlength="100" value="${categoryPermanent}" name="PERMANENT-categoryDisciplines">
                 <span name="iaisErrorMsg" class="error-msg" id="error_pageName3"></span>
               </div>
             </div>
@@ -1018,7 +1018,7 @@
           <div class="add col-xs-12 col-md-9 marg-1">
             <label class="col-xs-12 col-md-7 control-label" >Category / Discipline</label>
             <div class="col-xs-10 col-md-4">
-              <input type="text" maxlength="100" value="${categoryPermanent}" name="permanent-categoryDiscipline">
+              <input type="text" maxlength="100" value="${categoryPermanent}" name="PERMANENT-categoryDisciplines">
             </div>
             <div class="col-xs-12 col-md-1">
               <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
@@ -1026,7 +1026,7 @@
           </div>
 
           <div class="col-xs-12 col-md-12">
-            <a  class="btn  btn-secondary "   style="margin-right: 10px" id="addCategory" onclick="addCategory(this)"> + </a><label for="addCategory"> Add Item</label>
+            <a  class="btn  btn-secondary "   style="margin-right: 10px" id="addCategory" onclick="addCategory(this,'PERMANENT-categoryDisciplines')"> + </a><label for="addCategory"> Add Item</label>
           </div>
 
           <div class="col-xs-12 col-md-9 marg-1">
@@ -1326,11 +1326,11 @@
         }
     }*/
 
-    function addCategory(obj) {
+    function addCategory(obj,name) {
         $(obj).closest("div").prev("div").after("<div class=\"add col-xs-12 col-md-9 marg-1\">\n" +
             "            <label class=\"col-xs-12 col-md-7 control-label\" >Category / Discipline</label>\n" +
             "            <div class=\"col-xs-10 col-md-4\">\n" +
-            "              <input type=\"text\" maxlength=\"100\" value=\"\" name=\"categoryPermanent\">\n" +
+            "              <input type=\"text\" maxlength=\"100\" value=\"\" name=\""+name+ "\">\n" +
             "            </div>\n" +
             "            <div class=\"col-xs-12 col-md-1\">\n" +
             "              <a class=\"btn  btn-secondary view\"  onclick=\"removeThis(this)\" >-</a>\n" +

@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaConfigPageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCategoryDisciplineDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCategoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -476,6 +477,20 @@ public class ConfigServiceDelegator {
             hcsaServiceConfigDto.setHcsaConfigPageDtoMap(null);
         }
 
+        //for HcsaServiceCategoryDisciplineDto
+        String[] premisesTypes = hcsaServiceConfigDto.getPremisesTypes();
+        if(premisesTypes != null && premisesTypes.length > 0){
+            for(String premisesType : premisesTypes){
+                HcsaServiceCategoryDisciplineDto hcsaServiceCategoryDisciplineDto = new HcsaServiceCategoryDisciplineDto();
+                String sectionHeader = ParamUtil.getString(request,premisesType+"-sectionHeader");
+                String[] categoryDisciplines = ParamUtil.getStrings(request,premisesType+"-categoryDisciplines");
+                hcsaServiceCategoryDisciplineDto.setPremType(premisesType);
+                hcsaServiceCategoryDisciplineDto.setSectionHeader(sectionHeader);
+                hcsaServiceCategoryDisciplineDto.setCategoryDisciplines(categoryDisciplines);
+                hcsaServiceConfigDto.setPermanentHscdDto(hcsaServiceCategoryDisciplineDto);
+            }
+
+        }
         if(HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(hcsaServiceDto.getSvcType())||HcsaConsts.SERVICE_TYPE_BASE.equals(hcsaServiceDto.getSvcType())){
             return hcsaServiceConfigDto;
         }
@@ -561,16 +576,6 @@ public class ConfigServiceDelegator {
         }
         hcsaServiceDto.setServiceSubTypeDtos(list);
 
-        String[] premisesTypes = request.getParameterValues("PremisesType");
-        List<HcsaSvcSpePremisesTypeDto> hcsaSvcSpePremisesTypeDtos = IaisCommonUtils.genNewArrayList();
-        if (premisesTypes != null) {
-            for (String str : premisesTypes) {
-                HcsaSvcSpePremisesTypeDto hcsaSvcSpePremisesTypeDto = new HcsaSvcSpePremisesTypeDto();
-                hcsaSvcSpePremisesTypeDto.setPremisesType(str);
-                hcsaSvcSpePremisesTypeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                hcsaSvcSpePremisesTypeDtos.add(hcsaSvcSpePremisesTypeDto);
-            }
-        }
        // addSvcStepConfigsFromPage(hcsaServiceConfigDto, request);
 
         //addDocumentConfigsFromPage(hcsaServiceConfigDto, request);
@@ -802,7 +807,6 @@ public class ConfigServiceDelegator {
             hcsaServiceDto.setVersion(version);
         }
         hcsaServiceDto.setServiceIsUsed(String.valueOf(true).equals(serviceIsUse));
-        hcsaServiceConfigDto.setHcsaSvcSpePremisesTypeDtos(hcsaSvcSpePremisesTypeDtos);
         hcsaServiceConfigDto.setHcsaServiceDto(hcsaServiceDto);
 //        hcsaServiceConfigDto.setHcsaSvcSpeRoutingSchemeDtos(hcsaSvcSpeRoutingSchemeDtoList);
 //        hcsaServiceConfigDto.setHcsaSvcSpecificStageWorkloadDtos(hcsaSvcSpecificStageWorkloadDtoList);
