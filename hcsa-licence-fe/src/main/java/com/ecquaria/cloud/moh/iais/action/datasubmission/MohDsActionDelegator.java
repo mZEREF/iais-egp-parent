@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.privilege.PrivilegeConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
@@ -499,25 +498,7 @@ public class MohDsActionDelegator {
         if (arSuper == null) {
             uri = DEFAULT_URI;
         } else {
-            arSuper.setArCurrentInventoryDto(arDataSubmissionService.getArCurrentInventoryDtoBySubmissionNo(submissionNo, true));
-            ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_OLD_DATA_SUBMISSION,
-                    CopyUtil.copyMutableObject(arSuper));
-            arSuper.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            arSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
-            if (arSuper.getDataSubmissionDto() != null) {
-                DataSubmissionDto dataSubmissionDto = arSuper.getDataSubmissionDto();
-                dataSubmissionDto.setDeclaration(null);
-                dataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
-                dataSubmissionDto.setAmendReason(null);
-                dataSubmissionDto.setAmendReasonOther(null);
-                if (arSuper.getSelectionDto() != null) {
-                    CycleStageSelectionDto selectionDto = arSuper.getSelectionDto();
-                    if (StringUtil.isEmpty(selectionDto.getStage()) || StringUtil.isEmpty(selectionDto.getCycle())) {
-                        selectionDto.setStage(dataSubmissionDto.getCycleStage());
-                        selectionDto.setCycle(arSuper.getCycleDto().getCycleType());
-                    }
-                }
-            }
+            arSuper = arDataSubmissionService.prepareArRfcData(arSuper,submissionNo,request);
             if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(arSuper.getSubmissionType())) {
                 uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARPatientInformationManual";
             } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(arSuper.getSubmissionType())) {

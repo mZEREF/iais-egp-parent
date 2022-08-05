@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInvent
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoTransferredOutcomeStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EndCycleStageDto;
@@ -118,8 +119,14 @@ public abstract class CommonDelegator {
     public void doReturn(BaseProcessClass bpc) throws IOException {
         log.info(StringUtil.changeForLog("The doReturn start ..."));
         String actionType = ParamUtil.getRequestString(bpc.request, ACTION_TYPE);
+        String haveJump = (String) ParamUtil.getRequestAttr(bpc.request, "haveJump");
         if ("jumpStage".equals(actionType)) {
-            DataSubmissionHelper.jumpJudgement(bpc.request);
+            if (!"Y".equals(haveJump)) {
+                setDraftArSuperDataSubmissionDto(bpc.request);
+                doDraft(bpc);
+                ParamUtil.setRequestAttr(bpc.request, "saveDraftSuccess", null);
+            }
+            arDataSubmissionService.jumpJudgement(bpc.request);
         } else {
             returnStep(bpc);
             ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
@@ -144,6 +151,28 @@ public abstract class CommonDelegator {
             IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
             log.info(StringUtil.changeForLog("The doReturn end ..."));
         }
+    }
+
+    private void setDraftArSuperDataSubmissionDto(HttpServletRequest request) {
+        String orgId = "";
+        String userId = "";
+        LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
+        if (loginContext != null) {
+            orgId = loginContext.getOrgId();
+            userId = loginContext.getUserId();
+        }
+        ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        arSuperDataSubmission.setDraftNo(null);
+        arSuperDataSubmission.setDraftId(null);
+        CycleStageSelectionDto selectionDto = arSuperDataSubmission.getSelectionDto();
+        if (selectionDto != null) {
+            ArSuperDataSubmissionDto draftDto = arDataSubmissionService.getDraftArSuperDataSubmissionDtoByConds(orgId, arSuperDataSubmission.getHciCode(), selectionDto.getStage(), userId);
+            if (draftDto != null) {
+                arSuperDataSubmission.setDraftNo(draftDto.getDraftNo());
+                arSuperDataSubmission.setDraftId(draftDto.getDraftId());
+            }
+        }
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission, request);
     }
 
     /**

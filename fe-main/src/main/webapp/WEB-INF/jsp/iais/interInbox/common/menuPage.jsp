@@ -1,5 +1,5 @@
-<div class="row d-flex">
-    <div class="col-xs-12 col-md-10">
+<div class="row">
+    <div class="col-xs-12 col-md-9">
         <div class="navigation">
             <ul class="nav nav-tabs nav-menu">
                 <li class="active"><a href="#"><span>Dashboard</span></a></li> <%--NOSONAR--%>
@@ -12,10 +12,10 @@
                     <ul class="dropdown-menu menuDropHeight">
                         <ul class="nav nav-tabs subtab-nav" style = "${roleMenuForEServices != 2 ? 'display:none' : ''}">
                             <c:if test="${appTab == 1}">
-                                <li class="active"><a data-toggle="tab" href="#lics">Licensing</a></li>
+                                <li class="active"><a data-toggle="tab" href="#lics" aria-expanded="true">Licensing</a></li>
                             </c:if>
                             <c:if test="${dssTab == 1}">
-                                <li class="${roleMenuForEServices == 0 ? 'active' : ''}"><a data-toggle="tab" href="#datasub">Data Submission</a></li>
+                                <li class="${roleMenuForEServices == 0 ? 'active' : ''}"><a data-toggle="tab" href="#datasub" aria-expanded="false">Data Submission</a></li>
                             </c:if>
                         </ul>
                         <c:if test="${roleMenuForEServices ==0}">

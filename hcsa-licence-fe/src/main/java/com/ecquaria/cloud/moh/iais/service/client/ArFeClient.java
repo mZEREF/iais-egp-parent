@@ -109,6 +109,12 @@ public interface ArFeClient {
                                                                                                 @RequestParam(name = "onlyStage") boolean onlyStage,
                                                                                                 @RequestParam("userId") String userId);
 
+    @GetMapping(value = "/data-submission/draft-ar-data-submission/stage", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ArSuperDataSubmissionDto> getDraftArSuperDataSubmissionDtoByConds(@RequestParam(name = "orgId") String orgId,
+                                                                                            @RequestParam(name = "hciCode") String hciCode,
+                                                                                            @RequestParam(name = "submissionStage") String submissionStage,
+                                                                                            @RequestParam(name = "userId") String userId);
+
     @GetMapping(value = "/data-submission/draft-ar-data-submission/special", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ArSuperDataSubmissionDto> getArSuperDataSubmissionDtoDraftByConds(@RequestParam(name = "orgId") String orgId,

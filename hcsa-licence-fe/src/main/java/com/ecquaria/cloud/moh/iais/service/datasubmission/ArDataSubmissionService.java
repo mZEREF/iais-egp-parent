@@ -138,4 +138,10 @@ public interface ArDataSubmissionService {
     void remindAndDeleteDraftSubJob();
 
     List<ARCycleStageDto> genAvailableStageList(HttpServletRequest request);
+
+    ArSuperDataSubmissionDto prepareArRfcData(ArSuperDataSubmissionDto arSuper, String submissionNo, HttpServletRequest request);
+
+    void jumpJudgement(HttpServletRequest request);
+
+    ArSuperDataSubmissionDto getDraftArSuperDataSubmissionDtoByConds(String orgId, String hciCode, String submissionStage, String userId);
 }

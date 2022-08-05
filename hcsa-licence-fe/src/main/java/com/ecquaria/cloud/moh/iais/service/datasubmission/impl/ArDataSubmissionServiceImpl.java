@@ -26,14 +26,17 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.ARCycleStageDto;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationFeService;
@@ -67,6 +70,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.ACTION_TYPE;
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.JUMP_ACTION_TYPE;
 
 /**
  * @Description ArDataSubmissionServiceImpl
@@ -835,37 +841,48 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     private List<String> getSubmittedStageList(String cycleId){
-        List<DataSubmissionDto> dataSubmissionDtoList = arFeClient.getAllDataSubmissionByCycleId(cycleId).getEntity();
-        if (!CollectionUtils.isEmpty(dataSubmissionDtoList)){
-            return dataSubmissionDtoList.stream().map(DataSubmissionDto::getCycleStage).collect(Collectors.toList());
+        if (StringUtils.hasLength(cycleId)) {
+            List<DataSubmissionDto> dataSubmissionDtoList = arFeClient.getAllDataSubmissionByCycleId(cycleId).getEntity();
+            if (!CollectionUtils.isEmpty(dataSubmissionDtoList)) {
+                return dataSubmissionDtoList.stream().map(DataSubmissionDto::getCycleStage).collect(Collectors.toList());
+            }
         }
         return Collections.emptyList();
     }
 
+    /**
+     * Get all the data displayed in the AR Cycle navigation bar
+     */
     @Override
     public List<ARCycleStageDto> genAvailableStageList(HttpServletRequest request) {
         ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(request);
         CycleStageSelectionDto selectionDto = currentArDataSubmission.getSelectionDto();
-        String currentCycle = ParamUtil.getString(request, "stage");
+        // get from cycleStageSelectionSection.jsp , user select next stage
+        String stage = ParamUtil.getString(request, "stage");
+        //get from headStepNavTab.jsp , user click to change stage
         String actionValue = ParamUtil.getString(request, "action_value");
-        String stage;
+        String currentStage;
         List<String> submittedStageList = new ArrayList<>();
+        List<String> notSubmittedStageList = new ArrayList<>();
         if (selectionDto != null) {
-            stage = StringUtils.hasLength(actionValue) ? actionValue : selectionDto.getStage();
-            List<CycleDto> cycleDtos = selectionDto.getCycleDtos();
-            if (!CollectionUtils.isEmpty(cycleDtos)){
-                String cycleId = cycleDtos.stream().filter(cycleDto -> DataSubmissionConsts.DS_CYCLE_AR.equals(cycleDto.getCycleType())).map(CycleDto::getId).collect(Collectors.joining(","));
-                submittedStageList = getSubmittedStageList(cycleId);
-            }
+            currentStage = StringUtils.hasLength(actionValue) ? actionValue : selectionDto.getStage();
+            String cycleId = selectionDto.getCycleId();
+            submittedStageList = getSubmittedStageList(cycleId);
+            //get all can action stages
+            List<String> nextStageList = DataSubmissionHelper.getNextStageForAR(selectionDto);
+            //remove all submitted stage , result is not-submitted stage
+            nextStageList.removeAll(submittedStageList);
+            notSubmittedStageList = nextStageList;
         } else {
-            stage = StringUtils.hasLength(actionValue) ? actionValue : currentCycle;
+            currentStage = StringUtils.hasLength(actionValue) ? actionValue : stage;
         }
         //if current and submitted stage is same one, display ongoingStage status
-        submittedStageList.remove(stage);
+        submittedStageList.remove(currentStage);
         List<ARCycleStageDto> arCycleStageDtos = new ArrayList<>();
         List<String> options = DataSubmissionHelper.getAllARCycleStages();
         for (String option : options) {
             String codeDesc;
+            // Because the fields displayed by WireFrame are not the same as the fields stored in the database, fix this
             if (DataSubmissionConsts.AR_STAGE_THAWING.equals(option)) {
                 codeDesc = "Thawing";
             } else if (DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING.equals(option)) {
@@ -879,14 +896,97 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             } else {
                 codeDesc = MasterCodeUtil.getCodeDesc(option);
             }
-            if (option.equals(stage)) {
+            if (option.equals(currentStage)) {
                 arCycleStageDtos.add(new ARCycleStageDto(option, codeDesc, DataSubmissionConstant.AR_CYCLE_STAGE_STATUS_ONGOING));
             } else if (submittedStageList.contains(option)){
                 arCycleStageDtos.add(new ARCycleStageDto(option, codeDesc, DataSubmissionConstant.AR_CYCLE_STAGE_STATUS_SUBMITTED));
+            } else if(notSubmittedStageList.contains(option)){
+                arCycleStageDtos.add(new ARCycleStageDto(option, codeDesc, null));
             } else {
-                arCycleStageDtos.add(new ARCycleStageDto(option, codeDesc, DataSubmissionConstant.AR_CYCLE_STAGE_STATUS_NOT_SUBMITTED));
+                arCycleStageDtos.add(new ARCycleStageDto(option, codeDesc, DataSubmissionConstant.AR_CYCLE_STAGE_STATUS_Invalid));
             }
         }
         return arCycleStageDtos;
+    }
+
+    @Override
+    public ArSuperDataSubmissionDto prepareArRfcData(ArSuperDataSubmissionDto arSuper, String submissionNo, HttpServletRequest request) {
+        if (arSuper == null){
+            arSuper = getArSuperDataSubmissionDtoBySubmissionNo(submissionNo);
+        }
+        arSuper.setArCurrentInventoryDto(getArCurrentInventoryDtoBySubmissionNo(submissionNo, true));
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_OLD_DATA_SUBMISSION,
+                CopyUtil.copyMutableObject(arSuper));
+        arSuper.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        arSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
+        if (arSuper.getDataSubmissionDto() != null) {
+            DataSubmissionDto dataSubmissionDto = arSuper.getDataSubmissionDto();
+            dataSubmissionDto.setDeclaration(null);
+            dataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
+            dataSubmissionDto.setAmendReason(null);
+            dataSubmissionDto.setAmendReasonOther(null);
+            if (arSuper.getSelectionDto() != null) {
+                CycleStageSelectionDto selectionDto = arSuper.getSelectionDto();
+                if (StringUtil.isEmpty(selectionDto.getStage()) || StringUtil.isEmpty(selectionDto.getCycle())) {
+                    selectionDto.setStage(dataSubmissionDto.getCycleStage());
+                    selectionDto.setCycle(arSuper.getCycleDto().getCycleType());
+                }
+            }
+        }
+        return arSuper;
+    }
+
+    @Override
+    public void jumpJudgement(HttpServletRequest request){
+        String actionType = ParamUtil.getString(request, ACTION_TYPE);
+        String actionValue = ParamUtil.getString(request, "action_value");
+        String haveJump = (String) ParamUtil.getRequestAttr(request, "haveJump");
+        String jumpToSubmittedStage = ParamUtil.getString(request, DataSubmissionConstant.JUMP_TO_SUBMITTED_STAGE);
+        if ("jumpStage".equals(actionType)){
+            ParamUtil.setRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, actionValue);
+            if ("Y".equals(haveJump)){
+                prepareTargetStageRfcData(request, actionValue, jumpToSubmittedStage);
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
+            }else {
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "return");
+                ParamUtil.setRequestAttr(request, JUMP_ACTION_TYPE, "jump");
+            }
+        }
+    }
+
+    private void prepareTargetStageRfcData(HttpServletRequest request, String actionValue, String jumpToSubmittedStage) {
+        ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        CycleStageSelectionDto selectionDto = currentArDataSubmission.getSelectionDto();
+        DataSubmissionDto dataSubmissionDto1 = currentArDataSubmission.getDataSubmissionDto();
+        String cycleId = "";
+        if (selectionDto!=null) {
+            cycleId = selectionDto.getCycleId();
+        }
+        if (StringUtils.hasLength(cycleId) && "true".equals(jumpToSubmittedStage)) {
+            List<DataSubmissionDto> dataSubmissionDtoList = arFeClient.getAllDataSubmissionByCycleId(cycleId).getEntity();
+            if (!CollectionUtils.isEmpty(dataSubmissionDtoList)) {
+                for (DataSubmissionDto dataSubmissionDto : dataSubmissionDtoList) {
+                    if (dataSubmissionDto.getCycleStage().equals(actionValue)){
+                        currentArDataSubmission = prepareArRfcData(null,dataSubmissionDto.getSubmissionNo(), request);
+                        DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission,request);
+                        break;
+                    }
+                }
+            }
+        }
+        if (!"true".equals(jumpToSubmittedStage)){
+            currentArDataSubmission.setAppType(DataSubmissionConsts.DS_APP_TYPE_NEW);
+        }
+        if (selectionDto != null) {
+            selectionDto.setStage(actionValue);
+        }
+        if (dataSubmissionDto1!=null) {
+            dataSubmissionDto1.setCycleStage(actionValue);
+        }
+    }
+
+    @Override
+    public ArSuperDataSubmissionDto getDraftArSuperDataSubmissionDtoByConds(String orgId, String hciCode, String submissionStage, String userId){
+        return arFeClient.getDraftArSuperDataSubmissionDtoByConds(orgId,hciCode,submissionStage,userId).getEntity();
     }
 }
