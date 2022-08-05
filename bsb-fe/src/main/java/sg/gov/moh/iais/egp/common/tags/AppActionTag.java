@@ -6,9 +6,11 @@ import sg.gov.moh.iais.egp.bsb.service.inbox.AppActionJudge;
 import sg.gov.moh.iais.egp.bsb.service.inbox.AppWithdrawableJudge;
 import sg.gov.moh.iais.egp.bsb.service.inbox.ApplicantUploadCertReportJudge;
 import sg.gov.moh.iais.egp.bsb.service.inbox.DraftAppJudge;
-import sg.gov.moh.iais.egp.bsb.service.inbox.InsAppointmentJudge;
-import sg.gov.moh.iais.egp.bsb.service.inbox.InsReportJudge;
+import sg.gov.moh.iais.egp.bsb.service.inbox.InspectionAppointmentJudge;
+import sg.gov.moh.iais.egp.bsb.service.inbox.InspectionChecklistJudge;
 import sg.gov.moh.iais.egp.bsb.service.inbox.InspectionFollowUpJudge;
+import sg.gov.moh.iais.egp.bsb.service.inbox.InspectionNCJudge;
+import sg.gov.moh.iais.egp.bsb.service.inbox.RFIJudge;
 
 import javax.servlet.jsp.JspContext;
 import javax.servlet.jsp.JspException;
@@ -25,12 +27,14 @@ public class AppActionTag extends SimpleTagSupport {
     public void doTag() throws JspException, IOException {
         List<AppActionJudge> judgeList = Arrays.asList(
                 new DraftAppJudge(info.getStatus()),
-                new InsReportJudge(info.getStatus()),
+                new RFIJudge(info.getStatus()),
                 new AppWithdrawableJudge(info.getAppType(), info.getStatus()),
-                new InsAppointmentJudge(info.getAppType(), info.getStatus()),
                 new AFCUploadReportJudge(info.getAppType(), info.getStatus()),
                 new ApplicantUploadCertReportJudge(info.getAppType(), info.getStatus()),
-                new InspectionFollowUpJudge(info.getAppType(), info.getStatus()));
+                new InspectionAppointmentJudge(info.getStatus()),
+                new InspectionFollowUpJudge(info.getStatus()),
+                new InspectionNCJudge(info.getStatus()),
+                new InspectionChecklistJudge(info.getStatus()));
         boolean actionAvailable = false;
         JspContext context = getJspContext();
         for (AppActionJudge judge : judgeList) {
