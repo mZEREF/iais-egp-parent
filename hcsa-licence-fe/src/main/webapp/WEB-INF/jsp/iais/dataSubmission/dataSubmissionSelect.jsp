@@ -9,7 +9,7 @@
 %>
 <webui:setLayout name="iais-internet"/>
 
-<c:set var="title" value="New Data Submission" />
+<c:set var="title" value="Data Submission"/>
 
 <%@ include file="assistedReproduction/common/arHeader.jsp" %>
 <c:forEach items="${iais_Login_User_Info_Attr.privileges}" var="privilege">
@@ -30,63 +30,90 @@
   </c:if>
 </c:forEach>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-  <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-  <div class="row">
-    <div class="container center-content">
-      <div class="col-xs-12">
-        <h3>Please select the submission you wish to make</h3>
-      </div>
-          <c:if test="${dataSubARTPrivilege == 1}">
-            <div class="col-xs-12" style="height: 60px">
-              <div class="col-xs-8 col-md-4 text-left">
-                <a class="btn btn-primary next premiseId" onclick="submit('AR')"  href="javascript:void(0);">Assisted Reproduction</a>
-              </div>
+    <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+    <div class="main-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="instruction-content center-content">
+                        <h2>Please select the submission you wish to make</h2>
+                        <div class="row">
+                            <c:if test="${dataSubARTPrivilege == 1}">
+                            <div class="col-lg-4 col-xs-12">
+                                <div class="data-submission-box">
+                                    <a onclick="submit('AR')" href="javascript:void(0);">
+                                        <h4>
+                                            <i class="fa fa-file-text"></i>
+                                            Assisted Reproduction
+                                        </h4>
+                                    </a>
+                                </div>
+                            </div>
+                            </c:if>
+                            <c:if test="${dataSubDPPrivilege == 1}">
+                            <div class="col-lg-4 col-xs-12">
+                                <div class="data-submission-box">
+                                    <a onclick="submit('DP')" href="javascript:void(0);">
+                                        <h4>
+                                            <i class="fa fa-file-text"></i>
+                                            Drug Practices
+                                        </h4>
+                                    </a>
+                                </div>
+                            </div>
+                            </c:if>
+                            <c:if test="${dataSubLDTPrivilege == 1}">
+                            <div class="col-lg-4 col-xs-12">
+                                <div class="data-submission-box">
+                                    <a onclick="submit('LDT')" href="javascript:void(0);">
+                                        <h4>
+                                            <i class="fa fa-file-text"></i>
+                                            Laboratory Developed Test
+                                        </h4>
+                                    </a>
+                                </div>
+                            </div>
+                            </c:if>
+                            <c:if test="${dataSubTOPPrivilege == 1}">
+                            <div class="col-lg-4 col-xs-12">
+                                <div class="data-submission-box">
+                                    <a onclick="submit('TP')" href="javascript:void(0);">
+                                        <h4>
+                                            <i class="fa fa-file-text"></i>
+                                            Termination of Pregnancy
+                                        </h4>
+                                    </a>
+                                </div>
+                            </div>
+                            </c:if>
+                            <c:if test="${dataSubVSSPrivilege == 1}">
+                            <div class="col-lg-4 col-xs-12">
+                                <div class="data-submission-box">
+                                    <a onclick="submit('VS')" href="javascript:void(0);">
+                                        <h4>
+                                            <i class="fa fa-file-text"></i>
+                                            Voluntary Sterilisation
+                                        </h4>
+                                    </a>
+                                </div>
+                            </div>
+                            </c:if>
+                        </div>
+                        <div class="application-tab-footer">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-6 text-left">
+                                    <p>
+                                        <a class="back" id="backBtn" href="/main-web">
+                                            <i class="fa fa-angle-left">&nbsp;</i> Back
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </c:if>
-          <c:if test="${dataSubDPPrivilege == 1}">
-              <div class="col-xs-12" style="height: 60px">
-              <div class="col-xs-8 col-md-4 text-left">
-                <a class="btn btn-primary next premiseId" onclick="submit('DP')"  href="javascript:void(0);">Drug Practices</a>
-              </div>
-            </div>
-          </c:if>
-          <c:if test="${dataSubLDTPrivilege == 1}">
-          <div class="col-xs-12"  style="height: 60px">
-            <div class="col-xs-8 col-md-4 text-left">
-              <a class="btn btn-primary next premiseId" onclick="submit('LDT')"  href="javascript:void(0);">Laboratory Developed Test</a>
-            </div>
-          </div>
-          </c:if>
-           <c:if test="${dataSubTOPPrivilege == 1}">
-          <div class="col-xs-12" style="height: 60px">
-            <div class="col-xs-8 col-md-4 text-left">
-              <a class="btn btn-primary next premiseId" onclick="submit('TP')"  href="javascript:void(0);">Termination of Pregnancy</a>
-            </div>
-          </div>
-           </c:if>
-          <c:if test="${dataSubVSSPrivilege == 1}">
-          <div class="col-xs-12"  style="height: 60px">
-            <div class="col-xs-8 col-md-4 text-left">
-              <a class="btn btn-primary next premiseId" onclick="submit('VS')"  href="javascript:void(0);">Voluntary Sterilisation</a>
-            </div>
-          </div>
-         </c:if>
         </div>
-  </div>
-  <div class="row">
-    <div class="container">
-        <div class="col-xs-12">
-        <div class="application-tab-footer">
-          <div class="col-xs-12 col-sm-4 col-md-2 text-left">
-            <a style="padding-left: 5px;" class="back" id="backBtn" href="/main-web">
-              <em class="fa fa-angle-left">&nbsp;</em> Back
-            </a>
-          </div>
-        </div>
-      </div>
     </div>
-  </div>
-
-
 </form>
 <link rel="stylesheet" href="<%=webrootDS%>css/data_submission.css">
