@@ -18,7 +18,7 @@
                    aria-invalid="false">
             <label class="form-check-label" for="submitDateMohDrp">
                 <span class="check-circle"></span>
-                <span class="left-content">Drug Practices (DRP)</span>
+                <span class="left-content">Drug Practices (DP)</span>
             </label>
         </div>
     </c:if>
@@ -51,7 +51,7 @@
                    aria-invalid="false">
             <label class="form-check-label" for="submitDateMohVss">
                 <span class="check-circle"></span>
-                <span class="left-content">Voluntary Sterilization (VSS)</span>
+                <span class="left-content">Voluntary Sterilization (VS)</span>
             </label>
         </div>
     </c:if>
