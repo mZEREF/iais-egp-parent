@@ -4,12 +4,12 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4 class="panel-title">
-            <a class="collapsed" data-toggle="collapse" href="#top-amendment">
+            <a class="collapsed" data-toggle="collapse" href="#ar-declaration">
                 Declarations
             </a>
         </h4>
     </div>
-    <div id="top-amendment" class="panel-collapse collapse ">
+    <div id="ar-declaration" class="panel-collapse collapse ">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <iais:row>
