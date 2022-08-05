@@ -864,12 +864,12 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         String currentStage;
         List<String> submittedStageList = new ArrayList<>();
         List<String> notSubmittedStageList = new ArrayList<>();
+        //get all can action stages
+        List<String> nextStageList = DataSubmissionHelper.getNextStageForAR(selectionDto);
         if (selectionDto != null) {
             currentStage = StringUtils.hasLength(actionValue) ? actionValue : selectionDto.getStage();
             String cycleId = selectionDto.getCycleId();
             submittedStageList = getSubmittedStageList(cycleId);
-            //get all can action stages
-            List<String> nextStageList = DataSubmissionHelper.getNextStageForAR(selectionDto);
             //remove all submitted stage , result is not-submitted stage
             nextStageList.removeAll(submittedStageList);
             notSubmittedStageList = nextStageList;
