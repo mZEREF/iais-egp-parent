@@ -22,7 +22,7 @@ import java.util.List;
  */
 @Service
 @Slf4j
-public class PatientServiceImpl implements PatientService {
+    public class PatientServiceImpl implements PatientService {
 
     @Autowired
     private ArFeClient arFeClient;
@@ -54,6 +54,11 @@ public class PatientServiceImpl implements PatientService {
             return null;
         }
         return arFeClient.getActivePatientByConds(idType, idNumber, nationality, orgId, patientType).getEntity();
+    }
+
+    @Override
+    public PatientInfoDto getPatientInfoDtoByIdTypeAndIdNumber(String idType,String idNumber) {
+        return arFeClient.getPatientInfoDtoByIdTypeAndIdNumber(idType,idNumber).getEntity();
     }
 
     @Override

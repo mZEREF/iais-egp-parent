@@ -3,13 +3,17 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.HusbandDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
+import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.AjaxResDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -19,14 +23,18 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
+import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -197,6 +205,87 @@ public class ArAjaxController {
         log.debug(StringUtil.changeForLog("the generatePregnancyOutcomeBabyHtml end ...."));
         return ajaxResDto;
 
+    }
+
+    @PostMapping(value = "/validate-patient-info")
+    public @ResponseBody
+    Map<String, Object> validatePatientInfo(HttpServletRequest request) {
+        log.debug(StringUtil.changeForLog("the AR patient info validation start ...."));
+        Map<String,Object> situation = Maps.newHashMapWithExpectedSize(3);
+        String isPatHasId = ParamUtil.getString(request,"isPatHasId");
+        String identityNo = ParamUtil.getString(request,"identityNo");
+
+        //validate indeed field is not empty
+        situation.put("needShowError",false);
+        if(!StringUtils.hasLength(isPatHasId) || !StringUtils.hasLength(identityNo)){
+            if(!StringUtils.hasLength(isPatHasId)){
+                situation.put("error_hasIdNumber","");
+            }
+            if(!StringUtils.hasLength(identityNo)){
+                situation.put("error_identityNo","");
+            }
+            situation.put("needShowError",true);
+            return situation;
+        }
+
+        //do passport/FIN/NRIC validate
+        boolean identityNoValidate = false;
+        if("NRICORFIN".equals(isPatHasId)){
+            boolean finValidation = SgNoValidator.validateFin(identityNo);
+            boolean nricValidation = SgNoValidator.validateNric(identityNo);
+
+            if(finValidation || nricValidation)identityNoValidate = true;
+        }else{
+            identityNoValidate = true;
+        }
+        if(!identityNoValidate){
+            situation.put("error_identityNo","");
+            situation.put("needShowError",true);
+            return situation;
+        }
+
+
+        //by passport or NRIC NUMBER to search patient info from database
+        PatientInfoDto patientInfoDto = patientService.getPatientInfoDtoByIdTypeAndIdNumber(isPatHasId,identityNo);
+        ParamUtil.setSessionAttr(request,"patientInfoDto",patientInfoDto);
+        if(ObjectUtils.isEmpty(patientInfoDto)){
+            situation.put("registeredPT",false);
+
+            //deal with the issue that happened when ArDataSubmission is exist and key unregistered id
+            request.getSession().removeAttribute(DataSubmissionConstant.AR_DATA_SUBMISSION);
+            return situation;
+        }
+        situation.put("registeredPT",true);
+        PatientDto patientDto = patientInfoDto.getPatient();
+        StringBuilder patientHtml = new StringBuilder();
+        patientHtml.append("<span style=\"display:block\">").append("Details of Patient").append("</span>");
+        patientHtml.append("<span style=\"display:block\">").append("Name (as per NRIC/Passport): ").append(patientDto.getName()).append("</span>");
+        patientHtml.append("<span style=\"display:block\">").append("Date of Birth: ").append(patientDto.getBirthDate()).append("</span>");
+        patientHtml.append("<span style=\"display:block\">").append("Nationality: ").append(patientDto.getNationality()).append("</span>");
+        patientHtml.append("<span style=\"display:block\">").append("Ethnicity: ").append(patientDto.getEthnicGroup()).append("</span>");
+        situation.put("arPatient",patientHtml);
+        PatientDto previous = patientInfoDto.getPrevious();
+        if(!ObjectUtils.isEmpty(previous)){
+            StringBuilder previousHtml = new StringBuilder();
+            previousHtml.append("<span style=\"display:block\">").append("Other Identification ID Used in Previous AR Treatment").append("</span>");
+            previousHtml.append("<span style=\"display:block\">").append("ID No.: ").append(previous.getIdNumber()).append("</span>");
+            previousHtml.append("<span style=\"display:block\">").append("Name: ").append(previous.getName()).append("</span>");
+            previousHtml.append("<span style=\"display:block\">").append("Nationality: ").append(previous.getNationality()).append("</span>");
+            situation.put("preArPatient",previousHtml);
+        }
+        HusbandDto husband = patientInfoDto.getHusband();
+        if(!ObjectUtils.isEmpty(husband)){
+            StringBuilder husbandHtml = new StringBuilder();
+            husbandHtml.append("<span style=\"display:block\">").append("Husband Details (If Applicable)").append("</span>");
+            husbandHtml.append("<span style=\"display:block\">").append("Name (as per NRIC/Passport): ").append(husband.getIdNumber()).append("</span>");
+            husbandHtml.append("<span style=\"display:block\">").append("Date of Birth: ").append(husband.getBirthDate()).append("</span>");
+            husbandHtml.append("<span style=\"display:block\">").append("Nationality: ").append(husband.getNationality()).append("</span>");
+            husbandHtml.append("<span style=\"display:block\">").append("Ethnicity: ").append(husband.getEthnicGroup()).append("</span>");
+            situation.put("arHusband",husbandHtml);
+        }
+
+        log.debug(StringUtil.changeForLog("the AR patient info validation end ...."));
+        return situation;
     }
 
     private String generateDropDownHtml(List<SelectOption> options, String firstOption) {

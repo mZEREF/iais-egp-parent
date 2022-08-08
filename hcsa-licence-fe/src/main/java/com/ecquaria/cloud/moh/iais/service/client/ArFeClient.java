@@ -48,6 +48,10 @@ public interface ArFeClient {
             @RequestParam(name = "idNumber") String idNumber, @RequestParam(name = "nationality") String nationality,
             @RequestParam(name = "orgId") String orgId, @RequestParam(name = "patientType")String patientType);
 
+    @GetMapping(value = "/ar-common/patient-info/id-type/id-number", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<PatientInfoDto> getPatientInfoDtoByIdTypeAndIdNumber(@RequestParam(name = "idType") String idType,
+                                                                             @RequestParam(name = "idNumber") String idNumber);
+
     @GetMapping(value = "/data-submission/cycle-stage-selection", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<CycleStageSelectionDto> getCycleStageSelectionDtoByConds(@RequestParam(name = "idType") String idType,
             @RequestParam(name = "idNumber") String idNumber, @RequestParam(name = "nationality") String nationality,
