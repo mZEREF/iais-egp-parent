@@ -24,6 +24,7 @@
 <%@attribute name="titleFrag" fragment="true" %>
 
 <input type="hidden" name="sectionIdx" value="<%=sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil.indexes(batInfos.size())%>">
+<input type="hidden" id="deletedSectionIdx" value=""/>
 
 
 <bsb:global-constants classFullName="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" attributeKey="masterCodeConstants"/>

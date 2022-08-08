@@ -428,7 +428,7 @@ public class DocDownloadAjaxController {
         NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, FacRegisterConstants.KEY_ROOT_NODE_GROUP);
         SimpleNode profileNode = (SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE);
         FacilityProfileDto profileDto = (FacilityProfileDto) profileNode.getValue();
-        return profileDto.getNewDocMap().get(id).getMultipartFile();
+        return profileDto.findNewDocByTmpId(id).getMultipartFile();
     }
 
     /** Facility registration get saved uploaded file for profile (exactly the gazette order) */
@@ -436,7 +436,7 @@ public class DocDownloadAjaxController {
         NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, FacRegisterConstants.KEY_ROOT_NODE_GROUP);
         SimpleNode profileNode = (SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE);
         FacilityProfileDto profileDto = (FacilityProfileDto) profileNode.getValue();
-        DocRecordInfo info = profileDto.getSavedDocMap().get(id);
+        DocRecordInfo info = profileDto.findSavedDocByRepoId(id);
         if (info == null) {
             throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
         }

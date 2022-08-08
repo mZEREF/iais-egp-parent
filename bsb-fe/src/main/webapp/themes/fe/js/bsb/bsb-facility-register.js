@@ -78,34 +78,57 @@ $(function () {
         facActivityMandatory.show();
     });
 
-    $("#facType").change(function () {
+    $("select[data-custom-ind=facType]").change(function () {
+        var id = $(this).attr("id");
+        var index = id.substring('facType'.length);
         if (this.value === 'FACTYPE005') {
-            $("#facTypeDetailsFormGroup").show();
+            $("#facTypeDetailsFormGroup" + index).show();
         } else {
-            $("#facTypeDetailsFormGroup").hide();
+            $("#facTypeDetailsFormGroup" + index).hide();
         }
     });
 
-    $("input[name=protectedPlace]").change(function () {
+    $("input[data-custom-ind=isSameAddress]").change(function () {
         var id = $(this).attr("id");
-        if (id === 'isAProtectedPlace') {
-            $("#docUploadDiv").show();
-        } else if (id === 'notAProtectedPlace') {
-            $("#docUploadDiv").hide();
+        var name = $(this).attr("name");
+        var index = name.substring('isSameAddress'.length);
+        if (id.startsWith('isSameAddress')) {
+            $("#isSameAddrSection" + index).show();
+            $("#isSameAddrSectionY" + index).show();
+            $("#isSameAddrSectionN" + index).hide();
+        } else if (id.startsWith('notSameAddress')) {
+            $("#isSameAddrSection" + index).show();
+            $("#isSameAddrSectionY" + index).hide();
+            $("#isSameAddrSectionN" + index).show();
+        }
+    });
+
+    $("input[data-custom-ind=gazetted]").change(function () {
+        var id = $(this).attr("id");
+        var name = $(this).attr("name");
+        var index = name.substring('protectedPlace'.length);
+        if (id.startsWith('isAProtectedPlace')) {
+            $("#docUploadDiv" + index).show();
+        } else if (id.startsWith('notAProtectedPlace')) {
+            $("#docUploadDiv" + index).hide();
             $("#notGazetteModal").modal('show');
         }
     });
 
-    $("input[name=isSameAddress ]").change(function (){
+    $("select[data-custom-ind=addressType]").change(function () {
         var id = $(this).attr("id");
-        if(id === 'isSameAddress'){
-            $("#isSameAddrSection").show();
-            $("#isSameAddrSectionY").show();
-            $("#isSameAddrSectionN").hide();
-        } else if(id === 'notSameAddress'){
-            $("#isSameAddrSection").show();
-            $("#isSameAddrSectionY").hide();
-            $("#isSameAddrSectionN").show();
+        var index = id.substring('addressType'.length);
+        var addressType = $(this).val();
+        if(addressType === 'ADDTY001') {
+            $("#aptMandatoryBlk" + index).show();
+            $("#aptMandatoryFloor" + index).show();
+            $("#aptMandatoryUnit" + index).show();
+            $("#aptMandatoryStreet" + index).hide();
+        } else {
+            $("#aptMandatoryBlk" + index).hide();
+            $("#aptMandatoryFloor" + index).hide();
+            $("#aptMandatoryUnit" + index).hide();
+            $("#aptMandatoryStreet" + index).show();
         }
     });
 
@@ -121,6 +144,19 @@ $(function () {
             $("#aptMandatoryFloor").hide();
             $("#aptMandatoryUnit").hide();
             $("#aptMandatoryStreet").show();
+        }
+    });
+
+    $("input[data-custom-ind=opvSabin]").change(function () {
+        var id = $(this).attr("id");
+        var name = $(this).attr("name");
+        var parts = name.split(/--v--/);
+        var prefix = parts[0];
+        var index = parts[1];
+        if (id.startsWith(prefix + 'Y')) {
+            $("#" + prefix + 'SubSection--v--' + index).show();
+        } else if (id.startsWith(prefix + 'N')) {
+            $("#" + prefix + 'SubSection--v--' + index).hide();
         }
     });
 
@@ -145,6 +181,61 @@ $(function () {
         }
     });
 
+
+    $("#addNewProfileSection").click(function () {
+        var meta = readSectionRepeatMetaData();
+        var idxInput = $("input[name=" + meta.idxInputName +"]");
+        var curIdxes = idxInput.val();
+        var idxArr = curIdxes.trim().split(/ +/);
+
+        var currentAmt = idxArr.length;
+        var nextIdx = parseInt(idxArr[currentAmt - 1]) + 1;
+
+        var section0 = $("#" + meta.sectionIdPrefix + meta.separator + "0");
+        var newSectionDivJqObj = section0.clone(true);
+        var newSectionDiv = newSectionDivJqObj[0];
+        if (currentAmt === 1) {
+            changeFirstSectionHeader(meta.sectionIdPrefix, 0, meta.headerTitlePrefix, meta.separator, true);
+        }
+        modifyClonedNode(newSectionDiv, nextIdx, meta.separator);
+
+        var newHeaderDiv = newSectionHeader(currentAmt + 1, nextIdx, meta.headerTitlePrefix);
+        newSectionDiv.replaceChild(newHeaderDiv, newSectionDiv.children[0]);
+
+        var sectionGroupDiv = document.getElementById(meta.sectionGroupId);
+        sectionGroupDiv.appendChild(newSectionDiv);
+        appendSSInputVal(idxInput[0], nextIdx);
+
+        /* Reset select to first option */
+        newSectionDivJqObj.find("div.nice-select").each(function (index) {
+            // This unique class is intended for auto test framework.
+            // ('unq' is just a random string used to distinguish it from already exists name)
+            $(this).attr("class", "nice-select " + meta.sectionIdPrefix + meta.separator + nextIdx + "unq" + index);
+            var firstOp = $(this).find("ul.list > li:first");
+            // we need to click twice to set the value
+            firstOp.trigger('click'); firstOp.trigger('click');
+        });
+
+        /* Reset all radio button and checkbox to unchecked */
+        resetNotDisabledRadio(newSectionDivJqObj);
+        resetNotDisabledCheckbox(newSectionDivJqObj);
+        /* Reset date picker */
+        setupAllDatePickers(newSectionDivJqObj);
+        /* Reset tool tip */
+        setupAllToolTip(newSectionDivJqObj);
+
+        /* hide unfolded sections */
+        $("#facTypeDetailsFormGroup" + meta.separator + nextIdx).hide();
+        $("#isSameAddrSection" + meta.separator + nextIdx).hide();
+        $("#docUploadDiv" + meta.separator + nextIdx).hide();
+        // hide mandatory asterisk
+        $("#aptMandatoryBlk" + meta.separator + nextIdx).hide();
+        $("#aptMandatoryFloor" + meta.separator + nextIdx).hide();
+        $("#aptMandatoryUnit" + meta.separator + nextIdx).hide();
+        $("#aptMandatoryStreet" + meta.separator + nextIdx).hide();
+        // hide inventory info subsection
+        newSectionDivJqObj.find("div[data-custom-ind=opvSabinSubSection]").hide();
+    });
 
 
     $("#addNewOfficerSection").click(function () {
@@ -222,11 +313,27 @@ $(function () {
                 deleteSection(meta.sectionIdPrefix, meta.separator, idx);
             }
             idxArr = removeIdx(idxArr, idx);
-            if (idxArr.length === 0) {
-                $("#fakeOfficerSection").show();
-            }
             // set the input after the deletion of DOM to make sure the consistent between view and value.
             idxInput.val(idxArr.join(" "));
+
+            if (meta.deletedIdxInputName) {
+                var deletedIdxInput = document.getElementById(meta.deletedIdxInputName);
+                appendSSInputVal(deletedIdxInput, idx);
+            }
+
+            if (meta.sectionIdPrefix === 'profileInfoSection') {
+                if (idxArr.length === 1) {
+                    // remove the sequence number at all
+                    changeFirstSectionHeader(meta.sectionIdPrefix, 0, meta.headerTitlePrefix, meta.separator, false);
+                } else {
+                    // re-calculate sequence number
+                    refreshH3(meta.sectionGroupId, meta.headerTitlePrefix);
+                }
+            } else if (meta.sectionIdPrefix === 'officerSection') {
+                if (idxArr.length === 0) {
+                    $("#fakeOfficerSection").show();
+                }
+            }
         }
     });
 
@@ -286,8 +393,10 @@ $(function () {
     });
 
 
-    $("#retrieveAddressBtn").click(function retrieveAddress() {
-        var postalCode = $("#postalCodeN").val();
+    $("a[data-custom-ind=retrieveAddressBtn]").click(function () {
+        var id = $(this).attr("id");
+        var index = id.substring('retrieveAddressBtn'.length);
+        var postalCode = $("#postalCodeN" + index).val();
         if (!postalCode) {
             return false;
         }
@@ -299,12 +408,12 @@ $(function () {
                 $("#invalidPostalCodeModal").modal('show');
             },
             success:function(data) {
-                $("#addressType").val(data.address_type);
-                $("#blockN").val(data.block_no);
-                $("#floorN").val(data.floor);
-                $("#unitNoN").val(data.unit_no);
-                $("#streetNameN").val(data.street);
-                $("#buildingNameN").val(data.building);
+                $("#addressType" + index).val(data.address_type);
+                $("#blockN" + index).val(data.block_no);
+                $("#floorN" + index).val(data.floor);
+                $("#unitNoN" + index).val(data.unit_no);
+                $("#streetNameN" + index).val(data.street);
+                $("#buildingNameN" + index).val(data.building);
             }
         });
     });

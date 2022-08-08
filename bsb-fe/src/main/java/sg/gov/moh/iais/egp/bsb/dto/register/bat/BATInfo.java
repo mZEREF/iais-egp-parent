@@ -10,6 +10,8 @@ import java.util.List;
 
 @Data
 public class BATInfo implements Serializable {
+    private String batEntityId;
+
     private String schedule;
 
     private String batName;

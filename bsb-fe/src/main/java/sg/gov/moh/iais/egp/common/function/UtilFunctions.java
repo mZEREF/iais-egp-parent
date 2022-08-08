@@ -37,4 +37,19 @@ public class UtilFunctions {
         }
         return contain;
     }
+
+    /**
+     * Display value of Yes or No
+     * @param value Y or N
+     * @return Yes or No or null
+     */
+    public static String displayYesOrNo(String value) {
+        String display = null;
+        if ("Y".equals(value)) {
+            display = "Yes";
+        } else if ("N".equals(value)) {
+            display = "No";
+        }
+        return display;
+    }
 }

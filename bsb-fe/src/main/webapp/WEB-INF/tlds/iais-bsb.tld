@@ -193,4 +193,11 @@
             ${bsb:collectionContainsAny(collection, array)}
         </example>
     </function>
+
+    <function>
+        <description>Display value of Y/N as Yes/No</description>
+        <name>displayYN</name>
+        <function-class>sg.gov.moh.iais.egp.common.function.UtilFunctions</function-class>
+        <function-signature>java.lang.String displayYesOrNo(java.lang.String)</function-signature>
+    </function>
 </taglib>

@@ -1,144 +1,82 @@
 package sg.gov.moh.iais.egp.bsb.dto.register.facility;
 
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.google.common.collect.Maps;
 import com.googlecode.jmapper.JMapper;
-import com.googlecode.jmapper.annotations.JGlobalMap;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
-import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
-import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
-import sg.gov.moh.iais.egp.bsb.dto.file.RefreshableDocDto;
-import sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo;
-import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
-import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.RefreshableDocDto;
+import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.util.RequestObjectMappingUtil;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 import sop.servlet.webflow.HttpHandler;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static sg.gov.moh.iais.egp.bsb.service.OrganizationInfoService.KEY_ORG_ADDRESS;
-
 
 @Slf4j
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FacilityProfileDto extends ValidatableNodeValue implements RefreshableDocDto {
-    @Data
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JGlobalMap(excluded = {"metaList"})
-    public static class FacilityProfileValidateDto {
-        private String facName;
-        private String facType;
-        private String facTypeDetails;
-        private String sameAddress;
-        private String postalCode;
-        private String addressType;
-        private String block;
-        private String floor;
-        private String unitNo;
-        private String streetName;
-        private String building;
-        private String facilityProtected;
-        private List<DocMeta> metaList;
-    }
+    @Getter @Setter
+    private List<FacilityProfileInfo> infoList;
 
-
-    private String facilityEntityId;
-
-    private String facName;
-
-    private String facType;
-
-    private String facTypeDetails;
-
-    private String sameAddress;
-
-    private String block;
-
-    private String addressType;
-
-    private String streetName;
-
-    private String floor;
-
-    private String unitNo;
-
-    private String postalCode;
-
-    private String building;
-
-    private String facilityProtected;
-
-
-    /* docs already saved in DB, key is repoId */
-    @JsonIgnore
-    private Map<String, DocRecordInfo> savedDocMap;
-    /* docs new uploaded, key is tmpId */
-    @JsonIgnore
-    private Map<String, NewDocInfo> newDocMap;
-    /* to be deleted files (which already saved), the string is repoId, used to delete file in repo */
-    @JsonIgnore
+    /* to be deleted files (which already saved), the string is repoId, used to delete file in repo.
+     * This set contains all deleted files in all profile sections */
+    @Getter @JsonIgnore
     private final Set<String> toBeDeletedRepoIds;
+
+    /* Value set during service selection page */
+    @Getter @Setter @JsonIgnore
+    private boolean fifthRf;
+
+    /* Value set during service selection page */
+    @Getter @Setter @JsonIgnore
+    private boolean pvRf;
 
 
     public FacilityProfileDto() {
-        savedDocMap = new LinkedHashMap<>();
-        newDocMap = new LinkedHashMap<>();
+        infoList = new ArrayList<>();
+        FacilityProfileInfo info = new FacilityProfileInfo();
+        info.setFacName("");
+        infoList.add(info);
+
         toBeDeletedRepoIds = new HashSet<>();
     }
 
     @JsonIgnore
     private ValidationResultDto validationResultDto;
 
-    public List<DocMeta> getAllFilesMeta() {
-        List<DocMeta> metaDtoList = new ArrayList<>(this.savedDocMap.size() + this.newDocMap.size());
-        this.savedDocMap.values().forEach(i -> {
-            DocMeta docMeta = new DocMeta(i.getRepoId(), i.getDocType(), i.getFilename(), i.getSize());
-            metaDtoList.add(docMeta);
-        });
-        this.newDocMap.values().forEach(i -> {
-            DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize());
-            metaDtoList.add(docMeta);
-        });
-        return metaDtoList;
-    }
 
-    public FacilityProfileValidateDto toValidateDto() {
-        JMapper<FacilityProfileValidateDto, FacilityProfileDto> jMapper = new JMapper<>(FacilityProfileValidateDto.class, FacilityProfileDto.class);
-        FacilityProfileValidateDto validateDto = jMapper.getDestinationWithoutControl(this);
-        validateDto.setMetaList(getAllFilesMeta());
-        return validateDto;
-    }
 
     @Override
     public boolean doValidation() {
-        FacilityProfileValidateDto validateDto = toValidateDto();
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("facRegFeignClient", "validateFacilityProfile", new Object[]{validateDto});
+        JMapper<FacilityProfileInfoValidateDto, FacilityProfileInfo> mapper = new JMapper<>(FacilityProfileInfoValidateDto.class, FacilityProfileInfo.class);
+        List<FacilityProfileInfoValidateDto> validateDtoList = new ArrayList<>(infoList.size());
+        for (FacilityProfileInfo info : infoList) {
+            FacilityProfileInfoValidateDto validateDto = mapper.getDestination(info);
+            validateDto.setMetaList(info.getAllFilesMeta());
+            validateDtoList.add(validateDto);
+        }
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("facRegFeignClient", "validateFacilityProfile", new Object[]{new FacilityProfileValidateDto(validateDtoList)});
         return validationResultDto.isPass();
     }
 
@@ -157,274 +95,146 @@ public class FacilityProfileDto extends ValidatableNodeValue implements Refresha
 
     @Override
     public Map<String, byte[]> prepare4Saving() {
-        return Maps.transformValues(newDocMap, i -> i.getMultipartFile().getBytes());
+        Map<String, byte[]> all = new HashMap<>();
+        for (FacilityProfileInfo info : infoList) {
+            all.putAll(info.prepare4Saving());
+        }
+        return all;
     }
 
     @Override
     public void refreshAfterSave(Map<String, String> idMap) {
-        RefreshableDocDto.refreshDocMap(newDocMap, savedDocMap, idMap);
+        infoList.forEach(i -> i.refreshAfterSave(idMap));
     }
 
-
-    public List<NewFileSyncDto> newFileSaved(List<String> repoIds) {
-        Iterator<String> repoIdIt = repoIds.iterator();
-        Iterator<NewDocInfo> newDocIt = newDocMap.values().iterator();
-
-        List<NewFileSyncDto> newFileSyncDtoList = new ArrayList<>(repoIds.size());
-        while (repoIdIt.hasNext() && newDocIt.hasNext()) {
-            String repoId = repoIdIt.next();
-            NewDocInfo newDocInfo = newDocIt.next();
-            DocRecordInfo docRecordInfo = new DocRecordInfo();
-            docRecordInfo.setDocType(newDocInfo.getDocType());
-            docRecordInfo.setFilename(newDocInfo.getFilename());
-            docRecordInfo.setSize(newDocInfo.getSize());
-            docRecordInfo.setRepoId(repoId);
-            docRecordInfo.setSubmitBy(newDocInfo.getSubmitBy());
-            docRecordInfo.setSubmitDate(newDocInfo.getSubmitDate());
-            savedDocMap.put(repoId, docRecordInfo);
-
-            NewFileSyncDto newFileSyncDto = new NewFileSyncDto();
-            newFileSyncDto.setId(repoId);
-            newFileSyncDto.setData(newDocInfo.getMultipartFile().getBytes());
-            newFileSyncDtoList.add(newFileSyncDto);
+    /**
+     * Finds the new uploaded file by tmp ID.
+     * This method will try to find it in any of the sections.
+     * @return found NewDocInfo instance or null if not found
+     */
+    public NewDocInfo findNewDocByTmpId(String tmpId) {
+        NewDocInfo fileInfo = null;
+        for (FacilityProfileInfo info : infoList) {
+            if ((fileInfo = info.getNewDocMap().get(tmpId)) != null) {
+                break;
+            }
         }
-        newDocMap.clear();
-        return newFileSyncDtoList;
+        return fileInfo;
     }
 
-
-    public String getFacilityEntityId() {
-        return facilityEntityId;
+    /**
+     * Finds the saved file by repo ID.
+     * This method will try to find it in any of the sections.
+     * @return found DocRecordInfo instance or null if not found
+     */
+    public DocRecordInfo findSavedDocByRepoId(String repoId) {
+        DocRecordInfo fileInfo = null;
+        for (FacilityProfileInfo info : infoList) {
+            if ((fileInfo = info.getSavedDocMap().get(repoId)) != null) {
+                break;
+            }
+        }
+        return fileInfo;
     }
 
-    public void setFacilityEntityId(String facilityEntityId) {
-        this.facilityEntityId = facilityEntityId;
+    public FacilityProfileInfo firstProfile() {
+        return this.infoList.get(0);
     }
 
-    public String getFacName() {
-        return facName;
+    public void clearProfileInfoList() {
+        this.infoList.clear();
     }
 
-    public void setFacName(String facName) {
-        this.facName = facName;
+    public void addProfileInfo(FacilityProfileInfo info) {
+        this.infoList.add(info);
     }
 
-    public String getBlock() {
-        return block;
-    }
-
-    public void setBlock(String block) {
-        this.block = block;
-    }
-
-    public String getStreetName() {
-        return streetName;
-    }
-
-    public void setStreetName(String streetName) {
-        this.streetName = streetName;
-    }
-
-    public String getFloor() {
-        return floor;
-    }
-
-    public void setFloor(String floor) {
-        this.floor = floor;
-    }
-
-    public String getUnitNo() {
-        return unitNo;
-    }
-
-    public void setUnitNo(String unitNo) {
-        this.unitNo = unitNo;
-    }
-
-    public String getPostalCode() {
-        return postalCode;
-    }
-
-    public void setPostalCode(String postalCode) {
-        this.postalCode = postalCode;
-    }
-
-    public String getFacilityProtected() {
-        return facilityProtected;
-    }
-
-    public void setFacilityProtected(String facilityProtected) {
-        this.facilityProtected = facilityProtected;
-    }
-
-    public Map<String, DocRecordInfo> getSavedDocMap() {
-        return savedDocMap;
-    }
-
-    public void setSavedDocMap(Map<String, DocRecordInfo> savedDocMap) {
-        this.savedDocMap = savedDocMap;
-    }
-
-    public Map<String, NewDocInfo> getNewDocMap() {
-        return newDocMap;
-    }
-
-    public void setNewDocMap(Map<String, NewDocInfo> newDocMap) {
-        this.newDocMap = newDocMap;
-    }
-
-    public Set<String> getToBeDeletedRepoIds() {
-        return toBeDeletedRepoIds;
-    }
-
-    public String getFacType() {
-        return facType;
-    }
-
-    public void setFacType(String facType) {
-        this.facType = facType;
-    }
-
-    public String getFacTypeDetails() {
-        return facTypeDetails;
-    }
-
-    public void setFacTypeDetails(String facTypeDetails) {
-        this.facTypeDetails = facTypeDetails;
-    }
-
-    public String getSameAddress() {
-        return sameAddress;
-    }
-
-    public void setSameAddress(String sameAddress) {
-        this.sameAddress = sameAddress;
-    }
-
-    public String getAddressType() {
-        return addressType;
-    }
-
-    public void setAddressType(String addressType) {
-        this.addressType = addressType;
-    }
-
-    public String getBuilding() {
-        return building;
-    }
-
-    public void setBuilding(String building) {
-        this.building = building;
-    }
 
     //    ---------------------------- request -> object ----------------------------------------------
-    private static final String KEY_FAC_NAME = "facName";
-    private static final String KEY_FACILITY_TYPE = "facType";
-    private static final String KEY_FACILITY_TYPE_DETAILS = "facTypeDetails";
-    private static final String KEY_IS_SAME_ADDRESS_AS_COMPANY = "isSameAddress";
-    private static final String KEY_BLOCK = "block";
-    private static final String KEY_ADDRESS_TYPE = "addressType";
-    private static final String KEY_STREET_NAME = "streetName";
-    private static final String KEY_FLOOR = "floor";
-    private static final String KEY_UNIT_NO = "unitNo";
-    private static final String KEY_POSTAL_CODE = "postalCode";
-    private static final String KEY_BUILDING_NAME = "buildingName";
-    private static final String KEY_IS_PROTECTED_PLACE = "protectedPlace";
+    private static final String KEY_SECTION_IDXES = "sectionIdx";
+    private static final String KEY_DELETED_SECTION_IDXES = "deletedSectionIdx";
 
-    private static final String MASK_PARAM = "file";
     private static final String KEY_DELETED_SAVED_FILES = "deleteExistFiles";
     private static final String KEY_DELETED_NEW_FILES = "deleteNewFiles";
-    private static final String KEY_GAZETTE = "gazetteOrder";
+    private static final String MASK_PARAM = "file";
 
+
+    @SneakyThrows({InstantiationException.class, IllegalAccessException.class})
     public void reqObjMapping(HttpServletRequest request) {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        String idxes = mulReq.getParameter(KEY_SECTION_IDXES);
+        Set<Integer> idxSet = StringUtils.hasLength(idxes) ? Arrays.stream(idxes.trim().split(" +")).map(Integer::valueOf).collect(Collectors.toSet()) : Collections.emptySet();
+        String deletedIdxes = mulReq.getParameter(KEY_DELETED_SECTION_IDXES);
+        Set<Integer> deletedIdxSet = StringUtils.hasLength(deletedIdxes) ? Arrays.stream(deletedIdxes.trim().split(" +")).map(Integer::valueOf).collect(Collectors.toSet()) : Collections.emptySet();
 
-        this.setFacName(ParamUtil.getString(mulReq, KEY_FAC_NAME));
-        this.setFacType(ParamUtil.getString(mulReq, KEY_FACILITY_TYPE));
-        if (MasterCodeConstants.FACILITY_TYPE_OTHERS.equals(this.getFacType())) {
-            this.setFacTypeDetails(ParamUtil.getString(mulReq, KEY_FACILITY_TYPE_DETAILS));
-        }
+        // record deleted saved files in any deleted sections
+        recordDeletedSavedFilesInDeletedSections(deletedIdxSet);
+        // record and remove user deleted files
+        recordRemovedSavedFiles(mulReq);
+        recordRemovedNewFiles(mulReq);
 
-        String sameAddressAsCompany = ParamUtil.getString(mulReq,KEY_IS_SAME_ADDRESS_AS_COMPANY);
-        if (MasterCodeConstants.YES.equals(sameAddressAsCompany)) {
-            if (!sameAddressAsCompany.equals(this.sameAddress)) {
-                // load company address and set to this DTO
-                OrgAddressInfo orgAddressInfo = (OrgAddressInfo) request.getSession().getAttribute(KEY_ORG_ADDRESS);
-                this.setPostalCode(orgAddressInfo.getPostalCode());
-                this.setAddressType(orgAddressInfo.getAddressType());
-                this.setBlock(orgAddressInfo.getBlockNo());
-                this.setFloor(orgAddressInfo.getFloor());
-                this.setUnitNo(orgAddressInfo.getUnitNo());
-                this.setStreetName(orgAddressInfo.getStreet());
-                this.setBuilding(orgAddressInfo.getBuilding());
-            }
-            // do nothing, if current address is already the same as company
-        } else if (MasterCodeConstants.NO.equals(sameAddressAsCompany)) {
-            this.setAddressType(ParamUtil.getString(mulReq,KEY_ADDRESS_TYPE));
-            this.setBlock(ParamUtil.getString(mulReq, KEY_BLOCK));
-            this.setStreetName(ParamUtil.getString(mulReq, KEY_STREET_NAME));
-            this.setFloor(ParamUtil.getString(mulReq, KEY_FLOOR));
-            this.setUnitNo(ParamUtil.getString(mulReq, KEY_UNIT_NO));
-            this.setPostalCode(ParamUtil.getString(mulReq, KEY_POSTAL_CODE));
-            this.setBuilding(ParamUtil.getString(mulReq,KEY_BUILDING_NAME));
-        }
-        this.setSameAddress(sameAddressAsCompany);
-
-        this.setFacilityProtected(ParamUtil.getString(mulReq, KEY_IS_PROTECTED_PLACE));
-
-        String deleteSavedFilesString = ParamUtil.getString(mulReq, KEY_DELETED_SAVED_FILES);
-        String deleteNewFilesString = ParamUtil.getString(mulReq, KEY_DELETED_NEW_FILES);
-        if (log.isInfoEnabled()) {
-            log.info("deleteSavedFilesString: {}", LogUtil.escapeCrlf(deleteSavedFilesString));
-            log.info("deleteNewFilesString: {}", LogUtil.escapeCrlf(deleteNewFilesString));
-        }
-        if (StringUtils.hasLength(deleteSavedFilesString)) {
-            List<String> deleteFileRepoIds = Arrays.stream(deleteSavedFilesString.split(","))
-                    .map(f -> MaskUtil.unMaskValue(MASK_PARAM, f))
-                    .collect(Collectors.toList());
-            deleteFileRepoIds.forEach(it -> {this.savedDocMap.remove(it); toBeDeletedRepoIds.add(it);});
-        }
-        if (StringUtils.hasLength(deleteNewFilesString)) {
-            List<String> deleteFileTmpIds = Arrays.stream(deleteNewFilesString.split(","))
-                    .map(f -> MaskUtil.unMaskValue(MASK_PARAM, f))
-                    .collect(Collectors.toList());
-            deleteFileTmpIds.forEach(this.newDocMap::remove);
-        }
-
-        // read new uploaded files
-        if (MasterCodeConstants.YES.equals(this.facilityProtected)) {
-            List<MultipartFile> files = mulReq.getFiles(KEY_GAZETTE);
-            if (files.isEmpty()) {
-                log.info("No new file uploaded");
-            } else {
-                Date currentDate = new Date();
-                LoginContext loginContext = (LoginContext) com.ecquaria.cloud.moh.iais.common.utils.ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-                for (MultipartFile f : files) {
-                    if (f.isEmpty()) {
-                        log.warn("File is empty, ignore it");
-                    } else {
-                        NewDocInfo newDocInfo = new NewDocInfo();
-                        String tmpId = DocConstants.DOC_TYPE_GAZETTE_ORDER + f.getSize() + System.nanoTime();
-                        newDocInfo.setTmpId(tmpId);
-                        newDocInfo.setDocType(DocConstants.DOC_TYPE_GAZETTE_ORDER);
-                        newDocInfo.setFilename(f.getOriginalFilename());
-                        newDocInfo.setSize(f.getSize());
-                        newDocInfo.setSubmitDate(currentDate);
-                        newDocInfo.setSubmitBy(loginContext.getUserId());
-                        byte[] bytes = new byte[0];
-                        try {
-                            bytes = f.getBytes();
-                        } catch (IOException e) {
-                            log.warn("Fail to read bytes for file {}, tmpId {}", f.getOriginalFilename(), tmpId);
-                        }
-                        ByteArrayMultipartFile multipartFile = new ByteArrayMultipartFile(f.getName(), f.getOriginalFilename(), f.getContentType(), bytes);
-                        newDocInfo.setMultipartFile(multipartFile);
-                        this.newDocMap.put(tmpId, newDocInfo);
-                    }
-                }
-            }
+        if (idxSet.isEmpty()) {
+            clearProfileInfoList();
+            infoList.add(new FacilityProfileInfo());
         } else {
-            log.info("This place is not protected, won't read attachments");
+            Map<Integer, FacilityProfileInfo> map = RequestObjectMappingUtil.readAndReuseSectionDto(FacilityProfileInfo.class, infoList, idxSet, deletedIdxSet);
+            map.forEach((k, v) -> v.reqObjMapping(request, k.toString(), isFifthRf(), isPvRf()));
+            this.setInfoList(new ArrayList<>(map.values()));
+        }
+    }
+
+
+
+    /**
+     * If user delete a section which is already saved into DB (for example, in a RFI module).
+     * Then there may be some files already saved in DB, this method will add the repo IDs to the
+     * to be deleted repo IDs set.
+     * <p>
+     * Attention, this method will not delete the DTO for that section!
+     */
+    private void recordDeletedSavedFilesInDeletedSections(Collection<Integer> deletedIdxes) {
+        for (int idx : deletedIdxes) {
+            if (infoList.size() > idx) {
+                this.toBeDeletedRepoIds.addAll(infoList.get(idx).getSavedDocMap().keySet());
+            }
+        }
+    }
+
+    /**
+     * Removes saved files from map in specific DTO.
+     * Records the removed file repo IDs.
+     */
+    private void recordRemovedSavedFiles(MultipartHttpServletRequest mulReq) {
+        String deleteSavedFilesString = ParamUtil.getString(mulReq, KEY_DELETED_SAVED_FILES);
+        if (StringUtils.hasLength(deleteSavedFilesString)) {
+            Arrays.stream(deleteSavedFilesString.split(","))
+                .map(f -> MaskUtil.unMaskValue(MASK_PARAM, f))
+                .forEach(repoId -> {
+                    for (FacilityProfileInfo info : infoList) {
+                        if (info.getSavedDocMap().remove(repoId) != null) {
+                            toBeDeletedRepoIds.add(repoId);
+                            break;
+                        }
+                    }
+                });
+        }
+    }
+
+    /**
+     * Removes new files from map in specific DTO.
+     */
+    private void recordRemovedNewFiles(MultipartHttpServletRequest mulReq) {
+        String deleteNewFilesString = ParamUtil.getString(mulReq, KEY_DELETED_NEW_FILES);
+        if (StringUtils.hasLength(deleteNewFilesString)) {
+            Arrays.stream(deleteNewFilesString.split(","))
+                .map(f -> MaskUtil.unMaskValue(MASK_PARAM, f))
+                .forEach(tmpId -> {
+                    for (FacilityProfileInfo info : infoList) {
+                        if (info.getNewDocMap().remove(tmpId) != null) {
+                            break;
+                        }
+                    }
+                });
         }
     }
 }

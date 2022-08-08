@@ -317,7 +317,7 @@ public class RenewalFacilityRegistrationDelegator {
         FacilityProfileDto facProfileDto = (FacilityProfileDto) facProfileNode.getValue();
         SimpleNode facAuthNode = (SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH);
         FacilityAuthoriserDto facAuthDto = (FacilityAuthoriserDto) facAuthNode.getValue();
-        facAuthDto.setProtectedPlace(facProfileDto.getFacilityProtected());
+        facAuthDto.setProtectedPlace(facProfileDto.firstProfile().getFacilityProtected());
 
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (NODE_NAME_REVIEW.equals(actionType)){

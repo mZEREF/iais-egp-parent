@@ -1,15 +1,22 @@
 package sg.gov.moh.iais.egp.bsb.dto.register.bat;
 
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.SneakyThrows;
+import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.util.RequestObjectMappingUtil;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -26,8 +33,7 @@ public class BiologicalAgentToxinDto extends ValidatableNodeValue {
 
     public BiologicalAgentToxinDto() {
         batInfos = new ArrayList<>();
-        BATInfo batInfo = new BATInfo();
-        batInfos.add(batInfo);
+        batInfos.add(new BATInfo());
     }
 
     public BiologicalAgentToxinDto(String activityType) {
@@ -93,17 +99,24 @@ public class BiologicalAgentToxinDto extends ValidatableNodeValue {
 
 //    ---------------------------- request -> object ----------------------------------------------
 
-    private static final String KEY_SECTION_IDXES                             = "sectionIdx";
+    private static final String KEY_SECTION_IDXES                       = "sectionIdx";
+    private static final String KEY_DELETED_SECTION_IDXES               = "deletedSectionIdx";
 
 
+    @SneakyThrows({InstantiationException.class, IllegalAccessException.class})
     public void reqObjMapping(HttpServletRequest request) {
-        clearBatInfos();
-        String idxes = ParamUtil.getString(request, KEY_SECTION_IDXES);
-        String[] idxArr = idxes.trim().split(" +");
-        for (String idx : idxArr) {
-            BATInfo info = new BATInfo();
-            info.reqObjMapping(request,idx);
-            addBatInfo(info);
+        String idxes = request.getParameter(KEY_SECTION_IDXES);
+        Set<Integer> idxSet = StringUtils.hasLength(idxes) ? Arrays.stream(idxes.trim().split(" +")).map(Integer::valueOf).collect(Collectors.toSet()) : Collections.emptySet();
+        String deletedIdxes = request.getParameter(KEY_DELETED_SECTION_IDXES);
+        Set<Integer> deletedIdxSet = StringUtils.hasLength(deletedIdxes) ? Arrays.stream(deletedIdxes.trim().split(" +")).map(Integer::valueOf).collect(Collectors.toSet()) : Collections.emptySet();
+
+        if (idxSet.isEmpty()) {
+            clearBatInfos();
+            batInfos.add(new BATInfo());
+        } else {
+            Map<Integer, BATInfo> map = RequestObjectMappingUtil.readAndReuseSectionDto(BATInfo.class, batInfos, idxSet, deletedIdxSet);
+            map.forEach((k, v) -> v.reqObjMapping(request, k.toString()));
+            this.batInfos = new ArrayList<>(map.values());
         }
     }
 }

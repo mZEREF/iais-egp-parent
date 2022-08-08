@@ -110,6 +110,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_OPTIONS_
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_OPTIONS_DOC_TYPES;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_OPTIONS_FAC_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_OPTIONS_NATIONALITY;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_OPTIONS_PIM_RISK_LEVEL;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_OPTIONS_SCHEDULE;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_OPTION_SALUTATION;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.KEY_OTHER_DOC_TYPES;
@@ -145,6 +146,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_RE
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_PATH_FAC_AUTH;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_PATH_FAC_COMMITTEE;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_PATH_FAC_OPERATOR;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_PATH_FAC_PROFILE;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.STEP_NAME_AUTHORISER_PREVIEW;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.STEP_NAME_COMMITTEE_PREVIEW;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_ADDITIONAL;
@@ -421,6 +423,7 @@ public class FacilityRegistrationService {
 
         boolean isUcf = (boolean) ParamUtil.getSessionAttr(request, KEY_IS_UCF);
         boolean isFifthRf = (boolean) ParamUtil.getSessionAttr(request, KEY_IS_FIFTH_RF);
+        boolean isPvRf = (boolean) ParamUtil.getSessionAttr(request, KEY_IS_PV_RF);
         // change BAT node group
         if (isUcf) {
             NodeGroup batGroup = (NodeGroup) facRegRoot.getNode(NODE_NAME_FAC_BAT_INFO);
@@ -430,6 +433,12 @@ public class FacilityRegistrationService {
             changeBatNodeGroup4FifthRf(batGroup);
         }
 
+        // impact profile page
+        SimpleNode facProfileNode = (SimpleNode) facRegRoot.at(NODE_PATH_FAC_PROFILE);
+        FacilityProfileDto profileDto = (FacilityProfileDto) facProfileNode.getValue();
+        profileDto.setFifthRf(isFifthRf);
+        profileDto.setPvRf(isPvRf);
+        Nodes.needValidation(facRegRoot, NODE_PATH_FAC_PROFILE);
 
         // impact declaration page
         SimpleNode otherAppInfoNode = (SimpleNode) facRegRoot.at(NODE_NAME_OTHER_INFO);
@@ -438,7 +447,7 @@ public class FacilityRegistrationService {
         otherAppInfoDto.setDeclarationConfig(null);
         Nodes.needValidation(facRegRoot, NODE_NAME_OTHER_INFO);
 
-        // update impacted supporting document node
+        // impact supporting document node
         SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC);
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
         primaryDocDto.setFacClassification(selectionDto.getFacClassification());
@@ -493,6 +502,7 @@ public class FacilityRegistrationService {
 
         ParamUtil.setRequestAttr(request, KEY_OPTIONS_FAC_TYPE, MasterCodeHolder.FACILITY_TYPE.allOptions());
         ParamUtil.setRequestAttr(request, KEY_OPTIONS_ADDRESS_TYPE, MasterCodeHolder.ADDRESS_TYPE.allOptions());
+        ParamUtil.setRequestAttr(request, KEY_OPTIONS_PIM_RISK_LEVEL, MasterCodeHolder.PIM_RISK_LEVEL.allOptions());
     }
 
     public void handleFacProfile(BaseProcessClass bpc) {
@@ -507,7 +517,7 @@ public class FacilityRegistrationService {
         if (!isRf) {
             SimpleNode facAuthNode = (SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH);
             FacilityAuthoriserDto facAuthDto = (FacilityAuthoriserDto) facAuthNode.getValue();
-            facAuthDto.setProtectedPlace(facProfileDto.getFacilityProtected());
+            facAuthDto.setProtectedPlace(facProfileDto.firstProfile().getFacilityProtected());
         }
 
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
@@ -1500,11 +1510,9 @@ public class FacilityRegistrationService {
         }
 
 
-        Collection<DocRecordInfo> docRecordInfos = new ArrayList<>(facilityProfileDto.getSavedDocMap().size() + primaryDocDto.getSavedDocMap().size() + 2);
-        Collection<NewDocInfo> newDocInfos = new ArrayList<>(facilityProfileDto.getNewDocMap().size() + primaryDocDto.getNewDocMap().size() + 2);
-        docRecordInfos.addAll(facilityProfileDto.getSavedDocMap().values());
+        Collection<DocRecordInfo> docRecordInfos = new ArrayList<>(primaryDocDto.getSavedDocMap().size() + 2);
+        Collection<NewDocInfo> newDocInfos = new ArrayList<>(primaryDocDto.getNewDocMap().size() + 2);
         docRecordInfos.addAll(primaryDocDto.getSavedDocMap().values());
-        newDocInfos.addAll(facilityProfileDto.getNewDocMap().values());
         newDocInfos.addAll(primaryDocDto.getNewDocMap().values());
         if (isCf || isUcf) {
             if (dto.getFacilityCommitteeDto().getSavedFile() != null) {
@@ -1550,16 +1558,12 @@ public class FacilityRegistrationService {
         boolean isFifthRf = isRf && MasterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED.equals(selectionDto.getActivityTypes().get(0));
 
         // split documents
-        Collection<DocRecordInfo> profileSavedDocs = new ArrayList<>();
         Collection<DocRecordInfo> supportSavedDocs = new ArrayList<>();
         DocRecordInfo committeeSavedDoc = null;
         DocRecordInfo authoriserSavedDoc = null;
         if (!CollectionUtils.isEmpty(registerDto.getDocRecordInfos())) {
             for (DocRecordInfo info : registerDto.getDocRecordInfos()) {
                 switch (info.getDocType()) {
-                    case DocConstants.DOC_TYPE_GAZETTE_ORDER:
-                        profileSavedDocs.add(info);
-                        break;
                     case DocConstants.DOC_TYPE_DATA_COMMITTEE:
                         committeeSavedDoc = info;
                         break;
@@ -1573,16 +1577,12 @@ public class FacilityRegistrationService {
             }
         }
 
-        Collection<NewDocInfo> profileNewDocs = new ArrayList<>();
         Collection<NewDocInfo> supportNewDocs = new ArrayList<>();
         NewDocInfo committeeNewDoc = null;
         NewDocInfo authoriserNewDoc = null;
         if (!CollectionUtils.isEmpty(registerDto.getNewDocInfos())) {
             for (NewDocInfo info : registerDto.getNewDocInfos()) {
                 switch (info.getDocType()) {
-                    case DocConstants.DOC_TYPE_GAZETTE_ORDER:
-                        profileNewDocs.add(info);
-                        break;
                     case DocConstants.DOC_TYPE_DATA_COMMITTEE:
                         committeeNewDoc = info;
                         break;
@@ -1597,8 +1597,6 @@ public class FacilityRegistrationService {
         }
 
 
-        registerDto.getFacilityProfileDto().setSavedDocMap(sg.gov.moh.iais.egp.bsb.util.CollectionUtils.uniqueIndexMap(profileSavedDocs, DocRecordInfo::getRepoId));
-        registerDto.getFacilityProfileDto().setNewDocMap(sg.gov.moh.iais.egp.bsb.util.CollectionUtils.uniqueIndexMap(profileNewDocs, NewDocInfo::getTmpId));
         if (isCf || isUcf) {
             registerDto.getFacilityCommitteeDto().setSavedFile(committeeSavedDoc);
             registerDto.getFacilityCommitteeDto().setNewFile(committeeNewDoc);
@@ -1668,26 +1666,5 @@ public class FacilityRegistrationService {
             log.error("Fail to judge if the node selected", e);
         }
         return selected;
-    }
-
-
-
-
-    /**
-     * only use to 'rfc' module
-     * rfc compare
-     */
-    public List<DiffContent> compareTwoDto(FacilityRegisterDto oldFacilityRegisterDto, FacilityRegisterDto newFacilityRegisterDto){
-        List<DiffContent> diffContentList = new ArrayList<>();
-        CompareTwoObject.diff(oldFacilityRegisterDto.getFacilitySelectionDto(), newFacilityRegisterDto.getFacilitySelectionDto(), diffContentList);
-        CompareTwoObject.diff(oldFacilityRegisterDto.getFacilityProfileDto(), newFacilityRegisterDto.getFacilityProfileDto(), diffContentList);
-        CompareTwoObject.diff(oldFacilityRegisterDto.getFacilityOperatorDto(), newFacilityRegisterDto.getFacilityOperatorDto(), diffContentList);
-        CompareTwoObject.diff(oldFacilityRegisterDto.getFacilityAuthoriserDto(), newFacilityRegisterDto.getFacilityAuthoriserDto(), diffContentList, FacilityAuthoriserDto.FacilityAuthorisedPersonnel.class);
-//        CompareTwoObject.diff(oldFacilityRegisterDto.getFacilityAdministratorDto(), newFacilityRegisterDto.getFacilityAdministratorDto(), diffContentList, FacilityAdministratorDto.FacilityEmployeeInfo.class);
-//        CompareTwoObject.diff(oldFacilityRegisterDto.getFacilityOfficerDto(), newFacilityRegisterDto.getFacilityOfficerDto(), diffContentList);
-        CompareTwoObject.diff(oldFacilityRegisterDto.getFacilityCommitteeDto(), newFacilityRegisterDto.getFacilityCommitteeDto(), diffContentList);
-        CompareTwoObject.diffMap(oldFacilityRegisterDto.getBiologicalAgentToxinMap(), newFacilityRegisterDto.getBiologicalAgentToxinMap(), diffContentList, BATInfo.class);
-        //docRecordInfos don't process
-        return diffContentList;
     }
 }
