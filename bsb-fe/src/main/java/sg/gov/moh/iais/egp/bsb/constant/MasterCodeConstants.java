@@ -277,12 +277,22 @@ public class MasterCodeConstants {
     public static final String PROCESS_TYPE_INSPECTION_FOLLOW_UP = "PROTYPE014";
     public static final Set<String> APPLY_APPROVE_PROCESS_TYPES;
 
+    public static final List<SelectOption> INBOX_SEARCH_PROCESS_TYPE_FAC;
+
     static {
         Set<String> applyApprovalProcessType = Sets.newHashSetWithExpectedSize(3);
         applyApprovalProcessType.add(PROCESS_TYPE_APPROVE_POSSESS);
         applyApprovalProcessType.add(PROCESS_TYPE_APPROVE_LSP);
         applyApprovalProcessType.add(PROCESS_TYPE_SP_APPROVE_HANDLE);
         APPLY_APPROVE_PROCESS_TYPES = Collections.unmodifiableSet(applyApprovalProcessType);
+
+        List<SelectOption> inboxSearchProcessTypeFAC = new ArrayList<>(7);
+        inboxSearchProcessTypeFAC.add(new SelectOption(PROCESS_TYPE_FAC_REG, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_FAC_REG)));
+        inboxSearchProcessTypeFAC.add(new SelectOption(PROCESS_TYPE_APPROVE_POSSESS, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_APPROVE_POSSESS)));
+        inboxSearchProcessTypeFAC.add(new SelectOption(PROCESS_TYPE_APPROVE_LSP, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_APPROVE_LSP)));
+        inboxSearchProcessTypeFAC.add(new SelectOption(PROCESS_TYPE_SP_APPROVE_HANDLE, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_SP_APPROVE_HANDLE)));
+        inboxSearchProcessTypeFAC.add(new SelectOption(PROCESS_TYPE_APPROVAL_FOR_FACILITY_ACTIVITY_TYPE, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_APPROVAL_FOR_FACILITY_ACTIVITY_TYPE)));
+        INBOX_SEARCH_PROCESS_TYPE_FAC = Collections.unmodifiableList(inboxSearchProcessTypeFAC);
     }
 
     public static final String FAC_CLASSIFICATION_BSL3 = "FACCLA001";

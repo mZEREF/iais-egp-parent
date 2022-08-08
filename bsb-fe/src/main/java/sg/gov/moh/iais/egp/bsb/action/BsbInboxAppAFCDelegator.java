@@ -25,6 +25,7 @@ import java.util.List;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_INBOX_APPLICATION_AFC_ADMIN;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INTERNAL_INBOX;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.INBOX_APP_SEARCH_STATUS_AFC;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.PROCESS_TYPE_FAC_CERTIFIER_REG;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_CODE_VALIDATION_FAIL;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_INFO_ERROR_MSG;
 import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_APP_STATUS_OPS;
@@ -63,6 +64,9 @@ public class BsbInboxAppAFCDelegator {
         HttpServletRequest request = bpc.request;
         //dashboard get draft
         InboxAppSearchDto searchDto = getSearchDto(request);
+        // Application Sub-type does not require query, we can set it directly
+        searchDto.setSearchProcessType(PROCESS_TYPE_FAC_CERTIFIER_REG);
+
         String searchStatus = request.getParameter(KEY_SEARCH_STATUS);
         if(StringUtils.hasLength(searchStatus)){
             searchDto.setSearchStatus(searchStatus);
