@@ -205,14 +205,14 @@ public class RfcFacilityRegistrationDelegator {
                     //rfc compare to decision flowType
                     FacilityRegisterDto oldFacilityRegisterDto = (FacilityRegisterDto)ParamUtil.getSessionAttr(request, KEY_OLD_FACILITY_REGISTER_DTO);
                     DecisionFlowType flowType = new DecisionFlowTypeImpl();
-                    RfcFlowType rfcFlowType = flowType.facRegFlowType(facilityRegistrationService.compareTwoDto(oldFacilityRegisterDto,finalAllDataDto));
-                    ParamUtil.setRequestAttr(request, "rfcFlowType", rfcFlowType);
-                    if (rfcFlowType == RfcFlowType.AMENDMENT || rfcFlowType == RfcFlowType.NOTIFICATION){
-                        // save data
-                        log.info("Save rfc facility registration data");
-                        ResponseDto<String> responseDto = facRegClient.saveAmendmentFacility(finalAllDataDto);
-                        log.info("save rfc facility response: {}", org.apache.commons.lang.StringUtils.normalizeSpace(responseDto.toString()));
-
+//                    RfcFlowType rfcFlowType = flowType.facRegFlowType(facilityRegistrationService.compareTwoDto(oldFacilityRegisterDto,finalAllDataDto));
+//                    ParamUtil.setRequestAttr(request, "rfcFlowType", rfcFlowType);
+//                    if (rfcFlowType == RfcFlowType.AMENDMENT || rfcFlowType == RfcFlowType.NOTIFICATION){
+//                        // save data
+//                        log.info("Save rfc facility registration data");
+//                        ResponseDto<String> responseDto = facRegClient.saveAmendmentFacility(finalAllDataDto);
+//                        log.info("save rfc facility response: {}", org.apache.commons.lang.StringUtils.normalizeSpace(responseDto.toString()));
+//
 //                        try {
 //                            // delete docs
 //                            log.info("Delete already saved documents in file-repo");
@@ -227,7 +227,7 @@ public class RfcFacilityRegistrationDelegator {
 //                        } catch (Exception e) {
 //                            log.error("Fail to synchronize documents", e);
 //                        }
-                    }
+//                    }
                     ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SUBMIT);
                 } else {
                     ParamUtil.setRequestAttr(request, KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
