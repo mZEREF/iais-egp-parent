@@ -403,6 +403,12 @@ public class VssDataSubmissionDelegator {
         VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto() == null ? new VssTreatmentDto() : vssSuperDataSubmissionDto.getVssTreatmentDto();
         GuardianAppliedPartDto guardianAppliedPartDto = vssTreatmentDto.getGuardianAppliedPartDto() == null ? new GuardianAppliedPartDto() : vssTreatmentDto.getGuardianAppliedPartDto();
         ControllerHelper.get(request, guardianAppliedPartDto);
+        if(StringUtil.isNotEmpty(guardianAppliedPartDto.getAppliedPartIdNo())){
+            guardianAppliedPartDto.setAppliedPartIdNo(guardianAppliedPartDto.getAppliedPartIdNo().toUpperCase());
+        }
+        if(StringUtil.isNotEmpty(guardianAppliedPartDto.getGuardianIdNo())){
+            guardianAppliedPartDto.setGuardianIdNo(guardianAppliedPartDto.getGuardianIdNo().toUpperCase());
+        }
         String appliedPartBirthday = ParamUtil.getString(request, "appliedPartBirthday");
         String guardianBirthday = ParamUtil.getString(request, "guardianBirthday");
         String courtOrderIssueDate = ParamUtil.getString(request, "courtOrderIssueDate");
