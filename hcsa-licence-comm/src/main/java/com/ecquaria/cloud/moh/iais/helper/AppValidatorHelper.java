@@ -1601,7 +1601,7 @@ public final class AppValidatorHelper {
                         errorMap.put("businessName" + i, MessageUtil.getMessageDesc("GENERAL_ERR0016"));
                     }
                 }
-                if(/*AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL*/"BLB".equals(serviceCode)&&businessName.toUpperCase().contains("GENERAL")){
+                if(AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL.equals(serviceCode)&&businessName.toUpperCase().contains("GENERAL")){
                     errorMap.put("businessName" + i, MessageUtil.getMessageDesc("GENERAL_ERR0073"));
                 }
             }

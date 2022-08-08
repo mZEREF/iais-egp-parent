@@ -1,8 +1,8 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 
-<c:set var="isSpecialService" value="${serviceCode==AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL||serviceCode==AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL}"></c:set>
-<c:set var="isSpecialMOSD" value="${appGrpPremisesDto.premisesType==ApplicationConsts.PREMISES_TYPE_MOBILE||appGrpPremisesDto.premisesType==ApplicationConsts.PREMISES_TYPE_REMOTE}"></c:set>
+<c:set var="isSpecialService" value="${serviceCode==AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL||serviceCode==AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL}"/>
+<c:set var="isSpecialMOSD" value="${appGrpPremisesDto.premisesType==ApplicationConsts.PREMISES_TYPE_MOBILE||appGrpPremisesDto.premisesType==ApplicationConsts.PREMISES_TYPE_REMOTE}"/>
 
 <c:if test="${!isSpecialService&&!isSpecialMOSD}">
     <iais:row>

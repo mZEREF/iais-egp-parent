@@ -51,6 +51,7 @@ import sop.util.DateUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -1800,7 +1801,6 @@ public final class AppDataHelper {
         String currentSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request, currentSvcId);
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
-        String isSpecialService = ParamUtil.getString(request, "isSpecialService");
         if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
             int i = 0;
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
@@ -1840,9 +1840,7 @@ public final class AppDataHelper {
                     String contactNo = ParamUtil.getString(request, "contactNo" + i);
                     String emailAddr = ParamUtil.getString(request, "emailAddr" + i);
 
-
                     if (getOHData){
-
                         int weeklyLength=ParamUtil.getInt(request,"weeklyLength"+ i);
                         int phLength=ParamUtil.getInt(request,"phLength"+ i);
                         int eventLength=ParamUtil.getInt(request,"eventLength"+ i);
@@ -1863,17 +1861,26 @@ public final class AppDataHelper {
                                 weeklyDto.setSelectAllDay(true);
                                 weeklyDto.setStartFromHH(null);
                                 weeklyDto.setStartFromMM(null);
+                                weeklyDto.setStartFrom(new Time(0,0,0));
                                 weeklyDto.setEndToHH(null);
                                 weeklyDto.setEndToMM(null);
+                                weeklyDto.setEndTo(new Time(0,0,0));
                             } else {
                                 String weeklyStartHH = ParamUtil.getString(request,"onSiteWeeklyStartHH"+i+j);
                                 String weeklyStartMM = ParamUtil.getString(request,"onSiteWeeklyStartMM"+i+j);
+                                int weeklyStartH=weeklyStartHH!=null?Integer.parseInt(weeklyStartHH):0;
+                                int weeklyStartM=weeklyStartMM!=null?Integer.parseInt(weeklyStartMM):0;
                                 String weeklyEndHH = ParamUtil.getString(request,"onSiteWeeklyEndHH"+i+j);
                                 String weeklyEndMM = ParamUtil.getString(request,"onSiteWeeklyEndMM"+i+j);
+                                int weeklyEndH=weeklyEndHH!=null?Integer.parseInt(weeklyEndHH):0;
+                                int weeklyEndM=weeklyEndMM!=null?Integer.parseInt(weeklyEndMM):0;
+
                                 weeklyDto.setStartFromHH(weeklyStartHH);
                                 weeklyDto.setStartFromMM(weeklyStartMM);
+                                weeklyDto.setStartFrom(new Time(weeklyStartH,weeklyStartM,0));
                                 weeklyDto.setEndToHH(weeklyEndHH);
                                 weeklyDto.setEndToMM(weeklyEndMM);
+                                weeklyDto.setEndTo(new Time(weeklyEndH,weeklyEndM,0));
                             }
                             weeklyDtoList.add(weeklyDto);
                         }
@@ -1894,19 +1901,28 @@ public final class AppDataHelper {
                                 phDto.setSelectAllDay(true);
                                 phDto.setStartFromHH(null);
                                 phDto.setStartFromMM(null);
+                                phDto.setStartFrom(new Time(0,0,0));
                                 phDto.setEndToHH(null);
                                 phDto.setEndToMM(null);
+                                phDto.setEndTo(new Time(0,0,0));
                                 phDtoList.add(phDto);
                             } else {
                                 String phStartHH = ParamUtil.getString(request,"onSitePhStartHH"+i+j);
                                 String phStartMM = ParamUtil.getString(request,"onSitePhStartMM"+i+j);
+                                int phStartH=phStartHH!=null?Integer.parseInt(phStartHH):0;
+                                int phStartM=phStartMM!=null?Integer.parseInt(phStartMM):0;
                                 String phEndHH = ParamUtil.getString(request,"onSitePhEndHH"+i+j);
                                 String phEndMM = ParamUtil.getString(request,"onSitePhEndMM"+i+j);
+                                int phEndH=phEndHH!=null?Integer.parseInt(phEndHH):0;
+                                int phEndM=phEndMM!=null?Integer.parseInt(phEndMM):0;
+                                
                                 phDto.setStartFromHH(phStartHH);
                                 phDto.setStartFromMM(phStartMM);
+                                phDto.setStartFrom(new Time(phStartH,phStartM,0));
                                 phDto.setEndToHH(phEndHH);
                                 phDto.setEndToMM(phEndMM);
-                                if (phLength > 1 || !StringUtil.isEmpty(phSelect) || !StringUtil.isEmpty(phStartHH) || !StringUtil.isEmpty(
+                                phDto.setEndTo(new Time(phEndH,phEndM,0));
+                                if (!StringUtil.isEmpty(phSelect) || !StringUtil.isEmpty(phStartHH) || !StringUtil.isEmpty(
                                         phStartMM) || !StringUtil.isEmpty(phEndHH) || !StringUtil.isEmpty(phEndMM)) {
                                     phDtoList.add(phDto);
                                 }
@@ -1927,7 +1943,7 @@ public final class AppDataHelper {
                             appPremEventPeriodDto.setStartDateStr(eventStartStr);
                             appPremEventPeriodDto.setEndDate(eventEnd);
                             appPremEventPeriodDto.setEndDateStr(eventEndStr);
-                            if (eventLength > 1 || !StringUtil.isEmpty(eventName) || !StringUtil.isEmpty(eventStartStr) || !StringUtil.isEmpty(
+                            if (!StringUtil.isEmpty(eventName) || !StringUtil.isEmpty(eventStartStr) || !StringUtil.isEmpty(
                                     eventEndStr)) {
                                 eventList.add(appPremEventPeriodDto);
                             }

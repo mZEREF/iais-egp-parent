@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 
+<c:set var="psnType" value="${ApplicationConsts.PERSONNEL_PSN_TYPE_MAP}"/>
 <c:set var="personList" value="${currSvcInfoDto.appSvcMedAlertPersonList}"/>
 
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>

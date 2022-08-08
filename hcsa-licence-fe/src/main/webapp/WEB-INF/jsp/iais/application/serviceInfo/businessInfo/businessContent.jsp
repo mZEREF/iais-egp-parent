@@ -54,7 +54,7 @@
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
 <input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
 
-<div class="row form-horizontal outermost">
+<div class="row form-horizontal">
 
     <c:if test="${AppSubmissionDto.needEditController }">
         <c:if test="${(isRfc || isRenew) && !isRfi}">
@@ -68,7 +68,6 @@
         </c:if>
         <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
     </c:if>
-
 
     <c:set var="premBusinessMap" value="${premAlignBusinessMap}"/>
     <c:set var="maxCount" value="${maxCount}"/>

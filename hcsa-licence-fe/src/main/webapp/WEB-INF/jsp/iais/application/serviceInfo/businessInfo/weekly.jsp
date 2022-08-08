@@ -17,7 +17,6 @@
         <c:set var="index" value="${weeklyStat.index}"/>
         <c:set var="weekly" value="${weeklyList[index]}"/>
         <div class="weeklyDiv">
-            <input class="prefix" type="hidden" value="${status.index}">
             <iais:row>
                 <div>
                     <div class="col-md-4 col-xs-4 multi-sel-padding">

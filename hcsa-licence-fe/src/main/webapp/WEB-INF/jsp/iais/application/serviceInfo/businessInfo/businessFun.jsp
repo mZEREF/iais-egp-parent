@@ -12,7 +12,7 @@
 
         var $currContent = $(target).find("div.weeklyDiv").last();
         $currContent.find('select.onSiteWeekly').next('.multi-select-container').remove();
-        testclearFields($currContent);
+        clearFields($currContent);
         refreshContent($currContent, $target.find('div.weeklyDiv').length - 1);
         removeWeekly();
         clickAllDay();
@@ -56,7 +56,7 @@
         $tgt.after(src);
         var $currContent = $(target).find("div.pubHolidayDiv").last();
         $currContent.find('select.onSitePubHoliday').next('.multi-select-container').remove();
-        testclearFields($currContent);
+        clearFields($currContent);
         refreshContent($currContent, $target.find('div.pubHolidayDiv').length - 1);
         removePh();
         clickAllDay();
@@ -105,11 +105,12 @@
             todayHighlight:true,
             orientation:'bottom'
         });
-        testclearFields($currContent);
+        clearFields($currContent);
         refreshContent($currContent, $target.find('div.eventDiv').length - 1);
         removeEvent();
         var length =  $target.find('div.eventDiv').length;
         $target.find('input.eventLength').val(length);
+        console.log($target.find('input.eventLength').val());
         if(length >= '${maxCount}'){
             $target.find('.addEventDiv').addClass('hidden');
         }
@@ -126,7 +127,7 @@
             if(eventLength==0){
                 $eventContent.find('input.eventLength').val(1);
             }else {
-                $eventContent.find('input.eventLength').val(length);
+                $eventContent.find('input.eventLength').val(eventLength);
             }
             if(eventLength < '${maxCount}'){
                 $eventContent.find('.addEventDiv').removeClass('hidden');
@@ -158,7 +159,7 @@
             unDisableContent($target.find('div.end-div'));
         }
         var prefix=$target.closest('div.panel-group').index();
-        resetindex($target, k,prefix);
+        resetIndexNo($target, k,prefix);
     }
 
     var disabeleForAllDay = function ($allDayDiv) {
@@ -167,42 +168,6 @@
 
         clearFields($allDayDiv.siblings('.end-div'));
         disableContent($allDayDiv.siblings('.end-div'));
-    }
-
-    function testclearFields(targetSelector, withoutClearError) {
-        var $selector = getJqueryNode(targetSelector);
-        if (isEmptyNode($selector)) {
-            return;
-        }
-        if (!$selector.is(":input")) {
-            if (isEmpty(withoutClearError) || !withoutClearError) {
-                $selector.find("span[name='iaisErrorMsg']").each(function () {
-                    $(this).html("");
-                });
-            }
-            $selector = $selector.find(':input[class!="not-clear"]');
-        }
-        if ($selector.length <= 0) {
-            return;
-        }
-        $selector.each(function () {
-            var type = this.type, tag = this.tagName.toLowerCase();
-            if (!$(this).hasClass('not-clear')) {
-                if (type == 'text' || type == 'password' || type == 'hidden' || tag == 'textarea') {
-                    this.value = '';
-                } else if (type == 'checkbox') {
-                    this.checked = false;
-                } else if (type == 'radio') {
-                    this.checked = false;
-                } else if (tag == 'select') {
-                    this.selectedIndex = 0;
-                    if (this.multiple) {
-                        this.selectedIndex = -1;
-                    }
-                    updateSelectTag($(this));
-                }
-            }
-        });
     }
 
     function refreshIndex(targetSelector) {
@@ -223,12 +188,12 @@
             }
             $selector.each(function () {
                 var prefix=$target.closest('div.panel-group').index();
-                resetindex(this, k,prefix);
+                resetIndexNo(this, k,prefix);
             });
         });
     }
 
-    function resetindex(targetTag, index, prefix) {
+    function resetIndexNo(targetTag, index, prefix) {
         var $target = getJqueryNode(targetTag);
         if (isEmptyNode($target) || $target.hasClass('not-refresh')) {
             return;
@@ -271,7 +236,7 @@
             }
         } else {
             $target.find(':input').each(function () {
-                resetindex(this, index, prefix);
+                resetIndexNo(this, index, prefix);
             });
         }
     }
