@@ -64,7 +64,7 @@
                             <c:if test="${DeclarationsCheckBox != 'hide'}">
                                 <span class="check-square"></span>
                             </c:if>
-                            <iais:message key="DS_DEC002" escape="false"/></label>
+                            <iais:message key="DS_DEC004" escape="false"/></label>
                         <span class="error-msg col-md-7" name="iaisErrorMsg" id="error_declaration"></span>
                     </div>
                 </iais:row>
