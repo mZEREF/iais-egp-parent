@@ -8,11 +8,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaConfigPageD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCategoryDisciplineDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubServiceErrorsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubServicePageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpeRoutingSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
@@ -101,24 +102,7 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
                     }
                 }
             }
-            //for Discipline
-
-            String[] premisesTypes = hcsaServiceConfigDto.getPremisesTypes();
-            if(premisesTypes != null && premisesTypes.length > 0){
-                Map<String,HcsaServiceCategoryDisciplineDto> hcsaServiceCategoryDisciplineDtoMap = IaisCommonUtils.genNewHashMap();
-                for(String premisesType : premisesTypes){
-                    HcsaServiceCategoryDisciplineDto hcsaServiceCategoryDisciplineDto = new HcsaServiceCategoryDisciplineDto();
-                    String sectionHeader = ParamUtil.getString(request,premisesType+"-sectionHeader");
-                    String[] categoryDisciplines = ParamUtil.getStrings(request,premisesType+"-categoryDisciplines");
-                    hcsaServiceCategoryDisciplineDto.setPremType(premisesType);
-                    hcsaServiceCategoryDisciplineDto.setSectionHeader(sectionHeader);
-                    hcsaServiceCategoryDisciplineDto.setCategoryDisciplines(categoryDisciplines);
-                    hcsaServiceCategoryDisciplineDtoMap.put(premisesType,hcsaServiceCategoryDisciplineDto);
-                    hcsaServiceConfigDto.setHcsaServiceCategoryDisciplineDtoMap(hcsaServiceCategoryDisciplineDtoMap);
-                }
-
-            }
-
+            //for Discipline hcsaServiceCategoryDisciplineDtoMap
             Map<String,HcsaServiceCategoryDisciplineDto> hcsaServiceCategoryDisciplineDtoMap = hcsaServiceConfigDto.getHcsaServiceCategoryDisciplineDtoMap();
             if(hcsaServiceCategoryDisciplineDtoMap != null && hcsaServiceCategoryDisciplineDtoMap.size() > 0){
                 for(String premisesType : hcsaServiceCategoryDisciplineDtoMap.keySet()){
@@ -147,7 +131,37 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
                     hcsaServiceCategoryDisciplineDtoMap.put(premisesType,hcsaServiceCategoryDisciplineDto);
                 }
             }
-
+            //for Discipline Map<String,HcsaServiceSubServicePageDto> specHcsaServiceSubServicePageDtoMap
+            Map<String,HcsaServiceSubServicePageDto> specHcsaServiceSubServicePageDtoMap = hcsaServiceConfigDto.getSpecHcsaServiceSubServicePageDtoMap();
+            if(specHcsaServiceSubServicePageDtoMap != null && specHcsaServiceSubServicePageDtoMap.size() > 0){
+                for(String premisesType : specHcsaServiceSubServicePageDtoMap.keySet()){
+                    //for sectionHeader
+                    HcsaServiceSubServicePageDto hcsaServiceSubServicePageDto = specHcsaServiceSubServicePageDtoMap.get(premisesType);
+                    ValidationResult validationResultHcsaServiceCategoryDisciplineDto = WebValidationHelper.validateProperty(hcsaServiceSubServicePageDto,serviceType);
+                    if(validationResultHcsaServiceCategoryDisciplineDto.isHasErrors()){
+                        String sectionHeaderErrorMsg = validationResultHcsaServiceCategoryDisciplineDto.retrieveAll().get("sectionHeader");
+                        result.put(premisesType+"-SVTP003-sectionHeader",sectionHeaderErrorMsg);
+                    }
+                    //for sub service
+                    String[] subServiceCodes = hcsaServiceSubServicePageDto.getSubServiceCodes();
+                    String[] levels = hcsaServiceSubServicePageDto.getLevels();
+                    if(subServiceCodes != null && subServiceCodes.length>0){
+                        List<HcsaServiceSubServiceErrorsDto> hcsaServiceSubServiceErrorsDtos =  IaisCommonUtils.genNewArrayList();
+                       for (int i=0; i<subServiceCodes.length;i++){
+                           HcsaServiceSubServiceErrorsDto  hcsaServiceSubServiceErrorsDto = new HcsaServiceSubServiceErrorsDto();
+                           hcsaServiceSubServiceErrorsDto.setSubServiceCode(subServiceCodes[i]);
+                           hcsaServiceSubServiceErrorsDto.setLevel(levels[i]);
+                            ValidationResult validationResultCategoryDisciplineErrorsDto = WebValidationHelper.validateProperty(hcsaServiceSubServiceErrorsDto,serviceType);
+                            if(validationResultCategoryDisciplineErrorsDto.isHasErrors()){
+                                hcsaServiceSubServiceErrorsDto.setErrorMsg(validationResultCategoryDisciplineErrorsDto.retrieveAll().get("subServiceCode"));
+                            }
+                           hcsaServiceSubServiceErrorsDtos.add(hcsaServiceSubServiceErrorsDto);
+                        }
+                        hcsaServiceSubServicePageDto.setHcsaServiceSubServiceErrorsDtos(hcsaServiceSubServiceErrorsDtos);
+                    }
+                    specHcsaServiceSubServicePageDtoMap.put(premisesType,hcsaServiceSubServicePageDto);
+                }
+            }
 
         }
         log.info(StringUtil.changeForLog("The HcsaServiceConfigValidate end ..."));

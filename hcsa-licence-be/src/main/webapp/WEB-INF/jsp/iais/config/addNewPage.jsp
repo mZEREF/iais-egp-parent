@@ -1027,32 +1027,38 @@
             <label class="col-xs-12 col-md-7 control-label" >Specialised Services (Section Header)</label>
             <div class="col-xs-10 col-md-4">
               <div class="components">
-                <input type="text" maxlength="100" value="${pageName}" name="pageName">
-                <span name="iaisErrorMsg" class="error-msg" id="error_pageName2"></span>
+                <input type="text" maxlength="100" value="${hcsaServiceConfigDto.specHcsaServiceSubServicePageDtoMap['PERMANENT'].sectionHeader}" name="PERMANENT-SVTP003-sectionHeader">
+                <span name="iaisErrorMsg" class="error-msg" id="error_PERMANENT-SVTP003-sectionHeader"></span>
               </div>
             </div>
           </div>
 
-            <div class="add col-xs-12 col-md-12"  style="margin-top: 20px ;margin-bottom: 20px">
-              <div class="col-xs-12 col-md-5" style="padding-right: 20%;" >
-                <iais:select name="PERMANENT-specialisedSubService" options="specHcsaServiceOptions" firstOption="Please Select"/>
-              </div>
-              <div class="value">
-                <input type="text" value="0" name="level" style="display: none">
-              </div>
-              <div  class="col-xs-12 col-md-2" style="padding-left: 3%;" >
-                <a class="btn  btn-secondary  view"  onclick="indents(this)"   >indent</a>
-              </div>
-              <div  class="col-xs-12 col-md-2" >
-                <a class="btn  btn-secondary view"  onclick="outdent(this)" >outdent</a>
-              </div>
-              <div class="col-xs-12 col-md-1">
-                <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
-              </div>
-            </div>
+            <c:if test="${hcsaServiceConfigDto.specHcsaServiceSubServicePageDtoMap !=null}">
+              <c:forEach items="${hcsaServiceConfigDto.specHcsaServiceSubServicePageDtoMap['PERMANENT'].hcsaServiceSubServiceErrorsDtos}" var = "hcsaServiceSubServiceErrorsDto">
+                <div class="add col-xs-12 col-md-12"  style="margin-top: 20px ;margin-bottom: 20px">
+                  <div class="col-xs-12 col-md-5" style="padding-right: 20%;margin-left: ${hcsaServiceSubServiceErrorsDto.marginLeft} px" >
+                    <iais:select name="PERMANENT-SVTP003-subServiceCodes" options="specHcsaServiceOptions" firstOption="Please Select" value="${hcsaServiceSubServiceErrorsDto.subServiceCode}"/>
+                    <span name= class="error-msg" >${hcsaServiceSubServiceErrorsDto.errorMsg}</span>
+                  </div>
+                  <div class="value">
+                    <input type="text" value="${hcsaServiceSubServiceErrorsDto.level}" name="PERMANENT-SVTP003-levels" style="display: none">
+                  </div>
+                  <div  class="col-xs-12 col-md-2" style="padding-left: 3%;" >
+                    <a class="btn  btn-secondary  view"  onclick="indents(this)"   >indent</a>
+                  </div>
+                  <div  class="col-xs-12 col-md-2" >
+                    <a class="btn  btn-secondary view"  onclick="outdent(this)" >outdent</a>
+                  </div>
+                  <div class="col-xs-12 col-md-1">
+                    <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
+                  </div>
+                </div>
+              </c:forEach>
+            </c:if>
+
 
           <div class="col-xs-12 col-md-12">
-            <a  class="btn  btn-secondary "   style="margin-right: 10px" id="addAsItem" onclick="addAsItem(this,'PERMANENT','specialised')"> + </a><label for="addAsItem"> Add Item</label>
+            <a  class="btn  btn-secondary "   style="margin-right: 10px" id="addAsItem" onclick="addAsItem(this,'PERMANENT','SVTP003')"> + </a><label for="addAsItem"> Add Item</label>
           </div>
         </div>
       </div>
@@ -1228,6 +1234,7 @@
             'premisType':premisType,
             'specOrOthers':specOrOthers
         };
+        var levelName = premisType+"-"+specOrOthers+"-levels";
         $.ajax({
             'url':'${pageContext.request.contextPath}/getDropdownSelect',
             'dataType':'json',
@@ -1239,7 +1246,7 @@
                         "              <div class=\"col-xs-12 col-md-5\" style=\"padding-right: 20%;\" >\n" + data.resultJson +
                         "              </div>\n" +
                         "              <div class=\"value\">\n" +
-                        "                <input type=\"text\" value=\"0\" name=\"level\" style=\"display: none\">\n" +
+                        "                <input type=\"text\" value=\"0\" name=\""+levelName+"\" style=\"display: none\">\n" +
                         "              </div>\n" +
                         "              <div  class=\"col-xs-12 col-md-2\" style=\"padding-left: 3%;\" >\n" +
                         "                <a class=\"btn  btn-secondary  view\"  onclick=\"indents(this)\"   >indent</a>\n" +

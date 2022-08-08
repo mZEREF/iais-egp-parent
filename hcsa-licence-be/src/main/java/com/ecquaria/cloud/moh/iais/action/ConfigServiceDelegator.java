@@ -12,6 +12,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCate
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubServiceErrorsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubServicePageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcCateWrkgrpCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
@@ -21,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingS
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremisesTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpeRoutingSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecificStageWorkloadDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -77,14 +80,14 @@ public class ConfigServiceDelegator {
         log.info(StringUtil.changeForLog("the getDropdownSelect premisType is -->:"+premisType));
         log.info(StringUtil.changeForLog("the getDropdownSelect specOrOthers is -->:"+specOrOthers));
         List<SelectOption> selectOptions ;
-        if("specialised".equals(specOrOthers)){
+        if("SVTP003".equals(specOrOthers)){
             selectOptions =  (List<SelectOption>)ParamUtil.getSessionAttr(request,"specHcsaServiceOptions");
         }else{
             selectOptions =  (List<SelectOption>)ParamUtil.getSessionAttr(request,"otherHcsaServiceOptions");
         }
         ajaxResDto.setResCode(AppConsts.AJAX_RES_CODE_SUCCESS);
         Map<String, String> chargesTypeAttr = IaisCommonUtils.genNewHashMap();
-        chargesTypeAttr.put("name", premisType+"-"+specOrOthers+"SubService");
+        chargesTypeAttr.put("name", premisType+"-"+specOrOthers+"-subServiceCodes");
         String chargeTypeSelHtml = ApplicationHelper.genMutilSelectOpHtml(chargesTypeAttr,
                 selectOptions, HcsaAppConst.FIRESTOPTION, null, false,true);
         ajaxResDto.setResultJson(chargeTypeSelHtml);
@@ -125,11 +128,6 @@ public class ConfigServiceDelegator {
         //todo
       //  configService.addNewService(bpc.request);
 
-        /*
-        Object individualPremises = bpc.request.getAttribute("individualPremises");
-        if(individualPremises==null){
-            bpc.request.setAttribute("individualPremises","0");
-        }*/
         log.info(StringUtil.changeForLog("confige prepareAddNewService  end"));
     }
 
@@ -447,16 +445,66 @@ public class ConfigServiceDelegator {
         String[] premisesTypes = hcsaServiceConfigDto.getPremisesTypes();
         if(premisesTypes != null && premisesTypes.length > 0){
             Map<String,HcsaServiceCategoryDisciplineDto> hcsaServiceCategoryDisciplineDtoMap = hcsaServiceConfigDto.getHcsaServiceCategoryDisciplineDtoMap();
+            Map<String,HcsaServiceSubServicePageDto> specHcsaServiceSubServicePageDtoMap = hcsaServiceConfigDto.getSpecHcsaServiceSubServicePageDtoMap();
             for(String premisesType : premisesTypes){
+                //for HcsaSvcSpePremisesTypeDto
                 HcsaSvcSpePremisesTypeDto hcsaSvcSpePremisesTypeDto =  new HcsaSvcSpePremisesTypeDto();
                 hcsaSvcSpePremisesTypeDto.setPremisesType(premisesType);
                 hcsaSvcSpePremisesTypeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 
-                HcsaServiceCategoryDisciplineDto hcsaServiceCategoryDisciplineDto = hcsaServiceCategoryDisciplineDtoMap.get(premisesType);
-                hcsaSvcSpePremisesTypeDto.setCategorySectionName(hcsaServiceCategoryDisciplineDto.getSectionHeader());
-                List<HcsaServiceSubTypeDto> hcsaServiceSubTypeDtos = transferHcsaServiceSubTypeDto(hcsaServiceCategoryDisciplineDto);
-                hcsaSvcSpePremisesTypeDto.setHcsaServiceSubTypeDtos(hcsaServiceSubTypeDtos);
+                //for HcsaServiceCategoryDisciplineDto
+                if(hcsaServiceCategoryDisciplineDtoMap != null){
+                    HcsaServiceCategoryDisciplineDto hcsaServiceCategoryDisciplineDto = hcsaServiceCategoryDisciplineDtoMap.get(premisesType);
+                    hcsaSvcSpePremisesTypeDto.setCategorySectionName(hcsaServiceCategoryDisciplineDto.getSectionHeader());
+                    List<HcsaServiceSubTypeDto> hcsaServiceSubTypeDtos = transferHcsaServiceSubTypeDto(hcsaServiceCategoryDisciplineDto);
+                    hcsaSvcSpePremisesTypeDto.setHcsaServiceSubTypeDtos(hcsaServiceSubTypeDtos);
+                }
 
+                //for specHcsaServiceSubServicePageDtoMap
+                if(specHcsaServiceSubServicePageDtoMap != null){
+                    HcsaServiceSubServicePageDto hcsaServiceSubServicePageDto =  specHcsaServiceSubServicePageDtoMap.get(premisesType);
+                    hcsaSvcSpePremisesTypeDto.setSpecialSvcSecName(hcsaServiceSubServicePageDto.getSectionHeader());
+                    List<HcsaServiceSubServiceErrorsDto> hcsaServiceSubServiceErrorsDtos = hcsaServiceSubServicePageDto.getHcsaServiceSubServiceErrorsDtos();
+                    if(IaisCommonUtils.isNotEmpty(hcsaServiceSubServiceErrorsDtos)){
+                     List<HcsaSvcSpecifiedCorrelationDto> hcsaSvcSpecifiedCorrelationDtos = IaisCommonUtils.genNewArrayList();
+                     for(HcsaServiceSubServiceErrorsDto hcsaServiceSubServiceErrorsDto : hcsaServiceSubServiceErrorsDtos){
+                         HcsaSvcSpecifiedCorrelationDto hcsaSvcSpecifiedCorrelationDto = new HcsaSvcSpecifiedCorrelationDto();
+                         hcsaSvcSpecifiedCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                         hcsaSvcSpecifiedCorrelationDto.setSubSvcType(HcsaConsts.SERVICE_TYPE_SPECIFIED);
+                         hcsaSvcSpecifiedCorrelationDto.setSpecifiedSvcId(hcsaServiceSubServiceErrorsDto.getSubServiceCode());
+                         String level = hcsaServiceSubServiceErrorsDto.getLevel();
+                         if("0".equals(level)){
+                             hcsaSvcSpecifiedCorrelationDtos.add(hcsaSvcSpecifiedCorrelationDto);
+                         }else if("1".equals(level)){
+                             if(IaisCommonUtils.isEmpty(hcsaSvcSpecifiedCorrelationDtos)){
+                                 hcsaSvcSpecifiedCorrelationDtos.add(hcsaSvcSpecifiedCorrelationDto);
+                             }else{
+                                 HcsaSvcSpecifiedCorrelationDto hcsaSvcSpecifiedCorrelationDto0 =   hcsaSvcSpecifiedCorrelationDtos.get(hcsaSvcSpecifiedCorrelationDtos.size()-1);
+                                 List<HcsaSvcSpecifiedCorrelationDto> subHcsaSvcSpecifiedCorrelationDtos = hcsaSvcSpecifiedCorrelationDto0.getSubHcsaSvcSpecifiedCorrelationDtos();
+                                 subHcsaSvcSpecifiedCorrelationDtos.add(hcsaSvcSpecifiedCorrelationDto);
+                                 hcsaSvcSpecifiedCorrelationDto0.setSubHcsaSvcSpecifiedCorrelationDtos(subHcsaSvcSpecifiedCorrelationDtos);
+                             }
+                         }else{
+                             if(IaisCommonUtils.isEmpty(hcsaSvcSpecifiedCorrelationDtos)){
+                                 hcsaSvcSpecifiedCorrelationDtos.add(hcsaSvcSpecifiedCorrelationDto);
+                             }else{
+                                 HcsaSvcSpecifiedCorrelationDto hcsaSvcSpecifiedCorrelationDto0 =   hcsaSvcSpecifiedCorrelationDtos.get(hcsaSvcSpecifiedCorrelationDtos.size()-1);
+                                 List<HcsaSvcSpecifiedCorrelationDto> subHcsaSvcSpecifiedCorrelationDtos1 = hcsaSvcSpecifiedCorrelationDto0.getSubHcsaSvcSpecifiedCorrelationDtos();
+                                 if(IaisCommonUtils.isEmpty(subHcsaSvcSpecifiedCorrelationDtos1)){
+                                     subHcsaSvcSpecifiedCorrelationDtos1.add(hcsaSvcSpecifiedCorrelationDto);
+                                     hcsaSvcSpecifiedCorrelationDto0.setSubHcsaSvcSpecifiedCorrelationDtos(subHcsaSvcSpecifiedCorrelationDtos1);
+                                 }else{
+                                     HcsaSvcSpecifiedCorrelationDto hcsaSvcSpecifiedCorrelationDto1 = subHcsaSvcSpecifiedCorrelationDtos1.get(subHcsaSvcSpecifiedCorrelationDtos1.size() -1);
+                                     List<HcsaSvcSpecifiedCorrelationDto> subHcsaSvcSpecifiedCorrelationDtos2 =  hcsaSvcSpecifiedCorrelationDto1.getSubHcsaSvcSpecifiedCorrelationDtos();
+                                     subHcsaSvcSpecifiedCorrelationDtos2.add(hcsaSvcSpecifiedCorrelationDto);
+                                     hcsaSvcSpecifiedCorrelationDto1.setSubHcsaSvcSpecifiedCorrelationDtos(subHcsaSvcSpecifiedCorrelationDtos2);
+                                 }
+                             }
+                         }
+                     }
+                     hcsaSvcSpePremisesTypeDto.setSpecHcsaSvcSpecifiedCorrelationDtos(hcsaSvcSpecifiedCorrelationDtos);
+                    }
+                }
                 result.add(hcsaSvcSpePremisesTypeDto);
             }
         }
@@ -479,6 +527,8 @@ public class ConfigServiceDelegator {
         }
         return result;
     }
+
+
 
     /*
     * get page all data
@@ -536,20 +586,35 @@ public class ConfigServiceDelegator {
             hcsaServiceConfigDto.setHcsaConfigPageDtoMap(null);
         }
 
-        //for HcsaServiceCategoryDisciplineDto
+        //for HcsaServiceCategoryDisciplineDto  and sub service
         String[] premisesTypes = hcsaServiceConfigDto.getPremisesTypes();
         if(premisesTypes != null && premisesTypes.length > 0){
             Map<String,HcsaServiceCategoryDisciplineDto> hcsaServiceCategoryDisciplineDtoMap = IaisCommonUtils.genNewHashMap();
+            Map<String,HcsaServiceSubServicePageDto> specHcsaServiceSubServicePageDtoMap = IaisCommonUtils.genNewHashMap();
+            Map<String,HcsaServiceSubServicePageDto> otherHcsaServiceSubServicePageDtoMap = IaisCommonUtils.genNewHashMap();
             for(String premisesType : premisesTypes){
+                //for hcsaServiceCategoryDisciplineDtoMap
                 HcsaServiceCategoryDisciplineDto hcsaServiceCategoryDisciplineDto = new HcsaServiceCategoryDisciplineDto();
                 String sectionHeader = ParamUtil.getString(request,premisesType+"-sectionHeader");
                 String[] categoryDisciplines = ParamUtil.getStrings(request,premisesType+"-categoryDisciplines");
-               // hcsaServiceCategoryDisciplineDto.setPremType(premisesType);
                 hcsaServiceCategoryDisciplineDto.setSectionHeader(sectionHeader);
                 hcsaServiceCategoryDisciplineDto.setCategoryDisciplines(categoryDisciplines);
                 hcsaServiceCategoryDisciplineDtoMap.put(premisesType,hcsaServiceCategoryDisciplineDto);
                 hcsaServiceConfigDto.setHcsaServiceCategoryDisciplineDtoMap(hcsaServiceCategoryDisciplineDtoMap);
+               //for specHcsaServiceSubServicePageDtoMap
+                HcsaServiceSubServicePageDto specHcsaServiceCategoryDisciplineDto = new HcsaServiceSubServicePageDto();
+                String specSectionHeader = ParamUtil.getString(request,premisesType+"-SVTP003-sectionHeader");
+                String[] specSubServiceCodes = ParamUtil.getStrings(request,premisesType+"-SVTP003-subServiceCodes");
+                String[] specLevels = ParamUtil.getStrings(request,premisesType+"-SVTP003-levels");
+                specHcsaServiceCategoryDisciplineDto.setSectionHeader(specSectionHeader);
+                specHcsaServiceCategoryDisciplineDto.setSubServiceCodes(specSubServiceCodes);
+                specHcsaServiceCategoryDisciplineDto.setLevels(specLevels);
+                specHcsaServiceSubServicePageDtoMap.put(premisesType,specHcsaServiceCategoryDisciplineDto);
+
             }
+            hcsaServiceConfigDto.setHcsaServiceCategoryDisciplineDtoMap(hcsaServiceCategoryDisciplineDtoMap);
+            hcsaServiceConfigDto.setSpecHcsaServiceSubServicePageDtoMap(specHcsaServiceSubServicePageDtoMap);
+            hcsaServiceConfigDto.setOtherHcsaServiceSubServicePageDtoMap(otherHcsaServiceSubServicePageDtoMap);
 
         }
         if(HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(hcsaServiceDto.getSvcType())||HcsaConsts.SERVICE_TYPE_BASE.equals(hcsaServiceDto.getSvcType())){
