@@ -252,10 +252,23 @@ public final class AppValidatorHelper {
             errorList.add(HcsaAppConst.SECTION_PREMISES);
         }
         // Category/Discipline & Specialised Service/Specified Test
-        Map<String, String> speMap = doValidateSpecialisedDtoList(null, appSubmissionDto.getAppPremSpecialisedDtoList());
-        if (!speMap.isEmpty()) {
-            errorMap.putAll(speMap);
-            errorList.add(HcsaAppConst.SECTION_SPECIALISED);
+        List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
+        if (appPremSpecialisedDtoList != null) {
+            List<String> svcCodes = appPremSpecialisedDtoList.stream()
+                    .map(AppPremSpecialisedDto::getBaseSvcCode)
+                    .filter(StringUtil::isEmpty)
+                    .collect(Collectors.toList());
+            for (String svcCode : svcCodes) {
+                Map<String, String> speMap = doValidateSpecialisedDtoList(svcCode, appSubmissionDto.getAppPremSpecialisedDtoList());
+                if (!speMap.isEmpty()) {
+                    errorMap.putAll(speMap);
+                    IaisCommonUtils.addToList(HcsaAppConst.SECTION_SPECIALISED, errorList);
+                    errorList.add(HcsaAppConst.SECTION_SPECIALISED);
+                    if (errorSvcConfig != null) {
+                        errorSvcConfig.append(svcCode);
+                    }
+                }
+            }
         }
         // service info
         List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -263,9 +276,7 @@ public final class AppValidatorHelper {
             Map<String, String> map = doCheckBox(currSvcInfoDto, appSubmissionDto, null, errorList);
             if (!map.isEmpty()) {
                 errorMap.putAll(map);
-                if (!errorList.contains(HcsaAppConst.SECTION_SVCINFO)) {
-                    errorList.add(HcsaAppConst.SECTION_SVCINFO);
-                }
+                IaisCommonUtils.addToList(HcsaAppConst.SECTION_SVCINFO, errorList);
                 if (errorSvcConfig != null) {
                     errorSvcConfig.append(currSvcInfoDto.getServiceId());
                 }

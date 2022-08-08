@@ -139,3 +139,21 @@ input.allDay {
     margin: 14px 20px 20px 5px;
     padding: 0;
 }
+
+.form-check.form-check-1 {
+    margin-left: 30px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+.form-check.form-check-2 {
+    margin-left: 60px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+.form-check.form-check-3 {
+    margin-left: 90px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}

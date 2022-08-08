@@ -23,6 +23,11 @@
 
 }else{
 %>
+<c:forEach var="specialised" items="${AppSubmissionDto.appPremSpecialisedDtoList}">
+    <c:if test="${empty categorySectionName}"><c:set var="categorySectionName" value="${specialised.categorySectionName}" /></c:if>
+    <c:if test="${empty specialSvcSecName}"><c:set var="specialSvcSecName" value="${specialised.specialSvcSecName}" /></c:if>
+</c:forEach>
+<c:set var="specialisedTitle">${categorySectionName}<c:if test="${not empty categorySectionName}"> & </c:if>${specialSvcSecName}</c:set>
 <ul id="nav-tabs-ul" class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
     <li id="licenseeli" role="presentation" class="${empty coMap.licensee ? 'incomplete' : 'complete'}">
         <a id="licensee" aria-controls="licenseeTab" role="tab" data-toggle="tab">Licensee Details</a>
@@ -31,7 +36,7 @@
         <a id="premises" aria-controls="premisesTab" role="tab" data-toggle="tab">Mode of Service Delivery</a>
     </li>
     <li id="specialisedli" role="presentation" class="${empty coMap.specialised ? 'incomplete' : 'complete'}">
-        <a id = "specialised" aria-controls="specialisedTab" role="tab" data-toggle="tab">Category/Discipline & Specialised Service/Specified Test</a>
+        <a id = "specialised" aria-controls="specialisedTab" role="tab" data-toggle="tab">${specialisedTitle}</a>
     </li>
     <li id="serviceFormsli" role="presentation" class="${empty coMap.information ? 'incomplete' : 'complete'}">
         <a id="serviceForms" aria-controls="serviceInformationTab" role="tab" data-toggle="tab">Service-Related<br> Information</a>
@@ -50,7 +55,7 @@
         </div>
         <div class="swiper-slide " ><a href="#premisesTab" aria-controls="licenseeTab"  role="tab" data-toggle="tab">Mode of Service Delivery</a></div>
         <div class="swiper-slide">
-            <a href="#specialisedTab" aria-controls="tabApplication" role="tab" data-toggle="tab">Category/Discipline & Specialised Service/Specified Test</a>
+            <a href="#specialisedTab" aria-controls="tabApplication" role="tab" data-toggle="tab">${specialisedTitle}</a>
         </div>
         <div class="swiper-slide"><a href="#serviceInformationTab" aria-controls="tabLicence" role="tab" data-toggle="tab">Service-Related Information</a></div>
         <div class="swiper-slide"><a href="#previewTab" aria-controls="tabLicence" role="tab" data-toggle="tab">Preview & Submit</a></div>
