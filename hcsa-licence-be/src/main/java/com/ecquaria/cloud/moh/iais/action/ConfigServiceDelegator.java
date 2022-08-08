@@ -28,9 +28,12 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.ServiceConfigConstant;
+import com.ecquaria.cloud.moh.iais.dto.AjaxResDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -38,6 +41,7 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.google.common.collect.Maps;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,6 +50,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
 
 /**
@@ -59,6 +65,33 @@ public class ConfigServiceDelegator {
     private ConfigService configService;
     @Autowired
     private OrganizationClient organizationClient;
+
+
+    @PostMapping(value = "/getDropdownSelect")
+    public @ResponseBody
+    AjaxResDto getDropdownSelect(HttpServletRequest request) {
+        log.info(StringUtil.changeForLog("the getDropdownSelect start ..."));
+        AjaxResDto ajaxResDto = new AjaxResDto();
+        String premisType = ParamUtil.getString(request, "premisType");
+        String specOrOthers = ParamUtil.getString(request, "specOrOthers");
+        log.info(StringUtil.changeForLog("the getDropdownSelect premisType is -->:"+premisType));
+        log.info(StringUtil.changeForLog("the getDropdownSelect specOrOthers is -->:"+specOrOthers));
+        List<SelectOption> selectOptions ;
+        if("specialised".equals(specOrOthers)){
+            selectOptions =  (List<SelectOption>)ParamUtil.getSessionAttr(request,"specHcsaServiceOptions");
+        }else{
+            selectOptions =  (List<SelectOption>)ParamUtil.getSessionAttr(request,"otherHcsaServiceOptions");
+        }
+        ajaxResDto.setResCode(AppConsts.AJAX_RES_CODE_SUCCESS);
+        Map<String, String> chargesTypeAttr = IaisCommonUtils.genNewHashMap();
+        chargesTypeAttr.put("name", premisType+"-"+specOrOthers+"SubService");
+        String chargeTypeSelHtml = ApplicationHelper.genMutilSelectOpHtml(chargesTypeAttr,
+                selectOptions, HcsaAppConst.FIRESTOPTION, null, false,true);
+        ajaxResDto.setResultJson(chargeTypeSelHtml);
+        log.info(StringUtil.changeForLog("the getDropdownSelect end ..."));
+        return ajaxResDto;
+
+    }
 
     // 		start->OnStepProcess
     public void start(BaseProcessClass bpc){
@@ -223,10 +256,10 @@ public class ConfigServiceDelegator {
 
         // get all Specialised service
         List<HcsaServiceDto>  specHcsaServiceDtos = configService.getActiveServicesBySvcType(HcsaConsts.SERVICE_TYPE_SPECIFIED);
-        ParamUtil.setRequestAttr(request,"specHcsaServiceOptions",getSelectOptionForHcsaServiceDtos(specHcsaServiceDtos));
+        ParamUtil.setSessionAttr(request,"specHcsaServiceOptions",(Serializable)getSelectOptionForHcsaServiceDtos(specHcsaServiceDtos));
         //get all Other service
         List<HcsaServiceDto>  otherHcsaServiceDtos = configService.getActiveServicesBySvcType(HcsaConsts.SERVICE_TYPE_OTHERS);
-        ParamUtil.setRequestAttr(request,"otherHcsaServiceOptions",getSelectOptionForHcsaServiceDtos(otherHcsaServiceDtos));
+        ParamUtil.setSessionAttr(request,"otherHcsaServiceOptions",(Serializable)getSelectOptionForHcsaServiceDtos(otherHcsaServiceDtos));
     }
 
     private List<SelectOption> getSelectOptionForHcsaServiceDtos(List<HcsaServiceDto> hcsaServiceDtos){
@@ -286,9 +319,8 @@ public class ConfigServiceDelegator {
         hcsaServiceDto.setVersion("1");
         hcsaServiceConfigDto.setHcsaServiceDto(hcsaServiceDto);
 
-        //for HcsaSvcSpePremisesTypeDto
-        String[] premisesTypes = hcsaServiceConfigDto.getPremisesTypes();
-        hcsaServiceConfigDto.setHcsaSvcSpePremisesTypeDtos(transferToHcsaSvcSpePremisesTypeDto(premisesTypes));
+        //for HcsaSvcSpePremisesTypeDto and HcsaServiceCategoryDisciplineDto
+        hcsaServiceConfigDto.setHcsaSvcSpePremisesTypeDtos(transferToHcsaSvcSpePremisesTypeDtoAndHcsaServiceCategoryDisciplineDto(hcsaServiceConfigDto));
 
         //for routing stage
         if(HcsaConsts.SERVICE_TYPE_BASE.equals(hcsaServiceDto.getSvcType())){
@@ -409,18 +441,45 @@ public class ConfigServiceDelegator {
 
     }
 
-    private List<HcsaSvcSpePremisesTypeDto> transferToHcsaSvcSpePremisesTypeDto(String[] premisesTypes){
+    // transfer HcsaSvcSpePremisesTypeDto and HcsaServiceCategoryDisciplineDto
+    private List<HcsaSvcSpePremisesTypeDto> transferToHcsaSvcSpePremisesTypeDtoAndHcsaServiceCategoryDisciplineDto(HcsaServiceConfigDto hcsaServiceConfigDto){
         List<HcsaSvcSpePremisesTypeDto> result = IaisCommonUtils.genNewArrayList();
+        String[] premisesTypes = hcsaServiceConfigDto.getPremisesTypes();
         if(premisesTypes != null && premisesTypes.length > 0){
+            Map<String,HcsaServiceCategoryDisciplineDto> hcsaServiceCategoryDisciplineDtoMap = hcsaServiceConfigDto.getHcsaServiceCategoryDisciplineDtoMap();
             for(String premisesType : premisesTypes){
                 HcsaSvcSpePremisesTypeDto hcsaSvcSpePremisesTypeDto =  new HcsaSvcSpePremisesTypeDto();
                 hcsaSvcSpePremisesTypeDto.setPremisesType(premisesType);
                 hcsaSvcSpePremisesTypeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+
+                HcsaServiceCategoryDisciplineDto hcsaServiceCategoryDisciplineDto = hcsaServiceCategoryDisciplineDtoMap.get(premisesType);
+                hcsaSvcSpePremisesTypeDto.setCategorySectionName(hcsaServiceCategoryDisciplineDto.getSectionHeader());
+                List<HcsaServiceSubTypeDto> hcsaServiceSubTypeDtos = transferHcsaServiceSubTypeDto(hcsaServiceCategoryDisciplineDto);
+                hcsaSvcSpePremisesTypeDto.setHcsaServiceSubTypeDtos(hcsaServiceSubTypeDtos);
+
                 result.add(hcsaSvcSpePremisesTypeDto);
             }
         }
         return result;
     }
+
+    private List<HcsaServiceSubTypeDto> transferHcsaServiceSubTypeDto(HcsaServiceCategoryDisciplineDto hcsaServiceCategoryDisciplineDto){
+        List<HcsaServiceSubTypeDto> result = IaisCommonUtils.genNewArrayList();
+        String[] categoryDisciplines = hcsaServiceCategoryDisciplineDto.getCategoryDisciplines();
+        if(categoryDisciplines != null && categoryDisciplines.length > 0){
+            for(String categoryDiscipline : categoryDisciplines){
+                HcsaServiceSubTypeDto hcsaServiceSubTypeDto = new HcsaServiceSubTypeDto();
+
+                hcsaServiceSubTypeDto.setSubtypeName(categoryDiscipline);
+                hcsaServiceSubTypeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                hcsaServiceSubTypeDto.setType(ApplicationConsts.SUB_TYPE_MODALITY);
+
+                result.add(hcsaServiceSubTypeDto);
+            }
+        }
+        return result;
+    }
+
     /*
     * get page all data
     * -----------------------
@@ -480,14 +539,16 @@ public class ConfigServiceDelegator {
         //for HcsaServiceCategoryDisciplineDto
         String[] premisesTypes = hcsaServiceConfigDto.getPremisesTypes();
         if(premisesTypes != null && premisesTypes.length > 0){
+            Map<String,HcsaServiceCategoryDisciplineDto> hcsaServiceCategoryDisciplineDtoMap = IaisCommonUtils.genNewHashMap();
             for(String premisesType : premisesTypes){
                 HcsaServiceCategoryDisciplineDto hcsaServiceCategoryDisciplineDto = new HcsaServiceCategoryDisciplineDto();
                 String sectionHeader = ParamUtil.getString(request,premisesType+"-sectionHeader");
                 String[] categoryDisciplines = ParamUtil.getStrings(request,premisesType+"-categoryDisciplines");
-                hcsaServiceCategoryDisciplineDto.setPremType(premisesType);
+               // hcsaServiceCategoryDisciplineDto.setPremType(premisesType);
                 hcsaServiceCategoryDisciplineDto.setSectionHeader(sectionHeader);
                 hcsaServiceCategoryDisciplineDto.setCategoryDisciplines(categoryDisciplines);
-                hcsaServiceConfigDto.setPermanentHscdDto(hcsaServiceCategoryDisciplineDto);
+                hcsaServiceCategoryDisciplineDtoMap.put(premisesType,hcsaServiceCategoryDisciplineDto);
+                hcsaServiceConfigDto.setHcsaServiceCategoryDisciplineDtoMap(hcsaServiceCategoryDisciplineDtoMap);
             }
 
         }
