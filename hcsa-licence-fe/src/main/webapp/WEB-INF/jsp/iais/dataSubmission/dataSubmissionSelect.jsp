@@ -102,11 +102,11 @@
                         <div class="application-tab-footer">
                             <div class="row">
                                 <div class="col-xs-12 col-sm-6 text-left">
-                                    <p>
+<%--                                    <p>--%>
                                         <a class="back" id="backBtn" href="/main-web">
                                             <i class="fa fa-angle-left">&nbsp;</i> Back
                                         </a>
-                                    </p>
+<%--                                    </p>--%>
                                 </div>
                             </div>
                         </div>
