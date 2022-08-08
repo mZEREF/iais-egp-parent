@@ -1445,6 +1445,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
+    public List<InterMessageDto> getInterMessageByRefNo(String refNo) {
+        return feMessageClient.getInboxMsgByRefNo(refNo).getEntity();
+    }
+
+    @Override
     public AppSubmissionDto getAppSubmissionDtoByAppGrpNo(String appGrpNo) {
         return applicationFeClient.getAppSubmissionDtoByAppGrpNo(appGrpNo).getEntity();
     }

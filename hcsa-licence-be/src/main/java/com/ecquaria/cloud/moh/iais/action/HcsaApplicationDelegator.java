@@ -1746,7 +1746,6 @@ public class HcsaApplicationDelegator {
      */
     public void requestForInformation(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException, IOException, TemplateException {
         log.debug(StringUtil.changeForLog("the do requestForInformation start ...."));
-        routingTask(bpc, null, ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION, null);
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
@@ -1794,6 +1793,7 @@ public class HcsaApplicationDelegator {
             log.debug(StringUtil.changeForLog("send application RfiAndEmail error"));
             log.error(e.getMessage(), e);
         }
+        routingTask(bpc, null, ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION, null);
         log.debug(StringUtil.changeForLog("the do requestForInformation end ...."));
     }
 

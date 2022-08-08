@@ -235,6 +235,7 @@ public class NotificationHelper {
 		String moduleType = emailParam.getModuleType();
 		boolean smsOnlyOfficerHour = emailParam.isSmsOnlyOfficerHour();
 		HashMap<String, String> maskParams = emailParam.getMaskParams();
+		String messageNo = emailParam.getMessageNo();
 
 		log.info(StringUtil.changeForLog("sendemail start... ref type is " + StringUtil.nullToEmptyStr(refIdType)
 				+ " ref Id is " + StringUtil.nullToEmptyStr(refId)
@@ -280,7 +281,7 @@ public class NotificationHelper {
 				subject = replaceText(subject, subjectParams);
 			}
 
-			sendMessage(mesContext, refId, refIdType, subject, maskParams, svcCodeList,isSendNewLicensee);
+			sendMessage(mesContext, refId, refIdType, subject, maskParams, svcCodeList, isSendNewLicensee, messageNo);
 			if (jrDto != null) {
 				List<JobRemindMsgTrackingDto> jobList = IaisCommonUtils.genNewArrayList(1);
 				jrDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -467,7 +468,7 @@ public class NotificationHelper {
 				+ templateId+"thread name is " + Thread.currentThread().getName()));
 	}
 
-	private void sendMessage(String mesContext, String appNo, String refIdType, String subject, HashMap<String, String> maskParams, List<String> svcCodeList,boolean isSendNewLicensee) {
+	private void sendMessage(String mesContext, String appNo, String refIdType, String subject, HashMap<String, String> maskParams, List<String> svcCodeList,boolean isSendNewLicensee, String messageNo) {
 		String licenseeId;
 		ApplicationGroupDto grpDto = hcsaAppClient.getAppGrpByAppNo(appNo).getEntity();
 		if(grpDto != null) {
@@ -492,7 +493,10 @@ public class NotificationHelper {
 		interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
 		interMessageDto.setSubject(subject);
 		interMessageDto.setMessageType(refIdType);
-		String mesNO = getHelperMessageNo();
+		String mesNO = messageNo;
+		if (StringUtil.isEmpty(mesNO)){
+			mesNO = getHelperMessageNo();
+		}
 		interMessageDto.setRefNo(mesNO);
 		if(IaisCommonUtils.isEmpty(svcCodeList)){
 			interMessageDto.setService_id("");

@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -621,6 +622,12 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
         //send message to FE user.
         String messageNo = inboxMsgService.getMessageNo();
+        List<AppPremiseMiscDto> appPremiseMiscDtoList = IaisCommonUtils.genNewArrayList();
+        AppPremiseMiscDto appPremiseMiscDto = new AppPremiseMiscDto();
+        appPremiseMiscDto.setAppealType(ApplicationConsts.APPLICATION_RFI_MSG);
+        appPremiseMiscDto.setRelateRecId(messageNo);
+        appPremiseMiscDtoList.add(appPremiseMiscDto);
+        applicationDto.setAppPremiseMiscDtoList(appPremiseMiscDtoList);
         String applicationType = applicationDto.getApplicationType();
         String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+ MessageConstants.MESSAGE_CALL_BACK_URL_NEWAPPLICATION+applicationDto.getApplicationNo();
         String editSelect = "";
