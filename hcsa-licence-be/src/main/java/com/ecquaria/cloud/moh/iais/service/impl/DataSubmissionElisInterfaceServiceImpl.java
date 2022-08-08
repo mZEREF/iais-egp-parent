@@ -92,7 +92,6 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
         log.info("start processLicence");
         log.info("start generate licenceFile");
         File licenceFile = MiscUtil.generateFile(sharedPath, LICENCE_FILE + DATE_STR + ".txt");
-        log.info("licenceFile path: {}",licenceFile.getAbsolutePath());
         log.info("generate licenceFile end");
         boolean flag = true;
         ELISInterfaceDto elisInterfaceDto = new ELISInterfaceDto();
@@ -165,7 +164,10 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
             if (flag) {
                 //move file
                 try {
-                    FileUtils.copyFileToOtherPosition(licenceFile.getAbsolutePath(),NEW_PATH);
+                    String path = licenceFile.getCanonicalPath();
+                    log.info("licenceFile path: {}", path);
+                    log.info("The expected new licenceFile path: {}",NEW_PATH + path);
+                    FileUtils.copyFileToOtherPosition(path,NEW_PATH);
                     FileUtils.deleteTempFile(licenceFile);
                 } catch (IOException e) {
                     log.error(e.getMessage(),e);
@@ -271,7 +273,6 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
         log.info("start processUsers");
         log.info("start generate user file");
         File userFile = MiscUtil.generateFile(sharedPath, USER_FILE + DATE_STR + ".txt");
-        log.info("userFile path: {}",userFile.getAbsolutePath());
         log.info("generate userFile end");
         boolean flag = true;
         if (userFile.exists()) {
@@ -333,7 +334,10 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
             if (flag){
                 //move file
                 try {
-                    FileUtils.copyFileToOtherPosition(userFile.getAbsolutePath(),NEW_PATH);
+                    String path = userFile.getCanonicalPath();
+                    log.info("userFile path: {}", path);
+                    log.info("The expected new userFile path: {}",NEW_PATH + path);
+                    FileUtils.copyFileToOtherPosition(path,NEW_PATH);
                     FileUtils.deleteTempFile(userFile);
                 } catch (IOException e) {
                     log.error(e.getMessage(),e);
@@ -416,11 +420,9 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
         log.info("start processDoctor");
         log.info("start generate topDoctorFile");
         File topDoctorFile = MiscUtil.generateFile(sharedPath, TOP_DOCTOR_FILE + DATE_STR + ".txt");
-        log.info("topDoctorFile path: {}",topDoctorFile.getAbsolutePath());
         log.info("generate topDoctorFile end");
         log.info("start generate dpDoctorFile");
         File dpDoctorFile = MiscUtil.generateFile(sharedPath, DP_DOCTOR_FILE + DATE_STR + ".txt");
-        log.info("dpDoctorFile path: {}",dpDoctorFile.getAbsolutePath());
         log.info("generate dpDoctorFile end");
         List<DsElisDoctorDto> doctorDtoList = new ArrayList<>();
         ELISInterfaceDto elisInterfaceDto = new ELISInterfaceDto();
@@ -490,7 +492,9 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
             //move file
             if (topDoctorFile.exists()) {
                 try {
-                    FileUtils.copyFileToOtherPosition(topDoctorFile.getAbsolutePath(), NEW_PATH);
+                    log.info("topDoctorFile path: {}",topDoctorFile.getCanonicalPath());
+                    log.info("The expected new topDoctorFile path: {}",NEW_PATH + topDoctorFile.getCanonicalPath());
+                    FileUtils.copyFileToOtherPosition(topDoctorFile.getCanonicalPath(), NEW_PATH);
                     FileUtils.deleteTempFile(topDoctorFile);
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
@@ -499,7 +503,9 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
             }
             if (dpDoctorFile.exists()) {
                 try {
-                    FileUtils.copyFileToOtherPosition(dpDoctorFile.getAbsolutePath(), NEW_PATH);
+                    log.info("dpDoctorFile path: {}",dpDoctorFile.getCanonicalPath());
+                    log.info("The expected new dpDoctorFile path: {}",NEW_PATH + dpDoctorFile.getCanonicalPath());
+                    FileUtils.copyFileToOtherPosition(dpDoctorFile.getCanonicalPath(), NEW_PATH);
                     FileUtils.deleteTempFile(dpDoctorFile);
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);

@@ -185,6 +185,7 @@ public final class FileUtils {
             log.info("Start to copy ===>");
             String srcName = file.getName();
             String path = dst + srcName;
+            log.info("path: {}",path);
             File dstFile = MiscUtil.generateFile(path);
             MiscUtil.deleteFile(dstFile);
             if (dstFile.createNewFile()) {
