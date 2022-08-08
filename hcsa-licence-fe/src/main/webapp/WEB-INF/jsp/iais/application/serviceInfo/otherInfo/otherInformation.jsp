@@ -1,43 +1,50 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
-
+<c:set var="practitioners" value="${practitionersList}"/>
+<c:set var="anaesthetists" value="${anaesthetistsList}"/>
+<c:set var="nurses" value="${nursesList}"/>
+<c:set var="counsellors" value="${counsellorsList}"/>
+<c:set var="appSvcOtherInfoTop" value="${appSvcOtherInfoTopDto}" />
 <div class="row form-horizontal">
-    <%--    TODO...........--%>
-    <input type="hidden" class="not-refresh prepsn" name="${psnContent}" value="${prepsn}"/>
-    <input type="hidden" class="not-refresh assignSelVal" name="${prepsn}assignSelVal" value="${person.assignSelect}"/>
-    <input type="hidden" class="not-refresh licPerson" name="${prepsn}licPerson" value="${person.licPerson ? 1 : 0}"/>
-    <input type="hidden" class="not-refresh isPartEdit" name="${prepsn}isPartEdit" value="0"/>
-    <input type="hidden" class="not-refresh indexNo" name="${prepsn}indexNo" value="${person.indexNo}"/>
-    <input type="hidden" class="not-refresh psnEditField" name="${prepsn}psnEditField" value="<c:out value="${person.psnEditFieldStr}" />"/>
-
-    <iais:row cssClass="edit-content">
-        <c:if test="${canEdit}">
-            <div class="text-right app-font-size-16">
-                <a class="edit psnEdit" href="javascript:void(0);">
-                    <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
-                </a>
-            </div>
+<%--    <iais:row cssClass="edit-content">--%>
+<%--        <c:if test="${canEdit}">--%>
+<%--            <div class="text-right app-font-size-16">--%>
+<%--                <a class="edit psnEdit" href="javascript:void(0);">--%>
+<%--                    <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit--%>
+<%--                </a>--%>
+<%--            </div>--%>
+<%--        </c:if>--%>
+<%--    </iais:row>--%>
+    <iais:row cssClass="row col-xs-12 col-md-12 text-right">
+        <c:if test="${AppSubmissionDto.needEditController }">
+            <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
+            <c:if test="${('APTY002' == AppSubmissionDto.appType)}">
+                <div class="app-font-size-16">
+                    <a class="back" id="RfcSkip" href="javascript:void(0);">
+                        Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em>
+                    </a>
+                </div>
+            </c:if>
+            <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
         </c:if>
     </iais:row>
-
     <iais:row>
         <div class="col-xs-12 col-md-6">
             <p class="bold">Other Information</p>
         </div>
     </iais:row>
 
-    <iais:row cssClass="row control control-caption-horizontal">
+    <iais:row cssClass="row control control-caption-horizontal holdPregnancyDiv">
         <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Do you provide Termination of Pregnancy&nbsp;"/>
-                <%--            TODO.........--%>
-        <input type="hidden" class="holdCerByEMSVal" name="holdCerByEMSVal" value="${holdCerByEMSStatus}"/>
+        <input type="hidden" class="provideTopVal" name="provideTopVal" value="${provideTop}"/>
         <iais:value width="3" cssClass="form-check col-md-3">
-            <input class="form-check-input holdCerByEMS" <c:if test="${'1' == holdCerByEMSStatus}">checked="checked"</c:if>  type="radio" name="holdCerByEMS${index}" value = "1" aria-invalid="false">
+            <input class="form-check-input provideTop" <c:if test="${'1' == provideTop}">checked="checked"</c:if>  type="radio" name="provideTop" value = "1" aria-invalid="false">
             <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
         </iais:value>
 
         <iais:value width="3" cssClass="form-check col-md-3">
-            <input class="form-check-input holdCerByEMS" <c:if test="${'0' == holdCerByEMSStatus}">checked="checked"</c:if>  type="radio" name="holdCerByEMS${index}" value = "0" aria-invalid="false">
+            <input class="form-check-input provideTop" <c:if test="${'0' == provideTop}">checked="checked"</c:if>  type="radio" name="provideTop" value = "0" aria-invalid="false">
             <label class="form-check-label" ><span class="check-circle"></span>No</label>
         </iais:value>
     </iais:row>
@@ -56,309 +63,108 @@
         </iais:row>
 
         <iais:row cssClass="row control control-caption-horizontal">
-            <%--            TODO.........--%>
+            <input type="hidden" class="topType" name="topTypeVal" value="${appSvcOtherInfoTop.topType}"/>
             <iais:value width="4" cssClass="form-check col-md-4">
-                <input class="form-check-input holdCerByEMS1" <c:if test="${'1' == clinicalDirectorDto.holdCerByEMS}">checked="checked"</c:if>  type="radio" name="holdCerByEMS${index}" value = "1" aria-invalid="false">
+                <input class="form-check-input topType" <c:if test="${'1' == appSvcOtherInfoTop.topType}">checked="checked"</c:if>  type="radio" name="topType" value = "1" aria-invalid="false">
                 <label class="form-check-label" ><span class="check-circle"></span>Termination of Pregnancy(Solely by Drug)</label>
             </iais:value>
 
             <iais:value width="4" cssClass="form-check col-md-4">
-                <input class="form-check-input holdCerByEMS1" <c:if test="${'0' == clinicalDirectorDto.holdCerByEMS}">checked="checked"</c:if>  type="radio" name="holdCerByEMS${index}" value = "0" aria-invalid="false">
+                <input class="form-check-input topType" <c:if test="${'0' == appSvcOtherInfoTop.topType}">checked="checked"</c:if>  type="radio" name="topType" value = "0" aria-invalid="false">
                 <label class="form-check-label" ><span class="check-circle"></span>Termination of Pregnancy(Solely by Surgical Procedure)</label>
             </iais:value>
 
             <iais:value width="4" cssClass="form-check col-md-4">
-                <input class="form-check-input holdCerByEMS1" <c:if test="${'0' == clinicalDirectorDto.holdCerByEMS}">checked="checked"</c:if>  type="radio" name="holdCerByEMS${index}" value = "0" aria-invalid="false">
+                <input class="form-check-input topType" <c:if test="${'-1' == appSvcOtherInfoTop.topType}">checked="checked"</c:if>  type="radio" name="topType" value = "-1" aria-invalid="false">
                 <label class="form-check-label" ><span class="check-circle"></span>Termination of Pregnancy(Drug and Surgical Procedure)</label>
             </iais:value>
         </iais:row>
 
         <%--TODO...practitioners--%>
-        <div class="practitioners person-detail">
-            <iais:row>
-                <div class="col-xs-12 col-md-10">
-                        <%--                <p class="bold">Name, Professional Regn. No. and Qualification of medical practitioners authorised to perform Abortion<span class="psnHeader">${index+1}</span></p>--%>
-                    <p class="bold">Name, Professional Regn. No. and Qualification of medical practitioners authorised to perform Abortion</p>
-                </div>
-                <%--            <div class="col-xs-12 col-md-2 text-right removeEditDiv <c:if test="${index == 0}">hidden</c:if>">--%>
-                <%--                <h4 class="text-danger">--%>
-                <%--                    <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>--%>
-                <%--                </h4>--%>
-                <%--            </div>--%>
-            </iais:row>
-
-            <iais:row>
-                <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Professional Regn. No."/>
-                <iais:value width="6" cssClass="col-md-6">
-                    <%--            TODO.....--%>
-                    <iais:input maxLength="20" type="text" cssClass="profRegNo" name="${prepsn}profRegNo${index}" value="${person.profRegNo}"/>
-                </iais:value>
-            </iais:row>
-
-            <iais:row>
-                <iais:field width="6" cssClass="col-md-6" mandatory="true" value="NRIC/FIN No."/>
-                <iais:value width="6" cssClass="col-md-6">
-                    <%--            TODO.....--%>
-                    <iais:input maxLength="20" type="text" cssClass="profRegNo" name="${prepsn}profRegNo${index}" value="${person.profRegNo}"/>
-                </iais:value>
-            </iais:row>
-
-            <iais:row>
-                <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Type of Registration"/>
-                <iais:value width="6" cssClass="col-md-6">
-                    <%--            TODO.....--%>
-                    <iais:input maxLength="20" type="text" cssClass="profRegNo" name="${prepsn}profRegNo${index}" value="${person.profRegNo}"/>
-                </iais:value>
-            </iais:row>
-
-            <iais:row>
-                <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Name of medical practitioner"/>
-                <iais:value width="6" cssClass="col-md-6">
-                    <%--            TODO.....--%>
-                    <iais:input maxLength="20" type="text" cssClass="profRegNo" name="${prepsn}profRegNo${index}" value="${person.profRegNo}"/>
-                </iais:value>
-            </iais:row>
-
-            <iais:row>
-                <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Specialties"/>
-                <iais:value width="6" cssClass="col-md-6">
-                    <%--            TODO.....--%>
-                    <iais:input maxLength="20" type="text" cssClass="profRegNo" name="${prepsn}profRegNo${index}" value="${person.profRegNo}"/>
-                </iais:value>
-            </iais:row>
-
-            <iais:row>
-                <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Qualifications"/>
-                <iais:value width="6" cssClass="col-md-6">
-                    <%--            TODO.....--%>
-                    <iais:input maxLength="20" type="text" cssClass="profRegNo" name="${prepsn}profRegNo${index}" value="${person.profRegNo}"/>
-                </iais:value>
-            </iais:row>
-
-            <iais:row cssClass="row control control-caption-horizontal">
-                <iais:value width="6" cssClass="col-md-6">
-                    <label class="form-check-label" >Is the medical practitioners authorised by MOH to perform Abortion
-                        (if No, please upload a copy of the Obstetrics & Gynaecology certificate and <span style="color:deepskyblue;cursor:pointer;text-decoration: underline;">From 2</span> at the Document page)
-
-                        <span class="mandatory">*</span>
-                    </label>
-                </iais:value>
-                <%--            TODO.........--%>
-                <input type="hidden" class="holdCerByEMSVal" name="holdCerByEMSVal${index}" value="${clinicalDirectorDto.holdCerByEMS}"/>
-                <iais:value width="3" cssClass="form-check col-md-3">
-                    <input class="form-check-input holdCerByEMS" <c:if test="${'1' == clinicalDirectorDto.holdCerByEMS}">checked="checked"</c:if>  type="radio" name="holdCerByEMS${index}" value = "1" aria-invalid="false">
-                    <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
-                </iais:value>
-
-                <iais:value width="3" cssClass="form-check col-md-3">
-                    <input class="form-check-input holdCerByEMS" <c:if test="${'0' == clinicalDirectorDto.holdCerByEMS}">checked="checked"</c:if>  type="radio" name="holdCerByEMS${index}" value = "0" aria-invalid="false">
-                    <label class="form-check-label" ><span class="check-circle"></span>No</label>
-                </iais:value>
-            </iais:row>
-        </div>
-        <%--    TODO......--%>
-        <c:if test="${!isRfi}">
-            <c:set var="needAddPsn" value="true"/>
-            <c:choose>
-                <c:when test="${currStepConfig.status =='CMSTAT003'}">
-                    <c:set var="needAddPsn" value="false"/>
-                </c:when>
-                <c:when test="${personCount >= currStepConfig.maximumCount}">
-                    <c:set var="needAddPsn" value="false"/>
-                </c:when>
-                <c:when test="${AppSubmissionDto.needEditController && !canEdit}">
-                    <c:set var="needAddPsn" value="false"/>
-                </c:when>
-            </c:choose>
-            <div class="col-md-12 col-xs-12 addPractitionersDiv <c:if test="${!needAddPsn}">hidden</c:if>">
-            <span class="addPersonnelBtn" style="color:deepskyblue;cursor:pointer;">
+        <c:choose>
+            <c:when test="${empty practitioners}">
+                <c:set var="personCount" value="1"/>
+            </c:when>
+            <c:otherwise>
+                <c:set var="personCount" value="${practitioners.size()}"/>
+            </c:otherwise>
+        </c:choose>
+        <input type="hidden" name="cdLength" value="${personCount}" />
+        <input type="hidden" name="anaLength" value="${personCount}" />
+        <c:forEach begin="0" end="${personCount-1}" step="1" varStatus="pStat">
+            <c:set var="index" value="${pStat.index}" />
+            <c:set var="person" value="${practitioners[index]}"/>
+            <%@include file="practitionersDetail.jsp" %>
+        </c:forEach>
+        <div class="col-md-12 col-xs-12 addPractitionersDiv">
+            <span class="addPractitionersBtn" style="color:deepskyblue;cursor:pointer;">
                 <span style="">Add more</span>
             </span>
-            </div>
-        </c:if>
-        <%--TODO...anaesthetists--%>
-        <div class="person-detail anaesthetists">
-            <iais:row>
-                <div class="col-xs-12 col-md-10" style="padding-top: 25px;">
-                        <%--                <p class="bold">Name, Professional Regn. No. and Qualification of anaesthetists<span class="psnHeader">${index+1}</span></p>--%>
-                    <p class="bold">Name, Professional Regn. No. and Qualification of anaesthetists</p>
-                </div>
-                <%--            <div class="col-xs-12 col-md-2 text-right removeEditDiv <c:if test="${index == 0}">hidden</c:if>">--%>
-                <%--                <h4 class="text-danger">--%>
-                <%--                    <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>--%>
-                <%--                </h4>--%>
-                <%--            </div>--%>
-            </iais:row>
-
-            <iais:row>
-                <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Professional Regn. No."/>
-                <iais:value width="6" cssClass="col-md-6">
-                    <%--            TODO.....--%>
-                    <iais:input maxLength="20" type="text" cssClass="profRegNo" name="${prepsn}profRegNo${index}" value="${person.profRegNo}"/>
-                </iais:value>
-            </iais:row>
-
-            <iais:row>
-                <iais:field width="6" cssClass="col-md-6" mandatory="true" value="NRIC/FIN No."/>
-                <iais:value width="6" cssClass="col-md-6">
-                    <%--            TODO.....--%>
-                    <iais:input maxLength="20" type="text" cssClass="profRegNo" name="${prepsn}profRegNo${index}" value="${person.profRegNo}"/>
-                </iais:value>
-            </iais:row>
-
-            <iais:row>
-                <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Type of Registration"/>
-                <iais:value width="6" cssClass="col-md-6">
-                    <%--            TODO.....--%>
-                    <iais:input maxLength="20" type="text" cssClass="profRegNo" name="${prepsn}profRegNo${index}" value="${person.profRegNo}"/>
-                </iais:value>
-            </iais:row>
-
-            <iais:row>
-                <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Name of anaesthetists"/>
-                <iais:value width="6" cssClass="col-md-6">
-                    <%--            TODO.....--%>
-                    <iais:input maxLength="20" type="text" cssClass="profRegNo" name="${prepsn}profRegNo${index}" value="${person.profRegNo}"/>
-                </iais:value>
-            </iais:row>
-
-            <iais:row>
-                <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Qualifications"/>
-                <iais:value width="6" cssClass="col-md-6">
-                    <%--            TODO.....--%>
-                    <iais:input maxLength="20" type="text" cssClass="profRegNo" name="${prepsn}profRegNo${index}" value="${person.profRegNo}"/>
-                </iais:value>
-            </iais:row>
         </div>
-        <%--    TODO......--%>
-        <c:if test="${!isRfi}">
-            <c:set var="needAddPsn" value="true"/>
-            <c:choose>
-                <c:when test="${currStepConfig.status =='CMSTAT003'}">
-                    <c:set var="needAddPsn" value="false"/>
-                </c:when>
-                <c:when test="${personCount >= currStepConfig.maximumCount}">
-                    <c:set var="needAddPsn" value="false"/>
-                </c:when>
-                <c:when test="${AppSubmissionDto.needEditController && !canEdit}">
-                    <c:set var="needAddPsn" value="false"/>
-                </c:when>
-            </c:choose>
-            <div class="col-md-12 col-xs-12 addPractitionersDiv <c:if test="${!needAddPsn}">hidden</c:if>">
+
+
+        <%--TODO...anaesthetists--%>
+        <c:choose>
+            <c:when test="${empty anaesthetists}">
+                <c:set var="aCount" value="1"/>
+            </c:when>
+            <c:otherwise>
+                <c:set var="aCount" value="${anaesthetists.size()}"/>
+            </c:otherwise>
+        </c:choose>
+        <input type="hidden" name="anaLength" value="${aCount}" />
+        <c:forEach begin="0" end="${aCount-1}" step="1" varStatus="cdStat">
+            <c:set var="index" value="${cdStat.index}" />
+            <c:set var="person" value="${anaesthetists[index]}"/>
+            <%@include file="anaesthetistsDetail.jsp" %>
+        </c:forEach>
+        <div class="col-md-12 col-xs-12 addAnaesthetistsDiv">
             <span class="addAnaesthetistsBtn" style="color:deepskyblue;cursor:pointer;">
                 <span style="">Add more</span>
             </span>
-            </div>
-        </c:if>
-        <%--TODO...nurses--%>
-        <div class="person-detail nurses">
-            <iais:row>
-                <div class="col-xs-12 col-md-10" style="padding-top: 25px;">
-                    <p class="bold">Name, Professional Regn. No. and Qualification of trained nurses</p>
-                        <%--                <p class="bold">Name, Professional Regn. No. and Qualification of trained nurses<span class="psnHeader">${index+1}</span></p>--%>
-                </div>
-                <%--            <div class="col-xs-12 col-md-2 text-right removeEditDiv <c:if test="${index == 0}">hidden</c:if>">--%>
-                <%--                <h4 class="text-danger">--%>
-                <%--                    <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>--%>
-                <%--                </h4>--%>
-                <%--            </div>--%>
-            </iais:row>
-
-            <iais:row>
-                <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Name of trained nurses"/>
-                <iais:value width="6" cssClass="col-md-6">
-                    <%--            TODO.....--%>
-                    <iais:input maxLength="20" type="text" cssClass="profRegNo" name="${prepsn}profRegNo${index}" value="${person.profRegNo}"/>
-                </iais:value>
-            </iais:row>
-
-            <iais:row>
-                <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Qualifications"/>
-                <iais:value width="6" cssClass="col-md-6">
-                    <%--            TODO.....--%>
-                    <iais:input maxLength="20" type="text" cssClass="profRegNo" name="${prepsn}profRegNo${index}" value="${person.profRegNo}"/>
-                </iais:value>
-            </iais:row>
         </div>
-        <%--    TODO......--%>
-        <c:if test="${!isRfi}">
-            <c:set var="needAddPsn" value="true"/>
-            <c:choose>
-                <c:when test="${currStepConfig.status =='CMSTAT003'}">
-                    <c:set var="needAddPsn" value="false"/>
-                </c:when>
-                <c:when test="${personCount >= currStepConfig.maximumCount}">
-                    <c:set var="needAddPsn" value="false"/>
-                </c:when>
-                <c:when test="${AppSubmissionDto.needEditController && !canEdit}">
-                    <c:set var="needAddPsn" value="false"/>
-                </c:when>
-            </c:choose>
-            <div class="col-md-12 col-xs-12 addPractitionersDiv <c:if test="${!needAddPsn}">hidden</c:if>">
-                <span class="addNursesBtn" style="color:deepskyblue;cursor:pointer;">
-                    <span style="">Add more</span>
-                </span>
-            </div>
-        </c:if>
+
+        <%--TODO...nurses--%>
+        <c:choose>
+            <c:when test="${empty nurses}">
+                <c:set var="nCount" value="1"/>
+            </c:when>
+            <c:otherwise>
+                <c:set var="nCount" value="${nurses.size()}"/>
+            </c:otherwise>
+        </c:choose>
+        <input type="hidden" name="nLength" value="${nCount}" />
+        <c:forEach begin="0" end="${nCount-1}" step="1" varStatus="cdStat">
+            <c:set var="index" value="${cdStat.index}" />
+            <c:set var="person" value="${nurses[index]}"/>
+            <%@include file="nursesDetail.jsp" %>
+        </c:forEach>
+        <div class="col-md-12 col-xs-12 addNursesDiv">
+            <span class="addNursesBtn" style="color:deepskyblue;cursor:pointer;">
+                <span style="">Add more</span>
+            </span>
+        </div>
 
         <%--TODO...counsellors--%>
-        <div class="person-detail counsellors">
-            <iais:row>
-                <div class="col-xs-12 col-md-10" style="padding-top: 25px;">
-                    <p class="bold">Name, Professional Regn. No. and Qualification of certified TOP counsellors</p>
-                        <%--                <p class="bold">Name, Professional Regn. No. and Qualification of certified TOP counsellors<span class="psnHeader">${index+1}</span></p>--%>
-                </div>
-                <%--            <div class="col-xs-12 col-md-2 text-right removeEditDiv <c:if test="${index == 0}">hidden</c:if>">--%>
-                <%--                <h4 class="text-danger">--%>
-                <%--                    <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>--%>
-                <%--                </h4>--%>
-                <%--            </div>--%>
-            </iais:row>
-
-            <iais:row>
-                <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Name of certified TOP counsellors(Only Doctor/Nurse)"/>
-                <iais:value width="6" cssClass="col-md-6">
-                    <%--            TODO.....--%>
-                    <iais:input maxLength="20" type="text" cssClass="profRegNo" name="${prepsn}profRegNo${index}" value="${person.profRegNo}"/>
-                </iais:value>
-            </iais:row>
-
-            <iais:row>
-                <iais:field width="6" cssClass="col-md-6" mandatory="true" value="NRIC/FIN No."/>
-                <iais:value width="6" cssClass="col-md-6">
-                    <%--            TODO.....--%>
-                    <iais:input maxLength="20" type="text" cssClass="profRegNo" name="${prepsn}profRegNo${index}" value="${person.profRegNo}"/>
-                </iais:value>
-            </iais:row>
-
-            <iais:row>
-                <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Qualifications"/>
-                <iais:value width="6" cssClass="col-md-6">
-                    <%--            TODO.....--%>
-                    <iais:input maxLength="20" type="text" cssClass="profRegNo" name="${prepsn}profRegNo${index}" value="${person.profRegNo}"/>
-                </iais:value>
-            </iais:row>
-        </div>
-        <%--    TODO......--%>
-        <c:if test="${!isRfi}">
-            <c:set var="needAddPsn" value="true"/>
-            <c:choose>
-                <c:when test="${currStepConfig.status =='CMSTAT003'}">
-                    <c:set var="needAddPsn" value="false"/>
-                </c:when>
-                <c:when test="${personCount >= currStepConfig.maximumCount}">
-                    <c:set var="needAddPsn" value="false"/>
-                </c:when>
-                <c:when test="${AppSubmissionDto.needEditController && !canEdit}">
-                    <c:set var="needAddPsn" value="false"/>
-                </c:when>
-            </c:choose>
-            <div class="col-md-12 col-xs-12 addPractitionersDiv <c:if test="${!needAddPsn}">hidden</c:if>">
+        <c:choose>
+            <c:when test="${empty counsellors}">
+                <c:set var="cCount" value="1"/>
+            </c:when>
+            <c:otherwise>
+                <c:set var="cCount" value="${counsellors.size()}"/>
+            </c:otherwise>
+        </c:choose>
+        <input type="hidden" name="cLength" value="${cCount}" />
+        <c:forEach begin="0" end="${cCount-1}" step="1" varStatus="cdStat">
+            <c:set var="index" value="${cdStat.index}" />
+            <c:set var="person" value="${counsellors[index]}"/>
+            <%@include file="counsellorsDetail.jsp" %>
+        </c:forEach>
+        <div class="col-md-12 col-xs-12 addCounsellorsDiv">
             <span class="addCounsellorsBtn" style="color:deepskyblue;cursor:pointer;">
                 <span style="">Add more</span>
             </span>
-            </div>
-        </c:if>
+        </div>
 
         <iais:row cssClass="row control control-caption-horizontal">
             <iais:value width="6" cssClass="col-md-6">
@@ -366,14 +172,14 @@
                     <span class="mandatory">*</span>
                 </label>
             </iais:value>
-            <%--            TODO.........--%>
+            <input type="hidden" class="hasConsuAttendCourseVal" name="hasConsuAttendCourseVal" value="${appSvcOtherInfoTop.hasConsuAttendCourse}"/>
             <iais:value width="3" cssClass="form-check col-md-3">
-                <input class="form-check-input holdCerByEMS1" <c:if test="${'1' == clinicalDirectorDto.holdCerByEMS}">checked="checked"</c:if>  type="radio" name="holdCerByEMS${index}" value = "1" aria-invalid="false">
+                <input class="form-check-input hasConsuAttendCourse" <c:if test="${'1' == appSvcOtherInfoTop.hasConsuAttendCourse}">checked="checked"</c:if>  type="radio" name="hasConsuAttendCourse" value = "1" aria-invalid="false">
                 <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
             </iais:value>
 
             <iais:value width="3" cssClass="form-check col-md-3">
-                <input class="form-check-input holdCerByEMS1" <c:if test="${'0' == clinicalDirectorDto.holdCerByEMS}">checked="checked"</c:if>  type="radio" name="holdCerByEMS${index}" value = "0" aria-invalid="false">
+                <input class="form-check-input hasConsuAttendCourse" <c:if test="${'0' == appSvcOtherInfoTop.hasConsuAttendCourse}">checked="checked"</c:if>  type="radio" name="hasConsuAttendCourse" value = "0" aria-invalid="false">
                 <label class="form-check-label" ><span class="check-circle"></span>No</label>
             </iais:value>
         </iais:row>
@@ -384,25 +190,36 @@
                     <span class="mandatory">*</span>
                 </label>
             </iais:value>
-            <%--            TODO.........--%>
-            <input type="hidden" class="holdCerByEMSVal" name="holdCerByEMSVal${index}" value="${clinicalDirectorDto.holdCerByEMS}"/>
+            <input type="hidden" class="isProvideHpbVal" name="isProvideHpbVal" value="${appSvcOtherInfoTop.isProvideHpb}"/>
             <iais:value width="3" cssClass="form-check col-md-3">
-                <input class="form-check-input holdCerByEMS1" <c:if test="${'1' == clinicalDirectorDto.holdCerByEMS}">checked="checked"</c:if>  type="radio" name="holdCerByEMS${index}" value = "1" aria-invalid="false">
+                <input class="form-check-input isProvideHpb" <c:if test="${'1' == appSvcOtherInfoTop.isProvideHpb}">checked="checked"</c:if>  type="radio" name="isProvideHpb" value = "1" aria-invalid="false">
                 <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
             </iais:value>
 
             <iais:value width="3" cssClass="form-check col-md-3">
-                <input class="form-check-input holdCerByEMS1" <c:if test="${'0' == clinicalDirectorDto.holdCerByEMS}">checked="checked"</c:if>  type="radio" name="holdCerByEMS${index}" value = "0" aria-invalid="false">
+                <input class="form-check-input isProvideHpb" <c:if test="${'0' == appSvcOtherInfoTop.isProvideHpb}">checked="checked"</c:if>  type="radio" name="isProvideHpb" value = "0" aria-invalid="false">
                 <label class="form-check-label" ><span class="check-circle"></span>No</label>
             </iais:value>
         </iais:row>
     </div>
 </div>
-<%@include file="../../common/prsLoading.jsp"%>
+
 <script>
     $(document).ready(function () {
         initRadio();
         firstRadio();
+        medAuthByMoh();
+        addPractitioners();
+        removePractitioners();
+
+        addAnaesthetistsBtn();
+        removeAnaesthetists();
+
+        addNursesBtn();
+        removeNurses();
+
+        addCounsellorsBtn();
+        removeCounsellors();
 
     });
 
@@ -410,16 +227,299 @@
         $('div.allOtherInformation').addClass("hidden");
     }
 
+    let medAuthByMoh = function() {
+        $('.medAuthByMoh').unbind('click');
+        $('.medAuthByMoh').click(function () {
+            let medAuthByMohVal = $(this).val();
+            console.log("medAuthByMohVal"+medAuthByMohVal);
+            $('input[name="medAuthByMohVal"]').val(medAuthByMohVal);
+        });
+    };
+
     function firstRadio() {
-        $('input.holdCerByEMS').unbind('click');
-        $('input.holdCerByEMS').on('click', function () {
-            let holdCerByEMSVal = $(this).val();
-            if (holdCerByEMSVal == 1){
+        $('input.provideTop').unbind('click');
+        $('input.provideTop').on('click', function () {
+            let holderPregnancyVal = $(this).val();
+            console.log('holderPregnancyVal:'+holderPregnancyVal);
+            if (holderPregnancyVal == 1){
                 $('div.allOtherInformation').removeClass("hidden");
             }else {
                 $('div.allOtherInformation').addClass("hidden");
             }
         });
     };
+
+    <%--Practitioners--%>
+    function addPractitioners(){
+        let cdLength = $('.practitioners').length;
+        refresh();
+        $('.addPractitionersBtn').unbind('click');
+        $('.addPractitionersBtn').click(function () {
+            showWaiting();
+            let target = $('div.practitioners:first');
+            let src = target.clone();
+            $('div.addPractitionersDiv').before(src);
+            cdLength = cdLength + 1 ;
+            $('input[name="cdLength"]').val(cdLength);
+            let $currContent = $('div.practitioners:last');
+            clearFields($currContent);
+            removePractitioners();
+            if(cdLength <= 1){
+                console.log("init.........")
+                $('.practitioners:eq(0) .assign-psn-item').html('');
+            }
+            $('.practitioners').each(function (k,v) {
+                toggleTag($(this).find('div.removeBtn'), k != 0);
+                $(this).find('.assign-psn-item').html(k+1);
+                console.log("k....."+k)
+                $(this).find('input.psnType').prop('name','psnType');
+                $('input[name="psnType"]').val("practitioners");
+                $(this).find('input.profRegNo').prop('name','profRegNo'+k);
+                $(this).find('input.name').prop('name','name'+k);
+                $(this).find('input.idNo').prop('name','idNo'+k);
+                $(this).find('input.regType').prop('name','regType'+k);
+                $(this).find('input.qualification').prop('name','qualification'+k);
+                $(this).find('input.medAuthByMoh').prop('name','medAuthByMoh'+k);
+            });
+            $('#isEditHiddenVal').val('1');
+            dismissWaiting();
+        })
+    }
+
+    function refresh(){
+        let cdLength = $('.practitioners').length;
+        $('input[name="cdLength"]').val(cdLength);
+        //reset number
+        $('.practitioners').each(function (k,v) {
+            toggleTag($(this).find('div.removeBtn'), k != 0);
+
+        });
+    }
+
+    let removePractitioners = function () {
+        $('.removeBtn').unbind('click');
+        $('.removeBtn').click(function () {
+            $(this).closest('div.practitioners').remove();
+            let cdLength = $('.practitioners').length;
+            $('input[name="cdLength"]').val(cdLength);
+            //reset number
+            $('div.practitioners').each(function (k,v) {
+                console.log("k....."+k)
+                $(this).find('.assign-psn-item').html(k+1);
+                $(this).find('input.psnType').prop('name','psnType');
+                $(this).find('input.profRegNo').prop('name','profRegNo'+k);
+                $(this).find('input.profRegNo').prop('id','profRegNo'+k);
+                $(this).find('input.name').prop('name','name'+k);
+                $(this).find('input.idNo').prop('name','idNo'+k);
+                $(this).find('input.regType').prop('name','regType'+k);
+                $(this).find('input.qualification').prop('name','qualification'+k);
+                $(this).find('input.holdMPA').prop('name','holdMPA'+k);
+            });
+            //display add more
+            if(cdLength <= 1){
+                $('.practitioners:eq(0) .assign-psn-item').html('');
+            }
+            $('#isEditHiddenVal').val('1');
+        });
+    }
+    <%--Anaesthetists--%>
+    function addAnaesthetistsBtn(){
+        let anaLength = $('.anaesthetists').length;
+        refreshAnaesthetists();
+        $('.addAnaesthetistsBtn').unbind('click');
+        $('.addAnaesthetistsBtn').click(function () {
+            showWaiting();
+            let target = $('div.anaesthetists:first');
+            let src = target.clone();
+            $('div.addAnaesthetistsDiv').before(src);
+            anaLength = anaLength + 1 ;
+            $('input[name="anaLength"]').val(anaLength);
+            let $currContent = $('div.anaesthetists:last');
+            clearFields($currContent);
+            removeAnaesthetists();
+            if(anaLength <= 1){
+                console.log("init.........")
+                $('.anaesthetists:eq(0) .assign-psn-item').html('');
+            }
+            $('.anaesthetists').each(function (k,v) {
+                toggleTag($(this).find('div.removeBtn'), k != 0);
+                console.log("k...."+k);
+                $(this).find('.assign-psn-item').html(k+1);
+                $(this).find('input.apsnType').prop('name','apsnType');
+                $('input[name="apsnType"]').val("anaesthetists");
+                $(this).find('input.aprofRegNo').prop('name','aprofRegNo'+k);
+                $(this).find('input.aname').prop('name','aname'+k);
+                $(this).find('input.idANo').prop('name','idANo'+k);
+                $(this).find('input.aregType').prop('name','aregType'+k);
+                $(this).find('input.aqualification').prop('name','aqualification'+k);
+            });
+            $('#isEditHiddenVal').val('1');
+            dismissWaiting();
+        })
+    }
+
+    function refreshAnaesthetists(){
+        let anaLength = $('.anaesthetists').length;
+        $('input[name="anaLength"]').val(anaLength);
+        //reset number
+        $('.anaesthetists').each(function (k,v) {
+            toggleTag($(this).find('div.removeBtn'), k != 0);
+        });
+    }
+
+    let removeAnaesthetists = function () {
+        $('.removeBtn').unbind('click');
+        $('.removeBtn').click(function () {
+            $(this).closest('div.anaesthetists').remove();
+            let anaLength = $('.anaesthetists').length;
+            $('input[name="anaLength"]').val(anaLength);
+            //reset number
+            $('div.anaesthetists').each(function (k,v) {
+                console.log("k....."+k)
+                $(this).find('.assign-psn-item').html(k+1);
+                $(this).find('input.apsnType').prop('name','apsnType');
+                $(this).find('input.aprofRegNo').prop('name','aprofRegNo'+k);
+                $(this).find('input.aprofRegNo').prop('id','aprofRegNo'+k);
+                $(this).find('input.aname').prop('name','aname'+k);
+                $(this).find('input.idANo').prop('name','idANo'+k);
+                $(this).find('input.aregType').prop('name','aregType'+k);
+                $(this).find('input.aqualification').prop('name','aqualification'+k);
+            });
+            //display add more
+            if(anaLength <= 1){
+                $('.anaesthetists:eq(0) .assign-psn-item').html('');
+            }
+            $('#isEditHiddenVal').val('1');
+        });
+    }
+
+    <%--nurses--%>
+    function addNursesBtn(){
+        let nLength = $('.nurses').length;
+        refreshNurses();
+        $('.addNursesBtn').unbind('click');
+        $('.addNursesBtn').click(function () {
+            showWaiting();
+            let target = $('div.nurses:first');
+            let src = target.clone();
+            $('div.addNursesDiv').before(src);
+            nLength = nLength + 1 ;
+            $('input[name="nLength"]').val(nLength);
+            let $currContent = $('div.nurses:last');
+            clearFields($currContent);
+            removeNurses();
+            if(nLength <= 1){
+                console.log("init.........")
+                $('.nurses:eq(0) .assign-psn-item').html('');
+            }
+            $('.nurses').each(function (k,v) {
+                toggleTag($(this).find('div.removeBtn'), k != 0);
+                console.log("k...."+k);
+                $(this).find('.assign-psn-item').html(k+1);
+            });
+            $('#isEditHiddenVal').val('1');
+            dismissWaiting();
+        })
+    }
+
+    function refreshNurses(){
+        let nLength = $('.nurses').length;
+        $('input[name="nLength"]').val(nLength);
+        //reset number
+        $('.nurses').each(function (k,v) {
+            toggleTag($(this).find('div.removeBtn'), k != 0);
+            $(this).find('input.npsnType').prop('name','npsnType');
+            $('input[name="npsnType"]').val("nurses");
+            $(this).find('input.nname').prop('name','nname'+k);
+            $(this).find('input.nqualification').prop('name','nqualification'+k);
+        });
+    }
+
+    let removeNurses = function () {
+        $('.removeBtn').unbind('click');
+        $('.removeBtn').click(function () {
+            $(this).closest('div.nurses').remove();
+            let nLength = $('.nurses').length;
+            $('input[name="nLength"]').val(nLength);
+            //reset number
+            $('div.nurses').each(function (k,v) {
+                console.log("k....."+k)
+                $(this).find('.assign-psn-item').html(k+1);
+                $(this).find('input.npsnType').prop('name','npsnType');
+                $(this).find('input.nname').prop('name','nname'+k);
+                $(this).find('input.nqualification').prop('name','nqualification'+k);
+            });
+            if(nLength <= 1){
+                $('.nurses:eq(0) .assign-psn-item').html('');
+            }
+            $('#isEditHiddenVal').val('1');
+        });
+    }
+
+    <%--counsellors--%>
+    function addCounsellorsBtn(){
+        let cLength = $('.counsellors').length;
+        refreshCounsellors();
+        $('.addCounsellorsBtn').unbind('click');
+        $('.addCounsellorsBtn').click(function () {
+            showWaiting();
+            let target = $('div.counsellors:first');
+            let src = target.clone();
+            $('div.addCounsellorsDiv').before(src);
+            cLength = cLength + 1 ;
+            $('input[name="cLength"]').val(cLength);
+            let $currContent = $('div.counsellors:last');
+            clearFields($currContent);
+            removeCounsellors();
+            if(cLength <= 1){
+                console.log("init.........")
+                $('.counsellors:eq(0) .assign-psn-item').html('');
+            }
+            $('.counsellors').each(function (k,v) {
+                toggleTag($(this).find('div.removeBtn'), k != 0);
+                console.log("k...."+k);
+                $(this).find('.assign-psn-item').html(k+1);
+                $(this).find('input.cpsnType').prop('name','cpsnType');
+                $('input[name="cpsnType"]').val("counsellors");
+                $(this).find('input.cname').prop('name','cname'+k);
+                $(this).find('input.cidNo').prop('name','cidNo'+k);
+                $(this).find('input.cqualification').prop('name','cqualification'+k);
+            });
+            $('#isEditHiddenVal').val('1');
+            dismissWaiting();
+        })
+    }
+
+    function refreshCounsellors(){
+        let cLength = $('.counsellors').length;
+        $('input[name="cLength"]').val(cLength);
+        //reset number
+        $('.counsellors').each(function (k,v) {
+            toggleTag($(this).find('div.removeBtn'), k != 0);
+        });
+    }
+
+    let removeCounsellors = function () {
+        $('.removeBtn').unbind('click');
+        $('.removeBtn').click(function () {
+            $(this).closest('div.counsellors').remove();
+            let cLength = $('.counsellors').length;
+            $('input[name="cLength"]').val(cLength);
+            //reset number
+            $('div.counsellors').each(function (k,v) {
+                console.log("k....."+k)
+                $(this).find('.assign-psn-item').html(k+1);
+                $(this).find('input.cpsnType').prop('name','cpsnType');
+                $(this).find('input.cprofRegNo').prop('name','cprofRegNo'+k);
+                $(this).find('input.cprofRegNo').prop('id','cprofRegNo'+k);
+                $(this).find('input.cname').prop('name','cname'+k);
+                $(this).find('input.cqualification').prop('name','cqualification'+k);
+            });
+            if(cLength <= 1){
+                $('.counsellors:eq(0) .assign-psn-item').html('');
+            }
+            $('#isEditHiddenVal').val('1');
+        });
+    }
 </script>
 

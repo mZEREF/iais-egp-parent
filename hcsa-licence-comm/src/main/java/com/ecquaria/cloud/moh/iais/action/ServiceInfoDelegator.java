@@ -14,6 +14,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoTopPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
@@ -103,12 +105,12 @@ public class ServiceInfoDelegator {
         log.debug(StringUtil.changeForLog("the do doStart start ...."));
 
         AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(bpc.request);
-        if (IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList())) {
-            List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,
-                    AppServicesConsts.HCSASERVICEDTOLIST);
-            ApplicationHelper.initAppPremSpecialisedDtoList(appSubmissionDto, hcsaServiceDtoList);
-            ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
-        }
+//        if (IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList())) {
+//            List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,
+//                    AppServicesConsts.HCSASERVICEDTOLIST);
+//            ApplicationHelper.initAppPremSpecialisedDtoList(appSubmissionDto, hcsaServiceDtoList);
+//            ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
+//        }
 
         //svc
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.RELOADSVCDOC, null);
@@ -215,7 +217,7 @@ public class ServiceInfoDelegator {
                 break;
             case HcsaConsts.STEP_CLINICAL_DIRECTOR:
                 singleName = HcsaConsts.CLINICAL_DIRECTOR;
-                prePareClinicalDirector(bpc);
+                prepareClinicalDirector(bpc);
                 break;
             case HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS:
                 singleName = HcsaConsts.CLINICAL_GOVERNANCE_OFFICER;
@@ -247,7 +249,7 @@ public class ServiceInfoDelegator {
                 prePareMedAlertPerson(bpc);
                 break;
             case HcsaConsts.STEP_OTHER_INFORMATION:
-                prepareOtherInformation(bpc.request);
+                prepareOtherInformation(bpc);
                 break;
             case HcsaConsts.STEP_SUPPLEMENTARY_FORM:
                 prepareSupplementaryForm(bpc.request);
@@ -330,7 +332,7 @@ public class ServiceInfoDelegator {
                 doMedAlertPerson(bpc);
                 break;
             case HcsaConsts.STEP_OTHER_INFORMATION:
-                doOtherInformation(bpc.request);
+                doOtherInformation(bpc);
                 break;
             case HcsaConsts.STEP_SUPPLEMENTARY_FORM:
                 doSupplementaryForm(bpc.request);
@@ -362,12 +364,119 @@ public class ServiceInfoDelegator {
 
     private void doSupplementaryForm(HttpServletRequest request) {
     }
-
-    private void prepareOtherInformation(HttpServletRequest request) {
+    /**
+     * StartStep: prepareOtherInformation
+     *
+     * @param bpc
+     * @throws
+     */
+    private void prepareOtherInformation(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("prePareOtherInformationDirector start ..."));
+        String currSvcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
+        String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
+        AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId);
+        // Other Information Director config
+        AppSvcOtherInfoDto appSvcOtherInfoDto = currSvcInfoDto.getAppSvcOtherInfoDto();
+        if (appSvcOtherInfoDto != null) {
+            List<AppSvcOtherInfoTopPersonDto> list = appSvcOtherInfoDto.getAppSvcOtherInfoTopPersonDtoList();
+            List<AppSvcOtherInfoTopPersonDto> practitionersList = IaisCommonUtils.genNewArrayList();
+            List<AppSvcOtherInfoTopPersonDto> anaesthetistsList = IaisCommonUtils.genNewArrayList();
+            List<AppSvcOtherInfoTopPersonDto> nursesList = IaisCommonUtils.genNewArrayList();
+            List<AppSvcOtherInfoTopPersonDto> counsellorsList = IaisCommonUtils.genNewArrayList();
+            for (int i = 0; i < list.size(); i++) {
+                if("practitioners".equals(list.get(i).getPsnType())){
+                    AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto = new AppSvcOtherInfoTopPersonDto();
+                    appSvcOtherInfoTopPersonDto.setPsnType(list.get(i).getPsnType());
+                    appSvcOtherInfoTopPersonDto.setProfRegNo(list.get(i).getProfRegNo());
+                    appSvcOtherInfoTopPersonDto.setName(list.get(i).getName());
+                    appSvcOtherInfoTopPersonDto.setRegType(list.get(i).getRegType());
+                    appSvcOtherInfoTopPersonDto.setQualification(list.get(i).getQualification());
+                    appSvcOtherInfoTopPersonDto.setSeqNum(list.get(i).getSeqNum());
+                    appSvcOtherInfoTopPersonDto.setIdNo(list.get(i).getIdNo());
+                    appSvcOtherInfoTopPersonDto.setMedAuthByMoh(list.get(i).isMedAuthByMoh());
+                    practitionersList.add(appSvcOtherInfoTopPersonDto);
+                }
+                if ("anaesthetists".equals(list.get(i).getPsnType())){
+                    AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto = new AppSvcOtherInfoTopPersonDto();
+                    appSvcOtherInfoTopPersonDto.setPsnType(list.get(i).getPsnType());
+                    appSvcOtherInfoTopPersonDto.setProfRegNo(list.get(i).getProfRegNo());
+                    appSvcOtherInfoTopPersonDto.setName(list.get(i).getName());
+                    appSvcOtherInfoTopPersonDto.setRegType(list.get(i).getRegType());
+                    appSvcOtherInfoTopPersonDto.setQualification(list.get(i).getQualification());
+                    appSvcOtherInfoTopPersonDto.setSeqNum(list.get(i).getSeqNum());
+                    appSvcOtherInfoTopPersonDto.setIdNo(list.get(i).getIdNo());
+                    anaesthetistsList.add(appSvcOtherInfoTopPersonDto);
+                }
+                if ("nurses".equals(list.get(i).getPsnType())){
+                    AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto = new AppSvcOtherInfoTopPersonDto();
+                    appSvcOtherInfoTopPersonDto.setPsnType(list.get(i).getPsnType());
+                    appSvcOtherInfoTopPersonDto.setName(list.get(i).getName());
+                    appSvcOtherInfoTopPersonDto.setQualification(list.get(i).getQualification());
+                    appSvcOtherInfoTopPersonDto.setSeqNum(list.get(i).getSeqNum());
+                    nursesList.add(appSvcOtherInfoTopPersonDto);
+                }
+                if ("counsellors".equals(list.get(i).getPsnType())){
+                    AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto = new AppSvcOtherInfoTopPersonDto();
+                    appSvcOtherInfoTopPersonDto.setPsnType(list.get(i).getPsnType());
+                    appSvcOtherInfoTopPersonDto.setName(list.get(i).getName());
+                    appSvcOtherInfoTopPersonDto.setQualification(list.get(i).getQualification());
+                    appSvcOtherInfoTopPersonDto.setSeqNum(list.get(i).getSeqNum());
+                    appSvcOtherInfoTopPersonDto.setIdNo(list.get(i).getIdNo());
+                    counsellorsList.add(appSvcOtherInfoTopPersonDto);
+                }
+            }
+            ParamUtil.setRequestAttr(bpc.request,"provideTop",appSvcOtherInfoDto.getProvideTop());
+            ParamUtil.setRequestAttr(bpc.request, "practitionersList", practitionersList);
+            ParamUtil.setRequestAttr(bpc.request, "anaesthetistsList", anaesthetistsList);
+            ParamUtil.setRequestAttr(bpc.request, "nursesList", nursesList);
+            ParamUtil.setRequestAttr(bpc.request, "counsellorsList", counsellorsList);
+            ParamUtil.setRequestAttr(bpc.request, "appSvcOtherInfoTopDto", appSvcOtherInfoDto.getAppSvcOtherInfoTopDto());
+        }
+        log.debug(StringUtil.changeForLog("prePareOtherInformationDirector end ..."));
 
     }
-
-    private void doOtherInformation(HttpServletRequest request) {
+    /**
+     * StartStep: doOtherInformation
+     *
+     * @param bpc
+     * @throws
+     */
+    private void doOtherInformation(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("doOtherInformation start ..."));
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        String actionType = ParamUtil.getRequestString(bpc.request, "nextStep");
+        String appType = appSubmissionDto.getAppType();
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)
+                || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
+            if (RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(actionType)
+                    || RfcConst.RFC_BTN_OPTION_SKIP.equals(actionType)) {
+                return;
+            }
+        }
+        String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
+        AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId);
+        String isEdit = ParamUtil.getString(bpc.request, IS_EDIT);
+        boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
+        boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto,
+                RfcConst.EDIT_SERVICE, isEdit, isRfi);
+        log.debug(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
+        if (isGetDataFromPage) {
+            //get data from page
+            AppSvcOtherInfoDto appSvcOtherInfoDto = AppDataHelper.genAppSvcOtherInfoDto(bpc.request,
+                    appSubmissionDto.getAppType());
+            log.debug("========================= ........."+appSvcOtherInfoDto);
+            currSvcInfoDto.setAppSvcOtherInfoDto(appSvcOtherInfoDto);
+            setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
+            reSetChangesForApp(appSubmissionDto);
+            log.debug(StringUtil.changeForLog("XXXXXXXXXXXXXXXXXX end ..."));
+        }
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        if ("next".equals(actionType)) {
+           errorMap = AppValidatorHelper.doValidateOtherInformation(currSvcInfoDto.getAppSvcOtherInfoDto());
+           List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos = currSvcInfoDto.getAppSvcOtherInfoDto().getAppSvcOtherInfoTopPersonDtoList();
+        }
+        checkAction(errorMap, HcsaConsts.STEP_OTHER_INFORMATION, appSubmissionDto, bpc.request);
+        log.debug(StringUtil.changeForLog("doOtherInformation end ..."));
 
     }
 
@@ -645,7 +754,7 @@ public class ServiceInfoDelegator {
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currentSvcId);
         if (IaisCommonUtils.isEmpty(currSvcInfoDto.getDocumentShowDtoList())) {
-            ApplicationHelper.initDocumentList(currSvcInfoDto, appSubmissionDto.getAppPremSpecialisedDtoList());
+//            ApplicationHelper.initDocumentList(currSvcInfoDto, appSubmissionDto.getAppPremSpecialisedDtoList());
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currSvcInfoDto, appSubmissionDto);
         }
         log.info(StringUtil.changeForLog("the do prepareDocuments end ...."));
@@ -689,7 +798,7 @@ public class ServiceInfoDelegator {
             AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
             AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, svcId, appNo);
             List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
-            ApplicationHelper.initShowDocumentList(appSvcRelatedInfoDto, appPremSpecialisedDtoList);
+//            ApplicationHelper.initShowDocumentList(appSvcRelatedInfoDto, appPremSpecialisedDtoList);
             ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
             ParamUtil.setSessionAttr(bpc.request, "iframeId", iframeId);
         }
@@ -1402,7 +1511,7 @@ public class ServiceInfoDelegator {
         log.debug(StringUtil.changeForLog("doVehicles end ..."));
     }
 
-    public void prePareClinicalDirector(BaseProcessClass bpc) {
+    public void prepareClinicalDirector(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("prePareClinicalDirector start ..."));
 
         String currSvcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
@@ -1604,8 +1713,8 @@ public class ServiceInfoDelegator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
         if ("next".equals(crud_action_type)) {
-            AppValidatorHelper.doValidateBusiness(appSvcBusinessDtos, appSubmissionDto.getAppType(),
-                    appSubmissionDto.getLicenceId(), errorMap);
+//            AppValidatorHelper.doValidateBusiness(appSvcBusinessDtos, appSubmissionDto.getAppType(),
+//                    appSubmissionDto.getLicenceId(), errorMap);
         }
         checkAction(errorMap, HcsaConsts.STEP_BUSINESS_NAME, appSubmissionDto, bpc.request);
         log.debug(StringUtil.changeForLog("do Business end ..."));
@@ -1650,9 +1759,9 @@ public class ServiceInfoDelegator {
             if (StringUtil.isEmpty(action)) {
                 number = 0;
             } else {
-                String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,
-                        HcsaConsts.STEP_DISCIPLINE_ALLOCATION,
-                HcsaConsts.STEP_PRINCIPAL_OFFICERS,HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER};
+                String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS,
+                        HcsaConsts.STEP_DISCIPLINE_ALLOCATION,HcsaConsts.STEP_SERVICE_PERSONNEL,
+                HcsaConsts.STEP_PRINCIPAL_OFFICERS,HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER,HcsaConsts.STEP_MEDALERT_PERSON};
                 for (int i = 0; i < hcsaServiceStepSchemeDtos.size(); i++) {
                     if (action.equals(hcsaServiceStepSchemeDtos.get(i).getStepCode())) {
                         number = i;

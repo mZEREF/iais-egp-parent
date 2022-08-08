@@ -24,6 +24,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoTopDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoTopPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
@@ -1339,9 +1342,6 @@ public final class AppValidatorHelper {
                 }
 
                 if (StringUtil.isIn(psnType, new String[]{ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR})) {
-                    if (StringUtil.isEmpty(professionalRegoNo)) {
-                        errMap.put(prefix + "profRegNo" + i, "GENERAL_ERR0006");
-                    }
                     if (StringUtil.isEmpty(typeOfCurrRegi)) {
                         errMap.put(prefix + "typeOfCurrRegi" + i,
                                 MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of Registration Date", "field"));
@@ -1357,7 +1357,9 @@ public final class AppValidatorHelper {
                         errMap.put(prefix + "typeOfRegister" + i,
                                 MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of Register", "field"));
                     }
-
+                    if (StringUtil.isEmpty(designation)) {
+                        errMap.put(prefix + "designation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation", "field"));
+                    }
                 }
 
                 if (!StringUtil.isEmpty(professionalRegoNo)) {
@@ -1765,6 +1767,182 @@ public final class AppValidatorHelper {
         }
     }
 
+    public static Map<String, String> doValidateOtherInformation(AppSvcOtherInfoDto appSvcOtherInfoDto){
+        if (appSvcOtherInfoDto == null) {
+            return new HashMap<>(1);
+        }
+        List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos = appSvcOtherInfoDto.getAppSvcOtherInfoTopPersonDtoList();
+        AppSvcOtherInfoTopDto appSvcOtherInfoTopDto = appSvcOtherInfoDto.getAppSvcOtherInfoTopDto();
+        return doValidateAppSvcOtherInfoTopPerson(appSvcOtherInfoTopPersonDtos,appSvcOtherInfoTopDto);
+    }
+
+    protected static Map<String, String> doValidateAppSvcOtherInfoTopPerson(List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos,AppSvcOtherInfoTopDto appSvcOtherInfoTopDto){
+        if(appSvcOtherInfoTopPersonDtos==null || appSvcOtherInfoTopPersonDtos.isEmpty()){
+            return IaisCommonUtils.genNewHashMap();
+        }
+        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+        List<AppSvcOtherInfoTopPersonDto> practitioners = IaisCommonUtils.genNewArrayList();
+        List<AppSvcOtherInfoTopPersonDto> anaesthetists = IaisCommonUtils.genNewArrayList();
+        List<AppSvcOtherInfoTopPersonDto> nurses = IaisCommonUtils.genNewArrayList();
+        List<AppSvcOtherInfoTopPersonDto> counsellors = IaisCommonUtils.genNewArrayList();
+        String topType = appSvcOtherInfoTopDto.getTopType();
+        if (StringUtil.isEmpty(topType)){
+            errMap.put("topType", MessageUtil.replaceMessage("GENERAL_ERR0006", "Please indicate&nbsp;", "field"));
+        }
+        Boolean hasConsuAttendCourse = appSvcOtherInfoTopDto.getHasConsuAttendCourse();
+        if (StringUtil.isEmpty(hasConsuAttendCourse)){
+            errMap.put("hasConsuAttendCourse", MessageUtil.replaceMessage("GENERAL_ERR0006", "My counsellor(s) has attended the TOP counselling refresher course (Please upload the certificates in the document page)", "field"));
+        }
+        Boolean isProvideHpb = appSvcOtherInfoTopDto.getIsProvideHpb();
+        if (StringUtil.isEmpty(isProvideHpb)){
+            errMap.put("isProvideHpb", MessageUtil.replaceMessage("GENERAL_ERR0006", "The service provider has the necessary counselling facilities e.g. TV set, video player, video on abortion produced by HPB in different languages and the pamphlets produced by HPB", "field"));
+        }
+        for(int i=0;i< appSvcOtherInfoTopPersonDtos.size() ; i++){
+            String psnType = appSvcOtherInfoTopPersonDtos.get(i).getPsnType();
+            String name = appSvcOtherInfoTopPersonDtos.get(i).getName();
+            String profRegNo = appSvcOtherInfoTopPersonDtos.get(i).getProfRegNo();
+            String idNo = appSvcOtherInfoTopPersonDtos.get(i).getIdNo();
+            String regType = appSvcOtherInfoTopPersonDtos.get(i).getRegType();
+            String qualification = appSvcOtherInfoTopPersonDtos.get(i).getQualification();
+
+            if ("practitioners".equals(psnType)){
+                AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto = new AppSvcOtherInfoTopPersonDto();
+                appSvcOtherInfoTopPersonDto.setPsnType(psnType);
+                appSvcOtherInfoTopPersonDto.setProfRegNo(profRegNo);
+                appSvcOtherInfoTopPersonDto.setName(name);
+                appSvcOtherInfoTopPersonDto.setRegType(regType);
+                appSvcOtherInfoTopPersonDto.setQualification(qualification);
+                appSvcOtherInfoTopPersonDto.setSeqNum(i);
+                appSvcOtherInfoTopPersonDto.setIdNo(idNo);
+                appSvcOtherInfoTopPersonDto.setMedAuthByMoh(appSvcOtherInfoTopPersonDtos.get(i).isMedAuthByMoh());
+                practitioners.add(appSvcOtherInfoTopPersonDto);
+            }
+
+            if ("anaesthetists".equals(psnType)){
+                AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto = new AppSvcOtherInfoTopPersonDto();
+                appSvcOtherInfoTopPersonDto.setPsnType(psnType);
+                appSvcOtherInfoTopPersonDto.setProfRegNo(profRegNo);
+                appSvcOtherInfoTopPersonDto.setName(name);
+                appSvcOtherInfoTopPersonDto.setRegType(regType);
+                appSvcOtherInfoTopPersonDto.setQualification(qualification);
+                appSvcOtherInfoTopPersonDto.setSeqNum(i);
+                appSvcOtherInfoTopPersonDto.setIdNo(idNo);
+
+                anaesthetists.add(appSvcOtherInfoTopPersonDto);
+            }
+
+            if ("nurses".equals(psnType)){
+                AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto = new AppSvcOtherInfoTopPersonDto();
+                appSvcOtherInfoTopPersonDto.setPsnType(psnType);
+                appSvcOtherInfoTopPersonDto.setName(name);
+                appSvcOtherInfoTopPersonDto.setQualification(qualification);
+                appSvcOtherInfoTopPersonDto.setSeqNum(i);
+
+                nurses.add(appSvcOtherInfoTopPersonDto);
+            }
+
+            if ("counsellors".equals(psnType)){
+                AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto = new AppSvcOtherInfoTopPersonDto();
+                appSvcOtherInfoTopPersonDto.setPsnType(psnType);
+                appSvcOtherInfoTopPersonDto.setName(name);
+                appSvcOtherInfoTopPersonDto.setQualification(qualification);
+                appSvcOtherInfoTopPersonDto.setSeqNum(i);
+                appSvcOtherInfoTopPersonDto.setIdNo(idNo);
+
+                counsellors.add(appSvcOtherInfoTopPersonDto);
+            }
+        }
+        for (int i = 0; i < practitioners.size(); i++) {
+            String name = practitioners.get(i).getName();
+            String profRegNo = practitioners.get(i).getProfRegNo();
+            String idNo = practitioners.get(i).getIdNo();
+            String regType = practitioners.get(i).getRegType();
+            String qualification = practitioners.get(i).getQualification();
+            Boolean medAuthByMoh = practitioners.get(i).isMedAuthByMoh();
+
+            if (StringUtil.isEmpty(medAuthByMoh)){
+                errMap.put("medAuthByMoh"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Is the medical practitioners authorised by MOH to perform Abortion\n" +
+                        "                (if No, please upload a copy of the Obstetrics & Gynaecology certificate and From 2 at the Document page)", "field"));
+            }
+            if(StringUtil.isEmpty(name)){
+                errMap.put("name"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name of medical practitioner", "field"));
+            }
+
+            if(StringUtil.isEmpty(profRegNo)){
+                errMap.put("profRegNo"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Professional Regn. No.", "field"));
+            }
+
+            if(StringUtil.isEmpty(idNo)){
+                errMap.put("idNo"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "NRIC/FIN No.", "field"));
+            }
+
+            if(StringUtil.isEmpty(regType)){
+                errMap.put("regType"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of Registration", "field"));
+            }
+
+            if(StringUtil.isEmpty(qualification)){
+                errMap.put("qualification"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Qualifications", "field"));
+            }
+        }
+
+        for (int i = 0; i < anaesthetists.size(); i++) {
+            String name = anaesthetists.get(i).getName();
+            String profRegNo = anaesthetists.get(i).getProfRegNo();
+            String idNo = anaesthetists.get(i).getIdNo();
+            String regType = anaesthetists.get(i).getRegType();
+            String qualification = anaesthetists.get(i).getQualification();
+            if(StringUtil.isEmpty(name)){
+                errMap.put("aname"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name of anaesthetists", "field"));
+            }
+
+            if(StringUtil.isEmpty(profRegNo)){
+                errMap.put("aprofRegNo"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Professional Regn. No.", "field"));
+            }
+
+            if(StringUtil.isEmpty(idNo)){
+                errMap.put("idANo"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "NRIC/FIN No.", "field"));
+            }
+
+            if(StringUtil.isEmpty(regType)){
+                errMap.put("aregType"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of Registration", "field"));
+            }
+
+            if(StringUtil.isEmpty(qualification)){
+                errMap.put("aqualification"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Qualifications", "field"));
+            }
+        }
+
+        for (int i = 0; i < nurses.size(); i++) {
+            String name = nurses.get(i).getName();
+            String qualification = nurses.get(i).getQualification();
+            if(StringUtil.isEmpty(name)){
+                errMap.put("nname"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name of trained nurses", "field"));
+            }
+
+            if(StringUtil.isEmpty(qualification)){
+                errMap.put("nqualification"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Qualifications", "field"));
+            }
+        }
+
+        for (int i = 0; i < counsellors.size(); i++) {
+            String name = counsellors.get(i).getName();
+            String idNo = counsellors.get(i).getIdNo();
+            String qualification = counsellors.get(i).getQualification();
+            if(StringUtil.isEmpty(name)){
+                errMap.put("cname"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name of certified TOP counsellors(Only Doctor/Nurse)", "field"));
+            }
+
+            if(StringUtil.isEmpty(idNo)){
+                errMap.put("cidNo"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "NRIC/FIN No.", "field"));
+            }
+
+            if(StringUtil.isEmpty(qualification)){
+                errMap.put("cqualification"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Qualifications", "field"));
+            }
+        }
+        return errMap;
+    }
+
     public static boolean doPsnCommValidate(Map<String, String> errMap, String personKey, String idNo, boolean licPerson,
             Map<String, AppSvcPersonAndExtDto> licPersonMap, String errKey) {
         boolean isValid = true;
@@ -2010,6 +2188,33 @@ public final class AppValidatorHelper {
         }
         return isValid;
     }
+
+//    public static Map<String, String> psnOtherInformationValidate(List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos,String errName,
+//                  Map<String,String> errMap, int psnLength,String psnName){
+//        for (int i = 0; i < appSvcOtherInfoTopPersonDtos.size(); i++) {
+//            String psnType = appSvcOtherInfoTopPersonDtos.get(i).getPsnType();
+//            int mandatoryCount = getOtherInformationCountByPsnType(appSvcOtherInfoTopPersonDtos,psnType);
+//            if (psnLength < mandatoryCount) {
+//                String mandatoryErrMsg = MessageUtil.getMessageDesc("NEW_ERR0025");
+//                mandatoryErrMsg = mandatoryErrMsg.replace("{psnType}", psnName);
+//                mandatoryErrMsg = mandatoryErrMsg.replace("{mandatoryCount}", String.valueOf(mandatoryCount));
+//                errMap.put(errName, mandatoryErrMsg);
+//            }
+//        }
+//        return errMap;
+//    }
+//
+//    private static int getOtherInformationCountByPsnType(List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos, String psnType){
+//        int mandatoryCount = 0;
+//        if (!IaisCommonUtils.isEmpty(appSvcOtherInfoTopPersonDtos)) {
+//            for (AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto : appSvcOtherInfoTopPersonDtos) {
+//                if (appSvcOtherInfoTopPersonDto.getPsnType().equals(psnType)){
+//                    mandatoryCount = 10;
+//                }
+//            }
+//        }
+//        return mandatoryCount;
+//    }
 
     public static Map<String, String> psnMandatoryValidate(List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList, String psnType,
             Map<String, String> errMap, int psnLength, String errName, String psnName) {
