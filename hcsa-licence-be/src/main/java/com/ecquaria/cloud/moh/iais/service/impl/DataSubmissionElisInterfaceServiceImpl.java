@@ -480,13 +480,13 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
                     List<DoctorInformationDto> saveList = new ArrayList<>(prnDoctorInfoMap.values());
                     List<DoctorInformationDto> doctorDtos = assistedReproductionClient.saveDoctorInformationDtos(saveList).getEntity();
                     elisInterfaceDto.setDoctorDtos(doctorDtos);
-                    eicFeELISInterfaceDto(elisInterfaceDto);
                 } catch (Exception e) {
                     flag = false;
                     log.warn(e.getMessage(), e);
                     log.warn("save doctor failed");
                 }
             }
+            eicFeELISInterfaceDto(elisInterfaceDto);
         } else {
             flag = false;
         }
