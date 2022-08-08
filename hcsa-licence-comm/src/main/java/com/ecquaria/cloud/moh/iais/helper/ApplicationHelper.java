@@ -79,6 +79,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -2176,10 +2177,29 @@ public final class ApplicationHelper {
         List<HcsaServiceDto> hcsaServiceDtoList = getServiceConfigsFormApp(appSubmissionDto);
         initAppPremSpecialisedDtoList(appSubmissionDto, hcsaServiceDtoList, true);
     }
-
+    
     public static List<AppPremSpecialisedDto> initAppPremSpecialisedDtoList(AppSubmissionDto appSubmissionDto,
             List<HcsaServiceDto> hcsaServiceDtoList) {
-        return initAppPremSpecialisedDtoList(appSubmissionDto, hcsaServiceDtoList, false);
+        List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        int speSize = appPremSpecialisedDtoList == null ? 0 : appPremSpecialisedDtoList.size();
+        int svcSize = hcsaServiceDtoList.size();
+        int premSize = appGrpPremisesDtoList.size();
+        boolean initSpecialised = false;
+        if (appPremSpecialisedDtoList == null || speSize != svcSize * premSize) {
+            initSpecialised = true;
+        } else {
+            for (AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()) {
+                AtomicInteger count = new AtomicInteger();
+                boolean anyMatch = appPremSpecialisedDtoList.stream()
+                        .filter(dto -> Objects.equals(appGrpPremisesDto.getPremisesIndexNo(), dto.getPremisesVal()))
+                        .peek(dto -> count.incrementAndGet())
+                        .anyMatch(dto -> Objects.equals(appGrpPremisesDto.getPremisesType(), dto.getPremisesType())
+                                && Objects.equals(appGrpPremisesDto.getAddress(), dto.getPremAddress()));
+                initSpecialised = !anyMatch || count.get() != svcSize;
+            }
+        }
+        return initAppPremSpecialisedDtoList(appSubmissionDto, hcsaServiceDtoList, initSpecialised);
     }
 
     public static List<AppPremSpecialisedDto> initAppPremSpecialisedDtoList(AppSubmissionDto appSubmissionDto,
@@ -2189,7 +2209,7 @@ public final class ApplicationHelper {
         }
         List<AppPremSpecialisedDto> appPremSpecialisedDtos = appSubmissionDto.getAppPremSpecialisedDtoList();
         if (!init && appPremSpecialisedDtos != null
-                /*&& appPremSpecialisedDtos.stream().anyMatch(AppPremSpecialisedDto::isInit)*/) {
+                && appPremSpecialisedDtos.stream().allMatch(AppPremSpecialisedDto::isInit)) {
             return appPremSpecialisedDtos;
         }
         appPremSpecialisedDtos = genAppPremSpecialisedDtoList(appSubmissionDto.getAppGrpPremisesDtoList(),
@@ -2227,6 +2247,7 @@ public final class ApplicationHelper {
                 appPremSpecialisedDto.setBaseSvcConfigDto(serviceDto);
                 appPremSpecialisedDto.setSvcSpecifiedCorrelationList(svcSpeCorrelationList);
                 appPremSpecialisedDto.setSvcSubtypeList(hcsaSvcSubtypeDtos);
+                appPremSpecialisedDto.setInit(true);
                 result.add(appPremSpecialisedDto);
             }
         }

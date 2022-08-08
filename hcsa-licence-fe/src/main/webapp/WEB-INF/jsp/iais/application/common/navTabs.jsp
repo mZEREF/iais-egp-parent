@@ -61,8 +61,6 @@
 </div>
 <%}%>
 
-<c:set var="canClickMainTab" value="${empty AppSubmissionDto || 'APTY002' ne AppSubmissionDto.appType ||
-    AppSubmissionDto.appGrpPremisesDtoList.get(0).filled}" />
 <script type="text/javascript">
 
     $(document).ready(function() {
@@ -77,7 +75,7 @@
             }
         }
         // bind event
-        if ('licensee' == controlLi && ${!canClickMainTab}) {
+        /*if ('licensee' == controlLi && ${!canClickMainTab}) {
             $('#nav-tabs-ul #premises').on('click', function(){
                 showWaiting();
                 $('#mainForm').find(':input').prop('disabled',false);
@@ -102,7 +100,8 @@
                     submit(currId,null,null);
                 }
             });
-        }
+        }*/
+        navTabEvent();
 
         <c:if test="${requestInformationConfig==null && ('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
         <c:if test="${'APTY004' ==AppSubmissionDto.appType}">
@@ -147,6 +146,62 @@
         </c:if>
 
     });
+
+    var navTabEvent = function (nextTab) {
+        $('#nav-tabs-ul a').unbind('click');
+        if (isEmpty(nextTab)) {
+            nextTab = checkNextNavTab();
+        }
+        if (!isEmpty(nextTab)) {
+            $('#nav-tabs-ul #' + nextTab).on('click', function () {
+                showWaiting();
+                //$('#mainForm').find(':input').prop('disabled',false);
+                submit(nextTab, null, null);
+            });
+        } else {
+            let controlLi = $('#controlLi').val();
+            $('#nav-tabs-ul a').click(function () {
+                var currId = $(this).attr('id');
+                console.info(currId);
+                if (controlLi == currId) {
+                    return;
+                } else if ('serviceForms' == currId) {
+                    showWaiting();
+                    $("[name='crud_action_type']").val('serviceForms');
+                    $("[name='crud_action_type_tab']").val('${hcsaServiceDtoList.get(0).svcCode}');
+                    $("[name='crud_action_type_form_page']").val('jump');
+                    var mainForm = document.getElementById("mainForm");
+                    mainForm.submit();
+                } else if (currId != 'payment') {
+                    showWaiting();
+                    //$('#mainForm').find(':input').prop('disabled',false);
+                    submit(currId, null, null);
+                }
+            });
+        }
+    }
+
+    function checkNextNavTab() {
+        return "";
+    }
+
+/*    function checkNavTab(tabId) {
+        let controlLi = $('#controlLi').val();
+        if (controlLi == tabId) {
+            return;
+        } else if ('serviceForms' == tabId) {
+            showWaiting();
+            $("[name='crud_action_type']").val('serviceForms');
+            $("[name='crud_action_type_tab']").val('${hcsaServiceDtoList.get(0).svcCode}');
+            $("[name='crud_action_type_form_page']").val('jump');
+            var mainForm = document.getElementById("mainForm");
+            mainForm.submit();
+        } else if (tabId != 'payment') {
+            showWaiting();
+            $('#mainForm').find(':input').prop('disabled',false);
+            submit(tabId,null,null);
+        }
+    }*/
 
     function submit(action,value,additional){
         $("[name='crud_action_type']").val(action);

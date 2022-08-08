@@ -507,14 +507,16 @@ public abstract class AppCommDelegator {
 
         boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(RfcConst.EDIT_SPECIALISED, request);
         log.info(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
-        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
         String svcCode = ParamUtil.getString(request, HcsaAppConst.SPECIALISED_SVC_CODE);
         log.info(StringUtil.changeForLog("Svc Code: " + svcCode));
         if (isGetDataFromPage) {
             AppDataHelper.setSpecialisedData(appPremSpecialisedDtoList, svcCode, request);
+            appSubmissionDto.setAppPremSpecialisedDtoList(appPremSpecialisedDtoList);
+            ApplicationHelper.setAppSubmissionDto(appSubmissionDto, request);
         }
         // valiation
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String actionValue = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
         if (!StringUtil.isIn(actionValue, new String[]{"saveDraft", "back"})) {
             errorMap = AppValidatorHelper.doValidateSpecialisedDtoList(svcCode, appPremSpecialisedDtoList);
@@ -582,7 +584,14 @@ public abstract class AppCommDelegator {
         }
         appSubmissionDto.setSubLicenseeDto(subLicenseeDto);
         ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
-        bpc.request.setAttribute("subLicenseeDto", orgLicensee);
+        ParamUtil.setRequestAttr(bpc.request, "subLicenseeDto", orgLicensee);
+        // check data for nav tab
+        boolean onlyNextTab = IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList())
+                || appSubmissionDto.getAppGrpPremisesDtoList().stream().anyMatch(dto -> StringUtil.isEmpty(dto.getPremisesType()))
+                || IaisCommonUtils.isEmpty(appSubmissionDto.getAppPremSpecialisedDtoList())
+                || appSubmissionDto.getAppPremSpecialisedDtoList().stream().anyMatch(dto -> StringUtil.isEmpty(dto.getPremisesType()));
+        log.info(StringUtil.changeForLog("-----------onlyNextTab: " + onlyNextTab + "------------"));
+        ParamUtil.setRequestAttr(bpc.request, "onlyNextTab", onlyNextTab);
     }
 
     /**
@@ -854,10 +863,10 @@ public abstract class AppCommDelegator {
             }
             //update address
             //ApplicationHelper.updatePremisesAddress(appSubmissionDto);
-            ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-
+            ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
         }
-        String crud_action_additional = ParamUtil.getString(bpc.request, "crud_action_additional");
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+                String crud_action_additional = ParamUtil.getString(bpc.request, "crud_action_additional");
         if (!"saveDraft".equals(crud_action_value)) {
             String actionType = bpc.request.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
             bpc.request.setAttribute("continueStep", actionType);
@@ -866,7 +875,7 @@ public abstract class AppCommDelegator {
             AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
             List<String> premisesHciList = getPremisesHciList(appSubmissionDto.getLicenseeId(), isRfi, oldAppSubmissionDto,
                     bpc.request);
-            Map<String, String> errorMap = AppValidatorHelper.doValidatePremises(appSubmissionDto, premisesHciList, true);
+            errorMap = AppValidatorHelper.doValidatePremises(appSubmissionDto, premisesHciList, true);
             String crud_action_type_continue = bpc.request.getParameter("crud_action_type_continue");
             if ("continue".equals(crud_action_type_continue)) {
                 errorMap.remove("hciNameUsed");
@@ -876,22 +885,30 @@ public abstract class AppCommDelegator {
                 ParamUtil.setRequestAttr(bpc.request, "hciNameUsed", "hciNameUsed");
                 ParamUtil.setRequestAttr(bpc.request, "newAppPopUpMsg", hciNameUsed);
             }
-            // check result
-            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(HcsaAppConst.CO_MAP);
-            if (errorMap.size() > 0) {
-                boolean isNeedShowValidation = !"back".equals(crud_action_value);
-                if (isNeedShowValidation) {
-                    initAction(HcsaAppConst.ACTION_PREMISES, errorMap, appSubmissionDto, bpc.request);
-                }
-                coMap.put(HcsaAppConst.SECTION_PREMISES, "");
-            } else {
-                coMap.put(HcsaAppConst.SECTION_PREMISES, HcsaAppConst.SECTION_PREMISES);
-                saveDraft(bpc);
-            }
-            // coMap.put("serviceConfig", sB.toString());
-            bpc.request.getSession().setAttribute(HcsaAppConst.CO_MAP, coMap);
         }
+        // check result
+        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(HcsaAppConst.CO_MAP);
+        if (errorMap.size() > 0) {
+            boolean isNeedShowValidation = !"back".equals(crud_action_value);
+            if (isNeedShowValidation) {
+                initAction(HcsaAppConst.ACTION_PREMISES, errorMap, appSubmissionDto, bpc.request);
+            }
+            coMap.put(HcsaAppConst.SECTION_PREMISES, "");
+        } else {
+            coMap.put(HcsaAppConst.SECTION_PREMISES, HcsaAppConst.SECTION_PREMISES);
+            saveDraft(bpc);
+            checkAppPremSpecialisedDtoList(appSubmissionDto, bpc.request);
+        }
+        // coMap.put("serviceConfig", sB.toString());
+        bpc.request.getSession().setAttribute(HcsaAppConst.CO_MAP, coMap);
         log.info(StringUtil.changeForLog("the do doPremises end ...."));
+    }
+
+    protected void checkAppPremSpecialisedDtoList(AppSubmissionDto appSubmissionDto, HttpServletRequest request){
+        List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,
+                AppServicesConsts.HCSASERVICEDTOLIST);
+        ApplicationHelper.initAppPremSpecialisedDtoList(appSubmissionDto, hcsaServiceDtoList);
+        ApplicationHelper.setAppSubmissionDto(appSubmissionDto, request);
     }
 
     private List<String> getPremisesHciList(String licenseeId, boolean isRfi, AppSubmissionDto oldAppSubmissionDto,

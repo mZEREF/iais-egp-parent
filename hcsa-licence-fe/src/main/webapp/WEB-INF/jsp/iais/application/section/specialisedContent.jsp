@@ -41,10 +41,10 @@
                             <legend></legend>
                             <div class="form-check-gp">
                                 <c:forEach var="item" items="${specialised.allAppPremScopeDtoList}" varStatus="status">
-                                    <div class="form-check form-check-${item.level}" data-parent="${item.parentId}">
+                                    <div class="form-check form-check-${item.level}" data-parent="${specialised.premisesVal}-${item.parentId}">
                                         <input class="form-check-input" id="${specialised.premisesVal}-${item.subTypeId}"
                                                name="${specialised.premisesVal}_${item.parentId}_sub_type" value="${item.subTypeId}"
-                                               type="checkbox" aria-invalid="false"
+                                               type="checkbox" aria-invalid="false" data-prem="${specialised.premisesVal}"
                                                <c:if test="${item.checked}">checked="checked"</c:if> />
                                         <label class="form-check-label" for="${specialised.premisesVal}-${item.subTypeId}">
                                             <span class="check-square"></span><c:out value="${item.scopeName}"/>
@@ -69,10 +69,10 @@
                             <legend></legend>
                             <div class="form-check-gp">
                                 <c:forEach var="item" items="${specialised.allAppPremSubSvcRelDtoList}" varStatus="status">
-                                    <div class="form-check form-check-${item.level}" data-parent="${item.parentId}">
+                                    <div class="form-check form-check-${item.level}" data-parent="${specialised.premisesVal}-${item.parentId}">
                                         <input class="form-check-input" id="${specialised.premisesVal}-${item.svcId}"
                                                name="${specialised.premisesVal}_${item.parentId}_service" value="${item.svcId}"
-                                               type="checkbox" aria-invalid="false"
+                                               type="checkbox" aria-invalid="false" data-prem="${specialised.premisesVal}"
                                                <c:if test="${item.checked}">checked="checked"</c:if> />
                                         <label class="form-check-label" for="${specialised.premisesVal}-${item.svcId}">
                                             <span class="check-square"></span><c:out value="${item.svcName}"/>
@@ -111,7 +111,7 @@
     }
 
     function checkspecialisedCheckbox($input) {
-        let data = $input.val();
+        let data = $input.data('prem') + '-' + $input.val();
         if ($input.is(':checked')) {
             showTag($('div[data-parent="' + data + '"]'));
         } else {
