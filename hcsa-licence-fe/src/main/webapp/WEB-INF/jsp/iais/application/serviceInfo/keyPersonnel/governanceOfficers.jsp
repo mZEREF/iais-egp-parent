@@ -23,7 +23,8 @@
     </c:if>
     <iais:row>
         <div class="col-xs-12">
-            <p class="app-title"><c:out value="${currStepName}"/></p>
+            <h2 class="app-title"><c:out value="${currStepName}"/></h2>
+            <p><h4><iais:message key="NEW_ACK035"/></h4></p>
             <p><span class="error-msg" name="iaisErrorMSg" id="error_psnMandatory"></span></p>
         </div>
     </iais:row>

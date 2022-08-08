@@ -14,6 +14,7 @@
     <div class="main-content">
         <div class="container center-content">
             <div class="col-xs-12">
+                <%@include file="common/headStepNavTab.jsp" %>
                 <h3>Please key in the cycle information below.</h3>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <%@include file="section/pregnancyOutcomeStageSection.jsp" %>

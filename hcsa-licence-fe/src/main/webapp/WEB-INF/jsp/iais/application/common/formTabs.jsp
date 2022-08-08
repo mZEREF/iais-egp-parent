@@ -52,15 +52,4 @@
         var mainForm = document.getElementById("mainForm");
         mainForm.submit();
     }
-
-    function initNationality(parent, idTypeTag, nationalityDiv) {
-        $(parent).find(idTypeTag).on('change', function () {
-            var $content = $(this).closest(parent.replace(':last', ''));
-            toggleOnSelect(this, 'IDTYPE003', 'IDTYPE003', $content.find(nationalityDiv));
-        });
-        $(parent).each(function (index, ele) {
-            toggleOnSelect($(ele).find(idTypeTag), 'IDTYPE003', $(ele).find(nationalityDiv));
-        });
-    }
-
 </script>

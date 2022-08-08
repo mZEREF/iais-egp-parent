@@ -320,7 +320,7 @@ public class VssDataSubmissionDelegator {
             currentConfig.setStatus(status);
             DsConfigHelper.setConfig(DataSubmissionConsts.DS_VSS, currentConfig, request);
         }
-
+        vssDataSubmissionService.displayToolTipJudgement(request);
         log.info(StringUtil.changeForLog(" ----- DoStep Status: " + status + " ------ "));
         ParamUtil.setRequestAttr(request, DataSubmissionConstant.ACTION_STATUS, status);
         ParamUtil.setRequestAttr(request, "currentStage", DataSubmissionConstant.PAGE_STAGE_PAGE);
@@ -347,8 +347,10 @@ public class VssDataSubmissionDelegator {
         TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto() == null ? new TreatmentDto() : vssTreatmentDto.getTreatmentDto();
         ControllerHelper.get(request, treatmentDto);
         try {
-            int age = -Formatter.compareDateByDay(treatmentDto.getBirthDate());
-            treatmentDto.setAge(age / 365);
+            int age = -Formatter.compareDateByDay(treatmentDto.getBirthDate())/365;
+            int ageNew=-(Formatter.compareDateByDay(treatmentDto.getBirthDate())+age/4) / 365;
+
+            treatmentDto.setAge(ageNew);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }

@@ -38,7 +38,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.SELF_AUDIT_DATA;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_SELF_AUDIT;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_AUDIT;
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_NON_OBJECT_ERROR;
-import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_DO;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_DO_RECOMMENDATION;
 
 
 /**
@@ -118,7 +118,8 @@ public class SelfAuditDelegator {
         HttpServletRequest request = bpc.request;
         FacilitySubmitSelfAuditDto dto = getAuditDto(request);
         dto.setAuditStatus(PARAM_AUDIT_STATUS_PENDING_DO);
-        dto.setAppStatus(APP_STATUS_PEND_DO);
+        // TODO: check this app status
+        dto.setAppStatus(APP_STATUS_PEND_DO_RECOMMENDATION);
         dto.setAuditAppStatus(PARAM_AUDIT_STATUS_PENDING_DO);
         //
         PrimaryDocDto primaryDocDto = dto.getPrimaryDocDto();

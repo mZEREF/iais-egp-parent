@@ -84,7 +84,7 @@
                   <div class="col-xs-12 col-lg-8" style="padding-top:15px">
                     <div class="form-check-gp">
                       <div class="form-check">
-                        <input class="form-check-input" id="bsb" value="bsb" name="serviceGroup" onclick="landing();" type="checkbox" aria-invalid="false">
+                        <input class="form-check-input" id="bsb" value="bsb" name="serviceGroup" onclick="javascript:landing();" type="checkbox" aria-invalid="false">
                         <label class="form-check-label" for="bsb"><span class="check-square"></span><strong>Biosafety Branch (BSB) (Login as a facility user)</strong></label>
                       </div>
                     </div>
@@ -104,7 +104,7 @@
                   <div class="col-xs-12 col-lg-8" style="padding-top:15px">
                     <div class="form-check-gp">
                       <div class="form-check">
-                        <input class="form-check-input" id="bsb-afc" value="bsb-afc" name="serviceGroup" onclick="landing();" type="checkbox" aria-invalid="false">
+                        <input class="form-check-input" id="bsb-afc" value="bsb-afc" name="serviceGroup" onclick="javascript:landing();" type="checkbox" aria-invalid="false">
                         <label class="form-check-label" for="bsb-afc"><span class="check-square"></span><strong>Biosafety Branch (BSB) (Login as a MOH-AFC user)</strong></label>
                       </div>
                     </div>
@@ -144,6 +144,19 @@
     } else {
         $('#corppass').attr("href", "javascript:void(0);");
         $('#corppass').attr("onclick", "Utils.submit('mainForm','corppassLogin');");
+    }
+
+    if ($("input[id='bsb']")[0].checked) {
+      $('#singpass').addClass("disabled");
+      $.cookie('service_bsb', 'Y', { path: '/bsb-web/eservice/INTERNET' });
+    } else {
+      $.cookie('service_bsb', null, { path: '/bsb-web/eservice/INTERNET' });
+    }
+    if ($("input[id='bsb-afc']")[0].checked) {
+      $('#singpass').addClass("disabled");
+      $.cookie('service_bsb_afc', 'Y', { path: '/bsb-web/eservice/INTERNET' });
+    } else {
+      $.cookie('service_bsb_afc', null, { path: '/bsb-web/eservice/INTERNET' });
     }
   }
 </script>

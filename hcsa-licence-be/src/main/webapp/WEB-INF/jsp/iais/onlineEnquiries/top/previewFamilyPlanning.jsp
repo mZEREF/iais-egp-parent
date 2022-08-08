@@ -1,7 +1,7 @@
 <div class="panel panel-default">
     <div class="panel-heading ">
         <h4 class="panel-title">
-            <a  data-toggle="collapse" href="#familyDetails">
+            <a data-toggle="collapse" href="#familyDetails">
                 Family Planning/Pregnancy
             </a>
         </h4>
@@ -9,9 +9,9 @@
     <div id="familyDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
-                <c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}" />
+                <c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}"/>
                 <c:set var="patientInformationDto" value="${topSuperDataSubmissionDto.patientInformationDto}"/>
-                <c:set var="familyPlanDto" value="${terminationOfPregnancyDto.familyPlanDto}" />
+                <c:set var="familyPlanDto" value="${terminationOfPregnancyDto.familyPlanDto}"/>
                 <iais:row>
                     <iais:field width="5" value="Contraceptive History"/>
                     <iais:value width="7" display="true" cssClass="col-md-7">
@@ -20,7 +20,7 @@
                 </iais:row>
                 <div <c:if test="${familyPlanDto.contraHistory!='TOPCH003'}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="5" value="Most Recent Contraceptive Methods Used" />
+                        <iais:field width="5" value="Most Recent Contraceptive Methods Used"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <iais:code code="${familyPlanDto.mostRecentContraMethod}"/>
                         </iais:value>
@@ -47,7 +47,8 @@
                     </iais:value>
                 </iais:row>
                 <c:if test="${familyPlanDto.gestAgeBaseOnUltrWeek>24}">
-                    <c:set var="week"><iais:message key="DS_MSG031" paramKeys="1" paramValues="counsellor" escape="false"/></c:set>
+                    <c:set var="week"><iais:message key="DS_MSG031" paramKeys="1" paramValues="counsellor"
+                                                    escape="false"/></c:set>
                 </c:if>
                 <iais:row>
                     <iais:field width="5" value="Gestation Age based on Ultrasound(Weeks)" info="${week}"/>
@@ -73,16 +74,18 @@
                         <c:out value="${familyPlanDto.gestAgeBaseNotOnUltrDay}"/>
                     </iais:value>
                 </iais:row>
-                <div <c:if test="${familyPlanDto.gestAgeBaseOnUltrWeek==null || !(familyPlanDto.gestAgeBaseOnUltrWeek).matches('[0-9]+') || familyPlanDto.gestAgeBaseOnUltrWeek<15}">style="display: none"</c:if>>
+                <div
+                        <c:if test="${familyPlanDto.gestAgeBaseOnUltrWeek==null || !(familyPlanDto.gestAgeBaseOnUltrWeek).matches('[0-9]+') || familyPlanDto.gestAgeBaseOnUltrWeek<15}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="5" value="Gender of the Aborted Child if Gestation Age is 15 weeks and above" />
+                        <iais:field width="5"
+                                    value="Gender of the Aborted Child if Gestation Age is 15 weeks and above"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <iais:code code="${familyPlanDto.abortChdMoreWksGender}"/>
                         </iais:value>
                     </iais:row>
                 </div>
                 <iais:row>
-                    <iais:field width="5" value="Main Reason for Request to Terminate Pregnancy" />
+                    <iais:field width="5" value="Main Reason for Request to Terminate Pregnancy"/>
                     <iais:value width="7" display="true" cssClass="col-md-7">
                         <iais:code code="${familyPlanDto.mainTopReason}"/>
                     </iais:value>
@@ -95,31 +98,36 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div  <c:if test="${familyPlanDto.mainTopReason!='TOPRTP004'}">style="display: none"</c:if>>
+                <div <c:if test="${familyPlanDto.mainTopReason!='TOPRTP004'}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="5" value="Indicate the Maternal High Risk condition(s) that led to the Request to Terminate Pregnancy"/>
+                        <iais:field width="5"
+                                    value="Indicate the Maternal High Risk condition(s) that led to the Request to Terminate Pregnancy"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${familyPlanDto.topRiskCondition}"/>
                         </iais:value>
                     </iais:row>
                 </div>
-                <div <c:if test="${familyPlanDto.mainTopReason!='TOPRTP006'}">style="display: none"</c:if> >
+                <div
+                        <c:if test="${familyPlanDto.mainTopReason!='TOPRTP006'}">style="display: none"</c:if> >
                     <iais:row>
-                        <iais:field width="5" value="Indicate the Medical Condition(s) that led to the Request to Terminate Pregnancy"/>
+                        <iais:field width="5"
+                                    value="Indicate the Medical Condition(s) that led to the Request to Terminate Pregnancy"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${familyPlanDto.topMedCondition}"/>
                         </iais:value>
                     </iais:row>
                 </div>
-                <div id="subRopReasons" <c:if test="${familyPlanDto.mainTopReason!='TOPRTP003'}">style="display: none"</c:if>>
+                <div id="subRopReasons"
+                     <c:if test="${familyPlanDto.mainTopReason!='TOPRTP003'}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="5" value="Type of Fetal Anomalies" />
+                        <iais:field width="5" value="Type of Fetal Anomalies"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <iais:code code="${familyPlanDto.subRopReason}"/>
                         </iais:value>
                     </iais:row>
                 </div>
-                <div <c:if test="${(familyPlanDto.mainTopReason!='TOPRTP003' && familyPlanDto.mainTopReason!='TOPRTP006') || (familyPlanDto.subRopReason != 'TOPSCTP007' && familyPlanDto.subRopReason != 'TOPSCTP008')}">style="display: none"</c:if>>
+                <div
+                        <c:if test="${(familyPlanDto.mainTopReason!='TOPRTP003' && familyPlanDto.mainTopReason!='TOPRTP006') || (familyPlanDto.subRopReason != 'TOPSCTP007' && familyPlanDto.subRopReason != 'TOPSCTP008')}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Other Type of Fetal Anomalies (Please specify)"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">

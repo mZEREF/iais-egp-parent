@@ -65,7 +65,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_FACILITY_TYP
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_YEAR;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_CANCEL_AUDIT;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_APPROVED;
-import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_AO;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_DO_RECOMMENDATION;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_REJECTED;
 
 /**
@@ -196,7 +196,8 @@ public class CancelAuditDelegator {
             for (OfficerProcessAuditDto processAuditDto : auditDtos) {
                 processAuditDto.setCancelReason(cancelReason);
                 processAuditDto.setAuditAppStatus(PARAM_AUDIT_STATUS_PENDING_AO);
-                processAuditDto.setAppStatus(APP_STATUS_PEND_AO);
+                // TODO: check this app status
+                processAuditDto.setAppStatus(APP_STATUS_PEND_DO_RECOMMENDATION);
                 processAuditDto.setActionBy(loginContext.getUserName());
                 processAuditDto.setModule("doCancel");
             }

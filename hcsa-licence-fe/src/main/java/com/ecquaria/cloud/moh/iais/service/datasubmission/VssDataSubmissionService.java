@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSu
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -33,4 +34,6 @@ public interface VssDataSubmissionService {
     void deleteVssSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType);
 
     VssSuperDataSubmissionDto getVssSuperDataSubmissionDtoByDraftNo(String draftNo);
+
+    void displayToolTipJudgement(HttpServletRequest request);
 }

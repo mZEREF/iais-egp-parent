@@ -7,7 +7,9 @@ import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -18,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
@@ -42,6 +45,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremInspGrpCorrelati
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.PostInsGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -50,6 +54,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -299,6 +304,51 @@ public class LicenceServiceImpl implements LicenceService {
                 for (LicenceGroupDto item:eventBusLicenceGroupDtos.getLicenceGroupDtos()) {
                     for (SuperLicDto superLicDto : item.getSuperLicDtos()) {
                         sendNotification(superLicDto);
+                        if(superLicDto != null) {
+                            LicenceDto licenceDto = superLicDto.getLicenceDto();
+                            if(licenceDto != null){
+                                List<String> appIdList = hcsaLicenceClient.getAppIdsByLicId(superLicDto.getLicenceDto().getId()).getEntity();
+                                log.debug(StringUtil.changeForLog("send approve email --- get app list by licence id : " + superLicDto.getLicenceDto().getId()));
+                                if(appIdList != null && appIdList.size() >0) {
+                                    for(String applicationId : appIdList){
+                                        ApplicationDto applicationDto = applicationClient.getApplicationById(applicationId).getEntity();
+                                        List<AppPremisesRoutingHistoryDto> rollBackHistroyList = applicationClient.getHistoryByAppNoAndDecision(applicationDto.getApplicationNo(), ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL).getEntity();
+
+                                        if(IaisCommonUtils.isNotEmpty(rollBackHistroyList)&& (applicationDto.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)
+                                                || applicationDto.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_RENEWAL)
+                                                || applicationDto.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE))) {
+                                            //getAppPremisesCorrelationsByAppId
+                                            AppPremisesCorrelationDto appPremisesCorrelationDto = appPremisesCorrClient.getAppPremisesCorrelationsByAppId(applicationDto.getId()).getEntity().get(0);
+                                            if (appPremisesCorrelationDto != null) {
+                                                List<TaskDto> oldTaskDtos= taskService.getTaskbyApplicationNo(applicationDto.getApplicationNo());
+                                                TaskDto taskDto=null;
+                                                if(oldTaskDtos.size()!=0){
+                                                    for (TaskDto task:oldTaskDtos
+                                                    ) {
+                                                        if(task.getRoleId().equals(RoleConsts.USER_ROLE_ASO)){
+                                                            taskDto=task;
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                                if(taskDto!=null){
+                                                    taskDto.setDateAssigned(new Date());
+                                                    taskDto.setId(null);
+                                                    taskDto.setSlaDateCompleted(null);
+                                                    taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+                                                    AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
+                                                    taskDto.setAuditTrailDto(auditTrailDto);
+                                                    List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
+
+                                                    taskDtos.add(taskDto);
+                                                    taskService.createTasks(taskDtos);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
 
                     }
                 }
@@ -521,7 +571,9 @@ public class LicenceServiceImpl implements LicenceService {
                             if(appPremisesCorrelationDto != null){
                                 inspectionRecommendation = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION).getEntity();
                             }
-                            if (applicationDto != null) {
+                            List<AppPremisesRoutingHistoryDto> rollBackHistroyList = applicationClient.getHistoryByAppNoAndDecision(applicationDto.getApplicationNo(), ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL).getEntity();
+
+                            if (IaisCommonUtils.isEmpty(rollBackHistroyList)) {
                                 HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
                                 List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
                                 svcCodeList.add(svcDto.getSvcCode());
@@ -542,7 +594,7 @@ public class LicenceServiceImpl implements LicenceService {
                                     String applicationTypeShow = MasterCodeUtil.getCodeDesc(applicationType);
                                     log.info(StringUtil.changeForLog("send notification applicationType : " + applicationTypeShow));
                                     if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
-                                        //sendNewAppApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate,licenceNo,svcCodeList,loginUrl,corpPassUrl,MohName,organizationDto,inspectionRecommendation);
+                                        sendNewAppApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate,licenceNo,svcCodeList,loginUrl,corpPassUrl,MohName,organizationDto,inspectionRecommendation);
                                     }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
                                         sendRenewalAppApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate,licenceNo,svcCodeList,loginUrl,MohName,inspectionRecommendation);
                                         sendPostInspectionNotification(applicationGroupDto,applicantName,svcDto,svcCodeList,MohName,applicationNo);

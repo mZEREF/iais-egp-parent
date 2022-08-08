@@ -5,12 +5,12 @@
  <div class="panel panel-default">
     <div class="panel-heading">
         <h4  class="panel-title">
-            <a data-toggle="collapse" href="#dpAmendment">
+            <a class="collapsed" data-toggle="collapse" href="#dpAmendment">
                 Amendment
             </a>
         </h4>
     </div>
-    <div id="dpAmendment" class="panel-collapse collapse in">
+    <div id="dpAmendment" class="panel-collapse collapse ">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <c:if test="${dpSuperDataSubmissionDto.dataSubmissionDto.submissionType eq 'DP_TP001'}">

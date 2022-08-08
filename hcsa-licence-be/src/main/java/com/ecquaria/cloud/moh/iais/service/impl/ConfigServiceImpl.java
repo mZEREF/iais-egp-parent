@@ -207,7 +207,7 @@ public class ConfigServiceImpl implements ConfigService {
         }
 
         if (!errorMap.isEmpty()) {
-            hcsaServiceConfigDto.getHcsaSvcSpecificStageWorkloadDtos();
+            //hcsaServiceConfigDto.getHcsaSvcSpecificStageWorkloadDtos();
             List<HcsaSvcSpePremisesTypeDto> hcsaSvcSpePremisesTypeDtos = hcsaServiceConfigDto.getHcsaSvcSpePremisesTypeDtos();
             List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = hcsaServiceConfigDto.getHcsaSvcPersonnelDtos();
             List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = hcsaServiceConfigDto.getHcsaSvcSubtypeOrSubsumedDtos();
@@ -263,9 +263,9 @@ public class ConfigServiceImpl implements ConfigService {
             selectOption.setText(hcsaServiceDto.getSvcName());
             selectOptionList.add(selectOption);
         }
-        List<HcsaServiceCategoryDto> categoryDtos = getHcsaServiceCategoryDto();
+        /*List<HcsaServiceCategoryDto> categoryDtos = getHcsaServiceCategoryDto();
         categoryDtos.sort((s1, s2) -> (s1.getName().compareTo(s2.getName())));
-        request.getSession().setAttribute("categoryDtos",categoryDtos);
+        request.getSession().setAttribute("categoryDtos",categoryDtos);*/
         selectOptionList.sort((s1, s2) -> (s1.getText().compareTo(s2.getText())));
 
         request.getSession().setAttribute("selsectBaseHcsaServiceDto",selectOptionList);
@@ -1089,8 +1089,8 @@ public class ConfigServiceImpl implements ConfigService {
 
         return map;
     }
-
-    private List<HcsaServiceCategoryDto> getHcsaServiceCategoryDto() {
+    @Override
+    public List<HcsaServiceCategoryDto> getHcsaServiceCategoryDto() {
         if(hcsaServiceCatgoryDtos == null){
             hcsaServiceCatgoryDtos = hcsaConfigClient.getHcsaServiceCategorys().getEntity();
         }
@@ -1203,7 +1203,7 @@ public class ConfigServiceImpl implements ConfigService {
 
     private List<HcsaConfigPageDto> getWorkGrop(String type,String typeName){
         List<HcsaConfigPageDto> hcsaConfigPageDtos = IaisCommonUtils.genNewArrayList();
-        List<WorkingGroupDto> workingGroup = getWorkingGroup();
+       // List<WorkingGroupDto> workingGroup = getWorkingGroup();
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = getHcsaSvcRoutingStageDtos();
 
         for (HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto : hcsaSvcRoutingStageDtos) {
@@ -1212,38 +1212,17 @@ public class ConfigServiceImpl implements ConfigService {
             hcsaConfigPageDto.setStageName(hcsaSvcRoutingStageDto.getStageName());
             hcsaConfigPageDto.setAppTypeName(typeName);
             hcsaConfigPageDto.setAppType(type);
-            List<WorkingGroupDto> workingGroupDtoList = IaisCommonUtils.genNewArrayList();
-            for (WorkingGroupDto workingGroupDto : workingGroup) {
-                String groupName = workingGroupDto.getGroupName();
-                String stageCode = hcsaSvcRoutingStageDto.getStageCode();
-                if (groupName.contains("Admin Screening") && stageCode.contains("ASO")) {
-                    workingGroupDtoList.add(workingGroupDto);
-                }
-                if (groupName.contains("Professional Screening") && stageCode.contains("PSO")) {
-                    workingGroupDtoList.add(workingGroupDto);
-                }
-                if (groupName.contains("Inspection") && stageCode.contains("INS")) {
-                    workingGroupDtoList.add(workingGroupDto);
-                    List<HcsaSvcSpeRoutingSchemeDto> hcsaSvcSpeRoutingSchemeDtos=new ArrayList<>(2);
-                    for(int i=0;i<2;i++){
-                        HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDto=new HcsaSvcSpeRoutingSchemeDto();
-                        hcsaSvcSpeRoutingSchemeDto.setInsOder(String.valueOf(i));
-                        hcsaSvcSpeRoutingSchemeDtos.add(hcsaSvcSpeRoutingSchemeDto);
-                    }
-                    hcsaConfigPageDto.setHcsaSvcSpeRoutingSchemeDtos(hcsaSvcSpeRoutingSchemeDtos);
-                }
-                if (groupName.contains("Level 1 Approval") && stageCode.contains("AO1")) {
-                    workingGroupDtoList.add(workingGroupDto);
-                }
-                if (groupName.contains("Level 2 Approval") && stageCode.contains("AO2")) {
-                    workingGroupDtoList.add(workingGroupDto);
-                }
-                if (groupName.contains("Level 3 Approval") && stageCode.contains("AO3")) {
-                    workingGroupDtoList.add(workingGroupDto);
-                }
-                hcsaConfigPageDto.setWorkingGroup(workingGroupDtoList);
-            }
+            hcsaConfigPageDto.setStageId(hcsaSvcRoutingStageDto.getId());
 
+            if("INS".equals(hcsaConfigPageDto.getStageCode())){
+                List<HcsaSvcSpeRoutingSchemeDto> hcsaSvcSpeRoutingSchemeDtos=new ArrayList<>(2);
+                for(int i=0;i<2;i++){
+                    HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDto=new HcsaSvcSpeRoutingSchemeDto();
+                    hcsaSvcSpeRoutingSchemeDto.setInsOder(String.valueOf(i+2));
+                    hcsaSvcSpeRoutingSchemeDtos.add(hcsaSvcSpeRoutingSchemeDto);
+                }
+                hcsaConfigPageDto.setHcsaSvcSpeRoutingSchemeDtos(hcsaSvcSpeRoutingSchemeDtos);
+            }
             hcsaConfigPageDtos.add(hcsaConfigPageDto);
         }
         return  hcsaConfigPageDtos;
@@ -1253,11 +1232,9 @@ public class ConfigServiceImpl implements ConfigService {
     public List<String> getType(){
         List<String> list=IaisCommonUtils.genNewArrayList();
         list.add(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-       /* list.add(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT);*/
         list.add(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
         list.add(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL) ;
         list.add(ApplicationConsts.APPLICATION_TYPE_CESSATION) ;
-       /* list.add(ApplicationConsts.APPLICATION_TYPE_SUSPENSION) ;*/
         list.add(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         list.add(ApplicationConsts.APPLICATION_TYPE_APPEAL);
         //post audit insApplicationConsts
@@ -1268,6 +1245,7 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public List<HcsaSvcCateWrkgrpCorrelationDto> getHcsaSvcCateWrkgrpCorrelationDtoBySvcCateId(String svcCateId) {
+        log.info(StringUtil.changeForLog("The svcCateId is -->:"+svcCateId));
         if(StringUtil.isEmpty(svcCateId)){
             return new ArrayList<>();
         }
@@ -1319,7 +1297,7 @@ public class ConfigServiceImpl implements ConfigService {
             List<HcsaConfigPageDto> hcsaConfigPageDtos = IaisCommonUtils.genNewArrayList();
             if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(type)){
                 hcsaConfigPageDtos= getWorkGrop(type,APPEAL);
-            }else if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(type)){
+            } else if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(type)){
                 hcsaConfigPageDtos=  getWorkGrop(type,NEW_APPLICATION);
             }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(type)){
                 hcsaConfigPageDtos = getWorkGrop(type, REQUEST_FOR_CHANGE);
@@ -1327,12 +1305,12 @@ public class ConfigServiceImpl implements ConfigService {
                 hcsaConfigPageDtos=  getWorkGrop(type,RENEW);
             }else if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(type)){
                 hcsaConfigPageDtos= getWorkGrop(type,CESSATION);
-            }else  if(ApplicationConsts.APPLICATION_TYPE_SUSPENSION.equals(type)){
-                hcsaConfigPageDtos= getWorkGrop(type,SUSPENSION);
-            }else if(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT.equals(type)){
-                hcsaConfigPageDtos= getWorkGrop(type,"Revocation");
             }else if(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(type)){
                 hcsaConfigPageDtos= getWorkGrop(type,WITHDRAWAL);
+            }else  if(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(type)){
+                hcsaConfigPageDtos= getWorkGrop(type,SUSPENSION);
+            }else if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(type)){
+                hcsaConfigPageDtos= getWorkGrop(type,"Revocation");
             }
             map.put(type,hcsaConfigPageDtos);
         }
@@ -1348,7 +1326,8 @@ public class ConfigServiceImpl implements ConfigService {
             List<HcsaConfigPageDto> appeal=IaisCommonUtils.genNewArrayList();
             if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(type)){
                 appeal= getWorkGrop(type,APPEAL);
-            }else if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(type)){
+            }
+            else if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(type)){
                 appeal=  getWorkGrop(type,NEW_APPLICATION);
             }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(type)){
                appeal = getWorkGrop(type, REQUEST_FOR_CHANGE);

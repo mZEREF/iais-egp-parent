@@ -124,7 +124,7 @@ public class UserValidator implements CustomizeValidator {
                 if (!StringUtil.isEmpty(dto.getIdentityNo()) && !StringUtil.isEmpty(idType)) {
                     FeUserDto feUserDto = orgUserManageService.getFeUserAccountByNricAndType(dto.getIdentityNo(), idType, dto.getUenNo());
                     if (feUserDto != null) {
-                        map.put("idNo", MessageUtil.getMessageDesc("USER_ERR015"));
+                        map.put("identityNo", MessageUtil.getMessageDesc("USER_ERR015"));
                     }
                 }
 

@@ -1,35 +1,10 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 
-<c:choose>
-    <c:when test="${businessDto.weeklyDtoList != null && businessDto.weeklyDtoList.size()>1}">
-        <input class="weeklyLength" type="hidden" name="weeklyLength" value="${businessDto.weeklyDtoList.size()}"/>
-    </c:when>
-    <c:otherwise>
-        <input class="weeklyLength" type="hidden" name="weeklyLength" value="1"/>
-    </c:otherwise>
-</c:choose>
+<c:set var="isSpecialService" value="${serviceCode==AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL||serviceCode==AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL}"/>
+<c:set var="isSpecialMOSD" value="${appGrpPremisesDto.premisesType==ApplicationConsts.PREMISES_TYPE_MOBILE||appGrpPremisesDto.premisesType==ApplicationConsts.PREMISES_TYPE_REMOTE}"/>
 
-<c:choose>
-    <c:when test="${businessDto.phDtoList != null && businessDto.phDtoList.size()>1}">
-        <input class="phLength" type="hidden" name="phLength" value="${businessDto.phDtoList.size()}"/>
-    </c:when>
-    <c:otherwise>
-        <input class="phLength" type="hidden" name="phLength" value="1"/>
-    </c:otherwise>
-</c:choose>
-
-<c:choose>
-    <c:when test="${businessDto.eventDtoList != null && businessDto.eventDtoList.size()>1}">
-        <input class="eventLength" type="hidden" name="eventLength" value="${businessDto.eventDtoList.size()}"/>
-    </c:when>
-    <c:otherwise>
-        <input class="eventLength" type="hidden" name="eventLength" value="1"/>
-    </c:otherwise>
-</c:choose>
-
-<c:set var="isSpecialService" value="${serviceCode==AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL||serviceCode==AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL}"></c:set>
-<input class="isSpecialService" type="hidden" name="isSpecialService" value="${isSpecialService}"/>
-<c:if test="${!isSpecialService}">
+<c:if test="${!isSpecialService&&!isSpecialMOSD}">
     <iais:row>
         <div class="col-md-12 col-xs-12">
             <label class="control-label">Operating Hours</label>

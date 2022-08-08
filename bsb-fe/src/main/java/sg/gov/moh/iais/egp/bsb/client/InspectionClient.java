@@ -32,15 +32,6 @@ public interface InspectionClient {
     @GetMapping(value = "/checklist/config/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     ChecklistConfigDto getChecklistConfigById(@PathVariable("id") String id);
 
-    @GetMapping("/inspection/report/{appId}")
-    InsCommentReportDataDto retrieveInspectionReport(@PathVariable("appId") String appId);
-
-    @PostMapping(value = "/inspection/report/comment/validate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ValidationResultDto validateCommentReportForm(CommentInsReportDto.CommentInsReportValidateDto dto);
-
-    @PostMapping(value = "/inspection/report/comment", consumes = MediaType.APPLICATION_JSON_VALUE)
-    void saveCommentReportForm(CommentInsReportSaveDto saveDto);
-
     @GetMapping(path = "/inspection/non-compliance/items/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<InsRectificationDisplayDto> getNonComplianceFindingFormDtoByAppId(@PathVariable("appId") String appId);
 

@@ -1211,7 +1211,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     private List<String> addVehicleNameByAppType(ApplicationDto applicationDto, AppSvcVehicleDto appSvcVehicleDto, List<String> vehicleNoList) {
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())) {
-            if(ApplicationConsts.VEHICLE_ACTION_CODE_ADD.equals(appSvcVehicleDto.getActCode())) {
+            if(ApplicationConsts.VEHICLE_ACTION_CODE_ADD.equals(appSvcVehicleDto.getActCode()) || ApplicationConsts.VEHICLE_ACTION_CODE_EDIT.equals(appSvcVehicleDto.getActCode())) {
                 vehicleNoList.add(appSvcVehicleDto.getDisplayName());
             }
         } else {
@@ -1384,6 +1384,10 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public Map<String, String> checkApplicationByAppGrpNo(String appGrpNo) {
+        return checkApplicationByAppGrpNo(appGrpNo, false);
+    }
+
+    private Map<String, String> checkApplicationByAppGrpNo(String appGrpNo, boolean isApproveAction) {
         Map<String, String> result = IaisCommonUtils.genNewHashMap();
         result.put(HcsaAppConst.CAN_RFI, AppConsts.YES);
         if (StringUtil.isEmpty(appGrpNo)) {
@@ -1400,9 +1404,13 @@ public class ApplicationServiceImpl implements ApplicationService {
             // "There is a related application is in doing RFI, please wait for it."
             appError = MessageUtil.getMessageDesc("PRF_ERR014");
             canRFI = AppConsts.NO;
-        } else if (ApplicationConsts.PAYMENT_STATUS_GIRO_RETRIGGER.equals(map.get(HcsaAppConst.STATUS_PMT))) {
+        } else if (ApplicationConsts.PAYMENT_STATUS_GIRO_RETRIGGER.equals(map.get(HcsaAppConst.STATUS_PMT)) && !isApproveAction) {
             // The application is pending payment
             appError = MessageUtil.getMessageDesc("NEW_ERR0023");
+            canRFI = AppConsts.NO;
+        } else if (AppConsts.YES.equals(map.get(ApplicationConsts.STATUS_END)) && !isApproveAction) {
+            // There is an approved application in the group, Cannot do RFI or edit
+            appError = MessageUtil.replaceMessage("GENERAL_ERR0061", "edited", "action");
             canRFI = AppConsts.NO;
         } else {
             String appGrpStatus = map.get(HcsaAppConst.STATUS_GRP);
@@ -1417,7 +1425,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 // "There is a related application is waiting for synchronization, please wait and try it later."
                 appError = MessageUtil.getMessageDesc("PRF_ERR015");
                 canRFI = AppConsts.NO;
-            } else if (!ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED.equals(appGrpStatus)) {
+            } else if (!ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED.equals(appGrpStatus) && !isApproveAction) {
                 // "The application can't be edited."
                 appError = MessageUtil.replaceMessage("GENERAL_ERR0061",
                         "edited", "action");
@@ -1428,6 +1436,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
         result.put(HcsaAppConst.CAN_RFI, canRFI);
         log.info(StringUtil.changeForLog("Check Application result: " + result));
+
         return result;
     }
 
@@ -1478,7 +1487,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public Map<String, String> checkDataForEditApp(int check, String curRoleId, String appType, String appGrpNo) {
         log.info(StringUtil.changeForLog("Params: " + check + " | " + curRoleId + " | " + appType + " | " + appGrpNo));
-        Map<String, String> map = new HashMap<>();
+        Map<String, String> map = IaisCommonUtils.genNewHashMap();
         if (check == HcsaAppConst.CHECKED_BTN_SHOW || check == HcsaAppConst.CHECKED_ALL) {
             if (StringUtil.isEmpty(curRoleId) || !StringUtil.isIn(curRoleId, new String[]{
                     RoleConsts.USER_ROLE_ASO,
@@ -1495,8 +1504,9 @@ public class ApplicationServiceImpl implements ApplicationService {
             }
         }
         if (check != HcsaAppConst.CHECKED_BTN_SHOW) {
-            Map<String, String> checkMap = checkApplicationByAppGrpNo(appGrpNo);
-            if (check == HcsaAppConst.CHECKED_BTN_APR) {
+            boolean isBtnApprove = check == HcsaAppConst.CHECKED_BTN_APR;
+            Map<String, String> checkMap = checkApplicationByAppGrpNo(appGrpNo, isBtnApprove);
+            if (isBtnApprove) {
                 if (StringUtil.isIn(appType, new String[]{
                         ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,
                         ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,

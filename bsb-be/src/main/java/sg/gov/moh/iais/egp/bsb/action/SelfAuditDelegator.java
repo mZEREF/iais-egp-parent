@@ -41,9 +41,9 @@ import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_AUDIT_STATUS
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_DO_DECISION;
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_DO_REMARKS;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_APPROVED;
-import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_AO;
-import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_DO;
-import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_INPUT;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_AO_APPROVAL;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_APPLICANT_INPUT;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_DO_RECOMMENDATION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST;
 
 /**
@@ -169,7 +169,7 @@ public class SelfAuditDelegator {
         OfficerProcessAuditDto dto = getProcessDto(request);
         dto.setProcessDecision(dto.getDoDecision());
         dto.setAuditAppStatus(PARAM_AUDIT_STATUS_PENDING_AO);
-        dto.setAppStatus(APP_STATUS_PEND_AO);
+        dto.setAppStatus(APP_STATUS_PEND_AO_APPROVAL);
         auditClientBE.officerProcessSelfAudit(dto);
     }
 
@@ -179,7 +179,8 @@ public class SelfAuditDelegator {
         dto.setProcessDecision(dto.getDoDecision());
         dto.setAuditStatus(PARAM_AUDIT_STATUS_PENDING_APPLICANT_INPUT);
         dto.setAuditAppStatus(PARAM_AUDIT_STATUS_PENDING_APPLICANT_INPUT);
-        dto.setAppStatus(APP_STATUS_PEND_INPUT);
+        // TODO: check this app status
+        dto.setAppStatus(APP_STATUS_PEND_APPLICANT_INPUT);
         auditClientBE.officerProcessSelfAudit(dto);
     }
 
@@ -188,7 +189,7 @@ public class SelfAuditDelegator {
         OfficerProcessAuditDto dto = getProcessDto(request);
         dto.setProcessDecision(dto.getDoDecision());
         dto.setAuditAppStatus(PARAM_AUDIT_STATUS_PENDING_AO);
-        dto.setAppStatus(APP_STATUS_PEND_AO);
+        dto.setAppStatus(APP_STATUS_PEND_AO_APPROVAL);
         auditClientBE.officerProcessSelfAudit(dto);
     }
 
@@ -198,7 +199,7 @@ public class SelfAuditDelegator {
         dto.setProcessDecision(dto.getAoDecision());
         dto.setAuditStatus(PARAM_AUDIT_STATUS_PENDING_DO);
         dto.setAuditAppStatus(PARAM_AUDIT_STATUS_PENDING_DO);
-        dto.setAppStatus(APP_STATUS_PEND_DO);
+        dto.setAppStatus(APP_STATUS_PEND_DO_RECOMMENDATION);
         auditClientBE.officerProcessSelfAudit(dto);
     }
 

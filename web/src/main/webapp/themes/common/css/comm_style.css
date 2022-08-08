@@ -90,3 +90,70 @@ p, span {
     margin-top: 8px;
     margin-bottom: 8px;
 }
+
+input.disabled-placeHolder::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color:#999999 !important;
+}
+.disabled-placeHolder:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color:#999999!important;
+}
+.disabled-placeHolder::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color:#999999!important;
+}
+input.disabled-placeHolder:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color:#999999!important;
+}
+input.disabled-placeHolder::-ms-input-placeholder { /* Microsoft Edge */
+    color:#999999!important;
+}
+.radio-disabled::before{
+    background-color: #999999 !important;
+    /*border: 1px solid #999999 !important;*/
+}
+.radio-disabled{
+    border-color: #999999 !important;
+}
+input.allDay {
+    -ms-transform: scale(2,2); /* IE */
+    -moz-transform: scale(2,2); /* FireFox */
+    -webkit-transform: scale(2,2); /* Safari and Chrome */
+    -o-transform: scale(2,2); /* Opera */
+}
+
+.input-padding {
+    padding-right:5px;
+    padding-left: 15px;
+}
+
+.label-padding {
+    padding-left: 0px;
+    padding-top: 14px;
+    margin-left: -3px;
+}
+
+.multi-sel-padding {
+    padding-bottom: 15px;
+}
+
+.all-day-position {
+    margin: 14px 20px 20px 5px;
+    padding: 0;
+}
+
+.form-check.form-check-1 {
+    margin-left: 30px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+.form-check.form-check-2 {
+    margin-left: 60px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+.form-check.form-check-3 {
+    margin-left: 90px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}

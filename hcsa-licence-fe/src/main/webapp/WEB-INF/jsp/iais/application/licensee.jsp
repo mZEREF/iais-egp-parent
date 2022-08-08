@@ -66,4 +66,12 @@
         </c:if>
     });
 
+    function checkNextNavTab() {
+        <c:if test="${onlyNextTab}">
+        return "premises";
+        </c:if>
+        <c:if test="${!onlyNextTab}">
+        return "";
+        </c:if>
+    }
 </script>

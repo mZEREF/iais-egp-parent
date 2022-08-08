@@ -22,8 +22,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_INBOX_APPLICATION;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_INBOX_APPLICATION_FACILITY_ADMIN;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INTERNAL_INBOX;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.INBOX_APP_SEARCH_STATUS_FAC;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_CODE_VALIDATION_FAIL;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_INFO_ERROR_MSG;
 import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_APP_STATUS_OPS;
@@ -58,14 +59,11 @@ public class BsbInboxAppDelegator {
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_INBOX_APP_SEARCH_DTO);
-        AuditTrailHelper.auditFunction(MODULE_INTERNAL_INBOX, FUNCTION_INBOX_APPLICATION);
+        AuditTrailHelper.auditFunction(MODULE_INTERNAL_INBOX, FUNCTION_INBOX_APPLICATION_FACILITY_ADMIN);
     }
 
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-
-        // get search DTO
-
         //dashboard get draft
         InboxAppSearchDto searchDto = getSearchDto(request);
         String searchStatus = request.getParameter(KEY_SEARCH_STATUS);
@@ -94,9 +92,8 @@ public class BsbInboxAppDelegator {
 
         List<SelectOption> processTypeOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_PRO_TYPE);
         ParamUtil.setRequestAttr(request, KEY_PROCESS_TYPE_OPS, processTypeOps);
-        // TODO: liran update app status option
-        List<SelectOption> appStatusOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_APP_STATUS);
-        ParamUtil.setRequestAttr(request, KEY_APP_STATUS_OPS, appStatusOps);
+        // inbox search app FAC status
+        ParamUtil.setRequestAttr(request, KEY_APP_STATUS_OPS, INBOX_APP_SEARCH_STATUS_FAC);
         List<SelectOption> appTypeOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_APP_TYPE);
         ParamUtil.setRequestAttr(request, KEY_APP_TYPE_OPS, appTypeOps);
     }

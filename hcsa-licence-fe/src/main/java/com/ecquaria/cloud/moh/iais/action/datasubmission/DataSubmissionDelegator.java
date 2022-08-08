@@ -54,6 +54,8 @@ public class DataSubmissionDelegator {
             crud_action_type_ds = (String)ParamUtil.getSessionAttr(bpc.request,"DsModleSelect");
         }
         ParamUtil.setSessionAttr(bpc.request,"DsModleSelect",crud_action_type_ds);
+        String isGuide = ParamUtil.getString(bpc.request, DataSubmissionConstant.LDT_IS_GUIDE);
+        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.LDT_IS_GUIDE, isGuide);
         ComplianceDto  complianceDto = new ComplianceDto();
         complianceDto.setSubmissionType(crud_action_type_ds);
         switch (crud_action_type_ds){

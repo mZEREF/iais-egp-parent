@@ -992,7 +992,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                         //set svc doc title
                         Map<String, List<AppSvcDocDto>> reloadSvcDocMap = ApplicationHelper.genSvcDocReloadMap(svcDocConfig,
                                 newPremisesDtos, appSvcRelatedInfoDto);
-                        appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
+//                        appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
                         appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
                         // sort po and dpo
                         appSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(
@@ -1245,10 +1245,10 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 crudActionValue = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
             }
         }
+        boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
         Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request, HcsaAppConst.REQUESTINFORMATIONCONFIG);
         if ((ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
-                || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(
-                appSubmissionDto.getAppType())) && requestInformationConfig == null) {
+                || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) && !isRfi) {
             String crud_action_additional = ParamUtil.getString(bpc.request, "crud_action_additional");
             if ("rfcSaveDraft".equals(crud_action_additional)) {
                 crudActionValue = "saveDraft";

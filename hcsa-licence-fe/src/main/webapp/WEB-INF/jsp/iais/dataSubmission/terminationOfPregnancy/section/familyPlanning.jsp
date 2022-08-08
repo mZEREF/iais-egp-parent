@@ -44,6 +44,7 @@
         <iais:field width="5" value="First Day of Last Menstrual Period" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:datePicker name="firstDayOfLastMenstPer" value="${familyPlanDto.firstDayOfLastMenstPer}"/>
+            <span class="error-msg" name="iaisErrorMsg" id="error_firstDayOfLastMenstPer"></span>
         </iais:value>
     </iais:row>
     <%--<iais:row>

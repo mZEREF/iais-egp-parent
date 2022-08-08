@@ -408,6 +408,7 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "appealRecommendationValueOnlyShow", "");
         ParamUtil.setSessionAttr(bpc.request, "isDMS", null);
         ParamUtil.setSessionAttr(bpc.request, "finalStage", Boolean.FALSE);
+        ParamUtil.setSessionAttr(bpc.request,"aoSelect",null);
         vehicleCommonController.clearVehicleInformationSession(bpc.request);
         ParamUtil.setSessionAttr(bpc.request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,null);
         SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(bpc.request, "backendinboxSearchParam");
@@ -3992,9 +3993,6 @@ public class HcsaApplicationDelegator {
                 LicAppCorrelationDto licAppCorrelationDto = hcsaLicenceClient.getOneLicAppCorrelationByApplicationId(applicationDto.getId()).getEntity();
                 LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(licAppCorrelationDto.getLicenceId()).getEntity();
                 String licenceNo=licenceDto.getLicenceNo();
-                String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
-                String corpPassUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + "/main-web/eservice/INTERNET/FE_Landing";
-                HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
 
                 String applicationNo = applicationDto.getApplicationNo();
                 log.debug(StringUtil.changeForLog("send approve email --- get app by applicationNo : " + applicationNo));
@@ -4002,8 +4000,7 @@ public class HcsaApplicationDelegator {
                 LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenceDto.getLicenseeId()).getEntity();
                 String appGrpId = applicationDto.getAppGrpId();
                 ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(appGrpId).getEntity();
-                String appDate = Formatter.formatDateTime(new Date(), "dd/MM/yyyy");
-                String MohName = AppConsts.MOH_AGENCY_NAME;
+
                 String applicationTypeShow = MasterCodeUtil.getCodeDesc(applicationType);
                 log.info(StringUtil.changeForLog("send notification applicationType : " + applicationTypeShow));
                 OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
@@ -4011,31 +4008,45 @@ public class HcsaApplicationDelegator {
                 if(licenseeDto != null && orgUserDto != null){
                     String applicantName = orgUserDto.getDisplayName();
                     log.info(StringUtil.changeForLog("send notification applicantName : " + applicantName));
-                    String organizationId = licenseeDto.getOrganizationId();
-                    OrganizationDto organizationDto = organizationClient.getOrganizationById(organizationId).getEntity();
-
+                    AppPremisesRecommendationDto  inspectionRecommendation = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(applicationViewDto.getAppPremisesCorrelationId(), InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION).getEntity();
+                    String mesContext=null;
+                    String subject =null;
+                    EmailParam emailParam=null;
                     if(applicationDto.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)){
-                        AppPremisesRecommendationDto  inspectionRecommendation = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(applicationViewDto.getAppPremisesCorrelationId(), InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION).getEntity();
-                        EmailParam emailParam=sendNewAppApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate,licenceNo,svcDto,loginUrl,corpPassUrl,MohName,organizationDto,inspectionRecommendation,applicationViewDto.getHciAddress());
-                        String mesContext=null;
-                        String subject =null;
+                        String organizationId = licenseeDto.getOrganizationId();
+                        OrganizationDto organizationDto = organizationClient.getOrganizationById(organizationId).getEntity();
+
+                        emailParam=sendNewAppApproveNotification(applicantName,applicationTypeShow,applicationNo,licenceNo,organizationDto,inspectionRecommendation);
+                    }
+                    if(applicationDto.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_RENEWAL)){
+                        emailParam=sendRenewalAppApproveNotification(applicantName,applicationTypeShow,applicationNo,licenceNo,inspectionRecommendation);
+                    }
+                    if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
+                        if(applicationGroupDto.getNewLicenseeId()==null){
+                            emailParam=sendRfcApproveNotification(applicantName,applicationTypeShow,applicationNo);
+                        }
+                        //transfee
+                        if(applicationGroupDto.getNewLicenseeId()!=null){
+                            emailParam=sendRfcApproveLicenseeEmail(applicationGroupDto,applicationDto,licenceNo);
+                        }
+                    }
+                    if(emailParam!=null){
                         MsgTemplateDto msgTemplateDto = generateIdClient.getMsgTemplate(emailParam.getTemplateId()).getEntity();
                         Map<String, Object> templateContent = emailParam.getTemplateContent();
                         subject = emailParam.getSubject();
-
                         try {
                             mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), templateContent);
                         }catch (IOException | TemplateException e) {
                             log.error(e.getMessage(), e);
                             throw new IaisRuntimeException(e);
                         }
-
-                        emailDto=new AppPremisesUpdateEmailDto();
-                        emailDto.setAppPremCorrId(applicationViewDto.getAppPremisesCorrelationId());
-                        emailDto.setEmailType(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL);
-                        emailDto.setSubject(subject);
-                        emailDto.setMailContent(mesContext);
                     }
+
+                    emailDto=new AppPremisesUpdateEmailDto();
+                    emailDto.setAppPremCorrId(applicationViewDto.getAppPremisesCorrelationId());
+                    emailDto.setEmailType(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL);
+                    emailDto.setSubject(subject);
+                    emailDto.setMailContent(mesContext);
                 }
             }
 
@@ -4636,17 +4647,17 @@ public class HcsaApplicationDelegator {
     }
 
     private EmailParam sendNewAppApproveNotification(String applicantName,
-                                               String applicationTypeShow,
-                                               String applicationNo,
-                                               String appDate,
-                                               String licenceNo,
-                                               HcsaServiceDto hcsaServiceDto,
-                                               String loginUrl,
-                                               String corpPassUrl,
-                                               String MohName,
-                                               OrganizationDto organizationDto,
-                                               AppPremisesRecommendationDto inspectionRecommendation,
-                                                     String mosd){
+                                                     String applicationTypeShow,
+                                                     String applicationNo,
+                                                     String licenceNo,
+                                                     OrganizationDto organizationDto,
+                                                     AppPremisesRecommendationDto inspectionRecommendation
+    ){
+        String appDate = Formatter.formatDateTime(new Date(), "dd/MM/yyyy");
+        String MohName = AppConsts.MOH_AGENCY_NAME;
+        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
+        String corpPassUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + "/main-web/eservice/INTERNET/FE_Landing";
+
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         map.put("ApplicantName", applicantName);
         map.put("ApplicationType", applicationTypeShow);
@@ -4655,9 +4666,7 @@ public class HcsaApplicationDelegator {
         map.put("licenceNumber", licenceNo);
         map.put("isSpecial", "N");
         map.put("isCorpPass", "N");
-        map.put("svcNameMOSD", hcsaServiceDto.getSvcName()+"("+mosd+")");
-        map.put("SpecialisedOrDiscipline", "N");
-        map.put("ss1ss2", "N");
+
         if(inspectionRecommendation != null){
             map.put("inInspection", "Y");
             map.put("inspectionText", inspectionRecommendation.getRemarks());
@@ -4699,6 +4708,119 @@ public class HcsaApplicationDelegator {
         emailParam.setRefId(applicationNo);
         emailParam.setSubject(emailSubject);
         //send email
+        return emailParam;
+    }
+
+    private EmailParam sendRenewalAppApproveNotification(String applicantName,
+                                                         String applicationTypeShow,
+                                                         String applicationNo,
+                                                         String licenceNo,
+                                                         AppPremisesRecommendationDto inspectionRecommendation){
+        String MohName = AppConsts.MOH_AGENCY_NAME;
+        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        String appDate = Formatter.formatDateTime(new Date(), "dd/MM/yyyy");
+        map.put("ApplicantName", applicantName);
+        map.put("ApplicationType", applicationTypeShow);
+        map.put("ApplicationNumber", applicationNo);
+        map.put("applicationDate", appDate);
+        map.put("licenceNumber", licenceNo);
+        map.put("isSpecial", "N");
+        if(inspectionRecommendation != null){
+            map.put("inInspection", "Y");
+            map.put("inspectionText", inspectionRecommendation.getRemarks());
+        }else {
+            map.put("inInspection", "N");
+        }
+        map.put("systemLink", loginUrl);
+
+        map.put("createHyperlink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_CREATE_LINK));
+        map.put("regulationLink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_REGULATIONS_LINK));
+        map.put("link", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_LINK));
+        map.put("scdfLink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_SCDF_LINK));
+        map.put("momLink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_MOM_LINK));
+        map.put("irasLink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_IRAS_LINK));
+
+        map.put("phoneNumber", systemPhoneNumber);
+        map.put("emailAddress1", systemAddressOne);
+        map.put("emailAddress2", systemAddressTwo);
+        map.put("MOH_AGENCY_NAME", MohName);
+        //            String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ applicationNo +" is approved ";
+        Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
+        subMap.put("ApplicationType", applicationTypeShow);
+        subMap.put("ApplicationNumber", applicationNo);
+        String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_APPROVE,subMap);
+        log.debug(StringUtil.changeForLog("emailSubject : " + emailSubject));
+        EmailParam emailParam = new EmailParam();
+        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_APPROVE);
+        emailParam.setTemplateContent(map);
+        emailParam.setQueryCode(applicationNo);
+        emailParam.setReqRefNum(applicationNo);
+        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+        emailParam.setRefId(applicationNo);
+        emailParam.setSubject(emailSubject);
+        //send email
+
+        return emailParam;
+    }
+
+    private EmailParam sendRfcApproveLicenseeEmail(ApplicationGroupDto applicationGroupDto, ApplicationDto applicationDto, String licenceNo) {
+        String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
+        Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+        LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(applicationGroupDto.getLicenseeId()).getEntity();
+        LicenseeDto newLicenseeDto = organizationClient.getLicenseeDtoById(applicationGroupDto.getNewLicenseeId()).getEntity();
+        String applicantName = licenseeDto.getName();
+        emailMap.put("name_transferee", newLicenseeDto.getName());
+        emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
+        emailMap.put("ApplicationNumber", applicationDto.getApplicationNo());
+        emailMap.put("ApplicationDate", Formatter.formatDate(new Date()));
+        emailMap.put("ExistingLicensee", applicantName);
+        emailMap.put("transferee_licensee", newLicenseeDto.getName());
+        emailMap.put("LicenceNumber", licenceNo);
+        emailMap.put("specialText", "");
+        //emailMap.put("Hypelink", loginUrl);
+        emailMap.put("isSpecial", "N");
+        emailMap.put("createHyperlink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_CREATE_LINK));
+        emailMap.put("HCSA_Regulations", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_REGULATIONS_LINK));
+        emailMap.put("Number", systemPhoneNumber);
+        emailMap.put("email_1", systemAddressOne);
+        emailMap.put("Email_2", systemAddressTwo);
+        emailMap.put("systemLink", loginUrl);
+        emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
+        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+        EmailParam emailParam = new EmailParam();
+        emailParam.setTemplateContent(emailMap);
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        MsgTemplateDto templateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_007_LICENSEE_APPROVED).getEntity();
+        map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
+        map.put("ApplicationNumber", applicationDto.getApplicationNo());
+        String subject =  getEmailSubject(templateDto.getTemplateName(), map);
+
+        emailParam.setSubject(subject);
+        return emailParam;
+    }
+
+    private EmailParam sendRfcApproveNotification(String applicantName, String applicationTypeShow, String applicationNo) {
+        String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
+        Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+        String appDate = Formatter.formatDateTime(new Date(), "dd/MM/yyyy");
+        emailMap.put("change", "true");
+        emailMap.put("ApplicantName", applicantName);
+        emailMap.put("ApplicationType", applicationTypeShow);
+        emailMap.put("ApplicationNumber", applicationNo);
+        emailMap.put("ApplicationDate", appDate);
+        emailMap.put("systemLink", loginUrl);
+        emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
+        emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+        EmailParam emailParam = new EmailParam();
+        emailParam.setTemplateContent(emailMap);
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        MsgTemplateDto templateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_003_APPROVED_PAYMENT).getEntity();
+        map.put("ApplicationType", applicationTypeShow);
+        map.put("ApplicationNumber", applicationNo);
+        String subject =  getEmailSubject(templateDto.getTemplateName(), map);
+
+        emailParam.setSubject(subject);
         return emailParam;
     }
 }

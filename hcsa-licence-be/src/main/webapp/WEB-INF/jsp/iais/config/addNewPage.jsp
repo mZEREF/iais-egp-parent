@@ -5,7 +5,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page import="com.ecquaria.cloud.RedirectUtil" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
 <webui:setLayout name="iais-intranet"/>
 
@@ -694,7 +694,7 @@
                             placeholder="minimum count" needErrorSpan="true"/>
               </div>
               <div class="col-xs-12 col-md-2">
-                <iais:input maxLength="2" type="text" name="mix-SPD" value="${SPDE.maximumCount}"
+                <iais:input maxLength="2" type="text" name="mix-SPDE" value="${SPDE.maximumCount}"
                             placeholder="maximum count" needErrorSpan="false"/>
                 <span class="error-msg" name="iaisErrorMsg" id="error_mix-SPDE"></span>
               </div>
@@ -963,14 +963,13 @@
                               <p>${hcsaSvcSpeRoutingSchemeDto.getInsOderName()}</p>
                             </c:forEach>
                           </c:if>
-                         <%-- <span  name="iaisErrorMsg" class="error-msg" id="error_schemeType${routingStages.key}${status.index}"></span>--%>
                         </div>
                       </td>
 
                       <td>
                         <div class="col-xs-12 col-md-12" style="text-align:left">
                           <input style="margin: 0px 0px" type="text" maxlength="2" name="manhours${routingStage.stageCode}${routingStages.key}" value="${routingStage.manhours}" >
-                          <span class="error-msg" name="iaisErrorMsg" id="error_manhourCount${routingStages.key}${status.index}"></span>
+                          <span class="error-msg" name="iaisErrorMsg" id="error_manhours${routingStage.stageCode}${routingStages.key}"></span>
                         </div>
                       </td>
 
@@ -1001,147 +1000,65 @@
             <label class="col-xs-12 col-md-7 control-label" >Category / Discipline (Section Header)</label>
             <div class="col-xs-10 col-md-4">
               <div class="components">
-                <input type="text" maxlength="100" value="${pageName}" name="pageName">
-                <span name="iaisErrorMsg" class="error-msg" id="error_pageName"></span>
+                <input type="text" maxlength="100" value="${hcsaServiceConfigDto.hcsaServiceCategoryDisciplineDtoMap['PERMANENT'].sectionHeader}" name="PERMANENT-sectionHeader">
+                <span name="iaisErrorMsg" class="error-msg" id="error_PERMANENT-sectionHeader"></span>
               </div>
             </div>
           </div>
-          <div class="col-xs-12 col-md-9 marg-1">
-            <label class="col-xs-12 col-md-7 control-label" >Category / Discipline</label>
-            <div class="col-xs-10 col-md-4">
-              <div class="components">
-                <input type="text" maxlength="100" value="${categoryPermanent}" name="categoryPermanent">
-                <span name="iaisErrorMsg" class="error-msg" id="error_pageName3"></span>
+          <c:if test="${hcsaServiceConfigDto.hcsaServiceCategoryDisciplineDtoMap !=null}">
+            <c:forEach items="${hcsaServiceConfigDto.hcsaServiceCategoryDisciplineDtoMap['PERMANENT'].categoryDisciplineDtos}" var = "categoryDisciplineDto">
+              <div class="add col-xs-12 col-md-9 marg-1">
+                <label class="col-xs-12 col-md-7 control-label" >Category / Discipline</label>
+                <div class="col-xs-10 col-md-4">
+                  <input type="text" maxlength="100" value="${categoryDisciplineDto.categoryDiscipline}" name="PERMANENT-categoryDisciplines">
+                  <span class="error-msg" >${categoryDisciplineDto.errorMsg}</span>
+                </div>
+                <div class="col-xs-12 col-md-1">
+                  <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
+                </div>
               </div>
-            </div>
-          </div>
-          <div class="add col-xs-12 col-md-9 marg-1">
-            <label class="col-xs-12 col-md-7 control-label" >Category / Discipline</label>
-            <div class="col-xs-10 col-md-4">
-              <input type="text" maxlength="100" value="${categoryPermanent}" name="categoryPermanent">
-            </div>
-            <div class="col-xs-12 col-md-1">
-              <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
-            </div>
-          </div>
-
-
-
+            </c:forEach>
+          </c:if>
           <div class="col-xs-12 col-md-12">
-            <a  class="btn  btn-secondary "   style="margin-right: 10px" id="addCategory" onclick="addCategory(this)"> + </a><label for="addCategory"> Add Item</label>
+            <a  class="btn  btn-secondary "   style="margin-right: 10px" id="addCategory" onclick="addCategory(this,'PERMANENT-categoryDisciplines')"> + </a><label for="addCategory"> Add Item</label>
           </div>
+
           <div class="col-xs-12 col-md-9 marg-1">
             <label class="col-xs-12 col-md-7 control-label" >Specialised Services (Section Header)</label>
             <div class="col-xs-10 col-md-4">
               <div class="components">
-                <input type="text" maxlength="100" value="${pageName}" name="pageName">
-                <span name="iaisErrorMsg" class="error-msg" id="error_pageName2"></span>
+                <input type="text" maxlength="100" value="${hcsaServiceConfigDto.specHcsaServiceSubServicePageDtoMap['PERMANENT'].sectionHeader}" name="PERMANENT-SVTP003-sectionHeader">
+                <span name="iaisErrorMsg" class="error-msg" id="error_PERMANENT-SVTP003-sectionHeader"></span>
               </div>
             </div>
           </div>
 
-          <div >
-            <div class="view col-xs-12 col-md-12"  style="margin-top: 20px ;margin-bottom: 20px">
-              <div class="col-xs-12 col-md-5" style="padding-right: 20%;" >
-                <iais:select name="specHcsaServiceAdd" options="specHcsaServiceOptions" firstOption="Please Select"/>
-              </div>
-              <div class="value">
-                <input type="text" value="0" name="level" style="display: none">
-              </div>
-              <div  class="col-xs-12 col-md-2" style="padding-left: 3%;" >
-                <a class="btn  btn-secondary  view"  onclick="indents(this)"   >indent</a>
-              </div>
-              <div  class="col-xs-12 col-md-2" >
-                <a class="btn  btn-secondary view"  onclick="outdent(this)" >outdent</a>
-              </div>
-              <div class="col-xs-12 col-md-1">
-                <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
-              </div>
-            </div>
-
-          </div>
-
-          <c:set value="1" var="j"></c:set>
-            <c:forEach items="${hcsaSvcSubtypeOrSubsumedDto}" var="hcsaSvcSubtypeOrSubsumed" varStatus="index">
-              <div class="view col-xs-12 col-md-12" >
-                <div class="col-xs-12 col-md-4" style="padding-right: 20%;" >
-                  <input class="add" type="text"  style="margin-left:0px" name="subType" maxlength="100" value="${hcsaSvcSubtypeOrSubsumed.name}">
-                  <span name="iaisErrorMsg" class="error-msg white-space" id="error_hcsaSvcSubtypeOrSubsumed${j}"></span>
-                  <c:set value="${j+1}" var="j"></c:set>
-                </div>
-                <div class="value">
-                  <input type="text" value="0" name="level" style="display: none">
-                </div>
-                <div  class="col-xs-12 col-md-2" >
-                  <a class="btn  btn-secondary  view"  onclick="indents(this)"   >indent</a>
-                </div>
-                <div  class="col-xs-12 col-md-2">
-                  <a class="btn  btn-secondary view"  onclick="outdent(this)" >outdent</a>
-                </div>
-                <div class="col-xs-12 col-md-2 up">
-                  <a class="btn  btn-secondary up view" onclick="up(this)" style="margin-bottom: 10%;width:60%;">UP</a>
-                  <a class="btn  btn-secondary down view" onclick="down(this)" style="margin-bottom: 10%;width:60%;">DOWN</a>
-                </div>
-                <div class="col-xs-12 col-md-2">
-                  <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
-                </div>
-              </div>
-              <c:forEach items="${hcsaSvcSubtypeOrSubsumed.list}" var="hcsaSvcSubtypeOrSubsumed2">
-                <div class="view col-xs-12 col-md-12">
-                  <div class="col-xs-12 col-md-4" style="padding-right: 20%;" >
-                    <input class="add" type="text"  style="margin-left:60px" maxlength="100" name="subType" value="${hcsaSvcSubtypeOrSubsumed2.name}">
-                    <span style="margin-left:60px" name="iaisErrorMsg" class="error-msg white-space"  id="error_hcsaSvcSubtypeOrSubsumed${j}"></span>
-                    <c:set value="${j+1}" var="j"></c:set>
+            <c:if test="${hcsaServiceConfigDto.specHcsaServiceSubServicePageDtoMap !=null}">
+              <c:forEach items="${hcsaServiceConfigDto.specHcsaServiceSubServicePageDtoMap['PERMANENT'].hcsaServiceSubServiceErrorsDtos}" var = "hcsaServiceSubServiceErrorsDto">
+                <div class="add col-xs-12 col-md-12"  style="margin-top: 20px ;margin-bottom: 20px">
+                  <div class="col-xs-12 col-md-5" style="padding-right: 20%;margin-left: ${hcsaServiceSubServiceErrorsDto.marginLeft} px" >
+                    <iais:select name="PERMANENT-SVTP003-subServiceCodes" options="specHcsaServiceOptions" firstOption="Please Select" value="${hcsaServiceSubServiceErrorsDto.subServiceCode}"/>
+                    <span name= class="error-msg" >${hcsaServiceSubServiceErrorsDto.errorMsg}</span>
                   </div>
-
                   <div class="value">
-                    <input type="text" value="1" name="level" style="display: none" >
+                    <input type="text" value="${hcsaServiceSubServiceErrorsDto.level}" name="PERMANENT-SVTP003-levels" style="display: none">
+                  </div>
+                  <div  class="col-xs-12 col-md-2" style="padding-left: 3%;" >
+                    <a class="btn  btn-secondary  view"  onclick="indents(this)"   >indent</a>
                   </div>
                   <div  class="col-xs-12 col-md-2" >
-                    <a class="btn  btn-secondary  view" onclick="indents(this)"   >indent</a>
-                  </div>
-                  <div  class="col-xs-12 col-md-2">
                     <a class="btn  btn-secondary view"  onclick="outdent(this)" >outdent</a>
                   </div>
-                  <div class="col-xs-12 col-md-2 up">
-                    <a class="btn  btn-secondary up view"onclick="up(this)" style="margin-bottom: 10%;width:60%;">UP</a>
-                    <a class="btn  btn-secondary down view" onclick="down(this)" style="margin-bottom: 10%;width:60%;">DOWN</a>
-                  </div>
-                  <div class="col-xs-12 col-md-2">
+                  <div class="col-xs-12 col-md-1">
                     <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
                   </div>
                 </div>
-                <c:forEach items="${hcsaSvcSubtypeOrSubsumed2.list}" var="hcsaSvcSubtypeOrSubsumed3">
-                  <div class="view col-xs-12 col-md-12">
-                    <div class="col-xs-12 col-md-4" style="padding-right: 20%;" >
-                      <input class="add" type="text"  style="margin-left:120px" maxlength="100" name="subType" value="${hcsaSvcSubtypeOrSubsumed3.name}">
-                      <span name="iaisErrorMsg" style="margin-left:120px" class="error-msg white-space" id="error_hcsaSvcSubtypeOrSubsumed${j}"></span>
-                      <c:set value="${j+1}" var="j"></c:set>
-                    </div>
-
-                    <div class="value">
-                      <input type="text" value="2" name="level" style="display: none" >
-                    </div>
-                    <div  class="col-xs-12 col-md-2" >
-                      <a class="btn  btn-secondary  view" onclick="indents(this)"   >indent</a>
-                    </div>
-                    <div  class="col-xs-12 col-md-2">
-                      <a class="btn  btn-secondary view"  onclick="outdent(this)" >outdent</a>
-                    </div>
-                    <div class="col-xs-12 col-md-2 up">
-                      <a class="btn  btn-secondary up view" onclick="up(this)" style="margin-bottom: 10%;width:60%;">UP</a>
-                      <a class="btn  btn-secondary down view" onclick="down(this)" style="margin-bottom: 10%;width:60%;">DOWN</a>
-                    </div>
-                    <div class="col-xs-12 col-md-2">
-                      <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
-                    </div>
-                  </div>
-                </c:forEach>
               </c:forEach>
-            </c:forEach>
+            </c:if>
+
 
           <div class="col-xs-12 col-md-12">
-            <a  class="btn  btn-secondary "   style="margin-right: 10px" id="addAsItem" onclick="addAsItem(this)"> + </a><label for="addAsItem"> Add Item</label>
+            <a  class="btn  btn-secondary "   style="margin-right: 10px" id="addAsItem" onclick="addAsItem(this,'PERMANENT','SVTP003')"> + </a><label for="addAsItem"> Add Item</label>
           </div>
         </div>
       </div>
@@ -1194,9 +1111,7 @@
 
 <iais:confirm msg="Are you sure you want to cancel?" yesBtnDesc="NO" cancelBtnDesc="YES" yesBtnCls="btn btn-secondary" cancelBtnCls="btn btn-primary" cancelFunc="cancel()" callBack="displays()" popupOrder="cancel"></iais:confirm>
 <script type="text/javascript">
-    $(document).ready(function () {
-        a();
-    });
+
     function cancel() {
 
         SOP.Crud.cfxSubmit("mainForm","back","back","");
@@ -1298,40 +1213,14 @@
 
     function removeThis(obj) {
         $(obj).closest("div").closest("div.add").remove();
-       // a();
     }
 
-/*    function up(obj) {
-        let val = $(obj).closest("div").closest("div.view").children('div.col-xs-12.col-md-4').children("input");
-        let val1 = $(obj).closest("div").closest("div.view").prev("div.view").children('div.col-xs-12.col-md-4').children("input");
-        if("undefined" !=typeof val1.val()){
-            let upValue=val.val();
-            let upValue1=val1.val();
-            val.val(upValue1);
-            val1.val(upValue);
-            val.html(upValue1);
-            val1.html(upValue);
-        }
-    }
 
-    function down(obj) {
-        let val = $(obj).closest("div").closest("div.view").children('div.col-xs-12.col-md-4').children("input");
-        let val1 = $(obj).closest("div").closest("div.view").next("div.view").children('div.col-xs-12.col-md-4').children("input");
-        if("undefined" !=typeof val1.val()){
-            let upValue=val.val();
-            let upValue1=val1.val();
-            val.val(upValue1);
-            val1.val(upValue);
-            val.html(upValue1);
-            val1.html(upValue);
-        }
-    }*/
-
-    function addCategory(obj) {
+    function addCategory(obj,name) {
         $(obj).closest("div").prev("div").after("<div class=\"add col-xs-12 col-md-9 marg-1\">\n" +
             "            <label class=\"col-xs-12 col-md-7 control-label\" >Category / Discipline</label>\n" +
             "            <div class=\"col-xs-10 col-md-4\">\n" +
-            "              <input type=\"text\" maxlength=\"100\" value=\"\" name=\"categoryPermanent\">\n" +
+            "              <input type=\"text\" maxlength=\"100\" value=\"\" name=\""+name+ "\">\n" +
             "            </div>\n" +
             "            <div class=\"col-xs-12 col-md-1\">\n" +
             "              <a class=\"btn  btn-secondary view\"  onclick=\"removeThis(this)\" >-</a>\n" +
@@ -1339,104 +1228,75 @@
             "          </div>");
     }
 
-    function addAsItem(obj) {
-        $(obj).closest("div").prev("div").after(" <div class=\"view col-xs-12 col-md-12\">\n" +
-            "          <div class=\"col-xs-12 col-md-4\" style=\"padding-right: 20%;\" >\n" +
-            "            <input class=\"add\" type=\"text\"  style=\"\" name=\"subType\">\n" +
-            "          </div>\n" +
-            "            <div class=\"value\">\n" +
-            "              <input type=\"text\" value=\"0\" name=\"level\"  style=\"display: none\">\n" +
-            "            </div>\n" +
-            "          <div  class=\"col-xs-12 col-md-2\" >\n" +
-            "            <a class=\"btn  btn-secondary  view\" onclick=\"indents(this)\"   >indent</a>\n" +
-            "          </div>\n" +
-            "          <div  class=\"col-xs-12 col-md-2\">\n" +
-            "            <a class=\"btn  btn-secondary view\"  onclick=\"outdent(this)\" >outdent</a>\n" +
-            "          </div>\n" +
-            "           <div class=\"col-xs-12 col-md-2 up\">\n" +
-            "                    <a class=\"btn  btn-secondary up view\" onclick=\"up(this)\" style=\"margin-bottom: 10%;width:60%;\">UP</a>\n" +
-            "                    <a class=\"btn  btn-secondary down view\" onclick=\"down(this)\" style=\"margin-bottom: 10%;width:60%;\">DOWN</a>\n" +
-            "                  </div>\n" +
-            "                  <div class=\"col-xs-12 col-md-2\">\n" +
-            "                    <a class=\"btn  btn-secondary view\"  onclick=\"removeThis(this)\" >-</a>\n" +
-            "                  </div>"+
-            "          </div>");
-          a();
+    function addAsItem(obj,premisType,specOrOthers) {
+        showWaiting();
+        var data = {
+            'premisType':premisType,
+            'specOrOthers':specOrOthers
+        };
+        var levelName = premisType+"-"+specOrOthers+"-levels";
+        $.ajax({
+            'url':'${pageContext.request.contextPath}/getDropdownSelect',
+            'dataType':'json',
+            'data':data,
+            'type':'POST',
+            'success':function (data) {
+                if('<%=AppConsts.AJAX_RES_CODE_SUCCESS%>' == data.resCode){
+                    $(obj).closest("div").prev("div").after("<div class=\"add col-xs-12 col-md-12\"  style=\"margin-top: 20px ;margin-bottom: 20px\">\n" +
+                        "              <div class=\"col-xs-12 col-md-5\" style=\"padding-right: 20%;\" >\n" + data.resultJson +
+                        "              </div>\n" +
+                        "              <div class=\"value\">\n" +
+                        "                <input type=\"text\" value=\"0\" name=\""+levelName+"\" style=\"display: none\">\n" +
+                        "              </div>\n" +
+                        "              <div  class=\"col-xs-12 col-md-2\" style=\"padding-left: 3%;\" >\n" +
+                        "                <a class=\"btn  btn-secondary  view\"  onclick=\"indents(this)\"   >indent</a>\n" +
+                        "              </div>\n" +
+                        "              <div  class=\"col-xs-12 col-md-2\" >\n" +
+                        "                <a class=\"btn  btn-secondary view\"  onclick=\"outdent(this)\" >outdent</a>\n" +
+                        "              </div>\n" +
+                        "              <div class=\"col-xs-12 col-md-1\">\n" +
+                        "                <a class=\"btn  btn-secondary view\"  onclick=\"removeThis(this)\" >-</a>\n" +
+                        "              </div>\n" +
+                        "            </div>");
+                    $(obj).closest("div").prev("div").children("div").children("div").children("select").niceSelect();
+                }else if('<%=AppConsts.AJAX_RES_CODE_VALIDATE_ERROR%>' == data.resCode){
+
+                }else if('<%=AppConsts.AJAX_RES_CODE_ERROR%>' == data.resCode){
+
+                }
+            },
+            'error':function () {
+
+            }
+        });
+        dismissWaiting();
+
     }
 
-   /*var  a = function upDown() {
-        let length = $('#addAsItem').closest("div").closest("div.Sub-Types").children("div.view").length;
-        if (length == 1) {
-            $('#addAsItem').closest("div").closest("div.Sub-Types").children("div.view").children('.up').attr("style","display: none");
-        } else {
-            $('#addAsItem').closest("div").closest("div.Sub-Types").children("div.view").children('.up').removeAttr("style");
-        }
-    }*/
     function indents(obj) {
-        let jQuery = $(obj).closest('div.view').children("div.col-md-5").children();
-        let jQuery2 = $(obj).closest('div.view').children("div.value").children();
-        var jQuery1 = jQuery.attr("style");
-        if(jQuery1!=""){
-            var length=jQuery1.split(":")[1];
-            var a;
-          if(length.length==5){
-              a=   jQuery1.split(":")[1].substring(0,3);
-          }else if(length.length==4){
-              a=   jQuery1.split(":")[1].substring(0,2);
-          }else if(length.length==3){
-              a=   jQuery1.split(":")[1].substring(0,1);
-          }
-
-          a= parseInt(a)+60;
-          if(a>=120){
-
-              $(jQuery).attr("style","margin-left:"+120+"px");
-
-              jQuery2.val(2);
-          }else {
-
-              $(jQuery).attr("style","margin-left:"+a+"px");
-
-              jQuery2.val(parseInt(jQuery2.val())+1);
-
-             ;
-          }
-        }else {
-            jQuery2.val(parseInt(jQuery2.val())+1);
-            $(jQuery).attr("style","margin-left:60px");
-
+        let serviceDropdown = $(obj).closest('div.add').children("div.col-md-5");
+        var level = $(obj).closest('div.add').children("div.value").children();
+        var levelValue = parseInt($(level).val());
+        console.log(levelValue);
+        if(levelValue <2){
+            var length = 60 + 60*levelValue;
+            $(serviceDropdown).attr("style","padding-right: 20%;margin-left:"+length+"px");
+            $(level).attr("value",levelValue+1);
         }
     }
 
     function outdent(obj) {
-        let jQuery = $(obj).closest('div.view').children("div.col-md-5").children();
-        let jQuery2 = $(obj).closest('div.view').children("div.value").children();
-        var jQuery1 = jQuery.attr("style");
-        if(jQuery1!=""){
-            var length=jQuery1.split(":")[1];
-            var a;
-            if(length.length==6){
-                a=   jQuery1.split(":")[1].substring(0,4);
-            }else if(length.length==5){
-                a=   jQuery1.split(":")[1].substring(0,3);
-            }else if(length.length==4){
-                a=   jQuery1.split(":")[1].substring(0,2);
-            }else if(length.length==3){
-                a=   jQuery1.split(":")[1].substring(0,1);
-            }
-            a= parseInt(a)-60;
-            if(a<=0){
-                $(jQuery).attr("style","margin-left:"+0+"px");
-                jQuery2.val(0);
-            }else {
-                $(jQuery).attr("style","margin-left:"+a+"px");
-                jQuery2.val(parseInt(jQuery2.val())-1);
-            }
+        var serviceDropdown = $(obj).closest('div.add').children("div.col-md-5");
+        var level = $(obj).closest('div.add').children("div.value").children();
+        var levelValue = parseInt($(level).val());
+        console.log(levelValue);
+        if(levelValue >0){
+            levelValue = levelValue-1;
+            var length =  60*levelValue;
+            $(serviceDropdown).attr("style","padding-right: 20%;margin-left:"+length+"px");
+            $(level).attr("value",levelValue);
 
-        }else {
-            $(jQuery).attr("style","")
         }
-
     }
 
 

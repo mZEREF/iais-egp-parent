@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaConfigPageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCategoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcCateWrkgrpCorrelationDto;
@@ -46,6 +47,8 @@ public interface ConfigService {
     List<String> getType();
 
     List<HcsaSvcCateWrkgrpCorrelationDto> getHcsaSvcCateWrkgrpCorrelationDtoBySvcCateId(String svcCateId);
+
+    public List<HcsaServiceCategoryDto> getHcsaServiceCategoryDto() ;
 
     Map<String,String> getMaskHcsaServiceCategory();
 

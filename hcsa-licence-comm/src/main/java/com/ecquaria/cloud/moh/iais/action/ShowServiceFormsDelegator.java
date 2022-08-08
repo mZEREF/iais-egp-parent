@@ -62,10 +62,9 @@ public class ShowServiceFormsDelegator {
         String actionTab = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
         if(StringUtil.isEmpty(actionTab)){
             actionTab = getFirstTab(bpc);
-            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB,getFirstTab(bpc));
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB, actionTab);
         }
 
-//        String svcId = serviceConfigService.getSvcIdBySvcCode(actionTab);
         List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
         String svcId = "";
         if(!IaisCommonUtils.isEmpty(hcsaServiceDtos)){
@@ -95,7 +94,7 @@ public class ShowServiceFormsDelegator {
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.CURRENTSERVICEID, svcId);
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.CURRENTSVCCODE, actionTab);
         log.info(StringUtil.changeForLog("serviceStepDto:"+ JsonUtil.parseToJson(serviceStepDto)));
-        ParamUtil.setSessionAttr(bpc.request, SERVICESTEPDTO, (Serializable) serviceStepDto);
+        ParamUtil.setSessionAttr(bpc.request, SERVICESTEPDTO, serviceStepDto);
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.FORM_TAB,IaisEGPConstant.YES);
         log.debug(StringUtil.changeForLog("the do prepareSwitch end ...."));
     }

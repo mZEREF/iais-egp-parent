@@ -147,7 +147,7 @@ public class TerminationValidator implements CustomizeValidator {
                 }
             }
         }else if("false".equals(terminationDto.getTopDoctorInformations())){
-            if (!DataSubmissionConstant.TOP_DOCTOR_INFO_FROM_PRS.equals(doctorInformationDto.getDoctorSource())) {
+            if (doctorInformationDto != null && !DataSubmissionConstant.TOP_DOCTOR_INFO_FROM_PRS.equals(doctorInformationDto.getDoctorSource())) {
                 if (StringUtil.isEmpty(doctorInformationDto.getSpeciality())) {
                     errorMap.put("dSpecialitys", "GENERAL_ERR0006");
                 } else if (StringUtil.isNotEmpty(doctorInformationDto.getSpeciality()) && doctorInformationDto.getSpeciality().length() > 1024) {

@@ -91,7 +91,10 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     public void processLicence() {
         log.info("start processLicence");
         String path = sharedPath + "/" + LICENCE_FILE + DATE_STR + ".txt";
+        log.info("start generate licenceFile");
         File licenceFile = MiscUtil.generateFile(sharedPath, LICENCE_FILE + DATE_STR + ".txt");
+        log.info("licenceFile path: {}",licenceFile.getAbsolutePath());
+        log.info("generate licenceFile end");
         boolean flag = true;
         ELISInterfaceDto elisInterfaceDto = new ELISInterfaceDto();
         elisInterfaceDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -170,6 +173,8 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
                     log.error("move license file failed");
                 }
             }
+        }else {
+            log.info("create licenceFile failed");
         }
     }
 
@@ -266,7 +271,10 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     public void processUsers() {
         log.info("start processUsers");
         String path = sharedPath + "/" + USER_FILE + DATE_STR + ".txt";
+        log.info("start generate user file");
         File userFile = MiscUtil.generateFile(sharedPath, USER_FILE + DATE_STR + ".txt");
+        log.info("userFile path: {}",userFile.getAbsolutePath());
+        log.info("generate userFile end");
         boolean flag = true;
         if (userFile.exists()) {
             List<DsElisUserDto> dsElisUserDtoList = FileUtils.transformCsvToJavaBean(userFile, DsElisUserDto.class, false, '|');
@@ -334,6 +342,8 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
                     log.error("move user file failed");
                 }
             }
+        }else {
+            log.info("create userFile failed");
         }
     }
 
@@ -381,8 +391,14 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
         log.info("start processDoctor");
         String topPath = sharedPath + "/" + TOP_DOCTOR_FILE + DATE_STR + ".txt";
         String dpPath = sharedPath + "/" + DP_DOCTOR_FILE + DATE_STR + ".txt";
+        log.info("start generate topDoctorFile");
         File topDoctorFile = MiscUtil.generateFile(sharedPath, TOP_DOCTOR_FILE + DATE_STR + ".txt");
+        log.info("topDoctorFile path: {}",topDoctorFile.getAbsolutePath());
+        log.info("generate topDoctorFile end");
+        log.info("start generate dpDoctorFile");
         File dpDoctorFile = MiscUtil.generateFile(sharedPath, DP_DOCTOR_FILE + DATE_STR + ".txt");
+        log.info("dpDoctorFile path: {}",dpDoctorFile.getAbsolutePath());
+        log.info("generate dpDoctorFile end");
         List<DsElisDoctorDto> doctorDtoList = new ArrayList<>();
         ELISInterfaceDto elisInterfaceDto = new ELISInterfaceDto();
         elisInterfaceDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -392,6 +408,8 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
                 log.info("topDoctorDtoList size is {}", topDoctorDtoList.size());
                 doctorDtoList.addAll(topDoctorDtoList);
             }
+        }else {
+            log.info("create topDoctorFile failed");
         }
         if (dpDoctorFile.exists()) {
             List<DsElisDoctorDto> dpDoctorDtoList = FileUtils.transformCsvToJavaBean(dpDoctorFile, DsElisDoctorDto.class, false, '|');
@@ -399,6 +417,8 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
                 log.info("dpDoctorDtoList size is {}", dpDoctorDtoList.size());
                 doctorDtoList.addAll(dpDoctorDtoList);
             }
+        }else {
+            log.info("create dpDoctorFile failed");
         }
         boolean flag = true;
         if (!CollectionUtils.isEmpty(doctorDtoList)) {

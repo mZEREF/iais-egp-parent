@@ -32,6 +32,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @Process: MohInspTaskToLeader
@@ -165,6 +166,13 @@ public class InspecTaskToLeaderJobHandler extends IJobHandler {
         int all = report + leadTask;
         AuditTrailDto intranet = AuditTrailHelper.getCurrentAuditTrailDto();
         if(all == allApp){
+            appInspectionStatusDtos = appInspectionStatusDtos
+                    .stream()
+                    .filter(appInspectionStatusDto -> StringUtil.isNotEmpty(appInspectionStatusDto.getAppPremCorreId()))
+                    .collect(Collectors.toList());
+            if (IaisCommonUtils.isEmpty(appInspectionStatusDtos)) {
+                return;
+            }
             //get lead and work group
             ApplicationViewDto applicationViewDto = applicationClient.getAppViewByCorrelationId(appInspectionStatusDtos.get(0).getAppPremCorreId()).getEntity();
             ApplicationDto applicationDto = applicationViewDto.getApplicationDto();

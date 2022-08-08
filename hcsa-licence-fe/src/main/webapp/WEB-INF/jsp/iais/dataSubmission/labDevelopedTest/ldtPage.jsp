@@ -3,7 +3,7 @@
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="crud_action_type">
     <div class="main-content">
-        <div class="container">
+        <div class="container center-content">
             <div class="row">
                 <div class="col-xs-12">
                     <div class="tab-gp">
@@ -148,6 +148,7 @@
                     </div>
                 </div>
             </div>
+            <%@include file="./common/ldtFooter.jsp" %>
         </div>
     </div>
 </form>
@@ -158,4 +159,4 @@
             cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" needFungDuoJi="false"
             cancelBtnDesc="Continue" cancelFunc="submit('delete')"/>
 </c:if>
-<%@include file="./common/ldtFooter.jsp" %>
+

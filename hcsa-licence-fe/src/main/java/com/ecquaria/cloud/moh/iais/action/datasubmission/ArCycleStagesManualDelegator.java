@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +36,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.JUMP_ACTION_TYPE;
 
 /**
  * ARCycleStagesManualDelegator
@@ -78,6 +81,10 @@ public class ArCycleStagesManualDelegator {
                         DataSubmissionHelper.genCycleStartOptions(selectionDto.getCycleDtos()));
             }
         }
+        String jumpActionType = (String) ParamUtil.getRequestAttr(bpc.request, JUMP_ACTION_TYPE);
+        if (StringUtils.isEmpty(jumpActionType)){
+            ParamUtil.setRequestAttr(bpc.request, JUMP_ACTION_TYPE,"page");
+        }
         bpc.request.setAttribute("stage_options", DataSubmissionHelper.genOptions(nextStages));
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, "cycle-stage-selection");
         ParamUtil.setRequestAttr(bpc.request, "title", DataSubmissionHelper.getMainTitle(currentArDataSubmission.getAppType()));
@@ -92,72 +99,78 @@ public class ArCycleStagesManualDelegator {
      * @throws
      */
     public void doPrepareStage(BaseProcessClass bpc) {
-        String crudype = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
-        log.info(StringUtil.changeForLog("------Action Type: " + crudype));
-        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        CycleStageSelectionDto selectionDto;
+        String jumpActionType = (String) ParamUtil.getRequestAttr(bpc.request, JUMP_ACTION_TYPE);
         ArSuperDataSubmissionDto currentSuper = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        if (!StringUtil.isIn(crudype, new String[]{DataSubmissionConstant.CRUD_TYPE_FROM_DRAFT, "patient",
-                DataSubmissionConstant.CRUD_TYPE_RFC})) {
-            selectionDto = getSelectionDtoFromPage(bpc.request);
-            currentSuper.setSelectionDto(selectionDto);
-            DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, bpc.request);
-            if (StringUtil.isIn(crudype, new String[]{"return", "back"})) {
-                ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, "back");
-                return;
-            }
-            // validation
-            String profile = StringUtil.isIn(crudype, new String[]{"draft", "patient"}) ? "ART" : "save";
-            ValidationResult result = WebValidationHelper.validateProperty(selectionDto, profile);
-            if (result != null) {
-                errorMap.putAll(result.retrieveAll());
-            }
-
-            if (errorMap.isEmpty() && !AppConsts.YES.equals(selectionDto.getRetrieveData())) {
-                errorMap.put("showValidatePT", AppConsts.YES);
-                ParamUtil.setRequestAttr(bpc.request, "showValidatePT", AppConsts.YES);
-            }
-            if (AppConsts.YES.equals(selectionDto.getRetrieveData()) && StringUtil.isEmpty(selectionDto.getPatientName())) {
-                errorMap.put("showNoFoundMd", AppConsts.YES);
-                ParamUtil.setRequestAttr(bpc.request, "showNoFoundMd", AppConsts.YES);
-            }
+        if (StringUtils.hasLength(jumpActionType)) {
+            ParamUtil.setRequestAttr(bpc.request, "haveJump", "Y");
         } else {
-            selectionDto = currentSuper.getSelectionDto();
-        }
-        String stage;
-        if (!errorMap.isEmpty()) {
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            stage = "current";
-        } else {
-            if ("patient".equals(crudype)) {
-                stage = checkPatient(currentSuper, bpc.request);
-            } else if ("draft".equals(crudype)) {
-                stage = "draft";
-                // re-set cycle stage
-                DataSubmissionDto dataSubmissionDto = currentSuper.getDataSubmissionDto();
-                if (dataSubmissionDto != null) {
-                    // To reNew super data submission and retrieving draft data
-                    if (!Objects.equals(selectionDto.getStage(), dataSubmissionDto.getCycleStage())) {
-                        currentSuper = DataSubmissionHelper.reNew(currentSuper);
-                        currentSuper.setSelectionDto(selectionDto);
-                    }
-                    dataSubmissionDto.setCycleStage(null);
-                }
-                /*currentSuper.setCycleDto(DataSubmissionHelper.initCycleDto(selectionDto, currentSuper.getSvcName(),
-                        currentSuper.getHciCode()));*/
-                DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, bpc.request);
-            } else if (StringUtil.isIn(crudype, new String[]{DataSubmissionConstant.CRUD_TYPE_FROM_DRAFT,
+            String crudype = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+            log.info(StringUtil.changeForLog("------Action Type: " + crudype));
+            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+            CycleStageSelectionDto selectionDto;
+            if (!StringUtil.isIn(crudype, new String[]{DataSubmissionConstant.CRUD_TYPE_FROM_DRAFT, "patient",
                     DataSubmissionConstant.CRUD_TYPE_RFC})) {
-                stage = selectionDto.getStage();
-                if (StringUtil.isEmpty(stage)) {
-                    stage = "current";
+                selectionDto = getSelectionDtoFromPage(bpc.request);
+                currentSuper.setSelectionDto(selectionDto);
+                DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, bpc.request);
+                if (StringUtil.isIn(crudype, new String[]{"return", "back"})) {
+                    ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, "back");
+                    return;
+                }
+                // validation
+                String profile = StringUtil.isIn(crudype, new String[]{"draft", "patient"}) ? "ART" : "save";
+                ValidationResult result = WebValidationHelper.validateProperty(selectionDto, profile);
+                if (result != null) {
+                    errorMap.putAll(result.retrieveAll());
+                }
+
+                if (errorMap.isEmpty() && !AppConsts.YES.equals(selectionDto.getRetrieveData())) {
+                    errorMap.put("showValidatePT", AppConsts.YES);
+                    ParamUtil.setRequestAttr(bpc.request, "showValidatePT", AppConsts.YES);
+                }
+                if (AppConsts.YES.equals(selectionDto.getRetrieveData()) && StringUtil.isEmpty(selectionDto.getPatientName())) {
+                    errorMap.put("showNoFoundMd", AppConsts.YES);
+                    ParamUtil.setRequestAttr(bpc.request, "showNoFoundMd", AppConsts.YES);
                 }
             } else {
-                stage = checkCycleStage(currentSuper, selectionDto, bpc.request);
+                selectionDto = currentSuper.getSelectionDto();
             }
+            String stage;
+            if (!errorMap.isEmpty()) {
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                stage = "current";
+            } else {
+                if ("patient".equals(crudype)) {
+                    stage = checkPatient(currentSuper, bpc.request);
+                } else if ("draft".equals(crudype)) {
+                    stage = "draft";
+                    // re-set cycle stage
+                    DataSubmissionDto dataSubmissionDto = currentSuper.getDataSubmissionDto();
+                    if (dataSubmissionDto != null) {
+                        // To reNew super data submission and retrieving draft data
+                        if (!Objects.equals(selectionDto.getStage(), dataSubmissionDto.getCycleStage())) {
+                            currentSuper = DataSubmissionHelper.reNew(currentSuper);
+                            currentSuper.setSelectionDto(selectionDto);
+                        }
+                        dataSubmissionDto.setCycleStage(null);
+                    }
+                /*currentSuper.setCycleDto(DataSubmissionHelper.initCycleDto(selectionDto, currentSuper.getSvcName(),
+                        currentSuper.getHciCode()));*/
+                    DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, bpc.request);
+                } else if (StringUtil.isIn(crudype, new String[]{DataSubmissionConstant.CRUD_TYPE_FROM_DRAFT,
+                        DataSubmissionConstant.CRUD_TYPE_RFC})) {
+                    stage = selectionDto.getStage();
+                    if (StringUtil.isEmpty(stage)) {
+                        stage = "current";
+                    }
+                } else {
+                    stage = checkCycleStage(currentSuper, selectionDto, bpc.request);
+                }
+            }
+            log.info(StringUtil.changeForLog("Stage: " + stage));
+            ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, stage);
         }
-        log.info(StringUtil.changeForLog("Stage: " + stage));
-        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, stage);
+        ParamUtil.setRequestAttr(bpc.request, "stageList", arDataSubmissionService.genAvailableStageList(bpc.request));
     }
 
     private String checkPatient(ArSuperDataSubmissionDto currentArDataSubmission, HttpServletRequest request) {

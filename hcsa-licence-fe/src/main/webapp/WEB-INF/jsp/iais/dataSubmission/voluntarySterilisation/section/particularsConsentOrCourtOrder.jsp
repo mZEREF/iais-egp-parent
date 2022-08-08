@@ -22,7 +22,7 @@
 <div style="${treatmentDto.age<21 && treatmentDto.maritalStatus != 'VSSMS002' ? '' : 'display: none'}">
     <iais:row style="border-bottom: 1px solid #BABABA; ">
         <iais:value width="7" cssClass="col-md-7">
-            <strong class="app-font-size-22 premHeader">Particulars of Consent</strong>
+            <strong class="app-font-size-22 premHeader">Particulars of Parents/Guardian Who Gave Additional Consent</strong>
         </iais:value>
     </iais:row>
     <iais:row>
@@ -64,7 +64,7 @@
 <div style="${treatmentDto.sterilizationReason =='VSSRFS005' ? '' : 'display: none'}">
     <iais:row style="border-bottom: 1px solid #BABABA; ">
         <iais:value width="7" cssClass="col-md-7">
-            <strong class="app-font-size-22 premHeader">Particulars of Court Order</strong>
+            <strong class="app-font-size-22 premHeader">Particulars of Person Who Applied for Court Order</strong>
         </iais:value>
     </iais:row>
     <iais:row>

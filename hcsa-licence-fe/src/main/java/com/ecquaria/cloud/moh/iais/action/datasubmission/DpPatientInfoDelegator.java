@@ -42,6 +42,7 @@ public class DpPatientInfoDelegator extends DpCommonDelegator {
     @Autowired
     private DpDataSubmissionService dpDataSubmissionService;
 
+    @Override
     public void start(BaseProcessClass bpc) {
         bpc.request.removeAttribute(IaisEGPConstant.CRUD_ACTION_TYPE);
     }
@@ -87,6 +88,12 @@ public class DpPatientInfoDelegator extends DpCommonDelegator {
             }
         }
         DataSubmissionHelper.setCurrentDpDataSubmission(dpSuperDataSubmissionDto, bpc.request);
+        //set back url
+        if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(dpSuperDataSubmissionDto.getAppType())) {
+            DataSubmissionHelper.setGoBackUrl(bpc.request);
+        } else {
+            ParamUtil.setRequestAttr(bpc.request, "goBackUrl", null);
+        }
     }
 
     @Override
@@ -108,14 +115,14 @@ public class DpPatientInfoDelegator extends DpCommonDelegator {
         }
         patientDto.setPatientCode(patientService.getPatientCode(patientDto.getPatientCode()));
         dpSuperDataSubmissionDto.setPatientDto(patientDto);
-        String crud_action_type = ParamUtil.getRequestString(request, IntranetUserConstant.CRUD_ACTION_TYPE);
+        String crudActionType = ParamUtil.getRequestString(request, IntranetUserConstant.CRUD_ACTION_TYPE);
         String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         if ("resume".equals(actionValue)||"delete".equals(actionValue)) {
-            crud_action_type ="page";
-            ParamUtil.setRequestAttr(request, IntranetUserConstant.CRUD_ACTION_TYPE, crud_action_type);
+            crudActionType ="page";
+            ParamUtil.setRequestAttr(request, IntranetUserConstant.CRUD_ACTION_TYPE, crudActionType);
         }
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        if ("confirm".equals(crud_action_type)) {
+        if ("confirm".equals(crudActionType)) {
             ValidationResult validationResult = WebValidationHelper.validateProperty(patientDto, "DRP");
             errorMap = validationResult.retrieveAll();
                 verifyRfcCommon(request, errorMap);

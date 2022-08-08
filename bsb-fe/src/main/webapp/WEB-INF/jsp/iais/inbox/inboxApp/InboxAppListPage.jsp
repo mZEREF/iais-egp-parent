@@ -19,7 +19,7 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-inbox.js"></script>
 
 
-<%@include file="../dashboard/dashboard.jsp"%>
+<%@include file="../dashboard/dashboardFAC.jsp"%>
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
 <div class="main-content">
@@ -27,7 +27,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="tab-gp dashboard-tab" style="margin-left: 6px;margin-right: -8px;">
-                    <%@ include file="../InnerNavBar.jsp"%>
+                    <%@ include file="../InnerNavBarFAC.jsp"%>
 
                     <div style="padding: 50px 0">
                         <form class="" method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
@@ -42,7 +42,7 @@
                                 <%--@elvariable id="inboxAppSearchDto" type="sg.gov.moh.iais.egp.bsb.dto.inbox.InboxAppSearchDto"--%>
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-6">
-                                        <label class="col-xs-12 col-sm-5 control-label" FOR="searchAppNo">Application No.:</label>
+                                        <label class="col-xs-12 col-sm-5 control-label" for="searchAppNo" style="padding-left: 0">Application No.:</label>
                                         <div class="col-xs-12 col-sm-7">
                                             <input type="text" id="searchAppNo" name="searchAppNo" value="${inboxAppSearchDto.searchAppNo}"/>
                                             <span data-err-ind="searchAppNo" class="error-msg"></span>
@@ -50,7 +50,7 @@
 
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
-                                        <label class="col-xs-12 col-sm-5 control-label" FOR="searchProcessType">Application Sub-Type:</label>
+                                        <label class="col-xs-12 col-sm-5 control-label" for="searchProcessType" style="padding-left: 0">Application Sub-Type:</label>
                                         <div class="col-xs-12 col-sm-7">
                                             <select id="searchProcessType" class="searchProcessTypeDropdown" name="searchProcessType">
                                                 <option value='<c:out value=""/>' <c:if test="${inboxAppSearchDto.searchProcessType eq ''}">selected="selected"</c:if>>All</option>
@@ -65,7 +65,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-6">
-                                        <label class="col-xs-12 col-sm-5 control-label" for="searchFacilityName">Facility Name:</label>
+                                        <label class="col-xs-12 col-sm-5 control-label" for="searchFacilityName" style="padding-left: 0">Facility Name:</label>
                                         <div class="col-xs-12 col-sm-7">
                                             <input type="text" id="searchFacilityName" name="searchFacilityName" value="${inboxAppSearchDto.searchFacilityName}"/>
                                             <span data-err-ind="searchFacilityName" class="error-msg"></span>
@@ -73,7 +73,7 @@
 
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
-                                        <label class="col-xs-12 col-sm-5 control-label" FOR="searchStatus">Application Status:</label>
+                                        <label class="col-xs-12 col-sm-5 control-label" for="searchStatus" style="padding-left: 0">Application Status:</label>
                                         <div class="col-xs-12 col-sm-7">
                                             <select id="searchStatus" class="searchStatusDropdown" name="searchStatus">
                                                 <option value='<c:out value=""/>' <c:if test="${inboxAppSearchDto.searchStatus eq ''}">selected="selected"</c:if>>All</option>
@@ -88,7 +88,7 @@
                                 </div>
                                 <div class="row" style="margin-bottom: 20px">
                                     <div class="col-xs-12 col-sm-6">
-                                        <label for="searchAppType" class="col-xs-12 col-sm-5 control-label">Application Type:</label>
+                                        <label for="searchAppType" class="col-xs-12 col-sm-5 control-label" style="padding-left: 0">Application Type:</label>
                                         <div class="col-xs-12 col-sm-7">
                                             <select id="searchAppType" class="searchAppTypeDropdown" name="searchAppType">
                                                 <option value='<c:out value=""/>' <c:if test="${inboxAppSearchDto.searchAppType eq ''}">selected="selected"</c:if>>All</option>
@@ -235,7 +235,7 @@
 
                                                                                 <option value="deleteDraft<iais:mask name='deleteId' value='${app.id}'/>">Delete</option>
                                                                             </c:if>
-                                                                            <c:if test="${app.status eq MasterCodeConstants.APP_STATUS_PEND_SUBMIT_SELF_ASSESSMENT}">
+                                                                            <c:if test="${app.status eq MasterCodeConstants.APP_STATUS_PEND_CHECKLIST_SUBMISSION}">
                                                                                 <option value="/bsb-web/eservice/INTERNET/MohBsbSubmitSelfAssessment?appId=<iais:mask name='selfAssessAppId' value='${app.id}'/>">Self-Assessment</option>
                                                                             </c:if>
                                                                             <c:if test="${AppWithdrawableJudge}">
@@ -250,7 +250,7 @@
                                                                             <c:if test="${InspectionFollowUpJudge}">
                                                                                 <option value="/bsb-web/eservice/INTERNET/InspectionFollowUpItemsFE?appId=<iais:mask name='followUpAppId' value='${app.id}'/>">Submit follow-up action</option>
                                                                             </c:if>
-                                                                            <c:if test="${app.status eq MasterCodeConstants.APP_STATUS_PEND_INPUT or app.status eq MasterCodeConstants.APP_STATUS_PEND_CLARIFICATION}">
+                                                                            <c:if test="${app.status eq MasterCodeConstants.APP_STATUS_PEND_APPLICANT_INPUT or app.status eq MasterCodeConstants.APP_STATUS_PEND_APPLICANT_CLARIFICATION}">
                                                                                 <option value="/bsb-web/eservice/INTERNET/MohBsbRfi?appId=<iais:mask name='rfiAppId' value='${app.id}'/>">Request For Information</option>
                                                                             </c:if>
                                                                             <c:if test="${AFCUploadReportJudge}">

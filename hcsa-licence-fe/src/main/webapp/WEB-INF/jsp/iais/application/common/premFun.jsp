@@ -187,6 +187,7 @@
                 premType = "";
             }
             $premContent.find('.premTypeValue').val(premType);
+            $premContent.find('.premTypeValue').trigger('change');
             $premContent.find('.premSelValue').val('-1');
             $premContent.find('.chooseExistData').val('0');
             checkPremiseContent($premContent);

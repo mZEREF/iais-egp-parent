@@ -12,12 +12,12 @@
 
         var $currContent = $(target).find("div.weeklyDiv").last();
         $currContent.find('select.onSiteWeekly').next('.multi-select-container').remove();
-        testclearFields($currContent);
+        clearFields($currContent);
         refreshContent($currContent, $target.find('div.weeklyDiv').length - 1);
         removeWeekly();
         clickAllDay();
         var length =  $target.find('div.weeklyDiv').length;
-        $('input.weeklyLength').val(length);
+        $target.find('input.weeklyLength').val(length);
         if(length >= '${maxCount}'){
             $target.find('.addWeeklyDiv').addClass('hidden');
         }
@@ -35,9 +35,9 @@
             refreshIndex($weeklyContent.find('div.weeklyDiv'));
             var weeklyLength = $weeklyContent.find('.weeklyDiv').length;
             if (weeklyLength==0){
-                $('input.weeklyLength').val(1);
+                $weeklyContent.find('input.weeklyLength').val(1);
             }else {
-                $('input.weeklyLength').val(weeklyLength);
+                $weeklyContent.find('input.weeklyLength').val(weeklyLength);
             }
             if(weeklyLength < '${maxCount}'){
                 $weeklyContent.find('.addWeeklyDiv').removeClass('hidden');
@@ -56,12 +56,12 @@
         $tgt.after(src);
         var $currContent = $(target).find("div.pubHolidayDiv").last();
         $currContent.find('select.onSitePubHoliday').next('.multi-select-container').remove();
-        testclearFields($currContent);
+        clearFields($currContent);
         refreshContent($currContent, $target.find('div.pubHolidayDiv').length - 1);
         removePh();
         clickAllDay();
         var length =  $target.find('div.pubHolidayDiv').length;
-        $('input.phLength').val(length);
+        $target.find('input.phLength').val(length);
         if(length >= '${maxCount}'){
             $target.find('.addPhDiv').addClass('hidden');
         }
@@ -79,9 +79,9 @@
             refreshIndex($phContent.find('div.pubHolidayDiv'));
             var phLength = $phContent.find('.pubHolidayDiv').length;
             if(phLength==0){
-                $('input.phLength').val(1);
+                $phContent.find('input.phLength').val(1);
             } else{
-                $('input.phLength').val(phLength);
+                $phContent.find('input.phLength').val(phLength);
             }
             if(phLength < '${maxCount}'){
                 $phContent.find('.addPhDiv').removeClass('hidden');
@@ -105,11 +105,12 @@
             todayHighlight:true,
             orientation:'bottom'
         });
-        testclearFields($currContent);
+        clearFields($currContent);
         refreshContent($currContent, $target.find('div.eventDiv').length - 1);
         removeEvent();
         var length =  $target.find('div.eventDiv').length;
-        $('input.eventLength').val(length);
+        $target.find('input.eventLength').val(length);
+        console.log($target.find('input.eventLength').val());
         if(length >= '${maxCount}'){
             $target.find('.addEventDiv').addClass('hidden');
         }
@@ -124,9 +125,9 @@
             refreshIndex($eventContent.find('div.eventDiv'));
             var eventLength = $eventContent.find('.eventDiv').length;
             if(eventLength==0){
-                $('input.eventLength').val(1);
+                $eventContent.find('input.eventLength').val(1);
             }else {
-                $('input.eventLength').val(length);
+                $eventContent.find('input.eventLength').val(eventLength);
             }
             if(eventLength < '${maxCount}'){
                 $eventContent.find('.addEventDiv').removeClass('hidden');
@@ -157,7 +158,8 @@
             unDisableContent($target.find('div.start-div'));
             unDisableContent($target.find('div.end-div'));
         }
-        resetIndex($target, k);
+        var prefix=$target.closest('div.panel-group').index();
+        resetIndexNo($target, k,prefix);
     }
 
     var disabeleForAllDay = function ($allDayDiv) {
@@ -168,40 +170,75 @@
         disableContent($allDayDiv.siblings('.end-div'));
     }
 
-    function testclearFields(targetSelector, withoutClearError) {
-        var $selector = getJqueryNode(targetSelector);
-        if (isEmptyNode($selector)) {
+    function refreshIndex(targetSelector) {
+        var $target = getJqueryNode(targetSelector);
+        if (isEmptyNode($target)) {
             return;
         }
-        if (!$selector.is(":input")) {
-            if (isEmpty(withoutClearError) || !withoutClearError) {
-                $selector.find("span[name='iaisErrorMsg']").each(function () {
-                    $(this).html("");
-                });
+        $target.each(function (k, v) {
+            var $ele = $(v);
+            var $selector;
+            if ($ele.is(':input')) {
+                $selector = $ele;
+            } else {
+                $selector = $ele.find(':input');
             }
-            $selector = $selector.find(':input[class!="not-clear"]');
-        }
-        if ($selector.length <= 0) {
-            return;
-        }
-        $selector.each(function () {
-            var type = this.type, tag = this.tagName.toLowerCase();
-            if (!$(this).hasClass('not-clear')) {
-                if (type == 'text' || type == 'password' || type == 'hidden' || tag == 'textarea') {
-                    this.value = '';
-                } else if (type == 'checkbox') {
-                    this.checked = false;
-                } else if (type == 'radio') {
-                    this.checked = false;
-                } else if (tag == 'select') {
-                    this.selectedIndex = 0;
-                    if (this.multiple) {
-                        this.selectedIndex = -1;
-                    }
-                    updateSelectTag($(this));
-                }
+            if ($selector.length == 0) {
+                return;
             }
+            $selector.each(function () {
+                var prefix=$target.closest('div.panel-group').index();
+                resetIndexNo(this, k,prefix);
+            });
         });
+    }
+
+    function resetIndexNo(targetTag, index, prefix) {
+        var $target = getJqueryNode(targetTag);
+        if (isEmptyNode($target) || $target.hasClass('not-refresh')) {
+            return;
+        }
+        var tag = $target[0].tagName.toLowerCase();
+        if ($target.is(':input')) {
+            var orgName = $target.attr('name');
+            var orgId = $target.attr('id');
+            if (isEmpty(orgName)) {
+                orgName = orgId;
+            }
+            if (isEmpty(orgName)) {
+                return;
+            }
+            if (isEmpty(prefix)) {
+                prefix = "";
+            }
+            var base = $target.data('base');
+            if (isEmpty(base)) {
+                var result;
+                if (isEmpty(prefix)) {
+                    prefix = "";
+                    result = /(.*\D+)/g.exec(orgName);
+                } else {
+                    result = /(\D+.*\D+)/g.exec(orgName);
+                }
+                base = !isEmpty(result) && result.length > 0 ? result[0] : orgName;
+            }
+            var newName =base + prefix  + index;
+            $target.prop('name', newName);
+            if (orgName == orgId || base == orgId || !isEmpty(orgId) && $('#' + orgId).length > 1) {
+                $target.prop('id', newName);
+            }
+            var $errorSpan = $target.closest('.form-group').find('span[name="iaisErrorMsg"][id="error_' + orgName + '"]');
+            if ($errorSpan.length > 0) {
+                $errorSpan.prop('id', 'error_' + newName);
+            }
+            if (tag == 'select') {
+                updateSelectTag($target);
+            }
+        } else {
+            $target.find(':input').each(function () {
+                resetIndexNo(this, index, prefix);
+            });
+        }
     }
 
 </script>

@@ -85,17 +85,7 @@ public class TopAjaxController {
 
             }
 
-           /* try {
-                int age= -Formatter.compareDateByDay(top.getBirthData());
-                patientInformation.setPatientAge(age/365);
-            }catch (Exception e){
-                log.error(e.getMessage(),e);
-            }
 
-            FamilyPlanDto familyPlanDto=new FamilyPlanDto();
-            if(patientInformation.getPatientAge()<16 && !StringUtil.isEmpty(patientInformation.getPatientAge())){
-                familyPlanDto.setNeedHpbConsult(true);
-            }*/
 
             result.put("selection", patientInformation);
         }
@@ -116,8 +106,9 @@ public class TopAjaxController {
         boolean b1 = PreTerminationValidator.validateDate(counsellingGiven);
         if (b && b1) {
             int age = -Formatter.compareDateByDay(birthDate, counsellingGiven) / 365;
+            int ageNew=-(Formatter.compareDateByDay(birthDate, counsellingGiven)+age/4) / 365;
             PreTerminationDto preTerminationDto = new PreTerminationDto();
-            preTerminationDto.setCounsellingAge(age);
+            preTerminationDto.setCounsellingAge(ageNew);
             result.put("selection", preTerminationDto);
         }
         return result;
@@ -158,8 +149,10 @@ public class TopAjaxController {
         if(StringUtil.isNotEmpty(counsellingGivenDate)){
             try {
                 int counsellingAge = -Formatter.compareDateByDay(birthDate,counsellingGivenDate)/365;
-                if(!StringUtil.isEmpty(counsellingAge)){
-                    if(counsellingAge<16){
+                int ageNew=-(Formatter.compareDateByDay(birthDate,counsellingGivenDate)+counsellingAge/4) / 365;
+
+                if(!StringUtil.isEmpty(ageNew)){
+                    if(ageNew<16){
                         result.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER,CONSULTING_CENTER));
                     }
                 }

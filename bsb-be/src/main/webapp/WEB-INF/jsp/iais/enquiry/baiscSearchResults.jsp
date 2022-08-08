@@ -76,10 +76,11 @@
                                                         <td><c:out value="${status.index+1}"/></td>
                                                         <td>
                                                             <c:choose>
-                                                                <c:when test="${items.appType eq 'BSBAPTY006' and items.appStatus eq 'BSBAPST002'}">
+                                                                <c:when test="${items.appType eq 'BSBAPTY006' and items.appStatus eq 'BSBAPST031'}">
                                                                     <a href="/bsb-web/eservicecontinue/INTRANET/MohAOProcessingRevocation?appId=<iais:mask name='id' value='${items.id}'/>&OWASP_CSRFTOKEN=null"><c:out value="${items.applicationNo}"/></a>
                                                                 </c:when>
-                                                                <c:when test="${items.appType eq 'BSBAPTY001' and (items.appStatus eq 'BSBAPST001' or items.appStatus eq 'BSBAPST002' or items.appStatus eq 'BSBAPST003')}">
+                                                                <%--todo: check this app status and logic--%>
+                                                                <c:when test="${items.appType eq 'BSBAPTY001' and (items.appStatus eq 'BSBAPST030' or items.appStatus eq 'BSBAPST031' or items.appStatus eq 'BSBAPST032')}">
                                                                     <a href="/bsb-web/eservicecontinue/INTRANET/MohOfficersProcess?appId=<iais:mask name='id' value='${items.id}'/>&OWASP_CSRFTOKEN=null"><c:out value="${items.applicationNo}"/></a>
                                                                 </c:when>
                                                                 <c:otherwise>

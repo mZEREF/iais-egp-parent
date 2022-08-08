@@ -4,161 +4,114 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 
 <%
-  //handle to the Engine APIs
-  sop.webflow.rt.api.BaseProcessClass process =
-          (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
-  String webroot = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.BE_CSS_ROOT;
+    //handle to the Engine APIs
+    sop.webflow.rt.api.BaseProcessClass process =
+            (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 
 <webui:setLayout name="iais-internet"/>
 <%@ include file="/WEB-INF/jsp/iais/common/dashboard.jsp" %>
 <%--<div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">--%>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-  <%--Validation fields Start--%>
-  <input type="hidden" name="crud_action_type_continue" value="">
-  <%--Validation fields End--%>
-  <div class="main-content">
-    <div class="row">
-      <div class="center-content">
-        <div class="col-xs-12 intranet-content">
-          <div class="tab-gp steps-tab tab-be">
-            <%@ include file="/WEB-INF/jsp/iais/application/common/navTabs.jsp" %>
-            <div class="tab-content  ">
-              <div class="tab-pane active" id="premisesTab" role="tabpanel">
-                  <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
-                <div class="premises-content" >
-                  <div class="row ">
-                    <div class="col-xs-12">
-                      <div class="premises-txt">
-                        <p><iais:message escape="false" key="NEW_ACK018"/></p>
-                      </div>
+    <%--Validation fields Start--%>
+    <input type="hidden" name="crud_action_type_continue" value="">
+    <%--Validation fields End--%>
+    <div class="main-content">
+        <div class="row">
+            <div class="center-content">
+                <div class="col-xs-12 intranet-content">
+                    <div class="tab-gp steps-tab tab-be">
+                        <%@ include file="/WEB-INF/jsp/iais/application/common/navTabs.jsp" %>
+                        <div class="tab-content  ">
+                            <div class="tab-pane active" id="premisesTab" role="tabpanel">
+                                <div class="premises-content">
+                                    <div class="row ">
+                                        <div class="col-xs-12">
+                                            <div class="premises-txt">
+                                                <p><iais:message escape="false" key="NEW_ACK018"/></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <c:if test="${AppSubmissionDto.appType=='APTY005'||AppSubmissionDto.appType=='APTY004'}">
+                                        <c:if test="${fn:length(appGrpPremisesDto.licenceDtos)>0}">
+                                            <div class="form-check col-sm-12">
+                                                <ul>
+                                                    <li>
+                                                        Changes made will be applied to other licences associated with this mode of service delivery:
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </c:if>
+                                    </c:if>
+                                    <!--prem content -->
+                                    <%@include file="section/premisesContent.jsp" %>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12" id="addPremBody">
+                                        <%--<c:if test="${requestInformationConfig == null && 'APTY005' != AppSubmissionDto.appType && !multiBase && 'APTY004' != AppSubmissionDto.appType && !AppSubmissionDto.onlySpecifiedSvc}">--%>
+                                        <c:if test="${!isRfi && !isRFC && !isRenew && !multiBase && !readOnly && isMultiPremService}">
+                                            <button id="addPremBtn" class="btn btn-primary" type="button">Add Mode of Service Delivery</button>
+                                        </c:if>
+                                    </div>
+                                </div>
+                                <%@ include file="/WEB-INF/jsp/iais/application/common/appFooter.jsp" %>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                  <c:if test="${AppSubmissionDto.appType=='APTY005'||AppSubmissionDto.appType=='APTY004'}">
-                    <c:if test="${fn:length(appGrpPremisesDto.licenceDtos)>0}">
-                      <div class="form-check col-sm-12">
-                        <ul>
-                          <li>Changes made will be applied to other licences associated with this mode of service delivery:</li>
-                        </ul>
-                      </div>
-                    </c:if>
-                  </c:if>
-                  <!--prem content -->
-                  <%@include file="section/premisesContent.jsp"%>
                 </div>
-                <div class="row">
-                  <div class="col-xs-12" id="addPremBody">
-                    <%--<c:if test="${requestInformationConfig == null && 'APTY005' != AppSubmissionDto.appType && !multiBase && 'APTY004' != AppSubmissionDto.appType && !AppSubmissionDto.onlySpecifiedSvc}">--%>
-                    <c:if test="${!isRfi && !isRFC && !isRenew && !multiBase && !readOnly && isMultiPremService}">
-                      <button id="addPremBtn" class="btn btn-primary" type="button">Add Mode of Service Delivery</button>
-                    </c:if>
-                  </div>
-                </div>
-                <%@ include file="/WEB-INF/jsp/iais/application/common/appFooter.jsp"%>
-                </div>
-              </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
-  <%--Validation Field--%>
-  <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
- <%-- <%@include file="common/premFun.jsp"%>--%>
-  <input type="hidden" name="pageCon" value="valPremiseList" >
+    </div>
+    <%--Validation Field--%>
+    <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
+    <%-- <%@include file="common/premFun.jsp"%>--%>
+    <input type="hidden" name="pageCon" value="valPremiseList">
 
-  <%--<c:if test="${!isRFC && !isRenew}">
-    <iais:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></iais:confirm>
-  </c:if>--%>
+    <%--<c:if test="${!isRFC && !isRenew}">
+      <iais:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></iais:confirm>
+    </c:if>--%>
 
-  <input type="text" style="display: none" value="${AckMessage}" id="ackMessage" name="ackMessage">
-  <iais:confirm msg="There is a pending application for a licence associated to this mode of service delivery" callBack="" popupOrder="ackMessageConfim"></iais:confirm>
-  <input type="text" style="display:none;" value="${hciNameUsed}" name="hciNameUsedInput" id="hciNameUsedInput">
+    <input type="text" style="display: none" value="${AckMessage}" id="ackMessage" name="ackMessage">
+    <iais:confirm msg="There is a pending application for a licence associated to this mode of service delivery" callBack=""
+                  popupOrder="ackMessageConfim"></iais:confirm>
+    <input type="text" style="display:none;" value="${hciNameUsed}" name="hciNameUsedInput" id="hciNameUsedInput">
 
-  <iais:confirm msg="${newAppPopUpMsg}" needCancel="false" callBack="Continue()" popupOrder="hciNameUsed" yesBtnDesc="Continue" needEscapHtml="false"></iais:confirm>
-  <iais:confirm msg="NEW_ACK016" needCancel="false" callBack="$('#postalCodePop').modal('hide');" popupOrder="postalCodePop" yesBtnDesc="" needEscapHtml="false" needFungDuoJi="false"/>
-  <input type="text" style="display:none;" name="continueStep" id="continueStep" value="${continueStep}">
-  <input type="text" style="display: none" name="crudActionTypeContinue" id="crudActionTypeContinue" value="${crudActionTypeContinue}">
-  <input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
-  <%--<input type="hidden" id="rfc_eqHciNameChange" value="${rfc_eqHciCode}">--%>
+    <iais:confirm msg="${newAppPopUpMsg}" needCancel="false" callBack="Continue()" popupOrder="hciNameUsed" yesBtnDesc="Continue"
+                  needEscapHtml="false"></iais:confirm>
+    <iais:confirm msg="NEW_ACK016" needCancel="false" callBack="$('#postalCodePop').modal('hide');" popupOrder="postalCodePop"
+                  yesBtnDesc="" needEscapHtml="false" needFungDuoJi="false"/>
+    <input type="text" style="display:none;" name="continueStep" id="continueStep" value="${continueStep}">
+    <input type="text" style="display: none" name="crudActionTypeContinue" id="crudActionTypeContinue"
+           value="${crudActionTypeContinue}">
+    <input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
+    <%--<input type="hidden" id="rfc_eqHciNameChange" value="${rfc_eqHciCode}">--%>
 </form>
 </div>
 <script type="text/javascript">
     //var init;
-    $(document).ready(function() {
-        /*$('#postalCodePop').modal('hide');*/
-        /*cl();
-        $("input[name='easMtsUseOnly0']").trigger('change');
-        preperChange();
-        $("select[name='onSiteAddressType']").trigger('change');
-        $("select[name='conveyanceAddrType']").trigger('change');
-        $("select[name='offSiteAddrType']").trigger('change');
-        $("select[name='easMtsAddrType']").trigger('change');*/
-        <!-- init start-->
+    $(document).ready(function () {
         //init = 0;
-        if($('#ackMessage').val()=='ACKMESSAGE'){
+        if ($('#ackMessage').val() == 'ACKMESSAGE') {
             $('#ackMessageConfim').modal('show');
         }
-        if($('#hciNameUsedInput').val()=='hciNameUsed'){
+        if ($('#hciNameUsedInput').val() == 'hciNameUsed') {
             $('#hciNameUsed').modal('show');
         }
-        /*var checkedType = "";
-
-        $('.prem-summary').addClass('hidden');
-
-        $('.table-condensed').css("background-color","#d9edf7");*/
-
-        /*reloadPage();
-
-        premType();
-
-        premSelect();
-
-        retrieveAddr();
-
-        removePremises();
-
-        doEdit();
-
-        coLocation();
-
-        addPubHolDayHtml();
-
-        //removePH();
-
-        addOperational();
-
-        operationDel();
-
-        addWeeklyHtml();
-
-        addEventHtml();
-
-        removeWeekly();
-
-        removePh();
-
-        removeEvent();
-
-        clickAllDay();
-
-        useType();
-*/
         //Binding method
-        $('#Back').click(function(){
+        $('#Back').click(function () {
             showWaiting();
-            submit('licensee', 'back',null);
+            submit('licensee', 'back', null);
         });
-        $('#Next').click(function(){
+        $('#Next').click(function () {
             showWaiting();
-            $('input[type="radio"]').prop('disabled',false);
-            submit('specialised',null,null);
+            $('input[type="radio"]').prop('disabled', false);
+            submit('specialised', null, null);
         });
-        $('#SaveDraft').click(function(){
+        $('#SaveDraft').click(function () {
             showWaiting();
-            $('input[type="radio"]').prop('disabled',false);
-            submit('premises','saveDraft',$('#selectDraftNo').val());
+            $('input[type="radio"]').prop('disabled', false);
+            submit('premises', 'saveDraft', $('#selectDraftNo').val());
         });
         <c:if test="${(!AppSubmissionDto.needEditController && readOnly) || AppSubmissionDto.needEditController}">
         readonlyPartPage($('div.premises-content'));
@@ -172,24 +125,20 @@
         });
         </c:if>
 
-       /* var mainContent =$('.main-content');
-        mainContent.find('input.allDay:checked').each(function (k) {
-            console.log(k);
-            var $allDayDiv = $(this).closest('div.all-day-div');
-            disabeleForAllDay($allDayDiv);
-        });
-*/
-       /* init = 1;
-        <c:if test="${'APTY002' !=AppSubmissionDto.appType || requestInformationConfig != null}">
-        if ($("#errorMapIs").val()=='error') {
-            $('div.premContent').each(function () {
-                doEditPremise($(this), '1');
-            });
-        }
-        </c:if>*/
-
-
+        premTypeChangeEvent();
     });
+
+    var premTypeChangeEvent = function () {
+        //premContent oldPremTypeValue
+        $('.premContent .premTypeValue').on('input change', function () {
+            let val = $(this).val();
+            let $premContent = $(this).closest('.premContent');
+            let oldVal = $premContent.find('.oldPremTypeValue').val();
+            if (oldVal != val) {
+                navTabEvent('specialised');
+            }
+        });
+    }
 
     /*function saveDraft() {
       $('input[type="radio"]').prop('disabled',false);

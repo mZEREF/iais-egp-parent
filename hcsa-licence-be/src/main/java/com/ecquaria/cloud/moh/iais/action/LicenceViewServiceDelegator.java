@@ -934,10 +934,10 @@ public class LicenceViewServiceDelegator {
                     request.setAttribute("PO_SIZE", i_PO.size());
                     request.setAttribute("DPO_SIZE", j_DPO.size());
                 }
-                Map<String, List<AppSvcDocDto>> multipleSvcDoc = appSvcRelatedInfoDto.getMultipleSvcDoc();
-                sortSvcDoc(multipleSvcDoc);
-                multipleSvcDoc = translateForShow(multipleSvcDoc, appSvcRelatedInfoDto.getServiceId());
-                appSvcRelatedInfoDto.setMultipleSvcDoc(multipleSvcDoc);
+//                Map<String, List<AppSvcDocDto>> multipleSvcDoc = appSvcRelatedInfoDto.getMultipleSvcDoc();
+//                sortSvcDoc(multipleSvcDoc);
+//                multipleSvcDoc = translateForShow(multipleSvcDoc, appSvcRelatedInfoDto.getServiceId());
+//                appSvcRelatedInfoDto.setMultipleSvcDoc(multipleSvcDoc);
             }
             return;
         }
@@ -958,21 +958,21 @@ public class LicenceViewServiceDelegator {
         AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         // document in service info
-        Map<String, List<AppSvcDocDto>> multipleSvcDoc = appSvcRelatedInfoDto.getMultipleSvcDoc();
-        Map<String, List<AppSvcDocDto>> oldMultipleSvcDoc = oldAppSvcRelatedInfoDto.getMultipleSvcDoc();
-        dealMapSvcDoc(multipleSvcDoc, oldMultipleSvcDoc);
-        Map<String, List<AppSvcDocDto>> finalOldMultipleSvcDoc = oldMultipleSvcDoc;
-        multipleSvcDoc.forEach((k, v) -> {
-            List<AppSvcDocDto> appSvcDocDtos = finalOldMultipleSvcDoc.get(k);
-            copyServiceDoc(v, appSvcDocDtos);
-        });
+//        Map<String, List<AppSvcDocDto>> multipleSvcDoc = appSvcRelatedInfoDto.getMultipleSvcDoc();
+//        Map<String, List<AppSvcDocDto>> oldMultipleSvcDoc = oldAppSvcRelatedInfoDto.getMultipleSvcDoc();
+//        dealMapSvcDoc(multipleSvcDoc, oldMultipleSvcDoc);
+//        Map<String, List<AppSvcDocDto>> finalOldMultipleSvcDoc = oldMultipleSvcDoc;
+//        multipleSvcDoc.forEach((k, v) -> {
+//            List<AppSvcDocDto> appSvcDocDtos = finalOldMultipleSvcDoc.get(k);
+//            copyServiceDoc(v, appSvcDocDtos);
+//        });
         log.info(StringUtil.changeForLog("The multipleSvcDoc  show change"));
-        sortSvcDoc(multipleSvcDoc);
-        sortSvcDoc(oldMultipleSvcDoc);
-        multipleSvcDoc = translateForShow(multipleSvcDoc, appSvcRelatedInfoDto.getServiceId());
-        oldMultipleSvcDoc = translateForShow(oldMultipleSvcDoc, appSvcRelatedInfoDto.getServiceId());
-        appSvcRelatedInfoDto.setMultipleSvcDoc(multipleSvcDoc);
-        oldAppSvcRelatedInfoDto.setMultipleSvcDoc(oldMultipleSvcDoc);
+//        sortSvcDoc(multipleSvcDoc);
+//        sortSvcDoc(oldMultipleSvcDoc);
+//        multipleSvcDoc = translateForShow(multipleSvcDoc, appSvcRelatedInfoDto.getServiceId());
+//        oldMultipleSvcDoc = translateForShow(oldMultipleSvcDoc, appSvcRelatedInfoDto.getServiceId());
+//        appSvcRelatedInfoDto.setMultipleSvcDoc(multipleSvcDoc);
+//        oldAppSvcRelatedInfoDto.setMultipleSvcDoc(oldMultipleSvcDoc);
         // CGO
         List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
         List<AppSvcPrincipalOfficersDto> oldAppSvcCgoDtoList = oldAppSvcRelatedInfoDto.getAppSvcCgoDtoList();
@@ -1237,17 +1237,17 @@ public class LicenceViewServiceDelegator {
     }
 
     private void dealWithMultipleDoc(AppSubmissionDto appSubmissionDto) {
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+        /*AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
         Map<String, List<AppSvcDocDto>> multipleSvcDoc = appSvcRelatedInfoDto.getMultipleSvcDoc();
         if(multipleSvcDoc==null){
             multipleSvcDoc=new LinkedHashMap<>();
         }
         groupWithSvcDoc(appSvcDocDtoLit,multipleSvcDoc);
-        appSvcRelatedInfoDto.setMultipleSvcDoc(multipleSvcDoc);
+        //appSvcRelatedInfoDto.setMultipleSvcDoc(multipleSvcDoc);
         if(appSubmissionDto.getOldAppSubmissionDto()!=null){
             dealWithMultipleDoc(appSubmissionDto.getOldAppSubmissionDto());
-        }
+        }*/
     }
 
     private void groupWithSvcDoc(List<AppSvcDocDto> appSvcDocDtoLit, Map<String, List<AppSvcDocDto>> multipleSvcDoc){

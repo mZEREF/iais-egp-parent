@@ -12,7 +12,7 @@
             </a>
         </h4>
     </div>
-    <div id="ar-declaration" class="panel-collapse collapse">
+    <div id="ar-declaration" class="panel-collapse collapse ">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <c:if test="${drugSubmission.drugType eq 'DPD002' and drugSubmission.getReasonMandatory() ==true and drugSubmission.medication eq 'MED001'}">

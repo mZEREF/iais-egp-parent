@@ -38,7 +38,7 @@
                         </div>
                     </div>
                     <div class="dashboard-tile-item">
-                        <div class="dashboard-tile"><a data-tab="#tabApp" href="/bsb-web/eservice/INTERNET/MohBSBInboxApp?searchStatus=BSBAPST011" onclick="licToAppPage()">
+                        <div class="dashboard-tile"><a data-tab="#tabApp" href="/bsb-web/eservice/INTERNET/MohBSBInboxApp?searchStatus=BSBAPST001" onclick="licToAppPage()">
                             <p class="dashboard-txt">Application Drafts</p>
                             <h1 class="dashboard-count">${draftAppAmt}</h1>
                         </a></div>

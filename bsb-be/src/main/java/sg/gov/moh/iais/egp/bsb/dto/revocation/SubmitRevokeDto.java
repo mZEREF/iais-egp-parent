@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.*;
 
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_AO_APPROVAL;
 import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.*;
 
 /**
@@ -74,7 +75,8 @@ public class SubmitRevokeDto implements Serializable {
         this.setRemarks(doRevokeRemarks);
         this.setModule("doRevoke");
         this.setAppType(PARAM_APPLICATION_TYPE_REVOCATION);
-        this.setStatus(PARAM_APPLICATION_STATUS_PENDING_AO);
+        // TODO: check this app status
+        this.setStatus(APP_STATUS_PEND_AO_APPROVAL);
     }
 
     public void aoReqObjMapping(HttpServletRequest request){

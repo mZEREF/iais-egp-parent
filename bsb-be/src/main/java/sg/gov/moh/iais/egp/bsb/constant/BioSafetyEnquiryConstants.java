@@ -53,8 +53,6 @@ public class BioSafetyEnquiryConstants {
     public static final String PARAM_APPLICATION_STATUS = "appStatus";
     public static final String PARAM_APPLICATION_SUBMISSION_DATE_FROM = "appSubmissionDtFrom";
     public static final String PARAM_APPLICATION_SUBMISSION_DATE_TO = "appSubmissionDtTo";
-    public static final String PARAM_APPROVAL_DATE_FROM = "approvalDtFrom";
-    public static final String PARAM_APPROVAL_DATE_TO = "approvalDtTo";
     public static final String PARAM_FACILITY_CLASSIFICATION = "facilityClassification";
     public static final String PARAM_FACILITY_TYPES = "facTypes";
     public static final String PARAM_FACILITY_NAME = "facName";

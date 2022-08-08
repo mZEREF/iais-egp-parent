@@ -126,7 +126,7 @@ public class ConfigureDelegator {
                     hcsaSvcSpecificStageWorkloadDto.setId(item.getId());
                 }
                 hcsaSvcSpecificStageWorkloadDto.setAppType(item.getAppType());
-                hcsaSvcSpecificStageWorkloadDto.setManhourCount(Integer.valueOf(manhour));
+                hcsaSvcSpecificStageWorkloadDto.setManhourCount(manhour);
                 hcsaSvcSpecificStageWorkloadDto.setServiceId(item.getServiceId());
                 hcsaSvcSpecificStageWorkloadDto.setStageId(item.getStageId());
                 hcsaSvcSpecificStageWorkloadDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);

@@ -1,6 +1,6 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <c:set var="isCgo" value="${psnType == ApplicationConsts.PERSONNEL_PSN_TYPE_CGO}"/>
-<c:set var="isMap" value="${person.psnType == ApplicationConsts.PERSONNEL_PSN_TYPE_MAP}"/>
+<c:set var="isMap" value="${psnType == ApplicationConsts.PERSONNEL_PSN_TYPE_MAP}"/>
 
 <c:if test="${empty psnContent}">
     <c:set var="psnContent" value="person-content"/>

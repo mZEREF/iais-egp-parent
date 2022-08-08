@@ -29,7 +29,6 @@ public class BsbApptAppInfoShowDto extends ApplicationDto implements Serializabl
     private String calendarStatus;
     private List<String> clsStatus;
     private String groupName;
-    private String stageId;
     private List<String> userIdList;
     private Date inspDate;
     private Date inspEndDate;

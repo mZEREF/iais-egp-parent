@@ -75,6 +75,20 @@ public final class HcsaServiceCacheHelper {
 		return null;
 	}
 
+	public static List<HcsaServiceDto> getHcsaSvcsByNames(List<String> names) {
+		log.info(StringUtil.changeForLog("The service name param ==>> " + names));
+		if (IaisCommonUtils.isEmpty(names)) {
+			return IaisCommonUtils.genNewArrayList();
+		}
+		List<HcsaServiceDto> serviceDtos = receiveAllHcsaService();
+		if (!IaisCommonUtils.isEmpty(serviceDtos)) {
+			return serviceDtos.stream()
+					.filter(dto -> names.contains(dto.getSvcName()))
+					.collect(Collectors.toList());
+		}
+		return IaisCommonUtils.genNewArrayList();
+	}
+
 	public static HcsaServiceDto getServiceByServiceName(String svcName) {
 		log.info(StringUtil.changeForLog("The service name param ==>> " + svcName));
 		List<HcsaServiceDto> serviceDtos = receiveAllHcsaService();
@@ -86,7 +100,6 @@ public final class HcsaServiceCacheHelper {
 				}
 			}
 		}
-
 		return null;
 	}
 

@@ -13,8 +13,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.SuppleFormItemConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
-
 import java.io.File;
 import java.util.List;
 import java.util.Set;
@@ -80,4 +80,5 @@ public interface ConfigCommService {
 
     byte[] downloadFileRepo(String fileRepoId);
 
+    List<SuppleFormItemConfigDto> getSuppleFormItemConfigs(String serviceCode);
 }

@@ -41,6 +41,7 @@ import java.util.Map;
 
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_PRE_INSPECTION;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INSPECTION;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_APPLICANT_CLARIFICATION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ADHOC_CHECKLIST_LIST_ATTR;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ANSWER_MAP;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APP_ID;
@@ -115,7 +116,8 @@ public class PreInspectionDelegator {
         ParamUtil.setRequestAttr(request, KEY_ROUTING_HISTORY_LIST, preInspectionDataDto.getProcessHistoryDtoList());
         ParamUtil.setRequestAttr(request, KEY_INSPECTION_CONFIG, preInspectionDataDto.getBsbChecklistConfigDto());
 
-        if (MasterCodeConstants.APP_STATUS_PEND_SUBMIT_SELF_ASSESSMENT.equals(submissionDetailsInfo.getApplicationStatus())) {
+        // TODO: check this app status
+        if (MasterCodeConstants.APP_STATUS_PEND_CHECKLIST_SUBMISSION.equals(submissionDetailsInfo.getApplicationStatus())) {
             ParamUtil.setRequestAttr(request, KEY_SELF_ASSESSMENT_AVAILABLE, Boolean.FALSE);
         } else {
             ParamUtil.setRequestAttr(request, KEY_SELF_ASSESSMENT_AVAILABLE, Boolean.TRUE);
@@ -232,7 +234,7 @@ public class PreInspectionDelegator {
         log.info("AppId {} TaskId {} RfiFlag {} Inspection mark as rfi", appId, taskId, rfiFlag);
         inspectionClient.changeInspectionStatusToRfi(appId, taskId, rfiPreInspectionDto);
         ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_INSPECTION_READINESS));
-        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_CLARIFICATION));
+        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_APPLICANT_CLARIFICATION));
         ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_ROLE, KEY_APPLICANT);
     }
 

@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInforma
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -38,6 +39,8 @@ public interface TopDataSubmissionService {
     TopSuperDataSubmissionDto getTopSuperDataSubmissionDtoByDraftNo(String draftNo);
 
     PatientInformationDto getTopPatientSelect(String idType, String idNumber, String orgId);
+
+    void displayToolTipJudgement(HttpServletRequest request);
 
 //    String getDraftNo();
 

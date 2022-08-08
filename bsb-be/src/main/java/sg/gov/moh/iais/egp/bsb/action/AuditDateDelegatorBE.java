@@ -36,8 +36,8 @@ import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_AUDIT_STATUS
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_DO_DECISION;
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_DO_REASON;
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.PARAM_DO_REMARKS;
-import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_AO;
-import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_INPUT;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_AO_APPROVAL;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_APPLICANT_INPUT;
 
 /**
  * @author Zhu Tangtang
@@ -145,7 +145,8 @@ public class AuditDateDelegatorBE {
         HttpServletRequest request = bpc.request;
         OfficerProcessAuditDto dto = getProcessDto(request);
         dto.setAuditAppStatus(PARAM_AUDIT_STATUS_PENDING_AO);
-        dto.setAppStatus(APP_STATUS_PEND_AO);
+        // TODO: check this app status
+        dto.setAppStatus(APP_STATUS_PEND_AO_APPROVAL);
         auditClientBE.officerProcessAuditDt(dto);
     }
 
@@ -156,7 +157,8 @@ public class AuditDateDelegatorBE {
         HttpServletRequest request = bpc.request;
         OfficerProcessAuditDto dto = getProcessDto(request);
         dto.setAuditAppStatus(PARAM_AUDIT_STATUS_PENDING_AO);
-        dto.setAppStatus(APP_STATUS_PEND_AO);
+        // TODO: check this app status
+        dto.setAppStatus(APP_STATUS_PEND_AO_APPROVAL);
         auditClientBE.officerProcessAuditDt(dto);
     }
 
@@ -168,8 +170,8 @@ public class AuditDateDelegatorBE {
         OfficerProcessAuditDto dto = getProcessDto(request);
         dto.setAuditAppStatus(PARAM_AUDIT_STATUS_COMPLETED);
         dto.setAuditStatus(PARAM_AUDIT_STATUS_PENDING_APPLICANT_INPUT);
-        dto.setAppStatus(APP_STATUS_PEND_INPUT);
-        //
+        // TODO: check this app status
+        dto.setAppStatus(APP_STATUS_PEND_APPLICANT_INPUT);
         auditClientBE.officerProcessAuditDt(dto);
     }
 
@@ -181,7 +183,8 @@ public class AuditDateDelegatorBE {
         OfficerProcessAuditDto dto = getProcessDto(request);
         dto.setAuditAppStatus(PARAM_AUDIT_STATUS_CANCELLED);
         dto.setAuditStatus(PARAM_AUDIT_STATUS_PENDING_APPLICANT_INPUT);
-        dto.setAppStatus(APP_STATUS_PEND_INPUT);
+        // TODO: check this app status
+        dto.setAppStatus(APP_STATUS_PEND_APPLICANT_INPUT);
         auditClientBE.officerProcessAuditDt(dto);
     }
 
