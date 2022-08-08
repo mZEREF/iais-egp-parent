@@ -51,7 +51,7 @@
                    aria-invalid="false">
             <label class="form-check-label" for="submitDateMohVss">
                 <span class="check-circle"></span>
-                <span class="left-content">Voluntary Sterilization (VS)</span>
+                <span class="left-content">Voluntary Sterilisation (VS)</span>
             </label>
         </div>
     </c:if>
@@ -60,4 +60,8 @@
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <script>
     $("#submitDataMoh").attr('checked', 'true');
+    $('input[name="submitDateMohLab"]').click(function (){
+        $(".assessment-level-2").attr("hidden","true")
+    })
+
 </script>
