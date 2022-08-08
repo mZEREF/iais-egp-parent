@@ -58,6 +58,9 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     @Value("${iais.datasubmission.elis.path}")
     private String sharedPath;
 
+    @Value("${iais.file.move.path}")
+    private String movePath;
+
     private static final String LICENCE_FILE = "eLIS_HALP_Licence_Data_";
     private static final String USER_FILE = "eLIS_HALP_Internet_User_Data_";
     private static final String TOP_DOCTOR_FILE = "eLIS_HALP_TOP_Doctor_Data_";
@@ -68,7 +71,6 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     private static final String DATE_FORMAT = "dd/MM/yyyy";
 
     private static final String DATE_STR = convertToString(new Date(), DATE_STR_FORMAT);
-    private static final String NEW_PATH = DATE_STR + "ELIS/";
 
     @Autowired
     OrganizationClient organizationClient;
@@ -164,10 +166,10 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
             if (flag) {
                 //move file
                 try {
-                    String path = licenceFile.getCanonicalPath();
+                    String path = licenceFile.getAbsolutePath();
                     log.info("licenceFile path: {}", path);
-                    log.info("The expected new licenceFile path: {}",NEW_PATH + path);
-                    FileUtils.copyFileToOtherPosition(path,NEW_PATH);
+                    log.info("The expected new licenceFile path: {}",movePath + licenceFile.getName());
+                    FileUtils.copyFileToOtherPosition(path,movePath);
                     FileUtils.deleteTempFile(licenceFile);
                 } catch (IOException e) {
                     log.error(e.getMessage(),e);
@@ -334,10 +336,10 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
             if (flag){
                 //move file
                 try {
-                    String path = userFile.getCanonicalPath();
+                    String path = userFile.getAbsolutePath();
                     log.info("userFile path: {}", path);
-                    log.info("The expected new userFile path: {}",NEW_PATH + path);
-                    FileUtils.copyFileToOtherPosition(path,NEW_PATH);
+                    log.info("The expected new userFile path: {}",movePath + userFile.getName());
+                    FileUtils.copyFileToOtherPosition(path,movePath);
                     FileUtils.deleteTempFile(userFile);
                 } catch (IOException e) {
                     log.error(e.getMessage(),e);
@@ -492,9 +494,9 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
             //move file
             if (topDoctorFile.exists()) {
                 try {
-                    log.info("topDoctorFile path: {}",topDoctorFile.getCanonicalPath());
-                    log.info("The expected new topDoctorFile path: {}",NEW_PATH + topDoctorFile.getCanonicalPath());
-                    FileUtils.copyFileToOtherPosition(topDoctorFile.getCanonicalPath(), NEW_PATH);
+                    log.info("topDoctorFile path: {}",topDoctorFile.getAbsolutePath());
+                    log.info("The expected new topDoctorFile path: {}",movePath + topDoctorFile.getName());
+                    FileUtils.copyFileToOtherPosition(topDoctorFile.getAbsolutePath(), movePath);
                     FileUtils.deleteTempFile(topDoctorFile);
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
@@ -503,9 +505,9 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
             }
             if (dpDoctorFile.exists()) {
                 try {
-                    log.info("dpDoctorFile path: {}",dpDoctorFile.getCanonicalPath());
-                    log.info("The expected new dpDoctorFile path: {}",NEW_PATH + dpDoctorFile.getCanonicalPath());
-                    FileUtils.copyFileToOtherPosition(dpDoctorFile.getCanonicalPath(), NEW_PATH);
+                    log.info("dpDoctorFile path: {}",dpDoctorFile.getAbsolutePath());
+                    log.info("The expected new dpDoctorFile path: {}",movePath + dpDoctorFile.getName());
+                    FileUtils.copyFileToOtherPosition(dpDoctorFile.getAbsolutePath(), movePath);
                     FileUtils.deleteTempFile(dpDoctorFile);
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
