@@ -29,9 +29,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.SuppleFormItemConfigDto;
 import com.ecquaria.cloud.moh.iais.service.callback.ConfigCommClientFallback;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
+import java.util.Set;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,9 +44,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
-import java.util.Set;
 
 /**
  * AppConfigClient
@@ -227,4 +227,7 @@ public interface ConfigCommClient {
 
     @GetMapping(value = "/iais-hcsa-fee/fee-MatchingTh-ServiceCode/{serviceCode}", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Integer> getFeeMaxMatchingThByServiceCode(@PathVariable(name ="serviceCode") String svcCode);
+
+    @GetMapping(value = "/supple-form-item-avc-code",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<SuppleFormItemConfigDto>> getHcsaSvcSuppleFormItemBySvcCode(@RequestParam("serviceCode") String serviceId);
 }
