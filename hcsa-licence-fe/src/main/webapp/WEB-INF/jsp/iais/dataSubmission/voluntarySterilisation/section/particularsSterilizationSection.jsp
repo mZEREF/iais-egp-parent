@@ -397,7 +397,7 @@
                     console.log("The return data is null");
                     $('#doctorInformationText').show();
                     $('#doctorInformation').hide();
-                    $('#NO_PRS_ELIS_SERVICE').modal('show');
+                    // $('#NO_PRS_ELIS_SERVICE').modal('show');
                     console.log("3");
                 } else if(isEmpty(!data.selection)) {
                     $('#doctorInformations').val(false);
