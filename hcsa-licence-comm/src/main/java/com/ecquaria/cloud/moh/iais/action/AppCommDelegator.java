@@ -631,7 +631,7 @@ public abstract class AppCommDelegator {
         // valiation
         String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         if (!StringUtil.isIn(actionValue, new String[]{"saveDraft", "back"})) {
-            AppValidatorHelper.validateSubLicenseeDto(errorMap, subLicenseeDto, bpc.request);
+            AppValidatorHelper.validateSubLicenseeDto(errorMap, subLicenseeDto);
         }
         HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(HcsaAppConst.CO_MAP);
         if (!errorMap.isEmpty()) {
