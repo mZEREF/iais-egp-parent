@@ -303,6 +303,7 @@ public class MasterCodeConstants {
 
     public static final List<SelectOption> INBOX_APPLICATION_SEARCH_PROCESS_TYPE_FAC;
     public static final List<SelectOption> INBOX_APPROVAL_SEARCH_PROCESS_TYPE_FAC;
+    public static final List<SelectOption> INBOX_APPROVAL_SEARCH_PROCESS_TYPE_AFC;
 
     static {
         Set<String> applyApprovalProcessType = Sets.newHashSetWithExpectedSize(3);
@@ -325,6 +326,10 @@ public class MasterCodeConstants {
         inboxApprovalSearchProcessTypeFAC.add(new SelectOption(PROCESS_TYPE_SP_APPROVE_HANDLE, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_SP_APPROVE_HANDLE)));
         inboxApprovalSearchProcessTypeFAC.add(new SelectOption(PROCESS_TYPE_APPROVAL_FOR_FACILITY_ACTIVITY_TYPE, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_APPROVAL_FOR_FACILITY_ACTIVITY_TYPE)));
         INBOX_APPROVAL_SEARCH_PROCESS_TYPE_FAC = Collections.unmodifiableList(inboxApprovalSearchProcessTypeFAC);
+
+        List<SelectOption> inboxApprovalSearchProcessTypeAFC = new ArrayList<>(1);
+        inboxApprovalSearchProcessTypeAFC.add(new SelectOption(PROCESS_TYPE_FAC_CERTIFIER_REG, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_FAC_CERTIFIER_REG)));
+        INBOX_APPROVAL_SEARCH_PROCESS_TYPE_AFC = Collections.unmodifiableList(inboxApprovalSearchProcessTypeAFC);
     }
 
     public static final String FAC_CLASSIFICATION_BSL3 = "FACCLA001";
@@ -449,19 +454,31 @@ public class MasterCodeConstants {
     public static final String APPROVAL_STATUS_SUSPENDED_PENDING_INVESTIGATION = "APPRSTA008";
     public static final String APPROVAL_STATUS_SUSPENDED_CONDITIONAL_INVENTORY_MOVEMENT = "APPRSTA009";
     public static final String APPROVAL_STATUS_SUSPENDED_PENDING_RENEWAL = "APPRSTA010";
+    public static final String APPROVAL_STATUS_DEREGISTERED = "APPRSTA011";
 
-    public static final List<SelectOption> INBOX_APPROVAL_SEARCH_STATUS;
+    public static final List<SelectOption> INBOX_APPROVAL_SEARCH_STATUS_FAC;
+    public static final List<SelectOption> INBOX_APPROVAL_SEARCH_STATUS_AFC;
 
     static {
-        List<SelectOption> inboxApprovalSearchStatus = new ArrayList<>(7);
-        inboxApprovalSearchStatus.add(new SelectOption(APPROVAL_STATUS_ACTIVE, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_ACTIVE)));
-        inboxApprovalSearchStatus.add(new SelectOption(APPROVAL_STATUS_CANCELLED, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_CANCELLED)));
-        inboxApprovalSearchStatus.add(new SelectOption(APPROVAL_STATUS_SUSPENDED_PENDING_RENEWAL, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_SUSPENDED_PENDING_RENEWAL)));
-        inboxApprovalSearchStatus.add(new SelectOption(APPROVAL_STATUS_SUSPENDED_PENDING_INVESTIGATION, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_SUSPENDED_PENDING_INVESTIGATION)));
-        inboxApprovalSearchStatus.add(new SelectOption(APPROVAL_STATUS_SUSPENDED_NC, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_SUSPENDED_NC)));
-        inboxApprovalSearchStatus.add(new SelectOption(APPROVAL_STATUS_SUSPENDED_OTHERS, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_SUSPENDED_OTHERS)));
-        inboxApprovalSearchStatus.add(new SelectOption(APPROVAL_STATUS_REVOKED, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_REVOKED)));
-        INBOX_APPROVAL_SEARCH_STATUS = Collections.unmodifiableList(inboxApprovalSearchStatus);
+        List<SelectOption> inboxApprovalSearchStatusFAC = new ArrayList<>(7);
+        inboxApprovalSearchStatusFAC.add(new SelectOption(APPROVAL_STATUS_ACTIVE, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_ACTIVE)));
+        inboxApprovalSearchStatusFAC.add(new SelectOption(APPROVAL_STATUS_CANCELLED, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_CANCELLED)));
+        inboxApprovalSearchStatusFAC.add(new SelectOption(APPROVAL_STATUS_SUSPENDED_PENDING_RENEWAL, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_SUSPENDED_PENDING_RENEWAL)));
+        inboxApprovalSearchStatusFAC.add(new SelectOption(APPROVAL_STATUS_SUSPENDED_PENDING_INVESTIGATION, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_SUSPENDED_PENDING_INVESTIGATION)));
+        inboxApprovalSearchStatusFAC.add(new SelectOption(APPROVAL_STATUS_SUSPENDED_NC, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_SUSPENDED_NC)));
+        inboxApprovalSearchStatusFAC.add(new SelectOption(APPROVAL_STATUS_SUSPENDED_OTHERS, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_SUSPENDED_OTHERS)));
+        inboxApprovalSearchStatusFAC.add(new SelectOption(APPROVAL_STATUS_REVOKED, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_REVOKED)));
+        INBOX_APPROVAL_SEARCH_STATUS_FAC = Collections.unmodifiableList(inboxApprovalSearchStatusFAC);
+
+        List<SelectOption> inboxApprovalSearchStatusAFC = new ArrayList<>(7);
+        inboxApprovalSearchStatusAFC.add(new SelectOption(APPROVAL_STATUS_ACTIVE, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_ACTIVE)));
+        inboxApprovalSearchStatusAFC.add(new SelectOption(APPROVAL_STATUS_DEREGISTERED, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_DEREGISTERED)));
+        inboxApprovalSearchStatusAFC.add(new SelectOption(APPROVAL_STATUS_EXPIRED, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_EXPIRED)));
+        inboxApprovalSearchStatusAFC.add(new SelectOption(APPROVAL_STATUS_SUSPENDED_PENDING_RENEWAL, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_SUSPENDED_PENDING_RENEWAL)));
+        inboxApprovalSearchStatusAFC.add(new SelectOption(APPROVAL_STATUS_SUSPENDED_PENDING_INVESTIGATION, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_SUSPENDED_PENDING_INVESTIGATION)));
+        inboxApprovalSearchStatusAFC.add(new SelectOption(APPROVAL_STATUS_SUSPENDED_OTHERS, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_SUSPENDED_OTHERS)));
+        inboxApprovalSearchStatusAFC.add(new SelectOption(APPROVAL_STATUS_REVOKED, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_REVOKED)));
+        INBOX_APPROVAL_SEARCH_STATUS_AFC = Collections.unmodifiableList(inboxApprovalSearchStatusAFC);
     }
 
     public static final String REPORTING_OF_INCIDENT_ADVERSE_INCIDENT = "REPORT001";

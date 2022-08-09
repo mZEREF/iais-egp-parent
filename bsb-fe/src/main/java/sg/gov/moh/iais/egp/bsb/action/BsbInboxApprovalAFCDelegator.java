@@ -1,10 +1,8 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.BsbInboxClient;
@@ -18,11 +16,11 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.List;
 
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_INBOX_APPROVAL_AFC_ADMIN;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INTERNAL_INBOX;
-import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.PROCESS_TYPE_FAC_CERTIFIER_REG;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.INBOX_APPROVAL_SEARCH_PROCESS_TYPE_AFC;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.INBOX_APPROVAL_SEARCH_STATUS_AFC;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_CODE_VALIDATION_FAIL;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_INFO_ERROR_MSG;
 import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_APPROVAL_STATUS_OPS;
@@ -59,10 +57,6 @@ public class BsbInboxApprovalAFCDelegator {
         AuditTrailHelper.auditFunction(MODULE_INTERNAL_INBOX, FUNCTION_INBOX_APPROVAL_AFC_ADMIN);
     }
 
-    public void init(BaseProcessClass bpc) {
-        // do nothing
-    }
-
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
 
@@ -86,11 +80,8 @@ public class BsbInboxApprovalAFCDelegator {
             }
         }
 
-        List<SelectOption> processTypeOps = new ArrayList<>(1);
-        processTypeOps.add(new SelectOption(PROCESS_TYPE_FAC_CERTIFIER_REG, "Facility Certifier Registration"));
-        ParamUtil.setRequestAttr(request, KEY_PROCESS_TYPE_OPS, processTypeOps);
-        List<SelectOption> approvalStatusOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_APPROVAL_STATUS);
-        ParamUtil.setRequestAttr(request, KEY_APPROVAL_STATUS_OPS, approvalStatusOps);
+        ParamUtil.setRequestAttr(request, KEY_PROCESS_TYPE_OPS, INBOX_APPROVAL_SEARCH_PROCESS_TYPE_AFC);
+        ParamUtil.setRequestAttr(request, KEY_APPROVAL_STATUS_OPS, INBOX_APPROVAL_SEARCH_STATUS_AFC);
     }
 
 
