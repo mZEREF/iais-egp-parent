@@ -19,7 +19,7 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-inbox.js"></script>
 
 
-<%@include file="../../dashboard/dashboardFAC.jsp"%>
+<%@include file="../dashboard/dashboardFAC.jsp"%>
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
 <fmt:setLocale value="en"/>
@@ -28,7 +28,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="tab-gp dashboard-tab" style="margin-left: 6px;margin-right: -8px;">
-                    <%@ include file="../../InnerNavBarFAC.jsp"%>
+                    <%@ include file="../InnerNavBarFAC.jsp"%>
 
                     <div class="tab-content">
                         <form class="" method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
@@ -127,7 +127,7 @@
 
 
                                 <div class="row text-right text-center-mobile">
-                                    <button class="btn btn-secondary" type="reset" id="clearBtn" name="clearBtn">Clear</button>
+                                    <button class="btn btn-secondary" type="button" id="clearBtn" name="clearBtn">Clear</button>
                                     <button class="btn btn-primary" type="button" id="searchBtn" name="searchBtn">Search</button>
                                 </div>
                             </div>
@@ -165,6 +165,8 @@
                                                 </c:when>
                                                 <c:otherwise>
                                                     <c:forEach var="approval" items="${dataList}" varStatus="status">
+                                                        <iais-bsb:approval-action info="${approval}" attributeKey="actionAvailable"/>
+                                                        <%--@elvariable id="actionAvailable" type="java.lang.Boolean"--%>
                                                         <tr>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Approval No.</p>
@@ -198,28 +200,13 @@
                                                                 <p class="visible-xs visible-sm table-row-title">Actions</p>
                                                                 <select id="approvalAction${status.index}" class="approvalActionDropdown${status.index}" name="approvalAction${status.index}" data-action-select="">
                                                                     <option value="#" selected="selected">Select</option>
-                                                                    <c:choose>
-                                                                        <c:when test="${approval.status eq 'APPRSTA001' and approval.processType eq 'PROTYPE001'}">
-                                                                            <option value="/bsb-web/eservice/INTERNET/MohRfcViewFacRegApplication?appId=<iais:mask name='id' value='${approval.id}'/>&processType=<iais:mask name='processType' value='${approval.processType}'/>&approveNo=${approval.approveNo}<c:if test="${approval.status eq 'APPRSTA001'}">&editId=<iais:mask name='editId' value='${approval.id}'/></c:if>">RFC</option>
-                                                                        </c:when>
-                                                                        <c:when test="${approval.status eq 'APPRSTA001' and approval.processType eq 'PROTYPE002' or approval.processType eq 'PROTYPE003' or approval.processType eq 'PROTYPE004'}">
-                                                                            <option value="/bsb-web/eservice/INTERNET/MohRfcViewApprovalPossessApplication?appId=<iais:mask name='id' value='${approval.id}'/>&processType=<iais:mask name='processType' value='${approval.processType}'/>&approveNo=${approval.approveNo}<c:if test="${approval.status eq 'APPRSTA001'}">&editId=<iais:mask name='editId' value='${approval.id}'/></c:if>">RFC</option>
-                                                                        </c:when>
-                                                                    </c:choose>
-                                                                    <c:choose>
-                                                                        <c:when test="${approval.status eq 'APPRSTA001' and approval.renewable eq 'Y'}">
-                                                                            <option value="/bsb-web/eservice/INTERNET/MohRenewalFacilityRegistration?editId=<iais:mask name='editId' value='${approval.id}'/>">Renewal</option>
-                                                                        </c:when>
-                                                                        <c:when test="${approval.status eq 'APPRSTA004' and approval.renewable eq 'Y'}">
-                                                                            <option value="/bsb-web/eservice/INTERNET/MohDelayRenewalFacilityRegistration?editId=<iais:mask name='editId' value='${approval.id}'/>">Delay Renewal</option>
-                                                                        </c:when>
-                                                                    </c:choose>
-
-                                                                    <c:if test="${approval.processType eq 'PROTYPE001' and (approval.status eq 'APPRSTA001' or approval.status eq 'APPRSTA007' or approval.status eq 'APPRSTA009' or approval.status eq 'APPRSTA010')}">
-                                                                        <option value="/bsb-web/eservice/INTERNET/ApplicantDeRegistrationFacility?approvalId=<iais:mask name='approvalId' value='${approval.id}'/>">DeRegistration</option>
+                                                                    <%--@elvariable id="ApprovalUpdateJudge" type="java.lang.Boolean"--%>
+                                                                    <c:if test="${ApprovalUpdateJudge}">
+                                                                        <option value="">Update</option>
                                                                     </c:if>
-                                                                    <c:if test="${(approval.processType eq 'PROTYPE002' or approval.processType eq 'PROTYPE003' or approval.processType eq 'PROTYPE004') and (approval.status eq 'APPRSTA001' or approval.status eq 'APPRSTA007' or approval.status eq 'APPRSTA009' or approval.status eq 'APPRSTA010')}">
-                                                                        <option value="/bsb-web/eservice/INTERNET/ApplicantCancellationApproval?approvalId=<iais:mask name='approvalId' value='${approval.id}'/>">Cancellation</option>
+                                                                    <%--@elvariable id="ApprovalCancelJudge" type="java.lang.Boolean"--%>
+                                                                    <c:if test="${ApprovalCancelJudge}">
+                                                                        <option value="">Cancel</option>
                                                                     </c:if>
                                                                 </select>
                                                             </td>

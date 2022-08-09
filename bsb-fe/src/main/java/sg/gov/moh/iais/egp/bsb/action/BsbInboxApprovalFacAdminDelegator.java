@@ -24,6 +24,8 @@ import java.util.List;
 
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_INBOX_APPROVAL_FACILITY_ADMIN;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INTERNAL_INBOX;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.INBOX_APPROVAL_SEARCH_PROCESS_TYPE_FAC;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.INBOX_APPROVAL_SEARCH_STATUS;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_CODE_VALIDATION_FAIL;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_INFO_ERROR_MSG;
 import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_APPROVAL_STATUS_OPS;
@@ -60,10 +62,6 @@ public class BsbInboxApprovalFacAdminDelegator {
         AuditTrailHelper.auditFunction(MODULE_INTERNAL_INBOX, FUNCTION_INBOX_APPROVAL_FACILITY_ADMIN);
     }
 
-    public void init(BaseProcessClass bpc) {
-        // do nothing
-    }
-
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
 
@@ -90,12 +88,8 @@ public class BsbInboxApprovalFacAdminDelegator {
             }
         }
 
-
-
-        List<SelectOption> processTypeOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_PRO_TYPE);
-        ParamUtil.setRequestAttr(request, KEY_PROCESS_TYPE_OPS, processTypeOps);
-        List<SelectOption> approvalStatusOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_APPROVAL_STATUS);
-        ParamUtil.setRequestAttr(request, KEY_APPROVAL_STATUS_OPS, approvalStatusOps);
+        ParamUtil.setRequestAttr(request, KEY_PROCESS_TYPE_OPS, INBOX_APPROVAL_SEARCH_PROCESS_TYPE_FAC);
+        ParamUtil.setRequestAttr(request, KEY_APPROVAL_STATUS_OPS, INBOX_APPROVAL_SEARCH_STATUS);
     }
 
     public void search(BaseProcessClass bpc) {

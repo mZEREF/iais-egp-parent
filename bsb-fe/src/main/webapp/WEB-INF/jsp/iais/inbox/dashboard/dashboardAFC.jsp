@@ -44,13 +44,7 @@
                         </a></div>
                     </div>
                     <div class="dashboard-tile-item">
-                        <div class="dashboard-tile"><a data-tab="#tabLic" href="/bsb-web/eservice/INTERNET/MohBSBInboxFac?facilityStatus=APPRSTA001">
-                            <p class="dashboard-txt">Active Facilities</p>
-                            <h1 class="dashboard-count">${activeFacilityAmt}</h1>
-                        </a></div>
-                    </div>
-                    <div class="dashboard-tile-item">
-                        <div class="dashboard-tile"><a data-tab="#tabLic" href="/bsb-web/eservice/INTERNET/MohBsbInboxApprovalFacAdmin?searchStatus=APPRSTA001">
+                        <div class="dashboard-tile"><a data-tab="#tabLic" href="/bsb-web/eservice/INTERNET/MohBsbInboxApprovalAFC?searchStatus=APPRSTA001">
                             <p class="dashboard-txt">Active Approvals</p>
                             <h1 class="dashboard-count">${activeApprovalAmt}</h1>
                         </a></div>

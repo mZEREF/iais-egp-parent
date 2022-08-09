@@ -1,10 +1,8 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -24,8 +22,9 @@ import java.util.List;
 
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_INBOX_APPLICATION_FACILITY_ADMIN;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INTERNAL_INBOX;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.INBOX_APPLICATION_SEARCH_APP_TYPE_FAC;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.INBOX_APP_SEARCH_STATUS_FAC;
-import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.INBOX_SEARCH_PROCESS_TYPE_FAC;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.INBOX_APPLICATION_SEARCH_PROCESS_TYPE_FAC;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_CODE_VALIDATION_FAIL;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_INFO_ERROR_MSG;
 import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_APP_STATUS_OPS;
@@ -91,11 +90,10 @@ public class BsbInboxAppDelegator {
             }
         }
 
-        ParamUtil.setRequestAttr(request, KEY_PROCESS_TYPE_OPS, INBOX_SEARCH_PROCESS_TYPE_FAC);
+        ParamUtil.setRequestAttr(request, KEY_PROCESS_TYPE_OPS, INBOX_APPLICATION_SEARCH_PROCESS_TYPE_FAC);
         // inbox search app FAC status
         ParamUtil.setRequestAttr(request, KEY_APP_STATUS_OPS, INBOX_APP_SEARCH_STATUS_FAC);
-        List<SelectOption> appTypeOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_APP_TYPE);
-        ParamUtil.setRequestAttr(request, KEY_APP_TYPE_OPS, appTypeOps);
+        ParamUtil.setRequestAttr(request, KEY_APP_TYPE_OPS, INBOX_APPLICATION_SEARCH_APP_TYPE_FAC);
     }
 
     public void search(BaseProcessClass bpc) {

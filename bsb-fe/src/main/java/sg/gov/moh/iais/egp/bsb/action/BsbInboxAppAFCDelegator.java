@@ -24,6 +24,7 @@ import java.util.List;
 
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_INBOX_APPLICATION_AFC_ADMIN;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INTERNAL_INBOX;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.INBOX_APPLICATION_SEARCH_APP_TYPE_AFC;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.INBOX_APP_SEARCH_STATUS_AFC;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.PROCESS_TYPE_FAC_CERTIFIER_REG;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_CODE_VALIDATION_FAIL;
@@ -92,8 +93,7 @@ public class BsbInboxAppAFCDelegator {
 
         // inbox search app AFC status
         ParamUtil.setRequestAttr(request, KEY_APP_STATUS_OPS, INBOX_APP_SEARCH_STATUS_AFC);
-        List<SelectOption> appTypeOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_APP_TYPE);
-        ParamUtil.setRequestAttr(request, KEY_APP_TYPE_OPS, appTypeOps);
+        ParamUtil.setRequestAttr(request, KEY_APP_TYPE_OPS, INBOX_APPLICATION_SEARCH_APP_TYPE_AFC);
     }
 
     public void search(BaseProcessClass bpc) {

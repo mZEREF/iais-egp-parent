@@ -63,6 +63,27 @@ public class MasterCodeConstants {
     public static final String APP_TYPE_WITHDRAW = "BSBAPTY009";
     public static final String APP_TYPE_SUBMISSION = "BSBAPTY010";
 
+    public static final List<SelectOption> INBOX_APPLICATION_SEARCH_APP_TYPE_FAC;
+    public static final List<SelectOption> INBOX_APPLICATION_SEARCH_APP_TYPE_AFC;
+
+    static {
+        List<SelectOption> inboxApplicationSearchAppTypeFAC = new ArrayList<>(6);
+        inboxApplicationSearchAppTypeFAC.add(new SelectOption(APP_TYPE_NEW, MasterCodeUtil.getCodeDesc(APP_TYPE_NEW)));
+        inboxApplicationSearchAppTypeFAC.add(new SelectOption(APP_TYPE_RENEW, MasterCodeUtil.getCodeDesc(APP_TYPE_RENEW)));
+        inboxApplicationSearchAppTypeFAC.add(new SelectOption(APP_TYPE_RFC, MasterCodeUtil.getCodeDesc(APP_TYPE_RFC)));
+        inboxApplicationSearchAppTypeFAC.add(new SelectOption(APP_TYPE_CANCEL, MasterCodeUtil.getCodeDesc(APP_TYPE_CANCEL)));
+        inboxApplicationSearchAppTypeFAC.add(new SelectOption(APP_TYPE_DEREGISTRATION, MasterCodeUtil.getCodeDesc(APP_TYPE_DEREGISTRATION)));
+        inboxApplicationSearchAppTypeFAC.add(new SelectOption(APP_TYPE_WITHDRAW, MasterCodeUtil.getCodeDesc(APP_TYPE_WITHDRAW)));
+        INBOX_APPLICATION_SEARCH_APP_TYPE_FAC = Collections.unmodifiableList(inboxApplicationSearchAppTypeFAC);
+
+        List<SelectOption> inboxApplicationSearchAppTypeAFC = new ArrayList<>(4);
+        inboxApplicationSearchAppTypeAFC.add(new SelectOption(APP_TYPE_NEW, MasterCodeUtil.getCodeDesc(APP_TYPE_NEW)));
+        inboxApplicationSearchAppTypeAFC.add(new SelectOption(APP_TYPE_RENEW, MasterCodeUtil.getCodeDesc(APP_TYPE_RENEW)));
+        inboxApplicationSearchAppTypeAFC.add(new SelectOption(APP_TYPE_WITHDRAW, MasterCodeUtil.getCodeDesc(APP_TYPE_WITHDRAW)));
+        inboxApplicationSearchAppTypeAFC.add(new SelectOption(APP_TYPE_RFC, MasterCodeUtil.getCodeDesc(APP_TYPE_RFC)));
+        INBOX_APPLICATION_SEARCH_APP_TYPE_AFC = Collections.unmodifiableList(inboxApplicationSearchAppTypeAFC);
+    }
+
     // App Status
     // main
     public static final String APP_STATUS_REMOVED                                   = "BSBAPST000";
@@ -277,7 +298,8 @@ public class MasterCodeConstants {
     public static final String PROCESS_TYPE_INSPECTION_FOLLOW_UP = "PROTYPE014";
     public static final Set<String> APPLY_APPROVE_PROCESS_TYPES;
 
-    public static final List<SelectOption> INBOX_SEARCH_PROCESS_TYPE_FAC;
+    public static final List<SelectOption> INBOX_APPLICATION_SEARCH_PROCESS_TYPE_FAC;
+    public static final List<SelectOption> INBOX_APPROVAL_SEARCH_PROCESS_TYPE_FAC;
 
     static {
         Set<String> applyApprovalProcessType = Sets.newHashSetWithExpectedSize(3);
@@ -286,13 +308,20 @@ public class MasterCodeConstants {
         applyApprovalProcessType.add(PROCESS_TYPE_SP_APPROVE_HANDLE);
         APPLY_APPROVE_PROCESS_TYPES = Collections.unmodifiableSet(applyApprovalProcessType);
 
-        List<SelectOption> inboxSearchProcessTypeFAC = new ArrayList<>(7);
-        inboxSearchProcessTypeFAC.add(new SelectOption(PROCESS_TYPE_FAC_REG, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_FAC_REG)));
-        inboxSearchProcessTypeFAC.add(new SelectOption(PROCESS_TYPE_APPROVE_POSSESS, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_APPROVE_POSSESS)));
-        inboxSearchProcessTypeFAC.add(new SelectOption(PROCESS_TYPE_APPROVE_LSP, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_APPROVE_LSP)));
-        inboxSearchProcessTypeFAC.add(new SelectOption(PROCESS_TYPE_SP_APPROVE_HANDLE, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_SP_APPROVE_HANDLE)));
-        inboxSearchProcessTypeFAC.add(new SelectOption(PROCESS_TYPE_APPROVAL_FOR_FACILITY_ACTIVITY_TYPE, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_APPROVAL_FOR_FACILITY_ACTIVITY_TYPE)));
-        INBOX_SEARCH_PROCESS_TYPE_FAC = Collections.unmodifiableList(inboxSearchProcessTypeFAC);
+        List<SelectOption> inboxApplicationSearchProcessTypeFAC = new ArrayList<>(5);
+        inboxApplicationSearchProcessTypeFAC.add(new SelectOption(PROCESS_TYPE_FAC_REG, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_FAC_REG)));
+        inboxApplicationSearchProcessTypeFAC.add(new SelectOption(PROCESS_TYPE_APPROVE_POSSESS, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_APPROVE_POSSESS)));
+        inboxApplicationSearchProcessTypeFAC.add(new SelectOption(PROCESS_TYPE_APPROVE_LSP, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_APPROVE_LSP)));
+        inboxApplicationSearchProcessTypeFAC.add(new SelectOption(PROCESS_TYPE_SP_APPROVE_HANDLE, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_SP_APPROVE_HANDLE)));
+        inboxApplicationSearchProcessTypeFAC.add(new SelectOption(PROCESS_TYPE_APPROVAL_FOR_FACILITY_ACTIVITY_TYPE, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_APPROVAL_FOR_FACILITY_ACTIVITY_TYPE)));
+        INBOX_APPLICATION_SEARCH_PROCESS_TYPE_FAC = Collections.unmodifiableList(inboxApplicationSearchProcessTypeFAC);
+
+        List<SelectOption> inboxApprovalSearchProcessTypeFAC = new ArrayList<>(4);
+        inboxApprovalSearchProcessTypeFAC.add(new SelectOption(PROCESS_TYPE_APPROVE_POSSESS, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_APPROVE_POSSESS)));
+        inboxApprovalSearchProcessTypeFAC.add(new SelectOption(PROCESS_TYPE_APPROVE_LSP, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_APPROVE_LSP)));
+        inboxApprovalSearchProcessTypeFAC.add(new SelectOption(PROCESS_TYPE_SP_APPROVE_HANDLE, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_SP_APPROVE_HANDLE)));
+        inboxApprovalSearchProcessTypeFAC.add(new SelectOption(PROCESS_TYPE_APPROVAL_FOR_FACILITY_ACTIVITY_TYPE, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_APPROVAL_FOR_FACILITY_ACTIVITY_TYPE)));
+        INBOX_APPROVAL_SEARCH_PROCESS_TYPE_FAC = Collections.unmodifiableList(inboxApprovalSearchProcessTypeFAC);
     }
 
     public static final String FAC_CLASSIFICATION_BSL3 = "FACCLA001";
@@ -417,6 +446,20 @@ public class MasterCodeConstants {
     public static final String APPROVAL_STATUS_SUSPENDED_PENDING_INVESTIGATION = "APPRSTA008";
     public static final String APPROVAL_STATUS_SUSPENDED_CONDITIONAL_INVENTORY_MOVEMENT = "APPRSTA009";
     public static final String APPROVAL_STATUS_SUSPENDED_PENDING_RENEWAL = "APPRSTA010";
+
+    public static final List<SelectOption> INBOX_APPROVAL_SEARCH_STATUS;
+
+    static {
+        List<SelectOption> inboxApprovalSearchStatus = new ArrayList<>(7);
+        inboxApprovalSearchStatus.add(new SelectOption(APPROVAL_STATUS_ACTIVE, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_ACTIVE)));
+        inboxApprovalSearchStatus.add(new SelectOption(APPROVAL_STATUS_CANCELLED, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_CANCELLED)));
+        inboxApprovalSearchStatus.add(new SelectOption(APPROVAL_STATUS_SUSPENDED_PENDING_RENEWAL, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_SUSPENDED_PENDING_RENEWAL)));
+        inboxApprovalSearchStatus.add(new SelectOption(APPROVAL_STATUS_SUSPENDED_PENDING_INVESTIGATION, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_SUSPENDED_PENDING_INVESTIGATION)));
+        inboxApprovalSearchStatus.add(new SelectOption(APPROVAL_STATUS_SUSPENDED_NC, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_SUSPENDED_NC)));
+        inboxApprovalSearchStatus.add(new SelectOption(APPROVAL_STATUS_SUSPENDED_OTHERS, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_SUSPENDED_OTHERS)));
+        inboxApprovalSearchStatus.add(new SelectOption(APPROVAL_STATUS_REVOKED, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_REVOKED)));
+        INBOX_APPROVAL_SEARCH_STATUS = Collections.unmodifiableList(inboxApprovalSearchStatus);
+    }
 
     public static final String REPORTING_OF_INCIDENT_ADVERSE_INCIDENT = "REPORT001";
     public static final String REPORTING_OF_INCIDENT_NEAR_MISS = "REPORT002";

@@ -19,16 +19,21 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-inbox.js"></script>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
-<%@include file="../dashboard/dashboardFAC.jsp"%>
-
+<%--@elvariable id="isFacAdmin" type="java.lang.Boolean"--%>
+<c:choose>
+    <c:when test="${isFacAdmin}"><%@include file="../dashboard/dashboardFAC.jsp"%></c:when>
+    <c:otherwise><%@include file="../dashboard/dashboardAFC.jsp"%></c:otherwise>
+</c:choose>
 
 <div class="main-content">
     <div class="container">
         <div class="row">
             <div class="col-xs-12">
                 <div class="tab-gp dashboard-tab" style="margin-left: 6px;margin-right: -8px;">
-                    <%@ include file="../InnerNavBarFAC.jsp"%>
-
+                    <c:choose>
+                        <c:when test="${isFacAdmin}"><%@include file="../InnerNavBarFAC.jsp"%></c:when>
+                        <c:otherwise><%@include file="../InnerNavBarAFC.jsp"%></c:otherwise>
+                    </c:choose>
 
                     <div style="padding: 50px 0">
                         <form class="" method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
