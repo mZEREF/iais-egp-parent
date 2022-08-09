@@ -2306,6 +2306,9 @@ public final class ApplicationHelper {
         if (!IaisCommonUtils.isEmpty(appPremSpecialisedDtoList) && currSvcInfoDto != null) {
             ConfigCommService configCommService = getConfigCommService();
             for (AppPremSpecialisedDto appPremSpecialisedDto : appPremSpecialisedDtoList) {
+                if (!Objects.equals(appPremSpecialisedDto.getBaseSvcCode(), currSvcInfoDto.getServiceCode())) {
+                    continue;
+                }
                 DocumentShowDto docShowDto = new DocumentShowDto();
                 docShowDto.setAppGrpPremisesDto(appPremSpecialisedDto);
                 List<DocSectionDto> docSectionDtoList = IaisCommonUtils.genNewArrayList();
