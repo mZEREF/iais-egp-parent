@@ -141,6 +141,8 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             crudActionType="";
         }
         if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(dpSuperDataSubmissionDto.getDataSubmissionDto().getAppType())) {
+            DpSuperDataSubmissionDto oldDpSuperDataSubmissionDto = dpDataSubmissionService.getDpSuperDataSubmissionDto(dpSuperDataSubmissionDto.getDataSubmissionDto().getSubmissionNo());
+            ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_OLD_DATA_SUBMISSION, oldDpSuperDataSubmissionDto);
             if (crudActionType.equals("rfc")) {
                 DataSubmissionDto dataSubmissionDto = dpSuperDataSubmissionDto.getDataSubmissionDto();
                 String orgId = "";
@@ -489,6 +491,7 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             DpSuperDataSubmissionDto dpOldSuperDataSubmissionDto = DataSubmissionHelper.getOldDpSuperDataSubmissionDto(request);
             if(dpOldSuperDataSubmissionDto != null){
                 if(dpOldSuperDataSubmissionDto.getDrugPrescribedDispensedDto()!= null){
+                    drugPrescribedDispensed.getDrugSubmission().setIdNumber(drugPrescribedDispensed.getDrugSubmission().getIdNumber().toLowerCase());
                     if(drugPrescribedDispensed.getDrugSubmission().equals(dpOldSuperDataSubmissionDto.getDrugPrescribedDispensedDto().getDrugSubmission())){
                         if(drugPrescribedDispensed.getDrugMedicationDtos().equals(dpOldSuperDataSubmissionDto.getDrugPrescribedDispensedDto().getDrugMedicationDtos())){
                             ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);

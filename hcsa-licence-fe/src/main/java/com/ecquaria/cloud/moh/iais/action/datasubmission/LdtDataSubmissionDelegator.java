@@ -431,6 +431,11 @@ public class LdtDataSubmissionDelegator {
             setSelectOptions(bpc);
         }
         LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto = DataSubmissionHelper.getCurrentLdtSuperDataSubmissionDto(bpc.request);
+        if (DataSubmissionConstant.CRUD_TYPE_FROM_DRAFT.equals(crudType) && DataSubmissionConsts.DS_APP_TYPE_RFC.equals(ldtSuperDataSubmissionDto.getAppType())){
+            //set old dto
+            LdtSuperDataSubmissionDto oldLdtSuperDataSubmissionDto = ldtDataSubmissionService.getLdtSuperDataSubmissionDto(ldtSuperDataSubmissionDto.getDataSubmissionDto().getSubmissionNo());
+            ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.LDT_OLD_DATA_SUBMISSION, oldLdtSuperDataSubmissionDto);
+        }
         if (ldtSuperDataSubmissionDto == null) {
             ldtSuperDataSubmissionDto = initLdtSuperDataSubmissionDto(bpc.request);
             DataSubmissionHelper.setCurrentLdtSuperDataSubmissionDto(ldtSuperDataSubmissionDto, bpc.request);

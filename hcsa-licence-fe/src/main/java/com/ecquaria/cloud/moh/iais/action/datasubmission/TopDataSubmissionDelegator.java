@@ -340,6 +340,8 @@ public class TopDataSubmissionDelegator {
             }
         }else
         if(DataSubmissionConsts.DS_APP_TYPE_RFC.equals(topSuperDataSubmissionDto.getDataSubmissionDto().getAppType())){
+            TopSuperDataSubmissionDto oldTopSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDto(topSuperDataSubmissionDto.getDataSubmissionDto().getSubmissionNo());
+            ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.TOP_OLD_DATA_SUBMISSION, oldTopSuperDataSubmissionDto);
             List<DsConfig> configList =DsConfigHelper.initTopConfig(bpc.request);
 
             for (DsConfig cfg:configList
