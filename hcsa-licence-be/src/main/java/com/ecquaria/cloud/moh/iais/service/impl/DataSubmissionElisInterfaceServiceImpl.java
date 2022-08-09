@@ -454,8 +454,10 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
             List<String> deletedDoctorPrns = new ArrayList<>();
             for (DsElisDoctorDto dsElisDoctorDto : doctorDtoList) {
                 if ("N".equals(dsElisDoctorDto.getRegisterIndicator())) {
-                    log.info("delete doctor, register_no is {}", dsElisDoctorDto.getPrn());
-                    deletedDoctorPrns.add(dsElisDoctorDto.getPrn());
+                    if (!deletedDoctorPrns.contains(dsElisDoctorDto.getPrn())) {
+                        log.info("delete doctor, register_no is {}", dsElisDoctorDto.getPrn());
+                        deletedDoctorPrns.add(dsElisDoctorDto.getPrn());
+                    }
                 } else {
                     DoctorInformationDto doctorInformationDto = assistedReproductionClient.getDoctorInformationDtoByConds(dsElisDoctorDto.getPrn(), "ELIS").getEntity();
                     DoctorInformationDto doctorDto = generateDoctorDto(dsElisDoctorDto, doctorInformationDto);
