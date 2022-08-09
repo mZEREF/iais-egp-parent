@@ -2128,7 +2128,7 @@ public abstract class AppCommDelegator {
         RfcHelper.setRiskToDto(appSubmissionDto);
 
         //set psn dropdown
-        setPsnDroTo(appSubmissionDto, bpc);
+        //setPsnDroTo(appSubmissionDto, bpc);
         //rfi select control
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
@@ -2242,12 +2242,12 @@ public abstract class AppCommDelegator {
         return ApplicationHelper.getAppSubmissionDto(request);
     }
 
-    private void setPsnDroTo(AppSubmissionDto appSubmissionDto, BaseProcessClass bpc) {
+    /*private void setPsnDroTo(AppSubmissionDto appSubmissionDto, BaseProcessClass bpc) {
         Map<String, AppSvcPrincipalOfficersDto> personMap =
                 (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, HcsaAppConst.PERSONSELECTMAP);
         String personMapStr = JsonUtil.parseToJson(personMap);
         appSubmissionDto.setDropDownPsnMapStr(personMapStr);
-    }
+    }*/
 
     /**
      * StartStep: PrepareErrorAck

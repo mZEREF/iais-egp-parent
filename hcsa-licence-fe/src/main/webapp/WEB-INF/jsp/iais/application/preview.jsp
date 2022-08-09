@@ -225,9 +225,9 @@
             showWaiting();
             submit('premises',null,null);
         });
-        $('#docEdit').click(function(){
+        $('#specialisedEdit').click(function(){
             showWaiting();
-            submit('documents',null,null);
+            submit('specialised',null,null);
         });
         $('#Back').click(function(){
             showWaiting();
