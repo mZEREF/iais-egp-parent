@@ -233,8 +233,14 @@ public class DpDataSubmissionServiceImpl implements DpDataSubmissionService {
                 DoctorInformationDto doctorInformationDto = docInfoService.getDoctorInformationDtoByConds(drugSubmission.getDoctorReignNo(), "ELIS");
                 if (professionalResponseDto != null && doctorInformationDto != null
                         && ("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()))) {
+                    //PRN number doesn't exist in PRS but exist in eLis
                     drugSubmission.setToolTipShow("N");
                 } else if (professionalResponseDto != null && doctorInformationDto == null && StringUtils.hasLength(professionalResponseDto.getName())) {
+                    //PRN number doesn't exist in eLis but exist in PRS
+                    drugSubmission.setToolTipShow("N");
+                } else if (professionalResponseDto != null && doctorInformationDto == null
+                        && ("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()))){
+                    // PRN number doesn't exist in both (PRS and eLis)
                     drugSubmission.setToolTipShow("N");
                 } else {
                     drugSubmission.setToolTipShow("Y");
