@@ -8,6 +8,8 @@ import java.util.List;
 
 @Data
 public class BATInfo implements Serializable {
+    private String batEntityId;
+
     private String schedule;
 
     // javers compare id, must be unique and non-empty

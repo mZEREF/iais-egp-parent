@@ -21,6 +21,7 @@ public class FacilityRegisterDto implements Serializable{
     //this is used to saveDraft module
     private String appType;
 
+    private String uen;
     private FacilitySelectionDto facilitySelectionDto;
     private FacilityProfileDto facilityProfileDto;
     private FacilityOperatorDto facilityOperatorDto;

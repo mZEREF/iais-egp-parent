@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.helper.excel.ExcelReader;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.google.common.collect.Maps;
+import com.googlecode.jmapper.JMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ResourceUtils;
@@ -836,11 +837,12 @@ public class InspectionDODelegator {
             List<ExcelSheetDto> excelSheetDtos = getExcelSheetDtos(null, new ChecklistConfigDto(), null, null, false);
             Map<String, List<InsChklItemExcelDto>> data = ExcelReader.readerToBeans(file, excelSheetDtos);
             if (!data.isEmpty()) {
+                JMapper<ChklstItemAnswerDto, InsChklItemExcelDto> mapper = new JMapper<>(ChklstItemAnswerDto.class, InsChklItemExcelDto.class);
                 for (Map.Entry<String, List<InsChklItemExcelDto>> entry : data.entrySet()) {
                     List<ChklstItemAnswerDto> collect = entry.getValue().stream()
                             .filter(dto -> !StringUtils.isEmpty(dto.getSnNo()) && !StringUtils.isEmpty(dto.getChecklistItem()))
                             .map(dto -> {
-                                ChklstItemAnswerDto answerDto = MiscUtil.transferEntityDto(dto, ChklstItemAnswerDto.class);
+                                ChklstItemAnswerDto answerDto = mapper.getDestination(dto);
                                 String itemKey = dto.getItemKey();
                                 if (StringUtils.isEmpty(itemKey)) {
                                     return new ChklstItemAnswerDto();

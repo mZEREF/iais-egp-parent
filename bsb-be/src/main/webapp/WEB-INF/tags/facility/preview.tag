@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
-<%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
+<%@ taglib prefix="bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@taglib prefix="fac" tagdir="/WEB-INF/tags/facility" %>
 
 <%@attribute name="isCfJudge" required="true" type="java.lang.Boolean" %>
@@ -30,7 +30,7 @@
 <%@attribute name="batSelectJudge" type="java.lang.Boolean" %>
 <%@attribute name="docSelectJudge" type="java.lang.Boolean" %>
 
-<iais-bsb:global-constants classFullName="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" attributeKey="masterCodeConstants"/>
+<bsb:global-constants classFullName="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" attributeKey="masterCodeConstants"/>
 <%--@elvariable id="masterCodeConstants" type="java.util.Map<java.lang.String, java.lang.Object>"--%>
 <div class="preview-gp">
     <div class="row">
@@ -105,51 +105,205 @@
                         <div class="panel-body">
                             <c:if test="${facSelectJudge}"><div class="text-right"><input type="checkbox" name="facSelect" value="true" <c:if test="${rfiSelectMap.get('facSelect')}">checked="checked"</c:if>/></div></c:if>
                             <div class="panel-main-content form-horizontal min-row">
-                                <div class="form-group">
-                                    <div class="col-10"><strong>Facility Profile</strong></div>
-                                    <div class="clear"></div>
-                                </div>
                                 <div>
-                                    <div class="form-group">
-                                        <label class="col-xs-6 control-label">Facility Name</label>
-                                        <div class="col-xs-6"><p><c:out value="${facProfile.facName}"/></p></div>
-                                        <div class="clear"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-xs-6 control-label">Is the Facility address the same as the company address?</label>
-                                        <div class="col-xs-6"><p><c:out value="${facProfile.sameAddress}"/></p></div>
-                                        <div class="clear"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-xs-6 control-label">Postal Code</label>
-                                        <div class="col-xs-6"><p><c:out value="${facProfile.postalCode}"/></p></div>
-                                        <div class="clear"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-xs-6 control-label">Address Type</label>
-                                        <div class="col-xs-6"><p><iais:code code="${facProfile.addressType}"/></p></div>
-                                        <div class="clear"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-xs-6 control-label">Block / House No.</label>
-                                        <div class="col-xs-6"><p><c:out value="${facProfile.block}"/></p></div>
-                                        <div class="clear"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-xs-6 control-label">Floor and Unit No.</label>
-                                        <div class="col-xs-6"><p><c:out value="${facProfile.floor} - ${facProfile.unitNo}"/></p></div>
-                                        <div class="clear"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-xs-6 control-label">Street Name</label>
-                                        <div class="col-xs-6"><p><c:out value="${facProfile.streetName}"/></p></div>
-                                        <div class="clear"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-xs-6 control-label">Is the facility a Protected Place?</label>
-                                        <div class="col-xs-6"><p><c:out value="${facProfile.facilityProtected}"/></p></div>
-                                        <div class="clear"></div>
-                                    </div>
+                                    <c:forEach var="profileInfo" items="${facProfile.infoList}">
+                                        <div class="form-group">
+                                            <div class="col-10"><strong>Facility Profile</strong></div>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-6 control-label">Facility Name</label>
+                                            <div class="col-xs-6"><p><c:out value="${profileInfo.facName}"/></p></div>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-6 control-label">Is the Facility address the same as the company address?</label>
+                                            <div class="col-xs-6"><p><c:out value="${bsb:displayYN(profileInfo.sameAddress)}"/></p></div>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-6 control-label">Postal Code</label>
+                                            <div class="col-xs-6"><p><c:out value="${profileInfo.postalCode}"/></p></div>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-6 control-label">Address Type</label>
+                                            <div class="col-xs-6"><p><iais:code code="${profileInfo.addressType}"/></p></div>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-6 control-label">Block / House No.</label>
+                                            <div class="col-xs-6"><p><c:out value="${profileInfo.block}"/></p></div>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-6 control-label">Floor and Unit No.</label>
+                                            <div class="col-xs-6"><p><c:out value="${profileInfo.floor} - ${profileInfo.unitNo}"/></p></div>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-6 control-label">Street Name</label>
+                                            <div class="col-xs-6"><p><c:out value="${profileInfo.streetName}"/></p></div>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-6 control-label">Is the facility a Protected Place?</label>
+                                            <div class="col-xs-6"><p><c:out value="${bsb:displayYN(profileInfo.facilityProtected)}"/></p></div>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <c:if test="${isRfJudge}">
+                                            <div class="form-group">
+                                                <label class="col-xs-6 control-label" style="font-weight: bold">Person In Charge</label>
+                                                <div class="clear"></div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-xs-6 control-label">Name</label>
+                                                <div class="col-xs-6"><p><c:out value="${profileInfo.inChargePersonName}"/></p></div>
+                                                <div class="clear"></div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-xs-6 control-label">Desingation</label>
+                                                <div class="col-xs-6"><p><c:out value="${profileInfo.inChargePersonDesignation}"/></p></div>
+                                                <div class="clear"></div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-xs-6 control-label">Email</label>
+                                                <div class="col-xs-6"><p><c:out value="${profileInfo.inChargePersonEmail}"/></p></div>
+                                                <div class="clear"></div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-xs-6 control-label">Contect No.</label>
+                                                <div class="col-xs-6"><p><c:out value="${profileInfo.inChargePersonContactNo}"/></p></div>
+                                                <div class="clear"></div>
+                                            </div>
+                                        </c:if>
+                                        <c:if test="${isPvRfJudge}">
+                                            <div class="form-group">
+                                                <label class="col-xs-6 control-label" style="font-weight: bold">Inventory Information</label>
+                                                <div class="clear"></div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-xs-6 control-label">OPV/Sabin 1 IM</label>
+                                                <div class="form-check col-xs-2" style="margin: 0; padding-left: 15px;">
+                                                    <span class="fa <c:choose><c:when test="${masterCodeConstants.YES eq profileInfo.opvSabin1IM}">fa-dot-circle-o</c:when><c:otherwise>fa-circle-o</c:otherwise></c:choose>"></span> Yes
+                                                </div>
+                                                <div class="form-check col-xs-2" style="margin: 0;">
+                                                    <span class="fa <c:choose><c:when test="${masterCodeConstants.NO eq profileInfo.opvSabin1IM}">fa-dot-circle-o</c:when><c:otherwise>fa-circle-o</c:otherwise></c:choose>"></span> No
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                            <c:if test="${masterCodeConstants.YES eq profileInfo.opvSabin1IM}">
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Expected destruction date</label>
+                                                    <div class="col-xs-6"><p><c:out value="${profileInfo.opvSabin1IMExpectedDestructDt}"/></p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Reason for Retention</label>
+                                                    <div class="col-xs-6"><p><c:out value="${profileInfo.opvSabin1IMRetentionReason}"/></p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                            </c:if>
+                                            <div class="form-group">
+                                                <label class="col-xs-6 control-label">OPV/Sabin 2 IM</label>
+                                                <div class="form-check col-xs-2" style="margin: 0; padding-left: 15px;">
+                                                    <span class="fa <c:choose><c:when test="${masterCodeConstants.YES eq profileInfo.opvSabin2IM}">fa-dot-circle-o</c:when><c:otherwise>fa-circle-o</c:otherwise></c:choose>"></span> Yes
+                                                </div>
+                                                <div class="form-check col-xs-2" style="margin: 0;">
+                                                    <span class="fa <c:choose><c:when test="${masterCodeConstants.NO eq profileInfo.opvSabin2IM}">fa-dot-circle-o</c:when><c:otherwise>fa-circle-o</c:otherwise></c:choose>"></span> No
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-xs-6 control-label">OPV/Sabin 3 IM</label>
+                                                <div class="form-check col-xs-2" style="margin: 0; padding-left: 15px;">
+                                                    <span class="fa <c:choose><c:when test="${masterCodeConstants.YES eq profileInfo.opvSabin3IM}">fa-dot-circle-o</c:when><c:otherwise>fa-circle-o</c:otherwise></c:choose>"></span> Yes
+                                                </div>
+                                                <div class="form-check col-xs-2" style="margin: 0;">
+                                                    <span class="fa <c:choose><c:when test="${masterCodeConstants.NO eq profileInfo.opvSabin3IM}">fa-dot-circle-o</c:when><c:otherwise>fa-circle-o</c:otherwise></c:choose>"></span> No
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                            <c:if test="${masterCodeConstants.YES eq profileInfo.opvSabin3IM}">
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Expected destruction date</label>
+                                                    <div class="col-xs-6"><p><c:out value="${profileInfo.opvSabin3IMExpectedDestructDt}"/></p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Reason for Retention</label>
+                                                    <div class="col-xs-6"><p><c:out value="${profileInfo.opvSabin3IMRetentionReason}"/></p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                            </c:if>
+                                            <div class="form-group">
+                                                <label class="col-xs-6 control-label">OPV/Sabin 1 PIM</label>
+                                                <div class="form-check col-xs-2" style="margin: 0; padding-left: 15px;">
+                                                    <span class="fa <c:choose><c:when test="${masterCodeConstants.YES eq profileInfo.opvSabin1PIM}">fa-dot-circle-o</c:when><c:otherwise>fa-circle-o</c:otherwise></c:choose>"></span> Yes
+                                                </div>
+                                                <div class="form-check col-xs-2" style="margin: 0;">
+                                                    <span class="fa <c:choose><c:when test="${masterCodeConstants.NO eq profileInfo.opvSabin1PIM}">fa-dot-circle-o</c:when><c:otherwise>fa-circle-o</c:otherwise></c:choose>"></span> No
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                            <c:if test="${masterCodeConstants.YES eq profileInfo.opvSabin1PIM}">
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Risk level</label>
+                                                    <div class="col-xs-6"><p><iais:code code="${profileInfo.opvSabin1PIMRiskLevel}"/></p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Reason for Retention</label>
+                                                    <div class="col-xs-6"><p><c:out value="${profileInfo.opvSabin1PIMRetentionReason}"/></p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                            </c:if>
+                                            <div class="form-group">
+                                                <label class="col-xs-6 control-label">OPV/Sabin 2 PIM</label>
+                                                <div class="form-check col-xs-2" style="margin: 0; padding-left: 15px;">
+                                                    <span class="fa <c:choose><c:when test="${masterCodeConstants.YES eq profileInfo.opvSabin2PIM}">fa-dot-circle-o</c:when><c:otherwise>fa-circle-o</c:otherwise></c:choose>"></span> Yes
+                                                </div>
+                                                <div class="form-check col-xs-2" style="margin: 0;">
+                                                    <span class="fa <c:choose><c:when test="${masterCodeConstants.NO eq profileInfo.opvSabin2PIM}">fa-dot-circle-o</c:when><c:otherwise>fa-circle-o</c:otherwise></c:choose>"></span> No
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                            <c:if test="${masterCodeConstants.YES eq profileInfo.opvSabin2PIM}">
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Risk level</label>
+                                                    <div class="col-xs-6"><p><iais:code code="${profileInfo.opvSabin2PIMRiskLevel}"/></p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Reason for Retention</label>
+                                                    <div class="col-xs-6"><p><c:out value="${profileInfo.opvSabin2PIMRetentionReason}"/></p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                            </c:if>
+                                            <div class="form-group">
+                                                <label class="col-xs-6 control-label">OPV/Sabin 3 PIM</label>
+                                                <div class="form-check col-xs-2" style="margin: 0; padding-left: 15px;">
+                                                    <span class="fa <c:choose><c:when test="${masterCodeConstants.YES eq profileInfo.opvSabin3PIM}">fa-dot-circle-o</c:when><c:otherwise>fa-circle-o</c:otherwise></c:choose>"></span> Yes
+                                                </div>
+                                                <div class="form-check col-xs-2" style="margin: 0;">
+                                                    <span class="fa <c:choose><c:when test="${masterCodeConstants.NO eq profileInfo.opvSabin3PIM}">fa-dot-circle-o</c:when><c:otherwise>fa-circle-o</c:otherwise></c:choose>"></span> No
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                            <c:if test="${masterCodeConstants.YES eq profileInfo.opvSabin3PIM}">
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Risk level</label>
+                                                    <div class="col-xs-6"><p><iais:code code="${profileInfo.opvSabin3PIMRiskLevel}"/></p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-6 control-label">Reason for Retention</label>
+                                                    <div class="col-xs-6"><p><c:out value="${profileInfo.opvSabin3PIMRetentionReason}"/></p></div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                            </c:if>
+                                        </c:if>
+                                    </c:forEach>
                                 </div>
                             </div>
                             <c:if test="${not isRfJudge}">
@@ -415,7 +569,7 @@
                                             </c:if>
                                             <div class="form-group">
                                                 <label class="col-xs-6 control-label">Name of ${BAorT}</label>
-                                                <div class="col-xs-6"><p><iais-bsb:bat-code code="${info.batName}"/></p></div>
+                                                <div class="col-xs-6"><p><bsb:bat-code code="${info.batName}"/></p></div>
                                                 <div class="clear"></div>
                                             </div>
                                             <c:if test="${not isLsp}">
