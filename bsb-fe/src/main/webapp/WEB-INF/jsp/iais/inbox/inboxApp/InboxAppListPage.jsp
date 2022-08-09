@@ -6,7 +6,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.ecq.com/iais-bsb" prefix="iais-bsb" %>
-<%@ page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -119,7 +118,7 @@
                                 </div>
                             </div>
                             <div class="row text-right text-center-mobile">
-                                <button class="btn btn-secondary" type="reset" id="clearBtn" name="clearBtn">Clear</button>
+                                <button class="btn btn-secondary" type="button" id="clearBtn" name="clearBtn">Clear</button>
                                 <button class="btn btn-primary" type="button" id="searchBtn" name="searchBtn">Search</button>
                             </div>
 

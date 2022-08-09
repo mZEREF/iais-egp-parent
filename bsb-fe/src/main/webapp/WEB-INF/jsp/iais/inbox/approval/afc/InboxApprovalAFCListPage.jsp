@@ -116,7 +116,7 @@
                                 </div>
 
                                 <div class="row text-right text-center-mobile">
-                                    <button class="btn btn-secondary" type="reset" id="clearBtn" name="clearBtn">Clear</button>
+                                    <button class="btn btn-secondary" type="button" id="clearBtn" name="clearBtn">Clear</button>
                                     <button class="btn btn-primary" type="button" id="searchBtn" name="searchBtn">Search</button>
                                 </div>
                             </div>
