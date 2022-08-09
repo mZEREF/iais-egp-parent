@@ -96,6 +96,7 @@ public class MasterCodeConstants {
     public static final String APP_STATUS_REJECTED                                  = "BSBAPST007";
     public static final String APP_STATUS_PEND_APPLICANT_CLARIFICATION              = "BSBAPST008";
     public static final String APP_STATUS_PEND_APPLICANT_INPUT                      = "BSBAPST009";
+    public static final String APP_STATUS_PEND_INSPECTION_CERTIFICATION             = "BSBAPST010";
     // screening
     public static final String APP_STATUS_PEND_DO_SCREENING                         = "BSBAPST020";
     public static final String APP_STATUS_PEND_DO_CLARIFICATION                     = "BSBAPST021";
@@ -172,6 +173,7 @@ public class MasterCodeConstants {
         COMMON_QUERY_APP_STATUS = Collections.unmodifiableSet(commonQueryAppStatus);
 
         Set<String> inspectionAppStatus = Sets.newHashSetWithExpectedSize(15);
+        inspectionAppStatus.add(APP_STATUS_PEND_INSPECTION_CERTIFICATION);
         inspectionAppStatus.add(APP_STATUS_PEND_INSPECTION_TASK_ASSIGNMENT);
         inspectionAppStatus.add(APP_STATUS_PEND_CHECKLIST_SUBMISSION);
         inspectionAppStatus.add(APP_STATUS_PEND_APPOINTMENT_SCHEDULING);
@@ -213,6 +215,7 @@ public class MasterCodeConstants {
         pendingMohAppStatus.add(APP_STATUS_PEND_AO_APPROVAL);
         pendingMohAppStatus.add(APP_STATUS_PEND_HM_APPROVAL);
         pendingMohAppStatus.add(APP_STATUS_PEND_DO_VERIFICATION);
+        pendingMohAppStatus.add(APP_STATUS_PEND_INSPECTION_CERTIFICATION);
         pendingMohAppStatus.add(APP_STATUS_PEND_INSPECTION_TASK_ASSIGNMENT);
         pendingMohAppStatus.add(APP_STATUS_PEND_APPOINTMENT_CONFIRMATION);
         pendingMohAppStatus.add(APP_STATUS_PEND_INSPECTION_READINESS);

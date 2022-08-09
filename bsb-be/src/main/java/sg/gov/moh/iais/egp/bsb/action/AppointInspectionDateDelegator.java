@@ -46,10 +46,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_TASK_ID;
 
-/**
- * @author tangtang
- * @date 2022/3/3 13:52
- */
+
 @Slf4j
 @Delegator(value = "appointInspectionDateDelegator")
 public class AppointInspectionDateDelegator {
