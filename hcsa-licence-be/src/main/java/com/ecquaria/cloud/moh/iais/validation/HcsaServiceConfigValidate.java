@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.constant.ServiceConfigConstant;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ConfigService;
 import java.util.List;
@@ -61,111 +62,165 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
         //validate the svcCode and svcName repetition
         validateSvcCodeAndName(configService,hcsaServiceDto,result);
 
-       // if(HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(serviceType)){
-            //validate the hcsaSvcPersonnelDto
-            List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = hcsaServiceConfigDto.getHcsaSvcPersonnelDtos();
+        //validate the hcsaSvcPersonnelDto
+        validateHcsaSvcPersonnelDto(hcsaServiceConfigDto,result,serviceType);
+
+        //validate the HcsaSvcDocConfigDto
+        validateHcsaSvcDocConfigDto(hcsaServiceConfigDto,result,serviceType);
+
+
+        if(HcsaConsts.SERVICE_TYPE_BASE.equals(hcsaServiceDto.getSvcType())){
+            //for routingStages
+            validateRoutingStages(hcsaServiceConfigDto,result,serviceType);
+            //for Discipline hcsaServiceCategoryDisciplineDtoMap
+            validateCategoryDiscipline(hcsaServiceConfigDto,result,serviceType);
+            //for Discipline Map<String,HcsaServiceSubServicePageDto> specHcsaServiceSubServicePageDtoMap
+            validateSpecHcsaServiceSubServicePageDtoMap(hcsaServiceConfigDto,result,serviceType);
+            //for Discipline Map<String,HcsaServiceSubServicePageDto> otherHcsaServiceSubServicePageDtoMap
+            validateOtherHcsaServiceSubServicePageDtoMap(hcsaServiceConfigDto,result,serviceType);
+        }
+        log.info(StringUtil.changeForLog("The HcsaServiceConfigValidate end ..."));
+        return result;
+    }
+
+    private void validteSubService(Map<String,HcsaServiceSubServicePageDto> hcsaServiceSubServicePageDtoMap,Map<String, String> result,String serviceType){
+        if(hcsaServiceSubServicePageDtoMap != null && hcsaServiceSubServicePageDtoMap.size() > 0){
+            for(String premisesType : hcsaServiceSubServicePageDtoMap.keySet()){
+                HcsaServiceSubServicePageDto hcsaServiceSubServicePageDto = hcsaServiceSubServicePageDtoMap.get(premisesType);
+                //for sub service
+                String[] subServiceCodes = hcsaServiceSubServicePageDto.getSubServiceCodes();
+                String[] levels = hcsaServiceSubServicePageDto.getLevels();
+                if(subServiceCodes != null && subServiceCodes.length>0){
+                    List<HcsaServiceSubServiceErrorsDto> hcsaServiceSubServiceErrorsDtos =  IaisCommonUtils.genNewArrayList();
+                    for (int i=0; i<subServiceCodes.length;i++){
+                        HcsaServiceSubServiceErrorsDto  hcsaServiceSubServiceErrorsDto = new HcsaServiceSubServiceErrorsDto();
+                        hcsaServiceSubServiceErrorsDto.setSubServiceCode(subServiceCodes[i]);
+                        hcsaServiceSubServiceErrorsDto.setLevel(levels[i]);
+                        ValidationResult validationResultCategoryDisciplineErrorsDto = WebValidationHelper.validateProperty(hcsaServiceSubServiceErrorsDto,serviceType);
+                        if(validationResultCategoryDisciplineErrorsDto.isHasErrors()){
+                            String subServiceCodeError = validationResultCategoryDisciplineErrorsDto.retrieveAll().get("subServiceCode");
+                            subServiceCodeError = MessageUtil.getMessageDesc(subServiceCodeError);
+                            hcsaServiceSubServiceErrorsDto.setErrorMsg(subServiceCodeError);
+                            result.put("subServiceCode",subServiceCodeError);
+                        }
+                        hcsaServiceSubServiceErrorsDtos.add(hcsaServiceSubServiceErrorsDto);
+                    }
+                    hcsaServiceSubServicePageDto.setHcsaServiceSubServiceErrorsDtos(hcsaServiceSubServiceErrorsDtos);
+                }
+                hcsaServiceSubServicePageDtoMap.put(premisesType,hcsaServiceSubServicePageDto);
+            }
+        }
+    }
+
+    private void validateOtherHcsaServiceSubServicePageDtoMap(HcsaServiceConfigDto hcsaServiceConfigDto,Map<String, String> result,String serviceType){
+        log.info(StringUtil.changeForLog("The HcsaServiceConfigValidate validateOtherHcsaServiceSubServicePageDtoMap start ..."));
+        Map<String,HcsaServiceSubServicePageDto> otherHcsaServiceSubServicePageDtoMap = hcsaServiceConfigDto.getOtherHcsaServiceSubServicePageDtoMap();
+        validteSubService(otherHcsaServiceSubServicePageDtoMap,result,serviceType);
+        log.info(StringUtil.changeForLog("The HcsaServiceConfigValidate validateOtherHcsaServiceSubServicePageDtoMap end ..."));
+    }
+
+    private void validateSpecHcsaServiceSubServicePageDtoMap(HcsaServiceConfigDto hcsaServiceConfigDto,Map<String, String> result,String serviceType){
+        log.info(StringUtil.changeForLog("The HcsaServiceConfigValidate validateSpecHcsaServiceSubServicePageDtoMap start ..."));
+        Map<String,HcsaServiceSubServicePageDto> specHcsaServiceSubServicePageDtoMap = hcsaServiceConfigDto.getSpecHcsaServiceSubServicePageDtoMap();
+        if(specHcsaServiceSubServicePageDtoMap != null && specHcsaServiceSubServicePageDtoMap.size() > 0){
+            //for sectionHeader
+            for(String premisesType : specHcsaServiceSubServicePageDtoMap.keySet()){
+                HcsaServiceSubServicePageDto hcsaServiceSubServicePageDto = specHcsaServiceSubServicePageDtoMap.get(premisesType);
+                ValidationResult validationResultHcsaServiceCategoryDisciplineDto = WebValidationHelper.validateProperty(hcsaServiceSubServicePageDto,serviceType);
+                if(validationResultHcsaServiceCategoryDisciplineDto.isHasErrors()){
+                    String sectionHeaderErrorMsg = validationResultHcsaServiceCategoryDisciplineDto.retrieveAll().get("sectionHeader");
+                    result.put(premisesType+"-SVTP003-sectionHeader",sectionHeaderErrorMsg);
+                }
+            }
+            //for subService
+            validteSubService(specHcsaServiceSubServicePageDtoMap,result,serviceType);
+        }
+        log.info(StringUtil.changeForLog("The HcsaServiceConfigValidate validateSpecHcsaServiceSubServicePageDtoMap end ..."));
+    }
+
+    private void validateCategoryDiscipline(HcsaServiceConfigDto hcsaServiceConfigDto,Map<String, String> result,String serviceType){
+        log.info(StringUtil.changeForLog("The HcsaServiceConfigValidate validateCategoryDiscipline start ..."));
+        Map<String,HcsaServiceCategoryDisciplineDto> hcsaServiceCategoryDisciplineDtoMap = hcsaServiceConfigDto.getHcsaServiceCategoryDisciplineDtoMap();
+        if(hcsaServiceCategoryDisciplineDtoMap != null && hcsaServiceCategoryDisciplineDtoMap.size() > 0){
+            for(String premisesType : hcsaServiceCategoryDisciplineDtoMap.keySet()){
+                //for sectionHeader
+                HcsaServiceCategoryDisciplineDto hcsaServiceCategoryDisciplineDto = hcsaServiceCategoryDisciplineDtoMap.get(premisesType);
+                ValidationResult validationResultPermanentHscdDto = WebValidationHelper.validateProperty(hcsaServiceCategoryDisciplineDto,serviceType);
+                if(validationResultPermanentHscdDto.isHasErrors()){
+                    String sectionHeaderErrorMsg = validationResultPermanentHscdDto.retrieveAll().get("sectionHeader");
+                    result.put(premisesType+"-sectionHeader",sectionHeaderErrorMsg);
+                }
+                //for categoryDiscipline
+                String[] categoryDisciplines = hcsaServiceCategoryDisciplineDto.getCategoryDisciplines();
+                if(categoryDisciplines != null && categoryDisciplines.length>0){
+                    List<CategoryDisciplineErrorsDto> categoryDisciplineDtos =  IaisCommonUtils.genNewArrayList();
+                    for(String categoryDiscipline : categoryDisciplines){
+                        CategoryDisciplineErrorsDto  categoryDisciplineErrorsDto = new CategoryDisciplineErrorsDto();
+                        categoryDisciplineErrorsDto.setCategoryDiscipline(categoryDiscipline);
+                        ValidationResult validationResultCategoryDisciplineErrorsDto = WebValidationHelper.validateProperty(categoryDisciplineErrorsDto,serviceType);
+                        if(validationResultCategoryDisciplineErrorsDto.isHasErrors()){
+                            String categoryDisciplineErro = validationResultCategoryDisciplineErrorsDto.retrieveAll().get("categoryDiscipline");
+                            categoryDisciplineErrorsDto.setErrorMsg(categoryDisciplineErro);
+                            result.put("categoryDiscipline",categoryDisciplineErro);
+                        }
+                        categoryDisciplineDtos.add(categoryDisciplineErrorsDto);
+                    }
+                    hcsaServiceCategoryDisciplineDto.setCategoryDisciplineDtos(categoryDisciplineDtos);
+                }
+                hcsaServiceCategoryDisciplineDtoMap.put(premisesType,hcsaServiceCategoryDisciplineDto);
+            }
+        }
+        log.info(StringUtil.changeForLog("The HcsaServiceConfigValidate validateCategoryDiscipline end ..."));
+    }
+
+    private void validateRoutingStages(HcsaServiceConfigDto hcsaServiceConfigDto,Map<String, String> result,String serviceType){
+        log.info(StringUtil.changeForLog("The HcsaServiceConfigValidate validateRoutingStages start ..."));
+        Map<String, List<HcsaConfigPageDto>> hcsaConfigPageDtoMap =  hcsaServiceConfigDto.getHcsaConfigPageDtoMap();
+        for(String key : hcsaConfigPageDtoMap.keySet()){
+            if(!ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(key) && !ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(key)){
+                List<HcsaConfigPageDto> hcsaConfigPageDtos = hcsaConfigPageDtoMap.get(key);
+                Map<String,String> HcsaConfigPageDtoError = validateHcsaConfigPageDto(hcsaConfigPageDtos,serviceType);
+                if(HcsaConfigPageDtoError.size() > 0){
+                    result.put(key,"Error");
+                    result.putAll(HcsaConfigPageDtoError);
+                }
+            }
+        }
+        log.info(StringUtil.changeForLog("The HcsaServiceConfigValidate validateRoutingStages end ..."));
+    }
+    private void validateHcsaSvcDocConfigDto(HcsaServiceConfigDto hcsaServiceConfigDto,Map<String, String> result,String serviceType){
+        log.info(StringUtil.changeForLog("The HcsaServiceConfigValidate validateHcsaSvcDocConfigDto start ..."));
+        List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = hcsaServiceConfigDto.getHcsaSvcDocConfigDtos();
+        if(hcsaSvcDocConfigDtos!=null){
+            for(int i = 0; i < hcsaSvcDocConfigDtos.size(); i++){
+                String docTitle = hcsaSvcDocConfigDtos.get(i).getDocTitle();
+                ValidationResult validationResultHcsaSvcDocConfigDto = WebValidationHelper.validateProperty(hcsaSvcDocConfigDtos.get(i),serviceType);
+                if(validationResultHcsaSvcDocConfigDto.isHasErrors()){
+                    String docTitleError  = validationResultHcsaSvcDocConfigDto.retrieveAll().get("docTitle");
+                    result.put("serviceDoc"+i,docTitleError);
+                }else{
+                    int countForTitle = getCountForTitle(docTitle,hcsaSvcDocConfigDtos);
+                    if(countForTitle >1){
+                        result.put("serviceDoc"+i,"SC_ERR011");
+                    }
+                }
+            }
+        }
+        log.info(StringUtil.changeForLog("The HcsaServiceConfigValidate validateHcsaSvcDocConfigDto end ..."));
+    }
+
+    private void validateHcsaSvcPersonnelDto(HcsaServiceConfigDto hcsaServiceConfigDto,Map<String, String> result,String serviceType){
+        log.info(StringUtil.changeForLog("The HcsaServiceConfigValidate validateHcsaSvcPersonnelDto start ..."));
+        List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = hcsaServiceConfigDto.getHcsaSvcPersonnelDtos();
+        if(IaisCommonUtils.isNotEmpty(hcsaSvcPersonnelDtos)){
             for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto : hcsaSvcPersonnelDtos) {
                 ValidationResult validationResultHcsaSvcPersonnelDto = WebValidationHelper.validateProperty(hcsaSvcPersonnelDto,serviceType);
                 if(validationResultHcsaSvcPersonnelDto.isHasErrors()){
                     result.putAll(transferErrorMapForPersonnel(validationResultHcsaSvcPersonnelDto.retrieveAll(),hcsaSvcPersonnelDto));
                 }
             }
-            //validate the HcsaSvcDocConfigDto
-            List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = hcsaServiceConfigDto.getHcsaSvcDocConfigDtos();
-            if(hcsaSvcDocConfigDtos!=null){
-                for(int i = 0; i < hcsaSvcDocConfigDtos.size(); i++){
-                    String docTitle = hcsaSvcDocConfigDtos.get(i).getDocTitle();
-                    ValidationResult validationResultHcsaSvcDocConfigDto = WebValidationHelper.validateProperty(hcsaSvcDocConfigDtos.get(i),serviceType);
-                    if(validationResultHcsaSvcDocConfigDto.isHasErrors()){
-                        String docTitleError  = validationResultHcsaSvcDocConfigDto.retrieveAll().get("docTitle");
-                        result.put("serviceDoc"+i,docTitleError);
-                    }else{
-                        int countForTitle = getCountForTitle(docTitle,hcsaSvcDocConfigDtos);
-                        if(countForTitle >1){
-                            result.put("serviceDoc"+i,"SC_ERR011");
-                        }
-                    }
-                }
-            }
-       // }
-        if(HcsaConsts.SERVICE_TYPE_BASE.equals(hcsaServiceDto.getSvcType())){
-            //for routingStages
-            log.info(StringUtil.changeForLog("validate the HcsaConfigPageDto"));
-            Map<String, List<HcsaConfigPageDto>> hcsaConfigPageDtoMap =  hcsaServiceConfigDto.getHcsaConfigPageDtoMap();
-            for(String key : hcsaConfigPageDtoMap.keySet()){
-                if(!ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(key) && !ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(key)){
-                    List<HcsaConfigPageDto> hcsaConfigPageDtos = hcsaConfigPageDtoMap.get(key);
-                    Map<String,String> HcsaConfigPageDtoError = validateHcsaConfigPageDto(hcsaConfigPageDtos,serviceType);
-                    if(HcsaConfigPageDtoError.size() > 0){
-                        result.put(key,"Error");
-                        result.putAll(HcsaConfigPageDtoError);
-                    }
-                }
-            }
-            //for Discipline hcsaServiceCategoryDisciplineDtoMap
-            Map<String,HcsaServiceCategoryDisciplineDto> hcsaServiceCategoryDisciplineDtoMap = hcsaServiceConfigDto.getHcsaServiceCategoryDisciplineDtoMap();
-            if(hcsaServiceCategoryDisciplineDtoMap != null && hcsaServiceCategoryDisciplineDtoMap.size() > 0){
-                for(String premisesType : hcsaServiceCategoryDisciplineDtoMap.keySet()){
-                    //for sectionHeader
-                    HcsaServiceCategoryDisciplineDto hcsaServiceCategoryDisciplineDto = hcsaServiceCategoryDisciplineDtoMap.get(premisesType);
-                    ValidationResult validationResultPermanentHscdDto = WebValidationHelper.validateProperty(hcsaServiceCategoryDisciplineDto,serviceType);
-                    if(validationResultPermanentHscdDto.isHasErrors()){
-                        String sectionHeaderErrorMsg = validationResultPermanentHscdDto.retrieveAll().get("sectionHeader");
-                        result.put(premisesType+"-sectionHeader",sectionHeaderErrorMsg);
-                    }
-                    //for categoryDiscipline
-                    String[] categoryDisciplines = hcsaServiceCategoryDisciplineDto.getCategoryDisciplines();
-                    if(categoryDisciplines != null && categoryDisciplines.length>0){
-                        List<CategoryDisciplineErrorsDto> categoryDisciplineDtos =  IaisCommonUtils.genNewArrayList();
-                        for(String categoryDiscipline : categoryDisciplines){
-                            CategoryDisciplineErrorsDto  categoryDisciplineErrorsDto = new CategoryDisciplineErrorsDto();
-                            categoryDisciplineErrorsDto.setCategoryDiscipline(categoryDiscipline);
-                            ValidationResult validationResultCategoryDisciplineErrorsDto = WebValidationHelper.validateProperty(categoryDisciplineErrorsDto,serviceType);
-                            if(validationResultCategoryDisciplineErrorsDto.isHasErrors()){
-                                categoryDisciplineErrorsDto.setErrorMsg(validationResultCategoryDisciplineErrorsDto.retrieveAll().get("categoryDiscipline"));
-                            }
-                            categoryDisciplineDtos.add(categoryDisciplineErrorsDto);
-                        }
-                        hcsaServiceCategoryDisciplineDto.setCategoryDisciplineDtos(categoryDisciplineDtos);
-                    }
-                    hcsaServiceCategoryDisciplineDtoMap.put(premisesType,hcsaServiceCategoryDisciplineDto);
-                }
-            }
-            //for Discipline Map<String,HcsaServiceSubServicePageDto> specHcsaServiceSubServicePageDtoMap
-            Map<String,HcsaServiceSubServicePageDto> specHcsaServiceSubServicePageDtoMap = hcsaServiceConfigDto.getSpecHcsaServiceSubServicePageDtoMap();
-            if(specHcsaServiceSubServicePageDtoMap != null && specHcsaServiceSubServicePageDtoMap.size() > 0){
-                for(String premisesType : specHcsaServiceSubServicePageDtoMap.keySet()){
-                    //for sectionHeader
-                    HcsaServiceSubServicePageDto hcsaServiceSubServicePageDto = specHcsaServiceSubServicePageDtoMap.get(premisesType);
-                    ValidationResult validationResultHcsaServiceCategoryDisciplineDto = WebValidationHelper.validateProperty(hcsaServiceSubServicePageDto,serviceType);
-                    if(validationResultHcsaServiceCategoryDisciplineDto.isHasErrors()){
-                        String sectionHeaderErrorMsg = validationResultHcsaServiceCategoryDisciplineDto.retrieveAll().get("sectionHeader");
-                        result.put(premisesType+"-SVTP003-sectionHeader",sectionHeaderErrorMsg);
-                    }
-                    //for sub service
-                    String[] subServiceCodes = hcsaServiceSubServicePageDto.getSubServiceCodes();
-                    String[] levels = hcsaServiceSubServicePageDto.getLevels();
-                    if(subServiceCodes != null && subServiceCodes.length>0){
-                        List<HcsaServiceSubServiceErrorsDto> hcsaServiceSubServiceErrorsDtos =  IaisCommonUtils.genNewArrayList();
-                       for (int i=0; i<subServiceCodes.length;i++){
-                           HcsaServiceSubServiceErrorsDto  hcsaServiceSubServiceErrorsDto = new HcsaServiceSubServiceErrorsDto();
-                           hcsaServiceSubServiceErrorsDto.setSubServiceCode(subServiceCodes[i]);
-                           hcsaServiceSubServiceErrorsDto.setLevel(levels[i]);
-                            ValidationResult validationResultCategoryDisciplineErrorsDto = WebValidationHelper.validateProperty(hcsaServiceSubServiceErrorsDto,serviceType);
-                            if(validationResultCategoryDisciplineErrorsDto.isHasErrors()){
-                                hcsaServiceSubServiceErrorsDto.setErrorMsg(validationResultCategoryDisciplineErrorsDto.retrieveAll().get("subServiceCode"));
-                            }
-                           hcsaServiceSubServiceErrorsDtos.add(hcsaServiceSubServiceErrorsDto);
-                        }
-                        hcsaServiceSubServicePageDto.setHcsaServiceSubServiceErrorsDtos(hcsaServiceSubServiceErrorsDtos);
-                    }
-                    specHcsaServiceSubServicePageDtoMap.put(premisesType,hcsaServiceSubServicePageDto);
-                }
-            }
-
         }
-        log.info(StringUtil.changeForLog("The HcsaServiceConfigValidate end ..."));
-        return result;
+        log.info(StringUtil.changeForLog("The HcsaServiceConfigValidate validateHcsaSvcPersonnelDto end ..."));
     }
 
     private Map<String,String> validateHcsaConfigPageDto(List<HcsaConfigPageDto> hcsaConfigPageDtos,String serviceType ){

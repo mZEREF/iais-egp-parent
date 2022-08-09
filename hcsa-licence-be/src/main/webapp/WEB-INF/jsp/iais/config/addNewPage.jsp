@@ -6,6 +6,7 @@
 <%@ page import="com.ecquaria.cloud.RedirectUtil" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.ServiceConfigConstant" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
 <webui:setLayout name="iais-intranet"/>
 
@@ -189,28 +190,28 @@
               <div class="col-xs-12 col-md-3">
                 <div class="form-check " style="left: 10%">
                   <c:set var="type" value="${hcsaServiceConfigDto.getPremisesTypesForPage()}"></c:set>
-                  <input class="form-check-input" name="premisesTypes" id="icon3checkboxSample"
+                  <input class="form-check-input" name="premisesTypes" id="icon3checkboxSample" onclick="premisesSelect();"
                          <c:if test="${fn:contains(type,'PERMANENT')}">checked="checked"</c:if> type="checkbox" value="PERMANENT"  aria-invalid="false">
                   <label class="form-check-label" for="icon3checkboxSample"><span class="check-square"></span>Permanent Premises</label>
                 </div>
               </div>
               <div class="col-xs-12 col-md-3">
                 <div class="form-check ">
-                  <input class="form-check-input"  name="premisesTypes" id="icon5checkboxSample"
+                  <input class="form-check-input"  name="premisesTypes" id="icon5checkboxSample" onclick="premisesSelect();"
                          <c:if test="${fn:contains(type,'CONVEYANCE')}">checked="checked"</c:if> type="checkbox" value="CONVEYANCE" aria-invalid="false">
                   <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>Conveyance</label>
                 </div>
               </div>
               <div class="col-xs-12 col-md-3">
                 <div class="form-check ">
-                  <input class="form-check-input"  name="premisesTypes" id="icon4checkboxSample"
+                  <input class="form-check-input"  name="premisesTypes" id="icon4checkboxSample" onclick="premisesSelect();"
                          <c:if test="${fn:contains(type,'MOBILE')}">checked="checked"</c:if> type="checkbox" value="MOBILE"  aria-invalid="false">
                   <label class="form-check-label" for="icon4checkboxSample"><span class="check-square"></span>Mobile Delivery</label>
                 </div>
               </div>
               <div class="col-xs-12 col-md-3">
                 <div class="form-check ">
-                  <input class="form-check-input"  name="premisesTypes" id="icon6checkboxSample"
+                  <input class="form-check-input"  name="premisesTypes" id="icon6checkboxSample" onclick="premisesSelect();"
                          <c:if test="${fn:contains(type,'REMOTE')}">checked="checked"</c:if> type="checkbox" value="REMOTE"  aria-invalid="false">
                   <label class="form-check-label" for="icon4checkboxSample"><span class="check-square"></span>Remote Delivery</label>
                 </div>
@@ -982,87 +983,134 @@
         </div>
       </div>
 
-      <div class="form-group" id ="baseSubService">
-        <div class="col-xs-12 col-md-12 Sub-Types" style="margin-top: 20px ;margin-bottom: 20px">
-          <label class="col-xs-12 col-md-12 control-label">Specialised Services</label>
-        </div>
-
-
-
-        <div class="col-xs-12 col-md-12 Sub-Types" style="margin-top: 20px ;margin-bottom: 20px">
-          <div class="col-xs-12 col-md-12">
-          </div>
-          <div class="col-xs-12 col-md-12">
-            <label class="col-xs-12 col-md-12 control-label">For Permanent Premises</label>
+        <div class="form-group" id ="baseSubService">
+          <div class="col-xs-12 col-md-12 Sub-Types" style="margin-top: 20px ;margin-bottom: 20px">
+            <label class="col-xs-12 col-md-12 control-label">Specialised Services</label>
           </div>
 
-          <div class="col-xs-12 col-md-9 marg-1">
-            <label class="col-xs-12 col-md-7 control-label" >Category / Discipline (Section Header)</label>
-            <div class="col-xs-10 col-md-4">
-              <div class="components">
-                <input type="text" maxlength="100" value="${hcsaServiceConfigDto.hcsaServiceCategoryDisciplineDtoMap['PERMANENT'].sectionHeader}" name="PERMANENT-sectionHeader">
-                <span name="iaisErrorMsg" class="error-msg" id="error_PERMANENT-sectionHeader"></span>
+          <c:forEach items="<%=ServiceConfigConstant.PREMISES_TYPE_MAP%>" var = "premTypeMap">
+            <div class="col-xs-12 col-md-12 Sub-Types" style="margin-top: 20px ;margin-bottom: 20px" id ="${premTypeMap.key}-SVTP003">
+              <div class="col-xs-12 col-md-12">
               </div>
-            </div>
-          </div>
-          <c:if test="${hcsaServiceConfigDto.hcsaServiceCategoryDisciplineDtoMap !=null}">
-            <c:forEach items="${hcsaServiceConfigDto.hcsaServiceCategoryDisciplineDtoMap['PERMANENT'].categoryDisciplineDtos}" var = "categoryDisciplineDto">
-              <div class="add col-xs-12 col-md-9 marg-1">
-                <label class="col-xs-12 col-md-7 control-label" >Category / Discipline</label>
+              <div class="col-xs-12 col-md-12">
+                <label class="col-xs-12 col-md-12 control-label">For ${premTypeMap.value}</label>
+              </div>
+
+              <div class="col-xs-12 col-md-9 marg-1">
+                <label class="col-xs-12 col-md-7 control-label" >Category / Discipline (Section Header)</label>
                 <div class="col-xs-10 col-md-4">
-                  <input type="text" maxlength="100" value="${categoryDisciplineDto.categoryDiscipline}" name="PERMANENT-categoryDisciplines">
-                  <span class="error-msg" >${categoryDisciplineDto.errorMsg}</span>
-                </div>
-                <div class="col-xs-12 col-md-1">
-                  <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
+                  <div class="components">
+                    <input type="text" maxlength="100"
+                           value="${hcsaServiceConfigDto.hcsaServiceCategoryDisciplineDtoMap[premTypeMap.key].sectionHeader}" name="${premTypeMap.key}-sectionHeader">
+                    <span name="iaisErrorMsg" class="error-msg" id="error_${premTypeMap.key}-sectionHeader"></span>
+                  </div>
                 </div>
               </div>
-            </c:forEach>
-          </c:if>
-          <div class="col-xs-12 col-md-12">
-            <a  class="btn  btn-secondary "   style="margin-right: 10px" id="addCategory" onclick="addCategory(this,'PERMANENT-categoryDisciplines')"> + </a><label for="addCategory"> Add Item</label>
-          </div>
+              <c:if test="${hcsaServiceConfigDto.hcsaServiceCategoryDisciplineDtoMap !=null}">
+                <c:forEach items="${hcsaServiceConfigDto.hcsaServiceCategoryDisciplineDtoMap[premTypeMap.key].categoryDisciplineDtos}" var = "categoryDisciplineDto">
+                  <div class="add col-xs-12 col-md-9 marg-1">
+                    <label class="col-xs-12 col-md-7 control-label" >Category / Discipline</label>
+                    <div class="col-xs-10 col-md-4">
+                      <input type="text" maxlength="100" value="${categoryDisciplineDto.categoryDiscipline}" name="${premTypeMap.key}-categoryDisciplines">
+                      <span class="error-msg" >${categoryDisciplineDto.errorMsg}</span>
+                    </div>
+                    <div class="col-xs-12 col-md-1">
+                      <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
+                    </div>
+                  </div>
+                </c:forEach>
+              </c:if>
+              <div class="col-xs-12 col-md-12">
+                <a  class="btn  btn-secondary "   style="margin-right: 10px"
+                    onclick="addCategory(this,'${premTypeMap.key}-categoryDisciplines')"> + </a><label > Add Item</label>
+              </div>
 
-          <div class="col-xs-12 col-md-9 marg-1">
-            <label class="col-xs-12 col-md-7 control-label" >Specialised Services (Section Header)</label>
-            <div class="col-xs-10 col-md-4">
-              <div class="components">
-                <input type="text" maxlength="100" value="${hcsaServiceConfigDto.specHcsaServiceSubServicePageDtoMap['PERMANENT'].sectionHeader}" name="PERMANENT-SVTP003-sectionHeader">
-                <span name="iaisErrorMsg" class="error-msg" id="error_PERMANENT-SVTP003-sectionHeader"></span>
+              <div class="col-xs-12 col-md-9 marg-1">
+                <label class="col-xs-12 col-md-7 control-label" >Specialised Services (Section Header)</label>
+                <div class="col-xs-10 col-md-4">
+                  <div class="components">
+                    <input type="text" maxlength="100"
+                           value="${hcsaServiceConfigDto.specHcsaServiceSubServicePageDtoMap[premTypeMap.key].sectionHeader}" name="${premTypeMap.key}-SVTP003-sectionHeader">
+                    <span name="iaisErrorMsg" class="error-msg" id="error_${premTypeMap.key}-SVTP003-sectionHeader"></span>
+                  </div>
+                </div>
+              </div>
+
+              <c:if test="${hcsaServiceConfigDto.specHcsaServiceSubServicePageDtoMap !=null}">
+                <c:forEach items="${hcsaServiceConfigDto.specHcsaServiceSubServicePageDtoMap[premTypeMap.key].hcsaServiceSubServiceErrorsDtos}" var = "hcsaServiceSubServiceErrorsDto">
+                  <div class="add col-xs-12 col-md-12"  style="margin-top: 20px ;margin-bottom: 20px">
+                    <div class="col-xs-12 col-md-5" style="padding-right: 20%;margin-left:${hcsaServiceSubServiceErrorsDto.marginLeft}px" >
+                      <iais:select name="${premTypeMap.key}-SVTP003-subServiceCodes" options="specHcsaServiceOptions" firstOption="Please Select"
+                                   value="${hcsaServiceSubServiceErrorsDto.subServiceCode}"/>
+                      <span class="error-msg" >${hcsaServiceSubServiceErrorsDto.errorMsg}</span>
+                    </div>
+                    <div class="value">
+                      <input type="text" value="${hcsaServiceSubServiceErrorsDto.level}" name="${premTypeMap.key}-SVTP003-levels" style="display: none">
+                    </div>
+                    <div  class="col-xs-12 col-md-2" style="padding-left: 3%;" >
+                      <a class="btn  btn-secondary  view"  onclick="indents(this)"   >indent</a>
+                    </div>
+                    <div  class="col-xs-12 col-md-2" >
+                      <a class="btn  btn-secondary view"  onclick="outdent(this)" >outdent</a>
+                    </div>
+                    <div class="col-xs-12 col-md-1">
+                      <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
+                    </div>
+                  </div>
+                </c:forEach>
+              </c:if>
+
+
+              <div class="col-xs-12 col-md-12">
+                <a  class="btn  btn-secondary "   style="margin-right: 10px" onclick="addAsItem(this,'${premTypeMap.key}','SVTP003')"> + </a><label > Add Item</label>
               </div>
             </div>
+          </c:forEach>
+
+          <div class="col-xs-12 col-md-12 Sub-Types" style="margin-top: 20px ;margin-bottom: 20px">
+            <label class="col-xs-12 col-md-12 control-label">Other Services</label>
           </div>
 
-            <c:if test="${hcsaServiceConfigDto.specHcsaServiceSubServicePageDtoMap !=null}">
-              <c:forEach items="${hcsaServiceConfigDto.specHcsaServiceSubServicePageDtoMap['PERMANENT'].hcsaServiceSubServiceErrorsDtos}" var = "hcsaServiceSubServiceErrorsDto">
-                <div class="add col-xs-12 col-md-12"  style="margin-top: 20px ;margin-bottom: 20px">
-                  <div class="col-xs-12 col-md-5" style="padding-right: 20%;margin-left: ${hcsaServiceSubServiceErrorsDto.marginLeft} px" >
-                    <iais:select name="PERMANENT-SVTP003-subServiceCodes" options="specHcsaServiceOptions" firstOption="Please Select" value="${hcsaServiceSubServiceErrorsDto.subServiceCode}"/>
-                    <span name= class="error-msg" >${hcsaServiceSubServiceErrorsDto.errorMsg}</span>
+          <c:forEach items="<%=ServiceConfigConstant.PREMISES_TYPE_MAP%>" var = "premTypeMap">
+            <div class="col-xs-12 col-md-12 Sub-Types" style="margin-top: 20px ;margin-bottom: 20px" id ="${premTypeMap.key}-SVTP005">
+              <div class="col-xs-12 col-md-12">
+              </div>
+              <div class="col-xs-12 col-md-12">
+                <label class="col-xs-12 col-md-12 control-label">For ${premTypeMap.value}</label>
+              </div>
+
+              <c:if test="${hcsaServiceConfigDto.otherHcsaServiceSubServicePageDtoMap !=null}">
+                <c:forEach items="${hcsaServiceConfigDto.otherHcsaServiceSubServicePageDtoMap[premTypeMap.key].hcsaServiceSubServiceErrorsDtos}" var = "hcsaServiceSubServiceErrorsDto">
+                  <div class="add col-xs-12 col-md-12"  style="margin-top: 20px ;margin-bottom: 20px">
+                    <div class="col-xs-12 col-md-5" style="padding-right: 20%;margin-left:${hcsaServiceSubServiceErrorsDto.marginLeft}px" >
+                      <iais:select name="${premTypeMap.key}-SVTP005-subServiceCodes" options="specHcsaServiceOptions" firstOption="Please Select"
+                                   value="${hcsaServiceSubServiceErrorsDto.subServiceCode}"/>
+                      <span class="error-msg" >${hcsaServiceSubServiceErrorsDto.errorMsg}</span>
+                    </div>
+                    <div class="value">
+                      <input type="text" value="${hcsaServiceSubServiceErrorsDto.level}" name="${premTypeMap.key}-SVTP005-levels" style="display: none">
+                    </div>
+                    <div  class="col-xs-12 col-md-2" style="padding-left: 3%;" >
+                      <a class="btn  btn-secondary  view"  onclick="indents(this)"   >indent</a>
+                    </div>
+                    <div  class="col-xs-12 col-md-2" >
+                      <a class="btn  btn-secondary view"  onclick="outdent(this)" >outdent</a>
+                    </div>
+                    <div class="col-xs-12 col-md-1">
+                      <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
+                    </div>
                   </div>
-                  <div class="value">
-                    <input type="text" value="${hcsaServiceSubServiceErrorsDto.level}" name="PERMANENT-SVTP003-levels" style="display: none">
-                  </div>
-                  <div  class="col-xs-12 col-md-2" style="padding-left: 3%;" >
-                    <a class="btn  btn-secondary  view"  onclick="indents(this)"   >indent</a>
-                  </div>
-                  <div  class="col-xs-12 col-md-2" >
-                    <a class="btn  btn-secondary view"  onclick="outdent(this)" >outdent</a>
-                  </div>
-                  <div class="col-xs-12 col-md-1">
-                    <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
-                  </div>
-                </div>
-              </c:forEach>
-            </c:if>
+                </c:forEach>
+              </c:if>
 
 
-          <div class="col-xs-12 col-md-12">
-            <a  class="btn  btn-secondary "   style="margin-right: 10px" id="addAsItem" onclick="addAsItem(this,'PERMANENT','SVTP003')"> + </a><label for="addAsItem"> Add Item</label>
-          </div>
+              <div class="col-xs-12 col-md-12">
+                <a  class="btn  btn-secondary "   style="margin-right: 10px"  onclick="addAsItem(this,'${premTypeMap.key}','SVTP005')"> + </a><label > Add Item</label>
+              </div>
+            </div>
+          </c:forEach>
+
         </div>
-      </div>
-
       </div>
         <div class="col-xs-12 col-md-9">
           <div class="form-group">
@@ -1111,7 +1159,9 @@
 
 <iais:confirm msg="Are you sure you want to cancel?" yesBtnDesc="NO" cancelBtnDesc="YES" yesBtnCls="btn btn-secondary" cancelBtnCls="btn btn-primary" cancelFunc="cancel()" callBack="displays()" popupOrder="cancel"></iais:confirm>
 <script type="text/javascript">
-
+    $(document).ready(function () {
+        premisesSelect();
+    });
     function cancel() {
 
         SOP.Crud.cfxSubmit("mainForm","back","back","");
@@ -1466,6 +1516,23 @@
                 $(domEle).hide();
             }
         });
+    }
+
+    function premisesSelect(){
+        $("input[name='premisesTypes']").each(function () {
+            var values = $(this).val();
+            //console.log(values);
+            var specId = values+"-SVTP003";
+            var otherId = values+"-SVTP005";
+            //console.log($(this).prop('checked'));
+          if($(this).prop('checked')){
+            $('#'+specId).show();
+            $('#'+otherId).show();
+          }else{
+              $('#'+specId).hide();
+              $('#'+otherId).hide();
+          }
+        })
     }
 </script>
 </>
