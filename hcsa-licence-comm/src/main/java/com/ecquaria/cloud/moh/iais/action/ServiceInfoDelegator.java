@@ -814,8 +814,8 @@ public class ServiceInfoDelegator {
         boolean isValid = checkAction(map, HcsaConsts.STEP_PRINCIPAL_OFFICERS, appSubmissionDto, bpc.request);
         if (isValid && (isGetDataFromPagePo)) {
             String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
-            syncDropDownAndPsn(appSubmissionDto, poList, svcCode, bpc.request);
             syncDropDownAndPsn(appSubmissionDto, dpoList, svcCode, bpc.request);
+            syncDropDownAndPsn(appSubmissionDto, poList, svcCode, bpc.request);
         }
         log.debug(StringUtil.changeForLog("the do doPrincipalOfficers end ...."));
     }
@@ -1797,8 +1797,7 @@ public class ServiceInfoDelegator {
     }
 
     private Map<String, AppSvcPersonAndExtDto> syncDropDownAndPsn(AppSubmissionDto appSubmissionDto,
-            List<AppSvcPrincipalOfficersDto> personList,
-            String svcCode, HttpServletRequest request) {
+            List<AppSvcPrincipalOfficersDto> personList, String svcCode, HttpServletRequest request) {
         if (StringUtil.isEmpty(svcCode)) {
             svcCode = (String) ParamUtil.getSessionAttr(request, CURRENTSVCCODE);
         }
@@ -1875,6 +1874,22 @@ public class ServiceInfoDelegator {
         return stepName;
     }
 
+    private Map<String, AppSvcPersonAndExtDto> removeDirtyDataFromPsnDropDown(AppSubmissionDto appSubmissionDto,
+            Map<String, AppSvcPersonAndExtDto> licPersonMap, Map<String, AppSvcPersonAndExtDto> personMap) {
+        //add new person key
+        Set<String> personKeySet = new HashSet<>(licPersonMap.keySet());
+        Set<String> newPersonKeySet = getNewPersonKeySet(appSubmissionDto);
+        personKeySet.addAll(newPersonKeySet);
+        //filter removed person
+        Map<String, AppSvcPersonAndExtDto> newPersonMap = IaisCommonUtils.genNewHashMap();
+        personMap.forEach((k, v) -> {
+            if (personKeySet.contains(k)) {
+                newPersonMap.put(k, v);
+            }
+        });
+        return newPersonMap;
+    }
+
     private Set<String> getNewPersonKeySet(AppSubmissionDto appSubmissionDto) {
         Set<String> personKeySet = IaisCommonUtils.genNewHashSet();
         if (appSubmissionDto != null) {
@@ -1895,9 +1910,15 @@ public class ServiceInfoDelegator {
                             setPsnKeySet(psn, personKeySet);
                         }
                     }
-                    List<AppSvcPrincipalOfficersDto> appSvcPoDpoDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
-                    if (!IaisCommonUtils.isEmpty(appSvcPoDpoDtos)) {
-                        for (AppSvcPrincipalOfficersDto psn : appSvcPoDpoDtos) {
+                    List<AppSvcPrincipalOfficersDto> appSvcPoDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
+                    if (!IaisCommonUtils.isEmpty(appSvcPoDtos)) {
+                        for (AppSvcPrincipalOfficersDto psn : appSvcPoDtos) {
+                            setPsnKeySet(psn, personKeySet);
+                        }
+                    }
+                    List<AppSvcPrincipalOfficersDto> appSvcDpoDtos = appSvcRelatedInfoDto.getAppSvcNomineeDtoList();
+                    if (!IaisCommonUtils.isEmpty(appSvcDpoDtos)) {
+                        for (AppSvcPrincipalOfficersDto psn : appSvcDpoDtos) {
                             setPsnKeySet(psn, personKeySet);
                         }
                     }
@@ -1920,22 +1941,6 @@ public class ServiceInfoDelegator {
         return personKeySet;
     }
 
-    private Map<String, AppSvcPersonAndExtDto> removeDirtyDataFromPsnDropDown(AppSubmissionDto appSubmissionDto,
-            Map<String, AppSvcPersonAndExtDto> licPersonMap, Map<String, AppSvcPersonAndExtDto> personMap) {
-        //add new person key
-        Set<String> personKeySet = new HashSet<>(licPersonMap.keySet());
-        Set<String> newPersonKeySet = getNewPersonKeySet(appSubmissionDto);
-        personKeySet.addAll(newPersonKeySet);
-        //filter removed person
-        Map<String, AppSvcPersonAndExtDto> newPersonMap = IaisCommonUtils.genNewHashMap();
-        personMap.forEach((k, v) -> {
-            if (personKeySet.contains(k)) {
-                newPersonMap.put(k, v);
-            }
-        });
-        return newPersonMap;
-    }
-
     private void setPsnKeySet(AppSvcPrincipalOfficersDto psn, Set<String> personKeySet) {
         if (psn == null || personKeySet == null) {
             return;
@@ -1944,7 +1949,9 @@ public class ServiceInfoDelegator {
         if (!psn.isLicPerson()) {
             boolean partValidate = AppValidatorHelper.psnDoPartValidate(psn.getIdType(), psn.getIdNo(), psn.getName());
             if (partValidate) {
-                personKeySet.add(ApplicationHelper.getPersonKey(psn.getNationality(), psn.getIdType(), psn.getIdNo()));
+                String personKey = ApplicationHelper.getPersonKey(psn.getNationality(), psn.getIdType(), psn.getIdNo());
+                personKeySet.add(personKey);
+                psn.setAssignSelect(personKey);
             } else if (!StringUtil.isEmpty(assignSel) && !"-1".equals(assignSel)) {
                 psn.setAssignSelect(HcsaAppConst.NEW_PSN);
             }

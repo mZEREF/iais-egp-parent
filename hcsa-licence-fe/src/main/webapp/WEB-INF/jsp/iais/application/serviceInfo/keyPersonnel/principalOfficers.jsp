@@ -144,7 +144,7 @@
                         <c:if test="${dpoHcsaSvcPersonnelDto.maximumCount > 0}">
                             <iais:row cssClass="dpoDropDownDiv">
                                 <c:set var="toolMsg"><iais:message  key="NEW_ACK025"/></c:set>
-                                <iais:field width="5" value="${currStepName2}" info="${toolMsg}"/>
+                                <iais:field width="5" cssClass="col-md-5" value="${currStepName2}" info="${toolMsg}"/>
                                 <iais:value width="7" cssClass="col-md-7">
                                     <iais:select cssClass="deputySelect" name="deputyPrincipalOfficer" options="DeputyFlagSelect" value="${currSvcInfoDto.deputyPoFlag}" />
                                 </iais:value>

@@ -735,6 +735,7 @@ public abstract class AppCommDelegator {
         log.info(StringUtil.changeForLog("the do preparePremises start ...."));
         ApplicationHelper.setTimeList(bpc.request);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         //premise select select options
         ApplicationHelper.setPremSelect(bpc.request);
         //get svcCode to get svcId
@@ -744,7 +745,7 @@ public abstract class AppCommDelegator {
         Set<String> premisesType = IaisCommonUtils.genNewHashSet();
         boolean readOnly = ApplicationHelper.readonlyPremises(appSubmissionDto);
         if (readOnly) {
-            AppGrpPremisesDto appGrpPremisesDto = appSubmissionDto.getAppGrpPremisesDtoList().get(0);
+            AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(0);
             premisesType.add(appGrpPremisesDto.getPremisesType());
         } else {
             List<HcsaServiceDto> rfiHcsaService = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, "rfiHcsaService");
@@ -772,6 +773,12 @@ public abstract class AppCommDelegator {
         }*/
         ParamUtil.setSessionAttr(bpc.request, PREMISESTYPE, (Serializable) sortPremisesTypes(premisesType));
         ParamUtil.setRequestAttr(bpc.request, "readOnly", readOnly);
+        // check premises list
+        Set<String> finalPremisesType = premisesType;
+        appGrpPremisesDtoList = appGrpPremisesDtoList.stream()
+                .filter(dto -> finalPremisesType.contains(dto.getPremisesType()))
+                .collect(Collectors.toList());
+        appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
 
         int baseSvcCount = 0;
         if (hcsaServiceDtoList != null) {
