@@ -764,12 +764,12 @@ public abstract class AppCommDelegator {
             }
         }
         //TODO Test
-        if (!StringUtil.isIn(ApplicationConsts.PREMISES_TYPE_REMOTE, premisesType)) {
+        /*if (!StringUtil.isIn(ApplicationConsts.PREMISES_TYPE_REMOTE, premisesType)) {
             premisesType.add(ApplicationConsts.PREMISES_TYPE_REMOTE);
         }
         if (!StringUtil.isIn(ApplicationConsts.PREMISES_TYPE_MOBILE, premisesType)) {
             premisesType.add(ApplicationConsts.PREMISES_TYPE_MOBILE);
-        }
+        }*/
         ParamUtil.setSessionAttr(bpc.request, PREMISESTYPE, (Serializable) sortPremisesTypes(premisesType));
         ParamUtil.setRequestAttr(bpc.request, "readOnly", readOnly);
 
