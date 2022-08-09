@@ -42,8 +42,14 @@ import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.validation.ValidateCharges;
 import com.ecquaria.cloud.moh.iais.validation.ValidateVehicle;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import sop.util.DateUtil;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -58,12 +64,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import sop.util.DateUtil;
-import sop.webflow.rt.api.BaseProcessClass;
 
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.APPSUBMISSIONDTO;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CO_MAP;
@@ -215,7 +215,7 @@ public class ServiceInfoDelegator {
                 break;
             case HcsaConsts.STEP_CLINICAL_DIRECTOR:
                 singleName = HcsaConsts.CLINICAL_DIRECTOR;
-                prePareClinicalDirector(bpc);
+                prepareClinicalDirector(bpc);
                 break;
             case HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS:
                 singleName = HcsaConsts.CLINICAL_GOVERNANCE_OFFICER;
@@ -566,49 +566,12 @@ public class ServiceInfoDelegator {
             ParamUtil.setRequestAttr(bpc.request, "dpoHcsaSvcPersonnelDto", hcsaSvcPersonnelDto);
         }
 
-        /*AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currentSvcId);
-        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
-        List<AppSvcPrincipalOfficersDto> principalOfficersDtos = IaisCommonUtils.genNewArrayList();
-        List<AppSvcPrincipalOfficersDto> deputyPrincipalOfficersDtos = IaisCommonUtils.genNewArrayList();
-        if (!IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtos)) {
-            ApplicationHelper.assignPoDpoDto(appSvcPrincipalOfficersDtos, principalOfficersDtos, deputyPrincipalOfficersDtos);
-            if (principalOfficersDtos.size() > mandatory) {
-                mandatory = principalOfficersDtos.size();
-            }
-            if (deputyPrincipalOfficersDtos.size() > deputyMandatory) {
-                deputyMandatory = deputyPrincipalOfficersDtos.size();
-            }
-        }
-        //reload
-        ParamUtil.setRequestAttr(bpc.request, "PrincipalOfficersMandatory", mandatory);
-        ParamUtil.setRequestAttr(bpc.request, "DeputyPrincipalOfficersMandatory", deputyMandatory);
-        ParamUtil.setRequestAttr(bpc.request, "ReloadPrincipalOfficers", principalOfficersDtos);
-        ParamUtil.setRequestAttr(bpc.request, "ReloadDeputyPrincipalOfficers", deputyPrincipalOfficersDtos);*/
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currentSvcId);
         if (StringUtil.isEmpty(currSvcInfoDto.getDeputyPoFlag())) {
             List<AppSvcPrincipalOfficersDto> dpoList = currSvcInfoDto.getAppSvcNomineeDtoList();
-            if (IaisCommonUtils.isEmpty(dpoList)) {
-                currSvcInfoDto.setDeputyPoFlag(AppConsts.NO);
-            } else {
-                currSvcInfoDto.setDeputyPoFlag(AppConsts.YES);
-            }
+            currSvcInfoDto.setDeputyPoFlag(IaisCommonUtils.isEmpty(dpoList) ? AppConsts.NO : AppConsts.YES);
+            setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currSvcInfoDto);
         }
-        setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currSvcInfoDto);
-        /*if (StringUtil.isEmpty(appSvcRelatedInfoDto.getDeputyPoFlag())) {
-            ParamUtil.setRequestAttr(bpc.request, "DeputyPoFlag", "0");
-        } else {
-            ParamUtil.setRequestAttr(bpc.request, "DeputyPoFlag", appSvcRelatedInfoDto.getDeputyPoFlag());
-        }*/
-
-      /*  List<SelectOption> IdTypeSelect = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ID_TYPE);
-        ParamUtil.setRequestAttr(bpc.request, "IdTypeSelect", IdTypeSelect);
-
-        List<SelectOption> assignSelectList = ApplicationHelper.genAssignPersonSel(bpc.request, true);
-        ParamUtil.setRequestAttr(bpc.request, "PrincipalOfficersAssignSelect", assignSelectList);
-
-        List<SelectOption> deputyAssignSelectList = ApplicationHelper.genAssignPersonSel(bpc.request, true);
-        ParamUtil.setRequestAttr(bpc.request, "DeputyPrincipalOfficersAssignSelect", deputyAssignSelectList);*/
-
         List<SelectOption> personList = ApplicationHelper.genAssignPersonSel(bpc.request, true);
         ParamUtil.setRequestAttr(bpc.request, CURR_STEP_PSN_OPTS, personList);
 
@@ -693,9 +656,9 @@ public class ServiceInfoDelegator {
             log.info(StringUtil.changeForLog("get current svc info...."));
             AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
             AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, svcId, appNo);
-            List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
             List<HcsaServiceDto> serviceConfigs = ApplicationHelper.getServiceConfigsFormApp(appSubmissionDto);
-            appPremSpecialisedDtoList = ApplicationHelper.initAppPremSpecialisedDtoList(appSubmissionDto, serviceConfigs);
+            List<AppPremSpecialisedDto> appPremSpecialisedDtoList = ApplicationHelper.initAppPremSpecialisedDtoList(appSubmissionDto,
+                    serviceConfigs);
             ApplicationHelper.initShowDocumentList(appSvcRelatedInfoDto, appPremSpecialisedDtoList, false);
             ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
             ParamUtil.setSessionAttr(bpc.request, "iframeId", iframeId);
@@ -711,8 +674,7 @@ public class ServiceInfoDelegator {
         if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
             licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, LICPERSONSELECTMAP);
         }
-        for (int i = 0; i < dto.size(); i++) {
-            AppSvcRelatedInfoDto currSvcInfoDto = dto.get(i);
+        for (AppSvcRelatedInfoDto currSvcInfoDto : dto) {
             Map<String, String> map = AppValidatorHelper.doCheckBox(currSvcInfoDto, appSubmissionDto, licPersonMap);
             if (!map.isEmpty()) {
                 errorMap.putAll(map);
@@ -778,12 +740,6 @@ public class ServiceInfoDelegator {
         log.debug(StringUtil.changeForLog("the do doGovernanceOfficers end ...."));
     }
 
-    /**
-     * StartStep: doPrincipalOfficers
-     *
-     * @param bpc
-     * @throws
-     */
     public void doPrincipalOfficers(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doPrincipalOfficers start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
@@ -828,28 +784,6 @@ public class ServiceInfoDelegator {
             currSvcInfoDto.setAppSvcNomineeDtoList(dpoList);
         }
         setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currSvcInfoDto, appSubmissionDto);
-        /*if (isGetDataFromPagePo || isGetDataFromPageDpo) {
-            poList = AppDataHelper.genAppSvcPrincipalOfficersDto(bpc.request);
-            dpoList = AppDataHelper.genAppSvcDeputyPrincipalOfficersDto(bpc.request);
-            if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(
-                    appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())
-                    || isRfi) {
-                List<AppSvcPrincipalOfficersDto> oldOfficersDtoList = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
-                for (AppSvcPrincipalOfficersDto officersDto : oldOfficersDtoList) {
-                    if (!isGetDataFromPagePo && ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(officersDto.getPsnType())) {
-                        appSvcPrincipalOfficersDtoList.add(officersDto);
-                    } else if (!isGetDataFromPageDpo && ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(officersDto.getPsnType())) {
-                        appSvcPrincipalOfficersDtoList.add(officersDto);
-                    }
-                }
-            }
-
-            String deputyPoFlag = ParamUtil.getString(bpc.request, "deputyPrincipalOfficer");
-            if (!StringUtil.isEmpty(deputyPoFlag)) {
-                appSvcRelatedInfoDto.setDeputyPoFlag(deputyPoFlag);
-            }
-            appSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(appSvcPrincipalOfficersDtoList);
-        }*/
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
         if ("next".equals(action)) {
             Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(
@@ -939,9 +873,8 @@ public class ServiceInfoDelegator {
      * StartStep: doDocuments
      *
      * @param bpc
-     * @throws
      */
-    public void doDocuments(BaseProcessClass bpc) throws IOException {
+    public void doDocuments(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do doDocuments start ...."));
         HttpServletRequest request = bpc.request;
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
@@ -1154,8 +1087,7 @@ public class ServiceInfoDelegator {
                     appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType))) {
                 log.debug(StringUtil.changeForLog("cycle cgo dto to retrieve prs info start ..."));
                 if ("Y".equals(ApplicationHelper.getPrsFlag())) {
-                    for (int i = 0; i < appSvcPersonnelDtos.size(); i++) {
-                        AppSvcPersonnelDto appSvcPersonDto = appSvcPersonnelDtos.get(i);
+                    for (AppSvcPersonnelDto appSvcPersonDto : appSvcPersonnelDtos) {
                         String profRegNo = appSvcPersonDto.getProfRegNo();
                         ProfessionalResponseDto professionalResponseDto = appCommService.retrievePrsInfo(profRegNo);
                         if (professionalResponseDto != null) {
@@ -1242,7 +1174,7 @@ public class ServiceInfoDelegator {
             List<HcsaSvcPersonnelDto> psnConfig = configCommService.getHcsaSvcPersonnel(currentSvcId,
                     ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL);
             if (!ApplicationHelper.checkIsRfi(bpc.request)) {
-                errorMap = AppValidatorHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL,
+                AppValidatorHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL,
                         errorMap, psnLength, "psnMandatory", HcsaConsts.SERVICE_PERSONNEL);
             }
             errorMap = servicePersonPrsValidate(bpc.request, errorMap, appSvcRelatedInfoDto.getAppSvcPersonnelDtoList());
@@ -1388,7 +1320,7 @@ public class ServiceInfoDelegator {
         if ("next".equals(crud_action_type)) {
             List<AppSvcVehicleDto> appSvcVehicleDtos = IaisCommonUtils.genNewArrayList();
             if (!IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())) {
-                appSubmissionDto.getAppSvcRelatedInfoDtoList().stream().forEach(obj -> {
+                appSubmissionDto.getAppSvcRelatedInfoDtoList().forEach(obj -> {
                     // Don't add current service vehicles
                     if (Objects.equals(obj.getServiceId(), currSvcId)) {
                         return;
@@ -1408,8 +1340,8 @@ public class ServiceInfoDelegator {
         log.debug(StringUtil.changeForLog("doVehicles end ..."));
     }
 
-    public void prePareClinicalDirector(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("prePareClinicalDirector start ..."));
+    public void prepareClinicalDirector(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("prepareClinicalDirector start ..."));
 
         String currSvcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
         String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
@@ -1617,10 +1549,6 @@ public class ServiceInfoDelegator {
         log.debug(StringUtil.changeForLog("do Business end ..."));
     }
 
-    //=============================================================================
-    //private method
-    //=============================================================================
-
     private ServiceStepDto getServiceStepDto(ServiceStepDto serviceStepDto, String action, List<HcsaServiceDto> hcsaServiceDtoList,
             String svcId) {
         //get the service information
@@ -1751,9 +1679,6 @@ public class ServiceInfoDelegator {
             AppSubmissionDto appSubmissionDto) {
         if (appSubmissionDto == null) {
             appSubmissionDto = ApplicationHelper.getAppSubmissionDto(request);
-        }
-        if (appSubmissionDto == null) {
-            return;
         }
         String appNo = currSvcInfoDto.getAppNo();
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -1925,7 +1850,7 @@ public class ServiceInfoDelegator {
             return false;
         }
         //set person into dropdown
-        personMap = ApplicationHelper.initSetPsnIntoSelMap(personMap, newPersonList, svcCode);
+        ApplicationHelper.initSetPsnIntoSelMap(personMap, newPersonList, svcCode);
         //sync data
         ApplicationHelper.syncPsnData(appSubmissionDto, personMap);
         return true;
@@ -2003,9 +1928,8 @@ public class ServiceInfoDelegator {
         personKeySet.addAll(newPersonKeySet);
         //filter removed person
         Map<String, AppSvcPersonAndExtDto> newPersonMap = IaisCommonUtils.genNewHashMap();
-        Set<String> finalPersonKeySet = personKeySet;
         personMap.forEach((k, v) -> {
-            if (finalPersonKeySet.contains(k)) {
+            if (personKeySet.contains(k)) {
                 newPersonMap.put(k, v);
             }
         });
