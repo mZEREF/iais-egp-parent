@@ -342,16 +342,44 @@ public class TopDataSubmissionDelegator {
         if(DataSubmissionConsts.DS_APP_TYPE_RFC.equals(topSuperDataSubmissionDto.getDataSubmissionDto().getAppType())){
             TopSuperDataSubmissionDto oldTopSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDto(topSuperDataSubmissionDto.getDataSubmissionDto().getSubmissionNo());
             ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.TOP_OLD_DATA_SUBMISSION, oldTopSuperDataSubmissionDto);
-            List<DsConfig> configList =DsConfigHelper.initTopConfig(bpc.request);
 
-            for (DsConfig cfg:configList
-            ) {
-                if(!cfg.getCode().equals(DsConfigHelper.TOP_STEP_PREVIEW)&&!cfg.getCode().equals(DsConfigHelper.TOP_STEP_PATIENT)){
-                    cfg.setStatus(1);
-                    DsConfigHelper.setConfig(DataSubmissionConsts.DS_TOP, cfg, bpc.request);
+        }
+        List<DsConfig> configList =DsConfigHelper.initTopConfig(bpc.request);
+
+        for (DsConfig cfg:configList
+        ) {
+            TerminationOfPregnancyDto terminationOfPregnancyDto =  topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
+
+            if(terminationOfPregnancyDto!=null&&!cfg.getCode().equals(DsConfigHelper.TOP_STEP_PREVIEW)&&!cfg.getCode().equals(DsConfigHelper.TOP_STEP_PATIENT)){
+                int status=0;
+
+                 if (DsConfigHelper.TOP_STEP_PLANNING.equals(cfg.getCode())&&terminationOfPregnancyDto.getFamilyPlanDto()!=null) {
+                    ValidationResult result = WebValidationHelper.validateProperty(terminationOfPregnancyDto.getFamilyPlanDto(),"TOP");
+                    status = result.isHasErrors()?0:1;
+                }else if (DsConfigHelper.TOP_STEP_PRE_TERMINATION.equals(cfg.getCode())&&terminationOfPregnancyDto.getPreTerminationDto()!=null) {
+                    ValidationResult result = WebValidationHelper.validateProperty(terminationOfPregnancyDto.getPreTerminationDto(),"TOP");
+                    status = result.isHasErrors()?0:1;
+                }else if (DsConfigHelper.TOP_STEP_PRESENT_TERMINATION.equals(cfg.getCode())&&terminationOfPregnancyDto.getTerminationDto()!=null) {
+                    PreTerminationDto preTerminationDto= terminationOfPregnancyDto.getPreTerminationDto();
+                    if(needDoTop(preTerminationDto)){
+                        ValidationResult result = WebValidationHelper.validateProperty(terminationOfPregnancyDto.getTerminationDto(),"TOP");
+                        status = result.isHasErrors()?0:1;
+                    }else {
+                        status =1;
+                    }
+                }else if (DsConfigHelper.TOP_STEP_POST_TERMINATION.equals(cfg.getCode())&&terminationOfPregnancyDto.getPostTerminationDto()!=null) {
+                    PreTerminationDto preTerminationDto= terminationOfPregnancyDto.getPreTerminationDto();
+                    if(needDoTop(preTerminationDto)){
+                        ValidationResult result = WebValidationHelper.validateProperty(terminationOfPregnancyDto.getPostTerminationDto(),"TOP");
+                        status = result.isHasErrors()?0:1;
+                    }else {
+                        status =1;
+                    }
                 }
-            }
+                cfg.setStatus(status);
 
+                DsConfigHelper.setConfig(DataSubmissionConsts.DS_TOP, cfg, bpc.request);
+            }
         }
         DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
         String pageStage = DataSubmissionConstant.PAGE_STAGE_PAGE;
