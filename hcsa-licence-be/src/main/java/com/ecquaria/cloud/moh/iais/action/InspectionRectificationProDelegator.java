@@ -89,7 +89,7 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
     private static final String TASKDTO ="taskDto";
     private static final String APPLICATIONVIEWDTO = "applicationViewDto";
     private static final String CHECKLISTFILEDTO = "checkListFileDto";
-    private static final String ROLL_BACK_OPTIONS = "rollBackToOptions";
+    private static final String ROLL_BACK_OPTIONS = "rollBackOptions";
     private static final String ROLL_BACK_VALUE_MAP = "rollBackValueMap";
 
     @Autowired

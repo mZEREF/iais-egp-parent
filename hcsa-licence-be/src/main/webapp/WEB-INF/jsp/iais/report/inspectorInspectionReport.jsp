@@ -102,13 +102,15 @@
                                                                     </iais:row>
 
                                                                     <iais:row>
-                                                                        <iais:field value="Internal Remarks"/>
+                                                                        <label class="col-md-4 control-label">Internal Remarks <span style="color: red" id="internalRemarkStar"> *</span></label>
                                                                         <iais:value width="6">
                                                                         <textarea style="resize:none"
                                                                                   name="processRemarks" cols="65"
                                                                                   rows="6" title="content"
+                                                                                  class="internalRemarks"
                                                                                   MAXLENGTH="300"><c:out
                                                                                 value="${appPremisesRecommendationDto.processRemarks}"/></textarea>
+                                                                            <br/><span id="error_internalRemarks1" class="error-msg" style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
                                                                         </iais:value>
                                                                     </iais:row>
                                                                     <iais:row>
@@ -133,14 +135,7 @@
                                                                         </iais:value>
                                                                     </iais:row>
                                                                   </c:if>
-                                                                    <iais:row id="backToRow">
-                                                                        <iais:field value="Roll Back To" required="true" id="backToLabel"/>
-                                                                        <iais:value width="7">
-                                                                            <iais:select name="rollBackTo" options="rollBackToOptions" firstOption="Please Select"/>
-                                                                            <span id="error_rollBackTo1" class="error-msg"
-                                                                                  style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
-                                                                        </iais:value>
-                                                                    </iais:row>
+                                                                    <jsp:include page="/WEB-INF/jsp/iais/inspectionPreTask/rollBackPart.jsp"/>
                                                                     <c:if test="${applicationViewDto.applicationDto.applicationType=='APTY002'}">
                                                                         <iais:row>
                                                                             <iais:field value="Licence Start Date"
@@ -231,20 +226,16 @@
     <%@ include file="../inspectionncList/uploadFile.jsp" %>
 </div>
 
-<iais:confirm msg="INSPE_ACK001" popupOrder="confirmTag"
-              cancelFunc="$('#confirmTag').modal('hide');" cancelBtnCls="btn btn-secondary" cancelBtnDesc="NO"
-              callBack="$('#confirmTag').modal('hide');mysubmit();" yesBtnCls="btn btn-primary" yesBtnDesc="YES"/>
-
 <script>
     $(document).ready(function () {
         <c:if test = "${applicationViewDto.applicationDto.status eq 'APST037' || applicationViewDto.applicationDto.status eq 'APST020'}">
             changeAoSelect();
             $("#processSubmit").change(function () {
                 changeAoSelect();
-                initBackToRow();
+                showRollBackTo("rollBack");
             })
         </c:if>
-        initBackToRow();
+        showRollBackTo("rollBack");
     });
 
     function changeAoSelect() {
@@ -293,30 +284,14 @@
             $("#error_submit").show();
         } else if ("submit" === s) {
             mysubmit();
-        }else if("rollBack" === s){
-            const rollBackToVal = $("#rollBackTo").val();
-            if(rollBackToVal === null || rollBackToVal === undefined || rollBackToVal === ''){
-                $("#error_rollBackTo1").show();
-            } else {
-                $('#confirmTag').modal('show');
-            }
         }
+        submitRollBack(mysubmit, "rollBack");
     }
 
     function mysubmit(){
         $("#error_submit").hide();
         showWaiting();
         $("#mainForm").submit();
-    }
-
-    function initBackToRow() {
-        const actionValue = $("#processSubmit").val();
-        const backToRow = $("#backToRow");
-        if ("rollBack" === actionValue) {
-            backToRow.show();
-        } else {
-            backToRow.hide();
-        }
     }
 </script>
 

@@ -1109,6 +1109,7 @@ public class HcsaApplicationDelegator {
         String stageId = result[0];
         String wrkGpId = result[1];
         String userId = result[2];
+        String roleId = result[3];
         String historyId = result[4];
         OrgUserDto user = applicationViewService.getUserById(userId);
         userId=user.getId();
@@ -1120,7 +1121,7 @@ public class HcsaApplicationDelegator {
             inspectionService.rollBackInspectionRecord(applicationViewDto.getAppPremisesCorrelationId(), applicationViewDto.getApplicationDto());
             rollBackTask(bpc,historyId, HcsaConsts.ROUTING_STAGE_PSO,  RoleConsts.USER_ROLE_PSO, wrkGpId, userId);
         } else if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId)) {
-            applicationService.rollBackInsp(bpc, stageId,RoleConsts.USER_ROLE_INSPECTIOR,  wrkGpId, userId, historyId,ParamUtil.getString(bpc.request, "internalRemarks"));
+            applicationService.rollBackInsp(bpc, stageId,roleId,  wrkGpId, userId, historyId,ParamUtil.getString(bpc.request, "internalRemarks"));
 
         } else if (HcsaConsts.ROUTING_STAGE_AO1.equals(stageId)) {
             rollBackTask(bpc,historyId, HcsaConsts.ROUTING_STAGE_AO1, RoleConsts.USER_ROLE_AO1, wrkGpId, userId);
@@ -4149,7 +4150,7 @@ public class HcsaApplicationDelegator {
 
         } else {
             if (hasRollBackHistoryList ) {
-                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROLLBACK_CR, "Roll Back"));
+                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROLLBACK_CR, MasterCodeUtil.getCodeDesc(InspectionConstants.PROCESS_DECI_ROLL_BACK)));
             }
         }
         ParamUtil.setSessionAttr(request, "finalStage", finalStage);

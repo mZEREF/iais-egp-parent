@@ -118,6 +118,24 @@
                                 </tbody>
                               </table>
                             </div>
+
+                            <iais:row>
+                              <label class="col-md-4 control-label">Internal Remarks <span style="color: red" id="internalRemarkStar"> *</span></label>
+                              <iais:value width="10">
+                                <div class="input-group">
+                                  <div class="ax_default text_area">
+                                    <label for="internalRemarksId"></label><textarea id="internalRemarksId"
+                                                                                     name="internalRemarks"
+                                                                                     class="internalRemarks"
+                                                                                     cols="70"
+                                                                                     rows="7"
+                                                                                     maxlength="300">${apptInspectionDateDto.remarks}</textarea>
+                                    <span id="error_internalRemarks1" class="error-msg" style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
+                                  </div>
+                                </div>
+                              </iais:value>
+                            </iais:row>
+
                             <iais:row>
                               <iais:field value="Processing Decision" required="true"/>
                               <iais:value width="10" display="true">
@@ -167,17 +185,7 @@
                               </iais:value>
                             </iais:row>
 
-                            <iais:row id="rollBackToRow">
-                              <iais:field value="Roll Back To" required="true"/>
-                              <iais:value width="10" display="true">
-                                <iais:select name="rollBackTo" id="rollBackTo"
-                                             firstOption="Please Select"
-                                             options="rollBackOptions"
-                                             value=""/>
-                                <span id="error_rollBackTo1" class="error-msg"
-                                      style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
-                              </iais:value>
-                            </iais:row>
+                            <jsp:include page="/WEB-INF/jsp/iais/inspectionPreTask/rollBackPart.jsp"/>
 
                             <c:if test="${'APTY002' eq applicationViewDto.applicationDto.applicationType}">
                               <iais:row>
@@ -200,7 +208,8 @@
                               <iais:value width="10" display="true">
                                 <input disabled type="checkbox" id="fastTracking"
                                        <c:if test="${applicationViewDto.applicationDto.fastTracking}">checked="checked"</c:if>/>
-                                <label class="form-check-label" for="fastTracking"><span class="check-square"></span></label>
+                                <label class="form-check-label" for="fastTracking"><span
+                                        class="check-square"></span></label>
                               </iais:value>
                             </iais:row>
 
@@ -239,10 +248,6 @@
 <%@ include file="../inspectionncList/uploadFile.jsp" %>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 
-<iais:confirm msg="INSPE_ACK001" popupOrder="confirmTag"
-              cancelFunc="$('#confirmTag').modal('hide')" cancelBtnCls="btn btn-secondary" cancelBtnDesc="NO"
-              callBack="$('#confirmTag').modal('hide');submit()" yesBtnCls="btn btn-primary" yesBtnDesc="YES"/>
-
 <script type="text/javascript">
   $(document).ready(function () {
     changeNextStageFunc();
@@ -271,18 +276,15 @@
     let nextStageValue = $('#nextStage').find('option:selected').val();
     let systemDateRow = $('#systemDateRow');
     let specDateRow = $('#specDateRow');
-    let rollBackToRow = $('#rollBackToRow');
 
     systemDateRow.hide();
     specDateRow.hide();
-    rollBackToRow.hide();
     if ('REDECI017' === nextStageValue) {
       systemDateRow.show();
     } else if ('REDECI018' === nextStageValue) {
       specDateRow.show();
-    } else if ('REDECI027' === nextStageValue) {
-      rollBackToRow.show();
     }
+    showRollBackTo();
   }
 
   function apptInspectionDateGetDate() {
@@ -344,19 +346,8 @@
 
   function submitButFun() {
     clearErrorMsg();
-    $("#error_rollBackTo1").hide();
-    let nextStageValue = $('#nextStage').find('option:selected').val();
-    $("#processDec").val(nextStageValue);
-    if ('REDECI027' === nextStageValue) {
-      const rollBackToVal = $("#rollBackTo").val();
-      if(rollBackToVal === null || rollBackToVal === undefined || rollBackToVal === ''){
-        $("#error_rollBackTo1").show();
-      } else {
-        $('#confirmTag').modal('show');
-      }
-    } else {
-      submit();
-    }
+    $("#processDec").val($('#nextStage').find('option:selected').val());
+    submitRollBack(submit);
   }
 
   function submit() {

@@ -134,7 +134,7 @@ public class InspectEmailAo1Delegator  extends InspectionCheckListCommonMethodDe
     private static final String TD="</td><td>";
     private static final String SUBJECT="subject";
     private static final String DRA_EMA_ID="draftEmailId";
-    private static final String ROLLBACK_OPTIONS="rollBackToOptions";
+    private static final String ROLLBACK_OPTIONS="rollBackOptions";
     private static final String ROLLBACK_VALUE_MAP="rollBackValueMap";
 
     public void start(BaseProcessClass bpc){

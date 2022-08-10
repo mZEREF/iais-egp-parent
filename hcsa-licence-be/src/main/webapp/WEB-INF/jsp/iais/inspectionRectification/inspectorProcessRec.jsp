@@ -206,10 +206,11 @@
                               </iais:value>
                             </iais:row>
                             <iais:row>
-                              <iais:field value="Internal Remarks"/>
+                              <label class="col-md-4 control-label">Internal Remarks <span style="color: red" id="internalRemarkStar"> *</span></label>
                               <iais:value width="4000">
-                                <textarea id="internalRemarks" name="internalRemarks" cols="60" rows="7" style="font-size:16px"><c:out value="${inspectionPreTaskDto.internalMarks}"></c:out></textarea>
+                                <textarea id="internalRemarks" name="internalRemarks" class="internalRemarks" cols="60" rows="7" style="font-size:16px"><c:out value="${inspectionPreTaskDto.internalMarks}"></c:out></textarea>
                                 <br><span class="error-msg" name="iaisErrorMsg" id="error_internalMarks"></span>
+                                <br/><span id="error_internalRemarks1" class="error-msg" style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
                               </iais:value>
                             </iais:row>
                             <iais:row>
@@ -218,16 +219,7 @@
                                 <iais:select name="selectValue" options="processDecOption" cssClass="nextStage" firstOption="Please Select" value="${inspectionPreTaskDto.selectValue}" onchange="javascript:doInspectorProRecChange(this.value)"/>
                               </iais:value>
                             </iais:row>
-                            <iais:row id="rollBackToRow">
-                              <iais:field value="Roll Back To" required="true"/>
-                              <iais:value width="10">
-                                <iais:select name="rollBackTo" id="rollBackTo"
-                                             firstOption="Please Select"
-                                             options="rollBackToOptions"/>
-                                <span id="error_rollBackTo1" class="error-msg"
-                                      style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
-                              </iais:value>
-                            </iais:row>
+                            <jsp:include page="/WEB-INF/jsp/iais/inspectionPreTask/rollBackPart.jsp"/>
                             <iais:row id="indicateCondRemarks">
                               <div class="col-md-4" style="padding-right: 0px;">
                                 <label style="font-size: 16px">Please indicate Licensing Terms and Conditions<span style="color: red"> *</span></label>
@@ -284,10 +276,6 @@
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <%@ include file="../inspectionncList/uploadFile.jsp" %>
 
-<iais:confirm msg="INSPE_ACK001" popupOrder="confirmTag"
-              cancelFunc="$('#confirmTag').modal('hide')" cancelBtnCls="btn btn-secondary" cancelBtnDesc="NO"
-              callBack="$('#confirmTag').modal('hide');inspectorProRecSubmit('rollBack')" yesBtnCls="btn btn-primary" yesBtnDesc="YES"/>
-
 <script type="text/javascript">
     $(document).ready(function() {
         var value = $("#processDec").val();
@@ -316,7 +304,7 @@
             inspectorProRecJump(validateShowPage);
         }
         doInspectorProRecCheck();
-        showRollBackToRow();
+        showRollBackTo();
     })
 
     function inspectorProRecJump(ackValue){
@@ -384,17 +372,7 @@
             $("#processRec").show();
             $("#processRecRfi").hide();
         }
-        showRollBackToRow();
-    }
-
-    function showRollBackToRow(){
-      const pd = $("#processDec").val();
-      const rollBackRow = $('#rollBackToRow');
-      if('REDECI027' === pd){
-        rollBackRow.show();
-      }else {
-        rollBackRow.hide();
-      }
+      showRollBackTo();
     }
 
     function doInspectorProRecView() {
@@ -418,13 +396,8 @@
             $("#actionValue").val('acccond');
             inspectorProRecSubmit("acccond");
         } else if('REDECI027' === processDec){
-          const rollBackTo = $('#rollBackTo').val();
-          if (rollBackTo===''||rollBackTo===undefined||rollBackTo===null) {
-            $("#error_rollBackTo1").show();
-          }else {
-            $("#actionValue").val('rollBack');
-            $('#confirmTag').modal('show');
-          }
+          $("#actionValue").val('rollBack');
+          submitRollBack(()=>inspectorProRecSubmit('rollBack'));
         } else {
             var errMsg = 'This field is mandatory';
             $("#error_selectValue").text(errMsg);

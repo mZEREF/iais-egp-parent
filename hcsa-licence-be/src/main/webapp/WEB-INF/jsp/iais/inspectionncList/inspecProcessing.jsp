@@ -20,26 +20,20 @@
                         <iais:code code="${applicationViewDto.applicationDto.status}"/></iais:value></span></p>
                     </iais:row>
                     <iais:row>
-                        <iais:field value="Internal Remarks"/>
+                        <label class="col-md-4 control-label">Internal Remarks <span style="color: red" id="internalRemarkStar"> *</span></label>
                         <iais:value width="10">
-                            <textarea name="RemarksForHistory" cols="60" rows="7"maxlength="300"><c:out value="${serListDto.remarksForHistory}"/></textarea>
+                            <textarea name="RemarksForHistory" cols="60" rows="7"maxlength="300" class="internalRemarks"><c:out value="${serListDto.remarksForHistory}"/></textarea>
+                            <br/><span id="error_internalRemarks1" class="error-msg" style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field value="Processing Decision" required="true"/>
                         <iais:value width="10">
                             <iais:select name="processDec" cssClass="processDec nextStage" options="processDecOption"
-                                         firstOption="Please Select" value="${serListDto.processDec}" onchange="javascript:initRollBackToField()"/>
+                                         firstOption="Please Select" value="${serListDto.processDec}" onchange="javascript:showRollBackTo()"/>
                         </iais:value>
                     </iais:row>
-                    <iais:row id="rollBackToRow">
-                        <iais:field value="Roll Back To" required="true"/>
-                        <iais:value width="10">
-                            <iais:select name="rollBackTo" options="rollBackOptions" firstOption="Please Select" value="${serListDto.rollBackTo}"/>
-                            <span id="error_rollBackTo1" class="error-msg"
-                                  style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
-                        </iais:value>
-                    </iais:row>
+                    <jsp:include page="/WEB-INF/jsp/iais/inspectionPreTask/rollBackPart.jsp"/>
                     <c:if test="${ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION == applicationViewDto.applicationDto.applicationType}">
                         <iais:row>
                             <iais:field value="Licence Start Date" required="false"/>

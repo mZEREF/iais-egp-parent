@@ -1048,7 +1048,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         //get the user for this applicationNo
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         String taskType = TaskConsts.TASK_TYPE_INSPECTION;
-        String taskUrl = TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE;
+        String taskUrl = RoleConsts.USER_ROLE_INSPECTIOR.equals(roleId)?TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE:TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1;
         String appStatus= ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING;
         String insStatus= InspectionConstants.INSPECTION_STATUS_PENDING_APPOINTMENT_INSPECTION_DATE;
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
@@ -1058,8 +1058,10 @@ public class ApplicationServiceImpl implements ApplicationService {
         //complated this task and create the history
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
         broadcastOrganizationDto.setRollBackComplateTask((TaskDto) CopyUtil.copyMutableObject(taskDto));
-        //Delete all the Inspection records and update application's self assessment flag
-        inspectionService.rollBackInspectionRecord(taskDto.getRefNo(), applicationDto);
+        //Delete all the Inspection records and update application's self assessment flag, if roll back to inspector
+        if (RoleConsts.USER_ROLE_INSPECTIOR.equals(roleId)) {
+            inspectionService.rollBackInspectionRecord(taskDto.getRefNo(), applicationDto);
+        }
         //set / get completedTask
         taskDto = completedTask(taskDto);
         broadcastOrganizationDto.setComplateTask(taskDto);
