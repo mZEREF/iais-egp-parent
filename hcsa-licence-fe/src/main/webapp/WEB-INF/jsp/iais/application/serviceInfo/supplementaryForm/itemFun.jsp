@@ -1,6 +1,12 @@
 <script type="text/javascript">
+    $(function () {
+        refreshRemoveBtn();
+        removeBtnEvent();
+        addMoreEvent();
+        checkMandatoryEvent();
+    });
 
-    function initItem() {
+    /*function initItem() {
         $('[data-curr]').each(function (k, v) {
             let $tag = $(v);
             let conditionItemId = $tag.data('conditionItemId');
@@ -11,7 +17,7 @@
             let seq = $tag.data('seq');
             let $conNodes = $('[data-conditionItemId="' + conditionItemId + '"][data-seq="' + seq + '"]');
         });
-    }
+    }*/
 
     function refreshRemoveBtn() {
         let rmv_ary = [];
@@ -28,7 +34,35 @@
     }
 
     var removeBtnEvent = function(){
-        $('.removeBtn[data-addMoreBatchNum] .removeBtn')
+        $('.removeEditDiv[data-addMoreBatchNum] .removeBtn').unbind('click');
+        $('.removeEditDiv[data-addMoreBatchNum] .removeBtn').on('click', function () {
+            let $v = $(this);
+            let $tag = $v.closest('removeEditDiv');
+            let addMoreBatchNum = $tag.data('addMoreBatchNum');
+            let index = $tag.data('seq');
+            $('.removeEditRow [data-addMoreBatchNum="' + addMoreBatchNum + '"][data-seq="' + index + '"]').closest('.removeEditRow').remove();
+            $('[data-addMoreBatchNum="' + addMoreBatchNum + '"][data-seq="' + index + '"]:not(.removeEditDiv)').closest('.item-record').remove();
+            resetAllItemIndex(addMoreBatchNum);
+        });
+    }
+
+    function resetAllItemIndex(batchNum) {
+        $('.removeEditRow [data-addMoreBatchNum="' + addMoreBatchNum + '"]').each(function(index, ele){
+            let $ele = $(ele);
+            $ele.data('seq', index);
+        });
+        let rowAry = [];
+        $('[data-addMoreBatchNum="' + addMoreBatchNum + '"]:not(.removeEditDiv)').closest('.item-record').each(function(){
+            let data = $(this).attr('class');
+            if (!rowAry.rowAry(data)) {
+                rowAry.push(data);
+            }
+        });
+        rowAry.forEach(function(item){
+            $('div[class="' + item + '"]').each(function(index, ele) {
+                resetItem($(ele), index);
+            });
+        });
     }
 
     function resetItemIndex($itemRecords, index) {
@@ -36,48 +70,51 @@
             return;
         }
         $itemRecords.each(function(){
-            let $ele = $(this).find('[data-seq]');
-            if (isEmptyNode($ele)) {
-                return;
-            }
-            let odlIndex = $ele.data('seq');
-            $ele.data('seq', index);
-            let baseName = $ele.data('base');
-            $ele.attr('name', baseName + index);
-            let oldId = $ele.attr('id');
-            if (!isEmpty(oldId)) {
-                let baseId = $ele.data('id');
-                if (!isEmpty(idVal)) {
-                    $ele.attr('id', baseId + index);
-                }
-                let $eleLabel = $('label[for="' + oldId + '"]');
-                if (!isEmptyNode($eleLabel)) {
-                    $eleLabel.attr('for', baseId + index);
-                }
-            }
+            resetItem($(this).find('[data-seq]'), index);
         });
     }
 
+    function resetItem($ele, index) {
+        if (isEmptyNode($ele)) {
+            return;
+        }
+        //let odlIndex = $ele.data('seq');
+        $ele.data('seq', index);
+        let baseName = $ele.data('base');
+        $ele.attr('name', baseName + index);
+        let oldId = $ele.attr('id');
+        if (!isEmpty(oldId)) {
+            let baseId = $ele.data('id');
+            if (!isEmpty(idVal)) {
+                $ele.attr('id', baseId + index);
+            }
+            let $eleLabel = $('label[for="' + oldId + '"]');
+            if (!isEmptyNode($eleLabel)) {
+                $eleLabel.attr('for', baseId + index);
+            }
+        }
+    }
+
     var addMoreEvent = function () {
+        $('.addMoreDiv .addMoreBtn').unbind('click');
         $('.addMoreDiv .addMoreBtn').on('click', function() {
             let $tag = $(this);
-            let addMoreBatchNum = $tag.data('addMoreBatchNum');
-            let $itemRecords = $('[data-addMoreBatchNum="' + conditionItemId + '"][data-seq="0"]').closest('.item-record').clone();
             let oldIndex = parseInt($('input[name="' + addMoreBatchNum + '"]').val());
             let index = oldIndex + 1;
-            $itemRecords.each(function(){
-                let $ele = $(this).find('[data-seq="' + oldIndex + '"]');
-                if (isEmptyNode($ele)) {
-                    return;
-                }
-                $ele.data('seq', index);
-            });
+            let addMoreBatchNum = $tag.data('addMoreBatchNum');
+            let $romveRow = $('.removeEditRow [data-addMoreBatchNum="' + addMoreBatchNum + '"][data-seq="0"]').closest('.removeEditRow').clone();
+            resetItemIndex($romveRow, index);
+            showTag($romveRow);
+            $('.addMoreDiv').before($romveRow);
+            let $itemRecords = $('[data-addMoreBatchNum="' + addMoreBatchNum + '"][data-seq="0"]:not(.removeEditDiv)').closest('.item-record').clone();
+            resetItemIndex($itemRecords, index);
             $('.addMoreDiv').before($itemRecords);
             $('input[name="' + addMoreBatchNum + '"]').val(index);
         });
     }
 
     var checkMandatoryEvent = function() {
+        $('.item-record [data-curr]').unbind('click change');
         $('.item-record [data-curr]').on('click change', function(){
             let $tag = $(this);
             let conditionItemId = $tag.data('conditionItemId');
@@ -112,12 +149,6 @@
                     }
                 });
             }
-        });
-    }
-
-    var checkMandatoryEvent = function() {
-        $('[data-curr]').on('click change', function(){
-
         });
     }
 

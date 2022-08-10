@@ -2190,4 +2190,51 @@ public final class AppDataHelper {
         }
     }
 
+    public static void setSpecialisedData(List<AppPremSpecialisedDto> appPremSpecialisedDtoList,
+            String svcCode, HttpServletRequest request) {
+        if (IaisCommonUtils.isEmpty(appPremSpecialisedDtoList)) {
+            return;
+        }
+        for (AppPremSpecialisedDto specialisedDto : appPremSpecialisedDtoList) {
+            if (!Objects.equals(specialisedDto.getBaseSvcCode(), svcCode)) {
+                continue;
+            }
+            String premisesVal = specialisedDto.getPremisesVal();
+            specialisedDto.setAppPremScopeDtoList(genAppPremScopeDtoList(specialisedDto.getAppPremScopeDtoList(),
+                    premisesVal, "", request));
+            specialisedDto.setAppPremSubSvcRelDtoList(genAppPremSubSvcRelDtoList(specialisedDto.getAppPremSubSvcRelDtoList(),
+                    premisesVal, "", request));
+            specialisedDto.initAllAppPremScopeDtoList();
+            specialisedDto.initAllAppPremSubSvcRelDtoList();
+        }
+    }
+
+    private static List<AppPremSubSvcRelDto> genAppPremSubSvcRelDtoList(List<AppPremSubSvcRelDto> appPremScopeDtoList,
+            String premisesVal, String parentId, HttpServletRequest request) {
+        if (IaisCommonUtils.isEmpty(appPremScopeDtoList)) {
+            return null;
+        }
+        String[] values = ParamUtil.getStrings(request, premisesVal + "_" + parentId + "_service");
+        for (AppPremSubSvcRelDto relDto : appPremScopeDtoList) {
+            relDto.setChecked(StringUtil.isIn(relDto.getSvcId(), values));
+            relDto.setAppPremSubSvcRelDtos(genAppPremSubSvcRelDtoList(relDto.getAppPremSubSvcRelDtos(), premisesVal,
+                    relDto.getSvcId(), request));
+        }
+        return appPremScopeDtoList;
+    }
+
+    private static List<AppPremScopeDto> genAppPremScopeDtoList(List<AppPremScopeDto> appPremScopeDtoList,
+            String premisesVal, String parentId, HttpServletRequest request) {
+        if (IaisCommonUtils.isEmpty(appPremScopeDtoList)) {
+            return null;
+        }
+        String[] values = ParamUtil.getStrings(request, premisesVal + "_" + parentId + "_sub_type");
+        for (AppPremScopeDto scopeDto : appPremScopeDtoList) {
+            scopeDto.setChecked(StringUtil.isIn(scopeDto.getSubTypeId(), values));
+            scopeDto.setAppPremScopeDtos(genAppPremScopeDtoList(scopeDto.getAppPremScopeDtos(), premisesVal,
+                    scopeDto.getSubTypeId(), request));
+        }
+        return appPremScopeDtoList;
+    }
+
 }

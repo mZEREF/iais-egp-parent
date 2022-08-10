@@ -1,21 +1,18 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<c:set var="item" value=""/>
 <c:set var="itemConfigDto" value="${item.itemConfigDto}"/>
 
-
-
 <c:if test="${item.batchStart}">
-    <iais:row>
-        <div class="col-xs-12 text-right removeBtn removeEditDiv" data-addMoreBatchNum="${itemConfigDto.addMoreBatchNum}">
+    <iais:row cssClass="removeEditRow">
+        <div class="col-xs-12 text-right removeEditDiv" data-addMoreBatchNum="${itemConfigDto.addMoreBatchNum}" data-seq="${item.seqNum}">
             <h4 class="text-danger text-right">
                 <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
             </h4>
         </div>
     </iais:row>
 </c:if>
-<iais:row cssClass="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_CHECKBOX? 'form-check':''} form-level-${item.level} item-record">
+<iais:row cssClass="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_CHECKBOX? 'form-check':''} form-level-${item.level} item-record ${itemConfigDto.id}">
     <c:choose>
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_TITLE}">
             <div class="col-xs-12">
