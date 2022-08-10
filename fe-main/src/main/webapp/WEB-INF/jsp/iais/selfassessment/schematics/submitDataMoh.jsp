@@ -3,7 +3,7 @@
     <c:if test="${dataSubARTPrivilege == 1}">
         <div class="form-check progress-step-check" style="width: 65%">
             <input class="form-check-input" id="submitDateMohArt"
-                   type="radio" name="submitDateMohLab" <c:if test="${DsModleSelect=='AR'}">checked</c:if>
+                   type="radio" name="submitDateMohLab"
                    aria-invalid="false">
             <label class="form-check-label" for="submitDateMohArt">
                 <span class="check-circle"></span>
@@ -14,7 +14,7 @@
     <c:if test="${dataSubDPPrivilege == 1}">
         <div class="form-check progress-step-check" style="width: 65%">
             <input class="form-check-input" id="submitDateMohDrp"
-                   type="radio" name="submitDateMohLab" <c:if test="${DsModleSelect=='DP'}">checked</c:if>
+                   type="radio" name="submitDateMohLab"
                    aria-invalid="false">
             <label class="form-check-label" for="submitDateMohDrp">
                 <span class="check-circle"></span>
@@ -25,7 +25,7 @@
     <c:if test="${dataSubLDTPrivilege == 1}">
         <div class="form-check progress-step-check" style="width: 65%">
             <input class="form-check-input" id="submitDateMohLab"
-                   type="radio" name="submitDateMohLab" <c:if test="${DsModleSelect=='LDT'}">checked</c:if>
+                   type="radio" name="submitDateMohLab"
                    aria-invalid="false">
             <label class="form-check-label" for="submitDateMohLab">
                 <span class="check-circle"></span>
@@ -36,7 +36,7 @@
     <c:if test="${dataSubTOPPrivilege == 1}">
         <div class="form-check progress-step-check" style="width: 65%">
             <input class="form-check-input" id="submitDateMohTop"
-                   type="radio" name="submitDateMohLab" <c:if test="${DsModleSelect=='TP'}">checked</c:if>
+                   type="radio" name="submitDateMohLab"
                    aria-invalid="false">
             <label class="form-check-label" for="submitDateMohTop">
                 <span class="check-circle"></span>
@@ -47,7 +47,7 @@
     <c:if test="${dataSubVSSPrivilege == 1}">
         <div class="form-check progress-step-check" style="width: 65%">
             <input class="form-check-input" id="submitDateMohVss"
-                   type="radio" name="submitDateMohLab" <c:if test="${DsModleSelect=='VS'}">checked</c:if>
+                   type="radio" name="submitDateMohLab"
                    aria-invalid="false">
             <label class="form-check-label" for="submitDateMohVss">
                 <span class="check-circle"></span>
