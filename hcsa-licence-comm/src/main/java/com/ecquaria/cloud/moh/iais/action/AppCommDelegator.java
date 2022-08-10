@@ -776,7 +776,7 @@ public abstract class AppCommDelegator {
         // check premises list
         Set<String> finalPremisesType = premisesType;
         appGrpPremisesDtoList = appGrpPremisesDtoList.stream()
-                .filter(dto -> finalPremisesType.contains(dto.getPremisesType()))
+                .filter(dto -> StringUtil.isEmpty(dto.getPremisesType()) || finalPremisesType.contains(dto.getPremisesType()))
                 .collect(Collectors.toList());
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
 
