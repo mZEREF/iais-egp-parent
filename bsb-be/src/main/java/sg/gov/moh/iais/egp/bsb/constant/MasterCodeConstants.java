@@ -106,11 +106,9 @@ public class MasterCodeConstants {
 
     public static final Set<String> COMMON_QUERY_APP_STATUS;
     public static final Set<String> INSPECTION_APP_STATUS;
-    public static final Set<String> UNAVAILABLE_APP_STATUS;
-    public static final Set<String> APPOINTMENT_RESCHEDULE_APP_STATUS;
 
-    // TODO: check these app status
     static {
+        // TODO: check these app status
         Set<String> commonQueryAppStatus = Sets.newLinkedHashSetWithExpectedSize(9);
         // BE don't add 'Draft', because BE DB don't save it
         commonQueryAppStatus.add(APP_STATUS_PEND_DO_SCREENING);
@@ -123,8 +121,7 @@ public class MasterCodeConstants {
         commonQueryAppStatus.add(APP_STATUS_APPROVED);
         COMMON_QUERY_APP_STATUS = Collections.unmodifiableSet(commonQueryAppStatus);
 
-        Set<String> inspectionAppStatus = Sets.newHashSetWithExpectedSize(15);
-        inspectionAppStatus.add(APP_STATUS_PEND_INSPECTION_CERTIFICATION);
+        Set<String> inspectionAppStatus = Sets.newHashSetWithExpectedSize(22);
         inspectionAppStatus.add(APP_STATUS_PEND_INSPECTION_TASK_ASSIGNMENT);
         inspectionAppStatus.add(APP_STATUS_PEND_CHECKLIST_SUBMISSION);
         inspectionAppStatus.add(APP_STATUS_PEND_APPOINTMENT_SCHEDULING);
@@ -148,14 +145,6 @@ public class MasterCodeConstants {
         inspectionAppStatus.add(APP_STATUS_PEND_DO_FOLLOW_UP_ITEM_VERIFICATION);
         inspectionAppStatus.add(APP_STATUS_PEND_AO_FOLLOW_UP_ITEM_VERIFICATION);
         INSPECTION_APP_STATUS = Collections.unmodifiableSet(inspectionAppStatus);
-
-        Set<String> unavailableAppStatus = Sets.newHashSetWithExpectedSize(1);
-        unavailableAppStatus.add(APP_STATUS_REMOVED);
-        UNAVAILABLE_APP_STATUS = Collections.unmodifiableSet(unavailableAppStatus);
-
-        Set<String> rescheduleAppStatus = Sets.newHashSetWithExpectedSize(3);
-        rescheduleAppStatus.add(APP_STATUS_PEND_INSPECTION_READINESS);
-        APPOINTMENT_RESCHEDULE_APP_STATUS = Collections.unmodifiableSet(rescheduleAppStatus);
     }
 
 

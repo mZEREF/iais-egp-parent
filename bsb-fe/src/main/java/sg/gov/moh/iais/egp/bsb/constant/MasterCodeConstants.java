@@ -144,10 +144,7 @@ public class MasterCodeConstants {
     public static final String APP_STATUS_PEND_AO_REPORT_REVIEW                     = "BSBAPST404";
     public static final String APP_STATUS_PEND_AFC_INPUT                            = "BSBAPST405";
 
-    public static final Set<String> COMMON_QUERY_APP_STATUS;
     public static final Set<String> INSPECTION_APP_STATUS;
-    public static final Set<String> UNAVAILABLE_APP_STATUS;
-    public static final Set<String> APPOINTMENT_RESCHEDULE_APP_STATUS;
 
     // not an actual app status, this is a compound status
     public static final String PENDING_MOH                               = "Pending MOH";
@@ -158,22 +155,8 @@ public class MasterCodeConstants {
     public static final Set<String> APPROVED_APP_STATUS;
     public static final Set<String> PENDING_INSPECTION_OR_CERTIFICATION_APP_STATUS;
 
-    // TODO: check these app status
     static {
-        Set<String> commonQueryAppStatus = Sets.newLinkedHashSetWithExpectedSize(9);
-        commonQueryAppStatus.add(APP_STATUS_DRAFT);
-        commonQueryAppStatus.add(APP_STATUS_PEND_DO_SCREENING);
-        commonQueryAppStatus.add(APP_STATUS_PEND_AO_SCREENING);
-        commonQueryAppStatus.add(APP_STATUS_PEND_HM_DECISION);
-        commonQueryAppStatus.add(APP_STATUS_PEND_APPLICANT_CLARIFICATION);
-        commonQueryAppStatus.add(APP_STATUS_PEND_APPLICANT_INPUT);
-        commonQueryAppStatus.add(APP_STATUS_WITHDRAWN);
-        commonQueryAppStatus.add(APP_STATUS_REJECTED);
-        commonQueryAppStatus.add(APP_STATUS_APPROVED);
-        COMMON_QUERY_APP_STATUS = Collections.unmodifiableSet(commonQueryAppStatus);
-
-        Set<String> inspectionAppStatus = Sets.newHashSetWithExpectedSize(15);
-        inspectionAppStatus.add(APP_STATUS_PEND_INSPECTION_CERTIFICATION);
+        Set<String> inspectionAppStatus = Sets.newHashSetWithExpectedSize(22);
         inspectionAppStatus.add(APP_STATUS_PEND_INSPECTION_TASK_ASSIGNMENT);
         inspectionAppStatus.add(APP_STATUS_PEND_CHECKLIST_SUBMISSION);
         inspectionAppStatus.add(APP_STATUS_PEND_APPOINTMENT_SCHEDULING);
@@ -197,14 +180,6 @@ public class MasterCodeConstants {
         inspectionAppStatus.add(APP_STATUS_PEND_DO_FOLLOW_UP_ITEM_VERIFICATION);
         inspectionAppStatus.add(APP_STATUS_PEND_AO_FOLLOW_UP_ITEM_VERIFICATION);
         INSPECTION_APP_STATUS = Collections.unmodifiableSet(inspectionAppStatus);
-
-        Set<String> unavailableAppStatus = Sets.newHashSetWithExpectedSize(1);
-        unavailableAppStatus.add(APP_STATUS_REMOVED);
-        UNAVAILABLE_APP_STATUS = Collections.unmodifiableSet(unavailableAppStatus);
-
-        Set<String> rescheduleAppStatus = Sets.newHashSetWithExpectedSize(3);
-        rescheduleAppStatus.add(APP_STATUS_PEND_INSPECTION_READINESS);
-        APPOINTMENT_RESCHEDULE_APP_STATUS = Collections.unmodifiableSet(rescheduleAppStatus);
 
         Set<String> pendingMohAppStatus = Sets.newHashSetWithExpectedSize(27);
         pendingMohAppStatus.add(APP_STATUS_PEND_DO_SCREENING);
