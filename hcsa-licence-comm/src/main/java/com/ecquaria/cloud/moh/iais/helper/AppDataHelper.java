@@ -1759,7 +1759,7 @@ public final class AppDataHelper {
     }
 
     private static AppSvcPersonnelDto getAppSvcPersonnelDtoByIndexNo(AppSvcRelatedInfoDto appSvcRelatedInfoDto, String indexNo) {
-        if (appSvcRelatedInfoDto != null && !StringUtil.isEmpty(indexNo)) {
+       /* if (appSvcRelatedInfoDto != null && !StringUtil.isEmpty(indexNo)) {
             List<AppSvcPersonnelDto> appSvcPersonnelDtoList = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
             if (!IaisCommonUtils.isEmpty(appSvcPersonnelDtoList)) {
                 for (AppSvcPersonnelDto appSvcPersonnelDto : appSvcPersonnelDtoList) {
@@ -1768,7 +1768,7 @@ public final class AppDataHelper {
                     }
                 }
             }
-        }
+        }*/
         return new AppSvcPersonnelDto();
     }
 

@@ -421,7 +421,7 @@ public class LicenceViewServiceDelegator {
         AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
         List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
         List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtoList = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
-        List<AppSvcPersonnelDto> appSvcPersonnelDtoList = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
+        //List<AppSvcPersonnelDto> appSvcPersonnelDtoList = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
         Set<String> redNo = new HashSet<>();
         List<String> list = new ArrayList<>();
         if (appSvcCgoDtoList != null) {
@@ -430,13 +430,13 @@ public class LicenceViewServiceDelegator {
                 redNo.add(profRegNo);
             }
         }
-        if (appSvcPersonnelDtoList != null) {
+        /*if (appSvcPersonnelDtoList != null) {
             for (AppSvcPersonnelDto appSvcPersonnelDto : appSvcPersonnelDtoList) {
                 if (!StringUtil.isEmpty(appSvcPersonnelDto.getProfRegNo())) {
                     redNo.add(appSvcPersonnelDto.getProfRegNo());
                 }
             }
-        }
+        }*/
         if (appSvcClinicalDirectorDtoList != null) {
             for (AppSvcPrincipalOfficersDto v : appSvcClinicalDirectorDtoList) {
                 if (!StringUtil.isEmpty(v.getProfRegNo())) {
@@ -453,14 +453,14 @@ public class LicenceViewServiceDelegator {
                     redNo.add(appSvcCgoDto.getProfRegNo());
                 }
             }
-            List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList = oldAppSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
+            /*List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList = oldAppSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
             if (oldAppSvcPersonnelDtoList != null) {
                 for (AppSvcPersonnelDto appSvcPersonnelDto : oldAppSvcPersonnelDtoList) {
                     if (!StringUtil.isEmpty(appSvcPersonnelDto.getProfRegNo())) {
                         redNo.add(appSvcPersonnelDto.getProfRegNo());
                     }
                 }
-            }
+            }*/
             List<AppSvcPrincipalOfficersDto> oldAppSvcClinicalDirectorDtoList = oldAppSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
             if (oldAppSvcClinicalDirectorDtoList != null) {
                 for (AppSvcPrincipalOfficersDto v : oldAppSvcClinicalDirectorDtoList) {
@@ -1057,11 +1057,11 @@ public class LicenceViewServiceDelegator {
         oldAppSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(olAppSvcPrincipalOfficersDtoList);
         appSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(appSvcPrincipalOfficersDtoList);
         // Svc Personnel
-        List<AppSvcPersonnelDto> appSvcPersonnelDtoList = IaisCommonUtils.getList(appSvcRelatedInfoDto.getAppSvcPersonnelDtoList());
+        /*List<AppSvcPersonnelDto> appSvcPersonnelDtoList = IaisCommonUtils.getList(appSvcRelatedInfoDto.getAppSvcPersonnelDtoList());
         List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList = IaisCommonUtils.getList(oldAppSvcRelatedInfoDto.getAppSvcPersonnelDtoList());
         appSvcPersonnelDtoList(appSvcPersonnelDtoList, oldAppSvcPersonnelDtoList);
         oldAppSvcRelatedInfoDto.setAppSvcPersonnelDtoList(oldAppSvcPersonnelDtoList);
-        appSvcRelatedInfoDto.setAppSvcPersonnelDtoList(appSvcPersonnelDtoList);
+        appSvcRelatedInfoDto.setAppSvcPersonnelDtoList(appSvcPersonnelDtoList);*/
         // section leader
         List<AppSvcPersonnelDto> appSvcSectionLeaderList = IaisCommonUtils.getList(appSvcRelatedInfoDto.getAppSvcSectionLeaderList());
         List<AppSvcPersonnelDto> oldAppSvcSectionLeaderList = IaisCommonUtils.getList(oldAppSvcRelatedInfoDto.getAppSvcSectionLeaderList());

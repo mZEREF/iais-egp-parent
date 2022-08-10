@@ -434,7 +434,7 @@ public final class AppValidatorHelper {
                     addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
                     break;
                 case HcsaConsts.STEP_SERVICE_PERSONNEL:
-                    List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.getAppSvcPersonnelDtoList();
+                    /*List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.getAppSvcPersonnelDtoList();
                     doValidateSvcPersonnel(errorMap, appSvcPersonnelDtoList, dto.getServiceCode());
                     if (appSvcPersonnelDtoList != null && "Y".equals(prsFlag)) {
                         int i = 0;
@@ -445,7 +445,7 @@ public final class AppValidatorHelper {
                             }
                             i++;
                         }
-                    }
+                    }*/
                     addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
                     break;
                 case HcsaConsts.STEP_PRINCIPAL_OFFICERS: {
@@ -523,8 +523,8 @@ public final class AppValidatorHelper {
             validatePersonMandatoryCount(dto.getAppSvcPrincipalOfficersDtoList(), errorMap,
                     psnType, mandatoryCount, stepDtos, errorList);
         } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL.equals(psnType)) {
-            validatePersonMandatoryCount(dto.getAppSvcPersonnelDtoList(), errorMap,
-                    psnType, mandatoryCount, stepDtos, errorList);
+            /*validatePersonMandatoryCount(dto.getAppSvcPersonnelDtoList(), errorMap,
+                    psnType, mandatoryCount, stepDtos, errorList);*/
         } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)) {
             validatePersonMandatoryCount(dto.getAppSvcCgoDtoList(), errorMap,
                     psnType, mandatoryCount, stepDtos, errorList);

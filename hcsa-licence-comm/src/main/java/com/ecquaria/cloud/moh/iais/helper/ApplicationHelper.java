@@ -2090,6 +2090,7 @@ public final class ApplicationHelper {
                 psnDtoList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
                 break;
             case ApplicationConsts.DUP_FOR_PERSON_SVCPSN:
+
                 List<AppSvcPersonnelDto> spDtos = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
                 if (!IaisCommonUtils.isEmpty(spDtos)) {
                     for (AppSvcPersonnelDto spDto : spDtos) {

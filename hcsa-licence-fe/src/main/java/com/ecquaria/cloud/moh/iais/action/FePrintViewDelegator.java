@@ -151,7 +151,7 @@ public class FePrintViewDelegator {
             List<AppSvcPrincipalOfficersDto> principalOfficersDtos = IaisCommonUtils.genNewArrayList();
             List<AppSvcPrincipalOfficersDto> deputyPrincipalOfficersDtos = IaisCommonUtils.genNewArrayList();
             List<AppSvcPrincipalOfficersDto> medAlertPsnDtos = IaisCommonUtils.genNewArrayList();
-            List<AppSvcPersonnelDto> appSvcPersonnelDtos = IaisCommonUtils.genNewArrayList();
+            //List<AppSvcPersonnelDto> appSvcPersonnelDtos = IaisCommonUtils.genNewArrayList();
             List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos = IaisCommonUtils.genNewArrayList();
             if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
                 for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
@@ -183,10 +183,10 @@ public class FePrintViewDelegator {
                     if(!IaisCommonUtils.isEmpty(appSvcMedAlertPsnDtos)){
                         medAlertPsnDtos.addAll(appSvcMedAlertPsnDtos);
                     }
-                    List<AppSvcPersonnelDto> appSvcPersonnelDtos1 = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
+                    /*List<AppSvcPersonnelDto> appSvcPersonnelDtos1 = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
                     if(!IaisCommonUtils.isEmpty(appSvcPersonnelDtos1)){
                         appSvcPersonnelDtos.addAll(appSvcPersonnelDtos1);
-                    }
+                    }*/
                     List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos1 = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
                     if (!IaisCommonUtils.isEmpty(appSvcClinicalDirectorDtos1)){
                         appSvcClinicalDirectorDtos.addAll(appSvcClinicalDirectorDtos1);

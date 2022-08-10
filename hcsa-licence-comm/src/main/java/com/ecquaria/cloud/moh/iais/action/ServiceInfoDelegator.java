@@ -1185,7 +1185,7 @@ public class ServiceInfoDelegator {
         //reload
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currentSvcId);
-        List<AppSvcPersonnelDto> appSvcPersonnelDtos = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
+        /*List<AppSvcPersonnelDto> appSvcPersonnelDtos = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
         if (appSvcPersonnelDtos != null && !appSvcPersonnelDtos.isEmpty()) {
             if (appSvcPersonnelDtos.size() > mandatory) {
                 mandatory = appSvcPersonnelDtos.size();
@@ -1210,7 +1210,7 @@ public class ServiceInfoDelegator {
                 log.debug(StringUtil.changeForLog("cycle cgo dto to retrieve prs info end ..."));
             }
             ParamUtil.setRequestAttr(bpc.request, "AppSvcPersonnelDtoList", appSvcPersonnelDtos);
-        }
+        }*/
         ParamUtil.setRequestAttr(bpc.request, "ServicePersonnelMandatory", mandatory);
         List<SelectOption> personnelTypeSel = ApplicationHelper.genPersonnelTypeSel(currentSvcCode);
         ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.SERVICEPERSONNELTYPE, personnelTypeSel);
@@ -1239,7 +1239,7 @@ public class ServiceInfoDelegator {
                 return;
             }
         }
-        String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
+       /* String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         String currentSvcCod = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
         boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(RfcConst.EDIT_SERVICE,
@@ -1298,7 +1298,7 @@ public class ServiceInfoDelegator {
         if (isValid && isGetDataFromPage) {
             //remove dirty psn doc info
             removeDirtyPsnDoc(ApplicationConsts.DUP_FOR_PERSON_SVCPSN, bpc.request);
-        }
+        }*/
         log.info(StringUtil.changeForLog("the do doServicePersonnel end ...."));
     }
 

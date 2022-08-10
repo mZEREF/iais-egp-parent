@@ -126,6 +126,10 @@
         </c:if>
 
         premTypeChangeEvent();
+
+        premTypeChangeEvent2();
+
+        premTypeChangeEvent3();
     });
 
     var premTypeChangeEvent = function () {
@@ -137,6 +141,31 @@
             if (oldVal != val) {
                 navTabEvent('specialised');
             }
+        });
+    }
+    var premTypeChangeEvent2 = function () {
+        //premContent oldPremTypeValue
+        $('.premContent .premTypeValue').on('DOMAttrModified', function () {
+            let val = $(this).val();
+            let $premContent = $(this).closest('.premContent');
+            let oldVal = $premContent.find('.oldPremTypeValue').val();
+            if (oldVal != val) {
+                console.info('----2----' + oldVal + '--------' + val + '-----------------');
+            }
+        });
+    }
+
+    var premTypeChangeEvent3 = function () {
+        //premContent oldPremTypeValue
+        $('.premContent .premTypeValue').each(function(k, v){
+            v.addEventListener('DOMAttrModified', function () {
+                let val = $(this).val();
+                let $premContent = $(this).closest('.premContent');
+                let oldVal = $premContent.find('.oldPremTypeValue').val();
+                if (oldVal != val) {
+                    console.info('----3----' + oldVal + '--------' + val + '-----------------');
+                }
+            });
         });
     }
 

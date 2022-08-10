@@ -47,7 +47,6 @@
     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="status">
         <c:set var="index" value="${status.index}" />
         <c:set var="person" value="${personList[index]}"/>
-
         <%@include file="personnelDetail.jsp" %>
     </c:forEach>
 
