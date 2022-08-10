@@ -53,4 +53,7 @@ public interface CessationClient {
 
     @GetMapping(value = "/appeal/app-baseNo",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> getAppByBaseAppNo(@RequestParam("appNo") String appNo);
+
+    @GetMapping(value = "/appeal/application-premise-misc-dto",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppPremiseMiscDto> getAppPremiseMiscDtoListByCon(@RequestParam("corrId") String corrId, @RequestParam("type") String type);
 }

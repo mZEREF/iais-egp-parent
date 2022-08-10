@@ -12,8 +12,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionListDto;
@@ -50,7 +51,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -78,6 +78,7 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
+import com.ecquaria.cloud.moh.iais.service.SelfAssessmentService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.AppGrpPaymentClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
@@ -87,7 +88,6 @@ import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
-import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -156,6 +156,9 @@ public class NewApplicationDelegator extends AppCommDelegator {
 
     @Autowired
     private AppCommService appCommService;
+
+    @Autowired
+    private SelfAssessmentService selfAssessmentService;
 
     /**
      * StartStep: Start
@@ -900,37 +903,35 @@ public class NewApplicationDelegator extends AppCommDelegator {
             ApplicationDto applicationDto = appCommService.getApplicationDtoByAppNo(appNo);
             if (applicationDto != null) {
                 if (ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(applicationDto.getStatus())) {
-                    MsgTemplateDto autoEntity = generateIdClient.getMsgTemplate(
-                            MsgTemplateConstants.MSG_TEMPLATE_APP_RFI_MSG).getEntity();
-                    Map<String, Object> subjectMap = IaisCommonUtils.genNewHashMap();
-                    subjectMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
-                    subjectMap.put("ApplicationNumber", StringUtil.viewHtml(appNo));
-                    String msgSubject = MsgUtil.getTemplateMessageByContent(autoEntity.getTemplateName(), subjectMap);
-                    InterMessageDto interMessageBySubjectLike = appSubmissionService.getInterMessageBySubjectLike(msgSubject.trim(),
-                            MessageConstants.MESSAGE_STATUS_RESPONSE);
-                    if (interMessageBySubjectLike.getId() != null) {
-                        List<AppEditSelectDto> entity = applicationFeClient.getAppEditSelectDtos(applicationDto.getId(),
-                                ApplicationConsts.APPLICATION_EDIT_TYPE_RFI).getEntity();
-                        String url = "";
-                        String s = MaskUtil.maskValue("appNo", applicationDto.getApplicationNo());
-                        if (!entity.isEmpty()) {
-                            boolean rfcFlag = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(
-                                    applicationDto.getApplicationType());
-                            boolean premisesListEdit = entity.get(0).isPremisesListEdit();
-                            if (rfcFlag && premisesListEdit) {
-                                url = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_CALL_BACK_URL_PREMISES_LIST + s;
-                                sendURL(bpc.request, bpc.response, url);
-                                bpc.request.getSession().setAttribute(AppConsts.SESSION_INTER_INBOX_MESSAGE_ID,
-                                        interMessageBySubjectLike.getId());
-                                return;
+                    String applicationMsgNo = getApplicationMsgNo(appNo);
+                    if (StringUtil.isNotEmpty(applicationMsgNo)){
+                        List<InterMessageDto> interMessageDtos = appSubmissionService.getInterMessageByRefNo(applicationMsgNo);
+                        Optional<InterMessageDto> interMessageDtoOptional = interMessageDtos.stream().filter(interMessageDto -> !MessageConstants.MESSAGE_STATUS_RESPONSE.equals(interMessageDto.getStatus())).findFirst();
+                        if (interMessageDtoOptional.isPresent()) {
+                            InterMessageDto interMessageBySubjectLike = interMessageDtoOptional.get();
+                            List<AppEditSelectDto> entity = applicationFeClient.getAppEditSelectDtos(applicationDto.getId(),
+                                    ApplicationConsts.APPLICATION_EDIT_TYPE_RFI).getEntity();
+                            String url = "";
+                            String s = MaskUtil.maskValue("appNo", applicationDto.getApplicationNo());
+                            if (!entity.isEmpty()) {
+                                boolean rfcFlag = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(
+                                        applicationDto.getApplicationType());
+                                boolean premisesListEdit = entity.get(0).isPremisesListEdit();
+                                if (rfcFlag && premisesListEdit) {
+                                    url = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_CALL_BACK_URL_PREMISES_LIST + s;
+                                    sendURL(bpc.request, bpc.response, url);
+                                    bpc.request.getSession().setAttribute(AppConsts.SESSION_INTER_INBOX_MESSAGE_ID,
+                                            interMessageBySubjectLike.getId());
+                                    return;
+                                }
                             }
-                        }
 
-                        url = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_CALL_BACK_URL_NEWAPPLICATION + s;
-                        sendURL(bpc.request, bpc.response, url);
-                        bpc.request.getSession().setAttribute(AppConsts.SESSION_INTER_INBOX_MESSAGE_ID,
-                                interMessageBySubjectLike.getId());
-                        return;
+                            url = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_CALL_BACK_URL_NEWAPPLICATION + s;
+                            sendURL(bpc.request, bpc.response, url);
+                            bpc.request.getSession().setAttribute(AppConsts.SESSION_INTER_INBOX_MESSAGE_ID,
+                                    interMessageBySubjectLike.getId());
+                            return;
+                        }
                     }
                 }
                 /**
@@ -1088,6 +1089,19 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
             }
         }
+    }
+
+    private String getApplicationMsgNo(String appNo) {
+        if (StringUtil.isNotEmpty(appNo)) {
+            AppPremisesCorrelationDto correlation = selfAssessmentService.getCorrelationByAppNo(appNo);
+            if (correlation != null){
+                AppPremiseMiscDto appPremiseMiscDto = cessationClient.getAppPremiseMiscDtoListByCon(correlation.getId(), ApplicationConsts.APPLICATION_RFI_MSG).getEntity();
+                if (appPremiseMiscDto != null){
+                    return  appPremiseMiscDto.getRelateRecId();
+                }
+            }
+        }
+        return null;
     }
 
     private void premiseView(AppSubmissionDto appSubmissionDto, ApplicationDto applicationDto, HttpServletRequest request)

@@ -92,12 +92,12 @@
                                                             </div>
                                                         </iais:row>
                                                         <iais:row>
-                                                            <label class="col-xs-0 col-md-2 control-label col-sm-2">Internal
-                                                                Remarks</label>
+                                                            <label class="col-xs-0 col-md-2 control-label col-sm-2">Internal Remarks <span style="color: red" id="internalRemarkStar"> *</span></label>
                                                             <iais:value width="4000">
                                                             <textarea name="Remarks" cols="60" rows="7"
-                                                                      maxlength="300"
+                                                                      maxlength="300" class="internalRemarks"
                                                             >${insEmailDto.remarks}</textarea>
+                                                            <br/><span id="error_internalRemarks1" class="error-msg" style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
                                                             </iais:value>
                                                         </iais:row>
                                                         <iais:row>
@@ -115,19 +115,7 @@
                                                             </span>
                                                             </iais:value>
                                                         </iais:row>
-                                                        <iais:row id="rollBackToRow">
-                                                            <label class="col-xs-0 col-md-2 control-label col-sm-2">Roll
-                                                                Back To<span class="mandatory">*</span></label>
-                                                            <iais:value width="6">
-                                                                <iais:select name="rollBackTo"
-                                                                             options="rollBackToOptions"
-                                                                             firstOption="Please Select"
-                                                                             needSort="true"/>
-                                                                <span style="font-size: 1.6rem; color: #D22727; display: none"
-                                                                      id="err_rollBackTo"><iais:message
-                                                                        key="GENERAL_ERR0006"/></span>
-                                                            </iais:value>
-                                                        </iais:row>
+                                                        <jsp:include page="/WEB-INF/jsp/iais/inspectionPreTask/rollBackPart.jsp"/>
                                                         <iais:row style="display: none" id="selectReviseNc">
                                                             <label class="col-xs-0 col-md-2  col-sm-2">Need Revise<span
                                                                     class="mandatory">*</span></label>
@@ -192,13 +180,11 @@
 </div>
 <%@include file="/WEB-INF/jsp/iais/inspectionncList/uploadFile.jsp" %>
 
-<iais:confirm msg="INSPE_ACK001" popupOrder="confirmTag"
-              cancelFunc="$('#confirmTag').modal('hide');" cancelBtnCls="btn btn-secondary" cancelBtnDesc="NO"
-              callBack="$('#confirmTag').modal('hide');rollBackSubmit();" yesBtnCls="btn btn-primary" yesBtnDesc="YES"/>
-
 <script type="text/javascript">
     $(document).ready(function () {
-        showRollBackToRow();
+        showRollBackTo();
+        $('#rollBackToLabel').removeClass();
+        $('#rollBackToLabel').addClass('col-xs-0 col-md-2 control-label col-sm-2');
     });
 
     function doPreview() {
@@ -214,12 +200,7 @@
             $("#selectDecisionMsg").show();
             $("#selectDecisionMsgRevise").hide();
         } else if ('REDECI027' === f) {
-            const rollBackTo = $('#rollBackTo').val();
-            if (rollBackTo === null || rollBackTo === undefined || rollBackTo === "") {
-                $('#err_rollBackTo').show();
-            } else {
-                $('#confirmTag').modal('show');
-            }
+            submitRollBack(rollBackSubmit)
         } else {
             $("#selectDecisionMsg").hide();
             if ($('#decision_merge_email option:selected').val() === "REDECI005") {
@@ -252,22 +233,12 @@
         } else {
             $("#selectReviseNc").hide();
         }
-        showRollBackToRow();
+        showRollBackTo();
     }
 
     function rollBackSubmit() {
         showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "send");
-    }
-
-    function showRollBackToRow() {
-        const f = $('#decision_merge_email option:selected').val();
-        const row = $('#rollBackToRow')
-        if ('REDECI027' === f) {
-            row.show();
-        } else {
-            row.hide();
-        }
     }
 </script>
 

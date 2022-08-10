@@ -130,7 +130,7 @@ public class InspecEmailDelegator {
     private static final String INS_EMAIL_DTO="insEmailDto";
     private static final String SUBJECT="subject";
     private static final String APP_VIEW_DTO="applicationViewDto";
-    private static final String ROLL_BACK_OPTIONS="rollBackToOptions";
+    private static final String ROLL_BACK_OPTIONS="rollBackOptions";
     private static final String ROLL_BACK_VALUE_MAP="rollBackValueMap";
 
     public void start(BaseProcessClass bpc){

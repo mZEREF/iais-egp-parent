@@ -134,7 +134,7 @@ public class InspectionMergeSendNcEmailDelegator {
     private static final String MSG_CON="messageContent";
     private static final String APP_VIEW_DTO="applicationViewDto";
     private static final String TD="</td><td>";
-    private static final String ROLLBACK_OPTIONS="rollBackToOptions";
+    private static final String ROLLBACK_OPTIONS="rollBackOptions";
     private static final String ROLLBACK_VALUE_MAP="rollBackValueMap";
 
     public void start(BaseProcessClass bpc){

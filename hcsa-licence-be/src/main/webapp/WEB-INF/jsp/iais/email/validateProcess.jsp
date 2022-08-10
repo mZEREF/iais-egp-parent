@@ -101,30 +101,25 @@
                                                     </iais:value>
                                                 </iais:row>
                                                 <iais:row>
-                                                    <iais:field value="Internal Remarks"/>
+                                                    <label class="col-md-4 control-label">Internal Remarks <span style="color: red" id="internalRemarkStar"> *</span></label>
                                                     <iais:value width="4000">
                                                             <textarea id="Remarks" name="Remarks" cols="60" rows="7"
-                                                                      maxlength="300"
+                                                                      maxlength="300" class="internalRemarks"
                                                                       >${insEmailDto.remarks}</textarea>
                                                         <span style="font-size: 1.6rem; color: #D22727; display: none" id="remarksMsg" >Remarks should not be more than 300 characters.</span>
+                                                        <br/><span id="error_internalRemarks1" class="error-msg" style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
                                                     </iais:value>
                                                 </iais:row>
                                                 <iais:row>
                                                     <iais:field value="Processing Decision" required="true"/>
                                                     <iais:value width="7">
                                                         <iais:select id="decision-validate-email" name="decision"  cssClass="nice-select nextStage" options="appTypeOption" firstOption="Please select"
-                                                                     onchange="javascript:showRollBackToRow();"/>
+                                                                     onchange="javascript:showRollBackTo();"/>
                                                         <span style="font-size: 1.6rem; color: #D22727; display: none" id="selectDecisionMsg" ><iais:message key="GENERAL_ERR0006"/></span>
                                                     </iais:value>
                                                 </iais:row>
 
-                                                <iais:row id="rollBackToRow">
-                                                    <iais:field value="Roll Back To" required="true" id="backToLabel"/>
-                                                    <iais:value width="7">
-                                                        <iais:select name="rollBackTo" options="rollBackToOptions" firstOption="Please Select"/>
-                                                        <span style="font-size: 1.6rem; color: #D22727; display: none" id="err_rollBackTo" ><iais:message key="GENERAL_ERR0006"/></span>
-                                                    </iais:value>
-                                                </iais:row>
+                                                <jsp:include page="/WEB-INF/jsp/iais/inspectionPreTask/rollBackPart.jsp"/>
 
                                                 <c:if test="${ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION ==applicationViewDto.applicationDto.applicationType}">
                                                     <iais:row>
@@ -168,13 +163,9 @@
 </div>
 <%@include file="/WEB-INF/jsp/iais/inspectionncList/uploadFile.jsp" %>
 
-<iais:confirm msg="INSPE_ACK001" popupOrder="confirmTag"
-              cancelFunc="$('#confirmTag').modal('hide');" cancelBtnCls="btn btn-secondary" cancelBtnDesc="NO"
-              callBack="$('#confirmTag').modal('hide');rollBackSubmit();" yesBtnCls="btn btn-primary" yesBtnDesc="YES"/>
-
 <script type="text/javascript">
     $(document).ready(function (){
-        showRollBackToRow();
+        showRollBackTo();
     })
 
     function doSend() {
@@ -192,31 +183,17 @@
             $("#remarksMsg").show();
         }
         if('REDECI027' === f){
-            const rollBackTo = $('#rollBackTo').val();
-            if(rollBackTo === null || rollBackTo === undefined || rollBackTo === ""){
-                $('#err_rollBackTo').show();
-            }else {
-                $('#confirmTag').modal('show');
-            }
-        }else if(f != null && f != ""  &&remark.length<=300){
+            submitRollBack(rollBackSubmit)
+        } else if(f != null && f != ""  &&remark.length<=300){
             showWaiting();
             SOP.Crud.cfxSubmit("mainForm", "send");
         }
+        submitRollBack(rollBackSubmit)
     }
 
     function rollBackSubmit(){
         showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "send");
-    }
-
-    function showRollBackToRow(){
-        const f = $('#decision-validate-email option:selected').val();
-        const row = $('#rollBackToRow')
-        if('REDECI027' === f){
-            row.show();
-        }else {
-            row.hide();
-        }
     }
 </script>
 
