@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOf
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
@@ -2090,14 +2091,13 @@ public final class ApplicationHelper {
                 psnDtoList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
                 break;
             case ApplicationConsts.DUP_FOR_PERSON_SVCPSN:
-
-                List<AppSvcPersonnelDto> spDtos = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
-                if (!IaisCommonUtils.isEmpty(spDtos)) {
-                    for (AppSvcPersonnelDto spDto : spDtos) {
-                        AppSvcPrincipalOfficersDto psnDto = new AppSvcPrincipalOfficersDto();
-                        psnDto.setIndexNo(spDto.getIndexNo());
-                        psnDtoList.add(psnDto);
-                    }
+                SvcPersonnelDto svcPersonnelDto = appSvcRelatedInfoDto.getSvcPersonnelDto();
+                if (svcPersonnelDto != null) {
+                    addSvcPersonnels(svcPersonnelDto.getArPractitionerList(), psnDtoList);
+                    addSvcPersonnels(svcPersonnelDto.getNurseList(), psnDtoList);
+                    addSvcPersonnels(svcPersonnelDto.getEmbryologistList(), psnDtoList);
+                    addSvcPersonnels(svcPersonnelDto.getSpecialList(), psnDtoList);
+                    addSvcPersonnels(svcPersonnelDto.getNormalList(), psnDtoList);
                 }
                 break;
             case ApplicationConsts.DUP_FOR_PERSON_CD:
@@ -2117,6 +2117,16 @@ public final class ApplicationHelper {
                 break;
         }
         return IaisCommonUtils.getList(psnDtoList);
+    }
+
+    private static void addSvcPersonnels(List<AppSvcPersonnelDto> svcPersonnels, List<AppSvcPrincipalOfficersDto> psnDtoList) {
+        if (!IaisCommonUtils.isEmpty(svcPersonnels)) {
+            for (AppSvcPersonnelDto spDto : svcPersonnels) {
+                AppSvcPrincipalOfficersDto psnDto = new AppSvcPrincipalOfficersDto();
+                psnDto.setIndexNo(spDto.getIndexNo());
+                psnDtoList.add(psnDto);
+            }
+        }
     }
 /*
     public static List<DocumentShowDto> initDocumentShowDtoList(AppSvcRelatedInfoDto currSvcInfoDto,
