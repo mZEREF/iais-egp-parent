@@ -243,7 +243,7 @@ public final class AppValidatorHelper {
         }
         // sub licensee (licensee details)
         SubLicenseeDto subLicenseeDto = appSubmissionDto.getSubLicenseeDto();
-        boolean isValid = validateSubLicenseeDto(errorMap, subLicenseeDto, null);
+        boolean isValid = validateSubLicenseeDto(errorMap, subLicenseeDto);
         if (!isValid) {
             errorList.add(HcsaAppConst.SECTION_LICENSEE);
         }
@@ -349,127 +349,140 @@ public final class AppValidatorHelper {
                     .map(HcsaServiceStepSchemeDto::getStepName)
                     .orElse("");
             prevSize = errorMap.size();
-            if (HcsaConsts.STEP_BUSINESS_NAME.equals(currentStep)) {
-                // business name
-                List<AppSvcBusinessDto> appSvcBusinessDtoList = dto.getAppSvcBusinessDtoList();
-                doValidateBusiness(appSvcBusinessDtoList, dto.getApplicationType(), dto.getLicenceId(), errorMap);
-                addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
-            } else if (HcsaConsts.STEP_VEHICLES.equals(currentStep)) {
-                // Vehicles
-                List<String> ids = ApplicationHelper.getRelatedId(dto.getAppId(), dto.getLicenceId(),
-                        dto.getServiceName());
+            switch (currentStep) {
+                case HcsaConsts.STEP_BUSINESS_NAME:
+                    // business name
+                    List<AppSvcBusinessDto> appSvcBusinessDtoList = dto.getAppSvcBusinessDtoList();
+                    doValidateBusiness(appSvcBusinessDtoList, dto.getApplicationType(), dto.getLicenceId(), errorMap);
+                    addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
+                    break;
+                case HcsaConsts.STEP_VEHICLES:
+                    // Vehicles
+                    List<String> ids = ApplicationHelper.getRelatedId(dto.getAppId(), dto.getLicenceId(),
+                            dto.getServiceName());
 
-                List<AppSvcVehicleDto> otherExistedVehicles = getAppCommService().getActiveVehicles(ids);
-                List<AppSvcVehicleDto> appSvcVehicleDtos = IaisCommonUtils.genNewArrayList();
-                if (!IaisCommonUtils.isEmpty(dtos)) {
-                    for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : dtos) {
-                        // Don't add current service vehicles
-                        if (Objects.equals(appSvcRelatedInfoDto.getServiceId(), serviceId)) {
-                            continue;
-                        }
-                        List<AppSvcVehicleDto> appSvcVehicleDtoList = appSvcRelatedInfoDto.getAppSvcVehicleDtoList();
-                        if (!IaisCommonUtils.isEmpty(appSvcVehicleDtoList)) {
-                            appSvcVehicleDtos.addAll(appSvcVehicleDtoList);
+                    List<AppSvcVehicleDto> otherExistedVehicles = getAppCommService().getActiveVehicles(ids);
+                    List<AppSvcVehicleDto> appSvcVehicleDtos = IaisCommonUtils.genNewArrayList();
+                    if (!IaisCommonUtils.isEmpty(dtos)) {
+                        for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : dtos) {
+                            // Don't add current service vehicles
+                            if (Objects.equals(appSvcRelatedInfoDto.getServiceId(), serviceId)) {
+                                continue;
+                            }
+                            List<AppSvcVehicleDto> appSvcVehicleDtoList = appSvcRelatedInfoDto.getAppSvcVehicleDtoList();
+                            if (!IaisCommonUtils.isEmpty(appSvcVehicleDtoList)) {
+                                appSvcVehicleDtos.addAll(appSvcVehicleDtoList);
+                            }
                         }
                     }
-                }
-                new ValidateVehicle().doValidateVehicles(errorMap, appSvcVehicleDtos, dto.getAppSvcVehicleDtoList(),
-                        otherExistedVehicles);
-                addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
-            } else if (HcsaConsts.STEP_CLINICAL_DIRECTOR.equals(currentStep)) {
-                // Clinical Director
-                String currSvcCode = dto.getServiceCode();
-                if (StringUtil.isEmpty(currSvcCode)) {
-                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
-                    currSvcCode = Optional.of(hcsaServiceDto).map(HcsaServiceDto::getSvcCode).orElse("");
-                }
-                List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos = dto.getAppSvcClinicalDirectorDtoList();
-                new ValidateClincalDirector().doValidateClincalDirector(errorMap, dto.getAppSvcClinicalDirectorDtoList(), licPersonMap,
-                        currSvcCode);
-                if (appSvcClinicalDirectorDtos != null && "Y".equals(prsFlag)) {
-                    int i = 0;
-                    for (AppSvcPrincipalOfficersDto person : appSvcClinicalDirectorDtos) {
-                        if (!checkProfRegNo(person.getProfRegNo())) {
-                            errorMap.put("profRegNo" + i, prsError);
-                            break;
-                        }
-                        i++;
+                    new ValidateVehicle().doValidateVehicles(errorMap, appSvcVehicleDtos, dto.getAppSvcVehicleDtoList(),
+                            otherExistedVehicles);
+                    addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
+                    break;
+                case HcsaConsts.STEP_CLINICAL_DIRECTOR:
+                    // Clinical Director
+                    String currSvcCode = dto.getServiceCode();
+                    if (StringUtil.isEmpty(currSvcCode)) {
+                        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+                        currSvcCode = Optional.of(hcsaServiceDto).map(HcsaServiceDto::getSvcCode).orElse("");
                     }
-                }
-                addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
-            } else if (HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS.equals(currentStep)) {
-                Map<String, String> govenMap = IaisCommonUtils.genNewHashMap();
-                List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = dto.getAppSvcCgoDtoList();
-                doAppSvcCgoDto(currentSvcAllPsnConfig, govenMap, appSvcCgoDtoList);
-                if (govenMap.isEmpty()) {
-                    govenMap.putAll(doValidateGovernanceOfficers(appSvcCgoDtoList, licPersonMap, false));
-                }
-                if (appSvcCgoDtoList != null && govenMap.isEmpty() && "Y".equals(prsFlag)) {
-                    int i = 0;
-                    for (AppSvcPrincipalOfficersDto person : appSvcCgoDtoList) {
-                        if (!checkProfRegNo(person.getProfRegNo())) {
-                            govenMap.put("profRegNo" + i, prsError);
-                            break;
+                    List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos = dto.getAppSvcClinicalDirectorDtoList();
+                    new ValidateClincalDirector().doValidateClincalDirector(errorMap, dto.getAppSvcClinicalDirectorDtoList(),
+                            licPersonMap,
+                            currSvcCode);
+                    if (appSvcClinicalDirectorDtos != null && "Y".equals(prsFlag)) {
+                        int i = 0;
+                        for (AppSvcPrincipalOfficersDto person : appSvcClinicalDirectorDtos) {
+                            if (!checkProfRegNo(person.getProfRegNo())) {
+                                errorMap.put("profRegNo" + i, prsError);
+                                break;
+                            }
+                            i++;
                         }
-                        i++;
                     }
-                }
-                if (!govenMap.isEmpty()) {
-                    errorMap.putAll(govenMap);
-                }
-                addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
-            } else if (HcsaConsts.STEP_SECTION_LEADER.equals(currentStep)) {
-                // Section Leader
-                Map<String, String> map = validateSectionLeaders(dto.getAppSvcSectionLeaderList(), dto.getServiceCode());
-                if (!map.isEmpty()) {
-                    errorMap.putAll(map);
-                }
-                addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
-            } else if (HcsaConsts.STEP_CHARGES.equals(currentStep)) {
-                new ValidateCharges().doValidateCharges(errorMap, dto.getAppSvcChargesPageDto());
-                addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
-            } else if (HcsaConsts.STEP_SERVICE_PERSONNEL.equals(currentStep)) {
-                List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.getAppSvcPersonnelDtoList();
-                doValidateSvcPersonnel(errorMap, appSvcPersonnelDtoList, dto.getServiceCode());
-                if (appSvcPersonnelDtoList != null && "Y".equals(prsFlag)) {
-                    int i = 0;
-                    for (AppSvcPersonnelDto person : appSvcPersonnelDtoList) {
-                        if (!checkProfRegNo(person.getProfRegNo())) {
-                            errorMap.put("regnNo" + i, prsError);
-                            break;
+                    addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
+                    break;
+                case HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS:
+                    List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = dto.getAppSvcCgoDtoList();
+                    Map<String, String> govenMap = doValidateGovernanceOfficers(appSvcCgoDtoList, licPersonMap, false);
+                    if (appSvcCgoDtoList != null && govenMap.isEmpty() && "Y".equals(prsFlag)) {
+                        int i = 0;
+                        for (AppSvcPrincipalOfficersDto person : appSvcCgoDtoList) {
+                            if (!checkProfRegNo(person.getProfRegNo())) {
+                                govenMap.put("profRegNo" + i, prsError);
+                                break;
+                            }
+                            i++;
                         }
-                        i++;
                     }
+                    if (!govenMap.isEmpty()) {
+                        errorMap.putAll(govenMap);
+                    }
+                    addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
+                    break;
+                case HcsaConsts.STEP_SECTION_LEADER: {
+                    // Section Leader
+                    Map<String, String> map = validateSectionLeaders(dto.getAppSvcSectionLeaderList(), dto.getServiceCode());
+                    if (!map.isEmpty()) {
+                        errorMap.putAll(map);
+                    }
+                    addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
+                    break;
                 }
-                addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
-            } else if (HcsaConsts.STEP_PRINCIPAL_OFFICERS.equals(currentStep)) {
-                List<AppSvcPrincipalOfficersDto> poList = dto.getAppSvcPrincipalOfficersDtoList();
-                List<AppSvcPrincipalOfficersDto> dpoList = dto.getAppSvcNomineeDtoList();
-                Map<String, String> map = doValidatePoAndDpo(poList, dpoList, dto.getDeputyPoFlag(), licPersonMap,
-                        subLicenseeDto, false);
-                if (!map.isEmpty()) {
-                    errorMap.putAll(map);
+                case HcsaConsts.STEP_CHARGES:
+                    new ValidateCharges().doValidateCharges(errorMap, dto.getAppSvcChargesPageDto());
+                    addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
+                    break;
+                case HcsaConsts.STEP_SERVICE_PERSONNEL:
+                    List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.getAppSvcPersonnelDtoList();
+                    doValidateSvcPersonnel(errorMap, appSvcPersonnelDtoList, dto.getServiceCode());
+                    if (appSvcPersonnelDtoList != null && "Y".equals(prsFlag)) {
+                        int i = 0;
+                        for (AppSvcPersonnelDto person : appSvcPersonnelDtoList) {
+                            if (!checkProfRegNo(person.getProfRegNo())) {
+                                errorMap.put("regnNo" + i, prsError);
+                                break;
+                            }
+                            i++;
+                        }
+                    }
+                    addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
+                    break;
+                case HcsaConsts.STEP_PRINCIPAL_OFFICERS: {
+                    List<AppSvcPrincipalOfficersDto> poList = dto.getAppSvcPrincipalOfficersDtoList();
+                    List<AppSvcPrincipalOfficersDto> dpoList = dto.getAppSvcNomineeDtoList();
+                    Map<String, String> map = doValidatePoAndDpo(poList, dpoList, dto.getDeputyPoFlag(), licPersonMap,
+                            subLicenseeDto, false);
+                    if (!map.isEmpty()) {
+                        errorMap.putAll(map);
+                    }
+                    addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
+                    break;
                 }
-                addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
-            } else if (HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER.equals(currentStep)) {
-                List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderList = dto.getAppSvcKeyAppointmentHolderDtoList();
-                Map<String, String> map = doValidateKeyAppointmentHolder(appSvcKeyAppointmentHolderList,
-                        licPersonMap, false);
-                if (!map.isEmpty()) {
-                    errorMap.putAll(map);
+                case HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER: {
+                    List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderList = dto.getAppSvcKeyAppointmentHolderDtoList();
+                    Map<String, String> map = doValidateKeyAppointmentHolder(appSvcKeyAppointmentHolderList,
+                            licPersonMap, false);
+                    if (!map.isEmpty()) {
+                        errorMap.putAll(map);
+                    }
+                    addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
+                    break;
                 }
-                addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
-            } else if (HcsaConsts.STEP_MEDALERT_PERSON.equals(currentStep)) {
-                List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = dto.getAppSvcMedAlertPersonList();
-                Map<String, String> map = doValidateMedAlertPsn(appSvcMedAlertPersonList, licPersonMap,
-                        dto.getServiceCode());
-                if (!map.isEmpty()) {
-                    errorMap.putAll(map);
+                case HcsaConsts.STEP_MEDALERT_PERSON: {
+                    List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = dto.getAppSvcMedAlertPersonList();
+                    Map<String, String> map = doValidateMedAlertPsn(appSvcMedAlertPersonList, licPersonMap,
+                            dto.getServiceCode());
+                    if (!map.isEmpty()) {
+                        errorMap.putAll(map);
+                    }
+                    addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
+                    break;
                 }
-                addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
-            } else if (HcsaConsts.STEP_DOCUMENTS.equals(currentStep)) {
-                doValidateSvcDocuments(dto.getDocumentShowDtoList(), errorMap);
-                addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
+                case HcsaConsts.STEP_DOCUMENTS:
+                    doValidateSvcDocuments(dto.getDocumentShowDtoList(), errorMap);
+                    addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
+                    break;
             }
         }
         log.info(StringUtil.changeForLog("Error Message in doCheckBox for [" + dto.getServiceCode() + "] : " + errorMap));
@@ -610,55 +623,59 @@ public final class AppValidatorHelper {
                         checkHciName(hciNameKey, hciName, appType, licenceId, errorMap);
                     }
 
-                    if (ApplicationConsts.PREMISES_TYPE_PERMANENT.equals(premiseType)) {
-                        String scdfRefNo = appGrpPremisesDto.getScdfRefNo();
-                        if (!StringUtil.isEmpty(scdfRefNo) && scdfRefNo.length() > 66) {
-                            errorMap.put("scdfRefNo" + i, repLength("Fire Safety & Shelter Bureau Ref. No.", "66"));
-                        }
-                        String certIssuedDtStr = appGrpPremisesDto.getCertIssuedDtStr();
-                        if (!StringUtil.isEmpty(certIssuedDtStr) && !CommonValidator.isDate(certIssuedDtStr)) {
-                            errorMap.put("certIssuedDt" + i, "GENERAL_ERR0033");
-                        }
-                        // Co-Location Services
-                        validateCoLocation(errorMap, i, appGrpPremisesDto.getLocateWtihHcsa(),
-                                appGrpPremisesDto.getLocateWtihNonHcsa(), appGrpPremisesDto.getAppPremNonLicRelationDtos());
-                    } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
-                        String vehicleNo = appGrpPremisesDto.getVehicleNo();
-                        if (appSubmissionDto.getAppSvcRelatedInfoDtoList().size() > 1) {
-                            // GENERAL_ERR0072 - The {type} can't be applied to mutiple services.
-                            errorMap.put("premisesType" + i, MessageUtil.replaceMessage("GENERAL_ERR0072",
-                                    ApplicationConsts.PREMISES_TYPE_CONVEYANCE_SHOW, "type"));
-                        }
-                        AppSvcRelatedInfoDto dto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
-                        List<String> ids = ApplicationHelper.getRelatedId(dto.getAppId(), dto.getLicenceId(),
-                                dto.getServiceName());
-                        List<String> vehicles = getAppCommService().getActiveConveyanceVehicles(ids);
-                        validateVehicleNo(errorMap, i, vehicleNo, distinctVehicleNos, vehicles);
-                        // Co-Location Services
-                        validateCoLocation(errorMap, i, appGrpPremisesDto.getLocateWtihHcsa(),
-                                appGrpPremisesDto.getLocateWtihNonHcsa(), appGrpPremisesDto.getAppPremNonLicRelationDtos());
-                    } else if (ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premiseType)) {
-                        String easMtsUseOnly = appGrpPremisesDto.getEasMtsUseOnly();
-                        String easMtsPubHotline = appGrpPremisesDto.getEasMtsPubHotline();
-                        String email = appGrpPremisesDto.getEasMtsPubEmail();
-                        // "Public Hotline"
-                        if (StringUtil.isEmpty(easMtsPubHotline)) {
-                            if (!"UOT002".equals(easMtsUseOnly)) {
-                                errorMap.put("easMtsPubHotline" + i, MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                    switch (premiseType) {
+                        case ApplicationConsts.PREMISES_TYPE_PERMANENT:
+                            String scdfRefNo = appGrpPremisesDto.getScdfRefNo();
+                            if (!StringUtil.isEmpty(scdfRefNo) && scdfRefNo.length() > 66) {
+                                errorMap.put("scdfRefNo" + i, repLength("Fire Safety & Shelter Bureau Ref. No.", "66"));
                             }
-                        } else if (!easMtsPubHotline.matches("^[6|89][0-9]{7}$")) {
-                            errorMap.put("easMtsPubHotline" + i, MessageUtil.getMessageDesc("GENERAL_ERR0007"));
-                        }
-                        if (StringUtil.isEmpty(email)) {
-                            if (!"UOT002".equals(easMtsUseOnly)) {
-                                errorMap.put("easMtsPubEmail" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
-                                        "Email ", "field"));
+                            String certIssuedDtStr = appGrpPremisesDto.getCertIssuedDtStr();
+                            if (!StringUtil.isEmpty(certIssuedDtStr) && !CommonValidator.isDate(certIssuedDtStr)) {
+                                errorMap.put("certIssuedDt" + i, "GENERAL_ERR0033");
                             }
-                        } else if (email.length() > 320) {
-                            errorMap.put("easMtsPubEmail" + i, repLength("Email", "320"));
-                        } else if (!ValidationUtils.isEmail(email)) {
-                            errorMap.put("easMtsPubEmail" + i, MessageUtil.getMessageDesc("GENERAL_ERR0014"));
-                        }
+                            // Co-Location Services
+                            validateCoLocation(errorMap, i, appGrpPremisesDto.getLocateWtihHcsa(),
+                                    appGrpPremisesDto.getLocateWtihNonHcsa(), appGrpPremisesDto.getAppPremNonLicRelationDtos());
+                            break;
+                        case ApplicationConsts.PREMISES_TYPE_CONVEYANCE:
+                            String vehicleNo = appGrpPremisesDto.getVehicleNo();
+                            if (appSubmissionDto.getAppSvcRelatedInfoDtoList().size() > 1) {
+                                // GENERAL_ERR0072 - The {type} can't be applied to mutiple services.
+                                errorMap.put("premisesType" + i, MessageUtil.replaceMessage("GENERAL_ERR0072",
+                                        ApplicationConsts.PREMISES_TYPE_CONVEYANCE_SHOW, "type"));
+                            }
+                            AppSvcRelatedInfoDto dto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+                            List<String> ids = ApplicationHelper.getRelatedId(dto.getAppId(), dto.getLicenceId(),
+                                    dto.getServiceName());
+                            List<String> vehicles = getAppCommService().getActiveConveyanceVehicles(ids);
+                            validateVehicleNo(errorMap, i, vehicleNo, distinctVehicleNos, vehicles);
+                            // Co-Location Services
+                            validateCoLocation(errorMap, i, appGrpPremisesDto.getLocateWtihHcsa(),
+                                    appGrpPremisesDto.getLocateWtihNonHcsa(), appGrpPremisesDto.getAppPremNonLicRelationDtos());
+                            break;
+                        case ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE:
+                            String easMtsUseOnly = appGrpPremisesDto.getEasMtsUseOnly();
+                            String easMtsPubHotline = appGrpPremisesDto.getEasMtsPubHotline();
+                            String email = appGrpPremisesDto.getEasMtsPubEmail();
+                            // "Public Hotline"
+                            if (StringUtil.isEmpty(easMtsPubHotline)) {
+                                if (!"UOT002".equals(easMtsUseOnly)) {
+                                    errorMap.put("easMtsPubHotline" + i, MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                                }
+                            } else if (!easMtsPubHotline.matches("^[6|89][0-9]{7}$")) {
+                                errorMap.put("easMtsPubHotline" + i, MessageUtil.getMessageDesc("GENERAL_ERR0007"));
+                            }
+                            if (StringUtil.isEmpty(email)) {
+                                if (!"UOT002".equals(easMtsUseOnly)) {
+                                    errorMap.put("easMtsPubEmail" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                            "Email ", "field"));
+                                }
+                            } else if (email.length() > 320) {
+                                errorMap.put("easMtsPubEmail" + i, repLength("Email", "320"));
+                            } else if (!ValidationUtils.isEmail(email)) {
+                                errorMap.put("easMtsPubEmail" + i, MessageUtil.getMessageDesc("GENERAL_ERR0014"));
+                            }
+                            break;
                     }
 
                     Map<String, String> map = validateContactInfo(appGrpPremisesDto, i, floorUnitList, list);
@@ -957,10 +974,9 @@ public final class AppValidatorHelper {
         }*/
         if (addrTypeFlag) {
             String floorNoErr = errorMap.get(floorNoKey);
-            StringBuilder sb = new StringBuilder();
-            sb.append(ApplicationHelper.handleFloorNo(floorNo, floorNoErr)).append(AppConsts.DFT_DELIMITER)
-                    .append(StringUtil.getNonNull(blkNo)).append(AppConsts.DFT_DELIMITER).append(unitNo);
-            floorUnitList.add(sb.toString());
+            String sb = ApplicationHelper.handleFloorNo(floorNo, floorNoErr) + AppConsts.DFT_DELIMITER +
+                    StringUtil.getNonNull(blkNo) + AppConsts.DFT_DELIMITER + unitNo;
+            floorUnitList.add(sb);
         }
 
         String floorErrName = i + "FloorNo";
@@ -1016,10 +1032,9 @@ public final class AppValidatorHelper {
                             floorUnitList.add(floorUnitStr);
                         }
                         String blkNo = appGrpPremisesDto.getBlkNo();
-                        StringBuilder sb = new StringBuilder();
-                        sb.append(ApplicationHelper.handleFloorNo(floorNo, floorNoErr)).append(AppConsts.DFT_DELIMITER)
-                                .append(StringUtil.getNonNull(blkNo)).append(AppConsts.DFT_DELIMITER).append(unitNo);
-                        floorUnitList.add(sb.toString());
+                        String sb = ApplicationHelper.handleFloorNo(floorNo, floorNoErr) + AppConsts.DFT_DELIMITER +
+                                StringUtil.getNonNull(blkNo) + AppConsts.DFT_DELIMITER + unitNo;
+                        floorUnitList.add(sb);
                     }
                 }
                 opIndex++;
@@ -1028,8 +1043,7 @@ public final class AppValidatorHelper {
 
     }
 
-    public static boolean validateSubLicenseeDto(Map<String, String> errorMap, SubLicenseeDto subLicenseeDto,
-            HttpServletRequest request) {
+    public static boolean validateSubLicenseeDto(Map<String, String> errorMap, SubLicenseeDto subLicenseeDto) {
         if (subLicenseeDto == null) {
             if (errorMap != null) {
                 errorMap.put("licenseeType", "Invalid Data");
@@ -1176,42 +1190,6 @@ public final class AppValidatorHelper {
         }
         WebValidationHelper.saveAuditTrailForNoUseResult(errMap);
         return errMap;
-    }
-
-    private static List<String> getOtherScopeChildrenIdList(List<HcsaSvcSubtypeOrSubsumedDto> scopeConfigDtoList) {
-        List<String> otherScopeChildrenList = IaisCommonUtils.genNewArrayList();
-        HcsaSvcSubtypeOrSubsumedDto otherScopeConfigDto = null;
-        if (!IaisCommonUtils.isEmpty(scopeConfigDtoList)) {
-            for (HcsaSvcSubtypeOrSubsumedDto scopeConfigDto : scopeConfigDtoList) {
-                if (HcsaAppConst.SERVICE_SCOPE_LAB_OTHERS.equals(scopeConfigDto.getName())) {
-                    otherScopeConfigDto = scopeConfigDto;
-                    break;
-                }
-            }
-            if (otherScopeConfigDto != null) {
-                List<HcsaSvcSubtypeOrSubsumedDto> otherScopeChildrenDtoList = otherScopeConfigDto.getList();
-                if (!IaisCommonUtils.isEmpty(otherScopeChildrenDtoList)) {
-                    for (HcsaSvcSubtypeOrSubsumedDto otherScopeChildrenDto : otherScopeChildrenDtoList) {
-                        otherScopeChildrenList.add(otherScopeChildrenDto.getId());
-                    }
-                }
-
-            }
-        }
-        return otherScopeChildrenList;
-    }
-
-    private static boolean selectOtherScope(List<AppSvcChckListDto> appSvcChckListDtos) {
-        boolean flag = false;
-        if (!IaisCommonUtils.isEmpty(appSvcChckListDtos)) {
-            for (AppSvcChckListDto appSvcChckListDto : appSvcChckListDtos) {
-                if (HcsaAppConst.SERVICE_SCOPE_LAB_OTHERS.equals(appSvcChckListDto.getChkName())) {
-                    flag = true;
-                    break;
-                }
-            }
-        }
-        return flag;
     }
 
     public static Map<String, String> doValidateGovernanceOfficers(List<AppSvcPrincipalOfficersDto> appSvcCgoList,
@@ -1627,7 +1605,7 @@ public final class AppValidatorHelper {
                     String general_err0041 = repLength("Contact No.", "8");
                     errorMap.put("contactNo" + i, general_err0041);
                 }
-                if (!ContactNo.matches("^[3|6|8|9][0-9]{7}$")) {
+                if (!ContactNo.matches("^[3|689][0-9]{7}$")) {
                     errorMap.put("contactNo" + i, "GENERAL_ERR0007");
                 }
             }
@@ -1755,11 +1733,9 @@ public final class AppValidatorHelper {
             errorMap.put(errNameMap.get("select") + count, emptyErrMsg);
         }
         if (selectAllDay) {
-            if (!isEmpty) {
-                Time time = Time.valueOf(LocalTime.of(0, 0, 0));
-                operationHoursReloadDto.setStartFrom(time);
-                operationHoursReloadDto.setEndTo(time);
-            }
+            Time time = Time.valueOf(LocalTime.of(0, 0, 0));
+            operationHoursReloadDto.setStartFrom(time);
+            operationHoursReloadDto.setEndTo(time);
         } else {
             if (StringUtil.isEmpty(startHH) || StringUtil.isEmpty(startMM)) {
                 errorMap.put(errNameMap.get("start") + count, emptyErrMsg);

@@ -1373,8 +1373,8 @@ public class LicenceApproveBatchjob {
             LicPremisesDto licPremisesDto = new LicPremisesDto();
             licPremisesDto.setPremisesId(premisesId);
             licPremisesDto.setIsPostInspNeeded(isPostInspNeeded);
-            log.info(StringUtil.changeForLog("The BusinessName is-->："+appPremisesCorrelationDto.getBusinessName()));
-            licPremisesDto.setBusinessName(appPremisesCorrelationDto.getBusinessName());
+//            log.info(StringUtil.changeForLog("The BusinessName is-->："+appPremisesCorrelationDto.getBusinessName()));
+//            licPremisesDto.setBusinessName(appPremisesCorrelationDto.getBusinessName());
             if (appPremisesRecommendationDto == null || appPremisesRecommendationDto.getRecomInDate() == null) {
                 licPremisesDto.setIsTcuNeeded(Integer.valueOf(AppConsts.NO));
             } else {

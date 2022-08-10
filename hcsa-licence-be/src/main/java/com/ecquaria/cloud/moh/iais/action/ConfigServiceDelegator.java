@@ -80,7 +80,7 @@ public class ConfigServiceDelegator {
         log.info(StringUtil.changeForLog("the getDropdownSelect premisType is -->:"+premisType));
         log.info(StringUtil.changeForLog("the getDropdownSelect specOrOthers is -->:"+specOrOthers));
         List<SelectOption> selectOptions ;
-        if("SVTP003".equals(specOrOthers)){
+        if(HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(specOrOthers)){
             selectOptions =  (List<SelectOption>)ParamUtil.getSessionAttr(request,"specHcsaServiceOptions");
         }else{
             selectOptions =  (List<SelectOption>)ParamUtil.getSessionAttr(request,"otherHcsaServiceOptions");
@@ -125,9 +125,6 @@ public class ConfigServiceDelegator {
         log.info(StringUtil.changeForLog("confige prepareAddNewService start"));
         bpc.request.getSession().removeAttribute("routingStage");
         preparePage(bpc.request);
-        //todo
-      //  configService.addNewService(bpc.request);
-
         log.info(StringUtil.changeForLog("confige prepareAddNewService  end"));
     }
 
@@ -317,7 +314,7 @@ public class ConfigServiceDelegator {
         hcsaServiceDto.setVersion("1");
         hcsaServiceConfigDto.setHcsaServiceDto(hcsaServiceDto);
 
-        //for HcsaSvcSpePremisesTypeDto and HcsaServiceCategoryDisciplineDto
+        //for HcsaSvcSpePremisesTypeDto and HcsaServiceCategoryDisciplineDto and subservice
         hcsaServiceConfigDto.setHcsaSvcSpePremisesTypeDtos(transferToHcsaSvcSpePremisesTypeDtoAndHcsaServiceCategoryDisciplineDto(hcsaServiceConfigDto));
 
         //for routing stage
@@ -439,6 +436,66 @@ public class ConfigServiceDelegator {
 
     }
 
+    private List<HcsaSvcSpecifiedCorrelationDto>  transferToHcsaSvcSpecifiedCorrelationDto(Map<String,HcsaServiceSubServicePageDto> hcsaServiceSubServicePageDtoMap,
+                                                                                           String premisesType,
+                                                                                           String serviceType,
+                                                                                           HcsaSvcSpePremisesTypeDto hcsaSvcSpePremisesTypeDto){
+        log.info(StringUtil.changeForLog("The transferToHcsaSvcSpecifiedCorrelationDto start ..."));
+        log.info(StringUtil.changeForLog("The transferToHcsaSvcSpecifiedCorrelationDto premisesType -->:"+premisesType));
+        log.info(StringUtil.changeForLog("The transferToHcsaSvcSpecifiedCorrelationDto serviceType -->:"+serviceType));
+        List<HcsaSvcSpecifiedCorrelationDto> hcsaSvcSpecifiedCorrelationDtos = IaisCommonUtils.genNewArrayList();
+        if(hcsaServiceSubServicePageDtoMap != null){
+            HcsaServiceSubServicePageDto hcsaServiceSubServicePageDto =  hcsaServiceSubServicePageDtoMap.get(premisesType);
+            if(HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(serviceType)){
+                hcsaSvcSpePremisesTypeDto.setSpecialSvcSecName(hcsaServiceSubServicePageDto.getSectionHeader());
+            }
+            List<HcsaServiceSubServiceErrorsDto> hcsaServiceSubServiceErrorsDtos = hcsaServiceSubServicePageDto.getHcsaServiceSubServiceErrorsDtos();
+            if(IaisCommonUtils.isNotEmpty(hcsaServiceSubServiceErrorsDtos)){
+                for(HcsaServiceSubServiceErrorsDto hcsaServiceSubServiceErrorsDto : hcsaServiceSubServiceErrorsDtos){
+                    HcsaSvcSpecifiedCorrelationDto hcsaSvcSpecifiedCorrelationDto = new HcsaSvcSpecifiedCorrelationDto();
+                    hcsaSvcSpecifiedCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                    hcsaSvcSpecifiedCorrelationDto.setSubSvcType(serviceType);
+                    hcsaSvcSpecifiedCorrelationDto.setSpecifiedSvcId(hcsaServiceSubServiceErrorsDto.getSubServiceCode());
+                    String level = hcsaServiceSubServiceErrorsDto.getLevel();
+                    if("0".equals(level)){
+                        hcsaSvcSpecifiedCorrelationDtos.add(hcsaSvcSpecifiedCorrelationDto);
+                    }else if("1".equals(level)){
+                        if(IaisCommonUtils.isEmpty(hcsaSvcSpecifiedCorrelationDtos)){
+                            hcsaSvcSpecifiedCorrelationDtos.add(hcsaSvcSpecifiedCorrelationDto);
+                        }else{
+                            HcsaSvcSpecifiedCorrelationDto hcsaSvcSpecifiedCorrelationDto0 =   hcsaSvcSpecifiedCorrelationDtos.get(hcsaSvcSpecifiedCorrelationDtos.size()-1);
+                            List<HcsaSvcSpecifiedCorrelationDto> subHcsaSvcSpecifiedCorrelationDtos = hcsaSvcSpecifiedCorrelationDto0.getSubHcsaSvcSpecifiedCorrelationDtos();
+                            subHcsaSvcSpecifiedCorrelationDtos.add(hcsaSvcSpecifiedCorrelationDto);
+                            hcsaSvcSpecifiedCorrelationDto0.setSubHcsaSvcSpecifiedCorrelationDtos(subHcsaSvcSpecifiedCorrelationDtos);
+                        }
+                    }else{
+                        if(IaisCommonUtils.isEmpty(hcsaSvcSpecifiedCorrelationDtos)){
+                            hcsaSvcSpecifiedCorrelationDtos.add(hcsaSvcSpecifiedCorrelationDto);
+                        }else{
+                            HcsaSvcSpecifiedCorrelationDto hcsaSvcSpecifiedCorrelationDto0 =   hcsaSvcSpecifiedCorrelationDtos.get(hcsaSvcSpecifiedCorrelationDtos.size()-1);
+                            List<HcsaSvcSpecifiedCorrelationDto> subHcsaSvcSpecifiedCorrelationDtos1 = hcsaSvcSpecifiedCorrelationDto0.getSubHcsaSvcSpecifiedCorrelationDtos();
+                            if(IaisCommonUtils.isEmpty(subHcsaSvcSpecifiedCorrelationDtos1)){
+                                subHcsaSvcSpecifiedCorrelationDtos1.add(hcsaSvcSpecifiedCorrelationDto);
+                                hcsaSvcSpecifiedCorrelationDto0.setSubHcsaSvcSpecifiedCorrelationDtos(subHcsaSvcSpecifiedCorrelationDtos1);
+                            }else{
+                                HcsaSvcSpecifiedCorrelationDto hcsaSvcSpecifiedCorrelationDto1 = subHcsaSvcSpecifiedCorrelationDtos1.get(subHcsaSvcSpecifiedCorrelationDtos1.size() -1);
+                                List<HcsaSvcSpecifiedCorrelationDto> subHcsaSvcSpecifiedCorrelationDtos2 =  hcsaSvcSpecifiedCorrelationDto1.getSubHcsaSvcSpecifiedCorrelationDtos();
+                                subHcsaSvcSpecifiedCorrelationDtos2.add(hcsaSvcSpecifiedCorrelationDto);
+                                hcsaSvcSpecifiedCorrelationDto1.setSubHcsaSvcSpecifiedCorrelationDtos(subHcsaSvcSpecifiedCorrelationDtos2);
+                            }
+                        }
+                    }
+                }
+
+            }
+        }else{
+          log.error(StringUtil.changeForLog("The transferToHcsaSvcSpecifiedCorrelationDto hcsaServiceSubServicePageDtoMap is null "));
+        }
+        log.info(StringUtil.changeForLog("The transferToHcsaSvcSpecifiedCorrelationDto end ..."));
+        return hcsaSvcSpecifiedCorrelationDtos;
+    }
+
+
     // transfer HcsaSvcSpePremisesTypeDto and HcsaServiceCategoryDisciplineDto
     private List<HcsaSvcSpePremisesTypeDto> transferToHcsaSvcSpePremisesTypeDtoAndHcsaServiceCategoryDisciplineDto(HcsaServiceConfigDto hcsaServiceConfigDto){
         List<HcsaSvcSpePremisesTypeDto> result = IaisCommonUtils.genNewArrayList();
@@ -446,6 +503,7 @@ public class ConfigServiceDelegator {
         if(premisesTypes != null && premisesTypes.length > 0){
             Map<String,HcsaServiceCategoryDisciplineDto> hcsaServiceCategoryDisciplineDtoMap = hcsaServiceConfigDto.getHcsaServiceCategoryDisciplineDtoMap();
             Map<String,HcsaServiceSubServicePageDto> specHcsaServiceSubServicePageDtoMap = hcsaServiceConfigDto.getSpecHcsaServiceSubServicePageDtoMap();
+            Map<String,HcsaServiceSubServicePageDto> otherHcsaServiceSubServicePageDtoMap = hcsaServiceConfigDto.getOtherHcsaServiceSubServicePageDtoMap();
             for(String premisesType : premisesTypes){
                 //for HcsaSvcSpePremisesTypeDto
                 HcsaSvcSpePremisesTypeDto hcsaSvcSpePremisesTypeDto =  new HcsaSvcSpePremisesTypeDto();
@@ -461,50 +519,15 @@ public class ConfigServiceDelegator {
                 }
 
                 //for specHcsaServiceSubServicePageDtoMap
-                if(specHcsaServiceSubServicePageDtoMap != null){
-                    HcsaServiceSubServicePageDto hcsaServiceSubServicePageDto =  specHcsaServiceSubServicePageDtoMap.get(premisesType);
-                    hcsaSvcSpePremisesTypeDto.setSpecialSvcSecName(hcsaServiceSubServicePageDto.getSectionHeader());
-                    List<HcsaServiceSubServiceErrorsDto> hcsaServiceSubServiceErrorsDtos = hcsaServiceSubServicePageDto.getHcsaServiceSubServiceErrorsDtos();
-                    if(IaisCommonUtils.isNotEmpty(hcsaServiceSubServiceErrorsDtos)){
-                     List<HcsaSvcSpecifiedCorrelationDto> hcsaSvcSpecifiedCorrelationDtos = IaisCommonUtils.genNewArrayList();
-                     for(HcsaServiceSubServiceErrorsDto hcsaServiceSubServiceErrorsDto : hcsaServiceSubServiceErrorsDtos){
-                         HcsaSvcSpecifiedCorrelationDto hcsaSvcSpecifiedCorrelationDto = new HcsaSvcSpecifiedCorrelationDto();
-                         hcsaSvcSpecifiedCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                         hcsaSvcSpecifiedCorrelationDto.setSubSvcType(HcsaConsts.SERVICE_TYPE_SPECIFIED);
-                         hcsaSvcSpecifiedCorrelationDto.setSpecifiedSvcId(hcsaServiceSubServiceErrorsDto.getSubServiceCode());
-                         String level = hcsaServiceSubServiceErrorsDto.getLevel();
-                         if("0".equals(level)){
-                             hcsaSvcSpecifiedCorrelationDtos.add(hcsaSvcSpecifiedCorrelationDto);
-                         }else if("1".equals(level)){
-                             if(IaisCommonUtils.isEmpty(hcsaSvcSpecifiedCorrelationDtos)){
-                                 hcsaSvcSpecifiedCorrelationDtos.add(hcsaSvcSpecifiedCorrelationDto);
-                             }else{
-                                 HcsaSvcSpecifiedCorrelationDto hcsaSvcSpecifiedCorrelationDto0 =   hcsaSvcSpecifiedCorrelationDtos.get(hcsaSvcSpecifiedCorrelationDtos.size()-1);
-                                 List<HcsaSvcSpecifiedCorrelationDto> subHcsaSvcSpecifiedCorrelationDtos = hcsaSvcSpecifiedCorrelationDto0.getSubHcsaSvcSpecifiedCorrelationDtos();
-                                 subHcsaSvcSpecifiedCorrelationDtos.add(hcsaSvcSpecifiedCorrelationDto);
-                                 hcsaSvcSpecifiedCorrelationDto0.setSubHcsaSvcSpecifiedCorrelationDtos(subHcsaSvcSpecifiedCorrelationDtos);
-                             }
-                         }else{
-                             if(IaisCommonUtils.isEmpty(hcsaSvcSpecifiedCorrelationDtos)){
-                                 hcsaSvcSpecifiedCorrelationDtos.add(hcsaSvcSpecifiedCorrelationDto);
-                             }else{
-                                 HcsaSvcSpecifiedCorrelationDto hcsaSvcSpecifiedCorrelationDto0 =   hcsaSvcSpecifiedCorrelationDtos.get(hcsaSvcSpecifiedCorrelationDtos.size()-1);
-                                 List<HcsaSvcSpecifiedCorrelationDto> subHcsaSvcSpecifiedCorrelationDtos1 = hcsaSvcSpecifiedCorrelationDto0.getSubHcsaSvcSpecifiedCorrelationDtos();
-                                 if(IaisCommonUtils.isEmpty(subHcsaSvcSpecifiedCorrelationDtos1)){
-                                     subHcsaSvcSpecifiedCorrelationDtos1.add(hcsaSvcSpecifiedCorrelationDto);
-                                     hcsaSvcSpecifiedCorrelationDto0.setSubHcsaSvcSpecifiedCorrelationDtos(subHcsaSvcSpecifiedCorrelationDtos1);
-                                 }else{
-                                     HcsaSvcSpecifiedCorrelationDto hcsaSvcSpecifiedCorrelationDto1 = subHcsaSvcSpecifiedCorrelationDtos1.get(subHcsaSvcSpecifiedCorrelationDtos1.size() -1);
-                                     List<HcsaSvcSpecifiedCorrelationDto> subHcsaSvcSpecifiedCorrelationDtos2 =  hcsaSvcSpecifiedCorrelationDto1.getSubHcsaSvcSpecifiedCorrelationDtos();
-                                     subHcsaSvcSpecifiedCorrelationDtos2.add(hcsaSvcSpecifiedCorrelationDto);
-                                     hcsaSvcSpecifiedCorrelationDto1.setSubHcsaSvcSpecifiedCorrelationDtos(subHcsaSvcSpecifiedCorrelationDtos2);
-                                 }
-                             }
-                         }
-                     }
-                     hcsaSvcSpePremisesTypeDto.setSpecHcsaSvcSpecifiedCorrelationDtos(hcsaSvcSpecifiedCorrelationDtos);
-                    }
-                }
+                List<HcsaSvcSpecifiedCorrelationDto> specHcsaSvcSpecifiedCorrelationDtos  = transferToHcsaSvcSpecifiedCorrelationDto(specHcsaServiceSubServicePageDtoMap,
+                        premisesType,HcsaConsts.SERVICE_TYPE_SPECIFIED,hcsaSvcSpePremisesTypeDto);
+                hcsaSvcSpePremisesTypeDto.setSpecHcsaSvcSpecifiedCorrelationDtos(specHcsaSvcSpecifiedCorrelationDtos);
+
+                //for specHcsaServiceSubServicePageDtoMap
+                List<HcsaSvcSpecifiedCorrelationDto> otherHcsaSvcSpecifiedCorrelationDtos  = transferToHcsaSvcSpecifiedCorrelationDto(otherHcsaServiceSubServicePageDtoMap,
+                        premisesType,HcsaConsts.SERVICE_TYPE_OTHERS,hcsaSvcSpePremisesTypeDto);
+                hcsaSvcSpePremisesTypeDto.setOtherHcsaSvcSpecifiedCorrelationDtos(otherHcsaSvcSpecifiedCorrelationDtos);
+
                 result.add(hcsaSvcSpePremisesTypeDto);
             }
         }
@@ -530,63 +553,37 @@ public class ConfigServiceDelegator {
 
 
 
-    /*
-    * get page all data
-    * -----------------------
-    * service name ,service code ...
-    * --------------------------
-    * ( NEW APPLICATION ) ; ( REQUEST FOR CHANGE ) ...BUTTON
-    * these info in session
-     *
-    * */
-    private HcsaServiceConfigDto getDateOfHcsaService(HttpServletRequest request)  {
-        HcsaServiceConfigDto hcsaServiceConfigDto = new HcsaServiceConfigDto();
-        //hcsaServiceConfigDto.setBusinessInformation(Boolean.getBoolean(ParamUtil.getString(request,"businessInformation")));
-        hcsaServiceConfigDto = ControllerHelper.get(request,hcsaServiceConfigDto);
+    private Map<String, List<HcsaConfigPageDto>> addRoutingStage(HttpServletRequest request){
+        log.info(StringUtil.changeForLog("The addRoutingStage start ..."));
+        Map<String, List<HcsaConfigPageDto>> hcsaConfigPageDtoMap =   configService.getHcsaConfigPageDto();
+        for(String appType :hcsaConfigPageDtoMap.keySet() ){
+            List<HcsaConfigPageDto> hcsaConfigPageDtos = hcsaConfigPageDtoMap.get(appType);
+            for(HcsaConfigPageDto hcsaConfigPageDto : hcsaConfigPageDtos){
 
-        HcsaServiceDto hcsaServiceDto = new HcsaServiceDto();
-        hcsaServiceDto =  ControllerHelper.get(request,hcsaServiceDto);
+                String isMandatory=  request.getParameter("isMandatory"+ hcsaConfigPageDto.getStageCode()+appType);
+                String canApprove = request.getParameter("canApprove" +  hcsaConfigPageDto.getStageCode()+appType);
+                String routingSchemeName = request.getParameter("routingSchemeName" +  hcsaConfigPageDto.getStageCode()+appType);
+                String manhours = request.getParameter("manhours" +  hcsaConfigPageDto.getStageCode()+appType);
+                hcsaConfigPageDto.setCanApprove(canApprove);
+                hcsaConfigPageDto.setIsMandatory(isMandatory);
+                hcsaConfigPageDto.setRoutingSchemeName(routingSchemeName);
+                hcsaConfigPageDto.setManhours(manhours);
 
-        hcsaServiceConfigDto.setHcsaServiceDto(hcsaServiceDto);
-        if(HcsaConsts.SERVICE_TYPE_OTHERS.equals(hcsaServiceDto.getSvcType())){
-          return hcsaServiceConfigDto;
-        }
-        //for minimum and maximum
-        addSvcPersionnelAndStepConfigsFromPage(hcsaServiceConfigDto, request);
-        //Number of service-related document (for specialised service) to be uploaded
-        addDocumentConfigsFromPage(hcsaServiceConfigDto, request);
-
-        //for routingStages
-        if(HcsaConsts.SERVICE_TYPE_BASE.equals(hcsaServiceDto.getSvcType())){
-            Map<String, List<HcsaConfigPageDto>> hcsaConfigPageDtoMap =   configService.getHcsaConfigPageDto();
-            for(String appType :hcsaConfigPageDtoMap.keySet() ){
-                List<HcsaConfigPageDto> hcsaConfigPageDtos = hcsaConfigPageDtoMap.get(appType);
-                for(HcsaConfigPageDto hcsaConfigPageDto : hcsaConfigPageDtos){
-
-                    String isMandatory=  request.getParameter("isMandatory"+ hcsaConfigPageDto.getStageCode()+appType);
-                    String canApprove = request.getParameter("canApprove" +  hcsaConfigPageDto.getStageCode()+appType);
-                    String routingSchemeName = request.getParameter("routingSchemeName" +  hcsaConfigPageDto.getStageCode()+appType);
-                    String manhours = request.getParameter("manhours" +  hcsaConfigPageDto.getStageCode()+appType);
-                    hcsaConfigPageDto.setCanApprove(canApprove);
-                    hcsaConfigPageDto.setIsMandatory(isMandatory);
-                    hcsaConfigPageDto.setRoutingSchemeName(routingSchemeName);
-                    hcsaConfigPageDto.setManhours(manhours);
-
-                    List<HcsaSvcSpeRoutingSchemeDto> hcsaSvcSpeRoutingSchemeDtos = hcsaConfigPageDto.getHcsaSvcSpeRoutingSchemeDtos();
-                    if(IaisCommonUtils.isNotEmpty(hcsaSvcSpeRoutingSchemeDtos)){
-                        for(HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDto : hcsaSvcSpeRoutingSchemeDtos){
-                            String schemeType=  request.getParameter("schemeType"+ hcsaConfigPageDto.getStageCode()+appType+hcsaSvcSpeRoutingSchemeDto.getInsOder());
-                            hcsaSvcSpeRoutingSchemeDto.setSchemeType(schemeType);
-                        }
+                List<HcsaSvcSpeRoutingSchemeDto> hcsaSvcSpeRoutingSchemeDtos = hcsaConfigPageDto.getHcsaSvcSpeRoutingSchemeDtos();
+                if(IaisCommonUtils.isNotEmpty(hcsaSvcSpeRoutingSchemeDtos)){
+                    for(HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDto : hcsaSvcSpeRoutingSchemeDtos){
+                        String schemeType=  request.getParameter("schemeType"+ hcsaConfigPageDto.getStageCode()+appType+hcsaSvcSpeRoutingSchemeDto.getInsOder());
+                        hcsaSvcSpeRoutingSchemeDto.setSchemeType(schemeType);
                     }
                 }
             }
-            hcsaServiceConfigDto.setHcsaConfigPageDtoMap(hcsaConfigPageDtoMap);
-        }else{
-            hcsaServiceConfigDto.setHcsaConfigPageDtoMap(null);
         }
+        log.info(StringUtil.changeForLog("The addRoutingStage end ..."));
+        return hcsaConfigPageDtoMap;
+    }
 
-        //for HcsaServiceCategoryDisciplineDto  and sub service
+    private void addCategoryDisciplineAndSubService(HttpServletRequest request,HcsaServiceConfigDto hcsaServiceConfigDto){
+        log.info(StringUtil.changeForLog("The addCategoryDisciplineAndSubService start ..."));
         String[] premisesTypes = hcsaServiceConfigDto.getPremisesTypes();
         if(premisesTypes != null && premisesTypes.length > 0){
             Map<String,HcsaServiceCategoryDisciplineDto> hcsaServiceCategoryDisciplineDtoMap = IaisCommonUtils.genNewHashMap();
@@ -601,25 +598,79 @@ public class ConfigServiceDelegator {
                 hcsaServiceCategoryDisciplineDto.setCategoryDisciplines(categoryDisciplines);
                 hcsaServiceCategoryDisciplineDtoMap.put(premisesType,hcsaServiceCategoryDisciplineDto);
                 hcsaServiceConfigDto.setHcsaServiceCategoryDisciplineDtoMap(hcsaServiceCategoryDisciplineDtoMap);
-               //for specHcsaServiceSubServicePageDtoMap
-                HcsaServiceSubServicePageDto specHcsaServiceCategoryDisciplineDto = new HcsaServiceSubServicePageDto();
-                String specSectionHeader = ParamUtil.getString(request,premisesType+"-SVTP003-sectionHeader");
-                String[] specSubServiceCodes = ParamUtil.getStrings(request,premisesType+"-SVTP003-subServiceCodes");
-                String[] specLevels = ParamUtil.getStrings(request,premisesType+"-SVTP003-levels");
-                specHcsaServiceCategoryDisciplineDto.setSectionHeader(specSectionHeader);
-                specHcsaServiceCategoryDisciplineDto.setSubServiceCodes(specSubServiceCodes);
-                specHcsaServiceCategoryDisciplineDto.setLevels(specLevels);
-                specHcsaServiceSubServicePageDtoMap.put(premisesType,specHcsaServiceCategoryDisciplineDto);
+                //for specHcsaServiceSubServicePageDtoMap
+                addSubServiceData(request,premisesType,HcsaConsts.SERVICE_TYPE_SPECIFIED,specHcsaServiceSubServicePageDtoMap);
+                //for otherHcsaServiceSubServicePageDtoMap
+                addSubServiceData(request,premisesType,HcsaConsts.SERVICE_TYPE_OTHERS,otherHcsaServiceSubServicePageDtoMap);
 
             }
             hcsaServiceConfigDto.setHcsaServiceCategoryDisciplineDtoMap(hcsaServiceCategoryDisciplineDtoMap);
             hcsaServiceConfigDto.setSpecHcsaServiceSubServicePageDtoMap(specHcsaServiceSubServicePageDtoMap);
             hcsaServiceConfigDto.setOtherHcsaServiceSubServicePageDtoMap(otherHcsaServiceSubServicePageDtoMap);
 
+        }else{
+            log.error(StringUtil.changeForLog("The premisesTypes is null"));
         }
-        if(HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(hcsaServiceDto.getSvcType())||HcsaConsts.SERVICE_TYPE_BASE.equals(hcsaServiceDto.getSvcType())){
+        log.info(StringUtil.changeForLog("The addCategoryDisciplineAndSubService end ..."));
+    }
+
+    private void addSubServiceData(HttpServletRequest request,String premisesType,String serviceType,Map<String,HcsaServiceSubServicePageDto> hcsaServiceSubServicePageDtoMap){
+        log.info(StringUtil.changeForLog("The addSubServiceData start ..."));
+        log.info(StringUtil.changeForLog("The addSubServiceData premisesType -->:"+premisesType));
+        log.info(StringUtil.changeForLog("The addSubServiceData serviceType -->:"+serviceType));
+        HcsaServiceSubServicePageDto specHcsaServiceCategoryDisciplineDto = new HcsaServiceSubServicePageDto();
+        String specSectionHeader = ParamUtil.getString(request,premisesType+"-"+serviceType+"-sectionHeader");
+        String[] specSubServiceCodes = ParamUtil.getStrings(request,premisesType+"-"+serviceType+"-subServiceCodes");
+        String[] specLevels = ParamUtil.getStrings(request,premisesType+"-"+serviceType+"-levels");
+        specHcsaServiceCategoryDisciplineDto.setSectionHeader(specSectionHeader);
+        specHcsaServiceCategoryDisciplineDto.setSubServiceCodes(specSubServiceCodes);
+        specHcsaServiceCategoryDisciplineDto.setLevels(specLevels);
+        hcsaServiceSubServicePageDtoMap.put(premisesType,specHcsaServiceCategoryDisciplineDto);
+        log.info(StringUtil.changeForLog("The addSubServiceData end ..."));
+    }
+    /*
+    * get page all data
+    * -----------------------
+    * service name ,service code ...
+    * --------------------------
+    * ( NEW APPLICATION ) ; ( REQUEST FOR CHANGE ) ...BUTTON
+    * these info in session
+     *
+    * */
+    private HcsaServiceConfigDto getDateOfHcsaService(HttpServletRequest request)  {
+        log.info(StringUtil.changeForLog("The getDateOfHcsaService start ..."));
+        log.info(StringUtil.changeForLog("The getDateOfHcsaService hcsaServiceConfigDto"));
+        HcsaServiceConfigDto hcsaServiceConfigDto = new HcsaServiceConfigDto();
+        hcsaServiceConfigDto = ControllerHelper.get(request,hcsaServiceConfigDto);
+        hcsaServiceConfigDto.setHcsaConfigPageDtoMap(null);//clear routing
+        log.info(StringUtil.changeForLog("The getDateOfHcsaService hcsaServiceDto"));
+        HcsaServiceDto hcsaServiceDto = new HcsaServiceDto();
+        hcsaServiceDto =  ControllerHelper.get(request,hcsaServiceDto);
+        hcsaServiceConfigDto.setHcsaServiceDto(hcsaServiceDto);
+        log.info(StringUtil.changeForLog("The getDateOfHcsaService hcsaServiceDto.getSvcType() is -->:"+hcsaServiceDto.getSvcType()));
+        if(HcsaConsts.SERVICE_TYPE_OTHERS.equals(hcsaServiceDto.getSvcType())){
+          return hcsaServiceConfigDto;
+        }
+
+        //for minimum and maximum
+        addSvcPersionnelAndStepConfigsFromPage(hcsaServiceConfigDto, request);
+        //Number of service-related document (for specialised service) to be uploaded
+        addDocumentConfigsFromPage(hcsaServiceConfigDto, request);
+        if(HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(hcsaServiceDto.getSvcType())){
             return hcsaServiceConfigDto;
         }
+
+        //for routingStages
+        Map<String, List<HcsaConfigPageDto>> hcsaConfigPageDtoMap = addRoutingStage(request);
+        hcsaServiceConfigDto.setHcsaConfigPageDtoMap(hcsaConfigPageDtoMap);
+        //for HcsaServiceCategoryDisciplineDto  and sub service
+        addCategoryDisciplineAndSubService(request,hcsaServiceConfigDto);
+
+        if(HcsaConsts.SERVICE_TYPE_BASE.equals(hcsaServiceDto.getSvcType())){
+            return hcsaServiceConfigDto;
+        }
+        log.info(StringUtil.changeForLog("The getDateOfHcsaService end ..."));
+
 
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = configService.getHcsaSvcRoutingStageDtos();
         //if service type is sub must to chose
@@ -946,18 +997,14 @@ public class ConfigServiceDelegator {
     }
 
     private void addDocumentConfigsFromPage(HcsaServiceConfigDto hcsaServiceConfigDto, HttpServletRequest request) {
+        log.info(StringUtil.changeForLog("The addDocumentConfigsFromPage start ..."));
         List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = hcsaServiceConfigDto.getHcsaServiceStepSchemeDtos();
         List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = IaisCommonUtils.genNewArrayList();
-        //List<HcsaSvcDocConfigDto> hcsaSvcDocConfig = IaisCommonUtils.genNewArrayList();
         String serviceDocSize = request.getParameter("serviceDocSize");
         String[] descriptionServiceDocs = request.getParameterValues("descriptionServiceDoc");
         String[] parameterValues = request.getParameterValues("selectDocPerson");
         String[] serviceDocMandatories = request.getParameterValues("serviceDocMandatory");
         String[] serviceDocPremises = request.getParameterValues("serviceDocPremises");
-
-        //String numberfields = request.getParameter("Numberfields");
-
-        //request.setAttribute("serviceDocSize", numberDocument);
 
         if (descriptionServiceDocs != null) {
             for (int i = 0; i < descriptionServiceDocs.length; i++) {
@@ -980,49 +1027,13 @@ public class ConfigServiceDelegator {
                 hcsaSvcDocConfigDto.setDupForPrem(serviceDocPremises[i]);
 
                 hcsaSvcDocConfigDtos.add(hcsaSvcDocConfigDto);
-               // hcsaSvcDocConfig.add(hcsaSvcDocConfigDto);
             }
 
             addStepSchemeDto(true, HcsaConsts.STEP_DOCUMENTS, HcsaConsts.DOCUMENTS, hcsaServiceStepSchemeDtos);
         }
         hcsaServiceConfigDto.setServiceDocSize(serviceDocSize);
         hcsaServiceConfigDto.setHcsaSvcDocConfigDtos(hcsaSvcDocConfigDtos);
-       // request.setAttribute("serviceDoc", hcsaSvcDocConfigDtos);
-
-
-        /*request.setAttribute("comDocSize", numberfields);
-        String[] descriptionCommDocs = request.getParameterValues("descriptionCommDoc");
-        List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtoList = IaisCommonUtils.genNewArrayList();
-        String[] commDocMandatory = request.getParameterValues("commDocMandatory");
-        String[] commDocPremises = request.getParameterValues("commDocPremises");
-        if (descriptionCommDocs != null) {
-            for (int i = 0; i < descriptionCommDocs.length; i++) {
-                HcsaSvcDocConfigDto hcsaSvcDocConfigDto = new HcsaSvcDocConfigDto();
-                hcsaSvcDocConfigDto.setDocTitle(descriptionCommDocs[i]);
-                hcsaSvcDocConfigDto.setDocDesc(descriptionCommDocs[i]);
-                hcsaSvcDocConfigDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                hcsaSvcDocConfigDto.setDispOrder(i);
-                if (String.valueOf(0).equals(commDocMandatory[i])) {
-                    hcsaSvcDocConfigDto.setIsMandatory(Boolean.FALSE);
-                } else if (String.valueOf(1).equals(commDocMandatory[i])) {
-                    hcsaSvcDocConfigDto.setIsMandatory(Boolean.TRUE);
-                }
-                if (String.valueOf(0).equals(commDocPremises[i])) {
-                    hcsaSvcDocConfigDto.setDupForPrem(String.valueOf(0));
-                } else if (String.valueOf(1).equals(commDocPremises[i])) {
-                    hcsaSvcDocConfigDto.setDupForPrem(String.valueOf(1));
-                }
-               *//* if(!StringUtil.isEmpty(commDocIds[i])){
-                    hcsaSvcDocConfigDto.setId(commDocIds[i]);
-                }*//*
-                hcsaSvcDocConfig.add(hcsaSvcDocConfigDto);
-                hcsaSvcDocConfigDtoList.add(hcsaSvcDocConfigDto);
-            }
-        }
-        request.setAttribute("comDoc", hcsaSvcDocConfigDtoList);
-        hcsaServiceConfigDto.setHcsaSvcDocConfigDtos(hcsaSvcDocConfig);
-        hcsaServiceConfigDto.setComDocSize(numberDocument);
-        hcsaServiceConfigDto.setServiceDocSize(numberfields);*/
+        log.info(StringUtil.changeForLog("The addDocumentConfigsFromPage end ..."));
     }
 
     private void addSvcPersionnelAndStepConfigsFromPage(HcsaServiceConfigDto hcsaServiceConfigDto, HttpServletRequest request) {
@@ -1105,10 +1116,6 @@ public class ConfigServiceDelegator {
         List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = IaisCommonUtils.genNewArrayList();
         //for step
         if(HcsaConsts.SERVICE_TYPE_BASE.equals(serviceType)){
-            //String businessName = request.getParameter("business-name");
-//            request.setAttribute("businessName", businessName);
-//            String pageName = request.getParameter("pageName");
-//            request.setAttribute("pageName", pageName);
             // step
            // List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = hcsaServiceConfigDto.getHcsaSvcSubtypeOrSubsumedDtos();
             addStepSchemeDto(isNeed(vehicles), HcsaConsts.STEP_VEHICLES, HcsaConsts.VEHICLES, hcsaServiceStepSchemeDtos);
@@ -1135,7 +1142,6 @@ public class ConfigServiceDelegator {
 
         hcsaServiceConfigDto.setHcsaSvcPersonnelDtos(hcsaSvcPersonnelDtos);
         hcsaServiceConfigDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
-       // request.setAttribute("hcsaServiceStepSchemeDtos", hcsaServiceStepSchemeDtos);
         log.info(StringUtil.changeForLog("The addSvcStepConfigsFromPage end ..."));
     }
 

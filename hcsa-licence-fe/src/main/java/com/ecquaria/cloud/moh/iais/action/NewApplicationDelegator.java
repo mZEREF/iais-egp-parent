@@ -735,7 +735,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
         }
         appSubmissionDto.setMaxFileIndex(maxFileIndex);
         //set psn dropdown
-        setPsnDroTo(appSubmissionDto, bpc);
+        //setPsnDroTo(appSubmissionDto, bpc);
         appSubmissionDto = appSubmissionService.doSaveDraft(appSubmissionDto);
         if ("exitSaveDraft".equals(crud_action_additional)) {
             jumpYeMian(bpc.request, bpc.response);
@@ -1484,12 +1484,12 @@ public class NewApplicationDelegator extends AppCommDelegator {
         super.prepareJump(bpc);
     }
 
-    private void setPsnDroTo(AppSubmissionDto appSubmissionDto, BaseProcessClass bpc) {
+    /*private void setPsnDroTo(AppSubmissionDto appSubmissionDto, BaseProcessClass bpc) {
         Map<String, AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(
                 bpc.request, HcsaAppConst.PERSONSELECTMAP);
         String personMapStr = JsonUtil.parseToJson(personMap);
         appSubmissionDto.setDropDownPsnMapStr(personMapStr);
-    }
+    }*/
 
 }
 

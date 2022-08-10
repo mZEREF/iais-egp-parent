@@ -1290,6 +1290,7 @@ public final class ApplicationHelper {
                 syncPsnDto(appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList(), personMap, svcCode);
                 syncPsnDto(appSvcRelatedInfoDto.getAppSvcCgoDtoList(), personMap, svcCode);
                 syncPsnDto(appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList(), personMap, svcCode);
+                syncPsnDto(appSvcRelatedInfoDto.getAppSvcNomineeDtoList(), personMap, svcCode);
                 syncPsnDto(appSvcRelatedInfoDto.getAppSvcMedAlertPersonList(), personMap, svcCode);
                 syncPsnDto(appSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList(), personMap, svcCode);
             }
@@ -2177,7 +2178,7 @@ public final class ApplicationHelper {
         List<HcsaServiceDto> hcsaServiceDtoList = getServiceConfigsFormApp(appSubmissionDto);
         initAppPremSpecialisedDtoList(appSubmissionDto, hcsaServiceDtoList, true);
     }
-    
+
     public static List<AppPremSpecialisedDto> initAppPremSpecialisedDtoList(AppSubmissionDto appSubmissionDto,
             List<HcsaServiceDto> hcsaServiceDtoList) {
         List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
@@ -2290,10 +2291,10 @@ public final class ApplicationHelper {
         if (!init && IaisCommonUtils.isNotEmpty(currSvcInfoDto.getDocumentShowDtoList())) {
             return currSvcInfoDto.getDocumentShowDtoList();
         }
-        List<AppSvcDocDto> appSvcDocDtoLit = currSvcInfoDto.getAppSvcDocDtoLit();
+        /*List<AppSvcDocDto> appSvcDocDtoLit = currSvcInfoDto.getAppSvcDocDtoLit();
         if (appSvcDocDtoLit == null || appSvcDocDtoLit.isEmpty()) {
             return IaisCommonUtils.genNewArrayList();
-        }
+        }*/
         List<DocumentShowDto> documentShowDtos = genDocumentShowDtoList(addBaseSvc(appPremSpecialisedDtoList), currSvcInfoDto);
         currSvcInfoDto.setDocumentShowDtoList(documentShowDtos);
         return documentShowDtos;
@@ -2305,6 +2306,9 @@ public final class ApplicationHelper {
         if (!IaisCommonUtils.isEmpty(appPremSpecialisedDtoList) && currSvcInfoDto != null) {
             ConfigCommService configCommService = getConfigCommService();
             for (AppPremSpecialisedDto appPremSpecialisedDto : appPremSpecialisedDtoList) {
+                if (!Objects.equals(appPremSpecialisedDto.getBaseSvcCode(), currSvcInfoDto.getServiceCode())) {
+                    continue;
+                }
                 DocumentShowDto docShowDto = new DocumentShowDto();
                 docShowDto.setAppGrpPremisesDto(appPremSpecialisedDto);
                 List<DocSectionDto> docSectionDtoList = IaisCommonUtils.genNewArrayList();

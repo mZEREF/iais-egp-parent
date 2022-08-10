@@ -2,8 +2,9 @@ package com.ecquaria.cloud.moh.iais.constant;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.google.common.collect.Maps;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -16,10 +17,16 @@ import java.util.Map;
 public class ServiceConfigConstant {
 
     public static final String[] SERVICE_CODE ={HcsaConsts.SERVICE_TYPE_BASE,HcsaConsts.SERVICE_TYPE_OTHERS,HcsaConsts.SERVICE_TYPE_SPECIFIED};
-    public static Map<String, Integer> SEQ_MAP = new HashMap<>();
-    public static Map<String, String> NAME_MAP = new HashMap<>();
+    public static Map<String, Integer> SEQ_MAP = IaisCommonUtils.genNewHashMap();
+    public static Map<String, String> NAME_MAP = IaisCommonUtils.genNewHashMap();
+    public static Map<String, String> PREMISES_TYPE_MAP = Maps.newLinkedHashMap();
 
     static {
+        PREMISES_TYPE_MAP.put(ApplicationConsts.PREMISES_TYPE_PERMANENT,"Permanent Premises");
+        PREMISES_TYPE_MAP.put(ApplicationConsts.PREMISES_TYPE_CONVEYANCE,"Conveyance");
+        PREMISES_TYPE_MAP.put(ApplicationConsts.PREMISES_TYPE_MOBILE,"Mobile Delivery");
+        PREMISES_TYPE_MAP.put(ApplicationConsts.PREMISES_TYPE_REMOTE,"Remote Delivery");
+
         SEQ_MAP.put(HcsaConsts.STEP_BUSINESS_NAME, 1);
         SEQ_MAP.put(HcsaConsts.STEP_VEHICLES, 2);
         SEQ_MAP.put(HcsaConsts.STEP_CLINICAL_DIRECTOR, 3);

@@ -1232,14 +1232,14 @@ public class ConfigServiceImpl implements ConfigService {
     public List<String> getType(){
         List<String> list=IaisCommonUtils.genNewArrayList();
         list.add(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-        list.add(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
+      /*  list.add(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
         list.add(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL) ;
         list.add(ApplicationConsts.APPLICATION_TYPE_CESSATION) ;
         list.add(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         list.add(ApplicationConsts.APPLICATION_TYPE_APPEAL);
         //post audit insApplicationConsts
         list.add(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK);
-        list.add(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION);
+        list.add(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION);*/
         return list;
     }
 

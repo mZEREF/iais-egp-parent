@@ -27,10 +27,10 @@
                                 <c:choose>
                                     <c:when test="${AppSubmissionDto.amountStr=='$0'}">
                                         <input type="hidden" value="false" name="noNeedPayment">
-                                        <%@include file="../newApplication/noNeedPayment.jsp.jsp"%>
+                                        <%@include file="section/noNeedPayment.jsp"%>
                                     </c:when>
                                     <c:otherwise>
-                                        <%@include file="paymentMethod.jsp"%>
+                                        <%@include file="section/paymentMethod.jsp"%>
                                     </c:otherwise>
                                 </c:choose>
 

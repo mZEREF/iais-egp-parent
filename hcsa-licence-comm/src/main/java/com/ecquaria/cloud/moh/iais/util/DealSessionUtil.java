@@ -280,6 +280,8 @@ public class DealSessionUtil {
                     personMap = ApplicationHelper.initSetPsnIntoSelMap(personMap,
                             appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList(), svcCode);
                     personMap = ApplicationHelper.initSetPsnIntoSelMap(personMap,
+                            appSvcRelatedInfoDto.getAppSvcNomineeDtoList(), svcCode);
+                    personMap = ApplicationHelper.initSetPsnIntoSelMap(personMap,
                             appSvcRelatedInfoDto.getAppSvcMedAlertPersonList(), svcCode);
                     personMap = ApplicationHelper.initSetPsnIntoSelMap(personMap,
                             appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList(), svcCode);

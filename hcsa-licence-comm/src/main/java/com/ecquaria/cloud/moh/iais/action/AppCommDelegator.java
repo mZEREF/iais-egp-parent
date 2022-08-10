@@ -631,7 +631,7 @@ public abstract class AppCommDelegator {
         // valiation
         String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         if (!StringUtil.isIn(actionValue, new String[]{"saveDraft", "back"})) {
-            AppValidatorHelper.validateSubLicenseeDto(errorMap, subLicenseeDto, bpc.request);
+            AppValidatorHelper.validateSubLicenseeDto(errorMap, subLicenseeDto);
         }
         HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(HcsaAppConst.CO_MAP);
         if (!errorMap.isEmpty()) {
@@ -735,6 +735,7 @@ public abstract class AppCommDelegator {
         log.info(StringUtil.changeForLog("the do preparePremises start ...."));
         ApplicationHelper.setTimeList(bpc.request);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         //premise select select options
         ApplicationHelper.setPremSelect(bpc.request);
         //get svcCode to get svcId
@@ -744,7 +745,7 @@ public abstract class AppCommDelegator {
         Set<String> premisesType = IaisCommonUtils.genNewHashSet();
         boolean readOnly = ApplicationHelper.readonlyPremises(appSubmissionDto);
         if (readOnly) {
-            AppGrpPremisesDto appGrpPremisesDto = appSubmissionDto.getAppGrpPremisesDtoList().get(0);
+            AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(0);
             premisesType.add(appGrpPremisesDto.getPremisesType());
         } else {
             List<HcsaServiceDto> rfiHcsaService = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, "rfiHcsaService");
@@ -764,14 +765,20 @@ public abstract class AppCommDelegator {
             }
         }
         //TODO Test
-        if (!StringUtil.isIn(ApplicationConsts.PREMISES_TYPE_REMOTE, premisesType)) {
+        /*if (!StringUtil.isIn(ApplicationConsts.PREMISES_TYPE_REMOTE, premisesType)) {
             premisesType.add(ApplicationConsts.PREMISES_TYPE_REMOTE);
         }
         if (!StringUtil.isIn(ApplicationConsts.PREMISES_TYPE_MOBILE, premisesType)) {
             premisesType.add(ApplicationConsts.PREMISES_TYPE_MOBILE);
-        }
+        }*/
         ParamUtil.setSessionAttr(bpc.request, PREMISESTYPE, (Serializable) sortPremisesTypes(premisesType));
         ParamUtil.setRequestAttr(bpc.request, "readOnly", readOnly);
+        // check premises list
+        Set<String> finalPremisesType = premisesType;
+        appGrpPremisesDtoList = appGrpPremisesDtoList.stream()
+                .filter(dto -> finalPremisesType.contains(dto.getPremisesType()))
+                .collect(Collectors.toList());
+        appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
 
         int baseSvcCount = 0;
         if (hcsaServiceDtoList != null) {
@@ -2121,7 +2128,7 @@ public abstract class AppCommDelegator {
         RfcHelper.setRiskToDto(appSubmissionDto);
 
         //set psn dropdown
-        setPsnDroTo(appSubmissionDto, bpc);
+        //setPsnDroTo(appSubmissionDto, bpc);
         //rfi select control
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
@@ -2235,12 +2242,12 @@ public abstract class AppCommDelegator {
         return ApplicationHelper.getAppSubmissionDto(request);
     }
 
-    private void setPsnDroTo(AppSubmissionDto appSubmissionDto, BaseProcessClass bpc) {
+    /*private void setPsnDroTo(AppSubmissionDto appSubmissionDto, BaseProcessClass bpc) {
         Map<String, AppSvcPrincipalOfficersDto> personMap =
                 (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, HcsaAppConst.PERSONSELECTMAP);
         String personMapStr = JsonUtil.parseToJson(personMap);
         appSubmissionDto.setDropDownPsnMapStr(personMapStr);
-    }
+    }*/
 
     /**
      * StartStep: PrepareErrorAck
