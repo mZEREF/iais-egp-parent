@@ -46,7 +46,7 @@ public interface InspectionClient {
     InspectionChecklistDto getSavedInspectionChecklist(@RequestParam("appId") String appId);
 
     @GetMapping(value = "/checklist/config", produces = MediaType.APPLICATION_JSON_VALUE)
-    ChecklistConfigDto getMaxVersionChecklistConfig(@RequestParam("appId") String appId,
+    ChecklistConfigDto getMaxVersionChecklistConfig(@RequestParam("insAppId") String insAppId,
                                                     @RequestParam("type") String type);
 
     @GetMapping(value = "/checklist/config/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
