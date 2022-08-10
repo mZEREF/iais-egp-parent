@@ -676,6 +676,7 @@ public final class AppDataHelper {
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request,currentSvcId);
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
         String provideTop = ParamUtil.getString(request,"provideTop");
+        appSvcOtherInfoDto.setProvideTop(provideTop);
         String topType = ParamUtil.getString(request,"topType");
         appSvcOtherInfoTopDtos.setTopType(topType);
         String hasConsuAttendCourse = ParamUtil.getString(request,"hasConsuAttendCourse");
