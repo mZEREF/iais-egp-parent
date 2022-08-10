@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.googlecode.jmapper.annotations.JMap;
 import lombok.Data;
+import sg.gov.moh.iais.egp.bsb.constant.Stage;
 
 import java.io.Serializable;
 
@@ -27,4 +28,7 @@ public class AppBasicInfo implements Serializable {
 
     @JMap
     private String status;
+
+    @JMap
+    private Stage stage;
 }
