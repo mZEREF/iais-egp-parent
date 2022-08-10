@@ -5,6 +5,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.privilege.PrivilegeConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
@@ -24,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TransferInOutS
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TreatmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssTreatmentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
@@ -54,7 +56,9 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -156,6 +160,14 @@ public class MohDsActionDelegator {
             DataSubmissionHelper.setCurrentArDataSubmission(arSuper, bpc.request);
         } else if (DataSubmissionConsts.DS_DRP.equals(dsType)) {
             DpSuperDataSubmissionDto dpSuper = dpDataSubmissionService.getDpSuperDataSubmissionDto(submissionNo);
+            Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
+            PremisesDto premisesDto = dpSuper.getPremisesDto();
+            if (premisesDto != null) {
+                stringStringMap.put(premisesDto.getHciCode(), premisesDto.getPremiseLabel());
+            }
+            List<SelectOption> sourseList = DataSubmissionHelper.genOptions(stringStringMap);
+            ParamUtil.setSessionAttr(bpc.request,"hspSelectList",(Serializable) sourseList);
+
             if("DP_TP002".equals(dpSuper.getSubmissionType())){
                 DrugPrescribedDispensedDto drugPrescribedDispensedDto=dpSuper.getDrugPrescribedDispensedDto();
                 DrugSubmissionDto drugSubmissionDto=drugPrescribedDispensedDto.getDrugSubmission();
