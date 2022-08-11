@@ -221,22 +221,24 @@ public class MohDsActionDelegator {
                 if(doctorInfoDto!=null){
                     ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(doctorInfoDto.getDoctorReignNo());
                     DoctorInformationDto doctorInformationDto=docInfoService.getDoctorInformationDtoByConds(doctorInfoDto.getDoctorReignNo(),"ELIS");
-
-                    if(TOP_DOCTOR_INFO_FROM_PRS.equals(doctorInfoDto.getDoctorSource()) || TOP_DOCTOR_INFO_USER_NEW_REGISTER.equals(doctorInfoDto.getDoctorSource())){
-                        TerminationOfPregnancyDto terminationOfPregnancyDto=topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
-                        TerminationDto terminationDto=terminationOfPregnancyDto.getTerminationDto();
-                        topSuperDataSubmissionDto.setDoctorInformationDto(doctorInfoDto);
+                    TerminationOfPregnancyDto terminationOfPregnancyDto=topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
+                    TerminationDto terminationDto=terminationOfPregnancyDto.getTerminationDto();
+                    if(professionalResponseDto!=null&&("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()))){
                         terminationDto.setTopDoctorInformations("true");
+                    }else {
+                        terminationDto.setTopDoctorInformations("false");
+                    }
+                    if(TOP_DOCTOR_INFO_FROM_PRS.equals(doctorInfoDto.getDoctorSource()) || TOP_DOCTOR_INFO_USER_NEW_REGISTER.equals(doctorInfoDto.getDoctorSource())){
+                        terminationDto.setDoctorInformationPE("false");
+                        topSuperDataSubmissionDto.setDoctorInformationDto(doctorInfoDto);
                         terminationDto.setDoctorRegnNo(doctorInfoDto.getDoctorReignNo());
                         if(professionalResponseDto!=null&&doctorInformationDto!=null){
-                            ParamUtil.setSessionAttr(bpc.request, "DoctorELISAndPrs",true);
+                            ParamUtil.setRequestAttr(bpc.request, "DoctorELISAndPrs",true);
                         }else {
-                            ParamUtil.setSessionAttr(bpc.request, "DoctorELISAndPrs",false);
+                            ParamUtil.setRequestAttr(bpc.request, "DoctorELISAndPrs",false);
                         }
                     }else if(TOP_DOCTOR_INFO_FROM_ELIS.equals(doctorInfoDto.getDoctorSource())){
-                        TerminationOfPregnancyDto terminationOfPregnancyDto=topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
-                        TerminationDto terminationDto=terminationOfPregnancyDto.getTerminationDto();
-                        terminationDto.setTopDoctorInformations("false");
+                        terminationDto.setDoctorInformationPE("true");
                         terminationDto.setDoctorRegnNo(doctorInfoDto.getDoctorReignNo());
                         terminationDto.setDoctorName(doctorInfoDto.getName());
                         terminationDto.setSpecialty(String.valueOf(doctorInfoDto.getSpeciality()).replaceAll("(?:\\[|null|\\]| +)", ""));
@@ -244,7 +246,7 @@ public class MohDsActionDelegator {
                         terminationDto.setQualification(String.valueOf(doctorInfoDto.getQualification()).replaceAll("(?:\\[|null|\\]| +)", ""));
                     }
                 }else {
-                    ParamUtil.setSessionAttr(bpc.request, "DoctorELISAndPrs",false);
+                    ParamUtil.setRequestAttr(bpc.request, "DoctorELISAndPrs",false);
                 }
             }
             DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);

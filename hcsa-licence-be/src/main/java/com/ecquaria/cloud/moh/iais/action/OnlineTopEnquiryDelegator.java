@@ -361,18 +361,22 @@ public class OnlineTopEnquiryDelegator {
                 if(doctorInfoDto!=null){
                     ProfessionalResponseDto professionalResponseDto=assistedReproductionService.retrievePrsInfo(doctorInfoDto.getDoctorReignNo());
                     DoctorInformationDto doctorInformationDtoELIS=assistedReproductionClient.getDoctorInformationDtoByConds(doctorInfoDto.getDoctorReignNo(),"ELIS").getEntity();
-
+                    if(professionalResponseDto!=null&&("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()))){
+                        terminationDto.setTopDoctorInformations("true");
+                    }else {
+                        terminationDto.setTopDoctorInformations("false");
+                    }
                     if("TOPP".equals(doctorInfoDto.getDoctorSource()) || "TOPT".equals(doctorInfoDto.getDoctorSource())){
                         topInfo.setDoctorInformationDto(doctorInfoDto);
-                        terminationDto.setTopDoctorInformations("true");
+                        terminationDto.setDoctorInformationPE("false");
                         terminationDto.setDoctorRegnNo(doctorInfoDto.getDoctorReignNo());
                         if(professionalResponseDto!=null&&doctorInformationDtoELIS!=null){
-                            ParamUtil.setSessionAttr(request, "DoctorELISAndPrs",true);
+                            ParamUtil.setRequestAttr(request, "DoctorELISAndPrs",true);
                         }else {
-                            ParamUtil.setSessionAttr(request, "DoctorELISAndPrs",false);
+                            ParamUtil.setRequestAttr(request, "DoctorELISAndPrs",false);
                         }
                     }else if("TOPE".equals(doctorInfoDto.getDoctorSource())){
-                        terminationDto.setTopDoctorInformations("false");
+                        terminationDto.setDoctorInformationPE("true");
                         terminationDto.setDoctorRegnNo(doctorInfoDto.getDoctorReignNo());
                         terminationDto.setDoctorName(doctorInfoDto.getName());
                         terminationDto.setSpecialty(String.valueOf(doctorInfoDto.getSpeciality()).replaceAll("(?:\\[|null|\\]| +)", ""));
@@ -380,7 +384,7 @@ public class OnlineTopEnquiryDelegator {
                         terminationDto.setQualification(String.valueOf(doctorInfoDto.getQualification()).replaceAll("(?:\\[|null|\\]| +)", ""));
                     }
                 }else {
-                    ParamUtil.setSessionAttr(bpc.request, "DoctorELISAndPrs",false);
+                    ParamUtil.setRequestAttr(bpc.request, "DoctorELISAndPrs",false);
                 }
             }
         }
