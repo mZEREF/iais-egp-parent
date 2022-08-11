@@ -32,15 +32,14 @@ import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionServic
 import com.ecquaria.cloud.moh.iais.service.datasubmission.LdtDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * ArWithdrawalDelegator
@@ -306,6 +305,7 @@ public class ArWithdrawalDelegator {
                 break;
             case DataSubmissionConsts.DS_DRP:
                 List<DpSuperDataSubmissionDto> addDpWithdrawnDtoList= (List<DpSuperDataSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "addWithdrawnDtoList");
+                List<DpSuperDataSubmissionDto> toBeList = IaisCommonUtils.genNewArrayList();
                 for (DpSuperDataSubmissionDto dpSuper:addDpWithdrawnDtoList
                      ) {
                     DsWithdrawCorrelationDto dsWithdrawCorrelationDto2=new DsWithdrawCorrelationDto();
@@ -315,12 +315,13 @@ public class ArWithdrawalDelegator {
                     dpSuper.getDataSubmissionDto().setAppType(DataSubmissionConsts.DS_APP_TYPE_WITHDRAW);
                     dpSuper.getDataSubmissionDto().setStatus(DataSubmissionConsts.DS_STATUS_WITHDRAW);
                     dpSuper.getCycleDto().setStatus(DataSubmissionConsts.DS_STATUS_WITHDRAW);
-                    dpSuper =dpDataSubmissionService.saveDpSuperDataSubmissionDto(dpSuper);
-                    try {
-                        dpDataSubmissionService.saveDpSuperDataSubmissionDtoToBE(dpSuper);
-                    } catch (Exception e) {
-                        log.error(StringUtil.changeForLog("The Eic saveDpSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
-                    }
+                    dpSuper = dpDataSubmissionService.saveDpSuperDataSubmissionDto(dpSuper);
+                    toBeList.add(dpSuper);
+                }
+                try {
+                    dpDataSubmissionService.saveDpSuperDataSubmissionDtoToBE(toBeList);
+                } catch (Exception e) {
+                    log.error(StringUtil.changeForLog("The Eic saveDpSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
                 }
                 break;
             case DataSubmissionConsts.DS_VSS:

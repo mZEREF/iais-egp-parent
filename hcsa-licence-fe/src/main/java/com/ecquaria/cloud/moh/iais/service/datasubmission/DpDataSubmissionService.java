@@ -1,15 +1,13 @@
 package com.ecquaria.cloud.moh.iais.service.datasubmission;
 
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugMedicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugPrescribedDispensedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @Description DpDataSubmissionService
@@ -27,7 +25,7 @@ public interface DpDataSubmissionService {
 
     DpSuperDataSubmissionDto saveDpSuperDataSubmissionDto(DpSuperDataSubmissionDto dpSuperDataSubmissionDto);
 
-    DpSuperDataSubmissionDto saveDpSuperDataSubmissionDtoToBE(DpSuperDataSubmissionDto dpSuperDataSubmissionDto);
+    List<DpSuperDataSubmissionDto> saveDpSuperDataSubmissionDtoToBE(List<DpSuperDataSubmissionDto> dpSuperDataSubmissionDto);
 
     void updateDataSubmissionDraftStatus(String draftId, String status);
 

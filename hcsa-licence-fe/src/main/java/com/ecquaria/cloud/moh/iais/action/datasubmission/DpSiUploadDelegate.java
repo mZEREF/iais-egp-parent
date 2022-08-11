@@ -544,13 +544,9 @@ public class DpSiUploadDelegate {
             DpSuperDataSubmissionDto dpNew=dpDataSubmissionService.saveDpSuperDataSubmissionDto(dp);
             dpSuperLists.add(dpNew);
         }
-        List<DpSuperDataSubmissionDto> dpSuperListBe=IaisCommonUtils.genNewArrayList();
+        List<DpSuperDataSubmissionDto> dpSuperListBe = IaisCommonUtils.genNewArrayList();
         try {
-            for (DpSuperDataSubmissionDto dp:dpSuperLists
-            ) {
-                DpSuperDataSubmissionDto dpNew=dpDataSubmissionService.saveDpSuperDataSubmissionDtoToBE(dp);
-                dpSuperListBe.add(dpNew);
-            }
+            dpSuperListBe = dpDataSubmissionService.saveDpSuperDataSubmissionDtoToBE(dpSuperLists);
         } catch (Exception e) {
             log.error(StringUtil.changeForLog("The Eic saveArSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
         }

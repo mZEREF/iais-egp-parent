@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
@@ -11,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugPrescribed
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
@@ -24,12 +26,11 @@ import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @Description DpDataSubmissionServiceImpl
@@ -94,16 +95,25 @@ public class DpDataSubmissionServiceImpl implements DpDataSubmissionService {
         return dpFeClient.saveDpSuperDataSubmissionDto(dpSuperDataSubmissionDto).getEntity();
     }
 
-    public DpSuperDataSubmissionDto saveBeArSuperDataSubmissionDto(DpSuperDataSubmissionDto dpSuperDataSubmissionDto) {
-        return feEicGatewayClient.saveBeDpSuperDataSubmissionDto(dpSuperDataSubmissionDto).getEntity();
+    public void saveBeArSuperDataSubmissionDto(List<DpSuperDataSubmissionDto> dpSuperDataSubmissionDto) {
+        feEicGatewayClient.saveBeDpSuperDataSubmissionDto(dpSuperDataSubmissionDto).getEntity();
     }
 
     @Override
-    public DpSuperDataSubmissionDto saveDpSuperDataSubmissionDtoToBE(DpSuperDataSubmissionDto dpSuperDataSubmissionDto) {
+    public List<DpSuperDataSubmissionDto> saveDpSuperDataSubmissionDtoToBE(List<DpSuperDataSubmissionDto> dpSuperDataSubmissionDtos) {
         log.info(StringUtil.changeForLog(" the saveArSuperDataSubmissionDtoToBE start ..."));
-        dpSuperDataSubmissionDto.setFe(false);
-        DataSubmissionDto dataSubmission = dpSuperDataSubmissionDto.getDataSubmissionDto();
+        if (IaisCommonUtils.isEmpty(dpSuperDataSubmissionDtos)) {
+            return dpSuperDataSubmissionDtos;
+        }
+
+        for (DpSuperDataSubmissionDto dpSuperDataSubmissionDto : dpSuperDataSubmissionDtos) {
+            dpSuperDataSubmissionDto.setFe(false);
+        }
+        DataSubmissionDto dataSubmission = dpSuperDataSubmissionDtos.get(0).getDataSubmissionDto();
         String refNo = dataSubmission.getSubmissionNo() + dataSubmission.getVersion();
+        if (dataSubmission.getStatus().equals(DataSubmissionConsts.DS_STATUS_WITHDRAW)){
+            refNo += dataSubmission.getStatus();
+        }
         log.info(StringUtil.changeForLog(" the saveArSuperDataSubmissionDtoToBE refNo is -->:" + refNo));
         EicRequestTrackingDto eicRequestTrackingDto = licEicClient.getPendingRecordByReferenceNumber(refNo).getEntity();
         if (eicRequestTrackingDto != null) {
@@ -112,7 +122,7 @@ public class DpDataSubmissionServiceImpl implements DpDataSubmissionService {
             eicRequestTrackingDto.setLastActionAt(now);
             eicRequestTrackingDto.setProcessNum(eicRequestTrackingDto.getProcessNum() + 1);
             try {
-                dpSuperDataSubmissionDto = saveBeArSuperDataSubmissionDto(dpSuperDataSubmissionDto);
+                saveBeArSuperDataSubmissionDto(dpSuperDataSubmissionDtos);
                 eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
                 licEicClient.saveEicTrack(eicRequestTrackingDto);
             } catch (Throwable e) {
@@ -124,10 +134,7 @@ public class DpDataSubmissionServiceImpl implements DpDataSubmissionService {
         }
         log.info(StringUtil.changeForLog(" the saveArSuperDataSubmissionDtoToBE end ..."));
 
-
-
-
-        return dpSuperDataSubmissionDto;
+        return dpSuperDataSubmissionDtos;
     }
 
     @Override

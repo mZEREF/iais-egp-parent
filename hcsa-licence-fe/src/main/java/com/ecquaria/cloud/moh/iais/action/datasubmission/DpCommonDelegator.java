@@ -312,7 +312,9 @@ public abstract class DpCommonDelegator {
                     drugSubmissionDto.setDoctorInformations("true");
                 }
             }
-            dpSuperDataSubmissionDto = dpDataSubmissionService.saveDpSuperDataSubmissionDtoToBE(dpSuperDataSubmissionDto);
+            List<DpSuperDataSubmissionDto> beList = IaisCommonUtils.genNewArrayList(1);
+            beList.add(dpSuperDataSubmissionDto);
+            dpSuperDataSubmissionDto = dpDataSubmissionService.saveDpSuperDataSubmissionDtoToBE(beList);
         } catch (Exception e) {
             log.error(StringUtil.changeForLog("The Eic saveDpSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
         }
