@@ -9,7 +9,32 @@
         border-spacing: 0;
         background-color: transparent;
     }
+
+    .multi-select-button {
+        display: inline-block;
+        font-size: 1.6rem;
+        padding: 4px 225px 4px 15px;
+        min-width: 100%;
+        /* max-height: 22px;
+         max-width: 20px;*/
+        white-space: normal;
+        overflow-y: auto;
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+        vertical-align: -0.5em;
+        background: #efefef;
+        /* Old browsers */
+        background: -moz-linear-gradient(left, #efefef 0%, white 100%);
+        /* FF3.6-15 */
+        background: -webkit-linear-gradient(left, #efefef 0%, white 100%);
+        /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(to right, #efefef 0%, white 100%);
+        border: 1px solid #6c6c6c;
+        border-radius: 16px;
+        cursor: default;
+    }
 </style>
+
 <form class="" method="post" id="dataForm" action=<%=process.runtime.continueURL()%>>
     <%-- validation --%>
     <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
