@@ -7,13 +7,46 @@ import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocSecDetailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.application.SpecialServiceSectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremScopeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPsnEditDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoTopDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoTopPersonDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSpecialServiceInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSuplmFormDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSuplmGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSuplmItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.RegistrationDto;
+import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.*;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ReflectionUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -27,9 +60,20 @@ import sop.util.DateUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.APPSUBMISSIONDTO;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURRENTSERVICEID;
@@ -1585,6 +1629,155 @@ public final class AppDataHelper {
         return person;
     }
 
+    public static List<AppSvcSpecialServiceInfoDto> getAppSvcSpecialServiceInfoList(HttpServletRequest request, List<AppSvcSpecialServiceInfoDto> appPremSpecialisedDtoList, String appType) {
+        List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = IaisCommonUtils.genNewArrayList();
+        if (!IaisCommonUtils.isEmpty(appPremSpecialisedDtoList)) {
+            String prefix="";
+            int i = 0;
+            for (AppSvcSpecialServiceInfoDto appSvcSpecialServiceInfoDto : appPremSpecialisedDtoList) {
+                AppSvcSpecialServiceInfoDto serviceInfoDto=new AppSvcSpecialServiceInfoDto();
+                serviceInfoDto.setAppSvcSpecialServiceInfoDto(appSvcSpecialServiceInfoDto);
+                int j=0;
+                List<SpecialServiceSectionDto> specialServiceSectionDtoList=IaisCommonUtils.genNewArrayList();
+                for (SpecialServiceSectionDto specialServiceSectionDto : appSvcSpecialServiceInfoDto.getSpecialServiceSectionDtoList()) {
+                    SpecialServiceSectionDto serviceSectionDto=new SpecialServiceSectionDto();
+                    serviceSectionDto.setSpecialServiceSectionDto(specialServiceSectionDto);
+
+                    List<AppSvcPersonnelDto> appSvcDirectorDtoList=IaisCommonUtils.genNewArrayList();
+                    List<AppSvcPersonnelDto> appSvcChargedNurseDtoList=IaisCommonUtils.genNewArrayList();
+                    int diLength=ParamUtil.getInt(request,prefix+i+j+"DirectorDtoListLength");
+                    int nuLength=ParamUtil.getInt(request,prefix+i+j+"NurseDtoListLength");
+
+                    for(int x=0;x<diLength;x++){
+                        AppSvcPersonnelDto appSvcPersonnelDto=getAppSvcPersonnelDto(request,new AppSvcPersonnelDto(),prefix+i+j+"dir",x,appType);
+                        appSvcDirectorDtoList.add(appSvcPersonnelDto);
+                    }
+                    for(int x=0;x<nuLength;x++){
+                        AppSvcPersonnelDto appSvcPersonnelDto=getAppSvcPersonnelDto(request,new AppSvcPersonnelDto(),prefix+i+j+"nur",x,appType);
+                        appSvcChargedNurseDtoList.add(appSvcPersonnelDto);
+                    }
+                    serviceSectionDto.setAppSvcDirectorDtoList(appSvcDirectorDtoList);
+                    serviceSectionDto.setAppSvcChargedNurseDtoList(appSvcChargedNurseDtoList);
+                    specialServiceSectionDtoList.add(serviceSectionDto);
+                    j++;
+                }
+                serviceInfoDto.setSpecialServiceSectionDtoList(specialServiceSectionDtoList);
+                serviceInfoDto.setInit(true);
+                appSvcSpecialServiceInfoList.add(serviceInfoDto);
+                i++;
+            }
+        }
+        return appSvcSpecialServiceInfoList;
+    }
+
+    public static AppSvcPersonnelDto getAppSvcPersonnelDto(HttpServletRequest request, AppSvcPersonnelDto appSvcPersonnelDto, String prefix,int i, String personnelType) {
+        String salutation = ParamUtil.getString(request, prefix+"salutation" + i);
+        String name = ParamUtil.getString(request, prefix+"name" + i);
+        String designation = ParamUtil.getString(request, prefix+"designation" + i);
+        String professionBoard = ParamUtil.getString(request, prefix+"professionBoard" + i);
+        String professionType = ParamUtil.getString(request, prefix+"professionType" + i);
+        String profRegNo = ParamUtil.getString(request, prefix+"profRegNo" + i);
+        String typeOfCurrRegi = ParamUtil.getString(request, prefix+"typeOfCurrRegi" + i);
+        String currRegiDate = ParamUtil.getString(request, prefix+"currRegiDate" + i);
+        String praCerEndDate = ParamUtil.getString(request, prefix+"praCerEndDate" + i);
+        String typeOfRegister = ParamUtil.getString(request, prefix+"typeOfRegister" + i);
+        String specialityOther = ParamUtil.getString(request, prefix+"specialityOther" + i);
+        String specialtyGetDate = ParamUtil.getString(request, prefix+"specialtyGetDate" + i);
+        String bclsExpiryDate = ParamUtil.getString(request, prefix+"bclsExpiryDate" + i);
+        String cprExpiryDate = ParamUtil.getString(request, prefix+"cprExpiryDate" + i);
+        String qualification = ParamUtil.getString(request, prefix+"qualification" + i);
+        String wrkExpYear = ParamUtil.getString(request, prefix+"wrkExpYear" + i);
+        String numberSupervision = ParamUtil.getString(request, prefix+"numberSupervision" + i);
+        String locateWtihHcsa = ParamUtil.getString(request, prefix+"locateWtihHcsa" + i);
+        String otherDesignation = ParamUtil.getString(request, prefix+"otherDesignation" + i);
+        String indexNo = ParamUtil.getString(request, prefix+"indexNo" + i);
+        String subSpeciality = ParamUtil.getString(request, prefix+"subSpeciality" + i);
+        String speciality = ParamUtil.getString(request, prefix+"speciality" + i);
+        if (!StringUtil.isEmpty(indexNo)) {
+            appSvcPersonnelDto.setIndexNo(indexNo);
+        } else {
+            appSvcPersonnelDto.setIndexNo(UUID.randomUUID().toString());
+        }
+        appSvcPersonnelDto.setPersonnelType(personnelType);
+        appSvcPersonnelDto.setOtherDesignation(otherDesignation);
+        appSvcPersonnelDto.setSubSpeciality(subSpeciality);
+        appSvcPersonnelDto.setSpeciality(speciality);
+        appSvcPersonnelDto.setSalutation(salutation);
+        appSvcPersonnelDto.setName(name);
+        appSvcPersonnelDto.setQualification(qualification);
+        appSvcPersonnelDto.setWrkExpYear(wrkExpYear);
+        appSvcPersonnelDto.setNumberSupervision(numberSupervision);
+        appSvcPersonnelDto.setLocateWtihHcsa(locateWtihHcsa);
+        appSvcPersonnelDto.setDesignation(designation);
+        appSvcPersonnelDto.setProfessionBoard(professionBoard);
+        appSvcPersonnelDto.setProfessionType(professionType);
+        appSvcPersonnelDto.setProfRegNo(profRegNo);
+        appSvcPersonnelDto.setTypeOfCurrRegi(typeOfCurrRegi);
+        appSvcPersonnelDto.setCurrRegiDate(currRegiDate);
+        appSvcPersonnelDto.setPraCerEndDate(praCerEndDate);
+        appSvcPersonnelDto.setTypeOfRegister(typeOfRegister);
+        appSvcPersonnelDto.setSpecialityOther(specialityOther);
+        appSvcPersonnelDto.setSpecialtyGetDate(specialtyGetDate);
+        appSvcPersonnelDto.setBclsExpiryDate(bclsExpiryDate);
+        appSvcPersonnelDto.setCprExpiryDate(cprExpiryDate);
+
+
+        String profRegNos = appSvcPersonnelDto.getProfRegNo();
+        if (!StringUtil.isEmpty(profRegNos)) {
+            ProfessionalResponseDto professionalResponseDto = getAppCommService().retrievePrsInfo(profRegNos);
+            if (professionalResponseDto != null) {
+                if (IaisCommonUtils.isEmpty(professionalResponseDto.getSpecialty())) {
+                    appSvcPersonnelDto.setSpeciality("");
+                } else {
+                    appSvcPersonnelDto.setSpeciality(professionalResponseDto.getSpecialty().get(0));
+                }
+                if (IaisCommonUtils.isEmpty(professionalResponseDto.getSubspecialty())) {
+                    appSvcPersonnelDto.setSubSpeciality("");
+                } else {
+                    appSvcPersonnelDto.setSubSpeciality(professionalResponseDto.getSubspecialty().get(0));
+                }
+                String specialtyGetDateStr = "";
+                List<String> entryDateSpecialist = professionalResponseDto.getEntryDateSpecialist();
+                if (entryDateSpecialist != null && entryDateSpecialist.size() > 0) {
+                    specialtyGetDateStr = entryDateSpecialist.get(0);
+                }
+                appSvcPersonnelDto.setSpecialtyGetDate(specialtyGetDateStr);
+                if (StringUtil.isEmpty(specialtyGetDateStr)) {
+                    appSvcPersonnelDto.setSpecialtyGetDate(null);
+                } else {
+                    appSvcPersonnelDto.setSpecialtyGetDate(specialtyGetDateStr);
+                }
+
+                if (IaisCommonUtils.isEmpty(professionalResponseDto.getQualification())) {
+                    appSvcPersonnelDto.setQualification("");
+                } else {
+                    appSvcPersonnelDto.setQualification(professionalResponseDto.getQualification().get(0));
+                }
+                String typeOfCurrRegis = "";
+                String currRegiDateStrs = "";
+                String praCerEndDateStrs = "";
+                String typeOfRegisters = "";
+                List<RegistrationDto> registrationDtos = professionalResponseDto.getRegistration();
+                if (registrationDtos != null && registrationDtos.size() > 0) {
+                    RegistrationDto registrationDto = registrationDtos.get(0);
+                    typeOfCurrRegis = registrationDto.getRegistrationType();
+                    currRegiDateStrs = registrationDto.getRegStartDate();
+                    praCerEndDateStrs = registrationDto.getPcEndDate();
+                    typeOfRegisters = registrationDto.getRegisterType();
+                }
+                appSvcPersonnelDto.setTypeOfCurrRegi(typeOfCurrRegis);
+                appSvcPersonnelDto.setTypeOfRegister(typeOfRegisters);
+                appSvcPersonnelDto.setCurrRegiDate(currRegiDateStrs);
+                appSvcPersonnelDto.setPraCerEndDate(praCerEndDateStrs);
+                if (!StringUtil.isEmpty(professionalResponseDto.getName())) {
+                    appSvcPersonnelDto.setName(professionalResponseDto.getName());
+                }
+            }
+        }
+        return appSvcPersonnelDto;
+    }
+
+
     private static void setPsnValue(AppSvcPrincipalOfficersDto person, AppPsnEditDto appPsnEditDto, String fieldName,
             String prefix, String suffix, HttpServletRequest request) {
         setPsnValue(person, appPsnEditDto, fieldName, prefix, suffix, false, request);
@@ -1993,9 +2186,158 @@ public final class AppDataHelper {
                 if (getDataByIndexNo) {
                     appSvcBusinessDto = getAppSvcBusinessDtoByIndexNo(appSvcRelatedInfoDto, businessIndexNo);
                 } else if (getPageData) {
-                    String businessName = ParamUtil.getString(request, "businessName" + i);
                     appSvcBusinessDto = new AppSvcBusinessDto();
+                    boolean getOHData=true;
+                    String premisesType = appGrpPremisesDto.getPremisesType();
+                    if (ApplicationConsts.PREMISES_TYPE_MOBILE.equals(premisesType)||ApplicationConsts.PREMISES_TYPE_REMOTE.equals(premisesType)){
+                        getOHData=false;
+                    }
+                    String serviceCode=ParamUtil.getString(request,"currService"+i);
+                    if (AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL.equals(serviceCode)||AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL.equals(serviceCode)){
+                        getOHData=false;
+                    }
+
+                    List<OperationHoursReloadDto> weeklyDtoList = IaisCommonUtils.genNewArrayList();
+                    List<OperationHoursReloadDto> phDtoList = IaisCommonUtils.genNewArrayList();
+                    List<AppPremEventPeriodDto> eventList = IaisCommonUtils.genNewArrayList();
+
+                    String businessName = ParamUtil.getString(request, "businessName" + i);
+                    String contactNo = ParamUtil.getString(request, "contactNo" + i);
+                    String emailAddr = ParamUtil.getString(request, "emailAddr" + i);
+
+                    if (getOHData){
+                        int weeklyLength=ParamUtil.getInt(request,"weeklyLength"+ i);
+                        int phLength=ParamUtil.getInt(request,"phLength"+ i);
+                        int eventLength=ParamUtil.getInt(request,"eventLength"+ i);
+
+                        //weekly
+                        for (int j = 0; j < weeklyLength; j++) {
+                            OperationHoursReloadDto weeklyDto = new OperationHoursReloadDto();
+                            String[] weeklyVal = ParamUtil.getStrings(request,"onSiteWeekly"+i+j);
+                            String allDay = ParamUtil.getString(request,"onSiteWeeklyAllDay"+i+j);
+                            //reload
+                            String weeklySelect = StringUtil.arrayToString(weeklyVal);
+                            weeklyDto.setSelectVal(weeklySelect);
+                            if (weeklyVal != null) {
+                                List<String> selectValList = Arrays.asList(weeklyVal);
+                                weeklyDto.setSelectValList(selectValList);
+                            }
+                            if (AppConsts.TRUE.equals(allDay)) {
+                                Time tim = Time.valueOf(LocalTime.of(0,0,0));
+                                weeklyDto.setSelectAllDay(true);
+                                weeklyDto.setStartFromHH(null);
+                                weeklyDto.setStartFromMM(null);
+                                weeklyDto.setStartFrom(tim);
+                                weeklyDto.setEndToHH(null);
+                                weeklyDto.setEndToMM(null);
+                                weeklyDto.setEndTo(tim);
+                            } else {
+                                String weeklyStartHH = ParamUtil.getString(request,"onSiteWeeklyStartHH"+i+j);
+                                String weeklyStartMM = ParamUtil.getString(request,"onSiteWeeklyStartMM"+i+j);
+                                int weeklyStartH=weeklyStartHH!=null?Integer.parseInt(weeklyStartHH):0;
+                                int weeklyStartM=weeklyStartMM!=null?Integer.parseInt(weeklyStartMM):0;
+                                Time timStart=Time.valueOf(LocalTime.of(weeklyStartH,weeklyStartM,0));
+
+                                String weeklyEndHH = ParamUtil.getString(request,"onSiteWeeklyEndHH"+i+j);
+                                String weeklyEndMM = ParamUtil.getString(request,"onSiteWeeklyEndMM"+i+j);
+                                int weeklyEndH=weeklyEndHH!=null?Integer.parseInt(weeklyEndHH):0;
+                                int weeklyEndM=weeklyEndMM!=null?Integer.parseInt(weeklyEndMM):0;
+                                Time timEnd=Time.valueOf(LocalTime.of(weeklyEndH,weeklyEndM,0));
+
+                                weeklyDto.setStartFromHH(weeklyStartHH);
+                                weeklyDto.setStartFromMM(weeklyStartMM);
+                                weeklyDto.setStartFrom(timStart);
+                                weeklyDto.setEndToHH(weeklyEndHH);
+                                weeklyDto.setEndToMM(weeklyEndMM);
+                                weeklyDto.setEndTo(timEnd);
+                            }
+                            weeklyDtoList.add(weeklyDto);
+                        }
+
+                        //ph
+                        for (int j = 0; j < phLength; j++) {
+                            OperationHoursReloadDto phDto = new OperationHoursReloadDto();
+                            String[] phVal = ParamUtil.getStrings(request, "onSitePubHoliday"+i+j);
+                            String allDay = ParamUtil.getString(request,"onSitePhAllDay"+i+j);
+                            //reload
+                            String phSelect = StringUtil.arrayToString(phVal);
+                            phDto.setSelectVal(phSelect);
+                            if (phSelect != null) {
+                                List<String> selectValList = Arrays.asList(phVal);
+                                phDto.setSelectValList(selectValList);
+                            }
+                            if (AppConsts.TRUE.equals(allDay)) {
+                                Time tim = Time.valueOf(LocalTime.of(0,0,0));
+                                phDto.setSelectAllDay(true);
+                                phDto.setStartFromHH(null);
+                                phDto.setStartFromMM(null);
+                                phDto.setStartFrom(tim);
+                                phDto.setEndToHH(null);
+                                phDto.setEndToMM(null);
+                                phDto.setEndTo(tim);
+                                phDtoList.add(phDto);
+                            } else {
+                                String phStartHH = ParamUtil.getString(request,"onSitePhStartHH"+i+j);
+                                String phStartMM = ParamUtil.getString(request,"onSitePhStartMM"+i+j);
+                                int phStartH=phStartHH!=null?Integer.parseInt(phStartHH):0;
+                                int phStartM=phStartMM!=null?Integer.parseInt(phStartMM):0;
+                                Time timStart=Time.valueOf(LocalTime.of(phStartH,phStartM,0));
+
+                                String phEndHH = ParamUtil.getString(request,"onSitePhEndHH"+i+j);
+                                String phEndMM = ParamUtil.getString(request,"onSitePhEndMM"+i+j);
+                                int phEndH=phEndHH!=null?Integer.parseInt(phEndHH):0;
+                                int phEndM=phEndMM!=null?Integer.parseInt(phEndMM):0;
+                                Time timEnd=Time.valueOf(LocalTime.of(phEndH,phEndM,0));
+
+                                phDto.setStartFromHH(phStartHH);
+                                phDto.setStartFromMM(phStartMM);
+                                phDto.setStartFrom(timStart);
+                                phDto.setEndToHH(phEndHH);
+                                phDto.setEndToMM(phEndMM);
+                                phDto.setEndTo(timEnd);
+                                if (!StringUtil.isEmpty(phSelect) || !StringUtil.isEmpty(phStartHH) || !StringUtil.isEmpty(
+                                        phStartMM) || !StringUtil.isEmpty(phEndHH) || !StringUtil.isEmpty(phEndMM)) {
+                                    phDtoList.add(phDto);
+                                }
+                            }
+
+                        }
+
+                        //event
+                        for (int j = 0; j < eventLength; j++) {
+                            AppPremEventPeriodDto appPremEventPeriodDto = new AppPremEventPeriodDto();
+                            String eventName = ParamUtil.getString(request, "onSiteEvent"+i+j);
+                            String eventStartStr = ParamUtil.getString(request,"onSiteEventStart"+i+j);
+                            Date eventStart = DateUtil.parseDate(eventStartStr, Formatter.DATE);
+                            String eventEndStr = ParamUtil.getString(request,"onSiteEventEnd"+i+ j);
+                            Date eventEnd = DateUtil.parseDate(eventEndStr, Formatter.DATE);
+                            appPremEventPeriodDto.setEventName(eventName);
+                            appPremEventPeriodDto.setStartDate(eventStart);
+                            appPremEventPeriodDto.setStartDateStr(eventStartStr);
+                            appPremEventPeriodDto.setEndDate(eventEnd);
+                            appPremEventPeriodDto.setEndDateStr(eventEndStr);
+                            if (!StringUtil.isEmpty(eventName) || !StringUtil.isEmpty(eventStartStr) || !StringUtil.isEmpty(
+                                    eventEndStr)) {
+                                eventList.add(appPremEventPeriodDto);
+                            }
+                        }
+                    }
+
+                    appSvcBusinessDto.setCurrService(serviceCode);
                     appSvcBusinessDto.setBusinessName(businessName);
+                    appSvcBusinessDto.setContactNo(contactNo);
+                    appSvcBusinessDto.setEmailAddr(emailAddr);
+
+                    if (getOHData) {
+                        appSvcBusinessDto.setWeeklyDtoList(weeklyDtoList);
+                        appSvcBusinessDto.setPhDtoList(phDtoList);
+                        appSvcBusinessDto.setEventDtoList(eventList);
+
+                    }else {
+                        appSvcBusinessDto.setWeeklyDtoList(null);
+                        appSvcBusinessDto.setPhDtoList(null);
+                        appSvcBusinessDto.setEventDtoList(null);
+                    }
                     if (StringUtil.isEmpty(businessIndexNo)) {
                         appSvcBusinessDto.setBusinessIndexNo(UUID.randomUUID().toString());
                     } else {
@@ -2235,6 +2577,60 @@ public final class AppDataHelper {
                     scopeDto.getSubTypeId(), request));
         }
         return appPremScopeDtoList;
+    }
+
+    public static void setAppSvcSuplmFormDto(AppSvcSuplmFormDto appSvcSuplmFormDto, HttpServletRequest request) {
+        if (appSvcSuplmFormDto == null) {
+            log.info("The AppSvcSuplmFormDto is null!!!!");
+            return;
+        }
+        List<AppSvcSuplmGroupDto> appSvcSuplmGroupDtoList = appSvcSuplmFormDto.getAppSvcSuplmGroupDtoList();
+        if (IaisCommonUtils.isEmpty(appSvcSuplmGroupDtoList)) {
+            log.info("The AppSvcSuplmItemDto List is null!!!!");
+            return;
+        }
+        for (AppSvcSuplmGroupDto groupDto : appSvcSuplmGroupDtoList) {
+            String groupId = groupDto.getGroupId();
+            List<AppSvcSuplmItemDto> appSvcSuplmItemDtoList = groupDto.getAppSvcSuplmItemDtoList();
+            if (IaisCommonUtils.isEmpty(appSvcSuplmItemDtoList)) {
+                continue;
+            }
+            int count = ParamUtil.getInt(request, groupId, 1);
+            int baseSize = groupDto.getBaseSize();
+            groupDto.setAppSvcSuplmItemDtoList(genAppSvcSuplmItemDtoList(appSvcSuplmItemDtoList, baseSize, count, request));
+            groupDto.setCount(count);
+        }
+    }
+
+    private static List<AppSvcSuplmItemDto> genAppSvcSuplmItemDtoList(List<AppSvcSuplmItemDto> appSvcSuplmItemDtoList, int baseSize,
+            int count, HttpServletRequest request) {
+        List<AppSvcSuplmItemDto> result = IaisCommonUtils.genNewArrayList();
+        for (int i = 0; i < count; i++) {
+            for (int j = 0; j < baseSize; j++) {
+                AppSvcSuplmItemDto dto = CopyUtil.copyMutableObject(appSvcSuplmItemDtoList.get(j));
+                dto.setInputValue(getInputValue(request, i, dto));
+                dto.setSeqNum(i);
+                result.add(dto);
+            }
+        }
+        return result;
+    }
+
+    private static String getInputValue(HttpServletRequest request, int i, AppSvcSuplmItemDto dto) {
+        String inputValue = null;
+        String value = ParamUtil.getString(request, dto.getItemConfigId() + i);
+        if (StringUtil.isNotEmpty(value)) {
+            inputValue = value;
+        } else {
+            String radioBatchNum = dto.getItemConfigDto().getRadioBatchNum();
+            if (StringUtil.isNotEmpty(radioBatchNum)) {
+                String[] strings = ParamUtil.getStrings(request, radioBatchNum + i);
+                if (StringUtil.isIn(dto.getItemConfigId(), strings)) {
+                    inputValue = dto.getItemConfigId();
+                }
+            }
+        }
+        return inputValue;
     }
 
 }

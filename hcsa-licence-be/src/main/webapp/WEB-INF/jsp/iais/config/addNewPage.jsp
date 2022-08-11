@@ -34,7 +34,7 @@
     white-space: nowrap
   }
 </style>
-<div class="main-content">
+<div class="main-content readonly" >
   <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type" value="">
@@ -1137,7 +1137,7 @@
           </div>
           <div class="clear"></div></div>
       </div>
-      <div class="col-lg-12 col-xs-12">
+      <div class="col-lg-12 col-xs-12 canClick">
         <iais:action style="text-align:center;">
           <a class="btn btn-secondary" data-toggle="modal" data-target="#cancel">Cancel</a>
           <button class="btn btn-primary" onclick="save()">Save</button>
@@ -1150,7 +1150,7 @@
     <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
   </form>
 </div>
-<%@ include file="configRepeatJs.jsp" %>
+<%--<%@ include file="configRepeatJs.jsp" %>--%>
 <iais:confirm msg="Are you sure you want to leave this page ?" callBack="kpi()" popupOrder="kpi" ></iais:confirm>
 
 <iais:confirm msg="Are you sure you want to leave this page ?" callBack="checklists()" popupOrder="checklists" ></iais:confirm>
@@ -1185,9 +1185,9 @@
 
     }
 
-    function manhours(){
+    /*function manhours(){
         location.href="";
-    }
+    }*/
 
     function save() {
         showWaiting();
@@ -1350,15 +1350,15 @@
     }
 
 
-    function checkboxOnclick(checkbox) {
+   /* function checkboxOnclick(checkbox) {
         if (checkbox.checked == true) {
             $(checkbox).prev().val("1");
         } else {
             $(checkbox).prev().val("0");
         }
-    }
+    }*/
 
-        $('#NumberDocumentMandatory').click(function () {
+        /*$('#NumberDocumentMandatory').click(function () {
         let jQuery = $("#NumberDocumentMandatory").prop("checked");
         let jQuery1 = $("#DescriptionDocumentMandatory").prop("checked");
         if(jQuery==true){
@@ -1381,10 +1381,10 @@
             $("#NumberDocumentMandatory").prop("checked",false);
         }
 
-    });
+    });*/
 
 
-    $('#Numberfields').keyup(function () {
+    /*$('#Numberfields').keyup(function () {
         let val = $('#Numberfields').val();
         if(val==''){
           val='0';
@@ -1420,7 +1420,7 @@
             }
         }
 
-    });
+    });*/
 
     $('#NumberDocument').keyup(function () {
         let val = $('#NumberDocument').val();

@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocSecDetailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.SpecialServiceSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
@@ -30,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSpecialServiceInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SvcPersonnelDto;
@@ -2339,6 +2341,59 @@ public final class ApplicationHelper {
             }
         }
         result.sort(Comparator.comparing(DocumentShowDto::getPremiseIndex));
+        return result;
+    }
+
+    public static List<AppSvcSpecialServiceInfoDto> initAppSvcSpecialServiceInfoDtoList(AppSvcRelatedInfoDto currSvcInfoDto,
+                                                             List<AppPremSpecialisedDto> appPremSpecialisedDtoList) {
+        return initAppSvcSpecialServiceInfoDtoList(currSvcInfoDto, appPremSpecialisedDtoList, true);
+    }
+
+    public static List<AppSvcSpecialServiceInfoDto> initAppSvcSpecialServiceInfoDtoList(AppSvcRelatedInfoDto currSvcInfoDto,
+                                                                                        List<AppPremSpecialisedDto> appPremSpecialisedDtoList, boolean init) {
+        if (currSvcInfoDto == null) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+
+        List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoDtoList=currSvcInfoDto.getAppSvcSpecialServiceInfoList();
+        if (!IaisCommonUtils.isEmpty(appSvcSpecialServiceInfoDtoList)){
+            for (AppSvcSpecialServiceInfoDto appSvcSpecialServiceInfoDto : appSvcSpecialServiceInfoDtoList) {
+                if (appSvcSpecialServiceInfoDto.isInit()==true){
+                    init=false;
+                    break;
+                }
+            }
+            return appSvcSpecialServiceInfoDtoList;
+        }
+
+        if (!init && IaisCommonUtils.isNotEmpty(currSvcInfoDto.getAppSvcSpecialServiceInfoList())) {
+            return currSvcInfoDto.getAppSvcSpecialServiceInfoList();
+        }
+
+        List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoDtos = genAppSvcSpecialServiceInfoDtoList(appPremSpecialisedDtoList, currSvcInfoDto);
+        currSvcInfoDto.setAppSvcSpecialServiceInfoList(appSvcSpecialServiceInfoDtos);
+        return appSvcSpecialServiceInfoDtos;
+    }
+
+    private static List<AppSvcSpecialServiceInfoDto> genAppSvcSpecialServiceInfoDtoList(List<AppPremSpecialisedDto> appPremSpecialisedDtoList,
+                                                                                        AppSvcRelatedInfoDto currSvcInfoDto) {
+        List<AppSvcSpecialServiceInfoDto> result = IaisCommonUtils.genNewArrayList();
+        int i=1;
+        if (!IaisCommonUtils.isEmpty(appPremSpecialisedDtoList) && currSvcInfoDto != null) {
+            for (AppPremSpecialisedDto appPremSpecialisedDto : appPremSpecialisedDtoList) {
+                AppSvcSpecialServiceInfoDto appSvcSpecialServiceInfoDto=new AppSvcSpecialServiceInfoDto();
+                appPremSpecialisedDto.setPremiseIndex(i);
+                appSvcSpecialServiceInfoDto.setAppGrpPremisesDto(appPremSpecialisedDto);
+                List<SpecialServiceSectionDto> specialServiceSectionDtoList=IaisCommonUtils.genNewArrayList();
+                for (AppPremSubSvcRelDto appPremSubSvcRelDto : appPremSpecialisedDto.getAllAppPremSubSvcRelDtoList()) {
+                    SpecialServiceSectionDto specialServiceSectionDto=new SpecialServiceSectionDto();
+                    specialServiceSectionDto.setAppPremSubSvcRelDto(appPremSubSvcRelDto);
+                    specialServiceSectionDtoList.add(specialServiceSectionDto);
+                }
+                appSvcSpecialServiceInfoDto.setSpecialServiceSectionDtoList(specialServiceSectionDtoList);
+                result.add(appSvcSpecialServiceInfoDto);
+            }
+        }
         return result;
     }
 

@@ -21,7 +21,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialise
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
@@ -455,19 +454,24 @@ public abstract class AppCommDelegator {
      */
     public void doAction(BaseProcessClass bpc) {
         String crudActionAdditional = bpc.request.getParameter("crud_action_additional");
-        if ("jumpPage".equals(crudActionAdditional)) {
+        String action = (String) ParamUtil.getSessionAttr(bpc.request, HcsaAppConst.ACTION);
+        if ("jumpPage".equals(crudActionAdditional) || StringUtil.isEmpty(action)) {
             log.info("Jump Page!!!");
             return;
         }
-        String action = (String) ParamUtil.getSessionAttr(bpc.request, HcsaAppConst.ACTION);
-        if (HcsaAppConst.ACTION_LICENSEE.equals(action)) {
-            doSubLicensee(bpc);
-        } else if (HcsaAppConst.ACTION_PREMISES.equals(action)) {
-            doPremises(bpc);
-        } else if (HcsaAppConst.ACTION_SPECIALISED.equals(action)) {
-            doSpecialisedData(bpc);
-        } else {
-            jumpToErrorPage(bpc.request, "Invalid Action!");
+        switch (action) {
+            case HcsaAppConst.ACTION_LICENSEE:
+                doSubLicensee(bpc);
+                break;
+            case HcsaAppConst.ACTION_PREMISES:
+                doPremises(bpc);
+                break;
+            case HcsaAppConst.ACTION_SPECIALISED:
+                doSpecialised(bpc);
+                break;
+            default:
+                jumpToErrorPage(bpc.request, "Invalid Action!");
+                break;
         }
     }
 
@@ -501,7 +505,7 @@ public abstract class AppCommDelegator {
         return hcsaServiceDtoList.get(i).getSvcCode();
     }
 
-    public void doSpecialisedData(BaseProcessClass bpc) {
+    public void doSpecialised(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
 

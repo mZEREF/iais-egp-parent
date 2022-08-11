@@ -25,7 +25,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpeRouti
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecificStageWorkloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -43,10 +42,8 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import com.google.common.collect.Maps;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -173,7 +170,12 @@ public class ConfigServiceDelegator {
     // 		prepareView->OnStepProcess
     public void prepareView(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("confige prepareView start"));
-        configService.viewPageInfo(bpc.request);
+        //configService.viewPageInfo(bpc.request);
+        HcsaServiceConfigDto hcsaServiceConfigDto = preparePage(bpc.request);
+        //set data for this hcsaServiceConfigDto
+        String serviceId = ParamUtil.getString(bpc.request,"crud_action_value");
+        hcsaServiceConfigDto = configService.getHcsaServiceConfigDtoByServiceId(hcsaServiceConfigDto,serviceId);
+        ParamUtil.setRequestAttr(bpc.request,"hcsaServiceConfigDto",hcsaServiceConfigDto);
         log.info(StringUtil.changeForLog("confige prepareView end"));
     }
     // 		PrepareEditOrDelete->OnStepProcess
@@ -213,7 +215,7 @@ public class ConfigServiceDelegator {
         log.info(StringUtil.changeForLog("confige doDelete end"));
     }
 
-    private void preparePage(HttpServletRequest request){
+    private HcsaServiceConfigDto  preparePage(HttpServletRequest request){
         HcsaServiceConfigDto hcsaServiceConfigDto = (HcsaServiceConfigDto)ParamUtil.getRequestAttr(request,"hcsaServiceConfigDto");
         if(hcsaServiceConfigDto != null){
             List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = hcsaServiceConfigDto.getHcsaSvcPersonnelDtos();
@@ -255,6 +257,7 @@ public class ConfigServiceDelegator {
         //get all Other service
         List<HcsaServiceDto>  otherHcsaServiceDtos = configService.getActiveServicesBySvcType(HcsaConsts.SERVICE_TYPE_OTHERS);
         ParamUtil.setSessionAttr(request,"otherHcsaServiceOptions",(Serializable)getSelectOptionForHcsaServiceDtos(otherHcsaServiceDtos));
+        return hcsaServiceConfigDto;
     }
 
     private List<SelectOption> getSelectOptionForHcsaServiceDtos(List<HcsaServiceDto> hcsaServiceDtos){
@@ -651,7 +654,6 @@ public class ConfigServiceDelegator {
         if(HcsaConsts.SERVICE_TYPE_OTHERS.equals(hcsaServiceDto.getSvcType())){
           return hcsaServiceConfigDto;
         }
-
         //for minimum and maximum
         addSvcPersionnelAndStepConfigsFromPage(hcsaServiceConfigDto, request);
         //Number of service-related document (for specialised service) to be uploaded
@@ -666,13 +668,10 @@ public class ConfigServiceDelegator {
         //for HcsaServiceCategoryDisciplineDto  and sub service
         addCategoryDisciplineAndSubService(request,hcsaServiceConfigDto);
 
-        if(HcsaConsts.SERVICE_TYPE_BASE.equals(hcsaServiceDto.getSvcType())){
-            return hcsaServiceConfigDto;
-        }
         log.info(StringUtil.changeForLog("The getDateOfHcsaService end ..."));
+        return hcsaServiceConfigDto;
 
-
-        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = configService.getHcsaSvcRoutingStageDtos();
+       /* List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = configService.getHcsaSvcRoutingStageDtos();
         //if service type is sub must to chose
         String[] subsumption = request.getParameterValues("Subsumption");
         String selectSubsumption = ParamUtil.getStringsToString(request, "Subsumption");
@@ -829,7 +828,7 @@ public class ConfigServiceDelegator {
                 hcsaConfigPageDto.setWorkloadId(workloadId);
                 if (!StringUtil.isEmpty(stageId)) {
                     //todo delete
-                    /*   hcsaSvcSpeRoutingSchemeDto.setId(stageId);*/
+                    *//*   hcsaSvcSpeRoutingSchemeDto.setId(stageId);*//*
                     hcsaConfigPageDto.setRoutingSchemeId(stageId);
                 }
                 hcsaSvcSpeRoutingSchemeDto.setStageId(id);
@@ -842,9 +841,9 @@ public class ConfigServiceDelegator {
                 hcsaSvcStageWorkingGroupDto.setStageId(id);
 
                 if(!StringUtil.isEmpty(workstageId)){
-                    /*hcsaSvcStageWorkingGroupDto.setId(workstageId);*/
+                    *//*hcsaSvcStageWorkingGroupDto.setId(workstageId);*//*
                     //todo delete
-                    /*  hcsaSvcSpecificStageWorkloadDto.setId(workloadId);*/
+                    *//*  hcsaSvcSpecificStageWorkloadDto.setId(workloadId);*//*
                 }
                 if("INS".equals(stageCode)){
                     String parameter0 = request.getParameter("RoutingScheme" + stageCode + every + "0");
@@ -993,7 +992,7 @@ public class ConfigServiceDelegator {
         hcsaServiceConfigDto.setHcsaSvcSpecificStageWorkloadDtoMap(hcsaSvcSpecificStageWorkloadDtoMap);
         hcsaServiceConfigDto.setHcsaSvcStageWorkingGroupDtoMap(hcsaSvcStageWorkingGroupDtoMap);
         hcsaServiceConfigDto.setHcsaSvcSpeRoutingSchemeDtoMap(hcsaSvcSpeRoutingSchemeDtoMap);
-        return hcsaServiceConfigDto;
+        return hcsaServiceConfigDto;*/
     }
 
     private void addDocumentConfigsFromPage(HcsaServiceConfigDto hcsaServiceConfigDto, HttpServletRequest request) {

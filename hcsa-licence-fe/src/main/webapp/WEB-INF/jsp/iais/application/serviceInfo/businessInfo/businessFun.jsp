@@ -28,6 +28,7 @@
     }
 
     var removeWeekly = function () {
+        $('.weeklyDel').unbind('click');
         $('.weeklyDel').click(function () {
             var $weeklyContent = $(this).closest('.weeklyContent');
             $(this).closest('.weeklyDiv').remove();
@@ -72,6 +73,7 @@
     }
 
     var removePh = function () {
+        $('.pubHolidayDel').unbind('click');
         $('.pubHolidayDel').click(function () {
             var $phContent = $(this).closest('.pubHolDayContent');
             $(this).closest('.pubHolidayDiv').remove();
@@ -118,6 +120,7 @@
     }
 
     var removeEvent = function () {
+        $('.eventDel').unbind('click');
         $('.eventDel').click(function () {
             var $eventContent = $(this).closest('.eventContent');
             $(this).closest('.eventDiv').remove();
