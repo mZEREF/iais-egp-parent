@@ -25,6 +25,9 @@ public interface DpDataSubmissionService {
 
     DpSuperDataSubmissionDto saveDpSuperDataSubmissionDto(DpSuperDataSubmissionDto dpSuperDataSubmissionDto);
 
+    List<DpSuperDataSubmissionDto> saveDpSuperDataSubmissionDtoList(List<DpSuperDataSubmissionDto> dpSuperDataSubmissionDto);
+
+
     List<DpSuperDataSubmissionDto> saveDpSuperDataSubmissionDtoToBE(List<DpSuperDataSubmissionDto> dpSuperDataSubmissionDto);
 
     void updateDataSubmissionDraftStatus(String draftId, String status);

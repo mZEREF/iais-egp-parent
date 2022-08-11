@@ -538,12 +538,8 @@ public class DpSiUploadDelegate {
         if (useParallel) {
             Collections.sort(dpSuperList, Comparator.comparing(dto -> dto.getDataSubmissionDto().getSubmissionNo()));
         }
-        List<DpSuperDataSubmissionDto> dpSuperLists=IaisCommonUtils.genNewArrayList();
-        for (DpSuperDataSubmissionDto dp:dpSuperList
-             ) {
-            DpSuperDataSubmissionDto dpNew=dpDataSubmissionService.saveDpSuperDataSubmissionDto(dp);
-            dpSuperLists.add(dpNew);
-        }
+
+        List<DpSuperDataSubmissionDto> dpSuperLists=dpDataSubmissionService.saveDpSuperDataSubmissionDtoList(dpSuperList);
         List<DpSuperDataSubmissionDto> dpSuperListBe = IaisCommonUtils.genNewArrayList();
         try {
             dpSuperListBe = dpDataSubmissionService.saveDpSuperDataSubmissionDtoToBE(dpSuperLists);

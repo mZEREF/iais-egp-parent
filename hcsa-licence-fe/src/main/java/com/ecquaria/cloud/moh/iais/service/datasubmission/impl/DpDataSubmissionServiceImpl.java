@@ -23,14 +23,15 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DocInfoService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description DpDataSubmissionServiceImpl
@@ -93,6 +94,11 @@ public class DpDataSubmissionServiceImpl implements DpDataSubmissionService {
     public DpSuperDataSubmissionDto saveDpSuperDataSubmissionDto(DpSuperDataSubmissionDto dpSuperDataSubmissionDto) {
         log.info(StringUtil.changeForLog("do the saveArSuperDataSubmissionDto ..."));
         return dpFeClient.saveDpSuperDataSubmissionDto(dpSuperDataSubmissionDto).getEntity();
+    }
+
+    @Override
+    public List<DpSuperDataSubmissionDto> saveDpSuperDataSubmissionDtoList(List<DpSuperDataSubmissionDto> dpSuperDataSubmissionDto) {
+        return dpFeClient.saveDpSuperDataSubmissionDtoInList(dpSuperDataSubmissionDto).getEntity();
     }
 
     public void saveBeArSuperDataSubmissionDto(List<DpSuperDataSubmissionDto> dpSuperDataSubmissionDto) {
