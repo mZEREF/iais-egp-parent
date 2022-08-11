@@ -2618,15 +2618,15 @@ public final class AppDataHelper {
 
     private static String getInputValue(HttpServletRequest request, int i, AppSvcSuplmItemDto dto) {
         String inputValue = null;
-        String value = ParamUtil.getString(request, dto.getConfigItemId() + i);
+        String value = ParamUtil.getString(request, dto.getItemConfigId() + i);
         if (StringUtil.isNotEmpty(value)) {
             inputValue = value;
         } else {
             String radioBatchNum = dto.getItemConfigDto().getRadioBatchNum();
             if (StringUtil.isNotEmpty(radioBatchNum)) {
                 String[] strings = ParamUtil.getStrings(request, radioBatchNum + i);
-                if (StringUtil.isIn(dto.getConfigItemId(), strings)) {
-                    inputValue = dto.getConfigItemId();
+                if (StringUtil.isIn(dto.getItemConfigId(), strings)) {
+                    inputValue = dto.getItemConfigId();
                 }
             }
         }
