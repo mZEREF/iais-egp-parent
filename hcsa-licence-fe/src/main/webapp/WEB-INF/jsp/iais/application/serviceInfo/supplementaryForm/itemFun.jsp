@@ -10,7 +10,7 @@
         $('[data-curr]').each(function (k, v) {
             let $tag = $(v);
             let conditionItemId = $tag.data('conditionItemId');
-            let specialConditionType = $tag.data('specialConditionType');
+            let specialCondition = $tag.data('specialCondition');
             let parentItemId = $tag.data('parent');
             let mandatory = $tag.data('mandatory');
             let curr = $tag.data('curr');
@@ -21,38 +21,39 @@
 
     function refreshRemoveBtn() {
         let rmv_ary = [];
-        $('.removeBtn[data-addMoreBatchNum]').each(function(){
-            let addMoreBatchNum = $(this).data('addMoreBatchNum');
-            if (!rmv_ary.includes(addMoreBatchNum)) {
-                rmv_ary.push(addMoreBatchNum);
+        $('.removeBtn[data-group]').each(function(){
+            let group = $(this).data('group');
+            if (!rmv_ary.includes(group)) {
+                rmv_ary.push(group);
             }
         });
         rmv_ary.forEach(function(currentValue){
-            hideTag($('.removeBtn[data-addMoreBatchNum="' + currentValue + '"]:first'));
-            showTag($('.removeBtn[data-addMoreBatchNum="' + currentValue + '"]:not(first)'));
+            hideTag($('.removeBtn[data-group="' + currentValue + '"]:first'));
+            showTag($('.removeBtn[data-group="' + currentValue + '"]:not(first)'));
         });
+
     }
 
     var removeBtnEvent = function(){
-        $('.removeEditDiv[data-addMoreBatchNum] .removeBtn').unbind('click');
-        $('.removeEditDiv[data-addMoreBatchNum] .removeBtn').on('click', function () {
+        $('.removeEditDiv[data-group] .removeBtn').unbind('click');
+        $('.removeEditDiv[data-group] .removeBtn').on('click', function () {
             let $v = $(this);
             let $tag = $v.closest('removeEditDiv');
-            let addMoreBatchNum = $tag.data('addMoreBatchNum');
+            let group = $tag.data('group');
             let index = $tag.data('seq');
-            $('.removeEditRow [data-addMoreBatchNum="' + addMoreBatchNum + '"][data-seq="' + index + '"]').closest('.removeEditRow').remove();
-            $('[data-addMoreBatchNum="' + addMoreBatchNum + '"][data-seq="' + index + '"]:not(.removeEditDiv)').closest('.item-record').remove();
-            resetAllItemIndex(addMoreBatchNum);
+            $('.removeEditRow [data-group="' + group + '"][data-seq="' + index + '"]').closest('.removeEditRow').remove();
+            $('[data-group="' + group + '"][data-seq="' + index + '"]:not(.removeEditDiv)').closest('.item-record').remove();
+            resetAllItemIndex(group);
         });
     }
 
-    function resetAllItemIndex(batchNum) {
-        $('.removeEditRow [data-addMoreBatchNum="' + addMoreBatchNum + '"]').each(function(index, ele){
+    function resetAllItemIndex(group) {
+        $('.removeEditRow [data-group="' + group + '"]').each(function(index, ele){
             let $ele = $(ele);
             $ele.data('seq', index);
         });
         let rowAry = [];
-        $('[data-addMoreBatchNum="' + addMoreBatchNum + '"]:not(.removeEditDiv)').closest('.item-record').each(function(){
+        $('[data-group="' + group + '"]:not(.removeEditDiv)').closest('.item-record').each(function(){
             let data = $(this).attr('class');
             if (!rowAry.rowAry(data)) {
                 rowAry.push(data);
@@ -63,6 +64,7 @@
                 resetItem($(ele), index);
             });
         });
+        $('input[name="' + group + '"]').val(rowAry.length);
     }
 
     function resetItemIndex($itemRecords, index) {
@@ -99,17 +101,19 @@
         $('.addMoreDiv .addMoreBtn').unbind('click');
         $('.addMoreDiv .addMoreBtn').on('click', function() {
             let $tag = $(this);
-            let oldIndex = parseInt($('input[name="' + addMoreBatchNum + '"]').val());
-            let index = oldIndex + 1;
-            let addMoreBatchNum = $tag.data('addMoreBatchNum');
-            let $romveRow = $('.removeEditRow [data-addMoreBatchNum="' + addMoreBatchNum + '"][data-seq="0"]').closest('.removeEditRow').clone();
+            let $addMoreDiv = $tag.closest('.addMoreDiv');
+            let index = parseInt($('input[name="' + group + '"]').val());
+            let group = $tag.data('group');
+            // remove the group error message
+            $('.error_' + group).remove();
+            let $romveRow = $('.removeEditRow [data-group="' + group + '"][data-seq="0"]').closest('.removeEditRow').clone();
             resetItemIndex($romveRow, index);
             showTag($romveRow);
-            $('.addMoreDiv').before($romveRow);
-            let $itemRecords = $('[data-addMoreBatchNum="' + addMoreBatchNum + '"][data-seq="0"]:not(.removeEditDiv)').closest('.item-record').clone();
+            $addMoreDiv.before($romveRow);
+            let $itemRecords = $('[data-group="' + group + '"][data-seq="0"]:not(.removeEditDiv)').closest('.item-record').clone();
             resetItemIndex($itemRecords, index);
-            $('.addMoreDiv').before($itemRecords);
-            $('input[name="' + addMoreBatchNum + '"]').val(index);
+            $addMoreDiv.before($itemRecords);
+            $('input[name="' + group + '"]').val(index + 1);
         });
     }
 
@@ -118,7 +122,7 @@
         $('.item-record [data-curr]').on('click change', function(){
             let $tag = $(this);
             let conditionItemId = $tag.data('conditionItemId');
-            /*let specialConditionType = $tag.data('specialConditionType');
+            /*let specialCondition = $tag.data('specialCondition');
             let parentItemId = $tag.data('parent');
             let mandatory = $tag.data('mandatory');
             let curr = $tag.data('curr');*/
@@ -134,7 +138,7 @@
                         return;
                     }
                     $targetLabel.find('.mandatory').remove();
-                    let conVal = $v.data('specialConditionType');
+                    let conVal = $v.data('specialCondition');
                     if (isEmpty(conVal)) {
                         return;
                     }

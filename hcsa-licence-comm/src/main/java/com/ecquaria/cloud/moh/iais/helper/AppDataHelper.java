@@ -2237,4 +2237,58 @@ public final class AppDataHelper {
         return appPremScopeDtoList;
     }
 
+    public static void setAppSvcSuplmFormDto(AppSvcSuplmFormDto appSvcSuplmFormDto, HttpServletRequest request) {
+        if (appSvcSuplmFormDto == null) {
+            log.info("The AppSvcSuplmFormDto is null!!!!");
+            return;
+        }
+        List<AppSvcSuplmGroupDto> appSvcSuplmGroupDtoList = appSvcSuplmFormDto.getAppSvcSuplmGroupDtoList();
+        if (IaisCommonUtils.isEmpty(appSvcSuplmGroupDtoList)) {
+            log.info("The AppSvcSuplmItemDto List is null!!!!");
+            return;
+        }
+        for (AppSvcSuplmGroupDto groupDto : appSvcSuplmGroupDtoList) {
+            String groupId = groupDto.getGroupId();
+            List<AppSvcSuplmItemDto> appSvcSuplmItemDtoList = groupDto.getAppSvcSuplmItemDtoList();
+            if (IaisCommonUtils.isEmpty(appSvcSuplmItemDtoList)) {
+                continue;
+            }
+            int count = ParamUtil.getInt(request, groupId, 1);
+            int baseSize = groupDto.getBaseSize();
+            groupDto.setAppSvcSuplmItemDtoList(genAppSvcSuplmItemDtoList(appSvcSuplmItemDtoList, baseSize, count, request));
+            groupDto.setCount(count);
+        }
+    }
+
+    private static List<AppSvcSuplmItemDto> genAppSvcSuplmItemDtoList(List<AppSvcSuplmItemDto> appSvcSuplmItemDtoList, int baseSize,
+            int count, HttpServletRequest request) {
+        List<AppSvcSuplmItemDto> result = IaisCommonUtils.genNewArrayList();
+        for (int i = 0; i < count; i++) {
+            for (int j = 0; j < baseSize; j++) {
+                AppSvcSuplmItemDto dto = CopyUtil.copyMutableObject(appSvcSuplmItemDtoList.get(j));
+                dto.setInputValue(getInputValue(request, i, dto));
+                dto.setSeqNum(i);
+                result.add(dto);
+            }
+        }
+        return result;
+    }
+
+    private static String getInputValue(HttpServletRequest request, int i, AppSvcSuplmItemDto dto) {
+        String inputValue = null;
+        String value = ParamUtil.getString(request, dto.getConfigItemId() + i);
+        if (StringUtil.isNotEmpty(value)) {
+            inputValue = value;
+        } else {
+            String radioBatchNum = dto.getItemConfigDto().getRadioBatchNum();
+            if (StringUtil.isNotEmpty(radioBatchNum)) {
+                String[] strings = ParamUtil.getStrings(request, radioBatchNum + i);
+                if (StringUtil.isIn(dto.getConfigItemId(), strings)) {
+                    inputValue = dto.getConfigItemId();
+                }
+            }
+        }
+        return inputValue;
+    }
+
 }
