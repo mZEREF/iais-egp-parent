@@ -391,7 +391,7 @@ public class ServiceInfoDelegator {
         log.debug(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
         if (isGetDataFromPage) {
             //get data from page
-            appSvcSpecialServiceInfoList = AppDataHelper.gengetAppSvcSpecialServiceInfoList(request, appSvcSpecialServiceInfoList,appSubmissionDto.getAppType());
+            appSvcSpecialServiceInfoList = AppDataHelper.getAppSvcSpecialServiceInfoList(request, appSvcSpecialServiceInfoList,appSubmissionDto.getAppType());
             currSvcInfoDto.setAppSvcSpecialServiceInfoList(appSvcSpecialServiceInfoList);
             setAppSvcRelatedInfoMap(request, currSvcId, currSvcInfoDto);
         }
