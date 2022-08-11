@@ -323,13 +323,13 @@ public class FeEicGatewayClient {
                 signature.date(), signature.authorization(), signature2.date(), signature2.authorization(), PostCodeDto.class);
     }
 
-    public FeignResponseEntity<String> saveBeDpSuperDataSubmissionDto(List<DpSuperDataSubmissionDto> dpSuperDataSubmissionDto) {
+    public FeignResponseEntity<List> saveBeDpSuperDataSubmissionDto(List<DpSuperDataSubmissionDto> dpSuperDataSubmissionDto) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/data-submission-dp-sync", HttpMethod.POST,
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/data-submission-dp-sync", HttpMethod.POST,
                 dpSuperDataSubmissionDto,
                 MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization(), String.class);
+                signature2.date(), signature2.authorization(), DpSuperDataSubmissionDto.class);
     }
 
     public FeignResponseEntity<VssSuperDataSubmissionDto> saveBeVssSuperDataSubmissionDto(VssSuperDataSubmissionDto vssSuperDataSubmissionDto) {
