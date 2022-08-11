@@ -81,6 +81,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -159,8 +160,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
 
     static private String[] processDec = new String[]{InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION,
             InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO,
-            InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY,
-            InspectionConstants.PROCESS_DECI_ROLL_BACK};
+            InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY};
 
     @Override
     public ApplicationDto getAppStatusByTaskId(TaskDto taskDto) {
@@ -185,10 +185,14 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             if (AppConsts.YES.equals(canEdit) && rfiCount == 0) {
                 processDecArr = processDec;
             } else {
-                processDecArr = new String[]{InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO, InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY, InspectionConstants.PROCESS_DECI_ROLL_BACK};
+                processDecArr = new String[]{InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO, InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY};
             }
         }
-        return MasterCodeUtil.retrieveOptionsByCodes(processDecArr);
+        List<String> processDecArrList = new ArrayList<>(Arrays.asList(processDecArr));
+        if(!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType))){
+            processDecArrList.add(InspectionConstants.PROCESS_DECI_ROLL_BACK);
+        }
+        return MasterCodeUtil.retrieveOptionsByCodes(processDecArrList.toArray(new String[0]));
     }
 
     @Override

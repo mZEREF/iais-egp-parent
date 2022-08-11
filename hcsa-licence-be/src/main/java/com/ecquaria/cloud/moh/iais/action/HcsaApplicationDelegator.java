@@ -4149,7 +4149,7 @@ public class HcsaApplicationDelegator {
                 && RoleConsts.USER_ROLE_ASO.equals(taskRole)) {
 
         } else {
-            if (hasRollBackHistoryList ) {
+            if (hasRollBackHistoryList &&  !ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)) {
                 nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROLLBACK_CR, MasterCodeUtil.getCodeDesc(InspectionConstants.PROCESS_DECI_ROLL_BACK)));
             }
         }
