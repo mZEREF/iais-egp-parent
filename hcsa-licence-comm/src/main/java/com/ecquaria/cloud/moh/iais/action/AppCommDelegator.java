@@ -519,7 +519,7 @@ public abstract class AppCommDelegator {
             appSubmissionDto.setAppPremSpecialisedDtoList(appPremSpecialisedDtoList);
             ApplicationHelper.setAppSubmissionDto(appSubmissionDto, request);
         }
-        // valiation
+        // validation
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String actionValue = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
         if (!StringUtil.isIn(actionValue, new String[]{"saveDraft", "back"})) {

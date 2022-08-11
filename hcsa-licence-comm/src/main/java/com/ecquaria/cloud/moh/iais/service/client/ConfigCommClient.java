@@ -228,6 +228,6 @@ public interface ConfigCommClient {
     @GetMapping(value = "/iais-hcsa-fee/fee-MatchingTh-ServiceCode/{serviceCode}", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Integer> getFeeMaxMatchingThByServiceCode(@PathVariable(name ="serviceCode") String svcCode);
 
-    @GetMapping(value = "/supple-form-item-avc-code",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/hcsa-config/supple-form-item-avc-code",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<SuppleFormItemConfigDto>> getHcsaSvcSuppleFormItemBySvcCode(@RequestParam("serviceCode") String serviceId);
 }

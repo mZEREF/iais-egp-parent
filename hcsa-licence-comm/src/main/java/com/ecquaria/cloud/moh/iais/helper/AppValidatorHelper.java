@@ -81,6 +81,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -937,7 +938,6 @@ public final class AppValidatorHelper {
     private static boolean validateOperaionUnits(AppGrpPremisesDto appGrpPremisesDto, int i, List<String> floorUnitList, Map<String,
             String> errorMap) {
         boolean addrTypeFlag = true;
-        //String premisesType = appGrpPremisesDto.getPremisesType();
         String floorNo = appGrpPremisesDto.getFloorNo();
         String unitNo = appGrpPremisesDto.getUnitNo();
         String blkNo = appGrpPremisesDto.getBlkNo();
@@ -945,9 +945,7 @@ public final class AppValidatorHelper {
         appGrpPremisesDto.setFloorNo(ApplicationHelper.handleFloorNo(floorNo));
         String floorNoKey = ApplicationHelper.getParamName(String.valueOf(i), "floorNo0");
         String unitNoKey = ApplicationHelper.getParamName(String.valueOf(i), "unitNo0");
-        //String blkNoKey = ApplicationHelper.getParamName(prefix, "blkNo" + i);
         boolean empty = StringUtil.isEmpty(floorNo);
-        //boolean empty1 = StringUtil.isEmpty(blkNo);
         boolean empty2 = StringUtil.isEmpty(unitNo);
         boolean isAptBlkType = ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType);
         if ((isAptBlkType || !empty2) && empty) {
@@ -968,13 +966,6 @@ public final class AppValidatorHelper {
             String general_err0041 = repLength("Unit No.", "5");
             errorMap.put(unitNoKey, general_err0041);
         }
-        /*if (isAptBlkType && empty1) {
-            addrTypeFlag = false;
-            errorMap.put(blkNoKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Block / House No.", "field"));
-        } else if (!empty1 && blkNo.length() > 10) {
-            String general_err0041 = repLength("Block / House No.", "10");
-            errorMap.put(blkNoKey, general_err0041);
-        }*/
         if (addrTypeFlag) {
             String floorNoErr = errorMap.get(floorNoKey);
             String sb = ApplicationHelper.handleFloorNo(floorNo, floorNoErr) + AppConsts.DFT_DELIMITER +
@@ -1025,19 +1016,18 @@ public final class AppValidatorHelper {
                     errorMap.put(unitErrName + opIndex, general_err0041);
                 }
                 String floorNoErr = errorMap.get(floorErrName + opIndex);
-                operationalUnitDto.setFloorNo(ApplicationHelper.handleFloorNo(floorNo, floorNoErr));
+                floorNo = ApplicationHelper.handleFloorNo(floorNo, floorNoErr);
+                operationalUnitDto.setFloorNo(floorNo);
                 if (flag) {
-                    if (!StringUtil.isEmpty(operationalUnitDto.getFloorNo()) && !StringUtil.isEmpty(operationalUnitDto.getUnitNo())) {
-                        String floorUnitStr = operationalUnitDto.getFloorNo() + operationalUnitDto.getUnitNo();
+                    if (!StringUtil.isEmpty(floorNo) && !StringUtil.isEmpty(unitNo)) {
+                        String blkNo = appGrpPremisesDto.getBlkNo();
+                        String floorUnitStr = floorNo + AppConsts.DFT_DELIMITER +
+                                StringUtil.getNonNull(blkNo) + AppConsts.DFT_DELIMITER + unitNo;
                         if (floorUnitList.contains(floorUnitStr)) {
                             errorMap.put(floorUnitErrName + opIndex, "NEW_ERR0017");
                         } else {
                             floorUnitList.add(floorUnitStr);
                         }
-                        String blkNo = appGrpPremisesDto.getBlkNo();
-                        String sb = ApplicationHelper.handleFloorNo(floorNo, floorNoErr) + AppConsts.DFT_DELIMITER +
-                                StringUtil.getNonNull(blkNo) + AppConsts.DFT_DELIMITER + unitNo;
-                        floorUnitList.add(sb);
                     }
                 }
                 opIndex++;
@@ -2759,8 +2749,8 @@ public final class AppValidatorHelper {
             log.info("The AppSvcSuplmItemDto List is null!!!!");
             return IaisCommonUtils.genNewHashMap();
         }
-
-
+        Map<String, AppSvcSuplmItemDto> itemMap = appSvcSuplmFormDto.genExistedMap();
+        Map<String, List<AppSvcSuplmItemDto>> radioBatchMap = appSvcSuplmFormDto.genExistedRadioBatchMap();
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         for (AppSvcSuplmGroupDto appSvcSuplmGroupDto : appSvcSuplmGroupDtoList) {
             int count = appSvcSuplmGroupDto.getCount();
@@ -2773,10 +2763,11 @@ public final class AppValidatorHelper {
             }
             for (AppSvcSuplmItemDto appSvcSuplmItemDto : appSvcSuplmGroupDto.getAppSvcSuplmItemDtoList()) {
                 SuppleFormItemConfigDto itemConfigDto = appSvcSuplmItemDto.getItemConfigDto();
+                int mandatoryType = itemConfigDto.getMandatoryType();
+                String inputValue = appSvcSuplmItemDto.getInputValue();
+                String errorKey = appSvcSuplmItemDto.getItemConfigId() + appSvcSuplmItemDto.getSeqNum();
                 if (HcsaConsts.SUPFORM_ITEM_TYPE_TEXT.equals(itemConfigDto.getItemType())) {
-                    String errorKey = appSvcSuplmItemDto.getItemConfigId() + appSvcSuplmItemDto.getSeqNum();
-                    String inputValue = appSvcSuplmItemDto.getInputValue();
-                    if (StringUtil.isEmpty(inputValue) && 1 == itemConfigDto.getMandatoryType()) {
+                    if (StringUtil.isEmpty(inputValue) && 1 == mandatoryType) {
                         errorMap.put(errorKey, "GENERAL_ERR0006");
                     }
                     if (StringUtil.isNotEmpty(inputValue)) {
@@ -2805,7 +2796,18 @@ public final class AppValidatorHelper {
                                 errorMap.put(errorKey, "GENERAL_ERR0033");
                             } else if (compareDateByDay(inputValue) <= 0) {
                                 // GENERAL_ERR0026 - {field} must be a future date
-                                errorMap.put(errorKey, MessageUtil.replaceMessage("GENERAL_ERR0026", itemConfigDto.getDisplayInfo(), "field"));
+                                errorMap.put(errorKey,
+                                        MessageUtil.replaceMessage("GENERAL_ERR0026", itemConfigDto.getDisplayInfo(), "field"));
+                            }
+                        } else if (HcsaConsts.SUPFORM_DATA_TYPE_FUT_DATE_NOW.equals(dataType)) {
+                            if (!CommonValidator.isDate(inputValue)) {
+                                //GENERAL_ERR0033 - Invalid Date Format.
+                                errorMap.put(errorKey, "GENERAL_ERR0033");
+                            }
+                        } else if (HcsaConsts.SUPFORM_DATA_TYPE_PAST_DATE.equals(dataType)) {
+                            if (!CommonValidator.isDate(inputValue)) {
+                                //GENERAL_ERR0033 - Invalid Date Format.
+                                errorMap.put(errorKey, "GENERAL_ERR0033");
                             }
                         } else if (HcsaConsts.SUPFORM_DATA_TYPE_PAST_DATE_NOW.equals(dataType)) {
                             if (!CommonValidator.isDate(inputValue)) {
@@ -2813,15 +2815,45 @@ public final class AppValidatorHelper {
                                 errorMap.put(errorKey, "GENERAL_ERR0033");
                             } else if (compareDateByDay(inputValue) <= 0) {
                                 // DS_ERR001 - {{field} cannot be future date.
-                                errorMap.put(errorKey, MessageUtil.replaceMessage("DS_ERR001", itemConfigDto.getDisplayInfo(), "field"));
+                                errorMap.put(errorKey,
+                                        MessageUtil.replaceMessage("DS_ERR001", itemConfigDto.getDisplayInfo(), "field"));
                             }
                         }
                     }
-                } else if(HcsaConsts.SUPFORM_ITEM_TYPE_RADIO.equals(itemConfigDto.getItemType())) {
-                    String errorKey = appSvcSuplmItemDto.getItemConfigId() + appSvcSuplmItemDto.getSeqNum();
-                    String inputValue = appSvcSuplmItemDto.getInputValue();
-                    if (StringUtil.isEmpty(inputValue) && 1 == itemConfigDto.getMandatoryType()) {
+                } else if (HcsaConsts.SUPFORM_ITEM_TYPE_RADIO.equals(itemConfigDto.getItemType())) {
+                    if (StringUtil.isEmpty(inputValue) && 1 == mandatoryType) {
                         errorMap.put(errorKey, "GENERAL_ERR0006");
+                    }
+                } else if (HcsaConsts.SUPFORM_ITEM_TYPE_CHECKBOX.equals(itemConfigDto.getItemType())) {
+                    if (StringUtil.isEmpty(inputValue) && 1 == mandatoryType) {
+                        errorMap.put(errorKey, "GENERAL_ERR0006");
+                    }
+                }
+
+                if (2 == mandatoryType && StringUtil.isEmpty(inputValue)) {
+                    String radioBatchNum = itemConfigDto.getRadioBatchNum();
+                    String conditionItemId = itemConfigDto.getConditionItemId();
+                    String specialCondition = itemConfigDto.getSpecialConditionType();
+                    AppSvcSuplmItemDto condDto = itemMap.get(conditionItemId + appSvcSuplmItemDto.getSeqNum());
+                    if (StringUtil.isNotEmpty(specialCondition) && condDto != null
+                            && StringUtil.isNotEmpty(condDto.getInputValue())) {
+                        String condValue = condDto.getInputValue();
+                        String[] codes = StringUtil.convertCode(specialCondition.split("#"));
+                        boolean mandatory = StringUtil.isIn(condValue, codes);
+                        List<AppSvcSuplmItemDto> appSvcSuplmItemDtos = radioBatchMap.get(radioBatchNum);
+                        if (IaisCommonUtils.isEmpty(appSvcSuplmItemDtos)) {
+                            if (mandatory) {
+                                errorMap.put(errorKey, "GENERAL_ERR0006");
+                            }
+                        } else {
+                            if (appSvcSuplmItemDtos.stream().anyMatch(dto -> StringUtil.isEmpty(dto.getInputValue()))
+                                    && mandatory) {
+                                AppSvcSuplmItemDto itemDto = appSvcSuplmItemDtos.stream()
+                                        .max(Comparator.comparingInt(dto -> dto.getItemConfigDto().getSeqNum()))
+                                        .orElse(appSvcSuplmItemDto);
+                                errorMap.put(itemDto.getItemConfigId() + itemDto.getSeqNum(), "GENERAL_ERR0006");
+                            }
+                        }
                     }
                 }
             }

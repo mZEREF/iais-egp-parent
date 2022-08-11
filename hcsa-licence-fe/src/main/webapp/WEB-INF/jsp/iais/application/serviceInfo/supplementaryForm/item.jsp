@@ -74,6 +74,12 @@
             <iais:field width="5" cssClass="col-md-5" mandatory="${itemConfigDto.mandatoryType == 1}"
                         value="${itemConfigDto.displayInfo}"/>
             <iais:value width="7" cssClass="col-md-3">
+                <c:if test="${SUPFORM_ITEM_TYPE_TEXT.SUPFORM_DATA_TYPE_DATE == itemConfigDto.dataType}">
+
+                </c:if>
+                <c:if test="${}">
+
+                </c:if>
                 <input maxlength="${itemConfigDto.maxLength}" type="text" name="${itemConfigDto.id}${item.seqNum}"
                        data-base="${itemConfigDto.id}" data-parent="${itemConfigDto.parentItemId}" data-seq="${item.seqNum}"
                        data-conditionItemId="${itemConfigDto.conditionItemId}" data-specialCondition="${itemConfigDto.specialConditionType}"

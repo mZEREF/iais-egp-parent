@@ -264,7 +264,7 @@
                                 </iais:value>
                                 <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
                                 <iais:value cssClass="col-xs-12 col-md-5 ">
-                                    <input class="unitNo" maxlength="5" type="text" data-base="UnitNo12" name="${status.index}UnitNo120" value="${appGrpPremisesDto.unitNo}"/>
+                                    <input class="unitNo" maxlength="5" type="text" data-base="UnitNo" name="${status.index}UnitNo0" value="${appGrpPremisesDto.unitNo}"/>
                                     <span class="error-msg" name="iaisErrorMsg" id="error_${status.index}UnitNo0"></span>
                                 </iais:value>
                             </div>
