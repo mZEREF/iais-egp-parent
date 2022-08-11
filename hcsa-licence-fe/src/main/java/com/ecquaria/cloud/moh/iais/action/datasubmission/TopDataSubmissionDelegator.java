@@ -1060,6 +1060,7 @@ public class TopDataSubmissionDelegator {
             }
         }
         ControllerHelper.get(request, preTerminationDto);
+
         if(StringUtil.isNotEmpty(preTerminationDto.getCounsellorIdNo())){
             preTerminationDto.setCounsellorIdNo(preTerminationDto.getCounsellorIdNo().toUpperCase());
         }
@@ -1100,7 +1101,7 @@ public class TopDataSubmissionDelegator {
         }
 
         if(preTerminationDto.getCounsellingAge()!=null){
-            if(preTerminationDto.getCounsellingAge()>16){
+            if(preTerminationDto.getCounsellingAge()>=16){
                 String counsellingPlace = ParamUtil.getRequestString(request, "counsellingPlace");
                 preTerminationDto.setCounsellingPlace(counsellingPlace);
             }else {
