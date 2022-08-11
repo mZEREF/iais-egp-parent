@@ -1,7 +1,3 @@
-<c:set var="practitioners" value="${practitionersList}"/>
-<c:set var="anaesthetists" value="${anaesthetistsList}"/>
-<c:set var="nurses" value="${nursesList}"/>
-<c:set var="counsellors" value="${counsellorsList}"/>
 <iais:row>
     <iais:field width="6" cssClass="col-md-6" value="Please indicate"/>
     <iais:value width="6" cssClass="col-md-6">
@@ -11,49 +7,79 @@
     </iais:value>
 </iais:row>
 <c:set var="row_total_practitioners" value="0"></c:set>
+<c:forEach var="person" items="${currentPreviewSvcInfo.appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList}" varStatus="s">
+    <c:set var="row_count_practitioners" value="${row_total_practitioners+1}" />
+    <c:if test="${person.psnType == 'practitioners'}">
+        <c:set var="row_total_practitioners" value="${row_count_practitioners}" />
+    </c:if>
+</c:forEach>
 <c:forEach var="person" items="${currentPreviewSvcInfo.appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList}" varStatus="status">
     <c:if test="${person.psnType == 'practitioners'}">
-        <c:set var="row_count_practitioners" value="${row_total_practitioners+1}" />
-        <iais:row>
-            <div class="col-xs-12">
-                <p><strong>Name, Professional Regn. No. and Qualification of medical practitioners authorised to perform Abortion
-                    &nbsp;<c:if test="${row_count_practitioners > 1}"> ${status.index+1}</c:if>:</strong></p>
-            </div>
-        </iais:row>
-        <%@include file="viewPractitionersDetail.jsp"%>
-    </c:if>
+        <c:if test="${row_total_practitioners > 1}">
+            <iais:row>
+                <div class="col-xs-12">
+                    <p><strong>Name, Professional Regn. No. and Qualification of medical practitioners authorised to perform Abortion
+                        &nbsp;&nbsp;${person.seqNum+1}:</strong></p>
+                </div>
+            </iais:row>
+            <%@include file="viewPractitionersDetail.jsp"%>
+        </c:if>
 
+        <c:if test="${row_total_practitioners == 1}">
+            <iais:row>
+                <div class="col-xs-12">
+                    <p><strong>Name, Professional Regn. No. and Qualification of medical practitioners authorised to perform Abortion :</strong></p>
+                </div>
+            </iais:row>
+            <%@include file="viewPractitionersDetail.jsp"%>
+        </c:if>
+    </c:if>
 </c:forEach>
 
+<c:set var="row_total_anaesthetists" value="0"></c:set>
+<c:forEach var="person" items="${currentPreviewSvcInfo.appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList}" varStatus="s">
+    <c:set var="row_count_anaesthetists" value="${row_total_anaesthetists+1}" />
+    <c:if test="${person.psnType == 'anaesthetists'}">
+        <c:set var="row_total_anaesthetists" value="${row_count_anaesthetists}" />
+    </c:if>
+</c:forEach>
 <c:forEach var="person" items="${currentPreviewSvcInfo.appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList}" varStatus="status">
     <c:if test="${person.psnType == 'anaesthetists'}">
-        <iais:row>
-            <div class="col-xs-12">
-                <p><strong>Name, Professional Regn. No. and Qualification of anaesthetists&nbsp;<c:if test="${anaesthetistsList.size() > 1}"> ${status.index+1}</c:if>:</strong></p>
-            </div>
-        </iais:row>
-        <%@include file="viewAnaesthetistsDetail.jsp"%>
+        <c:if test="${row_total_anaesthetists > 1}">
+            <iais:row>
+                <div class="col-xs-12">
+                    <p><strong>Name, Professional Regn. No. and Qualification of anaesthetists&nbsp;${person.seqNum+1}:</strong></p>
+                </div>
+            </iais:row>
+            <%@include file="viewAnaesthetistsDetail.jsp"%>
+        </c:if>
+        <c:if test="${row_total_anaesthetists == 1}">
+            <iais:row>
+                <div class="col-xs-12">
+                    <p><strong>Name, Professional Regn. No. and Qualification of anaesthetists&nbsp;:</strong></p>
+                </div>
+            </iais:row>
+            <%@include file="viewAnaesthetistsDetail.jsp"%>
+        </c:if>
     </c:if>
 </c:forEach>
 
-
-
-<c:set var="row_total_nurses" value="0"></c:set>
-<c:forEach var="person" items="${currentPreviewSvcInfo.appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList}" varStatus="status">
+<c:set var="row_total_nurses" value="0" />
+<c:forEach var="person" items="${currentPreviewSvcInfo.appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList}" varStatus="s">
     <c:set var="row_count_nurses" value="${row_total_nurses+1}" />
     <c:if test="${person.psnType == 'nurses'}">
         <c:set var="row_total_nurses" value="${row_count_nurses}" />
-        ${row_total_nurses}
     </c:if>
 </c:forEach>
-<c:forEach var="person" items="${currentPreviewSvcInfo.appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList}" varStatus="status">
+<c:forEach var="person" items="${currentPreviewSvcInfo.appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList}">
     <c:if test="${person.psnType == 'nurses'}">
         <c:if test="${row_total_nurses > 1}">
-           <iais:row>
-               <div class="col-xs-12">
-                   <p><strong>Name, Professional Regn. No. and Qualification of trained nurses&nbsp;${s.index+1}:</strong></p>
-               </div>
-           </iais:row>
+            <iais:row>
+                <div class="col-xs-12">
+                    <p><strong>Name, Professional Regn. No. and Qualification of trained nurses&nbsp;${person.seqNum+1}:</strong></p>
+                </div>
+            </iais:row>
+            <%@include file="viewNursesDetail.jsp"%>
         </c:if>
 
         <c:if test="${row_total_nurses == 1}">
@@ -62,19 +88,38 @@
                     <p><strong>Name, Professional Regn. No. and Qualification of trained nurses&nbsp;:</strong></p>
                 </div>
             </iais:row>
+            <%@include file="viewNursesDetail.jsp"%>
         </c:if>
-        <%@include file="viewNursesDetail.jsp"%>
+
     </c:if>
 </c:forEach>
 
+<c:set var="row_total_counsellors" value="0" />
+<c:forEach var="person" items="${currentPreviewSvcInfo.appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList}" varStatus="s">
+    <c:set var="row_count_counsellors" value="${row_total_counsellors+1}" />
+    <c:if test="${person.psnType == 'counsellors'}">
+        <c:set var="row_total_counsellors" value="${row_count_counsellors}" />
+    </c:if>
+</c:forEach>
 <c:forEach var="person" items="${currentPreviewSvcInfo.appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList}" varStatus="status">
     <c:if test="${person.psnType == 'counsellors'}">
-        <iais:row>
-            <div class="col-xs-12">
-                <p><strong>Name, Professional Regn. No. and Qualification of certified TOP counsellors&nbsp;<c:if test="${counsellorsList.size() > 1}"> ${status.index+1}</c:if>:</strong></p>
-            </div>
-        </iais:row>
-        <%@include file="viewCounsellorsDetail.jsp"%>
+        <c:if test="${row_total_counsellors > 1}">
+            <iais:row>
+                <div class="col-xs-12">
+                    <p><strong>Name, Professional Regn. No. and Qualification of certified TOP counsellors&nbsp;${person.seqNum+1}:</strong></p>
+                </div>
+            </iais:row>
+            <%@include file="viewCounsellorsDetail.jsp"%>
+        </c:if>
+
+        <c:if test="${row_total_counsellors == 1}">
+            <iais:row>
+                <div class="col-xs-12">
+                    <p><strong>Name, Professional Regn. No. and Qualification of certified TOP counsellors&nbsp;:</strong></p>
+                </div>
+            </iais:row>
+            <%@include file="viewCounsellorsDetail.jsp"%>
+        </c:if>
     </c:if>
 </c:forEach>
 
