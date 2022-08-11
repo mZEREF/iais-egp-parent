@@ -314,7 +314,7 @@ public abstract class DpCommonDelegator {
             }
             List<DpSuperDataSubmissionDto> beList = IaisCommonUtils.genNewArrayList(1);
             beList.add(dpSuperDataSubmissionDto);
-            dpSuperDataSubmissionDto = dpDataSubmissionService.saveDpSuperDataSubmissionDtoToBE(beList);
+            dpDataSubmissionService.saveDpSuperDataSubmissionDtoToBE(beList);
         } catch (Exception e) {
             log.error(StringUtil.changeForLog("The Eic saveDpSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
         }
