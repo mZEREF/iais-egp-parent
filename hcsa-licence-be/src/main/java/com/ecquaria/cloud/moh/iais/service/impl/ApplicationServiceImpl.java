@@ -624,8 +624,10 @@ public class ApplicationServiceImpl implements ApplicationService {
         String messageNo = inboxMsgService.getMessageNo();
         List<AppPremiseMiscDto> appPremiseMiscDtoList = IaisCommonUtils.genNewArrayList();
         AppPremiseMiscDto appPremiseMiscDto = new AppPremiseMiscDto();
+        appPremiseMiscDto.setAppPremCorreId(applicationViewDto.getAppPremisesCorrelationId());
         appPremiseMiscDto.setAppealType(ApplicationConsts.APPLICATION_RFI_MSG);
-        appPremiseMiscDto.setRelateRecId(messageNo);
+        appPremiseMiscDto.setOtherReason(messageNo);
+        appPremiseMiscDto.setPatNeedTrans(Boolean.FALSE);
         appPremiseMiscDtoList.add(appPremiseMiscDto);
         applicationDto.setAppPremiseMiscDtoList(appPremiseMiscDtoList);
         String applicationType = applicationDto.getApplicationType();

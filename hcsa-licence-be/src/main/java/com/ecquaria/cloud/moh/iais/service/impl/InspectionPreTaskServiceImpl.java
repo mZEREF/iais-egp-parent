@@ -346,8 +346,10 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         if(!StringUtil.isEmpty(selfRfiDecision)){
             String selfRfiMsgNo = sendSelfRfiEmail(taskDto, premCheckItems, applicationViewDto, applicationDto, applicantName, applicationNo, appRfiDecision, preInspecComments);
             AppPremiseMiscDto appPremiseMiscDto = new AppPremiseMiscDto();
+            appPremiseMiscDto.setAppPremCorreId(taskDto.getRefNo());
             appPremiseMiscDto.setAppealType(ApplicationConsts.SELF_ASS_RFI_MSG);
-            appPremiseMiscDto.setRelateRecId(selfRfiMsgNo);
+            appPremiseMiscDto.setOtherReason(selfRfiMsgNo);
+            appPremiseMiscDto.setPatNeedTrans(Boolean.FALSE);
             List<AppPremiseMiscDto> appPremiseMiscDtoList = applicationDto.getAppPremiseMiscDtoList();
             if (appPremiseMiscDtoList != null) {
                 appPremiseMiscDtoList.add(appPremiseMiscDto);
@@ -369,6 +371,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION);
             applicationDto1.setSelfAssMtFlag(selfAssMtFlag);
         }
+        applicationDto1.setAppPremiseMiscDtoList(applicationDto.getAppPremiseMiscDtoList());
         applicationDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         applicationService.updateFEApplicaiton(applicationDto1);
         applicationViewDto.setApplicationDto(applicationDto1);
