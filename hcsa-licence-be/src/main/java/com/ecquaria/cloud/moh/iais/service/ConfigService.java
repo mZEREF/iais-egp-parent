@@ -22,6 +22,8 @@ public interface ConfigService {
 
     List<HcsaServiceDto> getActiveServicesBySvcType(String svcType);
 
+    HcsaServiceConfigDto getHcsaServiceConfigDtoByServiceId(HcsaServiceConfigDto hcsaServiceConfigDtoPrePare,String serviceId);
+
     void viewPageInfo(HttpServletRequest request);
 
     void editPageInfo(HttpServletRequest request);
