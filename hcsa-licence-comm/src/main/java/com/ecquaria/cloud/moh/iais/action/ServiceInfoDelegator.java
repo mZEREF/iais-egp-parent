@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoTo
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSpecialServiceInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSuplmFormDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -355,9 +356,53 @@ public class ServiceInfoDelegator {
     }
 
     private void prepareSpecialServicesForm(HttpServletRequest request) {
+        log.debug(StringUtil.changeForLog("prepare SpecialServicesForm start ..."));
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+        String currSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
+        AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request, currSvcId);
+        List<AppPremSpecialisedDto> appPremSpecialisedDtos = appSubmissionDto.getAppPremSpecialisedDtoList();
+        List<AppPremSpecialisedDto> appPremSpecialisedDtoList=IaisCommonUtils.genNewArrayList();
+        for (AppPremSpecialisedDto appPremSpecialisedDto : appPremSpecialisedDtos) {
+            if (appPremSpecialisedDto.getBaseSvcId().equals(currSvcId)){
+                appPremSpecialisedDtoList.add(appPremSpecialisedDto);
+            }
+        }
+        List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = ApplicationHelper.initAppSvcSpecialServiceInfoDtoList(currSvcInfoDto,appPremSpecialisedDtos);
+        boolean isRfi = ApplicationHelper.checkIsRfi(request);
+        ParamUtil.setRequestAttr(request, "isRfi", isRfi);
+        ParamUtil.setRequestAttr(request, "appSvcSpecialServiceInfoList", appSvcSpecialServiceInfoList);
+        log.debug(StringUtil.changeForLog("prepare SpecialServicesForm end ..."));
     }
 
     private void doSpecialServicesForm(HttpServletRequest request) {
+        log.debug(StringUtil.changeForLog("do SpecialServicesForm start ..."));
+
+        String currSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+
+        AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request, currSvcId);
+        String isEdit = ParamUtil.getString(request, IS_EDIT);
+        boolean isRfi = ApplicationHelper.checkIsRfi(request);
+
+        List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = currSvcInfoDto.getAppSvcSpecialServiceInfoList();
+
+
+        boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto, RfcConst.EDIT_SERVICE, isEdit, isRfi);
+        log.debug(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
+        if (isGetDataFromPage) {
+            //get data from page
+            appSvcSpecialServiceInfoList = AppDataHelper.gengetAppSvcSpecialServiceInfoList(request, appSvcSpecialServiceInfoList,appSubmissionDto.getAppType());
+            currSvcInfoDto.setAppSvcSpecialServiceInfoList(appSvcSpecialServiceInfoList);
+            setAppSvcRelatedInfoMap(request, currSvcId, currSvcInfoDto);
+        }
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        String crud_action_type = ParamUtil.getRequestString(request, "nextStep");
+        if ("next".equals(crud_action_type)) {
+//            AppValidatorHelper.doValidateSpecialServicesForm(appSvcSpecialServiceInfoList, appSubmissionDto.getAppType(),
+//                    appSubmissionDto.getLicenceId(), errorMap);
+        }
+        checkAction(errorMap, HcsaConsts.STEP_BUSINESS_NAME, appSubmissionDto, request);
+        log.debug(StringUtil.changeForLog("do SpecialServicesForm end ..."));
     }
 
     private void prepareSupplementaryForm(HttpServletRequest request) {
@@ -1695,8 +1740,8 @@ public class ServiceInfoDelegator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
         if ("next".equals(crud_action_type)) {
-//            AppValidatorHelper.doValidateBusiness(appSvcBusinessDtos, appSubmissionDto.getAppType(),
-//                    appSubmissionDto.getLicenceId(), errorMap);
+            AppValidatorHelper.doValidateBusiness(appSvcBusinessDtos, appSubmissionDto.getAppType(),
+                    appSubmissionDto.getLicenceId(), errorMap);
         }
         checkAction(errorMap, HcsaConsts.STEP_BUSINESS_NAME, appSubmissionDto, bpc.request);
         log.debug(StringUtil.changeForLog("do Business end ..."));
@@ -1737,9 +1782,8 @@ public class ServiceInfoDelegator {
             if (StringUtil.isEmpty(action)) {
                 number = 0;
             } else {
-                String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES, HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS,
-                        HcsaConsts.STEP_DISCIPLINE_ALLOCATION, HcsaConsts.STEP_SERVICE_PERSONNEL,
-                        HcsaConsts.STEP_PRINCIPAL_OFFICERS, HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER, HcsaConsts.STEP_MEDALERT_PERSON};
+                String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,
+                        HcsaConsts.STEP_DISCIPLINE_ALLOCATION};
                 for (int i = 0; i < hcsaServiceStepSchemeDtos.size(); i++) {
                     if (action.equals(hcsaServiceStepSchemeDtos.get(i).getStepCode())) {
                         number = i;
