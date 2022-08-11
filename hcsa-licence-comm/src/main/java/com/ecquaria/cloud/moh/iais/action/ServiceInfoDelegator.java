@@ -398,10 +398,10 @@ public class ServiceInfoDelegator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String crud_action_type = ParamUtil.getRequestString(request, "nextStep");
         if ("next".equals(crud_action_type)) {
-//            AppValidatorHelper.doValidateSpecialServicesForm(appSvcSpecialServiceInfoList, appSubmissionDto.getAppType(),
-//                    appSubmissionDto.getLicenceId(), errorMap);
+            AppValidatorHelper.doValidateSpecialServicesForm(appSvcSpecialServiceInfoList, appSubmissionDto.getAppType(),
+                    appSubmissionDto.getLicenceId(), errorMap);
         }
-        checkAction(errorMap, HcsaConsts.STEP_BUSINESS_NAME, appSubmissionDto, request);
+        checkAction(errorMap, HcsaConsts.STEP_SPECIAL_SERVICES_FORM, appSubmissionDto, request);
         log.debug(StringUtil.changeForLog("do SpecialServicesForm end ..."));
     }
 

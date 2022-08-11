@@ -33,12 +33,6 @@
 
         <c:forEach var="specialServiceSectionDto" items="${appSvcSpecialServiceInfo.specialServiceSectionDtoList}" varStatus="subSvcRelStatus">
 
-            <%--<c:forEach var="appSvcSpecialServiceInfo" items="${appSvcSpecialServiceInfoMap}" varStatus="appSvcSpecialServiceInfoStatus">
-                <c:if test="${appSvcSpecialServiceInfo.key == appPremSpecialisedDto.premisesIndexNo}">
-                    <c:set var="svcSpecialServiceInfo" value="${appSvcSpecialServiceInfo.value}"/>
-                </c:if>
-            </c:forEach>--%>
-
             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                 <div class="panel panel-default">
                     <div class="panel-heading " id="business-heading"  role="tab">

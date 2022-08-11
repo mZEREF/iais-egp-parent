@@ -23,7 +23,7 @@
                 $(v).find('.psnHeader').html('');
             }
             $(v).find('div.personnel-content').each(function (i, x) {
-                var flag=isEmpty($(x).find('input.profRegNo').val)?false:true;
+                var flag=isEmpty($(x).find('input.profRegNo').val())?false:true;
                 disablePrsInfo($(x),flag);
             })
 
@@ -84,8 +84,6 @@
 
         var length =  $target.find('div.personnel-content').length;
         $target.find('input.length').val(length);
-        console.log(length)
-
         dismissWaiting();
     }
 
@@ -102,13 +100,11 @@
                 $currContent.find('.psnHeader').html('');
             }
             var len =  $Content.find('div.personnel-content').length;
-            console.log(len)
             if (len==0){
                 $Content.find('input.length').val(1);
             }else {
                 $Content.find('input.length').val(len);
             }
-            console.log("11:"+$Content.find('input.length').val());
         });
     }
 

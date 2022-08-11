@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocSecDetailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.SpecialServiceSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
@@ -31,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoTo
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSpecialServiceInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSuplmFormDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSuplmGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSuplmItemDto;
@@ -2869,4 +2871,119 @@ public final class AppValidatorHelper {
         }
     }
 
+    public static void doValidateSpecialServicesForm(List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList, String appType, String licenceId, Map<String, String> errorMap) {
+        if (appSvcSpecialServiceInfoList == null || appSvcSpecialServiceInfoList.isEmpty()) {
+            return;
+        }
+        String prefix = "";
+        for (int i = 0; i < appSvcSpecialServiceInfoList.size(); i++) {
+
+            List<SpecialServiceSectionDto> specialServiceSectionDtoList=appSvcSpecialServiceInfoList.get(i).getSpecialServiceSectionDtoList();
+
+            for (int j=0;j<specialServiceSectionDtoList.size();j++){
+                SpecialServiceSectionDto specialServiceSectionDto=specialServiceSectionDtoList.get(j);
+
+                for (int x=0;x<specialServiceSectionDto.getAppSvcDirectorDtoList().size();x++){
+                    validateSpecialServicePerson(specialServiceSectionDto.getAppSvcDirectorDtoList().get(x),prefix+i+j+"dir",""+x,appType,errorMap);
+                }
+                for (int x=0;x<specialServiceSectionDto.getAppSvcChargedNurseDtoList().size();x++){
+                    validateSpecialServicePerson(specialServiceSectionDto.getAppSvcChargedNurseDtoList().get(x),prefix+i+j+"nur",""+x,appType,errorMap);
+                }
+
+            }
+        }
+    }
+
+    private static void validateSpecialServicePerson(AppSvcPersonnelDto appSvcPersonnelDto, String prefix, String subfix, String appType, Map<String, String> errorMap) {
+        String signal = "GENERAL_ERR0006";
+
+        String name = appSvcPersonnelDto.getName();
+        if (StringUtil.isEmpty(name)) {
+            errorMap.put(prefix+"name" + subfix, signal);
+        } else if (name.length() > 110) {
+            errorMap.put(prefix+"name" + subfix, signal);
+        }
+
+        String salutation = appSvcPersonnelDto.getSalutation();
+        if (StringUtil.isEmpty(salutation)) {
+            errorMap.put(prefix + "salutation" + subfix, signal);
+        }
+
+        String designation = appSvcPersonnelDto.getDesignation();
+        if (StringUtil.isEmpty(designation)) {
+            errorMap.put(prefix + "designation" + subfix, signal);
+        } else if (HcsaAppConst.DESIGNATION_OTHERS.equals(designation)) {
+            String otherDesignation = appSvcPersonnelDto.getOtherDesignation();
+            if (StringUtil.isEmpty(otherDesignation)) {
+                errorMap.put(prefix + "otherDesignation" + subfix, signal);
+            } else if (otherDesignation.length() > 100) {
+                errorMap.put(prefix + "otherDesignation" + subfix, signal);
+            }
+        }
+
+        String professionBoard = appSvcPersonnelDto.getProfessionBoard();
+        if (StringUtil.isEmpty(professionBoard)) {
+            errorMap.put(prefix + "professionBoard" + subfix, signal);
+        }
+
+        String professionType = appSvcPersonnelDto.getProfessionType();
+        if (StringUtil.isEmpty(professionType)) {
+            errorMap.put(prefix + "professionType" + subfix, signal);
+        }
+
+        String profRegNo = appSvcPersonnelDto.getProfRegNo();
+        if (StringUtil.isEmpty(profRegNo)) {
+            errorMap.put(prefix + "profRegNo" + subfix, signal);
+        } else if (profRegNo.length() > 20) {
+            errorMap.put(prefix + "profRegNo" + subfix, signal);
+        }
+
+        String typeOfCurrRegi = appSvcPersonnelDto.getTypeOfCurrRegi();
+        if (StringUtil.isEmpty(typeOfCurrRegi)) {
+            errorMap.put(prefix + "typeOfCurrRegi" + subfix, signal);
+        } else if (typeOfCurrRegi.length() > 100) {
+            errorMap.put(prefix + "typeOfCurrRegi" + subfix, signal);
+        }
+
+        String currRegiDate = appSvcPersonnelDto.getCurrRegiDate();
+        if (StringUtil.isEmpty(currRegiDate)) {
+            errorMap.put(prefix + "currRegiDate" + subfix, signal);
+        } else if (currRegiDate.length() > 15) {
+            errorMap.put(prefix + "currRegiDate" + subfix, signal);
+        }
+
+        String praCerEndDateStr = appSvcPersonnelDto.getPraCerEndDate();
+        if (StringUtil.isEmpty(praCerEndDateStr)) {
+            errorMap.put(prefix + "praCerEndDate" + subfix, signal);
+        } else if (praCerEndDateStr.length() > 15) {
+            errorMap.put(prefix + "praCerEndDate" + subfix, signal);
+        }
+
+        String typeOfRegister = appSvcPersonnelDto.getTypeOfRegister();
+        if (StringUtil.isEmpty(typeOfRegister)) {
+            errorMap.put(prefix + "typeOfRegister" + subfix, signal);
+        } else if (typeOfRegister.length() > 100) {
+            errorMap.put(prefix + "typeOfRegister" + subfix, signal);
+        }
+
+        String specialtyGetDateStr = appSvcPersonnelDto.getSpecialtyGetDate();
+        if (StringUtil.isEmpty(specialtyGetDateStr)) {
+            errorMap.put(prefix + "specialtyGetDate" + subfix, signal);
+        } else if (specialtyGetDateStr.length() > 15) {
+            errorMap.put(prefix + "specialtyGetDate" + subfix, signal);
+        }
+
+        String wrkExpYear = appSvcPersonnelDto.getWrkExpYear();
+        if (StringUtil.isEmpty(wrkExpYear)) {
+            errorMap.put(prefix+"wrkExpYear" + subfix, signal);
+        } else {
+            if (wrkExpYear.length() > 2) {
+                errorMap.put(prefix+"wrkExpYear" + subfix, signal);
+            }
+            if (!wrkExpYear.matches("^[0-9]*$")) {
+                errorMap.put(prefix+"wrkExpYear" + subfix, signal);
+            }
+        }
+
+    }
 }
