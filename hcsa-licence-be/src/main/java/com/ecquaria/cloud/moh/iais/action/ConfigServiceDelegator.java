@@ -173,7 +173,8 @@ public class ConfigServiceDelegator {
         //configService.viewPageInfo(bpc.request);
         HcsaServiceConfigDto hcsaServiceConfigDto = preparePage(bpc.request);
         //set data for this hcsaServiceConfigDto
-        String serviceId = ParamUtil.getString(bpc.request,"crud_action_value");
+        String serviceId = ParamUtil.getMaskedString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        log.info(StringUtil.changeForLog("The serviceid is -->:"+serviceId));
         hcsaServiceConfigDto = configService.getHcsaServiceConfigDtoByServiceId(hcsaServiceConfigDto,serviceId);
         ParamUtil.setRequestAttr(bpc.request,"hcsaServiceConfigDto",hcsaServiceConfigDto);
         log.info(StringUtil.changeForLog("confige prepareView end"));

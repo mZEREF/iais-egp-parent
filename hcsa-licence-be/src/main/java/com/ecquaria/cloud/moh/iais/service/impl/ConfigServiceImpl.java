@@ -183,7 +183,7 @@ public class ConfigServiceImpl implements ConfigService {
                 hcsaServiceConfigDto.setOtherHcsaServiceSubServicePageDtoMap(otherHcsaServiceSubServicePageDtoMap);
                 hcsaServiceConfigDto.setSpecHcsaServiceSubServicePageDtoMap(specHcsaServiceSubServicePageDtoMap);
                 hcsaServiceConfigDto.setHcsaServiceCategoryDisciplineDtoMap(hcsaServiceCategoryDisciplineDtoMap);
-                hcsaServiceConfigDto.setPremisesTypes((String[])premisTypes.toArray());
+                hcsaServiceConfigDto.setPremisesTypes(premisTypes.toArray(new String[premisTypes.size()]));
             }else{
                 log.info(StringUtil.changeForLog("The hcsaSvcSpePremisesTypeDtos is null"));
             }
@@ -224,6 +224,7 @@ public class ConfigServiceImpl implements ConfigService {
                          }
 
                      }
+                     hcsaServiceConfigDto.setHcsaConfigPageDtoMap(hcsaConfigPageDtoMap);
                  }
             }
         }else{
