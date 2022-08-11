@@ -14,14 +14,18 @@ import java.io.Serializable;
 public class ARCycleStageDto implements Serializable {
     private String stepKey;
     private String stepValue;
+    // Determine the color of the display
     private String status;
+    // To determine what the current stage can do
+    private String permissions;
 
     public ARCycleStageDto() {
     }
 
-    public ARCycleStageDto(String stepKey, String stepValue, String status) {
+    public ARCycleStageDto(String stepKey, String stepValue, String status, String permissions) {
         this.stepKey = stepKey;
         this.stepValue = stepValue;
         this.status = status;
+        this.permissions = permissions;
     }
 }

@@ -512,22 +512,22 @@
    <position>{(570,810)(260,810)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareCycleStageSelection" linkstyle="Rectangle" name="" sourceName="/Steps/InvokeStep/Patient" style="rectanular">
-   <position>{(260,810)(259,645)(210,570)}</position>
+   <position>{(260,810)(210,570)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Draft" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
    <position>{(610,570)(600,930)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareCycleStageSelection" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Draft" style="rectanular">
-   <position>{(600,930)(260,929)(260,760)(210,570)}</position>
+   <position>{(600,930)(260,929)(210,570)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareCycleStageSelection" style="oblique">
+   <position>{(210,570)(360,460)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/CycleStageSelection" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
    <position>{(360,460)(330,570)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareStage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
    <position>{(360,460)(480,570)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareCycleStageSelection" style="oblique">
-   <position>{(210,570)(360,460)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
