@@ -540,14 +540,14 @@ public class DpSiUploadDelegate {
         }
 
         List<DpSuperDataSubmissionDto> dpSuperLists=dpDataSubmissionService.saveDpSuperDataSubmissionDtoList(dpSuperList);
-        List<DpSuperDataSubmissionDto> dpSuperListBe = IaisCommonUtils.genNewArrayList();
-        try {
-            dpSuperListBe = dpDataSubmissionService.saveDpSuperDataSubmissionDtoToBE(dpSuperLists);
-        } catch (Exception e) {
-            log.error(StringUtil.changeForLog("The Eic saveArSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
-        }
+//        List<DpSuperDataSubmissionDto> dpSuperListBe = IaisCommonUtils.genNewArrayList();
+//        try {
+//            dpSuperListBe = dpDataSubmissionService.saveDpSuperDataSubmissionDtoToBE(dpSuperLists);
+//        } catch (Exception e) {
+//            log.error(StringUtil.changeForLog("The Eic saveArSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
+//        }
         sendSovenorFileMsgAndEmail(bpc.request);
-        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_LIST, (Serializable) dpSuperListBe);
+        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_LIST, (Serializable) dpSuperLists);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.EMAIL_ADDRESS, DataSubmissionHelper.getEmailAddrsByRoleIdsAndLicenseeId(bpc.request, Collections.singletonList(RoleConsts.USER_ROLE_DS_DP)));
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.SUBMITTED_BY,
                 DataSubmissionHelper.getLoginContext(bpc.request).getUserName());

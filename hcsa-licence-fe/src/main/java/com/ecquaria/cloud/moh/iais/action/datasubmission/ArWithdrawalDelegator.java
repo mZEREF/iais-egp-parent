@@ -306,6 +306,8 @@ public class ArWithdrawalDelegator {
                 break;
             case DataSubmissionConsts.DS_DRP:
                 List<DpSuperDataSubmissionDto> addDpWithdrawnDtoList= (List<DpSuperDataSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "addWithdrawnDtoList");
+                List<DpSuperDataSubmissionDto> toBeList = IaisCommonUtils.genNewArrayList();
+
                 for (DpSuperDataSubmissionDto dpSuper:addDpWithdrawnDtoList
                      ) {
                     DsWithdrawCorrelationDto dsWithdrawCorrelationDto2=new DsWithdrawCorrelationDto();
@@ -315,9 +317,9 @@ public class ArWithdrawalDelegator {
                     dpSuper.getDataSubmissionDto().setAppType(DataSubmissionConsts.DS_APP_TYPE_WITHDRAW);
                     dpSuper.getDataSubmissionDto().setStatus(DataSubmissionConsts.DS_STATUS_WITHDRAW);
                     dpSuper.getCycleDto().setStatus(DataSubmissionConsts.DS_STATUS_WITHDRAW);
-
+                    dpSuper =dpDataSubmissionService.saveDpSuperDataSubmissionDto(dpSuper);
+                    toBeList.add(dpSuper);
                 }
-                List<DpSuperDataSubmissionDto> toBeList = dpDataSubmissionService.saveDpSuperDataSubmissionDtoList(addDpWithdrawnDtoList);
 
                 try {
                     dpDataSubmissionService.saveDpSuperDataSubmissionDtoToBE(toBeList);
