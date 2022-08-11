@@ -2759,7 +2759,7 @@ public final class AppValidatorHelper {
             log.info("The AppSvcSuplmItemDto List is null!!!!");
             return IaisCommonUtils.genNewHashMap();
         }
-        List<AppSvcSuplmItemDto> activeAppSvcSuplmItemDtoList = appSvcSuplmFormDto.getActiveAppSvcSuplmItemDtoList();
+
 
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         for (AppSvcSuplmGroupDto appSvcSuplmGroupDto : appSvcSuplmGroupDtoList) {
@@ -2774,7 +2774,7 @@ public final class AppValidatorHelper {
             for (AppSvcSuplmItemDto appSvcSuplmItemDto : appSvcSuplmGroupDto.getAppSvcSuplmItemDtoList()) {
                 SuppleFormItemConfigDto itemConfigDto = appSvcSuplmItemDto.getItemConfigDto();
                 if (HcsaConsts.SUPFORM_ITEM_TYPE_TEXT.equals(itemConfigDto.getItemType())) {
-                    String errorKey = appSvcSuplmItemDto.getConfigItemId() + appSvcSuplmItemDto.getSeqNum();
+                    String errorKey = appSvcSuplmItemDto.getItemConfigId() + appSvcSuplmItemDto.getSeqNum();
                     String inputValue = appSvcSuplmItemDto.getInputValue();
                     if (StringUtil.isEmpty(inputValue) && 1 == itemConfigDto.getMandatoryType()) {
                         errorMap.put(errorKey, "GENERAL_ERR0006");
@@ -2818,7 +2818,7 @@ public final class AppValidatorHelper {
                         }
                     }
                 } else if(HcsaConsts.SUPFORM_ITEM_TYPE_RADIO.equals(itemConfigDto.getItemType())) {
-                    String errorKey = appSvcSuplmItemDto.getConfigItemId() + appSvcSuplmItemDto.getSeqNum();
+                    String errorKey = appSvcSuplmItemDto.getItemConfigId() + appSvcSuplmItemDto.getSeqNum();
                     String inputValue = appSvcSuplmItemDto.getInputValue();
                     if (StringUtil.isEmpty(inputValue) && 1 == itemConfigDto.getMandatoryType()) {
                         errorMap.put(errorKey, "GENERAL_ERR0006");
