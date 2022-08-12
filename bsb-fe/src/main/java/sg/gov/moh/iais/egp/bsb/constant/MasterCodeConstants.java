@@ -575,6 +575,7 @@ public class MasterCodeConstants {
     public static final String DOC_TYPE_CF_FACILITY_RISK_ASSESSMENT_AND_MANAGEMENT = "DOCTCF023";
     public static final String DOC_TYPE_CF_FACILITY_SOP_POLICIES = "DOCTCF024";
     public static final String DOC_TYPE_CF_FACILITY_TRAINING_RECORDS = "DOCTCF025";
+    public static final String DOC_TYPE_CF_ENDORSEMENT_GENETIC_MODIFICATION_ADVISORY_COMMITTEE = "DOCTCF026";
 
     //UCF, BMF
     public static final String DOC_TYPE_UCF_OR_BMP_BIO_SAFETY_COMMITTEE = "DOCTUCF001";
