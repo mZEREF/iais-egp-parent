@@ -63,7 +63,9 @@ $(function () {
     $("#processingDecision").change(function () {
         var selectValue = $(this).val();
         // TODO: check these decision
-        if (selectValue === "MOHPRO003" || selectValue === "MOHPRO007" || selectValue === "MOHPRO014" || selectValue === "MOHPRO022") {
+        if (selectValue === "MOHPRO003" || selectValue === "MOHPRO007" ||
+            selectValue === "MOHPRO009" || selectValue === "MOHPRO014" ||
+            selectValue === "MOHPRO018" || selectValue === "MOHPRO022") {
             $("#selectMohUserDiv").show();
         } else {
             $("#selectMohUserDiv").hide();
@@ -245,11 +247,7 @@ function doInspectorProRecCheck(){
             break;
         }
     }
-    if(flag){
-        allNcItemCheck.checked = true;
-    }else{
-        allNcItemCheck.checked = false;
-    }
+    allNcItemCheck.checked = flag;
 }
 
 

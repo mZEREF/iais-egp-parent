@@ -24,7 +24,7 @@ import sg.gov.moh.iais.egp.bsb.dto.inspection.InsNCEmailDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsNCEmailInitDataDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsNCRectificationDataDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.InsReportProcessDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.InsReportDoApprovalProcessDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsSubmitFindingDataDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsSubmitReportDataDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.PreInspectionDataDto;
@@ -72,10 +72,13 @@ public interface InspectionClient {
                                                      @RequestParam("taskId") String taskId);
 
     @PostMapping(value = "/inspection/actual/validate/submit-report", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ValidationResultDto validateActualInspectionDOSubmitReportDecision(@RequestBody InsReportProcessDto dto, @RequestParam("appId") String appId);
+    ValidationResultDto validateActualInspectionDOSubmitReportDecision(@RequestBody InsProcessDto dto, @RequestParam("appId") String appId);
 
     @PostMapping(value = "/inspection/actual/validate/ao-review-report", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateActualInspectionAOReviewDecision(@RequestBody InsProcessDto processDto);
+
+    @PostMapping(value = "/inspection/actual/validate/do-approve-report", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateInspectionReportDOApprovalDecision(@RequestBody InsReportDoApprovalProcessDto processDto);
 
     @PostMapping(value = "/inspection/actual/validate/hm-handle-report", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateActualInspectionHMApprovalDecision(@RequestBody InsProcessDto processDto);
@@ -182,7 +185,7 @@ public interface InspectionClient {
     @PostMapping(value = "/inspection/actual/report/do/finalize", consumes = MediaType.APPLICATION_JSON_VALUE)
     String finalizeInspectionReport(@RequestParam("appId") String appId,
                                   @RequestParam("taskId") String taskId,
-                                  @RequestBody InsReportProcessDto processDto);
+                                  @RequestBody InsReportDoApprovalProcessDto processDto);
 
     @PostMapping(value = "/inspection/actual/report/ao/approve", consumes = MediaType.APPLICATION_JSON_VALUE)
     void reviewInspectionReportApprove(@RequestParam("appId") String appId,
@@ -213,12 +216,12 @@ public interface InspectionClient {
     @PostMapping(value = "/inspection/actual/report/do/to-applicant", consumes = MediaType.APPLICATION_JSON_VALUE)
     void routeInspectionReportToApplicant(@RequestParam("appId") String appId,
                                           @RequestParam("taskId") String taskId,
-                                          @RequestBody InsReportProcessDto processDto);
+                                          @RequestBody InsReportDoApprovalProcessDto processDto);
 
     @PostMapping(value = "/inspection/actual/report/do/to-ao", consumes = MediaType.APPLICATION_JSON_VALUE)
     void submitInspectionReportToAO(@RequestParam("appId") String appId,
                                     @RequestParam("taskId") String taskId,
-                                    @RequestBody InsReportProcessDto processDto);
+                                    @RequestBody InsProcessDto processDto);
 
     /************************************* non-compliance *************************************/
     @GetMapping(value = "/inspection/actual/non-compliance/init-data", produces = MediaType.APPLICATION_JSON_VALUE)
