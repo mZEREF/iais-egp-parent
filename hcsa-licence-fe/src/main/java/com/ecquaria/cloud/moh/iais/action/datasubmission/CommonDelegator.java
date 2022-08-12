@@ -99,6 +99,7 @@ public abstract class CommonDelegator {
         prepareSwitch(bpc);
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", DataSubmissionHelper.getSmallTitle(DataSubmissionConsts.DS_AR,
                 currentArDataSubmission.getAppType(), currentArDataSubmission.getSubmissionType()));
+        ParamUtil.setRequestAttr(bpc.request, "stageList", arDataSubmissionService.genAvailableStageList(bpc.request));
     }
 
     /**
