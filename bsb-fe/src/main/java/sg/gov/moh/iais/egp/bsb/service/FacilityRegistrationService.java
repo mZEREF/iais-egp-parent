@@ -22,7 +22,6 @@ import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
-import sg.gov.moh.iais.egp.bsb.common.rfc.CompareTwoObject;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.constant.SampleFileConstants;
@@ -48,7 +47,6 @@ import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilitySelectionDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.OtherApplicationInfoDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.PreviewSubmitDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
-import sg.gov.moh.iais.egp.bsb.dto.rfc.DiffContent;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationListResultUnit;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sg.gov.moh.iais.egp.bsb.util.mastercode.MasterCodeHolder;
@@ -239,7 +237,7 @@ public class FacilityRegistrationService {
     }
 
     /**
-     *  The method is used to get draft data from db ,and the draft have same classification and activities
+     *  The method is used to get draft data from db ,and the draft have same classification
      */
     private void getSameTypeFacilityDraftData(HttpServletRequest request, FacilitySelectionDto selectionDto) {
         FacilityRegisterDto eligibleDraftRegisterDto = (FacilityRegisterDto) ParamUtil.getSessionAttr(request, ELIGIBLE_DRAFT_REGISTER_DTO);
@@ -250,7 +248,7 @@ public class FacilityRegistrationService {
         //if draftAppNo is not null, The applicant may enter the Apply for New Facility module by clicking the Draft Application
         //when the draft dto get from session is null and draftAppNo is null,call API get draft data
         if (eligibleDraftRegisterDto == null && !StringUtils.hasLength(selectionDto.getDraftAppNo())) {
-            Map<Long, FacilityRegisterDto> registerDtoMap = facRegClient.getSameClassificationAndActivityDraftData(selectionDto).getEntity();
+            Map<Long, FacilityRegisterDto> registerDtoMap = facRegClient.getSameClassificationDraftData(selectionDto.getFacClassification()).getEntity();
             //get latest data
             if (!CollectionUtils.isEmpty(registerDtoMap)) {
                 Map<Long, FacilityRegisterDto> suitableMap = sortByKey(registerDtoMap);
@@ -273,7 +271,7 @@ public class FacilityRegistrationService {
         if (eligibleDraftRegisterDto != null) {
             //judge whether need query the draft data again
             FacilitySelectionDto facilitySelectionDto = eligibleDraftRegisterDto.getFacilitySelectionDto();
-            if (!facilitySelectionDto.getFacClassification().equals(selectionDto.getFacClassification()) || facilitySelectionDto.getActivityTypes().size() != selectionDto.getActivityTypes().size() || !facilitySelectionDto.getActivityTypes().equals(selectionDto.getActivityTypes())) {
+            if (!facilitySelectionDto.getFacClassification().equals(selectionDto.getFacClassification())) {
                 selectionDto.setDraftAppNo(null);
                 ParamUtil.setSessionAttr(request, ELIGIBLE_DRAFT_REGISTER_DTO, null);
                 getSameTypeFacilityDraftData(request, selectionDto);

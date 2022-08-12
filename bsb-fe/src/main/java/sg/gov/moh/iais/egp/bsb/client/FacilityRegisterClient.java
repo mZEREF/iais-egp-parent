@@ -101,8 +101,8 @@ public interface FacilityRegisterClient {
     @GetMapping(path = "/register/facility/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<FacilityRegisterDto> getFacilityRegistrationAppDataByApplicationId(@PathVariable("appId") String appId);
 
-    @GetMapping(path = "/register/facility/draft/same-classification-activity", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<Map<Long,FacilityRegisterDto>> getSameClassificationAndActivityDraftData(@RequestBody FacilitySelectionDto selectionDto);
+    @GetMapping(path = "/register/facility/draft/same-classification", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<Map<Long,FacilityRegisterDto>> getSameClassificationDraftData(@RequestParam("facClassification") String facClassification);
 
     /*******************RFC********************/
     @GetMapping(path = "/register/facility/rfc/{approvalId}", produces = MediaType.APPLICATION_JSON_VALUE)
