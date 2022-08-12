@@ -1544,6 +1544,14 @@ public class TopDataSubmissionDelegator {
     public void doDraft(BaseProcessClass bpc) {
         log.info(" ----- DoDraft ------ ");
         String currentStage = (String) ParamUtil.getRequestAttr(bpc.request,"currentStage");
+        Map<String,String> errMap= (Map<String, String>) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.ERRORMAP);
+        if(IaisCommonUtils.isNotEmpty(errMap)){
+            errMap.remove("amendReason");
+            errMap.remove("amendReasonOther");
+            errMap.remove("declaration");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errMap));
+
+        }
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_TOP, currentStage);
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(bpc.request);
         if (topSuperDataSubmissionDto != null) {
@@ -1589,14 +1597,7 @@ public class TopDataSubmissionDelegator {
     public void doControl(BaseProcessClass bpc) {
         log.info(" ----- DoControl ------ ");
         String crudType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
-        Map<String,String> errMap= (Map<String, String>) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.ERRORMAP);
-        if(IaisCommonUtils.isNotEmpty(errMap)){
-            errMap.remove("amendReason");
-            errMap.remove("amendReasonOther");
-            errMap.remove("declaration");
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errMap));
 
-        }
         String actionType = null;
         if ("return".equals(crudType)) {
             actionType = "return";
