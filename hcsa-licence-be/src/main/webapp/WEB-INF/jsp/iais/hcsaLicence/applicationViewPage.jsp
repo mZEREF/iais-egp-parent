@@ -195,7 +195,12 @@
                                                                         </c:if>
                                                                         <div id="rollBackCrDropdown" class="hidden">
                                                                             <iais:row>
-                                                                                <iais:field value="Stage to Reset to" required="true"/>
+                                                                                <label class="col-xs-0 col-md-4 control-label">Stage to Reset to <span style="color: red"> *</span>
+                                                                                    <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
+                                                                                       title='<iais:message key="INSPE_ACK003"/>'
+                                                                                       style="z-index: 10"
+                                                                                       data-original-title="">i</a>
+                                                                                </label>
                                                                                 <iais:value width="10">
                                                                                     <iais:select cssClass="rollBackCr" name="rollBackCr" id="rollBackCr"
                                                                                                  firstOption="Please Select"
