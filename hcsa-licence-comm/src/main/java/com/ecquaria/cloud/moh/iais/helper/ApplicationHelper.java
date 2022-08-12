@@ -2271,7 +2271,7 @@ public final class ApplicationHelper {
         return result;
     }
 
-    public static boolean initSupplementoryForm(AppSvcRelatedInfoDto currSvcInfoDto){
+    public static boolean initSupplementoryForm(AppSvcRelatedInfoDto currSvcInfoDto) {
         AppSvcSuplmFormDto appSvcSuplmFormDto = currSvcInfoDto.getAppSvcSuplmFormDto();
         if (appSvcSuplmFormDto == null) {
             appSvcSuplmFormDto = new AppSvcSuplmFormDto();
@@ -2371,21 +2371,21 @@ public final class ApplicationHelper {
     }
 
     public static List<AppSvcSpecialServiceInfoDto> initAppSvcSpecialServiceInfoDtoList(AppSvcRelatedInfoDto currSvcInfoDto,
-                                                             List<AppPremSpecialisedDto> appPremSpecialisedDtoList) {
+            List<AppPremSpecialisedDto> appPremSpecialisedDtoList) {
         return initAppSvcSpecialServiceInfoDtoList(currSvcInfoDto, appPremSpecialisedDtoList, true);
     }
 
     public static List<AppSvcSpecialServiceInfoDto> initAppSvcSpecialServiceInfoDtoList(AppSvcRelatedInfoDto currSvcInfoDto,
-                                                                                        List<AppPremSpecialisedDto> appPremSpecialisedDtoList, boolean init) {
+            List<AppPremSpecialisedDto> appPremSpecialisedDtoList, boolean init) {
         if (currSvcInfoDto == null) {
             return IaisCommonUtils.genNewArrayList();
         }
 
-        List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoDtoList=currSvcInfoDto.getAppSvcSpecialServiceInfoList();
-        if (!IaisCommonUtils.isEmpty(appSvcSpecialServiceInfoDtoList)){
+        List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoDtoList = currSvcInfoDto.getAppSvcSpecialServiceInfoList();
+        if (!IaisCommonUtils.isEmpty(appSvcSpecialServiceInfoDtoList)) {
             for (AppSvcSpecialServiceInfoDto appSvcSpecialServiceInfoDto : appSvcSpecialServiceInfoDtoList) {
-                if (appSvcSpecialServiceInfoDto.isInit()==true){
-                    init=false;
+                if (appSvcSpecialServiceInfoDto.isInit() == true) {
+                    init = false;
                     break;
                 }
             }
@@ -2401,8 +2401,9 @@ public final class ApplicationHelper {
         return appSvcSpecialServiceInfoDtos;
     }
 
-    private static List<AppSvcSpecialServiceInfoDto> genAppSvcSpecialServiceInfoDtoList(List<AppPremSpecialisedDto> appPremSpecialisedDtoList,
-                                                                                        AppSvcRelatedInfoDto currSvcInfoDto) {
+    private static List<AppSvcSpecialServiceInfoDto> genAppSvcSpecialServiceInfoDtoList(
+            List<AppPremSpecialisedDto> appPremSpecialisedDtoList,
+            AppSvcRelatedInfoDto currSvcInfoDto) {
         List<AppSvcSpecialServiceInfoDto> result = IaisCommonUtils.genNewArrayList();
         ConfigCommService configCommService = getConfigCommService();
         int i=1;
