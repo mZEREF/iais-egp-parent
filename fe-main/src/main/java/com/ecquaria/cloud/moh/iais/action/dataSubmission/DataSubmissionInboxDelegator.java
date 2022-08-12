@@ -25,7 +25,6 @@ import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
@@ -188,7 +187,13 @@ public class DataSubmissionInboxDelegator {
 		privilegeIds.stream().forEach(privilegeId ->{
 			switch(privilegeId){
 				case PrivilegeConsts.USER_PRIVILEGE_DS_AR_RFC :
-					rfcType.append(""+",");
+					rfcType.append(DataSubmissionConsts.DS_CYCLE_AR+",");
+					rfcType.append(DataSubmissionConsts.DS_CYCLE_IUI+",");
+					rfcType.append(DataSubmissionConsts.DS_CYCLE_EFO+",");
+					rfcType.append(DataSubmissionConsts.DS_CYCLE_NON+",");
+					rfcType.append(DataSubmissionConsts.DS_CYCLE_PATIENT_ART+",");
+					rfcType.append(DataSubmissionConsts.DS_CYCLE_STAGE+",");
+					rfcType.append(DataSubmissionConsts.DS_CYCLE_DONOR_SAMPLE+",");
 					break;
 				case PrivilegeConsts.USER_PRIVILEGE_DS_DP_RFC :
 					rfcType.append(DataSubmissionConsts.DS_CYCLE_DRP_PRESCRIBED+",");
