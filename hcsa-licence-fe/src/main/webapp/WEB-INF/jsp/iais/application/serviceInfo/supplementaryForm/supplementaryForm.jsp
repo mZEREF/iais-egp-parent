@@ -33,20 +33,21 @@
 
     <c:set var="appSvcSuplmFormDto" value="${currSvcInfoDto.appSvcSuplmFormDto}"/>
 
-    <c:forEach var="appSvcSuplmGroupDto" items="${appSvcSuplmFormDto.appSvcSuplmGroupDtoList}" varStatus="status">
-        <c:set var="batchSize" value="${appSvcSuplmGroupDto.count}"/>
-        <c:if test="${batchSize > 0}">
+    <c:forEach var="appSvcSuplmGroupDto" items="${appSvcSuplmFormDto.appSvcSuplmGroupDtoList}">
+        <c:set var="count" value="${appSvcSuplmGroupDto.count}"/>
+        <c:set var="baseSize" value="${appSvcSuplmGroupDto.baseSize}"/>
+        <c:if test="${count > 0}">
             <c:set var="groupId" value="${appSvcSuplmGroupDto.groupId}"/>
-            <c:if test="${not empty groupId}">
-                <iais:row cssClass="removeEditRow">
-                    <div class="col-xs-12 text-right removeEditDiv" data-group="${groupId}" data-seq="0">
-                        <h4 class="text-danger text-right">
-                            <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
-                        </h4>
-                    </div>
-                </iais:row>
-            </c:if>
             <c:forEach var="item" items="${appSvcSuplmGroupDto.appSvcSuplmItemDtoList}" varStatus="status">
+                <c:if test="${not empty groupId && status.index % baseSize == 0}">
+                    <iais:row cssClass="removeEditRow">
+                        <div class="col-xs-12 text-right removeEditDiv" data-group="${groupId}" data-seq="${item.seqNum}">
+                            <h4 class="text-danger text-right">
+                                <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
+                            </h4>
+                        </div>
+                    </iais:row>
+                </c:if>
                 <%@ include file="item.jsp" %>
             </c:forEach>
             <iais:value cssClass="col-xs-12 error_${groupId}">
@@ -54,7 +55,7 @@
             </iais:value>
             <c:if test="${not empty groupId}">
                 <div class="form-group col-md-12 col-xs-12 addMoreDiv" data-group="${groupId}">
-                    <input type="hidden" value="${batchSize}" name="${groupId}"/>
+                    <input type="hidden" value="${count}" name="${groupId}"/>
                     <input type="hidden" value="${appSvcSuplmGroupDto.maxCount}" name="${groupId}-max"/>
                     <span class="addMoreBtn" style="color:deepskyblue;cursor:pointer;">
                         <span style="">+ Add more</span>

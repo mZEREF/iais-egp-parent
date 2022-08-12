@@ -5,11 +5,13 @@
         removeBtnEvent();
         addMoreEvent();
         checkMandatoryEvent();
-        $('.item-record [data-curr]').trigger('click');
+        $('.item-record [data-curr]').each(function () {
+            checkItemMandatory($(this));
+        });
     });
 
     function refreshAddBtn() {
-        $('.addMoreDiv').each(function() {
+        $('.addMoreDiv').each(function () {
             let $tag = $(this);
             let group = $tag.data('group');
             let count = parseInt($('input[name="' + group + '"]').val());
@@ -117,51 +119,58 @@
             $target.before($romveRow);
             // main content
             let $itemRecords = $('[data-group="' + group + '"][data-seq="0"]:not(.removeEditDiv)').closest('.item-record').clone();
-            clearFields($itemRecords);
             resetItemIndex($itemRecords, index);
             $target.before($itemRecords);
             $('input[name="' + group + '"]').val(index + 1);
             removeBtnEvent();
             refreshAddBtn();
+            clearFields($('[data-group="' + group + '"][data-seq="' + index + '"]'));
             checkMandatoryEvent();
-            $('.item-record [data-curr]').trigger('click');
+            $('.item-record [data-curr]').each(function () {
+                checkItemMandatory($(this));
+            });
         });
     }
 
     var checkMandatoryEvent = function () {
         $('.item-record [data-curr]').unbind('click change');
         $('.item-record [data-curr]').on('click change', function () {
-            let $tag = $(this);
-            //let conditionItemId = $tag.data('conditionitemid');
-            let seq = $tag.data('seq');
-            let curr = $tag.data('curr');
-            let $conNodes = $('[data-conditionitemid="' + curr + '"][data-seq="' + seq + '"]');
-            let currVal = getValue($tag);
-            if (!isEmptyNode($conNodes)) {
-                let ary = isEmpty(currVal) ? [] : currVal.split('#');
-                $conNodes.each(function () {
-                    let $v = $(this);
-                    let $targetLabel = $v.closest('.item-record').find('.item-label');
-                    if (isEmptyNode($targetLabel)) {
-                        return;
-                    }
-                    $targetLabel.find('.mandatory').remove();
-                    let conVal = $v.data('specialcondition');
-                    if (isEmpty(conVal)) {
-                        return;
-                    }
-                    let isIncluded = false;
-                    conVal.split('#').forEach(function (currentValue) {
-                        if (ary.includes(currentValue)) {
-                            isIncluded = true;
-                        }
-                    });
-                    if (isIncluded) {
-                        $targetLabel.append('<span class="mandatory">*</span>');
+            checkItemMandatory($(this));
+        });
+    }
+
+    function checkItemMandatory($tag) {
+        if (isEmptyNode($tag)) {
+            return;
+        }
+        let seq = $tag.data('seq');
+        let curr = $tag.data('curr');
+        let $conNodes = $('[data-conditionitemid="' + curr + '"][data-seq="' + seq + '"]');
+        let currVal = getValue($tag);
+        if (!isEmptyNode($conNodes)) {
+            let ary = isEmpty(currVal) ? [] : currVal.split('#');
+            $conNodes.each(function () {
+                let $v = $(this);
+                let $targetLabel = $v.closest('.item-record').find('.item-label');
+                if (isEmptyNode($targetLabel)) {
+                    return;
+                }
+                $targetLabel.find('.mandatory').remove();
+                let conVal = $v.data('specialcondition');
+                if (isEmpty(conVal)) {
+                    return;
+                }
+                let isIncluded = false;
+                conVal.split('#').forEach(function (currentValue) {
+                    if (ary.includes(currentValue)) {
+                        isIncluded = true;
                     }
                 });
-            }
-        });
+                if (isIncluded) {
+                    $targetLabel.append('<span class="mandatory">*</span>');
+                }
+            });
+        }
     }
 
     function getValue(target) {

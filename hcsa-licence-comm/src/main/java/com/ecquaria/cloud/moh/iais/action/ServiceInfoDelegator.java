@@ -404,21 +404,9 @@ public class ServiceInfoDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         String currentSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
-        List<SuppleFormItemConfigDto> configDtos = configCommService.getSuppleFormItemConfigs(currSvcInfoDto.getServiceCode());
-        AppSvcSuplmFormDto appSvcSuplmFormDto = currSvcInfoDto.getAppSvcSuplmFormDto();
-        if (appSvcSuplmFormDto == null) {
-            appSvcSuplmFormDto = new AppSvcSuplmFormDto();
+        if (ApplicationHelper.initSupplementoryForm(currSvcInfoDto)) {
+            setAppSvcRelatedInfoMap(request, currentSvcId, currSvcInfoDto, appSubmissionDto);
         }
-        appSvcSuplmFormDto.setSvcConfigDto(currSvcInfoDto);
-        appSvcSuplmFormDto.setSuppleFormItemConfigDtos(configDtos, (svcId, addMoreBatchNum) -> {
-            List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList = configCommService.getHcsaSvcPersonnel(svcId, addMoreBatchNum);
-            if (IaisCommonUtils.isNotEmpty(hcsaSvcPersonnelList)) {
-                return hcsaSvcPersonnelList.get(0);
-            }
-            return null;
-        });
-        currSvcInfoDto.setAppSvcSuplmFormDto(appSvcSuplmFormDto);
-        setAppSvcRelatedInfoMap(request, currentSvcId, currSvcInfoDto, appSubmissionDto);
     }
 
     private void doSupplementaryForm(HttpServletRequest request) {
