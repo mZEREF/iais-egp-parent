@@ -668,6 +668,7 @@ public class TopDataSubmissionDelegator {
             }
         }
         if(!errMap.isEmpty()){
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,errMap);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errMap));
             return 0;
         }
@@ -1588,6 +1589,14 @@ public class TopDataSubmissionDelegator {
     public void doControl(BaseProcessClass bpc) {
         log.info(" ----- DoControl ------ ");
         String crudType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        Map<String,String> errMap= (Map<String, String>) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.ERRORMAP);
+        if(IaisCommonUtils.isNotEmpty(errMap)){
+            errMap.remove("amendReason");
+            errMap.remove("amendReasonOther");
+            errMap.remove("declaration");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errMap));
+
+        }
         String actionType = null;
         if ("return".equals(crudType)) {
             actionType = "return";
