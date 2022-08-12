@@ -101,7 +101,7 @@ public class ArCycleStagesManualDelegator {
     public void doPrepareStage(BaseProcessClass bpc) {
         String jumpActionType = (String) ParamUtil.getRequestAttr(bpc.request, JUMP_ACTION_TYPE);
         ArSuperDataSubmissionDto currentSuper = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        if (StringUtils.hasLength(jumpActionType)) {
+        if ("jump".equals(jumpActionType)) {
             ParamUtil.setRequestAttr(bpc.request, "haveJump", "Y");
         } else {
             String crudype = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
