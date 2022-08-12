@@ -5,6 +5,7 @@ import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.entity.BsbInboxDto;
 
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -14,4 +15,5 @@ import java.util.List;
 public class InboxMsgSearchResultDto {
     private PageInfo pageInfo;
     private List<BsbInboxDto> bsbInboxes;
+    private Map<String,Boolean> inboxActionRequiredMsgIdMap;
 }

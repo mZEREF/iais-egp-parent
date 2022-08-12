@@ -355,6 +355,7 @@ public class MasterCodeConstants {
     public static final String PROCUREMENT_MODE_LOCAL_TRANSFER = "BMOP001";
     public static final String PROCUREMENT_MODE_IMPORT = "BMOP002";
     public static final String PROCUREMENT_MODE_ALREADY_IN_POSSESSION = "BMOP003";
+    public static final String PROCUREMENT_MODE_PURCHASE_FROM_LOCAL_SUPPLIER = "BMOP004";
 
     //Type of work that will be carried out involving the biological agent/toxin
     public static final String WORK_TYPE_CULTURING_ISOLATION_BAT = "BSBWT001";

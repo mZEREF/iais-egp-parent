@@ -32,6 +32,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_INBOX_MESSAGE;
@@ -61,6 +62,7 @@ public class BsbInboxMsgDelegator {
     public static final String KEY_INBOX = "inbox";
     public static final String KEY_ARCHIVE = "archive";
     private static final String KEY_AFTER_ARCHIVE = "AFTER_ARCHIVE";
+    public static final String KEY_ACTION_REQUIRED_MAP = "actionRequiredMap";
 
     private final BsbInboxClient inboxClient;
     private final BsbInboxService inboxService;
@@ -108,10 +110,12 @@ public class BsbInboxMsgDelegator {
         if (resultDto.ok()) {
             ParamUtil.setRequestAttr(request, KEY_INBOX_MSG_PAGE_INFO, resultDto.getEntity().getPageInfo());
             ParamUtil.setRequestAttr(request, KEY_INBOX_DATA_LIST, resultDto.getEntity().getBsbInboxes());
+            ParamUtil.setRequestAttr(request, KEY_ACTION_REQUIRED_MAP, new HashMap<>(resultDto.getEntity().getInboxActionRequiredMsgIdMap()));
         } else {
             log.warn("get inbox message API doesn't return ok, the response is {}", resultDto);
             ParamUtil.setRequestAttr(request, KEY_INBOX_MSG_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
             ParamUtil.setRequestAttr(request, KEY_INBOX_DATA_LIST, new ArrayList<>());
+            ParamUtil.setRequestAttr(request, KEY_ACTION_REQUIRED_MAP ,new HashMap<>());
         }
         // get select options
         ParamUtil.setRequestAttr(request, "msgTypeOps", MasterCodeHolder.MSG_TYPE.allOptions());
