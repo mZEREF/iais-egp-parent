@@ -2751,8 +2751,8 @@ public final class AppValidatorHelper {
             log.info("The AppSvcSuplmItemDto List is null!!!!");
             return IaisCommonUtils.genNewHashMap();
         }
-        Map<String, AppSvcSuplmItemDto> itemMap = appSvcSuplmFormDto.genExistedMap();
-        Map<String, List<AppSvcSuplmItemDto>> radioBatchMap = appSvcSuplmFormDto.genExistedRadioBatchMap();
+        Map<String, AppSvcSuplmItemDto> itemMap = appSvcSuplmFormDto.genMap(true);
+        Map<String, List<AppSvcSuplmItemDto>> radioBatchMap = appSvcSuplmFormDto.genRadioBatchMap(true);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         for (AppSvcSuplmGroupDto appSvcSuplmGroupDto : appSvcSuplmGroupDtoList) {
             int count = appSvcSuplmGroupDto.getCount();
@@ -2766,9 +2766,11 @@ public final class AppValidatorHelper {
             for (AppSvcSuplmItemDto appSvcSuplmItemDto : appSvcSuplmGroupDto.getAppSvcSuplmItemDtoList()) {
                 SuppleFormItemConfigDto itemConfigDto = appSvcSuplmItemDto.getItemConfigDto();
                 int mandatoryType = itemConfigDto.getMandatoryType();
+                String itemType = itemConfigDto.getItemType();
                 String inputValue = appSvcSuplmItemDto.getInputValue();
-                String errorKey = appSvcSuplmItemDto.getItemConfigId() + appSvcSuplmItemDto.getSeqNum();
-                if (HcsaConsts.SUPFORM_ITEM_TYPE_TEXT.equals(itemConfigDto.getItemType())) {
+                int seqNum = appSvcSuplmItemDto.getSeqNum();
+                String errorKey = appSvcSuplmItemDto.getItemConfigId() + seqNum;
+                if (HcsaConsts.SUPFORM_ITEM_TYPE_TEXT.equals(itemType)) {
                     if (StringUtil.isEmpty(inputValue) && 1 == mandatoryType) {
                         errorMap.put(errorKey, "GENERAL_ERR0006");
                     }
@@ -2822,11 +2824,11 @@ public final class AppValidatorHelper {
                             }
                         }
                     }
-                } else if (HcsaConsts.SUPFORM_ITEM_TYPE_RADIO.equals(itemConfigDto.getItemType())) {
+                } else if (HcsaConsts.SUPFORM_ITEM_TYPE_RADIO.equals(itemType)) {
                     if (StringUtil.isEmpty(inputValue) && 1 == mandatoryType) {
                         errorMap.put(errorKey, "GENERAL_ERR0006");
                     }
-                } else if (HcsaConsts.SUPFORM_ITEM_TYPE_CHECKBOX.equals(itemConfigDto.getItemType())) {
+                } else if (HcsaConsts.SUPFORM_ITEM_TYPE_CHECKBOX.equals(itemType)) {
                     if (StringUtil.isEmpty(inputValue) && 1 == mandatoryType) {
                         errorMap.put(errorKey, "GENERAL_ERR0006");
                     }
@@ -2835,25 +2837,31 @@ public final class AppValidatorHelper {
                 if (2 == mandatoryType && StringUtil.isEmpty(inputValue)) {
                     String radioBatchNum = itemConfigDto.getRadioBatchNum();
                     String conditionItemId = itemConfigDto.getConditionItemId();
-                    String specialCondition = itemConfigDto.getSpecialConditionType();
-                    AppSvcSuplmItemDto condDto = itemMap.get(conditionItemId + appSvcSuplmItemDto.getSeqNum());
-                    if (StringUtil.isNotEmpty(specialCondition) && condDto != null
-                            && StringUtil.isNotEmpty(condDto.getInputValue())) {
-                        String condValue = condDto.getInputValue();
-                        String[] codes = StringUtil.convertCode(specialCondition.split("#"));
-                        boolean mandatory = StringUtil.isIn(condValue, codes);
-                        List<AppSvcSuplmItemDto> appSvcSuplmItemDtos = radioBatchMap.get(radioBatchNum);
-                        if (IaisCommonUtils.isEmpty(appSvcSuplmItemDtos)) {
-                            if (mandatory) {
+                    String specialCondition = appSvcSuplmItemDto.getSpecialCondition();
+                    AppSvcSuplmItemDto condDto = itemMap.get(conditionItemId + seqNum);
+                    if (condDto != null) {
+                        boolean mandatory = false;
+                        if (StringUtil.isIn(condDto.getItemConfigDto().getItemType(), new String[]{
+                                HcsaConsts.SUPFORM_ITEM_TYPE_TITLE,
+                                HcsaConsts.SUPFORM_ITEM_TYPE_SUB_TITLE,
+                                HcsaConsts.SUPFORM_ITEM_TYPE_LABEL})) {
+                            mandatory = condDto.getItemConfigDto().getMandatoryType() == 1;
+                        } else if (StringUtil.isNotEmpty(specialCondition)) {
+                            String condValue = condDto.getInputValue();
+                            String[] codes = specialCondition.split("#");
+                            mandatory = StringUtil.isIn(condValue, codes);
+                        }
+                        if (mandatory) {
+                            List<AppSvcSuplmItemDto> appSvcSuplmItemDtos = radioBatchMap.get(radioBatchNum + seqNum);
+                            if (IaisCommonUtils.isEmpty(appSvcSuplmItemDtos)) {
                                 errorMap.put(errorKey, "GENERAL_ERR0006");
-                            }
-                        } else {
-                            if (appSvcSuplmItemDtos.stream().anyMatch(dto -> StringUtil.isEmpty(dto.getInputValue()))
-                                    && mandatory) {
-                                AppSvcSuplmItemDto itemDto = appSvcSuplmItemDtos.stream()
-                                        .max(Comparator.comparingInt(dto -> dto.getItemConfigDto().getSeqNum()))
-                                        .orElse(appSvcSuplmItemDto);
-                                errorMap.put(itemDto.getItemConfigId() + itemDto.getSeqNum(), "GENERAL_ERR0006");
+                            } else {
+                                if (appSvcSuplmItemDtos.stream().allMatch(dto -> StringUtil.isEmpty(dto.getInputValue()))) {
+                                    AppSvcSuplmItemDto itemDto = appSvcSuplmItemDtos.stream()
+                                            .max(Comparator.comparingInt(dto -> dto.getItemConfigDto().getSeqNum()))
+                                            .orElse(appSvcSuplmItemDto);
+                                    errorMap.put(itemDto.getItemConfigId() + itemDto.getSeqNum(), "GENERAL_ERR0006");
+                                }
                             }
                         }
                     }
@@ -2871,37 +2879,42 @@ public final class AppValidatorHelper {
         }
     }
 
-    public static void doValidateSpecialServicesForm(List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList, String appType, String licenceId, Map<String, String> errorMap) {
+    public static void doValidateSpecialServicesForm(List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList, String appType,
+            String licenceId, Map<String, String> errorMap) {
         if (appSvcSpecialServiceInfoList == null || appSvcSpecialServiceInfoList.isEmpty()) {
             return;
         }
         String prefix = "";
         for (int i = 0; i < appSvcSpecialServiceInfoList.size(); i++) {
 
-            List<SpecialServiceSectionDto> specialServiceSectionDtoList=appSvcSpecialServiceInfoList.get(i).getSpecialServiceSectionDtoList();
+            List<SpecialServiceSectionDto> specialServiceSectionDtoList = appSvcSpecialServiceInfoList.get(
+                    i).getSpecialServiceSectionDtoList();
 
-            for (int j=0;j<specialServiceSectionDtoList.size();j++){
-                SpecialServiceSectionDto specialServiceSectionDto=specialServiceSectionDtoList.get(j);
+            for (int j = 0; j < specialServiceSectionDtoList.size(); j++) {
+                SpecialServiceSectionDto specialServiceSectionDto = specialServiceSectionDtoList.get(j);
 
-                for (int x=0;x<specialServiceSectionDto.getAppSvcDirectorDtoList().size();x++){
-                    validateSpecialServicePerson(specialServiceSectionDto.getAppSvcDirectorDtoList().get(x),prefix+i+j+"dir",""+x,appType,errorMap);
+                for (int x = 0; x < specialServiceSectionDto.getAppSvcDirectorDtoList().size(); x++) {
+                    validateSpecialServicePerson(specialServiceSectionDto.getAppSvcDirectorDtoList().get(x), prefix + i + j + "dir",
+                            "" + x, appType, errorMap);
                 }
-                for (int x=0;x<specialServiceSectionDto.getAppSvcChargedNurseDtoList().size();x++){
-                    validateSpecialServicePerson(specialServiceSectionDto.getAppSvcChargedNurseDtoList().get(x),prefix+i+j+"nur",""+x,appType,errorMap);
+                for (int x = 0; x < specialServiceSectionDto.getAppSvcChargedNurseDtoList().size(); x++) {
+                    validateSpecialServicePerson(specialServiceSectionDto.getAppSvcChargedNurseDtoList().get(x),
+                            prefix + i + j + "nur", "" + x, appType, errorMap);
                 }
 
             }
         }
     }
 
-    private static void validateSpecialServicePerson(AppSvcPersonnelDto appSvcPersonnelDto, String prefix, String subfix, String appType, Map<String, String> errorMap) {
+    private static void validateSpecialServicePerson(AppSvcPersonnelDto appSvcPersonnelDto, String prefix, String subfix,
+            String appType, Map<String, String> errorMap) {
         String signal = "GENERAL_ERR0006";
 
         String name = appSvcPersonnelDto.getName();
         if (StringUtil.isEmpty(name)) {
-            errorMap.put(prefix+"name" + subfix, signal);
+            errorMap.put(prefix + "name" + subfix, signal);
         } else if (name.length() > 110) {
-            errorMap.put(prefix+"name" + subfix, signal);
+            errorMap.put(prefix + "name" + subfix, signal);
         }
 
         String salutation = appSvcPersonnelDto.getSalutation();
@@ -2975,15 +2988,16 @@ public final class AppValidatorHelper {
 
         String wrkExpYear = appSvcPersonnelDto.getWrkExpYear();
         if (StringUtil.isEmpty(wrkExpYear)) {
-            errorMap.put(prefix+"wrkExpYear" + subfix, signal);
+            errorMap.put(prefix + "wrkExpYear" + subfix, signal);
         } else {
             if (wrkExpYear.length() > 2) {
-                errorMap.put(prefix+"wrkExpYear" + subfix, signal);
+                errorMap.put(prefix + "wrkExpYear" + subfix, signal);
             }
             if (!wrkExpYear.matches("^[0-9]*$")) {
-                errorMap.put(prefix+"wrkExpYear" + subfix, signal);
+                errorMap.put(prefix + "wrkExpYear" + subfix, signal);
             }
         }
 
     }
+
 }

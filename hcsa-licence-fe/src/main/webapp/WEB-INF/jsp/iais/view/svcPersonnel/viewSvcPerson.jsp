@@ -3,7 +3,7 @@
 <div class="amended-service-info-gp">
     <label class="app-title">${currStepName}</label>
     <div class="amend-preview-info">
-        <c:forEach items="${currentPreviewSvcInfo.appSvcPersonnelDtoList}" var="appSvcPersonnelDtoList"
+        <c:forEach items="${currentPreviewSvcInfo.svcPersonnelDto.normalList}" var="appSvcPersonnelDtoList"
                    varStatus="status">
             <div class="form-check-gp">
                 <div class="row">

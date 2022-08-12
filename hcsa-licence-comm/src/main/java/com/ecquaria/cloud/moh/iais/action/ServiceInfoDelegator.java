@@ -443,12 +443,14 @@ public class ServiceInfoDelegator {
         log.info(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
         if (isGetDataFromPage) {
             AppDataHelper.setAppSvcSuplmFormDto(appSvcSuplmFormDto, request);
+            setAppSvcRelatedInfoMap(request, currentSvcId, currSvcInfoDto, appSubmissionDto);
         }
-
+        // validateion
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if ("next".equals(action)) {
             errorMap = AppValidatorHelper.doValidateSupplementaryForm(appSvcSuplmFormDto);
         }
+        checkAction(errorMap, HcsaConsts.STEP_SUPPLEMENTARY_FORM, appSubmissionDto, request);
     }
 
     /**
@@ -1783,6 +1785,7 @@ public class ServiceInfoDelegator {
                 number = 0;
             } else {
                 String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,
+                        HcsaConsts.STEP_OTHER_INFORMATION,
                         HcsaConsts.STEP_DISCIPLINE_ALLOCATION};
                 for (int i = 0; i < hcsaServiceStepSchemeDtos.size(); i++) {
                     if (action.equals(hcsaServiceStepSchemeDtos.get(i).getStepCode())) {
@@ -1809,7 +1812,7 @@ public class ServiceInfoDelegator {
             }
             serviceStepDto.setStepFirst(stepFirst);
             serviceStepDto.setStepEnd(stepEnd);
-            if (number != -1) {
+            if (number > -1) {
                 //clear the old data
                 serviceStepDto.setPreviousStep(null);
                 serviceStepDto.setNextStep(null);

@@ -717,6 +717,29 @@ function fillValue(targetSelector, data, includeHidden) {
     }
 }
 
+function getValue(target) {
+    var $target = getJqueryNode(target);
+    if (isEmptyNode($target)) {
+        return null;
+    }
+    if ($target.is(":input")) {
+        let type = $target[0].type;
+        if (type == 'radio') {
+            return $target.filter(':checked').val();
+        } else if (type == 'checkbox') {
+            let chk_value = [];
+            $target.filter(':checked').each(function () {
+                chk_value.push($(this).val());
+            });
+            return chk_value.join("#");
+        } else {
+            return $target.val();
+        }
+    } else {
+        return null;
+    }
+}
+
 function checkDisabled(targetSelector, disabled) {
     var $selector = getJqueryNode(targetSelector);
     if (isEmptyNode($selector)) {
