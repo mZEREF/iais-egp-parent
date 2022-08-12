@@ -187,7 +187,7 @@ public class TopDataSubmissionDelegator {
                     topSuperDataSubmissionDto = new TopSuperDataSubmissionDto();
                 }
                 DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto,bpc.request);
-                ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS,DataSubmissionConstant.PAGE_STAGE_PAGE);
+                ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_TOP,DataSubmissionConstant.PAGE_STAGE_PAGE);
             } else if (crud_action_type.equals("delete")) {
                 topDataSubmissionService.deleteTopSuperDataSubmissionDtoRfcDraftByConds(topSuperDataSubmissionDto.getOrgId(), DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE,topSuperDataSubmissionDto.getDataSubmissionDto().getId());
             }
@@ -332,7 +332,7 @@ public class TopDataSubmissionDelegator {
                     topSuperDataSubmissionDto = new TopSuperDataSubmissionDto();
                 }
                 DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto,bpc.request);
-                ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS,DataSubmissionConstant.PAGE_STAGE_PAGE);
+                ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_TOP,DataSubmissionConstant.PAGE_STAGE_PAGE);
             } else if (crud_action_type.equals("delete")) {
                 topDataSubmissionService.deleteTopSuperDataSubmissionDtoDraftByConds(topSuperDataSubmissionDto.getOrgId(), DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE,topSuperDataSubmissionDto.getAppType());
                 topSuperDataSubmissionDto=initTopSuperDataSubmissionDto(bpc.request);
@@ -406,9 +406,6 @@ public class TopDataSubmissionDelegator {
             terminationOfPregnancyDto=new TerminationOfPregnancyDto();
         }
         PatientInformationDto patientInformationDto= terminationOfPregnancyDto.getPatientInformationDto();
-        if(StringUtil.isEmpty(patientInformationDto)){
-            patientInformationDto=new PatientInformationDto();
-        }
         if(!StringUtil.isEmpty(patientInformationDto.getBirthData())){
             ParamUtil.setSessionAttr(bpc.request, "birthDate",topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getPatientInformationDto().getBirthData());
         }
