@@ -26,7 +26,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.SuppleFormItemConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -361,13 +360,14 @@ public class ServiceInfoDelegator {
         String currSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request, currSvcId);
         List<AppPremSpecialisedDto> appPremSpecialisedDtos = appSubmissionDto.getAppPremSpecialisedDtoList();
-        List<AppPremSpecialisedDto> appPremSpecialisedDtoList=IaisCommonUtils.genNewArrayList();
+        List<AppPremSpecialisedDto> appPremSpecialisedDtoList = IaisCommonUtils.genNewArrayList();
         for (AppPremSpecialisedDto appPremSpecialisedDto : appPremSpecialisedDtos) {
-            if (appPremSpecialisedDto.getBaseSvcId().equals(currSvcId)){
+            if (appPremSpecialisedDto.getBaseSvcId().equals(currSvcId)) {
                 appPremSpecialisedDtoList.add(appPremSpecialisedDto);
             }
         }
-        List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = ApplicationHelper.initAppSvcSpecialServiceInfoDtoList(currSvcInfoDto,appPremSpecialisedDtos);
+        List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = ApplicationHelper.initAppSvcSpecialServiceInfoDtoList(
+                currSvcInfoDto, appPremSpecialisedDtos);
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
         ParamUtil.setRequestAttr(request, "isRfi", isRfi);
         ParamUtil.setRequestAttr(request, "appSvcSpecialServiceInfoList", appSvcSpecialServiceInfoList);
