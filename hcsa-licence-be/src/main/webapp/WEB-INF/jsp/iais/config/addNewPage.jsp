@@ -1015,14 +1015,14 @@
                       <span class="error-msg" >${categoryDisciplineDto.errorMsg}</span>
                     </div>
                     <div class="col-xs-12 col-md-1">
-                      <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
+                      <a class="btn  btn-secondary view" <c:if test="${!isView}"> onclick="removeThis(this)"</c:if> >-</a>
                     </div>
                   </div>
                 </c:forEach>
               </c:if>
               <div class="col-xs-12 col-md-12">
                 <a  class="btn  btn-secondary "   style="margin-right: 10px"
-                    onclick="addCategory(this,'${premTypeMap.key}-categoryDisciplines')"> + </a><label > Add Item</label>
+                        <c:if test="${!isView}"> onclick="addCategory(this,'${premTypeMap.key}-categoryDisciplines')" </c:if> > + </a><label > Add Item</label>
               </div>
 
               <div class="col-xs-12 col-md-9 marg-1">
@@ -1048,13 +1048,13 @@
                       <input type="text" value="${hcsaServiceSubServiceErrorsDto.level}" name="${premTypeMap.key}-SVTP003-levels" style="display: none">
                     </div>
                     <div  class="col-xs-12 col-md-2" style="padding-left: 3%;" >
-                      <a class="btn  btn-secondary  view"  onclick="indents(this)"   >indent</a>
+                      <a class="btn  btn-secondary  view" <c:if test="${!isView}"> onclick="indents(this)" </c:if>  >indent</a>
                     </div>
                     <div  class="col-xs-12 col-md-2" >
-                      <a class="btn  btn-secondary view"  onclick="outdent(this)" >outdent</a>
+                      <a class="btn  btn-secondary view" <c:if test="${!isView}"> onclick="outdent(this)" </c:if> >outdent</a>
                     </div>
                     <div class="col-xs-12 col-md-1">
-                      <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
+                      <a class="btn  btn-secondary view" <c:if test="${!isView}"> onclick="removeThis(this)" </c:if> >-</a>
                     </div>
                   </div>
                 </c:forEach>
@@ -1062,7 +1062,7 @@
 
 
               <div class="col-xs-12 col-md-12">
-                <a  class="btn  btn-secondary "   style="margin-right: 10px" onclick="addAsItem(this,'${premTypeMap.key}','SVTP003')"> + </a><label > Add Item</label>
+                <a  class="btn  btn-secondary "   style="margin-right: 10px" <c:if test="${!isView}">onclick="addAsItem(this,'${premTypeMap.key}','SVTP003')"</c:if>> + </a><label > Add Item</label>
               </div>
             </div>
           </c:forEach>
@@ -1083,7 +1083,7 @@
                 <c:forEach items="${hcsaServiceConfigDto.otherHcsaServiceSubServicePageDtoMap[premTypeMap.key].hcsaServiceSubServiceErrorsDtos}" var = "hcsaServiceSubServiceErrorsDto">
                   <div class="add col-xs-12 col-md-12"  style="margin-top: 20px ;margin-bottom: 20px">
                     <div class="col-xs-12 col-md-5" style="padding-right: 20%;margin-left:${hcsaServiceSubServiceErrorsDto.marginLeft}px" >
-                      <iais:select name="${premTypeMap.key}-SVTP005-subServiceCodes" options="specHcsaServiceOptions" firstOption="Please Select"
+                      <iais:select name="${premTypeMap.key}-SVTP005-subServiceCodes" options="otherHcsaServiceOptions" firstOption="Please Select"
                                    value="${hcsaServiceSubServiceErrorsDto.subServiceCode}"/>
                       <span class="error-msg" >${hcsaServiceSubServiceErrorsDto.errorMsg}</span>
                     </div>
@@ -1091,13 +1091,13 @@
                       <input type="text" value="${hcsaServiceSubServiceErrorsDto.level}" name="${premTypeMap.key}-SVTP005-levels" style="display: none">
                     </div>
                     <div  class="col-xs-12 col-md-2" style="padding-left: 3%;" >
-                      <a class="btn  btn-secondary  view"  onclick="indents(this)"   >indent</a>
+                      <a class="btn  btn-secondary  view" <c:if test="${!isView}"> onclick="indents(this)" </c:if>  >indent</a>
                     </div>
                     <div  class="col-xs-12 col-md-2" >
-                      <a class="btn  btn-secondary view"  onclick="outdent(this)" >outdent</a>
+                      <a class="btn  btn-secondary view" <c:if test="${!isView}">  onclick="outdent(this)" </c:if> >outdent</a>
                     </div>
                     <div class="col-xs-12 col-md-1">
-                      <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
+                      <a class="btn  btn-secondary view"  <c:if test="${!isView}"> onclick="removeThis(this)" </c:if> >-</a>
                     </div>
                   </div>
                 </c:forEach>
@@ -1105,7 +1105,8 @@
 
 
               <div class="col-xs-12 col-md-12">
-                <a  class="btn  btn-secondary "   style="margin-right: 10px"  onclick="addAsItem(this,'${premTypeMap.key}','SVTP005')"> + </a><label > Add Item</label>
+                <a  class="btn  btn-secondary "   style="margin-right: 10px"
+                    <c:if test="${!isView}">onclick="addAsItem(this,'${premTypeMap.key}','SVTP005')"</c:if> > + </a><label > Add Item</label>
               </div>
             </div>
           </c:forEach>

@@ -154,7 +154,7 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     @Override
-    public HcsaServiceConfigDto getHcsaServiceConfigDtoByServiceId(HcsaServiceConfigDto hcsaServiceConfigDtoPrePare,String serviceId) {
+    public HcsaServiceConfigDto getHcsaServiceConfigDtoByServiceId(String serviceId) {
         log.info(StringUtil.changeForLog("The getHcsaServiceConfigDtoByServiceId start ..."));
         log.info(StringUtil.changeForLog("The getHcsaServiceConfigDtoByServiceId serviceId is -->:"+serviceId));
         HcsaServiceConfigDto hcsaServiceConfigDto = hcsaConfigClient.getHcsaServiceConfigByServiceId(serviceId).getEntity();
@@ -190,9 +190,8 @@ public class ConfigServiceImpl implements ConfigService {
             //for rounting
             HcsaSvcRoutingStageCompoundForDbDto hcsaSvcRoutingStageCompoundForDbDto = hcsaServiceConfigDto.getHcsaSvcRoutingStageCompoundForDbDto();
             if(hcsaSvcRoutingStageCompoundForDbDto != null){
-
                  if(IaisCommonUtils.isNotEmpty(hcsaSvcRoutingStageCompoundForDbDto.getHcsaSvcRoutingStageDtos())){
-                     Map<String, List<HcsaConfigPageDto>> hcsaConfigPageDtoMap =  hcsaServiceConfigDtoPrePare.getHcsaConfigPageDtoMap();
+                     Map<String, List<HcsaConfigPageDto>> hcsaConfigPageDtoMap =   getHcsaConfigPageDto();
                      for(String appType : hcsaConfigPageDtoMap.keySet()){
                          log.info(StringUtil.changeForLog("The getHcsaServiceConfigDtoByServiceId appType is -->:"+appType));
                          if(!ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)
@@ -202,22 +201,29 @@ public class ConfigServiceImpl implements ConfigService {
                                  HcsaSvcRoutingStageCompoundDto hcsaSvcRoutingStageCompoundDto = getHcsaSvcRoutingStageCompoundDto(
                                          hcsaSvcRoutingStageCompoundForDbDto, appType,hcsaConfigPageDto.getStageId(),1);
 
-                                 HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto = hcsaSvcRoutingStageCompoundDto.getHcsaSvcRoutingStageDto();
-                                 hcsaConfigPageDto.setCanApprove(hcsaSvcRoutingStageDto.getCanApprove());
-
-                                 HcsaSvcSpecificStageWorkloadDto hcsaSvcSpecificStageWorkloadDto = hcsaSvcRoutingStageCompoundDto.getHcsaSvcSpecificStageWorkloadDto();
-                                 hcsaConfigPageDto.setManhours(hcsaSvcSpecificStageWorkloadDto.getManhourCount());
 
                                  HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDto = hcsaSvcRoutingStageCompoundDto.getHcsaSvcSpeRoutingSchemeDto();
-                                 hcsaConfigPageDto.setRoutingSchemeName(hcsaSvcSpeRoutingSchemeDto.getSchemeType());
-                                 //for ins
-                                 List<HcsaSvcSpeRoutingSchemeDto> hcsaSvcSpeRoutingSchemeDtos = hcsaConfigPageDto.getHcsaSvcSpeRoutingSchemeDtos();
-                                 if(IaisCommonUtils.isNotEmpty(hcsaSvcSpeRoutingSchemeDtos)){
-                                     for(HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDtoIns : hcsaSvcSpeRoutingSchemeDtos){
-                                         HcsaSvcRoutingStageCompoundDto hcsaSvcRoutingStageCompoundDtoIns = getHcsaSvcRoutingStageCompoundDto(
-                                                 hcsaSvcRoutingStageCompoundForDbDto, appType,hcsaConfigPageDto.getStageId(),Integer.parseInt(hcsaSvcSpeRoutingSchemeDtoIns.getInsOder()));
-                                         HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDtoInsDb = hcsaSvcRoutingStageCompoundDtoIns.getHcsaSvcSpeRoutingSchemeDto();
-                                         hcsaSvcSpeRoutingSchemeDtoIns.setSchemeType(hcsaSvcSpeRoutingSchemeDtoInsDb.getSchemeType());
+                                 if(hcsaSvcSpeRoutingSchemeDto == null){
+                                     hcsaConfigPageDto.setIsMandatory("optional");
+                                 }else {
+                                     hcsaConfigPageDto.setIsMandatory("mandatory");
+                                     hcsaConfigPageDto.setRoutingSchemeName(hcsaSvcSpeRoutingSchemeDto.getSchemeType());
+
+                                     HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto = hcsaSvcRoutingStageCompoundDto.getHcsaSvcRoutingStageDto();
+                                     hcsaConfigPageDto.setCanApprove(hcsaSvcRoutingStageDto.getCanApprove());
+
+                                     HcsaSvcSpecificStageWorkloadDto hcsaSvcSpecificStageWorkloadDto = hcsaSvcRoutingStageCompoundDto.getHcsaSvcSpecificStageWorkloadDto();
+                                     hcsaConfigPageDto.setManhours(hcsaSvcSpecificStageWorkloadDto.getManhourCount());
+
+                                     //for ins
+                                     List<HcsaSvcSpeRoutingSchemeDto> hcsaSvcSpeRoutingSchemeDtos = hcsaConfigPageDto.getHcsaSvcSpeRoutingSchemeDtos();
+                                     if(IaisCommonUtils.isNotEmpty(hcsaSvcSpeRoutingSchemeDtos)){
+                                         for(HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDtoIns : hcsaSvcSpeRoutingSchemeDtos){
+                                             HcsaSvcRoutingStageCompoundDto hcsaSvcRoutingStageCompoundDtoIns = getHcsaSvcRoutingStageCompoundDto(
+                                                     hcsaSvcRoutingStageCompoundForDbDto, appType,hcsaConfigPageDto.getStageId(),Integer.parseInt(hcsaSvcSpeRoutingSchemeDtoIns.getInsOder()));
+                                             HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDtoInsDb = hcsaSvcRoutingStageCompoundDtoIns.getHcsaSvcSpeRoutingSchemeDto();
+                                             hcsaSvcSpeRoutingSchemeDtoIns.setSchemeType(hcsaSvcSpeRoutingSchemeDtoInsDb.getSchemeType());
+                                         }
                                      }
                                  }
                              }

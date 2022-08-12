@@ -22,7 +22,7 @@ public interface ConfigService {
 
     List<HcsaServiceDto> getActiveServicesBySvcType(String svcType);
 
-    HcsaServiceConfigDto getHcsaServiceConfigDtoByServiceId(HcsaServiceConfigDto hcsaServiceConfigDtoPrePare,String serviceId);
+    HcsaServiceConfigDto getHcsaServiceConfigDtoByServiceId(String serviceId);
 
     void viewPageInfo(HttpServletRequest request);
 

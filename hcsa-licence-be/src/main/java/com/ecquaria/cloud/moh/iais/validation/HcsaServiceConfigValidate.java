@@ -12,7 +12,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubS
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubServicePageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpeRoutingSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -179,15 +178,29 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
         for(String key : hcsaConfigPageDtoMap.keySet()){
             if(!ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(key) && !ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(key)){
                 List<HcsaConfigPageDto> hcsaConfigPageDtos = hcsaConfigPageDtoMap.get(key);
-                Map<String,String> HcsaConfigPageDtoError = validateHcsaConfigPageDto(hcsaConfigPageDtos,serviceType);
-                if(HcsaConfigPageDtoError.size() > 0){
-                    result.put(key,"Error");
-                    result.putAll(HcsaConfigPageDtoError);
+                for(HcsaConfigPageDto hcsaConfigPageDto : hcsaConfigPageDtos){
+                    validateHcsaConfigPageDto(hcsaConfigPageDto,key,result,serviceType);
+                    if(!ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(key) && !ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(key)){
+                        validateHcsaConfigPageDto(hcsaConfigPageDto,key,result,hcsaConfigPageDto.getStageId());
+                        validateHcsaConfigPageDto(hcsaConfigPageDto,key,result,hcsaConfigPageDto.getIsMandatory());
+                    }else {
+                        validateHcsaConfigPageDto(hcsaConfigPageDto,key,result,hcsaConfigPageDto.getIsMandatory());
+                    }
                 }
+
             }
         }
         log.info(StringUtil.changeForLog("The HcsaServiceConfigValidate validateRoutingStages end ..."));
     }
+
+  private void validateHcsaConfigPageDto(HcsaConfigPageDto hcsaConfigPageDto,String key,Map<String, String> result,String validateString){
+      Map<String,String> hcsaConfigPageDtoError = validateHcsaConfigPageDto(hcsaConfigPageDto,validateString);
+      if(hcsaConfigPageDtoError.size() > 0){
+          result.put(key,"Error");
+          result.putAll(hcsaConfigPageDtoError);
+      }
+  }
+
     private void validateHcsaSvcDocConfigDto(HcsaServiceConfigDto hcsaServiceConfigDto,Map<String, String> result,String serviceType){
         log.info(StringUtil.changeForLog("The HcsaServiceConfigValidate validateHcsaSvcDocConfigDto start ..."));
         List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = hcsaServiceConfigDto.getHcsaSvcDocConfigDtos();
@@ -223,13 +236,12 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
         log.info(StringUtil.changeForLog("The HcsaServiceConfigValidate validateHcsaSvcPersonnelDto end ..."));
     }
 
-    private Map<String,String> validateHcsaConfigPageDto(List<HcsaConfigPageDto> hcsaConfigPageDtos,String serviceType ){
+    private Map<String,String> validateHcsaConfigPageDto(HcsaConfigPageDto hcsaConfigPageDto,String validateString ){
         log.info(StringUtil.changeForLog("The validateHcsaConfigPageDto start ..."));
         Map<String,String> result = IaisCommonUtils.genNewHashMap();
-        if(IaisCommonUtils.isNotEmpty(hcsaConfigPageDtos)){
-            for(HcsaConfigPageDto hcsaConfigPageDto : hcsaConfigPageDtos ){
+
                 // for Ins hcsaConfigPageDto
-                ValidationResult validationResultHcsaConfigPageDto = WebValidationHelper.validateProperty(hcsaConfigPageDto,serviceType);
+                ValidationResult validationResultHcsaConfigPageDto = WebValidationHelper.validateProperty(hcsaConfigPageDto,validateString);
                 if(validationResultHcsaConfigPageDto.isHasErrors()){
                     Map<String,String>  validationResultHcsaConfigPageDtoMap = validationResultHcsaConfigPageDto.retrieveAll();
                     for(String key : validationResultHcsaConfigPageDtoMap.keySet()){
@@ -238,7 +250,7 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
                     }
                 }
                 // for Ins HcsaSvcSpeRoutingSchemeDto
-                List<HcsaSvcSpeRoutingSchemeDto> hcsaSvcSpeRoutingSchemeDtos = hcsaConfigPageDto.getHcsaSvcSpeRoutingSchemeDtos();
+               /* List<HcsaSvcSpeRoutingSchemeDto> hcsaSvcSpeRoutingSchemeDtos = hcsaConfigPageDto.getHcsaSvcSpeRoutingSchemeDtos();
                 if(IaisCommonUtils.isNotEmpty(hcsaSvcSpeRoutingSchemeDtos)){
                     for(HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDto : hcsaSvcSpeRoutingSchemeDtos ) {
                         ValidationResult validationResultHcsaSvcSpeRoutingSchemeDto = WebValidationHelper.validateProperty(hcsaSvcSpeRoutingSchemeDto, serviceType);
@@ -250,10 +262,8 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
                             }
                         }
                     }
-                }
-            }
+                }*/
 
-        }
         log.info(StringUtil.changeForLog("The validateHcsaConfigPageDto end ..."));
         return result;
     }

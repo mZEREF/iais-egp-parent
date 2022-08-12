@@ -1,3 +1,7 @@
+
+<%
+ request.setAttribute("isView","true");
+%>
 <%@include file="addNewPage.jsp" %>
 
 <script type="text/javascript">
