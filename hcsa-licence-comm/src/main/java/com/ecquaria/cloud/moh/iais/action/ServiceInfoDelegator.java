@@ -376,22 +376,17 @@ public class ServiceInfoDelegator {
 
     private void doSpecialServicesForm(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("do SpecialServicesForm start ..."));
-
         String currSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
-
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request, currSvcId);
         String isEdit = ParamUtil.getString(request, IS_EDIT);
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
-
         List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = currSvcInfoDto.getAppSvcSpecialServiceInfoList();
-
-
         boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto, RfcConst.EDIT_SERVICE, isEdit, isRfi);
         log.debug(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
         if (isGetDataFromPage) {
             //get data from page
-            appSvcSpecialServiceInfoList = AppDataHelper.getAppSvcSpecialServiceInfoList(request, appSvcSpecialServiceInfoList,appSubmissionDto.getAppType());
+            appSvcSpecialServiceInfoList = AppDataHelper.getAppSvcSpecialServiceInfoList(request, appSvcSpecialServiceInfoList);
             currSvcInfoDto.setAppSvcSpecialServiceInfoList(appSvcSpecialServiceInfoList);
             setAppSvcRelatedInfoMap(request, currSvcId, currSvcInfoDto);
         }

@@ -1,3 +1,24 @@
+<div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                    <span style="font-size: 2rem;" id="prsErrorMsg">
+                      <iais:message key="GENERAL_ERR0048" escape="false"/>
+                    </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row " style="margin-top: 5%;margin-bottom: 5%">
+                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal"
+                        onclick="$('#PRS_SERVICE_DOWN').modal('hide');">OK
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" value="${PRS_SERVICE_DOWN}" id="PRS_SERVICE_DOWN_INPUT">
 <script type="text/javascript">
     $(function () {
         let psnContent = '.${psnContent}';
@@ -24,7 +45,7 @@
             }
             $(v).find('div.personnel-content').each(function (i, x) {
                 var flag=isEmpty($(x).find('input.profRegNo').val())?false:true;
-                disablePrsInfo($(x),flag);
+                disablePrsInfo($(x),flag,true);
             })
 
         });
@@ -77,7 +98,7 @@
         $currContent.find('.qualification').html('');
 
         refreshPerson($currContent, $(target).find('div.personnel-content').length - 1);
-        disablePrsInfo($currContent, false);
+        disablePrsInfo($currContent, false,true);
         $(target).find('div.personnel-content').first().find('.psnHeader').html('1');
         removePersonEvent();
         profRegNoEvent($currContent);
@@ -108,37 +129,6 @@
         });
     }
 
-    function checkPersonDisabled($currContent, onlyInit) {
-        let data;
-        try {
-            data = $.parseJSON($currContent.find('.psnEditField').val());
-        } catch (e) {
-            data = {};
-        }
-
-        if ('1' == $currContent.find('.licPerson').val()) {
-            $.each(data, function (i, val) {
-                let $input = $currContent.find('.' + i + ':input');
-                if ($input.length > 0 && !val) {
-                    disableContent($input);
-                }
-            });
-        } else if (!onlyInit) {
-            $.each(data, function (i, val) {
-                let $input = $currContent.find('.' + i + ':input');
-                if ($input.length > 0) {
-                    unDisableContent($input);
-                }
-            });
-        }
-
-        if (!isEmpty($currContent.find('input.profRegNo').val())) {
-            disablePrsInfo($currContent, true);
-        } else if (!onlyInit) {
-            disablePrsInfo($currContent, false);
-        }
-    }
-
     var profRegNoEvent = function (target) {
         var $target = $(target);
         if (isEmptyNode($target)) {
@@ -153,6 +143,7 @@
             var appType = $('input[name="applicationType"]').val();
             var licPerson = $currContent.find('input.licPerson').val();
             var needControlName = isNeedControlName(assignSelectVal, licPerson, appType);
+            console.log('profRegNoEvent：'+needControlName);
             checkProfRegNo($currContent, prgNo, needControlName);
         });
     };
@@ -183,21 +174,24 @@
                 } else if ('-1' == data.statusCode) {
                     $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0042" escape="false" />');
                     $('#PRS_SERVICE_DOWN').modal('show');
+                    $currContent.find('.profRegNo').val('');
                 } else if ('-2' == data.statusCode) {
                     $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0042" escape="false" />');
                     $('#PRS_SERVICE_DOWN').modal('show');
+                    $currContent.find('.profRegNo').val('');
                 } else if (data.hasException) {
                     $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0048" escape="false" />');
                     $('#PRS_SERVICE_DOWN').modal('show');
-
+                    $currContent.find('.profRegNo').val('');
                 } else if ('401' == data.statusCode) {
                     $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0054" escape="false" />');
                     $('#PRS_SERVICE_DOWN').modal('show');
+                    $currContent.find('.profRegNo').val('');
                 } else {
                     canFill = true;
                 }
                 fillPrsInfo($currContent, canFill ? data : null, needControlName);
-                disablePrsInfo($currContent, canFill);
+                disablePrsInfo($currContent, canFill,needControlName);
                 if (typeof callback === 'function') {
                     callback($currContent, canFill ? data : null);
                 }
@@ -205,7 +199,7 @@
             },
             'error': function () {
                 fillPrsInfo($currContent, null, needControlName);
-                disablePrsInfo($currContent, false);
+                disablePrsInfo($currContent, false,needControlName);
                 dismissWaiting();
             }
         });
@@ -244,10 +238,11 @@
                 praCerEndDate = registration['PC End Date'];
                 typeOfRegister = registration['Register Type'];
             }
+            if (needControlName && !isEmpty(data.name)) {
+                $currContent.find('.name').val(name);
+            }
         }
-        if (needControlName && !isEmpty(data.name)) {
-            $currContent.find('.name').val(name);
-        }
+
         $currContent.find('.speciality p').html(specialty);
         $currContent.find('.subSpeciality p').html(subspecialty);
         $currContent.find('.qualification p').html(qualification);

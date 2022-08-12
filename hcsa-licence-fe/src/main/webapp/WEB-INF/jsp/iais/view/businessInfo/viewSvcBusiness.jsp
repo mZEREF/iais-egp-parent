@@ -1,7 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <div class="amended-service-info-gp">
     <iais:row>
         <label class="app-title">${currStepName}</label>
@@ -14,7 +13,6 @@
                 </div>
             </iais:row>
             <c:set var="isSpecialService" value="${businessDto.currService==AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL||businessDto.currService==AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL}"/>
-            <c:set var="isSpecialMOSD" value="${businessDto.premType==ApplicationConsts.PREMISES_TYPE_MOBILE||businessDto.premType==ApplicationConsts.PREMISES_TYPE_REMOTE}"/>
             <iais:row>
                 <iais:field width="5" value="Business Name"/>
                 <iais:value width="7" cssClass="col-md-7" display="true">
@@ -35,7 +33,7 @@
             </iais:row>
 
 
-            <c:if test="${!isSpecialService&&!isSpecialMOSD}">
+            <c:if test="${!isSpecialService}">
                 <iais:row>
                     <div class="col-md-12 col-xs-12">
                         <label class="control-label">Operating Hours</label>

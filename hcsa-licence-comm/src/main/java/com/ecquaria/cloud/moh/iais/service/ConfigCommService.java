@@ -70,7 +70,7 @@ public interface ConfigCommService {
 
     List<HcsaSvcSubtypeOrSubsumedDto> getSvcSubtypeOrSubsumedByIdList(List<String> idList);
 
-    List<HcsaSvcPersonnelDto> getHcsaSvcPersonnel(String currSvcId, String psnType);
+    List<HcsaSvcPersonnelDto> getHcsaSvcPersonnel(String currSvcId, String...psnType);
 
     HcsaServiceStepSchemeDto getHcsaServiceStepSchemeByConds(String serviceId, String stepCode);
 

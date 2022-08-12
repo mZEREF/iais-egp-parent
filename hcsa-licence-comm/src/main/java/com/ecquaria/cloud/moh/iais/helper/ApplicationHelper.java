@@ -43,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
@@ -2378,6 +2379,7 @@ public final class ApplicationHelper {
     private static List<AppSvcSpecialServiceInfoDto> genAppSvcSpecialServiceInfoDtoList(List<AppPremSpecialisedDto> appPremSpecialisedDtoList,
                                                                                         AppSvcRelatedInfoDto currSvcInfoDto) {
         List<AppSvcSpecialServiceInfoDto> result = IaisCommonUtils.genNewArrayList();
+        ConfigCommService configCommService = getConfigCommService();
         int i=1;
         if (!IaisCommonUtils.isEmpty(appPremSpecialisedDtoList) && currSvcInfoDto != null) {
             for (AppPremSpecialisedDto appPremSpecialisedDto : appPremSpecialisedDtoList) {
@@ -2387,11 +2389,25 @@ public final class ApplicationHelper {
                 List<SpecialServiceSectionDto> specialServiceSectionDtoList=IaisCommonUtils.genNewArrayList();
                 for (AppPremSubSvcRelDto appPremSubSvcRelDto : appPremSpecialisedDto.getAllAppPremSubSvcRelDtoList()) {
                     SpecialServiceSectionDto specialServiceSectionDto=new SpecialServiceSectionDto();
+                    Map<String,Integer> minCount=IaisCommonUtils.genNewHashMap();
+                    Map<String,Integer> maxCount=IaisCommonUtils.genNewHashMap();
                     specialServiceSectionDto.setAppPremSubSvcRelDto(appPremSubSvcRelDto);
+                    List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = configCommService.getHcsaSvcPersonnel(specialServiceSectionDto.getSvcId(),
+                            ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR
+                            /*ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR*/);
+                    if (IaisCommonUtils.isEmpty(hcsaSvcPersonnelDtoList)){
+                        for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto : hcsaSvcPersonnelDtoList) {
+                            minCount.put(hcsaSvcPersonnelDto.getPsnType(),hcsaSvcPersonnelDto.getMandatoryCount());
+                            maxCount.put(hcsaSvcPersonnelDto.getPsnType(),hcsaSvcPersonnelDto.getMaximumCount());
+                        }
+                    }
+                    specialServiceSectionDto.setMaxCount(maxCount);
+                    specialServiceSectionDto.setMinCount(minCount);
                     specialServiceSectionDtoList.add(specialServiceSectionDto);
                 }
                 appSvcSpecialServiceInfoDto.setSpecialServiceSectionDtoList(specialServiceSectionDtoList);
                 result.add(appSvcSpecialServiceInfoDto);
+                i++;
             }
         }
         return result;
