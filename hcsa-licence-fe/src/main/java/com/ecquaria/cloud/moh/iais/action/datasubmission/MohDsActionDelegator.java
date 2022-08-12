@@ -223,27 +223,31 @@ public class MohDsActionDelegator {
                     DoctorInformationDto doctorInformationDto=docInfoService.getDoctorInformationDtoByConds(doctorInfoDto.getDoctorReignNo(),"ELIS");
                     TerminationOfPregnancyDto terminationOfPregnancyDto=topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
                     TerminationDto terminationDto=terminationOfPregnancyDto.getTerminationDto();
-                    if(professionalResponseDto!=null&&("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()))){
-                        terminationDto.setTopDoctorInformations("true");
-                    }else {
-                        terminationDto.setTopDoctorInformations("false");
-                    }
-                    if(TOP_DOCTOR_INFO_FROM_PRS.equals(doctorInfoDto.getDoctorSource()) || TOP_DOCTOR_INFO_USER_NEW_REGISTER.equals(doctorInfoDto.getDoctorSource())){
+                    if(TOP_DOCTOR_INFO_FROM_PRS.equals(doctorInfoDto.getDoctorSource())){
                         terminationDto.setDoctorInformationPE("false");
+                        terminationDto.setTopDoctorInformations("false");
                         topSuperDataSubmissionDto.setDoctorInformationDto(doctorInfoDto);
                         terminationDto.setDoctorRegnNo(doctorInfoDto.getDoctorReignNo());
+                        terminationDto.setSpecialty(String.valueOf(doctorInfoDto.getSpeciality()).replaceAll("(?:\\[|null|\\]| +)", ""));
+                        terminationDto.setSubSpecialty(String.valueOf(doctorInfoDto.getSubSpeciality()).replaceAll("(?:\\[|null|\\]| +)", ""));
+                        terminationDto.setQualification(String.valueOf(doctorInfoDto.getQualification()).replaceAll("(?:\\[|null|\\]| +)", ""));
                         if(professionalResponseDto!=null&&doctorInformationDto!=null){
                             ParamUtil.setRequestAttr(bpc.request, "DoctorELISAndPrs",true);
                         }else {
                             ParamUtil.setRequestAttr(bpc.request, "DoctorELISAndPrs",false);
                         }
                     }else if(TOP_DOCTOR_INFO_FROM_ELIS.equals(doctorInfoDto.getDoctorSource())){
+                        terminationDto.setTopDoctorInformations("false");
                         terminationDto.setDoctorInformationPE("true");
                         terminationDto.setDoctorRegnNo(doctorInfoDto.getDoctorReignNo());
                         terminationDto.setDoctorName(doctorInfoDto.getName());
                         terminationDto.setSpecialty(String.valueOf(doctorInfoDto.getSpeciality()).replaceAll("(?:\\[|null|\\]| +)", ""));
                         terminationDto.setSubSpecialty(String.valueOf(doctorInfoDto.getSubSpeciality()).replaceAll("(?:\\[|null|\\]| +)", ""));
                         terminationDto.setQualification(String.valueOf(doctorInfoDto.getQualification()).replaceAll("(?:\\[|null|\\]| +)", ""));
+                    }else if ( TOP_DOCTOR_INFO_USER_NEW_REGISTER.equals(doctorInfoDto.getDoctorSource())){
+                        topSuperDataSubmissionDto.setDoctorInformationDto(doctorInfoDto);
+                        terminationDto.setTopDoctorInformations("true");
+                        terminationDto.setDoctorRegnNo(doctorInfoDto.getDoctorReignNo());
                     }
                 }else {
                     ParamUtil.setRequestAttr(bpc.request, "DoctorELISAndPrs",false);
@@ -471,6 +475,7 @@ public class MohDsActionDelegator {
                         terminationDto.setQualification(String.valueOf(doctorInformationDto.getQualification()).replaceAll("(?:\\[|null|\\]| +)", ""));
                         terminationDto.setDoctorRegnNo(doctorInformationDto.getDoctorReignNo());
                         terminationDto.setTopDoctorInformations("false");
+                        terminationDto.setDoctorInformationPE("false");
                     }else if(TOP_DOCTOR_INFO_FROM_ELIS.equals(doctorInformationDto.getDoctorSource())){
                         terminationDto.setDoctorName(doctorInformationDto.getName());
                         terminationDto.setSpecialty(String.valueOf(doctorInformationDto.getSpeciality()).replaceAll("(?:\\[|null|\\]| +)", ""));
