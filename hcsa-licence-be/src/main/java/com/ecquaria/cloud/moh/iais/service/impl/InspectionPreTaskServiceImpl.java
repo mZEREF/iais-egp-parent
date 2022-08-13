@@ -81,6 +81,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -159,8 +160,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
 
     static private String[] processDec = new String[]{InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION,
             InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO,
-            InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY,
-            InspectionConstants.PROCESS_DECI_ROLL_BACK};
+            InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY};
 
     @Override
     public ApplicationDto getAppStatusByTaskId(TaskDto taskDto) {
@@ -185,10 +185,14 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             if (AppConsts.YES.equals(canEdit) && rfiCount == 0) {
                 processDecArr = processDec;
             } else {
-                processDecArr = new String[]{InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO, InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY, InspectionConstants.PROCESS_DECI_ROLL_BACK};
+                processDecArr = new String[]{InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO, InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY};
             }
         }
-        return MasterCodeUtil.retrieveOptionsByCodes(processDecArr);
+        List<String> processDecArrList = new ArrayList<>(Arrays.asList(processDecArr));
+        if(!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType))){
+            processDecArrList.add(InspectionConstants.PROCESS_DECI_ROLL_BACK);
+        }
+        return MasterCodeUtil.retrieveOptionsByCodes(processDecArrList.toArray(new String[0]));
     }
 
     @Override
@@ -346,8 +350,10 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         if(!StringUtil.isEmpty(selfRfiDecision)){
             String selfRfiMsgNo = sendSelfRfiEmail(taskDto, premCheckItems, applicationViewDto, applicationDto, applicantName, applicationNo, appRfiDecision, preInspecComments);
             AppPremiseMiscDto appPremiseMiscDto = new AppPremiseMiscDto();
+            appPremiseMiscDto.setAppPremCorreId(taskDto.getRefNo());
             appPremiseMiscDto.setAppealType(ApplicationConsts.SELF_ASS_RFI_MSG);
-            appPremiseMiscDto.setRelateRecId(selfRfiMsgNo);
+            appPremiseMiscDto.setOtherReason(selfRfiMsgNo);
+            appPremiseMiscDto.setPatNeedTrans(Boolean.FALSE);
             List<AppPremiseMiscDto> appPremiseMiscDtoList = applicationDto.getAppPremiseMiscDtoList();
             if (appPremiseMiscDtoList != null) {
                 appPremiseMiscDtoList.add(appPremiseMiscDto);
@@ -369,6 +375,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION);
             applicationDto1.setSelfAssMtFlag(selfAssMtFlag);
         }
+        applicationDto1.setAppPremiseMiscDtoList(applicationDto.getAppPremiseMiscDtoList());
         applicationDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         applicationService.updateFEApplicaiton(applicationDto1);
         applicationViewDto.setApplicationDto(applicationDto1);

@@ -1097,7 +1097,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
             if (correlation != null){
                 AppPremiseMiscDto appPremiseMiscDto = cessationClient.getAppPremiseMiscDtoListByCon(correlation.getId(), ApplicationConsts.APPLICATION_RFI_MSG).getEntity();
                 if (appPremiseMiscDto != null){
-                    return  appPremiseMiscDto.getRelateRecId();
+                    return  appPremiseMiscDto.getOtherReason();
                 }
             }
         }

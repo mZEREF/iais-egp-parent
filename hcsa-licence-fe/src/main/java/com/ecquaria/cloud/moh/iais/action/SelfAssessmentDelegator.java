@@ -143,7 +143,7 @@ public class SelfAssessmentDelegator {
             if (correlation != null){
                 AppPremiseMiscDto appPremiseMiscDto = cessationClient.getAppPremiseMiscDtoListByCon(correlation.getId(), ApplicationConsts.SELF_ASS_RFI_MSG).getEntity();
                 if (appPremiseMiscDto != null){
-                    return  appPremiseMiscDto.getRelateRecId();
+                    return  appPremiseMiscDto.getOtherReason();
                 }
             }
         }
