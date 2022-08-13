@@ -346,9 +346,11 @@ public class BsbSubmitSelfAssessmentDelegator {
     public List<String> assessmentActions(AssessmentState state) {
         List<String> actions;
         if (state == AssessmentState.PEND) {
+            actions = Arrays.asList(ACTION_FILL, ACTION_DOWNLOAD, ACTION_UPLOAD);
+        } else if (state == AssessmentState.DRAFT) {
             actions = Arrays.asList(ACTION_FILL, ACTION_PRINT, ACTION_DOWNLOAD, ACTION_UPLOAD);
         } else if (state == AssessmentState.SUBMITTED) {
-            actions = Arrays.asList(ACTION_VIEW, ACTION_PRINT, ACTION_DOWNLOAD, ACTION_UPLOAD);
+            actions = Arrays.asList(ACTION_VIEW, ACTION_PRINT);
         } else if (state == AssessmentState.RFI) {
             actions = Arrays.asList(ACTION_EDIT, ACTION_PRINT, ACTION_DOWNLOAD, ACTION_UPLOAD);
         } else {
@@ -521,7 +523,6 @@ public class BsbSubmitSelfAssessmentDelegator {
         String maskedAppId = request.getParameter(KEY_APP_ID);
         String appId = MaskUtil.unMaskValue(MASK_PARAM, maskedAppId);
         ChecklistConfigDto configDto = inspectionClient.getMaxVersionChecklistConfig(appId, HcsaChecklistConstants.SELF_ASSESSMENT);
-        //ChecklistConfigDto commonConfigDto = inspectionClient.getMaxVersionCommonConfig();
         exportExcel(null, configDto, "Self_Assessment_Template", null, response);
     }
 
@@ -535,19 +536,16 @@ public class BsbSubmitSelfAssessmentDelegator {
         String appId = MaskUtil.unMaskValue(MASK_PARAM, maskedAppId);
         SelfAssessmtChklDto answerRecordDto = inspectionClient.getSavedSelfAssessment(appId);
         ChecklistConfigDto configDto;
-        ChecklistConfigDto commonConfigDto = null;
         Map<String, ChklstItemAnswerDto> answerMap = null;
         if (answerRecordDto == null) {
             configDto = inspectionClient.getMaxVersionChecklistConfig(appId, HcsaChecklistConstants.SELF_ASSESSMENT);
-            //commonConfigDto = inspectionClient.getMaxVersionCommonConfig();
         } else {
             configDto = inspectionClient.getChecklistConfigById(answerRecordDto.getChkLstConfigId());
-            //commonConfigDto = inspectionClient.getChecklistConfigById(answerRecordDto.getCommonChkLstConfigId());
             if (!StringUtils.isEmpty(answerRecordDto.getAnswer())) {
                 List<ChklstItemAnswerDto> answerDtoList = JsonUtil.parseToList(answerRecordDto.getAnswer(), ChklstItemAnswerDto.class);
                 if (answerDtoList != null) {
                     answerMap = answerDtoList.stream()
-                            .collect(Collectors.toMap((t) -> new StringBuilder()
+                            .collect(Collectors.toMap(t -> new StringBuilder()
                                     .append(t.getConfigId())
                                     .append(KEY_SEPARATOR)
                                     .append(t.getSectionId())
@@ -557,7 +555,7 @@ public class BsbSubmitSelfAssessmentDelegator {
                 }
             }
         }
-        exportExcel(commonConfigDto, configDto, "Self_Assessment", answerMap, response);
+        exportExcel(null, configDto, "Self_Assessment", answerMap, response);
     }
 
     private void exportExcel(ChecklistConfigDto commonConfigDto, ChecklistConfigDto configDto, String filename,

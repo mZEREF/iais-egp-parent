@@ -174,10 +174,15 @@
                               </iais:value>
                             </iais:row>
                             <iais:row>
-                              <iais:field value="Internal Remarks"/>
+                              <label class="col-md-4 control-label">Internal Remarks <span style="color: red"
+                                                                                           id="internalRemarkStar"> *</span></label>
                               <iais:value width="300">
-                                <textarea maxlength="300" id="preInspecRemarks" name="preInspecRemarks" cols="60" rows="7" style="font-size:16px"><c:out value="${inspectionPreTaskDto.reMarks}"></c:out></textarea>
+                                <textarea maxlength="300" id="preInspecRemarks" name="preInspecRemarks" cols="60" class="internalRemarks"
+                                          rows="7" style="font-size:16px"><c:out
+                                        value="${inspectionPreTaskDto.reMarks}"/></textarea>
                                 <br><span class="error-msg" name="iaisErrorMsg" id="error_reMarks"></span>
+                                <br><span id="error_internalRemarks1" class="error-msg"
+                                          style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
                               </iais:value>
                             </iais:row>
                             <iais:row>
@@ -185,7 +190,7 @@
                               <iais:value width="7">
                                 <iais:select name="selectValue" cssClass="nextStage" options="processDecOption"
                                              firstOption="Please Select" value="${inspectionPreTaskDto.selectValue}"
-                                             onchange="javascript:doInspectionPreTaskChange(this.value)"/>
+                                             onchange="javascript:doInspectionPreTaskChange()"/>
                                 <span class="error-msg" name="iaisErrorMsg" id="error_nextStage"></span>
                               </iais:value>
                             </iais:row>
@@ -197,17 +202,7 @@
                                              value="${inspectionPreTaskDto.checkRbStage}"/>
                               </iais:value>
                             </iais:row>
-                            <iais:row id="rollBackToRow">
-                              <iais:field value="Roll Back To" required="true"/>
-                              <iais:value width="10" display="true">
-                                <iais:select name="rollBackTo"
-                                             firstOption="Please Select"
-                                             options="rollBackOptions"
-                                             value=""/>
-                                <span id="error_rollBackTo1" class="error-msg"
-                                      style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
-                              </iais:value>
-                            </iais:row>
+                            <jsp:include page="/WEB-INF/jsp/iais/inspectionPreTask/rollBackPart.jsp"/>
                             <iais:row id="rfiCheckBox">
                               <iais:field value="Request For Information" required="true"/>
                               <iais:value width="7">
@@ -304,53 +299,27 @@
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <%@ include file="../inspectionncList/uploadFile.jsp" %>
 
-<iais:confirm msg="INSPE_ACK001" popupOrder="confirmTag"
-              cancelFunc="$('#confirmTag').modal('hide');" cancelBtnCls="btn btn-secondary" cancelBtnDesc="NO"
-              callBack="$('#confirmTag').modal('hide');showWaiting();inspectionPreTaskSubmit('rollBack');" yesBtnCls="btn btn-primary" yesBtnDesc="YES"/>
 <script type="text/javascript">
-    $(document).ready(function() {
+  $(document).ready(function () {
 
-        var actionValue = $("#actionValue").val();
-        if(actionValue == "edit"){
-            inspectionPreTaskJump("edit");
-        } else if(actionValue == "request" || actionValue == "routeB"){
-            inspectionPreTaskJump("process");
-        }
-        var selectValue = $("#processDec").val();
-        if("REDECI001" == selectValue){
-            $("#rfiCheckBox").show();
-            $("#rbCheckStage").hide();
-            var check = $("#appPreInspRfiCheck").prop("checked");
-            if(check){
-                $("#preInspRfiComments").removeClass('hidden');
-                $("#rfiSelect").removeClass('hidden');
-            } else {
-                $("#preInspRfiComments").addClass('hidden');
-                $("#rfiSelect").addClass('hidden');
-            }
-        } else if("REDECI021" == selectValue){
-            $("#rfiCheckBox").hide();
-            $("#rbCheckStage").show();
-            $('#rollBackToRow').hide();
-        }else if("REDECI027" == selectValue){
-          $("#rfiCheckBox").hide();
-          $("#rbCheckStage").hide();
-          $('#rollBackToRow').show();
-        } else {
-            $("#rfiCheckBox").hide();
-            $("#rbCheckStage").hide();
-            $('#rollBackToRow').hide();
-        }
-    });
+    var actionValue = $("#actionValue").val();
+    if (actionValue == "edit") {
+      inspectionPreTaskJump("edit");
+    } else if (actionValue == "request" || actionValue == "routeB") {
+      inspectionPreTaskJump("process");
+    }
 
-    function inspectionPreTaskJump(value){
-        $("#preInspTabInfo").removeClass('active');
-        $("#preInspTabDocuments").removeClass('active');
-        $("#preInspTabInspection").removeClass('active');
-        $("#preInspTabProcessing").removeClass('active');
-        if("edit" == value){
-            $("#preInspSelfChList").click();
-            $("#preInspTabInspection").addClass('active');
+    doInspectionPreTaskChange();
+  });
+
+  function inspectionPreTaskJump(value) {
+    $("#preInspTabInfo").removeClass('active');
+    $("#preInspTabDocuments").removeClass('active');
+    $("#preInspTabInspection").removeClass('active');
+    $("#preInspTabProcessing").removeClass('active');
+    if ("edit" == value) {
+      $("#preInspSelfChList").click();
+      $("#preInspTabInspection").addClass('active');
         } else {
             $("#preInspProcess").click();
             $("#preInspTabProcessing").addClass('active');
@@ -377,88 +346,75 @@
         }
         $("[name='inspectorPreType']").val(action);
         var mainPoolForm = document.getElementById('mainReviewForm');
-        mainPoolForm.submit();
+      mainPoolForm.submit();
     }
 
-    function doInspectionPreTaskEdit() {
+  function doInspectionPreTaskEdit() {
+    showWaiting();
+    $("#actionValue").val('edit');
+    inspectionPreTaskSubmit('edit');
+  }
+
+  function doInspectionPreTaskSelfBack() {
+    showWaiting();
+    $("#actionValue").val('self');
+    inspectionPreTaskSubmit('self');
+  }
+
+  function doInspectionPreTaskBack() {
+    showWaiting();
+    $("#actionValue").val('back');
+  }
+
+  function doInspectionPreTaskChange() {
+    const value = $('.nextStage').find('option:selected').val();
+    $("#processDec").val(value);
+
+    $("#preInspRfiComments").addClass('hidden');
+    $("#rfiSelect").addClass('hidden');
+    $("#rfiCheckBox").hide();
+    $("#rbCheckStage").hide();
+    $('#rollBackToRow').hide();
+
+    if ("REDECI001" == value) {
+      $("#rfiCheckBox").show();
+      const check = $("#appPreInspRfiCheck").prop("checked");
+      if (check) {
+        $("#preInspRfiComments").removeClass('hidden');
+        $("#rfiSelect").removeClass('hidden');
+      }
+    } else if ("REDECI021" == value) {
+      $("#rbCheckStage").show();
+    }
+    showRollBackTo();
+  }
+
+  function doInspectionPreTaskSubmit() {
+    showWaiting();
+    clearErrorMsg();
+    $("#error_rollBackTo1").hide();
+    var actionValue = $("#processDec").val();
+    if ("REDECI002" == actionValue) {
+      $("#actionValue").val('approve');
+      inspectionPreTaskSubmit("approve");
+    } else if ("REDECI001" == actionValue) {
+      $("#actionValue").val('request');
+      inspectionPreTaskSubmit("routeB");
+    } else if ("REDECI021" == actionValue) {
+      $("#actionValue").val('routeB');
+      inspectionPreTaskSubmit("apso");
+    } else if ("REDECI027" == actionValue) {
+      dismissWaiting();
+      submitRollBack(() => {
         showWaiting();
-        $("#actionValue").val('edit');
-        inspectionPreTaskSubmit('edit');
+        $("#actionValue").val('routeB');
+        inspectionPreTaskSubmit('rollBack');
+      })
+    } else {
+      var errMsg = 'This field is mandatory';
+      $("#error_selectValue").text(errMsg);
+      dismissWaiting();
     }
-
-    function doInspectionPreTaskSelfBack() {
-        showWaiting();
-        $("#actionValue").val('self');
-        inspectionPreTaskSubmit('self');
-    }
-
-    function doInspectionPreTaskBack() {
-        showWaiting();
-        $("#actionValue").val('back');
-    }
-
-    function doInspectionPreTaskChange(value) {
-        $("#processDec").val(value);
-        if("REDECI001" == value){
-            $("#rfiCheckBox").show();
-            $("#rbCheckStage").hide();
-            var check = $("#appPreInspRfiCheck").prop("checked");
-            if(check){
-                $("#preInspRfiComments").removeClass('hidden');
-                $("#rfiSelect").removeClass('hidden');
-            } else {
-                $("#preInspRfiComments").addClass('hidden');
-                $("#rfiSelect").addClass('hidden');
-            }
-        } else if("REDECI021" == value){
-            $("#rfiCheckBox").hide();
-            $("#rbCheckStage").show();
-            $("#preInspRfiComments").addClass('hidden');
-            $("#rfiSelect").addClass('hidden');
-            $('#rollBackToRow').hide();
-        } else if("REDECI027" == value){
-          $("#rfiCheckBox").hide();
-          $("#rbCheckStage").hide();
-          $('#rollBackToRow').show();
-          $("#preInspRfiComments").addClass('hidden');
-          $("#rfiSelect").addClass('hidden');
-        } else {
-          $("#rfiCheckBox").hide();
-          $("#rbCheckStage").hide();
-          $("#rollBackToRow").hide();
-          $("#preInspRfiComments").addClass('hidden');
-          $("#rfiSelect").addClass('hidden');
-        }
-    }
-
-    function doInspectionPreTaskSubmit() {
-        showWaiting();
-        clearErrorMsg();
-      $("#error_rollBackTo1").hide();
-      var actionValue = $("#processDec").val();
-        if("REDECI002" == actionValue){
-            $("#actionValue").val('approve');
-            inspectionPreTaskSubmit("approve");
-        } else if ("REDECI001" == actionValue){
-            $("#actionValue").val('request');
-            inspectionPreTaskSubmit("routeB");
-        } else if("REDECI021" == actionValue){
-            $("#actionValue").val('routeB');
-            inspectionPreTaskSubmit("apso");
-        } else if ("REDECI027" == actionValue) {
-          const rollBackToVal = $("#rollBackTo").val();
-          dismissWaiting();
-          if(rollBackToVal === null || rollBackToVal === undefined || rollBackToVal === ''){
-            $("#error_rollBackTo1").show();
-          } else {
-            $("#actionValue").val('routeB');
-            $('#confirmTag').modal('show');
-          }
-        } else {
-            var errMsg = 'This field is mandatory';
-            $("#error_selectValue").text(errMsg);
-            dismissWaiting();
-        }
-    }
+  }
 </script>
 

@@ -123,8 +123,9 @@
                                                                     <div class="input-group">
                                                                         <select name="processingDecision" class="processingDecisionDropDown" id="processingDecision">
                                                                             <option value="">Please Select</option>
-                                                                            <option value="${MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE}">selected="selected"</c:if>>Approve</option>
-                                                                            <option value="${MasterCodeConstants.MOH_PROCESSING_DECISION_REJECT}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESSING_DECISION_REJECT}">selected="selected"</c:if>>Reject</option>
+                                                                            <%--TODO: check these decision--%>
+                                                                            <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE}">selected="selected"</c:if>>Approve</option>
+                                                                            <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_REJECT}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESS_DECISION_REJECT}">selected="selected"</c:if>>Reject</option>
                                                                         </select>
                                                                         <span data-err-ind="decision" class="error-msg" ></span>
                                                                     </div>

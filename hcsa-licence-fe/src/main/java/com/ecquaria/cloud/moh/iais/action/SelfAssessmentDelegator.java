@@ -2,12 +2,15 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessmentConfig;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -22,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.InspecUserRecUploadService;
 import com.ecquaria.cloud.moh.iais.service.SelfAssessmentService;
+import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +57,9 @@ public class SelfAssessmentDelegator {
 
     @Autowired
     private AppSubmissionService appSubmissionService;
+
+    @Autowired
+    private CessationClient cessationClient;
 
     /**
      * Refer from InterInboxDelegator.doSelfAssMt
@@ -95,9 +102,25 @@ public class SelfAssessmentDelegator {
         }
 
         String messageId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
+        InterMessageDto interMessageDto = null;
         if (StringUtil.isNotEmpty(messageId)){
             log.info("SelfAssessmentDelegator [startStep] message id  {}", messageId);
-            InterMessageDto interMessageDto = appSubmissionService.getInterMessageById(messageId);
+            interMessageDto = appSubmissionService.getInterMessageById(messageId);
+        } else {
+            ApplicationDto applicationDto = appSubmissionService.getMaxVersionApp(appNo);
+            if (applicationDto != null){
+                String selfRfiMsgNo = getSelfRfiMsgNo(appNo);
+                if (StringUtil.isNotEmpty(selfRfiMsgNo)){
+                    List<InterMessageDto> interMessageDtos = appSubmissionService.getInterMessageByRefNo(selfRfiMsgNo);
+                    Optional<InterMessageDto> interMessageDtoOptional = interMessageDtos.stream().filter(interMessageDto1 -> !MessageConstants.MESSAGE_STATUS_RESPONSE.equals(interMessageDto1.getStatus())).findFirst();
+                    if (interMessageDtoOptional.isPresent()){
+                        interMessageDto = interMessageDtoOptional.get();
+                        ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID, interMessageDto.getId());
+                    }
+                }
+            }
+        }
+        if (interMessageDto != null) {
             ParamUtil.setSessionAttr(request,"msg_action_id",messageId);
             ParamUtil.setSessionAttr(request,"msg_action_type",interMessageDto.getMessageType());
             ParamUtil.setSessionAttr(request,"IAIS_MSG_CONTENT",interMessageDto.getMsgContent());
@@ -112,6 +135,19 @@ public class SelfAssessmentDelegator {
         ParamUtil.setSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_ATTR, null);
         ParamUtil.setSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_CAN_EDIT_ANSWER_FLAG, null);
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE,"Self-assessment listing");
+    }
+
+    private String getSelfRfiMsgNo(String appNo) {
+        if (StringUtil.isNotEmpty(appNo)) {
+            AppPremisesCorrelationDto correlation = selfAssessmentService.getCorrelationByAppNo(appNo);
+            if (correlation != null){
+                AppPremiseMiscDto appPremiseMiscDto = cessationClient.getAppPremiseMiscDtoListByCon(correlation.getId(), ApplicationConsts.SELF_ASS_RFI_MSG).getEntity();
+                if (appPremiseMiscDto != null){
+                    return  appPremiseMiscDto.getOtherReason();
+                }
+            }
+        }
+        return null;
     }
 
     /**

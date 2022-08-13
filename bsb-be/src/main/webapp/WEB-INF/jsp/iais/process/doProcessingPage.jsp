@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
+<%@ page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
@@ -136,9 +137,10 @@
                                                                         <div class="input-group">
                                                                             <select name="processingDecision" class="processingDecisionDropDown" id="processingDecision">
                                                                                 <option value="">Please Select</option>
-                                                                                <option value="MOHPRO004" <c:if test="${mohProcessDto.processingDecision eq 'MOHPRO004'}">selected="selected"</c:if>>Recommend Approval</option>
-                                                                                <option value="MOHPRO002" <c:if test="${mohProcessDto.processingDecision eq 'MOHPRO002'}">selected="selected"</c:if>>Request for Information</option>
-                                                                                <option value="MOHPRO005" <c:if test="${mohProcessDto.processingDecision eq 'MOHPRO005'}">selected="selected"</c:if>>Recommend Rejection</option>
+                                                                                    <%--TODO: check these decision--%>
+                                                                                <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE}" <c:if test="${mohProcessDto.processingDecision eq MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE}">selected="selected"</c:if>>Approve</option>
+                                                                                <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_REQUEST_FOR_INFORMATION}" <c:if test="${mohProcessDto.processingDecision eq MasterCodeConstants.MOH_PROCESS_DECISION_REQUEST_FOR_INFORMATION}">selected="selected"</c:if>>Request for Information</option>
+                                                                                <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_REJECT}" <c:if test="${mohProcessDto.processingDecision eq MasterCodeConstants.MOH_PROCESS_DECISION_REJECT}">selected="selected"</c:if>>Reject</option>
                                                                             </select>
                                                                             <span data-err-ind="processingDecision" class="error-msg" ></span>
                                                                         </div>

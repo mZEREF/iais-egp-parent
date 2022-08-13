@@ -134,7 +134,7 @@ public class InspectionMergeSendNcEmailDelegator {
     private static final String MSG_CON="messageContent";
     private static final String APP_VIEW_DTO="applicationViewDto";
     private static final String TD="</td><td>";
-    private static final String ROLLBACK_OPTIONS="rollBackToOptions";
+    private static final String ROLLBACK_OPTIONS="rollBackOptions";
     private static final String ROLLBACK_VALUE_MAP="rollBackValueMap";
 
     public void start(BaseProcessClass bpc){
@@ -391,7 +391,7 @@ public class InspectionMergeSendNcEmailDelegator {
         }
         String[] processDess = new String[]{InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT, InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT};
         String appType = applicationViewDto.getApplicationDto().getApplicationType();
-        if (!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType))) {
+        if (!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType))) {
             processDess = new String[]{InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT, InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT, InspectionConstants.PROCESS_DECI_ROLL_BACK};
         }
         List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(processDess);

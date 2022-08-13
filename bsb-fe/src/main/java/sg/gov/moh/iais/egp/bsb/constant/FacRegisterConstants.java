@@ -86,6 +86,7 @@ public class FacRegisterConstants {
     public static final String KEY_OPTION_SALUTATION       = "salutationOps";
     public static final String KEY_OPTIONS_FAC_TYPE        = "facTypeOps";
     public static final String KEY_OPTIONS_ADDRESS_TYPE    = "addressTypeOps";
+    public static final String KEY_OPTIONS_PIM_RISK_LEVEL  = "opvSabinPIMRiskLevelOps";
     public static final String KEY_OPTIONS_AFC             = "afcOps";
     public static final String KEY_OPTIONS_SCHEDULE        = "scheduleOps";
     public static final String KEY_SCHEDULE_FIRST_OPTION   = "firstScheduleOp";

@@ -23,10 +23,10 @@ import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PE
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_DO_SCREENING;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_HM_DECISION;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_INSPECTION_TASK_ASSIGNMENT;
-import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE;
-import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESSING_DECISION_REJECT;
-import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_BACK_TO_DO;
-import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_BACK_TO_HM;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE_TO_PROCEED_TO_NEXT_STAGE;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESS_DECISION_REJECT;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_HM;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.KEY_MOH_PROCESS_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.MODULE_NAME_AO_SCREENING;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_APP_ID;
@@ -73,7 +73,7 @@ public class MohAOScreeningDelegator {
         String processingDecision = mohProcessDto.getProcessingDecision();
         ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK,"Approval Officer Screening");
         switch (processingDecision) {
-            case MOH_PROCESSING_DECISION_APPROVE:
+            case MOH_PROCESS_DECISION_APPROVE_TO_PROCEED_TO_NEXT_STAGE:
                 String nextAppStatus = processClient.saveAoScreeningApprove(appId, taskId, mohProcessDto);
                 if (nextAppStatus.equals(APP_STATUS_PEND_INSPECTION_TASK_ASSIGNMENT)) {
                     ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_APPLICANT);
@@ -82,15 +82,15 @@ public class MohAOScreeningDelegator {
                 }
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(nextAppStatus));
                 break;
-            case MOH_PROCESSING_DECISION_REJECT:
+            case MOH_PROCESS_DECISION_REJECT:
                 processClient.saveAoScreeningReject(appId, taskId, mohProcessDto);
                 break;
-            case MOH_PROCESSING_DECISION_ROUTE_BACK_TO_DO:
+            case MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO:
                 processClient.saveAoScreeningRouteBackToDo(appId, taskId, mohProcessDto);
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK,MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_DO_SCREENING));
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_DO);
                 break;
-            case MOH_PROCESSING_DECISION_ROUTE_BACK_TO_HM:
+            case MOH_PROCESS_DECISION_ROUTE_TO_HM:
                 processClient.saveAoScreeningRouteToHm(appId, taskId, mohProcessDto);
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_HM_DECISION));
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_HM);

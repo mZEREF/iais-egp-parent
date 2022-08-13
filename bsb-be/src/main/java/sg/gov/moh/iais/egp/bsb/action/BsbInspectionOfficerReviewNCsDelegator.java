@@ -155,16 +155,17 @@ public class BsbInspectionOfficerReviewNCsDelegator {
 
         ValidationResultDto validationResultDto = inspectionClient.validateActualOfficerReviewNCDecision(processDto);
         String validateResult;
+        // TODO: check these decision
         if (validationResultDto.isPass()) {
-            if (MasterCodeConstants.MOH_PROCESSING_DECISION_ACCEPTS_RECTIFICATIONS_AND_ROUTE_TO_AO.equals(processDto.getDecision())) {
+            if (MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_AO_FOR_REVIEW.equals(processDto.getDecision())) {
                 validateResult = "ao";
-            }else if(MasterCodeConstants.MOH_PROCESSING_DECISION_REQUEST_FOR_INFO.equals(processDto.getDecision())){
+            }else if(MasterCodeConstants.MOH_PROCESS_DECISION_REQUEST_FOR_INFORMATION.equals(processDto.getDecision())){
                 validateResult = "rfi";
-            }else if(MasterCodeConstants.MOH_PROCESSING_DECISION_REJECT_AND_ROUTE_TO_DO_FOR_REVISION.equals(processDto.getDecision())){
+            }else if(MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO_FOR_REVISION.equals(processDto.getDecision())){
                 validateResult = "reject";
-            } else if(MasterCodeConstants.MOH_PROCESSING_DECISION_ACCEPT.equals(processDto.getDecision())){
+            } else if(MasterCodeConstants.MOH_PROCESS_DECISION_ACCEPT.equals(processDto.getDecision())){
                 validateResult = "accept";
-            }else if(MasterCodeConstants.MOH_PROCESSING_DECISION_SKIP_INSPECTION.equals(processDto.getDecision())){
+            }else if(MasterCodeConstants.MOH_PROCESS_DECISION_SKIP_INSPECTION.equals(processDto.getDecision())){
                 validateResult = "skip";
             }else {
                 validateResult = "invalid";

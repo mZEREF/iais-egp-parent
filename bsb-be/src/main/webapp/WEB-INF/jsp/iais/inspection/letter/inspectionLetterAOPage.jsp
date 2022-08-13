@@ -4,6 +4,7 @@
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
 <%@ page import="sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%@ page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -106,10 +107,11 @@
                                                             <div class="form-group">
                                                                 <label class="col-xs-12 col-md-4 control-label" for="processingDecision">Processing Decision<span style="color: red">*</span></label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
+                                                                    <%--TODO: check these decision--%>
                                                                     <select name="processingDecision"  class="processingDecisionDropdown" id="processingDecision">
                                                                         <option value="" <c:if test="${letterDto.decision eq ''}">selected="selected"</c:if>>Please Select</option>
-                                                                        <option value="MOHPRO007" <c:if test="${letterDto.decision eq 'MOHPRO007'}">selected="selected"</c:if>>Approve</option>
-                                                                        <option value="MOHPRO008" <c:if test="${letterDto.decision eq 'MOHPRO008'}">selected="selected"</c:if>>Route back to DO</option>
+                                                                        <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE}" <c:if test="${letterDto.decision eq MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE}">selected="selected"</c:if>>Approve</option>
+                                                                        <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO}" <c:if test="${letterDto.decision eq MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO}">selected="selected"</c:if>>Route back to DO</option>
                                                                     </select>
                                                                 </div>
                                                                 <div class="clear"></div>

@@ -5,6 +5,7 @@ import com.googlecode.jmapper.annotations.JGlobalMap;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import sg.gov.moh.iais.egp.bsb.constant.Stage;
 
 import java.util.Date;
 import java.util.List;
@@ -28,6 +29,8 @@ public class ApplicationDto extends BaseEntityDto {
     private String processType;
 
     private String status;
+
+    private Stage stage;
 
     private String facilityNo;
 

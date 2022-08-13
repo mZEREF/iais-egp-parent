@@ -44,6 +44,9 @@ import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_AP
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_AO_APPROVAL;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_APPLICANT_INPUT;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_DO_RECOMMENDATION;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESS_DECISION_REJECT;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESS_DECISION_REQUEST_FOR_INFORMATION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST;
 
 /**
@@ -230,11 +233,12 @@ public class SelfAuditDelegator {
             ParamUtil.setRequestAttr(request, ValidationConstants.KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
             actionType = ACTION_TYPE_PREPARE;
         }else {
-            if (dto.getDoDecision().equals("MOHPRO003")){
+            // TODO: check these decision
+            if (dto.getDoDecision().equals(MOH_PROCESS_DECISION_REJECT)){
                 actionType = ACTION_TYPE_REJECT;
-            } else if (dto.getDoDecision().equals("MOHPRO002")){
+            } else if (dto.getDoDecision().equals(MOH_PROCESS_DECISION_REQUEST_FOR_INFORMATION)){
                 actionType = ACTION_TYPE_RFI;
-            } else if (dto.getDoDecision().equals("MOHPRO010")){
+            } else if (dto.getDoDecision().equals("")){
                 actionType = ACTION_TYPE_VERIFIED;
             }
         }
@@ -249,9 +253,10 @@ public class SelfAuditDelegator {
             ParamUtil.setRequestAttr(request, ValidationConstants.KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
             actionType = ACTION_TYPE_PREPARE;
         }else {
-            if (dto.getAoDecision().equals("MOHPRO011")){
+            // TODO: check these decision
+            if (dto.getAoDecision().equals("")){
                 actionType = ACTION_TYPE_INTERNAL;
-            } else if (dto.getAoDecision().equals("MOHPRO007")){
+            } else if (dto.getAoDecision().equals(MOH_PROCESS_DECISION_APPROVE)){
                 actionType = ACTION_TYPE_APPROVE;
             }
         }

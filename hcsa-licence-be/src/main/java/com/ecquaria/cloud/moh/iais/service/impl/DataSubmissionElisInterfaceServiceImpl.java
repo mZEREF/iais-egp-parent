@@ -58,6 +58,9 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     @Value("${iais.datasubmission.elis.path}")
     private String sharedPath;
 
+    @Value("${iais.file.move.path}")
+    private String movePath;
+
     private static final String LICENCE_FILE = "eLIS_HALP_Licence_Data_";
     private static final String USER_FILE = "eLIS_HALP_Internet_User_Data_";
     private static final String TOP_DOCTOR_FILE = "eLIS_HALP_TOP_Doctor_Data_";
@@ -68,7 +71,6 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     private static final String DATE_FORMAT = "dd/MM/yyyy";
 
     private static final String DATE_STR = convertToString(new Date(), DATE_STR_FORMAT);
-    private static final String NEW_PATH = DATE_STR + "ELIS/";
 
     @Autowired
     OrganizationClient organizationClient;
@@ -90,10 +92,8 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     @Override
     public void processLicence() {
         log.info("start processLicence");
-        String path = sharedPath + "/" + LICENCE_FILE + DATE_STR + ".txt";
         log.info("start generate licenceFile");
         File licenceFile = MiscUtil.generateFile(sharedPath, LICENCE_FILE + DATE_STR + ".txt");
-        log.info("licenceFile path: {}",licenceFile.getAbsolutePath());
         log.info("generate licenceFile end");
         boolean flag = true;
         ELISInterfaceDto elisInterfaceDto = new ELISInterfaceDto();
@@ -166,7 +166,10 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
             if (flag) {
                 //move file
                 try {
-                    FileUtils.copyFileToOtherPosition(path,NEW_PATH);
+                    String path = licenceFile.getAbsolutePath();
+                    log.info("licenceFile path: {}", path);
+                    log.info("The expected new licenceFile path: {}",movePath + licenceFile.getName());
+                    FileUtils.copyFileToOtherPosition(path,movePath);
                     FileUtils.deleteTempFile(licenceFile);
                 } catch (IOException e) {
                     log.error(e.getMessage(),e);
@@ -207,7 +210,7 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
         licenseeDto.setStatus(COMMON_STATUS_ACTIVE);
         //
         LicenseeEntityDto licenseeEntityDto = new LicenseeEntityDto();
-        licenseeEntityDto.setEntityType("ds");
+        licenseeEntityDto.setEntityType("CL");
         licenseeEntityDto.setOfficeTelNo(null);
         licenseeEntityDto.setOfficeEmailAddr(null);
         licenseeDto.setLicenseeEntityDto(licenseeEntityDto);
@@ -270,10 +273,8 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     @Override
     public void processUsers() {
         log.info("start processUsers");
-        String path = sharedPath + "/" + USER_FILE + DATE_STR + ".txt";
         log.info("start generate user file");
         File userFile = MiscUtil.generateFile(sharedPath, USER_FILE + DATE_STR + ".txt");
-        log.info("userFile path: {}",userFile.getAbsolutePath());
         log.info("generate userFile end");
         boolean flag = true;
         if (userFile.exists()) {
@@ -335,7 +336,10 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
             if (flag){
                 //move file
                 try {
-                    FileUtils.copyFileToOtherPosition(path,NEW_PATH);
+                    String path = userFile.getAbsolutePath();
+                    log.info("userFile path: {}", path);
+                    log.info("The expected new userFile path: {}",movePath + userFile.getName());
+                    FileUtils.copyFileToOtherPosition(path,movePath);
                     FileUtils.deleteTempFile(userFile);
                 } catch (IOException e) {
                     log.error(e.getMessage(),e);
@@ -365,10 +369,11 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
         orgUserDto.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);
         orgUserDto.setUserId(userId);
         orgUserDto.setDisplayName(dsElisUserDto.getName());
-        orgUserDto.setSalutation(dsElisUserDto.getSalutation());
+        orgUserDto.setSalutation(processSalutation(dsElisUserDto.getSalutation()));
         orgUserDto.setIdType(type);
         orgUserDto.setIdNumber(dsElisUserDto.getNric());
-        orgUserDto.setDesignation(dsElisUserDto.getDesignation());
+        orgUserDto.setDesignation("DES999");
+        orgUserDto.setDesignationOther(dsElisUserDto.getDesignation());
         orgUserDto.setMobileNo(dsElisUserDto.getMobile());
         orgUserDto.setOfficeTelNo(dsElisUserDto.getOffice());
         orgUserDto.setEmail(dsElisUserDto.getEmail());
@@ -386,18 +391,40 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
         return orgUserDto;
     }
 
+    private String processSalutation(String salutation){
+        String code;
+        if (StringUtils.isEmpty(salutation)){
+            code = null;
+        } else if (salutation.equals("MR")){
+            code = "SALU003";
+        } else if (salutation.equals("MISS")|| salutation.equals("MS")){
+            code = "SALU005";
+        } else if (salutation.equals("MRS")){
+            code = "SALU004";
+        } else if (salutation.equals("MDM")){
+            code = "SALU002";
+        } else if (salutation.equals("DR")){
+            code = "SALU001";
+        } else if (salutation.equals("A/PROF")){
+            code = "SALU008";
+        } else if (salutation.equals("PROF")){
+            code = "SALU007";
+        } else if (salutation.equals("VEN")){
+            code = "SALU006";
+        } else {
+            code = null;
+        }
+        return code;
+    }
+
     @Override
     public void processDoctor() {
         log.info("start processDoctor");
-        String topPath = sharedPath + "/" + TOP_DOCTOR_FILE + DATE_STR + ".txt";
-        String dpPath = sharedPath + "/" + DP_DOCTOR_FILE + DATE_STR + ".txt";
         log.info("start generate topDoctorFile");
         File topDoctorFile = MiscUtil.generateFile(sharedPath, TOP_DOCTOR_FILE + DATE_STR + ".txt");
-        log.info("topDoctorFile path: {}",topDoctorFile.getAbsolutePath());
         log.info("generate topDoctorFile end");
         log.info("start generate dpDoctorFile");
         File dpDoctorFile = MiscUtil.generateFile(sharedPath, DP_DOCTOR_FILE + DATE_STR + ".txt");
-        log.info("dpDoctorFile path: {}",dpDoctorFile.getAbsolutePath());
         log.info("generate dpDoctorFile end");
         List<DsElisDoctorDto> doctorDtoList = new ArrayList<>();
         ELISInterfaceDto elisInterfaceDto = new ELISInterfaceDto();
@@ -427,8 +454,10 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
             List<String> deletedDoctorPrns = new ArrayList<>();
             for (DsElisDoctorDto dsElisDoctorDto : doctorDtoList) {
                 if ("N".equals(dsElisDoctorDto.getRegisterIndicator())) {
-                    log.info("delete doctor, register_no is {}", dsElisDoctorDto.getPrn());
-                    deletedDoctorPrns.add(dsElisDoctorDto.getPrn());
+                    if (!deletedDoctorPrns.contains(dsElisDoctorDto.getPrn())) {
+                        log.info("delete doctor, register_no is {}", dsElisDoctorDto.getPrn());
+                        deletedDoctorPrns.add(dsElisDoctorDto.getPrn());
+                    }
                 } else {
                     DoctorInformationDto doctorInformationDto = assistedReproductionClient.getDoctorInformationDtoByConds(dsElisDoctorDto.getPrn(), "ELIS").getEntity();
                     DoctorInformationDto doctorDto = generateDoctorDto(dsElisDoctorDto, doctorInformationDto);
@@ -453,13 +482,13 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
                     List<DoctorInformationDto> saveList = new ArrayList<>(prnDoctorInfoMap.values());
                     List<DoctorInformationDto> doctorDtos = assistedReproductionClient.saveDoctorInformationDtos(saveList).getEntity();
                     elisInterfaceDto.setDoctorDtos(doctorDtos);
-                    eicFeELISInterfaceDto(elisInterfaceDto);
                 } catch (Exception e) {
                     flag = false;
                     log.warn(e.getMessage(), e);
                     log.warn("save doctor failed");
                 }
             }
+            eicFeELISInterfaceDto(elisInterfaceDto);
         } else {
             flag = false;
         }
@@ -467,7 +496,9 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
             //move file
             if (topDoctorFile.exists()) {
                 try {
-                    FileUtils.copyFileToOtherPosition(topPath, NEW_PATH);
+                    log.info("topDoctorFile path: {}",topDoctorFile.getAbsolutePath());
+                    log.info("The expected new topDoctorFile path: {}",movePath + topDoctorFile.getName());
+                    FileUtils.copyFileToOtherPosition(topDoctorFile.getAbsolutePath(), movePath);
                     FileUtils.deleteTempFile(topDoctorFile);
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
@@ -476,7 +507,9 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
             }
             if (dpDoctorFile.exists()) {
                 try {
-                    FileUtils.copyFileToOtherPosition(dpPath, NEW_PATH);
+                    log.info("dpDoctorFile path: {}",dpDoctorFile.getAbsolutePath());
+                    log.info("The expected new dpDoctorFile path: {}",movePath + dpDoctorFile.getName());
+                    FileUtils.copyFileToOtherPosition(dpDoctorFile.getAbsolutePath(), movePath);
                     FileUtils.deleteTempFile(dpDoctorFile);
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);

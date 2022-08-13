@@ -26,6 +26,11 @@ public interface DpFeClient {
     FeignResponseEntity<DpSuperDataSubmissionDto> saveDpSuperDataSubmissionDto(
             @RequestBody DpSuperDataSubmissionDto dpSuperDataSubmissionDto);
 
+    @PostMapping(value = "/dp-common/dp-data-submission-list", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<DpSuperDataSubmissionDto> > saveDpSuperDataSubmissionDtoInList(
+            @RequestBody List<DpSuperDataSubmissionDto> dpSuperDataSubmissionDto);
+
     @PostMapping(value = "/data-submission/draft/dp", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<DpSuperDataSubmissionDto> doUpdateDataSubmissionDraft(

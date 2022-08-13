@@ -84,14 +84,15 @@ public class BsbInspectionDOReviewFollowUpItemsDelegator {
         ValidationResultDto validationResultDto = inspectionClient.validatePostInspectionDOReviewFollowUpItems(insProcessDto);
         String validateResult;
         if (validationResultDto.isPass()) {
+            // TODO: check these decision
             String processingDecision = insProcessDto.getDecision();
-            if (MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_REPORT_TO_APPLICANT.equals(processingDecision)) {
+            if (MasterCodeConstants.MOH_PROCESS_DECISION_ACCEPT_AND_ROUTE_INSPECTION_REPORT_TO_APPLICANT.equals(processingDecision)) {
                 validateResult = "routeBack";
-            } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE.equals(processingDecision)) {
+            } else if (MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE.equals(processingDecision)) {
                 validateResult = "acceptResponse";
-            } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_SKIP_INSPECTION.equals(processingDecision)) {
+            } else if (MasterCodeConstants.MOH_PROCESS_DECISION_SKIP_INSPECTION.equals(processingDecision)) {
                 validateResult = "skip";
-            } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_REJECT.equals(processingDecision)) {
+            } else if (MasterCodeConstants.MOH_PROCESS_DECISION_REJECT.equals(processingDecision)) {
                 validateResult = "reject";
             } else {
                 validateResult = "invalid";

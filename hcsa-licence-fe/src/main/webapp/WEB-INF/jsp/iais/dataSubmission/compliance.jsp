@@ -27,7 +27,7 @@
       <div class="col-xs-12">
         <ul>
           <li style=""><span>This form will take approximately ${complianceDto.mins} mins to complete. You may save your progress at anytime and resume your submission later</span></li>
-          <li style=""><span>* denotes mandatoy field.</span></li>
+          <li style=""><span>* denotes mandatory field.</span></li>
         </ul>
       </div>
     </div>

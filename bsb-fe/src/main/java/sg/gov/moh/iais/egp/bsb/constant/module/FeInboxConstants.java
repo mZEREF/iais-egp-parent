@@ -40,4 +40,6 @@ public class FeInboxConstants {
 
     public static final String KEY_ACTION_VALUE_CHANGE_SIZE            = "changeSize";
     public static final String KEY_ACTION_VALUE_CHANGE_PAGE            = "changePage";
+
+    public static final String KEY_IS_FAC_ADMIN                        = "isFacAdmin";
 }

@@ -4,7 +4,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,17 +37,18 @@ public class OrganizationInfoService {
             LicenseeDto licenseeDto = organizationInfoClient.getLicenseeByUenNo(uen);
             if (licenseeDto != null) {
                 orgAddressInfo = new OrgAddressInfo();
+                orgAddressInfo.setUen(licenseeDto.getUenNo());
+                orgAddressInfo.setCompName(licenseeDto.getName());
+                orgAddressInfo.setPostalCode(licenseeDto.getPostalCode());
+                orgAddressInfo.setAddressType(licenseeDto.getAddrType());
                 orgAddressInfo.setBlockNo(licenseeDto.getBlkNo());
                 orgAddressInfo.setFloor(licenseeDto.getFloorNo());
-                orgAddressInfo.setCompName(licenseeDto.getName());
-                orgAddressInfo.setUen(licenseeDto.getUenNo());
-                orgAddressInfo.setBuilding(licenseeDto.getBuildingName());
-                orgAddressInfo.setPostalCode(licenseeDto.getPostalCode());
-                orgAddressInfo.setStreet(licenseeDto.getStreetName());
                 orgAddressInfo.setUnitNo(licenseeDto.getUnitNo());
+                orgAddressInfo.setStreet(licenseeDto.getStreetName());
+                orgAddressInfo.setBuilding(licenseeDto.getBuildingName());
             }
         } catch (Exception e) {
-            log.error(StringUtil.changeForLog("retrieve address by UEN API hit error"), e);
+            log.error("retrieve address by UEN API hit error", e);
         }
         return orgAddressInfo;
     }

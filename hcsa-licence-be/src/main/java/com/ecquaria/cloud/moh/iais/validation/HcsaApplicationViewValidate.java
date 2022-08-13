@@ -192,6 +192,9 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                             //Route Back To
                             errMap.put("rollBackCr", MessageUtil.replaceMessage(ERROR_CODE_GENERAL_ERR0006,"Roll Back To", "field"));
                         }
+                        if (StringUtil.isEmpty(internalRemarks)) {
+                            errMap.put("internalRemarks", ERROR_CODE_GENERAL_ERR0006);
+                        }
                     } else if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage)){
                         //Prevent duplicate submissions
                         ApplicationService applicationService = SpringContextHelper.getContext().getBean(ApplicationServiceImpl.class);

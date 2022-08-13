@@ -46,10 +46,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_TASK_ID;
 
-/**
- * @author tangtang
- * @date 2022/3/3 13:52
- */
+
 @Slf4j
 @Delegator(value = "appointInspectionDateDelegator")
 public class AppointInspectionDateDelegator {
@@ -112,7 +109,7 @@ public class AppointInspectionDateDelegator {
         HttpServletRequest request = bpc.request;
         String appId = (String) ParamUtil.getSessionAttr(request, PARAM_NAME_APP_ID);
         String taskId = (String) ParamUtil.getSessionAttr(request, PARAM_NAME_TASK_ID);
-        inspectionClient.skipInspection(appId,taskId,new InsProcessDto(MasterCodeConstants.MOH_PROCESSING_DECISION_SKIP_INSPECTION));
+        inspectionClient.skipInspection(appId,taskId,new InsProcessDto(MasterCodeConstants.MOH_PROCESS_DECISION_SKIP_INSPECTION));
     }
 
     public void setApptInspectionDateDto(String taskId, HttpServletRequest request) {

@@ -36,13 +36,16 @@
                     <#if down_flag??>when :down_flag > 0 then lp.TCU_DATE_REMARKS</#if>
                     when LEN(lp.TCU_DATE_REMARKS) > 50 then CONCAT(subString(lp.TCU_DATE_REMARKS, 1, 50), '...')
                     else lp.TCU_DATE_REMARKS
-                END) AS TCU_DATE_REMARKS
+                END) AS TCU_DATE_REMARKS,
+                larai.last_insp_start as LAST_INSP_DATE,
+                l.EXPIRY_DATE as EXPIRY_DATE
             FROM
                 hcsal.dbo.lic_premises lp
             join hcsal.dbo.licence l on
                 lp.LICENCE_ID = l.ID
             JOIN hcsal.dbo.premises p on
                 lp.PREMISES_ID = p.ID
+            left join hcsal.dbo.licence_app_risk_associated_information larai on lp.ID = larai.LIC_PREMISES_ID
             WHERE  l.STATUS in ('LICEST001','LICEST007')
             AND l.ID NOT IN (SELECT l.ORIGIN_LICENCE_ID  FROM hcsal.dbo.licence l WHERE l.ORIGIN_LICENCE_ID IS  NOT NULL)
             <#if licence_no??>AND charindex(:licence_no,l.LICENCE_NO) > 0</#if>

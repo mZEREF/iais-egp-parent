@@ -48,6 +48,10 @@ public interface ArFeClient {
             @RequestParam(name = "idNumber") String idNumber, @RequestParam(name = "nationality") String nationality,
             @RequestParam(name = "orgId") String orgId, @RequestParam(name = "patientType")String patientType);
 
+    @GetMapping(value = "/ar-common/patient-info/id-type/id-number", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<PatientInfoDto> getPatientInfoDtoByIdTypeAndIdNumber(@RequestParam(name = "idType") String idType,
+                                                                             @RequestParam(name = "idNumber") String idNumber);
+
     @GetMapping(value = "/data-submission/cycle-stage-selection", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<CycleStageSelectionDto> getCycleStageSelectionDtoByConds(@RequestParam(name = "idType") String idType,
             @RequestParam(name = "idNumber") String idNumber, @RequestParam(name = "nationality") String nationality,
@@ -108,6 +112,12 @@ public interface ArFeClient {
                                                                                                 @RequestParam(name = "orgId") String orgId, @RequestParam(name = "hciCode") String hciCode,
                                                                                                 @RequestParam(name = "onlyStage") boolean onlyStage,
                                                                                                 @RequestParam("userId") String userId);
+
+    @GetMapping(value = "/data-submission/draft-ar-data-submission/stage", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ArSuperDataSubmissionDto> getDraftArSuperDataSubmissionDtoByConds(@RequestParam(name = "orgId") String orgId,
+                                                                                            @RequestParam(name = "hciCode") String hciCode,
+                                                                                            @RequestParam(name = "submissionStage") String submissionStage,
+                                                                                            @RequestParam(name = "userId") String userId);
 
     @GetMapping(value = "/data-submission/draft-ar-data-submission/special", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)

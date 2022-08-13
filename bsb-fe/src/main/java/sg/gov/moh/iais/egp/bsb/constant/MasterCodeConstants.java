@@ -63,6 +63,27 @@ public class MasterCodeConstants {
     public static final String APP_TYPE_WITHDRAW = "BSBAPTY009";
     public static final String APP_TYPE_SUBMISSION = "BSBAPTY010";
 
+    public static final List<SelectOption> INBOX_APPLICATION_SEARCH_APP_TYPE_FAC;
+    public static final List<SelectOption> INBOX_APPLICATION_SEARCH_APP_TYPE_AFC;
+
+    static {
+        List<SelectOption> inboxApplicationSearchAppTypeFAC = new ArrayList<>(6);
+        inboxApplicationSearchAppTypeFAC.add(new SelectOption(APP_TYPE_NEW, MasterCodeUtil.getCodeDesc(APP_TYPE_NEW)));
+        inboxApplicationSearchAppTypeFAC.add(new SelectOption(APP_TYPE_RENEW, MasterCodeUtil.getCodeDesc(APP_TYPE_RENEW)));
+        inboxApplicationSearchAppTypeFAC.add(new SelectOption(APP_TYPE_RFC, MasterCodeUtil.getCodeDesc(APP_TYPE_RFC)));
+        inboxApplicationSearchAppTypeFAC.add(new SelectOption(APP_TYPE_CANCEL, MasterCodeUtil.getCodeDesc(APP_TYPE_CANCEL)));
+        inboxApplicationSearchAppTypeFAC.add(new SelectOption(APP_TYPE_DEREGISTRATION, MasterCodeUtil.getCodeDesc(APP_TYPE_DEREGISTRATION)));
+        inboxApplicationSearchAppTypeFAC.add(new SelectOption(APP_TYPE_WITHDRAW, MasterCodeUtil.getCodeDesc(APP_TYPE_WITHDRAW)));
+        INBOX_APPLICATION_SEARCH_APP_TYPE_FAC = Collections.unmodifiableList(inboxApplicationSearchAppTypeFAC);
+
+        List<SelectOption> inboxApplicationSearchAppTypeAFC = new ArrayList<>(4);
+        inboxApplicationSearchAppTypeAFC.add(new SelectOption(APP_TYPE_NEW, MasterCodeUtil.getCodeDesc(APP_TYPE_NEW)));
+        inboxApplicationSearchAppTypeAFC.add(new SelectOption(APP_TYPE_RENEW, MasterCodeUtil.getCodeDesc(APP_TYPE_RENEW)));
+        inboxApplicationSearchAppTypeAFC.add(new SelectOption(APP_TYPE_WITHDRAW, MasterCodeUtil.getCodeDesc(APP_TYPE_WITHDRAW)));
+        inboxApplicationSearchAppTypeAFC.add(new SelectOption(APP_TYPE_RFC, MasterCodeUtil.getCodeDesc(APP_TYPE_RFC)));
+        INBOX_APPLICATION_SEARCH_APP_TYPE_AFC = Collections.unmodifiableList(inboxApplicationSearchAppTypeAFC);
+    }
+
     // App Status
     // main
     public static final String APP_STATUS_REMOVED                                   = "BSBAPST000";
@@ -75,6 +96,7 @@ public class MasterCodeConstants {
     public static final String APP_STATUS_REJECTED                                  = "BSBAPST007";
     public static final String APP_STATUS_PEND_APPLICANT_CLARIFICATION              = "BSBAPST008";
     public static final String APP_STATUS_PEND_APPLICANT_INPUT                      = "BSBAPST009";
+    public static final String APP_STATUS_PEND_INSPECTION_CERTIFICATION             = "BSBAPST010";
     // screening
     public static final String APP_STATUS_PEND_DO_SCREENING                         = "BSBAPST020";
     public static final String APP_STATUS_PEND_DO_CLARIFICATION                     = "BSBAPST021";
@@ -122,33 +144,19 @@ public class MasterCodeConstants {
     public static final String APP_STATUS_PEND_AO_REPORT_REVIEW                     = "BSBAPST404";
     public static final String APP_STATUS_PEND_AFC_INPUT                            = "BSBAPST405";
 
-    public static final Set<String> COMMON_QUERY_APP_STATUS;
     public static final Set<String> INSPECTION_APP_STATUS;
-    public static final Set<String> UNAVAILABLE_APP_STATUS;
-    public static final Set<String> APPOINTMENT_RESCHEDULE_APP_STATUS;
 
     // not an actual app status, this is a compound status
-    public static final String PENDING_MOH            = "Pending MOH";
-    public static final String APPROVED               = "Approved";
+    public static final String PENDING_MOH                               = "Pending MOH";
+    public static final String APPROVED                                  = "Approved";
+    public static final String PENDING_INSPECTION_OR_CERTIFICATION       = "Pending Inspection/Certification";
 
     public static final Set<String> PENDING_MOH_APP_STATUS;
     public static final Set<String> APPROVED_APP_STATUS;
+    public static final Set<String> PENDING_INSPECTION_OR_CERTIFICATION_APP_STATUS;
 
-    // TODO: check these app status
     static {
-        Set<String> commonQueryAppStatus = Sets.newLinkedHashSetWithExpectedSize(9);
-        commonQueryAppStatus.add(APP_STATUS_DRAFT);
-        commonQueryAppStatus.add(APP_STATUS_PEND_DO_SCREENING);
-        commonQueryAppStatus.add(APP_STATUS_PEND_AO_SCREENING);
-        commonQueryAppStatus.add(APP_STATUS_PEND_HM_DECISION);
-        commonQueryAppStatus.add(APP_STATUS_PEND_APPLICANT_CLARIFICATION);
-        commonQueryAppStatus.add(APP_STATUS_PEND_APPLICANT_INPUT);
-        commonQueryAppStatus.add(APP_STATUS_WITHDRAWN);
-        commonQueryAppStatus.add(APP_STATUS_REJECTED);
-        commonQueryAppStatus.add(APP_STATUS_APPROVED);
-        COMMON_QUERY_APP_STATUS = Collections.unmodifiableSet(commonQueryAppStatus);
-
-        Set<String> inspectionAppStatus = Sets.newHashSetWithExpectedSize(15);
+        Set<String> inspectionAppStatus = Sets.newHashSetWithExpectedSize(22);
         inspectionAppStatus.add(APP_STATUS_PEND_INSPECTION_TASK_ASSIGNMENT);
         inspectionAppStatus.add(APP_STATUS_PEND_CHECKLIST_SUBMISSION);
         inspectionAppStatus.add(APP_STATUS_PEND_APPOINTMENT_SCHEDULING);
@@ -173,14 +181,6 @@ public class MasterCodeConstants {
         inspectionAppStatus.add(APP_STATUS_PEND_AO_FOLLOW_UP_ITEM_VERIFICATION);
         INSPECTION_APP_STATUS = Collections.unmodifiableSet(inspectionAppStatus);
 
-        Set<String> unavailableAppStatus = Sets.newHashSetWithExpectedSize(1);
-        unavailableAppStatus.add(APP_STATUS_REMOVED);
-        UNAVAILABLE_APP_STATUS = Collections.unmodifiableSet(unavailableAppStatus);
-
-        Set<String> rescheduleAppStatus = Sets.newHashSetWithExpectedSize(3);
-        rescheduleAppStatus.add(APP_STATUS_PEND_INSPECTION_READINESS);
-        APPOINTMENT_RESCHEDULE_APP_STATUS = Collections.unmodifiableSet(rescheduleAppStatus);
-
         Set<String> pendingMohAppStatus = Sets.newHashSetWithExpectedSize(27);
         pendingMohAppStatus.add(APP_STATUS_PEND_DO_SCREENING);
         pendingMohAppStatus.add(APP_STATUS_PEND_DO_CLARIFICATION);
@@ -190,6 +190,7 @@ public class MasterCodeConstants {
         pendingMohAppStatus.add(APP_STATUS_PEND_AO_APPROVAL);
         pendingMohAppStatus.add(APP_STATUS_PEND_HM_APPROVAL);
         pendingMohAppStatus.add(APP_STATUS_PEND_DO_VERIFICATION);
+        pendingMohAppStatus.add(APP_STATUS_PEND_INSPECTION_CERTIFICATION);
         pendingMohAppStatus.add(APP_STATUS_PEND_INSPECTION_TASK_ASSIGNMENT);
         pendingMohAppStatus.add(APP_STATUS_PEND_APPOINTMENT_CONFIRMATION);
         pendingMohAppStatus.add(APP_STATUS_PEND_INSPECTION_READINESS);
@@ -211,31 +212,36 @@ public class MasterCodeConstants {
         pendingMohAppStatus.add(APP_STATUS_PEND_AO_REPORT_REVIEW);
         PENDING_MOH_APP_STATUS = Collections.unmodifiableSet(pendingMohAppStatus);
 
-        Set<String> approvedAppStatus = Sets.newHashSetWithExpectedSize(3);
+        Set<String> approvedAppStatus = Sets.newHashSetWithExpectedSize(4);
         approvedAppStatus.add(APP_STATUS_APPROVED);
         approvedAppStatus.add(APP_STATUS_PEND_DO_APPROVAL_LETTER_DRAFT);
         approvedAppStatus.add(APP_STATUS_PEND_AO_APPROVAL_LETTER_REVIEW);
+        approvedAppStatus.add(APP_STATUS_PARTIAL_ACCEPTANCE);
         APPROVED_APP_STATUS = Collections.unmodifiableSet(approvedAppStatus);
+
+        Set<String> pendingInspectionOrCertificationAppStatus = Sets.newHashSetWithExpectedSize(2);
+        pendingInspectionOrCertificationAppStatus.add(APP_STATUS_PEND_EXTENSION_REVIEW);
+        pendingInspectionOrCertificationAppStatus.add(APP_STATUS_PEND_AFC_SELECTION);
+        PENDING_INSPECTION_OR_CERTIFICATION_APP_STATUS = Collections.unmodifiableSet(pendingInspectionOrCertificationAppStatus);
     }
 
     public static final List<SelectOption> INBOX_APP_SEARCH_STATUS_FAC;
     public static final List<SelectOption> INBOX_APP_SEARCH_STATUS_AFC;
 
     static {
-        List<SelectOption> appSearchStatusFAC = new ArrayList<>(18);
+        List<SelectOption> appSearchStatusFAC = new ArrayList<>(17);
         appSearchStatusFAC.add(new SelectOption(APP_STATUS_DRAFT, MasterCodeUtil.getCodeDesc(APP_STATUS_DRAFT)));
         appSearchStatusFAC.add(new SelectOption(PENDING_MOH, PENDING_MOH));
         appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_APPLICANT_INPUT, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_APPLICANT_INPUT)));
-        appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_APPLICANT_CLARIFICATION, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_APPLICANT_CLARIFICATION)));
         appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_CHECKLIST_SUBMISSION, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_CHECKLIST_SUBMISSION)));
+        appSearchStatusFAC.add(new SelectOption(PENDING_INSPECTION_OR_CERTIFICATION, PENDING_INSPECTION_OR_CERTIFICATION));
+        appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_APPLICANT_CLARIFICATION, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_APPLICANT_CLARIFICATION)));
+        appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_APPOINTMENT_SCHEDULING, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_APPOINTMENT_SCHEDULING)));
+        appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_AFC_REPORT_UPLOAD, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_AFC_REPORT_UPLOAD)));
+        appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_AFC_INPUT, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_AFC_INPUT)));
         appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_NC_RECTIFICATION, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_NC_RECTIFICATION)));
         appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_NC_RECTIFICATION_CLARIFICATION, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_NC_RECTIFICATION_CLARIFICATION)));
-        appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_EXTENSION_REVIEW, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_EXTENSION_REVIEW)));
         appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_FOLLOW_UP_ITEM_SUBMISSION, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_FOLLOW_UP_ITEM_SUBMISSION)));
-        appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_AFC_REPORT_UPLOAD, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_AFC_REPORT_UPLOAD)));
-        appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_AFC_SELECTION, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_AFC_SELECTION)));
-        appSearchStatusFAC.add(new SelectOption(APP_STATUS_PEND_AFC_INPUT, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_AFC_INPUT)));
-        appSearchStatusFAC.add(new SelectOption(APP_STATUS_PARTIAL_ACCEPTANCE, MasterCodeUtil.getCodeDesc(APP_STATUS_PARTIAL_ACCEPTANCE)));
         appSearchStatusFAC.add(new SelectOption(APP_STATUS_VERIFIED, MasterCodeUtil.getCodeDesc(APP_STATUS_VERIFIED)));
         appSearchStatusFAC.add(new SelectOption(APPROVED, APPROVED));
         appSearchStatusFAC.add(new SelectOption(APP_STATUS_REJECTED, MasterCodeUtil.getCodeDesc(APP_STATUS_REJECTED)));
@@ -270,12 +276,35 @@ public class MasterCodeConstants {
     public static final String PROCESS_TYPE_INSPECTION_FOLLOW_UP = "PROTYPE014";
     public static final Set<String> APPLY_APPROVE_PROCESS_TYPES;
 
+    public static final List<SelectOption> INBOX_APPLICATION_SEARCH_PROCESS_TYPE_FAC;
+    public static final List<SelectOption> INBOX_APPROVAL_SEARCH_PROCESS_TYPE_FAC;
+    public static final List<SelectOption> INBOX_APPROVAL_SEARCH_PROCESS_TYPE_AFC;
+
     static {
         Set<String> applyApprovalProcessType = Sets.newHashSetWithExpectedSize(3);
         applyApprovalProcessType.add(PROCESS_TYPE_APPROVE_POSSESS);
         applyApprovalProcessType.add(PROCESS_TYPE_APPROVE_LSP);
         applyApprovalProcessType.add(PROCESS_TYPE_SP_APPROVE_HANDLE);
         APPLY_APPROVE_PROCESS_TYPES = Collections.unmodifiableSet(applyApprovalProcessType);
+
+        List<SelectOption> inboxApplicationSearchProcessTypeFAC = new ArrayList<>(5);
+        inboxApplicationSearchProcessTypeFAC.add(new SelectOption(PROCESS_TYPE_FAC_REG, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_FAC_REG)));
+        inboxApplicationSearchProcessTypeFAC.add(new SelectOption(PROCESS_TYPE_APPROVE_POSSESS, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_APPROVE_POSSESS)));
+        inboxApplicationSearchProcessTypeFAC.add(new SelectOption(PROCESS_TYPE_APPROVE_LSP, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_APPROVE_LSP)));
+        inboxApplicationSearchProcessTypeFAC.add(new SelectOption(PROCESS_TYPE_SP_APPROVE_HANDLE, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_SP_APPROVE_HANDLE)));
+        inboxApplicationSearchProcessTypeFAC.add(new SelectOption(PROCESS_TYPE_APPROVAL_FOR_FACILITY_ACTIVITY_TYPE, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_APPROVAL_FOR_FACILITY_ACTIVITY_TYPE)));
+        INBOX_APPLICATION_SEARCH_PROCESS_TYPE_FAC = Collections.unmodifiableList(inboxApplicationSearchProcessTypeFAC);
+
+        List<SelectOption> inboxApprovalSearchProcessTypeFAC = new ArrayList<>(4);
+        inboxApprovalSearchProcessTypeFAC.add(new SelectOption(PROCESS_TYPE_APPROVE_POSSESS, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_APPROVE_POSSESS)));
+        inboxApprovalSearchProcessTypeFAC.add(new SelectOption(PROCESS_TYPE_APPROVE_LSP, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_APPROVE_LSP)));
+        inboxApprovalSearchProcessTypeFAC.add(new SelectOption(PROCESS_TYPE_SP_APPROVE_HANDLE, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_SP_APPROVE_HANDLE)));
+        inboxApprovalSearchProcessTypeFAC.add(new SelectOption(PROCESS_TYPE_APPROVAL_FOR_FACILITY_ACTIVITY_TYPE, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_APPROVAL_FOR_FACILITY_ACTIVITY_TYPE)));
+        INBOX_APPROVAL_SEARCH_PROCESS_TYPE_FAC = Collections.unmodifiableList(inboxApprovalSearchProcessTypeFAC);
+
+        List<SelectOption> inboxApprovalSearchProcessTypeAFC = new ArrayList<>(1);
+        inboxApprovalSearchProcessTypeAFC.add(new SelectOption(PROCESS_TYPE_FAC_CERTIFIER_REG, MasterCodeUtil.getCodeDesc(PROCESS_TYPE_FAC_CERTIFIER_REG)));
+        INBOX_APPROVAL_SEARCH_PROCESS_TYPE_AFC = Collections.unmodifiableList(inboxApprovalSearchProcessTypeAFC);
     }
 
     public static final String FAC_CLASSIFICATION_BSL3 = "FACCLA001";
@@ -400,6 +429,32 @@ public class MasterCodeConstants {
     public static final String APPROVAL_STATUS_SUSPENDED_PENDING_INVESTIGATION = "APPRSTA008";
     public static final String APPROVAL_STATUS_SUSPENDED_CONDITIONAL_INVENTORY_MOVEMENT = "APPRSTA009";
     public static final String APPROVAL_STATUS_SUSPENDED_PENDING_RENEWAL = "APPRSTA010";
+    public static final String APPROVAL_STATUS_DEREGISTERED = "APPRSTA011";
+
+    public static final List<SelectOption> INBOX_APPROVAL_SEARCH_STATUS_FAC;
+    public static final List<SelectOption> INBOX_APPROVAL_SEARCH_STATUS_AFC;
+
+    static {
+        List<SelectOption> inboxApprovalSearchStatusFAC = new ArrayList<>(7);
+        inboxApprovalSearchStatusFAC.add(new SelectOption(APPROVAL_STATUS_ACTIVE, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_ACTIVE)));
+        inboxApprovalSearchStatusFAC.add(new SelectOption(APPROVAL_STATUS_CANCELLED, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_CANCELLED)));
+        inboxApprovalSearchStatusFAC.add(new SelectOption(APPROVAL_STATUS_SUSPENDED_PENDING_RENEWAL, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_SUSPENDED_PENDING_RENEWAL)));
+        inboxApprovalSearchStatusFAC.add(new SelectOption(APPROVAL_STATUS_SUSPENDED_PENDING_INVESTIGATION, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_SUSPENDED_PENDING_INVESTIGATION)));
+        inboxApprovalSearchStatusFAC.add(new SelectOption(APPROVAL_STATUS_SUSPENDED_NC, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_SUSPENDED_NC)));
+        inboxApprovalSearchStatusFAC.add(new SelectOption(APPROVAL_STATUS_SUSPENDED_OTHERS, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_SUSPENDED_OTHERS)));
+        inboxApprovalSearchStatusFAC.add(new SelectOption(APPROVAL_STATUS_REVOKED, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_REVOKED)));
+        INBOX_APPROVAL_SEARCH_STATUS_FAC = Collections.unmodifiableList(inboxApprovalSearchStatusFAC);
+
+        List<SelectOption> inboxApprovalSearchStatusAFC = new ArrayList<>(7);
+        inboxApprovalSearchStatusAFC.add(new SelectOption(APPROVAL_STATUS_ACTIVE, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_ACTIVE)));
+        inboxApprovalSearchStatusAFC.add(new SelectOption(APPROVAL_STATUS_DEREGISTERED, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_DEREGISTERED)));
+        inboxApprovalSearchStatusAFC.add(new SelectOption(APPROVAL_STATUS_EXPIRED, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_EXPIRED)));
+        inboxApprovalSearchStatusAFC.add(new SelectOption(APPROVAL_STATUS_SUSPENDED_PENDING_RENEWAL, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_SUSPENDED_PENDING_RENEWAL)));
+        inboxApprovalSearchStatusAFC.add(new SelectOption(APPROVAL_STATUS_SUSPENDED_PENDING_INVESTIGATION, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_SUSPENDED_PENDING_INVESTIGATION)));
+        inboxApprovalSearchStatusAFC.add(new SelectOption(APPROVAL_STATUS_SUSPENDED_OTHERS, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_SUSPENDED_OTHERS)));
+        inboxApprovalSearchStatusAFC.add(new SelectOption(APPROVAL_STATUS_REVOKED, MasterCodeUtil.getCodeDesc(APPROVAL_STATUS_REVOKED)));
+        INBOX_APPROVAL_SEARCH_STATUS_AFC = Collections.unmodifiableList(inboxApprovalSearchStatusAFC);
+    }
 
     public static final String REPORTING_OF_INCIDENT_ADVERSE_INCIDENT = "REPORT001";
     public static final String REPORTING_OF_INCIDENT_NEAR_MISS = "REPORT002";
@@ -444,6 +499,7 @@ public class MasterCodeConstants {
     public static final String PROCUREMENT_MODE_LOCAL_TRANSFER = "BMOP001";
     public static final String PROCUREMENT_MODE_IMPORT = "BMOP002";
     public static final String PROCUREMENT_MODE_ALREADY_IN_POSSESSION = "BMOP003";
+    public static final String PROCUREMENT_MODE_PURCHASE_FROM_LOCAL_SUPPLIER = "BMOP004";
 
     //Type of work that will be carried out involving the biological agent/toxin
     public static final String WORK_TYPE_CULTURING_ISOLATION_BAT = "BSBWT001";
@@ -519,6 +575,7 @@ public class MasterCodeConstants {
     public static final String DOC_TYPE_CF_FACILITY_RISK_ASSESSMENT_AND_MANAGEMENT = "DOCTCF023";
     public static final String DOC_TYPE_CF_FACILITY_SOP_POLICIES = "DOCTCF024";
     public static final String DOC_TYPE_CF_FACILITY_TRAINING_RECORDS = "DOCTCF025";
+    public static final String DOC_TYPE_CF_ENDORSEMENT_GENETIC_MODIFICATION_ADVISORY_COMMITTEE = "DOCTCF026";
 
     //UCF, BMF
     public static final String DOC_TYPE_UCF_OR_BMP_BIO_SAFETY_COMMITTEE = "DOCTUCF001";

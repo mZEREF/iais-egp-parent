@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -26,14 +27,18 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.ARCycleStageDto;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationFeService;
@@ -67,6 +72,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.ACTION_TYPE;
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.JUMP_ACTION_TYPE;
 
 /**
  * @Description ArDataSubmissionServiceImpl
@@ -834,38 +842,49 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         }
     }
 
-    private List<String> getSubmittedStageList(String cycleId){
-        List<DataSubmissionDto> dataSubmissionDtoList = arFeClient.getAllDataSubmissionByCycleId(cycleId).getEntity();
-        if (!CollectionUtils.isEmpty(dataSubmissionDtoList)){
-            return dataSubmissionDtoList.stream().map(DataSubmissionDto::getCycleStage).collect(Collectors.toList());
+    private Map<String, String> getCycleStageSubmitByMap(String cycleId) {
+        if (StringUtils.hasLength(cycleId)) {
+            List<DataSubmissionDto> dataSubmissionDtoList = arFeClient.getAllDataSubmissionByCycleId(cycleId).getEntity();
+            if (!CollectionUtils.isEmpty(dataSubmissionDtoList)) {
+                return dataSubmissionDtoList.stream().collect(Collectors.toMap(DataSubmissionDto::getCycleStage, DataSubmissionDto::getSubmitBy));
+            }
         }
-        return Collections.emptyList();
+        return Collections.emptyMap();
     }
 
+    /**
+     * Get all the data displayed in the AR Cycle navigation bar
+     */
     @Override
     public List<ARCycleStageDto> genAvailableStageList(HttpServletRequest request) {
         ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(request);
         CycleStageSelectionDto selectionDto = currentArDataSubmission.getSelectionDto();
-        String currentCycle = ParamUtil.getString(request, "stage");
+        // get from cycleStageSelectionSection.jsp, user select next stage
+        String stage = ParamUtil.getString(request, "stage");
+        //get from headStepNavTab.jsp , user click to change stage
         String actionValue = ParamUtil.getString(request, "action_value");
-        String stage;
+        String currentStage;
         List<String> submittedStageList = new ArrayList<>();
+        List<String> notSubmittedStageList = new ArrayList<>();
+        Map<String, String> map = IaisCommonUtils.genNewHashMap();
+        //get all can action stages
+        List<String> nextStageList = DataSubmissionHelper.getNextStageForAR(selectionDto);
         if (selectionDto != null) {
-            stage = StringUtils.hasLength(actionValue) ? actionValue : selectionDto.getStage();
-            List<CycleDto> cycleDtos = selectionDto.getCycleDtos();
-            if (!CollectionUtils.isEmpty(cycleDtos)){
-                String cycleId = cycleDtos.stream().filter(cycleDto -> DataSubmissionConsts.DS_CYCLE_AR.equals(cycleDto.getCycleType())).map(CycleDto::getId).collect(Collectors.joining(","));
-                submittedStageList = getSubmittedStageList(cycleId);
-            }
+            currentStage = StringUtils.hasLength(actionValue) ? actionValue : selectionDto.getStage();
+            String cycleId = selectionDto.getCycleId();
+            map = getCycleStageSubmitByMap(cycleId);
+            submittedStageList = new ArrayList<>(map.keySet());
+            //remove all submitted stage, result is not-submitted stage
+            nextStageList.removeAll(submittedStageList);
+            notSubmittedStageList = nextStageList;
         } else {
-            stage = StringUtils.hasLength(actionValue) ? actionValue : currentCycle;
+            currentStage = StringUtils.hasLength(actionValue) ? actionValue : stage;
         }
-        //if current and submitted stage is same one, display ongoingStage status
-        submittedStageList.remove(stage);
         List<ARCycleStageDto> arCycleStageDtos = new ArrayList<>();
         List<String> options = DataSubmissionHelper.getAllARCycleStages();
         for (String option : options) {
             String codeDesc;
+            // the fields displayed by WireFrame are not the same as the fields stored in the database, fix this
             if (DataSubmissionConsts.AR_STAGE_THAWING.equals(option)) {
                 codeDesc = "Thawing";
             } else if (DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING.equals(option)) {
@@ -879,14 +898,132 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             } else {
                 codeDesc = MasterCodeUtil.getCodeDesc(option);
             }
-            if (option.equals(stage)) {
-                arCycleStageDtos.add(new ARCycleStageDto(option, codeDesc, DataSubmissionConstant.AR_CYCLE_STAGE_STATUS_ONGOING));
-            } else if (submittedStageList.contains(option)){
-                arCycleStageDtos.add(new ARCycleStageDto(option, codeDesc, DataSubmissionConstant.AR_CYCLE_STAGE_STATUS_SUBMITTED));
+            String permissions = determinePermissions(request, map.get(option));
+            if (option.equals(currentStage)) {
+                arCycleStageDtos.add(new ARCycleStageDto(option, codeDesc, DataSubmissionConstant.AR_CYCLE_STAGE_STATUS_ONGOING, permissions));
+            } else if (submittedStageList.contains(option)) {
+                arCycleStageDtos.add(new ARCycleStageDto(option, codeDesc, DataSubmissionConstant.AR_CYCLE_STAGE_STATUS_SUBMITTED, permissions));
+            } else if (notSubmittedStageList.contains(option)) {
+                //if only can do rfc, notSubmittedStage -> invalidStage, can't click
+                if (DataSubmissionConstant.AR_CYCLE_USER_PERMISSIONS_RFC.equals(permissions)) {
+                    arCycleStageDtos.add(new ARCycleStageDto(option, codeDesc, DataSubmissionConstant.AR_CYCLE_STAGE_STATUS_INVALID, null));
+                } else {
+                    arCycleStageDtos.add(new ARCycleStageDto(option, codeDesc, null, permissions));
+                }
             } else {
-                arCycleStageDtos.add(new ARCycleStageDto(option, codeDesc, DataSubmissionConstant.AR_CYCLE_STAGE_STATUS_NOT_SUBMITTED));
+                arCycleStageDtos.add(new ARCycleStageDto(option, codeDesc, DataSubmissionConstant.AR_CYCLE_STAGE_STATUS_INVALID, null));
             }
         }
         return arCycleStageDtos;
+    }
+
+    @Override
+    public ArSuperDataSubmissionDto prepareArRfcData(ArSuperDataSubmissionDto arSuper, String submissionNo, HttpServletRequest request) {
+        if (arSuper == null) {
+            arSuper = getArSuperDataSubmissionDtoBySubmissionNo(submissionNo);
+        }
+        arSuper.setArCurrentInventoryDto(getArCurrentInventoryDtoBySubmissionNo(submissionNo, true));
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_OLD_DATA_SUBMISSION,
+                CopyUtil.copyMutableObject(arSuper));
+        arSuper.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        arSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
+        if (arSuper.getDataSubmissionDto() != null) {
+            DataSubmissionDto dataSubmissionDto = arSuper.getDataSubmissionDto();
+            dataSubmissionDto.setDeclaration(null);
+            dataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
+            dataSubmissionDto.setAmendReason(null);
+            dataSubmissionDto.setAmendReasonOther(null);
+            if (arSuper.getSelectionDto() != null) {
+                CycleStageSelectionDto selectionDto = arSuper.getSelectionDto();
+                if (StringUtil.isEmpty(selectionDto.getStage()) || StringUtil.isEmpty(selectionDto.getCycle())) {
+                    selectionDto.setStage(dataSubmissionDto.getCycleStage());
+                    selectionDto.setCycle(arSuper.getCycleDto().getCycleType());
+                }
+            }
+        }
+        return arSuper;
+    }
+
+    @Override
+    public void jumpJudgement(HttpServletRequest request) {
+        String actionType = ParamUtil.getString(request, ACTION_TYPE);
+        String actionValue = ParamUtil.getString(request, "action_value");
+        //ArCycleStagesManualDelegator#doPrepareStage set value
+        String haveJump = (String) ParamUtil.getRequestAttr(request, "haveJump");
+        String jumpToSubmittedStage = ParamUtil.getString(request, DataSubmissionConstant.JUMP_TO_SUBMITTED_STAGE);
+        String targetStageUserPermissions = ParamUtil.getString(request, DataSubmissionConstant.TARGET_STAGE_USER_PERMISSIONS);
+        if ("jumpStage".equals(actionType)) {
+            //set crud_action_type_ct, decide which process to enter
+            ParamUtil.setRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, actionValue);
+            if ("Y".equals(haveJump)) {
+                // 2. second step, come in from step 1's parent process, judge what user can do
+                if ("true".equals(jumpToSubmittedStage) && (DataSubmissionConstant.AR_CYCLE_USER_PERMISSIONS_VIEW.equals(targetStageUserPermissions) || DataSubmissionConstant.AR_CYCLE_USER_PERMISSIONS_NEW.equals(targetStageUserPermissions))) {
+                    ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "confirm");
+                } else {
+                    ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
+                }
+                prepareTargetStageRfcData(request, actionValue, jumpToSubmittedStage);
+            } else {
+                // 1. first step, return to parent process
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "return");
+                ParamUtil.setRequestAttr(request, JUMP_ACTION_TYPE, "jump");
+            }
+        }
+    }
+
+    private void prepareTargetStageRfcData(HttpServletRequest request, String actionValue, String jumpToSubmittedStage) {
+        String targetStageUserPermissions = ParamUtil.getString(request, DataSubmissionConstant.TARGET_STAGE_USER_PERMISSIONS);
+        ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        CycleStageSelectionDto selectionDto = currentArDataSubmission.getSelectionDto();
+        DataSubmissionDto dataSubmissionDto1 = currentArDataSubmission.getDataSubmissionDto();
+        String cycleId = "";
+        if (selectionDto != null) {
+            cycleId = selectionDto.getCycleId();
+        }
+        if (StringUtils.hasLength(cycleId) && "true".equals(jumpToSubmittedStage)) {
+            List<DataSubmissionDto> dataSubmissionDtoList = arFeClient.getAllDataSubmissionByCycleId(cycleId).getEntity();
+            if (!CollectionUtils.isEmpty(dataSubmissionDtoList)) {
+                for (DataSubmissionDto dataSubmissionDto : dataSubmissionDtoList) {
+                    if (dataSubmissionDto.getCycleStage().equals(actionValue)) {
+                        currentArDataSubmission = prepareArRfcData(null, dataSubmissionDto.getSubmissionNo(), request);
+                        break;
+                    }
+                }
+            }
+        }
+        if (!"true".equals(jumpToSubmittedStage) || DataSubmissionConstant.AR_CYCLE_USER_PERMISSIONS_VIEW.equals(targetStageUserPermissions)) {
+            currentArDataSubmission.setAppType(DataSubmissionConsts.DS_APP_TYPE_NEW);
+        }
+        if (selectionDto != null) {
+            selectionDto.setStage(actionValue);
+        }
+        if (dataSubmissionDto1 != null) {
+            dataSubmissionDto1.setCycleStage(actionValue);
+        }
+        DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, request);
+    }
+
+    private String determinePermissions(HttpServletRequest request, String currentSubmissionUserId) {
+        String permission = "";
+        LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
+        if (loginContext == null) {
+            loginContext = new LoginContext();
+        }
+        ArrayList<String> roleIds = loginContext.getRoleIds();
+        if (StringUtils.hasLength(currentSubmissionUserId) && !currentSubmissionUserId.equals(loginContext.getUserId())) {
+            permission = DataSubmissionConstant.AR_CYCLE_USER_PERMISSIONS_VIEW;
+        } else if (roleIds.contains(RoleConsts.USER_ROLE_DS_AR) && roleIds.contains(RoleConsts.USER_ROLE_DS_AR_SUPERVISOR)) {
+            permission = DataSubmissionConstant.AR_CYCLE_USER_PERMISSIONS_NEW_AND_RFC;
+        } else if (roleIds.contains(RoleConsts.USER_ROLE_DS_AR)) {
+            permission = DataSubmissionConstant.AR_CYCLE_USER_PERMISSIONS_NEW;
+        } else if (roleIds.contains(RoleConsts.USER_ROLE_DS_AR_SUPERVISOR)) {
+            permission = DataSubmissionConstant.AR_CYCLE_USER_PERMISSIONS_RFC;
+        }
+        return permission;
+    }
+
+    @Override
+    public ArSuperDataSubmissionDto getDraftArSuperDataSubmissionDtoByConds(String orgId, String hciCode, String submissionStage, String userId) {
+        return arFeClient.getDraftArSuperDataSubmissionDtoByConds(orgId, hciCode, submissionStage, userId).getEntity();
     }
 }

@@ -5,6 +5,7 @@ $(function () {
         $('#mainForm').submit();
     })
 
+    // TODO: check these decision
     var processingDecisionVal = $("#processingDecision").val();
     if (processingDecisionVal == "MOHPRO003" || processingDecisionVal == "MOHPRO005"){
         $("#reasonForRejection").show();

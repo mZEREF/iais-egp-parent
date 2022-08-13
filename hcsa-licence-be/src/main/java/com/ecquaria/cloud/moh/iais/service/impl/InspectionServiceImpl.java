@@ -716,7 +716,7 @@ public class InspectionServiceImpl implements InspectionService {
         String rollBackWrkGpId = wrkGpId;
         String rollBackUserId = userId;
         String rollBackRoleId = roleId;
-        if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId)) {
+        if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId) && RoleConsts.USER_ROLE_INSPECTIOR.equals(roleId)) {
             // because roll back to inspection history is ao1 decs, so change to inspection start stage.
             AppPremisesRoutingHistoryDto rollBackToHistory = null;
             List<AppPremisesRoutingHistoryDto> activeHistoryDtos = appPremisesRoutingHistoryClient.getActiveAppPremisesRoutingHistorysByAppCorrId(premCorrId).getEntity();

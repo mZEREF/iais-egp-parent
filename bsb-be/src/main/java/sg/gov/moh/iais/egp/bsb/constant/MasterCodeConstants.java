@@ -56,6 +56,7 @@ public class MasterCodeConstants {
     public static final String APP_STATUS_REJECTED                                  = "BSBAPST007";
     public static final String APP_STATUS_PEND_APPLICANT_CLARIFICATION              = "BSBAPST008";
     public static final String APP_STATUS_PEND_APPLICANT_INPUT                      = "BSBAPST009";
+    public static final String APP_STATUS_PEND_INSPECTION_CERTIFICATION             = "BSBAPST010";
     // screening
     public static final String APP_STATUS_PEND_DO_SCREENING                         = "BSBAPST020";
     public static final String APP_STATUS_PEND_DO_CLARIFICATION                     = "BSBAPST021";
@@ -105,11 +106,9 @@ public class MasterCodeConstants {
 
     public static final Set<String> COMMON_QUERY_APP_STATUS;
     public static final Set<String> INSPECTION_APP_STATUS;
-    public static final Set<String> UNAVAILABLE_APP_STATUS;
-    public static final Set<String> APPOINTMENT_RESCHEDULE_APP_STATUS;
 
-    // TODO: check these app status
     static {
+        // TODO: check these app status
         Set<String> commonQueryAppStatus = Sets.newLinkedHashSetWithExpectedSize(9);
         // BE don't add 'Draft', because BE DB don't save it
         commonQueryAppStatus.add(APP_STATUS_PEND_DO_SCREENING);
@@ -122,7 +121,7 @@ public class MasterCodeConstants {
         commonQueryAppStatus.add(APP_STATUS_APPROVED);
         COMMON_QUERY_APP_STATUS = Collections.unmodifiableSet(commonQueryAppStatus);
 
-        Set<String> inspectionAppStatus = Sets.newHashSetWithExpectedSize(15);
+        Set<String> inspectionAppStatus = Sets.newHashSetWithExpectedSize(22);
         inspectionAppStatus.add(APP_STATUS_PEND_INSPECTION_TASK_ASSIGNMENT);
         inspectionAppStatus.add(APP_STATUS_PEND_CHECKLIST_SUBMISSION);
         inspectionAppStatus.add(APP_STATUS_PEND_APPOINTMENT_SCHEDULING);
@@ -146,14 +145,6 @@ public class MasterCodeConstants {
         inspectionAppStatus.add(APP_STATUS_PEND_DO_FOLLOW_UP_ITEM_VERIFICATION);
         inspectionAppStatus.add(APP_STATUS_PEND_AO_FOLLOW_UP_ITEM_VERIFICATION);
         INSPECTION_APP_STATUS = Collections.unmodifiableSet(inspectionAppStatus);
-
-        Set<String> unavailableAppStatus = Sets.newHashSetWithExpectedSize(1);
-        unavailableAppStatus.add(APP_STATUS_REMOVED);
-        UNAVAILABLE_APP_STATUS = Collections.unmodifiableSet(unavailableAppStatus);
-
-        Set<String> rescheduleAppStatus = Sets.newHashSetWithExpectedSize(3);
-        rescheduleAppStatus.add(APP_STATUS_PEND_INSPECTION_READINESS);
-        APPOINTMENT_RESCHEDULE_APP_STATUS = Collections.unmodifiableSet(rescheduleAppStatus);
     }
 
 
@@ -304,28 +295,29 @@ public class MasterCodeConstants {
     public static final String APPROVAL_STATUS_SUSPENDED_PENDING_RENEWAL = "APPRSTA010";
 
     //BE DECISION VALUE
-    public static final String MOH_PROCESSING_DECISION_SCREENED_BY_DO = "MOHPRO001";
-    public static final String MOH_PROCESSING_DECISION_REQUEST_FOR_INFO = "MOHPRO002";
-    public static final String MOH_PROCESSING_DECISION_REJECT = "MOHPRO003";
-    public static final String MOH_PROCESSING_DECISION_RECOMMEND_APPROVAL = "MOHPRO004";
-    public static final String MOH_PROCESSING_DECISION_RECOMMEND_REJECT = "MOHPRO005";
-    public static final String MOH_PROCESSING_DECISION_APPROVE_FOR_INSPECTION = "MOHPRO006";
-    public static final String MOH_PROCESSING_DECISION_APPROVE = "MOHPRO007";
-    public static final String MOH_PROCESSING_DECISION_ROUTE_BACK_TO_DO = "MOHPRO008";
-    public static final String MOH_PROCESSING_DECISION_ROUTE_BACK_TO_HM = "MOHPRO009";
-    public static final String MOH_PROCESSING_DECISION_VERIFIED = "MOHPRO010";
-    public static final String MOH_PROCESSING_DECISION_INTERNAL_CLARIFICATIONS = "MOHPRO011";
-    public static final String MOH_PROCESSING_DECISION_MARK_AS_READY = "MOHPRO021";
-    public static final String MOH_PROCESSING_DECISION_SUBMIT_REPORT_TO_AO_FOR_REVIEW = "MOHPRO022";
-    public static final String MOH_PROCESSING_DECISION_ROUTE_REPORT_TO_APPLICANT = "MOHPRO023";
-    public static final String MOH_PROCESSING_DECISION_MARK_AS_FINAL = "MOHPRO024";
-    public static final String MOH_PROCESSING_DECISION_ACCEPTS_RECTIFICATIONS_AND_ROUTE_TO_AO = "MOHPRO025";
-    public static final String MOH_PROCESSING_DECISION_REJECT_AND_ROUTE_TO_DO_FOR_REVISION = "MOHPRO026";
-    public static final String MOH_PROCESSING_DECISION_ACCEPT = "MOHPRO027";
-    public static final String MOH_PROCESSING_DECISION_REJECT_RECTIFICATIONS  = "MOHPRO028";
-    public static final String MOH_PROCESSING_DECISION_SKIP_INSPECTION = "MOHPRO029";
-    public static final String MOH_PROCESSING_DECISION_ROUTE_TO_AO = "MOHPRO030";
-    public static final String MOH_PROCESSING_DECISION_ROUTE_TO_HM_FOR_REVIEW = "MOHPRO031";
+    public static final String MOH_PROCESS_DECISION_SCREENED_BY_DO_PROCEED_TO_NEXT_STAGE                  = "MOHPRO001";
+    public static final String MOH_PROCESS_DECISION_REQUEST_FOR_INFORMATION                               = "MOHPRO002";
+    public static final String MOH_PROCESS_DECISION_REJECT                                                = "MOHPRO003";
+    public static final String MOH_PROCESS_DECISION_APPROVE_TO_PROCEED_TO_NEXT_STAGE                      = "MOHPRO004";
+    public static final String MOH_PROCESS_DECISION_ROUTE_TO_HM                                           = "MOHPRO005";
+    public static final String MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO                                      = "MOHPRO006";
+    public static final String MOH_PROCESS_DECISION_APPROVE                                               = "MOHPRO007";
+    public static final String MOH_PROCESS_DECISION_ACCEPT                                                = "MOHPRO008";
+    public static final String MOH_PROCESS_DECISION_ROUTE_TO_AO_FOR_APPROVAL                              = "MOHPRO009";
+    public static final String MOH_PROCESS_DECISION_SELECT_ANOTHER_DATE                                   = "MOHPRO010";
+    public static final String MOH_PROCESS_DECISION_CONFIRM_PROPOSED_DATE                                 = "MOHPRO011";
+    public static final String MOH_PROCESS_DECISION_MARK_INSPECTION_TASK_AS_READY                         = "MOHPRO012";
+    public static final String MOH_PROCESS_DECISION_PROCEED_TO_INSPECTION_REPORT_PREPARATION              = "MOHPRO013";
+    public static final String MOH_PROCESS_DECISION_ROUTE_TO_AO_FOR_REVIEW                                = "MOHPRO014";
+    public static final String MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO_FOR_REVISION                         = "MOHPRO015";
+    public static final String MOH_PROCESS_DECISION_ACCEPT_AND_ROUTE_INSPECTION_REPORT_TO_APPLICANT       = "MOHPRO016";
+    public static final String MOH_PROCESS_DECISION_ROUTE_BACK_TO_APPLICANT                               = "MOHPRO017";
+    public static final String MOH_PROCESS_DECISION_MARK_AS_FINAL_AND_ROUTE_TO_AO                         = "MOHPRO018";
+    public static final String MOH_PROCESS_DECISION_ROUTE_TO_HM_FOR_REVIEW                                = "MOHPRO019";
+    public static final String MOH_PROCESS_DECISION_ROUTE_TO_APPLICANT                                    = "MOHPRO020";
+    public static final String MOH_PROCESS_DECISION_APPROVE_AND_ROUTE_TO_APPLICANT                        = "MOHPRO021";
+    public static final String MOH_PROCESS_DECISION_ROUTE_TO_AO                                           = "MOHPRO022";
+    public static final String MOH_PROCESS_DECISION_SKIP_INSPECTION                                       = "MOHPRO023";
 
     //Reason(s) for Facility Deregistration
     public static final String REASONS_FOR_FACILITY_DEREGISTRATION_1 = "BSBRFFD001";
@@ -363,6 +355,7 @@ public class MasterCodeConstants {
     public static final String PROCUREMENT_MODE_LOCAL_TRANSFER = "BMOP001";
     public static final String PROCUREMENT_MODE_IMPORT = "BMOP002";
     public static final String PROCUREMENT_MODE_ALREADY_IN_POSSESSION = "BMOP003";
+    public static final String PROCUREMENT_MODE_PURCHASE_FROM_LOCAL_SUPPLIER = "BMOP004";
 
     //Type of work that will be carried out involving the biological agent/toxin
     public static final String WORK_TYPE_CULTURING_ISOLATION_BAT = "BSBWT001";
@@ -438,6 +431,7 @@ public class MasterCodeConstants {
     public static final String DOC_TYPE_CF_FACILITY_RISK_ASSESSMENT_AND_MANAGEMENT = "DOCTCF023";
     public static final String DOC_TYPE_CF_FACILITY_SOP_POLICIES = "DOCTCF024";
     public static final String DOC_TYPE_CF_FACILITY_TRAINING_RECORDS = "DOCTCF025";
+    public static final String DOC_TYPE_CF_ENDORSEMENT_GENETIC_MODIFICATION_ADVISORY_COMMITTEE = "DOCTCF026";
 
     //UCF, BMF
     public static final String DOC_TYPE_UCF_OR_BMP_BIO_SAFETY_COMMITTEE = "DOCTUCF001";

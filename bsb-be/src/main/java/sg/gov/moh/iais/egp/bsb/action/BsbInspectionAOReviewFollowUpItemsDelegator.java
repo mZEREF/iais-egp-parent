@@ -79,12 +79,13 @@ public class BsbInspectionAOReviewFollowUpItemsDelegator {
         ValidationResultDto validationResultDto = inspectionClient.validatePostInspectionAOReviewFollowUpItems(insProcessDto);
         String validateResult;
         if (validationResultDto.isPass()) {
+            // TODO: check these decision
             String processingDecision = insProcessDto.getDecision();
-            if (MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_BACK_TO_DO.equals(processingDecision)) {
+            if (MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO.equals(processingDecision)) {
                 validateResult = "routeBack";
-            } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE.equals(processingDecision)) {
+            } else if (MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE.equals(processingDecision)) {
                 validateResult = "approve";
-            } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_SKIP_INSPECTION.equals(processingDecision)) {
+            } else if (MasterCodeConstants.MOH_PROCESS_DECISION_SKIP_INSPECTION.equals(processingDecision)) {
                 validateResult = "skip";
             } else {
                 validateResult = "invalid";

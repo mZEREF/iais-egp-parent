@@ -21,10 +21,6 @@ public class INTERNET___MohBsbInboxApprovalAFC___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
-	public void init_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "init", this);
-	}
-	
 	public void prepareData_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "prepareData", this);
 	}

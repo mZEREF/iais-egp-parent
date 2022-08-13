@@ -130,7 +130,7 @@ public class InspecEmailDelegator {
     private static final String INS_EMAIL_DTO="insEmailDto";
     private static final String SUBJECT="subject";
     private static final String APP_VIEW_DTO="applicationViewDto";
-    private static final String ROLL_BACK_OPTIONS="rollBackToOptions";
+    private static final String ROLL_BACK_OPTIONS="rollBackOptions";
     private static final String ROLL_BACK_VALUE_MAP="rollBackValueMap";
 
     public void start(BaseProcessClass bpc){
@@ -355,7 +355,7 @@ public class InspecEmailDelegator {
 
         String[] processDess = new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW, InspectionConstants.PROCESS_DECI_ROTE_EMAIL_INSPECTION_LEAD_REVIEW};
         String appType = applicationViewDto.getApplicationDto().getApplicationType();
-        if (!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType))) {
+        if (!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType))) {
             processDess = new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW, InspectionConstants.PROCESS_DECI_ROTE_EMAIL_INSPECTION_LEAD_REVIEW, InspectionConstants.PROCESS_DECI_ROLL_BACK};
         }
         List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(processDess);

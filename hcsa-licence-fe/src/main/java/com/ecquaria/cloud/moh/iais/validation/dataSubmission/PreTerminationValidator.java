@@ -77,7 +77,7 @@ public class PreTerminationValidator implements CustomizeValidator {
                                     String birthDate = terminationOfPregnancyDto.getPatientInformationDto().getBirthData();
                                     String counsellingGiven = preTerminationDto.getCounsellingDate();
                                     int age=-Formatter.compareDateByDay(birthDate,counsellingGiven)/365;
-                                    int ageNew=-(Formatter.compareDateByDay(birthDate,counsellingGiven)+age/4) / 365;
+                                    int ageNew=-(Formatter.compareDateByDay(birthDate,counsellingGiven)+age/4+1) / 365;
 
                                     preTerminationDto.setCounsellingAge(ageNew);
                                 }catch (Exception e){
@@ -115,7 +115,7 @@ public class PreTerminationValidator implements CustomizeValidator {
                                     Date secDate=Formatter.parseDate(preTerminationDto.getSecCounsellingDate());
                                     if(secDate.before(oneDate)){
                                         Map<String, String> params = IaisCommonUtils.genNewHashMap();
-                                        params.put("field1", "Date of Second or Final Pre-Counselling");
+                                        params.put("field1", "Date of Second or Final Counselling");
                                         params.put("field2", "Date of Counselling");
                                         errorMap.put("secCounsellingDate", MessageUtil.getMessageDesc("DS_ERR069", params));
                                     }

@@ -1,1 +1,1 @@
-<%@include file="/WEB-INF/jsp/iais/inbox/approval/afc/InboxApprovalAFCListPage.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/inbox/approval/InboxApprovalAFCListPage.jsp"%>

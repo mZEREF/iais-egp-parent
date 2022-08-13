@@ -8,6 +8,7 @@
 function readSectionRepeatMetaData() {
     return {
         idxInputName: $("#section_repeat_section_idx_name").val(),
+        deletedIdxInputName: $("#section_deleted_repeat_section_idx_name").val(),
         sectionIdPrefix: $("#section_repeat_section_id_prefix").val(),
         headerTitlePrefix: $("#section_repeat_header_title_prefix").val(),
         sectionGroupId: $("#section_repeat_section_group_id").val(),
@@ -39,7 +40,7 @@ function removeBtnEventHandler() {
     var idx = $(this).attr("data-current-idx");
     var meta = readSectionRepeatMetaData();
     if (meta) {
-        removeSection(idx, meta.idxInputName, meta.sectionIdPrefix, meta.headerTitlePrefix, meta.sectionGroupId, meta.separator);
+        removeSection(idx, meta.idxInputName, meta.deletedIdxInputName, meta.sectionIdPrefix, meta.headerTitlePrefix, meta.sectionGroupId, meta.separator);
     }
 }
 
@@ -47,7 +48,7 @@ function removeBtnEventHandler() {
  * 1, remove existing index in the input.
  * 2, delete section div in DOM.
  * 3, rectify the header sequence number */
-function removeSection(idx, idxInputName, sectionIdPrefix, titlePrefix, sectionGroupId, separator) {
+function removeSection(idx, idxInputName, deletedIdxInputName, sectionIdPrefix, titlePrefix, sectionGroupId, separator) {
     var idxInput = $("input[name=" + idxInputName +"]");
     var curIdxes = idxInput.val();
     var idxArr = curIdxes.trim().split(/ +/);
@@ -57,6 +58,11 @@ function removeSection(idx, idxInputName, sectionIdPrefix, titlePrefix, sectionG
     deleteSection(sectionIdPrefix, separator, idx);
     // set the input after the deletion of DOM to make sure the consistent between view and value.
     idxInput.val(idxArr.join(" "));
+
+    if (deletedIdxInputName) {
+        var deletedIdxInput = document.getElementById(deletedIdxInputName);
+        appendSSInputVal(deletedIdxInput, idx);
+    }
 
     if (nextAmt === 1) {
         // remove the sequence number at all
@@ -212,13 +218,15 @@ function modifyClonedNode(node, idx, separator) {
     } else if (node.nodeName === 'SPAN') {
         replaceNodeAttributeSuffixNum(node, 'id', idx, separator);
         replaceNodeAttributeSuffixNum(node, 'data-err-ind', idx, separator);
-        if(node.className && node.className.match(/(\s|^)error-msg(\s|$)/)){
+        if (node.className && node.className.match(/(\s|^)error-msg(\s|$)/)) {
             node.innerText = "";
         }
+    } else if (node.nodeName === 'A') {
+        replaceNodeAttributeSuffixNum(node, 'data-upload-file', idx, separator);
     } else if (node.nodeName === 'INPUT') {
         replaceNodeAttributeSuffixNum(node, 'id', idx, separator);
         replaceNodeAttributeSuffixNum(node, 'name', idx, separator);
-        if(node.type !== 'radio' && node.type !== 'checkbox'){
+        if(node.type !== 'radio' && node.type !== 'checkbox') {
             node.value = "";
         }
     } else if (node.nodeName === 'DIV') {

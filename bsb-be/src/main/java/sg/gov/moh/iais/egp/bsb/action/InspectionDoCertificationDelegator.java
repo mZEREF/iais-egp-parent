@@ -201,12 +201,13 @@ public class InspectionDoCertificationDelegator {
         processDto.reqObjMapping(request);
         ParamUtil.setSessionAttr(request, KEY_INS_DECISION, processDto);
 
+        // TODO: check these decision
         ValidationResultDto validationProcessDto = inspectionClient.validateDoCertification(processDto);
         String validateResult;
         if (validationProcessDto.isPass()) {
-            if (MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_TO_AO.equals(processDto.getDecision())) {
+            if (MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_AO.equals(processDto.getDecision())) {
                 validateResult = "routeToAO";
-            } else if(MasterCodeConstants.MOH_PROCESSING_DECISION_SKIP_INSPECTION.equals(processDto.getDecision())){
+            } else if(MasterCodeConstants.MOH_PROCESS_DECISION_SKIP_INSPECTION.equals(processDto.getDecision())){
                 validateResult = "skip";
             } else {
                 validateResult = "invalid";

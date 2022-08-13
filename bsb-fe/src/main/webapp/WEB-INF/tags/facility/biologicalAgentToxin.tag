@@ -44,6 +44,7 @@
     <input type="hidden" name="action_additional" value="">
 
     <input type="hidden" id="section_repeat_section_idx_name" value="sectionIdx" readonly disabled>
+    <input type="hidden" id="section_deleted_repeat_section_idx_name" value="deletedSectionIdx" readonly disabled>
     <input type="hidden" id="section_repeat_section_id_prefix" value="batInfoSection" readonly disabled>
     <input type="hidden" id="section_repeat_section_group_id" value="sectionGroup" readonly disabled>
     <input type="hidden" id="section_repeat_separator" value="--v--" readonly disabled>

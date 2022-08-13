@@ -19,7 +19,6 @@ public class InsProcessDto implements Serializable {
         this.decision = decision;
     }
 
-    private static final String KEY_NC_EMAIL_REQUIRED   = "ncEmailRequired";
     private static final String KEY_DECISION            = "processingDecision";
     private static final String KEY_REMARK              = "remarks";
     private static final String KEY_SELECT_MOH_USER     = "selectMohUser";

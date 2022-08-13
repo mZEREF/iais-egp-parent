@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugSubmissionDto;
@@ -38,6 +39,7 @@ import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import com.ecquaria.cloud.privilege.Privilege;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -185,7 +187,13 @@ public class DataSubmissionInboxDelegator {
 		privilegeIds.stream().forEach(privilegeId ->{
 			switch(privilegeId){
 				case PrivilegeConsts.USER_PRIVILEGE_DS_AR_RFC :
-					rfcType.append(""+",");
+					rfcType.append(DataSubmissionConsts.DS_CYCLE_AR+",");
+					rfcType.append(DataSubmissionConsts.DS_CYCLE_IUI+",");
+					rfcType.append(DataSubmissionConsts.DS_CYCLE_EFO+",");
+					rfcType.append(DataSubmissionConsts.DS_CYCLE_NON+",");
+					rfcType.append(DataSubmissionConsts.DS_CYCLE_PATIENT_ART+",");
+					rfcType.append(DataSubmissionConsts.DS_CYCLE_STAGE+",");
+					rfcType.append(DataSubmissionConsts.DS_CYCLE_DONOR_SAMPLE+",");
 					break;
 				case PrivilegeConsts.USER_PRIVILEGE_DS_DP_RFC :
 					rfcType.append(DataSubmissionConsts.DS_CYCLE_DRP_PRESCRIBED+",");
@@ -431,6 +439,11 @@ public class DataSubmissionInboxDelegator {
     private  boolean showMessage(HttpServletRequest request,HttpServletResponse response,String actionValue){
 		 String sizeString = ParamUtil.getString(request,NEED_VALIDATOR_SIZE);
 		 List<String> submissionNos = ParamUtil.getListStrings(request,"submissionNo");
+		 String crudActionType = ParamUtil.getString(request, "crud_action_type");
+		 String crudType = ParamUtil.getString(request, "crud_type");
+		 if ("rfc".equals(crudActionType) && (StringUtils.isEmpty(crudType) || !"delete".equals(crudType))) {
+			 ParamUtil.setRequestAttr(request, "rfcSubmissionNo", submissionNos.get(0));
+		 }
 		 int size = -1;
 		 if(StringUtil.isNotEmpty(sizeString)){
 			 try {
@@ -520,7 +533,25 @@ public class DataSubmissionInboxDelegator {
 		if(actionSize == 1 && !DELETE_DRAFT.equalsIgnoreCase(actionValue)){
 			Map<String,String> params = IaisCommonUtils.genNewHashMap(2);
 			InboxDataSubmissionQueryDto inboxDataSubmissionQueryDto = actionInboxDataSubmissionQueryDtos.get(0);
-			if (AMENDED.equals(actionValue)){
+			// crudType is the result that user select to delete draft or cancel rfc (for _draftModal modal)
+			// if curdType is null, mean no draft for current submissionNo to process
+			String crudType = ParamUtil.getString(request, "crud_type");
+
+			boolean hasDrafts = false;
+			if(!StringUtils.hasLength(crudType) || !"delete".equals(crudType)){
+				DataSubmissionDraftDto draftDto = licenceInboxClient.getDataSubmissionDraftDtoBySubmissionId(inboxDataSubmissionQueryDto.getId()).getEntity();
+				if (draftDto != null) {
+					hasDrafts = true;
+					ParamUtil.setRequestAttr(request, "hasDrafts", Boolean.TRUE);
+					ParamUtil.setRequestAttr(request,"crud_action_type","page");
+					ParamUtil.setRequestAttr(request,"draftSubmissionNo",draftDto.getDraftNo());
+				}
+			}
+			if ("delete".equals(crudType)) {
+				licenceInboxClient.deleteDraftBySubmissionId(inboxDataSubmissionQueryDto.getId());
+			}
+
+			if (AMENDED.equals(actionValue) && (!StringUtils.hasLength(crudType) || "delete".equals(crudType)) && !hasDrafts){
 				AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_DATA_SUBMISSION, AuditTrailConsts.FUNCTION_REQUEST_FOR_CHANGE);
 				params.put("dsType",inboxDataSubmissionQueryDto.getDsType());
 				params.put("type","rfc");

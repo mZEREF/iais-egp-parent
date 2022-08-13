@@ -101,7 +101,7 @@ public class ArCycleStagesManualDelegator {
     public void doPrepareStage(BaseProcessClass bpc) {
         String jumpActionType = (String) ParamUtil.getRequestAttr(bpc.request, JUMP_ACTION_TYPE);
         ArSuperDataSubmissionDto currentSuper = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        if (StringUtils.hasLength(jumpActionType)) {
+        if ("jump".equals(jumpActionType)) {
             ParamUtil.setRequestAttr(bpc.request, "haveJump", "Y");
         } else {
             String crudype = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
@@ -180,6 +180,7 @@ public class ArCycleStagesManualDelegator {
         LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
         if (loginContext != null) {
             orgId = loginContext.getOrgId();
+            userId = loginContext.getUserId();
         }
         String actionValue = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
         log.info(StringUtil.changeForLog("Action Value: " + actionValue));
@@ -243,6 +244,11 @@ public class ArCycleStagesManualDelegator {
             if (IaisCommonUtils.isEmpty(dataSubmissionDraftList)) {
                 dataSubmissionDraft = null;
             } else {
+                dataSubmissionDraftList = dataSubmissionDraftList.stream().filter(arDraft -> arDraft.getSelectionDto().getStage().equals(selectionDto.getStage())).collect(Collectors.toList());
+            }
+            if (IaisCommonUtils.isEmpty(dataSubmissionDraftList)) {
+                dataSubmissionDraft = null;
+            }else {
                 dataSubmissionDraft = dataSubmissionDraftList.get(0);
             }
             if (dataSubmissionDraft != null/* && !Objects.equals(currentArDataSubmission.getDraftNo(),

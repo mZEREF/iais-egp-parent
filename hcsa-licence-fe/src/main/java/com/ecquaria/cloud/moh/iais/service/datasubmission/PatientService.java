@@ -4,13 +4,15 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 
-public interface PatientService {
+    public interface PatientService {
 
     DataSubmissionDto getPatientDataSubmissionByConds(String idType, String idNumber, String nationality, String orgId, String patientType);
 
     PatientDto getActivePatientByConds(String idType, String idNumber, String nationality, String orgId, String patientType);
 
     PatientDto getActiveArPatientByConds(String idType, String idNumber, String nationality, String orgId);
+
+    PatientInfoDto getPatientInfoDtoByIdTypeAndIdNumber(String idType,String idNumber);
 
     PatientDto getArPatientDto(String idType, String idNumber, String nationality, String orgId);
 

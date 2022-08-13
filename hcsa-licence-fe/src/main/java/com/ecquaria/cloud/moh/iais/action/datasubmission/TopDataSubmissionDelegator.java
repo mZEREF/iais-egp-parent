@@ -187,7 +187,7 @@ public class TopDataSubmissionDelegator {
                     topSuperDataSubmissionDto = new TopSuperDataSubmissionDto();
                 }
                 DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto,bpc.request);
-                ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS,DataSubmissionConstant.PAGE_STAGE_PAGE);
+                ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_TOP,DataSubmissionConstant.PAGE_STAGE_PAGE);
             } else if (crud_action_type.equals("delete")) {
                 topDataSubmissionService.deleteTopSuperDataSubmissionDtoRfcDraftByConds(topSuperDataSubmissionDto.getOrgId(), DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE,topSuperDataSubmissionDto.getDataSubmissionDto().getId());
             }
@@ -222,7 +222,7 @@ public class TopDataSubmissionDelegator {
         if(!StringUtil.isEmpty(patientInformationDto.getPatientAge())){
             try {
                 int age= -Formatter.compareDateByDay(patientInformationDto.getBirthData())/365;
-                int ageNew=-(Formatter.compareDateByDay(patientInformationDto.getBirthData())+age/4) / 365;
+                int ageNew=-(Formatter.compareDateByDay(patientInformationDto.getBirthData())+age/4+1) / 365;
 
                 patientInformationDto.setPatientAge(ageNew);
             }catch (Exception e){
@@ -332,7 +332,7 @@ public class TopDataSubmissionDelegator {
                     topSuperDataSubmissionDto = new TopSuperDataSubmissionDto();
                 }
                 DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto,bpc.request);
-                ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS,DataSubmissionConstant.PAGE_STAGE_PAGE);
+                ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_TOP,DataSubmissionConstant.PAGE_STAGE_PAGE);
             } else if (crud_action_type.equals("delete")) {
                 topDataSubmissionService.deleteTopSuperDataSubmissionDtoDraftByConds(topSuperDataSubmissionDto.getOrgId(), DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE,topSuperDataSubmissionDto.getAppType());
                 topSuperDataSubmissionDto=initTopSuperDataSubmissionDto(bpc.request);
@@ -340,16 +340,46 @@ public class TopDataSubmissionDelegator {
             }
         }else
         if(DataSubmissionConsts.DS_APP_TYPE_RFC.equals(topSuperDataSubmissionDto.getDataSubmissionDto().getAppType())){
-            List<DsConfig> configList =DsConfigHelper.initTopConfig(bpc.request);
+            TopSuperDataSubmissionDto oldTopSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDto(topSuperDataSubmissionDto.getDataSubmissionDto().getSubmissionNo());
+            ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.TOP_OLD_DATA_SUBMISSION, oldTopSuperDataSubmissionDto);
 
-            for (DsConfig cfg:configList
-            ) {
-                if(!cfg.getCode().equals(DsConfigHelper.TOP_STEP_PREVIEW)&&!cfg.getCode().equals(DsConfigHelper.TOP_STEP_PATIENT)){
-                    cfg.setStatus(1);
-                    DsConfigHelper.setConfig(DataSubmissionConsts.DS_TOP, cfg, bpc.request);
+        }
+        List<DsConfig> configList =DsConfigHelper.initTopConfig(bpc.request);
+
+        for (DsConfig cfg:configList
+        ) {
+            TerminationOfPregnancyDto terminationOfPregnancyDto =  topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
+
+            if(terminationOfPregnancyDto!=null&&!cfg.getCode().equals(DsConfigHelper.TOP_STEP_PREVIEW)&&!cfg.getCode().equals(DsConfigHelper.TOP_STEP_PATIENT)){
+                int status=0;
+
+                 if (DsConfigHelper.TOP_STEP_PLANNING.equals(cfg.getCode())&&terminationOfPregnancyDto.getFamilyPlanDto()!=null) {
+                    ValidationResult result = WebValidationHelper.validateProperty(terminationOfPregnancyDto.getFamilyPlanDto(),"TOP");
+                    status = result.isHasErrors()?0:1;
+                }else if (DsConfigHelper.TOP_STEP_PRE_TERMINATION.equals(cfg.getCode())&&terminationOfPregnancyDto.getPreTerminationDto()!=null) {
+                    ValidationResult result = WebValidationHelper.validateProperty(terminationOfPregnancyDto.getPreTerminationDto(),"TOP");
+                    status = result.isHasErrors()?0:1;
+                }else if (DsConfigHelper.TOP_STEP_PRESENT_TERMINATION.equals(cfg.getCode())&&terminationOfPregnancyDto.getTerminationDto()!=null) {
+                    PreTerminationDto preTerminationDto= terminationOfPregnancyDto.getPreTerminationDto();
+                    if(needDoTop(preTerminationDto)){
+                        ValidationResult result = WebValidationHelper.validateProperty(terminationOfPregnancyDto.getTerminationDto(),"TOP");
+                        status = result.isHasErrors()?0:1;
+                    }else {
+                        status =1;
+                    }
+                }else if (DsConfigHelper.TOP_STEP_POST_TERMINATION.equals(cfg.getCode())&&terminationOfPregnancyDto.getPostTerminationDto()!=null) {
+                    PreTerminationDto preTerminationDto= terminationOfPregnancyDto.getPreTerminationDto();
+                    if(needDoTop(preTerminationDto)){
+                        ValidationResult result = WebValidationHelper.validateProperty(terminationOfPregnancyDto.getPostTerminationDto(),"TOP");
+                        status = result.isHasErrors()?0:1;
+                    }else {
+                        status =1;
+                    }
                 }
-            }
+                cfg.setStatus(status);
 
+                DsConfigHelper.setConfig(DataSubmissionConsts.DS_TOP, cfg, bpc.request);
+            }
         }
         DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
         String pageStage = DataSubmissionConstant.PAGE_STAGE_PAGE;
@@ -376,9 +406,6 @@ public class TopDataSubmissionDelegator {
             terminationOfPregnancyDto=new TerminationOfPregnancyDto();
         }
         PatientInformationDto patientInformationDto= terminationOfPregnancyDto.getPatientInformationDto();
-        if(StringUtil.isEmpty(patientInformationDto)){
-            patientInformationDto=new PatientInformationDto();
-        }
         if(!StringUtil.isEmpty(patientInformationDto.getBirthData())){
             ParamUtil.setSessionAttr(bpc.request, "birthDate",topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getPatientInformationDto().getBirthData());
         }
@@ -641,6 +668,7 @@ public class TopDataSubmissionDelegator {
             }
         }
         if(!errMap.isEmpty()){
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,errMap);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errMap));
             return 0;
         }
@@ -686,7 +714,7 @@ public class TopDataSubmissionDelegator {
             if(StringUtil.isNotEmpty(terminationOfPregnancyDto.getPreTerminationDto().getCounsellingDate())){
                 String counsellingGiven = terminationOfPregnancyDto.getPreTerminationDto().getCounsellingDate();
                 int age=-Formatter.compareDateByDay(birthDate,counsellingGiven)/365;
-                int ageNew=-(Formatter.compareDateByDay(birthDate,counsellingGiven)+age/4) / 365;
+                int ageNew=-(Formatter.compareDateByDay(birthDate,counsellingGiven)+age/4+1) / 365;
 
                 terminationOfPregnancyDto.getPreTerminationDto().setCounsellingAge(ageNew);
 
@@ -873,7 +901,7 @@ public class TopDataSubmissionDelegator {
         ControllerHelper.get(request, familyPlanDto);
         try {
             int age= -Formatter.compareDateByDay(patientInformationDto.getBirthData())/365;
-            int ageNew=-(Formatter.compareDateByDay(patientInformationDto.getBirthData())+age/4) / 365;
+            int ageNew=-(Formatter.compareDateByDay(patientInformationDto.getBirthData())+age/4+1) / 365;
 
             patientInformationDto.setPatientAge(ageNew);
         }catch (Exception e){
@@ -1030,6 +1058,7 @@ public class TopDataSubmissionDelegator {
             }
         }
         ControllerHelper.get(request, preTerminationDto);
+
         if(StringUtil.isNotEmpty(preTerminationDto.getCounsellorIdNo())){
             preTerminationDto.setCounsellorIdNo(preTerminationDto.getCounsellorIdNo().toUpperCase());
         }
@@ -1070,7 +1099,7 @@ public class TopDataSubmissionDelegator {
         }
 
         if(preTerminationDto.getCounsellingAge()!=null){
-            if(preTerminationDto.getCounsellingAge()>16){
+            if(preTerminationDto.getCounsellingAge()>=16){
                 String counsellingPlace = ParamUtil.getRequestString(request, "counsellingPlace");
                 preTerminationDto.setCounsellingPlace(counsellingPlace);
             }else {
@@ -1515,6 +1544,14 @@ public class TopDataSubmissionDelegator {
     public void doDraft(BaseProcessClass bpc) {
         log.info(" ----- DoDraft ------ ");
         String currentStage = (String) ParamUtil.getRequestAttr(bpc.request,"currentStage");
+        Map<String,String> errMap= (Map<String, String>) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.ERRORMAP);
+        if(IaisCommonUtils.isNotEmpty(errMap)){
+            errMap.remove("amendReason");
+            errMap.remove("amendReasonOther");
+            errMap.remove("declaration");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errMap));
+
+        }
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_TOP, currentStage);
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(bpc.request);
         if (topSuperDataSubmissionDto != null) {
@@ -1560,6 +1597,7 @@ public class TopDataSubmissionDelegator {
     public void doControl(BaseProcessClass bpc) {
         log.info(" ----- DoControl ------ ");
         String crudType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+
         String actionType = null;
         if ("return".equals(crudType)) {
             actionType = "return";

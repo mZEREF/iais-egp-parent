@@ -103,6 +103,8 @@ public interface AppSubmissionService {
 
     void sendEmailAndSMSAndMessage(AppSubmissionDto appSubmissionDto, String applicantName);
 
+    List<InterMessageDto> getInterMessageByRefNo(String refNo);
+
     AppSubmissionDto getAppSubmissionDtoByAppGrpNo(String appGrpNo);
 
     void setPreviewDta(AppSubmissionDto appSubmissionDto, BaseProcessClass bpc) throws CloneNotSupportedException;

@@ -1,14 +1,23 @@
 package sg.gov.moh.iais.egp.bsb.service.inbox;
 
-import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_APPLICANT_INPUT;
-import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_DO_FOLLOW_UP_ITEM_VERIFICATION;
-import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_FOLLOW_UP_ITEM_SUBMISSION;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_APPROVED;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_DRAFT;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PARTIAL_ACCEPTANCE;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_AO_APPROVAL_LETTER_REVIEW;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_DO_APPROVAL_LETTER_DRAFT;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_REJECTED;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_REMOVED;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_WITHDRAWN;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_TYPE_CANCEL;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_TYPE_DEREGISTRATION;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_TYPE_NEW;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_TYPE_RENEW;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_TYPE_RFC;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_TYPE_SUBMISSION;
 
 public class AppWithdrawableJudge implements AppActionJudge {
     private final String appType;
@@ -21,13 +30,9 @@ public class AppWithdrawableJudge implements AppActionJudge {
 
     @Override
     public boolean judge() {
-        List<String> withdrawableAppTypes = Arrays.asList(MasterCodeConstants.APP_TYPE_NEW, MasterCodeConstants.APP_TYPE_RENEW,
-                MasterCodeConstants.APP_TYPE_RFC, MasterCodeConstants.APP_TYPE_CANCEL, MasterCodeConstants.APP_TYPE_DEREGISTRATION,
-                MasterCodeConstants.APP_TYPE_SUBMISSION);
-        // TODO: check these app status
-        List<String> notWithdrawableAppStatus = Arrays.asList(APP_STATUS_WITHDRAWN, MasterCodeConstants.APP_STATUS_REJECTED, MasterCodeConstants.APP_STATUS_APPROVED, MasterCodeConstants.APP_STATUS_DRAFT, MasterCodeConstants.APP_STATUS_REMOVED,
-                APP_STATUS_PEND_FOLLOW_UP_ITEM_SUBMISSION, APP_STATUS_PEND_DO_FOLLOW_UP_ITEM_VERIFICATION, MasterCodeConstants.APP_STATUS_PEND_EXTENSION_REVIEW,
-                MasterCodeConstants.APP_STATUS_PEND_AFC_REPORT_UPLOAD, MasterCodeConstants.APP_STATUS_PEND_AFC_INPUT, APP_STATUS_PEND_APPLICANT_INPUT, MasterCodeConstants.APP_STATUS_PEND_DO_REPORT_REVIEW, MasterCodeConstants.APP_STATUS_PEND_AO_REPORT_REVIEW);
+        List<String> withdrawableAppTypes = Arrays.asList(APP_TYPE_NEW, APP_TYPE_RENEW, APP_TYPE_RFC, APP_TYPE_CANCEL, APP_TYPE_DEREGISTRATION, APP_TYPE_SUBMISSION);
+        List<String> notWithdrawableAppStatus = Arrays.asList(APP_STATUS_WITHDRAWN, APP_STATUS_REJECTED, APP_STATUS_DRAFT, APP_STATUS_REMOVED,
+                APP_STATUS_APPROVED, APP_STATUS_PEND_DO_APPROVAL_LETTER_DRAFT, APP_STATUS_PEND_AO_APPROVAL_LETTER_REVIEW, APP_STATUS_PARTIAL_ACCEPTANCE);
         return withdrawableAppTypes.contains(appType) && !notWithdrawableAppStatus.contains(appStatus);
     }
 }

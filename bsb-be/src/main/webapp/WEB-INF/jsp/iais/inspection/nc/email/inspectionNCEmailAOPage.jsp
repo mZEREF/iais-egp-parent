@@ -4,6 +4,7 @@
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
 <%@ page import="sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%@ page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -108,8 +109,9 @@
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
                                                                     <select name="processingDecision"  class="processingDecisionDropdown" id="processingDecision">
                                                                         <option value="" <c:if test="${ncEmailDto.decision eq ''}">selected="selected"</c:if>>Please Select</option>
-                                                                        <option value="MOHPRO007" <c:if test="${ncEmailDto.decision eq 'MOHPRO007'}">selected="selected"</c:if>>Approve and route to Applicant</option>
-                                                                        <option value="MOHPRO008" <c:if test="${ncEmailDto.decision eq 'MOHPRO008'}">selected="selected"</c:if>>Route back to DO</option>
+                                                                        <%--TODO: check these decision--%>
+                                                                        <option value="" <c:if test="${ncEmailDto.decision eq ''}">selected="selected"</c:if>>Approve and route to Applicant</option>
+                                                                        <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO}" <c:if test="${ncEmailDto.decision eq MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO}">selected="selected"</c:if>>Route back to DO</option>
                                                                     </select>
                                                                 </div>
                                                                 <div class="clear"></div>

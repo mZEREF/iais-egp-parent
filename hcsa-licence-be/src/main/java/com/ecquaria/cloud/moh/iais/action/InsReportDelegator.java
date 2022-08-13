@@ -85,7 +85,7 @@ public class InsReportDelegator {
         ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.REPORT_ACK_CLARIFICATION_FLAG,null);
         ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,null);
         ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,null);
-        ParamUtil.setSessionAttr(request,"rollBackToOptions",null);
+        ParamUtil.setSessionAttr(request,"rollBackOptions",null);
         ParamUtil.setSessionAttr(request,"rollBackToValueMap",null);
         vehicleCommonController.clearVehicleInformationSession(request);
     }
@@ -136,7 +136,7 @@ public class InsReportDelegator {
         }
         Map<String, AppPremisesRoutingHistoryDto> historyDtoMap = IaisCommonUtils.genNewHashMap();
         List<SelectOption> rollBackSelectOptions = inspectionService.getRollBackSelectOptions(applicationViewDto.getRollBackHistroyList(), historyDtoMap, taskDto.getRoleId());
-        ParamUtil.setSessionAttr(request,"rollBackToOptions",(Serializable) rollBackSelectOptions);
+        ParamUtil.setSessionAttr(request,"rollBackOptions",(Serializable) rollBackSelectOptions);
         ParamUtil.setSessionAttr(request,"rollBackValueMap", (Serializable) historyDtoMap);
         String riskLevelForSave = appPremisesRecommendationDto.getRiskLevel();
         List<SelectOption> riskOption = insRepService.getRiskOption(applicationViewDto);
@@ -520,7 +520,7 @@ public class InsReportDelegator {
         SelectOption so1 = new SelectOption("submit", MasterCodeUtil.getCodeDesc(InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT));
         riskLevelResult.add(so1);
         String appType = applicationDto.getApplicationType();
-        if (!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType))) {
+        if (!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType))) {
             riskLevelResult.add(new SelectOption("rollBack",  MasterCodeUtil.getCodeDesc(InspectionConstants.PROCESS_DECI_ROLL_BACK)));
         }
         return riskLevelResult;

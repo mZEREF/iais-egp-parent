@@ -218,8 +218,14 @@ public class TopDataSubmissionServiceImpl implements TopDataSubmissionService {
                 DoctorInformationDto doctorInformationDto = docInfoService.getDoctorInformationDtoByConds(terminationDto.getDoctorRegnNo(), "ELIS");
                 if (professionalResponseDto != null && doctorInformationDto != null
                         && ("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()))) {
+                    //PRN number doesn't exist in PRS but exist in eLis
                     terminationDto.setToolTipShow("N");
                 } else if (professionalResponseDto != null && doctorInformationDto == null && StringUtils.hasLength(professionalResponseDto.getName())) {
+                    //PRN number doesn't exist in eLis but exist in PRS
+                    terminationDto.setToolTipShow("N");
+                } else if (professionalResponseDto != null && doctorInformationDto == null
+                        && ("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()))){
+                    // PRN number doesn't exist in both (PRS and eLis)
                     terminationDto.setToolTipShow("N");
                 } else {
                     terminationDto.setToolTipShow("Y");

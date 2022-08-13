@@ -2,8 +2,8 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
-<%@ page import="sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil" %>
 <%@ page import="sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants" %>
+<%@ page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -121,9 +121,10 @@
                                                                 <label class="col-xs-12 col-md-4 control-label" for="processingDecision">Processing Decision</label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
                                                                     <select name="processingDecision" class="processingDecisionDropdown" id="processingDecision">
-                                                                        <option value="MOHPRO026" <c:if test="${insDecision.decision eq 'MOHPRO026'}">selected="selected"</c:if>>Reject and Route to DO for Revision</option>
-                                                                        <option value="MOHPRO027" <c:if test="${insDecision.decision eq 'MOHPRO027'}">selected="selected"</c:if>>Accept</option>
-                                                                        <option value="MOHPRO029" <c:if test="${insDecision.decision eq 'MOHPRO029'}">selected="selected"</c:if>>Skip Inspection</option>
+                                                                        <%--TODO: check these decision--%>
+                                                                        <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO_FOR_REVISION}" <c:if test="${insDecision.decision eq MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO_FOR_REVISION}">selected="selected"</c:if>>Reject and Route to DO for Revision</option>
+                                                                        <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_ACCEPT}" <c:if test="${insDecision.decision eq MasterCodeConstants.MOH_PROCESS_DECISION_ACCEPT}">selected="selected"</c:if>>Accept</option>
+                                                                        <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_SKIP_INSPECTION}" <c:if test="${insDecision.decision eq MasterCodeConstants.MOH_PROCESS_DECISION_SKIP_INSPECTION}">selected="selected"</c:if>>Skip Inspection</option>
                                                                     </select>
                                                                 </div>
                                                                 <div class="clear"></div>

@@ -4,7 +4,11 @@
 <%--@elvariable id="organizationAddress" type="sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo"--%>
 <%--@elvariable id="facTypeOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
 <%--@elvariable id="addressTypeOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
-<fac:facilityProfile facProfile="${facProfile}" organizationAddress="${organizationAddress}" facTypeOps="${facTypeOps}"
+<%--@elvariable id="opvSabinPIMRiskLevelOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
+<%--@elvariable id="isSPFifthRegisteredFacility" type="java.lang.Boolean"--%>
+<%--@elvariable id="isPolioVirusRegisteredFacility" type="java.lang.Boolean"--%>
+<fac:facilityProfile facProfile="${facProfile}" isFifthRf="${isSPFifthRegisteredFacility}" isPvRf="${isPolioVirusRegisteredFacility}"
+                     organizationAddress="${organizationAddress}" facTypeOps="${facTypeOps}" opvSabinPIMRiskLevelOps="${opvSabinPIMRiskLevelOps}"
                      addressTypeOps="${addressTypeOps}" editJudge="true">
     <jsp:attribute name="specialJsFrag">
         <iais-bsb:single-constant constantName="WEB_ROOT" classFullName="sg.gov.moh.iais.egp.bsb.constant.GlobalConstants" attributeKey="webroot"/>

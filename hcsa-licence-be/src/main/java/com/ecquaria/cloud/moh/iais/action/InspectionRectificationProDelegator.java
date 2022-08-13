@@ -89,7 +89,7 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
     private static final String TASKDTO ="taskDto";
     private static final String APPLICATIONVIEWDTO = "applicationViewDto";
     private static final String CHECKLISTFILEDTO = "checkListFileDto";
-    private static final String ROLL_BACK_OPTIONS = "rollBackToOptions";
+    private static final String ROLL_BACK_OPTIONS = "rollBackOptions";
     private static final String ROLL_BACK_VALUE_MAP = "rollBackValueMap";
 
     @Autowired
@@ -204,7 +204,7 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
         }
         List<SelectOption> processDecOption = inspectionRectificationProService.getProcessRecDecOption();
         String appType = applicationViewDto.getApplicationDto().getApplicationType();
-        if (!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType))) {
+        if (!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)  || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType))) {
             processDecOption.addAll(MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROLL_BACK}));
         }
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
