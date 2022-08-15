@@ -1621,7 +1621,6 @@ public final class ApplicationHelper {
                 specDtos.sort(Comparator.comparing(AppSvcRelatedInfoDto::getServiceName));
                 newAppSvcDto.addAll(specDtos);
             }
-            appSvcRelatedInfoDtos = newAppSvcDto;
         }
         return newAppSvcDto;
     }
@@ -2359,9 +2358,8 @@ public final class ApplicationHelper {
                     DocSectionDto docSectionDto = new DocSectionDto();
                     docSectionDto.setSvcConfigDto(relDto);
                     List<HcsaSvcDocConfigDto> docConfigDtos = configCommService.getAllHcsaSvcDocs(relDto.getSvcId());
-                    docSectionDto.setDocSecDetailList(
-                            genDocSecDetailList(docConfigDtos, relDto, appPremSpecialisedDto.getPremisesVal(),
-                                    currSvcInfoDto));
+                    docSectionDto.setDocSecDetailList(genDocSecDetailList(docConfigDtos, relDto,
+                            appPremSpecialisedDto.getPremisesVal(), currSvcInfoDto));
                     docSectionDtoList.add(docSectionDto);
                 }
                 docSectionDtoList.sort(Comparator.comparing(DocSectionDto::getSvcIndex).thenComparing(DocSectionDto::getSvcName));
@@ -2387,7 +2385,7 @@ public final class ApplicationHelper {
         List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoDtoList = currSvcInfoDto.getAppSvcSpecialServiceInfoList();
         if (!IaisCommonUtils.isEmpty(appSvcSpecialServiceInfoDtoList)) {
             for (AppSvcSpecialServiceInfoDto appSvcSpecialServiceInfoDto : appSvcSpecialServiceInfoDtoList) {
-                if (appSvcSpecialServiceInfoDto.isInit() == true) {
+                if (appSvcSpecialServiceInfoDto.isInit()) {
                     init = false;
                     break;
                 }
@@ -2445,11 +2443,10 @@ public final class ApplicationHelper {
     }
 
     private static List<DocSecDetailDto> genDocSecDetailList(List<HcsaSvcDocConfigDto> svcDocConfigDtos,
-            AppPremSubSvcRelDto appPremSubSvcRelDto,
-            String premisesVal, AppSvcRelatedInfoDto currSvcInfoDto) {
+            AppPremSubSvcRelDto appPremSubSvcRelDto, String premisesVal, AppSvcRelatedInfoDto currSvcInfoDto) {
         List<DocSecDetailDto> result = IaisCommonUtils.genNewArrayList();
-        if (IaisCommonUtils.isEmpty(svcDocConfigDtos) || appPremSubSvcRelDto == null || StringUtil.isEmpty(
-                premisesVal) || currSvcInfoDto == null) {
+        if (IaisCommonUtils.isEmpty(svcDocConfigDtos) || appPremSubSvcRelDto == null
+                || StringUtil.isEmpty(premisesVal) || currSvcInfoDto == null) {
             return result;
         }
         List<AppSvcDocDto> appSvcDocDtos = currSvcInfoDto.getAppSvcDocDtoLit();
@@ -2460,7 +2457,7 @@ public final class ApplicationHelper {
                 DocSecDetailDto dto = new DocSecDetailDto();
                 dto.setDocConfigDto(svcDocConfig, isBackend());
                 List<AppSvcDocDto> appSvcDocDtoList = getAppSvcDocDtoByConfigId(appSvcDocDtos, configId, premisesVal, "",
-                        appPremSubSvcRelDto.getId(), appPremSubSvcRelDto.getSvcId());
+                        currSvcInfoDto.getBaseServiceId(), appPremSubSvcRelDto);
                 dto.setAppSvcDocDtoList(appSvcDocDtoList);
                 result.add(dto);
             } else {
@@ -2469,7 +2466,7 @@ public final class ApplicationHelper {
                 boolean needPsnTypeIndex = psnList.size() > 1;
                 for (AppSvcPrincipalOfficersDto psn : psnList) {
                     List<AppSvcDocDto> appSvcDocDtoList = getAppSvcDocDtoByConfigId(appSvcDocDtos, configId, premisesVal,
-                            psn.getIndexNo(), appPremSubSvcRelDto.getId(), appPremSubSvcRelDto.getSvcId());
+                            psn.getIndexNo(), currSvcInfoDto.getBaseServiceId(), appPremSubSvcRelDto);
                     DocSecDetailDto dto = new DocSecDetailDto();
                     dto.setDocConfigDto(svcDocConfig, isBackend());
                     dto.setAppSvcDocDtoList(appSvcDocDtoList);
@@ -2493,13 +2490,14 @@ public final class ApplicationHelper {
     }
 
     private static List<AppSvcDocDto> getAppSvcDocDtoByConfigId(List<AppSvcDocDto> appSvcDocDtos, String docConfigId, String premIndex,
-            String psnIndex, String premSubSvcRelId, String svcId) {
+            String psnIndex, String baseSvcId, AppPremSubSvcRelDto appPremSubSvcRelDto) {
         List<AppSvcDocDto> appSvcDocDtoList = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(appSvcDocDtos) && !StringUtil.isEmpty(docConfigId)
-                && !StringUtil.isEmpty(svcId)) {
+                && appPremSubSvcRelDto != null) {
+            String svcId = StringUtil.getNonNull(appPremSubSvcRelDto.getSvcId());
+            String premSubSvcRelId = StringUtil.getNonNull(appPremSubSvcRelDto.getId());
             premIndex = StringUtil.getNonNull(premIndex);
             psnIndex = StringUtil.getNonNull(psnIndex);
-            premSubSvcRelId = StringUtil.getNonNull(premSubSvcRelId);
             for (AppSvcDocDto appSvcDocDto : appSvcDocDtos) {
                 String currPremIndex = StringUtil.getNonNull(appSvcDocDto.getPremisesVal());
                 String currPsnIndex = StringUtil.getNonNull(appSvcDocDto.getPsnIndexNo());
@@ -2509,6 +2507,7 @@ public final class ApplicationHelper {
                         && (StringUtil.isNotEmpty(currPremSubSvcRelId) && currPremSubSvcRelId.equals(premSubSvcRelId)
                         || StringUtil.isEmpty(currPremSubSvcRelId) && svcId.equals(currSvcId))) {
                     appSvcDocDto.setSvcId(svcId);
+                    appSvcDocDto.setBaseSvcId(baseSvcId);
                     appSvcDocDtoList.add(appSvcDocDto);
                 }
             }
@@ -3746,14 +3745,11 @@ public final class ApplicationHelper {
     }
 
     public static String getSvcDocKey(int i, String currSvcCode, String premVal) {
-        return new StringBuilder().append(i).append("svcDoc").append(currSvcCode)
-                .append(StringUtil.getNonNull(premVal)).toString();
+        return i + "svcDoc" + currSvcCode + StringUtil.getNonNull(premVal);
     }
 
     public static String getFileMapKey(String premVal, String svcId, String svcDocConfigId, String psnIndexNo, Integer seqNum) {
-        return new StringBuilder().append(StringUtil.getNonNull(premVal)).append(svcId).append(svcDocConfigId)
-                .append("svcDoc").append(StringUtil.getNonNull(psnIndexNo)).append(seqNum)
-                .toString();
+        return StringUtil.getNonNull(premVal) + svcId + svcDocConfigId + "svcDoc" + StringUtil.getNonNull(psnIndexNo) + seqNum;
     }
 
 }
