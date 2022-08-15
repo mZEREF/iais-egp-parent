@@ -42,8 +42,7 @@
 <%--                                                         value="Last inspection Date"/>--%>
 <%--                                    <iais:sortableHeader style="width:10%" needSort="false" field="expiry_date"--%>
 <%--                                                         value="Licence Expiry Date"/>--%>
-                                    <iais:sortableHeader style="width:10%" needSort="false" field="new_tcu_date"
-                                                         value="New TCU Date"/>
+                                    <th style="width:10%"><p>New TCU Date <span style="color: red"> *</span></p></th>
                                     <iais:sortableHeader style="width:15%" needSort="false" field="remarks"
                                                          value="Remarks"/>
                                 </tr>
