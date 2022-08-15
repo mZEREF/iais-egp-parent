@@ -2089,11 +2089,7 @@ public final class AppDataHelper {
         if (StringUtil.isEmpty(svcPersonnelDto)) {
             svcPersonnelDto = new SvcPersonnelDto();
         }
-
-
-
 //      得到每个集合
-
         List<AppSvcPersonnelDto> normalList = IaisCommonUtils.genNewArrayList();
         List<AppSvcPersonnelDto> nurseList = IaisCommonUtils.genNewArrayList();
         List<AppSvcPersonnelDto> specialList = IaisCommonUtils.genNewArrayList();
