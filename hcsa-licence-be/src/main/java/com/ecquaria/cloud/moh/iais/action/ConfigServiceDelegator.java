@@ -164,6 +164,12 @@ public class ConfigServiceDelegator {
     // 		prepareViewOrBack->OnStepProcess
     public void prepareViewOrBack(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("confige prepareViewOrBack start"));
+        String action = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        log.info(StringUtil.changeForLog("The action is -->:"+action));
+        if(!"back".equals(action)){
+            action = "view";
+        }
+        ParamUtil.setRequestAttr(bpc.request,"action_type",action);
         log.info(StringUtil.changeForLog("confige prepareViewOrBack  end"));
 
     }
@@ -182,14 +188,15 @@ public class ConfigServiceDelegator {
     // 		PrepareEditOrDelete->OnStepProcess
     public void prepareEditOrDelete(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("confige prepareEditOrDelete start"));
-        String crud_action_value = bpc.request.getParameter("crud_action_type");
-        if("save".equals(crud_action_value)){
-            bpc.request.setAttribute("crud_action_type","save");
-        }
-        if("edit".equals(crud_action_value)){
-            bpc.request.setAttribute("crud_action_type","edit");
-        }
-        log.info(StringUtil.changeForLog("confige prepareEditOrDelete start"));
+        String crud_action_type = bpc.request.getParameter("crud_action_type");
+        log.info(StringUtil.changeForLog("The crud_action_type is -->:"+crud_action_type));
+//        if("save".equals(crud_action_value)){
+//            bpc.request.setAttribute("crud_action_type","save");
+//        }
+//        if("edit".equals(crud_action_value)){
+//            bpc.request.setAttribute("crud_action_type","edit");
+//        }
+        log.info(StringUtil.changeForLog("confige prepareEditOrDelete end"));
 
     }
 
@@ -212,7 +219,11 @@ public class ConfigServiceDelegator {
     // 		doDelete->OnStepProcess
     public void doDelete(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("confige doDelete start"));
-        configService.deleteOrCancel(bpc.request,bpc.response);
+        String serviceId = bpc.request.getParameter("crud_action_value");
+        log.info(StringUtil.changeForLog("The serviceId is -->:"+serviceId));
+        configService.doDeleteService(serviceId);
+        bpc.request.setAttribute("deleteSuccess","Delete success");
+       // configService.deleteOrCancel(bpc.request,bpc.response);
         log.info(StringUtil.changeForLog("confige doDelete end"));
     }
 

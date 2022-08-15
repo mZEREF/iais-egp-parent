@@ -8,11 +8,14 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.ServiceConfigConstant" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.ParamUtil" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <webui:setLayout name="iais-intranet"/>
 
 <%
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
+  String titleShow = request.getAttribute("title") == null ? "Add HCSA Service" : (String)request.getAttribute("title");
 %>
 <style>
   .mandatory{
@@ -48,7 +51,7 @@
       </div>
       <div class="form-group">
         <div class="col-xs-12 col-md-9">
-          <h2 class="col-xs-0 col-md-7 component-title">Add HCSA Service</h2>
+          <h2 class="col-xs-0 col-md-7 component-title"><%=titleShow%></h2>
           <input type="text" style="display: none" name="serviceIsUse" value="false">
         </div>
       </div>
@@ -831,7 +834,7 @@
           <label class="col-xs-12 col-md-7 control-label" >Service-Related Checklists</label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
-              <a class="btn btn-secondary " data-toggle="modal" data-target= "#checklists" ><span class="view">Configure</span></a>
+              <a class="btn btn-secondary " data-toggle="modal" data-target= "<c:if test="${!isView}">#checklists</c:if>" ><span class="view">Configure</span></a>
             </div>
           </div>
         </div>
@@ -843,7 +846,7 @@
             <label class="col-xs-12 col-md-7 control-label" >Service Risk Score</label>
             <div class="col-xs-10 col-md-4">
               <div class="components">
-                <a class="btn btn-secondary "  data-toggle="modal" data-target= "#riskScore"><span class="view">Configure</span></a>
+                <a class="btn btn-secondary "  data-toggle="modal" data-target= "<c:if test="${!isView}">#riskScore</c:if>"><span class="view">Configure</span></a>
               </div>
             </div>
           </div>
@@ -854,7 +857,7 @@
             <label class="col-xs-12 col-md-7 control-label" >Service KPI</label>
             <div class="col-xs-10 col-md-4">
               <div class="components">
-                <a class="btn btn-secondary " data-toggle="modal" data-target= "#kpi" ><span class="view">Configure</span></a>
+                <a class="btn btn-secondary " data-toggle="modal" data-target= "<c:if test="${!isView}">#kpi</c:if>" ><span class="view">Configure</span></a>
               </div>
             </div>
           </div>
@@ -1141,7 +1144,23 @@
       <div class="col-lg-12 col-xs-12 canClick">
         <iais:action style="text-align:center;">
           <a class="btn btn-secondary" data-toggle="modal" data-target="#cancel">Cancel</a>
-          <button class="btn btn-primary" onclick="save()">Save</button>
+          <c:if test="${!isView}">
+            <a class="btn btn-primary" onclick="save()">Save</a>
+          </c:if>
+
+          <c:if test="${isDelete}">
+            <a class="btn btn-secondary"data-toggle="modal" style="color: #ff0000" data-target= "#deleteConfirmYesOrNo">CONFIRM DELETE</a>
+            <input type="hidden" id="deleteConfirm" value="${hcsaServiceConfigDto.hcsaServiceDto.id}">
+          </c:if>
+
+          <c:if test="${isEidtAndView}">
+            <button class="btn btn-primary"  onclick="submit('edit',${hcsaServiceConfigDto.hcsaServiceDto.id})">Update</button>
+          </c:if>
+
+          <c:if test="${isEdit}">
+            <a class="btn btn-secondary" onclick="saveAsNewVersion()">Select as New Version</a>
+          </c:if>
+
         </iais:action>
         <div class="bg-title" style="text-align: center">
           <p style="text-align: center">Version 1.00</p>
@@ -1159,6 +1178,8 @@
 <iais:confirm msg="Are you sure you want to leave this page ?" callBack="riskScore()" popupOrder="riskScore" ></iais:confirm>
 
 <iais:confirm msg="Are you sure you want to cancel?" yesBtnDesc="NO" cancelBtnDesc="YES" yesBtnCls="btn btn-secondary" cancelBtnCls="btn btn-primary" cancelFunc="cancel()" callBack="displays()" popupOrder="cancel"></iais:confirm>
+
+<iais:confirm msg="Are you sure to delete ?" yesBtnDesc="NO" cancelBtnDesc="YES" yesBtnCls="btn btn-secondary" cancelBtnCls="btn btn-primary" cancelFunc="deleteConfirmYesOrNo()" callBack="cancelDelete()" popupOrder="deleteConfirmYesOrNo" ></iais:confirm>
 <script type="text/javascript">
     $(document).ready(function () {
         premisesSelect();
@@ -1173,8 +1194,16 @@
         location.href='https://${pageContext.request.serverName}/${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohKPIAndReminder",request)%>';
 
     }
+    function deleteConfirmYesOrNo(){
+        var val = $('#deleteConfirm').val();
+        SOP.Crud.cfxSubmit("mainForm","delete",val,"");
+    }
+    function cancelDelete(){
+       // SOP.Crud.cfxSubmit("mainForm","delete","","");
+        $('#deleteConfirmYesOrNo').modal('hide');
+    }
     function  displays() {
-      $('#cancel').modal('hide');
+        $('#cancel').modal('hide');
     }
 
     function  checklists(){
@@ -1194,8 +1223,9 @@
         showWaiting();
         submit("save");
     }
-    function submit(action) {
+    function submit(action,value) {
         $("[name='crud_action_type']").val(action);
+        $("[name='crud_action_value']").val(value);
         $("#mainForm").submit();
     }
     $(document).ready(function () {

@@ -40,6 +40,8 @@ public interface ConfigService {
 
     void delete(HttpServletRequest request);
 
+    void doDeleteService(String serviceId);
+
     void deleteOrCancel(HttpServletRequest request,HttpServletResponse response);
 
     List<HcsaSvcRoutingStageDto> getHcsaSvcRoutingStageDtos();

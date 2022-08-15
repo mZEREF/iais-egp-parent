@@ -640,6 +640,19 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     @Override
+    public void doDeleteService(String serviceId) {
+        log.info(StringUtil.changeForLog("The doDeleteService start ..."));
+        hcsaConfigClient.updateService(serviceId);
+        /*HcsaServiceConfigDto hcsaServiceConfigDto=new HcsaServiceConfigDto();
+        HcsaServiceDto hcsaServiceDto = new HcsaServiceDto();
+        hcsaServiceDto.setId(serviceId);
+        hcsaServiceDto.setUseDelete(true);
+        hcsaServiceConfigDto.setHcsaServiceDto(hcsaServiceDto);
+        eicGateway(hcsaServiceConfigDto);*/
+        log.info(StringUtil.changeForLog("The doDeleteService end ..."));
+    }
+
+    @Override
     public void deleteOrCancel(HttpServletRequest request,HttpServletResponse response) {
         String crud_action_value = request.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
         if(!StringUtil.isEmpty(crud_action_value)){
