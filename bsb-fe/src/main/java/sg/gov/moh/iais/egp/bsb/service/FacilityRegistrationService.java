@@ -295,6 +295,10 @@ public class FacilityRegistrationService {
             // convert draft data to NodeGroup and set it into session, replace old data
             facRegRoot = retrieveFacRegRoot(request, eligibleDraftRegisterDto);
             facRegRoot.setActiveNodeKey(NODE_NAME_FAC_SELECTION);
+            // because don't need to judge whether activityTypes is same,so activityTypes in draft and user selected maybe not same
+            // get selectionDto from current node
+            facSelectionNode = (SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION);
+            selectionDto = (FacilitySelectionDto) facSelectionNode.getValue();
             newFacServiceSelectionPageJumpJudge(request, false, facSelectionNode, facRegRoot, selectionDto);
         } else if (StringUtils.hasLength(actionLoadDraft) && actionLoadDraft.equals(MasterCodeConstants.NO)) {
             FacilityRegisterDto eligibleDraftRegisterDto = (FacilityRegisterDto) ParamUtil.getSessionAttr(request, ELIGIBLE_DRAFT_REGISTER_DTO);
@@ -362,6 +366,7 @@ public class FacilityRegistrationService {
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
+        ParamUtil.setSessionAttr(request, KEY_SELECTED_ACTIVITIES, new ArrayList<>(selectionDto.getActivityTypes()));
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
     }
 
@@ -978,13 +983,26 @@ public class FacilityRegistrationService {
         ParamUtil.setRequestAttr(request, KEY_FILE_MAP_NEW, newFiles);
 
         FacilitySelectionDto selectionDto = (FacilitySelectionDto) ((SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION)).getValue();
-        List<DocSetting> facRegDocSetting = docSettingService.getFacRegDocSettings(selectionDto.getFacClassification(), selectionDto.getActivityTypes());
+        String facClassification = selectionDto.getFacClassification();
+        List<String> activityTypes = selectionDto.getActivityTypes();
+        List<DocSetting> facRegDocSetting = docSettingService.getFacRegDocSettings(facClassification, activityTypes);
         ParamUtil.setRequestAttr(request, KEY_DOC_SETTINGS, facRegDocSetting);
 
         Set<String> otherDocTypes = DocSettingService.computeOtherDocTypes(facRegDocSetting, savedFiles.keySet(), newFiles.keySet());
         ParamUtil.setRequestAttr(request, KEY_OTHER_DOC_TYPES, otherDocTypes);
 
-        List<SelectOption> docTypeOps = MasterCodeHolder.DOCUMENT_TYPE.allOptions();
+        List<SelectOption> docTypeOps;
+        if (MasterCodeConstants.FAC_CLASSIFICATION_RF.equals(facClassification) && MasterCodeConstants.ACTIVITY_SP_HANDLE_PV_POTENTIAL.equals(activityTypes.get(0))){
+            docTypeOps = MasterCodeHolder.RF_PV_DOCUMENT_TYPE.allOptions();
+        } else if (MasterCodeConstants.FAC_CLASSIFICATION_RF.equals(facClassification) && MasterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED.equals(activityTypes.get(0))){
+            docTypeOps = MasterCodeHolder.RF_ETF_DOCUMENT_TYPE.allOptions();
+        } else if (MasterCodeConstants.FAC_CLASSIFICATION_BSL3.equals(facClassification) || MasterCodeConstants.FAC_CLASSIFICATION_BSL4.equals(facClassification)){
+            docTypeOps = MasterCodeHolder.CF_DOCUMENT_TYPE.allOptions();
+        } else if (MasterCodeConstants.FAC_CLASSIFICATION_UF.equals(facClassification) || MasterCodeConstants.FAC_CLASSIFICATION_LSPF.equals(facClassification)){
+            docTypeOps = MasterCodeHolder.UCF_OR_BMF_DOCUMENT_TYPE.allOptions();
+        } else {
+            docTypeOps = MasterCodeHolder.DOCUMENT_TYPE.allOptions();
+        }
         ParamUtil.setRequestAttr(request, KEY_OPTIONS_DOC_TYPES, docTypeOps);
         ObjectMapper mapper = new ObjectMapper();
         String docTypeOpsJson = mapper.writeValueAsString(docTypeOps);

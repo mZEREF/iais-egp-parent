@@ -564,7 +564,7 @@ public class ApprovalBatAndActivityService {
         Set<String> otherDocTypes = DocSettingService.computeOtherDocTypes(approvalAppDocSettings, savedFiles.keySet(), newFiles.keySet());
         ParamUtil.setRequestAttr(request, KEY_OTHER_DOC_TYPES, otherDocTypes);
 
-        List<SelectOption> docTypeOps = MasterCodeHolder.DOCUMENT_TYPE.allOptions();
+        List<SelectOption> docTypeOps = MasterCodeHolder.APPROVAL_FOR_FACILITY_DOCUMENT_TYPE.allOptions();
         ParamUtil.setRequestAttr(request, KEY_OPTIONS_DOC_TYPES, docTypeOps);
         ObjectMapper mapper = new ObjectMapper();
         String docTypeOpsJson = mapper.writeValueAsString(docTypeOps);

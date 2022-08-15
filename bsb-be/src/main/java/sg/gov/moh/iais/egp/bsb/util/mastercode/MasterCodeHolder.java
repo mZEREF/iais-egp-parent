@@ -26,4 +26,6 @@ public class MasterCodeHolder {
     public static final MasterCodeWrapper SALUTATION = new MasterCodeWrapper(MasterCodeUtil.CATE_ID_BSB_SALUTATION);
 
     public static final MasterCodeWrapper ROLE_UNDER_SIXTH_SCHEDULE = new MasterCodeWrapper(MasterCodeUtil.CATE_ID_BSB_ROLE_UNDER_SIXTH_SCHEDULE);
+
+    public static final MasterCodeWrapper MOH_DOCUMENT_TYPE = new MasterCodeWrapper(MasterCodeUtil.CATE_ID_DOC_TYPE_MOH);
 }
