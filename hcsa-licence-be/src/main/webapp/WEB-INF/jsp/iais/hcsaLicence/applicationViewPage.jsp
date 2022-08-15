@@ -126,6 +126,7 @@
                                                                                         <textarea id="internalRemarksId"
                                                                                                   name="internalRemarks" cols="70"
                                                                                                   rows="7" maxlength="300">${internalRemarks}</textarea>
+                                                                                            <br>
                                                                                             <span id="error_internalRemarks" name="iaisErrorMsg" class="error-msg"></span>
                                                                                             <span id="error_internalRemarks1" class="error-msg" style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
                                                                                         </div>
@@ -195,7 +196,7 @@
                                                                         </c:if>
                                                                         <div id="rollBackCrDropdown" class="hidden">
                                                                             <iais:row>
-                                                                                <label class="col-xs-0 col-md-4 control-label">Stage to Reset to <span style="color: red"> *</span>
+                                                                                <label class="col-xs-0 col-md-4 control-label">Stage to Reset To <span style="color: red"> *</span>
                                                                                     <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
                                                                                        title='<iais:message key="INSPE_ACK003"/>'
                                                                                        style="z-index: 10"

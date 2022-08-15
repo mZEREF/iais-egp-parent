@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
+import ecq.commons.helper.DateHelper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -205,7 +206,7 @@ public class ChangeTcuDateDelegator {
                 errMap.put(keyNewTcuDateDates + i, "GENERAL_ERR0006");
             } else {
                 Date newDate = IaisEGPHelper.parseToDate(newTcuDate, AppConsts.DEFAULT_DATE_FORMAT);
-                if (!Objects.isNull(newDate) && IaisEGPHelper.getCompareDate(newDate, new Date()) > 0) {
+                if (!Objects.isNull(newDate) && IaisEGPHelper.getCompareDate(newDate, new Date()) > 1) {
                     errMap.put(keyNewTcuDateDates + i, MessageUtil.replaceMessage("GENERAL_ERR0026", "New TCU Date", "field"));
                 }
             }

@@ -1050,9 +1050,14 @@ public class ApplicationServiceImpl implements ApplicationService {
         //get the user for this applicationNo
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         String taskType = TaskConsts.TASK_TYPE_INSPECTION;
-        String taskUrl = RoleConsts.USER_ROLE_INSPECTIOR.equals(roleId)?TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE:TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1;
+        String taskUrl = TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE;
         String appStatus= ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING;
         String insStatus= InspectionConstants.INSPECTION_STATUS_PENDING_APPOINTMENT_INSPECTION_DATE;
+        if (!RoleConsts.USER_ROLE_INSPECTIOR.equals(roleId)) {
+            taskUrl = TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1;
+            appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW;
+            insStatus = InspectionConstants.INSPECTION_STATUS_PENDING_AO1_RESULT;
+        }
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
         BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
@@ -1106,11 +1111,13 @@ public class ApplicationServiceImpl implements ApplicationService {
         broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
 
         //set AppInspectionStatusDto, because old AppInspectionStatusDto delete in rollback cord
-        AppInspectionStatusDto appInspectionStatusDto = new AppInspectionStatusDto();
-        appInspectionStatusDto.setAppPremCorreId(taskDto.getRefNo());
-        appInspectionStatusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        appInspectionStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_APPOINTMENT_INSPECTION_DATE);
-        broadcastApplicationDto.setAppInspectionStatusDto(appInspectionStatusDto);
+        if (RoleConsts.USER_ROLE_INSPECTIOR.equals(roleId)) {
+            AppInspectionStatusDto appInspectionStatusDto = new AppInspectionStatusDto();
+            appInspectionStatusDto.setAppPremCorreId(taskDto.getRefNo());
+            appInspectionStatusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            appInspectionStatusDto.setStatus(insStatus);
+            broadcastApplicationDto.setAppInspectionStatusDto(appInspectionStatusDto);
+        }
 
         //save the broadcast
         broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
