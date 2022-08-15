@@ -381,6 +381,11 @@ $(function () {
 
         $("#sampleWorkDetailDiv" + meta.separator +  nextIdx).hide();
 
+        //hide all sections which need to show if checkbox procurement code is chose
+        $("#transferringFacilityDiv" + meta.separator +  nextIdx).hide();
+        $("#exportingFacilityDiv" + meta.separator +  nextIdx).hide();
+        $("#sourceFacilityDiv" + meta.separator +  nextIdx).hide();
+
         // set schedule-bat on change event
         newSectionDivJqObj.find("select[data-cascade-dropdown=schedule-bat]").each(function () {
             var id = $(this).attr("id");

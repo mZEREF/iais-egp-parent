@@ -8,10 +8,12 @@
 <%@attribute name="detail" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.bat.ProcModeDetails" %>
 <%@attribute name="status" required="true" type="javax.servlet.jsp.jstl.core.LoopTagStatus" %>
 
+<%@attribute name="facProfile" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileInfo" %>
 <%@attribute name="addressTypeOps" required="true" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>" %>
 <%@attribute name="nationalityOps" required="true" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>" %>
 
 <%@attribute name="lspJudge" required="false" type="java.lang.Boolean" %>
+<%@attribute name="spFifthJudge" type="java.lang.Boolean" %>
 
 <iais-bsb:global-constants classFullName="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" attributeKey="masterCodeConstants"/>
 <%--@elvariable id="masterCodeConstants" type="java.util.Map<java.lang.String, java.lang.Object>"--%>
@@ -28,10 +30,16 @@
             <input type="radio" class="form-check-input" name="procurementMode--v--${status.index}" id="procurementModeImport--v--${status.index}" data-custom-ind="batProcurementModeImport" value="${masterCodeConstants.PROCUREMENT_MODE_IMPORT}" <c:if test="${detail.procurementMode eq masterCodeConstants.PROCUREMENT_MODE_IMPORT}">checked="checked"</c:if> />
             <label for="procurementModeImport--v--${status.index}" class="form-check-label"><span class="check-circle"></span>Import</label>
         </div>
-        <c:if test="${lspJudge}">
+        <c:if test="${lspJudge || spFifthJudge}">
             <div class="form-check col-xs-4" style="margin-top: 8px; padding-left:0; padding-right:0">
-                <input type="radio" class="form-check-input" name="procurementMode--v--${status.index}" id="procurementModeAlreadyInProcession--v--${status.index}" data-custom-ind="procurementModeAlreadyInProcession" value="${masterCodeConstants.PROCUREMENT_MODE_ALREADY_IN_POSSESSION}" <c:if test="${detail.procurementMode eq masterCodeConstants.PROCUREMENT_MODE_ALREADY_IN_POSSESSION}">checked="checked"</c:if> />
-                <label for="procurementModeAlreadyInProcession--v--${status.index}" class="form-check-label"><span class="check-circle"></span>Already in possession</label>
+                <input type="radio" class="form-check-input" name="procurementMode--v--${status.index}" id="procurementModePossession--v--${status.index}" data-custom-ind="batProcurementModePossession" value="${masterCodeConstants.PROCUREMENT_MODE_ALREADY_IN_POSSESSION}" <c:if test="${detail.procurementMode eq masterCodeConstants.PROCUREMENT_MODE_ALREADY_IN_POSSESSION}">checked="checked"</c:if> />
+                <label for="procurementModePossession--v--${status.index}" class="form-check-label"><span class="check-circle"></span>Already in possession</label>
+            </div>
+        </c:if>
+        <c:if test="${spFifthJudge}">
+            <div class="form-check col-xs-4" style="margin-top: 8px; padding-left:0; padding-right:0">
+                <input type="radio" class="form-check-input" name="procurementMode--v--${status.index}" id="procurementModePurchaseFromLocalSupplier--v--${status.index}" data-custom-ind="procurementModePurchaseFromLocalSupplier" value="${masterCodeConstants.PROCUREMENT_MODE_PURCHASE_FROM_LOCAL_SUPPLIER}" <c:if test="${detail.procurementMode eq masterCodeConstants.PROCUREMENT_MODE_PURCHASE_FROM_LOCAL_SUPPLIER}">checked="checked"</c:if> />
+                <label for="procurementModePurchaseFromLocalSupplier--v--${status.index}" class="form-check-label"><span class="check-circle"></span>Purchase from local supplier</label>
             </div>
         </c:if>
         <span data-err-ind="procurementMode--v--${status.index}" class="error-msg"></span>
@@ -360,6 +368,77 @@
         <div class="col-sm-6">
             <textarea maxLength="1000" class="col-xs-12" name="remarksE--v--${status.index}" id="remarksE--v--${status.index}" rows="3"><c:out value="${detail.remarksE}"/></textarea>
             <span data-err-ind="remarksE--v--${status.index}" class="error-msg"></span>
+        </div>
+    </div>
+</div>
+<div id="sourceFacilityDiv--v--${status.index}" <c:if test="${detail.procurementMode ne masterCodeConstants.PROCUREMENT_MODE_ALREADY_IN_POSSESSION}">style="display: none;"</c:if>>
+    <p class="assessment-title" style="font-size:15px; padding-bottom: 10px; font-weight: bold">Details of Source Facility:</p>
+    <div class="form-group ">
+        <div class="col-sm-5 control-label">
+            <label for="facNameS--v--${status.index}">Facility Name</label>
+            <span class="mandatory otherQualificationSpan">*</span>
+        </div>
+        <div class="col-sm-6">
+            <label id="facNameS--v--${status.index}">${facProfile.facName}</label>
+        </div>
+    </div>
+    <div class="form-group ">
+        <div class="col-sm-5 control-label">
+            <label for="postalCodeS--v--${status.index}">Postal Code</label>
+            <span class="mandatory otherQualificationSpan">*</span>
+        </div>
+        <div class="col-sm-6">
+            <label id="postalCodeS--v--${status.index}">${facProfile.postalCode}</label>
+        </div>
+    </div>
+    <div class="form-group ">
+        <div class="col-sm-5 control-label">
+            <label for="addressTypeS--v--${status.index}">Address Type</label>
+            <span class="mandatory otherQualificationSpan">*</span>
+        </div>
+        <div class="col-sm-6">
+            <label id="addressTypeS--v--${status.index}"><iais:code code="${facProfile.addressType}"/></label>
+        </div>
+    </div>
+    <div class="form-group ">
+        <div class="col-sm-5 control-label">
+            <label for="blockNoS--v--${status.index}">Block / House No.</label>
+        </div>
+        <div class="col-sm-6">
+            <label id="blockNoS--v--${status.index}">${facProfile.block}</label>
+        </div>
+    </div>
+    <div class="form-group ">
+        <div class="col-sm-5 control-label">
+            <label for="floorNoS--v--${status.index}">Floor</label>
+        </div>
+        <div class="col-sm-6">
+            <label id="floorNoS--v--${status.index}">${facProfile.floor}</label>
+        </div>
+    </div>
+    <div class="form-group ">
+        <div class="col-sm-5 control-label">
+            <label for="unitNoS--v--${status.index}">Unit No.</label>
+        </div>
+        <div class="col-sm-6">
+            <label id="unitNoS--v--${status.index}">${facProfile.unitNo}</label>
+        </div>
+    </div>
+    <div class="form-group ">
+        <div class="col-sm-5 control-label">
+            <label for="streetNameS--v--${status.index}">Street Name</label>
+            <span class="mandatory otherQualificationSpan">*</span>
+        </div>
+        <div class="col-sm-6">
+            <label id="streetNameS--v--${status.index}">${facProfile.streetName}</label>
+        </div>
+    </div>
+    <div class="form-group ">
+        <div class="col-sm-5 control-label">
+            <label for="buildingNameS--v--${status.index}">Building Name</label>
+        </div>
+        <div class="col-sm-6">
+            <label id="buildingNameS--v--${status.index}">${facProfile.building}</label>
         </div>
     </div>
 </div>
