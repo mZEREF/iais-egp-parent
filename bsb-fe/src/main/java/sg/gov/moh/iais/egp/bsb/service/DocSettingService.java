@@ -57,11 +57,11 @@ public class DocSettingService {
         } else if (MasterCodeConstants.FAC_CLASSIFICATION_UF.equals(classification)) {
             docSettings = new ArrayList<>(9);
             docSettings.add(new DocSetting(DocConstants.DOC_TYPE_FACILITY_ADMIN_OVERSIGHT_PLAN, "Facility Administrative Oversight Plan", true));
-            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_FACILITY_LAYOUT_ACMV_SCHEMATICS, "Facility Layout and ACMV Schematics", true));
+            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_FACILITY_LAYOUT_ACMV_SCHEMATICS, "Facility Layout", true));
             docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COORDINATOR_CERTIFICATES, "Biosafety Coordinator's Certificates", true));
             docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COMMITTEE, "Approval/Endorsement: Biosafety Committee", true));
             docSettings.add(new DocSetting(DocConstants.DOC_TYPE_APPLICATION_LETTER, "Application Letter", false));
-            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_RISK_ASSESS_MGMT_WORK_ACTIVITIES, "Risk Assessment and Management: Work Activities", true));
+            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_RISK_ASSESS_MGMT_WORK_ACTIVITIES, "Risk Assessment and Management", true));
             docSettings.add(new DocSetting(DocConstants.DOC_TYPE_FACILITY_BIO_SAFETY_AND_BIO_SECURITY_MANUAL, "Facility Biosafety and Biosecurity Manual", true));
             docSettings.add(new DocSetting(DocConstants.DOC_TYPE_EMERGENCY_RESPONSE_PLAN, "Emergency Response Plan", true));
             docSettings.add(new DocSetting(DocConstants.DOC_TYPE_INVENTORY_TEMPLATE, "Inventory Template", false));
@@ -72,7 +72,7 @@ public class DocSettingService {
             docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COORDINATOR_CERTIFICATES, "Biosafety Coordinator's Certificates", true));
             docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COMMITTEE, "Approval/Endorsement: Biosafety Committee", true));
             docSettings.add(new DocSetting(DocConstants.DOC_TYPE_APPLICATION_LETTER, "Application Letter", false));
-            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_RISK_ASSESS_MGMT_WORK_ACTIVITIES, "Risk Assessment and Management: Work Activities", true));
+            docSettings.add(new DocSetting(DocConstants.DOC_TYPE_RISK_ASSESS_MGMT_WORK_ACTIVITIES, "Risk Assessment and Management", true));
             docSettings.add(new DocSetting(DocConstants.DOC_TYPE_FACILITY_BIO_SAFETY_AND_BIO_SECURITY_MANUAL, "Facility Biosafety and Biosecurity Manual", true));
             docSettings.add(new DocSetting(DocConstants.DOC_TYPE_EMERGENCY_RESPONSE_PLAN, "Emergency Response Plan", true));
         } else if (MasterCodeConstants.FAC_CLASSIFICATION_RF.equals(classification)) {
