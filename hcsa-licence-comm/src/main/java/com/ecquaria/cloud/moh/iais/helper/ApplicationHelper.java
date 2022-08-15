@@ -2272,11 +2272,15 @@ public final class ApplicationHelper {
     }
 
     public static boolean initSupplementoryForm(AppSvcRelatedInfoDto currSvcInfoDto) {
+        return initSupplementoryForm(currSvcInfoDto, false);
+    }
+
+    public static boolean initSupplementoryForm(AppSvcRelatedInfoDto currSvcInfoDto, boolean init) {
         AppSvcSuplmFormDto appSvcSuplmFormDto = currSvcInfoDto.getAppSvcSuplmFormDto();
         if (appSvcSuplmFormDto == null) {
             appSvcSuplmFormDto = new AppSvcSuplmFormDto();
         }
-        if (appSvcSuplmFormDto.isInit()) {
+        if (!init && appSvcSuplmFormDto.isInit()) {
             return false;
         }
         ConfigCommService configCommService = getConfigCommService();
