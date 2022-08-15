@@ -38,7 +38,7 @@
         </c:if>
         <c:if test="${spFifthJudge}">
             <div class="form-check col-xs-4" style="margin-top: 8px; padding-left:0; padding-right:0">
-                <input type="radio" class="form-check-input" name="procurementMode--v--${status.index}" id="procurementModePurchaseFromLocalSupplier--v--${status.index}" data-custom-ind="procurementModePurchaseFromLocalSupplier" value="${masterCodeConstants.PROCUREMENT_MODE_PURCHASE_FROM_LOCAL_SUPPLIER}" <c:if test="${detail.procurementMode eq masterCodeConstants.PROCUREMENT_MODE_PURCHASE_FROM_LOCAL_SUPPLIER}">checked="checked"</c:if> />
+                <input type="radio" class="form-check-input" name="procurementMode--v--${status.index}" id="procurementModePurchaseFromLocalSupplier--v--${status.index}" data-custom-ind="batProcurementModePurchaseFromLocalSupplier" value="${masterCodeConstants.PROCUREMENT_MODE_PURCHASE_FROM_LOCAL_SUPPLIER}" <c:if test="${detail.procurementMode eq masterCodeConstants.PROCUREMENT_MODE_PURCHASE_FROM_LOCAL_SUPPLIER}">checked="checked"</c:if> />
                 <label for="procurementModePurchaseFromLocalSupplier--v--${status.index}" class="form-check-label"><span class="check-circle"></span>Purchase from local supplier</label>
             </div>
         </c:if>
