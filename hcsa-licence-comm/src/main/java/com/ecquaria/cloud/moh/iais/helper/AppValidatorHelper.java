@@ -2942,6 +2942,24 @@ public final class AppValidatorHelper {
                                 //GENERAL_ERR0002 - Only numbers are allowed.
                                 errorMap.put(errorKey, "GENERAL_ERR0002");
                             }
+                        } else if (HcsaConsts.SUPFORM_DATA_TYPE_INT_NOT_NEGATIVE.equals(dataType)) {
+                            if (!StringUtil.isNumber(inputValue)) {
+                                errorMap.put(errorKey, "GENERAL_ERR0002");
+                            } else {
+                                int i = Integer.parseInt(inputValue);
+                                if (i < 0) {
+                                    errorMap.put(errorKey, "GENERAL_ERR0074");
+                                }
+                            }
+                        } else if (HcsaConsts.SUPFORM_DATA_TYPE_INT_POSITIVE.equals(dataType)) {
+                            if (!StringUtil.isNumber(inputValue)) {
+                                errorMap.put(errorKey, "GENERAL_ERR0002");
+                            } else {
+                                int i = Integer.parseInt(inputValue);
+                                if (i <= 0) {
+                                    errorMap.put(errorKey, "GENERAL_ERR0075");
+                                }
+                            }
                         } else if (HcsaConsts.SUPFORM_DATA_TYPE_DOUBLE.equals(dataType)) {
                             if (!StringUtil.isNumber(inputValue)) {
                                 errorMap.put(errorKey, "GENERAL_ERR0002");
