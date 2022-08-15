@@ -6,7 +6,7 @@
                     <iais:value width="6" cssClass="col-md-6 text-right editDiv">
                         <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
                         <p class="print" style="font-size: 16px;">
-                            <a onclick="printData()" href="javascript:void(0);"> <em class="fa fa-print"></em>Print</a>
+                            <label class="fa fa-print" style="color: #147aab;" onclick="printData()"></label> <a onclick="printData()" href="javascript:void(0);">Print</a>
                         </p>
                     </iais:value>
                 </iais:row>--%>
