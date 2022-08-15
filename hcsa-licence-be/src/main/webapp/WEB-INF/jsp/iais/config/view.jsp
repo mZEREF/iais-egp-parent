@@ -1,7 +1,10 @@
-
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
 <%
  request.setAttribute("isView","true");
-  String action = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+  String action  = (String)ParamUtil.getRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE);
+  if(StringUtil.isEmpty(action)){
+    action = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+  }
   String title = "Add HCSA Service";
   if("edit".equals(action)){
     request.setAttribute("isEidtAndView","true");

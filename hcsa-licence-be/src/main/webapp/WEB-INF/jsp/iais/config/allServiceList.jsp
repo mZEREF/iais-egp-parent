@@ -29,11 +29,11 @@
     </div>
     <div>
 <br>
-      <iais:success>
-        <c:if test="${deleteSuccess != null}">
-          ${deleteSuccess}
-        </c:if>
-      </iais:success>
+      <c:if test="${successMSG != null}">
+        <iais:success>
+          ${successMSG}
+        </iais:success>
+      </c:if>
     <div  class="col-lg-12 col-xs-10">
       <table aria-describedby="" border="1px">
         <tr>

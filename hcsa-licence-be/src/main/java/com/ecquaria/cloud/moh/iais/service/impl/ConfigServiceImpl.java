@@ -154,6 +154,18 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     @Override
+    public List<HcsaServiceDto> getServicesBySvcCode(String svcCode) {
+        log.info(StringUtil.changeForLog("The getServicesBySvcCode start ..."));
+        log.info(StringUtil.changeForLog("The getServicesBySvcCode svcCode is -->:"+svcCode));
+        List<HcsaServiceDto> hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
+        if(StringUtil.isNotEmpty(svcCode)){
+            hcsaServiceDtos = hcsaConfigClient.getServiceVersions(svcCode).getEntity();
+        }
+        log.info(StringUtil.changeForLog("The getServicesBySvcCode end ..."));
+        return hcsaServiceDtos;
+    }
+
+    @Override
     public HcsaServiceConfigDto getHcsaServiceConfigDtoByServiceId(String serviceId) {
         log.info(StringUtil.changeForLog("The getHcsaServiceConfigDtoByServiceId start ..."));
         log.info(StringUtil.changeForLog("The getHcsaServiceConfigDtoByServiceId serviceId is -->:"+serviceId));

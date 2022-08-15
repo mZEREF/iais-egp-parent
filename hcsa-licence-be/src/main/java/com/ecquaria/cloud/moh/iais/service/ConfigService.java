@@ -22,6 +22,8 @@ public interface ConfigService {
 
     List<HcsaServiceDto> getActiveServicesBySvcType(String svcType);
 
+    List<HcsaServiceDto> getServicesBySvcCode(String svcCode);
+
     HcsaServiceConfigDto getHcsaServiceConfigDtoByServiceId(String serviceId);
 
     void viewPageInfo(HttpServletRequest request);
@@ -61,4 +63,6 @@ public interface ConfigService {
     Map<String,Boolean> isExistHcsaService(HcsaServiceDto hcsaServiceDto);
 
     void saveHcsaServiceConfigDto(HcsaServiceConfigDto hcsaServiceConfigDto);
+
+
 }

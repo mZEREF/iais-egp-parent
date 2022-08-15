@@ -1154,7 +1154,7 @@
           </c:if>
 
           <c:if test="${isEidtAndView}">
-            <button class="btn btn-primary"  onclick="submit('edit',${hcsaServiceConfigDto.hcsaServiceDto.id})">Update</button>
+            <button class="btn btn-primary"  onclick="submitPage('edit','<iais:mask name="crud_action_value"  value="${hcsaServiceConfigDto.hcsaServiceDto.id}"/>')">Update</button>
           </c:if>
 
           <c:if test="${isEdit}">
@@ -1162,9 +1162,29 @@
           </c:if>
 
         </iais:action>
-        <div class="bg-title" style="text-align: center">
+          <div class="col-xs-12 col-md-9">
+            <div class="form-group" style="display: none" id="versionSelect">
+              <label class="col-xs-12 col-md-7 control-label"> </label>
+              <div class=" col-xs-7 col-sm-4 col-md-4">
+                <select name="versionSelect" id="version">
+                  <option value="">Select one</option>
+                  <c:forEach items="${hcsaServiceDtosVersion}" var="hcsaServiceDtosVer">
+                    <option  value="<iais:mask name="crud_action_additional"  value="${hcsaServiceDtosVer.id}"/>">${hcsaServiceDtosVer.version}</option>
+                  </c:forEach>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-12 col-xs-12" style="margin-bottom: 200px;">
+            <div class="bg-title" style="text-align: center">
+              <input style="display: none" value="${hcsaServiceConfigDto.hcsaServiceDto.version}" name="version" type="text">
+              <p style="text-align: center">Version ${hcsaServiceConfigDto.hcsaServiceDto.version}</p>
+            </div>
+          </div>
+
+       <%-- <div class="bg-title" style="text-align: center">
           <p style="text-align: center">Version 1.00</p>
-        </div>
+        </div>--%>
       </div>
     </div>
     <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
@@ -1186,7 +1206,7 @@
     });
     function cancel() {
 
-        SOP.Crud.cfxSubmit("mainForm","back","back","");
+        SOP.Crud.cfxSubmit("mainForm","back",'<iais:mask name="crud_action_value"  value="${hcsaServiceConfigDto.hcsaServiceDto.id}"/>',"");
     }
 
     function kpi() {
@@ -1206,6 +1226,17 @@
         $('#cancel').modal('hide');
     }
 
+    $('#versionSelect').change(function () {
+        if($('#version').val()==''){
+        }else {
+            SOP.Crud.cfxSubmit("mainForm","version",'<iais:mask name="crud_action_value"  value="${hcsaServiceConfigDto.hcsaServiceDto.id}"/>',$('#version').val());
+        }
+
+    });
+
+    function saveAsNewVersion() {
+        $('#versionSelect').attr("style","display: block");
+    }
     function  checklists(){
         location.href='https://${pageContext.request.serverName}/${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohChecklistConfiguration",request)%>';
     }
@@ -1221,12 +1252,10 @@
 
     function save() {
         showWaiting();
-        submit("save");
+        submitPage("save",'<iais:mask name="crud_action_value"  value="${hcsaServiceConfigDto.hcsaServiceDto.id}"/>');
     }
-    function submit(action,value) {
-        $("[name='crud_action_type']").val(action);
-        $("[name='crud_action_value']").val(value);
-        $("#mainForm").submit();
+    function submitPage(action,value) {
+        SOP.Crud.cfxSubmit("mainForm",action,value,"");
     }
     $(document).ready(function () {
         serviceTypeChange();

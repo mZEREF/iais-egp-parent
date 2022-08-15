@@ -59,7 +59,9 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
             result.putAll(validationResultHcsaServiceDto.retrieveAll());
         }
         //validate the svcCode and svcName repetition
-        validateSvcCodeAndName(configService,hcsaServiceDto,result);
+        if(hcsaServiceConfigDto.isCreate()){
+            validateSvcCodeAndName(configService,hcsaServiceDto,result);
+        }
 
         //validate the hcsaSvcPersonnelDto
         validateHcsaSvcPersonnelDto(hcsaServiceConfigDto,result,serviceType);
