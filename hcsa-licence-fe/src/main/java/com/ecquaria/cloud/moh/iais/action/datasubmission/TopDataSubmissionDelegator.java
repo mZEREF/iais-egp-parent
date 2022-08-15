@@ -406,7 +406,7 @@ public class TopDataSubmissionDelegator {
             terminationOfPregnancyDto=new TerminationOfPregnancyDto();
         }
         PatientInformationDto patientInformationDto= terminationOfPregnancyDto.getPatientInformationDto();
-        if(!StringUtil.isEmpty(patientInformationDto.getBirthData())){
+        if(patientInformationDto!=null&&!StringUtil.isEmpty(patientInformationDto.getBirthData())){
             ParamUtil.setSessionAttr(bpc.request, "birthDate",topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getPatientInformationDto().getBirthData());
         }
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_TOP);
@@ -515,7 +515,11 @@ public class TopDataSubmissionDelegator {
         if(terminationOfPregnancyDto==null){
             terminationOfPregnancyDto=new TerminationOfPregnancyDto();
         }
-
+        PatientInformationDto patientInformationDto= terminationOfPregnancyDto.getPatientInformationDto();
+        if(StringUtil.isEmpty(patientInformationDto)){
+            patientInformationDto=new PatientInformationDto();
+        }
+        terminationOfPregnancyDto.setPatientInformationDto(patientInformationDto);
         topSuperDataSubmissionDto.setTerminationOfPregnancyDto(terminationOfPregnancyDto);
         DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, request);
     }
