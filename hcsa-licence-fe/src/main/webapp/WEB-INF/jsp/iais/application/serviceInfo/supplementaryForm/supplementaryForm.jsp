@@ -2,8 +2,13 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 
 <style>
-    label {
+    .normal-label label {
         font-weight: normal;
+    }
+
+    .special-error .error-msg:not(:empty) {
+        margin-top: 25px;
+        display: inline-block;
     }
 </style>
 
@@ -11,7 +16,7 @@
 <input type="hidden" id="isEditHiddenVal" class="person-content-edit" name="isEdit"
        value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
 
-<div class="row form-horizontal">
+<div class="row form-horizontal normal-label">
     <c:if test="${AppSubmissionDto.needEditController }">
         <c:if test="${(isRfc || isRenew) && !isRfi}">
             <iais:row>

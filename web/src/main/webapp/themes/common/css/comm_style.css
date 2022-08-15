@@ -187,3 +187,12 @@ input.allDay {
     margin-bottom: 5px;
     margin-top: 5px;
 }
+
+.normal-label label {
+    font-weight: normal;
+}
+
+.special-error .error-msg:not(:empty) {
+    margin-top: 25px;
+    display: inline-block;
+}

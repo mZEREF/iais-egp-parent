@@ -91,9 +91,11 @@
             <label class="form-check-label" for="${itemConfigDto.id}${item.seqNum}">
                 <span class="check-square"></span><c:out value="${itemConfigDto.displayInfo}"/>
             </label>
-            <div>
+            <c:if test="${item.lastChild}">
+            <div class="special-error">
                 <span class="error-msg " name="iaisErrorMsg" id="error_${itemConfigDto.id}${item.seqNum}"></span>
             </div>
+            </c:if>
         </c:when>
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_TEXT}">
             <iais:field width="5" cssClass="col-md-5 item-label" mandatory="${itemConfigDto.mandatoryType == 1}"
