@@ -119,7 +119,7 @@ public class TerminationValidator implements CustomizeValidator {
                 ParamUtil.setRequestAttr(request, "showValidatePT", AppConsts.YES);
             }
         }
-        if("true".equals(terminationDto.getTopDoctorInformations())) {
+        if(doctorInformationDto!=null&&"true".equals(terminationDto.getTopDoctorInformations())) {
             if (StringUtil.isEmpty(doctorInformationDto.getName())) {
                 errorMap.put("dName", "GENERAL_ERR0006");
             }else if(StringUtil.isNotEmpty(doctorInformationDto.getName()) && doctorInformationDto.getName().length()>66){
