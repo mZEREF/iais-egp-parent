@@ -19,17 +19,18 @@
                     <input type="hidden" name="curAppId" value="${MaskUtil.maskValue('uploadInternalDoc', appId)}" />
                     <div class="form-horizontal">
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label">Type <span style="color: red"> *</span></label>
+                            <label class="col-xs-12 col-md-4 control-label">Document Type <span style="color: red"> *</span></label>
                             <div class="col-xs-8 col-sm-8 col-md-8">
-                                <p><input type="text" maxlength="50" id="internalFileType" name="internalFileType"></p>
+                                <iais:select name="internalFileType" cssClass="fileTypeDrop" id="internalFileType" codeCategory="CATE_ID_DOC_TYPE_MOH"
+                                             firstOption="Please Select" value=""/>
                                 <small class="error" ><span id ="internalFileTypeErrorSpan" style="color: #D22727; font-size: 1.6rem"></span></small>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label">Upload your files <span style="color: red"> *</span></label>
+                            <label class="col-xs-12 col-md-4 control-label">File to Upload <span style="color: red"> *</span></label>
                             <div class="col-xs-8 col-sm-8 col-md-8">
                                 <div style="padding:0" class="col-md-4">
-                                    <p><input id = "selectedFileShowText" name = "selectedFileShowText"  type="text"  value="Select File" readonly></p>
+                                    <p><input id = "selectedFileShowText" name = "selectedFileShowText"  type="text"  value="Browse" readonly></p>
                                 </div>
                                 <div style="padding: 0 0 0 15px" class="col-md-8">
                                     <input id = "selectedFileShowTextName" name = "selectedFileShowTextName" type="text" readonly>

@@ -9,8 +9,8 @@ $(function () {
     $("#selectedFileInput").change(fileChange);
 });
 function closeUploadDoc() {
-    $('#internalFileSelectErrorSpan').html('')
-    $('#internalFileTypeErrorSpan').html('')
+    $('#selectedFileInputErrorSpan').html('')
+    $('#fileTypeErrorSpan').html('')
     $("#uploadDoc .current").text("Please Select");
     $("#fileType option:first").prop("selected", 'selected');
     var modal = $('#uploadDoc');
@@ -20,16 +20,77 @@ function closeUploadDoc() {
 }
 
 function uploadDoc() {
+    $('#uploadFileBtn').attr("disabled", true);
     showWaiting();
     // var input1 = document.getElementById("selectedFileInput");
     // addFileTable(input1);
     // addFileDisplayInfo(input1);
-    var fileType = $("#fileType option:selected").val();
-    $("input[name='docType']").val(fileType);
-    $("input[name='action_value']").val("uploadDoc");
-    // $("#cancelDoc").click();
-    $("#mainForm").submit();
+    if (validateUploadInternalDoc()) {
+        var fileType = $("#fileType option:selected").val();
+        $("input[name='docType']").val(fileType);
+        $("input[name='action_value']").val("uploadDoc");
+        // $("#cancelDoc").click();
+        $("#mainForm").submit();
+    }
     dismissWaiting();
+}
+function validateUploadInternalDoc() {
+    var internalFileSelectedFile = $("#selectedFileInput");
+    var filename = getFileName(internalFileSelectedFile.val());
+    var file = internalFileSelectedFile.get(0).files[0];
+    if(filename === undefined || filename === "" || file === undefined || file == null) {
+        $('#selectedFileInputErrorSpan').html('This is mandatory.');
+        $('#uploadFileBtn').attr("disabled", false);
+        return false;
+    }
+
+    var maxSize = $("#internalFileMaxSize").val();
+    maxSize = (maxSize == null || maxSize === "") ? 4 : parseInt(maxSize);
+    var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
+    fileSize = parseInt(fileSize);
+    if(fileSize > maxSize) {
+        $('#selectedFileInputErrorSpan').html($("#fileMaxMBMessage").val());
+        if(fileSize >= 100) {
+            deleteSelectedInternalDoc();
+        }
+        $('#uploadFileBtn').attr("disabled", false);
+        return false;
+    }
+
+    if(filename.length > 100){
+        $('#selectedFileInputErrorSpan').html($("#fileMaxLengthMessage").val());
+        $('#uploadFileBtn').attr("disabled", false);
+        return false;
+    }
+
+    var fileType = $("#internalFileAllowTypes").val();
+    if(fileType == null || fileType === ""){
+        fileType = "PDF,JPG,PNG,DOCX,DOC";
+    }
+    var fileParts = filename.split(".");
+    var fileSuffix = fileParts[fileParts.length-1];
+    if(fileType.indexOf(fileSuffix.toUpperCase()) === -1) {
+        $('#selectedFileInputErrorSpan').html('Only files with the following extensions are allowed:'+ fileType +'. Please re-upload the file.');
+        $('#uploadFileBtn').attr("disabled", false);
+        return false;
+    }
+
+
+    var docTypeLength = $('#internalFileType').val().trim().length;
+    if (docTypeLength === 0) {
+        $('#fileTypeErrorSpan').html('This is mandatory.');
+        $('#uploadFileBtn').attr("disabled", false);
+        return false;
+    }
+
+    var docTypeMaxLength = 50;
+    if(docTypeLength > docTypeMaxLength){
+        $('#fileTypeErrorSpan').html('Exceeding the maximum length by ' + docTypeMaxLength );
+        $('#uploadFileBtn').attr("disabled", false);
+        return false;
+    }
+
+    return true;
 }
 
 function deleteSelectedDoc() {
