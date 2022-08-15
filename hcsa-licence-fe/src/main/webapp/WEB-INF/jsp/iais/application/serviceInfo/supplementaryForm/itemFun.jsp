@@ -4,9 +4,10 @@
         refreshAddBtn();
         removeBtnEvent();
         addMoreEvent();
-        checkMandatoryEvent();
+        checkItemEvent();
         $('.item-record [data-curr]').each(function () {
             checkItemMandatory($(this));
+            checkItemTotal($(this));
         });
     });
 
@@ -107,6 +108,7 @@
     var addMoreEvent = function () {
         $('.addMoreDiv .addMoreBtn').unbind('click');
         $('.addMoreDiv .addMoreBtn').on('click', function () {
+            clearErrorMsg();
             let $tag = $(this);
             let $target = $tag.closest('.addMoreDiv');
             let group = $target.data('group');
@@ -125,17 +127,21 @@
             removeBtnEvent();
             refreshAddBtn();
             clearFields($('[data-group="' + group + '"][data-seq="' + index + '"]'));
-            checkMandatoryEvent();
+            checkItemEvent();
             $('.item-record [data-curr]').each(function () {
                 checkItemMandatory($(this));
             });
         });
     }
 
-    var checkMandatoryEvent = function () {
-        $('.item-record [data-curr]').unbind('click change');
-        $('.item-record [data-curr]').on('click change', function () {
+    var checkItemEvent = function () {
+        var $target = $('.item-record [data-curr]');
+        $target.unbind('click change blur');
+        $target.on('click change', function () {
             checkItemMandatory($(this));
+        });
+        $target.on('blur', function () {
+            checkItem($(this));
         });
     }
 
@@ -173,7 +179,64 @@
         }
     }
 
-    function getValue(target) {
+    function checkItem($tag) {
+        if (isEmptyNode($tag)) {
+            return;
+        }
+        let targetId = $tag.data('conditionitemid');
+        if (isEmpty(targetId)) {
+            return;
+        }
+        let seq = $tag.data('seq');
+        let $target = $('[data-curr=' + targetId + '][data-seq=' + seq + ']');
+        checkItemTotal($target);
+    }
+
+    function checkItemTotal($tag) {
+        if (isEmptyNode($tag)) {
+            return -1;
+        }
+        let specialcondition = $tag.data('specialcondition');
+        if ('SPECCON01' !== specialcondition) {
+            return -1;
+        }
+        let seq = $tag.data('seq');
+        let curr = $tag.data('curr');
+        let $conNodes = $('[data-conditionitemid="' + curr + '"][data-seq="' + seq + '"]');
+        let total = 0;
+        if (!isEmptyNode($conNodes)) {
+            // calculate total
+            $conNodes.each(function () {
+                let $v = $(this);
+                let conVal = $v.data('specialcondition');
+                let currVal;
+                if ('SPECCON01' === conVal) {
+                    currVal = checkItemTotal($v);
+                } else {
+                    let x = getValue($v);
+                    if (isNaN(x)) {
+                        currVal = 0;
+                    } else {
+                        currVal = Number(x);
+                    }
+                }
+                total += currVal;
+            });
+        }
+        if ($tag.is(':input')) {
+            fillValue($tag, total);
+        } else {
+            var $target = $tag.find('p');
+            if (isEmptyNode($target)) {
+                $target = $tag;
+            }
+            $('[name="' + curr + seq + '"]').val(total);
+            $target.html(total);
+        }
+        return total;
+    }
+
+    /*function getValue(target) {
         var $target = getJqueryNode(target);
         if (isEmptyNode($target)) {
             return null;
@@ -181,9 +244,23 @@
         if ($target.is(":input")) {
             let type = $target[0].type;
             if (type == 'radio') {
+                let name = $target.attr('name');
+                if (!isEmpty(name)) {
+                    let newTag = $('[name="' + name + '"]');
+                    if (newTag.length > 0) {
+                        $target = newTag;
+                    }
+                }
                 return $target.filter(':checked').val();
             } else if (type == 'checkbox') {
                 let chk_value = [];
+                let name = $target.attr('name');
+                if (!isEmpty(name)) {
+                    let newTag = $('[name="' + name + '"]');
+                    if (newTag.length > 0) {
+                        $target = newTag;
+                    }
+                }
                 $target.filter(':checked').each(function () {
                     chk_value.push($(this).val());
                 });
@@ -194,5 +271,5 @@
         } else {
             return null;
         }
-    }
+    }*/
 </script>

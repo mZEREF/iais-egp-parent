@@ -432,6 +432,9 @@ function getJqueryNode(elem) {
             if ($target.length == 0) {
                 $target = $('.' + elem);
             }
+            if ($target.length == 0) {
+                $target = $('[name="' + elem + '"]');
+            }
         }
     }
     if ($target.length == 0) {
@@ -725,9 +728,23 @@ function getValue(target) {
     if ($target.is(":input")) {
         let type = $target[0].type;
         if (type == 'radio') {
+            let name = $target.attr('name');
+            if (!isEmpty(name)) {
+                let newTag = $('[name="' + name + '"]');
+                if (newTag.length > 0) {
+                    $target = newTag;
+                }
+            }
             return $target.filter(':checked').val();
         } else if (type == 'checkbox') {
             let chk_value = [];
+            let name = $target.attr('name');
+            if (!isEmpty(name)) {
+                let newTag = $('[name="' + name + '"]');
+                if (newTag.length > 0) {
+                    $target = newTag;
+                }
+            }
             $target.filter(':checked').each(function () {
                 chk_value.push($(this).val());
             });

@@ -164,25 +164,25 @@ input.allDay {
     margin-top: 5px;
 }
 
-.form-horizontal .form-level-1 {
+.form-horizontal .form-level-1 label {
     padding-left: 30px;
     margin-bottom: 5px;
     margin-top: 5px;
 }
 
-.form-horizontal .form-level-2 {
+.form-horizontal .form-level-2 label {
     padding-left: 60px;
     margin-bottom: 5px;
     margin-top: 5px;
 }
 
-.form-horizontal .form-level-3 {
+.form-horizontal .form-level-3 label {
     padding-left: 90px;
     margin-bottom: 5px;
     margin-top: 5px;
 }
 
-.form-horizontal .form-level-4 {
+.form-horizontal .form-level-4 label {
     padding-left-left: 90px;
     margin-bottom: 5px;
     margin-top: 5px;

@@ -30,6 +30,19 @@
             </div>
         </c:when>
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_LABEL}">
+            <c:if test="${'SPECCON01' == item.specialCondition}">
+                <iais:field width="5" cssClass="col-md-5 item-label" mandatory="${itemConfigDto.mandatoryType == 1}"
+                            value="${itemConfigDto.displayInfo}${itemConfigDto.mandatoryType == 2 ? ' ' : ''}"/>
+                <input type="hidden" name="${itemConfigDto.id}${item.seqNum}" value="" data-base="${itemConfigDto.id}" data-seq="${item.seqNum}"/>
+                <div class="col-sm-7 col-xs-7 col-md-7" data-base="${itemConfigDto.id}" data-mandatory="${itemConfigDto.mandatoryType}"
+                     data-parent="${itemConfigDto.parentItemId}" data-group="${groupId}"
+                     data-conditionitemid="${itemConfigDto.conditionItemId}"
+                     data-specialcondition="${item.specialCondition}"
+                     data-curr="${itemConfigDto.id}" data-seq="${item.seqNum}">
+                    <p></p>
+                </div>
+            </c:if>
+            <c:if test="${'SPECCON01' != item.specialCondition}">
             <div class="col-xs-12">
                 <div class="item-label" data-base="${itemConfigDto.id}" data-mandatory="${itemConfigDto.mandatoryType}"
                      data-parent="${itemConfigDto.parentItemId}" data-group="${groupId}"
@@ -40,6 +53,7 @@
                     <c:if test="${itemConfigDto.mandatoryType == 1}"><span class="mandatory">*</span></c:if>
                 </div>
             </div>
+            </c:if>
         </c:when>
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_RADIO}">
             <iais:field width="5" cssClass="col-md-5 item-label" mandatory="${itemConfigDto.mandatoryType == 1}"
@@ -87,15 +101,18 @@
             <iais:value width="7" cssClass="col-md-7">
                 <c:if test="${item.date}">
                     <input maxlength="${itemConfigDto.maxLength}" type="text" name="${itemConfigDto.id}${item.seqNum}"
-                           data-base="${itemConfigDto.id}" data-parent="${itemConfigDto.parentItemId}" data-seq="${item.seqNum}"
+                           data-base="${itemConfigDto.id}" data-parent="${itemConfigDto.parentItemId}"
+                           data-curr="${itemConfigDto.id}" data-seq="${item.seqNum}"
                            data-conditionitemid="${itemConfigDto.conditionItemId}"
                            data-specialcondition="${item.specialCondition}"
-                           data-group="${groupId}" value="${item.inputValue}" autocomplete="off"
-                           class="date_picker" ${item.startHtml} ${item.endHtml}/>
+                           data-group="${groupId}" value="${item.inputValue}"
+                           autocomplete="off" placeholder="dd/mm/yyyy"
+                           class="date_picker" ${item.endHtml} ${item.startHtml}/>
                 </c:if>
                 <c:if test="${not item.date}">
                     <input maxlength="${itemConfigDto.maxLength}" type="text" name="${itemConfigDto.id}${item.seqNum}"
-                           data-base="${itemConfigDto.id}" data-parent="${itemConfigDto.parentItemId}" data-seq="${item.seqNum}"
+                           data-base="${itemConfigDto.id}" data-parent="${itemConfigDto.parentItemId}"
+                           data-curr="${itemConfigDto.id}" data-seq="${item.seqNum}"
                            data-conditionitemid="${itemConfigDto.conditionItemId}"
                            data-specialcondition="${item.specialCondition}"
                            data-group="${groupId}" value="${item.inputValue}" autocomplete="off"/>
