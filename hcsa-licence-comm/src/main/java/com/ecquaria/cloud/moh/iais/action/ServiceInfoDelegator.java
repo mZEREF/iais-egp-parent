@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfo
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSpecialServiceInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSuplmFormDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
@@ -611,7 +612,7 @@ public class ServiceInfoDelegator {
             bpc.request.setAttribute(SECTION_LEADER_LIST, appSvcSectionLeaderList);
         }
         String action = ParamUtil.getRequestString(bpc.request, "nextStep");
-        Map<String, String> errorMap = null;
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if ("next".equals(action)) {
             if (StringUtil.isEmpty(currSvcInfoDto.getServiceCode())) {
                 HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(currSvcId);
@@ -621,17 +622,18 @@ public class ServiceInfoDelegator {
                     currSvcInfoDto.setServiceName(serviceDto.getSvcName());
                 }
             }
-            errorMap = AppValidatorHelper.validateSectionLeaders(currSvcInfoDto.getAppSvcSectionLeaderList(),
-                    currSvcInfoDto.getServiceCode());
-            if (!isRfi) {
-                List<HcsaSvcPersonnelDto> psnConfig = configCommService.getHcsaSvcPersonnel(currSvcId,
-                        ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER);
-                int psnLength = Optional.ofNullable(currSvcInfoDto.getAppSvcSectionLeaderList())
-                        .map(List::size)
-                        .orElse(0);
-                errorMap = AppValidatorHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER,
-                        errorMap, psnLength, "errorSECLDR", HcsaConsts.SECTION_LEADER);
-            }
+            AppValidatorHelper.doValidateSectionLeader(errorMap, currSvcInfoDto.getAppSvcSectionLeaderList(), currSvcInfoDto.getServiceCode());
+//            errorMap = AppValidatorHelper.validateSectionLeaders(currSvcInfoDto.getAppSvcSectionLeaderList(),
+//                    currSvcInfoDto.getServiceCode());
+//            if (!isRfi) {
+//                List<HcsaSvcPersonnelDto> psnConfig = configCommService.getHcsaSvcPersonnel(currSvcId,
+//                        ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER);
+//                int psnLength = Optional.ofNullable(currSvcInfoDto.getAppSvcSectionLeaderList())
+//                        .map(List::size)
+//                        .orElse(0);
+////                errorMap = AppValidatorHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER,
+////                        errorMap, psnLength, "errorSECLDR", HcsaConsts.SECTION_LEADER);
+//            }
         }
         boolean isValid = checkAction(errorMap, HcsaConsts.STEP_SECTION_LEADER, appSubmissionDto, bpc.request);
         if (isValid && isGetDataFromPage) {
@@ -1245,49 +1247,55 @@ public class ServiceInfoDelegator {
         log.debug(StringUtil.changeForLog("the do prepareServicePersonnel start ...."));
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         String currentSvcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
-        List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList = configCommService.getHcsaSvcPersonnel(currentSvcId,
-                ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL);
-        int mandatory = 0;
-        if (hcsaSvcPersonnelList != null && !hcsaSvcPersonnelList.isEmpty()) {
-            HcsaSvcPersonnelDto hcsaSvcPersonnelDto = hcsaSvcPersonnelList.get(0);
-            ParamUtil.setRequestAttr(bpc.request, "spHcsaSvcPersonnelDto", hcsaSvcPersonnelDto);
-            if (hcsaSvcPersonnelDto != null) {
-                mandatory = hcsaSvcPersonnelDto.getMandatoryCount();
-            }
-        }
+
         //reload
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currentSvcId);
-        /*List<AppSvcPersonnelDto> appSvcPersonnelDtos = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
-        if (appSvcPersonnelDtos != null && !appSvcPersonnelDtos.isEmpty()) {
-            if (appSvcPersonnelDtos.size() > mandatory) {
-                mandatory = appSvcPersonnelDtos.size();
+//        准备数据
+        SvcPersonnelDto svcPersonnelDto = appSvcRelatedInfoDto.getSvcPersonnelDto();
+
+        if (StringUtil.isEmpty(svcPersonnelDto)){
+            svcPersonnelDto = new SvcPersonnelDto();
+        }
+
+        int emCount = 0;
+        int nuCount = 0;
+        int arCount = 0;
+        int speCount = 0;
+        int norCount = 0;
+        if (currentSvcCode != null) {
+//            AR的  准备  三个集合
+//            AppServicesConsts.SERVICE_CODE_ASSISTED_REPRODUCTION.equals(currentSvcCode)
+            if ( AppServicesConsts.SERVICE_CODE_ASSISTED_REPRODUCTION.equals(currentSvcCode)) {
+                emCount = Optional.ofNullable(svcPersonnelDto.getEmbryologistList())
+                        .map(List::size)
+                        .orElse(1);
+                nuCount = Optional.ofNullable(svcPersonnelDto.getNurseList())
+                        .map(List::size)
+                        .orElse(1);
+                arCount = Optional.ofNullable(svcPersonnelDto.getArPractitionerList())
+                        .map(List::size)
+                        .orElse(1);
+                svcPersonnelDto.setEmbryologistMinCount(emCount);
+                svcPersonnelDto.setNurseCount(nuCount);
+                svcPersonnelDto.setArPractitionerCount(arCount);
+            } else if (AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(currentSvcCode)) {
+                speCount = Optional.ofNullable(svcPersonnelDto.getSpecialList())
+                        .map(List::size)
+                        .orElse(1);
+                svcPersonnelDto.setSpecialCount(speCount);
             }
-            boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
-            String appType = appSubmissionDto.getAppType();
-            if (isRfi || (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(
-                    appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType))) {
-                log.debug(StringUtil.changeForLog("cycle cgo dto to retrieve prs info start ..."));
-                if ("Y".equals(ApplicationHelper.getPrsFlag())) {
-                    for (AppSvcPersonnelDto appSvcPersonDto : appSvcPersonnelDtos) {
-                        String profRegNo = appSvcPersonDto.getProfRegNo();
-                        ProfessionalResponseDto professionalResponseDto = appCommService.retrievePrsInfo(profRegNo);
-                        if (professionalResponseDto != null) {
-                            String name = appSvcPersonDto.getName();
-                            if (!StringUtil.isEmpty(name)) {
-                                appSvcPersonDto.setPrsLoading(true);
-                            }
-                        }
-                    }
-                }
-                log.debug(StringUtil.changeForLog("cycle cgo dto to retrieve prs info end ..."));
+           else {
+                norCount = Optional.ofNullable(svcPersonnelDto.getNormalList())
+                        .map(List::size)
+                        .orElse(1);
+                svcPersonnelDto.setNormalCount(norCount);
             }
-            ParamUtil.setRequestAttr(bpc.request, "AppSvcPersonnelDtoList", appSvcPersonnelDtos);
-        }*/
-        ParamUtil.setRequestAttr(bpc.request, "ServicePersonnelMandatory", mandatory);
+        }
+//      fang
+        ParamUtil.setRequestAttr(bpc.request, "svcPersonnelDto",svcPersonnelDto);
         List<SelectOption> personnelTypeSel = ApplicationHelper.genPersonnelTypeSel(currentSvcCode);
         ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.SERVICEPERSONNELTYPE, personnelTypeSel);
-
         List<SelectOption> designation = genPersonnelDesignSel(currentSvcCode);
         ParamUtil.setSessionAttr(bpc.request, "NuclearMedicineImagingDesignation", (Serializable) designation);
         ParamUtil.setRequestAttr(bpc.request, "prsFlag", prsFlag);
@@ -1312,57 +1320,31 @@ public class ServiceInfoDelegator {
                 return;
             }
         }
-       /* String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
+        String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         String currentSvcCod = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
         boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(RfcConst.EDIT_SERVICE,
                 bpc.request);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        List<AppSvcPersonnelDto> appSvcPersonnelDtos = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
+        SvcPersonnelDto svcPersonnelDto = appSvcRelatedInfoDto.getSvcPersonnelDto();
         if (isGetDataFromPage) {
             List<String> personnelTypeList = IaisCommonUtils.genNewArrayList();
             List<SelectOption> personnelTypeSel = ApplicationHelper.genPersonnelTypeSel(currentSvcCod);
             for (SelectOption sp : personnelTypeSel) {
                 personnelTypeList.add(sp.getValue());
             }
-            appSvcPersonnelDtos = AppDataHelper.genAppSvcPersonnelDtoList(bpc.request, personnelTypeList, currentSvcCod);
+//            得到数据
+            svcPersonnelDto = AppDataHelper.genAppSvcPersonnelDtoList(bpc.request,svcPersonnelDto);
             log.debug(StringUtil.changeForLog("cycle cgo dto to retrieve prs info start ..."));
             log.debug("prs server flag {}", prsFlag);
-            if ("Y".equals(prsFlag) && !IaisCommonUtils.isEmpty(appSvcPersonnelDtos)) {
-                for (int i = 0; i < appSvcPersonnelDtos.size(); i++) {
-                    AppSvcPersonnelDto appSvcPersonDto = appSvcPersonnelDtos.get(i);
-                    String profRegNo = appSvcPersonDto.getProfRegNo();
-                    ProfessionalResponseDto professionalResponseDto = appCommService.retrievePrsInfo(profRegNo);
-                    if (professionalResponseDto != null) {
-                        String name = appSvcPersonDto.getName();
-                        if (!StringUtil.isEmpty(name)) {
-                            appSvcPersonDto.setPrsLoading(true);
-                        }
-                    }
-                }
-            }
             log.debug(StringUtil.changeForLog("cycle cgo dto to retrieve prs info end ..."));
-            appSvcRelatedInfoDto.setAppSvcPersonnelDtoList(appSvcPersonnelDtos);
+            appSvcRelatedInfoDto.setSvcPersonnelDto(svcPersonnelDto);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto, appSubmissionDto);
         }
-
-        if (!"back".equals(action)) {
-            AppValidatorHelper.doValidateSvcPersonnel(errorMap, appSvcPersonnelDtos, currentSvcCod);
-            //validate mandatory count
-            int psnLength = 0;
-            if (!IaisCommonUtils.isEmpty(appSvcPersonnelDtos)) {
-                psnLength = appSvcPersonnelDtos.size();
-            }
-            List<HcsaSvcPersonnelDto> psnConfig = configCommService.getHcsaSvcPersonnel(currentSvcId,
-                    ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL);
-            if (!ApplicationHelper.checkIsRfi(bpc.request)) {
-                AppValidatorHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL,
-                        errorMap, psnLength, "psnMandatory", HcsaConsts.SERVICE_PERSONNEL);
-            }
-            errorMap = servicePersonPrsValidate(bpc.request, errorMap, appSvcRelatedInfoDto.getAppSvcPersonnelDtoList());
+        if ("next".equals(action)) {
+            AppValidatorHelper.doValidateSvcPersonnel(errorMap, svcPersonnelDto, currentSvcCod);
             if (appSubmissionDto.isNeedEditController()) {
                 Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
-                //clickEditPages.add(APPLICATION_SVC_PAGE_NAME_SERVICE_PERSONNEL);
                 appSubmissionDto.setClickEditPage(clickEditPages);
             }
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
@@ -1371,7 +1353,7 @@ public class ServiceInfoDelegator {
         if (isValid && isGetDataFromPage) {
             //remove dirty psn doc info
             removeDirtyPsnDoc(ApplicationConsts.DUP_FOR_PERSON_SVCPSN, bpc.request);
-        }*/
+        }
         log.info(StringUtil.changeForLog("the do doServicePersonnel end ...."));
     }
 
