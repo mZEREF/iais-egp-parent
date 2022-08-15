@@ -38,6 +38,10 @@
                                                          value="Service Name"/>
                                     <iais:sortableHeader style="width:5%" needSort="false" field="tcu_date"
                                                          value="Previous TCU Date"/>
+<%--                                    <iais:sortableHeader style="width:10%" needSort="false" field="last_insp_date"--%>
+<%--                                                         value="Last inspection Date"/>--%>
+<%--                                    <iais:sortableHeader style="width:10%" needSort="false" field="expiry_date"--%>
+<%--                                                         value="Licence Expiry Date"/>--%>
                                     <iais:sortableHeader style="width:10%" needSort="false" field="new_tcu_date"
                                                          value="New TCU Date"/>
                                     <iais:sortableHeader style="width:15%" needSort="false" field="remarks"
@@ -56,6 +60,8 @@
                                         <td align="left">
                                             <fmt:formatDate value="${licencePremise.tcuDate}" pattern='dd/MM/yyyy'/>
                                         </td>
+<%--                                        <td align="left"><fmt:formatDate value="${licencePremise.lastInspDate}" pattern='dd/MM/yyyy'/></td>--%>
+<%--                                        <td align="left"><fmt:formatDate value="${licencePremise.expirtDate}" pattern='dd/MM/yyyy'/></td>--%>
                                         <td align="left">
                                             <iais:datePicker id="newTcuDate${status.index}"
                                                              name="newTcuDate${status.index}"

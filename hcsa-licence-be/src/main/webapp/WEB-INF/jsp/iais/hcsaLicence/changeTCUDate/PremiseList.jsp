@@ -147,10 +147,10 @@
                                                          value="TCU Date"/>
                                     <iais:sortableHeader style="width:5%" needSort="true" field="TCU_DATE_REMARKS"
                                                          value="Remarks"/>
-                                    <iais:sortableHeader style="width:5%" needSort="true" field="LAST_INSP_DATE"
-                                                         value="Last inspection Date"/>
-                                    <iais:sortableHeader style="width:5%" needSort="true" field="EXPIRY_DATE"
-                                                         value="Licence Expiry Date"/>
+<%--                                    <iais:sortableHeader style="width:5%" needSort="true" field="LAST_INSP_DATE"--%>
+<%--                                                         value="Last inspection Date"/>--%>
+<%--                                    <iais:sortableHeader style="width:5%" needSort="true" field="EXPIRY_DATE"--%>
+<%--                                                         value="Licence Expiry Date"/>--%>
                                 </tr>
                                 </thead>
                                 <tbody style="text-align: left">
@@ -177,8 +177,8 @@
                                                     <fmt:formatDate value="${licencePremise.tcuDate}" pattern='dd/MM/yyyy'/>
                                                 </td>
                                                 <td align="left"><c:out value="${licencePremise.tcuDateRemarks}"/></td>
-                                                <td align="left"><fmt:formatDate value="${licencePremise.lastInspDate}" pattern='dd/MM/yyyy'/></td>
-                                                <td align="left"><fmt:formatDate value="${licencePremise.expirtDate}" pattern='dd/MM/yyyy'/></td>
+<%--                                                <td align="left"><fmt:formatDate value="${licencePremise.lastInspDate}" pattern='dd/MM/yyyy'/></td>--%>
+<%--                                                <td align="left"><fmt:formatDate value="${licencePremise.expirtDate}" pattern='dd/MM/yyyy'/></td>--%>
                                             </tr>
                                         </c:forEach>
                                     </c:otherwise>
