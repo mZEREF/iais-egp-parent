@@ -53,4 +53,12 @@ public class EventBusClientClientFallBack implements EventBusClient{
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<List<EventCallbackTrackDto>> getPendingCallbackTracking() {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }
