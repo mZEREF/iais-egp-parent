@@ -39,18 +39,16 @@
                         <label class="control-label">Operating Hours</label>
                     </div>
                     <div class="col-md-6">
-                        <div class="col-md-5 col-xs-5  hidden-xs hidden-sm">
-                            <label class="control-label">Weekly <span class="mandatory">*</span></label>
-                        </div>
+                        <label class="control-label">Weekly</label>
                     </div>
                     <div class="col-md-6">
-                        <div class="col-md-4 col-xs-4 input-padding hidden-xs hidden-sm">
+                        <div class="col-md-4 col-xs-4 input-padding hidden-xs">
                             <label class="control-label">Start</label>
                         </div>
-                        <div class="col-md-4 col-xs-4 input-padding hidden-xs hidden-sm">
+                        <div class="col-md-4 col-xs-4 input-padding hidden-xs">
                             <label class="control-label">End</label>
                         </div>
-                        <div class="col-md-3 col-xs-3 hidden-xs hidden-sm">
+                        <div class="col-md-3 col-xs-3 hidden-xs">
                             <label class="control-label">24 Hours</label>
                         </div>
                     </div>
