@@ -11,14 +11,6 @@
 <div class="row">
     <div class="col-xs-12 col-md-12 text-right">
         <c:if test="${AppSubmissionDto.needEditController }">
-            <%--<c:choose>
-                <c:when test="${!('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
-                    <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
-                </c:when>
-                <c:otherwise>
-                    <input id="isEditHiddenVal" type="hidden" name="isEdit" value="1"/>
-                </c:otherwise>
-            </c:choose>--%>
             <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
             <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
                 <div class="app-font-size-16">

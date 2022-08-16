@@ -6,7 +6,8 @@
     </iais:row>
     <div class="amend-preview-info form-horizontal min-row">
         <%@include file="viewOtherInformationTopPerson.jsp"%>
+        <%@include file="viewDoucmentation.jsp"%>
+        <%@include file="viewAbort.jsp"%>
     </div>
-
 </div>
 

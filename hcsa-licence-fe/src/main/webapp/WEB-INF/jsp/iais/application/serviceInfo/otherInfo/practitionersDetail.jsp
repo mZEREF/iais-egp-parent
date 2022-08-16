@@ -1,6 +1,4 @@
-<c:set var="practitioners" value="${practitionersList}"/>
-
-<div class="practitioners person-detail">
+<div class="practitioners person-detail <c:if test="${'0' == provideTop}">hidden</c:if>">
     <iais:row>
         <div class="col-xs-12 col-md-10">
                 <%--                <p class="bold">Name, Professional Regn. No. and Qualification of medical practitioners authorised to perform Abortion<span class="psnHeader">${index+1}</span></p>--%>
@@ -8,13 +6,12 @@
                 &nbsp;<label class="assign-psn-item"><c:if test="${practitionersList.size() > 1}">${index+1}</c:if></label>
             </p>
         </div>
-        <div class="col-xs-12 col-md-2 text-right removeBtn">
+        <div class="col-xs-12 col-md-2 text-right removePractitionersBtn">
             <h4 class="text-danger">
-                <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer text-danger"></em>
+                <em class="fa fa-times-circle del-size-36 text-right removePractitionersBtn cursorPointer"></em>
             </h4>
         </div>
     </iais:row>
-
     <input type="hidden" name="psnType" value="practitioners">
     <iais:row>
         <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Professional Regn. No."/>
@@ -62,7 +59,7 @@
         <iais:value width="6" cssClass="col-md-6">
             <label class="form-check-label" >Is the medical practitioners authorised by MOH to perform Abortion
                 (if No, please upload a copy of the Obstetrics & Gynaecology certificate and
-                <a href="${pageContext.request.contextPath}/co-non-hcsa-template" style="color:deepskyblue;cursor:pointer;text-decoration: underline;">From 2</a>
+                <a href="${pageContext.request.contextPath}/co-non-hcsa-template-top" style="color:deepskyblue;cursor:pointer;text-decoration: underline;">From 2</a>
                 at the Document page)
                 <span class="mandatory">*</span>
             </label>

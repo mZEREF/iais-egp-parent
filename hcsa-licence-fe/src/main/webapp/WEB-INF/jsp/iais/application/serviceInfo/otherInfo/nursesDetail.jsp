@@ -6,9 +6,9 @@
                 <label class="assign-psn-item"><c:if test="${nursesList.size() > 1}">${index+1}</c:if>
             </p>
         </div>
-        <div class="col-xs-12 col-md-2 text-right removeBtn">
+        <div class="col-xs-12 col-md-2 text-right removeNursesBtn">
             <h4 class="text-danger text-right">
-                <em class="fa fa-times-circle del-size-36 text-right removeBtn cursorPointer"></em>
+                <em class="fa fa-times-circle del-size-36 text-right removeNursesBtn cursorPointer"></em>
             </h4>
         </div>
     </iais:row>

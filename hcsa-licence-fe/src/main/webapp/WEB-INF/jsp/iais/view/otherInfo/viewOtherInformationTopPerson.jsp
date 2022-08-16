@@ -1,4 +1,9 @@
 <iais:row>
+    <div class="col-xs-12">
+        <p><strong>Other Information</strong></p>
+    </div>
+</iais:row>
+<iais:row>
     <iais:field width="6" cssClass="col-md-6" value="Please indicate"/>
     <iais:value width="6" cssClass="col-md-6">
         <c:if test="${'1' == currentPreviewSvcInfo.appSvcOtherInfoDto.appSvcOtherInfoTopDto.topType}">Termination of Pregnancy(Solely by Drug)</c:if>

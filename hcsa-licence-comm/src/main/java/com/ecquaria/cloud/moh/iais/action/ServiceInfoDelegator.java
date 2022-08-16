@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoAbortDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoTopPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
@@ -512,11 +513,46 @@ public class ServiceInfoDelegator {
                     counsellorsList.add(appSvcOtherInfoTopPersonDto);
                 }
             }
+            //Info Abort
+            List<AppSvcOtherInfoAbortDto> appSvcOtherInfoAboutDtos = appSvcOtherInfoDto.getAppSvcOtherInfoAbortDtoList();
+            List<AppSvcOtherInfoAbortDto> topByDrugList = IaisCommonUtils.genNewArrayList();
+            List<AppSvcOtherInfoAbortDto> topBySurgicalProcedureList = IaisCommonUtils.genNewArrayList();
+            List<AppSvcOtherInfoAbortDto> topByAllList = IaisCommonUtils.genNewArrayList();
+            if (appSvcOtherInfoAboutDtos != null){
+                for (int i = 0; i < appSvcOtherInfoAboutDtos.size(); i++) {
+                    String topType = appSvcOtherInfoAboutDtos.get(i).getTopType();
+                    if ("1".equals(topType)){
+                        AppSvcOtherInfoAbortDto appSvcOtherInfoAboutDto = new AppSvcOtherInfoAbortDto();
+                        appSvcOtherInfoAboutDto.setTopType(appSvcOtherInfoAboutDtos.get(i).getTopType());
+                        appSvcOtherInfoAboutDto.setYear(appSvcOtherInfoAboutDtos.get(i).getYear());
+                        appSvcOtherInfoAboutDto.setAbortNum(appSvcOtherInfoAboutDtos.get(i).getAbortNum());
+                        topByDrugList.add(appSvcOtherInfoAboutDto);
+                    }
+                    if ("0".equals(topType)){
+                        AppSvcOtherInfoAbortDto appSvcOtherInfoAboutDto = new AppSvcOtherInfoAbortDto();
+                        appSvcOtherInfoAboutDto.setTopType(appSvcOtherInfoAboutDtos.get(i).getTopType());
+                        appSvcOtherInfoAboutDto.setYear(appSvcOtherInfoAboutDtos.get(i).getYear());
+                        appSvcOtherInfoAboutDto.setAbortNum(appSvcOtherInfoAboutDtos.get(i).getAbortNum());
+                        topBySurgicalProcedureList.add(appSvcOtherInfoAboutDto);
+                    }
+                    if ("-1".equals(topType)){
+                        AppSvcOtherInfoAbortDto appSvcOtherInfoAboutDto = new AppSvcOtherInfoAbortDto();
+                        appSvcOtherInfoAboutDto.setTopType(appSvcOtherInfoAboutDtos.get(i).getTopType());
+                        appSvcOtherInfoAboutDto.setYear(appSvcOtherInfoAboutDtos.get(i).getYear());
+                        appSvcOtherInfoAboutDto.setAbortNum(appSvcOtherInfoAboutDtos.get(i).getAbortNum());
+                        topByAllList.add(appSvcOtherInfoAboutDto);
+                    }
+                }
+            }
+
             ParamUtil.setRequestAttr(bpc.request, "provideTop", appSvcOtherInfoDto.getProvideTop());
             ParamUtil.setRequestAttr(bpc.request, "practitionersList", practitionersList);
             ParamUtil.setRequestAttr(bpc.request, "anaesthetistsList", anaesthetistsList);
             ParamUtil.setRequestAttr(bpc.request, "nursesList", nursesList);
             ParamUtil.setRequestAttr(bpc.request, "counsellorsList", counsellorsList);
+            ParamUtil.setRequestAttr(bpc.request, "topByDrugList", topByDrugList);
+            ParamUtil.setRequestAttr(bpc.request, "topBySurgicalProcedureList", topBySurgicalProcedureList);
+            ParamUtil.setRequestAttr(bpc.request, "topByAllList", topByAllList);
             ParamUtil.setRequestAttr(bpc.request, "appSvcOtherInfoTopDto", appSvcOtherInfoDto.getAppSvcOtherInfoTopDto());
         }
         log.debug(StringUtil.changeForLog("prePareOtherInformationDirector end ..."));
@@ -1783,7 +1819,9 @@ public class ServiceInfoDelegator {
                 number = 0;
             } else {
                 String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,
-                        HcsaConsts.STEP_DISCIPLINE_ALLOCATION};
+                        HcsaConsts.STEP_DISCIPLINE_ALLOCATION,HcsaConsts.STEP_SUPPLEMENTARY_FORM,
+                        HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS,HcsaConsts.STEP_SERVICE_PERSONNEL,HcsaConsts.STEP_PRINCIPAL_OFFICERS,
+                        HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER,HcsaConsts.STEP_MEDALERT_PERSON};
                 for (int i = 0; i < hcsaServiceStepSchemeDtos.size(); i++) {
                     if (action.equals(hcsaServiceStepSchemeDtos.get(i).getStepCode())) {
                         number = i;

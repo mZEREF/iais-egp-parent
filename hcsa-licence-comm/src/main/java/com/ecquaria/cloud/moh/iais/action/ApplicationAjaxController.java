@@ -766,4 +766,18 @@ public class ApplicationAjaxController {
         }
     }
 
+    @GetMapping(value = "/co-non-hcsa-template-top")
+    public void downloadTopFromTemplate(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            File inputFile = ResourceUtils.getFile("classpath:template/TOP_From_II.pdf");
+            if (!inputFile.exists() || !inputFile.isFile()) {
+                log.error("No File Template Found!");
+                return;
+            }
+            FileUtils.writeFileResponseContent(response, inputFile);
+        } catch (Exception e) {
+            log.error(StringUtil.changeForLog("Export Template has error - " + e.getMessage()), e);
+        }
+    }
+
 }

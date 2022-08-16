@@ -22,15 +22,9 @@
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
 
 <div class="row form-horizontal">
-    <iais:row cssClass="col-md-12 col-xs-12">
-        <div class="row control control-caption-horizontal">
-            <div class=" form-group form-horizontal formgap">
-                <iais:value width="10" cssClass="control-label formtext col-md-5 col-xs-5">
-                    <label  class="control-label control-set-font control-font-label">
-                        <p class="app-title"><c:out value="${currStepName}"/></p>
-                    </label>
-                </iais:value>
-            </div>
+    <iais:row>
+        <div class="col-xs-12">
+            <p class="app-title"><c:out value="${currStepName}"/></p>
         </div>
     </iais:row>
 
