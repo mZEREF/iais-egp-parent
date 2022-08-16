@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecific
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -213,8 +214,8 @@ public class ConfigServiceDelegator {
             ParamUtil.setRequestAttr(bpc.request,"hcsaServiceConfigDto",hcsaServiceConfigDto);
         }
         preparePage(bpc.request);
-        List<HcsaServiceDto> hcsaServiceDtos = configService.getServicesBySvcCode(hcsaServiceConfigDto.getHcsaServiceDto().getSvcCode());
-        ParamUtil.setRequestAttr(bpc.request,"hcsaServiceDtosVersion",hcsaServiceDtos);
+        /*List<HcsaServiceDto> hcsaServiceDtos = configService.getServicesBySvcCode(hcsaServiceConfigDto.getHcsaServiceDto().getSvcCode());
+        ParamUtil.setRequestAttr(bpc.request,"hcsaServiceDtosVersion",hcsaServiceDtos);*/
          //configService.viewPageInfo(bpc.request);
         log.info(StringUtil.changeForLog("confige prepeareEdit end"));
     }
@@ -228,20 +229,32 @@ public class ConfigServiceDelegator {
         if("back".equals(crud_action_type)){
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_TYPE,crud_action_type);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"edit");
+        }else if("version".equals(crud_action_type)){
+            String versionServiceId = ParamUtil.getMaskedString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
+            log.info(StringUtil.changeForLog("The versionServiceId is -->:"+versionServiceId));
+            HcsaServiceConfigDto hcsaServiceConfigDto = configService.getHcsaServiceConfigDtoByServiceId(versionServiceId);
+            ParamUtil.setRequestAttr(bpc.request,"hcsaServiceConfigDto",hcsaServiceConfigDto);
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_TYPE,"validate");
         }else{
             HcsaServiceConfigDto hcsaServiceConfigDto = getDateOfHcsaService(bpc.request);
             hcsaServiceConfigDto.setCreate(false);
+            List<HcsaServiceDto> hcsaServiceDtos = configService.getServicesBySvcCode(hcsaServiceConfigDto.getHcsaServiceDto().getSvcCode());
+            hcsaServiceConfigDto.setHcsaServiceDtosVersion(hcsaServiceDtos);
             ValidationResult validationResult = WebValidationHelper.validateProperty(hcsaServiceConfigDto, "save");
             if(validationResult.isHasErrors()){
                 Map<String, String> errorMap = validationResult.retrieveAll();
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMAP, errorMap);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_TYPE,"validate");
+                String serviceId = ParamUtil.getMaskedString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
+                hcsaServiceConfigDto.getHcsaServiceDto().setId(serviceId);
                 ParamUtil.setRequestAttr(bpc.request,"hcsaServiceConfigDto",hcsaServiceConfigDto);
             }else{
                 //configService.saveOrUpdate(bpc.request,bpc.response,hcsaServiceConfigDto);
                 transferHcsaServiceConfigDtoForDB(hcsaServiceConfigDto);
                 configService.saveHcsaServiceConfigDto(hcsaServiceConfigDto);
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_TYPE,"saveSuccess");
+                bpc.request.setAttribute("successMSG","Update success");
             }
         }
         log.info(StringUtil.changeForLog("confige doUpdate end"));
@@ -325,44 +338,77 @@ public class ConfigServiceDelegator {
     }
 
 
+    private HcsaServiceDto getActiveHcsaServiceDto(List<HcsaServiceDto> hcsaServiceDtosVersion){
+        HcsaServiceDto result = null;
 
-    private void setStatusAndEndDate(HcsaServiceDto hcsaServiceDto ){
+        if(IaisCommonUtils.isNotEmpty(hcsaServiceDtosVersion)){
+            for(HcsaServiceDto hcsaServiceDto :hcsaServiceDtosVersion ){
+                if(AppConsts.COMMON_STATUS_ACTIVE.equals(hcsaServiceDto.getStatus())){
+                    result = hcsaServiceDto;
+                }
+            }
+        }
+        return result;
+
+    }
+
+    private String getLasterVersion(List<HcsaServiceDto> hcsaServiceDtosVersion){
+        String result = "1";
+        if(IaisCommonUtils.isNotEmpty(hcsaServiceDtosVersion)){
+            result = String.valueOf(Integer.parseInt(hcsaServiceDtosVersion.get(hcsaServiceDtosVersion.size()-1).getVersion())+1);
+        }
+        return result;
+    }
+
+    private void setHcsaServiceDto(HcsaServiceConfigDto hcsaServiceConfigDto){
+        log.info(StringUtil.changeForLog("The setHcsaServiceDto start ..."));
+
+        HcsaServiceDto hcsaServiceDto = hcsaServiceConfigDto.getHcsaServiceDto();
+        List<HcsaServiceDto> hcsaServiceDtosVersion = hcsaServiceConfigDto.getHcsaServiceDtosVersion();
+
+        hcsaServiceDto.setVersion(getLasterVersion(hcsaServiceDtosVersion));
+        HcsaServiceDto activeHcsaServiceDto = getActiveHcsaServiceDto(hcsaServiceDtosVersion);
+        hcsaServiceConfigDto.setActiveHcsaServiceDto(activeHcsaServiceDto);
+
+        Date parse = null;
         try {
-            Date parse = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).parse(hcsaServiceDto.getEffectiveDate());
-//            String format = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(parse);
-//            hcsaServiceDto.setEffectiveDate(format);
+            parse = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).parse(hcsaServiceDto.getEffectiveDate());
+        } catch (Exception e) {
+            log.error(StringUtil.changeForLog("The Date format error"),e);
+        }
+        if(activeHcsaServiceDto == null){
             if(parse.before(new Date())){
                 hcsaServiceDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             }else {
                 hcsaServiceDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
             }
-
-        } catch (Exception e) {
-//            Date parse = new SimpleDateFormat("yyyy-MM-dd").parse(startDate);
-//            hcsaServiceDto.setEffectiveDate(startDate);
-//            if(parse.after(new Date())){
-//                hcsaServiceDto.setStatus("CMSTAT003");
-//            }else {
-//                hcsaServiceDto.setStatus("CMSTAT001");
-//            }
+        }else{
+            if(parse.before(new Date())){
+                hcsaServiceDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                activeHcsaServiceDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                activeHcsaServiceDto.setEndDate(Formatter.formatDateTime(new Date(),AppConsts.DEFAULT_DATE_FORMAT));
+            }else {
+                hcsaServiceDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                activeHcsaServiceDto.setEndDate(hcsaServiceDto.getEffectiveDate());
+            }
         }
 
-
-        if (StringUtil.isEmpty(hcsaServiceDto.getEndDate())) {
+     /*   if (StringUtil.isEmpty(hcsaServiceDto.getEndDate())) {
 //            try {
 //                hcsaServiceDto.setEndDate(new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).parse(endDate));
 //            } catch (ParseException e) {
 //                hcsaServiceDto.setEndDate(new Date(99,1,1));
 //            }
-            hcsaServiceDto.setEndDate(new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(new Date(99,1,1)));
-        }
+            hcsaServiceDto.setEndDate(new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(new Date(2099,1,1)));
+        }*/
+
+        log.info(StringUtil.changeForLog("The setHcsaServiceDto end ..."));
     }
 
 
     private HcsaServiceConfigDto transferHcsaServiceConfigDtoForDB(HcsaServiceConfigDto hcsaServiceConfigDto){
         HcsaServiceDto hcsaServiceDto = hcsaServiceConfigDto.getHcsaServiceDto();
-        setStatusAndEndDate(hcsaServiceDto);
-        hcsaServiceDto.setVersion("1");
+        setHcsaServiceDto(hcsaServiceConfigDto);
         hcsaServiceConfigDto.setHcsaServiceDto(hcsaServiceDto);
 
         //for HcsaSvcSpePremisesTypeDto and HcsaServiceCategoryDisciplineDto and subservice
@@ -373,7 +419,6 @@ public class ConfigServiceDelegator {
             Map<String, List<HcsaConfigPageDto>> hcsaConfigPageDtoMap = hcsaServiceConfigDto.getHcsaConfigPageDtoMap();
             hcsaServiceConfigDto.setHcsaSvcRoutingStageCompoundDtos(getHcsaSvcRoutingStageCompoundDtos(hcsaConfigPageDtoMap,hcsaServiceDto.getCategoryId()));
         }
-
 
         return  hcsaServiceConfigDto;
     }

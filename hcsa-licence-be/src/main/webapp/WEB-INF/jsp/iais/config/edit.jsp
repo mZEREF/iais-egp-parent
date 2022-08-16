@@ -6,3 +6,10 @@
 %>
 <%@include file="addNewPage.jsp" %>
 
+<script type="text/javascript">
+    $(document).ready(function () {
+        disableContent('div.editReadonly');
+
+    });
+</script>
+

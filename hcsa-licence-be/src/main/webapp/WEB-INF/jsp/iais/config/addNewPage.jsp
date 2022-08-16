@@ -44,6 +44,11 @@
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
     <input type="hidden" name="selectCategoryValue" value="">
+    <c:if test="${isEdit}">
+      <input  type="hidden" name="svcName" value="${hcsaServiceConfigDto.hcsaServiceDto.svcName}">
+      <input  type="hidden" name="svcCode" value="${hcsaServiceConfigDto.hcsaServiceDto.svcCode}">
+      <input  type="hidden" name="svcType"  value="${hcsaServiceConfigDto.hcsaServiceDto.svcType}">
+    </c:if>
     <input type="text" style="display: none" name="serviceSvcCode" id="serviceSvcCode" value="${hcsaServiceDto.svcCode}">
     <div class="col-lg-12 col-xs-12">
       <div class="bg-title" style="text-align: center;">
@@ -56,7 +61,7 @@
         </div>
       </div>
 
-      <div class="form-group">
+      <div class="form-group editReadonly">
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" for="serviceName">Service Name&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
@@ -84,7 +89,7 @@
         </div>
       </div>
 
-      <div class="form-group">
+      <div class="form-group editReadonly">
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" for="serviceCode">Service Code&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
@@ -94,7 +99,7 @@
         </div>
       </div>
 
-      <div class="form-group">
+      <div class="form-group editReadonly">
         <div class="col-xs-12 col-md-9" >
           <label class="col-xs-12 col-md-7 control-label" for="ServiceType">Service Type&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4" style="margin-bottom: 20px;">
@@ -1168,8 +1173,8 @@
               <div class=" col-xs-7 col-sm-4 col-md-4">
                 <select name="versionSelect" id="version">
                   <option value="">Select one</option>
-                  <c:forEach items="${hcsaServiceDtosVersion}" var="hcsaServiceDtosVer">
-                    <option  value="<iais:mask name="crud_action_additional"  value="${hcsaServiceDtosVer.id}"/>">${hcsaServiceDtosVer.version}</option>
+                  <c:forEach items="${hcsaServiceConfigDto.hcsaServiceDtosVersion}" var="hcsaServiceDtosVer">
+                    <option  value="<iais:mask name="crud_action_value"  value="${hcsaServiceDtosVer.id}"/>">${hcsaServiceDtosVer.version}</option>
                   </c:forEach>
                 </select>
               </div>
@@ -1229,7 +1234,7 @@
     $('#versionSelect').change(function () {
         if($('#version').val()==''){
         }else {
-            SOP.Crud.cfxSubmit("mainForm","version",'<iais:mask name="crud_action_value"  value="${hcsaServiceConfigDto.hcsaServiceDto.id}"/>',$('#version').val());
+            SOP.Crud.cfxSubmit("mainForm","version",$('#version').val(),$('#version').val());
         }
 
     });
