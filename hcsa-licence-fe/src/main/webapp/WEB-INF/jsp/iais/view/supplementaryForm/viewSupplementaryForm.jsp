@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 
-<div class="row form-horizontal min-row">
+<div class="amend-preview-info form-horizontal min-row">
     <iais:row>
         <div class="col-xs-12">
             <p class="app-title"><c:out value="${currStepName}"/></p>

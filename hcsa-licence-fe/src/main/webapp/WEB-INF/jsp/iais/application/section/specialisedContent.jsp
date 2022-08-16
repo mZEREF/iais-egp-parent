@@ -25,7 +25,7 @@
             <div class="specialised-content">
                 <iais:row>
                     <div class="col-xs-12">
-                        <p class="app-title">${specialised.premName}</p>
+                        <div class="app-title">${specialised.premName}</div>
                         <p class="font-18 bold">${specialised.premAddress}</p>
                         <p><span class="error-msg" name="iaisErrorMSg" id="error_${specialised.premisesVal}_mandatory"></span></p>
                     </div>
@@ -89,7 +89,7 @@
 
                 <c:if test="${empty specialised.allAppPremScopeDtoList && empty specialised.allAppPremSubSvcRelDtoList}">
                     <iais:row>
-                        <p class="font-18 bold error-msg"><iais:message key="NEW_ACK038"/></p>
+                        <span class="font-18 bold error-msg col-xs-12"><iais:message key="NEW_ACK038"/></span>
                     </iais:row>
                 </c:if>
             </div>
