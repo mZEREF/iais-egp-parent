@@ -659,12 +659,12 @@ public class ConfigServiceImpl implements ConfigService {
     public void doDeleteService(String serviceId) {
         log.info(StringUtil.changeForLog("The doDeleteService start ..."));
         hcsaConfigClient.updateService(serviceId);
-        /*HcsaServiceConfigDto hcsaServiceConfigDto=new HcsaServiceConfigDto();
+        HcsaServiceConfigDto hcsaServiceConfigDto=new HcsaServiceConfigDto();
         HcsaServiceDto hcsaServiceDto = new HcsaServiceDto();
         hcsaServiceDto.setId(serviceId);
         hcsaServiceDto.setUseDelete(true);
         hcsaServiceConfigDto.setHcsaServiceDto(hcsaServiceDto);
-        eicGateway(hcsaServiceConfigDto);*/
+        eicGateway(hcsaServiceConfigDto);
         log.info(StringUtil.changeForLog("The doDeleteService end ..."));
     }
 
@@ -1391,8 +1391,8 @@ public class ConfigServiceImpl implements ConfigService {
     public void saveHcsaServiceConfigDto(HcsaServiceConfigDto hcsaServiceConfigDto) {
         //transFor(hcsaServiceConfigDto);
         hcsaServiceConfigDto = hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto).getEntity();
-       // eicGateway(hcsaServiceConfigDto);
-        //HcsaServiceCacheHelper.flushServiceMapping();
+        eicGateway(hcsaServiceConfigDto);
+        HcsaServiceCacheHelper.flushServiceMapping();
     }
 
     static String[] codeSvc ={HcsaConsts.SERVICE_TYPE_BASE,HcsaConsts.SERVICE_TYPE_SUBSUMED,HcsaConsts.SERVICE_TYPE_SPECIFIED};
