@@ -107,13 +107,9 @@
 <%@include file="/WEB-INF/jsp/iais/inspectionncList/uploadFile.jsp"%>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 
-<iais:confirm msg="INSPE_ACK001" popupOrder="confirmTag"
-              cancelFunc="$('#confirmTag').modal('hide')" cancelBtnCls="btn btn-secondary" cancelBtnDesc="NO"
-              callBack="$('#confirmTag').modal('hide');showWaiting();SOP.Crud.cfxSubmit('mainForm', 'next');" yesBtnCls="btn btn-primary" yesBtnDesc="YES"/>
-
 <script type="text/javascript">
     $(document).ready(function () {
-        initRollBackToField();
+        showRollBackTo();
     });
 
     function doViewCheckList(){
@@ -130,12 +126,10 @@
         let processDecValue = $('#processDec').val();
         $("#viewchk").val("");
         if('REDECI027' === processDecValue){
-            const rollBackToVal = $("#rollBackTo").val();
-            if(rollBackToVal === null || rollBackToVal === undefined || rollBackToVal === ''){
-                $("#error_rollBackTo1").show();
-            } else {
-                $('#confirmTag').modal('show');
-            }
+            submitRollBack(()=>{
+                showWaiting();
+                SOP.Crud.cfxSubmit('mainForm', 'next');
+            });
         }else {
             showWaiting();
             SOP.Crud.cfxSubmit("mainForm", "next");
@@ -177,14 +171,4 @@
         $(this).parent().children('span:eq(0)').next().removeClass("hidden");
         $(this).parent().children('input delFlag').val('N');*/
     });
-
-    function initRollBackToField() {
-        let processDecValue = $('#processDec').val();
-        let rollBackToRow = $('#rollBackToRow');
-        if('REDECI027' === processDecValue){
-            rollBackToRow.show();
-        }else {
-            rollBackToRow.hide();
-        }
-    }
 </script>

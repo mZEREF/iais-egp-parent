@@ -7,6 +7,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.ecq.com/iais-bsb" prefix="iais-bsb" %>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
+<%@ page import="sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
@@ -18,15 +19,16 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-inbox.js"></script>
 
 
-<%@include file="../../dashboard/dashboardFAC.jsp"%>
+<%@include file="../dashboard/dashboardFAC.jsp"%>
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
+<fmt:setLocale value="en"/>
 <div class="main-content">
     <div class="container">
         <div class="row">
             <div class="col-xs-12">
                 <div class="tab-gp dashboard-tab" style="margin-left: 6px;margin-right: -8px;">
-                    <%@ include file="../../InnerNavBarFAC.jsp"%>
+                    <%@ include file="../InnerNavBarFAC.jsp"%>
 
                     <div class="tab-content">
                         <form class="" method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
@@ -49,7 +51,7 @@
 
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
-                                        <label class="col-xs-12 col-sm-5 control-label" FOR="searchProcessType">Application Sub-Type:</label>
+                                        <label class="col-xs-12 col-sm-5 control-label" for="searchProcessType">Application Sub-Type:</label>
                                         <div class="col-xs-12 col-sm-7">
                                             <select id="searchProcessType" class="searchProcessTypeDropDown" name="searchProcessType">
                                                 <option value='<c:out value=""/>' <c:if test="${inboxApprovalSearchDto.searchProcessType eq ''}">selected="selected"</c:if>>All</option>
@@ -59,6 +61,30 @@
                                                 </c:forEach>
                                             </select>
                                             <span data-err-ind="searchProcessType" class="error-msg"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6">
+                                        <label class="col-xs-12 col-sm-5 control-label" for="searchFacilityName">Facility Name:</label>
+                                        <div class="col-xs-12 col-sm-7">
+                                            <input type="text" id="searchFacilityName" name="searchFacilityName" value="${inboxApprovalSearchDto.searchFacilityName}"/>
+                                            <span data-err-ind="searchFacilityName" class="error-msg"></span>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6">
+                                        <label class="col-xs-12 col-sm-5 control-label" FOR="searchStatus">Approval Status:</label>
+                                        <div class="col-xs-12 col-sm-7">
+                                            <select id="searchStatus" class="searchStatusDropdown" name="searchStatus">
+                                                <option value='<c:out value=""/>' <c:if test="${inboxApprovalSearchDto.searchStatus eq ''}">selected="selected"</c:if>>All</option>
+                                                <%--@elvariable id="approvalStatusOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
+                                                <c:forEach var="approvalStatusItem" items="${approvalStatusOps}">
+                                                    <option value='<c:out value="${approvalStatusItem.value}"/>' <c:if test="${inboxApprovalSearchDto.searchStatus eq approvalStatusItem.value}">selected="selected"</c:if> ><c:out value="${approvalStatusItem.text}"/></option>
+                                                </c:forEach>
+                                            </select>
+                                            <span data-err-ind="searchStatus" class="error-msg"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -99,24 +125,9 @@
                                     </div>
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-xs-12 col-sm-6">
-                                        <label class="col-xs-12 col-sm-5 control-label" for="searchStatus">Approval Status:</label>
-                                        <div class="col-xs-12 col-sm-7">
-                                            <select id="searchStatus" class="searchStatusDropdown" name="searchStatus">
-                                                <option value='<c:out value=""/>' <c:if test="${inboxApprovalSearchDto.searchStatus eq ''}">selected="selected"</c:if>>All</option>
-                                                <%--@elvariable id="approvalStatusOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
-                                                <c:forEach var="approvalStatusItem" items="${approvalStatusOps}">
-                                                    <option value='<c:out value="${approvalStatusItem.value}"/>' <c:if test="${inboxApprovalSearchDto.searchStatus eq approvalStatusItem.value}">selected="selected"</c:if> ><c:out value="${approvalStatusItem.text}"/></option>
-                                                </c:forEach>
-                                            </select>
-                                            <span data-err-ind="searchStatus" class="error-msg"></span>
-                                        </div>
-                                    </div>
-                                </div>
 
                                 <div class="row text-right text-center-mobile">
-                                    <button class="btn btn-secondary" type="reset" id="clearBtn" name="clearBtn">Clear</button>
+                                    <button class="btn btn-secondary" type="button" id="clearBtn" name="clearBtn">Clear</button>
                                     <button class="btn btn-primary" type="button" id="searchBtn" name="searchBtn">Search</button>
                                 </div>
                             </div>
@@ -132,17 +143,19 @@
                                             <tr>
                                                 <%-- need to use new tag in future --%>
                                                 <th scope="col" style="display: none"></th>
-                                                <iais:sortableHeader needSort="true" field="approveNo" value="Approval No." isFE="true" style="width:16%"/>
-                                                <iais:sortableHeader needSort="true" field="processType" value="Application Sub-Type" isFE="true" style="width:17%"/>
-                                                <iais:sortableHeader needSort="true" field="status" value="Approval Status" isFE="true" style="width:17%"/>
-                                                <iais:sortableHeader needSort="true" field="approvalStartDate" value="Approval Start Date" isFE="true" style="width:17%"/>
-                                                <iais:sortableHeader needSort="true" field="approvalExpiryDate" value="Expiry Date" isFE="true" style="width:17%"/>
-                                                <iais:sortableHeader needSort="false" field="" value="Actions" isFE="true" style="width:16%"/>
+                                                <iais:sortableHeader needSort="true" field="approveNo" value="Approval No." isFE="true" style="width:12%"/>
+                                                <iais:sortableHeader needSort="true" field="processType" value="Application Sub-Type" isFE="true" style="width:13%"/>
+                                                <iais:sortableHeader needSort="true" field="status" value="Approval Status" isFE="true" style="width:11%"/>
+                                                <iais:sortableHeader needSort="false" field="facilityName" value="Facility Name" isFE="true" style="width:8%"/>
+                                                <iais:sortableHeader needSort="false" field="" value="Facility Address" isFE="true" style="width:14%"/>
+                                                <iais:sortableHeader needSort="true" field="approvalStartDate" value="Approval Start Date" isFE="true" style="width:13%"/>
+                                                <iais:sortableHeader needSort="true" field="approvalExpiryDate" value="Expiry Date" isFE="true" style="width:12%"/>
+                                                <iais:sortableHeader needSort="false" field="" value="Actions" isFE="true" style="width:14%"/>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             <c:choose>
-                                                <%--@elvariable id="dataList" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.inbox.InboxApprovalAFCResultDto$ApprovalInfo>"--%>
+                                                <%--@elvariable id="dataList" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.inbox.InboxApprovalFacAdminResultDto$ApprovalInfo>"--%>
                                                 <c:when test="${empty dataList}">
                                                     <tr>
                                                         <td colspan="6">
@@ -152,6 +165,8 @@
                                                 </c:when>
                                                 <c:otherwise>
                                                     <c:forEach var="approval" items="${dataList}" varStatus="status">
+                                                        <iais-bsb:approval-action info="${approval}" attributeKey="actionAvailable"/>
+                                                        <%--@elvariable id="actionAvailable" type="java.lang.Boolean"--%>
                                                         <tr>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Approval No.</p>
@@ -166,34 +181,33 @@
                                                                 <p style="text-align: center"><iais:code code="${approval.status}"/></p>
                                                             </td>
                                                             <td>
+                                                                <p class="visible-xs visible-sm table-row-title">Facility Name</p>
+                                                                <p style="text-align: center"><c:out value="${approval.facilityName}"/></p>
+                                                            </td>
+                                                            <td>
+                                                                <p class="visible-xs visible-sm table-row-title">Facility Address</p>
+                                                                <p><c:out value="${TableDisplayUtil.getOneLineAddress(approval.blkNo, approval.streetName, approval.floorNo, approval.unitNo, approval.postalCode)}"/></p>
+                                                            </td>
+                                                            <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Approval Start Date</p>
                                                                 <p><c:out value='${approval.approvalStartDt}'/></p>
                                                             </td>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
-                                                                <p><c:out value='${approval.approvalStartDt}'/></p>
+                                                                <p><c:out value='${approval.approvalExpiryDt}'/></p>
                                                             </td>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Actions</p>
-                                                                <select id="approvalAction${status.index}" name="approvalAction${status.index}" class="approvalActionDropdown${status.index}" data-action-select="">
+                                                                <select id="approvalAction${status.index}" class="approvalActionDropdown${status.index}" name="approvalAction${status.index}" data-action-select="">
                                                                     <option value="#" selected="selected">Select</option>
-<%--                                                                    <c:choose>--%>
-<%--                                                                        <c:when test="${approval.status eq 'APPRSTA001' and approval.processType eq 'PROTYPE005'}">--%>
-<%--                                                                            <option value="/bsb-web/eservice/INTERNET/MohRfcViewCertRegApplication?appId=<iais:mask name='id' value='${approval.id}'/>&processType=<iais:mask name='processType' value='${approval.processType}'/>&approveNo=${approval.approveNo}<c:if test="${approval.status eq 'APPRSTA001'}">&editId=<iais:mask name='editId' value='${approval.id}'/></c:if>">RFC</option>--%>
-<%--                                                                        </c:when>--%>
-<%--                                                                    </c:choose>--%>
-<%--                                                                    <c:choose>--%>
-<%--                                                                        <c:when test="${approval.status eq 'APPRSTA001' and approval.renewable eq 'Y'}">--%>
-<%--                                                                            <option value="/bsb-web/eservice/INTERNET/MohRenewalFacilityCertifierRegistration?editId=<iais:mask name='editId' value='${approval.id}'/>">Renewal</option>--%>
-<%--                                                                        </c:when>--%>
-<%--                                                                        <c:when test="${approval.status eq 'APPRSTA004' and approval.renewable eq 'Y'}">--%>
-<%--                                                                            <option value="/bsb-web/eservice/INTERNET/MohDelayRenewalFacilityCertifierRegistration?editId=<iais:mask name='editId' value='${approval.id}'/>">Delay Renewal</option>--%>
-<%--                                                                        </c:when>--%>
-<%--                                                                    </c:choose>--%>
-
-<%--                                                                    <c:if test="${approval.processType eq 'PROTYPE005' and (approval.status eq 'APPRSTA001' or approval.status eq 'APPRSTA007' or approval.status eq 'APPRSTA009' or approval.status eq 'APPRSTA010')}">--%>
-<%--                                                                        <option value="/bsb-web/eservice/INTERNET/ApplicantDeRegistrationAFC?approvalId=<iais:mask name='approvalId' value='${approval.id}'/>">DeRegistration</option>--%>
-<%--                                                                    </c:if>--%>
+                                                                    <%--@elvariable id="ApprovalUpdateJudge" type="java.lang.Boolean"--%>
+                                                                    <c:if test="${ApprovalUpdateJudge}">
+                                                                        <option value="">Update</option>
+                                                                    </c:if>
+                                                                    <%--@elvariable id="ApprovalCancelJudge" type="java.lang.Boolean"--%>
+                                                                    <c:if test="${ApprovalCancelJudge}">
+                                                                        <option value="">Cancel</option>
+                                                                    </c:if>
                                                                 </select>
                                                             </td>
                                                         </tr>
@@ -202,30 +216,6 @@
                                             </c:choose>
                                             </tbody>
                                         </table>
-                                        <!-- Modal -->
-                                        <div class="modal fade" id="archiveModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-                                            <div class="modal-dialog" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-body">
-                                                        <div class="row">
-                                                            <div class="col-md-12"><span style="font-size: 2rem">Please select at least one record</span></div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary btn-md" data-dismiss="modal">Close</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!--Modal End-->
-                                        <div class="row" style="margin-top: 1.5%">
-                                            <div class="col-md-12">
-                                                <div class="col-md-6 pull-right">
-                                                    <button type="button" class="btn btn-primary" id="doArchive" style="margin-right: 10px; display: none">Archive</button>
-                                                    <button style="display: none" type="button" class="btn btn-primary pull-right" onclick="toArchiveView()">Access Archive</button>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>

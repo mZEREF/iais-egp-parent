@@ -58,8 +58,10 @@ public interface RefreshableDocDto {
             String repoId = idEntry.getValue();
 
             NewDocInfo newDocInfo = newDocMap.get(newDocId);
-            DocRecordInfo docRecordInfo = refreshDocInfo(newDocInfo, repoId);
-            savedDocMap.put(repoId, docRecordInfo);
+            if (newDocInfo != null) {
+                DocRecordInfo docRecordInfo = refreshDocInfo(newDocInfo, repoId);
+                savedDocMap.put(repoId, docRecordInfo);
+            }
         }
         newDocMap.clear();
     }

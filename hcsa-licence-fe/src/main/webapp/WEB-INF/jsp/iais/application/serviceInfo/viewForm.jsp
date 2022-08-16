@@ -10,6 +10,12 @@
 <webui:setLayout name="iais-blank"/>
 <%--<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>--%>
 
+<style>
+  body {
+    padding-bottom: 0;
+  }
+</style>
+
 <div id="svcDiv" class="panel-main-content" style="margin: 2%">
   <jsp:include page="/WEB-INF/jsp/iais/view/viewSvcInfo.jsp" />
 </div>

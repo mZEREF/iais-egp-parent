@@ -4,12 +4,12 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4 class="panel-title">
-            <a class="collapsed" data-toggle="collapse" href="#top-amendment">
+            <a class="collapsed" data-toggle="collapse" href="#ar-declaration">
                 Declarations
             </a>
         </h4>
     </div>
-    <div id="top-amendment" class="panel-collapse collapse ">
+    <div id="ar-declaration" class="panel-collapse collapse ">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <iais:row>
@@ -26,7 +26,7 @@
                             <c:if test="${DeclarationsCheckBox != 'hide'}">
                                 <span class="check-square"></span>
                             </c:if>
-                            <iais:message key="DS_DEC001" escape="false"/></label>
+                            <iais:message key="DS_DEC004" escape="false"/></label>
                         <span class="error-msg col-md-7" name="iaisErrorMsg" id="error_declaration"></span>
                     </div>
                 </iais:row>

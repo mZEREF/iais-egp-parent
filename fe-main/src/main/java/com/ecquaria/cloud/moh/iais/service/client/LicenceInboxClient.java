@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugSubmissionDto;
@@ -34,6 +35,7 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -197,4 +199,10 @@ public interface LicenceInboxClient {
 
     @GetMapping(value = "/data-submission/DrugSubmissionDtos/{submissionNo}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<DrugSubmissionDto>> getDrugSubmissionDtosBySubmissionNo(@PathVariable("submissionNo") String submissionNo) ;
+
+    @GetMapping(value = "/data-submission/draft-data-submission/submissionId", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<DataSubmissionDraftDto> getDataSubmissionDraftDtoBySubmissionId(@RequestParam("submissionId") String submissionId);
+
+    @PostMapping(value = "/data-submission/rfc-draft-data-submission/submissionId", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> deleteDraftBySubmissionId(@RequestParam(name = "submissionId") String submissionId);
 }

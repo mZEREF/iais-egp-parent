@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
+<%@ page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -142,22 +143,23 @@
                                                                         <div class="input-group">
                                                                             <select name="processingDecision" class="processingDecisionDropdown" id="processingDecision">
                                                                                 <option value="">Please Select</option>
-                                                                                <option value="MOHPRO021" <c:if test="${insDecision.decision eq 'MOHPRO021'}">selected="selected"</c:if>>
+                                                                                <%--TODO: check all decision--%>
+                                                                                <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_MARK_INSPECTION_TASK_AS_READY}" <c:if test="${insDecision.decision eq MasterCodeConstants.MOH_PROCESS_DECISION_MARK_INSPECTION_TASK_AS_READY}">selected="selected"</c:if>>
                                                                                     Mark as ready
                                                                                 </option>
                                                                                 <%--@elvariable id="canRfi" type="java.lang.Boolean"--%>
                                                                                 <c:if test="${canRfi}">
-                                                                                    <option value="MOHPRO002" <c:if test="${insDecision.decision eq 'MOHPRO002'}">selected="selected"</c:if>>
+                                                                                    <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_REQUEST_FOR_INFORMATION}" <c:if test="${insDecision.decision eq MasterCodeConstants.MOH_PROCESS_DECISION_REQUEST_FOR_INFORMATION}">selected="selected"</c:if>>
                                                                                         Request for information
                                                                                     </option>
                                                                                 </c:if>
-                                                                                <option value="MOHPRO029" <c:if test="${insDecision.decision eq 'MOHPRO029'}">selected="selected"</c:if>>Skip Inspection</option>
+                                                                                <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_SKIP_INSPECTION}" <c:if test="${insDecision.decision eq MasterCodeConstants.MOH_PROCESS_DECISION_SKIP_INSPECTION}">selected="selected"</c:if>>Skip Inspection</option>
                                                                             </select>
                                                                             <span data-err-ind="processingDecision" class="error-msg"></span>
                                                                         </div>
                                                                     </div>
 
-                                                                    <div id="rfiCheckBox" <c:if test="${insDecision.decision ne 'MOHPRO002'}">style="display: none"</c:if>>
+                                                                    <div id="rfiCheckBox" <c:if test="${insDecision.decision ne MasterCodeConstants.MOH_PROCESS_DECISION_REQUEST_FOR_INFORMATION}">style="display: none"</c:if>>
                                                                         <iais:field value="Request For Information" mandatory="true"/>
                                                                         <iais:value width="7">
                                                                             <p>

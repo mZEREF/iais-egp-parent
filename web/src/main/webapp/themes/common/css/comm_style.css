@@ -158,20 +158,41 @@ input.allDay {
     margin-top: 5px;
 }
 
-.form-level-1 {
-    margin-left: 30px;
+.form-check.form-check-4 {
+    margin-left: 120px;
     margin-bottom: 5px;
     margin-top: 5px;
 }
 
-.form-level-2 {
-    margin-left: 60px;
+.form-horizontal .form-level-1 label {
+    padding-left: 30px;
     margin-bottom: 5px;
     margin-top: 5px;
 }
 
-.form-level-3 {
-    margin-left: 90px;
+.form-horizontal .form-level-2 label {
+    padding-left: 60px;
     margin-bottom: 5px;
     margin-top: 5px;
+}
+
+.form-horizontal .form-level-3 label {
+    padding-left: 90px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+.form-horizontal .form-level-4 label {
+    padding-left-left: 90px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+.normal-label label {
+    font-weight: normal;
+}
+
+.special-error .error-msg:not(:empty) {
+    margin-top: 25px;
+    display: inline-block;
 }

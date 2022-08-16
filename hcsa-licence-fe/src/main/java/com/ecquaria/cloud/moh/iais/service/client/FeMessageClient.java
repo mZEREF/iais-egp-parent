@@ -4,6 +4,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,9 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.Date;
-import java.util.List;
 
 @FeignClient(name = "inter-inbox",configuration = FeignConfiguration.class,fallback = FeMessageClientFallback.class)
 public interface FeMessageClient {
@@ -31,4 +29,8 @@ public interface FeMessageClient {
 
     @GetMapping(value = "/iais-inter-inbox/inter-msgIds-subject-like",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> getInterMsgIdsBySubjectLike(@RequestParam("subject") String subject, @RequestParam("status") String status);
+
+    @GetMapping(value = "/iais-inter-inbox/inbox-by-ref")
+    FeignResponseEntity<List<InterMessageDto>> getInboxMsgByRefNo(@RequestParam(name = "refNo")String refNo);
+
 }

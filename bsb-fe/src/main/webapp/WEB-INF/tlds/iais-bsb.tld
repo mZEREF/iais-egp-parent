@@ -103,6 +103,24 @@
         </attribute>
     </tag>
     <tag>
+        <description>Judge inbox approval action availability</description>
+        <name>approval-action</name>
+        <tag-class>sg.gov.moh.iais.egp.common.tags.ApprovalActionTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>info</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>sg.gov.moh.iais.egp.bsb.dto.info.approval.ApprovalBasicInfo</type>
+        </attribute>
+        <attribute>
+            <name>attributeKey</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
         <description>Simple LocalDate Format tag</description>
         <name>format-LocalDate</name>
         <tag-class>sg.gov.moh.iais.egp.common.tags.LocalDateFormatTag</tag-class>
@@ -192,5 +210,12 @@
         <example>
             ${bsb:collectionContainsAny(collection, array)}
         </example>
+    </function>
+
+    <function>
+        <description>Display value of Y/N as Yes/No</description>
+        <name>displayYN</name>
+        <function-class>sg.gov.moh.iais.egp.common.function.UtilFunctions</function-class>
+        <function-signature>java.lang.String displayYesOrNo(java.lang.String)</function-signature>
     </function>
 </taglib>

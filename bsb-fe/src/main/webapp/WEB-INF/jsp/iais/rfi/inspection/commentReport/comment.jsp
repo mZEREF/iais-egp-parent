@@ -190,7 +190,7 @@
                                                                                 <th scope="col" style="width:20%">Applicant's Input</th>
                                                                             </tr>
                                                                             </thead>
-                                                                            <c:forEach var="checkList" items="${reportDto.checkListItemGeneralList}" varStatus="status">
+                                                                            <c:forEach var="checkList" items="${reportDto.checkListItemBsbList}" varStatus="status">
                                                                                 <c:if test="${checkList.excludeFromApplicantVersion ne 'true'}">
                                                                                     <tr>
                                                                                         <td><p>1.${status.count}</p></td>

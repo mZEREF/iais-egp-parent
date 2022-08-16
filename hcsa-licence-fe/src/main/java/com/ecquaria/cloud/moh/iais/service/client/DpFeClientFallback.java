@@ -25,6 +25,11 @@ public class DpFeClientFallback implements DpFeClient {
     }
 
     @Override
+    public FeignResponseEntity<List<DpSuperDataSubmissionDto>> saveDpSuperDataSubmissionDtoInList(List<DpSuperDataSubmissionDto> dpSuperDataSubmissionDto) {
+        return getFeignResponseEntity(dpSuperDataSubmissionDto);
+    }
+
+    @Override
     public FeignResponseEntity<DpSuperDataSubmissionDto> doUpdateDataSubmissionDraft(
             DpSuperDataSubmissionDto dpSuperDataSubmissionDto) {
         return getFeignResponseEntity(dpSuperDataSubmissionDto);

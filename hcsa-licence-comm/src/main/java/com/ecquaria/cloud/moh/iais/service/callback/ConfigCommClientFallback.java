@@ -205,7 +205,7 @@ public class ConfigCommClientFallback implements ConfigCommClient {
     }
 
     @Override
-    public FeignResponseEntity<List<HcsaSvcPersonnelDto>> getServiceType(String serviceId, String psnType) {
+    public FeignResponseEntity<List<HcsaSvcPersonnelDto>> getServiceType(String serviceId, String...psnType) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

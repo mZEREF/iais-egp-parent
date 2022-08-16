@@ -138,7 +138,7 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
     private static final String SUBJECT="subject";
     private static final String SER_LIST_DTO= "serListDto";
     private static final String DRA_EMA_ID="draftEmailId";
-    private static final String ROLLBACK_OPTIONS="rollBackToOptions";
+    private static final String ROLLBACK_OPTIONS="rollBackOptions";
     private static final String ROLLBACK_VALUE_MAP="rollBackValueMap";
 
     public void start(BaseProcessClass bpc){
@@ -438,7 +438,7 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
             }
         }
         String appType = applicationViewDto.getApplicationDto().getApplicationType();
-        if (!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType))) {
+        if (!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType))) {
             appTypeOption.addAll(MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROLL_BACK}));
         }
 

@@ -1,7 +1,9 @@
 package sg.gov.moh.iais.egp.bsb.dto.inbox;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
+import sg.gov.moh.iais.egp.bsb.dto.info.approval.ApprovalBasicInfo;
 
 import java.util.List;
 
@@ -12,13 +14,8 @@ public class InboxApprovalFacAdminResultDto {
     private List<ApprovalInfo> approvalInfos;
 
     @Data
-    public static class ApprovalInfo {
-        private String id;
-        private String approveNo;
-        private String processType;
-        private String status;
-        private String approvalStartDt;
-        private String approvalExpiryDt;
+    @EqualsAndHashCode(callSuper = true)
+    public static class ApprovalInfo extends ApprovalBasicInfo {
         private String renewable;
         private String facilityName;
         private String postalCode;

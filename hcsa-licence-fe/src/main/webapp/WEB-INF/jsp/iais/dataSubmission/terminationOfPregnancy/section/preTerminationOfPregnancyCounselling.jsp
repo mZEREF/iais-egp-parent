@@ -225,7 +225,7 @@
     <div id="preCounsNoCondReasons"
          <c:if test="${preTerminationDto.counsellingGiven != true || preTerminationDto.counsellingAge>=16 || patientInformationDto.maritalStatus =='TOPMS002' || preTerminationDto.counsellingPlace == 'AR_SC_001' || preTerminationDto.counsellingPlace ==null || preTerminationDto.counsellingAge ==null}">style="display: none"</c:if> >
         <iais:row>
-            <iais:field width="5" value="Reason why pre-Counselling was Not Conducted at HPB Counselling Centre"
+            <iais:field width="5" value="Reason why Counselling was Not Conducted at HPB Counselling Centre"
                         mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="100" type="text" name="preCounsNoCondReason"
@@ -237,7 +237,7 @@
     <div id="patientAppointments"
          <c:if test="${preTerminationDto.counsellingGiven != true || preTerminationDto.counsellingResult !='TOPPCR001'}">style="display: none"</c:if>>
         <iais:row>
-            <iais:field width="5" value="Did Patient Make Appointment for Additional Pre-Counselling Sessions?"
+            <iais:field width="5" value="Did Patient Make Appointment for Additional Counselling Sessions?"
                         mandatory="true"/>
 
             <div class="col-sm-7 col-md-7 col-xs-10" style="width: 930px;">
@@ -259,7 +259,7 @@
         <iais:row>
             <c:set var="toolMsg17"><iais:message key="DS_MSG017" paramKeys="1" paramValues="counsellor"/></c:set>
             <iais:field width="5" id="secCounsellingDateLabel" style="padding-right: 50px;"
-                        value="Date of Second or Final Pre-Counselling" mandatory="true" info="${toolMsg17}"/>
+                        value="Date of Second or Final Counselling" mandatory="true" info="${toolMsg17}"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:datePicker name="secCounsellingDate" id="secCounsellingDateDate"
                                  value="${preTerminationDto.secCounsellingDate}"/>

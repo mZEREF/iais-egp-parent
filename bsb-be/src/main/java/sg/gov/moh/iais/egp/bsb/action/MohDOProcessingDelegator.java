@@ -20,9 +20,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_DO_PROCESSING;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_FACILITY_REGISTRATION;
-import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESSING_DECISION_RECOMMEND_APPROVAL;
-import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESSING_DECISION_RECOMMEND_REJECT;
-import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESSING_DECISION_REQUEST_FOR_INFO;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESS_DECISION_REJECT;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESS_DECISION_REQUEST_FOR_INFORMATION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.KEY_MOH_PROCESS_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.MODULE_NAME_DO_PROCESSING;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_APP_ID;
@@ -68,13 +68,13 @@ public class MohDOProcessingDelegator {
         String processingDecision = mohProcessDto.getProcessingDecision();
         ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK,"Duty Officer Processing");
         switch (processingDecision) {
-            case MOH_PROCESSING_DECISION_RECOMMEND_APPROVAL:
-            case MOH_PROCESSING_DECISION_RECOMMEND_REJECT:
+            case MOH_PROCESS_DECISION_APPROVE:
+            case MOH_PROCESS_DECISION_REJECT:
                 processClient.saveDoProcessingRecommendApprovalOrReject(appId, taskId, mohProcessDto);
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_AO_APPROVAL));
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_AO);
                 break;
-            case MOH_PROCESSING_DECISION_REQUEST_FOR_INFO:
+            case MOH_PROCESS_DECISION_REQUEST_FOR_INFORMATION:
                 processClient.saveDoProcessingRequestForInformation(appId, taskId, mohProcessDto);
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_APPLICANT_CLARIFICATION));
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_APPLICANT);

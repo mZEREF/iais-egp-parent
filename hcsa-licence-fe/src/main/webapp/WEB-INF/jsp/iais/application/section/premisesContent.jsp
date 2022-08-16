@@ -264,7 +264,7 @@
                                 </iais:value>
                                 <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
                                 <iais:value cssClass="col-xs-12 col-md-5 ">
-                                    <input class="unitNo" maxlength="5" type="text" data-base="UnitNo12" name="${status.index}UnitNo120" value="${appGrpPremisesDto.unitNo}"/>
+                                    <input class="unitNo" maxlength="5" type="text" data-base="UnitNo" name="${status.index}UnitNo0" value="${appGrpPremisesDto.unitNo}"/>
                                     <span class="error-msg" name="iaisErrorMsg" id="error_${status.index}UnitNo0"></span>
                                 </iais:value>
                             </div>
@@ -349,17 +349,17 @@
                         </iais:value>
                     </iais:row>
                     <iais:row cssClass="easMtsAddFields">
-                        <iais:field value="Public Email" mandatory="true" width="5"/>
+                        <iais:field value="Public Email" mandatory="true" width="5" cssClass="pubEmailLabel"/>
                         <iais:value width="7" cssClass="col-md-5">
                             <iais:input maxLength="320" cssClass="easMtsPubEmail" type="text" name="easMtsPubEmail${status.index}"
                                         value="${appGrpPremisesDto.easMtsPubEmail}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row cssClass="easMtsAddFields">
-                        <iais:field value="Public Hotline" mandatory="true" width="5"/>
+                        <iais:field value="Public Hotline" mandatory="true" width="5" cssClass="pubHotlineLabel"/>
                         <iais:value width="7" cssClass="col-md-5">
-                            <iais:input maxLength="8" cssClass="easMtsPubHotline" type="text" name="easMtsPubHotline"  value="${appGrpPremisesDto.easMtsPubHotline}"/>
-                            <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsPubHotline${status.index}"></span>
+                            <iais:input maxLength="8" cssClass="easMtsPubHotline" type="text" name="easMtsPubHotline${status.index}"
+                                        value="${appGrpPremisesDto.easMtsPubHotline}"/>
                         </iais:value>
                     </iais:row>
 

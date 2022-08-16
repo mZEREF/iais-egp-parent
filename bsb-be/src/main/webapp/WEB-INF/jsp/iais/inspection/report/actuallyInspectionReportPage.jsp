@@ -19,7 +19,7 @@
 
 <%--@elvariable id="submissionDetailsInfo" type="sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.SubmissionDetailsInfo"--%>
 <%--@elvariable id="activeTab" type="java.lang.String"--%>
-<%--@elvariable id="processDto" type="sg.gov.moh.iais.egp.bsb.dto.inspection.InsReportProcessDto"--%>
+<%--@elvariable id="processDto" type="sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto"--%>
 
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
@@ -102,56 +102,22 @@
                                                                 </div>
                                                                 <div class="clear"></div>
                                                             </div>
-                                                            <div class="form-group">
-                                                                <label for="remarks" class="col-xs-12 col-md-4 control-label">Remarks</label>
-                                                                <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                    <div class="input-group">
-                                                                        <textarea id="remarks" name="remarks" cols="70" rows="7" maxlength="300"><c:out value="${processDto.remark}"/></textarea>
-                                                                        <span data-err-ind="remark" class="error-msg"></span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="clear"></div>
-                                                            </div>
                                                             <span data-err-ind="error_message" class="error-msg"></span>
-                                                            <%--todo: check this app status and logic--%>
-                                                            <c:if test="${hasNonCompliance eq 'Y' && submissionDetailsInfo.applicationStatus eq MasterCodeConstants.APP_STATUS_PEND_DO_REPORT_APPROVAL}">
-                                                                <div class="form-group">
-                                                                    <label class="col-xs-12 col-md-4 control-label">Draft NC Email? <span style="color: red">*</span></label>
-                                                                    <div class="col-sm-7 col-md-5 col-xs-10 control-label">
-                                                                        <div class="input-group">
-                                                                            <label>
-                                                                                <input type="radio" name="ncEmailRequired" <c:if test="${processDto.ncEmailRequired eq 'Y'}">checked="checked"</c:if> value="Y"/>
-                                                                            </label>
-                                                                            <span class="check-circle">Yes</span>
-                                                                            <label>
-                                                                                <input type="radio" name="ncEmailRequired" <c:if test="${processDto.ncEmailRequired eq 'N'}">checked="checked"</c:if> value="N"/>
-                                                                            </label>
-                                                                            <span class="check-circle">No</span>
-                                                                            <span data-err-ind="ncEmailRequired" class="error-msg" ></span>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </c:if>
                                                             <div class="form-group">
                                                                 <label for="processingDecision" class="col-xs-12 col-md-4 control-label">Processing Decision <span style="color: red">*</span></label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
                                                                     <div class="input-group">
                                                                         <select name="processingDecision" class="processingDecisionDropdown" id="processingDecision">
                                                                             <option value="">Please Select</option>
-                                                                            <option value="${MasterCodeConstants.MOH_PROCESSING_DECISION_SUBMIT_REPORT_TO_AO_FOR_REVIEW}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESSING_DECISION_SUBMIT_REPORT_TO_AO_FOR_REVIEW}">selected="selected"</c:if>>Submit report to AO</option>
-                                                                            <%--todo: check this app status and logic--%>
-                                                                            <c:if test="${submissionDetailsInfo.applicationStatus eq MasterCodeConstants.APP_STATUS_PEND_DO_REPORT_APPROVAL}">
-                                                                                <option value="${MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_REPORT_TO_APPLICANT}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_REPORT_TO_APPLICANT}">selected="selected"</c:if>>Route report to applicant</option>
-                                                                                <option value="${MasterCodeConstants.MOH_PROCESSING_DECISION_MARK_AS_FINAL}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESSING_DECISION_MARK_AS_FINAL}">selected="selected"</c:if>>Mark report as final</option>
-                                                                            </c:if>
-                                                                            <option value="MOHPRO029" <c:if test="${processDto.decision eq 'MOHPRO029'}">selected="selected"</c:if>>Skip Inspection</option>
+                                                                            <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_AO_FOR_REVIEW}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_AO_FOR_REVIEW}">selected="selected"</c:if>>Route to AO for Review</option>
+                                                                            <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_SKIP_INSPECTION}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESS_DECISION_SKIP_INSPECTION}">selected="selected"</c:if>>Skip Inspection</option>
                                                                         </select>
                                                                         <span data-err-ind="decision" class="error-msg" ></span>
                                                                     </div>
                                                                 </div>
                                                                 <div class="clear"></div>
                                                             </div>
-                                                            <div class="form-group" id="selectMohUserDiv" <c:if test="${processDto.decision ne MasterCodeConstants.MOH_PROCESSING_DECISION_SUBMIT_REPORT_TO_AO_FOR_REVIEW}">style="display: none;"</c:if>>
+                                                            <div class="form-group" id="selectMohUserDiv" <c:if test="${processDto.decision ne MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_AO_FOR_REVIEW}">style="display: none;"</c:if>>
                                                                 <label for="selectMohUser" class="col-xs-12 col-md-4 control-label">Select AO <span style="color: red">*</span></label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
                                                                     <div class="input-group">
@@ -162,6 +128,16 @@
                                                                             </c:forEach>
                                                                         </select>
                                                                         <span data-err-ind="selectMohUser" class="error-msg" ></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="clear"></div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="remarks" class="col-xs-12 col-md-4 control-label">Remarks</label>
+                                                                <div class="col-sm-7 col-md-5 col-xs-10">
+                                                                    <div class="input-group">
+                                                                        <textarea id="remarks" name="remarks" cols="70" rows="7" maxlength="300"><c:out value="${processDto.remark}"/></textarea>
+                                                                        <span data-err-ind="remark" class="error-msg"></span>
                                                                     </div>
                                                                 </div>
                                                                 <div class="clear"></div>

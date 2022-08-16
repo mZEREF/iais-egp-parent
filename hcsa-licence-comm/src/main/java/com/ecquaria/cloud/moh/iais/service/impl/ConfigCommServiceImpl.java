@@ -30,15 +30,16 @@ import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * @author chenlei on 5/3/2022.
@@ -309,11 +310,16 @@ public class ConfigCommServiceImpl implements ConfigCommService {
     }
 
     @Override
-    public List<HcsaSvcPersonnelDto> getHcsaSvcPersonnel(String serviceId, String psnType) {
+    public List<HcsaSvcPersonnelDto> getHcsaSvcPersonnel(String serviceId, String...psnType) {
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         map.put("serviceId", serviceId);
         map.put("psnType", psnType);
-        return configCommClient.getServiceType(serviceId, psnType).getEntity();
+        if (!StringUtil.isEmpty(serviceId)&&!IaisCommonUtils.isSpecialEmpty(psnType)){
+            return configCommClient.getServiceType(serviceId, psnType).getEntity();
+        }
+        else{
+            return IaisCommonUtils.genNewArrayList();
+        }
     }
 
     @Override

@@ -97,8 +97,16 @@ function resetRadio(parentEl) {
     parentEl.find(":radio:checked").prop("checked", false);
 }
 
+function resetNotDisabledRadio(parentEl) {
+    parentEl.find(":radio:checked:not(:disabled)").prop("checked", false);
+}
+
 function resetCheckbox(parentEl) {
     parentEl.find(":checkbox:checked").prop("checked", false);
+}
+
+function resetNotDisabledCheckbox(parentEl) {
+    parentEl.find(":checkbox:checked:not(:disabled)").prop("checked", false);
 }
 //endregion --------------------------------------------------------
 

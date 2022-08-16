@@ -6,7 +6,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.ecq.com/iais-bsb" prefix="iais-bsb" %>
-<%@ page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -119,7 +118,7 @@
                                 </div>
                             </div>
                             <div class="row text-right text-center-mobile">
-                                <button class="btn btn-secondary" type="reset" id="clearBtn" name="clearBtn">Clear</button>
+                                <button class="btn btn-secondary" type="button" id="clearBtn" name="clearBtn">Clear</button>
                                 <button class="btn btn-primary" type="button" id="searchBtn" name="searchBtn">Search</button>
                             </div>
 
@@ -156,6 +155,7 @@
                                                 <c:otherwise>
                                                     <c:forEach var="app" items="${dataList}" varStatus="status">
                                                         <iais-bsb:app-action info="${app}" attributeKey="actionAvailable"/>
+                                                        <%--@elvariable id="actionAvailable" type="java.lang.Boolean"--%>
                                                         <tr>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Application No.</p>
@@ -176,6 +176,7 @@
                                                             </td>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Facility Name</p>
+                                                                    <%--@elvariable id="facilityNoNameMap" type="java.util.Map<java.lang.String, java.lang.String>"--%>
                                                                 <p style="text-align: center"><c:out value="${facilityNoNameMap.get(app.facilityNo)}"/></p>
                                                             </td>
                                                             <td>
@@ -198,13 +199,14 @@
                                                                 <p class="visible-xs visible-sm table-row-title">Actions</p>
                                                                 <c:choose>
                                                                     <c:when test="${not actionAvailable}">
-                                                                        <select  class="naDropdown" disabled="disabled">
+                                                                        <select class="naDropdown${status.index}" disabled="disabled">
                                                                             <option>N/A</option>
                                                                         </select>
                                                                     </c:when>
                                                                     <c:otherwise>
                                                                         <select id="appAction${status.index}" class="appActionDropdown${status.index}" name="appAction${status.index}" data-action-select="">
                                                                             <option value="#" selected="selected">Select</option>
+                                                                                <%--@elvariable id="DraftAppJudge" type="java.lang.Boolean"--%>
                                                                             <c:if test="${DraftAppJudge}">
                                                                                 <c:choose>
                                                                                     <c:when test="${app.appType eq 'BSBAPTY001' and app.processType eq 'PROTYPE001'}">
@@ -216,15 +218,6 @@
                                                                                     <c:when test="${app.appType eq 'BSBAPTY001' and app.processType eq 'PROTYPE005'}">
                                                                                         <option value="/bsb-web/eservice/INTERNET/MohBsbFacilityCertifierRegistration?editId=<iais:mask name='editId' value='${app.id}'/>">Continue</option>
                                                                                     </c:when>
-                                                                                    <c:when test="${app.appType eq 'BSBAPTY005' and app.processType eq 'PROTYPE001'}">
-                                                                                        <option value="/bsb-web/eservice/INTERNET/ApplicantDeRegistrationFacility?editId=<iais:mask name='editId' value='${app.id}'/>">Continue</option>
-                                                                                    </c:when>
-                                                                                    <c:when test="${app.appType eq 'BSBAPTY004' and (app.processType eq 'PROTYPE002' or app.processType eq 'PROTYPE003' or app.processType eq 'PROTYPE004')}">
-                                                                                        <option value="/bsb-web/eservice/INTERNET/ApplicantCancellationApproval?editId=<iais:mask name='editId' value='${app.id}'/>">Continue</option>
-                                                                                    </c:when>
-                                                                                    <c:when test="${app.appType eq 'BSBAPTY005' and app.processType eq 'PROTYPE005'}">
-                                                                                        <option value="/bsb-web/eservice/INTERNET/ApplicantDeRegistrationAFC?editId=<iais:mask name='editId' value='${app.id}'/>">Continue</option>
-                                                                                    </c:when>
                                                                                     <c:when test="${app.processType eq 'PROTYPE006'}">
                                                                                         <option value="/bsb-web/eservice/INTERNET/JudgeDataSubmissionType?editId=<iais:mask name='editId' value='${app.id}'/>">Continue</option>
                                                                                     </c:when>
@@ -235,31 +228,40 @@
 
                                                                                 <option value="deleteDraft<iais:mask name='deleteId' value='${app.id}'/>">Delete</option>
                                                                             </c:if>
-                                                                            <c:if test="${app.status eq MasterCodeConstants.APP_STATUS_PEND_CHECKLIST_SUBMISSION}">
-                                                                                <option value="/bsb-web/eservice/INTERNET/MohBsbSubmitSelfAssessment?appId=<iais:mask name='selfAssessAppId' value='${app.id}'/>">Self-Assessment</option>
+                                                                            <%--@elvariable id="InspectionChecklistJudge" type="java.lang.Boolean"--%>
+                                                                            <c:if test="${InspectionChecklistJudge}">
+                                                                                <option value="/bsb-web/eservice/INTERNET/MohBsbSubmitSelfAssessment?appId=<iais:mask name='selfAssessAppId' value='${app.id}'/>">Submit Checklist</option>
                                                                             </c:if>
-                                                                            <c:if test="${AppWithdrawableJudge}">
-                                                                                <option value="/bsb-web/eservice/INTERNET/BsbWithDrawn?withdrawnAppId=<iais:mask name='id' value='${app.id}'/>&from=application">Withdraw</option>
-                                                                            </c:if>
-                                                                            <c:if test="${InsAppointmentJudge}">
-                                                                                <option value="/bsb-web/eservice/INTERNET/ApplicantSubmitInspectionDate?appId=<iais:mask name='indicateInsDateAppId' value='${app.id}'/>">Indicate Preferred Inspection Date</option>
-                                                                            </c:if>
-                                                                            <c:if test="${app.appType eq MasterCodeConstants.APP_TYPE_NEW and app.status eq MasterCodeConstants.APP_STATUS_PEND_NC_RECTIFICATION}">
-                                                                                <option value="/bsb-web/eservice/INTERNET/MohBsbRectifiesNCs?appId=<iais:mask name='ncAppId' value='${app.id}'/>">Submit non-compliance action</option>
-                                                                            </c:if>
+                                                                            <%--@elvariable id="InspectionFollowUpJudge" type="java.lang.Boolean"--%>
                                                                             <c:if test="${InspectionFollowUpJudge}">
-                                                                                <option value="/bsb-web/eservice/INTERNET/InspectionFollowUpItemsFE?appId=<iais:mask name='followUpAppId' value='${app.id}'/>">Submit follow-up action</option>
+                                                                                <option value="/bsb-web/eservice/INTERNET/InspectionFollowUpItemsFE?appId=<iais:mask name='followUpAppId' value='${app.id}'/>">Submit Follow-up Action</option>
+                                                                                <option value="/bsb-web/eservice/INTERNET/InspectionFollowUpItemsFE?appId=<iais:mask name='followUpAppId' value='${app.id}'/>">Request for deadline extension</option>
                                                                             </c:if>
-                                                                            <c:if test="${app.status eq MasterCodeConstants.APP_STATUS_PEND_APPLICANT_INPUT or app.status eq MasterCodeConstants.APP_STATUS_PEND_APPLICANT_CLARIFICATION}">
-                                                                                <option value="/bsb-web/eservice/INTERNET/MohBsbRfi?appId=<iais:mask name='rfiAppId' value='${app.id}'/>">Request For Information</option>
+                                                                            <%--@elvariable id="InspectionNCJudge" type="java.lang.Boolean"--%>
+                                                                            <c:if test="${InspectionNCJudge}">
+                                                                                <option value="/bsb-web/eservice/INTERNET/MohBsbRectifiesNCs?appId=<iais:mask name='ncAppId' value='${app.id}'/>">Submit Non-Compliance Rectification</option>
                                                                             </c:if>
-                                                                            <c:if test="${AFCUploadReportJudge}">
+                                                                            <%--@elvariable id="InspectionAppointmentJudge" type="java.lang.Boolean"--%>
+                                                                            <c:if test="${InspectionAppointmentJudge}">
+                                                                                <option value="/bsb-web/eservice/INTERNET/ApplicantSubmitInspectionDate?appId=<iais:mask name='indicateInsDateAppId' value='${app.id}'/>">Submit Preferred Appointment Date</option>
+                                                                            </c:if>
+                                                                            <%--@elvariable id="RFIJudge" type="java.lang.Boolean"--%>
+                                                                            <c:if test="${RFIJudge}">
+                                                                                <option value="/bsb-web/eservice/INTERNET/MohBsbRfi?appId=<iais:mask name='rfiAppId' value='${app.id}'/>">Submit Response</option>
+                                                                            </c:if>
+
+                                                                            <%--<c:if test="${AFCUploadReportJudge}">
                                                                                 <option value="/bsb-web/eservice/INTERNET/InsAfcCertification?appId=<iais:mask name='afcCertReportAppId' value='${app.id}'/>">Upload Certification Report</option>
                                                                             </c:if>
                                                                             <c:if test="${ApplicantUploadCertReportJudge}">
                                                                                 <option value="/bsb-web/eservice/INTERNET/InsApplicantCertification?appId=<iais:mask name='applicantCertReportAppId' value='${app.id}'/>">Upload Certification Report</option>
-                                                                            </c:if>
+                                                                            </c:if>--%>
 
+                                                                            <%--Withdraw at the selection bottom--%>
+                                                                            <%--@elvariable id="AppWithdrawableJudge" type="java.lang.Boolean"--%>
+                                                                            <c:if test="${AppWithdrawableJudge}">
+                                                                                <option value="/bsb-web/eservice/INTERNET/BsbWithDrawn?withdrawnAppId=<iais:mask name='id' value='${app.id}'/>&from=application">Withdraw</option>
+                                                                            </c:if>
                                                                         </select>
                                                                     </c:otherwise>
                                                                 </c:choose>
@@ -270,7 +272,7 @@
                                             </c:choose>
                                             </tbody>
                                         </table>
-
+                                        <%--@elvariable id="AFTER_DELETE_DRAFT_APP" type="java.lang.Boolean"--%>
                                         <iais:confirm msg="Are you sure you want to delete?" needFungDuoJi="false" popupOrder="deleteDraftModal" callBack="delDraftCancelBtn()" title=" " cancelFunc="delDraftYesBtn()" cancelBtnDesc="OK" yesBtnDesc="Cancel" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"  />
                                         <iais:confirm msg="The draft application is deleted" needFungDuoJi="false" popupOrder="deleteDraftMessage"  title=" " callBack="delDraftMsgYesBtn()"  needCancel="false" />
                                         <input type="hidden" id="afterDeleteDraftApp" name="afterDeleteDraftApp" value="${AFTER_DELETE_DRAFT_APP}" readonly disabled/>

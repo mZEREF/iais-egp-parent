@@ -151,7 +151,7 @@ public class ApptInspectionDateDelegator {
             processDecValues.add(InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE);
         }
         String appType = applicationViewDto.getApplicationDto().getApplicationType();
-        if(!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType))){
+        if(!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType))){
             processDecValues.add(InspectionConstants.PROCESS_DECI_ROLL_BACK);
         }
         ParamUtil.setRequestAttr(bpc.request, "nextStages", MasterCodeUtil.retrieveOptionsByCodes(processDecValues.toArray(new String[0])));
@@ -173,14 +173,16 @@ public class ApptInspectionDateDelegator {
         log.debug(StringUtil.changeForLog("the apptInspectionDateStep1 start ...."));
         ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
         String processDec = ParamUtil.getRequestString(bpc.request, "processDec");
+        String remarks = ParamUtil.getString(bpc.request, "internalRemarks");
         apptInspectionDateDto.setProcessDec(processDec);
+        apptInspectionDateDto.setRemarks(remarks);
         ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", apptInspectionDateDto);
 
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if (InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE.equals(processDec)) {
             validateSpecificDate(bpc, errorMap, apptInspectionDateDto);
         } else if (InspectionConstants.PROCESS_DECI_ROLL_BACK.equals(processDec)) {
-            validateRollBack(bpc, errorMap);
+            validateRollBack(bpc, errorMap, apptInspectionDateDto);
         }else if (StringUtil.isEmpty(processDec)){
             errorMap.put("nextStage", "GENERAL_ERR0006");
         }
@@ -193,10 +195,13 @@ public class ApptInspectionDateDelegator {
         ParamUtil.setRequestAttr(bpc.request, "apptInspectionDateType", "success");
     }
 
-    private void validateRollBack(BaseProcessClass bpc, Map<String, String> errorMap) {
+    private void validateRollBack(BaseProcessClass bpc, Map<String, String> errorMap ,ApptInspectionDateDto apptInspectionDateDto) {
         String rollBackTo = ParamUtil.getRequestString(bpc.request, "rollBackTo");
         if (StringUtil.isEmpty(rollBackTo)) {
             errorMap.put("rollBackTo", "GENERAL_ERR0006");
+        }
+        if (StringUtil.isEmpty(apptInspectionDateDto.getRemarks())) {
+            errorMap.put("remarks", "GENERAL_ERR0006");
         }
     }
 
@@ -303,7 +308,7 @@ public class ApptInspectionDateDelegator {
                 String rollBackToIndex = ParamUtil.getString(bpc.request, "rollBackTo");
                 TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
                 Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(bpc.request, "rollBackValueMap");
-                inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackValueMap.get(rollBackToIndex),null);
+                inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackValueMap.get(rollBackToIndex),apptInspectionDateDto.getRemarks());
                 ParamUtil.setRequestAttr(bpc.request, "isRollBack", AppConsts.TRUE);
             }
         }

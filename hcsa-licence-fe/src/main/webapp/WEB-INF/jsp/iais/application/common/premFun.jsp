@@ -8,6 +8,8 @@
         addOperationalEvnet();
         delOperationEvent();
 
+        easMtsUseOnlyEvent();
+
         locateWtihNonHcsaEvent();
         addNonHcsaEvent();
         delNonHcsaEvent();
@@ -27,6 +29,7 @@
     }
 
     function checkPremiseContent($premContent) {
+        checkEasMtsUseOnly($premContent);
         checkAddressMandatory($premContent);
         checkLocateWtihNonHcsa($premContent);
 
@@ -66,7 +69,6 @@
             hideTag($premContent.find('.scdfRefNoRow'));
             hideTag($premContent.find('.certIssuedDtRow'));
             hideTag($premContent.find('.vehicleRow'));
-            hideTag($premContent.find('.easMtsAddFields'));
             hideTag($premContent.find('.co-location-div'));
             showTag($premContent.find('.easMtsAddFields'));
         } else if ('MOBILE' === premType) {
@@ -217,6 +219,7 @@
             if (!onlyInit) {
                 removeAdditional($premContent);
                 clearFields($premMainContent);
+                checkEasMtsUseOnly($premContent);
                 checkAddressMandatory($premContent);
                 checkLocateWtihNonHcsa($premContent);
                 checkPremDisabled($premContent, false);
@@ -267,6 +270,7 @@
         $premContent.find('.premisesIndexNo').val(data.premisesIndexNo);
         //$premContent.find('.isPartEdit').val('0');
 
+        checkEasMtsUseOnly($premContent);
         checkAddressMandatory($premContent);
         let existData = $premContent.find('.chooseExistData').val();
         checkPremDisabled($premContent, '1' == existData);
@@ -284,8 +288,29 @@
         toggleTag($premContent.find('.opDel:first'), !disabled);
     }
 
+    var easMtsUseOnlyEvent = function () {
+        $('.useType').unbind('click');
+        $('.useType').on('click', function() {
+            let $premContent = $(this).closest('div.premContent');
+            checkEasMtsUseOnly($premContent);
+        });
+    }
+
+    function checkEasMtsUseOnly($premContent) {
+        let data = getValue($premContent.find('.useType'));
+        $premContent.find('.pubEmailLabel').find('.mandatory').remove();
+        $premContent.find('.pubHotlineLabel').find('.mandatory').remove();
+        if ('UOT002' != data) {
+            $premContent.find('.pubEmailLabel').append('<span class="mandatory">*</span>');
+            $premContent.find('.pubHotlineLabel').append('<span class="mandatory">*</span>');
+        }
+    }
+
     function checkLocateWtihNonHcsa($premContent) {
         var $row = $premContent.find('.locateWtihNonHcsaRow');
+        if (isEmptyNode($row)) {
+            return;
+        }
         if ($row.find('input.locateWtihNonHcsa[value="1"]').is(':checked')) {
             showTag($row.next('.nonHcsaRowDiv'));
             hideTag($premContent.find('.delNonHcsaSvcRow:first'));

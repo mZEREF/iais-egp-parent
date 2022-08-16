@@ -104,6 +104,9 @@ public class DpPatientInfoDelegator extends DpCommonDelegator {
         PatientDto patientDto = dpSuperDataSubmissionDto.getPatientDto() == null ? new PatientDto() : dpSuperDataSubmissionDto.getPatientDto();
         ControllerHelper.get(request, patientDto);
         patientDto.setPatientType(DataSubmissionConsts.DS_PATIENT_DRP);
+        if (StringUtil.isNotEmpty(patientDto.getIdNumber())) {
+            patientDto.setIdNumber(patientDto.getIdNumber().toUpperCase());
+        }
         if (StringUtil.isEmpty(patientDto.getEthnicGroup())) {
             patientDto.setEthnicGroup("");
         }

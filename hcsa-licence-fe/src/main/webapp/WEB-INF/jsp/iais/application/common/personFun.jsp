@@ -358,10 +358,11 @@
                 praCerEndDate = registration['PC End Date'];
                 typeOfRegister = registration['Register Type'];
             }
+            if (needControlName && !isEmpty(data.name)) {
+                $currContent.find('.name').val(name);
+            }
         }
-        if (needControlName && !isEmpty(data.name)) {
-            $currContent.find('.name').val(name);
-        }
+
         $currContent.find('.speciality p').html(specialty);
         $currContent.find('.subSpeciality p').html(subspecialty);
         $currContent.find('.qualification p').html(qualification);

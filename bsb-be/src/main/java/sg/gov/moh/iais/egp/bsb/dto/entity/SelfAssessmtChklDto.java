@@ -19,8 +19,6 @@ public class SelfAssessmtChklDto extends BaseEntityDto {
     @JMap(value = "${application.id}")
     private String applicationId;
 
-    private String rfiId;
-
     private String commonChkLstConfigId;
 
     private String chkLstConfigId;

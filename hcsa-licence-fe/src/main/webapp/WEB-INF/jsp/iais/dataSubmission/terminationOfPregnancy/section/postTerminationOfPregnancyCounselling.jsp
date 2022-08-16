@@ -103,7 +103,7 @@
             </iais:row>
         </div>
         <div id="numCounsellingGivenDoc"
-             <c:if test="${postTerminationDto.givenPostCounselling == false}">style="display: none"</c:if> >
+             <c:if test="${postTerminationDto.givenPostCounselling !=true}">style="display: none"</c:if> >
             <iais:row>
                 <c:set var="toolMsgPost"><iais:message key="DS_MSG018" escape="false" paramKeys="1"
                                                        paramValues="patient"/></c:set>

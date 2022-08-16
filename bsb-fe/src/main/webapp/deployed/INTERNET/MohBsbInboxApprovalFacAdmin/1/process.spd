@@ -1,48 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohBsbInboxApprovalFacAdmin" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="0" minorVersion="0" name="MohBsbInboxApprovalFacAdmin" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices />
  <Steps>
-  <StartStep defClass="" executor="" icon="" name="Start" x="100" y="100">
+  <StartStep defClass="" executor="" icon="" name="Start" x="96" y="60">
    <Description />
    <probepoint type="none" />
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
    </OnStepProcess>
   </StartStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Init" x="250" y="100">
-   <Description />
-   <probepoint type="none" />
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="init_OnStepProcess_0" name="init_OnStepProcess_0" />
-   </OnStepProcess>
-  </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="PrepareData" x="400" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareData" x="228" y="60">
    <Description />
    <probepoint type="none" />
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="prepareData_OnStepProcess_0" name="prepareData_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="BindAction" x="400" y="370">
-   <Description />
-   <probepoint type="none" />
-   <OnStepProcess />
-  </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Page" x="710" y="470">
+  <AutomaticStep defClass="" executor="" icon="" name="Page" x="120" y="408">
    <Description />
    <probepoint type="none" />
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="page_OnStepProcess_0" name="page_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Sort" x="700" y="370">
+  <AutomaticStep defClass="" executor="" icon="" name="Sort" x="252" y="420">
    <Description />
    <probepoint type="none" />
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="sort_OnStepProcess_0" name="sort_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Search" x="700" y="280">
+  <AutomaticStep defClass="" executor="" icon="" name="Search" x="360" y="408">
    <Description />
    <probepoint type="none" />
    <OnStepProcess>
@@ -51,7 +39,7 @@
   </AutomaticStep>
  </Steps>
  <Pages>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InboxApprovalFacAdminPage" stageIndicator="" x="400" y="240">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InboxApprovalFacAdminPage" stageIndicator="" x="180" y="156">
    <OnPageLoad />
    <OnPageSubmit />
    <Description />
@@ -60,46 +48,40 @@
  </Pages>
  <Forms />
  <Links>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/Init" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
-   <position>{(120,120)(270,120)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Init" style="oblique">
-   <position>{(270,120)(420,120)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/InboxApprovalFacAdminPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareData" style="oblique">
-   <position>{(420,120)(420,260)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/BindAction" linkstyle="Direct" name="" sourceName="/Pages/WebPage/InboxApprovalFacAdminPage" style="oblique">
-   <position>{(420,260)(420,390)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/ActionSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/BindAction" style="oblique">
-   <position>{(420,390)(570,390)}</position>
+   <position>{(248,80)(200,176)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Page" linkstyle="Direct" name="" sourceName="/Switches/Switch/ActionSwitch" style="oblique">
-   <position>{(570,390)(730,490)}</position>
+   <position>{(260,320)(140,428)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Page" style="oblique">
-   <position>{(730,490)(900,390)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
-   <position>{(900,390)(900,258)(420,120)}</position>
+   <position>{(140,428)(272,536)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Sort" linkstyle="Direct" name="" sourceName="/Switches/Switch/ActionSwitch" style="oblique">
-   <position>{(570,390)(720,390)}</position>
+   <position>{(260,320)(272,440)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Search" linkstyle="Direct" name="" sourceName="/Switches/Switch/ActionSwitch" style="oblique">
-   <position>{(570,390)(720,300)}</position>
+   <position>{(260,320)(380,428)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Search" style="oblique">
-   <position>{(720,300)(900,390)}</position>
+   <position>{(380,428)(272,536)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Sort" style="oblique">
-   <position>{(720,390)(900,390)}</position>
+   <position>{(272,440)(272,536)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
+   <position>{(116,80)(248,80)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/ActionSwitch" linkstyle="Direct" name="" sourceName="/Pages/WebPage/InboxApprovalFacAdminPage" style="oblique">
+   <position>{(200,176)(260,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
+   <position>{(272,536)(535,537)(542,73)(248,80)}</position>
   </SynchronousLink>
  </Links>
  <Conditions />
  <Switches>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="ActionSwitch" x="550" y="370">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="ActionSwitch" x="240" y="300">
    <Description />
    <SwitchCase component="/Steps/AutomaticStep/Page" value="&quot;page&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/Sort" value="&quot;sort&quot;" />
@@ -108,7 +90,7 @@
  </Switches>
  <Branches />
  <Merges>
-  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="880" y="370">
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="252" y="516">
    <Description />
   </Merge>
  </Merges>

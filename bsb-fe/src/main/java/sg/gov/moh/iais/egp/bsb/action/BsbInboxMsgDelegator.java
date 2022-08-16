@@ -2,9 +2,12 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.SneakyThrows;
@@ -29,6 +32,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_INBOX_MESSAGE;
@@ -36,6 +40,7 @@ import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants
 import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_DASHBOARD_UNREAD_MSG_AMT;
 import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_INBOX_DATA_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_INBOX_MSG_SEARCH_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.FeInboxConstants.KEY_IS_FAC_ADMIN;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_ADDITIONAL;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_VALUE;
 
@@ -57,6 +62,7 @@ public class BsbInboxMsgDelegator {
     public static final String KEY_INBOX = "inbox";
     public static final String KEY_ARCHIVE = "archive";
     private static final String KEY_AFTER_ARCHIVE = "AFTER_ARCHIVE";
+    public static final String KEY_ACTION_REQUIRED_MAP = "actionRequiredMap";
 
     private final BsbInboxClient inboxClient;
     private final BsbInboxService inboxService;
@@ -76,12 +82,16 @@ public class BsbInboxMsgDelegator {
         AuditTrailHelper.auditFunction(MODULE_INTERNAL_INBOX, FUNCTION_INBOX_MESSAGE);
     }
 
-    public void init(BaseProcessClass bpc){
+    public void init(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String msgStatus = request.getParameter(KEY_MESSAGE_STATUS);
         InboxMsgSearchDto searchDto = getSearchDto(request);
         searchDto.setMsgStatus(msgStatus);
-        ParamUtil.setSessionAttr(request,KEY_INBOX_MSG_SEARCH_DTO,searchDto);
+        ParamUtil.setSessionAttr(request, KEY_INBOX_MSG_SEARCH_DTO, searchDto);
+
+        // judge the role of the logging user
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        ParamUtil.setSessionAttr(request, KEY_IS_FAC_ADMIN, loginContext.getCurRoleId().equals(RoleConsts.USER_ROLE_BSB_FACILITY_USER));
     }
 
     @SneakyThrows
@@ -100,10 +110,12 @@ public class BsbInboxMsgDelegator {
         if (resultDto.ok()) {
             ParamUtil.setRequestAttr(request, KEY_INBOX_MSG_PAGE_INFO, resultDto.getEntity().getPageInfo());
             ParamUtil.setRequestAttr(request, KEY_INBOX_DATA_LIST, resultDto.getEntity().getBsbInboxes());
+            ParamUtil.setRequestAttr(request, KEY_ACTION_REQUIRED_MAP, new HashMap<>(resultDto.getEntity().getInboxActionRequiredMsgIdMap()));
         } else {
             log.warn("get inbox message API doesn't return ok, the response is {}", resultDto);
             ParamUtil.setRequestAttr(request, KEY_INBOX_MSG_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
             ParamUtil.setRequestAttr(request, KEY_INBOX_DATA_LIST, new ArrayList<>());
+            ParamUtil.setRequestAttr(request, KEY_ACTION_REQUIRED_MAP ,new HashMap<>());
         }
         // get select options
         ParamUtil.setRequestAttr(request, "msgTypeOps", MasterCodeHolder.MSG_TYPE.allOptions());
@@ -111,7 +123,7 @@ public class BsbInboxMsgDelegator {
         ParamUtil.setRequestAttr(request, "msgSubTypeOps", inboxSubTypeOps);
 
         String msgPage = getMsgPage(request);
-        ParamUtil.setRequestAttr(request,KEY_MESSAGE_PAGE,msgPage);
+        ParamUtil.setRequestAttr(request, KEY_MESSAGE_PAGE, msgPage);
     }
 
     public void search(BaseProcessClass bpc) {
@@ -150,13 +162,13 @@ public class BsbInboxMsgDelegator {
                 searchDto.setSearchSubject("");
                 searchDto.setMsgStatus("MSGRS005");
                 searchDto.setPage(0);
-                ParamUtil.setSessionAttr(request,KEY_MESSAGE_PAGE,actionValue);
+                ParamUtil.setSessionAttr(request, KEY_MESSAGE_PAGE, actionValue);
                 break;
             case KEY_INBOX:
                 searchDto.setSearchSubject("");
                 searchDto.setMsgStatus("");
                 searchDto.setPage(0);
-                ParamUtil.setSessionAttr(request,KEY_MESSAGE_PAGE,actionValue);
+                ParamUtil.setSessionAttr(request, KEY_MESSAGE_PAGE, actionValue);
                 break;
             default:
                 log.warn("search, action_value is invalid: {}", actionValue);
@@ -185,23 +197,23 @@ public class BsbInboxMsgDelegator {
         HttpServletRequest request = bpc.request;
         //get mask msg id
         inboxService.retrieveDashboardData(request);
-        String maskedMsgId = ParamUtil.getString(request,KEY_ACTION_VALUE);
+        String maskedMsgId = ParamUtil.getString(request, KEY_ACTION_VALUE);
         //unMasked msg id
-        if(StringUtils.hasLength(maskedMsgId)){
-           String msgId = MaskUtil.unMaskValue(KEY_ACTION_VALUE,maskedMsgId);
-           InboxMsgContentDto msgContentDto = inboxClient.searchInboxContentByMsgId(msgId).getEntity();
-           String finalContent = msgContentDto.getContent();
-           List<MsgMaskParam> msgMaskParams = msgContentDto.getInboxMaskParamDtoList();
-           if(msgMaskParams != null && !msgMaskParams.isEmpty()){
-               for (MsgMaskParam maskParam : msgMaskParams) {
-                   finalContent = finalContent.replaceAll(KEY_SIGN_EQUAL+maskParam.getParamValue(),
-                           KEY_SIGN_EQUAL+MaskUtil.maskValue(maskParam.getParamName(),maskParam.getParamValue()));
-               }
-           }
+        if (StringUtils.hasLength(maskedMsgId)) {
+            String msgId = MaskUtil.unMaskValue(KEY_ACTION_VALUE, maskedMsgId);
+            InboxMsgContentDto msgContentDto = inboxClient.searchInboxContentByMsgId(msgId).getEntity();
+            String finalContent = msgContentDto.getContent();
+            List<MsgMaskParam> msgMaskParams = msgContentDto.getInboxMaskParamDtoList();
+            if (msgMaskParams != null && !msgMaskParams.isEmpty()) {
+                for (MsgMaskParam maskParam : msgMaskParams) {
+                    finalContent = finalContent.replaceAll(KEY_SIGN_EQUAL + maskParam.getParamValue(),
+                            KEY_SIGN_EQUAL + MaskUtil.maskValue(maskParam.getParamName(), maskParam.getParamValue()));
+                }
+            }
             //get msg content
             //set content into request
-            ParamUtil.setRequestAttr(request, FeInboxConstants.KEY_BSB_FE_MSG_CONTENT,finalContent);
-           inboxClient.updateInboxMsgStatusRead(msgId);
+            ParamUtil.setRequestAttr(request, FeInboxConstants.KEY_BSB_FE_MSG_CONTENT, finalContent);
+            inboxClient.updateInboxMsgStatusRead(msgId);
         }
     }
 
@@ -230,12 +242,9 @@ public class BsbInboxMsgDelegator {
     }
 
 
-
     public void bindAction(BaseProcessClass bpc) {
         // empty now
     }
-
-
 
 
     private InboxMsgSearchDto getSearchDto(HttpServletRequest request) {
@@ -250,8 +259,8 @@ public class BsbInboxMsgDelegator {
         return dto;
     }
 
-    public String getMsgPage(HttpServletRequest request){
-       String msgPage = (String) ParamUtil.getSessionAttr(request,KEY_MESSAGE_PAGE);
-       return msgPage != null?msgPage:KEY_INBOX;
+    public String getMsgPage(HttpServletRequest request) {
+        String msgPage = (String) ParamUtil.getSessionAttr(request, KEY_MESSAGE_PAGE);
+        return msgPage != null ? msgPage : KEY_INBOX;
     }
 }

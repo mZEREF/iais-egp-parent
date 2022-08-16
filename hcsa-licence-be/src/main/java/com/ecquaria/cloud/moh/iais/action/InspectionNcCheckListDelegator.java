@@ -128,7 +128,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
         ApplicationViewDto appViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(request, APPLICATIONVIEWDTO);
         String[] processDess = new String[]{InspectionConstants.PROCESS_DECI_PROCEED_WITH_INSPECTION};
         String appType = appViewDto.getApplicationDto().getApplicationType();
-        if(!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType))){
+        if(!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType))){
             processDess = new String[]{InspectionConstants.PROCESS_DECI_PROCEED_WITH_INSPECTION, InspectionConstants.PROCESS_DECI_ROLL_BACK};
         }
         ParamUtil.setSessionAttr(request, PROCESS_DEC_OPTIONS, (Serializable) MasterCodeUtil.retrieveOptionsByCodes(processDess));

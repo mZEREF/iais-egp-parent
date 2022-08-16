@@ -49,6 +49,7 @@
                             <td>
                                 <c:forEach var="action" items="${actions}" varStatus="status">
                                     <c:set var="maskApp"><iais:mask name="selfAssessAppId" value="${dataDto.appId}"/></c:set>
+                                    <%-- TODO use different mask param for different action, so when an action does not exist, user can not access it --%>
                                     <c:choose>
                                         <c:when test="${action eq 'Print'}">
                                             <button type="button" id="printSelfAssessment${status.index}" data-custom-ind="printSelfAssessment" value="${maskApp}" class="btn btn-default btn-md" >Print</button>

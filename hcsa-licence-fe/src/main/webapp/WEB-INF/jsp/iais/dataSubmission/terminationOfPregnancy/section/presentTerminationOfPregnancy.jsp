@@ -504,26 +504,26 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="NO_PRS_ELIS_SERVICE" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        <span style="font-size: 2rem;" id="noMsg">
-                            <iais:message key="GENERAL_ERR0065" escape="false"/>
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <div class="row " style="margin-top: 5%;margin-bottom: 5%">
-                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6"
-                        data-dismiss="modal" onclick="cancels()">CLOSE
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+<%--<div class="modal fade" id="NO_PRS_ELIS_SERVICE" role="dialog" aria-labelledby="myModalLabel">--%>
+<%--    <div class="modal-dialog modal-dialog-centered" role="document">--%>
+<%--        <div class="modal-content">--%>
+<%--            <div class="modal-body">--%>
+<%--                <div class="row">--%>
+<%--                    <div class="col-md-12">--%>
+<%--                        <span style="font-size: 2rem;" id="noMsg">--%>
+<%--                            <iais:message key="GENERAL_ERR0065" escape="false"/>--%>
+<%--                        </span>--%>
+<%--                    </div>--%>
+<%--                </div>--%>
+<%--            </div>--%>
+<%--            <div class="row " style="margin-top: 5%;margin-bottom: 5%">--%>
+<%--                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6"--%>
+<%--                        data-dismiss="modal" onclick="cancels()">CLOSE--%>
+<%--                </button>--%>
+<%--            </div>--%>
+<%--        </div>--%>
+<%--    </div>--%>
+<%--</div>--%>
 <div class="modal fade" id="PRS_CLOSE" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -857,7 +857,7 @@
                     console.log("The return data is null");
                     $('#doctorInformationText').show();
                     $('#doctorInformation').hide();
-                    $('#NO_PRS_ELIS_SERVICE').modal('show');
+                    // $('#NO_PRS_ELIS_SERVICE').modal('show');
                     console.log("3");
                 } else if (isEmpty(!data.selection)) {
                     $('#topDoctorInformations').val(false);
@@ -919,7 +919,7 @@
         $('#PRS_SERVICE_DOWN').modal('hide');
         $('#ELIS_SERVICE').modal('hide');
         $('#PRS_SERVICE').modal('hide');
-        $('#NO_PRS_ELIS_SERVICE').modal('hide');
+        // $('#NO_PRS_ELIS_SERVICE').modal('hide');
         $('#PRS_CLOSE').modal('hide');
         $('#PRS_PRN').modal('hide');
     }

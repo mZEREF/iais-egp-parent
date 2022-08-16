@@ -211,10 +211,10 @@
                                                                        paramValues="counsellor"/></c:set>
                             </c:if>
                         </c:if>
-                        <c:if test="${terminationDto.topDoctorInformations eq 'true'}">
-                            <c:set var="toolMsgRegn"><iais:message key="GENERAL_ERR0065" paramKeys="1"
-                                                                   paramValues="counsellor" escape="false"/></c:set>
-                        </c:if>
+<%--                        <c:if test="${terminationDto.topDoctorInformations eq 'true'}">--%>
+<%--                            <c:set var="toolMsgRegn"><iais:message key="GENERAL_ERR0065" paramKeys="1"--%>
+<%--                                                                   paramValues="counsellor" escape="false"/></c:set>--%>
+<%--                        </c:if>--%>
                     </c:if>
                     <c:if test="${'N' eq terminationDto.toolTipShow}">
                         <c:set var="toolMsgRegn"/>

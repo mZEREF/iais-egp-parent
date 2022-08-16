@@ -4,6 +4,7 @@
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
 <%@ page import="sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%@ page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -116,8 +117,9 @@
                                                                 <label class="col-xs-12 col-md-4 control-label" for="processingDecision">Processing Decision<span style="color: red">*</span></label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
                                                                     <select name="processingDecision"  class="processingDecisionDropdown" id="processingDecision">
+                                                                        <%--TODO: check this decision--%>
                                                                         <option value="" <c:if test="${letterDto.decision eq ''}">selected="selected"</c:if>>Please Select</option>
-                                                                        <option value="MOHPRO030" <c:if test="${letterDto.decision eq 'MOHPRO030'}">selected="selected"</c:if>>Submit to AO</option>
+                                                                        <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_AO}" <c:if test="${letterDto.decision eq MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_AO}">selected="selected"</c:if>>Submit to AO</option>
                                                                     </select>
                                                                 </div>
                                                                 <div class="clear"></div>

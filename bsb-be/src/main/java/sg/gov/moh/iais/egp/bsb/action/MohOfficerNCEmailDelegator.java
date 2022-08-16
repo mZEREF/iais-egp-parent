@@ -141,14 +141,15 @@ public class MohOfficerNCEmailDelegator {
         ncEmailDto.reqObjMapping(request);
         ParamUtil.setSessionAttr(request,KEY_INS_NC_EMAIL_DTO,ncEmailDto);
 
+        // TODO: check these decision
         ValidationResultDto validationResultDto = inspectionClient.validateInsNCEmailDto(ncEmailDto);
         String validateResult;
         if (validationResultDto.isPass()) {
-            if (MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_TO_AO.equals(ncEmailDto.getDecision())) {
+            if (MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_AO.equals(ncEmailDto.getDecision())) {
                 validateResult = "ao";
-            }else if(MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE.equals(ncEmailDto.getDecision())){
+            }else if(MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE.equals(ncEmailDto.getDecision())){
                 validateResult = "applicant";
-            }else if(MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_BACK_TO_DO.equals(ncEmailDto.getDecision())){
+            }else if(MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO.equals(ncEmailDto.getDecision())){
                 validateResult = "do";
             }else {
                 validateResult = "invalid";

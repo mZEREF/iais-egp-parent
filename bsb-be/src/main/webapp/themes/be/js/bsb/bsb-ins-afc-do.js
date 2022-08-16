@@ -1,14 +1,15 @@
 $(function () {
+    // TODO: check these decision
     var processingDecisionObj = $("#processingDecision");
     var processingDecisionVal =  processingDecisionObj.val();
-    if (processingDecisionVal === "MOHPRO030") {
+    if (processingDecisionVal === "MOHPRO022") {
         $("#selectMohUserDiv").show();
     } else {
         $("#selectMohUserDiv").hide();
     }
     processingDecisionObj.change(function () {
         var selectValue = $(this).val();
-        if (selectValue === "MOHPRO030") {
+        if (selectValue === "MOHPRO022") {
             $("#selectMohUserDiv").show();
         } else {
             $("#selectMohUserDiv").hide();

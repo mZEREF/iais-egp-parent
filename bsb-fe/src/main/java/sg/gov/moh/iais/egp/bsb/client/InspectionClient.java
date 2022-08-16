@@ -4,14 +4,20 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.FeignClientsConfiguration;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.InsRectificationDisplayDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.RectifyInsReportSaveDto;
+import sg.gov.moh.iais.egp.bsb.dto.inspection.ReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.insfollowup.FollowUpSaveDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.insfollowup.FollowUpViewDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.chklst.assessment.PreAssessmentDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.SelfAssessmtChklDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.*;
 
 
 @FeignClient(value = "bsb-api", configuration = FeignClientsConfiguration.class, contextId = "inspection")
@@ -26,7 +32,7 @@ public interface InspectionClient {
     void submitSelfAssessment(@RequestBody SelfAssessmtChklDto selfAssessmtChklDto);
 
     @GetMapping(value = "/checklist/config", produces = MediaType.APPLICATION_JSON_VALUE)
-    ChecklistConfigDto getMaxVersionChecklistConfig(@RequestParam("appId") String appId,
+    ChecklistConfigDto getMaxVersionChecklistConfig(@RequestParam("insAppId") String insAppId,
                                                     @RequestParam("type") String type);
 
     @GetMapping(value = "/checklist/config/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

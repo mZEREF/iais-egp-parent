@@ -50,7 +50,7 @@
                         <iais:row>
                             <iais:field width="5" value="Reason for No Counselling"/>
                             <iais:value width="7" display="true" cssClass="col-md-7">
-                                <iais:code code="${postTerminationDto.ifCounsellingNotGiven}"/>
+                                <c:out value="${postTerminationDto.ifCounsellingNotGiven}"/>
                             </iais:value>
                         </iais:row>
                     </div>

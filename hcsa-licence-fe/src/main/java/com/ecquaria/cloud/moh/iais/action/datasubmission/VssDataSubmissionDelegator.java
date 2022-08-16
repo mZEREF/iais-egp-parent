@@ -220,6 +220,25 @@ public class VssDataSubmissionDelegator {
         retrieveHciCode(bpc.request, vssSuperDataSubmissionDto);
         initVssSuperDataSubmissionDto(bpc.request, vssSuperDataSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, "hcSelectList", (Serializable) getSourseList(bpc.request));
+
+        List<DsConfig> configList =DsConfigHelper.initVssConfig(bpc.request);
+
+        for (DsConfig cfg:configList
+        ) {
+            VssTreatmentDto vssTreatmentDto =  vssSuperDataSubmissionDto.getVssTreatmentDto();
+            if(vssTreatmentDto!=null&&!cfg.getCode().equals(DsConfigHelper.TOP_STEP_PREVIEW)&&!cfg.getCode().equals(DsConfigHelper.VSS_STEP_TREATMENT)){
+                int status=0;
+                if (DsConfigHelper.VSS_STEP_CONSENT_PARTICULARS.equals(cfg.getCode())&&vssTreatmentDto.getGuardianAppliedPartDto()!=null) {
+                    ValidationResult result = WebValidationHelper.validateProperty(vssTreatmentDto.getGuardianAppliedPartDto(),DataSubmissionConsts.DS_VSS);
+                    status = result.isHasErrors()?0:1;
+                }else if (DsConfigHelper.VSS_STEP_TFSSP_PARTICULARS.equals(cfg.getCode())&&vssTreatmentDto.getSexualSterilizationDto()!=null) {
+                    ValidationResult result = WebValidationHelper.validateProperty(vssTreatmentDto.getSexualSterilizationDto(),DataSubmissionConsts.DS_VSS);
+                    status = result.isHasErrors()?0:1;
+                }
+                cfg.setStatus(status);
+                DsConfigHelper.setConfig(DataSubmissionConsts.DS_VSS, cfg, bpc.request);
+            }
+        }
         DataSubmissionHelper.setCurrentVssDataSubmission(vssSuperDataSubmissionDto, bpc.request);
         String pageStage = DataSubmissionConstant.PAGE_STAGE_PAGE;
         DsConfig currentConfig = DsConfigHelper.getCurrentConfig(DataSubmissionConsts.DS_VSS, bpc.request);
@@ -346,9 +365,12 @@ public class VssDataSubmissionDelegator {
         VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto() == null ? new VssTreatmentDto() : vssSuperDataSubmissionDto.getVssTreatmentDto();
         TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto() == null ? new TreatmentDto() : vssTreatmentDto.getTreatmentDto();
         ControllerHelper.get(request, treatmentDto);
+        if(StringUtil.isNotEmpty(treatmentDto.getIdNumber())){
+            treatmentDto.setIdNumber(treatmentDto.getIdNumber().toUpperCase());
+        }
         try {
             int age = -Formatter.compareDateByDay(treatmentDto.getBirthDate())/365;
-            int ageNew=-(Formatter.compareDateByDay(treatmentDto.getBirthDate())+age/4) / 365;
+            int ageNew=-(Formatter.compareDateByDay(treatmentDto.getBirthDate())+age/4+1) / 365;
 
             treatmentDto.setAge(ageNew);
         } catch (Exception e) {
@@ -397,6 +419,12 @@ public class VssDataSubmissionDelegator {
         VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto() == null ? new VssTreatmentDto() : vssSuperDataSubmissionDto.getVssTreatmentDto();
         GuardianAppliedPartDto guardianAppliedPartDto = vssTreatmentDto.getGuardianAppliedPartDto() == null ? new GuardianAppliedPartDto() : vssTreatmentDto.getGuardianAppliedPartDto();
         ControllerHelper.get(request, guardianAppliedPartDto);
+        if(StringUtil.isNotEmpty(guardianAppliedPartDto.getAppliedPartIdNo())){
+            guardianAppliedPartDto.setAppliedPartIdNo(guardianAppliedPartDto.getAppliedPartIdNo().toUpperCase());
+        }
+        if(StringUtil.isNotEmpty(guardianAppliedPartDto.getGuardianIdNo())){
+            guardianAppliedPartDto.setGuardianIdNo(guardianAppliedPartDto.getGuardianIdNo().toUpperCase());
+        }
         String appliedPartBirthday = ParamUtil.getString(request, "appliedPartBirthday");
         String guardianBirthday = ParamUtil.getString(request, "guardianBirthday");
         String courtOrderIssueDate = ParamUtil.getString(request, "courtOrderIssueDate");

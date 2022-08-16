@@ -22,7 +22,9 @@ public interface ConfigService {
 
     List<HcsaServiceDto> getActiveServicesBySvcType(String svcType);
 
-    HcsaServiceConfigDto getHcsaServiceConfigDtoByServiceId(HcsaServiceConfigDto hcsaServiceConfigDtoPrePare,String serviceId);
+    List<HcsaServiceDto> getServicesBySvcCode(String svcCode);
+
+    HcsaServiceConfigDto getHcsaServiceConfigDtoByServiceId(String serviceId);
 
     void viewPageInfo(HttpServletRequest request);
 
@@ -39,6 +41,8 @@ public interface ConfigService {
     void saData(HttpServletRequest request);
 
     void delete(HttpServletRequest request);
+
+    void doDeleteService(String serviceId);
 
     void deleteOrCancel(HttpServletRequest request,HttpServletResponse response);
 
@@ -59,4 +63,6 @@ public interface ConfigService {
     Map<String,Boolean> isExistHcsaService(HcsaServiceDto hcsaServiceDto);
 
     void saveHcsaServiceConfigDto(HcsaServiceConfigDto hcsaServiceConfigDto);
+
+
 }

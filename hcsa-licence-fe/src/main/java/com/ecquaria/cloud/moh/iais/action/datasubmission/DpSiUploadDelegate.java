@@ -130,7 +130,7 @@ public class DpSiUploadDelegate {
 
     private void preapreDate(String pageStage, HttpServletRequest request) {
         Map<String, String> maxCountMap = IaisCommonUtils.genNewHashMap(1);
-        maxCountMap.put("maxCount", Formatter.formatNumber(DataSubmissionHelper.getFileRecordMaxNumber(), "#,##0"));
+        maxCountMap.put("maxCount", Formatter.formatNumber(200, "#,##0"));
         ParamUtil.setRequestAttr(request, "maxCountMap", maxCountMap);
         ParamUtil.setRequestAttr(request, DataSubmissionConstant.CURRENT_PAGE_STAGE, pageStage);
         Integer fileItemSize = (Integer) request.getAttribute(FILE_ITEM_SIZE);
@@ -437,9 +437,9 @@ public class DpSiUploadDelegate {
                 fileItemSize = sovenorInventoryExcelDtos.size();
                 if (fileItemSize == 0) {
                     errorMap.put("uploadFileError", "PRF_ERR006");
-                } else if (fileItemSize > DataSubmissionHelper.getFileRecordMaxNumber()) {
+                } else if (fileItemSize > 200) {
                     errorMap.put("uploadFileError", MessageUtil.replaceMessage("GENERAL_ERR0052",
-                            Formatter.formatNumber(DataSubmissionHelper.getFileRecordMaxNumber(), "#,##0"), "maxCount"));
+                            Formatter.formatNumber(200, "#,##0"), "maxCount"));
                 } else {
                     dpSovenorInventoryDtos = getSovenorInventoryList(sovenorInventoryExcelDtos);
                     Map<String, ExcelPropertyDto> fieldCellMap = ExcelValidatorHelper.getFieldCellMap(SovenorInventoryExcelDto.class);
@@ -537,24 +537,16 @@ public class DpSiUploadDelegate {
         if (useParallel) {
             Collections.sort(dpSuperList, Comparator.comparing(dto -> dto.getDataSubmissionDto().getSubmissionNo()));
         }
-        List<DpSuperDataSubmissionDto> dpSuperLists=IaisCommonUtils.genNewArrayList();
-        for (DpSuperDataSubmissionDto dp:dpSuperList
-             ) {
-            DpSuperDataSubmissionDto dpNew=dpDataSubmissionService.saveDpSuperDataSubmissionDto(dp);
-            dpSuperLists.add(dpNew);
-        }
-        List<DpSuperDataSubmissionDto> dpSuperListBe=IaisCommonUtils.genNewArrayList();
-        try {
-            for (DpSuperDataSubmissionDto dp:dpSuperLists
-            ) {
-                DpSuperDataSubmissionDto dpNew=dpDataSubmissionService.saveDpSuperDataSubmissionDtoToBE(dp);
-                dpSuperListBe.add(dpNew);
-            }
-        } catch (Exception e) {
-            log.error(StringUtil.changeForLog("The Eic saveArSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
-        }
+
+        List<DpSuperDataSubmissionDto> dpSuperLists=dpDataSubmissionService.saveDpSuperDataSubmissionDtoList(dpSuperList);
+//        List<DpSuperDataSubmissionDto> dpSuperListBe = IaisCommonUtils.genNewArrayList();
+//        try {
+//            dpSuperListBe = dpDataSubmissionService.saveDpSuperDataSubmissionDtoToBE(dpSuperLists);
+//        } catch (Exception e) {
+//            log.error(StringUtil.changeForLog("The Eic saveArSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
+//        }
         sendSovenorFileMsgAndEmail(bpc.request);
-        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_LIST, (Serializable) dpSuperListBe);
+        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_LIST, (Serializable) dpSuperLists);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.EMAIL_ADDRESS, DataSubmissionHelper.getEmailAddrsByRoleIdsAndLicenseeId(bpc.request, Collections.singletonList(RoleConsts.USER_ROLE_DS_DP)));
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.SUBMITTED_BY,
                 DataSubmissionHelper.getLoginContext(bpc.request).getUserName());

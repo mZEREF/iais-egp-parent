@@ -23,7 +23,7 @@ import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserFileDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeFileDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityOperatorDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileValidateDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityRegisterDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilitySelectionDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.PreviewSubmitDto;
@@ -57,7 +57,7 @@ public interface FacilityRegisterClient {
     ValidationResultDto validateFacilitySelection(@RequestBody FacilitySelectionDto dto);
 
     @PostMapping(path = "/register/facility/form-validation/profile", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ValidationResultDto validateFacilityProfile(@RequestBody FacilityProfileDto.FacilityProfileValidateDto dto);
+    ValidationResultDto validateFacilityProfile(@RequestBody FacilityProfileValidateDto dto);
 
     @PostMapping(path = "/register/facility/form-validation/operator", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateFacilityOperator(@RequestBody FacilityOperatorDto dto);
@@ -101,8 +101,8 @@ public interface FacilityRegisterClient {
     @GetMapping(path = "/register/facility/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<FacilityRegisterDto> getFacilityRegistrationAppDataByApplicationId(@PathVariable("appId") String appId);
 
-    @GetMapping(path = "/register/facility/draft/same-classification-activity", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<Map<Long,FacilityRegisterDto>> getSameClassificationAndActivityDraftData(@RequestBody FacilitySelectionDto selectionDto);
+    @GetMapping(path = "/register/facility/draft/same-classification", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<Map<Long,FacilityRegisterDto>> getSameClassificationDraftData(@RequestParam("facClassification") String facClassification);
 
     /*******************RFC********************/
     @GetMapping(path = "/register/facility/rfc/{approvalId}", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -42,6 +42,7 @@ import java.util.Map;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_PRE_INSPECTION;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INSPECTION;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_APPLICANT_CLARIFICATION;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESS_DECISION_REQUEST_FOR_INFORMATION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ADHOC_CHECKLIST_LIST_ATTR;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ANSWER_MAP;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APP_ID;
@@ -183,12 +184,13 @@ public class PreInspectionDelegator {
         ParamUtil.setSessionAttr(request, KEY_INS_DECISION, processDto);
         ValidationResultDto validationResultDto = inspectionClient.validatePreInsSubmission(processDto);
         String validateResult;
+        // TODO: check these decision
         if (validationResultDto.isPass() && errorMap.isEmpty()) {
-            if (MasterCodeConstants.MOH_PROCESSING_DECISION_MARK_AS_READY.equals(processDto.getDecision())) {
+            if (MasterCodeConstants.MOH_PROCESS_DECISION_MARK_INSPECTION_TASK_AS_READY.equals(processDto.getDecision())) {
                 validateResult = "ready";
-            } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_REQUEST_FOR_INFO.equals(processDto.getDecision())) {
+            } else if (MOH_PROCESS_DECISION_REQUEST_FOR_INFORMATION.equals(processDto.getDecision())) {
                 validateResult = "rfi";
-            } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_SKIP_INSPECTION.equals(processDto.getDecision())) {
+            } else if (MasterCodeConstants.MOH_PROCESS_DECISION_SKIP_INSPECTION.equals(processDto.getDecision())) {
                 validateResult = "skip";
             } else {
                 validateResult = "unknown";
@@ -268,7 +270,7 @@ public class PreInspectionDelegator {
 
     private Map<String, String> validateRfi(HttpServletRequest request, InsProcessDto processDto) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
-        if ("MOHPRO002".equals(processDto.getDecision())) {
+        if (MOH_PROCESS_DECISION_REQUEST_FOR_INFORMATION.equals(processDto.getDecision())) {
             boolean rfiApp = (boolean) ParamUtil.getSessionAttr(request, RFI_APPLICATION);
             boolean rfiSelf = (boolean) ParamUtil.getSessionAttr(request, RFI_SELF);
             if (!(rfiApp || rfiSelf)) {
@@ -279,7 +281,7 @@ public class PreInspectionDelegator {
     }
 
     private void setRfiFromPage(HttpServletRequest request, InsProcessDto processDto) {
-        if ("MOHPRO002".equals(processDto.getDecision())) {
+        if (MOH_PROCESS_DECISION_REQUEST_FOR_INFORMATION.equals(processDto.getDecision())) {
             boolean rfiApp = "true".equals(ParamUtil.getString(request, RFI_APPLICATION));
             boolean rfiSelf = "true".equals(ParamUtil.getString(request, RFI_SELF));
             ParamUtil.setSessionAttr(request, RFI_APPLICATION, rfiApp);

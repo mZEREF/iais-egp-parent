@@ -87,5 +87,13 @@ public class CessationClientFallback implements CessationClient {
         return null;
     }
 
+    @Override
+    public FeignResponseEntity<AppPremiseMiscDto> getAppPremiseMiscDtoListByCon(String corrId, String type) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
 
 }

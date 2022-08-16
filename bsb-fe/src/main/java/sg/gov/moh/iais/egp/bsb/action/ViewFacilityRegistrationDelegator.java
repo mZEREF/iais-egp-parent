@@ -13,6 +13,7 @@ import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationItemMainInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.PrimaryDocDto;
+import sg.gov.moh.iais.egp.bsb.dto.info.common.OrgAddressInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserFileDto;
@@ -104,7 +105,8 @@ public class ViewFacilityRegistrationDelegator {
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         FacilityRegisterDto facilityRegisterDto = getFacilityRegisterDto(request, appId);
 
-        organizationInfoService.retrieveOrgAddressInfo(request);
+        OrgAddressInfo orgAddressInfo = organizationInfoService.getAddressByUen(facilityRegisterDto.getUen());
+        ParamUtil.setSessionAttr(request, OrganizationInfoService.KEY_ORG_ADDRESS, orgAddressInfo);
 
         FacilitySelectionDto selectionDto = facilityRegisterDto.getFacilitySelectionDto();
         boolean isCf = MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(selectionDto.getFacClassification());

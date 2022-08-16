@@ -43,7 +43,7 @@
                         <iais:row>
                             <iais:field value="Intended Purpose of Test" width="5" cssClass="col-md-5"/>
                             <iais:value width="7" cssClass="col-md-7" display="true">
-                                <c:out value="${dsLaboratoryDevelopTestDto.intendedPurpose}"/>
+                                ${StringUtil.viewTextHtml(dsLaboratoryDevelopTestDto.intendedPurpose)}
                             </iais:value>
                         </iais:row>
 
@@ -87,7 +87,7 @@
                         <iais:row>
                             <iais:field value="Remarks" width="5" cssClass="col-md-5" required="false"/>
                             <iais:value width="7" cssClass="col-md-7" display="true">
-                                <c:out value="${dsLaboratoryDevelopTestDto.remarks}"/>
+                                ${StringUtil.viewTextHtml(dsLaboratoryDevelopTestDto.remarks)}
                             </iais:value>
                         </iais:row>
 

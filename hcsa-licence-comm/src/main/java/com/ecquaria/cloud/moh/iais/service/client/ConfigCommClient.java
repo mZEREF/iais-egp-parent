@@ -33,8 +33,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.SuppleFormItemC
 import com.ecquaria.cloud.moh.iais.service.callback.ConfigCommClientFallback;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
-import java.util.Set;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,6 +42,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * AppConfigClient
@@ -122,7 +123,7 @@ public interface ConfigCommClient {
     FeignResponseEntity<List<HcsaSvcSubtypeOrSubsumedDto>> listSubCorrelation(@PathVariable(name = "svcId")String serviceId);
 
     @RequestMapping(path = "/iais-hcsa-service/service-type-results",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<HcsaSvcPersonnelDto>> getServiceType(@RequestParam("serviceId") String serviceId, @RequestParam("psnType") String psnType);
+    FeignResponseEntity<List<HcsaSvcPersonnelDto>> getServiceType(@RequestParam("serviceId") String serviceId, @RequestParam("psnType") String...psnType);
 
     @GetMapping(value = "/iais-hcsa-service/sub-type/{subTypeId}")
     FeignResponseEntity<HcsaServiceSubTypeDto> getHcsaServiceSubTypeById(@PathVariable("subTypeId")String subTypeId);
@@ -228,6 +229,6 @@ public interface ConfigCommClient {
     @GetMapping(value = "/iais-hcsa-fee/fee-MatchingTh-ServiceCode/{serviceCode}", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Integer> getFeeMaxMatchingThByServiceCode(@PathVariable(name ="serviceCode") String svcCode);
 
-    @GetMapping(value = "/supple-form-item-avc-code",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/hcsa-config/supple-form-item-avc-code",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<SuppleFormItemConfigDto>> getHcsaSvcSuppleFormItemBySvcCode(@RequestParam("serviceCode") String serviceId);
 }

@@ -56,7 +56,7 @@
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-12" style="text-align:right;"><%-- div for btn --%>
-                            <button class="btn btn-secondary" type="reset" id="clearBtn" name="clearBtn">Clear</button>
+                            <button class="btn btn-secondary" type="button" id="clearBtn" name="clearBtn">Clear</button>
                             <button class="btn btn-primary" type="button" id="searchBtn" name="searchBtn">Search</button>
                         </div>
                     </div>

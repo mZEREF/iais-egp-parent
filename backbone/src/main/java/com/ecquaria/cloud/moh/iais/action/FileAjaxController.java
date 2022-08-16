@@ -1,9 +1,11 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.helper.ConfigHelper;
+import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -136,31 +138,57 @@ public class FileAjaxController {
     private void checkAddtionalData(Map<String, Object> result, File toFile, HttpServletRequest request) {
         // premise - co-location non-licenced
         boolean forNonLicenced = !IaisCommonUtils.isEmpty(ParamUtil.getStrings(request, "premType"));
+        boolean isUpload = !IaisCommonUtils.isEmpty(ParamUtil.getStrings(request, "isUpload"));
         if (forNonLicenced) {
-            parsFile(result, toFile, "appPremNonLicRelationDtos", (data) -> {
+            parsFile(result, toFile, "appPremNonLicRelationDtos", 2, (data) -> {
                 AppPremNonLicRelationDto dto = new AppPremNonLicRelationDto();
                 dto.setBusinessName(data.get(0));
                 dto.setProvidedService(data.get(1));
                 return dto;
             });
         }
-        // others
+        if (isUpload) {
+            parsFile(result, toFile, "appSvcPersonnelDto", 19, (data) -> {
+                AppSvcPersonnelDto dto = new AppSvcPersonnelDto();
+                dto.setSalutation(data.get(0));
+                dto.setName(data.get(1));
+                dto.setDesignation(data.get(2));
+                dto.setOtherDesignation(data.get(3));
+                dto.setProfessionBoard(data.get(4));
+                dto.setProfessionType(data.get(5));
+                dto.setProfRegNo(data.get(6));
+                dto.setSpeciality(data.get(7));
+                dto.setSubSpeciality(data.get(8));
+                dto.setSpecialityOther(data.get(9));
+                dto.setSpecialtyGetDate(data.get(10));
+                dto.setTypeOfCurrRegi(data.get(11));
+                dto.setCurrRegiDate(data.get(12));
+                dto.setPraCerEndDate(data.get(13));
+                dto.setTypeOfRegister(data.get(14));
+                dto.setQualification(data.get(15));
+                dto.setWrkExpYear(data.get(16));
+                dto.setBclsExpiryDate(data.get(17));
+                dto.setCprExpiryDate(data.get(18));
+                return dto;
+            });
+            // others
+        }
     }
 
-    private <T> void parsFile(Map<String, Object> result, File toFile, String name, Function<List<String>, T> func) {
+    private <T> void parsFile(Map<String, Object> result, File toFile, String name, int fieldCount, Function<List<String>, T> func) {
         List<List<String>> data = null;
         try {
             data = ExcelReader.readerToList(toFile, 0, 1, null);
         } catch (Exception e) {
             log.warn(StringUtil.changeForLog(e.getMessage()), e);
         }
-        if (IaisCommonUtils.isEmpty(data)) {
-            // GENERAL_ERR0070 - Could not parse file content. Please download new template to do this.
-            result.put("description", MessageUtil.getMessageDesc("GENERAL_ERR0070"));
-            result.put("msgType", "N");
-        } else if (IaisCommonUtils.isEmpty(data.get(0))) {
+        if (IaisCommonUtils.isEmpty(data) || IaisCommonUtils.isEmpty(data.get(0))) {
             // PRF_ERR006 - No records found.
             result.put("description", MessageUtil.getMessageDesc("PRF_ERR006"));
+            result.put("msgType", "N");
+        } else if (data.get(0).size() < fieldCount) {
+            // GENERAL_ERR0070 - Could not parse file content. Please download new template to do this.
+            result.put("description", MessageUtil.getMessageDesc("GENERAL_ERR0070"));
             result.put("msgType", "N");
         } else {
             // data
@@ -375,5 +403,6 @@ public class FileAjaxController {
         data.put("fileType", fileType);
         return JsonUtil.parseToJson(data);
     }
+
 
 }

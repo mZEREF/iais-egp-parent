@@ -71,7 +71,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" value="Block No." />
+                    <iais:field width="6" value="Blk No." />
                     <iais:value width="6" display="true" cssClass="col-md-6">
                         <c:out value="${patientDto.blkNo}"/>
                     </iais:value>
@@ -110,7 +110,7 @@
                 <iais:row style="${patientDto.ethnicGroup eq 'ECGP004' ? '' : 'display: none'}">
                     <iais:field width="6" value="Other Ethnic Group" />
                     <iais:value width="6" display="true" cssClass="col-md-6">
-                        <c:out value="${patientDto.otherEthnicGroup}"/>
+                        <c:out value="${patientDto.ethnicGroupOther}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>

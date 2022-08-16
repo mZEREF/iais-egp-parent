@@ -5,9 +5,9 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.privilege.PrivilegeConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TransferInOutS
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TreatmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssTreatmentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
@@ -55,7 +56,9 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -157,6 +160,14 @@ public class MohDsActionDelegator {
             DataSubmissionHelper.setCurrentArDataSubmission(arSuper, bpc.request);
         } else if (DataSubmissionConsts.DS_DRP.equals(dsType)) {
             DpSuperDataSubmissionDto dpSuper = dpDataSubmissionService.getDpSuperDataSubmissionDto(submissionNo);
+            Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
+            PremisesDto premisesDto = dpSuper.getPremisesDto();
+            if (premisesDto != null) {
+                stringStringMap.put(premisesDto.getHciCode(), premisesDto.getPremiseLabel());
+            }
+            List<SelectOption> sourseList = DataSubmissionHelper.genOptions(stringStringMap);
+            ParamUtil.setSessionAttr(bpc.request,"hspSelectList",(Serializable) sourseList);
+
             if("DP_TP002".equals(dpSuper.getSubmissionType())){
                 DrugPrescribedDispensedDto drugPrescribedDispensedDto=dpSuper.getDrugPrescribedDispensedDto();
                 DrugSubmissionDto drugSubmissionDto=drugPrescribedDispensedDto.getDrugSubmission();
@@ -190,7 +201,7 @@ public class MohDsActionDelegator {
             TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto();
             try {
                 int age = -Formatter.compareDateByDay(treatmentDto.getBirthDate())/365;
-                int ageNew=-(Formatter.compareDateByDay(treatmentDto.getBirthDate())+age/4) / 365;
+                int ageNew=-(Formatter.compareDateByDay(treatmentDto.getBirthDate())+age/4+1) / 365;
                 treatmentDto.setAge(ageNew);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
@@ -210,30 +221,36 @@ public class MohDsActionDelegator {
                 if(doctorInfoDto!=null){
                     ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(doctorInfoDto.getDoctorReignNo());
                     DoctorInformationDto doctorInformationDto=docInfoService.getDoctorInformationDtoByConds(doctorInfoDto.getDoctorReignNo(),"ELIS");
-
-                    if(TOP_DOCTOR_INFO_FROM_PRS.equals(doctorInfoDto.getDoctorSource()) || TOP_DOCTOR_INFO_USER_NEW_REGISTER.equals(doctorInfoDto.getDoctorSource())){
-                        TerminationOfPregnancyDto terminationOfPregnancyDto=topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
-                        TerminationDto terminationDto=terminationOfPregnancyDto.getTerminationDto();
+                    TerminationOfPregnancyDto terminationOfPregnancyDto=topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
+                    TerminationDto terminationDto=terminationOfPregnancyDto.getTerminationDto();
+                    if(TOP_DOCTOR_INFO_FROM_PRS.equals(doctorInfoDto.getDoctorSource())){
+                        terminationDto.setDoctorInformationPE("false");
+                        terminationDto.setTopDoctorInformations("false");
                         topSuperDataSubmissionDto.setDoctorInformationDto(doctorInfoDto);
-                        terminationDto.setTopDoctorInformations("true");
                         terminationDto.setDoctorRegnNo(doctorInfoDto.getDoctorReignNo());
+                        terminationDto.setSpecialty(String.valueOf(doctorInfoDto.getSpeciality()).replaceAll("(?:\\[|null|\\]| +)", ""));
+                        terminationDto.setSubSpecialty(String.valueOf(doctorInfoDto.getSubSpeciality()).replaceAll("(?:\\[|null|\\]| +)", ""));
+                        terminationDto.setQualification(String.valueOf(doctorInfoDto.getQualification()).replaceAll("(?:\\[|null|\\]| +)", ""));
                         if(professionalResponseDto!=null&&doctorInformationDto!=null){
-                            ParamUtil.setSessionAttr(bpc.request, "DoctorELISAndPrs",true);
+                            ParamUtil.setRequestAttr(bpc.request, "DoctorELISAndPrs",true);
                         }else {
-                            ParamUtil.setSessionAttr(bpc.request, "DoctorELISAndPrs",false);
+                            ParamUtil.setRequestAttr(bpc.request, "DoctorELISAndPrs",false);
                         }
                     }else if(TOP_DOCTOR_INFO_FROM_ELIS.equals(doctorInfoDto.getDoctorSource())){
-                        TerminationOfPregnancyDto terminationOfPregnancyDto=topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
-                        TerminationDto terminationDto=terminationOfPregnancyDto.getTerminationDto();
                         terminationDto.setTopDoctorInformations("false");
+                        terminationDto.setDoctorInformationPE("true");
                         terminationDto.setDoctorRegnNo(doctorInfoDto.getDoctorReignNo());
                         terminationDto.setDoctorName(doctorInfoDto.getName());
                         terminationDto.setSpecialty(String.valueOf(doctorInfoDto.getSpeciality()).replaceAll("(?:\\[|null|\\]| +)", ""));
                         terminationDto.setSubSpecialty(String.valueOf(doctorInfoDto.getSubSpeciality()).replaceAll("(?:\\[|null|\\]| +)", ""));
                         terminationDto.setQualification(String.valueOf(doctorInfoDto.getQualification()).replaceAll("(?:\\[|null|\\]| +)", ""));
+                    }else if ( TOP_DOCTOR_INFO_USER_NEW_REGISTER.equals(doctorInfoDto.getDoctorSource())){
+                        topSuperDataSubmissionDto.setDoctorInformationDto(doctorInfoDto);
+                        terminationDto.setTopDoctorInformations("true");
+                        terminationDto.setDoctorRegnNo(doctorInfoDto.getDoctorReignNo());
                     }
                 }else {
-                    ParamUtil.setSessionAttr(bpc.request, "DoctorELISAndPrs",false);
+                    ParamUtil.setRequestAttr(bpc.request, "DoctorELISAndPrs",false);
                 }
             }
             DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
@@ -458,6 +475,7 @@ public class MohDsActionDelegator {
                         terminationDto.setQualification(String.valueOf(doctorInformationDto.getQualification()).replaceAll("(?:\\[|null|\\]| +)", ""));
                         terminationDto.setDoctorRegnNo(doctorInformationDto.getDoctorReignNo());
                         terminationDto.setTopDoctorInformations("false");
+                        terminationDto.setDoctorInformationPE("false");
                     }else if(TOP_DOCTOR_INFO_FROM_ELIS.equals(doctorInformationDto.getDoctorSource())){
                         terminationDto.setDoctorName(doctorInformationDto.getName());
                         terminationDto.setSpecialty(String.valueOf(doctorInformationDto.getSpeciality()).replaceAll("(?:\\[|null|\\]| +)", ""));
@@ -499,25 +517,7 @@ public class MohDsActionDelegator {
         if (arSuper == null) {
             uri = DEFAULT_URI;
         } else {
-            arSuper.setArCurrentInventoryDto(arDataSubmissionService.getArCurrentInventoryDtoBySubmissionNo(submissionNo, true));
-            ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_OLD_DATA_SUBMISSION,
-                    CopyUtil.copyMutableObject(arSuper));
-            arSuper.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            arSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
-            if (arSuper.getDataSubmissionDto() != null) {
-                DataSubmissionDto dataSubmissionDto = arSuper.getDataSubmissionDto();
-                dataSubmissionDto.setDeclaration(null);
-                dataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
-                dataSubmissionDto.setAmendReason(null);
-                dataSubmissionDto.setAmendReasonOther(null);
-                if (arSuper.getSelectionDto() != null) {
-                    CycleStageSelectionDto selectionDto = arSuper.getSelectionDto();
-                    if (StringUtil.isEmpty(selectionDto.getStage()) || StringUtil.isEmpty(selectionDto.getCycle())) {
-                        selectionDto.setStage(dataSubmissionDto.getCycleStage());
-                        selectionDto.setCycle(arSuper.getCycleDto().getCycleType());
-                    }
-                }
-            }
+            arSuper = arDataSubmissionService.prepareArRfcData(arSuper,submissionNo,request);
             if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(arSuper.getSubmissionType())) {
                 uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARPatientInformationManual";
             } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(arSuper.getSubmissionType())) {

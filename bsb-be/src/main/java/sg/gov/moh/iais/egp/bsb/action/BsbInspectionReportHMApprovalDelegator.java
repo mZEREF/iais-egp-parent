@@ -28,8 +28,8 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_HM_INSPECTION_REPORT_APPROVAL;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INSPECTION;
-import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_HM_APPROVE_INSPECTION_REPORT;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_AO_REPORT_APPROVAL;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_HM_REPORT_APPROVAL;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_AFTER_SAVE_REPORT;
@@ -67,7 +67,7 @@ public class BsbInspectionReportHMApprovalDelegator {
         HttpServletRequest request = bpc.request;
         MaskHelper.taskProcessUnmask(request, KEY_APP_ID, KEY_TASK_ID);
 
-        AuditTrailHelper.auditFunction(MODULE_INSPECTION, FUNCTION_HM_APPROVE_INSPECTION_REPORT);
+        AuditTrailHelper.auditFunction(MODULE_INSPECTION, FUNCTION_HM_INSPECTION_REPORT_APPROVAL);
     }
 
     public void init(BaseProcessClass bpc) {
@@ -121,12 +121,13 @@ public class BsbInspectionReportHMApprovalDelegator {
         processDto.reqObjMapping(request);
         ParamUtil.setSessionAttr(request, KEY_INS_DECISION, processDto);
 
+        // TODO: check these decision
         ValidationResultDto validationResultDto = inspectionClient.validateActualInspectionHMApprovalDecision(processDto);
         String validateResult;
         if (validationResultDto.isPass()) {
-            if (MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE.equals(processDto.getDecision())) {
+            if (MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE.equals(processDto.getDecision())) {
                 validateResult = "approve";
-            } else if (MasterCodeConstants.MOH_PROCESSING_DECISION_REJECT.equals(processDto.getDecision())) {
+            } else if (MasterCodeConstants.MOH_PROCESS_DECISION_REJECT.equals(processDto.getDecision())) {
                 validateResult = "reject";
             } else {
                 validateResult = "invalid";

@@ -19,16 +19,21 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-inbox.js"></script>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
-<%@include file="../dashboard/dashboardFAC.jsp"%>
-
+<%--@elvariable id="isFacAdmin" type="java.lang.Boolean"--%>
+<c:choose>
+    <c:when test="${isFacAdmin}"><%@include file="../dashboard/dashboardFAC.jsp"%></c:when>
+    <c:otherwise><%@include file="../dashboard/dashboardAFC.jsp"%></c:otherwise>
+</c:choose>
 
 <div class="main-content">
     <div class="container">
         <div class="row">
             <div class="col-xs-12">
                 <div class="tab-gp dashboard-tab" style="margin-left: 6px;margin-right: -8px;">
-                    <%@ include file="../InnerNavBarFAC.jsp"%>
-
+                    <c:choose>
+                        <c:when test="${isFacAdmin}"><%@include file="../InnerNavBarFAC.jsp"%></c:when>
+                        <c:otherwise><%@include file="../InnerNavBarAFC.jsp"%></c:otherwise>
+                    </c:choose>
 
                     <div style="padding: 50px 0">
                         <form class="" method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
@@ -111,8 +116,8 @@
                                                         </label>
                                                     </div>
                                                 </th>
-                                                <iais:sortableHeader needSort="true" field="subject" value="Subject" style="width:25%" isFE="true"/>
-                                                <iais:sortableHeader needSort="true" field="msgType" value="Message Type" isFE="true"/>
+                                                <iais:sortableHeader needSort="true" field="subject" value="Subject" style="width:20%" isFE="true"/>
+                                                <iais:sortableHeader needSort="true" field="msgType" value="Message Type" style="width:13%" isFE="true"/>
                                                 <iais:sortableHeader needSort="true" field="facilityName" value="Facility Name" style="width:15%" isFE="true"/>
                                                 <iais:sortableHeader needSort="true" field="refNo" value="Reference Number" isFE="true"/>
                                                 <iais:sortableHeader needSort="true" field="submissionType" value="Submission Type" isFE="true"/>
@@ -131,22 +136,35 @@
                                                 </c:when>
                                                 <c:otherwise>
                                                     <c:forEach var="msg" items="${dataList}" varStatus="status">
+                                                        <c:set var="isActionRequired" value="${actionRequiredMap.get(msg.id)}"/>
                                                         <c:choose>
-                                                            <c:when test="${msg.status == 'MSGRS001' || msg.status == 'MSGRS002'}">
-                                                                <tr style="font-weight:bold">
+                                                            <c:when test="${msg.msgType == 'BSBMSGT001'}">
+                                                                <c:choose>
+                                                                    <c:when test="${msg.status == 'MSGRS001'}">
+                                                                        <tr style="font-weight:bold">
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <tr>
+                                                                    </c:otherwise>
+                                                                </c:choose>
                                                             </c:when>
-                                                            <c:when test="${msg.status == 'MSGRS004'}">
-                                                                <tr style="font-weight: bolder">
+                                                            <c:when test="${msg.msgType == 'BSBMSGT002'}">
+                                                                <c:choose>
+                                                                    <c:when test="${msg.status == 'MSGRS001' || !isActionRequired}">
+                                                                        <tr style="font-weight:bold">
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <tr>
+                                                                    </c:otherwise>
+                                                                </c:choose>
                                                             </c:when>
-                                                            <c:otherwise>
-                                                                <tr>
-                                                            </c:otherwise>
                                                         </c:choose>
                                                         <c:set var="maskedMsgId"><iais:mask name="action_value" value="${msg.id}"/></c:set>
                                                         <td>
                                                             <div class="form-check">
                                                                 <input class="form-check-input msgCheck" id="msgCheck" type="checkbox" name="chkChild" aria-invalid="false" value="${maskedMsgId}"
-                                                                       <c:if test="${msg.status == 'MSGRS001' || msg.status == 'MSGRS002'}">disabled = "disabled"</c:if>>
+                                                                       <c:if test="${msg.status == 'MSGRS001' && msg.msgType == 'BSBMSGT001' ||
+                                                                        msg.msgType == 'BSBMSGT002' && (msg.status == 'MSGRS001' || !isActionRequired) }">disabled = "disabled"</c:if>>
                                                                 <label class="form-check-label" for="msgCheck"><span
                                                                         class="check-square"></span>
                                                                 </label>

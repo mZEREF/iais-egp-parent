@@ -34,6 +34,10 @@ import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_AP
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_DO_RECOMMENDATION;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_HM_APPROVAL;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_REJECTED;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESS_DECISION_REJECT;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_HM;
 import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.BACK_URL;
 import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.KEY_CAN_UPLOAD;
 import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.PARAM_APPLICATION_SEARCH;
@@ -188,13 +192,14 @@ public class AORevocationDelegator {
             ParamUtil.setRequestAttr(request, ValidationConstants.KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
             actionType = ACTION_TYPE_PREPARE;
         }else {
-            if (dto.getAoDecision().equals("MOHPRO008")){
+            // TODO: check these decision
+            if (dto.getAoDecision().equals(MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO)){
                 actionType = ACTION_TYPE_ROUTE_BACK;
-            } else if (dto.getAoDecision().equals("MOHPRO009")){
+            } else if (dto.getAoDecision().equals(MOH_PROCESS_DECISION_ROUTE_TO_HM)){
                 actionType = ACTION_TYPE_ROUTE_TO_HM;
-            } else if (dto.getAoDecision().equals("MOHPRO003")){
+            } else if (dto.getAoDecision().equals(MOH_PROCESS_DECISION_REJECT)){
                 actionType = ACTION_TYPE_REJECT;
-            } else if (dto.getAoDecision().equals("MOHPRO007")){
+            } else if (dto.getAoDecision().equals(MOH_PROCESS_DECISION_APPROVE)){
                 actionType = ACTION_TYPE_APPROVE;
             }
         }

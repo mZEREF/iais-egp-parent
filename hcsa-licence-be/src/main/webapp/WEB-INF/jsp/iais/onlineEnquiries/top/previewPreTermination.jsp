@@ -95,15 +95,25 @@
                 </div>
                 <div
                         <c:if test="${preTerminationDto.counsellingGiven != true}">style="display: none"</c:if> >
-                    <c:if test="${counsellingLateSubmit}">
-                        <c:set var="toolMsg"><iais:message key="Late" paramKeys="1" paramValues="counsellor"/></c:set>
+                    <c:if test="${counsellingLateSubmit}" var="isLate">
+                        <c:set var="toolMsgPreLate"><iais:message key="Late" paramKeys="1" paramValues="counsellor"/></c:set>
                     </c:if>
-                    <c:if test="${topDates}">
+                    <c:if test="${topDates}" var="isDS_MSG030">
                         <c:set var="toolMsgDS_MSG030"><iais:message key="DS_MSG030" paramKeys="1"
                                                                     paramValues="counsellor"/></c:set>
                     </c:if>
                     <iais:row>
-                        <iais:field width="5" value="Date of Counselling" info="${toolMsgDS_MSG030}"/>
+                        <c:choose>
+                            <c:when test="${isLate}">
+                                <iais:field width="5" value="Date of Counselling" info="${toolMsgPreLate}"/>
+                            </c:when>
+                            <c:when test="${isDS_MSG030}">
+                                <iais:field width="5" value="Date of Counselling" info="${toolMsgDS_MSG030}"/>
+                            </c:when>
+                            <c:otherwise>
+                                <iais:field width="5" value="Date of Counselling"/>
+                            </c:otherwise>
+                        </c:choose>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${preTerminationDto.counsellingDate}"/>
                         </iais:value>
@@ -131,7 +141,7 @@
                         <c:if test="${preTerminationDto.counsellingGiven != true || preTerminationDto.counsellingAge>=16 || patientInformationDto.maritalStatus =='TOPMS002' || preTerminationDto.counsellingPlace == 'AR_SC_001' || preTerminationDto.counsellingPlace ==null || preTerminationDto.counsellingAge==null}">style="display: none"</c:if> >
                     <iais:row>
                         <iais:field width="5"
-                                    value="Reason why pre-Counselling was Not Conducted at HPB Counselling Centre"
+                                    value="Reason why Counselling was Not Conducted at HPB Counselling Centre"
                                     info="${toolMsgNum}"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${preTerminationDto.preCounsNoCondReason}"/>
@@ -142,7 +152,7 @@
                         <c:if test="${preTerminationDto.counsellingGiven != true || preTerminationDto.counsellingResult !='TOPPCR001'}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="6"
-                                    value="Did Patient Make Appointment for Additional Pre-Counselling Sessions?"/>
+                                    value="Did Patient Make Appointment for Additional Counselling Sessions?"/>
                         <iais:value width="6" display="true">
                             <c:if test="${preTerminationDto.patientAppointment=='1'}">Yes</c:if>
                             <c:if test="${preTerminationDto.patientAppointment=='0'}">No</c:if>
@@ -155,7 +165,7 @@
                         <c:set var="toolMsgSecondLate"><iais:message key="Late" paramKeys="1" paramValues="counsellor"/></c:set>
                     </c:if>
                     <iais:row>
-                        <iais:field width="5" value="Date of Second or Final Pre-Counselling"
+                        <iais:field width="5" value="Date of Second or Final Counselling"
                                     info="${toolMsgSecondLate}"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${preTerminationDto.secCounsellingDate}"/>

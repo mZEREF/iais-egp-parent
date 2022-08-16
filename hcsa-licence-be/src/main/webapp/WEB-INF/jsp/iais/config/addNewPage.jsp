@@ -8,11 +8,14 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.ServiceConfigConstant" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.ParamUtil" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <webui:setLayout name="iais-intranet"/>
 
 <%
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
+  String titleShow = request.getAttribute("title") == null ? "Add HCSA Service" : (String)request.getAttribute("title");
 %>
 <style>
   .mandatory{
@@ -41,6 +44,11 @@
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
     <input type="hidden" name="selectCategoryValue" value="">
+    <c:if test="${isEdit}">
+      <input  type="hidden" name="svcName" value="${hcsaServiceConfigDto.hcsaServiceDto.svcName}">
+      <input  type="hidden" name="svcCode" value="${hcsaServiceConfigDto.hcsaServiceDto.svcCode}">
+      <input  type="hidden" name="svcType"  value="${hcsaServiceConfigDto.hcsaServiceDto.svcType}">
+    </c:if>
     <input type="text" style="display: none" name="serviceSvcCode" id="serviceSvcCode" value="${hcsaServiceDto.svcCode}">
     <div class="col-lg-12 col-xs-12">
       <div class="bg-title" style="text-align: center;">
@@ -48,12 +56,12 @@
       </div>
       <div class="form-group">
         <div class="col-xs-12 col-md-9">
-          <h2 class="col-xs-0 col-md-7 component-title">Add HCSA Service</h2>
+          <h2 class="col-xs-0 col-md-7 component-title"><%=titleShow%></h2>
           <input type="text" style="display: none" name="serviceIsUse" value="false">
         </div>
       </div>
 
-      <div class="form-group">
+      <div class="form-group editReadonly">
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" for="serviceName">Service Name&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
@@ -81,7 +89,7 @@
         </div>
       </div>
 
-      <div class="form-group">
+      <div class="form-group editReadonly">
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" for="serviceCode">Service Code&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
@@ -91,7 +99,7 @@
         </div>
       </div>
 
-      <div class="form-group">
+      <div class="form-group editReadonly">
         <div class="col-xs-12 col-md-9" >
           <label class="col-xs-12 col-md-7 control-label" for="ServiceType">Service Type&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4" style="margin-bottom: 20px;">
@@ -831,7 +839,7 @@
           <label class="col-xs-12 col-md-7 control-label" >Service-Related Checklists</label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
-              <a class="btn btn-secondary " data-toggle="modal" data-target= "#checklists" ><span class="view">Configure</span></a>
+              <a class="btn btn-secondary " data-toggle="modal" data-target= "<c:if test="${!isView}">#checklists</c:if>" ><span class="view">Configure</span></a>
             </div>
           </div>
         </div>
@@ -843,7 +851,7 @@
             <label class="col-xs-12 col-md-7 control-label" >Service Risk Score</label>
             <div class="col-xs-10 col-md-4">
               <div class="components">
-                <a class="btn btn-secondary "  data-toggle="modal" data-target= "#riskScore"><span class="view">Configure</span></a>
+                <a class="btn btn-secondary "  data-toggle="modal" data-target= "<c:if test="${!isView}">#riskScore</c:if>"><span class="view">Configure</span></a>
               </div>
             </div>
           </div>
@@ -854,7 +862,7 @@
             <label class="col-xs-12 col-md-7 control-label" >Service KPI</label>
             <div class="col-xs-10 col-md-4">
               <div class="components">
-                <a class="btn btn-secondary " data-toggle="modal" data-target= "#kpi" ><span class="view">Configure</span></a>
+                <a class="btn btn-secondary " data-toggle="modal" data-target= "<c:if test="${!isView}">#kpi</c:if>" ><span class="view">Configure</span></a>
               </div>
             </div>
           </div>
@@ -1015,14 +1023,14 @@
                       <span class="error-msg" >${categoryDisciplineDto.errorMsg}</span>
                     </div>
                     <div class="col-xs-12 col-md-1">
-                      <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
+                      <a class="btn  btn-secondary view" <c:if test="${!isView}"> onclick="removeThis(this)"</c:if> >-</a>
                     </div>
                   </div>
                 </c:forEach>
               </c:if>
               <div class="col-xs-12 col-md-12">
                 <a  class="btn  btn-secondary "   style="margin-right: 10px"
-                    onclick="addCategory(this,'${premTypeMap.key}-categoryDisciplines')"> + </a><label > Add Item</label>
+                        <c:if test="${!isView}"> onclick="addCategory(this,'${premTypeMap.key}-categoryDisciplines')" </c:if> > + </a><label > Add Item</label>
               </div>
 
               <div class="col-xs-12 col-md-9 marg-1">
@@ -1048,13 +1056,13 @@
                       <input type="text" value="${hcsaServiceSubServiceErrorsDto.level}" name="${premTypeMap.key}-SVTP003-levels" style="display: none">
                     </div>
                     <div  class="col-xs-12 col-md-2" style="padding-left: 3%;" >
-                      <a class="btn  btn-secondary  view"  onclick="indents(this)"   >indent</a>
+                      <a class="btn  btn-secondary  view" <c:if test="${!isView}"> onclick="indents(this)" </c:if>  >indent</a>
                     </div>
                     <div  class="col-xs-12 col-md-2" >
-                      <a class="btn  btn-secondary view"  onclick="outdent(this)" >outdent</a>
+                      <a class="btn  btn-secondary view" <c:if test="${!isView}"> onclick="outdent(this)" </c:if> >outdent</a>
                     </div>
                     <div class="col-xs-12 col-md-1">
-                      <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
+                      <a class="btn  btn-secondary view" <c:if test="${!isView}"> onclick="removeThis(this)" </c:if> >-</a>
                     </div>
                   </div>
                 </c:forEach>
@@ -1062,7 +1070,7 @@
 
 
               <div class="col-xs-12 col-md-12">
-                <a  class="btn  btn-secondary "   style="margin-right: 10px" onclick="addAsItem(this,'${premTypeMap.key}','SVTP003')"> + </a><label > Add Item</label>
+                <a  class="btn  btn-secondary "   style="margin-right: 10px" <c:if test="${!isView}">onclick="addAsItem(this,'${premTypeMap.key}','SVTP003')"</c:if>> + </a><label > Add Item</label>
               </div>
             </div>
           </c:forEach>
@@ -1083,7 +1091,7 @@
                 <c:forEach items="${hcsaServiceConfigDto.otherHcsaServiceSubServicePageDtoMap[premTypeMap.key].hcsaServiceSubServiceErrorsDtos}" var = "hcsaServiceSubServiceErrorsDto">
                   <div class="add col-xs-12 col-md-12"  style="margin-top: 20px ;margin-bottom: 20px">
                     <div class="col-xs-12 col-md-5" style="padding-right: 20%;margin-left:${hcsaServiceSubServiceErrorsDto.marginLeft}px" >
-                      <iais:select name="${premTypeMap.key}-SVTP005-subServiceCodes" options="specHcsaServiceOptions" firstOption="Please Select"
+                      <iais:select name="${premTypeMap.key}-SVTP005-subServiceCodes" options="otherHcsaServiceOptions" firstOption="Please Select"
                                    value="${hcsaServiceSubServiceErrorsDto.subServiceCode}"/>
                       <span class="error-msg" >${hcsaServiceSubServiceErrorsDto.errorMsg}</span>
                     </div>
@@ -1091,13 +1099,13 @@
                       <input type="text" value="${hcsaServiceSubServiceErrorsDto.level}" name="${premTypeMap.key}-SVTP005-levels" style="display: none">
                     </div>
                     <div  class="col-xs-12 col-md-2" style="padding-left: 3%;" >
-                      <a class="btn  btn-secondary  view"  onclick="indents(this)"   >indent</a>
+                      <a class="btn  btn-secondary  view" <c:if test="${!isView}"> onclick="indents(this)" </c:if>  >indent</a>
                     </div>
                     <div  class="col-xs-12 col-md-2" >
-                      <a class="btn  btn-secondary view"  onclick="outdent(this)" >outdent</a>
+                      <a class="btn  btn-secondary view" <c:if test="${!isView}">  onclick="outdent(this)" </c:if> >outdent</a>
                     </div>
                     <div class="col-xs-12 col-md-1">
-                      <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
+                      <a class="btn  btn-secondary view"  <c:if test="${!isView}"> onclick="removeThis(this)" </c:if> >-</a>
                     </div>
                   </div>
                 </c:forEach>
@@ -1105,7 +1113,8 @@
 
 
               <div class="col-xs-12 col-md-12">
-                <a  class="btn  btn-secondary "   style="margin-right: 10px"  onclick="addAsItem(this,'${premTypeMap.key}','SVTP005')"> + </a><label > Add Item</label>
+                <a  class="btn  btn-secondary "   style="margin-right: 10px"
+                    <c:if test="${!isView}">onclick="addAsItem(this,'${premTypeMap.key}','SVTP005')"</c:if> > + </a><label > Add Item</label>
               </div>
             </div>
           </c:forEach>
@@ -1140,11 +1149,47 @@
       <div class="col-lg-12 col-xs-12 canClick">
         <iais:action style="text-align:center;">
           <a class="btn btn-secondary" data-toggle="modal" data-target="#cancel">Cancel</a>
-          <button class="btn btn-primary" onclick="save()">Save</button>
+          <c:if test="${!isView}">
+            <a class="btn btn-primary" onclick="save()">Save</a>
+          </c:if>
+
+          <c:if test="${isDelete}">
+            <a class="btn btn-secondary"data-toggle="modal" style="color: #ff0000" data-target= "#deleteConfirmYesOrNo">CONFIRM DELETE</a>
+            <input type="hidden" id="deleteConfirm" value="${hcsaServiceConfigDto.hcsaServiceDto.id}">
+          </c:if>
+
+          <c:if test="${isEidtAndView}">
+            <button class="btn btn-primary"  onclick="submitPage('edit','<iais:mask name="crud_action_value"  value="${hcsaServiceConfigDto.hcsaServiceDto.id}"/>')">Update</button>
+          </c:if>
+
+          <c:if test="${isEdit}">
+            <a class="btn btn-secondary" onclick="saveAsNewVersion()">Select as New Version</a>
+          </c:if>
+
         </iais:action>
-        <div class="bg-title" style="text-align: center">
+          <div class="col-xs-12 col-md-9">
+            <div class="form-group" style="display: none" id="versionSelect">
+              <label class="col-xs-12 col-md-7 control-label"> </label>
+              <div class=" col-xs-7 col-sm-4 col-md-4">
+                <select name="versionSelect" id="version">
+                  <option value="">Select one</option>
+                  <c:forEach items="${hcsaServiceConfigDto.hcsaServiceDtosVersion}" var="hcsaServiceDtosVer">
+                    <option  value="<iais:mask name="crud_action_value"  value="${hcsaServiceDtosVer.id}"/>">${hcsaServiceDtosVer.version}</option>
+                  </c:forEach>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-12 col-xs-12" style="margin-bottom: 200px;">
+            <div class="bg-title" style="text-align: center">
+              <input style="display: none" value="${hcsaServiceConfigDto.hcsaServiceDto.version}" name="version" type="text">
+              <p style="text-align: center">Version ${hcsaServiceConfigDto.hcsaServiceDto.version}</p>
+            </div>
+          </div>
+
+       <%-- <div class="bg-title" style="text-align: center">
           <p style="text-align: center">Version 1.00</p>
-        </div>
+        </div>--%>
       </div>
     </div>
     <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
@@ -1158,13 +1203,15 @@
 <iais:confirm msg="Are you sure you want to leave this page ?" callBack="riskScore()" popupOrder="riskScore" ></iais:confirm>
 
 <iais:confirm msg="Are you sure you want to cancel?" yesBtnDesc="NO" cancelBtnDesc="YES" yesBtnCls="btn btn-secondary" cancelBtnCls="btn btn-primary" cancelFunc="cancel()" callBack="displays()" popupOrder="cancel"></iais:confirm>
+
+<iais:confirm msg="Are you sure to delete ?" yesBtnDesc="NO" cancelBtnDesc="YES" yesBtnCls="btn btn-secondary" cancelBtnCls="btn btn-primary" cancelFunc="deleteConfirmYesOrNo()" callBack="cancelDelete()" popupOrder="deleteConfirmYesOrNo" ></iais:confirm>
 <script type="text/javascript">
     $(document).ready(function () {
         premisesSelect();
     });
     function cancel() {
 
-        SOP.Crud.cfxSubmit("mainForm","back","back","");
+        SOP.Crud.cfxSubmit("mainForm","back",'<iais:mask name="crud_action_value"  value="${hcsaServiceConfigDto.hcsaServiceDto.id}"/>',"");
     }
 
     function kpi() {
@@ -1172,10 +1219,29 @@
         location.href='https://${pageContext.request.serverName}/${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohKPIAndReminder",request)%>';
 
     }
+    function deleteConfirmYesOrNo(){
+        var val = $('#deleteConfirm').val();
+        SOP.Crud.cfxSubmit("mainForm","delete",val,"");
+    }
+    function cancelDelete(){
+       // SOP.Crud.cfxSubmit("mainForm","delete","","");
+        $('#deleteConfirmYesOrNo').modal('hide');
+    }
     function  displays() {
-      $('#cancel').modal('hide');
+        $('#cancel').modal('hide');
     }
 
+    $('#versionSelect').change(function () {
+        if($('#version').val()==''){
+        }else {
+            SOP.Crud.cfxSubmit("mainForm","version",$('#version').val(),$('#version').val());
+        }
+
+    });
+
+    function saveAsNewVersion() {
+        $('#versionSelect').attr("style","display: block");
+    }
     function  checklists(){
         location.href='https://${pageContext.request.serverName}/${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohChecklistConfiguration",request)%>';
     }
@@ -1191,11 +1257,10 @@
 
     function save() {
         showWaiting();
-        submit("save");
+        submitPage("save",'<iais:mask name="crud_action_value"  value="${hcsaServiceConfigDto.hcsaServiceDto.id}"/>');
     }
-    function submit(action) {
-        $("[name='crud_action_type']").val(action);
-        $("#mainForm").submit();
+    function submitPage(action,value) {
+        SOP.Crud.cfxSubmit("mainForm",action,value,"");
     }
     $(document).ready(function () {
         serviceTypeChange();

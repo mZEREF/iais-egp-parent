@@ -233,7 +233,7 @@ public class OnlineVssEnquiryDelegator {
         TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto();
         try {
             int age = -Formatter.compareDateByDay(treatmentDto.getBirthDate())/365;
-            int ageNew=-(Formatter.compareDateByDay(treatmentDto.getBirthDate())+age/4) / 365;
+            int ageNew=-(Formatter.compareDateByDay(treatmentDto.getBirthDate())+age/4+1) / 365;
             treatmentDto.setAge(ageNew);
         } catch (Exception e) {
             log.error(e.getMessage(), e);

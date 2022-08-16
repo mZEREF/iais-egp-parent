@@ -16,6 +16,7 @@ public class MasterCodeHolder {
 
     public static final MasterCodeWrapper FACILITY_TYPE = new MasterCodeWrapper(MasterCodeUtil.CATE_ID_BSB_FACILITY_TYPE);
     public static final MasterCodeWrapper APPROVED_FACILITY_CERTIFIER = new MasterCodeWrapper(MasterCodeUtil.CATE_ID_APPROVED_FACILITY_CERTIFIER_SELECTION);
+    public static final MasterCodeWrapper PIM_RISK_LEVEL = new MasterCodeWrapper(MasterCodeUtil.CATE_ID_BSB_PIM_RISK_LEVEL);
 
     public static final MasterCodeWrapper SCHEDULE = new MasterCodeWrapper(MasterCodeUtil.CATE_ID_BSB_SCHEDULE_TYPE);
 

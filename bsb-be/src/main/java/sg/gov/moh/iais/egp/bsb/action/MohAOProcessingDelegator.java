@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
-import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants;
 import sg.gov.moh.iais.egp.bsb.dto.process.MohProcessDto;
@@ -23,10 +22,10 @@ import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_DO_APPROVAL_LETTER_DRAFT;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_DO_RECOMMENDATION;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_HM_APPROVAL;
-import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESSING_DECISION_APPROVE;
-import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESSING_DECISION_REJECT;
-import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_BACK_TO_DO;
-import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESSING_DECISION_ROUTE_BACK_TO_HM;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESS_DECISION_REJECT;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_HM;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.KEY_MOH_PROCESS_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.MODULE_NAME_AO_PROCESSING;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_APP_ID;
@@ -72,20 +71,20 @@ public class MohAOProcessingDelegator {
         String processingDecision = mohProcessDto.getProcessingDecision();
         ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, "Approval Officer Processing");
         switch (processingDecision) {
-            case MOH_PROCESSING_DECISION_APPROVE:
+            case MOH_PROCESS_DECISION_APPROVE:
                 processClient.saveAoProcessingApprove(appId, taskId, mohProcessDto);
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_DO_APPROVAL_LETTER_DRAFT));
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_DO);
                 break;
-            case MOH_PROCESSING_DECISION_REJECT:
+            case MOH_PROCESS_DECISION_REJECT:
                 processClient.saveAoProcessingReject(appId, taskId, mohProcessDto);
                 break;
-            case MOH_PROCESSING_DECISION_ROUTE_BACK_TO_DO:
+            case MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO:
                 processClient.saveAoProcessingRouteBackToDo(appId, taskId, mohProcessDto);
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_DO_RECOMMENDATION));
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_DO);
                 break;
-            case MOH_PROCESSING_DECISION_ROUTE_BACK_TO_HM:
+            case MOH_PROCESS_DECISION_ROUTE_TO_HM:
                 processClient.saveAoProcessingRouteToHm(appId, taskId, mohProcessDto);
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_HM_APPROVAL));
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_HM);

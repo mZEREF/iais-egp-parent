@@ -132,6 +132,7 @@
                                                                                                   name="internalRemarks" cols="70"
                                                                                                   rows="7" maxlength="300">${internalRemarks}</textarea>
                                                                                             <span id="error_internalRemarks" name="iaisErrorMsg" class="error-msg"></span>
+                                                                                            <span id="error_internalRemarks1" class="error-msg" style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
                                                                                         </div>
                                                                                     </div>
                                                                                 </iais:value>
@@ -199,7 +200,12 @@
                                                                         </c:if>
                                                                         <div id="rollBackCrDropdown" class="hidden">
                                                                             <iais:row>
-                                                                                <iais:field value="Roll Back To" required="true"/>
+                                                                                <label class="col-xs-0 col-md-4 control-label">Stage to Reset to <span style="color: red"> *</span>
+                                                                                    <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
+                                                                                       title='<iais:message key="INSPE_ACK003"/>'
+                                                                                       style="z-index: 10"
+                                                                                       data-original-title="">i</a>
+                                                                                </label>
                                                                                 <iais:value width="10">
                                                                                     <iais:select cssClass="rollBackCr" name="rollBackCr" id="rollBackCr"
                                                                                                  firstOption="Please Select"
@@ -724,12 +730,21 @@
     $("#submitButton").click(function () {
         var selectValue = $("[name='nextStage']").val();
         clearErrorMsg();
+        $('#error_internalRemarks1').hide();
         $('#err_rollBackTo').hide();
         if('RollBack' ===selectValue){
             const rollBackTo = $('#rollBackCr').val();
+            const remark = $('#internalRemarksId').val();
+            let pass =true;
             if(rollBackTo === null || rollBackTo === undefined || rollBackTo === ""){
                 $('#err_rollBackTo').show();
-            }else {
+                pass = false;
+            }
+            if(remark === null || remark === undefined || remark === "") {
+                $('#error_internalRemarks1').show();
+                pass = false;
+            }
+            if(pass) {
                 $('#confirmTag').modal('show');
             }
         }else {
@@ -860,6 +875,8 @@
         var selectValue = $("[name='nextStage']").val();
         var isChangePeriodAppealType = $('#isChangePeriodAppealType').val();
         var appealRecommenValueShow = $('#appealRecommenValueShow').text();
+        $('#internalRemarksFalse').removeClass('hidden');
+        $('#internalRemarksTrue').addClass('hidden');
         if (selectValue == "PROCVER") {
             $("#chooseInspectionBox").removeClass('hidden');
             $('#verifiedDropdown').removeClass('hidden');
@@ -900,6 +917,8 @@
             checkAppealPso();
             $('#appealRecommendationDiv').removeClass('hidden');
             $('#normalRecommendationDiv').removeClass('hidden');
+            $('#internalRemarksFalse').addClass('hidden');
+            $('#internalRemarksTrue').removeClass('hidden');
         } else if (selectValue == "PROCRFI") {
             $("#chooseInspectionBox").addClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
@@ -942,15 +961,6 @@
                 $('#recommendationFieldFalse').removeClass('hidden');
             }
         }
-        //PROCVER nextStage
-        <%--var nextStage = $("[name='nextStage']").val();--%>
-        <%--if('PROCVER' == nextStage && selectValue != '${RecommendValue}'){--%>
-        <%--    $('#internalRemarksTrue').removeClass('hidden');--%>
-        <%--    $('#internalRemarksFalse').addClass('hidden');--%>
-        <%--}else if('PROCVER' == nextStage && selectValue ==  '${RecommendValue}'){--%>
-        <%--    $('#internalRemarksTrue').addClass('hidden');--%>
-        <%--    $('#internalRemarksFalse').removeClass('hidden');--%>
-        <%--}--%>
     }
 
     $("[name='verified']").change(function selectChange() {

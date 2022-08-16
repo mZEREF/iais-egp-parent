@@ -306,6 +306,8 @@ public class ArWithdrawalDelegator {
                 break;
             case DataSubmissionConsts.DS_DRP:
                 List<DpSuperDataSubmissionDto> addDpWithdrawnDtoList= (List<DpSuperDataSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "addWithdrawnDtoList");
+                List<DpSuperDataSubmissionDto> toBeList = IaisCommonUtils.genNewArrayList();
+
                 for (DpSuperDataSubmissionDto dpSuper:addDpWithdrawnDtoList
                      ) {
                     DsWithdrawCorrelationDto dsWithdrawCorrelationDto2=new DsWithdrawCorrelationDto();
@@ -316,11 +318,13 @@ public class ArWithdrawalDelegator {
                     dpSuper.getDataSubmissionDto().setStatus(DataSubmissionConsts.DS_STATUS_WITHDRAW);
                     dpSuper.getCycleDto().setStatus(DataSubmissionConsts.DS_STATUS_WITHDRAW);
                     dpSuper =dpDataSubmissionService.saveDpSuperDataSubmissionDto(dpSuper);
-                    try {
-                        dpDataSubmissionService.saveDpSuperDataSubmissionDtoToBE(dpSuper);
-                    } catch (Exception e) {
-                        log.error(StringUtil.changeForLog("The Eic saveDpSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
-                    }
+                    toBeList.add(dpSuper);
+                }
+
+                try {
+                    dpDataSubmissionService.saveDpSuperDataSubmissionDtoToBE(toBeList);
+                } catch (Exception e) {
+                    log.error(StringUtil.changeForLog("The Eic saveDpSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
                 }
                 break;
             case DataSubmissionConsts.DS_VSS:
