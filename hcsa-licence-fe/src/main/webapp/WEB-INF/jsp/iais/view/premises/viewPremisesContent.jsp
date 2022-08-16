@@ -121,45 +121,47 @@
         </iais:row>
     </c:if>
 
-    <iais:row>
-        <iais:field value="Co-Location Service" width="10" />
-    </iais:row>
-    <iais:row>
-        <iais:field width="5" value="Are you co-locating with a service that is licensed under HCSA?"/>
-        <iais:value width="7" display="true">
-            <c:choose>
-                <c:when test="${appGrpPremDto.locateWtihHcsa == '1'}">Yes</c:when>
-                <c:when test="${appGrpPremDto.locateWtihHcsa == '0'}">No</c:when>
-            </c:choose>
-        </iais:value>
-    </iais:row>
-    <iais:row>
-        <iais:field width="5" value="Are you co-locating with a service that is not licensed under HCSA?"/>
-        <iais:value width="7" display="true">
-            <c:choose>
-                <c:when test="${appGrpPremDto.locateWtihNonHcsa == '1'}">Yes</c:when>
-                <c:when test="${appGrpPremDto.locateWtihNonHcsa == '0'}">No</c:when>
-            </c:choose>
-        </iais:value>
-    </iais:row>
-    <c:if test="${appGrpPremDto.locateWtihNonHcsa == '1'}">
+    <c:if test="${premType == permanent || premType == conv}">
         <iais:row>
-            <table aria-describedby="" class="col-xs-12" border="0">
-                <thead style="display: none">
-                    <tr>
-                        <th scope="col" width="50%">Business Name</th>
-                        <th scope="col" width="50%">Services Provided</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <c:forEach var="relatedDto" items="${appGrpPremDto.appPremNonLicRelationDtos}" >
-                    <tr>
-                        <td><c:out value="${relatedDto.businessName}"/></td>
-                        <td><c:out value="${relatedDto.providedService}"/></td>
-                    </tr>
-                </c:forEach>
-                </tbody>
-            </table>
+            <iais:field value="Co-Location Service" width="10" />
         </iais:row>
+        <iais:row>
+            <iais:field width="5" value="Are you co-locating with a service that is licensed under HCSA?"/>
+            <iais:value width="7" display="true">
+                <c:choose>
+                    <c:when test="${appGrpPremDto.locateWtihHcsa == '1'}">Yes</c:when>
+                    <c:when test="${appGrpPremDto.locateWtihHcsa == '0'}">No</c:when>
+                </c:choose>
+            </iais:value>
+        </iais:row>
+        <iais:row>
+            <iais:field width="5" value="Are you co-locating with a service that is not licensed under HCSA?"/>
+            <iais:value width="7" display="true">
+                <c:choose>
+                    <c:when test="${appGrpPremDto.locateWtihNonHcsa == '1'}">Yes</c:when>
+                    <c:when test="${appGrpPremDto.locateWtihNonHcsa == '0'}">No</c:when>
+                </c:choose>
+            </iais:value>
+        </iais:row>
+        <c:if test="${appGrpPremDto.locateWtihNonHcsa == '1'}">
+            <iais:row>
+                <table aria-describedby="" class="col-xs-12" border="0">
+                    <thead style="display: none">
+                        <tr>
+                            <th scope="col" width="50%">Business Name</th>
+                            <th scope="col" width="50%">Services Provided</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <c:forEach var="relatedDto" items="${appGrpPremDto.appPremNonLicRelationDtos}" >
+                        <tr>
+                            <td><c:out value="${relatedDto.businessName}"/></td>
+                            <td><c:out value="${relatedDto.providedService}"/></td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </table>
+            </iais:row>
+        </c:if>
     </c:if>
 </div>

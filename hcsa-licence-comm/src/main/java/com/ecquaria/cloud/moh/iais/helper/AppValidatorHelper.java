@@ -674,6 +674,9 @@ public final class AppValidatorHelper {
                             String easMtsUseOnly = appGrpPremisesDto.getEasMtsUseOnly();
                             String easMtsPubHotline = appGrpPremisesDto.getEasMtsPubHotline();
                             String email = appGrpPremisesDto.getEasMtsPubEmail();
+                            if (StringUtil.isEmpty(easMtsUseOnly)) {
+                                errorMap.put("easMtsUseOnly" + i, MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                            }
                             // "Public Hotline"
                             if (StringUtil.isEmpty(easMtsPubHotline)) {
                                 if (!"UOT002".equals(easMtsUseOnly)) {
