@@ -693,7 +693,7 @@ public final class DataSubmissionHelper {
         stages.add(DataSubmissionConsts.AR_STAGE_EMBRYO_CREATED);
         stages.add(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING);
         stages.add(DataSubmissionConsts.AR_STAGE_EMBRYO_TRANSFER);
-        stages.add(DataSubmissionConsts.AR_STAGE_OUTCOME);//todo may change OutCome
+        stages.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED);//todo may change OutCome
         stages.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
         stages.add(DataSubmissionConsts.AR_STAGE_DONATION);
         stages.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
