@@ -1,18 +1,11 @@
 <%--    大标题,不动--%>
 <div class="personnel-content">
         <input type="hidden" class="not-refresh " name="${logo}arCount" value="size"/>
-
-    <iais:row>
-        <div class="col-xs-12">
-            <p class="app-title" ><c:out value="Service Personnel"/></p>
-        </div>
-    </iais:row>
-
     <iais:row cssClass="personnel-header">
         <iais:value width="5" cssClass="col-xs-12 col-md-6">
             <strong>
                 <c:out value="AR Practitioner "/>
-                <label class="assign-psn-item"></label>
+                <label class="assign-psn-item">${index+1}</label>
             </strong>
         </iais:value>
         <iais:value width="7" cssClass="col-xs-12 col-md-4 text-right">
