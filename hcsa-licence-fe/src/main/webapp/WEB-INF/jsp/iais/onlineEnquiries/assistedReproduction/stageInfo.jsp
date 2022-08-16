@@ -155,10 +155,7 @@
                                             <%-- AR_STAGE_OUTCOME--%>
                                             <%@include file="cycleStage/previewOutcomeStageDetail.jsp" %>
                                         </c:if>
-                                        <c:if test="${cycleStage == 'AR_STG011'}">
-                                            <%-- AR_STAGE_OUTCOME_OF_PREGNANCY--%>
-                                            <%@include file="cycleStage/previewPregnancyOutcomeStageDetail.jsp" %>
-                                        </c:if>
+
                                         <c:if test="${cycleStage == 'AR_STG012'}">
                                             <%-- AR_STAGE_FREEZING--%>
                                             <%@include file="cycleStage/previewFreezingSection.jsp" %>
@@ -230,6 +227,8 @@
                                         <c:if test="${cycleStage == 'AR_STG009'}">
                                             <%-- AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED--%>
                                             <%@include file="cycleStageAment/previewEmbryoTransferredOutcomeStageDetail.jsp" %>
+                                            <%@include file="cycleStageAment/previewPregnancyOutcomeStageDetail.jsp" %>
+
                                         </c:if>
                                         <c:if test="${cycleStage == 'AR_STG010'}">
                                             <%-- AR_STAGE_OUTCOME--%>
@@ -237,6 +236,7 @@
                                         </c:if>
                                         <c:if test="${cycleStage == 'AR_STG011'}">
                                             <%-- AR_STAGE_OUTCOME_OF_PREGNANCY--%>
+                                            <%@include file="cycleStageAment/previewEmbryoTransferredOutcomeStageDetail.jsp" %>
                                             <%@include file="cycleStageAment/previewPregnancyOutcomeStageDetail.jsp" %>
                                         </c:if>
                                         <c:if test="${cycleStage == 'AR_STG012'}">
