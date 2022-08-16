@@ -77,7 +77,7 @@ public class DataSubmissionDelegator {
                 break;
             case "VS" :
                 complianceDto.setMins("10");
-                complianceDto.setSubmissionTypeDisplay("Voluntary Sterilisation");
+                complianceDto.setSubmissionTypeDisplay("Voluntary Sterilization");
                 break;
         }
         bpc.request.setAttribute("complianceDto",complianceDto);

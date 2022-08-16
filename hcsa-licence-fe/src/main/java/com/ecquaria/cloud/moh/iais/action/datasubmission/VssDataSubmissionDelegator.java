@@ -170,7 +170,7 @@ public class VssDataSubmissionDelegator {
         if (config != null) {
             smallTitle = config.getText();
         }
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>" + "Voluntary Sterilisation" + "</strong>");
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>" + "Voluntary Sterilization" + "</strong>");
 
     }
 
