@@ -317,7 +317,7 @@ public class WithOutRenewalDelegator {
                 }
                 appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
 
-                List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = ApplicationHelper.transferCgoToPsnDtoList(appSvcRelatedInfoDto.getAppSvcCgoDtoList());
+                /*List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = ApplicationHelper.transferCgoToPsnDtoList(appSvcRelatedInfoDto.getAppSvcCgoDtoList());
                 String svcCode = appSvcRelatedInfoDto.getServiceCode();
                 ApplicationHelper.initSetPsnIntoSelMap(licPersonMap, appSvcCgoDtos, svcCode);
                 //reset dto
@@ -327,7 +327,7 @@ public class WithOutRenewalDelegator {
                 }
                 appSvcRelatedInfoDto.setAppSvcCgoDtoList(newCgoDtoList);
                 ApplicationHelper.initSetPsnIntoSelMap(licPersonMap, appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList(), svcCode);
-                ApplicationHelper.initSetPsnIntoSelMap(licPersonMap, appSvcRelatedInfoDto.getAppSvcMedAlertPersonList(), svcCode);
+                ApplicationHelper.initSetPsnIntoSelMap(licPersonMap, appSvcRelatedInfoDto.getAppSvcMedAlertPersonList(), svcCode);*/
 
                 appSvcRelatedInfoDtoList.add(appSvcRelatedInfoDto);
                 List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();

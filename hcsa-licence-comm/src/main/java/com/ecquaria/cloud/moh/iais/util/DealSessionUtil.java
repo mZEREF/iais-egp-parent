@@ -394,7 +394,9 @@ public class DealSessionUtil {
                         DocSecDetailDto docSecDetailDto = docSecDetailList.get(j);
                         if (docSecDetailDto.isExistDoc()) {
                             Map<String, Map<String, File>> fileMap = IaisCommonUtils.genNewHashMap();
-                            fileMap.put(docKey, null);
+                            for (AppSvcDocDto appSvcDocDto : docSecDetailDto.getAppSvcDocDtoList()) {
+                                fileMap.put(docKey + appSvcDocDto.getSeqNum(), null);
+                            }
                             session.setAttribute(IaisEGPConstant.SEESION_FILES_MAP_AJAX + docKey, fileMap);
                         } else {
                             session.removeAttribute(IaisEGPConstant.SEESION_FILES_MAP_AJAX + docKey);

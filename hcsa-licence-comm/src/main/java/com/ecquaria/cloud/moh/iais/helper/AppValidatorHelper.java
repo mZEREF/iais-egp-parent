@@ -488,6 +488,14 @@ public final class AppValidatorHelper {
                     addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
                     break;
                 }
+                case HcsaConsts.STEP_SUPPLEMENTARY_FORM: {
+                    Map<String, String> map = doValidateSupplementaryForm(dto.getAppSvcSuplmFormDto());
+                    if (!map.isEmpty()) {
+                        errorMap.putAll(map);
+                    }
+                    addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
+                    break;
+                }
                 case HcsaConsts.STEP_DOCUMENTS:
                     doValidateSvcDocuments(dto.getDocumentShowDtoList(), errorMap);
                     addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
