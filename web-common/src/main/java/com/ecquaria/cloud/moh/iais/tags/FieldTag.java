@@ -30,6 +30,7 @@ public final class FieldTag extends DivTagSupport {
     private String onclick;
     private int width;
     private boolean mandatory;
+    private String data;
 
     public FieldTag() {
         super();
@@ -107,7 +108,11 @@ public final class FieldTag extends DivTagSupport {
         if (!StringUtil.isEmpty(style)) {
             html.append("\" style=\"").append(style);
         }
-        html.append("\">");
+        html.append("\"");
+        if (StringUtil.isNotEmpty(data)) {
+            html.append(" ").append(data);
+        }
+        html.append(" >");
 
         html.append(value);
         if (isBackend && required) {
@@ -206,5 +211,9 @@ public final class FieldTag extends DivTagSupport {
         this.width = width;
     }
     public void setMandatory(Boolean mandatory){this.mandatory = mandatory;}
+
+    public void setData(String data) {
+        this.data = data;
+    }
 
 }

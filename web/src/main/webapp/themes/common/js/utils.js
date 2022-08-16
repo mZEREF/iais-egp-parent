@@ -1038,4 +1038,23 @@ function getContextPath() {
     return result;
 }
 
+function toRomanNum(i, withLower) {
+    if (isNaN(i)) {
+        return "";
+    }
+    let num = Number(i);
+    if (num < 1 || num > 5999) {
+        return "";
+    }
+    const RN_I = ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"];
+    const RN_X = ["", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"];
+    const RN_C = ["", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"];
+    const RN_M = ["", "M", "MM", "MMM", "MMMM", "MMMMM"];
+    let result = RN_M[parseInt(num / 1000)] + RN_C[parseInt(num % 1000 / 100)] + RN_X[parseInt(num % 100 / 10)] + RN_I[num % 10];
+    if (withLower) {
+        result = result.toLowerCase();
+    }
+    return result;
+}
+
 
