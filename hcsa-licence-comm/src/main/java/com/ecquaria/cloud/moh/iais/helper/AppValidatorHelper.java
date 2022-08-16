@@ -2302,7 +2302,6 @@ public final class AppValidatorHelper {
             String salutation = appSvcPersonnelDto.getSalutation();
             String name = appSvcPersonnelDto.getName();
             String qualification = appSvcPersonnelDto.getQualification();
-
             String wrkExpYear = appSvcPersonnelDto.getWrkExpYear();
             if (StringUtil.isEmpty(salutation)) {
                 errorMap.put("salutation" + i, signal);
@@ -2312,10 +2311,10 @@ public final class AppValidatorHelper {
             } else if (name.length() > 66) {
                 errorMap.put("name" + i, signal);
             }else {
-                if (errorName.contains(name)){
+                if (errorName.contains(salutation+name)){
                     errorMap.put("name"+i,"Do not enter the same name");
                 }else {
-                    errorName.add(name);
+                    errorName.add(salutation+name);
                 }
             }
             if (StringUtil.isEmpty(qualification)) {
@@ -2466,18 +2465,18 @@ public final class AppValidatorHelper {
 
     public static void paramValidate(Map<String, String> errorMap,AppSvcPersonnelDto appSvcPersonnelDto,String prefix,int i,List<String> errorName){
         String signal = "GENERAL_ERR0006";
-
         String name = appSvcPersonnelDto.getName();
-
-        if (StringUtil.isEmpty(name)) {
-            errorMap.put(prefix+"name" + i, signal);
-        } else if (name.length() > 110) {
-            errorMap.put(prefix+"name" + i, signal);
-        }else {
-            if (errorName.contains(prefix+name)){
-                errorMap.put(prefix+"name" + i,"Do not enter the same name");
+        if ("SP001".equals(prefix)||"SP999".equals(prefix)){
+            if (StringUtil.isEmpty(name)) {
+                errorMap.put(prefix+"name" + i, signal);
+            } else if (name.length() > 110) {
+                errorMap.put(prefix+"name" + i, signal);
             }else {
-                errorName.add(prefix+name);
+                if (errorName.contains(prefix+name)){
+                    errorMap.put(prefix+"name" + i,"Do not enter the same name");
+                }else {
+                    errorName.add(prefix+name);
+                }
             }
         }
         String wrkExpYear = appSvcPersonnelDto.getWrkExpYear();
@@ -2491,13 +2490,10 @@ public final class AppValidatorHelper {
                 errorMap.put(prefix+"wrkExpYear" + i, signal);
             }
         }
-
         if ("SP002".equals(prefix) || "SP003".equals(prefix)) {
             String designation = appSvcPersonnelDto.getDesignation();
-//                designation
             if (StringUtil.isEmpty(designation)) {
                 errorMap.put(prefix + "designation" + i, signal);
-//            Others  下拉框
             } else if (HcsaAppConst.DESIGNATION_OTHERS.equals(designation)) {
                 String otherDesignation = appSvcPersonnelDto.getOtherDesignation();
                 if (StringUtil.isEmpty(otherDesignation)) {
@@ -2505,6 +2501,10 @@ public final class AppValidatorHelper {
                 } else if (otherDesignation.length() > 100) {
                     errorMap.put(prefix + "otherDesignation" + i, signal);
                 }
+            }else if (errorName.contains(designation+prefix+name)){
+                errorMap.put(prefix+"name" + i,"Do not enter the same name");
+            }else {
+                errorName.add(designation+prefix+name);
             }
             //              profRegNo
             String profRegNo = appSvcPersonnelDto.getProfRegNo();
@@ -2606,11 +2606,6 @@ public final class AppValidatorHelper {
                 errorMap.put(prefix+"numberSupervision" + i, signal);
             }
         }
-
-//        if ("SP002".equals(prefix) || "SP003".equals(prefix) || "SP001".equals(prefix) || "SP999".equals(prefix) ){
-////               wrkExpYear
-//
-//        }
     }
 
     public static void specialValidate(Map<String, String> errorMap,AppSvcPersonnelDto appSvcPersonnelDto,int i){

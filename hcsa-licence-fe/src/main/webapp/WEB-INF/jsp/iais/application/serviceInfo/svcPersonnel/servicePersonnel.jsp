@@ -83,6 +83,9 @@
          <span style="">+ Add Another AR Practitioner</span>
          </span>
         </div>
+        <div class="form-group col-md-12 col-xs-12 addDpoDiv">
+         <span style="">+ Add Another AR Practitioner</span>
+        </div>
 
     </div>
 
@@ -102,6 +105,23 @@
          <span style="">+ Add Another Nurse</span>
          </span>
         </div>
+
+            <div class="contents">
+                <div class="file-upload-gp nonHcsaRowDiv">
+                <span><a href="${pageContext.request.contextPath}/co-non-hcsa-template2"
+                         style="text-decoration: none;color:deepskyblue;cursor:pointer;">
+                    List of Nurses Template</a>
+                  </span>
+                    <div class="uploadFileShowDiv" id="uploadFileShowId">
+                    </div>
+                    <div class="col-xs-12 uploadFileErrorDiv">
+                        <span id="error_uploadFileError" name="iaisErrorMsg" class="error-msg"></span>
+                    </div>
+                    <br/>
+                    <a class="btn btn-file-upload file-upload btn-secondary">Upload List of Nurses</a>
+                </div>
+            </div>
+            <div id="selectFileDiv"></div>
 
     </div>
 

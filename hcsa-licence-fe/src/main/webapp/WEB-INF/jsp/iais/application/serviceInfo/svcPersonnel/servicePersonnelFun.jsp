@@ -558,12 +558,15 @@
     }
 
     function doActionAfterUploading(data, fileAppendId) {
-        fillNurse($("#" + fileAppendId + "ShowId").closest('div.personnel-content'), data.appSvcPersonnelDto);
+        fillNurse($("#" + fileAppendId + "ShowId").closest('div.panel-main-content'), data.appSvcPersonnelDto);
     }
 
     function fillNurse($premContent, data) {
         //清除除了第一个的
-        $('div.personnel-content:not(:first)').remove();
+
+        $($premContent).find('.personnel-content:not(:first)').remove();
+
+        // $('div.personnel-content:not(:first)').remove();
         if (isEmpty(data) || !$.isArray(data)) {
             clearFields($('.personnel-content'));
             return;
@@ -574,15 +577,10 @@
             //如果没多余的，那么重新拷贝一份
             if (isEmptyNode($('.personnel-content').eq(i))) {
                 //重新拷贝一份    TODO
-                // addNurse();
+                addPersonnels($premContent);
             }
             console.log(data[i])
             fillForm($('.personnel-content').eq(i), data[i], '', i)
         }
     }
-
-    // function addNurse() {
-    //     clickEvent()
-    // }
-
 </script>

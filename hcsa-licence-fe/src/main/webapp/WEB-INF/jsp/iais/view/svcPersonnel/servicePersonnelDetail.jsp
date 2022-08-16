@@ -1,17 +1,7 @@
-<iais:row>
-    <iais:value width="5" cssClass="col-xs-12 col-md-6">
-        <strong>
-            <c:out value="Service Personnel "/>
-            <label class="assign-psn-item">${index+1}</label>
-        </strong>
-    </iais:value>
-</iais:row>
 <iais:field width="5" mandatory="true" value="Select Service Personnel" cssClass="col-sm-5"/>
 <iais:value width="7" cssClass="col-sm-5 col-md-7">
     <c:out value="${appSvcPersonnelDto.personnelType}"/>
 </iais:value>
-
-
 <%--        name--%>
 <iais:row>
     <iais:field width="5" mandatory="true" value="Name" cssClass="col-sm-5"/>

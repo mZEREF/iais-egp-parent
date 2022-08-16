@@ -623,17 +623,6 @@ public class ServiceInfoDelegator {
                 }
             }
             AppValidatorHelper.doValidateSectionLeader(errorMap, currSvcInfoDto.getAppSvcSectionLeaderList(), currSvcInfoDto.getServiceCode());
-//            errorMap = AppValidatorHelper.validateSectionLeaders(currSvcInfoDto.getAppSvcSectionLeaderList(),
-//                    currSvcInfoDto.getServiceCode());
-//            if (!isRfi) {
-//                List<HcsaSvcPersonnelDto> psnConfig = configCommService.getHcsaSvcPersonnel(currSvcId,
-//                        ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER);
-//                int psnLength = Optional.ofNullable(currSvcInfoDto.getAppSvcSectionLeaderList())
-//                        .map(List::size)
-//                        .orElse(0);
-////                errorMap = AppValidatorHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER,
-////                        errorMap, psnLength, "errorSECLDR", HcsaConsts.SECTION_LEADER);
-//            }
         }
         boolean isValid = checkAction(errorMap, HcsaConsts.STEP_SECTION_LEADER, appSubmissionDto, bpc.request);
         if (isValid && isGetDataFromPage) {
@@ -1326,20 +1315,25 @@ public class ServiceInfoDelegator {
         boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(RfcConst.EDIT_SERVICE,
                 bpc.request);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+
         SvcPersonnelDto svcPersonnelDto = appSvcRelatedInfoDto.getSvcPersonnelDto();
+
         if (isGetDataFromPage) {
             List<String> personnelTypeList = IaisCommonUtils.genNewArrayList();
             List<SelectOption> personnelTypeSel = ApplicationHelper.genPersonnelTypeSel(currentSvcCod);
             for (SelectOption sp : personnelTypeSel) {
                 personnelTypeList.add(sp.getValue());
             }
-//            得到数据
             svcPersonnelDto = AppDataHelper.genAppSvcPersonnelDtoList(bpc.request,svcPersonnelDto);
+
             log.debug(StringUtil.changeForLog("cycle cgo dto to retrieve prs info start ..."));
             log.debug("prs server flag {}", prsFlag);
             log.debug(StringUtil.changeForLog("cycle cgo dto to retrieve prs info end ..."));
+
             appSvcRelatedInfoDto.setSvcPersonnelDto(svcPersonnelDto);
-            setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto, appSubmissionDto);
+
+            setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto);
+
         }
         if ("next".equals(action)) {
             AppValidatorHelper.doValidateSvcPersonnel(errorMap, svcPersonnelDto, currentSvcCod);

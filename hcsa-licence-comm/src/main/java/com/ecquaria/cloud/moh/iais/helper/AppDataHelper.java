@@ -1969,8 +1969,11 @@ public final class AppDataHelper {
         } else {
             appSvcPersonnelDto.setIndexNo(UUID.randomUUID().toString());
         }
-//        类型设置为前缀名
-//        appSvcPersonnelDto.setPersonnelType(prefix);
+        if (!StringUtil.isEmpty(prefix) && prefix=="SP999"){
+            appSvcPersonnelDto.setPersonnelType(ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS);
+        }else {
+            appSvcPersonnelDto.setPersonnelType(prefix);
+        }
         appSvcPersonnelDto.setOtherDesignation(otherDesignation);
         appSvcPersonnelDto.setSubSpeciality(subSpeciality);
         appSvcPersonnelDto.setSpeciality(speciality);
@@ -2083,34 +2086,26 @@ public final class AppDataHelper {
         appSvcPersonnelDto.setSeqNum(i);
         return appSvcPersonnelDto;
     }
-
     public static SvcPersonnelDto genAppSvcPersonnelDtoList(HttpServletRequest request, SvcPersonnelDto
             svcPersonnelDto) {
         if (StringUtil.isEmpty(svcPersonnelDto)) {
             svcPersonnelDto = new SvcPersonnelDto();
         }
-//      得到每个集合
         List<AppSvcPersonnelDto> normalList = IaisCommonUtils.genNewArrayList();
         List<AppSvcPersonnelDto> nurseList = IaisCommonUtils.genNewArrayList();
         List<AppSvcPersonnelDto> specialList = IaisCommonUtils.genNewArrayList();
         List<AppSvcPersonnelDto> embryologistList = IaisCommonUtils.genNewArrayList();
         List<AppSvcPersonnelDto> arPractitionerList = IaisCommonUtils.genNewArrayList();
-
-//        作用域中得到长度
         int arCount = 0;
         int nuCount = 0;
         int emCount = 0;
         int speCount = 0;
         int noCount = 0;
-
         String[] arCountStrs = ParamUtil.getStrings(request, "SP002arCount");
         String[] nuCountStrs = ParamUtil.getStrings(request, "SP003nuCount");
         String[] emCountStrs = ParamUtil.getStrings(request, "SP001emCount");
-
         String[] speCountStrs = ParamUtil.getStrings(request, "SP000speCount");
-
         String[] noCountStrs = ParamUtil.getStrings(request, "SP999noCount");
-
         if (!StringUtil.isEmpty(arCountStrs)){
             arCount = arCountStrs.length;
         }
@@ -2128,54 +2123,41 @@ public final class AppDataHelper {
         }
 
         for (int i = 0; i < arCount; i++) {
-//            得到的是
             AppSvcPersonnelDto dto = getAppSvcPersonnelParam(request, "SP002", String.valueOf(i));
             arPractitionerList.add(dto);
         }
-
         for (int i = 0; i < nuCount; i++) {
             AppSvcPersonnelDto dto = getAppSvcPersonnelParam(request, "SP003", String.valueOf(i));
             nurseList.add(dto);
         }
-
         for (int i = 0; i < emCount; i++) {
             AppSvcPersonnelDto dto = getAppSvcPersonnelParam(request, "SP001", String.valueOf(i));
             embryologistList.add(dto);
         }
-
         for (int i = 0; i < noCount; i++) {
             AppSvcPersonnelDto dto = getAppSvcPersonnelParam(request, "SP999", String.valueOf(i));
             normalList.add(dto);
         }
-//
-//        特殊的一个  如果是不为零
         for (int i = 0; i < speCount; i++) {
             AppSvcPersonnelDto dto = getAppSvcPersonnelDto(request,i);
             specialList.add(dto);
         }
-
-//        TODO
         if (arPractitionerList.size() != 0){
             svcPersonnelDto.setArPractitionerList(arPractitionerList);
         }
-
         if (nurseList.size() != 0){
             svcPersonnelDto.setNurseList(nurseList);
         }
-
         if (embryologistList.size() != 0){
             svcPersonnelDto.setEmbryologistList(embryologistList);
         }
-
         if (specialList.size() != 0){
             svcPersonnelDto.setSpecialList(specialList);
         }
-
         if (normalList.size() != 0){
             svcPersonnelDto.setNormalList(normalList);
         }
         return svcPersonnelDto;
-
     }
 
 
