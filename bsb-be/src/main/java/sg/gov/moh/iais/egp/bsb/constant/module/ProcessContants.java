@@ -1,29 +1,26 @@
 package sg.gov.moh.iais.egp.bsb.constant.module;
 
-/**
- * @author : LiRan
- * @date : 2021/8/20
- */
+
 public class ProcessContants {
     private ProcessContants() {}
 
-    public static final String CRUD_ACTION_TYPE_PROCESS             = "process";
-    public static final String CRUD_ACTION_TYPE_PREPARE             = "prepare";
+    public static final String CRUD_ACTION_TYPE_PROCESS                   = "process";
+    public static final String CRUD_ACTION_TYPE_PREPARE                   = "prepare";
+    // DO Verification crud_action_type
+    public static final String CRUD_ACTION_TYPE_ACCEPT                    = "accept";
+    public static final String CRUD_ACTION_TYPE_REJECT                    = "reject";
+    public static final String CRUD_ACTION_TYPE_REQUEST_FOR_INFORMATION   = "requestForInformation";
+    public static final String CRUD_ACTION_TYPE_PREPARE_DATA              = "prepareData";
 
     public static final String MOH_PROCESS_PAGE_VALIDATION          = "mohProcessPageValidation";
 
-    public static final String MODULE_NAME_DO_SCREENING             = "doScreening";
-    public static final String MODULE_NAME_AO_SCREENING             = "aoScreening";
-    public static final String MODULE_NAME_HM_SCREENING             = "hmScreening";
-    public static final String MODULE_NAME_DO_PROCESSING            = "doProcessing";
-    public static final String MODULE_NAME_AO_PROCESSING            = "aoProcessing";
-    public static final String MODULE_NAME_HM_PROCESSING            = "hmProcessing";
-
     public static final String KEY_MOH_PROCESS_DTO                  = "mohProcessDto";
+    public static final String KEY_DO_VERIFICATION_DTO              = "doVerificationDto";
 
     public static final String KEY_REMARKS                          = "remarks";
     public static final String KEY_PROCESSING_DECISION              = "processingDecision";
     public static final String KEY_INSPECTION_REQUIRED              = "inspectionRequired";
     public static final String KEY_CERTIFICATION_REQUIRED           = "certificationRequired";
     public static final String KEY_SELECT_MOH_USER                  = "selectMohUser";
+
 }

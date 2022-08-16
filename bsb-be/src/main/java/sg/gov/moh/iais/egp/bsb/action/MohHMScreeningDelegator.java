@@ -15,18 +15,14 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_HM_SCREENING;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_HM_DECISION;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_FACILITY_REGISTRATION;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_AO_SCREENING;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.KEY_MOH_PROCESS_DTO;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.MODULE_NAME_HM_SCREENING;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_TASK_ID;
 
-/**
- * @author : LiRan
- * @date : 2021/11/22
- */
+
 @Delegator(value = "hmScreeningDelegator")
 @Slf4j
 public class MohHMScreeningDelegator {
@@ -39,29 +35,28 @@ public class MohHMScreeningDelegator {
         this.mohProcessService = mohProcessService;
     }
 
-
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_MOH_PROCESS_DTO);
         MaskHelper.taskProcessUnmask(request, PARAM_NAME_APP_ID, PARAM_NAME_TASK_ID);
-        AuditTrailHelper.auditFunction(MODULE_FACILITY_REGISTRATION, FUNCTION_HM_SCREENING);
+        AuditTrailHelper.auditFunction(MODULE_FACILITY_REGISTRATION, FUNCTION_HM_DECISION);
     }
 
     public void prepareData(BaseProcessClass bpc) {
-        mohProcessService.prepareData(bpc, MODULE_NAME_HM_SCREENING);
+        mohProcessService.prepareData(bpc, FUNCTION_HM_DECISION);
     }
 
-    public void prepareSwitch(BaseProcessClass bpc){
-        mohProcessService.prepareSwitch(bpc, MODULE_NAME_HM_SCREENING);
+    public void prepareSwitch(BaseProcessClass bpc) {
+        mohProcessService.prepareSwitch(bpc, FUNCTION_HM_DECISION);
     }
 
-    public void process(BaseProcessClass bpc){
+    public void process(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String taskId = (String) ParamUtil.getSessionAttr(request, PARAM_NAME_TASK_ID);
         String appId = (String) ParamUtil.getSessionAttr(request, PARAM_NAME_APP_ID);
         MohProcessDto mohProcessDto = (MohProcessDto) ParamUtil.getSessionAttr(request, KEY_MOH_PROCESS_DTO);
-        processClient.saveHmScreeningApproveOrReject(appId, taskId, mohProcessDto);
-        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, "Higher Management Screening");
+        processClient.saveHMScreeningApproveOrReject(appId, taskId, mohProcessDto);
+        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, FUNCTION_HM_DECISION);
         ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, APP_STATUS_PEND_AO_SCREENING);
         ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_AO);
     }

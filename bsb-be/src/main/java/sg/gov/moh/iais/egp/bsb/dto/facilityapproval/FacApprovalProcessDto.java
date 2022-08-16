@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.Map;
 
+import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_COMMENTS_TO_APPLICANT;
+
 @Data
 public class FacApprovalProcessDto implements Serializable {
     private String taskId;
@@ -23,7 +25,7 @@ public class FacApprovalProcessDto implements Serializable {
     private String lastRecommendation;
     private String lastRemarks;
 
-    private Map<String,String> batAgentIdApprovedMap;
+    private Map<String, String> batAgentIdApprovedMap;
 
     private String remarks;
 
@@ -54,19 +56,18 @@ public class FacApprovalProcessDto implements Serializable {
         this.validationResultDto = null;
     }
 
-    private static final String KEY_REMARKS = "remarks";
-    private static final String KEY_PROCESSING_DECISION = "processingDecision";
-    private static final String KEY_SELECT_MOH_USER = "selectMohUser";
-    private static final String KEY_COMMENTS_TO_APPLICANT = "commentsToApplicant";
+    private static final String KEY_REMARKS                  = "remarks";
+    private static final String KEY_PROCESSING_DECISION      = "processingDecision";
+    private static final String KEY_SELECT_MOH_USER          = "selectMohUser";
 
-    public void reqObjMapping(HttpServletRequest request){
+    public void reqObjMapping(HttpServletRequest request) {
         FacilityDetailsInfo facilityDetailsInfo = (FacilityDetailsInfo) ParamUtil.getSessionAttr(request, ModuleCommonConstants.KEY_FACILITY_DETAILS_INFO);
         for (FacilityBiologicalAgentInfo info : facilityDetailsInfo.getFacilityBiologicalAgentInfoList()) {
-            batAgentIdApprovedMap.put(info.getId(),ParamUtil.getString(request,info.getId()));
+            batAgentIdApprovedMap.put(info.getId(), ParamUtil.getString(request, info.getId()));
         }
-        this.remarks = ParamUtil.getString(request,KEY_REMARKS);
-        this.processingDecision = ParamUtil.getString(request,KEY_PROCESSING_DECISION);
-        this.selectMohUser = ParamUtil.getString(request,KEY_SELECT_MOH_USER);
-        this.commentsToApplicant = ParamUtil.getString(request,KEY_COMMENTS_TO_APPLICANT);
+        this.remarks = ParamUtil.getString(request, KEY_REMARKS);
+        this.processingDecision = ParamUtil.getString(request, KEY_PROCESSING_DECISION);
+        this.selectMohUser = ParamUtil.getString(request, KEY_SELECT_MOH_USER);
+        this.commentsToApplicant = ParamUtil.getString(request, KEY_COMMENTS_TO_APPLICANT);
     }
 }

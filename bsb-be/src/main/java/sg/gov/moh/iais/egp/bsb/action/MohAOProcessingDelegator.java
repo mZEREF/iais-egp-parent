@@ -17,7 +17,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_AO_PROCESSING;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_AO_APPROVAL;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_FACILITY_REGISTRATION;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_DO_APPROVAL_LETTER_DRAFT;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_DO_RECOMMENDATION;
@@ -27,15 +27,10 @@ import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESS_D
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_HM;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.KEY_MOH_PROCESS_DTO;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.MODULE_NAME_AO_PROCESSING;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_TASK_ID;
 
 
-/**
- * @author : LiRan
- * @date : 2021/11/22
- */
 @Delegator(value = "aoProcessingDelegator")
 @Slf4j
 public class MohAOProcessingDelegator {
@@ -52,40 +47,40 @@ public class MohAOProcessingDelegator {
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_MOH_PROCESS_DTO);
         MaskHelper.taskProcessUnmask(request, PARAM_NAME_APP_ID, PARAM_NAME_TASK_ID);
-        AuditTrailHelper.auditFunction(MODULE_FACILITY_REGISTRATION, FUNCTION_AO_PROCESSING);
+        AuditTrailHelper.auditFunction(MODULE_FACILITY_REGISTRATION, FUNCTION_AO_APPROVAL);
     }
 
     public void prepareData(BaseProcessClass bpc) {
-        mohProcessService.prepareData(bpc, MODULE_NAME_AO_PROCESSING);
+        mohProcessService.prepareData(bpc, FUNCTION_AO_APPROVAL);
     }
 
-    public void prepareSwitch(BaseProcessClass bpc){
-        mohProcessService.prepareSwitch(bpc, MODULE_NAME_AO_PROCESSING);
+    public void prepareSwitch(BaseProcessClass bpc) {
+        mohProcessService.prepareSwitch(bpc, FUNCTION_AO_APPROVAL);
     }
 
-    public void process(BaseProcessClass bpc){
+    public void process(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String taskId = (String) ParamUtil.getSessionAttr(request, PARAM_NAME_TASK_ID);
         String appId = (String) ParamUtil.getSessionAttr(request, PARAM_NAME_APP_ID);
         MohProcessDto mohProcessDto = (MohProcessDto) ParamUtil.getSessionAttr(request, KEY_MOH_PROCESS_DTO);
         String processingDecision = mohProcessDto.getProcessingDecision();
-        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, "Approval Officer Processing");
+        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, FUNCTION_AO_APPROVAL);
         switch (processingDecision) {
             case MOH_PROCESS_DECISION_APPROVE:
-                processClient.saveAoProcessingApprove(appId, taskId, mohProcessDto);
+                processClient.saveAOProcessingApprove(appId, taskId, mohProcessDto);
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_DO_APPROVAL_LETTER_DRAFT));
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_DO);
                 break;
             case MOH_PROCESS_DECISION_REJECT:
-                processClient.saveAoProcessingReject(appId, taskId, mohProcessDto);
+                processClient.saveAOProcessingReject(appId, taskId, mohProcessDto);
                 break;
             case MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO:
-                processClient.saveAoProcessingRouteBackToDo(appId, taskId, mohProcessDto);
+                processClient.saveAOProcessingRouteBackToDo(appId, taskId, mohProcessDto);
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_DO_RECOMMENDATION));
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_DO);
                 break;
             case MOH_PROCESS_DECISION_ROUTE_TO_HM:
-                processClient.saveAoProcessingRouteToHm(appId, taskId, mohProcessDto);
+                processClient.saveAOProcessingRouteToHm(appId, taskId, mohProcessDto);
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_HM_APPROVAL));
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_HM);
                 break;

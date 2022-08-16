@@ -4,6 +4,7 @@ package sg.gov.moh.iais.egp.bsb.service.inbox;
 import java.util.Arrays;
 import java.util.List;
 
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_ACCEPTED;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_APPROVED;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_DRAFT;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PARTIAL_ACCEPTANCE;
@@ -32,7 +33,7 @@ public class AppWithdrawableJudge implements AppActionJudge {
     public boolean judge() {
         List<String> withdrawableAppTypes = Arrays.asList(APP_TYPE_NEW, APP_TYPE_RENEW, APP_TYPE_RFC, APP_TYPE_CANCEL, APP_TYPE_DEREGISTRATION, APP_TYPE_SUBMISSION);
         List<String> notWithdrawableAppStatus = Arrays.asList(APP_STATUS_WITHDRAWN, APP_STATUS_REJECTED, APP_STATUS_DRAFT, APP_STATUS_REMOVED,
-                APP_STATUS_APPROVED, APP_STATUS_PEND_DO_APPROVAL_LETTER_DRAFT, APP_STATUS_PEND_AO_APPROVAL_LETTER_REVIEW, APP_STATUS_PARTIAL_ACCEPTANCE);
+                APP_STATUS_APPROVED, APP_STATUS_ACCEPTED, APP_STATUS_PEND_DO_APPROVAL_LETTER_DRAFT, APP_STATUS_PEND_AO_APPROVAL_LETTER_REVIEW, APP_STATUS_PARTIAL_ACCEPTANCE);
         return withdrawableAppTypes.contains(appType) && !notWithdrawableAppStatus.contains(appStatus);
     }
 }

@@ -36,10 +36,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessDeregistrationConst
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_TASK_ID;
 
-/**
- * @author : LiRan
- * @date : 2022/1/20
- */
+
 @Slf4j
 @Delegator(value = "aoProcessDeregistrationDelegator")
 public class AOProcessDeregistrationDelegator {
@@ -66,7 +63,7 @@ public class AOProcessDeregistrationDelegator {
         request.getSession().removeAttribute(KEY_AO_PROCESS_DTO);
         request.getSession().removeAttribute("applicationDocRepoIdNameMap");
         MaskHelper.taskProcessUnmask(request, PARAM_NAME_APP_ID, PARAM_NAME_TASK_ID);
-        AuditTrailHelper.auditFunction(MODULE_DEREGISTRATION, MODULE_DEREGISTRATION);
+        AuditTrailHelper.auditFunction(MODULE_DEREGISTRATION, "");
     }
 
     public void prepareData(BaseProcessClass bpc) {
@@ -75,10 +72,6 @@ public class AOProcessDeregistrationDelegator {
         AOProcessDto aoProcessDto = processDeregistrationService.getAOProcessDto(request, appId);
         ParamUtil.setSessionAttr(request, KEY_AO_PROCESS_DTO, aoProcessDto);
         ParamUtil.setRequestAttr(request, KEY_SUBMISSION_DETAILS_DTO, aoProcessDto.getSubmissionDetailsDto());
-        // view application need appId and moduleType
-//        String moduleType = AppViewService.judgeProcessAppModuleType(aoProcessDto.getSubmissionDetailsDto().getProcessType(), aoProcessDto.getSubmissionDetailsDto().getApplicationType());
-//        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_ID, appId);
-//        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_VIEW_MODULE_TYPE, moduleType);
         //show routingHistory list
         processHistoryService.getAndSetHistoryInRequest(aoProcessDto.getSubmissionDetailsDto().getApplicationNo(), request);
         //show internal doc

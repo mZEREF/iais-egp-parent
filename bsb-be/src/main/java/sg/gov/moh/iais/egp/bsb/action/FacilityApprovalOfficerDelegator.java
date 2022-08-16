@@ -5,7 +5,6 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +25,7 @@ import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.SubmissionDetailsInfo;
 import sg.gov.moh.iais.egp.bsb.dto.rfi.RfiProcessDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.service.AppViewService;
+import sg.gov.moh.iais.egp.bsb.service.RfiService;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 import sg.gov.moh.iais.egp.bsb.util.DocDisplayDtoUtil;
 import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
@@ -46,12 +46,7 @@ import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_HM_HANDLE_PROCESSING;
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_APPROVAL_APPLICATION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_DOC_DISPLAY_DTO_REPO_ID_NAME_MAP;
-import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.CHECK_BOX_APP_SELECT;
-import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.CHECK_BOX_DOC_SELECT;
-import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.CLOSE_PAGE;
-import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_TRUE;
-import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.RFI_SELECT_MAP;
-import static sg.gov.moh.iais.egp.bsb.dto.rfi.RfiProcessDto.KEY_COMMENTS_TO_APPLICANT;
+import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_RFI_PROCESS_DTO;
 
 
 @Slf4j
@@ -67,12 +62,14 @@ public class FacilityApprovalOfficerDelegator {
     private final FacilityApprovalClient facApprovalClient;
     private final InternalDocClient internalDocClient;
     private final AppViewService appViewService;
+    private final RfiService rfiService;
 
     @Autowired
-    public FacilityApprovalOfficerDelegator(FacilityApprovalClient facApprovalClient, InternalDocClient internalDocClient, AppViewService appViewService) {
+    public FacilityApprovalOfficerDelegator(FacilityApprovalClient facApprovalClient, InternalDocClient internalDocClient, AppViewService appViewService, RfiService rfiService) {
         this.facApprovalClient = facApprovalClient;
         this.internalDocClient = internalDocClient;
         this.appViewService = appViewService;
+        this.rfiService = rfiService;
     }
 
     public void startDO(BaseProcessClass bpc) {
@@ -105,7 +102,7 @@ public class FacilityApprovalOfficerDelegator {
         session.removeAttribute(KEY_DOC_DISPLAY_DTO_REPO_ID_NAME_MAP);
         session.removeAttribute("aoSelectionOps");
         session.removeAttribute("hmSelectionOps");
-        session.removeAttribute(RFI_SELECT_MAP);
+        session.removeAttribute(KEY_RFI_PROCESS_DTO);
 
         String appId = (String) ParamUtil.getSessionAttr(request, TaskModuleConstants.PARAM_NAME_APP_ID);
         FacApprovalInitDataDto initDataDto = facApprovalClient.getInitFacilityApprovalData(appId).getEntity();
@@ -235,10 +232,7 @@ public class FacilityApprovalOfficerDelegator {
     public void rfiByDO(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         FacApprovalProcessDto processDto = (FacApprovalProcessDto) ParamUtil.getSessionAttr(request, KEY_FACILITY_APPROVAL_PROCESS_DTO);
-        Map<String, Boolean> rfiSelectMap = (Map<String, Boolean>) ParamUtil.getSessionAttr(request, RFI_SELECT_MAP);
-        RfiProcessDto rfiProcessDto = new RfiProcessDto();
-        rfiProcessDto.setRfiSelectMap(rfiSelectMap);
-        rfiProcessDto.setCommentsToApplicant(ParamUtil.getString(request, KEY_COMMENTS_TO_APPLICANT));
+        RfiProcessDto rfiProcessDto = (RfiProcessDto) ParamUtil.getSessionAttr(request, KEY_RFI_PROCESS_DTO);
         processDto.setRfiProcessDto(rfiProcessDto);
         facApprovalClient.facApprovalDORfi(processDto);
         ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, MSG_COMPLETE_TASK);
@@ -297,13 +291,6 @@ public class FacilityApprovalOfficerDelegator {
     }
 
     public void doRfi(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        Map<String, Boolean> rfiSelectMap = Maps.newHashMapWithExpectedSize(2);
-        String appSelect = ParamUtil.getString(request, CHECK_BOX_APP_SELECT);
-        String docSelect = ParamUtil.getString(request, CHECK_BOX_DOC_SELECT);
-        rfiSelectMap.put(CHECK_BOX_APP_SELECT, appSelect != null && appSelect.equals(KEY_TRUE));
-        rfiSelectMap.put(CHECK_BOX_DOC_SELECT, docSelect != null && docSelect.equals(KEY_TRUE));
-        ParamUtil.setSessionAttr(request, RFI_SELECT_MAP, (Serializable) rfiSelectMap);
-        ParamUtil.setRequestAttr(request, CLOSE_PAGE, true);
+        rfiService.doNewApprovalAppRfi(bpc.request);
     }
 }

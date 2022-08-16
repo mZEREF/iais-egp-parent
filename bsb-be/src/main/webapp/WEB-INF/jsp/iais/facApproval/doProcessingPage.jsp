@@ -4,6 +4,7 @@
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
 <%@ page import="sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants" %>
 <%@ page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
+<%@ taglib prefix="common" tagdir="/WEB-INF/tags/common" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -124,27 +125,9 @@
                                                                 </div>
                                                                 <div class="clear"></div>
                                                             </div>
-                                                            <div id="rfiDiv" <c:if test="${processDto.processingDecision ne MasterCodeConstants.MOH_PROCESS_DECISION_REQUEST_FOR_INFORMATION}">style="display:none"</c:if>>
-                                                                <div class="form-group">
-                                                                    <label class="col-xs-12 col-md-4 control-label">Sections allowed to change</label>
-                                                                    <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                        <div class="input-group">
-                                                                            <p>Facility Information</p>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="clear"></div>
-                                                                </div>
-                                                                <div class="form-group">
-                                                                    <label for="commentsToApplicant" class="col-xs-12 col-md-4 control-label">Comments To Applicant</label>
-                                                                    <div class="col-sm-7 col-md-5 col-xs-10">
-                                                                        <div class="input-group">
-                                                                            <textarea id="commentsToApplicant" name="commentsToApplicant" cols="70" rows="7" maxlength="300"><c:out value="${processDto.commentsToApplicant}"/></textarea>
-                                                                            <span data-err-ind="commentsToApplicant" class="error-msg"></span>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="clear"></div>
-                                                                </div>
-                                                            </div>
+                                                            <%--@elvariable id="rfiProcessDto" type="sg.gov.moh.iais.egp.bsb.dto.rfi.RfiProcessDto"--%>
+                                                            <common:rfi processingDecision="${processDto.processingDecision}" commentsToApplicant="${processDto.commentsToApplicant}" rfiProcessDto="${rfiProcessDto}">
+                                                            </common:rfi>
                                                             <div class="form-group">
                                                                 <label for="remarks" class="col-xs-12 col-md-4 control-label">Remarks</label>
                                                                 <div class="col-sm-7 col-md-5 col-xs-10">
