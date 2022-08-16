@@ -78,14 +78,6 @@ public class MohProcessService {
         return dto;
     }
 
-    public DOVerificationDto getDOVerificationDto(HttpServletRequest request, String applicationId) {
-        DOVerificationDto dto = (DOVerificationDto) ParamUtil.getSessionAttr(request, KEY_DO_VERIFICATION_DTO);
-        if (dto == null) {
-            dto = processClient.getDOVerificationByAppId(applicationId).getEntity();
-        }
-        return dto;
-    }
-
 //    ---------------------------- Moh process delegator public part ----------------------------------------------
 
     public void prepareData(BaseProcessClass bpc, String functionName) {
@@ -181,6 +173,15 @@ public class MohProcessService {
         } else {
             ParamUtil.setRequestAttr(request, KEY_INS_REPORT, null);
         }
+    }
+
+    /***************************************** DO Verification ****************************************************************/
+    public DOVerificationDto getDOVerificationDto(HttpServletRequest request, String applicationId) {
+        DOVerificationDto dto = (DOVerificationDto) ParamUtil.getSessionAttr(request, KEY_DO_VERIFICATION_DTO);
+        if (dto == null) {
+            dto = processClient.getDOVerificationByAppId(applicationId).getEntity();
+        }
+        return dto;
     }
 
     public void reqObjMappingDOVerification(HttpServletRequest request, DOVerificationDto doVerificationDto){

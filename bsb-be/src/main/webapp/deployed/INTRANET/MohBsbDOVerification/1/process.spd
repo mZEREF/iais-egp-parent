@@ -23,27 +23,6 @@
     <JavaCode defClass="" executor="" methodName="prepareSwitch_OnStepProcess_0" name="prepareSwitch_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Accept" x="291" y="343">
-   <Description />
-   <probepoint type="none" />
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="accept_OnStepProcess_0" name="accept_OnStepProcess_0" />
-   </OnStepProcess>
-  </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Reject" x="408" y="336">
-   <Description />
-   <probepoint type="none" />
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="reject_OnStepProcess_0" name="reject_OnStepProcess_0" />
-   </OnStepProcess>
-  </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="RequestForInformation" x="502" y="334">
-   <Description />
-   <probepoint type="none" />
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="requestForInformation_OnStepProcess_0" name="requestForInformation_OnStepProcess_0" />
-   </OnStepProcess>
-  </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="PrepareRfi" x="24" y="264">
    <Description />
    <probepoint type="none" />
@@ -56,6 +35,13 @@
    <probepoint type="none" />
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doRfi_OnStepProcess_0" name="doRfi_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Process" x="408" y="324">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="process_OnStepProcess_0" name="process_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -93,24 +79,6 @@
   <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareSwitch" style="oblique">
    <position>{(404,104)(428,236)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/Accept" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(428,236)(311,363)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/Reject" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(428,236)(428,356)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/RequestForInformation" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(428,236)(522,354)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/AcknowledgePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/RequestForInformation" style="oblique">
-   <position>{(522,354)(392,476)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/AcknowledgePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Accept" style="oblique">
-   <position>{(311,363)(392,476)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/AcknowledgePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Reject" style="oblique">
-   <position>{(428,356)(392,476)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(428,236)(188,104)}</position>
   </SynchronousLink>
@@ -123,15 +91,19 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareRfi" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/DoRfi" style="oblique">
    <position>{(152,416)(44,284)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Process" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(428,236)(428,344)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/AcknowledgePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Process" style="oblique">
+   <position>{(428,344)(392,476)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions />
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="408" y="216">
    <Description />
-   <SwitchCase component="/Steps/AutomaticStep/Accept" value="&quot;accept&quot;" />
-   <SwitchCase component="/Steps/AutomaticStep/Reject" value="&quot;reject&quot;" />
-   <SwitchCase component="/Steps/AutomaticStep/RequestForInformation" value="&quot;requestForInformation&quot;" />
-   <SwitchCase component="/Steps/AutomaticStep/PrepareData" value="&quot;prepareData&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareData" value="&quot;prepare&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/Process" value="&quot;process&quot;" />
   </Switch>
  </Switches>
  <Branches />

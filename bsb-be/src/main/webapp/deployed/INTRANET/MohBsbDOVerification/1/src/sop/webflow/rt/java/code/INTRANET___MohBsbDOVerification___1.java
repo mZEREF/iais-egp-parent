@@ -32,21 +32,6 @@ public class INTRANET___MohBsbDOVerification___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "prepareSwitch", this);
 	}
 
-	public void accept_OnStepProcess_0() throws Exception {
-	// 		Accept->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "accept", this);
-	}
-
-	public void reject_OnStepProcess_0() throws Exception {
-	// 		Reject->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "reject", this);
-	}
-
-	public void requestForInformation_OnStepProcess_0() throws Exception {
-	// 		RequestForInformation->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "requestForInformation", this);
-	}
-
 	public void prepareRfi_OnStepProcess_0() throws Exception {
 	// 		PrepareRfi->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prepareRfi", this);
@@ -55,6 +40,11 @@ public class INTRANET___MohBsbDOVerification___1 extends BaseProcessClass {
 	public void doRfi_OnStepProcess_0() throws Exception {
 	// 		DoRfi->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doRfi", this);
+	}
+
+	public void process_OnStepProcess_0() throws Exception {
+	// 		Process->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "process", this);
 	}
 
 }

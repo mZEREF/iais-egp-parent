@@ -6,11 +6,6 @@ public class ProcessContants {
 
     public static final String CRUD_ACTION_TYPE_PROCESS                   = "process";
     public static final String CRUD_ACTION_TYPE_PREPARE                   = "prepare";
-    // DO Verification crud_action_type
-    public static final String CRUD_ACTION_TYPE_ACCEPT                    = "accept";
-    public static final String CRUD_ACTION_TYPE_REJECT                    = "reject";
-    public static final String CRUD_ACTION_TYPE_REQUEST_FOR_INFORMATION   = "requestForInformation";
-    public static final String CRUD_ACTION_TYPE_PREPARE_DATA              = "prepareData";
 
     public static final String MOH_PROCESS_PAGE_VALIDATION          = "mohProcessPageValidation";
 
