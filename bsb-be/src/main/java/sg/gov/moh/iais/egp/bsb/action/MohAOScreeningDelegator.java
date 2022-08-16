@@ -22,6 +22,7 @@ import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_DO_RECOMMENDATION;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_DO_SCREENING;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_HM_DECISION;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_INSPECTION_CERTIFICATION;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_INSPECTION_TASK_ASSIGNMENT;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE_TO_PROCEED_TO_NEXT_STAGE;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESS_DECISION_REJECT;
@@ -70,7 +71,7 @@ public class MohAOScreeningDelegator {
         switch (processingDecision) {
             case MOH_PROCESS_DECISION_APPROVE_TO_PROCEED_TO_NEXT_STAGE:
                 String nextAppStatus = processClient.saveAOScreeningApprove(appId, taskId, mohProcessDto);
-                if (nextAppStatus.equals(APP_STATUS_PEND_INSPECTION_TASK_ASSIGNMENT)) {
+                if (nextAppStatus.equals(APP_STATUS_PEND_INSPECTION_CERTIFICATION)) {
                     ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_APPLICANT);
                 } else if (nextAppStatus.equals(APP_STATUS_PEND_DO_RECOMMENDATION)) {
                     ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_DO);
