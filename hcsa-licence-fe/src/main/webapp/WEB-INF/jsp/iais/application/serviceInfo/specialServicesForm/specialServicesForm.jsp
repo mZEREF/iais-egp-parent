@@ -7,9 +7,6 @@
 
 <div class="row form-horizontal">
 
-    <c:set var="appPremSpecialisedDtoList" value="${appPremSpecialisedDtoList}"/>
-    <c:set var="appSvcSpecialServiceInfoMap" value="${appSvcSpecialServiceInfoMap}"/>
-
     <c:if test="${AppSubmissionDto.needEditController }">
         <c:if test="${(isRfc || isRenew) && !isRfi}">
             <iais:row>
@@ -52,6 +49,9 @@
                             <c:set var="NurMinCount" value="${minCount.value}"/>
                         </c:if>
                     </c:forEach>
+
+                    <c:set var="DirMaxCount" value="0"/>
+                    <c:set var="NurMaxCount" value="0"/>
                     <c:forEach var="maxCount" items="${specialServiceSectionDto.maxCount}">
                         <c:if test="${maxCount.key == ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR}">
                             <c:set var="DirMaxCount" value="${maxCount.value}"/>
@@ -90,11 +90,11 @@
                                             <%@include file="specialServiceDetail.jsp" %>
                                         </c:forEach>
                                         <iais:row>
-                                            <div class="col-md-12 col-xs-12 addDiv">
+                                            <div class="col-md-12 col-xs-12 addDiv <c:if test="${DirectorDtoListLength >= DirMaxCount}">hidden</c:if>">
                                                 <input type="hidden" class ="disDiOrNu" name="disDiOrNu" value="Di"/>
                                                 <span class="addBtn" style="color:deepskyblue;cursor:pointer;">
-                                            <span style="">Add more</span>
-                                        </span>
+                                                    <span style="">Add more</span>
+                                                </span>
                                             </div>
                                         </iais:row>
                                     </div>
@@ -118,11 +118,11 @@
                                             <%@include file="specialServiceDetail.jsp"%>
                                         </c:forEach>
                                         <iais:row>
-                                            <div class="col-md-12 col-xs-12 addDiv">
+                                            <div class="col-md-12 col-xs-12 addDiv <c:if test="${NurseDtoListLength >= NurMaxCount}">hidden</c:if>">
                                                 <input type="hidden" class ="disDiOrNu" name="disDiOrNu" value="Nu"/>
                                                 <span class="addBtn" style="color:deepskyblue;cursor:pointer;">
-                                            <span style="">Add more</span>
-                                        </span>
+                                                    <span style="">Add more</span>
+                                                </span>
                                             </div>
                                         </iais:row>
                                     </div>
@@ -141,7 +141,8 @@
 <script>
     $(function() {
         $('.addBtn').on('click', function () {
-            addPersonnel($(this).closest('div.panel-main-content'));
+            var dis=$(this).closest('div.addDiv').find('input.disDiOrNu').val();
+            addPersonnel($(this).closest('div.panel-main-content'),dis);
         });
     });
 </script>

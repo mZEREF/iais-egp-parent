@@ -2381,13 +2381,18 @@ public final class ApplicationHelper {
                     specialServiceSectionDto.setAppPremSubSvcRelDto(appPremSubSvcRelDto);
                     List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = configCommService.getHcsaSvcPersonnel(
                             specialServiceSectionDto.getSvcId(),
-                            ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR
-                            /*ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR*/);
-                    if (IaisCommonUtils.isEmpty(hcsaSvcPersonnelDtoList)) {
+                            ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR,
+                            ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR);
+                    if (!IaisCommonUtils.isEmpty(hcsaSvcPersonnelDtoList)) {
                         for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto : hcsaSvcPersonnelDtoList) {
                             minCount.put(hcsaSvcPersonnelDto.getPsnType(), hcsaSvcPersonnelDto.getMandatoryCount());
                             maxCount.put(hcsaSvcPersonnelDto.getPsnType(), hcsaSvcPersonnelDto.getMaximumCount());
                         }
+                    }else{
+                        maxCount.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR,0);
+                        maxCount.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR,0);
+                        minCount.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR,0);
+                        minCount.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR,0);
                     }
                     specialServiceSectionDto.setMaxCount(maxCount);
                     specialServiceSectionDto.setMinCount(minCount);

@@ -3068,26 +3068,27 @@ public final class AppValidatorHelper {
             return;
         }
         String prefix = "";
-        List<String> names=IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < appSvcSpecialServiceInfoList.size(); i++) {
-
             List<SpecialServiceSectionDto> specialServiceSectionDtoList=appSvcSpecialServiceInfoList.get(i).getSpecialServiceSectionDtoList();
-
             List<String> dirNames=IaisCommonUtils.genNewArrayList();
             List<String> nurNames=IaisCommonUtils.genNewArrayList();
             for (int j=0;j<specialServiceSectionDtoList.size();j++){
                 SpecialServiceSectionDto specialServiceSectionDto=specialServiceSectionDtoList.get(j);
 
-                for (int x=0;x<specialServiceSectionDto.getAppSvcDirectorDtoList().size();x++){
-                    validateSpecialServicePerson(specialServiceSectionDto.getAppSvcDirectorDtoList().get(x),prefix+i+j+"dir",""+x,appType,errorMap,dirNames);
-                    if(specialServiceSectionDto.getAppSvcDirectorDtoList().get(x).getName()!=null){
-                        dirNames.add(specialServiceSectionDto.getAppSvcDirectorDtoList().get(x).getName());
+                if (specialServiceSectionDto.getAppSvcDirectorDtoList()!=null){
+                    for (int x=0;x<specialServiceSectionDto.getAppSvcDirectorDtoList().size();x++){
+                        validateSpecialServicePerson(specialServiceSectionDto.getAppSvcDirectorDtoList().get(x),prefix+i+j+"dir",""+x,appType,errorMap,dirNames);
+                        if(specialServiceSectionDto.getAppSvcDirectorDtoList().get(x).getName()!=null){
+                            dirNames.add(specialServiceSectionDto.getAppSvcDirectorDtoList().get(x).getName());
+                        }
                     }
                 }
-                for (int x=0;x<specialServiceSectionDto.getAppSvcChargedNurseDtoList().size();x++){
-                    validateSpecialServicePerson(specialServiceSectionDto.getAppSvcChargedNurseDtoList().get(x),prefix+i+j+"nur",""+x,appType,errorMap,nurNames);
-                    if(specialServiceSectionDto.getAppSvcChargedNurseDtoList().get(x).getName()!=null){
-                        nurNames.add(specialServiceSectionDto.getAppSvcChargedNurseDtoList().get(x).getName());
+                if (specialServiceSectionDto.getAppSvcChargedNurseDtoList()!=null){
+                    for (int x=0;x<specialServiceSectionDto.getAppSvcChargedNurseDtoList().size();x++){
+                        validateSpecialServicePerson(specialServiceSectionDto.getAppSvcChargedNurseDtoList().get(x),prefix+i+j+"nur",""+x,appType,errorMap,nurNames);
+                        if(specialServiceSectionDto.getAppSvcChargedNurseDtoList().get(x).getName()!=null){
+                            nurNames.add(specialServiceSectionDto.getAppSvcChargedNurseDtoList().get(x).getName());
+                        }
                     }
                 }
             }

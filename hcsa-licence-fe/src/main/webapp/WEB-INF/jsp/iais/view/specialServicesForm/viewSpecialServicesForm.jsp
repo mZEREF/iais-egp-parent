@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <div class="amended-service-info-gp">
     <iais:row>
         <label class="app-title">${currStepName}</label>
@@ -21,35 +22,54 @@
                     </div>
                 </iais:row>
 
-                <c:choose>
-                    <c:when test="${specialServiceSectionDto.appSvcDirectorDtoList != null && specialServiceSectionDto.appSvcDirectorDtoList.size()>1}">
-                        <c:set var="DirectorDtoListLength" value="${specialServiceSectionDto.appSvcDirectorDtoList.size()}"/>
-                    </c:when>
-                    <c:otherwise>
-                        <c:set var="DirectorDtoListLength" value="1"/>
-                    </c:otherwise>
-                </c:choose>
-                <c:forEach begin="0" end="${DirectorDtoListLength - 1}" step="1" varStatus="direStatus">
-                    <c:set var="index" value="${direStatus.index}"/>
-                    <c:set var="appSvcPersonnelDto" value="${specialServiceSectionDto.appSvcDirectorDtoList[index]}"/>
-                    <c:set var="title" value="Emergency Department Director"/>
-                    <%@include file="viewSpecialServicesFromDetail.jsp"%>
+                <c:set var="DirMaxCount" value="0"/>
+                <c:set var="NurMaxCount" value="0"/>
+                <c:forEach var="maxCount" items="${specialServiceSectionDto.maxCount}">
+                    <c:if test="${maxCount.key == ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR}">
+                        <c:set var="DirMaxCount" value="${maxCount.value}"/>
+                    </c:if>
+                    <c:if test="${maxCount.key == ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR}">
+                        <c:set var="NurMaxCount" value="${maxCount.value}"/>
+                    </c:if>
                 </c:forEach>
 
                 <c:choose>
-                    <c:when test="${specialServiceSectionDto.appSvcChargedNurseDtoList != null && specialServiceSectionDto.appSvcChargedNurseDtoList.size()>1}">
-                        <c:set var="NurseDtoListLength" value="${specialServiceSectionDto.appSvcChargedNurseDtoList.size()}"/>
+                    <c:when test="${DirMaxCount==0&&NurMaxCount==0}">
+                        <div>
+                            <p><h4><iais:message key="NEW_ACK039"/></h4></p>
+                        </div>
                     </c:when>
                     <c:otherwise>
-                        <c:set var="NurseDtoListLength" value="1"/>
+                        <c:choose>
+                            <c:when test="${specialServiceSectionDto.appSvcDirectorDtoList != null && specialServiceSectionDto.appSvcDirectorDtoList.size()>1}">
+                                <c:set var="DirectorDtoListLength" value="${specialServiceSectionDto.appSvcDirectorDtoList.size()}"/>
+                            </c:when>
+                            <c:otherwise>
+                                <c:set var="DirectorDtoListLength" value="1"/>
+                            </c:otherwise>
+                        </c:choose>
+                        <c:forEach begin="0" end="${DirectorDtoListLength - 1}" step="1" varStatus="direStatus">
+                            <c:set var="index" value="${direStatus.index}"/>
+                            <c:set var="appSvcPersonnelDto" value="${specialServiceSectionDto.appSvcDirectorDtoList[index]}"/>
+                            <c:set var="title" value="Emergency Department Director"/>
+                            <%@include file="viewSpecialServicesFromDetail.jsp"%>
+                        </c:forEach>
+                        <c:choose>
+                            <c:when test="${specialServiceSectionDto.appSvcChargedNurseDtoList != null && specialServiceSectionDto.appSvcChargedNurseDtoList.size()>1}">
+                                <c:set var="NurseDtoListLength" value="${specialServiceSectionDto.appSvcChargedNurseDtoList.size()}"/>
+                            </c:when>
+                            <c:otherwise>
+                                <c:set var="NurseDtoListLength" value="1"/>
+                            </c:otherwise>
+                        </c:choose>
+                        <c:forEach begin="0" end="${NurseDtoListLength - 1}" step="1" varStatus="nurStatus">
+                            <c:set var="index" value="${nurStatus.index}"/>
+                            <c:set var="appSvcPersonnelDto" value="${specialServiceSectionDto.appSvcChargedNurseDtoList[index]}"/>
+                            <c:set var="title" value="Emergency Department Nurse-in-charge"/>
+                            <%@include file="viewSpecialServicesFromDetail.jsp"%>
+                        </c:forEach>
                     </c:otherwise>
                 </c:choose>
-                <c:forEach begin="0" end="${NurseDtoListLength - 1}" step="1" varStatus="nurStatus">
-                    <c:set var="index" value="${nurStatus.index}"/>
-                    <c:set var="appSvcPersonnelDto" value="${specialServiceSectionDto.appSvcChargedNurseDtoList[index]}"/>
-                    <c:set var="title" value="Emergency Department Nurse-in-charge"/>
-                    <%@include file="viewSpecialServicesFromDetail.jsp"%>
-                </c:forEach>
             </c:forEach>
         </c:forEach>
     </div>

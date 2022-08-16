@@ -75,10 +75,16 @@
         resetIndex($target, k);
     }
 
-    function addPersonnel(target) {
+    function addPersonnel(target,dis) {
         var $target = $(target);
         if (isEmptyNode($target)) {
             return;
+        }
+        var maxCount;
+        if (dis=='Di'){
+            maxCount=${DirMaxCount};
+        }else if (dis=='Nu'){
+            maxCount=${NurMaxCount};
         }
         showWaiting();
         var $tgt = $(target).find('div.personnel-content').last();
@@ -104,6 +110,9 @@
         profRegNoEvent($currContent);
 
         var length =  $target.find('div.personnel-content').length;
+        if(length >= maxCount){
+            $target.find('.addDiv').addClass('hidden');
+        }
         $target.find('input.length').val(length);
         dismissWaiting();
     }
@@ -112,6 +121,13 @@
         $('.removeBtn').unbind('click');
         $('.removeBtn').on('click', function () {
             var $Content = $(this).closest('div.panel-main-content');
+            var dis=$Content.find('input.disDiOrNu').val();
+            var maxCount;
+            if (dis=='Di'){
+                maxCount=${DirMaxCount};
+            }else if (dis=='Nu'){
+                maxCount=${NurMaxCount};
+            }
             $(this).closest('div.personnel-content').remove();
             let $currContent = $Content.find('div.personnel-content');
             $currContent.each(function (k, v) {
@@ -125,6 +141,9 @@
                 $Content.find('input.length').val(1);
             }else {
                 $Content.find('input.length').val(len);
+            }
+            if(len < maxCount){
+                $Content.find('.addDiv').removeClass('hidden');
             }
         });
     }
