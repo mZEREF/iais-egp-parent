@@ -128,14 +128,14 @@ public class ConfigServiceImpl implements ConfigService {
                 entity.remove(entity.get(i));
                 i--;
             }else {
-                String effectiveDate = entity.get(i).getEffectiveDate();
+                /*String effectiveDate = entity.get(i).getEffectiveDate();
                 try {
                 Date pare=new SimpleDateFormat(DATE_FORMAT).parse(effectiveDate);
                 String format = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(pare);
                 entity.get(i).setEffectiveDate(format);
                 }catch (Exception e){
                     log.error(e.getMessage(),e);
-                }
+                }*/
             }
         }
         Collections.sort(entity, (o1, o2) -> {
@@ -171,6 +171,10 @@ public class ConfigServiceImpl implements ConfigService {
         log.info(StringUtil.changeForLog("The getHcsaServiceConfigDtoByServiceId serviceId is -->:"+serviceId));
         HcsaServiceConfigDto hcsaServiceConfigDto = hcsaConfigClient.getHcsaServiceConfigByServiceId(serviceId).getEntity();
         if(hcsaServiceConfigDto != null){
+            //for HcsaServiceDto
+            /*HcsaServiceDto oldHcsaServiceDto = hcsaServiceConfigDto.getHcsaServiceDto();
+            oldHcsaServiceDto = CopyUtil.copyMutableObject(oldHcsaServiceDto);
+            hcsaServiceConfigDto.setOldHcsaServiceDto(oldHcsaServiceDto);*/
             //for HcsaSvcSpePremisesTypeDto
             List<HcsaSvcSpePremisesTypeDto> hcsaSvcSpePremisesTypeDtos = hcsaServiceConfigDto.getHcsaSvcSpePremisesTypeDtos();
             if(IaisCommonUtils.isNotEmpty(hcsaSvcSpePremisesTypeDtos)){
@@ -655,12 +659,12 @@ public class ConfigServiceImpl implements ConfigService {
     public void doDeleteService(String serviceId) {
         log.info(StringUtil.changeForLog("The doDeleteService start ..."));
         hcsaConfigClient.updateService(serviceId);
-        /*HcsaServiceConfigDto hcsaServiceConfigDto=new HcsaServiceConfigDto();
+        HcsaServiceConfigDto hcsaServiceConfigDto=new HcsaServiceConfigDto();
         HcsaServiceDto hcsaServiceDto = new HcsaServiceDto();
         hcsaServiceDto.setId(serviceId);
         hcsaServiceDto.setUseDelete(true);
         hcsaServiceConfigDto.setHcsaServiceDto(hcsaServiceDto);
-        eicGateway(hcsaServiceConfigDto);*/
+        eicGateway(hcsaServiceConfigDto);
         log.info(StringUtil.changeForLog("The doDeleteService end ..."));
     }
 
@@ -1387,8 +1391,8 @@ public class ConfigServiceImpl implements ConfigService {
     public void saveHcsaServiceConfigDto(HcsaServiceConfigDto hcsaServiceConfigDto) {
         //transFor(hcsaServiceConfigDto);
         hcsaServiceConfigDto = hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto).getEntity();
-       // eicGateway(hcsaServiceConfigDto);
-        //HcsaServiceCacheHelper.flushServiceMapping();
+        eicGateway(hcsaServiceConfigDto);
+        HcsaServiceCacheHelper.flushServiceMapping();
     }
 
     static String[] codeSvc ={HcsaConsts.SERVICE_TYPE_BASE,HcsaConsts.SERVICE_TYPE_SUBSUMED,HcsaConsts.SERVICE_TYPE_SPECIFIED};
