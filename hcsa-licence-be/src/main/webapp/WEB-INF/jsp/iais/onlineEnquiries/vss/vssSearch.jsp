@@ -34,7 +34,7 @@
                 <div class="intranet-content">
                     <div class="row form-horizontal">
                         <div class="bg-title col-xs-12 col-md-12">
-                            <h2>Voluntary Sterilisation Enquiry</h2>
+                            <h2>Voluntary Sterilization Enquiry</h2>
                         </div>
 
 
