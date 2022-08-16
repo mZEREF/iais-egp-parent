@@ -2,7 +2,7 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <div class="amended-service-info-gp">
     <label class="app-title">${currStepName}</label>
-    <div class="amend-preview-info">
+    <div class="amend-preview-info form-horizontal min-row">
         <c:forEach var="sectionLeader" items="${currentPreviewSvcInfo.appSvcSectionLeaderList}" varStatus="status">
 
             <iais:row>

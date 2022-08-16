@@ -42,7 +42,6 @@
     <iais:row cssClass="control  svcPsnSel">
         <div class="personnel-sel">
             <iais:field width="5" mandatory="true" value="Select Service Personnel" cssClass="col-sm-5"/>
-
             <iais:value width="7" cssClass="col-sm-5 col-md-7">
                 <iais:select cssClass="personnelSel" name="personnelSel" options="ServicePersonnelType"
                              value="${appSvcPersonnelDto.personnelType}" firstOption="Please Select"></iais:select>
@@ -71,18 +70,6 @@
                 <span class="error-msg" name="iaisErrorMsg" id="error_designation${status.index}"></span>
             </iais:value>
         </iais:row>
-        <iais:row cssClass="${appSvcPersonnelDto.designation !='Others' ? 'hidden' : ''} otherDesignationDiv">
-            <div class="personnel-designation hidden ">
-                <iais:field width="5" mandatory="true" value="otherDesignation" cssClass="col-sm-5"/>
-                <iais:value width="7" cssClass="col-sm-5 col-md-7">
-                    <iais:input maxLength="100" type="text" cssClass="otherDesignation" name="otherDesignation"
-                                value="${appSvcPersonnelDto.otherDesignation}"/>
-                    <span class="error-msg" name="iaisErrorMsg" id="error_otherDesignation${status.index}"></span>
-                </iais:value>
-
-            </div>
-        </iais:row>
-
         <%--    qualification--%>
         <iais:row cssClass="personnel-qualification hidden ">
             <iais:field width="5" mandatory="true" value="Qualification" cssClass="col-sm-5"/>
