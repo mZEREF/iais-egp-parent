@@ -697,16 +697,20 @@ public class TopDataSubmissionDelegator {
                 postTerminationDto = new PostTerminationDto();
             }
         }
-        String[] livingChildrenGenders= ParamUtil.getStrings(request, "livingChildrenGenders");
         ControllerHelper.get(request, patientInformationDto);
         if(StringUtil.isNotEmpty(patientInformationDto.getIdNumber())){
             patientInformationDto.setIdNumber(patientInformationDto.getIdNumber().toUpperCase());
         }
-        if( !IaisCommonUtils.isEmpty(livingChildrenGenders)){
+        String[] livingChildrenGenders= ParamUtil.getStrings(request, "livingChildrenGenders");
+        if(StringUtil.isNumber(patientInformationDto.getLivingChildrenNo()) && !StringUtil.isEmpty(patientInformationDto.getLivingChildrenNo())){
+            if (Integer.parseInt(patientInformationDto.getLivingChildrenNo()) > 0) {
+                if( !IaisCommonUtils.isEmpty(livingChildrenGenders)){
 
-            patientInformationDto.setLivingChildrenGenders(Arrays.asList(livingChildrenGenders));
-        }else{
-            patientInformationDto.setLivingChildrenGenders(null);
+                    patientInformationDto.setLivingChildrenGenders(Arrays.asList(livingChildrenGenders));
+                }else{
+                    patientInformationDto.setLivingChildrenGenders(null);
+                }
+            }
         }
         if(StringUtil.isEmpty(patientInformationDto.getOrgId())){
             patientInformationDto.setOrgId(topSuperDataSubmissionDto.getOrgId());
@@ -914,6 +918,13 @@ public class TopDataSubmissionDelegator {
         }
         if(!StringUtil.isEmpty(patientInformationDto.getPatientAge()) && patientInformationDto.getPatientAge()<16){
             familyPlanDto.setNeedHpbConsult(true);
+        }
+        if(!StringUtil.isEmpty(familyPlanDto.getGestAgeBaseOnUltrWeek())){
+            if(Integer.parseInt(familyPlanDto.getGestAgeBaseOnUltrWeek())<15){
+                familyPlanDto.setAbortChdMoreWksGender(null);
+            }
+        }else {
+            familyPlanDto.setAbortChdMoreWksGender(null);
         }
         terminationOfPregnancyDto.setFamilyPlanDto(familyPlanDto);
         topSuperDataSubmissionDto.setTerminationOfPregnancyDto(terminationOfPregnancyDto);
@@ -1125,6 +1136,7 @@ public class TopDataSubmissionDelegator {
         String patientAppointment=ParamUtil.getString(request, "patientAppointment");
         preTerminationDto.setPatientAppointment(patientAppointment);
         terminationOfPregnancyDto.setPreTerminationDto(preTerminationDto);
+        setPreTerminationDtoFieldsNull(terminationOfPregnancyDto);
         topSuperDataSubmissionDto.setTerminationOfPregnancyDto(terminationOfPregnancyDto);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
 
@@ -1193,6 +1205,54 @@ public class TopDataSubmissionDelegator {
             return 5;
         }
         return 1;
+    }
+
+    private void setPreTerminationDtoFieldsNull(TerminationOfPregnancyDto terminationOfPregnancyDto){
+
+        PreTerminationDto preTerminationDto =terminationOfPregnancyDto.getPreTerminationDto();
+        FamilyPlanDto familyPlanDto=terminationOfPregnancyDto.getFamilyPlanDto();
+        if(!StringUtil.isEmpty(familyPlanDto)){
+            if(Integer.parseInt(familyPlanDto.getGestAgeBaseOnUltrWeek())<13 && Integer.parseInt(familyPlanDto.getGestAgeBaseOnUltrWeek())>24){
+                preTerminationDto.setCounsellingGivenOnMin(null);
+                preTerminationDto.setPatientSign(null);
+
+            }
+        }
+        if(preTerminationDto.getCounsellingGiven()!=null){
+            if(preTerminationDto.getCounsellingGiven()){
+                preTerminationDto.setNoCounsReason(null);
+                if(preTerminationDto.getCounsellingResult()!=null&&!preTerminationDto.getCounsellingResult().equals("TOPPCR001")){
+                    preTerminationDto.setPatientAppointment(null);
+
+                }else {
+                    if(preTerminationDto.getPatientAppointment()!=null&&!preTerminationDto.getPatientAppointment().equals("1")){
+                        preTerminationDto.setSecCounsellingDate(null);
+                        preTerminationDto.setSecCounsellingResult(null);
+
+                    }
+                }
+                if(preTerminationDto.getCounsellingPlace()!=null&&!preTerminationDto.getCounsellingPlace().equals("AR_SC_001") ){
+                    preTerminationDto.setPreCounsNoCondReason(null);
+                }
+            }else {
+                preTerminationDto.setCounsellorIdType(null);
+                preTerminationDto.setCounsellorIdNo(null);
+                preTerminationDto.setCounsellorName(null);
+                preTerminationDto.setCounsellingReignNo(null);
+                preTerminationDto.setCounsellingDate(null);
+                preTerminationDto.setCounsellingResult(null);
+                preTerminationDto.setCounsellingPlace(null);
+                preTerminationDto.setCounsellingAge(null);
+
+                preTerminationDto.setPatientAppointment(null);
+                preTerminationDto.setSecCounsellingDate(null);
+                preTerminationDto.setSecCounsellingResult(null);
+                preTerminationDto.setPreCounsNoCondReason(null);
+               }
+
+        }
+
+
     }
 
     private int doPresentTermination(HttpServletRequest request) {
