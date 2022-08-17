@@ -3110,7 +3110,8 @@ public final class AppValidatorHelper {
         if (StringUtil.isEmpty(name)) {
             errorMap.put(prefix+"name" + subfix, signal);
         } else if (name.length() > 110) {
-            errorMap.put(prefix+"name" + subfix, signal);
+            String general_err0041 = repLength("Name", "110");
+            errorMap.put(prefix+"name" + subfix, general_err0041);
         }else if(isNameUsed){
             errorMap.put(prefix+"name" + subfix, "Cannot use duplicate names");
         }
@@ -3192,7 +3193,7 @@ public final class AppValidatorHelper {
                 errorMap.put(prefix + "wrkExpYear" + subfix, signal);
             }
             if (!wrkExpYear.matches("^[0-9]*$")) {
-                errorMap.put(prefix + "wrkExpYear" + subfix, signal);
+                errorMap.put(prefix + "wrkExpYear" + subfix, "GENERAL_ERR0002");
             }
         }
 

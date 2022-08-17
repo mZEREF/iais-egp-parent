@@ -1630,25 +1630,16 @@ public final class AppDataHelper {
         return person;
     }
 
-    public static List<AppSvcSpecialServiceInfoDto> getAppSvcSpecialServiceInfoList(HttpServletRequest request, List<AppSvcSpecialServiceInfoDto> appPremSpecialisedDtoList) {
-        List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = IaisCommonUtils.genNewArrayList();
-        if (!IaisCommonUtils.isEmpty(appPremSpecialisedDtoList)) {
+    public static List<AppSvcSpecialServiceInfoDto> getAppSvcSpecialServiceInfoList(HttpServletRequest request, List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoDtoList) {
+        if (!IaisCommonUtils.isEmpty(appSvcSpecialServiceInfoDtoList)) {
             String prefix="";
             int i = 0;
-            for (AppSvcSpecialServiceInfoDto appSvcSpecialServiceInfoDto : appPremSpecialisedDtoList) {
-                AppSvcSpecialServiceInfoDto serviceInfoDto=new AppSvcSpecialServiceInfoDto();
-                serviceInfoDto.setAppSvcSpecialServiceInfoDto(appSvcSpecialServiceInfoDto);
+            for (AppSvcSpecialServiceInfoDto appSvcSpecialServiceInfoDto : appSvcSpecialServiceInfoDtoList) {
                 int j=0;
-                List<SpecialServiceSectionDto> specialServiceSectionDtoList=IaisCommonUtils.genNewArrayList();
                 for (SpecialServiceSectionDto specialServiceSectionDto : appSvcSpecialServiceInfoDto.getSpecialServiceSectionDtoList()) {
-                    SpecialServiceSectionDto serviceSectionDto=new SpecialServiceSectionDto();
-                    serviceSectionDto.setSpecialServiceSectionDto(specialServiceSectionDto);
-
                     Map<String, Integer> maxCount = specialServiceSectionDto.getMaxCount();
-                    serviceSectionDto.setMaxCount(specialServiceSectionDto.getMaxCount());
                     int diMaxCount=maxCount.get(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR)!=null?maxCount.get(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR):0;
                     int nuMaxCount=maxCount.get(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR)!=null?maxCount.get(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR):0;
-
                     if (diMaxCount!=0){
                         List<AppSvcPersonnelDto> appSvcDirectorDtoList=IaisCommonUtils.genNewArrayList();
                         int diLength=ParamUtil.getInt(request,prefix+i+j+"DirectorDtoListLength");
@@ -1656,9 +1647,8 @@ public final class AppDataHelper {
                             AppSvcPersonnelDto appSvcPersonnelDto=getAppSvcPersonnelDto(request,new AppSvcPersonnelDto(),prefix+i+j+"dir",x,ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR);
                             appSvcDirectorDtoList.add(appSvcPersonnelDto);
                         }
-                        serviceSectionDto.setAppSvcDirectorDtoList(appSvcDirectorDtoList);
+                        specialServiceSectionDto.setAppSvcDirectorDtoList(appSvcDirectorDtoList);
                     }
-
                     if (nuMaxCount!=0){
                         int nuLength=ParamUtil.getInt(request,prefix+i+j+"NurseDtoListLength");
                         List<AppSvcPersonnelDto> appSvcChargedNurseDtoList=IaisCommonUtils.genNewArrayList();
@@ -1666,18 +1656,15 @@ public final class AppDataHelper {
                             AppSvcPersonnelDto appSvcPersonnelDto=getAppSvcPersonnelDto(request,new AppSvcPersonnelDto(),prefix+i+j+"nur",x,ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR);
                             appSvcChargedNurseDtoList.add(appSvcPersonnelDto);
                         }
-                        serviceSectionDto.setAppSvcChargedNurseDtoList(appSvcChargedNurseDtoList);
+                        specialServiceSectionDto.setAppSvcChargedNurseDtoList(appSvcChargedNurseDtoList);
                     }
-                    specialServiceSectionDtoList.add(serviceSectionDto);
                     j++;
                 }
-                serviceInfoDto.setSpecialServiceSectionDtoList(specialServiceSectionDtoList);
-                serviceInfoDto.setInit(true);
-                appSvcSpecialServiceInfoList.add(serviceInfoDto);
+                appSvcSpecialServiceInfoDto.setInit(true);
                 i++;
             }
         }
-        return appSvcSpecialServiceInfoList;
+        return appSvcSpecialServiceInfoDtoList;
     }
 
     public static AppSvcPersonnelDto getAppSvcPersonnelDto(HttpServletRequest request, AppSvcPersonnelDto appSvcPersonnelDto, String prefix, int i, String personnelType) {
