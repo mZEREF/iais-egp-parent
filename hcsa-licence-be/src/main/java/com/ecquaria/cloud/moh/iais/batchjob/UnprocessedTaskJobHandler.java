@@ -155,8 +155,8 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
                                 templateContent.put("applicationNo", applicationDto.getApplicationNo());
                                 String mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), templateContent);
 
-                                sendEmail(item,email,subject,mesContext);
-                                sendSms(item,sms,mesContext);
+                                sendEmail(item,email,subject,mesContext, applicationDto.getApplicationNo());
+                                sendSms(item,sms,mesContext, applicationDto.getApplicationNo());
                         }else if(days == (kpi + 1) && kpi > 0){
                             List<OrgUserDto> leaders = taskService.getEmailNotifyLeader(item.getId());
                             log.info(StringUtil.changeForLog("send email to leader:"));
@@ -174,8 +174,8 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
                                 templateContent.put("applicationNo", applicationDto.getApplicationNo());
                                 String mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), templateContent);
 
-                                sendEmail(item,email,subject,mesContext);
-                                sendSms(item,sms,mesContext);
+                                sendEmail(item,email,subject,mesContext, applicationDto.getApplicationNo());
+                                sendSms(item,sms,mesContext, applicationDto.getApplicationNo());
                             }
                         }else if(days == sysday){
                             log.info(StringUtil.changeForLog("send email to admin:"));
@@ -195,8 +195,8 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
                                         templateContent.put("applicationNo", applicationDto.getApplicationNo());
                                         templateContent.put("days", systemParamConfig.getUnprocessedSystemAdmin());
                                         String mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), templateContent);
-                                        sendEmail(item,email,subject,mesContext);
-                                        sendSms(item,sms,mesContext);
+                                        sendEmail(item,email,subject,mesContext, applicationDto.getApplicationNo());
+                                        sendSms(item,sms,mesContext, applicationDto.getApplicationNo());
                                     }
                                 }
 
@@ -218,24 +218,25 @@ public class UnprocessedTaskJobHandler extends IJobHandler {
 
     }
 
-    private void sendEmail(TaskEmailDto item,List<String> emailAddr,String subject,String content){
+    private void sendEmail(TaskEmailDto item,List<String> emailAddr,String subject,String content, String appNo){
         EmailDto email = new EmailDto();
         email.setSubject(subject);
         email.setReqRefNum(item.getId());
         email.setContent(content);
         email.setSender(mailSender);
-        email.setClientQueryCode(item.getId());
+        email.setClientQueryCode(appNo);
         email.setReceipts(emailAddr);
         emailClient.sendNotification(email).getEntity();
     }
 
-    private void sendSms(TaskEmailDto item,List<String> smsAddr,String content){
+    private void sendSms(TaskEmailDto item,List<String> smsAddr,String content, String appNo){
         SmsDto smsDto = new SmsDto();
         smsDto.setContent(content);
         smsDto.setReqRefNum(item.getId());
         smsDto.setReceipts(smsAddr);
         smsDto.setOnlyOfficeHour(true);
         smsDto.setSender(mailSender);
+        smsDto.setQueryCode(appNo);
         emailClient.sendSMS(smsAddr,smsDto,item.getId());
     }
 }

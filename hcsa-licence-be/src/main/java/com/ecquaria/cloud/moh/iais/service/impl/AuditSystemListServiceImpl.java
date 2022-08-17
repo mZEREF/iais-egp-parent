@@ -460,6 +460,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
                 smsDto.setOnlyOfficeHour(true);
                 smsDto.setReceipts(mobile);
                 smsDto.setReqRefNum(appNo);
+                smsDto.setQueryCode(appNo);
                 emailClient.sendSMS(mobile, smsDto, appNo);
             } else {
                 log.info("Tcu Audit mobile is null.......");

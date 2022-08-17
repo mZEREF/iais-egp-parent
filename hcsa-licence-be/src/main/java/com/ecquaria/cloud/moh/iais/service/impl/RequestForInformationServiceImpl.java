@@ -654,7 +654,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
         EmailParam emailParam = new EmailParam();
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER);
         emailParam.setTemplateContent(emailMap);
-        emailParam.setQueryCode(applicationDto.getAppGrpId());
+        emailParam.setQueryCode(applicationDto.getApplicationNo());
         emailParam.setReqRefNum(applicationDto.getAppGrpId());
         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
         emailParam.setRefId(applicationDto.getApplicationNo());
@@ -667,7 +667,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
         subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(),map);
         EmailParam smsParam = new EmailParam();
         smsParam.setTemplateContent(emailMap);
-        smsParam.setQueryCode(applicationDto.getAppGrpId());
+        smsParam.setQueryCode(applicationDto.getApplicationNo());
         smsParam.setReqRefNum(applicationDto.getAppGrpId());
         smsParam.setRefId(applicationDto.getApplicationNo());
         smsParam.setSubject(subject);
@@ -675,7 +675,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
         smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
         notificationHelper.sendNotification(smsParam);
         EmailParam msgParam = new EmailParam();
-        msgParam.setQueryCode(applicationDto.getAppGrpId());
+        msgParam.setQueryCode(applicationDto.getApplicationNo());
         msgParam.setReqRefNum(applicationDto.getAppGrpId());
         rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER_MSG);
         subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(),map);

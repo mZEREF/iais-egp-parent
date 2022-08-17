@@ -317,7 +317,7 @@ public final class ChecklistHelper {
                 emailDto.setSubject(subject);
                 emailDto.setSender(mailSender);
                 emailDto.setReceipts(eList);
-                emailDto.setClientQueryCode(MsgTemplateConstants.MSG_TEMPLATE_INSPECTOR_MODIFIED_CHECKLIST);
+                emailDto.setClientQueryCode(refNum);
                 if (AppConsts.COMMON_STATUS_ACTIVE.equals(msgTemplate.getStatus())) {
                     emailClient.sendNotification(emailDto).getEntity();
                 }
@@ -328,6 +328,7 @@ public final class ChecklistHelper {
                 smsDto.setSender(mailSender);
                 smsDto.setContent(MsgUtil.getTemplateMessageByContent(subject, map));
                 smsDto.setOnlyOfficeHour(true);
+                smsDto.setQueryCode(refNum);
                 if (AppConsts.COMMON_STATUS_ACTIVE.equals(msgTemplate.getStatus()) && !StringUtil.isEmpty(orgUserDto.getMobileNo())) {
                     List<String> recipts = IaisCommonUtils.genNewArrayList();
                     recipts.add(orgUserDto.getMobileNo());

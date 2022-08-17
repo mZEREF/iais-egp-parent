@@ -474,7 +474,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             emailParam.setJobRemindMsgTrackingDto(jobRemindMsgTrackingDto);
             emailParam.setSubjectParams(subjectParams);
             emailParam.setTemplateId(emailId);
-            emailParam.setQueryCode(queryCode);
+            emailParam.setQueryCode(tlGroupNumber);
             emailParam.setReqRefNum(randomStr);
             emailParam.setRefIdType(refType);
             emailParam.setRefId(reqRefNum);
