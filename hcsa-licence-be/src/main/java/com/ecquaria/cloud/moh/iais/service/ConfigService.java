@@ -9,8 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonne
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Wenkang
@@ -26,29 +24,15 @@ public interface ConfigService {
 
     HcsaServiceConfigDto getHcsaServiceConfigDtoByServiceId(String serviceId);
 
-    void viewPageInfo(HttpServletRequest request);
-
-    void editPageInfo(HttpServletRequest request);
-
-    void saveOrUpdate(HttpServletRequest request, HttpServletResponse response, HcsaServiceConfigDto hcsaServiceConfigDto) throws Exception;
-
-    void addNewService(HttpServletRequest request);
 
     Map<String, List<HcsaConfigPageDto>>  getHcsaConfigPageDto();
 
-    void update(HttpServletRequest request,HttpServletResponse response, HcsaServiceConfigDto hcsaServiceConfigDto) throws Exception;
-
-    void saData(HttpServletRequest request);
-
-    void delete(HttpServletRequest request);
 
     void doDeleteService(String serviceId);
 
-    void deleteOrCancel(HttpServletRequest request,HttpServletResponse response);
 
     List<HcsaSvcRoutingStageDto> getHcsaSvcRoutingStageDtos();
 
-    List<String>  split(String str);
 
     List<String> getType();
 
@@ -56,7 +40,6 @@ public interface ConfigService {
 
     public List<HcsaServiceCategoryDto> getHcsaServiceCategoryDto() ;
 
-    Map<String,String> getMaskHcsaServiceCategory();
 
     HcsaSvcPersonnelDto getHcsaSvcPersonnelDto(String man,String mix,String psnType);
 
