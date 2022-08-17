@@ -34,9 +34,9 @@
     </iais:value>
 </iais:row>
 
-<div class="allOtherInformation <c:if test="${null == provideTop}">hidden</c:if>">
+<div class="allOtherInformation">
 
-    <div class="topt <c:if test="${'0' == provideTop}">hidden</c:if>">
+    <div class="topt <c:if test="${'1' != provideTop}">hidden</c:if>">
         <iais:row cssClass="row control control-caption-horizontal">
             <iais:field width="12" cssClass="col-md-12 " mandatory="true" value="Please indicate&nbsp;"/>
         </iais:row>
@@ -76,7 +76,7 @@
         <c:set var="person" value="${practitioners[index]}"/>
         <%@include file="practitionersDetail.jsp" %>
     </c:forEach>
-    <div class="col-md-12 col-xs-12 addPractitionersDiv <c:if test="${'0' == provideTop}">hidden</c:if>">
+    <div class="col-md-12 col-xs-12 addPractitionersDiv <c:if test="${'1' != provideTop}">hidden</c:if>">
             <span class="addPractitionersBtn" style="color:deepskyblue;cursor:pointer;">
                 <span style="">Add more</span>
             </span>
@@ -98,7 +98,7 @@
         <c:set var="person" value="${anaesthetists[index]}"/>
         <%@include file="anaesthetistsDetail.jsp" %>
     </c:forEach>
-    <div class="col-md-12 col-xs-12 addAnaesthetistsDiv">
+    <div class="col-md-12 col-xs-12 addAnaesthetistsDiv <c:if test="${'1' != provideTop}">hidden</c:if>">
             <span class="addAnaesthetistsBtn" style="color:deepskyblue;cursor:pointer;">
                 <span style="">Add more</span>
             </span>
@@ -119,7 +119,7 @@
         <c:set var="person" value="${nurses[index]}"/>
         <%@include file="nursesDetail.jsp" %>
     </c:forEach>
-    <div class="col-md-12 col-xs-12 addNursesDiv">
+    <div class="col-md-12 col-xs-12 addNursesDiv <c:if test="${'1' != provideTop}">hidden</c:if>">
             <span class="addNursesBtn" style="color:deepskyblue;cursor:pointer;">
                 <span style="">Add more</span>
             </span>
@@ -140,13 +140,13 @@
         <c:set var="person" value="${counsellors[index]}"/>
         <%@include file="counsellorsDetail.jsp" %>
     </c:forEach>
-    <div class="col-md-12 col-xs-12 addCounsellorsDiv">
+    <div class="col-md-12 col-xs-12 addCounsellorsDiv <c:if test="${'1' != provideTop}">hidden</c:if>">
             <span class="addCounsellorsBtn" style="color:deepskyblue;cursor:pointer;">
                 <span style="">Add more</span>
             </span>
     </div>
 
-    <div class="lowt">
+    <div class="lowt <c:if test="${'1' != provideTop}">hidden</c:if>">
         <iais:row cssClass="row control control-caption-horizontal">
             <iais:value width="6" cssClass="col-md-6">
                 <label class="form-check-label" style="padding-top: 25px;">My counsellor(s) has attended the TOP counselling refresher course (Please upload the certificates in the document page)
@@ -246,6 +246,7 @@
                 $(this).find('input.regType').prop('name','regType'+k);
                 $(this).find('input.qualification').prop('name','qualification'+k);
                 $(this).find('input.medAuthByMoh').prop('name','medAuthByMoh'+k);
+                $(this).find('input.specialties').prop('name','specialties'+k);
             });
             $('#isEditHiddenVal').val('1');
             dismissWaiting();
@@ -280,6 +281,7 @@
                 $(this).find('input.idNo').prop('name','idNo'+k);
                 $(this).find('input.regType').prop('name','regType'+k);
                 $(this).find('input.qualification').prop('name','qualification'+k);
+                $(this).find('input.specialties').prop('name','specialties'+k);
                 $(this).find('input.holdMPA').prop('name','holdMPA'+k);
             });
             //display add more

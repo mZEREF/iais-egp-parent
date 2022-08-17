@@ -1903,6 +1903,7 @@ public final class AppValidatorHelper {
             String profRegNo = appSvcOtherInfoTopPersonDtos.get(i).getProfRegNo();
             String idNo = appSvcOtherInfoTopPersonDtos.get(i).getIdNo();
             String regType = appSvcOtherInfoTopPersonDtos.get(i).getRegType();
+            String specialties = appSvcOtherInfoTopPersonDtos.get(i).getSpeciality();
             String qualification = appSvcOtherInfoTopPersonDtos.get(i).getQualification();
 
             if ("practitioners".equals(psnType)) {
@@ -1914,6 +1915,7 @@ public final class AppValidatorHelper {
                 appSvcOtherInfoTopPersonDto.setQualification(qualification);
                 appSvcOtherInfoTopPersonDto.setSeqNum(i);
                 appSvcOtherInfoTopPersonDto.setIdNo(idNo);
+                appSvcOtherInfoTopPersonDto.setSpeciality(specialties);
                 appSvcOtherInfoTopPersonDto.setMedAuthByMoh(appSvcOtherInfoTopPersonDtos.get(i).isMedAuthByMoh());
                 practitioners.add(appSvcOtherInfoTopPersonDto);
             }
@@ -1959,6 +1961,7 @@ public final class AppValidatorHelper {
             String idNo = practitioners.get(i).getIdNo();
             String regType = practitioners.get(i).getRegType();
             String qualification = practitioners.get(i).getQualification();
+            String specialties = practitioners.get(i).getSpeciality();
             Boolean medAuthByMoh = practitioners.get(i).isMedAuthByMoh();
 
             if (StringUtil.isEmpty(medAuthByMoh)) {
@@ -1985,6 +1988,10 @@ public final class AppValidatorHelper {
 
             if (StringUtil.isEmpty(qualification)) {
                 errMap.put("qualification" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Qualifications", "field"));
+            }
+
+            if (StringUtil.isEmpty(specialties)) {
+                errMap.put("specialties" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Specialties", "field"));
             }
         }
 

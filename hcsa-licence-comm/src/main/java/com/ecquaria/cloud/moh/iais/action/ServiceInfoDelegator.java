@@ -482,6 +482,7 @@ public class ServiceInfoDelegator {
                     appSvcOtherInfoTopPersonDto.setQualification(list.get(i).getQualification());
                     appSvcOtherInfoTopPersonDto.setSeqNum(list.get(i).getSeqNum());
                     appSvcOtherInfoTopPersonDto.setIdNo(list.get(i).getIdNo());
+                    appSvcOtherInfoTopPersonDto.setSpeciality(list.get(i).getSpeciality());
                     appSvcOtherInfoTopPersonDto.setMedAuthByMoh(list.get(i).isMedAuthByMoh());
                     practitionersList.add(appSvcOtherInfoTopPersonDto);
                 }
@@ -1831,7 +1832,7 @@ public class ServiceInfoDelegator {
                 number = 0;
             } else {
                 String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,
-                        HcsaConsts.STEP_DISCIPLINE_ALLOCATION,HcsaConsts.STEP_SUPPLEMENTARY_FORM};
+                        HcsaConsts.STEP_DISCIPLINE_ALLOCATION,HcsaConsts.STEP_SUPPLEMENTARY_FORM,HcsaConsts.STEP_SERVICE_PERSONNEL};
                 for (int i = 0; i < hcsaServiceStepSchemeDtos.size(); i++) {
                     if (action.equals(hcsaServiceStepSchemeDtos.get(i).getStepCode())) {
                         number = i;

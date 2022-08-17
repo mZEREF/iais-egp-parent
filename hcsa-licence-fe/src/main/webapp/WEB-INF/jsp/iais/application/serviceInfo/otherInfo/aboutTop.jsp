@@ -9,7 +9,7 @@
 </iais:row>
 
 <input type="hidden" name="t" value="${t}">
-<div class="topTypeAbout">
+<div class="topTypeAbout <c:if test="${null == provideTop}">hidden</c:if>">
     <c:choose>
         <c:when test="${empty topByDrug}">
             <c:set var="dCount" value="1"/>

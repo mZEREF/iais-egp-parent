@@ -814,6 +814,7 @@ public final class AppDataHelper {
                 String profRegNo = ParamUtil.getString(request, "profRegNo" + i);
                 String name = ParamUtil.getString(request, "name" + i);
                 String regType = ParamUtil.getString(request, "regType" + i);
+                String specialties = ParamUtil.getString(request,"specialties"+i);
                 String qualification = ParamUtil.getString(request, "qualification" + i);
                 String medAuthByMoh = ParamUtil.getString(request,"medAuthByMoh"+i);
 
@@ -821,6 +822,7 @@ public final class AppDataHelper {
                 appSvcOtherInfoTopPersonDto.setPsnType(psnType);
                 appSvcOtherInfoTopPersonDto.setProfRegNo(profRegNo);
                 appSvcOtherInfoTopPersonDto.setName(name);
+                appSvcOtherInfoTopPersonDto.setSpeciality(specialties);
                 appSvcOtherInfoTopPersonDto.setRegType(regType);
                 if ("1".equals(medAuthByMoh)){
                     appSvcOtherInfoTopPersonDto.setMedAuthByMoh(true);

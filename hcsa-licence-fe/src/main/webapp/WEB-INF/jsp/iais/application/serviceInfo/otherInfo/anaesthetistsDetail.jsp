@@ -1,5 +1,5 @@
 <c:set var="anaesthetists" value="${anaesthetistsList}"/>
-<div class="person-detail anaesthetists">
+<div class="person-detail anaesthetists  <c:if test="${'1' != provideTop}">hidden</c:if>">
     <iais:row>
         <div class="col-xs-12 col-md-10" style="padding-top: 25px;">
             <p class="bold">Name, Professional Regn. No. and Qualification of anaesthetists&nbsp;

@@ -1,4 +1,4 @@
-<div class="practitioners person-detail <c:if test="${'0' == provideTop}">hidden</c:if>">
+<div class="practitioners person-detail <c:if test="${'1' != provideTop}">hidden</c:if>">
     <iais:row>
         <div class="col-xs-12 col-md-10">
                 <%--                <p class="bold">Name, Professional Regn. No. and Qualification of medical practitioners authorised to perform Abortion<span class="psnHeader">${index+1}</span></p>--%>
@@ -44,7 +44,7 @@
     <iais:row>
         <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Specialties"/>
         <iais:value width="6" cssClass="col-md-6">
-            <iais:input maxLength="20" type="text" cssClass="profRegNo" name="profRegNo${index}" value="${person.profRegNo}"/>
+            <iais:input maxLength="20" type="text" cssClass="specialties" name="specialties${index}" value="${person.speciality}"/>
         </iais:value>
     </iais:row>
 

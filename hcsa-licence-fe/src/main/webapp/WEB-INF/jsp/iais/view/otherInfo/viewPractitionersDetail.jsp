@@ -31,7 +31,7 @@
     <iais:row>
         <iais:field width="6" cssClass="col-md-6" value="Specialties"/>
         <iais:value width="6" cssClass="col-md-6" display="true">
-            <c:out value="${person.profRegNo}" />
+            <c:out value="${person.speciality}" />
         </iais:value>
     </iais:row>
 
