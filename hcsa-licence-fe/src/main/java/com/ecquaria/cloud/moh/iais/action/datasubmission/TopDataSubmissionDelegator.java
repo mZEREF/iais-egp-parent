@@ -222,7 +222,7 @@ public class TopDataSubmissionDelegator {
         if(!StringUtil.isEmpty(patientInformationDto.getPatientAge())){
             try {
                 int age= -Formatter.compareDateByDay(patientInformationDto.getBirthData())/365;
-                int ageNew=-(Formatter.compareDateByDay(patientInformationDto.getBirthData())+age/4+1) / 365;
+                int ageNew=-(Formatter.compareDateByDay(patientInformationDto.getBirthData())+age/4) / 365;
 
                 patientInformationDto.setPatientAge(ageNew);
             }catch (Exception e){
@@ -406,7 +406,7 @@ public class TopDataSubmissionDelegator {
             terminationOfPregnancyDto=new TerminationOfPregnancyDto();
         }
         PatientInformationDto patientInformationDto= terminationOfPregnancyDto.getPatientInformationDto();
-        if(!StringUtil.isEmpty(patientInformationDto.getBirthData())){
+        if(patientInformationDto!=null&&!StringUtil.isEmpty(patientInformationDto.getBirthData())){
             ParamUtil.setSessionAttr(bpc.request, "birthDate",topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getPatientInformationDto().getBirthData());
         }
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_TOP);
@@ -515,7 +515,11 @@ public class TopDataSubmissionDelegator {
         if(terminationOfPregnancyDto==null){
             terminationOfPregnancyDto=new TerminationOfPregnancyDto();
         }
-
+        PatientInformationDto patientInformationDto= terminationOfPregnancyDto.getPatientInformationDto();
+        if(StringUtil.isEmpty(patientInformationDto)){
+            patientInformationDto=new PatientInformationDto();
+        }
+        terminationOfPregnancyDto.setPatientInformationDto(patientInformationDto);
         topSuperDataSubmissionDto.setTerminationOfPregnancyDto(terminationOfPregnancyDto);
         DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, request);
     }
@@ -714,7 +718,7 @@ public class TopDataSubmissionDelegator {
             if(StringUtil.isNotEmpty(terminationOfPregnancyDto.getPreTerminationDto().getCounsellingDate())){
                 String counsellingGiven = terminationOfPregnancyDto.getPreTerminationDto().getCounsellingDate();
                 int age=-Formatter.compareDateByDay(birthDate,counsellingGiven)/365;
-                int ageNew=-(Formatter.compareDateByDay(birthDate,counsellingGiven)+age/4+1) / 365;
+                int ageNew=-(Formatter.compareDateByDay(birthDate,counsellingGiven)+age/4) / 365;
 
                 terminationOfPregnancyDto.getPreTerminationDto().setCounsellingAge(ageNew);
 
@@ -901,7 +905,7 @@ public class TopDataSubmissionDelegator {
         ControllerHelper.get(request, familyPlanDto);
         try {
             int age= -Formatter.compareDateByDay(patientInformationDto.getBirthData())/365;
-            int ageNew=-(Formatter.compareDateByDay(patientInformationDto.getBirthData())+age/4+1) / 365;
+            int ageNew=-(Formatter.compareDateByDay(patientInformationDto.getBirthData())+age/4) / 365;
 
             patientInformationDto.setPatientAge(ageNew);
         }catch (Exception e){

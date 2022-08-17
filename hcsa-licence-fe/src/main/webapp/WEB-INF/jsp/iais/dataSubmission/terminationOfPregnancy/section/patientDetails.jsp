@@ -6,7 +6,7 @@
                     <iais:value width="6" cssClass="col-md-6 text-right editDiv">
                         <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
                         <p class="print" style="font-size: 16px;">
-                            <a onclick="printData()" href="javascript:void(0);"> <em class="fa fa-print"></em>Print</a>
+                            <label class="fa fa-print" style="color: #147aab;" onclick="printData()"></label> <a onclick="printData()" href="javascript:void(0);">Print</a>
                         </p>
                     </iais:value>
                 </iais:row>--%>
@@ -145,15 +145,18 @@
                             <div id="genders">
                                <c:forEach items="${patientInformationDto.livingChildrenGenders}" var="livingChildrenGenders" begin="0"
                                            varStatus="idxStatus">
-                                    <iais:row>
-                                        <iais:value cssClass="col-sm-7 col-md-5 col-xs-7 col-md-12">
-                                            <div class="form-group" id="genders" style="padding-left: 15px;padding-right: 15px;">
-                                                    <iais:select name="livingChildrenGenders" firstOption="Please Select" id="livingChildrenGenders${idxStatus.index}" codeCategory="TOP_GENDER_OF_PREGNANT_CHILDREN"
-                                                                 value="${livingChildrenGenders}" cssClass="livingChildrenGenders${idxStatus.index}"/>
-                                                    <span id="error_livingChildrenGenders${idxStatus.index}" name="iaisErrorMsg" class="error-msg"></span>
-                                            </div>
-                                        </iais:value>
-                                    </iais:row>
+                                   <c:if test="${livingChildrenGenders!=''}">
+                                       <iais:row>
+                                           <iais:value cssClass="col-sm-7 col-md-5 col-xs-7 col-md-12">
+                                               <div class="form-group" id="genders" style="padding-left: 15px;padding-right: 15px;">
+                                                   <iais:select name="livingChildrenGenders" firstOption="Please Select" id="livingChildrenGenders${idxStatus.index}" codeCategory="TOP_GENDER_OF_PREGNANT_CHILDREN"
+                                                                value="${livingChildrenGenders}" cssClass="livingChildrenGenders${idxStatus.index}"/>
+                                                   <span id="error_livingChildrenGenders${idxStatus.index}" name="iaisErrorMsg" class="error-msg"></span>
+                                               </div>
+                                           </iais:value>
+                                       </iais:row>
+                                   </c:if>
+
                                 </c:forEach>
                             </div>
                         </iais:value>

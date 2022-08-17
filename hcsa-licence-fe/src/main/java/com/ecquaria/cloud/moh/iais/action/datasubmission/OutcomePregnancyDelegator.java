@@ -37,7 +37,7 @@ import java.util.Map;
 public class OutcomePregnancyDelegator extends CommonDelegator {
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Outcome of Pregnancy Stage</strong>");
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Outcome</strong>");
     }
 
     @Override
@@ -136,7 +136,7 @@ public class OutcomePregnancyDelegator extends CommonDelegator {
         ParamUtil.setRequestAttr(request, "otherDefectTypes", otherDefectTypes);
     }
 
-    private void fromPageData(PregnancyOutcomeStageDto pregnancyOutcomeStageDto, HttpServletRequest request) {
+    public void fromPageData(PregnancyOutcomeStageDto pregnancyOutcomeStageDto, HttpServletRequest request) {
         String firstUltrasoundOrderShow = ParamUtil.getString(request, "firstUltrasoundOrderShow");
         String pregnancyOutcome = ParamUtil.getString(request, "pregnancyOutcome");
         String otherPregnancyOutcome = ParamUtil.getString(request, "otherPregnancyOutcome");

@@ -345,7 +345,6 @@ public final class DataSubmissionHelper {
                 if (!undergoingCycle && DsHelper.isSpecialFinalStatus(lastStatus)) {
                     addStartStages(result);
                 }
-                result.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY);
             } else if (DataSubmissionConsts.AR_STAGE_FREEZING.equals(lastStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_FERTILISATION);
                 result.add(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING);
@@ -371,10 +370,10 @@ public final class DataSubmissionHelper {
                 if (!undergoingCycle && DsHelper.isSpecialFinalStatus(lastStatus)) {
                     addStartStages(result);
                 }
-                result.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY);
+                result.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED);
                 result.add(DataSubmissionConsts.AR_STAGE_IUI_TREATMENT_SUBSIDIES);
             } else if (DataSubmissionConsts.AR_STAGE_IUI_TREATMENT_SUBSIDIES.equals(lastStage)) {
-                result.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY);
+                result.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED);
             }
         } else if (DataSubmissionConsts.DS_CYCLE_EFO.equals(lastCycle)) {
             if (DataSubmissionConsts.AR_CYCLE_EFO.equals(lastStage) || StringUtil.isEmpty(lastStage)) {
@@ -694,7 +693,7 @@ public final class DataSubmissionHelper {
         stages.add(DataSubmissionConsts.AR_STAGE_EMBRYO_CREATED);
         stages.add(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING);
         stages.add(DataSubmissionConsts.AR_STAGE_EMBRYO_TRANSFER);
-        stages.add(DataSubmissionConsts.AR_STAGE_OUTCOME);//todo may change OutCome
+        stages.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED);//todo may change OutCome
         stages.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
         stages.add(DataSubmissionConsts.AR_STAGE_DONATION);
         stages.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);

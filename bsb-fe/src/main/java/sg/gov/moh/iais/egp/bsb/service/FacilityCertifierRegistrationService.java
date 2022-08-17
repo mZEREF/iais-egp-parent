@@ -4,6 +4,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -24,7 +27,15 @@ import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.info.common.EmployeeInfo;
-import sg.gov.moh.iais.egp.bsb.dto.register.afc.*;
+import sg.gov.moh.iais.egp.bsb.dto.register.afc.AdministratorDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.afc.CertTeamNewDoc;
+import sg.gov.moh.iais.egp.bsb.dto.register.afc.CertTeamSavedDoc;
+import sg.gov.moh.iais.egp.bsb.dto.register.afc.CertifyingTeamDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.afc.CertifyingTeamFileDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.afc.CompanyProfileDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.afc.FacilityCertifierRegisterDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.afc.PreviewSubmitDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.afc.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.rfc.DiffContent;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationListResultUnit;
 import sg.gov.moh.iais.egp.bsb.util.mastercode.MasterCodeHolder;
@@ -37,6 +48,8 @@ import java.util.List;
 import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_DOC_TYPES_JSON;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_OPTIONS_DOC_TYPES;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_ADDITIONAL;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_IND_AFTER_SAVE_AS_DRAFT;
 
@@ -246,7 +259,7 @@ public class FacilityCertifierRegistrationService {
         }
     }
 
-
+    @SneakyThrows(JsonProcessingException.class)
     public void preSupportingDoc(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacCertifierRegisterRoot(request);
@@ -271,6 +284,12 @@ public class FacilityCertifierRegistrationService {
         ParamUtil.setRequestAttr(request, "newFiles", newFiles);
         ParamUtil.setRequestAttr(request,"certTeamSavedFiles",certTeamSavedFiles);
         ParamUtil.setRequestAttr(request,"certTeamNewFiles",certTeamNewFiles);
+
+        List<SelectOption> docTypeOps = MasterCodeHolder.MOH_AFC_DOCUMENT_TYPE.allOptions();
+        ParamUtil.setRequestAttr(request, KEY_OPTIONS_DOC_TYPES, docTypeOps);
+        ObjectMapper mapper = new ObjectMapper();
+        String docTypeOpsJson = mapper.writeValueAsString(docTypeOps);
+        ParamUtil.setRequestAttr(request, KEY_DOC_TYPES_JSON, docTypeOpsJson);
     }
 
     public void handleSupportingDoc(BaseProcessClass bpc){

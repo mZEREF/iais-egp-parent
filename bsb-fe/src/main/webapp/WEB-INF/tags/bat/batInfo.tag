@@ -12,12 +12,14 @@
 <%@attribute name="scheduleBatMap" required="true" type="java.util.Map<java.lang.String, java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>>" %>
 <%@attribute name="firstScheduleOp" required="true" type="java.lang.String" %>
 
-<%@attribute name="batInfos" required="true" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.register.bat.BATInfo>" %>
 
+<%@attribute name="batInfos" required="true" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.register.bat.BATInfo>" %>
+<%@attribute name="facProfile" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileInfo" %>
 <%@attribute name="addressTypeOps" required="true" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>" %>
 <%@attribute name="nationalityOps" required="true" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>" %>
 
 <%@attribute name="lspJudge" type="java.lang.Boolean" %>
+<%@attribute name="spFifthJudge" type="java.lang.Boolean" %>
 
 <%@attribute name="editJudge" type="java.lang.Boolean" %>
 
@@ -188,7 +190,7 @@
                                 </div>
                             </div>
                         </c:if>
-                        <bat:batProcFacilityDetail detail="${info.details}" status="${status}" addressTypeOps="${addressTypeOps}" nationalityOps="${nationalityOps}" lspJudge="${lspJudge}"/>
+                        <bat:batProcFacilityDetail detail="${info.details}" status="${status}" addressTypeOps="${addressTypeOps}" nationalityOps="${nationalityOps}" lspJudge="${lspJudge}" spFifthJudge="${spFifthJudge}"/>
                     </section>
                 </c:forEach>
             </div>

@@ -51,7 +51,7 @@
                    aria-invalid="false">
             <label class="form-check-label" for="submitDateMohVss">
                 <span class="check-circle"></span>
-                <span class="left-content">Voluntary Sterilisation (VS)</span>
+                <span class="left-content">Voluntary Sterilization (VS)</span>
             </label>
         </div>
     </c:if>

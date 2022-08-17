@@ -17,12 +17,16 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.List;
 
-import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.*;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_AO_SCREENING;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_DO_SCREENING;
+import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_HM_DECISION;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.KEY_CERTIFICATION_REQUIRED;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.KEY_INSPECTION_REQUIRED;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.KEY_PROCESSING_DECISION;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.KEY_REMARKS;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.KEY_SELECT_MOH_USER;
 
-/**
- * @author : LiRan
- * @date : 2022/3/14
- */
+
 @Data
 @Slf4j
 public class MohProcessDto implements Serializable {
@@ -30,7 +34,6 @@ public class MohProcessDto implements Serializable {
     private FacilityDetailsInfo facilityDetailsInfo;
 
     private List<DocDisplayDto> supportDocDisplayDtoList;
-    private List<DocDisplayDto> internalDocDisplayDtoList;
     private List<SelectOption> selectRouteToMoh;
     private List<ProcessHistoryDto> processHistoryDtoList;
 
@@ -44,12 +47,13 @@ public class MohProcessDto implements Serializable {
     private String selectMohUser;
 
 
-    public void reqObjMapping(HttpServletRequest request, String moduleName){
+    public void reqObjMapping(HttpServletRequest request, String functionName){
         this.setRemarks(ParamUtil.getString(request, KEY_REMARKS));
         this.setProcessingDecision(ParamUtil.getString(request, KEY_PROCESSING_DECISION));
         String facClassification = facilityDetailsInfo.getClassification();
-        switch (moduleName) {
-            case MODULE_NAME_DO_SCREENING: {
+
+        switch (functionName) {
+            case FUNCTION_DO_SCREENING: {
                 this.setSelectMohUser(ParamUtil.getString(request, KEY_SELECT_MOH_USER));
                 if (MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(facClassification)) {
                     this.setCertificationRequired(ParamUtil.getString(request, KEY_CERTIFICATION_REQUIRED));
@@ -67,7 +71,7 @@ public class MohProcessDto implements Serializable {
                 }
                 break;
             }
-            case MODULE_NAME_AO_SCREENING: {
+            case FUNCTION_AO_SCREENING: {
                 this.setSelectMohUser(ParamUtil.getString(request, KEY_SELECT_MOH_USER));
                 if (MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(facClassification)) {
                     this.setCertificationRequired(ParamUtil.getString(request, KEY_CERTIFICATION_REQUIRED));
@@ -75,7 +79,7 @@ public class MohProcessDto implements Serializable {
                 this.setInspectionRequired(ParamUtil.getString(request, KEY_INSPECTION_REQUIRED));
                 break;
             }
-            case MODULE_NAME_HM_SCREENING: {
+            case FUNCTION_HM_DECISION: {
                 if (MasterCodeConstants.CERTIFIED_CLASSIFICATION.contains(facClassification)) {
                     this.setCertificationRequired(ParamUtil.getString(request, KEY_CERTIFICATION_REQUIRED));
                 }
@@ -83,7 +87,7 @@ public class MohProcessDto implements Serializable {
                 break;
             }
             default:
-                log.info("don't have such moduleName {}", StringUtils.normalizeSpace(moduleName));
+                log.info("don't have such functionName {}", StringUtils.normalizeSpace(functionName));
                 break;
         }
     }

@@ -19,7 +19,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">Type <span style="color: red"> *</span></label>
                             <div class="col-xs-8 col-sm-8 col-md-8">
-                                <p><iais:select name="fileType" cssClass="fileTypeDrop" id="fileType" codeCategory="CATE_ID_BSB_DOCUMENT_TYPE"
+                                <p><iais:select name="fileType" cssClass="fileTypeDrop" id="fileType" codeCategory="CATE_ID_DOC_TYPE_MOH"
                                                 firstOption="Please Select" value=""/></p>
                                 <small class="error" ><span id ="fileTypeErrorSpan" style="color: #D22727; font-size: 1.6rem"></span></small>
                             </div>

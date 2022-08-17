@@ -14,6 +14,13 @@ public class MasterCodeHolder {
     public static final MasterCodeWrapper ADDRESS_TYPE = new MasterCodeWrapper(MasterCodeUtil.CATE_ID_ADDRESS_TYPE);
     public static final MasterCodeWrapper DOCUMENT_TYPE = new MasterCodeWrapper(MasterCodeUtil.CATE_ID_BSB_DOCUMENT_TYPE);
 
+    public static final MasterCodeWrapper RF_ETF_DOCUMENT_TYPE = new MasterCodeWrapper(MasterCodeUtil.CATE_ID_DOC_TYPE_RF_ETF);
+    public static final MasterCodeWrapper RF_PV_DOCUMENT_TYPE = new MasterCodeWrapper(MasterCodeUtil.CATE_ID_DOC_TYPE_RF_PV);
+    public static final MasterCodeWrapper CF_DOCUMENT_TYPE = new MasterCodeWrapper(MasterCodeUtil.CATE_ID_DOC_TYPE_CF);
+    public static final MasterCodeWrapper UCF_OR_BMF_DOCUMENT_TYPE = new MasterCodeWrapper(MasterCodeUtil.CATE_ID_DOC_TYPE_UCF_OR_BMP);
+    public static final MasterCodeWrapper APPROVAL_FOR_FACILITY_DOCUMENT_TYPE = new MasterCodeWrapper(MasterCodeUtil.CATE_ID_DOC_TYPE_APPROVAL_FOR_FACILITY);
+    public static final MasterCodeWrapper MOH_AFC_DOCUMENT_TYPE = new MasterCodeWrapper(MasterCodeUtil.CATE_ID_DOC_TYPE_MOH_AFC);
+
     public static final MasterCodeWrapper FACILITY_TYPE = new MasterCodeWrapper(MasterCodeUtil.CATE_ID_BSB_FACILITY_TYPE);
     public static final MasterCodeWrapper APPROVED_FACILITY_CERTIFIER = new MasterCodeWrapper(MasterCodeUtil.CATE_ID_APPROVED_FACILITY_CERTIFIER_SELECTION);
     public static final MasterCodeWrapper PIM_RISK_LEVEL = new MasterCodeWrapper(MasterCodeUtil.CATE_ID_BSB_PIM_RISK_LEVEL);

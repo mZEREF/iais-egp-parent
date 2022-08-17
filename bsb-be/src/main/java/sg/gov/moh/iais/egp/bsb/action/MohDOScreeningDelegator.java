@@ -24,14 +24,10 @@ import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESS_D
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESS_DECISION_REQUEST_FOR_INFORMATION;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESS_DECISION_SCREENED_BY_DO_PROCEED_TO_NEXT_STAGE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.KEY_MOH_PROCESS_DTO;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.MODULE_NAME_DO_SCREENING;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_TASK_ID;
 
-/**
- * @author : LiRan
- * @date : 2021/11/22
- */
+
 @Delegator(value = "doScreeningDelegator")
 @Slf4j
 public class MohDOScreeningDelegator {
@@ -52,33 +48,33 @@ public class MohDOScreeningDelegator {
     }
 
     public void prepareData(BaseProcessClass bpc) {
-        mohProcessService.prepareData(bpc, MODULE_NAME_DO_SCREENING);
+        mohProcessService.prepareData(bpc, FUNCTION_DO_SCREENING);
     }
 
-    public void prepareSwitch(BaseProcessClass bpc){
-        mohProcessService.prepareSwitch(bpc, MODULE_NAME_DO_SCREENING);
+    public void prepareSwitch(BaseProcessClass bpc) {
+        mohProcessService.prepareSwitch(bpc, FUNCTION_DO_SCREENING);
     }
 
-    public void process(BaseProcessClass bpc){
+    public void process(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String taskId = (String) ParamUtil.getSessionAttr(request, PARAM_NAME_TASK_ID);
         String appId = (String) ParamUtil.getSessionAttr(request, PARAM_NAME_APP_ID);
         MohProcessDto mohProcessDto = (MohProcessDto) ParamUtil.getSessionAttr(request, KEY_MOH_PROCESS_DTO);
         String processingDecision = mohProcessDto.getProcessingDecision();
-        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, "Duty Officer Screening");
+        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, FUNCTION_DO_SCREENING);
         switch (processingDecision) {
             case MOH_PROCESS_DECISION_SCREENED_BY_DO_PROCEED_TO_NEXT_STAGE:
-                processClient.saveDoScreeningScreenedByDO(appId, taskId, mohProcessDto);
+                processClient.saveDOScreeningScreenedByDO(appId, taskId, mohProcessDto);
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_AO_SCREENING));
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_AO);
                 break;
             case MOH_PROCESS_DECISION_REQUEST_FOR_INFORMATION:
-                processClient.saveDoScreeningRequestForInformation(appId, taskId, mohProcessDto);
+                processClient.saveDOScreeningRequestForInformation(appId, taskId, mohProcessDto);
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(MasterCodeConstants.APP_STATUS_PEND_APPLICANT_CLARIFICATION));
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_APPLICANT);
                 break;
             case MOH_PROCESS_DECISION_REJECT:
-                processClient.saveDoScreeningReject(appId, taskId, mohProcessDto);
+                processClient.saveDOScreeningReject(appId, taskId, mohProcessDto);
                 break;
             default:
                 log.info("don't have such processingDecision {}", StringUtils.normalizeSpace(processingDecision));

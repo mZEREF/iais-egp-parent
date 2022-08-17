@@ -9,4 +9,8 @@ import java.util.List;
 @Data
 public class FacilityProfileDto implements Serializable {
     private List<FacilityProfileInfo> infoList;
+
+    public FacilityProfileInfo firstProfile() {
+        return this.infoList.get(0);
+    }
 }

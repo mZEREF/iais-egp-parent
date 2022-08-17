@@ -17,15 +17,15 @@ $(function (){
         // TODO: check these app status and decision
         if (decision === 'MOHPRO007' && currentStatus === 'BSBAPST030' || decision === 'BSBAPST031' && currentStatus === 'BSBAPST032') {
             $("#selectMohUserDiv").show();
-            $("#rfiDiv").hide();
+            $("#rfiSubContent").hide();
         } else if (decision === 'MOHPRO002') {
-            $("#rfiDiv").show();
+            $("#rfiSubContent").show();
             $("#selectMohUserDiv").hide();
             var url = "/bsb-web/eservice/INTRANET/MohFacilityApprovalDORecommendation/1/PrepareRfi";
             window.open(url,'_blank');
         } else {
             $("#selectMohUserDiv").hide();
-            $("#rfiDiv").hide();
+            $("#rfiSubContent").hide();
         }
     })
 
