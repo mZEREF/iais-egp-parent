@@ -55,7 +55,6 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
-
     @Value("${iais.email.sender}")
     private String mailSender;
     @Autowired

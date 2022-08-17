@@ -24,22 +24,17 @@ public interface ConfigService {
 
     HcsaServiceConfigDto getHcsaServiceConfigDtoByServiceId(String serviceId);
 
-
     Map<String, List<HcsaConfigPageDto>>  getHcsaConfigPageDto();
-
 
     void doDeleteService(String serviceId);
 
-
     List<HcsaSvcRoutingStageDto> getHcsaSvcRoutingStageDtos();
-
 
     List<String> getType();
 
     List<HcsaSvcCateWrkgrpCorrelationDto> getHcsaSvcCateWrkgrpCorrelationDtoBySvcCateId(String svcCateId);
 
     public List<HcsaServiceCategoryDto> getHcsaServiceCategoryDto() ;
-
 
     HcsaSvcPersonnelDto getHcsaSvcPersonnelDto(String man,String mix,String psnType);
 
