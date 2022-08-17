@@ -761,12 +761,12 @@ public class TopDataSubmissionDelegator {
                 return 2;
             }
             if(!StringUtil.isEmpty(preTerminationDto.getCounsellingGiven())){
-                if(preTerminationDto.getCounsellingGiven()==true){
+                if(preTerminationDto.getCounsellingGiven()){
                     ValidationResult result = WebValidationHelper.validateProperty(preTerminationDto,"TOPY");
                     if(result !=null){
                         errMap.putAll(result.retrieveAll());
                     }
-                }else if(preTerminationDto.getCounsellingGiven()==false){
+                }else if(!preTerminationDto.getCounsellingGiven()){
                     ValidationResult result = WebValidationHelper.validateProperty(preTerminationDto,"TOPN");
                     if(result !=null){
                         errMap.putAll(result.retrieveAll());
@@ -793,12 +793,12 @@ public class TopDataSubmissionDelegator {
                 return 2;
             }
             if(!StringUtil.isEmpty(preTerminationDto.getCounsellingGiven())){
-                if(preTerminationDto.getCounsellingGiven()==true){
+                if(preTerminationDto.getCounsellingGiven()){
                     ValidationResult result3 = WebValidationHelper.validateProperty(preTerminationDto,"TOPY");
                     if(result3 !=null){
                         errMap.putAll(result3.retrieveAll());
                     }
-                }else if(preTerminationDto.getCounsellingGiven()==false){
+                }else if(!preTerminationDto.getCounsellingGiven()){
                     ValidationResult result3 = WebValidationHelper.validateProperty(preTerminationDto,"TOPN");
                     if(result3 !=null){
                         errMap.putAll(result3.retrieveAll());
@@ -835,12 +835,12 @@ public class TopDataSubmissionDelegator {
                 return 2;
             }
             if(!StringUtil.isEmpty(preTerminationDto.getCounsellingGiven())){
-                if(preTerminationDto.getCounsellingGiven()==true){
+                if(preTerminationDto.getCounsellingGiven()){
                     ValidationResult result3 = WebValidationHelper.validateProperty(preTerminationDto,"TOPY");
                     if(result3 !=null){
                         errMap.putAll(result3.retrieveAll());
                     }
-                }else if(preTerminationDto.getCounsellingGiven()==false){
+                }else if(!preTerminationDto.getCounsellingGiven()){
                     ValidationResult result3 = WebValidationHelper.validateProperty(preTerminationDto,"TOPN");
                     if(result3 !=null){
                         errMap.putAll(result3.retrieveAll());
@@ -933,12 +933,12 @@ public class TopDataSubmissionDelegator {
         }
         if(DsConfigHelper.TOP_STEP_PRESENT_TERMINATION.equals(actionType)){
             if(!StringUtil.isEmpty(preTerminationDto.getCounsellingGiven())){
-                if(preTerminationDto.getCounsellingGiven()==true){
+                if(preTerminationDto.getCounsellingGiven()){
                     ValidationResult result = WebValidationHelper.validateProperty(preTerminationDto,"TOPY");
                     if(result !=null){
                         errMap.putAll(result.retrieveAll());
                     }
-                }else if(preTerminationDto.getCounsellingGiven()==false){
+                }else if(!preTerminationDto.getCounsellingGiven()){
                     ValidationResult result = WebValidationHelper.validateProperty(preTerminationDto,"TOPN");
                     if(result !=null){
                         errMap.putAll(result.retrieveAll());
@@ -957,12 +957,12 @@ public class TopDataSubmissionDelegator {
         }
         if(DsConfigHelper.TOP_STEP_POST_TERMINATION.equals(actionType)){
             if(!StringUtil.isEmpty(preTerminationDto.getCounsellingGiven())){
-                if(preTerminationDto.getCounsellingGiven()==true){
+                if(preTerminationDto.getCounsellingGiven()){
                     ValidationResult result3 = WebValidationHelper.validateProperty(preTerminationDto,"TOPY");
                     if(result3 !=null){
                         errMap.putAll(result3.retrieveAll());
                     }
-                }else if(preTerminationDto.getCounsellingGiven()==false){
+                }else if(!preTerminationDto.getCounsellingGiven()){
                     ValidationResult result3 = WebValidationHelper.validateProperty(preTerminationDto,"TOPN");
                     if(result3 !=null){
                         errMap.putAll(result3.retrieveAll());
@@ -999,12 +999,12 @@ public class TopDataSubmissionDelegator {
                 return 2;
             }
             if(!StringUtil.isEmpty(preTerminationDto.getCounsellingGiven())){
-                if(preTerminationDto.getCounsellingGiven()==true){
+                if(preTerminationDto.getCounsellingGiven()){
                     ValidationResult result3 = WebValidationHelper.validateProperty(preTerminationDto,"TOPY");
                     if(result3 !=null){
                         errMap.putAll(result3.retrieveAll());
                     }
-                }else if(preTerminationDto.getCounsellingGiven()==false){
+                }else if(!preTerminationDto.getCounsellingGiven()){
                     ValidationResult result3 = WebValidationHelper.validateProperty(preTerminationDto,"TOPN");
                     if(result3 !=null){
                         errMap.putAll(result3.retrieveAll());
@@ -1442,7 +1442,7 @@ public class TopDataSubmissionDelegator {
             if(Formatter.compareDateByDay(submitDt,terminationDto.getTopDate())>=dayIntA){
                 terminationDto.setLateSubmit(true);
             }
-            if(preTerminationDto.getCounsellingGiven()==true){
+            if(preTerminationDto.getCounsellingGiven()){
                 //b.Only 1 pre-TOP counselling session done and decision is not to abort; Data was submitted more than 30 days from the Pre-Counselling Date;
                 if("TOPPCR003".equals(preTerminationDto.getCounsellingResult())){
                     if(Formatter.compareDateByDay(submitDt,preTerminationDto.getCounsellingDate())>=dayIntB){
@@ -1760,9 +1760,15 @@ public class TopDataSubmissionDelegator {
     }
 
     private boolean needDoTop(PreTerminationDto preTerminationDto){
-        if(!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())) {
-            if ("1".equals(preTerminationDto.getPatientAppointment())) {
-                return !"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult());
+        if(preTerminationDto.getCounsellingGiven()!=null){
+            if(preTerminationDto.getCounsellingGiven()){
+                if(preTerminationDto.getCounsellingResult()!=null&&!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())) {
+                    if ("1".equals(preTerminationDto.getPatientAppointment())) {
+                        return !"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult());
+                    }else {
+                        return true;
+                    }
+                }
             }else {
                 return true;
             }
