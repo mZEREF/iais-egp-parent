@@ -15,6 +15,7 @@
     <%@include file="otherInformationTopPerson.jsp" %>
     <%@include file="documentation.jsp" %>
     <%@include file="aboutTop.jsp" %>
+    <%@include file="yFV.jsp"%>
 </div>
 
 <script>
@@ -42,6 +43,7 @@
                 $('div.counsellors').removeClass("hidden");
                 $('div.addCounsellorsDiv').removeClass("hidden");
                 $('div.lowt').removeClass("hidden");
+                $('div.de').removeClass("hidden");
                 topAboutHAS();
             }else {
                 $('input[name="t"]').val(0);
@@ -56,6 +58,7 @@
                 $('div.counsellors').addClass("hidden");
                 $('div.addCounsellorsDiv').addClass("hidden");
                 $('div.lowt').addClass("hidden");
+                $('div.de').addClass("hidden");
                 topAboutHAS();
             }
         });

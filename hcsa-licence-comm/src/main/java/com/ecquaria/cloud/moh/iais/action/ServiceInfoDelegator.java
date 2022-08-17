@@ -42,6 +42,7 @@ import com.ecquaria.cloud.moh.iais.helper.AppDataHelper;
 import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
@@ -546,6 +547,8 @@ public class ServiceInfoDelegator {
             }
 
             ParamUtil.setRequestAttr(bpc.request, "provideTop", appSvcOtherInfoDto.getProvideTop());
+            ParamUtil.setRequestAttr(bpc.request,"provideYfVs",appSvcOtherInfoDto.getProvideYfVs());
+            ParamUtil.setRequestAttr(bpc.request,"yfCommencementDateStr",appSvcOtherInfoDto.getYfCommencementDateStr());
             ParamUtil.setRequestAttr(bpc.request, "practitionersList", practitionersList);
             ParamUtil.setRequestAttr(bpc.request, "anaesthetistsList", anaesthetistsList);
             ParamUtil.setRequestAttr(bpc.request, "nursesList", nursesList);
@@ -597,9 +600,18 @@ public class ServiceInfoDelegator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if ("next".equals(actionType)) {
             AppSvcOtherInfoDto appSvcOtherInfoDto = currSvcInfoDto.getAppSvcOtherInfoDto();
-            String provideTop = appSvcOtherInfoDto.getProvideTop();
-            if (AppConsts.YES.equals(provideTop)) {
-                errorMap = AppValidatorHelper.doValidateOtherInformation(appSvcOtherInfoDto);
+            if (appSvcOtherInfoDto != null){
+                String provideTop = appSvcOtherInfoDto.getProvideTop();
+                String provideYfVs = appSvcOtherInfoDto.getProvideYfVs();
+                if (AppConsts.YES.equals(provideTop) || AppConsts.YES.equals(provideYfVs)) {
+                    errorMap = AppValidatorHelper.doValidateOtherInformation(appSvcOtherInfoDto);
+                }
+                if (StringUtil.isEmpty(provideTop)){
+                    errorMap.put("provideTop", MessageUtil.replaceMessage("GENERAL_ERR0006", "Please indicate&nbsp;", "field"));
+                }
+                if (StringUtil.isEmpty(provideYfVs)){
+                    errorMap.put("provideYfVs", MessageUtil.replaceMessage("GENERAL_ERR0006", "Do you provide Yellow Fever Vaccination Service&nbsp;", "field"));
+                }
             }
         }
         checkAction(errorMap, HcsaConsts.STEP_OTHER_INFORMATION, appSubmissionDto, bpc.request);
@@ -1819,9 +1831,7 @@ public class ServiceInfoDelegator {
                 number = 0;
             } else {
                 String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,
-                        HcsaConsts.STEP_DISCIPLINE_ALLOCATION,HcsaConsts.STEP_SUPPLEMENTARY_FORM,
-                        HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS,HcsaConsts.STEP_SERVICE_PERSONNEL,HcsaConsts.STEP_PRINCIPAL_OFFICERS,
-                        HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER,HcsaConsts.STEP_MEDALERT_PERSON};
+                        HcsaConsts.STEP_DISCIPLINE_ALLOCATION,HcsaConsts.STEP_SUPPLEMENTARY_FORM};
                 for (int i = 0; i < hcsaServiceStepSchemeDtos.size(); i++) {
                     if (action.equals(hcsaServiceStepSchemeDtos.get(i).getStepCode())) {
                         number = i;

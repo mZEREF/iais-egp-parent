@@ -758,6 +758,8 @@ public final class AppDataHelper {
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
         String provideTop = ParamUtil.getString(request,"provideTop");
         appSvcOtherInfoDto.setProvideTop(provideTop);
+        String provideYfVs = ParamUtil.getString(request,"provideYfVs");
+        appSvcOtherInfoDto.setProvideYfVs(provideYfVs);
         // AppSvcOtherInfoTopDto
         String topType = ParamUtil.getString(request,"topType");
         appSvcOtherInfoTopDtos.setTopType(topType);

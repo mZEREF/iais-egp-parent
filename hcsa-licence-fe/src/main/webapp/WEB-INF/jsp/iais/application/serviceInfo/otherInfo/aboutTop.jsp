@@ -69,6 +69,24 @@
             <span>Add more</span>
         </span>
     </div>
+
+    <div class="de <c:if test="${('-1' != appSvcOtherInfoTopDto.topType) || ('0' == provideTop)}">hidden</c:if>">
+        <iais:row>
+            <div class="col-xs-12 col-md-12">
+                <p class="bold">Declaration</p>
+            </div>
+        </iais:row>
+        <iais:row>
+            <div class="col-md-1">
+                <input class="form-check-input declaration"  type="checkbox" checked="checked" name="declaration">
+            </div>
+            <div class="col-md-11">
+                <span>I declare the information in my application to be true, to the best of my knowledge.
+                    I also understand that approval of the licence is dependent on satisfactory compliance with the relevant requirements under
+                    the Healthcare Services Act, Regulations and Guidelines and the TOP Act, Regulations and Guidelines.</span>
+            </div>
+        </iais:row>
+    </div>
 </div>
 <script>
     $(document).ready(function (){
