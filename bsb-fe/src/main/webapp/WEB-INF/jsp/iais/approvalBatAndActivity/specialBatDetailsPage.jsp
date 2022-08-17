@@ -6,7 +6,7 @@
 <%--@elvariable id="scheduleBatMap" type="java.util.Map<java.lang.String, java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>>"--%>
 <%--@elvariable id="scheduleOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
 <%--@elvariable id="batInfo" type="sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalToSpecialDto"--%>
-<bat:specialBatDetails firstScheduleOp="${firstScheduleOp}" scheduleOps="${scheduleOps}" scheduleBatMap="${scheduleBatMap}" batInfo="${batInfo}">
+<bat:specialBatDetails firstScheduleOp="${firstScheduleOp}" scheduleOps="${scheduleOps}" scheduleBatMap="${scheduleBatMap}" existBatSet="${existBatSet}" batInfo="${batInfo}">
     <jsp:attribute name="specialJsFrag">
         <iais-bsb:single-constant constantName="WEB_ROOT" classFullName="sg.gov.moh.iais.egp.bsb.constant.GlobalConstants" attributeKey="webroot"/>
         <%--@elvariable id="webroot" type="java.lang.String"--%>

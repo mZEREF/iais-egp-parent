@@ -3,6 +3,7 @@ package sg.gov.moh.iais.egp.bsb.service;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -45,6 +46,7 @@ import sg.gov.moh.iais.egp.bsb.dto.register.approval.FacAuthorisedDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.approval.FacProfileDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.approval.PreviewDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.approval.PrimaryDocDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.approval.ScheduleBasedBatDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
@@ -81,13 +83,15 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityCons
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_DOC_SETTINGS;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_DOC_TYPES_JSON;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_FACILITY_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_FAC_ACTIVITY_TYPE_APPROVAL_WITH_APPROVED_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_FAC_AUTHORISED_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_FAC_EXIST_BAT_SET;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_FAC_EXIST_BAT_SET_JSON;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_FAC_PROFILE_DTO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_INDEED_ACTION_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_JUMP_DEST_NODE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_NAV_NEXT;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_NAV_PREVIOUS;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_NOT_EXIST_FAC_ACTIVITY_TYPE_APPROVAL_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_OPTIONS_ADDRESS_TYPE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_OPTIONS_AUTH_PERSONNEL;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.KEY_OPTIONS_DOC_TYPES;
@@ -117,6 +121,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityCons
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_PRIMARY_DOC;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.NODE_NAME_SPECIAL_BAT;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.SELECTION_FACILITY_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ApprovalBatAndActivityConstants.SOURCE_FACILITY_DETAILS;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_IND_AFTER_SAVE_AS_DRAFT;
 
 
@@ -347,6 +352,8 @@ public class ApprovalBatAndActivityService {
         ParamUtil.setRequestAttr(request, KEY_OPTIONS_ADDRESS_TYPE, MasterCodeHolder.ADDRESS_TYPE.allOptions());
         ParamUtil.setRequestAttr(request, KEY_OPTIONS_NATIONALITY, MasterCodeHolder.NATIONALITY.allOptions());
         loadAllowedScheduleAndBatOptions(request);
+        FacProfileDto facProfileDto = (FacProfileDto) ParamUtil.getSessionAttr(request, KEY_FAC_PROFILE_DTO);
+        ParamUtil.setRequestAttr(request, SOURCE_FACILITY_DETAILS, facProfileDto.getSourceFacDetails());
     }
 
     public void handlePossessBatDetails(BaseProcessClass bpc) {
@@ -384,6 +391,8 @@ public class ApprovalBatAndActivityService {
         ParamUtil.setRequestAttr(request, KEY_OPTIONS_ADDRESS_TYPE, MasterCodeHolder.ADDRESS_TYPE.allOptions());
         ParamUtil.setRequestAttr(request, KEY_OPTIONS_NATIONALITY, MasterCodeHolder.NATIONALITY.allOptions());
         loadAllowedScheduleAndBatOptions(request);
+        FacProfileDto facProfileDto = (FacProfileDto) ParamUtil.getSessionAttr(request, KEY_FAC_PROFILE_DTO);
+        ParamUtil.setRequestAttr(request, SOURCE_FACILITY_DETAILS, facProfileDto.getSourceFacDetails());
     }
 
     public void handleLargeBatDetails(BaseProcessClass bpc) {
@@ -516,8 +525,8 @@ public class ApprovalBatAndActivityService {
         ApprovalSelectionDto approvalSelectionDto = getApprovalSelectionDto(request);
         String facilityId = approvalSelectionDto.getFacilityId();
         // show that belongs to this classification without approval facActivityType
-        List<String> notExistFacActivityTypeApprovalList = approvalBatAndActivityClient.getNotApprovalActivities(facilityId);
-        ParamUtil.setRequestAttr(request, KEY_NOT_EXIST_FAC_ACTIVITY_TYPE_APPROVAL_LIST, notExistFacActivityTypeApprovalList);
+        Map<String,String> allActivityMapWithApproved = approvalBatAndActivityClient.getNotApprovalActivities(facilityId);
+        ParamUtil.setRequestAttr(request, KEY_FAC_ACTIVITY_TYPE_APPROVAL_WITH_APPROVED_LIST, allActivityMapWithApproved);
     }
 
     public void handleActivityDetails(BaseProcessClass bpc) {
@@ -526,6 +535,10 @@ public class ApprovalBatAndActivityService {
         String currentNodePath = NODE_NAME_APP_INFO + approvalAppRoot.getPathSeparator() + NODE_NAME_FAC_ACTIVITY;
         SimpleNode facActivityNode = (SimpleNode) approvalAppRoot.at(currentNodePath);
         ApprovalToActivityDto approvalToActivityDto = (ApprovalToActivityDto) facActivityNode.getValue();
+        // get facilityId
+        ApprovalSelectionDto approvalSelectionDto = getApprovalSelectionDto(request);
+        String facilityId = approvalSelectionDto.getFacilityId();
+        approvalToActivityDto.setFacilityId(facilityId);
         approvalToActivityDto.reqObjMapping(request);
 
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
@@ -1017,6 +1030,8 @@ public class ApprovalBatAndActivityService {
         }
         List<DocSetting> approvalAppDocSettings = docSettingService.getApprovalAppDocSettings(processType);
         ParamUtil.setRequestAttr(request, "docSettings", approvalAppDocSettings);
+        FacProfileDto facProfileDto = (FacProfileDto) ParamUtil.getSessionAttr(request, KEY_FAC_PROFILE_DTO);
+        ParamUtil.setRequestAttr(request, SOURCE_FACILITY_DETAILS, facProfileDto.getSourceFacDetails());
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode) approvalAppRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
         Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
         Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
@@ -1028,12 +1043,12 @@ public class ApprovalBatAndActivityService {
         ParamUtil.setRequestAttr(request, KEY_OTHER_DOC_TYPES, otherDocTypes);
     }
 
-    @SneakyThrows(JsonProcessingException.class)
     public void loadAllowedScheduleAndBatOptions(HttpServletRequest request) {
         ApprovalSelectionDto approvalSelectionDto = getApprovalSelectionDto(request);
         log.debug("facility id is {}", LogUtil.escapeCrlf(approvalSelectionDto.getFacilityId()));
         log.debug("process Type is {}", LogUtil.escapeCrlf(approvalSelectionDto.getProcessType()));
-        Map<String, List<BatCodeInfo>> scheduleBatMap = approvalBatAndActivityClient.queryScheduleBasedBatBasicInfo(approvalSelectionDto.getFacilityId(), getApprovalTypeByProcessType(approvalSelectionDto.getProcessType()));
+        ScheduleBasedBatDto scheduleBasedBatDto = approvalBatAndActivityClient.queryScheduleBasedBatBasicInfo(approvalSelectionDto.getFacilityId(), getApprovalTypeByProcessType(approvalSelectionDto.getProcessType()));
+        Map<String, List<BatCodeInfo>> scheduleBatMap = scheduleBasedBatDto.getBiologicalInfoMap();
         List<SelectOption> scheduleTypeOps = MasterCodeHolder.SCHEDULE.customOptions(scheduleBatMap.keySet().toArray(new String[0]));
         ParamUtil.setRequestAttr(request, KEY_OPTIONS_SCHEDULE, scheduleTypeOps);
         ParamUtil.setRequestAttr(request, KEY_SCHEDULE_FIRST_OPTION, Optional.of(scheduleTypeOps).filter(l -> !l.isEmpty()).map(l -> l.get(0)).map(SelectOption::getValue).orElse(null));
@@ -1053,9 +1068,11 @@ public class ApprovalBatAndActivityService {
             scheduleBatOptionMap.put(entry.getKey(), optionList);
         }
         ParamUtil.setRequestAttr(request, KEY_SCHEDULE_BAT_MAP, scheduleBatOptionMap);
-        ObjectMapper mapper = new ObjectMapper();
-        String scheduleBatMapJson = mapper.writeValueAsString(scheduleBatOptionMap);
+        ParamUtil.setRequestAttr(request, KEY_FAC_EXIST_BAT_SET, scheduleBasedBatDto.getFacExistBatSet());
+        String scheduleBatMapJson = JsonUtil.parseToJson(scheduleBatOptionMap);
+        String existBatSetJson = JsonUtil.parseToJson(scheduleBasedBatDto.getFacExistBatSet());
         ParamUtil.setRequestAttr(request, KEY_SCHEDULE_BAT_MAP_JSON, scheduleBatMapJson);
+        ParamUtil.setRequestAttr(request, KEY_FAC_EXIST_BAT_SET_JSON, existBatSetJson);
     }
 
     public String getApprovalTypeByProcessType(String processType) {

@@ -7,6 +7,7 @@
 <%@attribute name="firstScheduleOp" required="true" type="java.lang.String" %>
 <%@attribute name="scheduleOps" required="true" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>" %>
 <%@attribute name="scheduleBatMap" required="true" type="java.util.Map<java.lang.String, java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>>" %>
+<%@attribute name="existBatSet" type="java.util.Set<java.lang.String>"%>
 <%@attribute name="batInfo" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.approval.ApprovalToSpecialDto" %>
 <%@attribute name="specialJsFrag" fragment="true" %>
 <%@attribute name="dashboardFrag" fragment="true" %>
@@ -29,8 +30,13 @@
         if (jsonStr == null || "".equals(jsonStr)) {
             jsonStr = "undefined";
         }
+        String existBatDataJson = (String) request.getAttribute("existBatSetJson");
+        if (existBatDataJson == null || "".equals(existBatDataJson)) {
+            existBatDataJson = "undefined";
+        }
     %>
     var scheduleBatDataJson = <%=jsonStr%>;
+    var existBatDataJson = <%=existBatDataJson%>
 </script>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
@@ -82,7 +88,8 @@
                                                                 <select name="batName"  class="batNameDropdown" id="batName">
                                                                     <c:set var="batNameOps" value="${scheduleBatMap.get(batInfo.schedule == null ? firstScheduleOp : batInfo.schedule)}"/>
                                                                     <c:forEach items="${batNameOps}" var="name">
-                                                                        <option value="${name.value}" <c:if test="${batInfo.batName eq name.value}">selected="selected"</c:if>>${name.text}</option>
+                                                                        <option value="${name.value}" <c:if test="${batInfo.batName eq name.value}">selected="selected"</c:if>
+                                                                                <c:if test="${not empty existBatSet && existBatSet.contains(name.value)}">disabled="disabled"</c:if>>${name.text}</option>
                                                                     </c:forEach>
                                                                 </select>
                                                                 <span data-err-ind="batName" class="error-msg"></span>

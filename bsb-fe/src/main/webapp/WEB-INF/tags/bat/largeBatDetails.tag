@@ -26,8 +26,13 @@
         if (jsonStr == null || "".equals(jsonStr)) {
             jsonStr = "undefined";
         }
+        String existBatDataJson = (String) request.getAttribute("existBatSetJson");
+        if (existBatDataJson == null || "".equals(existBatDataJson)) {
+            existBatDataJson = "undefined";
+        }
     %>
     var scheduleBatDataJson = <%=jsonStr%>;
+    var existBatDataJson = <%=existBatDataJson%>
 </script>
 
 

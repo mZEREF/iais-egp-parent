@@ -8,6 +8,7 @@
 <%@attribute name="batInfo" required="true" type="java.lang.Object" %>
 <%@attribute name="facAuthorisedList" required="false" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.entity.FacilityAuthoriserDto>" %>
 <%@attribute name="processType" required="true" type="java.lang.String" %>
+<%@attribute name="sourceFac" type="sg.gov.moh.iais.egp.bsb.dto.register.bat.SourceFacDetails" %>
 
 <%@attribute name="docFrag" fragment="true" %>
 <%@attribute name="editFrag" fragment="true" %>
@@ -436,7 +437,6 @@
                                                             </div>
                                                         </div>
                                                     </c:if>
-                                                    <c:set var="possess" value="${info.inPossessionInfo}"/>
                                                     <c:if test="${'BMOP003' eq detail.procurementMode}">
                                                         <div id="exportingFacilityDetailsInfo">
                                                             <div class="form-group">
@@ -445,27 +445,27 @@
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label">Facility Name</label>
-                                                                <div class="col-xs-6"><p>${possess.facNameS}</p></div>
+                                                                <div class="col-xs-6"><p>${sourceFac.facilityName}</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label">Block No.</label>
-                                                                <div class="col-xs-6"><p>${possess.blockNoS}</p></div>
+                                                                <div class="col-xs-6"><p>${sourceFac.blkNo}</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label">Floor & Unit</label>
-                                                                <div class="col-xs-6"><p>${possess.floorNoS}-${possess.unitNoS}</p></div>
+                                                                <div class="col-xs-6"><p>${sourceFac.floorNo}-${sourceFac.unitNo}</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label">Street Name</label>
-                                                                <div class="col-xs-6"><p>${possess.streetNameS}</p></div>
+                                                                <div class="col-xs-6"><p>${sourceFac.streetName}</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="col-xs-6 control-label">Postal Code</label>
-                                                                <div class="col-xs-6"><p>${possess.postalCodeS}</p></div>
+                                                                <div class="col-xs-6"><p>${sourceFac.postalCode}</p></div>
                                                                 <div class="clear"></div>
                                                             </div>
                                                         </div>

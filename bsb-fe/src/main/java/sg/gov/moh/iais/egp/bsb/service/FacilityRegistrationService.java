@@ -34,6 +34,7 @@ import sg.gov.moh.iais.egp.bsb.dto.declaration.DeclarationItemMainInfo;
 import sg.gov.moh.iais.egp.bsb.dto.info.bat.BatCodeInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.bat.BATInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.bat.SourceFacDetails;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAdminAndOfficerDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAfcDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserDto;
@@ -42,6 +43,7 @@ import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeFileDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityOperatorDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityRegisterDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilitySelectionDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.OtherApplicationInfoDto;
@@ -145,6 +147,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_PATH_FA
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_PATH_FAC_COMMITTEE;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_PATH_FAC_OPERATOR;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_PATH_FAC_PROFILE;
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.SOURCE_FACILITY_DETAILS;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.STEP_NAME_AUTHORISER_PREVIEW;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.STEP_NAME_COMMITTEE_PREVIEW;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_ADDITIONAL;
@@ -861,6 +864,11 @@ public class FacilityRegistrationService {
 
         ParamUtil.setRequestAttr(request, KEY_OPTIONS_ADDRESS_TYPE, MasterCodeHolder.ADDRESS_TYPE.allOptions());
         ParamUtil.setRequestAttr(request, KEY_OPTIONS_NATIONALITY, MasterCodeHolder.NATIONALITY.allOptions());
+
+        //prepare facility profile for condition which Mode of Procurement is Already in possession
+        FacilityProfileDto facProfileDto = (FacilityProfileDto) ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue();
+        FacilityProfileInfo facilityProfileInfo = facProfileDto.firstProfile();
+        ParamUtil.setRequestAttr(request, SOURCE_FACILITY_DETAILS, SourceFacDetails.of(facilityProfileInfo));
     }
 
     public void handleBAToxin(BaseProcessClass bpc) {

@@ -11,10 +11,11 @@
 <%@attribute name="scheduleOps" required="true" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>" %>
 <%@attribute name="scheduleBatMap" required="true" type="java.util.Map<java.lang.String, java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>>" %>
 <%@attribute name="firstScheduleOp" required="true" type="java.lang.String" %>
+<%@attribute name="existBatSet" type="java.util.Set<java.lang.String>"%>
 
 
 <%@attribute name="batInfos" required="true" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.register.bat.BATInfo>" %>
-<%@attribute name="facProfile" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileInfo" %>
+<%@attribute name="sourceFac" type="sg.gov.moh.iais.egp.bsb.dto.register.bat.SourceFacDetails" %>
 <%@attribute name="addressTypeOps" required="true" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>" %>
 <%@attribute name="nationalityOps" required="true" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>" %>
 
@@ -79,7 +80,7 @@
                                         </c:when>
                                         <c:otherwise>
                                             <c:forEach items="${batNameOps}" var="name">
-                                                <option value="${name.value}" <c:if test="${info.batName eq name.value}">selected="selected"</c:if>>${name.text}</option>
+                                                <option value="${name.value}" <c:if test="${info.batName eq name.value}">selected="selected"</c:if>  <c:if test="${not empty existBatSet && existBatSet.contains(name.value)}">disabled="disabled"</c:if>>${name.text}</option>
                                             </c:forEach>
                                         </c:otherwise>
                                     </c:choose>
@@ -190,7 +191,7 @@
                                 </div>
                             </div>
                         </c:if>
-                        <bat:batProcFacilityDetail detail="${info.details}" status="${status}" addressTypeOps="${addressTypeOps}" nationalityOps="${nationalityOps}" lspJudge="${lspJudge}" spFifthJudge="${spFifthJudge}"/>
+                        <bat:batProcFacilityDetail detail="${info.details}" status="${status}" addressTypeOps="${addressTypeOps}" nationalityOps="${nationalityOps}" sourceFac="${sourceFac}" lspJudge="${lspJudge}" spFifthJudge="${spFifthJudge}"/>
                     </section>
                 </c:forEach>
             </div>
