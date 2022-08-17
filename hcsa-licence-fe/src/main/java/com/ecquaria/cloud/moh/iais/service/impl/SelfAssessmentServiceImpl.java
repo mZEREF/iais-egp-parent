@@ -312,7 +312,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                     EmailParam email_004 = new EmailParam();
                     email_004.setTemplateId(email_004_template);
                     email_004.setTemplateContent(templateContent);
-                    email_004.setQueryCode(HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR);
+                    email_004.setQueryCode(tlGroupNumber);
                     email_004.setReqRefNum(emailRandomStr_003);
                     email_004.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
                     email_004.setRefId(appNo);
@@ -339,7 +339,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
         email_003.setTemplateId(email_003_template);
         email_003.setTemplateContent(emailContent_003);
-        email_003.setQueryCode(HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR);
+        email_003.setQueryCode(tlGroupNumber);
         email_003.setReqRefNum(emailRandomStr_003);
         email_003.setRefId(emailGroupId_003);
         email_003.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP_GRP);
