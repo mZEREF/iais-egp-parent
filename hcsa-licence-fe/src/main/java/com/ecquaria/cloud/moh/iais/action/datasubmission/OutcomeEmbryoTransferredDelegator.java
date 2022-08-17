@@ -4,19 +4,18 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoTransferredOutcomeStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FertilisationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PregnancyOutcomeStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +32,9 @@ import java.util.Map;
 @Slf4j
 public class OutcomeEmbryoTransferredDelegator extends CommonDelegator{
     public static final String OUTCOME_OF_EMBRYO_TRANSFERREDS = "OutcomeEmbryoTransferreds";
+
+    @Autowired
+    private OutcomePregnancyDelegator outcomePregnancyDelegator;
     @Override
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -41,16 +43,14 @@ public class OutcomeEmbryoTransferredDelegator extends CommonDelegator{
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Outcome</strong>");
         HttpServletRequest request = bpc.request;
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
     }
     @Override
     public void preparePage(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
-        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
+        outcomePregnancyDelegator.preparePage(bpc);
     }
     @Override
     public void prepareConfim(BaseProcessClass bpc) {
@@ -68,13 +68,19 @@ public class OutcomeEmbryoTransferredDelegator extends CommonDelegator{
         arSuperDataSubmissionDto.setEmbryoTransferredOutcomeStageDto(embryoTransferredOutcomeStageDto);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String crud_action_type = ParamUtil.getRequestString(request, IntranetUserConstant.CRUD_ACTION_TYPE);
-
+        PregnancyOutcomeStageDto pregnancyOutcomeStageDto = arSuperDataSubmissionDto.getPregnancyOutcomeStageDto();
+        outcomePregnancyDelegator.fromPageData(pregnancyOutcomeStageDto, request);
         if ("confirm".equals(crud_action_type)) {
             ValidationResult validationResult = WebValidationHelper.validateProperty(embryoTransferredOutcomeStageDto, "save");
+            ValidationResult validationResult1 = WebValidationHelper.validateProperty(pregnancyOutcomeStageDto, "save");
+
             errorMap = validationResult.retrieveAll();
+            errorMap.putAll(validationResult1.retrieveAll());
             verifyRfcCommon(request, errorMap);
             if(errorMap.isEmpty()){
                 valRFC(request, embryoTransferredOutcomeStageDto);
+                outcomePregnancyDelegator.valRFC(request, pregnancyOutcomeStageDto);
+
             }
         }
 

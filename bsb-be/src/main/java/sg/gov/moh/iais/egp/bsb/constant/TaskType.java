@@ -5,6 +5,6 @@ package sg.gov.moh.iais.egp.bsb.constant;
  * API part has an enum with the same name, and it has more information.
  */
 public enum TaskType {
-    DO_SCREENING, CHECK_INSPECTION_READINESS, DO_PROCESSING,
+    DO_SCREENING, CHECK_INSPECTION_READINESS, DO_PROCESSING, DO_VERIFICATION,
     DO_PROCESSING_FACILITY_APPROVAL, AO_PROCESSING_FACILITY_APPROVAL, HM_PROCESSING_FACILITY_APPROVAL
 }

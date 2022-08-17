@@ -2330,18 +2330,16 @@ public final class ApplicationHelper {
         }
 
         List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoDtoList = currSvcInfoDto.getAppSvcSpecialServiceInfoList();
-        if (!IaisCommonUtils.isEmpty(appSvcSpecialServiceInfoDtoList)) {
+        if (init&&!IaisCommonUtils.isEmpty(appSvcSpecialServiceInfoDtoList)) {
             for (AppSvcSpecialServiceInfoDto appSvcSpecialServiceInfoDto : appSvcSpecialServiceInfoDtoList) {
                 if (appSvcSpecialServiceInfoDto.isInit()) {
                     init = false;
                     break;
                 }
             }
-            return appSvcSpecialServiceInfoDtoList;
-        }
-
-        if (!init && IaisCommonUtils.isNotEmpty(currSvcInfoDto.getAppSvcSpecialServiceInfoList())) {
-            return currSvcInfoDto.getAppSvcSpecialServiceInfoList();
+            if(init==false){
+                return appSvcSpecialServiceInfoDtoList;
+            }
         }
 
         List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoDtos = genAppSvcSpecialServiceInfoDtoList(appPremSpecialisedDtoList,
@@ -2370,6 +2368,7 @@ public final class ApplicationHelper {
                     List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = configCommService.getHcsaSvcPersonnel(
                             specialServiceSectionDto.getSvcId(),
                             ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR,
+                            ApplicationConsts.PERSONNEL_PSN_TYPE_MAP,
                             ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR);
                     if (!IaisCommonUtils.isEmpty(hcsaSvcPersonnelDtoList)) {
                         for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto : hcsaSvcPersonnelDtoList) {

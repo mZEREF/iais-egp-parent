@@ -71,7 +71,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.ACTION_TYPE;
 import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.JUMP_ACTION_TYPE;
@@ -846,7 +845,13 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         if (StringUtils.hasLength(cycleId)) {
             List<DataSubmissionDto> dataSubmissionDtoList = arFeClient.getAllDataSubmissionByCycleId(cycleId).getEntity();
             if (!CollectionUtils.isEmpty(dataSubmissionDtoList)) {
-                return dataSubmissionDtoList.stream().collect(Collectors.toMap(DataSubmissionDto::getCycleStage, DataSubmissionDto::getSubmitBy));
+                Map<String, String> cycleStageMap=IaisCommonUtils.genNewHashMap();
+                for (DataSubmissionDto dataSubmissionDto:dataSubmissionDtoList
+                     ) {
+                    cycleStageMap.put(dataSubmissionDto.getCycleStage(),dataSubmissionDto.getSubmitBy());
+
+                }
+                return cycleStageMap;
             }
         }
         return Collections.emptyMap();

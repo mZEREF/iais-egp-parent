@@ -20,7 +20,7 @@
             <table aria-describedby="" class="table">
                 <thead>
                 <tr>
-                    <th scope="col" style="width: 20%">Type</th>
+                    <th scope="col" style="width: 20%">Document Type</th>
                     <th scope="col" style="width: 20%">File</th>
                     <th scope="col" style="width: 15%">Size</th>
                     <th scope="col" style="width: 20%">Submitted By</th>
@@ -61,7 +61,7 @@
             <table aria-describedby="" class="table">
                 <thead>
                 <tr>
-                    <th scope="col" style="width: 20%">Type</th>
+                    <th scope="col" style="width: 20%">Document Type</th>
                     <th scope="col" style="width: 20%">File</th>
                     <th scope="col" style="width: 10%">Size</th>
                     <th scope="col" style="width: 20%">Submitted By</th>
@@ -80,7 +80,7 @@
                         <c:forEach var="doc" items="${internalDocDisplayDtoList}" varStatus="status">
                             <c:set var="maskedRepoId" value="${MaskUtil.maskValue('file', doc.fileRepoId)}"/>
                             <tr>
-                                <td>${doc.docTypeDesc}</td>
+                                <td><iais:code code="${doc.docTypeDesc}"/></td>
                                 <td><a href="javascript:void(0)" onclick="downloadInternalDocument('${maskedRepoId}', '${doc.docName}')">${doc.docName}</a></td>
                                 <td>${String.format("%.1f", doc.docSize/1024.0)}KB</td>
                                 <td>${doc.submitByName}</td>

@@ -18,8 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 
 
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INCIDENT_FOLLOW_UP;
-import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_DO_PROCESSING;
-
 /**
  * @author YiMing
  * @version 2022/1/21 13:39
@@ -47,7 +45,7 @@ public class IncidentFollowupProcessDelegator {
     public void start(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         followupService.clearSession(request);
-        AuditTrailHelper.auditFunction(MODULE_INCIDENT_FOLLOW_UP, FUNCTION_DO_PROCESSING);
+//        AuditTrailHelper.auditFunction(MODULE_INCIDENT_FOLLOW_UP, FUNCTION_DO_PROCESSING);
     }
 
     public void initFollowA(BaseProcessClass bpc){

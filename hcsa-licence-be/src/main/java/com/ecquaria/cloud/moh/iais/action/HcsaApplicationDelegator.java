@@ -1096,7 +1096,7 @@ public class HcsaApplicationDelegator {
                 routeBackStatus = ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_ASO;
             } else if (HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)) {
                 routeBackStatus = ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_PSO;
-            } else if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId)) {
+            } else if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId) && RoleConsts.USER_ROLE_INSPECTIOR.equals(roleId)) {
                 routeBackStatus = ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR;
             }
         } else if (RoleConsts.USER_ROLE_PSO.equals(userRoleId)) {

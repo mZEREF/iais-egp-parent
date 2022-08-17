@@ -22,21 +22,17 @@ import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_DO_RECOMMENDATION;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_DO_SCREENING;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_HM_DECISION;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_INSPECTION_CERTIFICATION;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_INSPECTION_TASK_ASSIGNMENT;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE_TO_PROCEED_TO_NEXT_STAGE;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESS_DECISION_REJECT;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_TO_HM;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.KEY_MOH_PROCESS_DTO;
-import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants.MODULE_NAME_AO_SCREENING;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_TASK_ID;
 
 
-/**
- * @author : LiRan
- * @date : 2021/11/22
- */
 @Delegator(value = "aoScreeningDelegator")
 @Slf4j
 public class MohAOScreeningDelegator {
@@ -58,24 +54,24 @@ public class MohAOScreeningDelegator {
     }
 
     public void prepareData(BaseProcessClass bpc) {
-        mohProcessService.prepareData(bpc, MODULE_NAME_AO_SCREENING);
+        mohProcessService.prepareData(bpc, FUNCTION_AO_SCREENING);
     }
 
-    public void prepareSwitch(BaseProcessClass bpc){
-        mohProcessService.prepareSwitch(bpc, MODULE_NAME_AO_SCREENING);
+    public void prepareSwitch(BaseProcessClass bpc) {
+        mohProcessService.prepareSwitch(bpc, FUNCTION_AO_SCREENING);
     }
 
-    public void process(BaseProcessClass bpc){
+    public void process(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String taskId = (String) ParamUtil.getSessionAttr(request, PARAM_NAME_TASK_ID);
         String appId = (String) ParamUtil.getSessionAttr(request, PARAM_NAME_APP_ID);
         MohProcessDto mohProcessDto = (MohProcessDto) ParamUtil.getSessionAttr(request, KEY_MOH_PROCESS_DTO);
         String processingDecision = mohProcessDto.getProcessingDecision();
-        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK,"Approval Officer Screening");
+        ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, FUNCTION_AO_SCREENING);
         switch (processingDecision) {
             case MOH_PROCESS_DECISION_APPROVE_TO_PROCEED_TO_NEXT_STAGE:
-                String nextAppStatus = processClient.saveAoScreeningApprove(appId, taskId, mohProcessDto);
-                if (nextAppStatus.equals(APP_STATUS_PEND_INSPECTION_TASK_ASSIGNMENT)) {
+                String nextAppStatus = processClient.saveAOScreeningApprove(appId, taskId, mohProcessDto);
+                if (nextAppStatus.equals(APP_STATUS_PEND_INSPECTION_CERTIFICATION)) {
                     ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_APPLICANT);
                 } else if (nextAppStatus.equals(APP_STATUS_PEND_DO_RECOMMENDATION)) {
                     ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_DO);
@@ -83,15 +79,15 @@ public class MohAOScreeningDelegator {
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(nextAppStatus));
                 break;
             case MOH_PROCESS_DECISION_REJECT:
-                processClient.saveAoScreeningReject(appId, taskId, mohProcessDto);
+                processClient.saveAOScreeningReject(appId, taskId, mohProcessDto);
                 break;
             case MOH_PROCESS_DECISION_ROUTE_BACK_TO_DO:
-                processClient.saveAoScreeningRouteBackToDo(appId, taskId, mohProcessDto);
-                ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK,MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_DO_SCREENING));
+                processClient.saveAOScreeningRouteBackToDo(appId, taskId, mohProcessDto);
+                ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_DO_SCREENING));
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_DO);
                 break;
             case MOH_PROCESS_DECISION_ROUTE_TO_HM:
-                processClient.saveAoScreeningRouteToHm(appId, taskId, mohProcessDto);
+                processClient.saveAOScreeningRouteToHm(appId, taskId, mohProcessDto);
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_HM_DECISION));
                 ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_HM);
                 break;

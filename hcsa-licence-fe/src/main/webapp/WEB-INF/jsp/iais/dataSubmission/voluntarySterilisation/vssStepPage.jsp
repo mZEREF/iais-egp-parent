@@ -45,7 +45,7 @@
                                             </div>
                                             <div class="col-xs-12 col-md-2 text-right">
                                                 <p class="print" style="font-size: 16px;">
-                                                    <a onclick="printData()" href="javascript:void(0);"> <em class="fa fa-print"></em>Print</a>
+                                                    <label class="fa fa-print" style="color: #147aab;" onclick="printData()"></label> <a onclick="printData()" href="javascript:void(0);">Print</a>
                                                 </p>
                                             </div>
                                         </div>

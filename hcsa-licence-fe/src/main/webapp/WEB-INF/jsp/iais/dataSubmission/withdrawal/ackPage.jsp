@@ -30,7 +30,7 @@
             <div style="margin-top:-30px;">
                 <div class="col-xs-12 text-right">
                     <p class="print ack-font-16">
-                        <a onclick="printData()" href="javascript:void(0);"> <em class="fa fa-print"></em>Print</a>
+                        <label class="fa fa-print" style="color: #147aab;" onclick="printData()"></label> <a onclick="printData()" href="javascript:void(0);">Print</a>
                     </p>
                 </div>
                 <label class="col-xs-12" style="font-size: 20px">Withdrawal Successful</label>

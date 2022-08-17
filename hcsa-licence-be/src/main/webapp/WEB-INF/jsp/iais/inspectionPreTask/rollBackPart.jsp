@@ -1,7 +1,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <iais:row id="rollBackToRow">
-    <label id="rollBackToLabel" class="col-md-4 control-label">Stage to Reset to <span style="color: red"> *</span>
+    <label id="rollBackToLabel" class="col-md-4 control-label">Stage to Reset To <span style="color: red"> *</span>
         <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
            title='<iais:message key="INSPE_ACK003"/>'
            style="z-index: 10"

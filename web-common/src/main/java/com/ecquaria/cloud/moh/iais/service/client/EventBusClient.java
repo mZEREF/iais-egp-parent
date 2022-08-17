@@ -36,4 +36,7 @@ public interface EventBusClient {
 
     @GetMapping(value = "/submission/submissionstatus/{submissionId}/{operation}")
     FeignResponseEntity<GetSubmissionStatusResp> getSubmissionStatus(@PathVariable("submissionId") String submissionId, @PathVariable("operation") String operation);
+
+    @GetMapping(value = "/callbackTracking/pending")
+    FeignResponseEntity<List<EventCallbackTrackDto>> getPendingCallbackTracking();
 }

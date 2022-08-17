@@ -49,6 +49,14 @@ $(function () {
         $("#sourceFacilityDiv" + idx).show();
     });
 
+    $("input[data-custom-ind=batProcurementModePurchaseFromLocalSupplier]").click(function () {
+        var id = $(this).attr("id");
+        var idx = id.substring('procurementModePurchaseFromLocalSupplier'.length, id.length);
+        $("#transferringFacilityDiv" + idx).hide();
+        $("#exportingFacilityDiv" + idx).hide();
+        $("#sourceFacilityDiv" + idx).hide();
+    });
+
 
     $("#localTransferRetrieveAddressBtn").click(function retrieveAddress() {
         var idx = $(this).attr("data-current-idx");

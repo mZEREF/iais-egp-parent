@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.sz.commons.util.DateUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -115,7 +116,7 @@ public class DocumentAjaxController {
 
                 // remove sensitive data
                 internalDocDto.setSubmitBy(null);
-
+                internalDocDto.setDocType(MasterCodeUtil.getCodeDesc(docType));
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode rootNode = mapper.valueToTree(internalDocDto);
                 ObjectNode rootObjectNode = (ObjectNode) rootNode;

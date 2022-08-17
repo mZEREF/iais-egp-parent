@@ -42,7 +42,7 @@
                         <label class="control-label">Weekly</label>
                     </div>
                     <div class="col-md-6">
-                        <div class="col-md-4 col-xs-4 input-padding hidden-xs">
+                        <div class="col-md-4 col-xs-4 input-padding hidden-xs" style="padding-left: 0;">
                             <label class="control-label">Start</label>
                         </div>
                         <div class="col-md-4 col-xs-4 input-padding hidden-xs">

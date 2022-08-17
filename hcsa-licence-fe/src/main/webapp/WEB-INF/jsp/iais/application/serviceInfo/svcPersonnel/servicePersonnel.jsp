@@ -11,11 +11,18 @@
 <%--<input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>--%>
 
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
-<input type="hidden" id="isEditHiddenVal" class="person-content-edit" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
-
+<input type="hidden" id="isEditHiddenVal" class="person-content-edit" name="isEdit"
+       value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
+<style>
+    .addDpoDiv{
+        margin-bottom: 20px;
+    }
+    .panel-main-content{
+        margin-top: 20px;
+    }
+</style>
 
 <div class="row form-horizontal">
-
     <input type="hidden" id="curr" name="currentSvcCode" value="${currentSvcCode}"/>
     <c:choose>
         <c:when test="${'BLB' ==currentSvcCode}">
@@ -33,7 +40,6 @@
                 requirements at all times</h4>
         </c:when>
     </c:choose>
-    <%--    </div>--%>
     <iais:row>
         <div class="col-xs-12">
             <p><span class="error-msg" name="iaisErrorMSg" id="error_psnMandatory"></span></p>
@@ -57,56 +63,51 @@
             </c:if>
         </c:if>
     </div>
-
     <input type="hidden" name="prsFlag" value="${prsFlag}"/>
-
-
-
     <c:set var="arPractitionerCount" value="${svcPersonnelDto.arPractitionerCount}"/>
     <c:set var="nurseCount" value="${svcPersonnelDto.nurseCount}"/>
     <c:set var="embryologistMinCount" value="${svcPersonnelDto.embryologistMinCount}"/>
     <c:set var="specialCount" value="${svcPersonnelDto.specialCount}"/>
     <c:set var="normalCount" value="${svcPersonnelDto.normalCount}"/>
-
-
     <c:if test="${arPractitionerCount != 0}">
-    <div class="panel-main-content">
-        <c:forEach begin="0" end="${arPractitionerCount - 1}" step="1" varStatus="status">
-            <c:set value="SP002" var="logo"/>
-            <c:set var="index" value="${status.index}"/>
-            <c:set var="appSvcPersonnelDto" value="${svcPersonnelDto.arPractitionerList[index]}"/>
-            <%@include file="servicePersonnelArDetail.jsp" %>
-        </c:forEach>
+        <div class="panel-main-content">
+            <iais:row>
+                <div class="col-xs-12">
+                    <p class="app-title" ><c:out value="Service Personnel"/></p>
+                </div>
+            </iais:row>
+            <c:forEach begin="0" end="${arPractitionerCount - 1}" step="1" varStatus="status">
+                <c:set value="SP002" var="logo"/>
+                <c:set var="index" value="${status.index}"/>
+                <c:set var="appSvcPersonnelDto" value="${svcPersonnelDto.arPractitionerList[index]}"/>
+                <%@include file="servicePersonnelArDetail.jsp" %>
+            </c:forEach>
 
-        <div class="form-group col-md-12 col-xs-12 addDpoDiv">
+            <div class="form-group col-md-12 col-xs-12 addDpoDiv">
          <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">
          <span style="">+ Add Another AR Practitioner</span>
          </span>
+            </div>
+            <div class="form-group col-md-12 col-xs-12 addDpoDiv">
+                <span style="">Total Number of AR Practitioner</span>
+            </div>
         </div>
-        <div class="form-group col-md-12 col-xs-12 addDpoDiv">
-         <span style="">+ Add Another AR Practitioner</span>
-        </div>
-
-    </div>
-
     </c:if>
 
     <c:if test="${nurseCount != 0}">
-    <div class="panel-main-content">
-        <c:forEach begin="0" end="${nurseCount - 1}" step="1" varStatus="status">
-            <c:set value="SP003" var="logo"/>
-            <c:set var="index" value="${status.index}"/>
-            <c:set var="appSvcPersonnelDto" value="${svcPersonnelDto.nurseList[index]}"/>
-            <%@include file="servicePersonnelNurse.jsp" %>
-        </c:forEach>
-
-        <div class="form-group col-md-12 col-xs-12 addDpoDiv">
-         <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">
-         <span style="">+ Add Another Nurse</span>
-         </span>
-        </div>
-
-            <div class="contents">
+        <div class="panel-main-content">
+            <c:forEach begin="0" end="${nurseCount - 1}" step="1" varStatus="status">
+                <c:set value="SP003" var="logo"/>
+                <c:set var="index" value="${status.index}"/>
+                <c:set var="appSvcPersonnelDto" value="${svcPersonnelDto.nurseList[index]}"/>
+                <%@include file="servicePersonnelNurse.jsp" %>
+            </c:forEach>
+         <div class="col-md-12 col-xs-12 addDpoDiv">
+             <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">
+                 <span style="">+ Add Another Nurse</span>
+             </span>
+         </div>
+            <div>
                 <div class="file-upload-gp nonHcsaRowDiv">
                 <span><a href="${pageContext.request.contextPath}/co-non-hcsa-template2"
                          style="text-decoration: none;color:deepskyblue;cursor:pointer;">
@@ -122,29 +123,23 @@
                 </div>
             </div>
             <div id="selectFileDiv"></div>
-
-    </div>
-
+        </div>
     </c:if>
-
     <c:if test="${embryologistMinCount != 0}">
-    <div class="panel-main-content">
-        <c:forEach begin="0" end="${embryologistMinCount - 1}" step="1" varStatus="status">
-            <c:set value="SP001" var="logo"/>
-            <c:set var="index" value="${status.index}"/>
-            <c:set var="appSvcPersonnelDto" value="${svcPersonnelDto.embryologistList[index]}"/>
-            <%@include file="servicePersonnelEmbryologist.jsp" %>
-        </c:forEach>
-
-        <div class="form-group col-md-12 col-xs-12 addDpoDiv">
+        <div class="panel-main-content">
+            <c:forEach begin="0" end="${embryologistMinCount - 1}" step="1" varStatus="status">
+                <c:set value="SP001" var="logo"/>
+                <c:set var="index" value="${status.index}"/>
+                <c:set var="appSvcPersonnelDto" value="${svcPersonnelDto.embryologistList[index]}"/>
+                <%@include file="servicePersonnelEmbryologist.jsp" %>
+            </c:forEach>
+            <div class="form-group col-md-12 col-xs-12 addDpoDiv">
          <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">
          <span style="">+ Add Another Embryologist </span>
          </span>
+            </div>
         </div>
-
-    </div>
     </c:if>
-
 
 
     <c:if test="${specialCount != 0}">
@@ -154,29 +149,26 @@
             <c:set var="appSvcPersonnelDto" value="${svcPersonnelDto.specialList[index]}"/>
             <%@include file="servicePersonnelDetail.jsp" %>
         </c:forEach>
-
         <div class="form-group col-md-12 col-xs-12" id="addPsnDiv">
          <span class="addSpecialListBtn" style="color:deepskyblue;cursor:pointer;">
          <span style="">+ Add Another Service Personnel</span>
          </span>
         </div>
     </c:if>
-
-
     <c:if test="${normalCount != 0}">
-    <div class="panel-main-content">
-        <c:forEach begin="0" end="${normalCount - 1}" step="1" varStatus="status">
-            <c:set value="SP999" var="logo"/>
-            <c:set var="index" value="${status.index}"/>
-            <c:set var="appSvcPersonnelDto" value="${svcPersonnelDto.normalList[index]}"/>
-            <%@include file="servicePersonnelBlood.jsp" %>
-        </c:forEach>
-        <div class="form-group col-md-12 col-xs-12 addDpoDiv">
+        <div class="panel-main-content">
+            <c:forEach begin="0" end="${normalCount - 1}" step="1" varStatus="status">
+                <c:set value="SP999" var="logo"/>
+                <c:set var="index" value="${status.index}"/>
+                <c:set var="appSvcPersonnelDto" value="${svcPersonnelDto.normalList[index]}"/>
+                <%@include file="servicePersonnelBlood.jsp" %>
+            </c:forEach>
+            <div class="form-group col-md-12 col-xs-12 addDpoDiv">
          <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">
          <span style="">+ Add Another Service Personnel</span>
          </span>
+            </div>
         </div>
-    </div>
     </c:if>
 </div>
 <%@include file="servicePersonnelOthers.jsp" %>

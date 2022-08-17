@@ -103,6 +103,7 @@
                 $eleLabel.attr('for', baseId + index);
             }
         }
+        refreshLabel($ele, index);
     }
 
     var addMoreEvent = function () {
@@ -134,6 +135,27 @@
         });
     }
 
+    function refreshLabel($tag, index) {
+        if (isEmptyNode($tag)) {
+            return;
+        }
+        let $targetLabel = $tag.closest('.item-record').find('.item-label');
+        if (isEmptyNode($targetLabel)) {
+            return;
+        }
+        let part = $targetLabel.data('label');
+        if (isEmpty(part)) {
+            return;
+        }
+        let newVal = toRomanNum(index + 1, true) + part;
+        let $span = $targetLabel.find('span');
+        if ($span.length > 0) {
+            $targetLabel.html(newVal + "&nbsp;" + $span.prop('outerHTML'));
+        } else {
+            $targetLabel.html(newVal);
+        }
+    }
+
     var checkItemEvent = function () {
         var $target = $('.item-record [data-curr]');
         $target.unbind('click change blur');
@@ -151,12 +173,16 @@
         }
         let seq = $tag.data('seq');
         let curr = $tag.data('curr');
-        let $conNodes = $('[data-conditionitemid="' + curr + '"][data-seq="' + seq + '"]');
+        let $conNodes = $('[data-condition="' + curr + '"][data-seq="' + seq + '"]');
         let currVal = getValue($tag);
         if (!isEmptyNode($conNodes)) {
             let ary = isEmpty(currVal) ? [] : currVal.split('#');
             $conNodes.each(function () {
                 let $v = $(this);
+                let mandatory = $v.data('mandatory');
+                if ('2' !== mandatory) {
+                    return;
+                }
                 let $targetLabel = $v.closest('.item-record').find('.item-label');
                 if (isEmptyNode($targetLabel)) {
                     return;
@@ -183,7 +209,7 @@
         if (isEmptyNode($tag)) {
             return;
         }
-        let targetId = $tag.data('conditionitemid');
+        let targetId = $tag.data('condition');
         if (isEmpty(targetId)) {
             return;
         }
@@ -202,7 +228,7 @@
         }
         let seq = $tag.data('seq');
         let curr = $tag.data('curr');
-        let $conNodes = $('[data-conditionitemid="' + curr + '"][data-seq="' + seq + '"]');
+        let $conNodes = $('[data-condition="' + curr + '"][data-seq="' + seq + '"]');
         let total = 0;
         if (!isEmptyNode($conNodes)) {
             // calculate total
@@ -236,40 +262,23 @@
         return total;
     }
 
-    /*function getValue(target) {
-        var $target = getJqueryNode(target);
-        if (isEmptyNode($target)) {
-            return null;
+    function toRomanNum(i, withLower) {
+        if (isNaN(i)) {
+            return "";
         }
-        if ($target.is(":input")) {
-            let type = $target[0].type;
-            if (type == 'radio') {
-                let name = $target.attr('name');
-                if (!isEmpty(name)) {
-                    let newTag = $('[name="' + name + '"]');
-                    if (newTag.length > 0) {
-                        $target = newTag;
-                    }
-                }
-                return $target.filter(':checked').val();
-            } else if (type == 'checkbox') {
-                let chk_value = [];
-                let name = $target.attr('name');
-                if (!isEmpty(name)) {
-                    let newTag = $('[name="' + name + '"]');
-                    if (newTag.length > 0) {
-                        $target = newTag;
-                    }
-                }
-                $target.filter(':checked').each(function () {
-                    chk_value.push($(this).val());
-                });
-                return chk_value.join("#");
-            } else {
-                return $target.val();
-            }
-        } else {
-            return null;
+        let num = Number(i);
+        if (num < 1 || num > 5999) {
+            return "";
         }
-    }*/
+        const RN_I = ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"];
+        const RN_X = ["", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"];
+        const RN_C = ["", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"];
+        const RN_M = ["", "M", "MM", "MMM", "MMMM", "MMMMM"];
+        let result = RN_M[parseInt(num / 1000)] + RN_C[parseInt(num % 1000 / 100)] + RN_X[parseInt(num % 100 / 10)] + RN_I[num % 10];
+        if (withLower) {
+            result = result.toLowerCase();
+        }
+        return result;
+    }
+
 </script>

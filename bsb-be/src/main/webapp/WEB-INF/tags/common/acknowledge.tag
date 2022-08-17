@@ -29,7 +29,7 @@
                                         <span>You have successfully completed your task -- <c:out value="${task}"/></span>
                                     </h2>
                                     <c:choose>
-                                        <c:when test="${nextTask ne null}">
+                                        <c:when test="${nextTask ne null && nextTask ne ''}">
                                             <h3>Next stage is <c:out value="${nextTask}"/>, handled by ${nextRole}</h3>
                                         </c:when>
                                         <c:otherwise>

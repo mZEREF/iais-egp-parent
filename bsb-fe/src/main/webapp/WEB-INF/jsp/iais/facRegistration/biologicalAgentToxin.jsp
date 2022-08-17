@@ -2,6 +2,7 @@
 <%@taglib prefix="fac" tagdir="/WEB-INF/tags/facility" %>
 <%@page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
 <%--@elvariable id="batInfo" type="sg.gov.moh.iais.egp.bsb.dto.register.bat.BiologicalAgentToxinDto"--%>
+<%--@elvariable id="facProfile" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileInfo"--%>
 <%--@elvariable id="addressTypeOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
 <%--@elvariable id="nationalityOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
 <%--@elvariable id="activeNodeKey" type="java.lang.String"--%>
@@ -11,7 +12,8 @@
 <%--@elvariable id="scheduleOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
 <fac:biologicalAgentToxin batInfos="${batInfo.batInfos}" addressTypeOps="${addressTypeOps}" nationalityOps="${nationalityOps}" activeNodeKey="${activeNodeKey}"
                           activityTypes="${activityTypes}" firstScheduleOp="${firstScheduleOp}" scheduleBatMap="${scheduleBatMap}" scheduleOps="${scheduleOps}"
-                          lspJudge="${MasterCodeConstants.ACTIVITY_LSP_FIRST_THIRD_SCHEDULE eq activeNodeKey}">
+                          facProfile="${facProfile}" lspJudge="${MasterCodeConstants.ACTIVITY_LSP_FIRST_THIRD_SCHEDULE eq activeNodeKey}"
+                          spFifthJudge="${MasterCodeConstants.ACTIVITY_SP_HANDLE_FIFTH_SCHEDULE_EXEMPTED eq activeNodeKey}" >
     <jsp:attribute name="specialJsFrag">
         <iais-bsb:single-constant constantName="WEB_ROOT" classFullName="sg.gov.moh.iais.egp.bsb.constant.GlobalConstants" attributeKey="webroot"/>
         <%--@elvariable id="webroot" type="java.lang.String"--%>

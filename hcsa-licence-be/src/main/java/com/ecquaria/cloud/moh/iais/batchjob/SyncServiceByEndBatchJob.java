@@ -1,19 +1,12 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.job.executor.log.JobLogger;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import java.util.List;
 
 /**
  * @author Shicheng
@@ -25,6 +18,9 @@ public class SyncServiceByEndBatchJob {
 
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
+
+    @Autowired
+    private SyncServiceByEndJobHandler syncServiceByEndJobHandler;
 
     /**
      * StartStep: syncServiceByEndStart
@@ -45,8 +41,9 @@ public class SyncServiceByEndBatchJob {
      */
     public void syncServiceByEndDo(BaseProcessClass bpc){
         logAbout("syncServiceByEndBatchJob");
+        syncServiceByEndJobHandler.doExecute("serviceConfig");
         //get expire Service By End Date
-        List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigClient.getNeedInActiveServices(AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+        /*List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigClient.getNeedInActiveServices(AppConsts.COMMON_STATUS_ACTIVE).getEntity();
         if(!IaisCommonUtils.isEmpty(hcsaServiceDtos)){
             List<HcsaServiceDto> updateServiceList = IaisCommonUtils.genNewArrayList();
             for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtos){
@@ -87,7 +84,7 @@ public class SyncServiceByEndBatchJob {
             HcsaServiceCacheHelper.flushServiceMapping();
         } else {
             log.info(StringUtil.changeForLog("hcsaServiceDtoList is Null"));
-        }
+        }*/
     }
 
     private void logAbout(String methodName){

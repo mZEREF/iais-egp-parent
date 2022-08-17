@@ -1429,7 +1429,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         }
 
         if (arSuper != null) {
-            if(arSuper.getDataSubmissionDto().getCycleStage().equals(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY)){
+            if(arSuper.getDataSubmissionDto().getCycleStage().equals(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED)){
                 List<List<String>> defectTypesArray = IaisCommonUtils.genNewArrayList();
                 List<String> otherDefectTypes = IaisCommonUtils.genNewArrayList();
                 List<PregnancyOutcomeBabyDto> pregnancyOutcomeBabyDtos = arSuper.getPregnancyOutcomeStageDto().getPregnancyOutcomeBabyDtos();

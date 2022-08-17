@@ -745,6 +745,41 @@
                                                 </div>
                                             </div>
                                             </c:if>
+                                            <c:if test="${'BMOP003' eq info.details.procurementMode}">
+                                                <c:set var="firstProfile" value="${facProfile.firstProfile()}" />
+                                                <%--@elvariable id="firstProfile" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileInfo"--%>
+                                                <div id="sourceFacilityDetailsInfo">
+                                                    <div class="form-group">
+                                                        <label class="col-xs-6 control-label" style="font-weight: bold">Details of Source Facility</label>
+                                                        <div class="clear"></div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-xs-6 control-label">Facility Name</label>
+                                                        <div class="col-xs-6"><p><c:out value="${firstProfile.facName}"/></p></div>
+                                                        <div class="clear"></div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-xs-6 control-label">Block No.</label>
+                                                        <div class="col-xs-6"><p><c:out value="${firstProfile.block}"/></p></div>
+                                                        <div class="clear"></div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-xs-6 control-label">Floor & Unit</label>
+                                                        <div class="col-xs-6"><p><c:out value="${firstProfile.floor} - ${firstProfile.unitNo}"/></p></div>
+                                                        <div class="clear"></div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-xs-6 control-label">Street</label>
+                                                        <div class="col-xs-6"><p><c:out value="${firstProfile.streetName}"/></p></div>
+                                                        <div class="clear"></div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-xs-6 control-label">Postal Code</label>
+                                                        <div class="col-xs-6"><p><c:out value="${firstProfile.postalCode}"/></p></div>
+                                                        <div class="clear"></div>
+                                                    </div>
+                                                </div>
+                                            </c:if>
                                         </div>
                                     </c:forEach>
                                 </div>

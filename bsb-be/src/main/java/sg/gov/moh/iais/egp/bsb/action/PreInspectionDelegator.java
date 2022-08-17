@@ -30,12 +30,12 @@ import sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.SubmissionDetailsInfo;
 import sg.gov.moh.iais.egp.bsb.dto.rfi.RfiProcessDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.service.AppViewService;
+import sg.gov.moh.iais.egp.bsb.service.RfiService;
 import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -66,12 +66,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_INTERNAL_DOC_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_VALID;
-import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.CHECK_BOX_BAT_SELECT;
-import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.CHECK_BOX_DOC_SELECT;
-import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.CHECK_BOX_FAC_SELECT;
-import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.CLOSE_PAGE;
-import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_TRUE;
-import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.RFI_SELECT_MAP;
+import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.KEY_RFI_PROCESS_DTO;
 
 
 @Slf4j
@@ -79,14 +74,16 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.RfiConstants.RFI_SELECT_MA
 public class PreInspectionDelegator {
     private final InspectionClient inspectionClient;
     private final AppViewService appViewService;
+    private final RfiService rfiService;
 
     private static final String RFI_APPLICATION = "AppPreInspRfiCheck";
     private static final String RFI_SELF = "SelfPreInspRfiCheck";
 
     @Autowired
-    public PreInspectionDelegator(InspectionClient inspectionClient, AppViewService appViewService) {
+    public PreInspectionDelegator(InspectionClient inspectionClient, AppViewService appViewService, RfiService rfiService) {
         this.inspectionClient = inspectionClient;
         this.appViewService = appViewService;
+        this.rfiService = rfiService;
     }
 
 
@@ -102,7 +99,7 @@ public class PreInspectionDelegator {
         session.removeAttribute(RFI_APPLICATION);
         session.removeAttribute(RFI_SELF);
         session.removeAttribute(KEY_ADHOC_CHECKLIST_LIST_ATTR);
-        session.removeAttribute(RFI_SELECT_MAP);
+        session.removeAttribute(KEY_RFI_PROCESS_DTO);
     }
 
     public void prepareData(BaseProcessClass bpc) {
@@ -225,9 +222,7 @@ public class PreInspectionDelegator {
         int rfiFlag = getRfiFlag(request);
         InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
 
-        Map<String, Boolean> rfiSelectMap = (Map<String, Boolean>) ParamUtil.getSessionAttr(request, RFI_SELECT_MAP);
-        RfiProcessDto rfiProcessDto = new RfiProcessDto();
-        rfiProcessDto.setRfiSelectMap(rfiSelectMap);
+        RfiProcessDto rfiProcessDto = (RfiProcessDto) ParamUtil.getSessionAttr(request, KEY_RFI_PROCESS_DTO);
 
         RfiPreInspectionDto rfiPreInspectionDto = new RfiPreInspectionDto();
         rfiPreInspectionDto.setInsProcessDto(processDto);
@@ -256,16 +251,7 @@ public class PreInspectionDelegator {
     }
 
     public void doApplicationRfi(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        Map<String, Boolean> rfiSelectMap = Maps.newHashMapWithExpectedSize(3);
-        String facSelect = ParamUtil.getString(request, CHECK_BOX_FAC_SELECT);
-        String batSelect = ParamUtil.getString(request, CHECK_BOX_BAT_SELECT);
-        String docSelect = ParamUtil.getString(request, CHECK_BOX_DOC_SELECT);
-        rfiSelectMap.put(CHECK_BOX_FAC_SELECT, facSelect != null && facSelect.equals(KEY_TRUE));
-        rfiSelectMap.put(CHECK_BOX_BAT_SELECT, batSelect != null && batSelect.equals(KEY_TRUE));
-        rfiSelectMap.put(CHECK_BOX_DOC_SELECT, docSelect != null && docSelect.equals(KEY_TRUE));
-        ParamUtil.setSessionAttr(request, RFI_SELECT_MAP, (Serializable) rfiSelectMap);
-        ParamUtil.setRequestAttr(request, CLOSE_PAGE, true);
+        rfiService.doNewFacilityRfi(bpc.request);
     }
 
     private Map<String, String> validateRfi(HttpServletRequest request, InsProcessDto processDto) {

@@ -4,7 +4,6 @@
     <label class="app-title">${currStepName}</label>
     <div class="amend-preview-info form-horizontal min-row">
         <c:forEach var="sectionLeader" items="${currentPreviewSvcInfo.appSvcSectionLeaderList}" varStatus="status">
-
             <iais:row>
                 <iais:field width="5" mandatory="true" value="Name" cssClass="col-md-5 control-font-label"/>
                 <iais:value width="3" cssClass="col-md-3">
@@ -21,7 +20,8 @@
                 </iais:value>
             </iais:row>
             <iais:row>
-                <iais:field width="5" mandatory="true" value="Working Experience (in terms of years)" cssClass="col-md-5 control-font-label"/>
+                <iais:field width="5" mandatory="true" value="Working Experience (in terms of years)"
+                            cssClass="col-md-5 control-font-label"/>
                 <iais:value width="7" cssClass="col-md-7">
                     <c:out value="${sectionLeader.wrkExpYear}"/>
                 </iais:value>

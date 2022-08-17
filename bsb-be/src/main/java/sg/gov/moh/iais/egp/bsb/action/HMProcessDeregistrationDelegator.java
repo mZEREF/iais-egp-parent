@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_DEREGISTRATION;
-import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.FUNCTION_HM_PROCESSING;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_INTERNAL_DOC_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_TAB_DOCUMENT_SUPPORT_DOC_LIST;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_VALIDATION_ERRORS;
@@ -37,10 +36,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ProcessDeregistrationConst
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.PARAM_NAME_TASK_ID;
 
-/**
- * @author : LiRan
- * @date : 2022/1/20
- */
+
 @Slf4j
 @Delegator(value = "hmProcessDeregistrationDelegator")
 public class HMProcessDeregistrationDelegator {
@@ -67,7 +63,7 @@ public class HMProcessDeregistrationDelegator {
         request.getSession().removeAttribute(KEY_HM_PROCESS_DTO);
         request.getSession().removeAttribute("applicationDocRepoIdNameMap");
         MaskHelper.taskProcessUnmask(request, PARAM_NAME_APP_ID, PARAM_NAME_TASK_ID);
-        AuditTrailHelper.auditFunction(MODULE_DEREGISTRATION, FUNCTION_HM_PROCESSING);
+        AuditTrailHelper.auditFunction(MODULE_DEREGISTRATION, "");
     }
 
     public void prepareData(BaseProcessClass bpc) {
@@ -76,10 +72,6 @@ public class HMProcessDeregistrationDelegator {
         HMProcessDto hmProcessDto = processDeregistrationService.getHMProcessDto(request, appId);
         ParamUtil.setSessionAttr(request, KEY_HM_PROCESS_DTO, hmProcessDto);
         ParamUtil.setRequestAttr(request, KEY_SUBMISSION_DETAILS_DTO, hmProcessDto.getSubmissionDetailsDto());
-        // view application need appId and moduleType
-//        String moduleType = AppViewService.judgeProcessAppModuleType(hmProcessDto.getSubmissionDetailsDto().getProcessType(), hmProcessDto.getSubmissionDetailsDto().getApplicationType());
-//        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_ID, appId);
-//        ParamUtil.setRequestAttr(request, AppViewConstants.MASK_PARAM_APP_VIEW_MODULE_TYPE, moduleType);
         //show routingHistory list
         processHistoryService.getAndSetHistoryInRequest(hmProcessDto.getSubmissionDetailsDto().getApplicationNo(), request);
         //show internal doc

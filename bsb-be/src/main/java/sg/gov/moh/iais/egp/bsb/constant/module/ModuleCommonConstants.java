@@ -42,6 +42,9 @@ public class ModuleCommonConstants {
     public static final String KEY_ROUTING_HISTORY_LIST             = "routingHistoryList";
     public static final String KEY_SELECT_ROUTE_TO_MOH              = "selectRouteToMoh";
     public static final String KEY_PREVIOUS_OFFICER_NOTE            = "prevOfficerNote";
+    public static final String KEY_RF_FACILITY_DETAILS_INFO         = "rfFacilityDetailsInfo";
+    public static final String KEY_RF_BAT_LIST                      = "rfBATList";
+    public static final String KEY_RF_FACILITY_LIST                 = "rfFacilityList";
 
     public static final String KEY_CAN_NOT_UPLOAD_DOC               = "canNotUploadInternalDoc";
 

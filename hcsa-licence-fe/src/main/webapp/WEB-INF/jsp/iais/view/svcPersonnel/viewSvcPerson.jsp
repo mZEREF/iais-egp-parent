@@ -69,40 +69,54 @@
         <c:set var="normalCount" value="0"/>
     </c:otherwise>
 </c:choose>
-
-
-
 <c:if test="${arPractitionerCount != 0}">
     <div class="panel-main-content">
+        <div>
+            <iais:value width="7" cssClass="col-md-12">
+            <strong>
+                <c:out value="AR Practitioner "/>
+            </strong>
+        </iais:value>
+        </div>
+
         <c:forEach begin="0" end="${arPractitionerCount - 1}" step="1" varStatus="status">
             <c:set var="index" value="${status.index}"/>
             <c:set var="appSvcPersonnelDto" value="${currentPreviewSvcInfo.svcPersonnelDto.arPractitionerList[index]}"/>
             <%@include file="servicePersonnelArDetail.jsp" %>
         </c:forEach>
     </div>
-    </div>
 
 </c:if>
 
 <c:if test="${nurseCount != 0}">
     <div class="panel-main-content">
+        <iais:value width="7" cssClass="col-md-12">
+            <strong>
+                <c:out value="Nurse"/>
+            </strong>
+        </iais:value>
+
         <c:forEach begin="0" end="${nurseCount - 1}" step="1" varStatus="status">
             <c:set var="index" value="${status.index}"/>
             <c:set var="appSvcPersonnelDto" value="${currentPreviewSvcInfo.svcPersonnelDto.nurseList[index]}"/>
             <%@include file="servicePersonnelNurse.jsp" %>
         </c:forEach>
     </div>
-    </div>
 </c:if>
 
 <c:if test="${embryologistMinCount != 0}">
     <div class="panel-main-content">
+        <iais:value width="7" cssClass="col-md-12">
+            <strong>
+                <c:out value="Embryologist "/>
+            </strong>
+        </iais:value>
+
         <c:forEach begin="0" end="${embryologistMinCount - 1}" step="1" varStatus="status">
             <c:set var="index" value="${status.index}"/>
             <c:set var="appSvcPersonnelDto" value="${currentPreviewSvcInfo.svcPersonnelDto.embryologistList[index]}"/>
             <%@include file="servicePersonnelEmbryologist.jsp" %>
         </c:forEach>
-    </div>
     </div>
 </c:if>
 
@@ -125,10 +139,5 @@
         </c:forEach>
     </div>
 </c:if>
-
-
-
 </div>
-
-
 </div>

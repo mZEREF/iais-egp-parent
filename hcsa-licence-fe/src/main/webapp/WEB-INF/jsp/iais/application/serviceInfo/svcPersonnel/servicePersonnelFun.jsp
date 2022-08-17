@@ -69,8 +69,9 @@
             })
 
         });
-
     }
+
+
 
     function disablePersonnel($currContent, flag, needControlName) {
         if (flag) {
@@ -96,7 +97,6 @@
             }
         }
     }
-
 
     var absencePsnSel = function (val, $Ele) {
         $('.svcPsnSel').addClass('hidden');
@@ -219,26 +219,17 @@
 
 
     function addPersonnels(target) {
-
         var $target = $(target);
         if (isEmptyNode($target)) {
             return;
         }
         showWaiting();
-
         var $tgt = $(target).find('div.personnel-content').last();
-
         var locateWtihNonHcsa = $tgt.find('input.locateWtihNonHcsa:checked').val();
-
         var src = $tgt.clone();
         $tgt.after(src);
-
-        console.log('add',111)
-
         fillValue($tgt.find('input.locateWtihNonHcsa'), locateWtihNonHcsa);
-
         var $currContent = $(target).find('div.personnel-content').last();
-
         $currContent.find('.date_picker').datepicker({
             format:"dd/mm/yyyy",
             autoclose:true,
@@ -246,24 +237,14 @@
             orientation:'bottom'
         });
         clearFields($currContent);
-        // $currContent.find('.speciality').html('');
-        // $currContent.find('.subSpeciality').html('');
-        // $currContent.find('.othersubSpeciality').html('');
-        // $currContent.find('.qualification').html('');
-        // $currContent.find('.typeOfCurrRegi').html('');
-        // $currContent.find('.typeOfRegister').html('');
         $currContent.find('.speciality').html('');
         $currContent.find('.subSpeciality').html('');
         $currContent.find('.othersubSpeciality').html('');
         $currContent.find('.qualification').html('');
         refreshIndex($currContent, $(target).find('div.personnel-content').length - 1);
-
-        disablePersonnel($currContent, false,true);
-
         $(target).find('div.personnel-content').first().find('.assign-psn-item').html('1');
-
+        disablePersonnel($currContent, false,true);
         removePersonEvent();
-
         profRegNoEvent($currContent);
 
         var length =  $target.find('div.personnel-content').length;

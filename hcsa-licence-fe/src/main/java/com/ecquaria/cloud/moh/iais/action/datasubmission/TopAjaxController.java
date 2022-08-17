@@ -106,7 +106,7 @@ public class TopAjaxController {
         boolean b1 = PreTerminationValidator.validateDate(counsellingGiven);
         if (b && b1) {
             int age = -Formatter.compareDateByDay(birthDate, counsellingGiven) / 365;
-            int ageNew=-(Formatter.compareDateByDay(birthDate, counsellingGiven)+age/4+1) / 365;
+            int ageNew=-(Formatter.compareDateByDay(birthDate, counsellingGiven)+age/4) / 365;
             PreTerminationDto preTerminationDto = new PreTerminationDto();
             preTerminationDto.setCounsellingAge(ageNew);
             result.put("selection", preTerminationDto);
@@ -149,7 +149,7 @@ public class TopAjaxController {
         if(StringUtil.isNotEmpty(counsellingGivenDate)){
             try {
                 int counsellingAge = -Formatter.compareDateByDay(birthDate,counsellingGivenDate)/365;
-                int ageNew=-(Formatter.compareDateByDay(birthDate,counsellingGivenDate)+counsellingAge/4+1) / 365;
+                int ageNew=-(Formatter.compareDateByDay(birthDate,counsellingGivenDate)+counsellingAge/4) / 365;
 
                 if(!StringUtil.isEmpty(ageNew)){
                     if(ageNew<16){

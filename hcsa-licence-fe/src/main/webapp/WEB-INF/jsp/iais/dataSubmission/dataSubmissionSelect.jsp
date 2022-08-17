@@ -92,7 +92,7 @@
                                     <a onclick="submit('VS')" href="javascript:void(0);">
                                         <h4>
                                             <i class="fa fa-file-text"></i>
-                                            Voluntary Sterilisation
+                                            Voluntary Sterilization
                                         </h4>
                                     </a>
                                 </div>
