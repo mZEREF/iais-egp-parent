@@ -1,14 +1,14 @@
 <c:set var="anaesthetists" value="${anaesthetistsList}"/>
-<div class="person-detail anaesthetists">
+<div class="person-detail anaesthetists  <c:if test="${'1' != provideTop}">hidden</c:if>">
     <iais:row>
         <div class="col-xs-12 col-md-10" style="padding-top: 25px;">
             <p class="bold">Name, Professional Regn. No. and Qualification of anaesthetists&nbsp;
                 <label class="assign-psn-item"><c:if test="${anaesthetistsList.size() > 1}">${index+1}</c:if></label>
             </p>
         </div>
-        <div class="col-xs-12 col-md-2 text-right removeBtn">
+        <div class="col-xs-12 col-md-2 text-right removeAnaesthetistsBtn">
             <h4 class="text-danger text-right ">
-                <em class="fa fa-times-circle text-right  text del-size-36 removeBtn cursorPointer"></em>
+                <em class="fa fa-times-circle text-right  text del-size-36 removeAnaesthetistsBtn cursorPointer"></em>
             </h4>
         </div>
     </iais:row>

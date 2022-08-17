@@ -766,10 +766,10 @@ public class ApplicationAjaxController {
         }
     }
 
-    @GetMapping(value = "/co-non-hcsa-template2")
-    public void downloadNurseTemplate(HttpServletRequest request, HttpServletResponse response) {
+    @GetMapping(value = "/co-non-hcsa-template-top")
+    public void downloadTopFromTemplate(HttpServletRequest request, HttpServletResponse response) {
         try {
-            File inputFile = ResourceUtils.getFile("classpath:template/Nurse-Upload-Template.xlsx");
+            File inputFile = ResourceUtils.getFile("classpath:template/TOP_From_II.pdf");
             if (!inputFile.exists() || !inputFile.isFile()) {
                 log.error("No File Template Found!");
                 return;

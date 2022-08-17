@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoAbortDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoTopDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoTopPersonDto;
@@ -1309,6 +1310,7 @@ public final class AppValidatorHelper {
                 String praCerEndDate = person.getPraCerEndDateStr();
                 String typeOfRegister = person.getTypeOfRegister();
                 String otherQualification = person.getOtherQualification();
+                String holdCerByEMS = person.getHoldCerByEMS();
                 if (StringUtil.isIn(psnType, new String[]{ApplicationConsts.PERSONNEL_PSN_TYPE_CGO})) {
                     if (StringUtil.isEmpty(professionType)) {
                         errMap.put(prefix + "professionType" + i,
@@ -1356,6 +1358,9 @@ public final class AppValidatorHelper {
                     if (StringUtil.isEmpty(designation)) {
                         errMap.put(prefix + "designation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation", "field"));
                     }
+                    if (StringUtil.isEmpty(holdCerByEMS)){
+                        errMap.put(prefix + "holdCerByEMS" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Clinical Governance Officer (CGO) holds a valid certification issued by an Emergency Medical Services ('EMS') Medical Directors workshop", "field"));
+                    }
                 }
 
                 if (!StringUtil.isEmpty(professionalRegoNo)) {
@@ -1391,14 +1396,7 @@ public final class AppValidatorHelper {
                 if (StringUtil.isNotEmpty(otherQualification) && otherQualification.length() > 100) {
                     errMap.put(prefix + "otherQualification" + i, repLength("Other Qualification", "100"));
                 }
-                if (StringUtil.isIn(psnType, new String[]{ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR})) {
-                    String holdCerByEMS = person.getHoldCerByEMS();
-                    if (StringUtil.isEmpty(holdCerByEMS)) {
-                        errMap.put("holdCerByEMS" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "holdCerByEMS", "field"));
-                    } else if (AppConsts.NO.equals(holdCerByEMS)) {
-                        errMap.put("holdCerByEMS" + i, MessageUtil.getMessageDesc("NEW_ERR0031"));
-                    }
-                }
+
                 String aclsExpiryDate = person.getAclsExpiryDateStr();
                 if (StringUtil.isNotEmpty(aclsExpiryDate) && aclsExpiryDate.length() > 100) {
                     errMap.put(prefix + "aclsExpiryDate" + i, repLength("Expiry Date (ACLS)", "100"));
@@ -1778,12 +1776,13 @@ public final class AppValidatorHelper {
         }
         List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos = appSvcOtherInfoDto.getAppSvcOtherInfoTopPersonDtoList();
         AppSvcOtherInfoTopDto appSvcOtherInfoTopDto = appSvcOtherInfoDto.getAppSvcOtherInfoTopDto();
-        return doValidateAppSvcOtherInfoTopPerson(appSvcOtherInfoTopPersonDtos, appSvcOtherInfoTopDto);
+        List<AppSvcOtherInfoAbortDto> appSvcOtherInfoAboutDtos =appSvcOtherInfoDto.getAppSvcOtherInfoAbortDtoList();
+        return doValidateAppSvcOtherInfoTop(appSvcOtherInfoTopPersonDtos, appSvcOtherInfoTopDto,appSvcOtherInfoAboutDtos);
     }
 
-    protected static Map<String, String> doValidateAppSvcOtherInfoTopPerson(
-            List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos, AppSvcOtherInfoTopDto appSvcOtherInfoTopDto) {
-        if (appSvcOtherInfoTopPersonDtos == null || appSvcOtherInfoTopPersonDtos.isEmpty()) {
+    protected static Map<String, String> doValidateAppSvcOtherInfoTop(
+            List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos, AppSvcOtherInfoTopDto appSvcOtherInfoTopDto, List<AppSvcOtherInfoAbortDto> appSvcOtherInfoAboutDtos) {
+        if (appSvcOtherInfoTopPersonDtos == null || appSvcOtherInfoTopPersonDtos.isEmpty() || appSvcOtherInfoTopDto == null || appSvcOtherInfoAboutDtos == null || appSvcOtherInfoAboutDtos.isEmpty()) {
             return IaisCommonUtils.genNewHashMap();
         }
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
@@ -1791,9 +1790,24 @@ public final class AppValidatorHelper {
         List<AppSvcOtherInfoTopPersonDto> anaesthetists = IaisCommonUtils.genNewArrayList();
         List<AppSvcOtherInfoTopPersonDto> nurses = IaisCommonUtils.genNewArrayList();
         List<AppSvcOtherInfoTopPersonDto> counsellors = IaisCommonUtils.genNewArrayList();
+        List<AppSvcOtherInfoAbortDto> topByDrug = IaisCommonUtils.genNewArrayList();
+        List<AppSvcOtherInfoAbortDto> topBySurgicalProcedure = IaisCommonUtils.genNewArrayList();
+        List<AppSvcOtherInfoAbortDto> topByAll = IaisCommonUtils.genNewArrayList();
         String topType = appSvcOtherInfoTopDto.getTopType();
         if (StringUtil.isEmpty(topType)) {
             errMap.put("topType", MessageUtil.replaceMessage("GENERAL_ERR0006", "Please indicate&nbsp;", "field"));
+        }
+        String isOutcomeProcRecord = String.valueOf(appSvcOtherInfoTopDto.getIsOutcomeProcRecord());
+        if (StringUtil.isEmpty(isOutcomeProcRecord)){
+            errMap.put("isOutcomeProcRecord", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                    "Outcome of procedures are recorded",
+                    "field"));
+        }
+        String compCaseNum = String.valueOf(appSvcOtherInfoTopDto.getCompCaseNum());
+        if (StringUtil.isEmpty(compCaseNum) && compCaseNum.matches("^[0-9]*[1-9][0-9]*$")){
+            errMap.put("compCaseNum", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                    "Number of cases with complications, if any",
+                    "field"));
         }
         Boolean hasConsuAttendCourse = appSvcOtherInfoTopDto.getHasConsuAttendCourse();
         if (StringUtil.isEmpty(hasConsuAttendCourse)) {
@@ -1807,12 +1821,89 @@ public final class AppValidatorHelper {
                     "The service provider has the necessary counselling facilities e.g. TV set, video player, video on abortion produced by HPB in different languages and the pamphlets produced by HPB",
                     "field"));
         }
+
+        for (int i = 0; i < appSvcOtherInfoAboutDtos.size(); i++) {
+            if ("1".equals(appSvcOtherInfoAboutDtos.get(i).getTopType())){
+                AppSvcOtherInfoAbortDto appSvcOtherInfoAboutDto = new AppSvcOtherInfoAbortDto();
+                appSvcOtherInfoAboutDto.setTopType(appSvcOtherInfoAboutDtos.get(i).getTopType());
+                appSvcOtherInfoAboutDto.setYear(appSvcOtherInfoAboutDtos.get(i).getYear());
+                appSvcOtherInfoAboutDto.setAbortNum(appSvcOtherInfoAboutDtos.get(i).getAbortNum());
+                topByDrug.add(appSvcOtherInfoAboutDto);
+            }
+            if ("0".equals(appSvcOtherInfoAboutDtos.get(i).getTopType())){
+                AppSvcOtherInfoAbortDto appSvcOtherInfoAboutDto = new AppSvcOtherInfoAbortDto();
+                appSvcOtherInfoAboutDto.setTopType(appSvcOtherInfoAboutDtos.get(i).getTopType());
+                appSvcOtherInfoAboutDto.setYear(appSvcOtherInfoAboutDtos.get(i).getYear());
+                appSvcOtherInfoAboutDto.setAbortNum(appSvcOtherInfoAboutDtos.get(i).getAbortNum());
+                topBySurgicalProcedure.add(appSvcOtherInfoAboutDto);
+            }
+            if ("-1".equals(appSvcOtherInfoAboutDtos.get(i).getTopType())){
+                AppSvcOtherInfoAbortDto appSvcOtherInfoAboutDto = new AppSvcOtherInfoAbortDto();
+                appSvcOtherInfoAboutDto.setTopType(appSvcOtherInfoAboutDtos.get(i).getTopType());
+                appSvcOtherInfoAboutDto.setYear(appSvcOtherInfoAboutDtos.get(i).getYear());
+                appSvcOtherInfoAboutDto.setAbortNum(appSvcOtherInfoAboutDtos.get(i).getAbortNum());
+                topByAll.add(appSvcOtherInfoAboutDto);
+            }
+        }
+
+        if (("1".equals(topType)) || ("-1".equals(topType))){
+            for (int i = 0; i < topByDrug.size(); i++) {
+                String year = String.valueOf(topByDrug.get(i).getYear());
+                if (StringUtil.isEmpty(year) || year.matches("^[0-9]*[1-9][0-9]*$")){
+                    errMap.put("year"+ i, MessageUtil.replaceMessage("GENERAL_ERR0006",
+                            "Year.",
+                            "field"));
+                }
+                String abortNum = String.valueOf(topByDrug.get(i).getAbortNum());
+                if (StringUtil.isEmpty(abortNum) || abortNum.matches("^[0-9]*[1-9][0-9]*$")){
+                    errMap.put("abortNum"+ i, MessageUtil.replaceMessage("GENERAL_ERR0006",
+                            "No. of abortions",
+                            "field"));
+                }
+            }
+        }
+
+        if (("0".equals(topType)) || ("-1".equals(topType))){
+            for (int i = 0; i < topBySurgicalProcedure.size(); i++) {
+                String year = String.valueOf(topBySurgicalProcedure.get(i).getYear());
+                if (StringUtil.isEmpty(year) || !year.matches("^[0-9]*[1-9][0-9]*$")){
+                    errMap.put("pyear"+ i, MessageUtil.replaceMessage("GENERAL_ERR0006",
+                            "Year.",
+                            "field"));
+                }
+                String abortNum = String.valueOf(topBySurgicalProcedure.get(i).getAbortNum());
+                if (StringUtil.isEmpty(abortNum) || !abortNum.matches("^[0-9]*[1-9][0-9]*$")){
+                    errMap.put("pabortNum"+ i, MessageUtil.replaceMessage("GENERAL_ERR0006",
+                            "No. of abortions",
+                            "field"));
+                }
+            }
+        }
+
+       if ("-1".equals(topType)){
+           for (int i = 0; i < topByAll.size(); i++) {
+               String year = String.valueOf(topByAll.get(i).getYear());
+               if (StringUtil.isEmpty(year) || year.matches("^[0-9]*[1-9][0-9]*$")){
+                   errMap.put("ayear"+ i, MessageUtil.replaceMessage("GENERAL_ERR0006",
+                           "Year.",
+                           "field"));
+               }
+               String abortNum = String.valueOf(topByAll.get(i).getAbortNum());
+               if (StringUtil.isEmpty(abortNum) || abortNum.matches("^[0-9]*[1-9][0-9]*$")){
+                   errMap.put("aabortNum"+ i, MessageUtil.replaceMessage("GENERAL_ERR0006",
+                           "No. of abortions",
+                           "field"));
+               }
+           }
+       }
+
         for (int i = 0; i < appSvcOtherInfoTopPersonDtos.size(); i++) {
             String psnType = appSvcOtherInfoTopPersonDtos.get(i).getPsnType();
             String name = appSvcOtherInfoTopPersonDtos.get(i).getName();
             String profRegNo = appSvcOtherInfoTopPersonDtos.get(i).getProfRegNo();
             String idNo = appSvcOtherInfoTopPersonDtos.get(i).getIdNo();
             String regType = appSvcOtherInfoTopPersonDtos.get(i).getRegType();
+            String specialties = appSvcOtherInfoTopPersonDtos.get(i).getSpeciality();
             String qualification = appSvcOtherInfoTopPersonDtos.get(i).getQualification();
 
             if ("practitioners".equals(psnType)) {
@@ -1824,6 +1915,7 @@ public final class AppValidatorHelper {
                 appSvcOtherInfoTopPersonDto.setQualification(qualification);
                 appSvcOtherInfoTopPersonDto.setSeqNum(i);
                 appSvcOtherInfoTopPersonDto.setIdNo(idNo);
+                appSvcOtherInfoTopPersonDto.setSpeciality(specialties);
                 appSvcOtherInfoTopPersonDto.setMedAuthByMoh(appSvcOtherInfoTopPersonDtos.get(i).isMedAuthByMoh());
                 practitioners.add(appSvcOtherInfoTopPersonDto);
             }
@@ -1862,12 +1954,14 @@ public final class AppValidatorHelper {
                 counsellors.add(appSvcOtherInfoTopPersonDto);
             }
         }
+
         for (int i = 0; i < practitioners.size(); i++) {
             String name = practitioners.get(i).getName();
             String profRegNo = practitioners.get(i).getProfRegNo();
             String idNo = practitioners.get(i).getIdNo();
             String regType = practitioners.get(i).getRegType();
             String qualification = practitioners.get(i).getQualification();
+            String specialties = practitioners.get(i).getSpeciality();
             Boolean medAuthByMoh = practitioners.get(i).isMedAuthByMoh();
 
             if (StringUtil.isEmpty(medAuthByMoh)) {
@@ -1894,6 +1988,10 @@ public final class AppValidatorHelper {
 
             if (StringUtil.isEmpty(qualification)) {
                 errMap.put("qualification" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Qualifications", "field"));
+            }
+
+            if (StringUtil.isEmpty(specialties)) {
+                errMap.put("specialties" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Specialties", "field"));
             }
         }
 
