@@ -180,7 +180,7 @@
             $conNodes.each(function () {
                 let $v = $(this);
                 let mandatory = $v.data('mandatory');
-                if ('2' !== mandatory) {
+                if ('2' != mandatory) {
                     return;
                 }
                 let $targetLabel = $v.closest('.item-record').find('.item-label');
