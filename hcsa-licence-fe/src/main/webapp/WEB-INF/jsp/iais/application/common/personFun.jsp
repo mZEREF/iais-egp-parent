@@ -275,7 +275,7 @@
         showWaiting();
         if (isEmpty(prgNo)) {
             fillPrsInfo($currContent, null, needControlName);
-            disablePrsInfo($currContent, false);
+            disablePrsInfo($currContent, false,true);
             dismissWaiting();
             if (typeof callback === 'function') {
                 callback($currContent, null);
@@ -293,6 +293,7 @@
             'success': function (data) {
                 var canFill = false;
                 if (isEmpty(data)) {
+                    console.log("data===>:",data)
                     console.log("The return data is null for PRS");
                 } else if ('-1' == data.statusCode) {
                     $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0042" escape="false" />');
@@ -311,7 +312,7 @@
                     canFill = true;
                 }
                 fillPrsInfo($currContent, canFill ? data : null, needControlName);
-                disablePrsInfo($currContent, canFill);
+                disablePrsInfo($currContent, canFill,true);
                 if (typeof callback === 'function') {
                     callback($currContent, canFill ? data : null);
                 }
@@ -367,6 +368,7 @@
         $currContent.find('.subSpeciality p').html(subspecialty);
         $currContent.find('.qualification p').html(qualification);
 
+        $currContent.find('.name').val(name);
         $currContent.find('.specialtyGetDate').val(specialtyGetDate);
         $currContent.find('.typeOfCurrRegi').val(typeOfCurrRegi);
         $currContent.find('.currRegiDate').val(currRegiDate);
@@ -381,8 +383,10 @@
             disableContent($currContent.find('.currRegiDate'));
             disableContent($currContent.find('.praCerEndDate'));
             disableContent($currContent.find('.typeOfRegister'));
+            console.log("jinru===>",needControlName)
             if (needControlName) {
                 var name = $currContent.find('.name').val();
+                console.log("Fun--needControlName===>",name)
                 if (!isEmpty(name)) {
                     disableContent($currContent.find('.name'));
                 }
@@ -393,7 +397,9 @@
             unDisableContent($currContent.find('.currRegiDate'));
             unDisableContent($currContent.find('.praCerEndDate'));
             unDisableContent($currContent.find('.typeOfRegister'));
+            console.log("fang===>","-----")
             if (needControlName) {
+                console.log("jin===>","-----")
                 unDisableContent($currContent.find('.name'));
             }
         }

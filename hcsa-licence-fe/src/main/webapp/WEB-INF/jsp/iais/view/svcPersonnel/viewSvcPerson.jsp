@@ -69,9 +69,6 @@
         <c:set var="normalCount" value="0"/>
     </c:otherwise>
 </c:choose>
-
-
-
 <c:if test="${arPractitionerCount != 0}">
     <div class="panel-main-content">
         <div>
@@ -142,8 +139,5 @@
         </c:forEach>
     </div>
 </c:if>
-
-
-
 </div>
 </div>

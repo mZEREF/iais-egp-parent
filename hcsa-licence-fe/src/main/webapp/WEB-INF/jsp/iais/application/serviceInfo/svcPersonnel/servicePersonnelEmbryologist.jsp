@@ -1,6 +1,5 @@
 <div class="personnel-content">
     <input type="hidden" class="not-refresh" name="${logo}emCount" value="size"/>
-
     <iais:row cssClass="personnel-header">
         <iais:value width="5" cssClass="col-xs-12 col-md-6">
             <strong>
@@ -8,11 +7,8 @@
                 <label class="assign-psn-item">${index+1}</label>
             </strong>
         </iais:value>
-
         <iais:value width="7" cssClass="col-xs-12 col-md-4 text-right">
-
             <span class="error-msg" name="iaisErrorMSg" id="error_personError${index}"></span>
-
             <div class="removeEditDiv <c:if test="${index == 0}">hidden</c:if>">
                 <h4 class="text-danger">
                     <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
@@ -22,7 +18,6 @@
     </iais:row>
     <%----%>
     <input type="hidden" name="isPartEdit" value="0"/>
-
     <%--        name--%>
     <iais:row>
         <iais:field width="5" mandatory="true" value="Name"/>
@@ -35,8 +30,6 @@
                         value="${appSvcPersonnelDto.name}"/>
         </iais:value>
     </iais:row>
-
-
     <%--         qualification   --%>
     <iais:row>
         <iais:field width="5" value="Qualification"/>
@@ -45,8 +38,6 @@
                         value="${appSvcPersonnelDto.qualification}"/>
         </iais:value>
     </iais:row>
-
-
     <%--           Relevant working experience(Years) --%>
     <iais:row>
         <iais:field width="5" mandatory="true" value="Working Experience(in term of years)"/>
@@ -55,8 +46,6 @@
                         value="${appSvcPersonnelDto.wrkExpYear}"/>
         </iais:value>
     </iais:row>
-
-
     <%--  Number of AR procedures done under supervision  --%>
     <iais:row>
         <iais:field width="5" mandatory="true" value="Number of AR procedures done under supervision"/>
@@ -66,28 +55,24 @@
         </iais:value>
     </iais:row>
 
-
     <iais:row>
         <iais:field value="Is the Embryologist authorized?" mandatory="true" width="5"/>
-
-
-
         <iais:value width="3" cssClass="col-md-3 form-check">
             <input
                     <c:if test="${'1'==appSvcPersonnelDto.locateWtihHcsa}">checked="checked"</c:if>
-                    class="form-check-input locateWtihNonHcsa" type="radio" name="${logo}locateWtihHcsa${index}" value="1"
+                    class="form-check-input locateWtihNonHcsa" type="radio" name="${logo}locateWtihHcsa${index}"
+                    value="1"
                     aria-invalid="false">
             <label class="form-check-label"><span class="check-circle"></span>Yes</label>
         </iais:value>
-
         <iais:value width="4" cssClass="col-md-4 form-check">
             <input
                     <c:if test="${'0'==appSvcPersonnelDto.locateWtihHcsa}">checked="checked"</c:if>
-                    class="form-check-input locateWtihNonHcsa" type="radio" name="${logo}locateWtihHcsa${index}" value="0"
+                    class="form-check-input locateWtihNonHcsa" type="radio" name="${logo}locateWtihHcsa${index}"
+                    value="0"
                     aria-invalid="false">
             <label class="form-check-label"><span class="check-circle"></span>No</label>
         </iais:value>
-
         <iais:value cssClass="col-md-offset-4 col-md-8 col-xs-12">
             <span class="error-msg " name="iaisErrorMsg" id="error_${logo}locateWtihHcsa${status.index}"></span>
         </iais:value>

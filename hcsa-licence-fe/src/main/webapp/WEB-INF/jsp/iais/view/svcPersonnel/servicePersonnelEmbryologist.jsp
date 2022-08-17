@@ -22,8 +22,8 @@
     </iais:value>
 </iais:row>
 <iais:row>
-    <iais:field width="5" mandatory="true" value="Number of AR procedures done under supervision"/>
-    <iais:value width="7" cssClass="col-md-7">
+    <iais:field width="7" cssClass="col-md-5" mandatory="true" value="Number of AR procedures done under supervision"/>
+    <iais:value width="5" cssClass="col-md-7">
         <c:out value="${appSvcPersonnelDto.numberSupervision}"/>
     </iais:value>
 </iais:row>
@@ -31,10 +31,10 @@
     <iais:field width="5" value="Is the Embryologist authorized?"/>
     <iais:value width="7">
         <c:if test="${appSvcPersonnelDto.locateWtihHcsa == '1'}">
-            Yes
+             <c:out value="Yes"/>
         </c:if>
         <c:if test="${appSvcPersonnelDto.locateWtihHcsa == '0'}">
-            NO
+            <c:out value="NO"/>
         </c:if>
     </iais:value>
 </iais:row>

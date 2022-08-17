@@ -3,10 +3,7 @@
     <input type="hidden" class="not-refresh " name="${logo}speCount" value="size"/>
 
     <input type="hidden" name="indexNo" value="${appSvcPersonnelDto.indexNo}"/>
-
-
     <iais:row cssClass="personnel-header">
-
         <iais:value width="5" cssClass="col-xs-12 col-md-6">
             <strong>
                 <c:out value="Service Personnel "/>
@@ -20,12 +17,8 @@
                     <em class="fa fa-times-circle del-size-36 cursorPointer"></em>
                 </h4>
             </div>
-
         </iais:value>
-
     </iais:row>
-
-
     <iais:row>
         <c:if test="${'true' == canEdit}">
             <div class="text-right app-font-size-16">
@@ -35,10 +28,7 @@
             </div>
         </c:if>
     </iais:row>
-
     <input type="hidden" name="isPartEdit" value="0"/>
-
-
     <iais:row cssClass="control  svcPsnSel">
         <div class="personnel-sel">
             <iais:field width="5" mandatory="true" value="Select Service Personnel" cssClass="col-sm-5"/>
@@ -49,9 +39,7 @@
             </iais:value>
         </div>
     </iais:row>
-
     <div class="new-svc-personnel-form">
-
         <%--        name--%>
         <iais:row cssClass="personnel-name hidden ">
             <iais:field width="5" mandatory="true" value="Name" cssClass="col-sm-5"/>
@@ -89,7 +77,6 @@
                 <span class="error-msg" name="iaisErrorMsg" id="error_regnNo${status.index}"></span>
             </iais:value>
         </iais:row>
-
         <%--    years--%>
         <iais:row cssClass="personnel-wrkExpYear hidden ">
             <iais:field width="5" mandatory="true" value="Relevant working experience (Years)" cssClass="col-sm-5"/>
