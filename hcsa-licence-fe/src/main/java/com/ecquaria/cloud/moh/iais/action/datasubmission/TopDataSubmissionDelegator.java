@@ -740,6 +740,9 @@ public class TopDataSubmissionDelegator {
                 int ageNew=-(Formatter.compareDateByDay(birthDate,counsellingGiven)+age/4) / 365;
 
                 terminationOfPregnancyDto.getPreTerminationDto().setCounsellingAge(ageNew);
+                if(ageNew>=16&&"AR_SC_001".equals(terminationOfPregnancyDto.getPreTerminationDto().getCounsellingPlace())){
+                    terminationOfPregnancyDto.getPreTerminationDto().setCounsellingPlace(null);
+                }
 
             }
         }catch (Exception e){
@@ -747,7 +750,6 @@ public class TopDataSubmissionDelegator {
             log.error(StringUtil.changeForLog("setCounsellingAge is error"));
         }
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
-        request.getSession().setAttribute(DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
         String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
         if("next".equals(actionType)|| DataSubmissionHelper.isToNextAction(request)){
