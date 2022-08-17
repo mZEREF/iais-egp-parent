@@ -362,18 +362,22 @@ public class TopDataSubmissionDelegator {
                 }else if (DsConfigHelper.TOP_STEP_PRESENT_TERMINATION.equals(cfg.getCode())&&terminationOfPregnancyDto.getTerminationDto()!=null) {
                     PreTerminationDto preTerminationDto= terminationOfPregnancyDto.getPreTerminationDto();
                     if(needDoTop(preTerminationDto)){
+                        ParamUtil.setSessionAttr(bpc.request, "needDoTop", "yes");
                         ValidationResult result = WebValidationHelper.validateProperty(terminationOfPregnancyDto.getTerminationDto(),"TOP");
                         status = result.isHasErrors()?0:1;
                     }else {
+                        ParamUtil.setSessionAttr(bpc.request, "needDoTop", "no");
                         status =1;
                     }
                 }else if (DsConfigHelper.TOP_STEP_POST_TERMINATION.equals(cfg.getCode())&&terminationOfPregnancyDto.getPostTerminationDto()!=null) {
                     PreTerminationDto preTerminationDto= terminationOfPregnancyDto.getPreTerminationDto();
                     if(needDoTop(preTerminationDto)){
+                        ParamUtil.setSessionAttr(bpc.request, "needDoTop", "yes");
                         ValidationResult result = WebValidationHelper.validateProperty(terminationOfPregnancyDto.getPostTerminationDto(),"TOP");
                         status = result.isHasErrors()?0:1;
                     }else {
                         status =1;
+                        ParamUtil.setSessionAttr(bpc.request, "needDoTop", "no");
                     }
                 }
                 cfg.setStatus(status);
@@ -486,13 +490,24 @@ public class TopDataSubmissionDelegator {
             PreTerminationDto preTerminationDto= terminationOfPregnancyDto.getPreTerminationDto();
             if(needDoTop(preTerminationDto)){
                 status = doPresentTermination(bpc.request);
+                ParamUtil.setSessionAttr(bpc.request, "needDoTop", "yes");
             }else {
+                ParamUtil.setSessionAttr(bpc.request, "needDoTop", "no");
                 status =1;
             }
         }else if (DsConfigHelper.TOP_STEP_POST_TERMINATION.equals(currentCode)) {
-            status = doPostTermination(bpc.request);
+            TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(bpc.request);
+            TerminationOfPregnancyDto terminationOfPregnancyDto =  topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
+            PreTerminationDto preTerminationDto= terminationOfPregnancyDto.getPreTerminationDto();
+            if(needDoTop(preTerminationDto)){
+                status = doPostTermination(bpc.request);
+                ParamUtil.setSessionAttr(bpc.request, "needDoTop", "yes");
+            }else {
+                ParamUtil.setSessionAttr(bpc.request, "needDoTop", "no");
+                status =1;
+            }
         }else if(DsConfigHelper.TOP_STEP_PREVIEW.equals(currentCode)){
-            status = doPreview(bpc.request);;
+            status = doPreview(bpc.request);
         }
         if("next".equals(crudType)|| DataSubmissionHelper.isToNextAction(bpc.request)){
             currentConfig.setStatus(status);

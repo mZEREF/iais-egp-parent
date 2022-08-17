@@ -9,6 +9,9 @@
         <c:if test="${config.status == 0}">
             <c:set var="stepStatus" value="incomplete"/>
         </c:if>
+        <c:if test="${needDoTop=='no' && (config.code=='TOPT004' || config.code=='TOPT005')}">
+            <c:set var="stepStatus" value=""/>
+        </c:if>
         <c:if test="${config.status == 1 || config.status == 2 || config.status == 3 || config.status == 4 || config.status == 5}">
             <c:set var="stepStatus" value="complete"/>
         </c:if>
