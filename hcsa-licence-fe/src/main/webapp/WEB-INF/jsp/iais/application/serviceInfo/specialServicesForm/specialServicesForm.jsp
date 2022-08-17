@@ -41,15 +41,6 @@
                         </h4>
                     </div>
 
-                    <c:forEach var="minCount" items="${specialServiceSectionDto.minCount}">
-                        <c:if test="${minCount.key == ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR}">
-                            <c:set var="DirMinCount" value="${minCount.value}"/>
-                        </c:if>
-                        <c:if test="${minCount.key == ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR}">
-                            <c:set var="NurMinCount" value="${minCount.value}"/>
-                        </c:if>
-                    </c:forEach>
-
                     <c:set var="DirMaxCount" value="0"/>
                     <c:set var="NurMaxCount" value="0"/>
                     <c:forEach var="maxCount" items="${specialServiceSectionDto.maxCount}">
@@ -71,61 +62,65 @@
                                     </div>
                                 </c:when>
                                 <c:otherwise>
-                                    <div class="panel-main-content">
-                                        <c:choose>
-                                            <c:when test="${specialServiceSectionDto.appSvcDirectorDtoList != null && specialServiceSectionDto.appSvcDirectorDtoList.size()>1}">
-                                                <input class="length" type="hidden" name="${status.index}${subSvcRelStatus.index}DirectorDtoListLength" value="${specialServiceSectionDto.appSvcDirectorDtoList.size()}"/>
-                                                <c:set var="DirectorDtoListLength" value="${specialServiceSectionDto.appSvcDirectorDtoList.size()}"/>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <input class="length" type="hidden" name="${status.index}${subSvcRelStatus.index}DirectorDtoListLength" value="1"/>
-                                                <c:set var="DirectorDtoListLength" value="1"/>
-                                            </c:otherwise>
-                                        </c:choose>
-                                        <c:forEach begin="0" end="${DirectorDtoListLength - 1}" step="1" varStatus="direStatus">
-                                            <c:set var="index" value="${direStatus.index}"/>
-                                            <c:set var="appSvcPersonnelDto" value="${specialServiceSectionDto.appSvcDirectorDtoList[index]}"/>
-                                            <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}dir"/>
-                                            <c:set var="title" value="Emergency Department Director"/>
-                                            <%@include file="specialServiceDetail.jsp" %>
-                                        </c:forEach>
-                                        <iais:row>
-                                            <div class="col-md-12 col-xs-12 addDiv <c:if test="${DirectorDtoListLength >= DirMaxCount}">hidden</c:if>">
-                                                <input type="hidden" class ="disDiOrNu" name="disDiOrNu" value="Di"/>
-                                                <span class="addBtn" style="color:deepskyblue;cursor:pointer;">
+                                    <c:if test="${DirMaxCount!=0}">
+                                        <div class="panel-main-content">
+                                            <c:choose>
+                                                <c:when test="${specialServiceSectionDto.appSvcDirectorDtoList != null && specialServiceSectionDto.appSvcDirectorDtoList.size()>1}">
+                                                    <input class="length" type="hidden" name="${status.index}${subSvcRelStatus.index}DirectorDtoListLength" value="${specialServiceSectionDto.appSvcDirectorDtoList.size()}"/>
+                                                    <c:set var="DirectorDtoListLength" value="${specialServiceSectionDto.appSvcDirectorDtoList.size()}"/>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <input class="length" type="hidden" name="${status.index}${subSvcRelStatus.index}DirectorDtoListLength" value="1"/>
+                                                    <c:set var="DirectorDtoListLength" value="1"/>
+                                                </c:otherwise>
+                                            </c:choose>
+                                            <c:forEach begin="0" end="${DirectorDtoListLength - 1}" step="1" varStatus="direStatus">
+                                                <c:set var="index" value="${direStatus.index}"/>
+                                                <c:set var="appSvcPersonnelDto" value="${specialServiceSectionDto.appSvcDirectorDtoList[index]}"/>
+                                                <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}dir"/>
+                                                <c:set var="title" value="Emergency Department Director"/>
+                                                <%@include file="specialServiceDetail.jsp" %>
+                                            </c:forEach>
+                                            <iais:row>
+                                                <div class="col-md-12 col-xs-12 addDiv <c:if test="${DirectorDtoListLength >= DirMaxCount}">hidden</c:if>">
+                                                    <input type="hidden" class ="disDiOrNu" name="disDiOrNu" value="Di"/>
+                                                    <span class="addBtn" style="color:deepskyblue;cursor:pointer;">
                                                     <span style="">Add more</span>
                                                 </span>
-                                            </div>
-                                        </iais:row>
-                                    </div>
+                                                </div>
+                                            </iais:row>
+                                        </div>
+                                    </c:if>
 
-                                    <div class="panel-main-content">
-                                        <c:choose>
-                                            <c:when test="${specialServiceSectionDto.appSvcChargedNurseDtoList != null && specialServiceSectionDto.appSvcChargedNurseDtoList.size()>1}">
-                                                <input class="length" type="hidden" name="${status.index}${subSvcRelStatus.index}NurseDtoListLength" value="${specialServiceSectionDto.appSvcChargedNurseDtoList.size()}"/>
-                                                <c:set var="NurseDtoListLength" value="${specialServiceSectionDto.appSvcChargedNurseDtoList.size()}"/>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <input class="length" type="hidden" name="${status.index}${subSvcRelStatus.index}NurseDtoListLength" value="1"/>
-                                                <c:set var="NurseDtoListLength" value="1"/>
-                                            </c:otherwise>
-                                        </c:choose>
-                                        <c:forEach begin="0" end="${NurseDtoListLength - 1}" step="1" varStatus="nurStatus">
-                                            <c:set var="index" value="${nurStatus.index}"/>
-                                            <c:set var="appSvcPersonnelDto" value="${specialServiceSectionDto.appSvcChargedNurseDtoList[index]}"/>
-                                            <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}nur"/>
-                                            <c:set var="title" value="Emergency Department Nurse-in-charge"/>
-                                            <%@include file="specialServiceDetail.jsp"%>
-                                        </c:forEach>
-                                        <iais:row>
-                                            <div class="col-md-12 col-xs-12 addDiv <c:if test="${NurseDtoListLength >= NurMaxCount}">hidden</c:if>">
-                                                <input type="hidden" class ="disDiOrNu" name="disDiOrNu" value="Nu"/>
-                                                <span class="addBtn" style="color:deepskyblue;cursor:pointer;">
+                                    <c:if test="${NurMaxCount!=0}">
+                                        <div class="panel-main-content">
+                                            <c:choose>
+                                                <c:when test="${specialServiceSectionDto.appSvcChargedNurseDtoList != null && specialServiceSectionDto.appSvcChargedNurseDtoList.size()>1}">
+                                                    <input class="length" type="hidden" name="${status.index}${subSvcRelStatus.index}NurseDtoListLength" value="${specialServiceSectionDto.appSvcChargedNurseDtoList.size()}"/>
+                                                    <c:set var="NurseDtoListLength" value="${specialServiceSectionDto.appSvcChargedNurseDtoList.size()}"/>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <input class="length" type="hidden" name="${status.index}${subSvcRelStatus.index}NurseDtoListLength" value="1"/>
+                                                    <c:set var="NurseDtoListLength" value="1"/>
+                                                </c:otherwise>
+                                            </c:choose>
+                                            <c:forEach begin="0" end="${NurseDtoListLength - 1}" step="1" varStatus="nurStatus">
+                                                <c:set var="index" value="${nurStatus.index}"/>
+                                                <c:set var="appSvcPersonnelDto" value="${specialServiceSectionDto.appSvcChargedNurseDtoList[index]}"/>
+                                                <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}nur"/>
+                                                <c:set var="title" value="Emergency Department Nurse-in-charge"/>
+                                                <%@include file="specialServiceDetail.jsp"%>
+                                            </c:forEach>
+                                            <iais:row>
+                                                <div class="col-md-12 col-xs-12 addDiv <c:if test="${NurseDtoListLength >= NurMaxCount}">hidden</c:if>">
+                                                    <input type="hidden" class ="disDiOrNu" name="disDiOrNu" value="Nu"/>
+                                                    <span class="addBtn" style="color:deepskyblue;cursor:pointer;">
                                                     <span style="">Add more</span>
                                                 </span>
-                                            </div>
-                                        </iais:row>
-                                    </div>
+                                                </div>
+                                            </iais:row>
+                                        </div>
+                                    </c:if>
                                 </c:otherwise>
                             </c:choose>
                         </div>
