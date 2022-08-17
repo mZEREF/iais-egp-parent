@@ -215,7 +215,7 @@ public class GiroDeductionBeServiceImpl implements GiroDeductionBeService {
             EmailParam emailParam = new EmailParam();
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_GIRO_RETRIGGERS_EMAIL);
             emailParam.setTemplateContent(map);
-            emailParam.setQueryCode(appGrpId);
+            emailParam.setQueryCode(applicationGroupDto.getGroupNo());
             emailParam.setReqRefNum(appGrpId);
             emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP_GRP);
             emailParam.setRefId(appGrpId);

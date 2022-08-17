@@ -438,6 +438,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         String applicantName = getApplicantNameByLicId(id);
         if(!StringUtil.isEmpty(applicantName)){
             String licenceId = licenceDto.getId();
+            String licenceNo = licenceDto.getLicenceNo();
             String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
             String MohName = AppConsts.MOH_AGENCY_NAME;
             log.info(StringUtil.changeForLog("send renewal application notification applicantName : " + applicantName));
@@ -463,7 +464,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                     EmailParam emailParam = new EmailParam();
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_LAST_REMINDER);
                     emailParam.setTemplateContent(map);
-                    emailParam.setQueryCode(licenceId);
+                    emailParam.setQueryCode(licenceNo);
                     emailParam.setReqRefNum(licenceId);
                     emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
                     emailParam.setRefId(licenceId);
@@ -476,7 +477,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                     EmailParam smsParam = new EmailParam();
                     smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_LAST_REMINDER_SMS);
                     smsParam.setSubject(smsSubject);
-                    smsParam.setQueryCode(licenceId);
+                    smsParam.setQueryCode(licenceNo);
                     smsParam.setReqRefNum(licenceId);
                     smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
                     smsParam.setRefId(licenceId);
@@ -487,7 +488,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                     EmailParam messageParam = new EmailParam();
                     messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_LAST_REMINDER_MESSAGE);
                     messageParam.setTemplateContent(map);
-                    messageParam.setQueryCode(licenceId);
+                    messageParam.setQueryCode(licenceNo);
                     messageParam.setReqRefNum(licenceId);
                     messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                     messageParam.setRefId(licenceId);
@@ -559,7 +560,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                     EmailParam emailParam = new EmailParam();
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REMINDER);
                     emailParam.setTemplateContent(map);
-                    emailParam.setQueryCode(licenceId);
+                    emailParam.setQueryCode(licenceNo);
                     emailParam.setReqRefNum(licenceId);
                     emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
                     emailParam.setRefId(licenceId);
@@ -572,7 +573,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                     EmailParam smsParam = new EmailParam();
                     smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REMINDER_SMS);
                     smsParam.setSubject(smsSubject);
-                    smsParam.setQueryCode(licenceId);
+                    smsParam.setQueryCode(licenceNo);
                     smsParam.setReqRefNum(licenceId);
                     smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
                     smsParam.setRefId(licenceId);
@@ -583,7 +584,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                     EmailParam messageParam = new EmailParam();
                     messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REMINDER_MESSAGE);
                     messageParam.setTemplateContent(map);
-                    messageParam.setQueryCode(licenceId);
+                    messageParam.setQueryCode(licenceNo);
                     messageParam.setReqRefNum(licenceId);
                     messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                     messageParam.setSvcCodeList(serviceCodeList);

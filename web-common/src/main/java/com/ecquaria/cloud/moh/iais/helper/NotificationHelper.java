@@ -335,7 +335,7 @@ public class NotificationHelper {
 						log.info("please turn on sms param.......");
 						return;
 					}
-					sendSms(refIdType, subject, refId, smsOnlyOfficerHour, msgTemplateDto,
+					sendSms(refIdType, subject, refId, queryCode, smsOnlyOfficerHour, msgTemplateDto,
 							emailParam.getSvcCodeList(),recipientUserId);
 					if (jrDto != null) {
 						List<JobRemindMsgTrackingDto> jobList = IaisCommonUtils.genNewArrayList(1);
@@ -592,7 +592,7 @@ public class NotificationHelper {
 		}
 	}
 
-	private void sendSms(String refIdType, String mesContext, String refId, boolean smsOnlyOfficerHour,
+	private void sendSms(String refIdType, String mesContext, String refId, String queryCode, boolean smsOnlyOfficerHour,
 						 MsgTemplateDto msgTemplateDto, List<String> svcCodeList,String recipientUserId) {
 		try{
 			List<String> roles = null;
@@ -608,6 +608,7 @@ public class NotificationHelper {
 			SmsDto smsDto = new SmsDto();
 			smsDto.setSender(mailSender);
 			smsDto.setContent(mesContext);
+			smsDto.setQueryCode(queryCode);
 			smsDto.setOnlyOfficeHour(smsOnlyOfficerHour);
 			List<String> mobile  = IaisCommonUtils.genNewArrayList();
 			if(!StringUtil.isEmpty(refId)){
