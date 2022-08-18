@@ -413,8 +413,8 @@
             $('#genders').show();
             var livingChildrenGenders=data.selection.livingChildrenGenders;
             for(var i=0;i<livingChildrenGenders.length;i++){
-                console.log(i)
-                fillValue($('#livingChildrenGenders'+i),livingChildrenGenders[i]);
+                console.log(livingChildrenGenders[i].replace(/^\s*/,""))
+                fillValue($('#livingChildrenGenders'+i),livingChildrenGenders[i].replace(/^\s*/,""));
             }
         }else {
             $('#gender').hide();
