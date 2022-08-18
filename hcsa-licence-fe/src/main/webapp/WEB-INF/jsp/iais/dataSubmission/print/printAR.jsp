@@ -63,7 +63,6 @@
     </c:when>
     <c:when test="${cycleStage == 'AR_STG009'}">
         <%-- AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED--%>
-        <%@include file="../assistedReproduction/section/previewEmbryoTransferredOutcomeStageDetail.jsp" %>
         <%@include file="../assistedReproduction/section/previewPregnancyOutcomeStageDetail.jsp" %>
 
     </c:when>
@@ -73,7 +72,6 @@
     </c:when>
     <c:when test="${cycleStage == 'AR_STG011'}">
         <%-- AR_STAGE_OUTCOME_OF_PREGNANCY--%>
-        <%@include file="../assistedReproduction/section/previewEmbryoTransferredOutcomeStageDetail.jsp" %>
         <%@include file="../assistedReproduction/section/previewPregnancyOutcomeStageDetail.jsp" %>
     </c:when>
     <c:when test="${cycleStage == 'AR_STG012'}">
