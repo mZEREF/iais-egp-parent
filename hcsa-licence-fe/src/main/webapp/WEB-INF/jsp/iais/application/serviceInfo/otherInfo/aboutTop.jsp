@@ -9,7 +9,7 @@
 </iais:row>
 
 <input type="hidden" name="t" value="${t}">
-<div class="topTypeAbout <c:if test="${null == provideTop}">hidden</c:if>">
+<div class="topTypeAbout">
     <c:choose>
         <c:when test="${empty topByDrug}">
             <c:set var="dCount" value="1"/>
@@ -24,7 +24,7 @@
         <c:set var="person" value="${topByDrug[index]}"/>
         <%@include file="aboutTopDetail1.jsp" %>
     </c:forEach>
-    <div class="col-md-12 col-xs-12 addTopByDrugDiv <c:if test="${'0' == appSvcOtherInfoTopDto.topType}">hidden</c:if>">
+    <div class="col-md-12 col-xs-12 addTopByDrugDiv <c:if test="${'0' == appSvcOtherInfoTop.topType}">hidden</c:if>">
         <span class="addTopByDrugBtn" style="color:deepskyblue;cursor:pointer;">
             <span>Add more</span>
         </span>
@@ -44,7 +44,7 @@
         <c:set var="person" value="${topBySurgicalProcedure[index]}"/>
         <%@include file="aboutTopDetail2.jsp" %>
     </c:forEach>
-    <div class="col-md-12 col-xs-12 addTopBySurgicalProcedureDiv <c:if test="${'1' == appSvcOtherInfoTopDto.topType}">hidden</c:if>">
+    <div class="col-md-12 col-xs-12 addTopBySurgicalProcedureDiv <c:if test="${'1' == appSvcOtherInfoTop.topType}">hidden</c:if>">
         <span class="addTopBySurgicalProcedureBtn" style="color:deepskyblue;cursor:pointer;">
             <span>Add more</span>
         </span>
@@ -64,13 +64,13 @@
         <c:set var="person" value="${topByAll[index]}"/>
         <%@include file="aboutTopDetail3.jsp" %>
     </c:forEach>
-    <div class="col-md-12 col-xs-12 addTopAllDiv <c:if test="${'-1' != appSvcOtherInfoTopDto.topType}">hidden</c:if>">
+    <div class="col-md-12 col-xs-12 addTopAllDiv <c:if test="${'-1' != appSvcOtherInfoTop.topType}">hidden</c:if>">
         <span class="addTopAllBtn" style="color:deepskyblue;cursor:pointer;">
             <span>Add more</span>
         </span>
     </div>
 
-    <div class="de <c:if test="${('-1' != appSvcOtherInfoTopDto.topType) || ('0' == provideTop)}">hidden</c:if>">
+    <div class="de <c:if test="${('-1' != appSvcOtherInfoTop.topType) || ('0' == provideTop)}">hidden</c:if>">
         <iais:row>
             <div class="col-xs-12 col-md-12">
                 <p class="bold">Declaration</p>

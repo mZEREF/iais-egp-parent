@@ -3,7 +3,7 @@
         <div class="col-xs-12 col-md-10">
                 <%--                <p class="bold">Name, Professional Regn. No. and Qualification of medical practitioners authorised to perform Abortion<span class="psnHeader">${index+1}</span></p>--%>
             <p class="bold">Name, Professional Regn. No. and Qualification of medical practitioners authorised to perform Abortion
-                &nbsp;<label class="assign-psn-item"><c:if test="${practitionersList.size() > 1}">${index+1}</c:if></label>
+                &nbsp;<label class="assign-psn-item"><c:if test="${practitioners.size() > 1}">${index+1}</c:if></label>
             </p>
         </div>
         <div class="col-xs-12 col-md-2 text-right removePractitionersBtn">

@@ -14,9 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoAbortDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoTopPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
@@ -27,7 +25,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.SuppleFormItemConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -42,7 +39,6 @@ import com.ecquaria.cloud.moh.iais.helper.AppDataHelper;
 import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
-import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
@@ -447,106 +443,13 @@ public class ServiceInfoDelegator {
      */
     private void prepareOtherInformation(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("prePareOtherInformationDirector start ..."));
-        String currSvcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
         String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId);
         // Other Information Director config
         AppSvcOtherInfoDto appSvcOtherInfoDto = currSvcInfoDto.getAppSvcOtherInfoDto();
         if (appSvcOtherInfoDto != null && AppConsts.YES.equals(appSvcOtherInfoDto.getProvideTop())) {
-            List<AppSvcOtherInfoTopPersonDto> list = appSvcOtherInfoDto.getAppSvcOtherInfoTopPersonDtoList();
-            List<AppSvcOtherInfoTopPersonDto> practitionersList = IaisCommonUtils.genNewArrayList();
-            List<AppSvcOtherInfoTopPersonDto> anaesthetistsList = IaisCommonUtils.genNewArrayList();
-            List<AppSvcOtherInfoTopPersonDto> nursesList = IaisCommonUtils.genNewArrayList();
-            List<AppSvcOtherInfoTopPersonDto> counsellorsList = IaisCommonUtils.genNewArrayList();
-            for (int i = 0; i < list.size(); i++) {
-                if ("practitioners".equals(list.get(i).getPsnType())) {
-                    AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto = new AppSvcOtherInfoTopPersonDto();
-                    appSvcOtherInfoTopPersonDto.setPsnType(list.get(i).getPsnType());
-                    appSvcOtherInfoTopPersonDto.setProfRegNo(list.get(i).getProfRegNo());
-                    appSvcOtherInfoTopPersonDto.setName(list.get(i).getName());
-                    appSvcOtherInfoTopPersonDto.setRegType(list.get(i).getRegType());
-                    appSvcOtherInfoTopPersonDto.setQualification(list.get(i).getQualification());
-                    appSvcOtherInfoTopPersonDto.setSeqNum(list.get(i).getSeqNum());
-                    appSvcOtherInfoTopPersonDto.setIdNo(list.get(i).getIdNo());
-                    appSvcOtherInfoTopPersonDto.setSpeciality(list.get(i).getSpeciality());
-                    appSvcOtherInfoTopPersonDto.setMedAuthByMoh(list.get(i).isMedAuthByMoh());
-                    practitionersList.add(appSvcOtherInfoTopPersonDto);
-                }
-                if ("anaesthetists".equals(list.get(i).getPsnType())) {
-                    AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto = new AppSvcOtherInfoTopPersonDto();
-                    appSvcOtherInfoTopPersonDto.setPsnType(list.get(i).getPsnType());
-                    appSvcOtherInfoTopPersonDto.setProfRegNo(list.get(i).getProfRegNo());
-                    appSvcOtherInfoTopPersonDto.setName(list.get(i).getName());
-                    appSvcOtherInfoTopPersonDto.setRegType(list.get(i).getRegType());
-                    appSvcOtherInfoTopPersonDto.setQualification(list.get(i).getQualification());
-                    appSvcOtherInfoTopPersonDto.setSeqNum(list.get(i).getSeqNum());
-                    appSvcOtherInfoTopPersonDto.setIdNo(list.get(i).getIdNo());
-                    anaesthetistsList.add(appSvcOtherInfoTopPersonDto);
-                }
-                if ("nurses".equals(list.get(i).getPsnType())) {
-                    AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto = new AppSvcOtherInfoTopPersonDto();
-                    appSvcOtherInfoTopPersonDto.setPsnType(list.get(i).getPsnType());
-                    appSvcOtherInfoTopPersonDto.setName(list.get(i).getName());
-                    appSvcOtherInfoTopPersonDto.setQualification(list.get(i).getQualification());
-                    appSvcOtherInfoTopPersonDto.setSeqNum(list.get(i).getSeqNum());
-                    nursesList.add(appSvcOtherInfoTopPersonDto);
-                }
-                if ("counsellors".equals(list.get(i).getPsnType())) {
-                    AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto = new AppSvcOtherInfoTopPersonDto();
-                    appSvcOtherInfoTopPersonDto.setPsnType(list.get(i).getPsnType());
-                    appSvcOtherInfoTopPersonDto.setName(list.get(i).getName());
-                    appSvcOtherInfoTopPersonDto.setQualification(list.get(i).getQualification());
-                    appSvcOtherInfoTopPersonDto.setSeqNum(list.get(i).getSeqNum());
-                    appSvcOtherInfoTopPersonDto.setIdNo(list.get(i).getIdNo());
-                    counsellorsList.add(appSvcOtherInfoTopPersonDto);
-                }
-            }
-            //Info Abort
-            List<AppSvcOtherInfoAbortDto> appSvcOtherInfoAboutDtos = appSvcOtherInfoDto.getAppSvcOtherInfoAbortDtoList();
-            List<AppSvcOtherInfoAbortDto> topByDrugList = IaisCommonUtils.genNewArrayList();
-            List<AppSvcOtherInfoAbortDto> topBySurgicalProcedureList = IaisCommonUtils.genNewArrayList();
-            List<AppSvcOtherInfoAbortDto> topByAllList = IaisCommonUtils.genNewArrayList();
-            if (appSvcOtherInfoAboutDtos != null){
-                for (int i = 0; i < appSvcOtherInfoAboutDtos.size(); i++) {
-                    String topType = appSvcOtherInfoAboutDtos.get(i).getTopType();
-                    if ("1".equals(topType)){
-                        AppSvcOtherInfoAbortDto appSvcOtherInfoAboutDto = new AppSvcOtherInfoAbortDto();
-                        appSvcOtherInfoAboutDto.setTopType(appSvcOtherInfoAboutDtos.get(i).getTopType());
-                        appSvcOtherInfoAboutDto.setYear(appSvcOtherInfoAboutDtos.get(i).getYear());
-                        appSvcOtherInfoAboutDto.setAbortNum(appSvcOtherInfoAboutDtos.get(i).getAbortNum());
-                        topByDrugList.add(appSvcOtherInfoAboutDto);
-                    }
-                    if ("0".equals(topType)){
-                        AppSvcOtherInfoAbortDto appSvcOtherInfoAboutDto = new AppSvcOtherInfoAbortDto();
-                        appSvcOtherInfoAboutDto.setTopType(appSvcOtherInfoAboutDtos.get(i).getTopType());
-                        appSvcOtherInfoAboutDto.setYear(appSvcOtherInfoAboutDtos.get(i).getYear());
-                        appSvcOtherInfoAboutDto.setAbortNum(appSvcOtherInfoAboutDtos.get(i).getAbortNum());
-                        topBySurgicalProcedureList.add(appSvcOtherInfoAboutDto);
-                    }
-                    if ("-1".equals(topType)){
-                        AppSvcOtherInfoAbortDto appSvcOtherInfoAboutDto = new AppSvcOtherInfoAbortDto();
-                        appSvcOtherInfoAboutDto.setTopType(appSvcOtherInfoAboutDtos.get(i).getTopType());
-                        appSvcOtherInfoAboutDto.setYear(appSvcOtherInfoAboutDtos.get(i).getYear());
-                        appSvcOtherInfoAboutDto.setAbortNum(appSvcOtherInfoAboutDtos.get(i).getAbortNum());
-                        topByAllList.add(appSvcOtherInfoAboutDto);
-                    }
-                }
-            }
-
-            ParamUtil.setRequestAttr(bpc.request, "provideTop", appSvcOtherInfoDto.getProvideTop());
-            ParamUtil.setRequestAttr(bpc.request,"provideYfVs",appSvcOtherInfoDto.getProvideYfVs());
-            ParamUtil.setRequestAttr(bpc.request,"yfCommencementDateStr",appSvcOtherInfoDto.getYfCommencementDateStr());
-            ParamUtil.setRequestAttr(bpc.request, "practitionersList", practitionersList);
-            ParamUtil.setRequestAttr(bpc.request, "anaesthetistsList", anaesthetistsList);
-            ParamUtil.setRequestAttr(bpc.request, "nursesList", nursesList);
-            ParamUtil.setRequestAttr(bpc.request, "counsellorsList", counsellorsList);
-            ParamUtil.setRequestAttr(bpc.request, "topByDrugList", topByDrugList);
-            ParamUtil.setRequestAttr(bpc.request, "topBySurgicalProcedureList", topBySurgicalProcedureList);
-            ParamUtil.setRequestAttr(bpc.request, "topByAllList", topByAllList);
-            ParamUtil.setRequestAttr(bpc.request, "appSvcOtherInfoTopDto", appSvcOtherInfoDto.getAppSvcOtherInfoTopDto());
+            ParamUtil.setRequestAttr(bpc.request,"appSvcOtherInfoDto",appSvcOtherInfoDto);
         }
-        log.debug(StringUtil.changeForLog("prePareOtherInformationDirector end ..."));
-
     }
 
     /**
@@ -573,36 +476,22 @@ public class ServiceInfoDelegator {
         boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
         boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto,
                 RfcConst.EDIT_SERVICE, isEdit, isRfi);
-        log.debug(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
         if (isGetDataFromPage) {
             //get data from page
             AppSvcOtherInfoDto appSvcOtherInfoDto = AppDataHelper.genAppSvcOtherInfoDto(bpc.request,
                     appSubmissionDto.getAppType());
-            log.debug("========================= ........." + appSvcOtherInfoDto);
             currSvcInfoDto.setAppSvcOtherInfoDto(appSvcOtherInfoDto);
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
             reSetChangesForApp(appSubmissionDto);
-            log.debug(StringUtil.changeForLog("XXXXXXXXXXXXXXXXXX end ..."));
         }
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if ("next".equals(actionType)) {
             AppSvcOtherInfoDto appSvcOtherInfoDto = currSvcInfoDto.getAppSvcOtherInfoDto();
             if (appSvcOtherInfoDto != null){
-                String provideTop = appSvcOtherInfoDto.getProvideTop();
-                String provideYfVs = appSvcOtherInfoDto.getProvideYfVs();
-                if (AppConsts.YES.equals(provideTop) || AppConsts.YES.equals(provideYfVs)) {
-                    errorMap = AppValidatorHelper.doValidateOtherInformation(appSvcOtherInfoDto);
-                }
-                if (StringUtil.isEmpty(provideTop)){
-                    errorMap.put("provideTop", MessageUtil.replaceMessage("GENERAL_ERR0006", "Please indicate&nbsp;", "field"));
-                }
-                if (StringUtil.isEmpty(provideYfVs)){
-                    errorMap.put("provideYfVs", MessageUtil.replaceMessage("GENERAL_ERR0006", "Do you provide Yellow Fever Vaccination Service&nbsp;", "field"));
-                }
+                errorMap = AppValidatorHelper.doValidateOtherInformation(appSvcOtherInfoDto);
             }
         }
         checkAction(errorMap, HcsaConsts.STEP_OTHER_INFORMATION, appSubmissionDto, bpc.request);
-        log.debug(StringUtil.changeForLog("doOtherInformation end ..."));
 
     }
 
@@ -1819,7 +1708,7 @@ public class ServiceInfoDelegator {
                 number = 0;
             } else {
                 String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,
-                                                                        HcsaConsts.STEP_DISCIPLINE_ALLOCATION};
+                                                                        HcsaConsts.STEP_DISCIPLINE_ALLOCATION,HcsaConsts.STEP_SERVICE_PERSONNEL};
                 for (int i = 0; i < hcsaServiceStepSchemeDtos.size(); i++) {
                     if (action.equals(hcsaServiceStepSchemeDtos.get(i).getStepCode())) {
                         number = i;

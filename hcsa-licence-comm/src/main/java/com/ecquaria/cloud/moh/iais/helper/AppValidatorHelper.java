@@ -489,6 +489,15 @@ public final class AppValidatorHelper {
                     addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
                     break;
                 }
+                case HcsaConsts.STEP_OTHER_INFORMATION:{
+                    AppSvcOtherInfoDto appSvcOtherInfoDtos = dto.getAppSvcOtherInfoDto();
+                    Map<String,String> map = doValidateOtherInformation(appSvcOtherInfoDtos);
+                    if (!map.isEmpty()){
+                        errorMap.putAll(map);
+                    }
+                    addErrorStep(currentStep,stepName,errorMap.size() != prevSize,errorList);
+                    break;
+                }
                 case HcsaConsts.STEP_SUPPLEMENTARY_FORM: {
                     Map<String, String> map = doValidateSupplementaryForm(dto.getAppSvcSuplmFormDto());
                     if (!map.isEmpty()) {
@@ -1793,6 +1802,11 @@ public final class AppValidatorHelper {
         List<AppSvcOtherInfoAbortDto> topByDrug = IaisCommonUtils.genNewArrayList();
         List<AppSvcOtherInfoAbortDto> topBySurgicalProcedure = IaisCommonUtils.genNewArrayList();
         List<AppSvcOtherInfoAbortDto> topByAll = IaisCommonUtils.genNewArrayList();
+        String provideTop = appSvcOtherInfoTopDto.getTopType();
+
+        if (StringUtil.isEmpty(provideTop)){
+            errMap.put("provideTop", MessageUtil.replaceMessage("GENERAL_ERR0006", "Please indicate&nbsp;", "field"));
+        }
         String topType = appSvcOtherInfoTopDto.getTopType();
         if (StringUtil.isEmpty(topType)) {
             errMap.put("topType", MessageUtil.replaceMessage("GENERAL_ERR0006", "Please indicate&nbsp;", "field"));

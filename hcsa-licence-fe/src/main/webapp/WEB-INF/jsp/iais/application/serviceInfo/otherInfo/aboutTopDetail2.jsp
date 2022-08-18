@@ -1,7 +1,7 @@
-<div class="topBySurgicalProcedure <c:if test="${'1' == appSvcOtherInfoTopDto.topType}">hidden</c:if>">
+<div class="topBySurgicalProcedure <c:if test="${'1' == appSvcOtherInfoTop.topType}">hidden</c:if>">
     <iais:row>
         <div class="col-xs-12 col-md-10">
-            <p class="bold">TOP (By Surgical Procedure)&nbsp;<label class="assign-psn-item"><c:if test="${topBySurgicalProcedureList.size() > 1}">${index+1}</c:if></label></p>
+            <p class="bold">TOP (By Surgical Procedure)&nbsp;<label class="assign-psn-item"><c:if test="${topBySurgicalProcedure.size() > 1}">${index+1}</c:if></label></p>
         </div>
         <div class="col-xs-12 col-md-2 text-right removeTopBySurgicalProcedureBtn">
             <h4 class="text-danger">
@@ -9,6 +9,7 @@
             </h4>
         </div>
     </iais:row>
+
     <iais:row>
         <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Year."/>
         <iais:value width="6" cssClass="col-md-6">

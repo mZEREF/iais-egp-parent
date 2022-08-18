@@ -1,9 +1,8 @@
-<c:set var="counsellors" value="${counsellorsList}"/>
 <div class="person-detail counsellors  <c:if test="${'1' != provideTop}">hidden</c:if>">
     <iais:row>
         <div class="col-xs-12 col-md-10" style="padding-top: 25px;">
             <p class="bold">Name, Professional Regn. No. and Qualification of certified TOP counsellors&nbsp;
-                <label class="assign-psn-item"><c:if test="${counsellorsList.size() > 1}">${index+1}</c:if></label>
+                <label class="assign-psn-item"><c:if test="${counsellors.size() > 1}">${index+1}</c:if></label>
             </p>
         </div>
 

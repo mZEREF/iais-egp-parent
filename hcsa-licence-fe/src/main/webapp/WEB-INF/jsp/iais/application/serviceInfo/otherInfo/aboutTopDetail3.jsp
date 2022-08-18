@@ -1,7 +1,7 @@
-<div class="topByDrugandSurgicalProcedure <c:if test="${'-1' != appSvcOtherInfoTopDto.topType}">hidden</c:if>">
+<div class="topByDrugandSurgicalProcedure <c:if test="${'-1' != appSvcOtherInfoTop.topType}">hidden</c:if>">
     <iais:row>
         <div class="col-xs-12 col-md-10">
-            <p class="bold">TOP (By Drug and Surgical Procedure)&nbsp;<label class="assign-psn-item"><c:if test="${topByAllList.size() > 1}">${index+1}</c:if></label></p>
+            <p class="bold">TOP (By Drug and Surgical Procedure)&nbsp;<label class="assign-psn-item"><c:if test="${topBySurgicalProcedure.size() > 1}">${index+1}</c:if></label></p>
         </div>
         <div class="col-xs-12 col-md-2 text-right removeTopByAllBtn">
             <h4 class="text-danger">

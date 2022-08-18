@@ -1,17 +1,18 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
-<c:set var="provideTop" value="${provideTop}"/>
-<c:set var="practitioners" value="${practitionersList}"/>
-<c:set var="anaesthetists" value="${anaesthetistsList}"/>
-<c:set var="nurses" value="${nursesList}"/>
-<c:set var="counsellors" value="${counsellorsList}"/>
-<c:set var="appSvcOtherInfoTop" value="${appSvcOtherInfoTopDto}" />
-<c:set var="topByDrug" value="${topByDrugList}"/>
-<c:set var="topByAll" value="${topByAllList}"/>
-<c:set var="topBySurgicalProcedure" value="${topBySurgicalProcedureList}"/>
+<c:set var="provideTop" value="${appSvcOtherInfoDto.provideTop}"/>
+<c:set var="practitioners" value="${appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList}"/>
+<c:set var="anaesthetists" value="${appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList1}"/>
+<c:set var="nurses" value="${appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList2}"/>
+<c:set var="counsellors" value="${appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList3}"/>
+<c:set var="appSvcOtherInfoTop" value="${appSvcOtherInfoDto.appSvcOtherInfoTopDto}" />
+<c:set var="topByDrug" value="${appSvcOtherInfoDto.appSvcOtherInfoAbortDtoList}"/>
+<c:set var="topBySurgicalProcedure" value="${appSvcOtherInfoDto.appSvcOtherInfoAbortDtoList1}"/>
+<c:set var="topByAll" value="${appSvcOtherInfoDto.appSvcOtherInfoAbortDtoList2}"/>
 
 <div class="row form-horizontal">
+    <%@include file="dentalService.jsp" %>
     <%@include file="otherInformationTopPerson.jsp" %>
     <%@include file="documentation.jsp" %>
     <%@include file="aboutTop.jsp" %>
