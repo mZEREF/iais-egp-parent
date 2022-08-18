@@ -407,21 +407,9 @@ public class ServiceInfoDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         String currentSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
-        List<SuppleFormItemConfigDto> configDtos = configCommService.getSuppleFormItemConfigs(currSvcInfoDto.getServiceCode());
-        AppSvcSuplmFormDto appSvcSuplmFormDto = currSvcInfoDto.getAppSvcSuplmFormDto();
-        if (appSvcSuplmFormDto == null) {
-            appSvcSuplmFormDto = new AppSvcSuplmFormDto();
+        if (ApplicationHelper.initSupplementoryForm(currSvcInfoDto)) {
+            setAppSvcRelatedInfoMap(request, currentSvcId, currSvcInfoDto, appSubmissionDto);
         }
-        appSvcSuplmFormDto.setSvcConfigDto(currSvcInfoDto);
-        appSvcSuplmFormDto.setSuppleFormItemConfigDtos(configDtos, (svcId, addMoreBatchNum) -> {
-            List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList = configCommService.getHcsaSvcPersonnel(svcId, addMoreBatchNum);
-            if (IaisCommonUtils.isNotEmpty(hcsaSvcPersonnelList)) {
-                return hcsaSvcPersonnelList.get(0);
-            }
-            return null;
-        });
-        currSvcInfoDto.setAppSvcSuplmFormDto(appSvcSuplmFormDto);
-        setAppSvcRelatedInfoMap(request, currentSvcId, currSvcInfoDto, appSubmissionDto);
     }
 
     private void doSupplementaryForm(HttpServletRequest request) {
@@ -441,12 +429,14 @@ public class ServiceInfoDelegator {
         log.info(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
         if (isGetDataFromPage) {
             AppDataHelper.setAppSvcSuplmFormDto(appSvcSuplmFormDto, request);
+            setAppSvcRelatedInfoMap(request, currentSvcId, currSvcInfoDto, appSubmissionDto);
         }
-
+        // validateion
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if ("next".equals(action)) {
             errorMap = AppValidatorHelper.doValidateSupplementaryForm(appSvcSuplmFormDto);
         }
+        checkAction(errorMap, HcsaConsts.STEP_SUPPLEMENTARY_FORM, appSubmissionDto, request);
     }
 
     /**
@@ -853,7 +843,7 @@ public class ServiceInfoDelegator {
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currentSvcId);
         if (IaisCommonUtils.isEmpty(currSvcInfoDto.getDocumentShowDtoList())) {
-//            ApplicationHelper.initDocumentList(currSvcInfoDto, appSubmissionDto.getAppPremSpecialisedDtoList());
+            ApplicationHelper.initShowDocumentList(currSvcInfoDto, appSubmissionDto.getAppPremSpecialisedDtoList());
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currSvcInfoDto, appSubmissionDto);
         }
         log.info(StringUtil.changeForLog("the do prepareDocuments end ...."));
@@ -1828,7 +1818,7 @@ public class ServiceInfoDelegator {
                 number = 0;
             } else {
                 String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,
-                        HcsaConsts.STEP_DISCIPLINE_ALLOCATION,HcsaConsts.STEP_SUPPLEMENTARY_FORM,HcsaConsts.STEP_SERVICE_PERSONNEL};
+                                                                        HcsaConsts.STEP_DISCIPLINE_ALLOCATION};
                 for (int i = 0; i < hcsaServiceStepSchemeDtos.size(); i++) {
                     if (action.equals(hcsaServiceStepSchemeDtos.get(i).getStepCode())) {
                         number = i;
@@ -1854,7 +1844,7 @@ public class ServiceInfoDelegator {
             }
             serviceStepDto.setStepFirst(stepFirst);
             serviceStepDto.setStepEnd(stepEnd);
-            if (number != -1) {
+            if (number > -1) {
                 //clear the old data
                 serviceStepDto.setPreviousStep(null);
                 serviceStepDto.setNextStep(null);
