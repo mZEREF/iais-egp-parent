@@ -116,19 +116,19 @@
                         <c:forEach var="pool" items="${giroDedSearchResult.rows}" varStatus="status">
                           <tr style = "display: table-row;" id = "advfilter${(status.index + 1) + (giroDedSearchParam.pageNo - 1) * giroDedSearchParam.pageSize}">
                             <td>
-                              <c:if test="${pool.pmtStatus=='PMT09' &&  pool.appGroupStatus!='AGST014'}">
+                              <c:if test="${(pool.pmtStatus=='PMT09' || pool.pmtStatus=='PMT10') &&  pool.appGroupStatus!='AGST014'}">
                                 <input type="checkbox" name="giroDueCheck" id="giroDueCheck${status.index}"
                                        onclick="javascript:doGiroDeductionCheck()" value="<c:out value="${pool.appGroupNo}"/>"/>
                               </c:if>
                             </td>
                             <td class="row_no"><c:out value="${(status.index + 1) + (giroDedSearchParam.pageNo - 1) * giroDedSearchParam.pageSize}"/></td>
                             <td>${pool.hciName}</td>
-                            <td><iais:code code="${pool.appGroupNo}"/></td>
+                            <td><c:out value="${pool.appGroupNo}"/></td>
                             <td><c:out value="${pool.txnRefNo}"/></td>
-                            <td><iais:code code="${pool.acctNo}"/></td>
+                            <td><c:out value="${pool.acctNo}"/></td>
                             <td>
-                                ${pool.pmtStatus == 'PMT03' ? "Pending" : (pool.pmtStatus == 'PMT09' ? "Failed" : (pool.pmtStatus == 'PMT01' ? "Success" : ""))}</td>
-                            <td><iais:code code="${pool.amount}"/></td>
+                                ${pool.pmtStatus == 'PMT03' ? "Pending" : (pool.pmtStatus == 'PMT09' || pool.pmtStatus == 'PMT10' ? "Failed" : (pool.pmtStatus == 'PMT01' ? "Success" : ""))}</td>
+                            <td><c:out value="${pool.amount}"/></td>
                           </tr>
                         </c:forEach>
                       </c:otherwise>

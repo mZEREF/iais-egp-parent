@@ -70,10 +70,6 @@ public class GiroDeductionBeDelegator {
     private ApplicationClient applicationClient;
     private final static String CSV="csv";
 
-    protected static final String [] STATUS={"PMT01","PMT03","PMT09"};
-    /*
-        protected static final String [] PAYMENT_DEC={MasterCodeUtil.getCodeDesc("PMT01"),MasterCodeUtil.getCodeDesc("PMT03"),MasterCodeUtil.getCodeDesc("PMT09")};
-    */
     @Autowired
     private GiroDeductionBeDelegator(GiroDeductionBeService giroDeductionBeService){
         this.giroDeductionBeService = giroDeductionBeService;
@@ -406,6 +402,7 @@ public class GiroDeductionBeDelegator {
 
     private String decryptPayment(String payment){
         switch (payment){
+            case "PMT10":
             case "PMT09": return "Failed";
             case "PMT01":return "Successful";
             case "PMT03":return "Pending";
