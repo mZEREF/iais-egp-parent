@@ -3151,6 +3151,38 @@ public final class AppValidatorHelper {
                         }
                     }
                 }
+                if (3 == mandatoryType && StringUtil.isEmpty(inputValue)) {
+                    String radioBatchNum = itemConfigDto.getRadioBatchNum();
+                    String conditionItemId = itemConfigDto.getConditionItemId();
+                    String specialCondition = appSvcSuplmItemDto.getSpecialCondition();
+                    AppSvcSuplmItemDto condDto = itemMap.get(conditionItemId + seqNum);
+                    if (condDto != null) {
+                        boolean mandatory = false;
+                        if (StringUtil.isIn(condDto.getItemConfigDto().getItemType(), new String[]{
+                                HcsaConsts.SUPFORM_ITEM_TYPE_TITLE,
+                                HcsaConsts.SUPFORM_ITEM_TYPE_SUB_TITLE,
+                                HcsaConsts.SUPFORM_ITEM_TYPE_LABEL})) {
+                            mandatory = condDto.getItemConfigDto().getMandatoryType() == 1;
+                        } else if (StringUtil.isNotEmpty(specialCondition)) {
+                            String condValue = condDto.getInputValue();
+                            String[] codes = specialCondition.split("#");
+                            mandatory = StringUtil.isIn(condValue, codes);
+                        }
+                        if (mandatory) {
+                            List<AppSvcSuplmItemDto> appSvcSuplmItemDtos = radioBatchMap.get(radioBatchNum + seqNum);
+                            if (IaisCommonUtils.isEmpty(appSvcSuplmItemDtos)) {
+                                errorMap.put(errorKey, "GENERAL_ERR0006");
+                            } else {
+                                if (appSvcSuplmItemDtos.stream().allMatch(dto -> StringUtil.isEmpty(dto.getInputValue()))) {
+                                    AppSvcSuplmItemDto itemDto = appSvcSuplmItemDtos.stream()
+                                            .max(Comparator.comparingInt(dto -> dto.getItemConfigDto().getSeqNum()))
+                                            .orElse(appSvcSuplmItemDto);
+                                    errorMap.put(itemDto.getItemConfigId() + itemDto.getSeqNum(), "GENERAL_ERR0006");
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
         return errorMap;
@@ -3204,7 +3236,7 @@ public final class AppValidatorHelper {
         boolean isNameUsed=false;
         if (!IaisCommonUtils.isEmpty(names)){
             for (String s : names) {
-                if (s.equals(name)){
+                if (s.equalsIgnoreCase(name)){
                     isNameUsed=true;
                     break;
                 }
