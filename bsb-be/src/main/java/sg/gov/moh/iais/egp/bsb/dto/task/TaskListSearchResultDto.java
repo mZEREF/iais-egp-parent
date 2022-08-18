@@ -10,5 +10,7 @@ import java.util.List;
 @Data
 public class TaskListSearchResultDto {
     private PageInfo pageInfo;
+    @Deprecated
     private List<TaskDto> tasks;
+    private List<ResultDto> resultDtos;
 }

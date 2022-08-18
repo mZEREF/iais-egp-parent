@@ -165,6 +165,7 @@ public class MasterCodeConstants {
     public static final String PROCESS_TYPE_ADHOC_RFI = "PROTYPE013";
     public static final String PROCESS_TYPE_INSPECTION_FOLLOW_UP = "PROTYPE014";
     public static final Set<String> APPLY_APPROVE_PROCESS_TYPES;
+    public static final Set<String> COMMON_QUERY_APP_SUB_TYPE;
 
     static {
         Set<String> applyApprovalProcessType = Sets.newHashSetWithExpectedSize(3);
@@ -172,6 +173,17 @@ public class MasterCodeConstants {
         applyApprovalProcessType.add(PROCESS_TYPE_APPROVE_LSP);
         applyApprovalProcessType.add(PROCESS_TYPE_SP_APPROVE_HANDLE);
         APPLY_APPROVE_PROCESS_TYPES = Collections.unmodifiableSet(applyApprovalProcessType);
+
+        Set<String> commonQueryAppSubType = Sets.newLinkedHashSetWithExpectedSize(7);
+        // BE don't add 'Draft', because BE DB don't save it
+        commonQueryAppSubType.add(PROCESS_TYPE_FAC_REG);
+        commonQueryAppSubType.add(PROCESS_TYPE_APPROVAL_FOR_FACILITY_ACTIVITY_TYPE);
+        commonQueryAppSubType.add(PROCESS_TYPE_APPROVE_POSSESS);
+        commonQueryAppSubType.add(PROCESS_TYPE_APPROVE_LSP);
+        commonQueryAppSubType.add(PROCESS_TYPE_SP_APPROVE_HANDLE);
+        commonQueryAppSubType.add(PROCESS_TYPE_FAC_CERTIFIER_REG);
+        commonQueryAppSubType.add(PROCESS_TYPE_DATA_SUBMISSION);
+        COMMON_QUERY_APP_SUB_TYPE = Collections.unmodifiableSet(commonQueryAppSubType);
     }
 
     public static final String FAC_CLASSIFICATION_BSL3 = "FACCLA001";

@@ -143,6 +143,8 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_BSB_APPROVAL_TYPE = "6EF28184-C9ED-427C-8F2B-E5012D7A7B75";
     public static final String CATE_ID_BSB_APPROVAL_STATUS = "3DE300C3-C94C-47C9-88BA-A27B2D5740F4";
 
+    public static final String CATE_ID_BSB_SUBMISSION_TYPE = "834FF40B-353D-4A91-AD72-23FCA6944849";
+
     //FacilityInfo
     public static final String CATE_ID_BSB_GAZETTED_AREA = "5B9B1838-C58C-49E9-AA65-3078F67B1ED9";
 

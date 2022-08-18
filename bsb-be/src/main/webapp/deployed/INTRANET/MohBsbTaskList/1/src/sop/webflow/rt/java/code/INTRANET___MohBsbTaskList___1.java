@@ -41,4 +41,8 @@ public class INTRANET___MohBsbTaskList___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "changeRole", this);
 	}
 
+	public void sort_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "sort", this);
+	}
+
 }

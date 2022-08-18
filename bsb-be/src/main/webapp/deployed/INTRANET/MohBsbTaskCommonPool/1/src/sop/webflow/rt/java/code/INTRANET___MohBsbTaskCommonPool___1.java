@@ -53,4 +53,7 @@ public class INTRANET___MohBsbTaskCommonPool___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "detail", this); 
 	}
 
+	public void sort_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "sort", this);
+	}
 }

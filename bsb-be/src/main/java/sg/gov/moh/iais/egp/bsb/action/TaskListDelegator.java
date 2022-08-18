@@ -5,18 +5,20 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.BsbTaskClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.task.TaskListSearchDto;
 import sg.gov.moh.iais.egp.bsb.dto.task.TaskListSearchResultDto;
+import sg.gov.moh.iais.egp.bsb.service.BsbTaskService;
 import sg.gov.moh.iais.egp.bsb.service.UserRoleService;
 import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +30,7 @@ import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INTRANET_DASHBOARD;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_CODE_VALIDATION_FAIL;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_INFO_ERROR_MSG;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_ADDITIONAL;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_ACTION_VALUE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_PAGE_NO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_PAGE_SIZE;
@@ -41,15 +44,11 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.KEY_TA
 
 @Slf4j
 @Delegator("bsbTaskListDelegator")
+@RequiredArgsConstructor
 public class TaskListDelegator {
     private final UserRoleService userRoleService;
     private final BsbTaskClient bsbTaskClient;
-
-    @Autowired
-    public TaskListDelegator(UserRoleService userRoleService, BsbTaskClient bsbTaskClient) {
-        this.userRoleService = userRoleService;
-        this.bsbTaskClient = bsbTaskClient;
-    }
+    private final BsbTaskService taskService;
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -75,13 +74,14 @@ public class TaskListDelegator {
 
         if (resultDto.ok()) {
             ParamUtil.setRequestAttr(request, KEY_TASK_LIST_PAGE_INFO, resultDto.getEntity().getPageInfo());
-            ParamUtil.setRequestAttr(request, KEY_TASK_LIST_DATA_LIST, resultDto.getEntity().getTasks());
+            ParamUtil.setRequestAttr(request, KEY_TASK_LIST_DATA_LIST, resultDto.getEntity().getResultDtos());
         } else {
             log.info("Search Task List fail");
             ParamUtil.setRequestAttr(request, KEY_TASK_LIST_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
             ParamUtil.setRequestAttr(request, KEY_TASK_LIST_DATA_LIST, new ArrayList<>());
             if(ERROR_CODE_VALIDATION_FAIL.equals(resultDto.getErrorCode())) {
                 log.warn("Fail reason: {}", resultDto.getErrorInfos().get(ERROR_INFO_ERROR_MSG));
+                ParamUtil.setRequestAttr(request,"errorMsg", JsonUtil.parseToJson(resultDto.getErrorInfos().get(ERROR_INFO_ERROR_MSG)));
             }
         }
 
@@ -91,12 +91,25 @@ public class TaskListDelegator {
         ParamUtil.setRequestAttr(request, "appTypeOps", appTypeOps);
         List<SelectOption> appStatusTypeOps = MasterCodeUtil.retrieveOptionsByCodes(MasterCodeConstants.COMMON_QUERY_APP_STATUS.toArray(new String[0]));
         ParamUtil.setRequestAttr(request, "appStatusOps", appStatusTypeOps);
+        List<SelectOption> appSubTypeOps = MasterCodeUtil.retrieveOptionsByCodes(MasterCodeConstants.COMMON_QUERY_APP_SUB_TYPE.toArray(new String[0]));
+        ParamUtil.setRequestAttr(request, "appSubTypeOps", appSubTypeOps);
+        List<SelectOption> submissionTypeOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_SUBMISSION_TYPE);
+        ParamUtil.setRequestAttr(request, "submissionTypeOps", submissionTypeOps);
     }
 
     public void search(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         TaskListSearchDto searchDto = bindModel(request, getSearchDto(request));
         searchDto.setPage(0);
+        ParamUtil.setSessionAttr(request, KEY_TASK_LIST_SEARCH_DTO, searchDto);
+    }
+
+    public void sort(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        TaskListSearchDto searchDto = getSearchDto(request);
+        String field = ParamUtil.getString(request, KEY_ACTION_VALUE);
+        String sortType = ParamUtil.getString(request, KEY_ACTION_ADDITIONAL);
+        searchDto.changeSort(field, sortType);
         ParamUtil.setSessionAttr(request, KEY_TASK_LIST_SEARCH_DTO, searchDto);
     }
 
@@ -158,10 +171,8 @@ public class TaskListDelegator {
         return dto;
     }
 
-    private static TaskListSearchDto bindModel(HttpServletRequest request, TaskListSearchDto dto) {
-        dto.setSearchAppNo(request.getParameter("searchAppNo"));
-        dto.setSearchAppType(request.getParameter("searchAppType"));
-        dto.setSearchAppStatus(request.getParameter("searchAppStatus"));
+    private TaskListSearchDto bindModel(HttpServletRequest request, TaskListSearchDto dto) {
+        taskService.bindQueryCondition(request,dto);
         /* This is because we share the search dto with task pool module,
          * When user open the common pool and task list at the same time, we set these columns to avoid error */
         if (dto.getUserId() == null) {

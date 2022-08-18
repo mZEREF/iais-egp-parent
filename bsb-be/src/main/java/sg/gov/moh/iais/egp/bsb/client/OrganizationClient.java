@@ -7,7 +7,10 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -34,4 +37,7 @@ public interface OrganizationClient {
     @GetMapping(value = "/iais-orgUserRole/users-by-loginId/{user_id}",produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<OrgUserDto> retrieveOneOrgUserAccount(@PathVariable(value = "user_id") String userId);
+
+    @GetMapping(value = "/iais-orgUserRole/user-roles/{user_id}")
+    FeignResponseEntity<List<String>> retrieveUserRoles(@PathVariable("user_id") String userId);
 }

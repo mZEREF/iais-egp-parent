@@ -49,4 +49,6 @@ public class ApplicationDto extends BaseEntityDto {
     private String aoUserId;
 
     private String hmUserId;
+
+    private String submissionType;
 }
