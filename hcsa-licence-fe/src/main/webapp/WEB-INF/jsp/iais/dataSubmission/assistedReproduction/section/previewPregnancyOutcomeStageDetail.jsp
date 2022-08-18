@@ -24,7 +24,6 @@
                         <iais:code code="${embryoTransferredOutcomeStageDto.transferedOutcome}"/>
                     </iais:value>
                 </iais:row>
-                <%@include file="../common/patientInventoryTable.jsp" %>
             </div>
         </div>
     </div>
