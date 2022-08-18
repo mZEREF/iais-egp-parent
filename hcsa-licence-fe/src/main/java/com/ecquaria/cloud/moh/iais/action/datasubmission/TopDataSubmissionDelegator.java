@@ -221,10 +221,7 @@ public class TopDataSubmissionDelegator {
         }
         if(!StringUtil.isEmpty(patientInformationDto.getPatientAge())){
             try {
-                int age= -Formatter.compareDateByDay(patientInformationDto.getBirthData())/365;
-                int ageNew=-(Formatter.compareDateByDay(patientInformationDto.getBirthData())+age/4) / 365;
-
-                patientInformationDto.setPatientAge(ageNew);
+                patientInformationDto.setPatientAge(Formatter.getAge(patientInformationDto.getBirthData()));
             }catch (Exception e){
                 log.error(e.getMessage(),e);
             }
@@ -362,22 +359,18 @@ public class TopDataSubmissionDelegator {
                 }else if (DsConfigHelper.TOP_STEP_PRESENT_TERMINATION.equals(cfg.getCode())&&terminationOfPregnancyDto.getTerminationDto()!=null) {
                     PreTerminationDto preTerminationDto= terminationOfPregnancyDto.getPreTerminationDto();
                     if(needDoTop(preTerminationDto)){
-                        ParamUtil.setSessionAttr(bpc.request, "needDoTop", "yes");
                         ValidationResult result = WebValidationHelper.validateProperty(terminationOfPregnancyDto.getTerminationDto(),"TOP");
                         status = result.isHasErrors()?0:1;
                     }else {
-                        ParamUtil.setSessionAttr(bpc.request, "needDoTop", "no");
                         status =1;
                     }
                 }else if (DsConfigHelper.TOP_STEP_POST_TERMINATION.equals(cfg.getCode())&&terminationOfPregnancyDto.getPostTerminationDto()!=null) {
                     PreTerminationDto preTerminationDto= terminationOfPregnancyDto.getPreTerminationDto();
                     if(needDoTop(preTerminationDto)){
-                        ParamUtil.setSessionAttr(bpc.request, "needDoTop", "yes");
                         ValidationResult result = WebValidationHelper.validateProperty(terminationOfPregnancyDto.getPostTerminationDto(),"TOP");
                         status = result.isHasErrors()?0:1;
                     }else {
                         status =1;
-                        ParamUtil.setSessionAttr(bpc.request, "needDoTop", "no");
                     }
                 }
                 cfg.setStatus(status);
@@ -490,9 +483,7 @@ public class TopDataSubmissionDelegator {
             PreTerminationDto preTerminationDto= terminationOfPregnancyDto.getPreTerminationDto();
             if(needDoTop(preTerminationDto)){
                 status = doPresentTermination(bpc.request);
-                ParamUtil.setSessionAttr(bpc.request, "needDoTop", "yes");
             }else {
-                ParamUtil.setSessionAttr(bpc.request, "needDoTop", "no");
                 status =1;
             }
         }else if (DsConfigHelper.TOP_STEP_POST_TERMINATION.equals(currentCode)) {
@@ -501,9 +492,7 @@ public class TopDataSubmissionDelegator {
             PreTerminationDto preTerminationDto= terminationOfPregnancyDto.getPreTerminationDto();
             if(needDoTop(preTerminationDto)){
                 status = doPostTermination(bpc.request);
-                ParamUtil.setSessionAttr(bpc.request, "needDoTop", "yes");
             }else {
-                ParamUtil.setSessionAttr(bpc.request, "needDoTop", "no");
                 status =1;
             }
         }else if(DsConfigHelper.TOP_STEP_PREVIEW.equals(currentCode)){
@@ -736,9 +725,7 @@ public class TopDataSubmissionDelegator {
             String birthDate = terminationOfPregnancyDto.getPatientInformationDto().getBirthData();
             if(StringUtil.isNotEmpty(terminationOfPregnancyDto.getPreTerminationDto().getCounsellingDate())){
                 String counsellingGiven = terminationOfPregnancyDto.getPreTerminationDto().getCounsellingDate();
-                int age=-Formatter.compareDateByDay(birthDate,counsellingGiven)/365;
-                int ageNew=-(Formatter.compareDateByDay(birthDate,counsellingGiven)+age/4) / 365;
-
+                int ageNew=Formatter.getAge(birthDate,counsellingGiven);
                 terminationOfPregnancyDto.getPreTerminationDto().setCounsellingAge(ageNew);
                 if(ageNew>=16&&"AR_SC_001".equals(terminationOfPregnancyDto.getPreTerminationDto().getCounsellingPlace())){
                     terminationOfPregnancyDto.getPreTerminationDto().setCounsellingPlace(null);
@@ -925,8 +912,7 @@ public class TopDataSubmissionDelegator {
         }
         ControllerHelper.get(request, familyPlanDto);
         try {
-            int age= -Formatter.compareDateByDay(patientInformationDto.getBirthData())/365;
-            int ageNew=-(Formatter.compareDateByDay(patientInformationDto.getBirthData())+age/4) / 365;
+            int ageNew=Formatter.getAge(patientInformationDto.getBirthData());
 
             patientInformationDto.setPatientAge(ageNew);
         }catch (Exception e){
