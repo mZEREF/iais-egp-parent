@@ -152,15 +152,11 @@
                                                     <%-- AR_STAGE_IUI_TREATMENT_SUBSIDIES --%>
                                                     <%@include file="cycleStage/previewIuiTreatmentSubsidiesDetail.jsp" %>
                                                 </c:when>
-                                                <c:when test="${cycleStage == 'AR_STG009'}">
-                                                    <%-- AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED--%>
-                                                    <%@include file="cycleStage/previewPregnancyOutcomeStageDetail.jsp" %>
-                                                </c:when>
                                                 <c:when test="${cycleStage == 'AR_STG010'}">
                                                     <%-- AR_STAGE_OUTCOME--%>
                                                     <%@include file="cycleStage/previewOutcomeStageDetail.jsp" %>
                                                 </c:when>
-                                                <c:when test="${cycleStage == 'AR_STG011'}">
+                                                <c:when test="${cycleStage == 'AR_STG011'||cycleStage == 'AR_STG009'}">
                                                     <%-- AR_STAGE_OUTCOME_OF_PREGNANCY--%>
                                                     <%@include file="cycleStage/previewPregnancyOutcomeStageDetail.jsp" %>
                                                 </c:when>
@@ -235,15 +231,11 @@
                                                     <%-- AR_STAGE_IUI_TREATMENT_SUBSIDIES --%>
                                                     <%@include file="cycleStageAment/previewIuiTreatmentSubsidiesDetail.jsp" %>
                                                 </c:when>
-                                                <c:when test="${cycleStage == 'AR_STG009'}">
-                                                    <%-- AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED--%>
-                                                    <%@include file="cycleStageAment/previewPregnancyOutcomeStageDetail.jsp" %>
-                                                </c:when>
                                                 <c:when test="${cycleStage == 'AR_STG010'}">
                                                     <%-- AR_STAGE_OUTCOME--%>
                                                     <%@include file="cycleStageAment/previewOutcomeStageDetail.jsp" %>
                                                 </c:when>
-                                                <c:when test="${cycleStage == 'AR_STG011'}">
+                                                <c:when test="${cycleStage == 'AR_STG011'||cycleStage == 'AR_STG009'}">
                                                     <%-- AR_STAGE_OUTCOME_OF_PREGNANCY--%>
                                                     <%@include file="cycleStageAment/previewPregnancyOutcomeStageDetail.jsp" %>
                                                 </c:when>
