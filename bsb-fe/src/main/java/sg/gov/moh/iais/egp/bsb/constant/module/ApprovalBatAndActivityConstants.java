@@ -17,7 +17,8 @@ public class ApprovalBatAndActivityConstants {
 
     public static final String KEY_PROCESS_TYPE = "processType";
 
-    public static final String KEY_NOT_EXIST_FAC_ACTIVITY_TYPE_APPROVAL_LIST = "notExistFacActivityTypeApprovalList";
+    public static final String KEY_FAC_ACTIVITY_TYPE_APPROVAL_WITH_APPROVED_LIST = "allFacilityActivitiesWithApproved";
+    public static final String KEY_FAC_ACTIVITY_TYPE_SET = "allActivityTypes";
 
     public static final String KEY_DOC_SETTINGS             = "docSettings";
     public static final String KEY_OTHER_DOC_TYPES          = "otherDocTypes";
@@ -42,6 +43,8 @@ public class ApprovalBatAndActivityConstants {
     public static final String NODE_NAME_FAC_ACTIVITY = "facActivity";
     public static final String NODE_NAME_PRIMARY_DOC = "primaryDoc";
     public static final String NODE_NAME_PREVIEW = "preview";
+
+    public static final String SOURCE_FACILITY_DETAILS = "sourceFacDetails";
 
     public static final String SELECTION_FACILITY_ID = "selectionFacilityId";
 
@@ -73,6 +76,8 @@ public class ApprovalBatAndActivityConstants {
 
     public static final String KEY_SCHEDULE_BAT_MAP        = "scheduleBatMap";
     public static final String KEY_SCHEDULE_BAT_MAP_JSON   = "scheduleBatMapJson";
+    public static final String KEY_FAC_EXIST_BAT_SET       = "existBatSet";
+    public static final String KEY_FAC_EXIST_BAT_SET_JSON  = "existBatSetJson";
     public static final String KEY_AUTH_PERSONNEL_DETAIL_MAP_JSON   = "authPersonnelDetailMapJson";
 
     public static final String KEY_USER_ID_FACILITY_AUTH_MAP = "facilityAuthIdMap";

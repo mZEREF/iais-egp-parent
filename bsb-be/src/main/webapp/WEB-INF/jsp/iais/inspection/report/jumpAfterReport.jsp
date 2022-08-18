@@ -1,4 +1,4 @@
-<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 
 <%--@elvariable id="AFTER_SAVE_REPORT" type="java.lang.Boolean"--%>

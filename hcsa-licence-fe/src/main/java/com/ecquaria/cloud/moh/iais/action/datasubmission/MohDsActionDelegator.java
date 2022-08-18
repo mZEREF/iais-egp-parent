@@ -200,8 +200,8 @@ public class MohDsActionDelegator {
             SexualSterilizationDto sexualSterilizationDto =vssTreatmentDto.getSexualSterilizationDto();
             TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto();
             try {
-                int age = -Formatter.compareDateByDay(treatmentDto.getBirthDate())/365;
-                int ageNew=-(Formatter.compareDateByDay(treatmentDto.getBirthDate())+age/4) / 365;
+                int ageNew=Formatter.getAge(treatmentDto.getBirthDate());
+
                 treatmentDto.setAge(ageNew);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);

@@ -26,11 +26,16 @@
 
 <script>
     <% String jsonStr = (String) request.getAttribute("scheduleBatMapJson");
-       if (jsonStr == null || "".equals(jsonStr)) {
-           jsonStr = "undefined";
-       }
+        if (jsonStr == null || "".equals(jsonStr)) {
+            jsonStr = "undefined";
+        }
+        String existBatDataJson = (String) request.getAttribute("existBatSetJson");
+        if (existBatDataJson == null || "".equals(existBatDataJson)) {
+            existBatDataJson = "undefined";
+        }
     %>
     var scheduleBatDataJson = <%=jsonStr%>;
+    var existBatDataJson = <%=existBatDataJson%>
 </script>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>

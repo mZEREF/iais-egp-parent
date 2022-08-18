@@ -105,8 +105,8 @@ public class TopAjaxController {
         boolean b = PreTerminationValidator.validateDate(birthDate);
         boolean b1 = PreTerminationValidator.validateDate(counsellingGiven);
         if (b && b1) {
-            int age = -Formatter.compareDateByDay(birthDate, counsellingGiven) / 365;
-            int ageNew=-(Formatter.compareDateByDay(birthDate, counsellingGiven)+age/4) / 365;
+            int ageNew=Formatter.getAge(birthDate,counsellingGiven);
+
             PreTerminationDto preTerminationDto = new PreTerminationDto();
             preTerminationDto.setCounsellingAge(ageNew);
             result.put("selection", preTerminationDto);
@@ -148,9 +148,7 @@ public class TopAjaxController {
         String counsellingGivenDate = ParamUtil.getString(request, "counsellingGivenDate");
         if(StringUtil.isNotEmpty(counsellingGivenDate)){
             try {
-                int counsellingAge = -Formatter.compareDateByDay(birthDate,counsellingGivenDate)/365;
-                int ageNew=-(Formatter.compareDateByDay(birthDate,counsellingGivenDate)+counsellingAge/4) / 365;
-
+                int ageNew=Formatter.getAge(birthDate,counsellingGivenDate);
                 if(!StringUtil.isEmpty(ageNew)){
                     if(ageNew<16){
                         result.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER,CONSULTING_CENTER));

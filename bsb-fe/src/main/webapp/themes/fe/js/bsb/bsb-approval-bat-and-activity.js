@@ -1,4 +1,4 @@
-$(function () {
+    $(function () {
     $("#saveDraft").click(function () {
         showWaiting();
         $("input[name='action_type']").val("draft");
@@ -72,7 +72,7 @@ $(function () {
             var id = $(this).attr("id");
             var batDropdownId = computeBatDropdownIdByScheduleDropdownId(id);
             $("#"+id).unbind("change");
-            registerCascadeEvent(id, batDropdownId, scheduleBatDataJson, null, function () {
+            registerCascadeEventWithDisabled(id, batDropdownId, scheduleBatDataJson, existBatDataJson, null, function () {
                 $("#"+batDropdownId).niceSelect("update");
             });
         });

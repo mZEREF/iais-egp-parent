@@ -18,6 +18,8 @@
 
 <link href="<%=sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
 <script type="text/javascript" src="<%=sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT%>/js/bsb/bsb-common.js"></script>
+<script type="text/javascript" src="<%=sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT%>/js/bsb/bsb-common-node-group.js"></script>
+
 <jsp:invoke fragment="specialJsFrag"/>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
@@ -40,14 +42,15 @@
                                         <p class="assessment-title" style="font-size:18px; font-weight: bold">Facility Activity Type <span style="color: red">*</span></p>
                                         <p class="assessment-title" style="border-bottom: 1px solid black; font-size:15px; padding-bottom: 10px;">Please select the facility activity type from the following:</p>
                                         <c:if test="${editJudge}"><div class="text-right app-font-size-16"><a id="edit" href="javascript:void(0)"><em class="fa fa-pencil-square-o"></em>Edit</a></div></c:if>
-                                        <c:forEach items="${notExistFacActivityTypeApprovalList}" var="facActivity">
+                                        <c:forEach items="${allFacilityActivitiesWithApproved}" var="facActivity" varStatus="status">
                                             <div>
-                                                <input type="checkbox" name="facActivityTypes" id="facActivityTypes" <c:if test="${approvalToActivityDto.facActivityTypes.contains(facActivity)}">checked="checked"</c:if> value="${facActivity}"/>
-                                                <label for="facActivityTypes" class="form-check-label"><span class="check-square"><iais:code code="${facActivity}"/></span></label>
+                                                <input type="checkbox" name="facActivityTypes" id="facActivityTypes${status.index}" <c:if test="${'Y'== facActivity.value}">disabled="disabled"</c:if> <c:if test="${approvalToActivityDto.facActivityTypes.contains(facActivity.key)}">checked="checked"</c:if> value="${facActivity.key}"/>
+                                                <label for="facActivityTypes${status.index}" class="form-check-label"><span class="check-square" <c:if test="${'Y'== facActivity.value}">style="color: grey" </c:if> ><iais:code code="${facActivity.key}"/></span></label>
                                             </div>
+                                            <span data-err-ind="facActivityTypes${status.index}" class="error-msg"></span>
                                         </c:forEach>
+                                        <span data-err-ind="facActivityTypes" class="error-msg"></span>
                                         <div>
-                                            <span data-err-ind="facActivityTypes" class="error-msg"></span>
                                         </div>
                                     </div>
                                 </div>

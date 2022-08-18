@@ -20,6 +20,7 @@ import sg.gov.moh.iais.egp.bsb.dto.inspection.InsSubmitReportDataDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.ReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.service.AppViewService;
+import sg.gov.moh.iais.egp.bsb.service.InspectionService;
 import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -50,16 +51,18 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_VALIDATION_ERRORS;
 
 /**
- * DO inspection report
+ * DO submit inspection report
  */
 @Slf4j
 @Delegator("bsbSubmitInspectionReport")
 public class BsbSubmitInspectionReportDelegator {
+    private final InspectionService inspectionService;
     private final InspectionClient inspectionClient;
     private final InternalDocClient internalDocClient;
 
     @Autowired
-    public BsbSubmitInspectionReportDelegator(InspectionClient inspectionClient, InternalDocClient internalDocClient) {
+    public BsbSubmitInspectionReportDelegator(InspectionService inspectionService, InspectionClient inspectionClient, InternalDocClient internalDocClient) {
+        this.inspectionService = inspectionService;
         this.inspectionClient = inspectionClient;
         this.internalDocClient = internalDocClient;
     }
@@ -150,11 +153,7 @@ public class BsbSubmitInspectionReportDelegator {
     }
 
     public void skip(BaseProcessClass bpc){
-        HttpServletRequest request = bpc.request;
-        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
-        String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
-        InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
-        inspectionClient.skipInspection(appId, taskId, processDto);
+        inspectionService.skipInspection(bpc.request);
     }
 
     public void handleSaveReport(BaseProcessClass bpc) {

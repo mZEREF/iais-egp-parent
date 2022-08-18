@@ -61,11 +61,21 @@ $(function () {
     });
 
     $("#processingDecision").change(function () {
-        var selectValue = $(this).val();
-        // TODO: check these decision
-        if (selectValue === "MOHPRO003" || selectValue === "MOHPRO007" ||
-            selectValue === "MOHPRO009" || selectValue === "MOHPRO014" ||
-            selectValue === "MOHPRO018" || selectValue === "MOHPRO022") {
+        var selectValue = this.value;
+        var appStatus = this.getAttribute("data-app-status");
+        var show = false;
+        if (selectValue === 'MOHPRO014') {  // decision is rout to AO for review
+            if (appStatus === 'BSBAPST300' ||  // DO submit inspection report
+                appStatus === 'BSBAPST302' ||  // DO submit inspection report revision
+                appStatus === 'BSBAPST312') {  // DO NC notification email
+                show = true;
+            }
+        } else if (appStatus === 'BSBAPST303' && selectValue === 'MOHPRO018') {  // DO approve inspection report
+            show = true;
+        } else if (appStatus === 'BSBAPST304' && selectValue === 'MOHPRO019') {  // AO approve inspection report
+            show = true;
+        }
+        if (show) {
             $("#selectMohUserDiv").show();
         } else {
             $("#selectMohUserDiv").hide();

@@ -16,6 +16,7 @@ import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApprovalToActivityDto extends ValidatableNodeValue {
+    private String facilityId;
     private List<String> facActivityTypes;
 
     @JsonIgnore
@@ -42,6 +43,14 @@ public class ApprovalToActivityDto extends ValidatableNodeValue {
     @Override
     public void clearValidationResult() {
         this.validationResultDto = null;
+    }
+
+    public String getFacilityId() {
+        return facilityId;
+    }
+
+    public void setFacilityId(String facilityId) {
+        this.facilityId = facilityId;
     }
 
     public List<String> getFacActivityTypes() {

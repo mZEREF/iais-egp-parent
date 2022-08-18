@@ -32,14 +32,12 @@ import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants
 import static com.ecquaria.cloud.moh.iais.common.constant.BsbAuditTrailConstants.MODULE_INSPECTION;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_AO_REPORT_APPROVAL;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.APP_STATUS_PEND_HM_REPORT_APPROVAL;
-import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_AFTER_SAVE_REPORT;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INS_DECISION;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_INS_REPORT;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_ROUTE;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.KEY_TASK_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.TAB_ACTIVE;
-import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.TAB_INS_REPORT;
 import static sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants.TAB_PROCESSING;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_FACILITY_DETAILS_INFO;
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_PREVIOUS_OFFICER_NOTE;
@@ -49,7 +47,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_VALIDATION_ERRORS;
 
 /**
- * AO inspection report
+ * HM inspection report approval
  */
 @Slf4j
 @Delegator("bsbInspectionReportHMApprovalDelegator")
@@ -101,6 +99,7 @@ public class BsbInspectionReportHMApprovalDelegator {
         ParamUtil.setSessionAttr(request, KEY_INS_DECISION, processDto);
     }
 
+
     public void pre(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
@@ -111,9 +110,11 @@ public class BsbInspectionReportHMApprovalDelegator {
         AppViewService.facilityRegistrationViewApp(request, appId);
     }
 
+
     public void bindAction(BaseProcessClass bpc) {
         // do nothing now
     }
+
 
     public void handleSubmit(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -121,8 +122,7 @@ public class BsbInspectionReportHMApprovalDelegator {
         processDto.reqObjMapping(request);
         ParamUtil.setSessionAttr(request, KEY_INS_DECISION, processDto);
 
-        // TODO: check these decision
-        ValidationResultDto validationResultDto = inspectionClient.validateActualInspectionHMApprovalDecision(processDto);
+        ValidationResultDto validationResultDto = inspectionClient.validateActualInspectionReportHMApprovalDecision(processDto);
         String validateResult;
         if (validationResultDto.isPass()) {
             if (MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE.equals(processDto.getDecision())) {
@@ -143,13 +143,12 @@ public class BsbInspectionReportHMApprovalDelegator {
     }
 
 
-
     public void approve(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
         InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
-        inspectionClient.reviewInspectionReportHMApprove(appId, taskId, processDto);
+        inspectionClient.hmApproveFinalInspectionReport(appId, taskId, processDto);
 
         ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_HM_REPORT_APPROVAL));
         ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_AO_REPORT_APPROVAL));
@@ -161,7 +160,7 @@ public class BsbInspectionReportHMApprovalDelegator {
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
         InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
-        inspectionClient.reviewInspectionReportHMReject(appId,taskId,processDto);
+        inspectionClient.hmRejectFinalInspectionReport(appId,taskId,processDto);
 
         ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_HM_REPORT_APPROVAL));
         ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_AO_REPORT_APPROVAL));
@@ -169,24 +168,6 @@ public class BsbInspectionReportHMApprovalDelegator {
     }
 
     public void handleSaveReport(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
-
-        InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
-        processDto.reqObjMapping(request);
-        ParamUtil.setSessionAttr(request, KEY_INS_DECISION, processDto);
-
-        ReportDto reportDto = (ReportDto) ParamUtil.getSessionAttr(request, KEY_INS_REPORT);
-        reportDto.reqObjMapping(request);
-        ParamUtil.setSessionAttr(request, KEY_INS_REPORT, reportDto);
-        ValidationResultDto validationResultDto = inspectionClient.validateActualInspectionReport(reportDto);
-        if (validationResultDto.isPass()) {
-            inspectionClient.saveInspectionReportDto(appId, StageConstants.ROLE_DO, reportDto);
-            ParamUtil.setRequestAttr(request, KEY_AFTER_SAVE_REPORT, Boolean.TRUE);
-        } else {
-            log.error("Validation inspection report failure info: {}", validationResultDto.toErrorMsg());
-            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());
-        }
-        ParamUtil.setRequestAttr(request, TAB_ACTIVE, TAB_INS_REPORT);
+        throw new UnsupportedOperationException("HM can not edit inspection report");
     }
 }

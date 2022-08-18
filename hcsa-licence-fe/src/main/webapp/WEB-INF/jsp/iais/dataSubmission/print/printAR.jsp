@@ -61,19 +61,13 @@
         <%-- AR_STAGE_IUI_TREATMENT_SUBSIDIES --%>
         <%@include file="../assistedReproduction/section/previewIuiTreatmentSubsidiesDetail.jsp" %>
     </c:when>
-    <c:when test="${cycleStage == 'AR_STG009'}">
-        <%-- AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED--%>
-        <%@include file="../assistedReproduction/section/previewEmbryoTransferredOutcomeStageDetail.jsp" %>
-        <%@include file="../assistedReproduction/section/previewPregnancyOutcomeStageDetail.jsp" %>
 
-    </c:when>
     <c:when test="${cycleStage == 'AR_STG010'}">
         <%-- AR_STAGE_OUTCOME--%>
         <%@include file="../assistedReproduction/section/previewOutcomeStageDetail.jsp" %>
     </c:when>
-    <c:when test="${cycleStage == 'AR_STG011'}">
+    <c:when test="${cycleStage == 'AR_STG011'||cycleStage == 'AR_STG009'}">
         <%-- AR_STAGE_OUTCOME_OF_PREGNANCY--%>
-        <%@include file="../assistedReproduction/section/previewEmbryoTransferredOutcomeStageDetail.jsp" %>
         <%@include file="../assistedReproduction/section/previewPregnancyOutcomeStageDetail.jsp" %>
     </c:when>
     <c:when test="${cycleStage == 'AR_STG012'}">

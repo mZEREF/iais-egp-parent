@@ -22,6 +22,7 @@ import sg.gov.moh.iais.egp.bsb.dto.register.approval.FacAuthorisedDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.approval.FacProfileDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.approval.PreviewDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.approval.PrimaryDocDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.approval.ScheduleBasedBatDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 
 import java.util.List;
@@ -37,7 +38,7 @@ public interface ApprovalBatAndActivityClient {
     ResponseDto<ApprovalBatAndActivityDto> getApprovalAppAppDataByApplicationId(@PathVariable("appId") String appId);
 
     @GetMapping(path = "/bat-info/dropdown/schedule-bat/facId", produces = MediaType.APPLICATION_JSON_VALUE)
-    Map<String, List<BatCodeInfo>> queryScheduleBasedBatBasicInfo(@RequestParam("facId") String facId,@RequestParam("approvalType")String approvalType);
+    ScheduleBasedBatDto queryScheduleBasedBatBasicInfo(@RequestParam("facId") String facId, @RequestParam("approvalType")String approvalType);
 
     @PostMapping(path = "/register/bat-and-activity-approval/form-validation/approval-selection", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateApprovalSelectionDto(@RequestBody ApprovalSelectionDto dto);
@@ -64,7 +65,7 @@ public interface ApprovalBatAndActivityClient {
     ResponseDto<FacProfileDto> getFacProfileDtoByFacilityId(@PathVariable("facilityId") String facilityId);
 
     @GetMapping(path = "/register/bat-and-activity-approval/not-approval-activities/{facilityId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    List<String> getNotApprovalActivities(@PathVariable("facilityId") String facilityId);
+    Map<String,String> getNotApprovalActivities(@PathVariable("facilityId") String facilityId);
 
     @PostMapping(path = "/register/bat-and-activity-approval", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<AppMainInfo> saveNewApplicationToApproval(@RequestBody ApprovalBatAndActivityDto dto);

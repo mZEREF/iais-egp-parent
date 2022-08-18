@@ -77,6 +77,8 @@ public class FacRegisterConstants {
     public static final String KEY_JUMP_DEST_NODE          = "destNode";
     public static final String KEY_DEST_NODE_ROUTE         = "nodeRoute";
 
+    public static final String SOURCE_FACILITY_DETAILS = "sourceFacDetails";
+
     public static final String KEY_APP_NO                  = "appNo";
     public static final String KEY_APP_DT                  = "appDt";
 

@@ -217,8 +217,12 @@
             var childrenNum = $('#childrenNum').val();
             if (childrenNum!=null && childrenNum>0 && childrenNum<=10) {
                 $('#gender').show();
+                $('#genders').show();
+
             } else {
                 $('#gender').hide();
+                $('#genders').hide();
+
             }
         });
     });
@@ -230,7 +234,7 @@
             $("#genders").empty();
             for (var i = 0; i < value; i++) {
                 var input = "<div class=\"col-sm-7 col-md-5 col-xs-7 col-md-12\" style=\"padding-left: 0px;padding-right: 0px;\">\n" +
-                    "<select class='livingChildrenGendersSel' name=\"livingChildrenGenders\" id=\"livingChildrenGenders\" style=\"display: none;\">\n" +
+                    "<select class='livingChildrenGendersSel' name=\"livingChildrenGenders\" id=\"livingChildrenGenders"+i+"\" style=\"display: none;\">\n" +
                     "     <option value=\"\">Please Select</option>\n" +
                     "     <option value=\"TOPGAW001\">Male</option>\n" +
                     "     <option value=\"TOPGAW002\">Female</option>\n" +
@@ -328,6 +332,28 @@
                 console.log("shibai")
                 $('#noFoundDiv').modal('show');
             }
+            $('#patientName').val(null);
+            $('#birthDate').val(null);
+            fillValue($('#nationality'),null);
+            $('#commResidenceInSgDate').hide();
+            $('#commResidenceInSgDates').val(null);
+            $('#residenceStatus').hide();
+            fillValue($('#residenceStatus'),null);
+            fillValue($('#ethnicGroups'),null);
+            $('#otherEthnicGroups').hide();
+            $('#otherEthnicGroup').val(null);
+            $('#occupations').hide();
+            fillValue($('#occupations'),null);
+            $('#otherOccupations').hide();
+            $('#otherOccupation').val(null);
+            fillValue($('#maritalStatus'),null);
+            fillValue($('#educationLevel'),null);
+            $('#childrenNum').val(null);
+            fillValue($('#activityStatus'),null);
+            $('#childrenNum').val(null);
+            $('#gender').hide();
+            $('#genders').hide();
+
             return;
         }
         clearSelection();
@@ -387,8 +413,8 @@
             $('#genders').show();
             var livingChildrenGenders=data.selection.livingChildrenGenders;
             for(var i=0;i<livingChildrenGenders.length;i++){
-                console.log(i)
-                fillValue($('#livingChildrenGenders'+i),livingChildrenGenders[i]);
+                console.log(livingChildrenGenders[i].replace(/^\s*/,""))
+                fillValue($('#livingChildrenGenders'+i),livingChildrenGenders[i].replace(/^\s*/,""));
             }
         }else {
             $('#gender').hide();

@@ -369,8 +369,7 @@ public class VssDataSubmissionDelegator {
             treatmentDto.setIdNumber(treatmentDto.getIdNumber().toUpperCase());
         }
         try {
-            int age = -Formatter.compareDateByDay(treatmentDto.getBirthDate())/365;
-            int ageNew=-(Formatter.compareDateByDay(treatmentDto.getBirthDate())+age/4) / 365;
+            int ageNew=Formatter.getAge(treatmentDto.getBirthDate());
 
             treatmentDto.setAge(ageNew);
         } catch (Exception e) {

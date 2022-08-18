@@ -15,12 +15,12 @@ import sg.gov.moh.iais.egp.bsb.constant.StageConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
-import sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsReportDoApprovalProcessDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.InsSubmitReportDataDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.ReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.service.AppViewService;
+import sg.gov.moh.iais.egp.bsb.service.InspectionService;
 import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -54,16 +54,18 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
 
 
 /**
- * DO inspection approval
+ * DO inspection report approval
  */
 @Slf4j
 @Delegator("bsbInspectionReportDOApprovalDelegator")
 public class BsbInspectionReportDOApprovalDelegator {
+    private final InspectionService inspectionService;
     private final InspectionClient inspectionClient;
     private final InternalDocClient internalDocClient;
 
     @Autowired
-    public BsbInspectionReportDOApprovalDelegator(InspectionClient inspectionClient, InternalDocClient internalDocClient) {
+    public BsbInspectionReportDOApprovalDelegator(InspectionService inspectionService, InspectionClient inspectionClient, InternalDocClient internalDocClient) {
+        this.inspectionService = inspectionService;
         this.inspectionClient = inspectionClient;
         this.internalDocClient = internalDocClient;
     }
@@ -104,7 +106,7 @@ public class BsbInspectionReportDOApprovalDelegator {
 
 
         // inspection processing
-        InsProcessDto processDto = new InsProcessDto();
+        InsReportDoApprovalProcessDto processDto = new InsReportDoApprovalProcessDto();
         ParamUtil.setSessionAttr(request, KEY_INS_DECISION, processDto);
     }
 
@@ -160,6 +162,8 @@ public class BsbInspectionReportDOApprovalDelegator {
                 validateResult = "markAsFinal";
             } else if (MasterCodeConstants.MOH_PROCESS_DECISION_ROUTE_BACK_TO_APPLICANT.equals(processDto.getDecision())) {
                 validateResult = "rfi";
+            } else if (MasterCodeConstants.MOH_PROCESS_DECISION_SKIP_INSPECTION.equals(processDto.getDecision())){
+                validateResult = "skip";
             } else {
                 validateResult = "invalid";
             }
@@ -179,7 +183,7 @@ public class BsbInspectionReportDOApprovalDelegator {
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
         InsReportDoApprovalProcessDto processDto = (InsReportDoApprovalProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
-        inspectionClient.finalizeInspectionReport(appId, taskId, processDto);
+        inspectionClient.doFinalizeInspectionReport(appId, taskId, processDto);
 
         ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_DO_REPORT_APPROVAL));
         ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_AO_REPORT_APPROVAL));
@@ -196,5 +200,9 @@ public class BsbInspectionReportDOApprovalDelegator {
         ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_DO_REPORT_APPROVAL));
         ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_APPLICANT_INPUT));
         ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_NEXT_ROLE, ModuleCommonConstants.KEY_APPLICANT);
+    }
+
+    public void skip(BaseProcessClass bpc){
+        inspectionService.skipInspection(bpc.request);
     }
 }

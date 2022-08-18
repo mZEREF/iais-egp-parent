@@ -1,12 +1,6 @@
 $(function () {
-    $("[data-type='reportInput']").removeAttr("disabled");
-
-    $(".nice-select").removeClass("disabled");
-
     $("#saveReportBtn").click(function () {
         showWaiting();
-        $("[data-type='reportInput']").removeAttr("disabled");
-        $(".nice-select").removeClass("disabled");
         $("input[name='action_type']").val("saveReport");
         $("#mainForm").submit();
     });

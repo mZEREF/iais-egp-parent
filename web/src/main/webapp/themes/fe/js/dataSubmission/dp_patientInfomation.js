@@ -23,11 +23,17 @@ function  test(sel,val,id1,id2){
 function countryStar(){
     var country= $('#country option:selected').val();
     if(isEmpty(country) || "SG" == country){
-        $('#cityStar').text("")
-        $('#stateStar').text("")
+        $('#cityStar').text("");
+        $('#stateStar').text("");
+        if("SG" == country){
+            $('#postalCode').prop('maxLength',6);
+            var postalCode=$('#postalCode').val();
+            $('#postalCode').val(postalCode.slice(0,6))
+        }
     }else {
-        $('#cityStar').text("*")
-        $('#stateStar').text("*")
+        $('#cityStar').text("*");
+        $('#stateStar').text("*");
+        $('#postalCode').prop('maxLength',20);
     }
 }
 function toggleSelect(sel, val, elem) {

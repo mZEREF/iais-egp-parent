@@ -147,9 +147,9 @@
                                             <%-- AR_STAGE_IUI_TREATMENT_SUBSIDIES --%>
                                             <%@include file="cycleStage/previewIuiTreatmentSubsidiesDetail.jsp" %>
                                         </c:if>
-                                        <c:if test="${cycleStage == 'AR_STG009'}">
+                                        <c:if test="${cycleStage == 'AR_STG009'||cycleStage == 'AR_STG011'}">
                                             <%-- AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED--%>
-                                            <%@include file="cycleStage/previewEmbryoTransferredOutcomeStageDetail.jsp" %>
+                                            <%@include file="cycleStage/previewPregnancyOutcomeStageDetail.jsp" %>
                                         </c:if>
                                         <c:if test="${cycleStage == 'AR_STG010'}">
                                             <%-- AR_STAGE_OUTCOME--%>
@@ -224,9 +224,8 @@
                                             <%-- AR_STAGE_IUI_TREATMENT_SUBSIDIES --%>
                                             <%@include file="cycleStageAment/previewIuiTreatmentSubsidiesDetail.jsp" %>
                                         </c:if>
-                                        <c:if test="${cycleStage == 'AR_STG009'}">
+                                        <c:if test="${cycleStage == 'AR_STG009'||cycleStage == 'AR_STG011'}">
                                             <%-- AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED--%>
-                                            <%@include file="cycleStageAment/previewEmbryoTransferredOutcomeStageDetail.jsp" %>
                                             <%@include file="cycleStageAment/previewPregnancyOutcomeStageDetail.jsp" %>
 
                                         </c:if>
@@ -234,11 +233,7 @@
                                             <%-- AR_STAGE_OUTCOME--%>
                                             <%@include file="cycleStageAment/previewOutcomeStageDetail.jsp" %>
                                         </c:if>
-                                        <c:if test="${cycleStage == 'AR_STG011'}">
-                                            <%-- AR_STAGE_OUTCOME_OF_PREGNANCY--%>
-                                            <%@include file="cycleStageAment/previewEmbryoTransferredOutcomeStageDetail.jsp" %>
-                                            <%@include file="cycleStageAment/previewPregnancyOutcomeStageDetail.jsp" %>
-                                        </c:if>
+
                                         <c:if test="${cycleStage == 'AR_STG012'}">
                                             <%-- AR_STAGE_FREEZING--%>
                                             <%@include file="cycleStageAment/previewFreezingSection.jsp" %>

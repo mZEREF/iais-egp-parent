@@ -84,6 +84,7 @@ public class MasterCodeConstants {
     public static final String APP_STATUS_PEND_DO_REPORT_APPROVAL                   = "BSBAPST303";
     public static final String APP_STATUS_PEND_AO_REPORT_APPROVAL                   = "BSBAPST304";
     public static final String APP_STATUS_PEND_HM_REPORT_APPROVAL                   = "BSBAPST305";
+    public static final String APP_STATUS_PEND_DO_CLARIFICATION_OF_REPORT_APPROVAL  = "BSBAPST306";
     // post-inspection(Non-Compliance)
     public static final String APP_STATUS_PEND_NC_RECTIFICATION                     = "BSBAPST310";
     public static final String APP_STATUS_PEND_NC_RECTIFICATION_CLARIFICATION       = "BSBAPST311";
@@ -134,6 +135,7 @@ public class MasterCodeConstants {
         inspectionAppStatus.add(APP_STATUS_PEND_DO_REPORT_APPROVAL);
         inspectionAppStatus.add(APP_STATUS_PEND_AO_REPORT_APPROVAL);
         inspectionAppStatus.add(APP_STATUS_PEND_HM_REPORT_APPROVAL);
+        inspectionAppStatus.add(APP_STATUS_PEND_DO_CLARIFICATION_OF_REPORT_APPROVAL);
         inspectionAppStatus.add(APP_STATUS_PEND_NC_RECTIFICATION);
         inspectionAppStatus.add(APP_STATUS_PEND_NC_RECTIFICATION_CLARIFICATION);
         inspectionAppStatus.add(APP_STATUS_PEND_NC_NOTIFICATION_EMAIL);

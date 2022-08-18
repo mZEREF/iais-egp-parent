@@ -145,9 +145,15 @@ $(function () {
     $("select[data-cascade-dropdown=schedule-bat]").each(function () {
         var id = $(this).attr("id");
         var batDropdownId = computeBatDropdownIdByScheduleDropdownId(id);
-        registerCascadeEvent(id, batDropdownId, scheduleBatDataJson, null, function () {
-            $("#"+batDropdownId).niceSelect("update");
-        });
+        if(existBatDataJson === "undefined"){
+            registerCascadeEvent(id, batDropdownId, scheduleBatDataJson,null, function () {
+                $("#"+batDropdownId).niceSelect("update");
+            });
+        } else {
+            registerCascadeEventWithDisabled(id, batDropdownId, scheduleBatDataJson, existBatDataJson,null, function () {
+                $("#"+batDropdownId).niceSelect("update");
+            });
+        }
     });
 });
 

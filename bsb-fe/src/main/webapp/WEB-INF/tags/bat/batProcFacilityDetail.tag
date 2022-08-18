@@ -8,7 +8,7 @@
 <%@attribute name="detail" required="true" type="sg.gov.moh.iais.egp.bsb.dto.register.bat.ProcModeDetails" %>
 <%@attribute name="status" required="true" type="javax.servlet.jsp.jstl.core.LoopTagStatus" %>
 
-<%@attribute name="facProfile" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileInfo" %>
+<%@attribute name="sourceFac" type="sg.gov.moh.iais.egp.bsb.dto.register.bat.SourceFacDetails" %>
 <%@attribute name="addressTypeOps" required="true" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>" %>
 <%@attribute name="nationalityOps" required="true" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>" %>
 
@@ -379,7 +379,7 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6">
-            <label id="facNameS--v--${status.index}">${facProfile.facName}</label>
+            <label id="facNameS--v--${status.index}">${sourceFac.facilityName}</label>
         </div>
     </div>
     <div class="form-group ">
@@ -388,7 +388,7 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6">
-            <label id="postalCodeS--v--${status.index}">${facProfile.postalCode}</label>
+            <label id="postalCodeS--v--${status.index}">${sourceFac.postalCode}</label>
         </div>
     </div>
     <div class="form-group ">
@@ -397,7 +397,7 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6">
-            <label id="addressTypeS--v--${status.index}"><iais:code code="${facProfile.addressType}"/></label>
+            <label id="addressTypeS--v--${status.index}"><iais:code code="${sourceFac.addressType}"/></label>
         </div>
     </div>
     <div class="form-group ">
@@ -405,7 +405,7 @@
             <label for="blockNoS--v--${status.index}">Block / House No.</label>
         </div>
         <div class="col-sm-6">
-            <label id="blockNoS--v--${status.index}">${facProfile.block}</label>
+            <label id="blockNoS--v--${status.index}">${sourceFac.blkNo}</label>
         </div>
     </div>
     <div class="form-group ">
@@ -413,7 +413,7 @@
             <label for="floorNoS--v--${status.index}">Floor</label>
         </div>
         <div class="col-sm-6">
-            <label id="floorNoS--v--${status.index}">${facProfile.floor}</label>
+            <label id="floorNoS--v--${status.index}">${sourceFac.floorNo}</label>
         </div>
     </div>
     <div class="form-group ">
@@ -421,7 +421,7 @@
             <label for="unitNoS--v--${status.index}">Unit No.</label>
         </div>
         <div class="col-sm-6">
-            <label id="unitNoS--v--${status.index}">${facProfile.unitNo}</label>
+            <label id="unitNoS--v--${status.index}">${sourceFac.unitNo}</label>
         </div>
     </div>
     <div class="form-group ">
@@ -430,7 +430,7 @@
             <span class="mandatory otherQualificationSpan">*</span>
         </div>
         <div class="col-sm-6">
-            <label id="streetNameS--v--${status.index}">${facProfile.streetName}</label>
+            <label id="streetNameS--v--${status.index}">${sourceFac.streetName}</label>
         </div>
     </div>
     <div class="form-group ">
@@ -438,7 +438,7 @@
             <label for="buildingNameS--v--${status.index}">Building Name</label>
         </div>
         <div class="col-sm-6">
-            <label id="buildingNameS--v--${status.index}">${facProfile.building}</label>
+            <label id="buildingNameS--v--${status.index}">${sourceFac.building}</label>
         </div>
     </div>
 </div>
