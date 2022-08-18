@@ -218,7 +218,8 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     }
 
     private DsCenterDto generateDsCenterDto(DsElisLicenceDto dsElisLicenceDto, String centerType, String orgId, String licenseeId) {
-        DsCenterDto dsCenterDto = licenceClient.getDsCenterDto(orgId, dsElisLicenceDto.getHciCode(), centerType).getEntity();
+        Date fromDate = processDate(dsElisLicenceDto.getLicStartDate(), DATE_FORMAT);
+        DsCenterDto dsCenterDto = licenceClient.getDsCenterDto(orgId, dsElisLicenceDto.getHciCode(), centerType, fromDate).getEntity();
         if (Objects.isNull(dsCenterDto)) {
             log.info("create new ds_center");
             dsCenterDto = new DsCenterDto();
@@ -237,8 +238,6 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
         dsCenterDto.setUnitNo(dsElisLicenceDto.getPreUnit());
         dsCenterDto.setStreetName(dsElisLicenceDto.getPreStreetName());
         dsCenterDto.setBuildingName(dsElisLicenceDto.getPreBuildingName());
-        //
-        Date fromDate = processDate(dsElisLicenceDto.getLicStartDate(), DATE_FORMAT);
         dsCenterDto.setEffectiveFrom(fromDate);
         //compare LicEndDate with ceseDate
         if (!StringUtils.hasLength(dsElisLicenceDto.getLicCeseDate())) {
