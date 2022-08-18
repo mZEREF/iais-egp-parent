@@ -980,8 +980,7 @@ public final class AppValidatorHelper {
         }
         if (!empty && floorNo.length() > 3) {
             addrTypeFlag = false;
-            String general_err0041 = repLength("Floor No.", "3");
-            errorMap.put(floorNoKey, general_err0041);
+            errorMap.put(floorNoKey, repLength("Floor No.", "3"));
         }
         if ((isAptBlkType || !empty) && empty2) {
             addrTypeFlag = false;
@@ -989,8 +988,7 @@ public final class AppValidatorHelper {
         }
         if (!empty2 && unitNo.length() > 5) {
             addrTypeFlag = false;
-            String general_err0041 = repLength("Unit No.", "5");
-            errorMap.put(unitNoKey, general_err0041);
+            errorMap.put(unitNoKey, repLength("Unit No.", "5"));
         }
         if (addrTypeFlag) {
             String floorNoErr = errorMap.get(floorNoKey);
@@ -1032,14 +1030,12 @@ public final class AppValidatorHelper {
 
                 if (!floorNoFlag && floorNo.length() > 3) {
                     flag = false;
-                    String general_err0041 = repLength("Floor No.", "3");
-                    errorMap.put(floorErrName + opIndex, general_err0041);
+                    errorMap.put(floorErrName + opIndex, repLength("Floor No.", "3"));
                 }
 
                 if (!unitNoFlag && unitNo.length() > 5) {
                     flag = false;
-                    String general_err0041 = repLength("Unit No.", "5");
-                    errorMap.put(unitErrName + opIndex, general_err0041);
+                    errorMap.put(unitErrName + opIndex, repLength("Unit No.", "5"));
                 }
                 String floorNoErr = errorMap.get(floorErrName + opIndex);
                 floorNo = ApplicationHelper.handleFloorNo(floorNo, floorNoErr);
@@ -2557,7 +2553,6 @@ public final class AppValidatorHelper {
         }
     }
 
-    //    校验时间
     public static boolean isEarly(String bclsExpiryDateStr, String currRegiDate) {
         SimpleDateFormat sdf = new SimpleDateFormat(AppConstants.DEFAULT_DATE_FORMAT);
         if (StringUtil.isEmpty(bclsExpiryDateStr) || StringUtil.isEmpty(currRegiDate)) {
@@ -2572,10 +2567,7 @@ public final class AppValidatorHelper {
             e.printStackTrace();
         }
 
-        if (date1.compareTo(date2) > 0) {
-            return true;
-        } else
-            return false;
+        return date1.compareTo(date2) > 0;
     }
 
     public static void paramValidate(Map<String, String> errorMap,AppSvcPersonnelDto appSvcPersonnelDto,String prefix,int i,List<String> errorName){
