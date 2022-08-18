@@ -73,6 +73,7 @@
     <c:set var="maxCount" value="${maxCount}"/>
 
     <c:forEach var="appGrpPremisesDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
+        <c:set var="businessDto" value="${newBusiness}"/>
         <c:forEach var="premBusinessItem" items="${premBusinessMap}" varStatus="premBusinessStatus">
             <c:if test="${premBusinessItem.key == appGrpPremisesDto.premisesIndexNo}">
                 <c:set var="businessDto" value="${premBusinessItem.value}"/>
