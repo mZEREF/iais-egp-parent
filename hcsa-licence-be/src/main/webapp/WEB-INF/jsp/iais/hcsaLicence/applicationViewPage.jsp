@@ -211,7 +211,7 @@
                                                                                     <iais:select cssClass="rollBackCr" name="rollBackCr" id="rollBackCr"
                                                                                                  firstOption="Please Select"
                                                                                                  options="rollBackValues"
-                                                                                                 value="${selectRollBack}"></iais:select>
+                                                                                                 value="${selectRollBackCr}"/>
                                                                                     <span style="font-size: 1.6rem; color: #D22727; display: none" id="err_rollBackTo" >This field is mandatory</span>
                                                                                 </iais:value>
                                                                             </iais:row>
@@ -223,7 +223,7 @@
                                                                                     <iais:select cssClass="rollBack" name="rollBack" id="rollBack"
                                                                                                  firstOption="Please Select"
                                                                                                  options="routeBackValues"
-                                                                                                 value="${selectRollBackCr}"></iais:select>
+                                                                                                 value="${selectRollBack}"/>
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
@@ -808,6 +808,8 @@
             $('#appealRecommendationDiv').removeClass('hidden');
             $('#normalRecommendationDiv').removeClass('hidden');
             checkAppealPso();
+            $('#internalRemarksFalse').addClass('hidden');
+            $('#internalRemarksTrue').removeClass('hidden');
         } else if (selectValue == "PROCRFI") {
             $("#chooseInspectionBox").addClass('hidden');
             $('#verifiedDropdown').addClass('hidden');

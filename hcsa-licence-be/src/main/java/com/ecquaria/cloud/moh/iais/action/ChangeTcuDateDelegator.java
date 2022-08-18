@@ -207,7 +207,7 @@ public class ChangeTcuDateDelegator {
             } else {
                 Date newDate = IaisEGPHelper.parseToDate(newTcuDate, AppConsts.DEFAULT_DATE_FORMAT);
                 if (!Objects.isNull(newDate) && IaisEGPHelper.getCompareDate(newDate, new Date()) > 1) {
-                    errMap.put(keyNewTcuDateDates + i, MessageUtil.replaceMessage("GENERAL_ERR0026", "New TCU Date", "field"));
+                    errMap.put(keyNewTcuDateDates + i, MessageUtil.replaceMessage("AUDIT_ERR011", "New TCU Date", "field"));
                 }
             }
             if (StringUtil.isNotEmpty(newTcuDateRemark) && newTcuDateRemark.length() > 300) {

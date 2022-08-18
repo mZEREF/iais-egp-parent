@@ -672,7 +672,7 @@ public class HcsaApplicationDelegator {
             }
             String verified = ParamUtil.getString(bpc.request, "verified");
             String rollBack = ParamUtil.getMaskedString(bpc.request, "rollBack");
-            String rollBackCr = ParamUtil.getMaskedString(bpc.request, "rollBackCr");
+            String rollBackCr = ParamUtil.getString(bpc.request, "rollBackCr");
             String nextStage = null;
 
             boolean chooseInspection = (boolean) ParamUtil.getSessionAttr(bpc.request, "isChooseInspection");
@@ -815,7 +815,7 @@ public class HcsaApplicationDelegator {
         } else if (ApplicationConsts.PROCESSING_DECISION_ROLLBACK.equals(nextStage)) {
             rollBack = ParamUtil.getMaskedString(bpc.request, "rollBack");
         }else if (ApplicationConsts.PROCESSING_DECISION_ROLLBACK_CR.equals(nextStage)) {
-            rollBackCr = ParamUtil.getMaskedString(bpc.request, "rollBackCr");
+            rollBackCr = ParamUtil.getString(bpc.request, "rollBackCr");
         }
         String decisionValue = ParamUtil.getString(bpc.request, "decisionValues");
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
@@ -1156,7 +1156,8 @@ public class HcsaApplicationDelegator {
     public void rollBackCr(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do rollBack start ...."));
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
-        String str = ParamUtil.getMaskedString(bpc.request, "rollBackCr");
+        Map<String, String> rollBackValueMap = (Map<String, String>) ParamUtil.getSessionAttr(bpc.request, "rollBackValueMap");
+        String str = rollBackValueMap.get(ParamUtil.getString(bpc.request, "rollBackCr"));
         log.info(StringUtil.changeForLog(str));
         String[] result = str.split(",");
         String stageId = result[0];
@@ -4455,9 +4456,11 @@ public class HcsaApplicationDelegator {
         //   rollback
         log.debug(StringUtil.changeForLog("the do prepareData get the rollBackMap"));
         Map<String, String> rollBackMap = IaisCommonUtils.genNewHashMap();
+        Map<String, String> rollBackValueMap = IaisCommonUtils.genNewHashMap();
         List<SelectOption> rollBackStage = IaisCommonUtils.genNewArrayList();
         List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtoList = applicationViewDto.getRollBackHistroyList();
         if (!IaisCommonUtils.isEmpty(appPremisesRoutingHistoryDtoList)) {
+            int i = 0;
             for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : appPremisesRoutingHistoryDtoList) {
 //                String displayName = applicationViewService.getStageById(appPremisesRoutingHistoryDto.getStageId()).getStageName();
                 String displayName = appPremisesRoutingHistoryDto.getRoleId();
@@ -4467,9 +4470,10 @@ public class HcsaApplicationDelegator {
                 if(user != null&&ROLE.indexOf(taskDto.getRoleId())>ROLE.indexOf(displayName)) {
                     String actionBy = user.getDisplayName();
                     rollBackMap.put(actionBy + " (" + displayName + ")", appPremisesRoutingHistoryDto.getStageId() + "," + wrkGrpId + "," + userId + "," + appPremisesRoutingHistoryDto.getRoleId() + "," + appPremisesRoutingHistoryDto.getId());
-                    String maskRollBackValue = MaskUtil.maskValue("rollBackCr", appPremisesRoutingHistoryDto.getStageId() + "," + wrkGrpId + "," + userId + "," + appPremisesRoutingHistoryDto.getRoleId() + "," + appPremisesRoutingHistoryDto.getId());
-                    SelectOption selectOption = new SelectOption(maskRollBackValue, actionBy + " (" + displayName + ")");
+                    rollBackValueMap.put(String.valueOf(i), appPremisesRoutingHistoryDto.getStageId() + "," + wrkGrpId + "," + userId + "," + appPremisesRoutingHistoryDto.getRoleId() + "," + appPremisesRoutingHistoryDto.getId());
+                    SelectOption selectOption = new SelectOption(String.valueOf(i), actionBy + " (" + displayName + ")");
                     rollBackStage.add(selectOption);
+                    i++;
                 }
             }
         } else {
@@ -4493,6 +4497,7 @@ public class HcsaApplicationDelegator {
         });
         applicationViewDto.setRollBack(rollBackMap);
         ParamUtil.setSessionAttr(request, "rollBackValues", (Serializable) rollBackStage);
+        ParamUtil.setSessionAttr(request, "rollBackValueMap", (Serializable) rollBackValueMap);
     }
 
     private boolean isFinalStage(TaskDto taskDto, ApplicationViewDto applicationViewDto) {

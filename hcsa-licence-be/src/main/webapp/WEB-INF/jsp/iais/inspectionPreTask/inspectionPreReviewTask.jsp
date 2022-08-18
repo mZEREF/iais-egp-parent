@@ -181,7 +181,7 @@
                                           rows="7" style="font-size:16px"><c:out
                                         value="${inspectionPreTaskDto.reMarks}"/></textarea>
                                 <br><span class="error-msg" name="iaisErrorMsg" id="error_reMarks"></span>
-                                <br><span id="error_internalRemarks1" class="error-msg"
+                                <span id="error_internalRemarks1" class="error-msg"
                                           style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
                               </iais:value>
                             </iais:row>

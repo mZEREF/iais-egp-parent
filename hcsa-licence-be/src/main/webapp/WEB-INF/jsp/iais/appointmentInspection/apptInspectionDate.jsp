@@ -130,7 +130,7 @@
                                                                                      cols="70"
                                                                                      rows="7"
                                                                                      maxlength="300">${apptInspectionDateDto.remarks}</textarea>
-                                    <span id="error_internalRemarks1" class="error-msg" style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
+                                    <br><span id="error_internalRemarks1" class="error-msg" style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
                                   </div>
                                 </div>
                               </iais:value>

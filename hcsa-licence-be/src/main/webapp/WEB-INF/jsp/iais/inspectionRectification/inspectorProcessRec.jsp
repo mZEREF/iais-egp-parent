@@ -210,7 +210,7 @@
                               <iais:value width="4000">
                                 <textarea id="internalRemarks" name="internalRemarks" class="internalRemarks" cols="60" rows="7" style="font-size:16px"><c:out value="${inspectionPreTaskDto.internalMarks}"></c:out></textarea>
                                 <br><span class="error-msg" name="iaisErrorMsg" id="error_internalMarks"></span>
-                                <br/><span id="error_internalRemarks1" class="error-msg" style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
+                                <span id="error_internalRemarks1" class="error-msg" style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
                               </iais:value>
                             </iais:row>
                             <iais:row>
