@@ -92,11 +92,19 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     @Override
     public void processLicence(List<File> sortList) {
         log.info("start processLicence");
-
+        for (File file : sortList) {
+            if (file.getName().startsWith(LICENCE_FILE)) {
+                try {
+                    processLicenceFile(file);
+                } catch (Throwable th) {
+                    log.error("Processing licence file {} failed", file.getName(), th);
+                }
+            }
+        }
+        log.info("end processLicence");
     }
 
     private void processLicenceFile(File licenceFile) {
-//        File licenceFile = MiscUtil.generateFile(sharedPath, LICENCE_FILE + DATE_STR + ".txt");
         boolean flag = true;
         ELISInterfaceDto elisInterfaceDto = new ELISInterfaceDto();
         elisInterfaceDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -178,7 +186,7 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
                     log.error("move license file failed");
                 }
             }
-        }else {
+        } else {
             log.info("create licenceFile failed");
         }
     }
@@ -274,9 +282,19 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     @Override
     public void processUsers(List<File> sortList) {
         log.info("start processUsers");
-        log.info("start generate user file");
-        File userFile = MiscUtil.generateFile(sharedPath, USER_FILE + DATE_STR + ".txt");
-        log.info("generate userFile end");
+        for (File file : sortList) {
+            if (file.getName().startsWith(USER_FILE)) {
+                try {
+                    processUserFile(file);
+                } catch (Throwable th) {
+                    log.error("Processing user file {} failed", file.getName(), th);
+                }
+            }
+        }
+        log.info("end processUsers");
+    }
+
+    private void processUserFile(File userFile) {
         boolean flag = true;
         if (userFile.exists()) {
             List<DsElisUserDto> dsElisUserDtoList = FileUtils.transformCsvToJavaBean(userFile, DsElisUserDto.class, false, '|');
@@ -347,7 +365,7 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
                     log.error("move user file failed");
                 }
             }
-        }else {
+        } else {
             log.info("create userFile failed");
         }
     }
@@ -421,9 +439,19 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     @Override
     public void processDoctor(List<File> sortList) {
         log.info("start processDoctor");
-        log.info("start generate topDoctorFile");
-        File topDoctorFile = MiscUtil.generateFile(sharedPath, TOP_DOCTOR_FILE + DATE_STR + ".txt");
-        log.info("generate topDoctorFile end");
+        for (File file : sortList) {
+            if (file.getName().startsWith(TOP_DOCTOR_FILE)) {
+                try {
+                    processDoctorFile(file);
+                } catch (Throwable th) {
+                    log.error("Processing doctor file {} failed", file.getName(), th);
+                }
+            }
+        }
+        log.info("end processDoctor");
+    }
+
+    private void processDoctorFile(File topDoctorFile) {
         log.info("start generate dpDoctorFile");
         File dpDoctorFile = MiscUtil.generateFile(sharedPath, DP_DOCTOR_FILE + DATE_STR + ".txt");
         log.info("generate dpDoctorFile end");
@@ -436,7 +464,7 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
                 log.info("topDoctorDtoList size is {}", topDoctorDtoList.size());
                 doctorDtoList.addAll(topDoctorDtoList);
             }
-        }else {
+        } else {
             log.info("create topDoctorFile failed");
         }
         if (dpDoctorFile.exists()) {
