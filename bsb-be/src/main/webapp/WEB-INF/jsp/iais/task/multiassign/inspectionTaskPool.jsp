@@ -27,59 +27,7 @@
 
         <div class="col-xs-12">
             <div class="center-content">
-                <div class="form-horizontal">
-                    <div class="form-group">
-                        <label for="commonRoleId" class="col-xs-12 col-md-4 control-label">Role</label>
-                        <div class="col-xs-8 col-sm-6 col-md-6">
-                            <select name="commonRoleId" id="commonRoleId" class="commonRoleDropdown">
-                                <%--@elvariable id="BsbRoleOptions" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
-                                <%--@elvariable id="bsbCurRole" type="java.lang.String"--%>
-                                <c:forEach var="option" items="${BsbRoleOptions}">
-                                    <option value="${option.value}" <c:if test="${option.value eq bsbCurRole}">selected="selected"</c:if>>${option.text}</option>
-                                </c:forEach>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-10 col-md-12">
-                            <div class="components">
-                                <a class="btn btn-secondary" data-toggle="collapse" data-target="#taskListSearchFilter">Filter</a>
-                            </div>
-                        </div>
-                    </div>
-                    <%--@elvariable id="taskListSearchDto" type="sg.gov.moh.iais.egp.bsb.dto.task.TaskListSearchDto"--%>
-                    <div id="taskListSearchFilter" class="collapse">
-                        <div class="col-xs-12 col-sm-12"><%-- div for app date from and to --%>
-                            <label for="searchAppNo" class="col-sm-5 col-md-5 control-label">Reference No.</label>
-                            <div class="col-sm-7 col-md-5">
-                                <span data-err-ind="searchAppNo" class="error-msg"></span>
-                                <input type="text" id="searchAppNo" name="searchAppNo" value=""/>
-                            </div>
-                            <label for="searchAppType" class="col-sm-5 col-md-5 control-label">Application Type</label>
-                            <div class="col-sm-7 col-md-5">
-                                <span data-err-ind="searchAppType" class="error-msg"></span>
-                                <iais:select name="searchAppType" cssClass="searchAppTypeDropdown" id="searchAppType" codeCategory="CATE_ID_BSB_APP_TYPE"
-                                             firstOption="Please Select" value=""/>
-                            </div>
-                            <label for="searchSubmissionType" class="col-sm-5 col-md-5 control-label">Submission Type</label>
-                            <div class="col-sm-7 col-md-5">
-                                <span data-err-ind="searchAppType" class="error-msg"></span>
-                                <iais:select name="searchSubmissionType"  cssClass="searchSubTypeDropdown" id="searchSubmissionType" codeCategory="CATE_ID_BSB_APP_TYPE"
-                                             firstOption="Please Select" value=""/>
-                            </div>
-                            <label for="searchAppStatus" class="col-sm-5 col-md-5 control-label">Status</label>
-                            <div class="col-sm-7 col-md-5">
-                                <span data-err-ind="searchStatus" class="error-msg"></span>
-                                <iais:select name="searchAppStatus" id="searchAppStatus" cssClass="searchAppStDropdown" options="insAppStatus"
-                                             firstOption="Please Select" value="${taskListSearchDto.searchAppStatus}"/>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-12" style="text-align:right;"><%-- div for btn --%>
-                            <button class="btn btn-secondary" type="button" id="clearBtn" name="clearBtn">Clear</button>
-                            <button class="btn btn-primary" type="button" id="searchBtn" name="searchBtn">Search</button>
-                        </div>
-                    </div>
-                </div>
+                <%@include file="../searchSection.jsp"%>
                 <h3>
                     <span>Search Results</span>
                 </h3>
@@ -92,16 +40,17 @@
                         <tr>
                             <th scope="col" style="display: none"></th>
                             <iais:sortableHeader needSort="false" field="" value="S/N"/>
-                            <iais:sortableHeader needSort="false" field="applicationNo" value="Application No."/>
-                            <iais:sortableHeader needSort="false" field="appType" value="Application Type"/>
-                            <iais:sortableHeader needSort="false" field="submissionType" value="Submission Type"/>
-                            <iais:sortableHeader needSort="false" field="applicationStatus" value="Application Status"/>
-                            <iais:sortableHeader needSort="false" field="applicationDt" value="Application Date"/>
-                            <iais:sortableHeader needSort="false" field="role" value="Duty Officer"/>
+                            <iais:sortableHeader needSort="true" field="application.applicationNo" value="Application No."/>
+                            <iais:sortableHeader needSort="true" field="application.appType" value="Application Type"/>
+                            <iais:sortableHeader needSort="true" field="application.processType" value="Application Sub-Type"/>
+                            <iais:sortableHeader needSort="true" field="application.submissionType" value="Submission Type"/>
+                            <iais:sortableHeader needSort="true" field="application.status" value="Application Status"/>
+                            <iais:sortableHeader needSort="true" field="application.applicationDt" value="Application Date"/>
+                            <iais:sortableHeader needSort="false" field="Duty Officer" value="Duty Officer"/>
                         </tr>
                         </thead>
                         <c:choose>
-                            <%--@elvariable id="dataList" type="java.util.List<sg.gov.moh.iais.egp.bsb.entity.TaskView>"--%>
+                            <%--@elvariable id="dataList" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.task.ResultDto>"--%>
                             <c:when test="${empty dataList}">
                                 <tr>
                                     <td colspan="7">
@@ -110,24 +59,34 @@
                                 </tr>
                             </c:when>
                             <c:otherwise>
-                                <c:forEach var="entity" items="${dataList}" varStatus="status">
+                                <c:forEach var="pool" items="${dataList}" varStatus="status">
+                                    <c:set var="entity" value="${pool.taskDto}"/>
+                                    <c:set var="divId" value="${(status.index + 1) + (pageInfo.pageNo - 1) * pageInfo.size}"/>
                                     <c:set var="maskedTaskId" value='${MaskUtil.maskValue("id", entity.id)}'/>
-                                    <tr style="display: table-row;">
+                                    <tr style="display: table-row;" id="advfilter${divId}">
                                         <td>
                                             <p class="visible-xs visible-sm table-row-title">S/N</p>
                                             <p>${(status.index + 1) + (pageInfo.pageNo) * pageInfo.size}</p>
                                         </td>
                                         <td>
                                             <p class="visible-xs visible-sm table-row-title">Application No.</p>
-                                            <a href="/bsb-web/eservicecontinue/INTRANET/MultiAssignInspectionTask?appId=<iais:mask name='id' value='${entity.application.id}'/>&taskId=<iais:mask name='id' value='${entity.id}'/>&OWASP_CSRFTOKEN=null&from=app"><c:out value="${entity.application.applicationNo}"/></a>
+                                            <p style="width: 180px;">
+                                                <c:out value="${entity.application.applicationNo}"/><a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right"
+                                                                                                       data-toggle="collapse" aria-expanded="false"
+                                                                                                       data-target="#dropdown${divId}"></a>
+                                            </p>
                                         </td>
                                         <td>
                                             <p class="visible-xs visible-sm table-row-title">Application Type</p>
                                             <p><iais:code code="${entity.application.appType}"/></p>
                                         </td>
                                         <td>
-                                            <p class="visible-xs visible-sm table-row-title">Submission Type</p>
+                                            <p class="visible-xs visible-sm table-row-title">Application Sub-Type</p>
                                             <p><iais:code code="${entity.application.processType}"/></p>
+                                        </td>
+                                        <td>
+                                            <p class="visible-xs visible-sm table-row-title">Submission Type</p>
+                                            <p><iais:code code="${entity.application.submissionType ne null ? entity.application.submissionType : 'N/A'}"/></p>
                                         </td>
                                         <td>
                                             <p class="visible-xs visible-sm table-row-title">Application Status</p>
@@ -139,7 +98,60 @@
                                         </td>
                                         <td>
                                             <p class="visible-xs visible-sm table-row-title">Duty Officer</p>
-                                            <p><iais:code code="${entity.curOwner}"/></p>
+                                            <p>"N/A"</p>
+                                        </td>
+                                    </tr>
+                                    <tr style="background-color: #F3F3F3;" class="p" id="advfilterson${divId}">
+                                        <td colspan="9" style="padding: 0 8px !important;">
+                                            <div class="accordian-body p-3 collapse" id="dropdown${divId}">
+                                                <table aria-describedby=""  class="table application-item" style="background-color: #F3F3F3;margin-bottom:0;" >
+                                                    <thead>
+                                                    <tr>
+                                                        <th scope="col" style="width: 15%">Application No.</th>
+                                                        <th scope="col" style="width: 25%">Facility Classification</th>
+                                                        <th scope="col" style="width: 15%">Facility Name</th>
+                                                        <th scope="col" style="width: 15%">Facility Address</th>
+                                                        <th scope="col" style="width: 10%">Inspection Date</th>
+                                                        <th scope="col" style="width: 10%">Validity End Date</th>
+                                                        <th scope="col" style="width: 10%">Status</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr style="color: black">
+                                                        <td>
+                                                            <p class="visible-xs visible-sm table-row-title">Application No.</p>
+                                                            <p>
+                                                                <a href="/bsb-web/eservicecontinue/INTRANET/MultiAssignInspectionTask?appId=<iais:mask name='id' value='${entity.application.id}'/>&taskId=<iais:mask name='id' value='${entity.id}'/>&OWASP_CSRFTOKEN=null&from=app"><c:out value="${entity.application.applicationNo}"/></a>
+                                                            </p>
+                                                        </td>
+                                                        <td>
+                                                            <p class="visible-xs visible-sm table-row-title">Facility Classification</p>
+                                                            <p><iais:code code="${pool.facClassification ne null ? pool.facClassification : 'N/A'}"/></p>
+                                                        </td>
+                                                        <td>
+                                                            <p class="visible-xs visible-sm table-row-title">Facility Name</p>
+                                                            <p><c:out value="${pool.facName ne null ? pool.facName : 'N/A'}"/></p>
+                                                        </td>
+                                                        <td>
+                                                            <p class="visible-xs visible-sm table-row-title">Facility Address</p>
+                                                            <p><c:out value="${pool.facAddress ne null ? pool.facAddress : 'N/A'}"/></p>
+                                                        </td>
+                                                        <td>
+                                                            <p class="visible-xs visible-sm table-row-title">Inspection Date</p>
+                                                            <p><c:out value="${pool.inspectionDate ne null ? pool.inspectionDate : 'N/A'}"/></p>
+                                                        </td>
+                                                        <td>
+                                                            <p class="visible-xs visible-sm table-row-title">Validity End Date</p>
+                                                            <p><c:out value="${pool.validityEndDate ne null ? pool.validityEndDate : 'N/A'}"/></p>
+                                                        </td>
+                                                        <td>
+                                                            <p class="visible-xs visible-sm table-row-title">Status</p>
+                                                            <p><c:out value="${pool.status ne null ? pool.status : 'N/A'}"/></p>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </td>
                                     </tr>
                                 </c:forEach>

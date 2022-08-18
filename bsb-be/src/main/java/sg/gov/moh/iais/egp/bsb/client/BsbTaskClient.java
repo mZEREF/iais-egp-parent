@@ -35,7 +35,7 @@ public interface BsbTaskClient {
     ResponseDto<String> reassignTask(@RequestBody TaskReassignDto dto);
 
     @PutMapping(value = "/task/assign/multi", produces = MediaType.APPLICATION_JSON_VALUE)
-    List<TaskAssignDto> assignMultiTasks(List<TaskAssignDto> taskAssignDtoList);
+    List<TaskAssignDto> assignMultiTasks(@RequestBody List<TaskAssignDto> taskAssignDtoList);
 
     @GetMapping(value = "/inspection-task/pool", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<TaskListSearchResultDto> searchInspectionTaskPool(@SpringQueryMap TaskListSearchDto searchDto);

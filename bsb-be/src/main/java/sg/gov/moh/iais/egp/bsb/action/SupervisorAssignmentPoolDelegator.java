@@ -11,8 +11,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.BsbTaskClient;
@@ -23,6 +23,7 @@ import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.TaskDto;
 import sg.gov.moh.iais.egp.bsb.dto.task.TaskListSearchDto;
 import sg.gov.moh.iais.egp.bsb.dto.task.TaskListSearchResultDto;
+import sg.gov.moh.iais.egp.bsb.service.BsbTaskService;
 import sg.gov.moh.iais.egp.bsb.service.UserRoleService;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -49,19 +50,14 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants.KEY_TA
  */
 @Slf4j
 @Delegator("supervisorAssignmentPoolDelegator")
+@RequiredArgsConstructor
 public class SupervisorAssignmentPoolDelegator {
     private static final String MODULE_NAME = "BSB Task Pool";
 
     private final UserRoleService userRoleService;
     private final BsbTaskClient bsbTaskClient;
     private final OrganizationClient organizationClient;
-
-    @Autowired
-    public SupervisorAssignmentPoolDelegator(UserRoleService userRoleService, BsbTaskClient bsbTaskClient, OrganizationClient organizationClient) {
-        this.userRoleService = userRoleService;
-        this.bsbTaskClient = bsbTaskClient;
-        this.organizationClient = organizationClient;
-    }
+    private final BsbTaskService taskService;
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -88,29 +84,8 @@ public class SupervisorAssignmentPoolDelegator {
         ResponseDto<TaskListSearchResultDto> resultDto = bsbTaskClient.searchInspectionTaskPool(searchDto);
 
         if (resultDto.ok()) {
-            List<TaskDto> tasks = resultDto.getEntity().getTasks();
-            if(tasks != null && !tasks.isEmpty()){
-                List<String> doUserIds = new ArrayList<>(tasks.size());
-                List<String> aoUserIds = new ArrayList<>(tasks.size());
-                List<String> hmUserIds = new ArrayList<>(tasks.size());
-                //get the do/ao/hm user id from task
-                setUserIdList(tasks, doUserIds, aoUserIds, hmUserIds);
-                //
-                List<OrgUserDto> userDtoList = new ArrayList<>();
-                if (curRoleId.equals(RoleConsts.USER_ROLE_BSB_DO) && !CollectionUtils.isEmpty(doUserIds)) {
-                    userDtoList = organizationClient.retrieveOrgUserAccount(doUserIds).getEntity();
-                } else if (curRoleId.equals(RoleConsts.USER_ROLE_BSB_AO) && !CollectionUtils.isEmpty(aoUserIds)) {
-                    userDtoList = organizationClient.retrieveOrgUserAccount(aoUserIds).getEntity();
-                } else if (curRoleId.equals(RoleConsts.USER_ROLE_BSB_HM) && !CollectionUtils.isEmpty(hmUserIds)) {
-                    userDtoList = organizationClient.retrieveOrgUserAccount(hmUserIds).getEntity();
-                }
-                Map<String, OrgUserDto> userDtoMap = sg.gov.moh.iais.egp.bsb.util.CollectionUtils.uniqueIndexMap(userDtoList, OrgUserDto::getId);
-                //set current owner by current role and the user id from task
-//                setTaskCurOwner(tasks, curRoleId, userDtoMap);
-                ParamUtil.setRequestAttr(request, KEY_TASK_LIST_PAGE_INFO, resultDto.getEntity().getPageInfo());
-                ParamUtil.setRequestAttr(request, KEY_TASK_LIST_DATA_LIST, tasks);
-            }
-
+            ParamUtil.setRequestAttr(request, KEY_TASK_LIST_PAGE_INFO, resultDto.getEntity().getPageInfo());
+            ParamUtil.setRequestAttr(request, KEY_TASK_LIST_DATA_LIST, resultDto.getEntity().getResultDtos());
         } else {
             log.info("Search Task List fail");
             ParamUtil.setRequestAttr(request, KEY_TASK_LIST_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
@@ -122,37 +97,16 @@ public class SupervisorAssignmentPoolDelegator {
         ParamUtil.setRequestAttr(request, KEY_CUR_ROLE, curRoleId);
         List<SelectOption> inspectionAppStatusOption = MasterCodeUtil.retrieveOptionsByCodes(MasterCodeConstants.INSPECTION_APP_STATUS.toArray(new String[0]));
         ParamUtil.setRequestAttr(request,"insAppStatus",inspectionAppStatusOption);
-    }
 
-    private void setUserIdList(List<TaskDto> tasks, List<String> doUserIds, List<String> aoUserIds, List<String> hmUserIds) {
-        for (TaskDto task : tasks) {
-            if (task.getApplication() != null) {
-                if (StringUtils.hasLength(task.getApplication().getDoUserId())) {
-                    doUserIds.add(task.getApplication().getDoUserId());
-                }
-                if (StringUtils.hasLength(task.getApplication().getAoUserId())) {
-                    aoUserIds.add(task.getApplication().getAoUserId());
-                }
-                if (StringUtils.hasLength(task.getApplication().getHmUserId())) {
-                    hmUserIds.add(task.getApplication().getHmUserId());
-                }
-            }
-        }
+        List<SelectOption> appTypeOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_APP_TYPE);
+        ParamUtil.setRequestAttr(request, "appTypeOps", appTypeOps);
+        List<SelectOption> appStatusTypeOps = MasterCodeUtil.retrieveOptionsByCodes(MasterCodeConstants.COMMON_QUERY_APP_STATUS.toArray(new String[0]));
+        ParamUtil.setRequestAttr(request, "appStatusOps", appStatusTypeOps);
+        List<SelectOption> appSubTypeOps = MasterCodeUtil.retrieveOptionsByCodes(MasterCodeConstants.COMMON_QUERY_APP_SUB_TYPE.toArray(new String[0]));
+        ParamUtil.setRequestAttr(request, "appSubTypeOps", appSubTypeOps);
+        List<SelectOption> submissionTypeOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_SUBMISSION_TYPE);
+        ParamUtil.setRequestAttr(request, "submissionTypeOps", submissionTypeOps);
     }
-
-//    private void setTaskCurOwner(List<TaskDto> tasks, String curRoleId, Map<String, OrgUserDto> userDtoMap) {
-//        for (TaskDto task : tasks) {
-//            if (task.getApplication() != null) {
-//                if (curRoleId.equals(RoleConsts.USER_ROLE_BSB_DO) && StringUtils.hasLength(task.getApplication().getDoUserId())) {
-//                    task.setCurOwner(userDtoMap.get(task.getApplication().getDoUserId()).getUserId());
-//                } else if (curRoleId.equals(RoleConsts.USER_ROLE_BSB_AO) && StringUtils.hasLength(task.getApplication().getAoUserId())) {
-//                    task.setCurOwner(userDtoMap.get(task.getApplication().getAoUserId()).getUserId());
-//                } else if (curRoleId.equals(RoleConsts.USER_ROLE_BSB_HM) && StringUtils.hasLength(task.getApplication().getHmUserId())) {
-//                    task.setCurOwner(userDtoMap.get(task.getApplication().getAoUserId()).getUserId());
-//                }
-//            }
-//        }
-//    }
 
     public void search(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -209,23 +163,12 @@ public class SupervisorAssignmentPoolDelegator {
             dto.defaultPaging();
 
             LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-            dto.setUserId(loginContext.getUserId());
             dto.setRoleIds(Collections.singleton(loginContext.getCurRoleId()));
         }
         return dto;
     }
 
-    private static TaskListSearchDto bindModel(HttpServletRequest request, TaskListSearchDto dto) {
-        dto.setSearchAppNo(request.getParameter("searchAppNo"));
-        dto.setSearchAppType(request.getParameter("searchAppType"));
-        dto.setSearchAppStatus(request.getParameter("searchAppStatus"));
-        dto.setSearchSubmissionType(request.getParameter("searchSubmissionType"));
-        /* This is because we share the search dto with task list module,
-         * When user open the common pool and task list at the same time, we set these columns to avoid error */
-        if (dto.getUserId() == null) {
-            LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-            dto.setUserId(loginContext.getUserId());
-        }
-        return dto;
+    private TaskListSearchDto bindModel(HttpServletRequest request, TaskListSearchDto dto) {
+        return taskService.bindQueryCondition(request,dto);
     }
 }

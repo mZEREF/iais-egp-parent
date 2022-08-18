@@ -19,8 +19,13 @@ import java.util.Set;
 public class TaskListSearchDto extends PagingAndSortingDto {
     private String searchAppNo;
     private String searchAppType;
-    private String searchAppStatus;
+    private String searchAppSubType;
     private String searchSubmissionType;
+    private String searchAppStatus;
+    private String searchAppDateFrom;
+    private String searchAppDateTo;
+    private String searchModifiedDateFrom;
+    private String searchModifiedDateTo;
     private String userId;
     private Set<String> roleIds;
 }

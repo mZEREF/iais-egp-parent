@@ -12,10 +12,15 @@ $(function () {
         $('input[name="searchAppNo"]').val("");
         $('input[name="searchAppDateFrom"]').val("");
         $('input[name="searchAppDateTo"]').val("");
+        $('input[name="searchModifiedDateFrom"]').val("");
+        $('input[name="searchModifiedDateTo"]').val("");
         $("#searchFacType option:first").prop("selected", 'selected');
         $("#searchProcessType option:first").prop("selected", 'selected');
         $("#searchAppType option:first").prop("selected", 'selected');
         $("#searchAppStatus option:first").prop("selected", 'selected');
+        $("#searchAppSubType option:first").prop("selected", 'selected');
+        $("#searchSubmissionType option:first").prop("selected", 'selected');
+        $("#taskListSearchFilter .current").text("Please Select");
     });
 
 

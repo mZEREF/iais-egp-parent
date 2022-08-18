@@ -16,6 +16,12 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-task.js"></script>
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
+<%--@elvariable id="multiAssignInsDto" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.multiassign.MultiAssignInsDto>"--%>
+<%--@elvariable id="userOption" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
+<%--@elvariable id="appViewModuleType" type="java.lang.String"--%>
+<%--@elvariable id="appId" type="java.lang.String"--%>
+<%--@elvariable id="appViewUrl" type="java.lang.String"--%>
+<%--@elvariable id="taskType" type="java.lang.String"--%>
 <div class="dashboard">
   <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <div class="main-content">
@@ -28,17 +34,15 @@
                   <span>Task Details</span>
                 </h2>
               </div>
-              <%--@elvariable id="multiAssignInsDto" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.multiassign.MultiAssignInsDto>"--%>
-              <%--@elvariable id="appId" type="java.lang.String"--%>
-              <%--@elvariable id="appViewModuleType" type="java.lang.String"--%>
               <iais:body >
                 <iais:section title="">
                   <div class="row">
                     <div class="col-md-4">
-                      <label style="font-size: 16px">Application Number</label>
+                      <label style="font-size: 16px">Application No.</label>
                     </div>
                     <div class="col-md-6">
-                      <a href="javascript:void(0);" onclick="viewApplication('<iais:mask name="appId" value="${appId}"/>', '<iais:mask name="appViewModuleType" value="${appViewModuleType}"/>')">
+                      <c:set var="maskedAppId"><iais:mask name="appId" value="${appId}"/></c:set>
+                      <a href="javascript:void(0);" onclick="viewUrlApplication('${maskedAppId}', '${appViewUrl}', '${taskType}')">
                         <c:out value="${multiAssignInsDto.applicationNo}"/>
                       </a>
                     </div>
@@ -61,7 +65,7 @@
                   </div>
                   <div class="row">
                     <div class="col-md-4">
-                      <label style="font-size: 16px">Activity Type</label>
+                      <label style="font-size: 16px">Facility Activity Type</label>
                     </div>
                     <div class="col-md-6">
                       <span style="font-size: 16px"><iais:code code="${multiAssignInsDto.activityType}"/></span>
@@ -69,28 +73,42 @@
                   </div>
                   <div class="row">
                     <div class="col-md-4">
-                      <label style="font-size: 16px">Name/Address</label>
+                      <label style="font-size: 16px">Facility Name</label>
                     </div>
                     <div class="col-md-6">
-                      <c:if test="${multiAssignInsDto.canMultiAssign}">
-                        <span style="font-size: 16px"><c:out value="${multiAssignInsDto.facName}"/>/<c:out value="${multiAssignInsDto.facAddress}"/></span>
-                      </c:if>
+                        <span style="font-size: 16px"><c:out value="${multiAssignInsDto.facName}"/></span>
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-md-4">
-                      <label style="font-size: 16px">Inspector Leader</label>
+                      <label style="font-size: 16px">Inspection Date</label>
                     </div>
                     <div class="col-md-6">
-                      <span style="font-size: 16px"><c:out value="${multiAssignInsDto.insLeader}"/></span>
+                        <span style="font-size: 16px"><c:out value="${multiAssignInsDto.inspectionDate ne null ? multiAssignInsDto.inspectionDate : '-'}"/></span>
                     </div>
                   </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label style="font-size: 16px">Validity End Date</label>
+                    </div>
+                    <div class="col-md-6">
+                        <span style="font-size: 16px"><c:out value="${multiAssignInsDto.validityEndDate ne null ? multiAssignInsDto.validityEndDate : '-'}"/></span>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label style="font-size: 16px">Facility Address</label>
+                    </div>
+                    <div class="col-md-6">
+                      <span style="font-size: 16px"><c:out value="${multiAssignInsDto.facAddress}"/></span>
+                    </div>
+                  </div>
+
                   <div class="row">
                     <div class="col-md-4">
                       <label style="font-size: 16px">Inspector<span style="color: red"> *</span></label>
                     </div>
                     <div class="col-md-6">
-                        <%--@elvariable id="userOption" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
                       <c:if test="${null ne userOption  && multiAssignInsDto.canMultiAssign}">
                         <c:forEach items="${userOption}" var="options">
                           <input type="checkbox" name="inspectorCheck" id="inspectorCheck" <c:if test="${multiAssignInsDto.inspectors.contains(options.value)}">checked="checked"</c:if> value="<c:out value="${options.value}"/>"/>

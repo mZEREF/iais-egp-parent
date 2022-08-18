@@ -2,6 +2,7 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
@@ -72,16 +73,9 @@ public class MultiAssignInspectionTaskDelegator {
             if (responseDto.ok()){
                 dto = responseDto.getEntity();
                 dto.setTaskId(taskId);
-                LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-                String curRoleId = loginContext.getCurRoleId();
-                List<OrgUserDto> dtoList = organizationClient.retrieveOrgUserAccountByRoleId(curRoleId).getEntity();
-
-                List<SelectOption> opts = new ArrayList<>();
-                dtoList.forEach(orgUserDto -> opts.add(new SelectOption(MaskUtil.maskValue(MASK_USER_ID, orgUserDto.getId()), orgUserDto.getUserId())));
-                Map<String, SelectOption> optionMap = CollectionUtils.uniqueIndexMap(opts, SelectOption::getValue);
+                Map<String, SelectOption> optionMap = retrieveUserInfo(request);
                 dto.setOptionMap(optionMap);
                 dto.setCanMultiAssign(true);
-                ParamUtil.setSessionAttr(request, USER_OPTION, (Serializable) opts);
             }else {
                 dto = new MultiAssignInsDto();
                 dto.setCanMultiAssign(false);
@@ -90,7 +84,27 @@ public class MultiAssignInspectionTaskDelegator {
         }
 
         // view application
-        AppViewService.facilityRegistrationViewApp(request, dto.getApplicationId());
+        AppViewService.facilityRegistrationViewApp(request, dto.getMainAppId());
+    }
+
+    private Map<String, SelectOption> retrieveUserInfo(HttpServletRequest request) {
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String curRoleId = loginContext.getCurRoleId();
+        List<OrgUserDto> dtoList = organizationClient.retrieveOrgUserAccountByRoleId(curRoleId).getEntity();
+        List<OrgUserDto> userDtoList = new ArrayList<>();
+        for (OrgUserDto orgUserDto : dtoList) {
+            List<String> roles = organizationClient.retrieveUserRoles(orgUserDto.getId()).getEntity();
+            // System will display all MOH BSB Officers with inspector role
+            if (!org.springframework.util.CollectionUtils.isEmpty(roles) && roles.contains(RoleConsts.USER_ROLE_BSB_INSPECTOR)){
+                userDtoList.add(orgUserDto);
+            }
+        }
+
+        List<SelectOption> opts = new ArrayList<>();
+        userDtoList.forEach(orgUserDto -> opts.add(new SelectOption(MaskUtil.maskValue(MASK_USER_ID, orgUserDto.getId()), orgUserDto.getUserId())));
+        Map<String, SelectOption> optionMap = CollectionUtils.uniqueIndexMap(opts, SelectOption::getValue);
+        ParamUtil.setSessionAttr(request, USER_OPTION, (Serializable) opts);
+        return optionMap;
     }
 
     public void valFormData(BaseProcessClass bpc) {

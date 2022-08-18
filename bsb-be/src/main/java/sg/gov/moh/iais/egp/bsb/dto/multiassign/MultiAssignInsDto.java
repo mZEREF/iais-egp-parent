@@ -11,13 +11,15 @@ import java.util.Map;
 public class MultiAssignInsDto implements Serializable {
     private String taskId;
     private String applicationId;
+    private String mainAppId;
     private String applicationNo;
     private String applicationStatus;
     private String facClassification;
     private String activityType;
     private String facName;
     private String facAddress;
-    private String insLeader;
+    private String validityEndDate;
+    private String inspectionDate;
 
     private Map<String, SelectOption> optionMap;
     private List<String> inspectors;
