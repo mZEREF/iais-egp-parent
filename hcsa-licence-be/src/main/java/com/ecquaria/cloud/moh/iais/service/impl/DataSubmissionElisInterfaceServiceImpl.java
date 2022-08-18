@@ -90,11 +90,13 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     }
 
     @Override
-    public void processLicence() {
+    public void processLicence(List<File> sortList) {
         log.info("start processLicence");
-        log.info("start generate licenceFile");
-        File licenceFile = MiscUtil.generateFile(sharedPath, LICENCE_FILE + DATE_STR + ".txt");
-        log.info("generate licenceFile end");
+
+    }
+
+    private void processLicenceFile(File licenceFile) {
+//        File licenceFile = MiscUtil.generateFile(sharedPath, LICENCE_FILE + DATE_STR + ".txt");
         boolean flag = true;
         ELISInterfaceDto elisInterfaceDto = new ELISInterfaceDto();
         elisInterfaceDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -270,7 +272,7 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     }
 
     @Override
-    public void processUsers() {
+    public void processUsers(List<File> sortList) {
         log.info("start processUsers");
         log.info("start generate user file");
         File userFile = MiscUtil.generateFile(sharedPath, USER_FILE + DATE_STR + ".txt");
@@ -417,7 +419,7 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     }
 
     @Override
-    public void processDoctor() {
+    public void processDoctor(List<File> sortList) {
         log.info("start processDoctor");
         log.info("start generate topDoctorFile");
         File topDoctorFile = MiscUtil.generateFile(sharedPath, TOP_DOCTOR_FILE + DATE_STR + ".txt");
