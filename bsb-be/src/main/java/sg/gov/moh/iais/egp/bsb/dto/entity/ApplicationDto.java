@@ -44,6 +44,8 @@ public class ApplicationDto extends BaseEntityDto {
 
     private String doUserId;
 
+    private String doInChargeUserId;
+
     private String aoUserId;
 
     private String hmUserId;

@@ -20,6 +20,7 @@ import sg.gov.moh.iais.egp.bsb.dto.inspection.InsSubmitReportDataDto;
 import sg.gov.moh.iais.egp.bsb.dto.inspection.ReportDto;
 import sg.gov.moh.iais.egp.bsb.dto.validation.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.service.AppViewService;
+import sg.gov.moh.iais.egp.bsb.service.InspectionService;
 import sg.gov.moh.iais.egp.bsb.util.MaskHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -52,16 +53,18 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_
 import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.KEY_VALIDATION_ERRORS;
 
 /**
- * AO inspection report
+ * AO review inspection report
  */
 @Slf4j
 @Delegator("bsbAOReviewInspectionReport")
 public class BsbInspectionAOReviewReportDelegator {
+    private final InspectionService inspectionService;
     private final InspectionClient inspectionClient;
     private final InternalDocClient internalDocClient;
 
     @Autowired
-    public BsbInspectionAOReviewReportDelegator(InspectionClient inspectionClient, InternalDocClient internalDocClient) {
+    public BsbInspectionAOReviewReportDelegator(InspectionService inspectionService, InspectionClient inspectionClient, InternalDocClient internalDocClient) {
+        this.inspectionService = inspectionService;
         this.inspectionClient = inspectionClient;
         this.internalDocClient = internalDocClient;
     }
@@ -173,12 +176,7 @@ public class BsbInspectionAOReviewReportDelegator {
     }
 
     public void skip(BaseProcessClass bpc){
-        HttpServletRequest request = bpc.request;
-        String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
-        String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
-        InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
-        inspectionClient.skipInspection(appId, taskId, processDto);
-        ParamUtil.setRequestAttr(request, KEY_RESULT_MSG, "You have successfully completed your task");
+        inspectionService.skipInspection(bpc.request);
     }
 
     public void handleSaveReport(BaseProcessClass bpc) {

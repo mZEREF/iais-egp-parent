@@ -122,6 +122,37 @@
             <type>java.lang.String</type>
         </attribute>
     </tag>
+    <tag>
+        <description>Generate one line address</description>
+        <name>address</name>
+        <tag-class>sg.gov.moh.iais.egp.common.tags.AddressTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>block</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>street</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>floor</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>unitNo</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>postalCode</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
 
     <function>
         <description>Check if a collection contains any element in another</description>

@@ -80,8 +80,11 @@ public interface InspectionClient {
     @PostMapping(value = "/inspection/actual/validate/do-approve-report", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateInspectionReportDOApprovalDecision(@RequestBody InsReportDoApprovalProcessDto processDto);
 
-    @PostMapping(value = "/inspection/actual/validate/hm-handle-report", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ValidationResultDto validateActualInspectionHMApprovalDecision(@RequestBody InsProcessDto processDto);
+    @PostMapping(value = "/inspection/actual/validate/ao-approve-report", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateActualInspectionReportAOApprovalDecision(@RequestBody InsProcessDto processDto);
+
+    @PostMapping(value = "/inspection/actual/validate/hm-approve-report", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateActualInspectionReportHMApprovalDecision(@RequestBody InsProcessDto processDto);
 
     @PostMapping(value = "/inspection/actual/validate/approval-letter", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateInsApprovalLetter(@RequestBody InsApprovalLetterDto dto);
@@ -182,46 +185,66 @@ public interface InspectionClient {
     @PostMapping(value = "/inspection/actual/report/report-dto", consumes = MediaType.APPLICATION_JSON_VALUE)
     void saveInspectionReportDto(@RequestParam("appId") String appId, @RequestParam("roleId") String roleId, @RequestBody ReportDto reportDto);
 
-    @PostMapping(value = "/inspection/actual/report/do/finalize", consumes = MediaType.APPLICATION_JSON_VALUE)
-    String finalizeInspectionReport(@RequestParam("appId") String appId,
-                                  @RequestParam("taskId") String taskId,
-                                  @RequestBody InsReportDoApprovalProcessDto processDto);
+    /** DO submit inspection report and route to AO for review */
+    @PostMapping(value = "/inspection/actual/report/do/to-ao", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void submitInspectionReportToAO(@RequestParam("appId") String appId,
+                                    @RequestParam("taskId") String taskId,
+                                    @RequestBody InsProcessDto processDto);
 
-    @PostMapping(value = "/inspection/actual/report/ao/approve", consumes = MediaType.APPLICATION_JSON_VALUE)
+    /** AO review inspection report and decide to approve */
+    @PostMapping(value = "/inspection/actual/report/review/ao/approve", consumes = MediaType.APPLICATION_JSON_VALUE)
     void reviewInspectionReportApprove(@RequestParam("appId") String appId,
                                        @RequestParam("taskId") String taskId,
                                        @RequestBody InsProcessDto processDto);
 
-    @PostMapping(value = "/inspection/actual/report/hm/approve", consumes = MediaType.APPLICATION_JSON_VALUE)
-    void reviewInspectionReportHMApprove(@RequestParam("appId") String appId,
-                                       @RequestParam("taskId") String taskId,
-                                       @RequestBody InsProcessDto processDto);
-
-    @PostMapping(value = "/inspection/actual/report/hm/reject", consumes = MediaType.APPLICATION_JSON_VALUE)
-    void reviewInspectionReportHMReject(@RequestParam("appId") String appId,
-                                         @RequestParam("taskId") String taskId,
-                                         @RequestBody InsProcessDto processDto);
-
-
-    @PostMapping(value = "/inspection/actual/report/ao/route-back", consumes = MediaType.APPLICATION_JSON_VALUE)
+    /** AO review inspection report and decide to route back to DO */
+    @PostMapping(value = "/inspection/actual/report/review/ao/route-back", consumes = MediaType.APPLICATION_JSON_VALUE)
     void reviewInspectionReportRouteBackToDO(@RequestParam("appId") String appId,
                                              @RequestParam("taskId") String taskId,
                                              @RequestBody InsProcessDto processDto);
 
-    @PostMapping(value = "/inspection/actual/report/ao/to-hm", consumes = MediaType.APPLICATION_JSON_VALUE)
-    void reviewInspectionReportRouteToHM(@RequestParam("appId") String appId,
-                                         @RequestParam("taskId") String taskId,
-                                         @RequestBody InsProcessDto processDto);
+    /** DO approve inspection report and decide to mark as final */
+    @PostMapping(value = "/inspection/actual/report/finalize/do", consumes = MediaType.APPLICATION_JSON_VALUE)
+    String doFinalizeInspectionReport(@RequestParam("appId") String appId,
+                                      @RequestParam("taskId") String taskId,
+                                      @RequestBody InsReportDoApprovalProcessDto processDto);
 
+    /** DO approve inspection report and decide to route back to applicant */
     @PostMapping(value = "/inspection/actual/report/do/to-applicant", consumes = MediaType.APPLICATION_JSON_VALUE)
     void routeInspectionReportToApplicant(@RequestParam("appId") String appId,
                                           @RequestParam("taskId") String taskId,
                                           @RequestBody InsReportDoApprovalProcessDto processDto);
 
-    @PostMapping(value = "/inspection/actual/report/do/to-ao", consumes = MediaType.APPLICATION_JSON_VALUE)
-    void submitInspectionReportToAO(@RequestParam("appId") String appId,
+    /** AO approve inspection report and decide to mark as final */
+    @PostMapping(value = "/inspection/actual/report/finalize/ao", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void aoFinalizeInspectionReport(@RequestParam("appId") String appId,
                                     @RequestParam("taskId") String taskId,
                                     @RequestBody InsProcessDto processDto);
+
+    /** AO approve inspection report and decide to route back to DO */
+    @PostMapping(value = "/inspection/actual/report/finalize/ao/route-back", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void aoRouteBackFinalInspectionReport(@RequestParam("appId") String appId,
+                                          @RequestParam("taskId") String taskId,
+                                          @RequestBody InsProcessDto processDto);
+
+    /** AO approve inspection report and route it to HM */
+    @PostMapping(value = "/inspection/actual/report/finalize/ao/to-hm", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void aoRouteFinalInspectionReportToHM(@RequestParam("appId") String appId,
+                                          @RequestParam("taskId") String taskId,
+                                          @RequestBody InsProcessDto processDto);
+
+    /** HM approve inspection report and approve it */
+    @PostMapping(value = "/inspection/actual/report/finalize/hm/approve", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void hmApproveFinalInspectionReport(@RequestParam("appId") String appId,
+                                        @RequestParam("taskId") String taskId,
+                                        @RequestBody InsProcessDto processDto);
+
+    /** HM approve inspection report and reject it */
+    @PostMapping(value = "/inspection/actual/report/finalize/hm/reject", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void hmRejectFinalInspectionReport(@RequestParam("appId") String appId,
+                                       @RequestParam("taskId") String taskId,
+                                       @RequestBody InsProcessDto processDto);
+
 
     /************************************* non-compliance *************************************/
     @GetMapping(value = "/inspection/actual/non-compliance/init-data", produces = MediaType.APPLICATION_JSON_VALUE)

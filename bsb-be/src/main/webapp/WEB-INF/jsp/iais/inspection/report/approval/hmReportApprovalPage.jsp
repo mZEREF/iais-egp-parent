@@ -4,6 +4,7 @@
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
 <%@ page import="sg.gov.moh.iais.egp.bsb.constant.module.InspectionConstants" %>
 <%@ page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
+<%@taglib prefix="inspection" tagdir="/WEB-INF/tags/inspection" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -15,13 +16,12 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-file.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-inspection.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-inspection-report.js"></script>
 
 <%--@elvariable id="submissionDetailsInfo" type="sg.gov.moh.iais.egp.bsb.dto.mohprocessingdisplay.SubmissionDetailsInfo"--%>
 <%--@elvariable id="activeTab" type="java.lang.String"--%>
 <%--@elvariable id="processDto" type="sg.gov.moh.iais.egp.bsb.dto.inspection.InsProcessDto"--%>
 <%--@elvariable id="prevOfficerNote" type="sg.gov.moh.iais.egp.bsb.dto.inspection.common.PrevOfficerNoteDto"--%>
-
+<%--@elvariable id="reportDto" type="sg.gov.moh.iais.egp.bsb.dto.inspection.ReportDto"--%>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
@@ -82,7 +82,7 @@
                                             <%@include file="/WEB-INF/jsp/iais/doDocument/tabDocuments.jsp"%>
                                         </div>
                                         <div class="tab-pane <c:if test="${activeTab eq InspectionConstants.TAB_INS_REPORT}">active</c:if>" id="${InspectionConstants.TAB_INS_REPORT}" role="tabpanel">
-                                            <%@include file="../report/inspectionReport.jsp"%>
+                                            <inspection:inspectionReport reportDto="${reportDto}"/>
                                         </div>
                                         <div class="tab-pane <c:if test="${activeTab eq InspectionConstants.TAB_FAC_DETAILS}">active</c:if>" id="${InspectionConstants.TAB_FAC_DETAILS}" role="tabpanel">
                                             <%@include file="/WEB-INF/jsp/iais/common/facilityDetailsInfo.jsp"%>
@@ -123,7 +123,6 @@
                                                                     <div class="input-group">
                                                                         <select name="processingDecision" class="processingDecisionDropDown" id="processingDecision">
                                                                             <option value="">Please Select</option>
-                                                                            <%--TODO: check these decision--%>
                                                                             <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESS_DECISION_APPROVE}">selected="selected"</c:if>>Approve</option>
                                                                             <option value="${MasterCodeConstants.MOH_PROCESS_DECISION_REJECT}" <c:if test="${processDto.decision eq MasterCodeConstants.MOH_PROCESS_DECISION_REJECT}">selected="selected"</c:if>>Reject</option>
                                                                         </select>
