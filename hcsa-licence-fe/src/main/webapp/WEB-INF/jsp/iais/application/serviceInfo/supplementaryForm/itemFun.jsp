@@ -180,26 +180,44 @@
             $conNodes.each(function () {
                 let $v = $(this);
                 let mandatory = $v.data('mandatory');
-                if ('2' != mandatory) {
-                    return;
-                }
-                let $targetLabel = $v.closest('.item-record').find('.item-label');
-                if (isEmptyNode($targetLabel)) {
-                    return;
-                }
-                $targetLabel.find('.mandatory').remove();
-                let conVal = $v.data('specialcondition');
-                if (isEmpty(conVal)) {
-                    return;
-                }
-                let isIncluded = false;
-                conVal.split('#').forEach(function (currentValue) {
-                    if (ary.includes(currentValue)) {
-                        isIncluded = true;
+                if ('2' == mandatory) {
+                    let $targetLabel = $v.closest('.item-record').find('.item-label');
+                    if (isEmptyNode($targetLabel)) {
+                        return;
                     }
-                });
-                if (isIncluded) {
-                    $targetLabel.append('<span class="mandatory">*</span>');
+                    $targetLabel.find('.mandatory').remove();
+                    let conVal = $v.data('specialcondition');
+                    if (isEmpty(conVal)) {
+                        return;
+                    }
+                    let isIncluded = false;
+                    conVal.split('#').forEach(function (currentValue) {
+                        if (ary.includes(currentValue)) {
+                            isIncluded = true;
+                        }
+                    });
+                    if (isIncluded) {
+                        $targetLabel.append('<span class="mandatory">*</span>');
+                    }
+
+                } else if ('3' == mandatory) {
+                    let $target = $v.closest('.item-record');
+                    let $targetLabel = $target.find('.item-label');
+                    if (!isEmptyNode($targetLabel)) {
+                        $targetLabel.find('.mandatory').remove();
+                        $targetLabel.append('<span class="mandatory">*</span>');
+                    }
+                    let conVal = $v.data('specialcondition');
+                    if (isEmpty(conVal)) {
+                        return;
+                    }
+                    let isIncluded = false;
+                    conVal.split('#').forEach(function (currentValue) {
+                        if (ary.includes(currentValue)) {
+                            isIncluded = true;
+                        }
+                    });
+                    toggleTag($target, isIncluded);
                 }
             });
         }
