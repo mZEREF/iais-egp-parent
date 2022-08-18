@@ -10,7 +10,7 @@
     <c:set var="weeklyDto" value="${businessDto.weeklyDtoList[stat.index]}"/>
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-6 col-sm-6 col-xs-6">
             <p class="form-check-label" aria-label="premise-1-cytology">
                 <span>
                     <c:forEach var="weeklyName" items="${weeklyDto.selectValList}"
@@ -21,9 +21,9 @@
                 </span>
             </p>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6 col-sm-6 col-xs-6">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-4 col-sm-4 col-xs-4">
                     <p class="form-check-label" aria-label="premise-1-cytology">
                         <span>
                             <c:if test="${!weeklyDto.selectAllDay}">
@@ -54,7 +54,7 @@
                         </span>
                     </p>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 col-sm-4 col-xs-4">
                     <p class="form-check-label" aria-label="premise-1-cytology">
                         <span>
                             <c:if test="${!weeklyDto.selectAllDay}">
@@ -85,7 +85,7 @@
                         </span>
                     </p>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3 col-sm-3 col-xs-3">
                     <c:if test="${weeklyDto.selectAllDay}">
                         <div class="form-check active">
                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>

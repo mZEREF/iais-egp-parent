@@ -1744,6 +1744,7 @@ public class ServiceInfoDelegator {
         boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
         ParamUtil.setRequestAttr(bpc.request, "isRfi", isRfi);
         ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.PREMALIGNBUSINESSMAP, premAlignBusinessMap);
+        ParamUtil.setRequestAttr(bpc.request, "newBusiness", new AppSvcBusinessDto());
         log.debug(StringUtil.changeForLog("prepare business end ..."));
     }
 

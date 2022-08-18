@@ -38,17 +38,19 @@
                     <div class="col-md-12 col-xs-12">
                         <label class="control-label">Operating Hours</label>
                     </div>
-                    <div class="col-md-6">
+                </iais:row>
+                <iais:row>
+                    <div class="col-md-6 col-sm-6 col-xs-6">
                         <label class="control-label">Weekly</label>
                     </div>
-                    <div class="col-md-6">
-                        <div class="col-md-4 col-xs-4 input-padding hidden-xs" style="padding-left: 0;">
+                    <div class="col-md-6 col-sm-6 col-xs-6">
+                        <div class="col-md-4  col-sm-4 col-xs-4 input-padding hidden-xs" style="padding-left: 0;">
                             <label class="control-label">Start</label>
                         </div>
-                        <div class="col-md-4 col-xs-4 input-padding hidden-xs">
+                        <div class="col-md-4 col-sm-4 col-xs-4 input-padding hidden-xs">
                             <label class="control-label">End</label>
                         </div>
-                        <div class="col-md-3 col-xs-3 hidden-xs">
+                        <div class="col-md-3 col-sm-3 col-xs-3 hidden-xs">
                             <label class="control-label">24 Hours</label>
                         </div>
                     </div>
