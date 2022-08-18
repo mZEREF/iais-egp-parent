@@ -209,7 +209,7 @@
         if (isEmptyNode($tag)) {
             return;
         }
-        let targetId = $tag.data('condition');
+        let targetId = $tag.data('parent');
         if (isEmpty(targetId)) {
             return;
         }
@@ -228,7 +228,7 @@
         }
         let seq = $tag.data('seq');
         let curr = $tag.data('curr');
-        let $conNodes = $('[data-condition="' + curr + '"][data-seq="' + seq + '"]');
+        let $conNodes = $('[data-parent="' + curr + '"][data-seq="' + seq + '"]');
         let total = 0;
         if (!isEmptyNode($conNodes)) {
             // calculate total
