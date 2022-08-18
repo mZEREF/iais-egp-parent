@@ -217,9 +217,9 @@ public interface InspectionClient {
 
     /** AO approve inspection report and decide to mark as final */
     @PostMapping(value = "/inspection/actual/report/finalize/ao", consumes = MediaType.APPLICATION_JSON_VALUE)
-    void aoFinalizeInspectionReport(@RequestParam("appId") String appId,
-                                    @RequestParam("taskId") String taskId,
-                                    @RequestBody InsProcessDto processDto);
+    String aoFinalizeInspectionReport(@RequestParam("appId") String appId,
+                                      @RequestParam("taskId") String taskId,
+                                      @RequestBody InsProcessDto processDto);
 
     /** AO approve inspection report and decide to route back to DO */
     @PostMapping(value = "/inspection/actual/report/finalize/ao/route-back", consumes = MediaType.APPLICATION_JSON_VALUE)

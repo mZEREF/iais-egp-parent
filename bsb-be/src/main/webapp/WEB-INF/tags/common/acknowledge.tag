@@ -1,6 +1,6 @@
 <%@tag description="acknowledge page" pageEncoding="UTF-8" %>
-<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
-<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
+<%@ taglib prefix="webui" uri="http://www.ecquaria.com/webui" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <webui:setLayout name="iais-intranet"/>
 
@@ -25,7 +25,7 @@
                                     <h2><c:out value="${resultMsg}"/></h2>
                                 </c:when>
                                 <c:otherwise>
-                                    <h2 style="border-bottom: 0px">
+                                    <h2 style="border-bottom: 0">
                                         <span>You have successfully completed your task -- <c:out value="${task}"/></span>
                                     </h2>
                                     <c:choose>
@@ -33,7 +33,7 @@
                                             <h3>Next stage is <c:out value="${nextTask}"/>, handled by ${nextRole}</h3>
                                         </c:when>
                                         <c:otherwise>
-                                            <h3>this is final stage</h3>
+                                            <h3>This is final stage</h3>
                                         </c:otherwise>
                                     </c:choose>
                                 </c:otherwise>

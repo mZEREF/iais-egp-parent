@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.InspectionClient;
 import sg.gov.moh.iais.egp.bsb.client.InternalDocClient;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
+import sg.gov.moh.iais.egp.bsb.constant.StageConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.constant.module.TaskModuleConstants;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocDisplayDto;
@@ -159,12 +160,12 @@ public class BsbInspectionReportAOApprovalDelegator {
         String appId = (String) ParamUtil.getSessionAttr(request, KEY_APP_ID);
         String taskId = (String) ParamUtil.getSessionAttr(request, KEY_TASK_ID);
         InsProcessDto processDto = (InsProcessDto) ParamUtil.getSessionAttr(request, KEY_INS_DECISION);
-        inspectionClient.aoFinalizeInspectionReport(appId, taskId, processDto);
+        String nextAppStatus = inspectionClient.aoFinalizeInspectionReport(appId, taskId, processDto);
 
         ParamUtil.setRequestAttr(request, TaskModuleConstants.KEY_CURRENT_TASK, MasterCodeUtil.getCodeDesc(APP_STATUS_PEND_AO_REPORT_APPROVAL));
-        // TODO returned by API
-//        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(nextStatus));
-//        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_ROLE, nextRole);
+        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_TASK, MasterCodeUtil.getCodeDesc(nextAppStatus));
+        String nextRole = MasterCodeConstants.APP_STATUS_PEND_NC_RECTIFICATION.equals(nextAppStatus) ? StageConstants.ROLE_APPLICANT : StageConstants.ROLE_DO;
+        ParamUtil.setRequestAttr(request,TaskModuleConstants.KEY_NEXT_ROLE, nextRole);
     }
 
     public void routeBack(BaseProcessClass bpc) {
