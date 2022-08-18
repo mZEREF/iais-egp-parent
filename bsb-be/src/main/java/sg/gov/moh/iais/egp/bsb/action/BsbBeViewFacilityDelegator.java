@@ -4,8 +4,9 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.AppViewClient;
 import sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserDto;
@@ -32,17 +33,12 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.AppViewConstants.KEY_TASK_
 
 
 @Slf4j
+@RequiredArgsConstructor
 @Delegator("bsbBeViewFacilityDelegator")
 public class BsbBeViewFacilityDelegator {
 
     private final AppViewService appViewService;
     private final AppViewClient appViewClient;
-
-    @Autowired
-    public BsbBeViewFacilityDelegator(AppViewService appViewService, AppViewClient appViewClient) {
-        this.appViewService = appViewService;
-        this.appViewClient = appViewClient;
-    }
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -61,7 +57,7 @@ public class BsbBeViewFacilityDelegator {
         HttpServletRequest request = bpc.request;
         String appId = (String) ParamUtil.getSessionAttr(request, MASK_PARAM_APP_ID);
         String taskType = (String) ParamUtil.getSessionAttr(request, KEY_TASK_TYPE);
-        if (taskType != null) {
+        if (StringUtils.hasLength(taskType)) {
             // need judge has rfi
             if (appViewClient.hasCompletedRfi(appId, taskType)) {
                 FacilityRegisterDto oldFacRegDto = appViewClient.getOldFacilityRegistrationData(appId).getEntity();
