@@ -356,20 +356,20 @@ public class TopDataSubmissionDelegator {
                 }else if (DsConfigHelper.TOP_STEP_PRE_TERMINATION.equals(cfg.getCode())&&terminationOfPregnancyDto.getPreTerminationDto()!=null) {
                     ValidationResult result = WebValidationHelper.validateProperty(terminationOfPregnancyDto.getPreTerminationDto(),"TOP");
                     status = result.isHasErrors()?0:1;
-                }else if (DsConfigHelper.TOP_STEP_PRESENT_TERMINATION.equals(cfg.getCode())&&terminationOfPregnancyDto.getTerminationDto()!=null) {
+                }else if (DsConfigHelper.TOP_STEP_PRESENT_TERMINATION.equals(cfg.getCode())) {
+                     PreTerminationDto preTerminationDto= terminationOfPregnancyDto.getPreTerminationDto();
+                     if(needDoTop(preTerminationDto)&&terminationOfPregnancyDto.getTerminationDto()!=null){
+                         ValidationResult result = WebValidationHelper.validateProperty(terminationOfPregnancyDto.getTerminationDto(),"TOP");
+                         status = result.isHasErrors()?0:1;
+                     }else if(topSuperDataSubmissionDto.getAppType().equals(DataSubmissionConsts.DS_APP_TYPE_RFC)){
+                         status =1;
+                     }
+                }else if (DsConfigHelper.TOP_STEP_POST_TERMINATION.equals(cfg.getCode())) {
                     PreTerminationDto preTerminationDto= terminationOfPregnancyDto.getPreTerminationDto();
-                    if(needDoTop(preTerminationDto)){
-                        ValidationResult result = WebValidationHelper.validateProperty(terminationOfPregnancyDto.getTerminationDto(),"TOP");
-                        status = result.isHasErrors()?0:1;
-                    }else {
-                        status =1;
-                    }
-                }else if (DsConfigHelper.TOP_STEP_POST_TERMINATION.equals(cfg.getCode())&&terminationOfPregnancyDto.getPostTerminationDto()!=null) {
-                    PreTerminationDto preTerminationDto= terminationOfPregnancyDto.getPreTerminationDto();
-                    if(needDoTop(preTerminationDto)){
+                    if(needDoTop(preTerminationDto)&&terminationOfPregnancyDto.getPostTerminationDto()!=null){
                         ValidationResult result = WebValidationHelper.validateProperty(terminationOfPregnancyDto.getPostTerminationDto(),"TOP");
                         status = result.isHasErrors()?0:1;
-                    }else {
+                    }else if(topSuperDataSubmissionDto.getAppType().equals(DataSubmissionConsts.DS_APP_TYPE_RFC)){
                         status =1;
                     }
                 }
@@ -1879,7 +1879,7 @@ public class TopDataSubmissionDelegator {
     }
 
     private boolean needDoTop(PreTerminationDto preTerminationDto){
-        if(preTerminationDto.getCounsellingGiven()!=null){
+        if(preTerminationDto!=null&&preTerminationDto.getCounsellingGiven()!=null){
             if(preTerminationDto.getCounsellingGiven()){
                 if(preTerminationDto.getCounsellingResult()!=null&&!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())) {
                     if ("1".equals(preTerminationDto.getPatientAppointment())) {
@@ -1893,6 +1893,6 @@ public class TopDataSubmissionDelegator {
                 return true;
             }
         }
-        return false;
+        return true;
     }
 }
