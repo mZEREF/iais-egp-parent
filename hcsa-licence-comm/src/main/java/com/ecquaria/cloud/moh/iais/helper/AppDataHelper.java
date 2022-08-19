@@ -57,6 +57,7 @@ import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
+import com.microsoft.schemas.office.office.STInsetMode;
 import lombok.extern.slf4j.Slf4j;
 import sop.util.DateUtil;
 
@@ -2027,7 +2028,7 @@ public final class AppDataHelper {
         return new AppSvcPrincipalOfficersDto();
     }*/
 
-    public static AppSvcPersonnelDto getAppSvcPersonnelParam(HttpServletRequest request, String prefix, String suffix) {
+    public static AppSvcPersonnelDto getAppSvcPersonnelParam(HttpServletRequest request, String prefix, String suffix,String personnelType) {
         AppSvcPersonnelDto appSvcPersonnelDto = new AppSvcPersonnelDto();
         String salutation = ParamUtil.getString(request, prefix + "salutation" + suffix);
         String name = ParamUtil.getString(request, prefix + "name" + suffix);
@@ -2056,10 +2057,15 @@ public final class AppDataHelper {
         } else {
             appSvcPersonnelDto.setIndexNo(UUID.randomUUID().toString());
         }
+
         if (!StringUtil.isEmpty(prefix) && prefix=="SP999"){
             appSvcPersonnelDto.setPersonnelType(ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS);
         }else {
-            appSvcPersonnelDto.setPersonnelType(prefix);
+            if (StringUtil.isEmpty(personnelType)){
+                appSvcPersonnelDto.setPersonnelType(prefix);
+            }else {
+                appSvcPersonnelDto.setPersonnelType(personnelType);
+            }
         }
         appSvcPersonnelDto.setOtherDesignation(otherDesignation);
         appSvcPersonnelDto.setSubSpeciality(subSpeciality);
@@ -2210,19 +2216,19 @@ public final class AppDataHelper {
         }
 
         for (int i = 0; i < arCount; i++) {
-            AppSvcPersonnelDto dto = getAppSvcPersonnelParam(request, "SP002", String.valueOf(i));
+            AppSvcPersonnelDto dto = getAppSvcPersonnelParam(request, "SP002", String.valueOf(i),null);
             arPractitionerList.add(dto);
         }
         for (int i = 0; i < nuCount; i++) {
-            AppSvcPersonnelDto dto = getAppSvcPersonnelParam(request, "SP003", String.valueOf(i));
+            AppSvcPersonnelDto dto = getAppSvcPersonnelParam(request, "SP003", String.valueOf(i),null);
             nurseList.add(dto);
         }
         for (int i = 0; i < emCount; i++) {
-            AppSvcPersonnelDto dto = getAppSvcPersonnelParam(request, "SP001", String.valueOf(i));
+            AppSvcPersonnelDto dto = getAppSvcPersonnelParam(request, "SP001", String.valueOf(i),null);
             embryologistList.add(dto);
         }
         for (int i = 0; i < noCount; i++) {
-            AppSvcPersonnelDto dto = getAppSvcPersonnelParam(request, "SP999", String.valueOf(i));
+            AppSvcPersonnelDto dto = getAppSvcPersonnelParam(request, "SP999", String.valueOf(i),null);
             normalList.add(dto);
         }
         for (int i = 0; i < speCount; i++) {
@@ -2245,22 +2251,6 @@ public final class AppDataHelper {
             svcPersonnelDto.setNormalList(normalList);
         }
         return svcPersonnelDto;
-    }
-
-
-    private static AppSvcPersonnelDto getAppSvcPersonnelDtoByIndexNo(AppSvcRelatedInfoDto
-                                                                             appSvcRelatedInfoDto, String indexNo) {
-//        if (appSvcRelatedInfoDto != null && !StringUtil.isEmpty(indexNo)) {
-////            List<AppSvcPersonnelDto> appSvcPersonnelDtoList = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
-//            if (!IaisCommonUtils.isEmpty(appSvcPersonnelDtoList)) {
-//                for (AppSvcPersonnelDto appSvcPersonnelDto : appSvcPersonnelDtoList) {
-//                    if (indexNo.equals(appSvcPersonnelDto.getIndexNo())) {
-//                        return appSvcPersonnelDto;
-//                    }
-//                }
-//            }
-//        }
-        return new AppSvcPersonnelDto();
     }
 
     public static List<AppSvcPrincipalOfficersDto> genAppSvcKeyAppointmentHolder(HttpServletRequest request) {
