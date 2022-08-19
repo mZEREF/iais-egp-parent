@@ -173,7 +173,7 @@
         }
         let seq = $tag.data('seq');
         let curr = $tag.data('curr');
-        let $conNodes = $('[data-condition="' + curr + '"][data-seq="' + seq + '"]');
+        let $conNodes = $('[data-parent="' + curr + '"][data-seq="' + seq + '"]');
         let currVal = getValue($tag);
         if (!isEmptyNode($conNodes)) {
             let ary = isEmpty(currVal) ? [] : currVal.split('#');
@@ -186,7 +186,7 @@
                         return;
                     }
                     $targetLabel.find('.mandatory').remove();
-                    let conVal = $v.data('specialcondition');
+                    let conVal = $v.data('mandatory-cond');
                     if (isEmpty(conVal)) {
                         return;
                     }
@@ -207,7 +207,24 @@
                         $targetLabel.find('.mandatory').remove();
                         $targetLabel.append('<span class="mandatory">*</span>');
                     }
-                    let conVal = $v.data('specialcondition');
+                    let conVal = $v.data('mandatory-cond');
+                    if (isEmpty(conVal)) {
+                        return;
+                    }
+                    let isIncluded = false;
+                    conVal.split('#').forEach(function (currentValue) {
+                        if (ary.includes(currentValue)) {
+                            isIncluded = true;
+                        }
+                    });
+                    toggleTag($target, isIncluded);
+                } else if ('4' == mandatory) {
+                    let $target = $v.closest('.item-record');
+                    let $targetLabel = $target.find('.item-label');
+                    if (!isEmptyNode($targetLabel)) {
+                        $targetLabel.find('.mandatory').remove();
+                    }
+                    let conVal = $v.data('mandatory-cond');
                     if (isEmpty(conVal)) {
                         return;
                     }
@@ -246,7 +263,7 @@
         }
         let seq = $tag.data('seq');
         let curr = $tag.data('curr');
-        let $conNodes = $('[data-parent="' + curr + '"][data-seq="' + seq + '"]');
+        let $conNodes = $('[data-condition="' + curr + '"][data-seq="' + seq + '"]');
         let total = 0;
         if (!isEmptyNode($conNodes)) {
             // calculate total
