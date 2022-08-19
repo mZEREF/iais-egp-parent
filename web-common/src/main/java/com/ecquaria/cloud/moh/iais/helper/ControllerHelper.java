@@ -43,13 +43,13 @@ public final class ControllerHelper {
         }
     }
 
-    public static <T> T get(HttpServletRequest request, Class<T> clazz, String shortName, String suffix) {
+    public static <T> T get(HttpServletRequest request, Class<T> clazz, String shortName, String suffix, boolean isCapitalize) {
         if (clazz == null) {
             return null;
         }
 
         try {
-            return get(request, clazz.newInstance(), shortName, suffix);
+            return get(request, clazz.newInstance(), shortName, suffix, isCapitalize);
         } catch (Exception e) {
             log.error(StringUtil.changeForLog(e.getMessage()), e);
             throw new IaisRuntimeException(e);
@@ -61,10 +61,10 @@ public final class ControllerHelper {
     }
 
     public static <T> T get(HttpServletRequest request, T obj, String suffix) {
-        return get(request, obj, null, suffix);
+        return get(request, obj, null, suffix, false);
     }
 
-    public static <T> T get(HttpServletRequest request, T obj, String shortName, String suffix) {
+    public static <T> T get(HttpServletRequest request, T obj, String shortName, String suffix, boolean isCapitalize) {
         if (obj == null) {
             return obj;
         }
@@ -80,11 +80,11 @@ public final class ControllerHelper {
             }
 
 
-            if (!isFieldExist(request, shortName, suffix, field)) {
+            if (!isFieldExist(request, shortName, suffix, field, isCapitalize)) {
                 continue;
             }
 
-            ReflectionUtil.setPropertyObj(field, getValue(request, shortName, suffix, field), obj);
+            ReflectionUtil.setPropertyObj(field, getValue(request, shortName, suffix, field, isCapitalize), obj);
         }
 
         return obj;
@@ -111,25 +111,26 @@ public final class ControllerHelper {
         return fields;
     }
 
-    private static boolean isFieldExist(HttpServletRequest request, String shortName, String id, Field field) {
+    private static boolean isFieldExist(HttpServletRequest request, String shortName, String id, Field field, boolean isCapitalize) {
         if (field == null) {
             return false;
         }
 
-        String name = getParamName(shortName, field.getName(), id);
+        String name = getParamName(shortName, field.getName(), id, isCapitalize);
         String _checkbox_radio = ParamUtil.getString(request, "_checkbox_radio");
         if (StringUtil.isIn(name, _checkbox_radio)) {
             return true;
         }
 
-        return isFieldExist((MultipartHttpServletRequest)request.getAttribute("sop6.multipart.req"),name) || isFieldExist(request,name);
+        return isFieldExist((MultipartHttpServletRequest) request.getAttribute("sop6.multipart.req"), name) || isFieldExist(request,
+                name);
     }
 
-    private static boolean isFieldExist(HttpServletRequest request,String name){
+    private static boolean isFieldExist(HttpServletRequest request, String name) {
         return request != null && request.getParameterMap() != null && request.getParameterMap().containsKey(name);
     }
 
-    private static Object getValue(HttpServletRequest request, String shortName, String id, Field field) {
+    private static Object getValue(HttpServletRequest request, String shortName, String id, Field field, boolean isCapitalize) {
         if (field == null) {
             return null;
         }
@@ -137,7 +138,7 @@ public final class ControllerHelper {
         log.info(StringUtil.changeForLog("ControllerHelper - Getting value for field: " +
                 field.getName()) + " (" + StringUtil.changeForLog(String.valueOf(field.getType())) + ")");
         Class<?> type = field.getType();
-        String name = getParamName(shortName, field.getName(), id);
+        String name = getParamName(shortName, field.getName(), id, isCapitalize);
         Object value = null;
         if (String.class.isAssignableFrom(type)) {
             value = ParamUtil.getString(request, name);
@@ -149,7 +150,7 @@ public final class ControllerHelper {
             value = ParamUtil.getDouble(request, name, 0);
         } else if (Integer.class.isAssignableFrom(type)) {
             value = ParamUtil.getString(request, name);
-            if(value == null){
+            if (value == null) {
                 return null;
             }
             if (StringUtil.isDigit((String) value)) {
@@ -192,10 +193,13 @@ public final class ControllerHelper {
         return value;
     }
 
-    public static String getParamName(String shortName, String name, String suffix) {
+    public static String getParamName(String shortName, String name, String suffix, boolean isCapitalize) {
         StringBuilder param = new StringBuilder();
         if (!StringUtil.isEmpty(shortName)) {
-            param.append(shortName).append(StringUtil.capitalize(name));
+            param.append(shortName);
+        }
+        if (isCapitalize) {
+            param.append(StringUtil.capitalize(name));
         } else {
             param.append(name);
         }
