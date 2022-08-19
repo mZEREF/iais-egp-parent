@@ -28,6 +28,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPage
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoAbortDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoMedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoNurseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoTopPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
@@ -1842,9 +1844,22 @@ public final class AppValidatorHelper {
         List<AppSvcOtherInfoAbortDto> topByDrug = appSvcOtherInfoDto.getAppSvcOtherInfoAbortDtoList();
         List<AppSvcOtherInfoAbortDto> topBySurgicalProcedure = appSvcOtherInfoDto.getAppSvcOtherInfoAbortDtoList1();
         List<AppSvcOtherInfoAbortDto> topByAll = appSvcOtherInfoDto.getAppSvcOtherInfoAbortDtoList2();
-        String provideTop = appSvcOtherInfoDto.getProvideTop();
-
-        if (StringUtil.isEmpty(provideTop)){
+        AppSvcOtherInfoMedDto appSvcOtherInfoMedDto = appSvcOtherInfoDto.getAppSvcOtherInfoMedDto();
+        AppSvcOtherInfoNurseDto appSvcOtherInfoNurseDto = appSvcOtherInfoDto.getAppSvcOtherInfoNurseDto();
+        if (StringUtil.isEmpty(appSvcOtherInfoMedDto.getIsMedicalTypeIt() && appSvcOtherInfoMedDto.getIsMedicalTypePaper())){
+            errMap.put("isMedicalTypeIt", MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of medical records", "field"));
+        }
+        if (StringUtil.isEmpty(appSvcOtherInfoMedDto.getSystemOption())){
+            errMap.put("systemOption", MessageUtil.replaceMessage("GENERAL_ERR0006", "List of options for IT system and paper cards / IT system only", "field"));
+        }
+        if (StringUtil.isEmpty(appSvcOtherInfoMedDto.getIsOpenToPublic())){
+            errMap.put("isOpenToPublic", MessageUtil.replaceMessage("GENERAL_ERR0006", "Is clinic open to general public?", "field"));
+        }
+        String gfaValue = String.valueOf(appSvcOtherInfoMedDto.getGfaValue());
+        if (StringUtil.isEmpty(gfaValue) && gfaValue.matches("^[0-9]*[1-9][0-9]*$")){
+            errMap.put("gfaValue", MessageUtil.replaceMessage("GENERAL_ERR0006", "GFA Value (in sqm)", "field"));
+        }
+        if (StringUtil.isEmpty(appSvcOtherInfoDto.getProvideTop())){
             errMap.put("provideTop", MessageUtil.replaceMessage("GENERAL_ERR0006", "Please indicate&nbsp;", "field"));
         }
         String topType = appSvcOtherInfoDto.getAppSvcOtherInfoTopDto().getTopType();

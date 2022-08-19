@@ -12,7 +12,7 @@
 <c:set var="topByAll" value="${appSvcOtherInfoDto.appSvcOtherInfoAbortDtoList2}"/>
 <c:set var="med" value="${appSvcOtherInfoDto.appSvcOtherInfoMedDto}"/>
 <c:set var="n" value="${appSvcOtherInfoDto.appSvcOtherInfoNurseDto}"/>
-============================${anaesthetists}
+
 <div class="row form-horizontal">
     <%@include file="dentalService.jsp" %>
     <%@include file="renalDialysisCentreService.jsp"%>
