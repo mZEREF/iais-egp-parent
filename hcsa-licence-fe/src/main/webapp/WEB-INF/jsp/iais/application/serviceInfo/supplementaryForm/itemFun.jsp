@@ -244,7 +244,7 @@
         if (isEmptyNode($tag)) {
             return;
         }
-        let targetId = $tag.data('parent');
+        let targetId = $tag.data('condition');
         if (isEmpty(targetId)) {
             return;
         }
