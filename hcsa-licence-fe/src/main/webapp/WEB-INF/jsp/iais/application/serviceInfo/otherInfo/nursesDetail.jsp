@@ -12,7 +12,7 @@
         </div>
     </iais:row>
 
-    <input type="hidden" name="npsnType" value="nurses">
+    <input type="hidden" name="npsnType${index}" value="nurses">
     <iais:row>
         <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Name of trained nurses"/>
         <iais:value width="6" cssClass="col-md-6">

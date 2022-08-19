@@ -10,9 +10,13 @@
 <c:set var="topByDrug" value="${appSvcOtherInfoDto.appSvcOtherInfoAbortDtoList}"/>
 <c:set var="topBySurgicalProcedure" value="${appSvcOtherInfoDto.appSvcOtherInfoAbortDtoList1}"/>
 <c:set var="topByAll" value="${appSvcOtherInfoDto.appSvcOtherInfoAbortDtoList2}"/>
-
+<c:set var="med" value="${appSvcOtherInfoDto.appSvcOtherInfoMedDto}"/>
+<c:set var="n" value="${appSvcOtherInfoDto.appSvcOtherInfoNurseDto}"/>
+============================${anaesthetists}
 <div class="row form-horizontal">
     <%@include file="dentalService.jsp" %>
+    <%@include file="renalDialysisCentreService.jsp"%>
+    <%@include file="ambulatorySurgicalCentreService.jsp"%>
     <%@include file="otherInformationTopPerson.jsp" %>
     <%@include file="documentation.jsp" %>
     <%@include file="aboutTop.jsp" %>
@@ -119,6 +123,8 @@
             $('div.addTopAllDiv').removeClass("hidden");
         }
     }
+
+
 </script>
 
 

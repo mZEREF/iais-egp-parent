@@ -69,8 +69,7 @@
             <span>Add more</span>
         </span>
     </div>
-
-    <div class="de <c:if test="${('-1' != appSvcOtherInfoTop.topType) || ('0' == provideTop)}">hidden</c:if>">
+    <div class="de <c:if test="${'0' == provideTop}">hidden</c:if>">
         <iais:row>
             <div class="col-xs-12 col-md-12">
                 <p class="bold">Declaration</p>

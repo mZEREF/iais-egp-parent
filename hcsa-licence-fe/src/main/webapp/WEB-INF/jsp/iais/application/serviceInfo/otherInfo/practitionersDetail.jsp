@@ -12,7 +12,7 @@
             </h4>
         </div>
     </iais:row>
-    <input type="hidden" name="psnType" value="practitioners">
+    <input type="hidden" name="psnType${index}" value="practitioners">
     <iais:row>
         <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Professional Regn. No."/>
         <iais:value width="6" cssClass="col-md-6">
@@ -44,7 +44,7 @@
     <iais:row>
         <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Specialties"/>
         <iais:value width="6" cssClass="col-md-6">
-            <iais:input maxLength="20" type="text" cssClass="specialties" name="specialties${index}" value="${person.speciality}"/>
+            <iais:input maxLength="20" type="text" cssClass="speciality" name="speciality${index}" value="${person.speciality}"/>
         </iais:value>
     </iais:row>
 

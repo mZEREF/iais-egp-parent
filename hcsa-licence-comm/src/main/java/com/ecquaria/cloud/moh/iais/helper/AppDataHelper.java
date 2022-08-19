@@ -25,6 +25,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPage
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoAbortDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoMedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoNurseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoTopDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoTopPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
@@ -786,6 +788,7 @@ public final class AppDataHelper {
         String currentSvcId = (String) ParamUtil.getSessionAttr(request,CURRENTSERVICEID);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request,currentSvcId);
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
+
         String provideTop = ParamUtil.getString(request,"provideTop");
         appSvcOtherInfoDto.setProvideTop(provideTop);
         String provideYfVs = ParamUtil.getString(request,"provideYfVs");
@@ -809,6 +812,12 @@ public final class AppDataHelper {
         if (compCaseNum != null && compCaseNum.matches("^[0-9]*[1-9][0-9]*$")){
             appSvcOtherInfoTopDtos.setCompCaseNum(Integer.valueOf(compCaseNum));
         }
+        //med
+        AppSvcOtherInfoMedDto appSvcOtherInfoMedDto = new AppSvcOtherInfoMedDto();
+        ControllerHelper.get(request,appSvcOtherInfoMedDto);
+        //n
+        AppSvcOtherInfoNurseDto appSvcOtherInfoNurseDto = new AppSvcOtherInfoNurseDto();
+        ControllerHelper.get(request,appSvcOtherInfoNurseDto);
         int conts = 0;
         // List<AppSvcOtherInfoTopPersonDto>
         int cdLength = ParamUtil.getInt(request,"cdLength");
@@ -833,27 +842,9 @@ public final class AppDataHelper {
                     appSvcOtherInfoTopPersonDtos.add(appPremOtherInfoTopPersonDto);
                 }
             } else if (getPageData) {
-                String psnType = ParamUtil.getString(request,"psnType");
-                String profRegNo = ParamUtil.getString(request, "profRegNo" + i);
-                String name = ParamUtil.getString(request, "name" + i);
-                String regType = ParamUtil.getString(request, "regType" + i);
-                String specialties = ParamUtil.getString(request,"specialties"+i);
-                String qualification = ParamUtil.getString(request, "qualification" + i);
-                String medAuthByMoh = ParamUtil.getString(request,"medAuthByMoh"+i);
-
                 AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto = new AppSvcOtherInfoTopPersonDto();
-                appSvcOtherInfoTopPersonDto.setPsnType(psnType);
-                appSvcOtherInfoTopPersonDto.setProfRegNo(profRegNo);
-                appSvcOtherInfoTopPersonDto.setName(name);
-                appSvcOtherInfoTopPersonDto.setSpeciality(specialties);
-                appSvcOtherInfoTopPersonDto.setRegType(regType);
-                if ("1".equals(medAuthByMoh)){
-                    appSvcOtherInfoTopPersonDto.setMedAuthByMoh(true);
-                }
-                if ("0".equals(medAuthByMoh)){
-                    appSvcOtherInfoTopPersonDto.setMedAuthByMoh(false);
-                }
-                appSvcOtherInfoTopPersonDto.setQualification(qualification);
+                ControllerHelper.get(request,appSvcOtherInfoTopPersonDto,String.valueOf(i));
+                String medAuthByMoh = ParamUtil.getString(request,"medAuthByMoh"+i);
                 appSvcOtherInfoTopPersonDto.setSeqNum(i);
                 appSvcOtherInfoTopPersonDto.setIdNo(idNo);
                 appSvcOtherInfoTopPersonDtos.add(appSvcOtherInfoTopPersonDto);
@@ -882,7 +873,7 @@ public final class AppDataHelper {
                     appSvcOtherInfoTopPersonDtos1.add(appPremOtherInfoTopPersonDto);
                 }
             } else if (getPageData) {
-                String apsnType = ParamUtil.getString(request,"apsnType");
+                String apsnType = ParamUtil.getString(request,"apsnType"+i);
                 String profRegNo = ParamUtil.getString(request, "aprofRegNo" + i);
                 String name = ParamUtil.getString(request, "aname" + i);
                 String regType = ParamUtil.getString(request, "aregType" + i);
@@ -924,7 +915,7 @@ public final class AppDataHelper {
                 }
             } else if (getPageData) {
                 String nqualification = ParamUtil.getString(request, "nqualification" + i);
-                String npsnType = ParamUtil.getString(request,"npsnType");
+                String npsnType = ParamUtil.getString(request,"npsnType"+i);
                 AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto = new AppSvcOtherInfoTopPersonDto();
                 appSvcOtherInfoTopPersonDto.setPsnType(npsnType);
                 appSvcOtherInfoTopPersonDto.setName(nname);
@@ -956,7 +947,7 @@ public final class AppDataHelper {
                     appSvcOtherInfoTopPersonDtos3.add(appPremOtherInfoTopPersonDto);
                 }
             } else if (getPageData) {
-                String cpsnType = ParamUtil.getString(request,"cpsnType");
+                String cpsnType = ParamUtil.getString(request,"cpsnType"+i);
                 String cqualification = ParamUtil.getString(request, "cqualification" + i);
                 String cname = ParamUtil.getString(request,"cname"+i);
                 AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto = new AppSvcOtherInfoTopPersonDto();
@@ -1069,6 +1060,7 @@ public final class AppDataHelper {
                 String abortNum = ParamUtil.getString(request, "aabortNum" + i);
 
                 AppSvcOtherInfoAbortDto appSvcOtherInfoAboutDto = new AppSvcOtherInfoAbortDto();
+
                 if (year != null && abortNum != null){
                     appSvcOtherInfoAboutDto.setTopType("-1");
                     if (year.matches("^[0-9]*[1-9][0-9]*$")){
@@ -1088,9 +1080,10 @@ public final class AppDataHelper {
         appSvcOtherInfoDto.setAppSvcOtherInfoTopPersonDtoList3(appSvcOtherInfoTopPersonDtos3);
         appSvcOtherInfoDto.setAppSvcOtherInfoAbortDtoList1(appSvcOtherInfoAboutDtos1);
         appSvcOtherInfoDto.setAppSvcOtherInfoAbortDtoList2(appSvcOtherInfoAboutDtos2);
-
         appSvcOtherInfoDto.setAppSvcOtherInfoTopDto(appSvcOtherInfoTopDtos);
         appSvcOtherInfoDto.setAppSvcOtherInfoAbortDtoList(appSvcOtherInfoAboutDtos);
+        appSvcOtherInfoDto.setAppSvcOtherInfoMedDto(appSvcOtherInfoMedDto);
+        appSvcOtherInfoDto.setAppSvcOtherInfoNurseDto(appSvcOtherInfoNurseDto);
         return appSvcOtherInfoDto;
     }
 

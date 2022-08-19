@@ -13,7 +13,7 @@
         </div>
     </iais:row>
 
-    <input type="hidden" name="cpsnType" value="counsellors">
+    <input type="hidden" name="cpsnType${index}" value="counsellors">
     <iais:row>
         <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Name of certified TOP counsellors(Only Doctor/Nurse)"/>
         <iais:value width="6" cssClass="col-md-6">

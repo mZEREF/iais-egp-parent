@@ -12,7 +12,7 @@
         </div>
     </iais:row>
 
-    <input type="hidden" name="apsnType" value="anaesthetists">
+    <input type="hidden" name="apsnType${index}" value="anaesthetists">
     <iais:row>
         <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Professional Regn. No."/>
         <iais:value width="6" cssClass="col-md-6">

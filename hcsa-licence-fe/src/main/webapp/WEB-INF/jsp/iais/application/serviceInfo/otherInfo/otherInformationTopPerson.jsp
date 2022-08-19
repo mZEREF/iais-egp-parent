@@ -238,7 +238,7 @@
                 toggleTag($(this).find('div.removePractitionersBtn'), k != 0);
                 $(this).find('.assign-psn-item').html(k+1);
                 console.log("k....."+k)
-                $(this).find('input.psnType').prop('name','psnType');
+                $(this).find('input.psnType').prop('name','psnType'+k);
                 $('input[name="psnType"]').val("practitioners");
                 $(this).find('input.profRegNo').prop('name','profRegNo'+k);
                 $(this).find('input.name').prop('name','name'+k);
@@ -274,7 +274,7 @@
             $('div.practitioners').each(function (k,v) {
                 console.log("k....."+k)
                 $(this).find('.assign-psn-item').html(k+1);
-                $(this).find('input.psnType').prop('name','psnType');
+                $(this).find('input.psnType').prop('name','psnType'+k);
                 $(this).find('input.profRegNo').prop('name','profRegNo'+k);
                 $(this).find('input.profRegNo').prop('id','profRegNo'+k);
                 $(this).find('input.name').prop('name','name'+k);
@@ -314,9 +314,9 @@
                 toggleTag($(this).find('div.removeAnaesthetistsBtn'), k != 0);
                 console.log("k...."+k);
                 $(this).find('.assign-psn-item').html(k+1);
-                $(this).find('input.apsnType').prop('name','apsnType');
+                $(this).find('input.apsnType').prop('name','apsnType'+k);
                 $('input[name="apsnType"]').val("anaesthetists");
-                $(this).find('input.aprofRegNo').prop('name','aprofRegNo'+k);
+                $(this).find('input.aprofRegNo').prop('aname','profRegNo'+k);
                 $(this).find('input.aname').prop('name','aname'+k);
                 $(this).find('input.idANo').prop('name','idANo'+k);
                 $(this).find('input.aregType').prop('name','aregType'+k);
@@ -344,11 +344,10 @@
             $('input[name="anaLength"]').val(anaLength);
             //reset number
             $('div.anaesthetists').each(function (k,v) {
-                console.log("k....."+k)
                 $(this).find('.assign-psn-item').html(k+1);
-                $(this).find('input.apsnType').prop('name','apsnType');
-                $(this).find('input.aprofRegNo').prop('name','aprofRegNo'+k);
-                $(this).find('input.aprofRegNo').prop('id','aprofRegNo'+k);
+                $(this).find('input.apsnType').prop('name','apsnType'+k);
+                $('input[name="apsnType"]').val("anaesthetists");
+                $(this).find('input.aprofRegNo').prop('aname','profRegNo'+k);
                 $(this).find('input.aname').prop('name','aname'+k);
                 $(this).find('input.idANo').prop('name','idANo'+k);
                 $(this).find('input.aregType').prop('name','aregType'+k);
@@ -385,7 +384,7 @@
                 toggleTag($(this).find('div.removeNursesBtn'), k != 0);
                 console.log("k...."+k);
                 $(this).find('.assign-psn-item').html(k+1);
-                $(this).find('input.npsnType').prop('name','npsnType');
+                $(this).find('input.npsnType').prop('name','npsnType'+k);
                 $(this).find('input.nname').prop('name','nname'+k);
                 $(this).find('input.nqualification').prop('name','nqualification'+k);
             });
@@ -400,7 +399,7 @@
         //reset number
         $('.nurses').each(function (k,v) {
             toggleTag($(this).find('div.removeNursesBtn'), k != 0);
-            $(this).find('input.npsnType').prop('name','npsnType');
+            $(this).find('input.npsnType').prop('name','npsnType'+k);
             $('input[name="npsnType"]').val("nurses");
             $(this).find('input.nname').prop('name','nname'+k);
             $(this).find('input.nqualification').prop('name','nqualification'+k);
@@ -417,7 +416,7 @@
             $('div.nurses').each(function (k,v) {
                 console.log("k....."+k)
                 $(this).find('.assign-psn-item').html(k+1);
-                $(this).find('input.npsnType').prop('name','npsnType');
+                $(this).find('input.npsnType').prop('name','npsnType'+k);
                 $(this).find('input.nname').prop('name','nname'+k);
                 $(this).find('input.nqualification').prop('name','nqualification'+k);
             });
@@ -451,7 +450,7 @@
                 toggleTag($(this).find('div.removeBtn'), k != 0);
                 console.log("k...."+k);
                 $(this).find('.assign-psn-item').html(k+1);
-                $(this).find('input.cpsnType').prop('name','cpsnType');
+                $(this).find('input.cpsnType').prop('name','cpsnType'+k);
                 $('input[name="cpsnType"]').val("counsellors");
                 $(this).find('input.cname').prop('name','cname'+k);
                 $(this).find('input.cidNo').prop('name','cidNo'+k);
@@ -481,7 +480,7 @@
             $('div.counsellors').each(function (k,v) {
                 console.log("k....."+k)
                 $(this).find('.assign-psn-item').html(k+1);
-                $(this).find('input.cpsnType').prop('name','cpsnType');
+                $(this).find('input.cpsnType').prop('name','cpsnType'+k);
                 $(this).find('input.cprofRegNo').prop('name','cprofRegNo'+k);
                 $(this).find('input.cprofRegNo').prop('id','cprofRegNo'+k);
                 $(this).find('input.cname').prop('name','cname'+k);

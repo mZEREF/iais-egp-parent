@@ -28,7 +28,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPage
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoAbortDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoTopDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoTopPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
@@ -1828,81 +1827,53 @@ public final class AppValidatorHelper {
         if (appSvcOtherInfoDto == null) {
             return new HashMap<>(1);
         }
-        List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos = appSvcOtherInfoDto.getAppSvcOtherInfoTopPersonDtoList();
-        AppSvcOtherInfoTopDto appSvcOtherInfoTopDto = appSvcOtherInfoDto.getAppSvcOtherInfoTopDto();
-        List<AppSvcOtherInfoAbortDto> appSvcOtherInfoAboutDtos =appSvcOtherInfoDto.getAppSvcOtherInfoAbortDtoList();
-        return doValidateAppSvcOtherInfoTop(appSvcOtherInfoTopPersonDtos, appSvcOtherInfoTopDto,appSvcOtherInfoAboutDtos);
+        return doValidateAppSvcOtherInfoTop(appSvcOtherInfoDto);
     }
 
-    protected static Map<String, String> doValidateAppSvcOtherInfoTop(
-            List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos, AppSvcOtherInfoTopDto appSvcOtherInfoTopDto, List<AppSvcOtherInfoAbortDto> appSvcOtherInfoAboutDtos) {
-        if (appSvcOtherInfoTopPersonDtos == null || appSvcOtherInfoTopPersonDtos.isEmpty() || appSvcOtherInfoTopDto == null || appSvcOtherInfoAboutDtos == null || appSvcOtherInfoAboutDtos.isEmpty()) {
+    protected static Map<String, String> doValidateAppSvcOtherInfoTop(AppSvcOtherInfoDto appSvcOtherInfoDto) {
+        if (appSvcOtherInfoDto != null) {
             return IaisCommonUtils.genNewHashMap();
         }
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
-        List<AppSvcOtherInfoTopPersonDto> practitioners = IaisCommonUtils.genNewArrayList();
-        List<AppSvcOtherInfoTopPersonDto> anaesthetists = IaisCommonUtils.genNewArrayList();
-        List<AppSvcOtherInfoTopPersonDto> nurses = IaisCommonUtils.genNewArrayList();
-        List<AppSvcOtherInfoTopPersonDto> counsellors = IaisCommonUtils.genNewArrayList();
-        List<AppSvcOtherInfoAbortDto> topByDrug = IaisCommonUtils.genNewArrayList();
-        List<AppSvcOtherInfoAbortDto> topBySurgicalProcedure = IaisCommonUtils.genNewArrayList();
-        List<AppSvcOtherInfoAbortDto> topByAll = IaisCommonUtils.genNewArrayList();
-        String provideTop = appSvcOtherInfoTopDto.getTopType();
+        List<AppSvcOtherInfoTopPersonDto> practitioners = appSvcOtherInfoDto.getAppSvcOtherInfoTopPersonDtoList();
+        List<AppSvcOtherInfoTopPersonDto> anaesthetists = appSvcOtherInfoDto.getAppSvcOtherInfoTopPersonDtoList1();
+        List<AppSvcOtherInfoTopPersonDto> nurses = appSvcOtherInfoDto.getAppSvcOtherInfoTopPersonDtoList2();
+        List<AppSvcOtherInfoTopPersonDto> counsellors = appSvcOtherInfoDto.getAppSvcOtherInfoTopPersonDtoList3();
+        List<AppSvcOtherInfoAbortDto> topByDrug = appSvcOtherInfoDto.getAppSvcOtherInfoAbortDtoList();
+        List<AppSvcOtherInfoAbortDto> topBySurgicalProcedure = appSvcOtherInfoDto.getAppSvcOtherInfoAbortDtoList1();
+        List<AppSvcOtherInfoAbortDto> topByAll = appSvcOtherInfoDto.getAppSvcOtherInfoAbortDtoList2();
+        String provideTop = appSvcOtherInfoDto.getProvideTop();
 
         if (StringUtil.isEmpty(provideTop)){
             errMap.put("provideTop", MessageUtil.replaceMessage("GENERAL_ERR0006", "Please indicate&nbsp;", "field"));
         }
-        String topType = appSvcOtherInfoTopDto.getTopType();
+        String topType = appSvcOtherInfoDto.getAppSvcOtherInfoTopDto().getTopType();
         if (StringUtil.isEmpty(topType)) {
             errMap.put("topType", MessageUtil.replaceMessage("GENERAL_ERR0006", "Please indicate&nbsp;", "field"));
         }
-        String isOutcomeProcRecord = String.valueOf(appSvcOtherInfoTopDto.getIsOutcomeProcRecord());
+        String isOutcomeProcRecord = String.valueOf(appSvcOtherInfoDto.getAppSvcOtherInfoTopDto().getIsOutcomeProcRecord());
         if (StringUtil.isEmpty(isOutcomeProcRecord)){
             errMap.put("isOutcomeProcRecord", MessageUtil.replaceMessage("GENERAL_ERR0006",
                     "Outcome of procedures are recorded",
                     "field"));
         }
-        String compCaseNum = String.valueOf(appSvcOtherInfoTopDto.getCompCaseNum());
+        String compCaseNum = String.valueOf(appSvcOtherInfoDto.getAppSvcOtherInfoTopDto().getCompCaseNum());
         if (StringUtil.isEmpty(compCaseNum) && compCaseNum.matches("^[0-9]*[1-9][0-9]*$")){
             errMap.put("compCaseNum", MessageUtil.replaceMessage("GENERAL_ERR0006",
                     "Number of cases with complications, if any",
                     "field"));
         }
-        Boolean hasConsuAttendCourse = appSvcOtherInfoTopDto.getHasConsuAttendCourse();
+        Boolean hasConsuAttendCourse = appSvcOtherInfoDto.getAppSvcOtherInfoTopDto().getHasConsuAttendCourse();
         if (StringUtil.isEmpty(hasConsuAttendCourse)) {
             errMap.put("hasConsuAttendCourse", MessageUtil.replaceMessage("GENERAL_ERR0006",
                     "My counsellor(s) has attended the TOP counselling refresher course (Please upload the certificates in the document page)",
                     "field"));
         }
-        Boolean isProvideHpb = appSvcOtherInfoTopDto.getIsProvideHpb();
+        Boolean isProvideHpb = appSvcOtherInfoDto.getAppSvcOtherInfoTopDto().getIsProvideHpb();
         if (StringUtil.isEmpty(isProvideHpb)) {
             errMap.put("isProvideHpb", MessageUtil.replaceMessage("GENERAL_ERR0006",
                     "The service provider has the necessary counselling facilities e.g. TV set, video player, video on abortion produced by HPB in different languages and the pamphlets produced by HPB",
                     "field"));
-        }
-
-        for (int i = 0; i < appSvcOtherInfoAboutDtos.size(); i++) {
-            if ("1".equals(appSvcOtherInfoAboutDtos.get(i).getTopType())){
-                AppSvcOtherInfoAbortDto appSvcOtherInfoAboutDto = new AppSvcOtherInfoAbortDto();
-                appSvcOtherInfoAboutDto.setTopType(appSvcOtherInfoAboutDtos.get(i).getTopType());
-                appSvcOtherInfoAboutDto.setYear(appSvcOtherInfoAboutDtos.get(i).getYear());
-                appSvcOtherInfoAboutDto.setAbortNum(appSvcOtherInfoAboutDtos.get(i).getAbortNum());
-                topByDrug.add(appSvcOtherInfoAboutDto);
-            }
-            if ("0".equals(appSvcOtherInfoAboutDtos.get(i).getTopType())){
-                AppSvcOtherInfoAbortDto appSvcOtherInfoAboutDto = new AppSvcOtherInfoAbortDto();
-                appSvcOtherInfoAboutDto.setTopType(appSvcOtherInfoAboutDtos.get(i).getTopType());
-                appSvcOtherInfoAboutDto.setYear(appSvcOtherInfoAboutDtos.get(i).getYear());
-                appSvcOtherInfoAboutDto.setAbortNum(appSvcOtherInfoAboutDtos.get(i).getAbortNum());
-                topBySurgicalProcedure.add(appSvcOtherInfoAboutDto);
-            }
-            if ("-1".equals(appSvcOtherInfoAboutDtos.get(i).getTopType())){
-                AppSvcOtherInfoAbortDto appSvcOtherInfoAboutDto = new AppSvcOtherInfoAbortDto();
-                appSvcOtherInfoAboutDto.setTopType(appSvcOtherInfoAboutDtos.get(i).getTopType());
-                appSvcOtherInfoAboutDto.setYear(appSvcOtherInfoAboutDtos.get(i).getYear());
-                appSvcOtherInfoAboutDto.setAbortNum(appSvcOtherInfoAboutDtos.get(i).getAbortNum());
-                topByAll.add(appSvcOtherInfoAboutDto);
-            }
         }
 
         if (("1".equals(topType)) || ("-1".equals(topType))){
@@ -1955,64 +1926,6 @@ public final class AppValidatorHelper {
                }
            }
        }
-
-        for (int i = 0; i < appSvcOtherInfoTopPersonDtos.size(); i++) {
-            String psnType = appSvcOtherInfoTopPersonDtos.get(i).getPsnType();
-            String name = appSvcOtherInfoTopPersonDtos.get(i).getName();
-            String profRegNo = appSvcOtherInfoTopPersonDtos.get(i).getProfRegNo();
-            String idNo = appSvcOtherInfoTopPersonDtos.get(i).getIdNo();
-            String regType = appSvcOtherInfoTopPersonDtos.get(i).getRegType();
-            String specialties = appSvcOtherInfoTopPersonDtos.get(i).getSpeciality();
-            String qualification = appSvcOtherInfoTopPersonDtos.get(i).getQualification();
-
-            if ("practitioners".equals(psnType)) {
-                AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto = new AppSvcOtherInfoTopPersonDto();
-                appSvcOtherInfoTopPersonDto.setPsnType(psnType);
-                appSvcOtherInfoTopPersonDto.setProfRegNo(profRegNo);
-                appSvcOtherInfoTopPersonDto.setName(name);
-                appSvcOtherInfoTopPersonDto.setRegType(regType);
-                appSvcOtherInfoTopPersonDto.setQualification(qualification);
-                appSvcOtherInfoTopPersonDto.setSeqNum(i);
-                appSvcOtherInfoTopPersonDto.setIdNo(idNo);
-                appSvcOtherInfoTopPersonDto.setSpeciality(specialties);
-                appSvcOtherInfoTopPersonDto.setMedAuthByMoh(appSvcOtherInfoTopPersonDtos.get(i).isMedAuthByMoh());
-                practitioners.add(appSvcOtherInfoTopPersonDto);
-            }
-
-            if ("anaesthetists".equals(psnType)) {
-                AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto = new AppSvcOtherInfoTopPersonDto();
-                appSvcOtherInfoTopPersonDto.setPsnType(psnType);
-                appSvcOtherInfoTopPersonDto.setProfRegNo(profRegNo);
-                appSvcOtherInfoTopPersonDto.setName(name);
-                appSvcOtherInfoTopPersonDto.setRegType(regType);
-                appSvcOtherInfoTopPersonDto.setQualification(qualification);
-                appSvcOtherInfoTopPersonDto.setSeqNum(i);
-                appSvcOtherInfoTopPersonDto.setIdNo(idNo);
-
-                anaesthetists.add(appSvcOtherInfoTopPersonDto);
-            }
-
-            if ("nurses".equals(psnType)) {
-                AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto = new AppSvcOtherInfoTopPersonDto();
-                appSvcOtherInfoTopPersonDto.setPsnType(psnType);
-                appSvcOtherInfoTopPersonDto.setName(name);
-                appSvcOtherInfoTopPersonDto.setQualification(qualification);
-                appSvcOtherInfoTopPersonDto.setSeqNum(i);
-
-                nurses.add(appSvcOtherInfoTopPersonDto);
-            }
-
-            if ("counsellors".equals(psnType)) {
-                AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto = new AppSvcOtherInfoTopPersonDto();
-                appSvcOtherInfoTopPersonDto.setPsnType(psnType);
-                appSvcOtherInfoTopPersonDto.setName(name);
-                appSvcOtherInfoTopPersonDto.setQualification(qualification);
-                appSvcOtherInfoTopPersonDto.setSeqNum(i);
-                appSvcOtherInfoTopPersonDto.setIdNo(idNo);
-
-                counsellors.add(appSvcOtherInfoTopPersonDto);
-            }
-        }
 
         for (int i = 0; i < practitioners.size(); i++) {
             String name = practitioners.get(i).getName();
