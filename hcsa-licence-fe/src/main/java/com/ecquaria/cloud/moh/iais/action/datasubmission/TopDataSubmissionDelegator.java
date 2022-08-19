@@ -628,14 +628,24 @@ public class TopDataSubmissionDelegator {
             ParamUtil.setRequestAttr(request, "preTermination", "false");
         }
         if(needDoTop(preTerminationDto)){
-            ValidationResult result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
+            ValidationResult result4;
+            if(terminationDto==null){
+                result4 = WebValidationHelper.validateProperty(new TerminationDto(), "TOP");
+            }else {
+                result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
+            }
             if (result4.isHasErrors()) {
                 errMap.putAll(result4.retrieveAll());
                 ParamUtil.setRequestAttr(request, "termination", "false");
             }
         }
         if(needDoTop(preTerminationDto)){
-            ValidationResult result5 = WebValidationHelper.validateProperty(postTerminationDto, "TOP");
+            ValidationResult result5 ;
+            if(postTerminationDto==null){
+                result5 = WebValidationHelper.validateProperty(new PostTerminationDto(), "TOP");
+            }else {
+                result5 = WebValidationHelper.validateProperty(postTerminationDto, "TOP");
+            }
             if (result5.isHasErrors()) {
                 errMap.putAll(result5.retrieveAll());
                 ParamUtil.setRequestAttr(request, "postTermination", "false");
@@ -823,7 +833,12 @@ public class TopDataSubmissionDelegator {
                 return 3;
             }
             if(needDoTop(preTerminationDto)){
-                ValidationResult result = WebValidationHelper.validateProperty(terminationDto, "TOP");
+                ValidationResult result ;
+                if(terminationDto==null){
+                    result = WebValidationHelper.validateProperty(new TerminationDto(), "TOP");
+                }else {
+                    result = WebValidationHelper.validateProperty(terminationDto, "TOP");
+                }
                 if (result != null) {
                     errMap.putAll(result.retrieveAll());
                 }
@@ -865,7 +880,12 @@ public class TopDataSubmissionDelegator {
                 return 3;
             }
             if(needDoTop(preTerminationDto)){
-                ValidationResult result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
+                ValidationResult result4 ;
+                if(terminationDto==null){
+                    result4 = WebValidationHelper.validateProperty(new TerminationDto(), "TOP");
+                }else {
+                    result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
+                }
                 if (result4 != null) {
                     errMap.putAll(result4.retrieveAll());
                 }
@@ -875,7 +895,12 @@ public class TopDataSubmissionDelegator {
                 return 4;
             }
             if(needDoTop(preTerminationDto)){
-                ValidationResult result = WebValidationHelper.validateProperty(postTerminationDto,"TOP");
+                ValidationResult result ;
+                if(postTerminationDto==null){
+                    result = WebValidationHelper.validateProperty(new PostTerminationDto(), "TOP");
+                }else {
+                    result = WebValidationHelper.validateProperty(postTerminationDto, "TOP");
+                }
                 if(result !=null){
                     errMap.putAll(result.retrieveAll());
                 }
@@ -993,7 +1018,12 @@ public class TopDataSubmissionDelegator {
                 return 3;
             }
             if(needDoTop(preTerminationDto)){
-                ValidationResult result = WebValidationHelper.validateProperty(terminationDto, "TOP");
+                ValidationResult result ;
+                if(terminationDto==null){
+                    result = WebValidationHelper.validateProperty(new TerminationDto(), "TOP");
+                }else {
+                    result = WebValidationHelper.validateProperty(terminationDto, "TOP");
+                }
                 if (result != null) {
                     errMap.putAll(result.retrieveAll());
                 }
@@ -1035,7 +1065,12 @@ public class TopDataSubmissionDelegator {
                 return 3;
             }
             if(needDoTop(preTerminationDto)){
-                ValidationResult result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
+                ValidationResult result4 ;
+                if(terminationDto==null){
+                    result4 = WebValidationHelper.validateProperty(new TerminationDto(), "TOP");
+                }else {
+                    result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
+                }
                 if (result4 != null) {
                     errMap.putAll(result4.retrieveAll());
                 }
@@ -1045,7 +1080,12 @@ public class TopDataSubmissionDelegator {
                 return 4;
             }
             if(needDoTop(preTerminationDto)){
-                ValidationResult result = WebValidationHelper.validateProperty(postTerminationDto,"TOP");
+                ValidationResult result ;
+                if(postTerminationDto==null){
+                    result = WebValidationHelper.validateProperty(new PostTerminationDto(), "TOP");
+                }else {
+                    result = WebValidationHelper.validateProperty(postTerminationDto, "TOP");
+                }
                 if(result !=null){
                     errMap.putAll(result.retrieveAll());
                 }
@@ -1174,7 +1214,12 @@ public class TopDataSubmissionDelegator {
         }
         if(DsConfigHelper.TOP_STEP_POST_TERMINATION.equals(actionType)){
             if(needDoTop(preTerminationDto)){
-                ValidationResult result = WebValidationHelper.validateProperty(terminationDto, "TOP");
+                ValidationResult result ;
+                if(terminationDto==null){
+                    result = WebValidationHelper.validateProperty(new TerminationDto(), "TOP");
+                }else {
+                    result = WebValidationHelper.validateProperty(terminationDto, "TOP");
+                }
                 if (result != null) {
                     errMap.putAll(result.retrieveAll());
                 }
@@ -1186,7 +1231,12 @@ public class TopDataSubmissionDelegator {
         }
         if(DsConfigHelper.TOP_STEP_PREVIEW.equals(actionType)){
             if(needDoTop(preTerminationDto)){
-                ValidationResult result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
+                ValidationResult result4 ;
+                if(terminationDto==null){
+                    result4 = WebValidationHelper.validateProperty(new TerminationDto(), "TOP");
+                }else {
+                    result4 = WebValidationHelper.validateProperty(terminationDto, "TOP");
+                }
                 if (result4 != null) {
                     errMap.putAll(result4.retrieveAll());
                 }
@@ -1196,7 +1246,12 @@ public class TopDataSubmissionDelegator {
                 return 4;
             }
             if(needDoTop(preTerminationDto)){
-                ValidationResult result = WebValidationHelper.validateProperty(postTerminationDto,"TOP");
+                ValidationResult result ;
+                if(postTerminationDto==null){
+                    result = WebValidationHelper.validateProperty(new PostTerminationDto(), "TOP");
+                }else {
+                    result = WebValidationHelper.validateProperty(postTerminationDto, "TOP");
+                }
                 if(result !=null){
                     errMap.putAll(result.retrieveAll());
                 }
@@ -1832,6 +1887,7 @@ public class TopDataSubmissionDelegator {
                         return true;
                     }
                 }
+                return false;
             }else {
                 return true;
             }
