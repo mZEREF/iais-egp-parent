@@ -1401,8 +1401,9 @@ public class TopDataSubmissionDelegator {
                     }
                 }
             }else if("false".equals(terminationDto.getDoctorInformationPE())){
-                if(professionalResponseDto!=null&&doctorInformationDtoELIS!=null){
+                if(doctorInformationDtoELIS!=null){
                     ParamUtil.setSessionAttr(request, "DoctorELISAndPrs",true);
+                    doctorInformationDto.setElis(true);
                 }else {
                     ParamUtil.setSessionAttr(request, "DoctorELISAndPrs",false);
                 }

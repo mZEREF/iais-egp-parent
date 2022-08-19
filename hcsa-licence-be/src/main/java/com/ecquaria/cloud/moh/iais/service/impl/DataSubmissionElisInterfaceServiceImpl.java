@@ -488,14 +488,6 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
                 } else {
                     DoctorInformationDto doctorInformationDto = assistedReproductionClient.getDoctorInformationDtoByConds(dsElisDoctorDto.getPrn(), source, dsElisDoctorDto.getHciCode()).getEntity();
                     DoctorInformationDto doctorDto = generateDoctorDto(dsElisDoctorDto, doctorInformationDto, source);
-                    ProfessionalResponseDto professionalResponseDto = appSubmissionService.retrievePrsInfo(doctorDto.getDoctorReignNo());
-                    if (professionalResponseDto!=null
-                            && !"-1".equals(professionalResponseDto.getStatusCode())
-                            && !"-2".equals(professionalResponseDto.getStatusCode())
-                            && !professionalResponseDto.isHasException()){
-                        doctorDto.setPrs(true);
-                        log.info("doctor has in prs, register_no is {}", dsElisDoctorDto.getPrn());
-                    }
                     prnDoctorInfoMap.put(doctorDto.getDoctorReignNo(), doctorDto);
                 }
             }
