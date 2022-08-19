@@ -2,16 +2,15 @@ package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.SexualSterilizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssTreatmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
@@ -25,9 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -179,7 +176,7 @@ public class VssDataSubmissionServiceImpl implements VssDataSubmissionService {
             SexualSterilizationDto sexualSterilizationDto = vssTreatmentDto.getSexualSterilizationDto();
             if (sexualSterilizationDto != null){
                 ProfessionalResponseDto professionalResponseDto = appSubmissionService.retrievePrsInfo(sexualSterilizationDto.getDoctorReignNo());
-                DoctorInformationDto doctorInformationDto = docInfoService.getDoctorInformationDtoByConds(sexualSterilizationDto.getDoctorReignNo(), "ELIS");
+                DoctorInformationDto doctorInformationDto = docInfoService.getDoctorInformationDtoByConds(sexualSterilizationDto.getDoctorReignNo(), DataSubmissionConsts.DOCTOR_SOURCE_ELIS_VSS, currentVssDataSubmission.getHciCode());
                 if (professionalResponseDto != null && doctorInformationDto != null
                         && ("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()))) {
                     //PRN number doesn't exist in PRS but exist in eLis

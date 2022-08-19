@@ -18,6 +18,7 @@
 
 <c:set var="canEdit" value="${TOP_CURRENT_STEP.showEdit}" scope="request"/>
 
+<%--@elvariable id="topSuperDataSubmissionDto" type="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto"--%>
 <c:set var="terminationOfPregnancyDto" value="${topSuperDataSubmissionDto.terminationOfPregnancyDto}"/>
 <c:set var="preTerminationDto" value="${terminationOfPregnancyDto.preTerminationDto}"/>
 <form method="post" id="mainForm" action="<%=process2.runtime.continueURL()%>">

@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
@@ -215,7 +216,7 @@ public class TopDataSubmissionServiceImpl implements TopDataSubmissionService {
             TerminationDto terminationDto = terminationOfPregnancyDto.getTerminationDto();
             if (terminationDto != null) {
                 ProfessionalResponseDto professionalResponseDto = appSubmissionService.retrievePrsInfo(terminationDto.getDoctorRegnNo());
-                DoctorInformationDto doctorInformationDto = docInfoService.getDoctorInformationDtoByConds(terminationDto.getDoctorRegnNo(), "ELIS");
+                DoctorInformationDto doctorInformationDto = docInfoService.getDoctorInformationDtoByConds(terminationDto.getDoctorRegnNo(), DataSubmissionConsts.DOCTOR_SOURCE_ELIS_TOP, currentTopDataSubmission.getHciCode());
                 if (professionalResponseDto != null && doctorInformationDto != null
                         && ("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()))) {
                     //PRN number doesn't exist in PRS but exist in eLis

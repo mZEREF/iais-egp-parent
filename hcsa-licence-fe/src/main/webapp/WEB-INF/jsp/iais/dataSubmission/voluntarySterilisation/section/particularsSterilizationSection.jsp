@@ -1,3 +1,4 @@
+<%--@elvariable id="vssSuperDataSubmissionDto" type="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSubmissionDto"--%>
 <c:set var="vssTreatmentDto" value="${vssSuperDataSubmissionDto.vssTreatmentDto}" />
 <c:set var="sexualSterilizationDto" value="${vssTreatmentDto.sexualSterilizationDto}" />
 <c:set var="doctorInformationDto" value="${vssSuperDataSubmissionDto.doctorInformationDto}"/>
@@ -5,6 +6,7 @@
 <div id="flagInvaMessage" hidden><iais:message key="GENERAL_ERR0057"/> </div>
 <div id="flagPrnMessage" hidden><iais:message key="GENERAL_ERR0054"/> </div>
 <input type="hidden" name="doctorSource" value="VSS">
+<input type="hidden" name="hciCode" value="${vssSuperDataSubmissionDto.hciCode}"/>
 <div class="form-horizontal treatmentDetails">
     <iais:row>
         <iais:field width="5" value="Doctor Professional Registration No." mandatory="true"/>
@@ -365,9 +367,11 @@
         }
         var no = $('input[name="doctorReignNo"]').val();
         var doctorSource = $('input[name="doctorSource"]').val();
+        const hciCode = $('input[name="hciCode"]').val();
         var jsonData = {
             'prgNo': no,
-            'docSource': doctorSource
+            'docSource': doctorSource,
+            'hciCode': hciCode
         };
         $.ajax({
             'url': '${pageContext.request.contextPath}/doc/prg-input-info',

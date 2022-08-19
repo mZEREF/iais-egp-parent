@@ -1377,10 +1377,10 @@ public class TopDataSubmissionDelegator {
             }
         }
         ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(terminationDto.getDoctorRegnNo());
-        DoctorInformationDto doctorInformationDtoELIS=docInfoService.getDoctorInformationDtoByConds(terminationDto.getDoctorRegnNo(),"ELIS");
+        DoctorInformationDto doctorInformationDtoELIS=docInfoService.getDoctorInformationDtoByConds(terminationDto.getDoctorRegnNo(),DataSubmissionConsts.DOCTOR_SOURCE_ELIS_TOP, topSuperDataSubmissionDto.getHciCode());
         ParamUtil.setSessionAttr(request, "DoctorELISAndPrs",null);
         if(professionalResponseDto!=null){
-            if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()) || professionalResponseDto.isHasException()==true){
+            if("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()) || professionalResponseDto.isHasException()){
                 if("false".equals(terminationDto.getTopDoctorInformations())){
                     if("true".equals(terminationDto.getDoctorInformationPE())){
                         String doctorName = ParamUtil.getString(request, "names");

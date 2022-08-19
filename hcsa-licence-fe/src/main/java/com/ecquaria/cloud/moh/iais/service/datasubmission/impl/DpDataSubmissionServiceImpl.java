@@ -243,7 +243,7 @@ public class DpDataSubmissionServiceImpl implements DpDataSubmissionService {
             DrugSubmissionDto drugSubmission = drugPrescribedDispensedDto.getDrugSubmission();
             if (drugSubmission!=null){
                 ProfessionalResponseDto professionalResponseDto = appSubmissionService.retrievePrsInfo(drugSubmission.getDoctorReignNo());
-                DoctorInformationDto doctorInformationDto = docInfoService.getDoctorInformationDtoByConds(drugSubmission.getDoctorReignNo(), "ELIS");
+                DoctorInformationDto doctorInformationDto = docInfoService.getDoctorInformationDtoByConds(drugSubmission.getDoctorReignNo(), DataSubmissionConsts.DOCTOR_SOURCE_ELIS_DRP, currentDpDataSubmission.getHciCode());
                 if (professionalResponseDto != null && doctorInformationDto != null
                         && ("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()))) {
                     //PRN number doesn't exist in PRS but exist in eLis

@@ -15,9 +15,15 @@ public class DoctorInfoClientFallback implements DoctorInfoClient {
     private FeignResponseEntity getFeignResponseEntity(Object... params) {
         return IaisEGPHelper.getFeignResponseEntity(params);
     }
+
     @Override
-    public FeignResponseEntity<DoctorInformationDto> getDoctorInformationDtoByConds(String doctorReignNo,String doctorSource) {
-        return getFeignResponseEntity(doctorReignNo,doctorSource);
+    public FeignResponseEntity<DoctorInformationDto> getAllDoctorInformationDtoByConds(String doctorReignNo, String doctorSource) {
+        return getFeignResponseEntity(doctorReignNo, doctorSource);
+    }
+
+    @Override
+    public FeignResponseEntity<DoctorInformationDto> getDoctorInformationDtoByConds(String doctorReignNo, String doctorSource, String hciCode) {
+        return getFeignResponseEntity(doctorReignNo, doctorSource, hciCode);
     }
 
     @Override

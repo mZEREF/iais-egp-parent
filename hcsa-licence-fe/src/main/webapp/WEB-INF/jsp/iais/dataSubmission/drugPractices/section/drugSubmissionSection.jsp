@@ -3,6 +3,7 @@
 <div id="flagDocMessage" hidden><iais:message key="GENERAL_ERR0042"/> </div>
 <div id="flagInvaMessage" hidden><iais:message key="GENERAL_ERR0057"/> </div>
 <div id="flagPrnMessage" hidden><iais:message key="GENERAL_ERR0054"/> </div>
+<%--@elvariable id="dpSuperDataSubmissionDto" type="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto"--%>
 <c:set var="doctorInformationDto" value="${dpSuperDataSubmissionDto.doctorInformationDto}"/>
 <div class="panel panel-default">
     <div class="panel-heading">
@@ -16,6 +17,7 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <input type="hidden" name="docSource" value="DRP"/>
+                <input type="hidden" name="hciCode" value="${dpSuperDataSubmissionDto.hciCode}"/>
                 <c:set var="suffix" value="" />
                 <c:set var="drug" value="${drugSubmission}"/>
                 <div class="patient">
@@ -615,9 +617,11 @@
         }
         var no = $('input[name="doctorReignNo"]').val();
         var docSource = $('input[name="docSource"]').val();
+        const hciCode = $('input[name="hciCode"]').val();
         var jsonData = {
             'prgNo': no,
-            'docSource': docSource
+            'docSource': docSource,
+            'hciCode': hciCode
         };
         $.ajax({
             'url': '${pageContext.request.contextPath}/doc/prg-input-info',

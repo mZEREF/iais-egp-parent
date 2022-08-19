@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -38,10 +39,11 @@ public class DoctorInfoAjaxController {
     Map<String, Object> getPrgNoInfo(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the prgNo start ...."));
         String professionRegoNo = ParamUtil.getString(request, "prgNo");
-        /*String doctorSource = ParamUtil.getString(request,"docSource");*/
+        String doctorSource = convertSource(ParamUtil.getString(request, "docSource"));
+        String hciCode = ParamUtil.getString(request, "hciCode");
         Map<String, Object> result = IaisCommonUtils.genNewHashMap(1);
         ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(professionRegoNo);
-        DoctorInformationDto doctorInformationDto=docInfoService.getDoctorInformationDtoByConds(professionRegoNo,"ELIS");
+        DoctorInformationDto doctorInformationDto=docInfoService.getDoctorInformationDtoByConds(professionRegoNo, doctorSource, hciCode);
         // PRS down
 //        professionalResponseDto = new ProfessionalResponseDto();
 //        professionalResponseDto.setHasException(true);
@@ -59,5 +61,15 @@ public class DoctorInfoAjaxController {
         result.put("selections", doctorInformationDto);
         result.put("selection", professionalResponseDto);
         return result;
+    }
+
+    private String convertSource(String stage) {
+        if (DataSubmissionConsts.DS_TOP.equals(stage)) {
+            return DataSubmissionConsts.DOCTOR_SOURCE_ELIS_TOP;
+        } else if (DataSubmissionConsts.DS_DRP.equals(stage)) {
+            return DataSubmissionConsts.DOCTOR_SOURCE_ELIS_DRP;
+        } else {
+            return DataSubmissionConsts.DOCTOR_SOURCE_ELIS_VSS;
+        }
     }
 }
