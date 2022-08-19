@@ -3245,17 +3245,11 @@ public final class AppValidatorHelper {
                 if (specialServiceSectionDto.getAppSvcDirectorDtoList()!=null){
                     for (int x=0;x<specialServiceSectionDto.getAppSvcDirectorDtoList().size();x++){
                         validateSpecialServicePerson(specialServiceSectionDto.getAppSvcDirectorDtoList().get(x),prefix+i+j+"dir",""+x,appType,errorMap,dirNames);
-                        if(specialServiceSectionDto.getAppSvcDirectorDtoList().get(x).getName()!=null){
-                            dirNames.add(specialServiceSectionDto.getAppSvcDirectorDtoList().get(x).getName());
-                        }
                     }
                 }
                 if (specialServiceSectionDto.getAppSvcChargedNurseDtoList()!=null){
                     for (int x=0;x<specialServiceSectionDto.getAppSvcChargedNurseDtoList().size();x++){
                         validateSpecialServicePerson(specialServiceSectionDto.getAppSvcChargedNurseDtoList().get(x),prefix+i+j+"nur",""+x,appType,errorMap,nurNames);
-                        if(specialServiceSectionDto.getAppSvcChargedNurseDtoList().get(x).getName()!=null){
-                            nurNames.add(specialServiceSectionDto.getAppSvcChargedNurseDtoList().get(x).getName());
-                        }
                     }
                 }
             }
@@ -3265,29 +3259,25 @@ public final class AppValidatorHelper {
     private static void validateSpecialServicePerson(AppSvcPersonnelDto appSvcPersonnelDto, String prefix, String subfix, String appType, Map<String, String> errorMap,List<String> names) {
         String signal = "GENERAL_ERR0006";
 
-        String name = appSvcPersonnelDto.getName();
-        boolean isNameUsed=false;
-        if (!IaisCommonUtils.isEmpty(names)){
-            for (String s : names) {
-                if (s.equalsIgnoreCase(name)){
-                    isNameUsed=true;
-                    break;
-                }
-            }
+        String salutation = appSvcPersonnelDto.getSalutation();
+        if (StringUtil.isEmpty(salutation)) {
+            errorMap.put(prefix + "salutation" + subfix, signal);
         }
 
+        String name = appSvcPersonnelDto.getName();
         if (StringUtil.isEmpty(name)) {
             errorMap.put(prefix+"name" + subfix, signal);
         } else if (name.length() > 110) {
             String general_err0041 = repLength("Name", "110");
             errorMap.put(prefix+"name" + subfix, general_err0041);
-        }else if(isNameUsed){
-            errorMap.put(prefix+"name" + subfix, "Cannot use duplicate names");
-        }
-
-        String salutation = appSvcPersonnelDto.getSalutation();
-        if (StringUtil.isEmpty(salutation)) {
-            errorMap.put(prefix + "salutation" + subfix, signal);
+        }else{
+            String target = salutation + name;
+            boolean flag = names.stream().anyMatch(target::equalsIgnoreCase);
+            if (flag) {
+                errorMap.put(prefix+"name" + subfix, "Cannot use duplicate names");
+            }else {
+                names.add(target);
+            }
         }
 
         String designation = appSvcPersonnelDto.getDesignation();
