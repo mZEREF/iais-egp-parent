@@ -444,19 +444,12 @@ public final class AppValidatorHelper {
                     addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
                     break;
                 case HcsaConsts.STEP_SERVICE_PERSONNEL:
-                    /*List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.getAppSvcPersonnelDtoList();
-                    doValidateSvcPersonnel(errorMap, appSvcPersonnelDtoList, dto.getServiceCode());
-                    if (appSvcPersonnelDtoList != null && "Y".equals(prsFlag)) {
-                        int i = 0;
-                        for (AppSvcPersonnelDto person : appSvcPersonnelDtoList) {
-                            if (!checkProfRegNo(person.getProfRegNo())) {
-                                errorMap.put("regnNo" + i, prsError);
-                                break;
-                            }
-                            i++;
-                        }
-                    }*/
-                    addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
+//                    SvcPersonnelDto svcPersonnelDto = dto.getSvcPersonnelDto();
+//                    doValidateSvcPersonnel(errorMap, svcPersonnelDto);
+//                    if (svcPersonnelDto != null && "Y".equals(prsFlag)) {
+//                        checkServicePersonnel(svcPersonnelDto,errorMap,prsError);
+//                    }
+//                    addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
                     break;
                 case HcsaConsts.STEP_PRINCIPAL_OFFICERS: {
                     List<AppSvcPrincipalOfficersDto> poList = dto.getAppSvcPrincipalOfficersDtoList();
@@ -516,6 +509,62 @@ public final class AppValidatorHelper {
         log.info(StringUtil.changeForLog("Error Steps in doCheckBox for [" + dto.getServiceCode() + "] : " + errorList));
         return errorMap;
     }
+    private static void checkServicePersonnel(SvcPersonnelDto svcPersonnelDto, Map<String, String> errorMap,String prsError) {
+       List<AppSvcPersonnelDto> arPractitionerList = svcPersonnelDto.getArPractitionerList();
+        List<AppSvcPersonnelDto> nurseList = svcPersonnelDto.getNurseList();
+        List<AppSvcPersonnelDto> embryologistList = svcPersonnelDto.getEmbryologistList();
+        List<AppSvcPersonnelDto> normalList = svcPersonnelDto.getNormalList();
+        List<AppSvcPersonnelDto> specialList = svcPersonnelDto.getSpecialList();
+        int i = 0;
+        if (StringUtil.isEmpty(arPractitionerList)&&arPractitionerList.size()>0){}
+        for (AppSvcPersonnelDto person : arPractitionerList) {
+            if (!checkProfRegNo(person.getProfRegNo())) {
+                errorMap.put("regnNo" + i, prsError);
+                break;
+            }
+            i++;
+        }
+        int j = 0;
+        if (StringUtil.isEmpty(nurseList)&&nurseList.size()>0){}
+        for (AppSvcPersonnelDto person : nurseList) {
+            if (!checkProfRegNo(person.getProfRegNo())) {
+                errorMap.put("regnNo" + j, prsError);
+                break;
+            }
+            j++;
+        }
+        int m = 0;
+        if (StringUtil.isEmpty(embryologistList)&&embryologistList.size()>0){}
+        for (AppSvcPersonnelDto person : embryologistList) {
+            if (!checkProfRegNo(person.getProfRegNo())) {
+                errorMap.put("regnNo" + m, prsError);
+                break;
+            }
+            m++;
+        }
+
+        int x = 0;
+        if (StringUtil.isEmpty(normalList)&&normalList.size()>0){}
+        for (AppSvcPersonnelDto person : normalList) {
+            if (!checkProfRegNo(person.getProfRegNo())) {
+                errorMap.put("regnNo" + x, prsError);
+                break;
+            }
+            x++;
+        }
+
+        int y = 0;
+        if (StringUtil.isEmpty(specialList)&&specialList.size()>0){}
+        for (AppSvcPersonnelDto person : specialList) {
+            if (!checkProfRegNo(person.getProfRegNo())) {
+                errorMap.put("regnNo" + y, prsError);
+                break;
+            }
+            y++;
+        }
+    }
+
+
 
     private static String getStepName(String step, List<HcsaServiceStepSchemeDto> stepDtos) {
         if (step == null || stepDtos == null) {
@@ -2409,7 +2458,6 @@ public final class AppValidatorHelper {
         String signal = "GENERAL_ERR0006";
         for (int i = 0; i < appSvcSectionLeaderList.size(); i++) {
             AppSvcPersonnelDto appSvcPersonnelDto = appSvcSectionLeaderList.get(i);
-
             String salutation = appSvcPersonnelDto.getSalutation();
             String name = appSvcPersonnelDto.getName();
             String qualification = appSvcPersonnelDto.getQualification();
@@ -2421,12 +2469,14 @@ public final class AppValidatorHelper {
                 errorMap.put("name" + i, signal);
             } else if (name.length() > 66) {
                 errorMap.put("name" + i, signal);
-            }else {
-                if (errorName.contains(salutation+name)){
-                    errorMap.put("name"+i,"Do not enter the same name");
-                }else {
-                    errorName.add(salutation+name);
-                }
+            } else {
+                String target = salutation+name;
+                boolean flag = errorName.stream().anyMatch(target::equalsIgnoreCase);
+                if (flag) {
+                errorMap.put("name" + i, "Do not enter the same name");
+                } else {
+                errorName.add(target);
+            }
             }
             if (StringUtil.isEmpty(qualification)) {
                 errorMap.put("qualification" + i, signal);
@@ -2573,16 +2623,18 @@ public final class AppValidatorHelper {
     public static void paramValidate(Map<String, String> errorMap,AppSvcPersonnelDto appSvcPersonnelDto,String prefix,int i,List<String> errorName){
         String signal = "GENERAL_ERR0006";
         String name = appSvcPersonnelDto.getName();
-        if ("SP001".equals(prefix)||"SP999".equals(prefix)){
+        if ("SP999".equals(prefix)||"SP002".equals(prefix)) {
             if (StringUtil.isEmpty(name)) {
-                errorMap.put(prefix+"name" + i, signal);
+                errorMap.put(prefix + "name" + i, signal);
             } else if (name.length() > 110) {
-                errorMap.put(prefix+"name" + i, signal);
-            }else {
-                if (errorName.contains(prefix+name)){
-                    errorMap.put(prefix+"name" + i,"Do not enter the same name");
-                }else {
-                    errorName.add(prefix+name);
+                errorMap.put(prefix + "name" + i, signal);
+            } else {
+                String target = prefix+name;
+                boolean flag = errorName.stream().anyMatch(target::equalsIgnoreCase);
+                if (flag) {
+                    errorMap.put(prefix+"name" + i, "Do not enter the same name");
+                } else {
+                    errorName.add(target);
                 }
             }
         }
@@ -2601,17 +2653,6 @@ public final class AppValidatorHelper {
             String designation = appSvcPersonnelDto.getDesignation();
             if (StringUtil.isEmpty(designation)) {
                 errorMap.put(prefix + "designation" + i, signal);
-            } else if (HcsaAppConst.DESIGNATION_OTHERS.equals(designation)) {
-                String otherDesignation = appSvcPersonnelDto.getOtherDesignation();
-                if (StringUtil.isEmpty(otherDesignation)) {
-                    errorMap.put(prefix + "otherDesignation" + i, signal);
-                } else if (otherDesignation.length() > 100) {
-                    errorMap.put(prefix + "otherDesignation" + i, signal);
-                }
-            }else if (errorName.contains(designation+prefix+name)){
-                errorMap.put(prefix+"name" + i,"Do not enter the same name");
-            }else {
-                errorName.add(designation+prefix+name);
             }
             //              profRegNo
             String profRegNo = appSvcPersonnelDto.getProfRegNo();
@@ -2665,8 +2706,7 @@ public final class AppValidatorHelper {
                     errorMap.put(prefix + "bclsExpiryDate" + i, "SC_ERR009");
                 }
             }
-//                公共的end
-//                nurse独有的
+//             nurse special
             if ("SP003".equals(prefix)) {
                 String professionType = appSvcPersonnelDto.getProfessionType();
                 if (StringUtil.isEmpty(professionType)) {
@@ -2683,7 +2723,6 @@ public final class AppValidatorHelper {
 
             }
         }
-
         if ("SP999".equals(prefix)){
             String qualification = appSvcPersonnelDto.getQualification();
             if (StringUtil.isEmpty(qualification)) {
@@ -2692,20 +2731,32 @@ public final class AppValidatorHelper {
                 errorMap.put(prefix + "qualification" + i, signal);
             }
         }
-
         if ("SP003".equals(prefix) || "SP001".equals(prefix)){
             String salutation = appSvcPersonnelDto.getSalutation();
             if (StringUtil.isEmpty(salutation)) {
                 errorMap.put(prefix + "salutation" + i, signal);
             }
-        }
+            if (StringUtil.isEmpty(name)) {
+                errorMap.put(prefix+"name" + i, signal);
+            } else if (name.length() > 110) {
+                errorMap.put(prefix+"name" + i, signal);
+            }else {
+                String target = salutation + prefix + name;
+                boolean flag = errorName.stream().anyMatch(target::equalsIgnoreCase);
+                if (flag) {
+                    errorMap.put(prefix+"name" + i,"Do not enter the same name");
+                }else {
+                    errorName.add(target);
+                }
+            }
 
+        }
         if ("SP001".equals(prefix)){
-//            //                locateWtihHcsa
-//            String locateWtihHcsa = appSvcPersonnelDto.getLocateWtihHcsa();
-//            if (StringUtil.isEmpty(locateWtihHcsa)) {
-//                errorMap.put(prefix+"locateWtihHcsa" + i, signal);
-//            }
+            //
+            String isEmbryologistAuthorized = appSvcPersonnelDto.getIsEmbryologistAuthorized();
+            if (StringUtil.isEmpty(isEmbryologistAuthorized)) {
+                errorMap.put(prefix+"isEmbryologistAuthorized" + i, signal);
+            }
             String numberSupervision = appSvcPersonnelDto.getNumberSupervision();
             if (StringUtil.isEmpty(numberSupervision) || numberSupervision.length() > 110) {
                 errorMap.put(prefix+"numberSupervision" + i, signal);
@@ -2713,9 +2764,10 @@ public final class AppValidatorHelper {
                 errorMap.put(prefix+"numberSupervision" + i, signal);
             }
         }
+
     }
 
-    public static void specialValidate(Map<String, String> errorMap,AppSvcPersonnelDto appSvcPersonnelDto,int i){
+    public static void specialValidate(Map<String, String> errorMap,AppSvcPersonnelDto appSvcPersonnelDto,int i,List<String> errorName){
         String signal = "GENERAL_ERR0006";
 
         String personnelSel = appSvcPersonnelDto.getPersonnelType();
@@ -2731,6 +2783,10 @@ public final class AppValidatorHelper {
                 errorMap.put("name" + i, signal);
             } else if (name.length() > 110) {
                 errorMap.put("name" + i, signal);
+            }else if (errorName.contains(personnelSel+name)){
+                errorMap.put("name"+i,"Do not enter the same name");
+            }else {
+                errorName.add(personnelSel+name);
             }
             if (StringUtil.isEmpty(profRegNo)) {
                 errorMap.put("regnNo" + i, signal);
@@ -2745,6 +2801,10 @@ public final class AppValidatorHelper {
                 errorMap.put("name" + i, signal);
             } else if (name.length() > 110) {
                 errorMap.put("name" + i, signal);
+            }else if (errorName.contains(personnelSel+name)){
+                errorMap.put("name"+i,"Do not enter the same name");
+            }else {
+                errorName.add(personnelSel+name);
             }
 //                    designation
             if (StringUtil.isEmpty(designation)) {
@@ -2780,6 +2840,10 @@ public final class AppValidatorHelper {
                 errorMap.put("name" + i, signal);
             } else if (name.length() > 110) {
                 errorMap.put("name" + i, signal);
+            }else if (errorName.contains(personnelSel+name)){
+                errorMap.put("name"+i,"Do not enter the same name");
+            }else {
+                errorName.add(personnelSel+name);
             }
             if (StringUtil.isEmpty(wrkExpYear)) {
                 errorMap.put("wrkExpYear" + i, signal);
@@ -2801,22 +2865,23 @@ public final class AppValidatorHelper {
                 errorMap.put("name" + i, signal);
             } else if (name.length() > 110) {
                 errorMap.put("name" + i, signal);
+            }else if (errorName.contains(personnelSel+name)){
+                errorMap.put("name"+i,"Do not enter the same name");
+            }else {
+                errorName.add(personnelSel+name);
             }
         }
     }
 
-    public static void doValidateSvcPersonnel(Map<String, String> errorMap, SvcPersonnelDto svcPersonnelDto, String svcCode) {
+    public static void doValidateSvcPersonnel(Map<String, String> errorMap, SvcPersonnelDto svcPersonnelDto) {
         if (StringUtil.isEmpty(svcPersonnelDto)) {
             return;
         }
-//        每个集合
         List<AppSvcPersonnelDto> normalList = svcPersonnelDto.getNormalList();
         List<AppSvcPersonnelDto> nurseList = svcPersonnelDto.getNurseList();
         List<AppSvcPersonnelDto> specialList = svcPersonnelDto.getSpecialList();
         List<AppSvcPersonnelDto> embryologistList = svcPersonnelDto.getEmbryologistList();
         List<AppSvcPersonnelDto> arPractitionerList = svcPersonnelDto.getArPractitionerList();
-
-//        从ar开始
         List<String> errorName = IaisCommonUtils.genNewArrayList();
          if (!StringUtil.isEmpty(arPractitionerList) && arPractitionerList.size() > 0){
            int count = arPractitionerList.size();
@@ -2845,7 +2910,7 @@ public final class AppValidatorHelper {
         if (!StringUtil.isEmpty(specialList) && specialList.size() > 0){
             int count = specialList.size();
             for (int i = 0; i < count; i++) {
-                specialValidate(errorMap,specialList.get(i),i);
+                specialValidate(errorMap,specialList.get(i),i,errorName);
             }
         }
 

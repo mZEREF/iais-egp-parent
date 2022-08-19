@@ -1,6 +1,6 @@
 <div class="personnel-content">
 <iais:row>
-    <iais:field width="5" mandatory="true" value="Name"/>
+    <iais:field width="5" value="Name"/>
     <iais:value width="3" cssClass="col-md-3">
         <c:out value="${appSvcPersonnelDto.salutation}"/>
     </iais:value>
@@ -9,49 +9,49 @@
     </iais:value>
 </iais:row>
 <iais:row>
-    <iais:field width="5" mandatory="true" value="Designation"/>
+    <iais:field width="5" value="Designation"/>
     <iais:value width="7" cssClass="col-md-7">
         <c:out value="${appSvcPersonnelDto.designation}"/>
     </iais:value>
 </iais:row>
 <iais:row>
-    <iais:field width="5" mandatory="true" value="Professional Board"/>
+    <iais:field width="5" value="Professional Board"/>
     <iais:value width="7" cssClass="col-md-7">
         <c:out value="${appSvcPersonnelDto.professionBoard}"/>
     </iais:value>
 </iais:row>
 <iais:row>
-    <iais:field width="5" mandatory="true" value="Professional Type"/>
+    <iais:field width="5" value="Professional Type"/>
     <iais:value width="7" cssClass="col-md-7">
         <c:out value="${appSvcPersonnelDto.professionType}"/>
     </iais:value>
 </iais:row>
 <iais:row>
-    <iais:field width="5" mandatory="true" value="Professional Regn. No."/>
+    <iais:field width="5" value="Professional Regn. No."/>
     <iais:value width="7" cssClass="col-md-7">
         <c:out value="${appSvcPersonnelDto.profRegNo}"/>
     </iais:value>
 </iais:row>
 <iais:row>
-    <iais:field width="5" mandatory="true" value="Type of Current Registration"/>
+    <iais:field width="5"  value="Type of Current Registration"/>
     <iais:value width="7" cssClass="col-md-7">
         <c:out value="${appSvcPersonnelDto.typeOfCurrRegi}"/>
     </iais:value>
 </iais:row>
 <iais:row>
-    <iais:field width="5" mandatory="true" value="Current Registration Date"/>
+    <iais:field width="5" value="Current Registration Date"/>
     <iais:value width="7" cssClass="col-md-7">
         <c:out value="${appSvcPersonnelDto.currRegiDate}"/>
     </iais:value>
 </iais:row>
 <iais:row>
-    <iais:field width="5" mandatory="true" value="Practicing Certificate End Date"/>
+    <iais:field width="5" value="Practicing Certificate End Date"/>
     <iais:value width="7" cssClass="col-md-7">
         <c:out value="${appSvcPersonnelDto.praCerEndDate}"/>
     </iais:value>
 </iais:row>
 <iais:row>
-    <iais:field width="5" mandatory="true" value="Type of Register"/>
+    <iais:field width="5" value="Type of Register"/>
     <iais:value width="7" cssClass="col-md-7">
         <c:out value="${appSvcPersonnelDto.typeOfRegister}"/>
     </iais:value>
@@ -75,7 +75,7 @@
     </iais:value>
 </iais:row>
 <iais:row>
-    <iais:field width="5" mandatory="true" value="Date when specialty was obtained"/>
+    <iais:field width="5" value="Date when specialty was obtained"/>
     <iais:value width="7" cssClass="col-md-7">
         <c:out value="${appSvcPersonnelDto.specialtyGetDate}"/>
     </iais:value>
@@ -87,19 +87,19 @@
     </iais:value>
 </iais:row>
 <iais:row>
-    <iais:field width="5" mandatory="true" value="Relevant working experience(Years)"/>
+    <iais:field width="5" value="Relevant working experience(Years)"/>
     <iais:value width="7" cssClass="col-md-7">
         <c:out value="${appSvcPersonnelDto.wrkExpYear}"/>
     </iais:value>
 </iais:row>
 <iais:row>
-    <iais:field width="5" mandatory="true" value="Expiry Date (BCLS and AED)"/>
+    <iais:field width="5" value="Expiry Date (BCLS and AED)"/>
     <iais:value width="7" cssClass="col-md-7">
         <c:out value="${appSvcPersonnelDto.bclsExpiryDate}"/>
     </iais:value>
 </iais:row>
 <iais:row>
-    <iais:field width="5" mandatory="true" value="Expiry Date(CPR)"/>
+    <iais:field width="5" value="Expiry Date(CPR)"/>
     <iais:value width="7" cssClass="col-md-7">
         <c:out value="${appSvcPersonnelDto.cprExpiryDate}"/>
     </iais:value>

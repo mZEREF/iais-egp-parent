@@ -1,6 +1,6 @@
 <div class="personnel-content">
 <iais:row>
-    <iais:field width="5" mandatory="true" value="Name"/>
+    <iais:field width="5" value="Name"/>
     <iais:value width="3" cssClass="col-md-3">
         <c:out value="${appSvcPersonnelDto.salutation}"/>
     </iais:value>
@@ -16,13 +16,13 @@
     </iais:value>
 </iais:row>
 <iais:row>
-    <iais:field width="5" mandatory="true" value="Working Experience(in term of years)"/>
+    <iais:field width="5" value="Working Experience(in term of years)"/>
     <iais:value width="7" cssClass="col-md-7">
         <c:out value="${appSvcPersonnelDto.wrkExpYear}"/>
     </iais:value>
 </iais:row>
 <iais:row>
-    <iais:field width="7" cssClass="col-md-5" mandatory="true" value="Number of AR procedures done under supervision"/>
+    <iais:field width="7" cssClass="col-md-5" value="Number of AR procedures done under supervision"/>
     <iais:value width="5" cssClass="col-md-7">
         <c:out value="${appSvcPersonnelDto.numberSupervision}"/>
     </iais:value>
@@ -30,10 +30,10 @@
 <iais:row>
     <iais:field width="5" value="Is the Embryologist authorized?"/>
     <iais:value width="7">
-        <c:if test="${appSvcPersonnelDto.locateWtihHcsa == '1'}">
+        <c:if test="${appSvcPersonnelDto.isEmbryologistAuthorized == '1'}">
              <c:out value="Yes"/>
         </c:if>
-        <c:if test="${appSvcPersonnelDto.locateWtihHcsa == '0'}">
+        <c:if test="${appSvcPersonnelDto.isEmbryologistAuthorized == '0'}">
             <c:out value="NO"/>
         </c:if>
     </iais:value>
