@@ -164,9 +164,6 @@ public final class AppDataHelper {
         boolean isMultiPremService = ApplicationHelper.isMultiPremService(hcsaServiceDtoList);
         String[] premisesIndexNos = ParamUtil.getStrings(request, "premisesIndexNo");
         String[] chooseExistData = ParamUtil.getStrings(request, "chooseExistData");
-        String[] opLengths = ParamUtil.getStrings(request, "opLength");
-        String[] nonHcsaLengths = ParamUtil.getStrings(request, "nonHcsaLength");
-        String[] retrieveflag = ParamUtil.getStrings(request, "retrieveflag");
         int count = premisesIndexNos.length;
         if (!isMultiPremService) {
             count = 1;
@@ -193,70 +190,21 @@ public final class AppDataHelper {
             String existingData = getVal(chooseExistData, i);
             // data
             AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
-            ControllerHelper.get(request, appGrpPremisesDto, String.valueOf(i));
-            String certIssuedDtStr = ParamUtil.getString(request, "certIssuedDt" + i);
-            appGrpPremisesDto.setCertIssuedDtStr(certIssuedDtStr);
-            setPremise(appGrpPremisesDto, premIndexNo, ApplicationHelper.getOldAppSubmissionDto(request));
-            List<AppPremNonLicRelationDto> appPremNonLicRelationDtos = IaisCommonUtils.genNewArrayList();
-            int nonHcsaLength = 0;
-            try {
-                nonHcsaLength = Integer.parseInt(nonHcsaLengths[i]);
-            } catch (Exception e) {
-                log.error(StringUtil.changeForLog("Non-hcsa service length can not parse to int"));
-            }
-            for (int k = 0; k < nonHcsaLength; k++) {
-                String coBusinessName = ParamUtil.getString(request, i + "CoBusinessName" + k);
-                String coSvcName = ParamUtil.getString(request, i + "CoSvcName" + k);
-                if (StringUtil.isEmpty(coBusinessName) && StringUtil.isEmpty(coSvcName)) {
-                    continue;
-                }
-                AppPremNonLicRelationDto dto = new AppPremNonLicRelationDto();
-                dto.setBusinessName(coBusinessName);
-                dto.setProvidedService(coSvcName);
-                dto.setSeqNum(k);
-                appPremNonLicRelationDtos.add(dto);
-            }
-            appGrpPremisesDto.setAppPremNonLicRelationDtos(appPremNonLicRelationDtos);
-
+            setAppGrpPremiseFromPage(appGrpPremisesDto, premIndexNo,  i, request);
+            // check
             AppGrpPremisesDto licPremise = ApplicationHelper.getPremisesFromMap(premisesSel, request);
             if (AppConsts.YES.equals(existingData)) {
                 setDataFromExisting(appGrpPremisesDto, licPremise);
             } else {
-                //appGrpPremisesDto = new AppGrpPremisesDto();
                 if (licPremise != null) {
                     appGrpPremisesDto.setRelatedServices(licPremise.getRelatedServices());
                     appGrpPremisesDto.setHciCode(licPremise.getHciCode());
                 }
-                appGrpPremisesDto.setClickRetrieve(AppConsts.YES.equals(getVal(retrieveflag, i)));
-                String floorNo = ParamUtil.getString(request, i + "FloorNo" + 0);
-                String unitNo = ParamUtil.getString(request, i + "UnitNo" + 0);
-                appGrpPremisesDto.setFloorNo(floorNo);
-                appGrpPremisesDto.setUnitNo(unitNo);
-
-                List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = IaisCommonUtils.genNewArrayList();
-                int opLength = 0;
-                try {
-                    opLength = Integer.parseInt(opLengths[i]);
-                } catch (Exception e) {
-                    log.error(StringUtil.changeForLog("operation length can not parse to int"));
-                }
-                for (int k = 1; k < opLength; k++) {
-                    floorNo = ParamUtil.getString(request, i + "FloorNo" + k);
-                    unitNo = ParamUtil.getString(request, i + "UnitNo" + k);
-                    if (StringUtil.isEmpty(floorNo) && StringUtil.isEmpty(unitNo)) {
-                        continue;
-                    }
-                    AppPremisesOperationalUnitDto dto = new AppPremisesOperationalUnitDto();
-                    dto.setFloorNo(floorNo);
-                    dto.setUnitNo(unitNo);
-                    dto.setPremType(premType);
-                    dto.setPremVal(premIndexNo);
-                    dto.setSeqNum(k);
-                    appPremisesOperationalUnitDtos.add(dto);
-                }
-                appGrpPremisesDto.setAppPremisesOperationalUnitDtos(appPremisesOperationalUnitDtos);
-                appGrpPremisesDto.setAppPremisesOperationalUnitDtos(appPremisesOperationalUnitDtos);
+                setAppGrpPremiseNonAutoFields(appGrpPremisesDto, premIndexNo, premType, i, request);
             }
+            // rfc and renewal
+            String[] selectedLicences = ParamUtil.getStrings(request, "selectedLicence");
+            appGrpPremisesDto.setSelectedLicences(selectedLicences);
             appGrpPremisesDto.setSeqNum(i + 1);
             appGrpPremisesDto.setHasError(null);
             appGrpPremisesDto.setExistingData(existingData);
@@ -266,6 +214,70 @@ public final class AppDataHelper {
             appGrpPremisesDtoList.add(appGrpPremisesDto);
         }
         return appGrpPremisesDtoList;
+    }
+
+    private static void setAppGrpPremiseNonAutoFields(AppGrpPremisesDto appGrpPremisesDto, String premIndexNo,
+            String premType, int i, HttpServletRequest request) {
+        String[] opLengths = ParamUtil.getStrings(request, "opLength");
+        String[] retrieveflag = ParamUtil.getStrings(request, "retrieveflag");
+        appGrpPremisesDto.setClickRetrieve(AppConsts.YES.equals(getVal(retrieveflag, i)));
+        String floorNo = ParamUtil.getString(request, i + "FloorNo" + 0);
+        String unitNo = ParamUtil.getString(request, i + "UnitNo" + 0);
+        appGrpPremisesDto.setFloorNo(floorNo);
+        appGrpPremisesDto.setUnitNo(unitNo);
+
+        List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = IaisCommonUtils.genNewArrayList();
+        int opLength = 0;
+        try {
+            opLength = Integer.parseInt(opLengths[i]);
+        } catch (Exception e) {
+            log.error(StringUtil.changeForLog("operation length can not parse to int"));
+        }
+        for (int k = 1; k < opLength; k++) {
+            floorNo = ParamUtil.getString(request, i + "FloorNo" + k);
+            unitNo = ParamUtil.getString(request, i + "UnitNo" + k);
+            if (StringUtil.isEmpty(floorNo) && StringUtil.isEmpty(unitNo)) {
+                continue;
+            }
+            AppPremisesOperationalUnitDto dto = new AppPremisesOperationalUnitDto();
+            dto.setFloorNo(floorNo);
+            dto.setUnitNo(unitNo);
+            dto.setPremType(premType);
+            dto.setPremVal(premIndexNo);
+            dto.setSeqNum(k);
+            appPremisesOperationalUnitDtos.add(dto);
+        }
+        appGrpPremisesDto.setAppPremisesOperationalUnitDtos(appPremisesOperationalUnitDtos);
+        appGrpPremisesDto.setAppPremisesOperationalUnitDtos(appPremisesOperationalUnitDtos);
+    }
+
+    private static void setAppGrpPremiseFromPage(AppGrpPremisesDto appGrpPremisesDto, String premIndexNo,
+            int i, HttpServletRequest request) {
+        String[] nonHcsaLengths = ParamUtil.getStrings(request, "nonHcsaLength");
+        ControllerHelper.get(request, appGrpPremisesDto, String.valueOf(i));
+        String certIssuedDtStr = ParamUtil.getString(request, "certIssuedDt" + i);
+        appGrpPremisesDto.setCertIssuedDtStr(certIssuedDtStr);
+        setPremise(appGrpPremisesDto, premIndexNo, ApplicationHelper.getOldAppSubmissionDto(request));
+        List<AppPremNonLicRelationDto> appPremNonLicRelationDtos = IaisCommonUtils.genNewArrayList();
+        int nonHcsaLength = 0;
+        try {
+            nonHcsaLength = Integer.parseInt(nonHcsaLengths[i]);
+        } catch (Exception e) {
+            log.error(StringUtil.changeForLog("Non-hcsa service length can not parse to int"));
+        }
+        for (int k = 0; k < nonHcsaLength; k++) {
+            String coBusinessName = ParamUtil.getString(request, i + "CoBusinessName" + k);
+            String coSvcName = ParamUtil.getString(request, i + "CoSvcName" + k);
+            if (StringUtil.isEmpty(coBusinessName) && StringUtil.isEmpty(coSvcName)) {
+                continue;
+            }
+            AppPremNonLicRelationDto dto = new AppPremNonLicRelationDto();
+            dto.setBusinessName(coBusinessName);
+            dto.setProvidedService(coSvcName);
+            dto.setSeqNum(k);
+            appPremNonLicRelationDtos.add(dto);
+        }
+        appGrpPremisesDto.setAppPremNonLicRelationDtos(appPremNonLicRelationDtos);
     }
 
     private static void setPremise(AppGrpPremisesDto appGrpPremisesDto, String premIndexNo, AppSubmissionDto oldAppSubmissionDto) {
