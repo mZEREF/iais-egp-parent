@@ -573,7 +573,7 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     }
 
     public void syncFeUserWithTrack(FeUserDto userAttr) {
-        beEicGatewayClient.callEicWithTrack(userAttr, this::syncFeUser, this.getClass(), "syncFeUser",EicClientConstant.LICENCE_CLIENT);
+        beEicGatewayClient.callEicWithTrack(userAttr, this::syncFeUser, this.getClass(), "syncFeUser",EicClientConstant.ORGANIZATION_CLIENT);
     }
 
     public void syncFeUser(FeUserDto userAttr) {
