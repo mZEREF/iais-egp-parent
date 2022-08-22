@@ -553,18 +553,18 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     public void eicFeOrganization(OrganizationDto organizationDto) {
         log.info(StringUtil.changeForLog("The eicFeOrganization start ..."));
         beEicGatewayClient.callEicWithTrack(organizationDto,
-                this::callEicSaveOrganizationDto, this.getClass(), "saveOrganizationDto", EicClientConstant.ORGANIZATION_CLIENT);
+                this::callEicSaveOrganizationDto, this.getClass(), "callEicSaveOrganizationDto", EicClientConstant.ORGANIZATION_CLIENT);
         log.info(StringUtil.changeForLog("The eicFeOrganization end ..."));
     }
 
-    private void callEicSaveOrganizationDto(OrganizationDto organizationDto){
+    public void callEicSaveOrganizationDto(OrganizationDto organizationDto){
         beEicGatewayClient.saveOrganizationDto(organizationDto).getEntity();
     }
 
     public void eicFeELISInterfaceDto(ELISInterfaceDto elisInterfaceDto) {
         log.info(StringUtil.changeForLog("The eicFeOrganization start ..."));
         beEicGatewayClient.callEicWithTrack(elisInterfaceDto,
-                this::callEicSaveElisInterfaceDto, this.getClass(), "saveElisInterfaceDto",EicClientConstant.LICENCE_CLIENT);
+                this::callEicSaveElisInterfaceDto, this.getClass(), "callEicSaveElisInterfaceDto",EicClientConstant.LICENCE_CLIENT);
         log.info(StringUtil.changeForLog("The eicFeOrganization end ..."));
     }
 
