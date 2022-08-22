@@ -954,7 +954,7 @@ public class InsRepServiceImpl implements InsRepService {
         List<TaskDto> taskDtos = prepareRoutBackTaskList(taskDto, userId, roleId, stageId);
         taskService.createTasks(taskDtos);
         createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, ApplicationConsts.PROCESSING_DECISION_REPLY, rountHistotyRoleId,rountHistotyGroupId , subStage);
-        createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, null, null,  rountHistotyRoleId, rountHistotyGroupId, subStage);
+        createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), stageId, null, null,  rountHistotyRoleId, rountHistotyGroupId, subStage);
     }
     private void setWorkGroupIdForTask(ApplicationDto applicationDto, TaskDto taskDto,String stageId){
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();

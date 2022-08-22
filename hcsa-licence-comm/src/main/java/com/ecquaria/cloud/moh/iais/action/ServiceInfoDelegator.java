@@ -368,6 +368,7 @@ public class ServiceInfoDelegator {
         }
         List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = ApplicationHelper.initAppSvcSpecialServiceInfoDtoList(
                 currSvcInfoDto, appPremSpecialisedDtos);
+        currSvcInfoDto.setAppSvcSpecialServiceInfoList(appSvcSpecialServiceInfoList);
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
         ParamUtil.setRequestAttr(request, "isRfi", isRfi);
         ParamUtil.setRequestAttr(request, "appSvcSpecialServiceInfoList", appSvcSpecialServiceInfoList);
@@ -553,14 +554,6 @@ public class ServiceInfoDelegator {
         String action = ParamUtil.getRequestString(bpc.request, "nextStep");
         Map<String, String> errorMap = null;
         if ("next".equals(action)) {
-            if (StringUtil.isEmpty(currSvcInfoDto.getServiceCode())) {
-                HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(currSvcId);
-                if (serviceDto != null) {
-                    currSvcInfoDto.setServiceId(currSvcId);
-                    currSvcInfoDto.setServiceCode(serviceDto.getSvcCode());
-                    currSvcInfoDto.setServiceName(serviceDto.getSvcName());
-                }
-            }
             errorMap = AppValidatorHelper.validateSectionLeaders(currSvcInfoDto.getAppSvcSectionLeaderList(),
                     currSvcInfoDto.getServiceCode());
             if (!isRfi) {
@@ -1682,7 +1675,7 @@ public class ServiceInfoDelegator {
                 number = 0;
             } else {
                 String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,
-                        HcsaConsts.STEP_DISCIPLINE_ALLOCATION,HcsaConsts.STEP_SERVICE_PERSONNEL};
+                        HcsaConsts.STEP_DISCIPLINE_ALLOCATION};
                 for (int i = 0; i < hcsaServiceStepSchemeDtos.size(); i++) {
                     if (action.equals(hcsaServiceStepSchemeDtos.get(i).getStepCode())) {
                         number = i;
