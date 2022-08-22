@@ -51,7 +51,7 @@
                         <c:forEach begin="0" end="${DirectorDtoListLength - 1}" step="1" varStatus="direStatus">
                             <c:set var="index" value="${direStatus.index}"/>
                             <c:set var="appSvcPersonnelDto" value="${specialServiceSectionDto.appSvcDirectorDtoList[index]}"/>
-                            <c:set var="title" value="Emergency Department Director"/>
+                            <c:set var="title" value="Emergency Department Director ${DirectorDtoListLength > 1?index+1:''}"/>
                             <%@include file="viewSpecialServicesFromDetail.jsp"%>
                         </c:forEach>
                         <c:choose>
@@ -65,7 +65,7 @@
                         <c:forEach begin="0" end="${NurseDtoListLength - 1}" step="1" varStatus="nurStatus">
                             <c:set var="index" value="${nurStatus.index}"/>
                             <c:set var="appSvcPersonnelDto" value="${specialServiceSectionDto.appSvcChargedNurseDtoList[index]}"/>
-                            <c:set var="title" value="Emergency Department Nurse-in-charge"/>
+                            <c:set var="title" value="Emergency Department Nurse-in-charge ${NurseDtoListLength > 1?index+1:''}"/>
                             <%@include file="viewSpecialServicesFromDetail.jsp"%>
                         </c:forEach>
                     </c:otherwise>

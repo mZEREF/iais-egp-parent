@@ -8,7 +8,7 @@
     <c:forEach items="${currentPreviewSvcInfo.appSvcMedAlertPersonList}" var="person" varStatus="status">
       <iais:row>
         <div  class="col-xs-12" style="margin-bottom: 1%;margin-top: 1%">
-          <p><strong>MedAlert Person<c:if test="${currentPreviewSvcInfo.appSvcMedAlertPersonList.size() > 1}"> ${status.index+1}</c:if>:</strong></p>
+          <p><strong>MedAlert Person<c:if test="${currentPreviewSvcInfo.appSvcMedAlertPersonList.size() > 1}"> ${status.index+1}</c:if></strong></p>
         </div>
       </iais:row>
       <%@include file="viewPersonnelDetail.jsp"%>
