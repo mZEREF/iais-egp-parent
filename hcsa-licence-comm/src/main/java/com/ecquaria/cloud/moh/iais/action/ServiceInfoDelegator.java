@@ -368,6 +368,7 @@ public class ServiceInfoDelegator {
         }
         List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = ApplicationHelper.initAppSvcSpecialServiceInfoDtoList(
                 currSvcInfoDto, appPremSpecialisedDtos);
+        currSvcInfoDto.setAppSvcSpecialServiceInfoList(appSvcSpecialServiceInfoList);
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
         ParamUtil.setRequestAttr(request, "isRfi", isRfi);
         ParamUtil.setRequestAttr(request, "appSvcSpecialServiceInfoList", appSvcSpecialServiceInfoList);
