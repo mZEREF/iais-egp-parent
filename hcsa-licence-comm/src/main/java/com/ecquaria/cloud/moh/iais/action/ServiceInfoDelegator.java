@@ -553,14 +553,6 @@ public class ServiceInfoDelegator {
         String action = ParamUtil.getRequestString(bpc.request, "nextStep");
         Map<String, String> errorMap = null;
         if ("next".equals(action)) {
-            if (StringUtil.isEmpty(currSvcInfoDto.getServiceCode())) {
-                HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(currSvcId);
-                if (serviceDto != null) {
-                    currSvcInfoDto.setServiceId(currSvcId);
-                    currSvcInfoDto.setServiceCode(serviceDto.getSvcCode());
-                    currSvcInfoDto.setServiceName(serviceDto.getSvcName());
-                }
-            }
             errorMap = AppValidatorHelper.validateSectionLeaders(currSvcInfoDto.getAppSvcSectionLeaderList(),
                     currSvcInfoDto.getServiceCode());
             if (!isRfi) {
