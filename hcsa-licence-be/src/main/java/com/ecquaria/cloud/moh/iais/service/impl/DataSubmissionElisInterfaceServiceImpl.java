@@ -229,7 +229,7 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
 
     private DsCenterDto generateDsCenterDto(DsElisLicenceDto dsElisLicenceDto, String centerType, String orgId, String licenseeId) {
         Date fromDate = processDate(dsElisLicenceDto.getLicStartDate(), DATE_FORMAT);
-        DsCenterDto dsCenterDto = licenceClient.getDsCenterDto(orgId, dsElisLicenceDto.getHciCode(), centerType, fromDate).getEntity();
+        DsCenterDto dsCenterDto = licenceClient.getDsCenterDto(orgId, dsElisLicenceDto.getHciCode(), centerType, dsElisLicenceDto.getLicStartDate()).getEntity();
         if (Objects.isNull(dsCenterDto)) {
             log.info("create new ds_center");
             dsCenterDto = new DsCenterDto();
