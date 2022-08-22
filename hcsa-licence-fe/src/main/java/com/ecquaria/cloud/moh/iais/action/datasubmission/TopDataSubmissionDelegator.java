@@ -1289,7 +1289,7 @@ public class TopDataSubmissionDelegator {
 
                     }
                 }
-                if(preTerminationDto.getCounsellingPlace()!=null&&!preTerminationDto.getCounsellingPlace().equals("AR_SC_001") ){
+                if(preTerminationDto.getCounsellingPlace()!=null&&preTerminationDto.getCounsellingPlace().equals("AR_SC_001") ){
                     preTerminationDto.setPreCounsNoCondReason(null);
                 }
             }else {
