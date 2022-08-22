@@ -361,7 +361,7 @@ public class TopDataSubmissionDelegator {
                      if(needDoTop(preTerminationDto)&&terminationOfPregnancyDto.getTerminationDto()!=null){
                          ValidationResult result = WebValidationHelper.validateProperty(terminationOfPregnancyDto.getTerminationDto(),"TOP");
                          status = result.isHasErrors()?0:1;
-                     }else if(topSuperDataSubmissionDto.getAppType().equals(DataSubmissionConsts.DS_APP_TYPE_RFC)){
+                     }else {
                          status =1;
                      }
                 }else if (DsConfigHelper.TOP_STEP_POST_TERMINATION.equals(cfg.getCode())) {
@@ -369,7 +369,7 @@ public class TopDataSubmissionDelegator {
                     if(needDoTop(preTerminationDto)&&terminationOfPregnancyDto.getPostTerminationDto()!=null){
                         ValidationResult result = WebValidationHelper.validateProperty(terminationOfPregnancyDto.getPostTerminationDto(),"TOP");
                         status = result.isHasErrors()?0:1;
-                    }else if(topSuperDataSubmissionDto.getAppType().equals(DataSubmissionConsts.DS_APP_TYPE_RFC)){
+                    }else {
                         status =1;
                     }
                 }
