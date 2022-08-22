@@ -552,10 +552,9 @@ public class ServiceInfoDelegator {
             bpc.request.setAttribute(SECTION_LEADER_LIST, appSvcSectionLeaderList);
         }
         String action = ParamUtil.getRequestString(bpc.request, "nextStep");
-        Map<String, String> errorMap = null;
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if ("next".equals(action)) {
-            errorMap = AppValidatorHelper.validateSectionLeaders(currSvcInfoDto.getAppSvcSectionLeaderList(),
-                    currSvcInfoDto.getServiceCode());
+            AppValidatorHelper.doValidateSectionLeader(errorMap, currSvcInfoDto.getAppSvcSectionLeaderList());
             if (!isRfi) {
                 List<HcsaSvcPersonnelDto> psnConfig = configCommService.getHcsaSvcPersonnel(currSvcId,
                         ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER);
@@ -1190,7 +1189,7 @@ public class ServiceInfoDelegator {
         int norCount = 0;
         if (currentSvcCode != null) {
 //            AppServicesConsts.SERVICE_CODE_ASSISTED_REPRODUCTION.equals(currentSvcCode)
-          if ( AppServicesConsts.SERVICE_CODE_ASSISTED_REPRODUCTION.equals(currentSvcCode)) {
+          if (AppServicesConsts.SERVICE_CODE_ASSISTED_REPRODUCTION.equals(currentSvcCode)) {
                 emCount = Optional.ofNullable(svcPersonnelDto.getEmbryologistList())
                         .map(List::size)
                         .orElse(1);
@@ -1219,11 +1218,11 @@ public class ServiceInfoDelegator {
         }
 //      fang
         ParamUtil.setRequestAttr(bpc.request, "svcPersonnelDto",svcPersonnelDto);
-//        List<SelectOption> personnelTypeSel = ApplicationHelper.genPersonnelTypeSel(currentSvcCode);
-//        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.SERVICEPERSONNELTYPE, personnelTypeSel);
-//        List<SelectOption> designation = genPersonnelDesignSel(currentSvcCode);
-//        ParamUtil.setSessionAttr(bpc.request, "NuclearMedicineImagingDesignation", (Serializable) designation);
-//        ParamUtil.setRequestAttr(bpc.request, "prsFlag", prsFlag);
+        List<SelectOption> personnelTypeSel = ApplicationHelper.genPersonnelTypeSel(currentSvcCode);
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.SERVICEPERSONNELTYPE, personnelTypeSel);
+        List<SelectOption> designation = genPersonnelDesignSel(currentSvcCode);
+        ParamUtil.setSessionAttr(bpc.request, "NuclearMedicineImagingDesignation", (Serializable) designation);
+        ParamUtil.setRequestAttr(bpc.request, "prsFlag", prsFlag);
         log.debug(StringUtil.changeForLog("the do prepareServicePersonnel end ...."));
     }
 
