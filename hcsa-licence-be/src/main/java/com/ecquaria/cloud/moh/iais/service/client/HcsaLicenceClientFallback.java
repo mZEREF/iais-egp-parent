@@ -36,7 +36,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.PostInsGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.monitoringExcel.MonitoringSheetsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalInformationQueryDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.springframework.http.HttpHeaders;
@@ -664,7 +663,7 @@ public class HcsaLicenceClientFallback implements HcsaLicenceClient {
     }
 
     @Override
-    public FeignResponseEntity<DsCenterDto> getDsCenterDto(String orgId, String hciCode, String centerType, Date startDate) {
+    public FeignResponseEntity<DsCenterDto> getDsCenterDto(String orgId, String hciCode, String centerType, String startDate) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
