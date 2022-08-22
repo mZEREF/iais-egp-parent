@@ -99,7 +99,7 @@ public class PatientDelegator extends CommonDelegator {
             if (patient.isPreviousIdentification()) {
                 String retrievePrevious = ParamUtil.getString(request, "retrievePrevious");
                 patientInfo.setRetrievePrevious(AppConsts.YES.equals(retrievePrevious));
-                PatientDto previous = ControllerHelper.get(request, PatientDto.class, "pre", "");
+                PatientDto previous = ControllerHelper.get(request, PatientDto.class, "pre");
                 if (patientInfo.isRetrievePrevious()) {
                     PatientDto db = patientService.getActiveArPatientByConds(previous.getIdType(), previous.getIdNumber(),
                             previous.getNationality(), patient.getOrgId());
