@@ -705,24 +705,24 @@ public final class AppDataHelper {
         return result;
     }
 
-    private static AppSvcOtherInfoTopPersonDto getSvcOtherInfoTopPersonByIdNo (AppSvcRelatedInfoDto appSvcRelatedInfoDto, String idNo,int conts){
+    private static AppSvcOtherInfoTopPersonDto getSvcOtherInfoTopPersonByIdNo (AppSvcRelatedInfoDto appSvcRelatedInfoDto, String idNo,String psnType){
         AppSvcOtherInfoTopPersonDto result = null;
         if (appSvcRelatedInfoDto != null && !StringUtil.isEmpty(idNo)){
             AppSvcOtherInfoDto appSvcOtherInfoDto = appSvcRelatedInfoDto.getAppSvcOtherInfoDto();
             if (appSvcOtherInfoDto != null){
-                if (conts == 1){
+                if (AppConsts.OTHER_INFO_P.equals(psnType)){
                     List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos = appSvcOtherInfoDto.getAppSvcOtherInfoTopPersonDtoList();
                     result = getOtherInfoByIdNo(appSvcOtherInfoTopPersonDtos,idNo);
                 }
-                if (conts == 2){
+                if (AppConsts.OTHER_INFO_A.equals(psnType)){
                     List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos1 = appSvcOtherInfoDto.getAppSvcOtherInfoTopPersonDtoList1();
                     result = getOtherInfoByIdNo(appSvcOtherInfoTopPersonDtos1,idNo);
                 }
-                if (conts == 3){
+                if (AppConsts.OTHER_INFO_N.equals(psnType)){
                     List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos2 = appSvcOtherInfoDto.getAppSvcOtherInfoTopPersonDtoList2();
                     result = getOtherInfoByIdNo(appSvcOtherInfoTopPersonDtos2,idNo);
                 }
-                if (conts == 4){
+                if (AppConsts.OTHER_INFO_C.equals(psnType)){
                     List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos3 = appSvcOtherInfoDto.getAppSvcOtherInfoTopPersonDtoList3();
                     result = getOtherInfoByIdNo(appSvcOtherInfoTopPersonDtos3,idNo);
                 }
@@ -760,17 +760,17 @@ public final class AppDataHelper {
         AppSvcOtherInfoAbortDto result = null;
 
         if (!IaisCommonUtils.isEmpty(appSvcOtherInfoAboutDtos) && (appSvcOtherInfoTopDto != null) && !StringUtil.isEmpty(topType)){
-            if (topType.equals("1")){
+            if (ApplicationConsts.OTHER_INFO_SD.equals(topType)){
                 for (AppSvcOtherInfoAbortDto appSvcOtherInfoAboutDto : appSvcOtherInfoAboutDtos) {
                     result = appSvcOtherInfoAboutDto;
                 }
             }
-            if (topType.equals("0")){
+            if (ApplicationConsts.OTHER_INFO_SSP.equals(topType)){
                 for (AppSvcOtherInfoAbortDto appSvcOtherInfoAboutDto : appSvcOtherInfoAboutDtos) {
                     result = appSvcOtherInfoAboutDto;
                 }
             }
-            if (topType.equals("-1")){
+            if (ApplicationConsts.OTHER_INFO_DSP.equals(topType)){
                 for (AppSvcOtherInfoAbortDto appSvcOtherInfoAboutDto : appSvcOtherInfoAboutDtos) {
                     result = appSvcOtherInfoAboutDto;
                 }
@@ -829,7 +829,6 @@ public final class AppDataHelper {
         //n
         AppSvcOtherInfoNurseDto appSvcOtherInfoNurseDto = new AppSvcOtherInfoNurseDto();
         ControllerHelper.get(request,appSvcOtherInfoNurseDto);
-        int conts = 0;
         // List<AppSvcOtherInfoTopPersonDto>
         int cdLength = ParamUtil.getInt(request,"cdLength");
         for (int i = 0; i < cdLength; i++) {
@@ -837,6 +836,7 @@ public final class AppDataHelper {
             boolean getPageData = false;
             String isPartEdit = ParamUtil.getString(request, "isPartEdit" + i);
             String idNo = ParamUtil.getString(request, "idNo" + i);
+            String psnType = ParamUtil.getString(request, "psnType" + i);
             if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
                 getPageData = true;
             } else if (AppConsts.YES.equals(isPartEdit)) {
@@ -845,8 +845,7 @@ public final class AppDataHelper {
                 getDataByIndexNo = true;
             }
             if (getDataByIndexNo) {
-                conts = 1 ;
-                AppSvcOtherInfoTopPersonDto appPremOtherInfoTopPersonDto = getSvcOtherInfoTopPersonByIdNo(appSvcRelatedInfoDto, idNo,conts);
+                AppSvcOtherInfoTopPersonDto appPremOtherInfoTopPersonDto = getSvcOtherInfoTopPersonByIdNo(appSvcRelatedInfoDto, idNo, psnType);
                 if (appPremOtherInfoTopPersonDto != null) {
                     appSvcOtherInfoTopPersonDtos.add(appPremOtherInfoTopPersonDto);
                 }
@@ -865,6 +864,7 @@ public final class AppDataHelper {
             boolean getPageData = false;
             String isPartEdit = ParamUtil.getString(request, "isPartEdit" + i);
             String idNo = ParamUtil.getString(request, "idANo" + i);
+            String apsnType = ParamUtil.getString(request,"apsnType"+i);
             if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
                 getPageData = true;
             } else if (AppConsts.YES.equals(isPartEdit)) {
@@ -873,13 +873,11 @@ public final class AppDataHelper {
                 getDataByIndexNo = true;
             }
             if (getDataByIndexNo) {
-                conts = 2;
-                AppSvcOtherInfoTopPersonDto appPremOtherInfoTopPersonDto = getSvcOtherInfoTopPersonByIdNo(appSvcRelatedInfoDto, idNo,conts);
+                AppSvcOtherInfoTopPersonDto appPremOtherInfoTopPersonDto = getSvcOtherInfoTopPersonByIdNo(appSvcRelatedInfoDto, idNo, apsnType);
                 if (appPremOtherInfoTopPersonDto != null) {
                     appSvcOtherInfoTopPersonDtos1.add(appPremOtherInfoTopPersonDto);
                 }
             } else if (getPageData) {
-                String apsnType = ParamUtil.getString(request,"apsnType"+i);
                 String profRegNo = ParamUtil.getString(request, "aprofRegNo" + i);
                 String name = ParamUtil.getString(request, "aname" + i);
                 String regType = ParamUtil.getString(request, "aregType" + i);
@@ -904,6 +902,7 @@ public final class AppDataHelper {
             boolean getPageData = false;
             String isPartEdit = ParamUtil.getString(request, "isPartEdit" + i);
             String nname = ParamUtil.getString(request, "nname" + i);
+            String npsnType = ParamUtil.getString(request,"npsnType"+i);
             if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
                 getPageData = true;
             } else if (AppConsts.YES.equals(isPartEdit)) {
@@ -912,14 +911,12 @@ public final class AppDataHelper {
                 getDataByIndexNo = true;
             }
             if (getDataByIndexNo) {
-                conts = 3;
-                AppSvcOtherInfoTopPersonDto appPremOtherInfoTopPersonDto = getSvcOtherInfoTopPersonByIdNo(appSvcRelatedInfoDto, nname,conts);
+                AppSvcOtherInfoTopPersonDto appPremOtherInfoTopPersonDto = getSvcOtherInfoTopPersonByIdNo(appSvcRelatedInfoDto, nname, npsnType);
                 if (appPremOtherInfoTopPersonDto != null) {
                     appSvcOtherInfoTopPersonDtos2.add(appPremOtherInfoTopPersonDto);
                 }
             } else if (getPageData) {
                 String nqualification = ParamUtil.getString(request, "nqualification" + i);
-                String npsnType = ParamUtil.getString(request,"npsnType"+i);
                 AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto = new AppSvcOtherInfoTopPersonDto();
                 appSvcOtherInfoTopPersonDto.setPsnType(npsnType);
                 appSvcOtherInfoTopPersonDto.setName(nname);
@@ -935,6 +932,7 @@ public final class AppDataHelper {
             boolean getPageData = false;
             String isPartEdit = ParamUtil.getString(request, "isPartEdit" + i);
             String cidNo = ParamUtil.getString(request, "cidNo" + i);
+            String cpsnType = ParamUtil.getString(request,"cpsnType"+i);
             if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
                 getPageData = true;
             } else if (AppConsts.YES.equals(isPartEdit)) {
@@ -943,13 +941,11 @@ public final class AppDataHelper {
                 getDataByIndexNo = true;
             }
             if (getDataByIndexNo) {
-                conts = 4;
-                AppSvcOtherInfoTopPersonDto appPremOtherInfoTopPersonDto = getSvcOtherInfoTopPersonByIdNo(appSvcRelatedInfoDto, cidNo, conts);
+                AppSvcOtherInfoTopPersonDto appPremOtherInfoTopPersonDto = getSvcOtherInfoTopPersonByIdNo(appSvcRelatedInfoDto, cidNo, cpsnType);
                 if (appPremOtherInfoTopPersonDto != null) {
                     appSvcOtherInfoTopPersonDtos3.add(appPremOtherInfoTopPersonDto);
                 }
             } else if (getPageData) {
-                String cpsnType = ParamUtil.getString(request,"cpsnType"+i);
                 String cqualification = ParamUtil.getString(request, "cqualification" + i);
                 String cname = ParamUtil.getString(request,"cname"+i);
                 AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto = new AppSvcOtherInfoTopPersonDto();
