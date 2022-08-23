@@ -80,3 +80,16 @@
         </c:if>
     </c:forEach>
 </div>
+<div class="amend-preview-info form-horizontal min-row">
+    <iais:row>
+        <div class="col-xs-12 col-md-12">
+            <p class="bold">Declaration</p>
+        </div>
+    </iais:row>
+    <iais:row>
+        <iais:field width="5" value="I declare that I have met URA's requirements for gross floor area"/>
+        <iais:value width="3" cssClass="col-md-7" display="true">
+            Yes
+        </iais:value>
+    </iais:row>
+</div>

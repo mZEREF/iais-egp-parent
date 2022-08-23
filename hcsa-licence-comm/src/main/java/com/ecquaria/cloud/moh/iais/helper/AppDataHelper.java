@@ -788,11 +788,10 @@ public final class AppDataHelper {
         String currentSvcId = (String) ParamUtil.getSessionAttr(request,CURRENTSERVICEID);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request,currentSvcId);
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
-
+        //check-checked
+        String requireCheck = ParamUtil.getString(request,"requireCheck");
+        String requireCheck1 = ParamUtil.getString(request,"requireCheck1");
         String provideTop = ParamUtil.getString(request,"provideTop");
-        appSvcOtherInfoDto.setProvideTop(provideTop);
-        String provideYfVs = ParamUtil.getString(request,"provideYfVs");
-        appSvcOtherInfoDto.setProvideYfVs(provideYfVs);
         // AppSvcOtherInfoTopDto
         String topType = ParamUtil.getString(request,"topType");
         String hasConsuAttendCourse = ParamUtil.getString(request,"hasConsuAttendCourse");
@@ -815,6 +814,17 @@ public final class AppDataHelper {
         //med
         AppSvcOtherInfoMedDto appSvcOtherInfoMedDto = new AppSvcOtherInfoMedDto();
         ControllerHelper.get(request,appSvcOtherInfoMedDto);
+        String systemOption = ParamUtil.getString(request,"systemOption");
+        if (systemOption.equals("MED06")){
+            String otherSystemOption = ParamUtil.getString(request,"otherSystemOption");
+            appSvcOtherInfoMedDto.setOtherSystemOption(otherSystemOption);
+        }
+        //a
+        AppSvcOtherInfoMedDto appSvcOtherInfoMedDto1 = new AppSvcOtherInfoMedDto();
+        String gfValue = ParamUtil.getString(request,"agfaValue");
+        if (gfValue != null && gfValue.matches("^[0-9]*[1-9][0-9]*$")){
+            appSvcOtherInfoMedDto1.setGfaValue(Integer.valueOf(gfValue));
+        }
         //n
         AppSvcOtherInfoNurseDto appSvcOtherInfoNurseDto = new AppSvcOtherInfoNurseDto();
         ControllerHelper.get(request,appSvcOtherInfoNurseDto);
@@ -844,7 +854,6 @@ public final class AppDataHelper {
             } else if (getPageData) {
                 AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto = new AppSvcOtherInfoTopPersonDto();
                 ControllerHelper.get(request,appSvcOtherInfoTopPersonDto,String.valueOf(i));
-                String medAuthByMoh = ParamUtil.getString(request,"medAuthByMoh"+i);
                 appSvcOtherInfoTopPersonDto.setSeqNum(i);
                 appSvcOtherInfoTopPersonDto.setIdNo(idNo);
                 appSvcOtherInfoTopPersonDtos.add(appSvcOtherInfoTopPersonDto);
@@ -1074,6 +1083,8 @@ public final class AppDataHelper {
             }
         }
         appSvcOtherInfoDto.setProvideTop(provideTop);
+        appSvcOtherInfoDto.setRequireCheck(requireCheck);
+        appSvcOtherInfoDto.setRequireCheck1(requireCheck1);
         appSvcOtherInfoDto.setAppSvcOtherInfoTopPersonDtoList(appSvcOtherInfoTopPersonDtos);
         appSvcOtherInfoDto.setAppSvcOtherInfoTopPersonDtoList1(appSvcOtherInfoTopPersonDtos1);
         appSvcOtherInfoDto.setAppSvcOtherInfoTopPersonDtoList2(appSvcOtherInfoTopPersonDtos2);
@@ -1083,6 +1094,7 @@ public final class AppDataHelper {
         appSvcOtherInfoDto.setAppSvcOtherInfoTopDto(appSvcOtherInfoTopDtos);
         appSvcOtherInfoDto.setAppSvcOtherInfoAbortDtoList(appSvcOtherInfoAboutDtos);
         appSvcOtherInfoDto.setAppSvcOtherInfoMedDto(appSvcOtherInfoMedDto);
+        appSvcOtherInfoDto.setAppSvcOtherInfoMedDto1(appSvcOtherInfoMedDto1);
         appSvcOtherInfoDto.setAppSvcOtherInfoNurseDto(appSvcOtherInfoNurseDto);
         return appSvcOtherInfoDto;
     }

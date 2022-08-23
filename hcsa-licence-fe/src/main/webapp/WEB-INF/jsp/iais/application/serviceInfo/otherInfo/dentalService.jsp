@@ -55,11 +55,11 @@
         <iais:input maxLength="20" type="text" cssClass="gfaValue" name="gfaValue" value="${med.gfaValue}"/>
     </iais:value>
 </iais:row>
-
+============================${appSvcOtherInfoDto.requireCheck1}
 <iais:row>
     <iais:field width="3" cssClass="col-md-6" mandatory="true" value="I declare that I have met URA's requirements for gross floor area"/>
     <iais:value width="4" cssClass="col-md-6">
-        <input class="form-check-input requirements"  type="checkbox" checked="checked" name="requirements">
+        <input class="form-check-input requireCheck"  type="checkbox" <c:if test="${'1' == appSvcOtherInfoDto.requireCheck}">checked="checked"</c:if> name="requireCheck" value="${appSvcOtherInfoDto.requireCheck}">
     </iais:value>
 </iais:row>
 

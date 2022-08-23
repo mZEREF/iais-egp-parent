@@ -1846,11 +1846,23 @@ public final class AppValidatorHelper {
         List<AppSvcOtherInfoAbortDto> topByAll = appSvcOtherInfoDto.getAppSvcOtherInfoAbortDtoList2();
         AppSvcOtherInfoMedDto appSvcOtherInfoMedDto = appSvcOtherInfoDto.getAppSvcOtherInfoMedDto();
         AppSvcOtherInfoNurseDto appSvcOtherInfoNurseDto = appSvcOtherInfoDto.getAppSvcOtherInfoNurseDto();
+        AppSvcOtherInfoMedDto appSvcOtherInfoMedDto1 = appSvcOtherInfoDto.getAppSvcOtherInfoMedDto1();
+        if (appSvcOtherInfoDto.getRequireCheck().equals(0) || StringUtil.isEmpty(appSvcOtherInfoDto.getRequireCheck())){
+            errMap.put("requireCheck", MessageUtil.replaceMessage("GENERAL_ERR0006", "I declare that I have met URA's requirements for gross floor area", "field"));
+        }
+        if (appSvcOtherInfoDto.getRequireCheck1().equals(0) || StringUtil.isEmpty(appSvcOtherInfoDto.getRequireCheck1())){
+            errMap.put("requireCheck1", MessageUtil.replaceMessage("GENERAL_ERR0006", "I declare that I have met URA's requirements for gross floor area", "field"));
+        }
         if (StringUtil.isEmpty(appSvcOtherInfoMedDto.getIsMedicalTypeIt() && appSvcOtherInfoMedDto.getIsMedicalTypePaper())){
             errMap.put("isMedicalTypeIt", MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of medical records", "field"));
         }
         if (StringUtil.isEmpty(appSvcOtherInfoMedDto.getSystemOption())){
             errMap.put("systemOption", MessageUtil.replaceMessage("GENERAL_ERR0006", "List of options for IT system and paper cards / IT system only", "field"));
+        }
+        if (appSvcOtherInfoMedDto.getSystemOption().equals("MED06")){
+            if (StringUtil.isEmpty(appSvcOtherInfoMedDto.getOtherSystemOption())){
+                errMap.put("otherSystemOption", MessageUtil.replaceMessage("GENERAL_ERR0006", "Please specify", "field"));
+            }
         }
         if (StringUtil.isEmpty(appSvcOtherInfoMedDto.getIsOpenToPublic())){
             errMap.put("isOpenToPublic", MessageUtil.replaceMessage("GENERAL_ERR0006", "Is clinic open to general public?", "field"));
@@ -1858,6 +1870,14 @@ public final class AppValidatorHelper {
         String gfaValue = String.valueOf(appSvcOtherInfoMedDto.getGfaValue());
         if (StringUtil.isEmpty(gfaValue) && gfaValue.matches("^[0-9]*[1-9][0-9]*$")){
             errMap.put("gfaValue", MessageUtil.replaceMessage("GENERAL_ERR0006", "GFA Value (in sqm)", "field"));
+        }
+        String nisOpenToPublic = String.valueOf(appSvcOtherInfoNurseDto.getIsOpenToPublic());
+        if (StringUtil.isEmpty(nisOpenToPublic)){
+            errMap.put("nisOpenToPublic",MessageUtil.replaceMessage("GENERAL_ERR0006","Is the clinic open to general public?","field"));
+        }
+        String agfaValue = String.valueOf(appSvcOtherInfoMedDto1.getGfaValue());
+        if (StringUtil.isEmpty(agfaValue) && agfaValue.matches("^[0-9]*[1-9][0-9]*$")){
+            errMap.put("agfaValue", MessageUtil.replaceMessage("GENERAL_ERR0006", "GFA Value (in sqm)", "field"));
         }
         if (StringUtil.isEmpty(appSvcOtherInfoDto.getProvideTop())){
             errMap.put("provideTop", MessageUtil.replaceMessage("GENERAL_ERR0006", "Please indicate&nbsp;", "field"));
