@@ -359,7 +359,7 @@ public class TopDataSubmissionDelegator {
                 }else if (DsConfigHelper.TOP_STEP_PRESENT_TERMINATION.equals(cfg.getCode())) {
                      PreTerminationDto preTerminationDto= terminationOfPregnancyDto.getPreTerminationDto();
                      if(needDoTop(preTerminationDto)){
-                         if(terminationOfPregnancyDto.getPostTerminationDto()==null){
+                         if(terminationOfPregnancyDto.getTerminationDto()==null){
                              ValidationResult result = WebValidationHelper.validateProperty(new TerminationDto(),"TOP");
                              status = result.isHasErrors()?0:1;
                          }else {
