@@ -39,7 +39,6 @@ import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
 import com.ecquaria.cloud.moh.iais.helper.AppDataHelper;
 import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
-import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
@@ -445,12 +444,16 @@ public class ServiceInfoDelegator {
      */
     private void prepareOtherInformation(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("prePareOtherInformationDirector start ..."));
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId);
         // Other Information Director config
         AppSvcOtherInfoDto appSvcOtherInfoDto = currSvcInfoDto.getAppSvcOtherInfoDto();
         if (appSvcOtherInfoDto != null) {
             ParamUtil.setRequestAttr(bpc.request,"appSvcOtherInfoDto",appSvcOtherInfoDto);
+        }
+        if (ApplicationHelper.initSupplementoryForm(currSvcInfoDto)) {
+            setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
         }
     }
 

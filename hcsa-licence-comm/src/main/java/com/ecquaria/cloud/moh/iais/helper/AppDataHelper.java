@@ -800,9 +800,6 @@ public final class AppDataHelper {
         String currentSvcId = (String) ParamUtil.getSessionAttr(request,CURRENTSERVICEID);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request,currentSvcId);
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
-        //check-checked
-        String requireCheck = ParamUtil.getString(request,"requireCheck");
-        String requireCheck1 = ParamUtil.getString(request,"requireCheck1");
         String provideTop = ParamUtil.getString(request,"provideTop");
         // AppSvcOtherInfoTopDto
         String topType = ParamUtil.getString(request,"topType");
@@ -811,18 +808,11 @@ public final class AppDataHelper {
         String isOutcomeProcRecord = ParamUtil.getString(request,"isOutcomeProcRecord");
         String compCaseNum = ParamUtil.getString(request,"compCaseNum");
         appSvcOtherInfoTopDtos.setTopType(topType);
-        if (!StringUtil.isEmpty(hasConsuAttendCourse)){
-            appSvcOtherInfoTopDtos.setHasConsuAttendCourse(AppConsts.YES.equals(hasConsuAttendCourse));
-        }
-        if (!StringUtil.isEmpty(isProvideHpb)){
-            appSvcOtherInfoTopDtos.setIsProvideHpb(AppConsts.YES.equals(isProvideHpb));
-        }
-        if (!StringUtil.isEmpty(isOutcomeProcRecord)){
-            appSvcOtherInfoTopDtos.setIsOutcomeProcRecord(AppConsts.YES.equals(isOutcomeProcRecord));
-        }
-        if (compCaseNum != null && compCaseNum.matches("^[0-9]*[1-9][0-9]*$")){
-            appSvcOtherInfoTopDtos.setCompCaseNum(Integer.valueOf(compCaseNum));
-        }
+        appSvcOtherInfoTopDtos.setHasConsuAttendCourse(hasConsuAttendCourse);
+        appSvcOtherInfoTopDtos.setIsProvideHpb(isProvideHpb);
+        appSvcOtherInfoTopDtos.setIsOutcomeProcRecord(isOutcomeProcRecord);
+        appSvcOtherInfoTopDtos.setCompCaseNum(compCaseNum);
+
         //med
         AppSvcOtherInfoMedDto appSvcOtherInfoMedDto = new AppSvcOtherInfoMedDto();
         ControllerHelper.get(request,appSvcOtherInfoMedDto);
@@ -834,9 +824,8 @@ public final class AppDataHelper {
         //a
         AppSvcOtherInfoMedDto appSvcOtherInfoMedDto1 = new AppSvcOtherInfoMedDto();
         String gfValue = ParamUtil.getString(request,"agfaValue");
-        if (gfValue != null && gfValue.matches("^[0-9]*[1-9][0-9]*$")){
-            appSvcOtherInfoMedDto1.setGfaValue(Integer.valueOf(gfValue));
-        }
+        appSvcOtherInfoMedDto1.setGfaValue(gfValue);
+
         //n
         AppSvcOtherInfoNurseDto appSvcOtherInfoNurseDto = new AppSvcOtherInfoNurseDto();
         ControllerHelper.get(request,appSvcOtherInfoNurseDto);
@@ -855,8 +844,6 @@ public final class AppDataHelper {
             } else if (!StringUtil.isEmpty(idNo)) {
                 getDataByIndexNo = true;
             }
-            log.debug("get data by index no. is {}", getDataByIndexNo);
-            log.debug("get page data is {}", getPageData);
             if (getDataByIndexNo) {
                 conts = 1 ;
                 AppSvcOtherInfoTopPersonDto appPremOtherInfoTopPersonDto = getSvcOtherInfoTopPersonByIdNo(appSvcRelatedInfoDto, idNo,conts);
@@ -885,8 +872,6 @@ public final class AppDataHelper {
             } else if (!StringUtil.isEmpty(idNo)) {
                 getDataByIndexNo = true;
             }
-            log.debug("get data by index no. is {}", getDataByIndexNo);
-            log.debug("get page data is {}", getPageData);
             if (getDataByIndexNo) {
                 conts = 2;
                 AppSvcOtherInfoTopPersonDto appPremOtherInfoTopPersonDto = getSvcOtherInfoTopPersonByIdNo(appSvcRelatedInfoDto, idNo,conts);
@@ -926,8 +911,6 @@ public final class AppDataHelper {
             } else if (!StringUtil.isEmpty(nname)) {
                 getDataByIndexNo = true;
             }
-            log.debug("get data by index no. is {}", getDataByIndexNo);
-            log.debug("get page data is {}", getPageData);
             if (getDataByIndexNo) {
                 conts = 3;
                 AppSvcOtherInfoTopPersonDto appPremOtherInfoTopPersonDto = getSvcOtherInfoTopPersonByIdNo(appSvcRelatedInfoDto, nname,conts);
@@ -959,8 +942,6 @@ public final class AppDataHelper {
             } else if (!StringUtil.isEmpty(cidNo)) {
                 getDataByIndexNo = true;
             }
-            log.debug("get data by index no. is {}", getDataByIndexNo);
-            log.debug("get page data is {}", getPageData);
             if (getDataByIndexNo) {
                 conts = 4;
                 AppSvcOtherInfoTopPersonDto appPremOtherInfoTopPersonDto = getSvcOtherInfoTopPersonByIdNo(appSvcRelatedInfoDto, cidNo, conts);
@@ -981,7 +962,7 @@ public final class AppDataHelper {
                 appSvcOtherInfoTopPersonDtos3.add(appSvcOtherInfoTopPersonDto);
             }
         }
-
+        //Abort
         List<AppSvcOtherInfoAbortDto> appSvcOtherInfoAboutDtos = IaisCommonUtils.genNewArrayList();
         List<AppSvcOtherInfoAbortDto> appSvcOtherInfoAboutDtos1 = IaisCommonUtils.genNewArrayList();
         List<AppSvcOtherInfoAbortDto> appSvcOtherInfoAboutDtos2 = IaisCommonUtils.genNewArrayList();
@@ -997,8 +978,6 @@ public final class AppDataHelper {
             } else if (!StringUtil.isEmpty(topType)) {
                 getDataByIndexNo = true;
             }
-            log.debug("get data by index no. is {}", getDataByIndexNo);
-            log.debug("get page data is {}", getPageData);
             if (getDataByIndexNo) {
                 AppSvcOtherInfoAbortDto appSvcOtherInfoAboutDto = getSvcOtherInfoAboutByTopType(appSvcRelatedInfoDto,"1","1");
                 if (appSvcOtherInfoAboutDto != null) {
@@ -1010,13 +989,9 @@ public final class AppDataHelper {
 
                 AppSvcOtherInfoAbortDto appSvcOtherInfoAboutDto = new AppSvcOtherInfoAbortDto();
                 if (year != null && abortNum != null){
-                    appSvcOtherInfoAboutDto.setTopType("1");
-                    if (year.matches("^[0-9]*[1-9][0-9]*$")){
-                        appSvcOtherInfoAboutDto.setYear(Integer.valueOf(year));
-                    }
-                    if (abortNum.matches("^[0-9]*[1-9][0-9]*$")){
-                        appSvcOtherInfoAboutDto.setAbortNum(Integer.valueOf(abortNum));
-                    }
+                    appSvcOtherInfoAboutDto.setTopType(ApplicationConsts.OTHER_INFO_SD);
+                    appSvcOtherInfoAboutDto.setYear(year);
+                    appSvcOtherInfoAboutDto.setAbortNum(abortNum);
                 }
                 appSvcOtherInfoAboutDtos.add(appSvcOtherInfoAboutDto);
             }
@@ -1033,8 +1008,6 @@ public final class AppDataHelper {
             } else if (!StringUtil.isEmpty(topType)) {
                 getDataByIndexNo = true;
             }
-            log.debug("get data by index no. is {}", getDataByIndexNo);
-            log.debug("get page data is {}", getPageData);
             if (getDataByIndexNo) {
                 AppSvcOtherInfoAbortDto appSvcOtherInfoAboutDto = getSvcOtherInfoAboutByTopType(appSvcRelatedInfoDto,"0","2");
                 if (appSvcOtherInfoAboutDto != null) {
@@ -1046,13 +1019,10 @@ public final class AppDataHelper {
 
                 AppSvcOtherInfoAbortDto appSvcOtherInfoAboutDto = new AppSvcOtherInfoAbortDto();
                 if (year != null && abortNum != null){
-                    appSvcOtherInfoAboutDto.setTopType("0");
-                    if (year.matches("^[0-9]*[1-9][0-9]*$")){
-                        appSvcOtherInfoAboutDto.setYear(Integer.valueOf(year));
-                    }
-                    if (abortNum.matches("^[0-9]*[1-9][0-9]*$")){
-                        appSvcOtherInfoAboutDto.setAbortNum(Integer.valueOf(abortNum));
-                    }
+                    appSvcOtherInfoAboutDto.setTopType(ApplicationConsts.OTHER_INFO_SSP);
+                    appSvcOtherInfoAboutDto.setYear(year);
+                    appSvcOtherInfoAboutDto.setAbortNum(abortNum);
+
                 }
                 appSvcOtherInfoAboutDtos1.add(appSvcOtherInfoAboutDto);
             }
@@ -1069,8 +1039,6 @@ public final class AppDataHelper {
             } else if (!StringUtil.isEmpty(topType)) {
                 getDataByIndexNo = true;
             }
-            log.debug("get data by index no. is {}", getDataByIndexNo);
-            log.debug("get page data is {}", getPageData);
             if (getDataByIndexNo) {
                 AppSvcOtherInfoAbortDto appSvcOtherInfoAboutDto = getSvcOtherInfoAboutByTopType(appSvcRelatedInfoDto,"-1","3");
                 if (appSvcOtherInfoAboutDto != null) {
@@ -1083,20 +1051,14 @@ public final class AppDataHelper {
                 AppSvcOtherInfoAbortDto appSvcOtherInfoAboutDto = new AppSvcOtherInfoAbortDto();
 
                 if (year != null && abortNum != null){
-                    appSvcOtherInfoAboutDto.setTopType("-1");
-                    if (year.matches("^[0-9]*[1-9][0-9]*$")){
-                        appSvcOtherInfoAboutDto.setYear(Integer.valueOf(year));
-                    }
-                    if (abortNum.matches("^[0-9]*[1-9][0-9]*$")){
-                        appSvcOtherInfoAboutDto.setAbortNum(Integer.valueOf(abortNum));
-                    }
+                    appSvcOtherInfoAboutDto.setTopType(ApplicationConsts.OTHER_INFO_DSP);
+                    appSvcOtherInfoAboutDto.setYear(year);
+                    appSvcOtherInfoAboutDto.setAbortNum(abortNum);
                 }
                 appSvcOtherInfoAboutDtos2.add(appSvcOtherInfoAboutDto);
             }
         }
         appSvcOtherInfoDto.setProvideTop(provideTop);
-        appSvcOtherInfoDto.setRequireCheck(requireCheck);
-        appSvcOtherInfoDto.setRequireCheck1(requireCheck1);
         appSvcOtherInfoDto.setAppSvcOtherInfoTopPersonDtoList(appSvcOtherInfoTopPersonDtos);
         appSvcOtherInfoDto.setAppSvcOtherInfoTopPersonDtoList1(appSvcOtherInfoTopPersonDtos1);
         appSvcOtherInfoDto.setAppSvcOtherInfoTopPersonDtoList2(appSvcOtherInfoTopPersonDtos2);
