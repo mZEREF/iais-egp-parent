@@ -1792,7 +1792,7 @@ public final class AppValidatorHelper {
         if (StringUtil.isEmpty(appSvcOtherInfoMedDto.getSystemOption())){
             errMap.put("systemOption", MessageUtil.replaceMessage("GENERAL_ERR0006", "List of options for IT system and paper cards / IT system only", "field"));
         }
-        if (appSvcOtherInfoMedDto.getSystemOption().equals("MED06")){
+        if ("MED06".equals(appSvcOtherInfoMedDto.getOtherSystemOption())){
             if (StringUtil.isEmpty(appSvcOtherInfoMedDto.getOtherSystemOption())){
                 errMap.put("otherSystemOption", MessageUtil.replaceMessage("GENERAL_ERR0006", "Please specify", "field"));
             }
@@ -1844,7 +1844,7 @@ public final class AppValidatorHelper {
                     "field"));
         }
 
-        if (("1".equals(topType)) || ("-1".equals(topType))){
+        if ((ApplicationConsts.OTHER_INFO_SD.equals(topType)) || (ApplicationConsts.OTHER_INFO_DSP.equals(topType))){
             for (int i = 0; i < topByDrug.size(); i++) {
                 String year = String.valueOf(topByDrug.get(i).getYear());
                 if (StringUtil.isDigit(year)){
@@ -1861,7 +1861,7 @@ public final class AppValidatorHelper {
             }
         }
 
-        if (("0".equals(topType)) || ("-1".equals(topType))){
+        if ((ApplicationConsts.OTHER_INFO_SSP.equals(topType)) || (ApplicationConsts.OTHER_INFO_DSP.equals(topType))){
             for (int i = 0; i < topBySurgicalProcedure.size(); i++) {
                 String year = String.valueOf(topBySurgicalProcedure.get(i).getYear());
                 if (StringUtil.isDigit(year)){
@@ -1878,7 +1878,7 @@ public final class AppValidatorHelper {
             }
         }
 
-       if ("-1".equals(topType)){
+       if (ApplicationConsts.OTHER_INFO_DSP.equals(topType)){
            for (int i = 0; i < topByAll.size(); i++) {
                String year = String.valueOf(topByAll.get(i).getYear());
                if (StringUtil.isDigit(year)){
