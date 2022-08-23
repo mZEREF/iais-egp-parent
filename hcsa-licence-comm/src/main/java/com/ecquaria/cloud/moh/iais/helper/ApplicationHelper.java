@@ -2315,7 +2315,7 @@ public final class ApplicationHelper {
             return false;
         }
         ConfigCommService configCommService = getConfigCommService();
-        List<SuppleFormItemConfigDto> configDtos = configCommService.getSuppleFormItemConfigs(currSvcInfoDto.getServiceCode(),appSvcOtherInfoDto.getSuppleFormItemConfigDto().getOtherInfoType());
+        List<SuppleFormItemConfigDto> configDtos = configCommService.getSuppleFormItemConfigs(currSvcInfoDto.getServiceCode());
         appSvcSuplmFormDto.setSvcConfigDto(currSvcInfoDto);
         appSvcSuplmFormDto.setSuppleFormItemConfigDtos(configDtos, (svcId, addMoreBatchNum) -> {
             List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList = configCommService.getHcsaSvcPersonnel(svcId, addMoreBatchNum);
