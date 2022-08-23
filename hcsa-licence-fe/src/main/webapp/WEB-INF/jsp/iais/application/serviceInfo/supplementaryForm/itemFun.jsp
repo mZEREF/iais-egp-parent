@@ -176,6 +176,15 @@
         let $conNodes = $('[data-parent="' + curr + '"][data-seq="' + seq + '"]');
         let currVal = getValue($tag);
         if (!isEmptyNode($conNodes)) {
+            if ($tag.is(':hidden')) {
+                $conNodes.each(function () {
+                    let $v = $(this);
+                    let $target = $v.closest('.item-record');
+                    hideTag($target);
+                    checkItemMandatory($v);
+                });
+                return;
+            }
             let ary = isEmpty(currVal) ? [] : currVal.split('#');
             $conNodes.each(function () {
                 let $v = $(this);
@@ -199,7 +208,6 @@
                     if (isIncluded) {
                         $targetLabel.append('<span class="mandatory">*</span>');
                     }
-
                 } else if ('3' == mandatory) {
                     let $target = $v.closest('.item-record');
                     let $targetLabel = $target.find('.item-label');
@@ -212,12 +220,14 @@
                         return;
                     }
                     let isIncluded = false;
+
                     conVal.split('#').forEach(function (currentValue) {
                         if (ary.includes(currentValue)) {
                             isIncluded = true;
                         }
                     });
                     toggleTag($target, isIncluded);
+                    checkItemMandatory($v);
                 } else if ('4' == mandatory) {
                     let $target = $v.closest('.item-record');
                     let $targetLabel = $target.find('.item-label');
@@ -235,6 +245,7 @@
                         }
                     });
                     toggleTag($target, isIncluded);
+                    checkItemMandatory($v);
                 }
             });
         }
