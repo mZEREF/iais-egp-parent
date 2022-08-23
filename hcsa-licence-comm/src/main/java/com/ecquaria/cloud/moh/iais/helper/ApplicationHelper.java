@@ -28,7 +28,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSpecialServiceInfoDto;
@@ -2304,18 +2303,18 @@ public final class ApplicationHelper {
 
     public static boolean initSupplementoryForm(AppSvcRelatedInfoDto currSvcInfoDto, boolean init) {
         AppSvcSuplmFormDto appSvcSuplmFormDto = currSvcInfoDto.getAppSvcSuplmFormDto();
-        AppSvcOtherInfoDto appSvcOtherInfoDto = currSvcInfoDto.getAppSvcOtherInfoDto();
+//        AppSvcOtherInfoDto appSvcOtherInfoDto = currSvcInfoDto.getAppSvcOtherInfoDto();
         if (appSvcSuplmFormDto == null) {
             appSvcSuplmFormDto = new AppSvcSuplmFormDto();
         }
-        if (appSvcOtherInfoDto == null){
-            appSvcOtherInfoDto = new AppSvcOtherInfoDto();
-        }
+//        if (appSvcOtherInfoDto == null){
+//            appSvcOtherInfoDto = new AppSvcOtherInfoDto();
+//        }
         if (!init && appSvcSuplmFormDto.isInit()) {
             return false;
         }
         ConfigCommService configCommService = getConfigCommService();
-        List<SuppleFormItemConfigDto> configDtos = configCommService.getSuppleFormItemConfigs(currSvcInfoDto.getServiceCode(),appSvcOtherInfoDto.getSuppleFormItemConfigDto().getOtherInfoType());
+        List<SuppleFormItemConfigDto> configDtos = configCommService.getSuppleFormItemConfigs(currSvcInfoDto.getServiceCode());
         appSvcSuplmFormDto.setSvcConfigDto(currSvcInfoDto);
         appSvcSuplmFormDto.setSuppleFormItemConfigDtos(configDtos, (svcId, addMoreBatchNum) -> {
             List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList = configCommService.getHcsaSvcPersonnel(svcId, addMoreBatchNum);
