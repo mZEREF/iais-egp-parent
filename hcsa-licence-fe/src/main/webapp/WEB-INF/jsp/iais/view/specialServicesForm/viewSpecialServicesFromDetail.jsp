@@ -2,7 +2,7 @@
 
     <iais:row>
         <div class="col-xs-12 col-md-6">
-            <p class="bold">${title} <span class="psnHeader">${index+1}</span></p>
+            <p class="bold">${title}</p>
         </div>
     </iais:row>
 

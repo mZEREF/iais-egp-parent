@@ -1,17 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 
-<style>
-    .normal-label label {
-        font-weight: normal;
-    }
-
-    .special-error .error-msg:not(:empty) {
-        margin-top: 25px;
-        display: inline-block;
-    }
-</style>
-
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
 <input type="hidden" id="isEditHiddenVal" class="person-content-edit" name="isEdit"
        value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>

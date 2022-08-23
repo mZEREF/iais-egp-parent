@@ -360,7 +360,7 @@ public class OnlineTopEnquiryDelegator {
                 DoctorInformationDto doctorInfoDto=assistedReproductionClient.getRfcDoctorInformationDtoByConds(terminationDto.getDoctorInformationId()).getEntity();
                 if(doctorInfoDto!=null){
                     ProfessionalResponseDto professionalResponseDto=assistedReproductionService.retrievePrsInfo(doctorInfoDto.getDoctorReignNo());
-                    DoctorInformationDto doctorInformationDtoELIS=assistedReproductionClient.getDoctorInformationDtoByConds(doctorInfoDto.getDoctorReignNo(),"ELIS").getEntity();
+                    DoctorInformationDto doctorInformationDtoELIS=assistedReproductionClient.getAllDoctorInformationDtoByConds(doctorInfoDto.getDoctorReignNo(),DataSubmissionConsts.DOCTOR_SOURCE_ELIS_TOP).getEntity();
                     if("TOPP".equals(doctorInfoDto.getDoctorSource()) ){
                         topInfo.setDoctorInformationDto(doctorInfoDto);
                         terminationDto.setDoctorInformationPE("false");

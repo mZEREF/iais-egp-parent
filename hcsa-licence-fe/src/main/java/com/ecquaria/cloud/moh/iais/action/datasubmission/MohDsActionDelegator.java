@@ -220,7 +220,7 @@ public class MohDsActionDelegator {
                 DoctorInformationDto doctorInfoDto=docInfoService.getRfcDoctorInformationDtoByConds(topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().getDoctorInformationId());
                 if(doctorInfoDto!=null){
                     ProfessionalResponseDto professionalResponseDto=appSubmissionService.retrievePrsInfo(doctorInfoDto.getDoctorReignNo());
-                    DoctorInformationDto doctorInformationDto=docInfoService.getDoctorInformationDtoByConds(doctorInfoDto.getDoctorReignNo(),"ELIS");
+                    DoctorInformationDto doctorInformationDto=docInfoService.getAllDoctorInformationDtoByConds(doctorInfoDto.getDoctorReignNo(),DataSubmissionConsts.DOCTOR_SOURCE_ELIS_TOP);
                     TerminationOfPregnancyDto terminationOfPregnancyDto=topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
                     TerminationDto terminationDto=terminationOfPregnancyDto.getTerminationDto();
                     if(TOP_DOCTOR_INFO_FROM_PRS.equals(doctorInfoDto.getDoctorSource())){

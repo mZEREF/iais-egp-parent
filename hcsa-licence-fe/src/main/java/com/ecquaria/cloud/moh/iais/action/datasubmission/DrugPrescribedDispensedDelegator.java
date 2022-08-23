@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.DocInfoService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import lombok.extern.slf4j.Slf4j;
@@ -68,6 +69,9 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
 
     @Autowired
     private DpDataSubmissionService dpDataSubmissionService;
+
+    @Autowired
+    private DocInfoService docInfoService;
 
     @PostMapping(value = "/checkPrescriptionSubmissionId")
     public @ResponseBody
@@ -279,6 +283,10 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             doctorInformationDto.setSubSpeciality(drugSubmission.getSubSpecialty());
             doctorInformationDto.setQualification(drugSubmission.getQualification());
             doctorInformationDto.setDoctorSource(DP_DOCTOR_INFO_FROM_PRS);
+            DoctorInformationDto elisDoctorInformationDto = docInfoService.getDoctorInformationDtoByConds(drugSubmission.getDoctorReignNo(), DataSubmissionConsts.DOCTOR_SOURCE_ELIS_VSS, currentDpDataSubmission.getHciCode());
+            if (elisDoctorInformationDto != null){
+                doctorInformationDto.setElis(true);
+            }
             currentDpDataSubmission.setDoctorInformationDto(doctorInformationDto);
         }
         if("true".equals(drugSubmission.getDoctorInformations())){

@@ -11,8 +11,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.dto.DsElisDoctorDto;
@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.dto.DsElisLicenceDto;
 import com.ecquaria.cloud.moh.iais.dto.DsElisUserDto;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.DataSubmissionElisInterfaceService;
 import com.ecquaria.cloud.moh.iais.service.client.AssistedReproductionClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
@@ -83,6 +84,9 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
 
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
+
+    @Autowired
+    private AppCommService appSubmissionService;
 
     public static String convertToString(Date date, String pattern) {
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
@@ -229,7 +233,7 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
 
     private DsCenterDto generateDsCenterDto(DsElisLicenceDto dsElisLicenceDto, String centerType, String orgId, String licenseeId) {
         Date fromDate = processDate(dsElisLicenceDto.getLicStartDate(), DATE_FORMAT);
-        DsCenterDto dsCenterDto = licenceClient.getDsCenterDto(orgId, dsElisLicenceDto.getHciCode(), centerType, fromDate).getEntity();
+        DsCenterDto dsCenterDto = licenceClient.getDsCenterDto(orgId, dsElisLicenceDto.getHciCode(), centerType, dsElisLicenceDto.getLicStartDate()).getEntity();
         if (Objects.isNull(dsCenterDto)) {
             log.info("create new ds_center");
             dsCenterDto = new DsCenterDto();
@@ -442,7 +446,13 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
         for (File file : sortList) {
             if (file.getName().startsWith(TOP_DOCTOR_FILE)) {
                 try {
-                    processDoctorFile(file);
+                    processDoctorFile(file, DataSubmissionConsts.DOCTOR_SOURCE_ELIS_TOP);
+                } catch (Throwable th) {
+                    log.error("Processing doctor file {} failed", file.getName(), th);
+                }
+            } else if (file.getName().startsWith(DP_DOCTOR_FILE)) {
+                try {
+                    processDoctorFile(file, DataSubmissionConsts.DOCTOR_SOURCE_ELIS_DRP);
                 } catch (Throwable th) {
                     log.error("Processing doctor file {} failed", file.getName(), th);
                 }
@@ -451,30 +461,18 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
         log.info("end processDoctor");
     }
 
-    private void processDoctorFile(File topDoctorFile) {
-        log.info("start generate dpDoctorFile");
-        File dpDoctorFile = MiscUtil.generateFile(sharedPath, DP_DOCTOR_FILE + DATE_STR + ".txt");
-        log.info("generate dpDoctorFile end");
+    private void processDoctorFile(File topDoctorFile, String source) {
         List<DsElisDoctorDto> doctorDtoList = new ArrayList<>();
         ELISInterfaceDto elisInterfaceDto = new ELISInterfaceDto();
         elisInterfaceDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         if (topDoctorFile.exists()) {
             List<DsElisDoctorDto> topDoctorDtoList = FileUtils.transformCsvToJavaBean(topDoctorFile, DsElisDoctorDto.class, false, '|');
             if (IaisCommonUtils.isNotEmpty(topDoctorDtoList)) {
-                log.info("topDoctorDtoList size is {}", topDoctorDtoList.size());
+                log.info("doctorDtoList size is {}", topDoctorDtoList.size());
                 doctorDtoList.addAll(topDoctorDtoList);
             }
         } else {
-            log.info("create topDoctorFile failed");
-        }
-        if (dpDoctorFile.exists()) {
-            List<DsElisDoctorDto> dpDoctorDtoList = FileUtils.transformCsvToJavaBean(dpDoctorFile, DsElisDoctorDto.class, false, '|');
-            if (IaisCommonUtils.isNotEmpty(dpDoctorDtoList)) {
-                log.info("dpDoctorDtoList size is {}", dpDoctorDtoList.size());
-                doctorDtoList.addAll(dpDoctorDtoList);
-            }
-        }else {
-            log.info("create dpDoctorFile failed");
+            log.info("create doctorFile failed");
         }
         boolean flag = true;
         if (!CollectionUtils.isEmpty(doctorDtoList)) {
@@ -488,15 +486,15 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
                         deletedDoctorPrns.add(dsElisDoctorDto.getPrn());
                     }
                 } else {
-                    DoctorInformationDto doctorInformationDto = assistedReproductionClient.getDoctorInformationDtoByConds(dsElisDoctorDto.getPrn(), "ELIS").getEntity();
-                    DoctorInformationDto doctorDto = generateDoctorDto(dsElisDoctorDto, doctorInformationDto);
+                    DoctorInformationDto doctorInformationDto = assistedReproductionClient.getDoctorInformationDtoByConds(dsElisDoctorDto.getPrn(), source, dsElisDoctorDto.getHciCode()).getEntity();
+                    DoctorInformationDto doctorDto = generateDoctorDto(dsElisDoctorDto, doctorInformationDto, source);
                     prnDoctorInfoMap.put(doctorDto.getDoctorReignNo(), doctorDto);
                 }
             }
             if (!CollectionUtils.isEmpty(deletedDoctorPrns)) {
                 //delete
                 try {
-                    int num = assistedReproductionClient.deleteDoctorByConds(deletedDoctorPrns, "ELIS").getEntity();
+                    int num = assistedReproductionClient.deleteDoctorByConds(deletedDoctorPrns, source).getEntity();
                     elisInterfaceDto.setDeletedDoctorPrns(deletedDoctorPrns);
                     log.info("delete {} doctors", num);
                 } catch (Exception e) {
@@ -525,35 +523,26 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
             //move file
             if (topDoctorFile.exists()) {
                 try {
-                    log.info("topDoctorFile path: {}",topDoctorFile.getAbsolutePath());
-                    log.info("The expected new topDoctorFile path: {}",movePath + topDoctorFile.getName());
+                    log.info("doctorFile path: {}",topDoctorFile.getAbsolutePath());
+                    log.info("The expected new doctorFile path: {}",movePath + topDoctorFile.getName());
                     FileUtils.copyFileToOtherPosition(topDoctorFile.getAbsolutePath(), movePath);
                     FileUtils.deleteTempFile(topDoctorFile);
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
-                    log.error("move TOP file failed");
-                }
-            }
-            if (dpDoctorFile.exists()) {
-                try {
-                    log.info("dpDoctorFile path: {}",dpDoctorFile.getAbsolutePath());
-                    log.info("The expected new dpDoctorFile path: {}",movePath + dpDoctorFile.getName());
-                    FileUtils.copyFileToOtherPosition(dpDoctorFile.getAbsolutePath(), movePath);
-                    FileUtils.deleteTempFile(dpDoctorFile);
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
-                    log.error("move DP file failed");
+                    log.error("move doctor file failed");
                 }
             }
         }
     }
 
-    private DoctorInformationDto generateDoctorDto(DsElisDoctorDto dsElisDoctorDto, DoctorInformationDto doctorInformationDto) {
+    private DoctorInformationDto generateDoctorDto(DsElisDoctorDto dsElisDoctorDto, DoctorInformationDto doctorInformationDto, String source) {
         if (doctorInformationDto == null) {
             log.info("create doctor");
             doctorInformationDto = new DoctorInformationDto();
             doctorInformationDto.setDoctorReignNo(dsElisDoctorDto.getPrn());
-            doctorInformationDto.setDoctorSource("ELIS");
+            doctorInformationDto.setDoctorSource(source);
+            doctorInformationDto.setHciCode(dsElisDoctorDto.getHciCode());
+            doctorInformationDto.setUen(dsElisDoctorDto.getUen());
         } else {
             log.info("update doctor");
         }
@@ -564,18 +553,18 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     public void eicFeOrganization(OrganizationDto organizationDto) {
         log.info(StringUtil.changeForLog("The eicFeOrganization start ..."));
         beEicGatewayClient.callEicWithTrack(organizationDto,
-                this::callEicSaveOrganizationDto, this.getClass(), "saveOrganizationDto", EicClientConstant.ORGANIZATION_CLIENT);
+                this::callEicSaveOrganizationDto, this.getClass(), "callEicSaveOrganizationDto", EicClientConstant.ORGANIZATION_CLIENT);
         log.info(StringUtil.changeForLog("The eicFeOrganization end ..."));
     }
 
-    private void callEicSaveOrganizationDto(OrganizationDto organizationDto){
+    public void callEicSaveOrganizationDto(OrganizationDto organizationDto){
         beEicGatewayClient.saveOrganizationDto(organizationDto).getEntity();
     }
 
     public void eicFeELISInterfaceDto(ELISInterfaceDto elisInterfaceDto) {
         log.info(StringUtil.changeForLog("The eicFeOrganization start ..."));
         beEicGatewayClient.callEicWithTrack(elisInterfaceDto,
-                this::callEicSaveElisInterfaceDto, this.getClass(), "saveElisInterfaceDto",EicClientConstant.LICENCE_CLIENT);
+                this::callEicSaveElisInterfaceDto, this.getClass(), "callEicSaveElisInterfaceDto",EicClientConstant.LICENCE_CLIENT);
         log.info(StringUtil.changeForLog("The eicFeOrganization end ..."));
     }
 
@@ -584,7 +573,7 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
     }
 
     public void syncFeUserWithTrack(FeUserDto userAttr) {
-        beEicGatewayClient.callEicWithTrack(userAttr, this::syncFeUser, this.getClass(), "syncFeUser",EicClientConstant.LICENCE_CLIENT);
+        beEicGatewayClient.callEicWithTrack(userAttr, this::syncFeUser, this.getClass(), "syncFeUser",EicClientConstant.ORGANIZATION_CLIENT);
     }
 
     public void syncFeUser(FeUserDto userAttr) {

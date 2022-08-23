@@ -444,6 +444,7 @@
     </div>
 </c:if>
 <input type="hidden" name="docSource" value="TOP"/>
+<input type="hidden" name="hciCode" value="${topSuperDataSubmissionDto.hciCode}"/>
 <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -827,9 +828,11 @@
         }
         var no = $('input[name="doctorRegnNo"]').val();
         var docSource = $('input[name="docSource"]').val();
+        const hciCode = $('input[name="hciCode"]').val();
         var jsonData = {
             'prgNo': no,
-            'docSource': docSource
+            'docSource': docSource,
+            'hciCode': hciCode
         };
         $.ajax({
             'url': '${pageContext.request.contextPath}/doc/prg-input-info',

@@ -20,11 +20,19 @@ public class DocInfoServiceImpl implements DocInfoService {
     private DoctorInfoClient doctorInfoClient;
 
     @Override
-    public DoctorInformationDto getDoctorInformationDtoByConds(String doctorReignNo,String doctorSource) {
+    public DoctorInformationDto getAllDoctorInformationDtoByConds(String doctorReignNo, String doctorSource) {
         if (StringUtil.isEmpty(doctorReignNo) ) {
             return null;
         }
-        return doctorInfoClient.getDoctorInformationDtoByConds(doctorReignNo,doctorSource).getEntity();
+        return doctorInfoClient.getAllDoctorInformationDtoByConds(doctorReignNo, doctorSource).getEntity();
+    }
+
+    @Override
+    public DoctorInformationDto getDoctorInformationDtoByConds(String doctorReignNo, String doctorSource, String hciCode) {
+        if (StringUtil.isEmpty(doctorReignNo) ) {
+            return null;
+        }
+        return doctorInfoClient.getDoctorInformationDtoByConds(doctorReignNo, doctorSource, hciCode).getEntity();
     }
 
     @Override

@@ -42,7 +42,9 @@ public final class ControllerHelper {
             throw new IaisRuntimeException(e);
         }
     }
-
+    public static <T> T get(HttpServletRequest request, Class<T> clazz, String shortName, String suffix) {
+        return get(request,clazz,shortName,suffix,false);
+    }
     public static <T> T get(HttpServletRequest request, Class<T> clazz, String shortName, String suffix, boolean isCapitalize) {
         if (clazz == null) {
             return null;

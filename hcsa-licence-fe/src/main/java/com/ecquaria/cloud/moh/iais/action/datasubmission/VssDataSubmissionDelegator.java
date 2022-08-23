@@ -48,6 +48,7 @@ import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.DocInfoService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
 import com.ecquaria.sz.commons.util.MsgUtil;
@@ -110,6 +111,9 @@ public class VssDataSubmissionDelegator {
 
     @Autowired
     private LicenceClient licenceClient;
+
+    @Autowired
+    private DocInfoService docInfoService;
 
     /**
      * Step: Start
@@ -540,6 +544,10 @@ public class VssDataSubmissionDelegator {
             doctorInformationDto.setSubSpeciality(sexualSterilizationDto.getSubSpecialty());
             doctorInformationDto.setQualification(sexualSterilizationDto.getQualification());
             doctorInformationDto.setDoctorSource(VS_DOCTOR_INFO_FROM_PRS);
+            DoctorInformationDto elisDoctorInformationDto = docInfoService.getDoctorInformationDtoByConds(sexualSterilizationDto.getDoctorReignNo(), DataSubmissionConsts.DOCTOR_SOURCE_ELIS_VSS, vssSuperDataSubmissionDto.getHciCode());
+            if (elisDoctorInformationDto != null){
+                doctorInformationDto.setElis(true);
+            }
             vssSuperDataSubmissionDto.setDoctorInformationDto(doctorInformationDto);
         }
         // doctor not register,get data from input

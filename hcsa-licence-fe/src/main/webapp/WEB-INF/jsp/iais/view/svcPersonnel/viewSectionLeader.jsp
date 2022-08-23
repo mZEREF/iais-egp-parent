@@ -5,24 +5,23 @@
     <div class="amend-preview-info form-horizontal min-row">
         <c:forEach var="sectionLeader" items="${currentPreviewSvcInfo.appSvcSectionLeaderList}" varStatus="status">
             <iais:row>
-                <iais:field width="5" value="Name" cssClass="col-md-5 control-font-label"/>
-                <iais:value width="3" cssClass="col-md-3">
+                <iais:field width="5" value="Name"/>
+                <iais:value width="3" cssClass="col-md-3" display="true">
                     <c:out value="${sectionLeader.salutation}"/>
                 </iais:value>
-                <iais:value width="4" cssClass="col-md-4">
+                <iais:value width="4" cssClass="col-md-4" display="true">
                     <c:out value="${sectionLeader.name}"/>
                 </iais:value>
             </iais:row>
             <iais:row>
-                <iais:field width="5" value="Qualification" cssClass="col-md-5 control-font-label"/>
-                <iais:value width="7" cssClass="col-md-7">
+                <iais:field width="5" value="Qualification"/>
+                <iais:value width="7" cssClass="col-md-7" display="true">
                     <c:out value="${sectionLeader.qualification}"/>
                 </iais:value>
             </iais:row>
             <iais:row>
-                <iais:field width="5" value="Working Experience (in terms of years)"
-                            cssClass="col-md-5 control-font-label"/>
-                <iais:value width="7" cssClass="col-md-7">
+                <iais:field width="5" value="Working Experience (in terms of years)"/>
+                <iais:value width="7" cssClass="col-md-7" display="true">
                     <c:out value="${sectionLeader.wrkExpYear}"/>
                 </iais:value>
             </iais:row>

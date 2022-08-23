@@ -37,7 +37,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.monitoringExcel.MonitoringSheetsDt
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalInformationQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,9 +49,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Wenkang
@@ -294,7 +292,7 @@ public interface HcsaLicenceClient {
 
     @GetMapping(value = "/lic-common/ds-center-org-id-hci-code-center-type", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<DsCenterDto> getDsCenterDto(@RequestParam("orgId") String orgId, @RequestParam("hciCode") String hciCode,
-                                    @RequestParam("centerType") String centerType, @RequestParam("startDate") Date startDate);
+                                    @RequestParam("centerType") String centerType, @RequestParam("startDate") String startDate);
 
     @PostMapping(value = "/lic-common/ds-centers",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<DsCenterDto>> saveDsCenters(@RequestBody List<DsCenterDto> dsCenterDtos);
