@@ -74,11 +74,6 @@ public interface RequestForChangeService {
 
     LicenceDto getLicenceById(String licenceId);
 
-    List<LicenceDto> getLicenceDtoByHciCode(String hciCode,String licenseeId);
-
-    List<LicenceDto> getLicenceDtoByHciCode(String licenseeId, AppGrpPremisesDto appGrpPremisesDto,
-            String... excludeNos);
-
     List<PersonnelListDto> getPersonnelListDto(PersonnelTypeDto personnelTypeDto);
 
     List<AppSubmissionDto> saveAppsForRequestForGoupAndAppChangeByList(List<AppSubmissionDto> appSubmissionDtos);

@@ -68,6 +68,7 @@ import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
@@ -138,6 +139,8 @@ public class RequestForChangeMenuDelegator {
     private SystemParamConfig systemParamConfig;
     @Autowired
     private AppCommService appCommService;
+    @Autowired
+    private LicCommService licCommService;
     /**
      * @param bpc
      * @Decription start
@@ -255,7 +258,7 @@ public class RequestForChangeMenuDelegator {
         List<PremisesListQueryDto> rows = searchResult.getRows();
         for (PremisesListQueryDto premisesListQueryDto : rows) {
             StringBuilder stringBuilder = new StringBuilder();
-            List<LicenceDto> licenceDtoByHciCode = requestForChangeService.getLicenceDtoByHciCode(premisesListQueryDto.getHciCode(), licenseeId);
+            List<LicenceDto> licenceDtoByHciCode = licCommService.getLicenceDtoByHciCode(premisesListQueryDto.getHciCode(), licenseeId);
             for (LicenceDto licenceDto : licenceDtoByHciCode) {
                 stringBuilder.append(licenceDto.getSvcName()).append(", ");
             }
@@ -361,7 +364,7 @@ public class RequestForChangeMenuDelegator {
             }
             for (AppGrpPremisesDto appGrpPremisesDto1 : appGrpPremisesDtoList) {
                 String hciCode = appGrpPremisesDto1.getHciCode();
-                List<LicenceDto> licenceDtoList = requestForChangeService.getLicenceDtoByHciCode(hciCode, licenseeId);
+                List<LicenceDto> licenceDtoList = licCommService.getLicenceDtoByHciCode(hciCode, licenseeId);
                 List<LicenceDto> licenceDtos = appGrpPremisesDto1.getLicenceDtos();
                 if(licenceDtos==null){
                     appGrpPremisesDto1.setLicenceDtos(licenceDtoList);
@@ -396,7 +399,7 @@ public class RequestForChangeMenuDelegator {
         Object o = bpc.getSession().getAttribute("licenceDtoList");
         if (premisesListQueryDto != null && o==null) {
             String hciCode = premisesListQueryDto.getHciCode();
-            List<LicenceDto> licenceDtoList = requestForChangeService.getLicenceDtoByHciCode(hciCode, licenseeId);
+            List<LicenceDto> licenceDtoList = licCommService.getLicenceDtoByHciCode(hciCode, licenseeId);
             bpc.request.getSession().setAttribute("licenceDtoList", licenceDtoList);
         }
 

@@ -34,7 +34,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -42,7 +41,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
- * @Auther chenlei on 5/3/2022.
+ * @author chenlei on 5/3/2022.
  */
 @Slf4j
 @Service
@@ -89,12 +88,11 @@ public class LicCommServiceImpl implements LicCommService {
         if (licenceDtos == null || licenceDtos.isEmpty()) {
             return IaisCommonUtils.genNewArrayList(0);
         }
+        String[] activeStatus = new String[]{ApplicationConsts.LICENCE_STATUS_ACTIVE};
         return licenceDtos.stream()
                 .filter(dto -> !StringUtil.isIn(dto.getLicenceNo(), excludeNos))
-                .map(licenceDto -> {
-                    log.info(StringUtil.changeForLog("--- licenceDto licenceNo : " + licenceDto.getLicenceNo()));
-                    return licenceDto;
-                })
+                .filter(dto -> StringUtil.isIn(dto.getStatus(), activeStatus))
+                .peek(licenceDto -> log.info(StringUtil.changeForLog("--- LicenceNo : " + licenceDto.getLicenceNo())))
                 .collect(Collectors.toList());
     }
 
@@ -153,17 +151,15 @@ public class LicCommServiceImpl implements LicCommService {
             String svcType = activeHcsaServiceDtoByName.getSvcType();
             log.info(StringUtil.changeForLog("The Svc Type: " + svcType));
             if (HcsaConsts.SERVICE_TYPE_BASE.equals(svcType)) {
-                return flag == true ? String.valueOf(true) : activeHcsaServiceDtoByName.getId();
+                return flag ? String.valueOf(true) : activeHcsaServiceDtoByName.getId();
             } else if (HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(svcType)) {
                 List<HcsaServiceCorrelationDto> serviceCorrelationDtos = configCommService.getActiveSvcCorrelation();
                 if (serviceCorrelationDtos == null || serviceCorrelationDtos.isEmpty()) {
                     log.info(StringUtil.changeForLog("The service correlations is empty!"));
-                    return flag == true ? String.valueOf(false) : "";
+                    return flag ? String.valueOf(false) : "";
                 }
                 String baseService = "";
-                Iterator<HcsaServiceCorrelationDto> iterator = serviceCorrelationDtos.iterator();
-                while (iterator.hasNext()) {
-                    HcsaServiceCorrelationDto next = iterator.next();
+                for (HcsaServiceCorrelationDto next : serviceCorrelationDtos) {
                     if (next.getSpecifiedSvcId().equals(activeHcsaServiceDtoByName.getId())) {
                         baseService = next.getBaseSvcId();
                         break;
@@ -171,28 +167,26 @@ public class LicCommServiceImpl implements LicCommService {
                 }
                 if (StringUtil.isEmpty(baseService)) {
                     log.info(StringUtil.changeForLog("The base service is empty!"));
-                    return flag == true ? String.valueOf(false) : "";
+                    return flag ? String.valueOf(false) : "";
                 }
 
                 List<LicBaseSpecifiedCorrelationDto> entity = getLicBaseSpecifiedCorrelationDtos(
                         HcsaConsts.SERVICE_TYPE_SPECIFIED, licenceDto.getId());
                 if (entity == null || entity.isEmpty()) {
                     log.info(StringUtil.changeForLog("The related base service is empty!"));
-                    return flag == true ? String.valueOf(false) : "";
+                    return flag ? String.valueOf(false) : "";
                 }
-                Iterator<LicBaseSpecifiedCorrelationDto> iterator1 = entity.iterator();
-                while (iterator1.hasNext()) {
-                    LicBaseSpecifiedCorrelationDto next = iterator1.next();
+                for (LicBaseSpecifiedCorrelationDto next : entity) {
                     if (next.getSpecLicId().equals(licenceDto.getId())) {
                         String baseLicId = next.getBaseLicId();
                         LicenceDto licenceDto1 = getActiveLicenceById(baseLicId);
                         if (licenceDto1 == null) {
                             log.info(StringUtil.changeForLog("The base Licence is empty!"));
-                            return flag == true ? String.valueOf(false) : "";
+                            return flag ? String.valueOf(false) : "";
                         }
                         String svcname = configCommService.getServiceNameById(baseService);
                         if (Objects.equals(svcname, licenceDto1.getSvcName())) {
-                            return flag == true ? String.valueOf(true) : baseService;
+                            return flag ? String.valueOf(true) : baseService;
                         }
                     }
                 }
@@ -200,7 +194,7 @@ public class LicCommServiceImpl implements LicCommService {
             }
         }
         log.info("The baseSpecLicenceRelation end!");
-        return flag == true ? String.valueOf(false) : "";
+        return flag ? String.valueOf(false) : "";
     }
 
     @Override

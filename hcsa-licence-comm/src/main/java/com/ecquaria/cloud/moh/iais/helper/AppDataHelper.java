@@ -164,6 +164,7 @@ public final class AppDataHelper {
         boolean isMultiPremService = ApplicationHelper.isMultiPremService(hcsaServiceDtoList);
         String[] premisesIndexNos = ParamUtil.getStrings(request, "premisesIndexNo");
         String[] chooseExistData = ParamUtil.getStrings(request, "chooseExistData");
+        String[] isParyEdit = ParamUtil.getStrings(request, "isParyEdit");
         int count = premisesIndexNos.length;
         if (!isMultiPremService) {
             count = 1;
@@ -190,18 +191,20 @@ public final class AppDataHelper {
             String existingData = getVal(chooseExistData, i);
             // data
             AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
-            setAppGrpPremiseFromPage(appGrpPremisesDto, premIndexNo,  i, request);
             // check
             AppGrpPremisesDto licPremise = ApplicationHelper.getPremisesFromMap(premisesSel, request);
             if (AppConsts.YES.equals(existingData)) {
                 setDataFromExisting(appGrpPremisesDto, licPremise);
-            } else {
+            }
+            // edit current or edit existed data
+            if (!AppConsts.YES.equals(existingData) || AppConsts.YES.equals(getVal(isParyEdit, i))) {
                 if (licPremise != null) {
                     appGrpPremisesDto.setRelatedServices(licPremise.getRelatedServices());
                     appGrpPremisesDto.setHciCode(licPremise.getHciCode());
                 }
                 setAppGrpPremiseNonAutoFields(appGrpPremisesDto, premIndexNo, premType, i, request);
             }
+            setAppGrpPremiseFromPage(appGrpPremisesDto, premIndexNo,  i, request);
             // rfc and renewal
             String[] selectedLicences = ParamUtil.getStrings(request, "selectedLicence");
             appGrpPremisesDto.setSelectedLicences(selectedLicences);

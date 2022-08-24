@@ -11,7 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConsta
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -389,35 +388,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     @Override
     public LicenceDto getLicenceById(String licenceId) {
         return licenceClient.getLicBylicId(licenceId).getEntity();
-    }
-
-    @Override
-    public List<LicenceDto> getLicenceDtoByHciCode(String hciCode, String licenseeId) {
-        return licCommService.getLicenceDtoByHciCode(hciCode, licenseeId);
-    }
-
-    @Override
-    public List<LicenceDto> getLicenceDtoByHciCode(String licenseeId, AppGrpPremisesDto appGrpPremisesDto, String... excludeNos) {
-        if (StringUtil.isEmpty(licenseeId) || appGrpPremisesDto == null) {
-            return IaisCommonUtils.genNewArrayList(0);
-        }
-        String hciCode = appGrpPremisesDto.getHciCode();
-        String oldHciCode = appGrpPremisesDto.getOldHciCode();
-        if (!StringUtil.isEmpty(oldHciCode) && !oldHciCode.equals(hciCode)) {
-            hciCode = oldHciCode;
-        }
-        log.info(StringUtil.changeForLog("Hci code: " + hciCode + " - Licensee: " + licenseeId));
-        List<LicenceDto> licenceDtos = getLicenceDtoByHciCode(hciCode, licenseeId);
-        if (licenceDtos == null || licenceDtos.isEmpty()) {
-            return IaisCommonUtils.genNewArrayList(0);
-        }
-        return licenceDtos.stream()
-                .filter(dto -> !StringUtil.isIn(dto.getLicenceNo(), excludeNos))
-                .map(licenceDto -> {
-                    log.info(StringUtil.changeForLog("--- licenceDto licenceNo : " + licenceDto.getLicenceNo()));
-                    return licenceDto;
-                })
-                .collect(Collectors.toList());
     }
 
     @Override

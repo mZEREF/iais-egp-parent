@@ -44,6 +44,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursRel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.CheckCoLocationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicBaseSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -100,6 +101,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -714,6 +716,12 @@ public final class AppValidatorHelper {
                     checkHciIsSame(currentHcis, premisesHciList, errorMap, "premisesHci" + i);
                 }
             }
+
+            // rfc, renewal
+            if (!rfi && checkOthers) {
+                validateAffectedLicences(appSubmissionDto, errorMap, appGrpPremisesDtoList);
+            }
+
             if (checkOthers) {
                 List<PremisesDto> premisesDtos =
                         getLicCommService().getPremisesDtoByHciNameAndPremType(appGrpPremisesDto.getHciName(),
@@ -774,6 +782,49 @@ public final class AppValidatorHelper {
         }
         log.info(StringUtil.changeForLog("the do doValidatePremiss end ...."));
         return errMap;
+    }
+
+    private static void validateAffectedLicences(AppSubmissionDto appSubmissionDto, Map<String, String> errorMap,
+            List<AppGrpPremisesDto> appGrpPremisesDtoList) {
+        String appType = appSubmissionDto.getAppType();
+        if (!StringUtil.isIn(appType, new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,
+                ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE})) {
+            return;
+        }
+        AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(0);
+        List<LicenceDto> licenceDtos = appGrpPremisesDto.getLicenceDtos();
+        if (IaisCommonUtils.isEmpty(licenceDtos)) {
+            return;
+        }
+        // mandatory for RFC and Renewal, not RFI
+        String[] selectedLicences = appGrpPremisesDto.getSelectedLicences();
+        if (selectedLicences == null || selectedLicences.length == 0 || selectedLicences[0] == null) {
+            errorMap.put("selectedLicences", "GENERAL_ERR0006");
+        } else {
+            Map<String, LicenceDto> licMap = IaisCommonUtils.isEmpty(licenceDtos) ?
+                    IaisCommonUtils.genNewHashMap() : licenceDtos.stream()
+                    .collect(Collectors.toMap(LicenceDto::getId, Function.identity()));
+            String svcType = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceType();
+            List<LicBaseSpecifiedCorrelationDto> licBaseSpecifiedCorrelationDtos = getLicCommService().getLicBaseSpecifiedCorrelationDtos(
+                    svcType, appSubmissionDto.getLicenceId());
+            String licNos = null;
+            if (IaisCommonUtils.isNotEmpty(licBaseSpecifiedCorrelationDtos)) {
+                licNos = licBaseSpecifiedCorrelationDtos.stream()
+                        .map(dto -> HcsaConsts.SERVICE_TYPE_BASE.equals(svcType) ? dto.getSpecLicId() : dto.getBaseLicId())
+                        .filter(id -> !StringUtil.isIn(id, selectedLicences))
+                        .map(id -> licMap.get(id))
+                        .filter(Objects::nonNull)
+                        .map(LicenceDto::getLicenceNo)
+                        .collect(Collectors.joining(", "));
+            }
+            if (StringUtil.isNotEmpty(licNos)) {
+                // RFC_ERR025 - You have to {action} {data}.
+                Map<String, String> data = new HashMap<>(2);
+                data.put("action", "check");
+                data.put("data", licNos);
+                errorMap.put("selectedLicences", MessageUtil.getMessageDesc("RFC_ERR025", data));
+            }
+        }
     }
 
     /**
