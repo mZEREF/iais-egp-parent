@@ -255,7 +255,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             clientUser.setSalutation(salutation);
             clientUser.setEmail(email);
             clientUser.setDisplayName(feUserDto.getDisplayName());
-
+            clientUser.setAccountDeactivateDatetime(new Date(Long.MAX_VALUE));
             clientUser.setPassword(pwd);
             String chanQue = PasswordUtil.encryptPassword(AppConsts.HALP_EGP_DOMAIN, IaisEGPHelper.generateRandomString(6), null);
             String chanAn = PasswordUtil.encryptPassword(AppConsts.HALP_EGP_DOMAIN, IaisEGPHelper.generateRandomString(6), null);

@@ -11,7 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
@@ -399,8 +398,6 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
         orgUserDto.setDesignationOther(dsElisUserDto.getDesignation());
         orgUserDto.setMobileNo(dsElisUserDto.getMobile());
         orgUserDto.setOfficeTelNo(dsElisUserDto.getOffice());
-        orgUserDto.setStartDateStr(Formatter.formatDate(new Date()));
-        orgUserDto.setEndDateStr(Formatter.formatDate(new Date(Long.MAX_VALUE)));
         orgUserDto.setEmail(dsElisUserDto.getEmail());
         if (dsElisUserDto.getIsActive().equals("Y")) {
             orgUserDto.setStatus(COMMON_STATUS_ACTIVE);
