@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInformationDto;
@@ -12,10 +13,15 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TerminationOfP
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
-import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.client.AssistedReproductionClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
+import com.ecquaria.cloud.moh.iais.service.client.TopFeClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DocInfoService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DsLicenceService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
@@ -26,7 +32,11 @@ import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.CONSULTING_CENTER;
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.TOP_OTHERS;
 
 /**
  * @Description TopDataSubmissionServiceImpl
@@ -57,6 +67,9 @@ public class TopDataSubmissionServiceImpl implements TopDataSubmissionService {
     private AppCommService appSubmissionService;
     @Autowired
     private DocInfoService docInfoService;
+
+    @Autowired
+    private AssistedReproductionClient assistedReproductionClient;
 
     @Override
     public Map<String, PremisesDto> getTopCenterPremises(String licenseeId) {
@@ -249,4 +262,64 @@ public class TopDataSubmissionServiceImpl implements TopDataSubmissionService {
         log.info(StringUtil.changeForLog("The submissionNo : " + submissionNo));
         return submissionNo;
     }*/
+
+    //TODO from ar center
+    @Override
+    public List<SelectOption> getSourseList(HttpServletRequest request){
+        Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
+        List<PremisesDto> premisesDtos=assistedReproductionClient.getAllCenterPremisesDtoByPatientCode(DataSubmissionConsts.DS_TOP,"null","null").getEntity();
+        for (PremisesDto v:premisesDtos
+        ) {
+            if(v!=null){
+                stringStringMap.put(v.getHciCode(),v.getPremiseLabel());
+            }
+        }
+        List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
+        return selectOptions;
+    }
+    //TODO from ar center
+    @Override
+    public List<SelectOption> getSourseListAge(HttpServletRequest request){
+        Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
+        List<PremisesDto> premisesDtos=assistedReproductionClient.getAllCenterPremisesDtoByPatientCode(DataSubmissionConsts.DS_TOP,"null","null").getEntity();
+        for (PremisesDto v:premisesDtos
+        ) {
+            if(v!=null){
+                stringStringMap.put(v.getHciCode(),v.getPremiseLabel());
+            }
+        }
+        List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
+        selectOptions.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER,CONSULTING_CENTER));
+        return selectOptions;
+    }
+    //TODO from ar center
+    @Override
+    public List<SelectOption> getSourseLists(HttpServletRequest request){
+        Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
+        List<PremisesDto> premisesDtos=assistedReproductionClient.getAllCenterPremisesDtoByPatientCode(DataSubmissionConsts.DS_TOP,"null","null").getEntity();
+        for (PremisesDto v:premisesDtos
+        ) {
+            if(v!=null){
+                stringStringMap.put(v.getHciCode(),v.getPremiseLabel());
+            }
+        }
+        List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
+        return selectOptions;
+    }
+
+    //TODO from ar center
+    @Override
+    public List<SelectOption> getSourseListsDrug(HttpServletRequest request){
+        Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
+        List<PremisesDto> premisesDtos=assistedReproductionClient.getAllCenterPremisesDtoByPatientCode(DataSubmissionConsts.DS_TOP,"null","null").getEntity();
+        for (PremisesDto v:premisesDtos
+        ) {
+            if(v!=null){
+                stringStringMap.put(v.getHciCode(),v.getPremiseLabel());
+            }
+        }
+        List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
+        selectOptions.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER,TOP_OTHERS));
+        return selectOptions;
+    }
 }

@@ -128,4 +128,14 @@ public class DataSubmissionConstant {
     public static final String AR_CYCLE_USER_PERMISSIONS_NEW          = "canNew";
     public static final String AR_CYCLE_USER_PERMISSIONS_RFC          = "canRFC";
     public static final String AR_CYCLE_USER_PERMISSIONS_NEW_AND_RFC  = "canNewAndRfc";
+
+    public static final String ACTION_TYPE_CONFIRM = "confim";
+    public static final String ACTION_TYPE_BACK = "back";
+    public static final String PREMISES = "premises";
+    public static final String  CONSULTING_CENTER = "Health Promotion Board Counselling Centre";
+    public static final String  TOP_OTHERS    = "Others (E.g. Home)";
+    public static final String  COUNSE_LLING_PLACE          =  "CounsellingPlace";
+    public static final String  COUNSE_LLING_PLACE_AGES          =  "CounsellingPlacea";
+    public static final String  TOP_PLACE          =  "TopPlace";
+    public static final String  TOP_DRUG_PLACE     ="TopDrugPlace";
 }

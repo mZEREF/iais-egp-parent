@@ -1,10 +1,12 @@
 package com.ecquaria.cloud.moh.iais.service.datasubmission;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,4 +47,9 @@ public interface TopDataSubmissionService {
 //    String getDraftNo();
 
  //   String getSubmissionNo();
+
+    List<SelectOption> getSourseList(HttpServletRequest request);
+    List<SelectOption> getSourseListAge(HttpServletRequest request);
+    List<SelectOption> getSourseLists(HttpServletRequest request);
+    List<SelectOption> getSourseListsDrug(HttpServletRequest request);
 }

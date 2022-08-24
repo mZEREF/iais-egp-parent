@@ -62,12 +62,16 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.COUNSE_LLING_PLACE;
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.COUNSE_LLING_PLACE_AGES;
 import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.DP_DOCTOR_INFO_FROM_ELIS;
 import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.DP_DOCTOR_INFO_FROM_PRS;
 import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.DP_DOCTOR_INFO_USER_NEW_REGISTER;
 import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.TOP_DOCTOR_INFO_FROM_ELIS;
 import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.TOP_DOCTOR_INFO_FROM_PRS;
 import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.TOP_DOCTOR_INFO_USER_NEW_REGISTER;
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.TOP_DRUG_PLACE;
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.TOP_PLACE;
 
 /**
  * Process: MohDsAction
@@ -216,6 +220,12 @@ public class MohDsActionDelegator {
             vssDataSubmissionService.displayToolTipJudgement(bpc.request);
         }else if (DataSubmissionConsts.DS_TOP.equals(dsType)) {
             TopSuperDataSubmissionDto topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDto(submissionNo);
+            //
+            ParamUtil.setSessionAttr(bpc.request,COUNSE_LLING_PLACE,(Serializable) topDataSubmissionService.getSourseList(bpc.request));
+            ParamUtil.setSessionAttr(bpc.request,COUNSE_LLING_PLACE_AGES,(Serializable) topDataSubmissionService.getSourseListAge(bpc.request));
+            ParamUtil.setSessionAttr(bpc.request,TOP_PLACE,(Serializable) topDataSubmissionService.getSourseLists(bpc.request));
+            ParamUtil.setSessionAttr(bpc.request,TOP_DRUG_PLACE,(Serializable) topDataSubmissionService.getSourseListsDrug(bpc.request));
+
             if(!StringUtil.isEmpty(topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto())){
                 DoctorInformationDto doctorInfoDto=docInfoService.getRfcDoctorInformationDtoByConds(topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getTerminationDto().getDoctorInformationId());
                 if(doctorInfoDto!=null){

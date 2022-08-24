@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsConfig;
@@ -64,9 +63,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.ACTION_TYPE_CONFIRM;
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.COUNSE_LLING_PLACE;
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.COUNSE_LLING_PLACE_AGES;
 import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.TOP_DOCTOR_INFO_FROM_ELIS;
 import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.TOP_DOCTOR_INFO_FROM_PRS;
 import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.TOP_DOCTOR_INFO_USER_NEW_REGISTER;
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.TOP_DRUG_PLACE;
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.TOP_PLACE;
 
 /**
  * Process: MohNEWTOPDataSumission
@@ -77,16 +81,6 @@ import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.TOP_DO
 @Slf4j
 @Delegator("topDataSubmissionDelegator")
 public class TopDataSubmissionDelegator {
-
-    public static final String ACTION_TYPE_CONFIRM = "confim";
-    public static final String ACTION_TYPE_BACK = "back";
-    private static final String PREMISES = "premises";
-    protected final static String  CONSULTING_CENTER = "Health Promotion Board Counselling Centre";
-    protected final static String  TOP_OTHERS    = "Others (E.g. Home)";
-    private final static String  COUNSE_LLING_PLACE          =  "CounsellingPlace";
-    private final static String  COUNSE_LLING_PLACE_AGES          =  "CounsellingPlacea";
-    private final static String  TOP_PLACE          =  "TopPlace";
-    private final static String  TOP_DRUG_PLACE     ="TopDrugPlace";
 
     @Autowired
     private AppCommService appSubmissionService;
@@ -205,10 +199,10 @@ public class TopDataSubmissionDelegator {
             smallTitle = config.getText();
         }
 
-        ParamUtil.setSessionAttr(bpc.request,COUNSE_LLING_PLACE,(Serializable) getSourseList(bpc.request));
-        ParamUtil.setSessionAttr(bpc.request,COUNSE_LLING_PLACE_AGES,(Serializable) getSourseListAge(bpc.request));
-        ParamUtil.setSessionAttr(bpc.request,TOP_PLACE,(Serializable) getSourseLists(bpc.request));
-        ParamUtil.setSessionAttr(bpc.request,TOP_DRUG_PLACE,(Serializable) getSourseListsDrug(bpc.request));
+        ParamUtil.setSessionAttr(bpc.request,COUNSE_LLING_PLACE,(Serializable) topDataSubmissionService.getSourseList(bpc.request));
+        ParamUtil.setSessionAttr(bpc.request,COUNSE_LLING_PLACE_AGES,(Serializable) topDataSubmissionService.getSourseListAge(bpc.request));
+        ParamUtil.setSessionAttr(bpc.request,TOP_PLACE,(Serializable) topDataSubmissionService.getSourseLists(bpc.request));
+        ParamUtil.setSessionAttr(bpc.request,TOP_DRUG_PLACE,(Serializable) topDataSubmissionService.getSourseListsDrug(bpc.request));
 
 
         TerminationOfPregnancyDto terminationOfPregnancyDto=topSuperDataSubmissionDto.getTerminationOfPregnancyDto();
@@ -242,62 +236,6 @@ public class TopDataSubmissionDelegator {
             actionType = DataSubmissionHelper.initAction(DataSubmissionConsts.DS_TOP, DsConfigHelper.TOP_STEP_PATIENT, request);
         }
         return actionType;
-    }
-
-    //TODO from ar center
-    protected final List<SelectOption> getSourseList(HttpServletRequest request){
-        Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
-        List<PremisesDto> premisesDtos=assistedReproductionClient.getAllCenterPremisesDtoByPatientCode(DataSubmissionConsts.DS_TOP,"null","null").getEntity();
-        for (PremisesDto v:premisesDtos
-        ) {
-            if(v!=null){
-                stringStringMap.put(v.getHciCode(),v.getPremiseLabel());
-            }
-        }
-        List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
-        return selectOptions;
-    }
-    //TODO from ar center
-    protected final List<SelectOption> getSourseListAge(HttpServletRequest request){
-        Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
-        List<PremisesDto> premisesDtos=assistedReproductionClient.getAllCenterPremisesDtoByPatientCode(DataSubmissionConsts.DS_TOP,"null","null").getEntity();
-        for (PremisesDto v:premisesDtos
-        ) {
-            if(v!=null){
-                stringStringMap.put(v.getHciCode(),v.getPremiseLabel());
-            }
-        }
-        List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
-        selectOptions.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER,CONSULTING_CENTER));
-        return selectOptions;
-    }
-    //TODO from ar center
-    protected final List<SelectOption> getSourseLists(HttpServletRequest request){
-        Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
-        List<PremisesDto> premisesDtos=assistedReproductionClient.getAllCenterPremisesDtoByPatientCode(DataSubmissionConsts.DS_TOP,"null","null").getEntity();
-        for (PremisesDto v:premisesDtos
-             ) {
-            if(v!=null){
-                stringStringMap.put(v.getHciCode(),v.getPremiseLabel());
-            }
-        }
-        List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
-        return selectOptions;
-    }
-
-    //TODO from ar center
-    protected final List<SelectOption> getSourseListsDrug(HttpServletRequest request){
-        Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
-        List<PremisesDto> premisesDtos=assistedReproductionClient.getAllCenterPremisesDtoByPatientCode(DataSubmissionConsts.DS_TOP,"null","null").getEntity();
-        for (PremisesDto v:premisesDtos
-        ) {
-            if(v!=null){
-                stringStringMap.put(v.getHciCode(),v.getPremiseLabel());
-            }
-        }
-        List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
-        selectOptions.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER,TOP_OTHERS));
-        return selectOptions;
     }
 
     /**
