@@ -102,8 +102,7 @@
                             <c:set var="toolMsgLate"><iais:message key="Late" paramKeys="1"
                                                                    paramValues="counsellor"/></c:set>
                         </c:if>
-                        <iais:field width="5" value="Date of Termination of Pregnancy" info="${toolMsgLate}"
-                                    style="width: 300px;"/>
+                        <iais:field width="5" value="Date of Termination of Pregnancy" info="${toolMsgLate}"/>
                         <iais:value width="7" display="true" cssClass="col-md-7">
                             <c:out value="${terminationDto.topDate}"/>
                         </iais:value>

@@ -21,7 +21,7 @@
 
 <form method="post" id="mainForm" action=<%=continueURL%>>
     <div class="main-content">
-        <div class="container center-content">
+        <div class="container " style="padding: 50px 50px;">
             <div class="col-xs-12">
                 <div class="row form-group" style="border-bottom: 1px solid #D1D1D1;">
                     <c:if test="${ DashboardTitle != 'Withdrawal Form'}">
