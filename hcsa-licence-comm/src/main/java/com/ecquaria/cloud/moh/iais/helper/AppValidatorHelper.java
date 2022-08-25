@@ -1872,186 +1872,191 @@ public final class AppValidatorHelper {
         if (!StringUtil.isDigit(agfaValue)){
             errMap.put("agfaValue", MessageUtil.replaceMessage("GENERAL_ERR0006", "GFA Value (in sqm)", "field"));
         }
-        if (StringUtil.isEmpty(appSvcOtherInfoDto.getProvideTop())){
-            errMap.put("provideTop", MessageUtil.replaceMessage("GENERAL_ERR0006", "Please indicate&nbsp;", "field"));
-        }
-        String topType = appSvcOtherInfoDto.getAppSvcOtherInfoTopDto().getTopType();
-        if (StringUtil.isEmpty(topType)) {
-            errMap.put("topType", MessageUtil.replaceMessage("GENERAL_ERR0006", "Please indicate&nbsp;", "field"));
-        }
+
         String isOutcomeProcRecord = String.valueOf(appSvcOtherInfoDto.getAppSvcOtherInfoTopDto().getIsOutcomeProcRecord());
         if (StringUtil.isEmpty(isOutcomeProcRecord)){
             errMap.put("isOutcomeProcRecord", MessageUtil.replaceMessage("GENERAL_ERR0006",
                     "Outcome of procedures are recorded",
                     "field"));
         }
+
         String compCaseNum = String.valueOf(appSvcOtherInfoDto.getAppSvcOtherInfoTopDto().getCompCaseNum());
         if (!StringUtil.isDigit(compCaseNum)){
             errMap.put("compCaseNum", MessageUtil.replaceMessage("GENERAL_ERR0006",
                     "Number of cases with complications, if any",
                     "field"));
         }
-       String hasConsuAttendCourse = appSvcOtherInfoDto.getAppSvcOtherInfoTopDto().getHasConsuAttendCourse();
-        if (StringUtil.isEmpty(hasConsuAttendCourse)) {
-            errMap.put("hasConsuAttendCourse", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                    "My counsellor(s) has attended the TOP counselling refresher course (Please upload the certificates in the document page)",
-                    "field"));
-        }
-        String isProvideHpb = appSvcOtherInfoDto.getAppSvcOtherInfoTopDto().getIsProvideHpb();
-        if (StringUtil.isEmpty(isProvideHpb)) {
-            errMap.put("isProvideHpb", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                    "The service provider has the necessary counselling facilities e.g. TV set, video player, video on abortion produced by HPB in different languages and the pamphlets produced by HPB",
-                    "field"));
-        }
 
-        if ((ApplicationConsts.OTHER_INFO_SD.equals(topType)) || (ApplicationConsts.OTHER_INFO_DSP.equals(topType))){
-            for (int i = 0; i < topByDrug.size(); i++) {
-                String year = String.valueOf(topByDrug.get(i).getYear());
-                if (!StringUtil.isDigit(year)){
-                    errMap.put("year"+ i, MessageUtil.replaceMessage("GENERAL_ERR0006",
-                            "Year.",
-                            "field"));
-                }
-                String abortNum = String.valueOf(topByDrug.get(i).getAbortNum());
-                if (!StringUtil.isDigit(abortNum)){
-                    errMap.put("abortNum"+ i, MessageUtil.replaceMessage("GENERAL_ERR0006",
-                            "No. of abortions",
-                            "field"));
-                }
+        if (StringUtil.isEmpty(appSvcOtherInfoDto.getProvideTop())){
+            errMap.put("provideTop", MessageUtil.replaceMessage("GENERAL_ERR0006", "Please indicate&nbsp;", "field"));
+        }else if (AppConsts.YES.equals(appSvcOtherInfoDto.getProvideTop())){
+            String topType = appSvcOtherInfoDto.getAppSvcOtherInfoTopDto().getTopType();
+            if (StringUtil.isEmpty(topType)) {
+                errMap.put("topType", MessageUtil.replaceMessage("GENERAL_ERR0006", "Please indicate&nbsp;", "field"));
             }
-        }
-
-        if ((ApplicationConsts.OTHER_INFO_SSP.equals(topType)) || (ApplicationConsts.OTHER_INFO_DSP.equals(topType))){
-            for (int i = 0; i < topBySurgicalProcedure.size(); i++) {
-                String year = String.valueOf(topBySurgicalProcedure.get(i).getYear());
-                if (!StringUtil.isDigit(year)){
-                    errMap.put("pyear"+ i, MessageUtil.replaceMessage("GENERAL_ERR0006",
-                            "Year.",
-                            "field"));
-                }
-                String abortNum = String.valueOf(topBySurgicalProcedure.get(i).getAbortNum());
-                if (!StringUtil.isDigit(abortNum)){
-                    errMap.put("pabortNum"+ i, MessageUtil.replaceMessage("GENERAL_ERR0006",
-                            "No. of abortions",
-                            "field"));
-                }
-            }
-        }
-
-       if (ApplicationConsts.OTHER_INFO_DSP.equals(topType)){
-           for (int i = 0; i < topByAll.size(); i++) {
-               String year = String.valueOf(topByAll.get(i).getYear());
-               if (!StringUtil.isDigit(year)){
-                   errMap.put("ayear"+ i, MessageUtil.replaceMessage("GENERAL_ERR0006",
-                           "Year.",
-                           "field"));
-               }
-               String abortNum = String.valueOf(topByAll.get(i).getAbortNum());
-               if (!StringUtil.isDigit(abortNum)){
-                   errMap.put("aabortNum"+ i, MessageUtil.replaceMessage("GENERAL_ERR0006",
-                           "No. of abortions",
-                           "field"));
-               }
-           }
-       }
-
-        for (int i = 0; i < practitioners.size(); i++) {
-            String name = practitioners.get(i).getName();
-            String profRegNo = practitioners.get(i).getProfRegNo();
-            String idNo = practitioners.get(i).getIdNo();
-            String regType = practitioners.get(i).getRegType();
-            String qualification = practitioners.get(i).getQualification();
-            String specialties = practitioners.get(i).getSpeciality();
-            Boolean medAuthByMoh = practitioners.get(i).isMedAuthByMoh();
-
-            if (StringUtil.isEmpty(medAuthByMoh)) {
-                errMap.put("medAuthByMoh" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
-                        "Is the medical practitioners authorised by MOH to perform Abortion\n" +
-                                "                (if No, please upload a copy of the Obstetrics & Gynaecology certificate and From 2 at the Document page)",
+            String hasConsuAttendCourse = appSvcOtherInfoDto.getAppSvcOtherInfoTopDto().getHasConsuAttendCourse();
+            if (StringUtil.isEmpty(hasConsuAttendCourse)) {
+                errMap.put("hasConsuAttendCourse", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                        "My counsellor(s) has attended the TOP counselling refresher course (Please upload the certificates in the document page)",
                         "field"));
             }
-            if (StringUtil.isEmpty(name)) {
-                errMap.put("name" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name of medical practitioner", "field"));
+            String isProvideHpb = appSvcOtherInfoDto.getAppSvcOtherInfoTopDto().getIsProvideHpb();
+            if (StringUtil.isEmpty(isProvideHpb)) {
+                errMap.put("isProvideHpb", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                        "The service provider has the necessary counselling facilities e.g. TV set, video player, video on abortion produced by HPB in different languages and the pamphlets produced by HPB",
+                        "field"));
             }
 
-            if (StringUtil.isEmpty(profRegNo)) {
-                errMap.put("profRegNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Professional Regn. No.", "field"));
-            }
-
-            if (StringUtil.isEmpty(idNo)) {
-                errMap.put("idNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "NRIC/FIN No.", "field"));
-            }
-
-            if (StringUtil.isEmpty(regType)) {
-                errMap.put("regType" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of Registration", "field"));
-            }
-
-            if (StringUtil.isEmpty(qualification)) {
-                errMap.put("qualification" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Qualifications", "field"));
-            }
-
-            if (StringUtil.isEmpty(specialties)) {
-                errMap.put("specialties" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Specialties", "field"));
-            }
-        }
-
-        for (int i = 0; i < anaesthetists.size(); i++) {
-            String name = anaesthetists.get(i).getName();
-            String profRegNo = anaesthetists.get(i).getProfRegNo();
-            String idNo = anaesthetists.get(i).getIdNo();
-            String regType = anaesthetists.get(i).getRegType();
-            String qualification = anaesthetists.get(i).getQualification();
-            if (StringUtil.isEmpty(name)) {
-                errMap.put("aname" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name of anaesthetists", "field"));
-            }
-
-            if (StringUtil.isEmpty(profRegNo)) {
-                errMap.put("aprofRegNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Professional Regn. No.", "field"));
-            }
-
-            if (StringUtil.isEmpty(idNo)) {
-                errMap.put("idANo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "NRIC/FIN No.", "field"));
-            }
-
-            if (StringUtil.isEmpty(regType)) {
-                errMap.put("aregType" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of Registration", "field"));
-            }
-
-            if (StringUtil.isEmpty(qualification)) {
-                errMap.put("aqualification" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Qualifications", "field"));
-            }
-        }
-
-        for (int i = 0; i < nurses.size(); i++) {
-            String name = nurses.get(i).getName();
-            String qualification = nurses.get(i).getQualification();
-            if (StringUtil.isEmpty(name)) {
-                errMap.put("nname" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name of trained nurses", "field"));
-            }
-
-            if (StringUtil.isEmpty(qualification)) {
-                errMap.put("nqualification" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Qualifications", "field"));
-            }
-        }
-
-        for (int i = 0; i < counsellors.size(); i++) {
-            String name = counsellors.get(i).getName();
-            String idNo = counsellors.get(i).getIdNo();
-            String qualification = counsellors.get(i).getQualification();
-            if (StringUtil.isEmpty(name)) {
-                errMap.put("cname" + i,
-                        MessageUtil.replaceMessage("GENERAL_ERR0006", "Name of certified TOP counsellors(Only Doctor/Nurse)",
+            if ((ApplicationConsts.OTHER_INFO_SD.equals(topType)) || (ApplicationConsts.OTHER_INFO_DSP.equals(topType))){
+                for (int i = 0; i < topByDrug.size(); i++) {
+                    String year = String.valueOf(topByDrug.get(i).getYear());
+                    if (!StringUtil.isDigit(year)){
+                        errMap.put("year"+ i, MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                "Year.",
                                 "field"));
+                    }
+                    String abortNum = String.valueOf(topByDrug.get(i).getAbortNum());
+                    if (!StringUtil.isDigit(abortNum)){
+                        errMap.put("abortNum"+ i, MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                "No. of abortions",
+                                "field"));
+                    }
+                }
             }
 
-            if (StringUtil.isEmpty(idNo)) {
-                errMap.put("cidNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "NRIC/FIN No.", "field"));
+            if ((ApplicationConsts.OTHER_INFO_SSP.equals(topType)) || (ApplicationConsts.OTHER_INFO_DSP.equals(topType))){
+                for (int i = 0; i < topBySurgicalProcedure.size(); i++) {
+                    String year = String.valueOf(topBySurgicalProcedure.get(i).getYear());
+                    if (!StringUtil.isDigit(year)){
+                        errMap.put("pyear"+ i, MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                "Year.",
+                                "field"));
+                    }
+                    String abortNum = String.valueOf(topBySurgicalProcedure.get(i).getAbortNum());
+                    if (!StringUtil.isDigit(abortNum)){
+                        errMap.put("pabortNum"+ i, MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                "No. of abortions",
+                                "field"));
+                    }
+                }
             }
 
-            if (StringUtil.isEmpty(qualification)) {
-                errMap.put("cqualification" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Qualifications", "field"));
+            if (ApplicationConsts.OTHER_INFO_DSP.equals(topType)){
+                for (int i = 0; i < topByAll.size(); i++) {
+                    String year = String.valueOf(topByAll.get(i).getYear());
+                    if (!StringUtil.isDigit(year)){
+                        errMap.put("ayear"+ i, MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                "Year.",
+                                "field"));
+                    }
+                    String abortNum = String.valueOf(topByAll.get(i).getAbortNum());
+                    if (!StringUtil.isDigit(abortNum)){
+                        errMap.put("aabortNum"+ i, MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                "No. of abortions",
+                                "field"));
+                    }
+                }
+            }
+
+            for (int i = 0; i < practitioners.size(); i++) {
+                String name = practitioners.get(i).getName();
+                String profRegNo = practitioners.get(i).getProfRegNo();
+                String idNo = practitioners.get(i).getIdNo();
+                String regType = practitioners.get(i).getRegType();
+                String qualification = practitioners.get(i).getQualification();
+                String specialties = practitioners.get(i).getSpeciality();
+                Boolean medAuthByMoh = practitioners.get(i).isMedAuthByMoh();
+
+                if (StringUtil.isEmpty(medAuthByMoh)) {
+                    errMap.put("medAuthByMoh" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
+                            "Is the medical practitioners authorised by MOH to perform Abortion\n" +
+                                    "                (if No, please upload a copy of the Obstetrics & Gynaecology certificate and From 2 at the Document page)",
+                            "field"));
+                }
+                if (StringUtil.isEmpty(name)) {
+                    errMap.put("name" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name of medical practitioner", "field"));
+                }
+
+                if (StringUtil.isEmpty(profRegNo)) {
+                    errMap.put("profRegNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Professional Regn. No.", "field"));
+                }
+
+                if (StringUtil.isEmpty(idNo)) {
+                    errMap.put("idNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "NRIC/FIN No.", "field"));
+                }
+
+                if (StringUtil.isEmpty(regType)) {
+                    errMap.put("regType" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of Registration", "field"));
+                }
+
+                if (StringUtil.isEmpty(qualification)) {
+                    errMap.put("qualification" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Qualifications", "field"));
+                }
+
+                if (StringUtil.isEmpty(specialties)) {
+                    errMap.put("specialties" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Specialties", "field"));
+                }
+            }
+
+            for (int i = 0; i < anaesthetists.size(); i++) {
+                String name = anaesthetists.get(i).getName();
+                String profRegNo = anaesthetists.get(i).getProfRegNo();
+                String idNo = anaesthetists.get(i).getIdNo();
+                String regType = anaesthetists.get(i).getRegType();
+                String qualification = anaesthetists.get(i).getQualification();
+                if (StringUtil.isEmpty(name)) {
+                    errMap.put("aname" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name of anaesthetists", "field"));
+                }
+
+                if (StringUtil.isEmpty(profRegNo)) {
+                    errMap.put("aprofRegNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Professional Regn. No.", "field"));
+                }
+
+                if (StringUtil.isEmpty(idNo)) {
+                    errMap.put("idANo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "NRIC/FIN No.", "field"));
+                }
+
+                if (StringUtil.isEmpty(regType)) {
+                    errMap.put("aregType" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of Registration", "field"));
+                }
+
+                if (StringUtil.isEmpty(qualification)) {
+                    errMap.put("aqualification" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Qualifications", "field"));
+                }
+            }
+
+            for (int i = 0; i < nurses.size(); i++) {
+                String name = nurses.get(i).getName();
+                String qualification = nurses.get(i).getQualification();
+                if (StringUtil.isEmpty(name)) {
+                    errMap.put("nname" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name of trained nurses", "field"));
+                }
+
+                if (StringUtil.isEmpty(qualification)) {
+                    errMap.put("nqualification" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Qualifications", "field"));
+                }
+            }
+
+            for (int i = 0; i < counsellors.size(); i++) {
+                String name = counsellors.get(i).getName();
+                String idNo = counsellors.get(i).getIdNo();
+                String qualification = counsellors.get(i).getQualification();
+                if (StringUtil.isEmpty(name)) {
+                    errMap.put("cname" + i,
+                            MessageUtil.replaceMessage("GENERAL_ERR0006", "Name of certified TOP counsellors(Only Doctor/Nurse)",
+                                    "field"));
+                }
+
+                if (StringUtil.isEmpty(idNo)) {
+                    errMap.put("cidNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "NRIC/FIN No.", "field"));
+                }
+
+                if (StringUtil.isEmpty(qualification)) {
+                    errMap.put("cqualification" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Qualifications", "field"));
+                }
             }
         }
+
         return errMap;
     }
 

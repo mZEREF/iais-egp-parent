@@ -25,7 +25,7 @@
 <iais:row>
     <iais:field width="6" cssClass="col-md-6" mandatory="true" value="List of options for IT system and paper cards / IT system only"/>
     <iais:value width="6" cssClass="col-md-6">
-        <iais:select cssClass="systemOption" name="systemOption" codeCategory="OTHER_INFO_MED" value="${med.systemOption}" firstOption="Please Select" onchange="toggleOnSelect(this, 'MED06', 'otherInfo')"/>
+        <iais:select cssClass="systemOption" name="systemOption" codeCategory="CATE_ID_DS_OTHER_MED_OPTION" value="${med.systemOption}" firstOption="Please Select" onchange="toggleOnSelect(this, 'MED06', 'otherInfo')"/>
     </iais:value>
 </iais:row>
 

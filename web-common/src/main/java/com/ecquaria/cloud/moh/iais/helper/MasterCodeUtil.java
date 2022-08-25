@@ -207,6 +207,9 @@ public final class MasterCodeUtil {
     //Data Submission Status
     public static final String DATA_SUBMISSION_STATUS          = "55fdea54-f29d-4a33-a7e2-184c4cdb8581";
 
+    //Other Information MED
+    public static final String OTHER_INFO_MED = "4FDB2F95-0D1E-ED11-BE77-000C298D317C";
+
     //Reason for Patient Amendment
     public static final String DATA_SUBMISSION_PATIENT_AMENDMENT = "E92D33E5-6B47-EC11-BE6B-000C29FAAE4D";
     public static final String DATA_SUBMISSION_DONOR_SMAPLE_AMENDMENT = "54C91975-375E-EC11-BE6B-000C29FAAE4D";
@@ -270,6 +273,8 @@ public final class MasterCodeUtil {
 
     // Data Submission Id Type(dp,top,vs)
     public static final String CATE_ID_DS_ID_TYPE_DTV ="7CAE7440-31F4-445F-A063-2351E9483175";
+
+
 
 
     /**
