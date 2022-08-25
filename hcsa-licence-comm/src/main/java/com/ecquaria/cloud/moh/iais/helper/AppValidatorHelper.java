@@ -3139,40 +3139,62 @@ public final class AppValidatorHelper {
                 }
 
                 if ((2 == mandatoryType || 3 == mandatoryType) && StringUtil.isEmpty(inputValue)) {
-                    String radioBatchNum = itemConfigDto.getRadioBatchNum();
-                    String parentItemId = itemConfigDto.getParentItemId();
-                    String mandatoryCondition = appSvcSuplmItemDto.getMandatoryCondition();
-                    AppSvcSuplmItemDto condDto = itemMap.get(parentItemId + seqNum);
-                    if (condDto != null) {
-                        boolean mandatory = false;
-                        if (StringUtil.isIn(condDto.getItemConfigDto().getItemType(), new String[]{
-                                HcsaConsts.SUPFORM_ITEM_TYPE_TITLE,
-                                HcsaConsts.SUPFORM_ITEM_TYPE_SUB_TITLE,
-                                HcsaConsts.SUPFORM_ITEM_TYPE_LABEL})) {
-                            mandatory = condDto.getItemConfigDto().getMandatoryType() == 1;
-                        } else if (StringUtil.isNotEmpty(mandatoryCondition)) {
-                            String condValue = condDto.getInputValue();
-                            String[] codes = mandatoryCondition.split("#");
-                            mandatory = StringUtil.isIn(condValue, codes);
-                        }
-                        if (mandatory) {
-                            List<AppSvcSuplmItemDto> appSvcSuplmItemDtos = radioBatchMap.get(radioBatchNum + seqNum);
-                            if (IaisCommonUtils.isEmpty(appSvcSuplmItemDtos)) {
-                                errorMap.put(errorKey, "GENERAL_ERR0006");
-                            } else {
-                                if (appSvcSuplmItemDtos.stream().allMatch(dto -> StringUtil.isEmpty(dto.getInputValue()))) {
-                                    AppSvcSuplmItemDto itemDto = appSvcSuplmItemDtos.stream()
-                                            .max(Comparator.comparingInt(dto -> dto.getItemConfigDto().getSeqNum()))
-                                            .orElse(appSvcSuplmItemDto);
-                                    errorMap.put(itemDto.getItemConfigId() + itemDto.getSeqNum(), "GENERAL_ERR0006");
-                                }
-                            }
-                        }
-                    }
+                    checkConditonMandatory(itemMap, radioBatchMap, errorMap, appSvcSuplmItemDto, itemConfigDto);
                 }
             }
         }
         return errorMap;
+    }
+
+    private static void checkConditonMandatory(Map<String, AppSvcSuplmItemDto> itemMap, Map<String, List<AppSvcSuplmItemDto>> radioBatchMap,
+            Map<String, String> errorMap, AppSvcSuplmItemDto appSvcSuplmItemDto, SuppleFormItemConfigDto itemConfigDto) {
+        int seqNum = appSvcSuplmItemDto.getSeqNum();
+        String radioBatchNum = itemConfigDto.getRadioBatchNum();
+        String parentItemId = itemConfigDto.getParentItemId();
+        String mandatoryCondition = appSvcSuplmItemDto.getMandatoryCondition();
+        if (StringUtil.isEmpty(parentItemId)) {
+            return;
+        }
+        List<AppSvcSuplmItemDto> conditions = IaisCommonUtils.genNewArrayList();
+        for (String id : parentItemId.split(AppConsts.DFT_DELIMITER)) {
+            AppSvcSuplmItemDto condDto = itemMap.get(id + seqNum);
+            if (condDto != null) {
+                conditions.add(condDto);
+            }
+        }
+        if (conditions.isEmpty()) {
+            return;
+        }
+        boolean mandatory = false;
+        for (AppSvcSuplmItemDto condDto : conditions) {
+            if (StringUtil.isIn(condDto.getItemConfigDto().getItemType(), new String[]{
+                    HcsaConsts.SUPFORM_ITEM_TYPE_TITLE,
+                    HcsaConsts.SUPFORM_ITEM_TYPE_SUB_TITLE,
+                    HcsaConsts.SUPFORM_ITEM_TYPE_LABEL})) {
+                mandatory = condDto.getItemConfigDto().getMandatoryType() == 1;
+            } else if (StringUtil.isNotEmpty(mandatoryCondition)) {
+                String condValue = condDto.getInputValue();
+                String[] codes = mandatoryCondition.split("#");
+                mandatory = StringUtil.isIn(condValue, codes);
+            }
+            if (mandatory) {
+                break;
+            }
+        }
+        if (!mandatory) {
+            return;
+        }
+        List<AppSvcSuplmItemDto> appSvcSuplmItemDtos = radioBatchMap.get(radioBatchNum + seqNum);
+        if (IaisCommonUtils.isEmpty(appSvcSuplmItemDtos)) {
+            errorMap.put(appSvcSuplmItemDto.getItemConfigId() + seqNum, "GENERAL_ERR0006");
+        } else {
+            if (appSvcSuplmItemDtos.stream().allMatch(dto -> StringUtil.isEmpty(dto.getInputValue()))) {
+                AppSvcSuplmItemDto itemDto = appSvcSuplmItemDtos.stream()
+                        .max(Comparator.comparingInt(dto -> dto.getItemConfigDto().getSeqNum()))
+                        .orElse(appSvcSuplmItemDto);
+                errorMap.put(itemDto.getItemConfigId() + itemDto.getSeqNum(), "GENERAL_ERR0006");
+            }
+        }
     }
 
     public static int compareDateByDay(String date) {
