@@ -230,5 +230,5 @@ public interface ConfigCommClient {
     FeignResponseEntity<Integer> getFeeMaxMatchingThByServiceCode(@PathVariable(name ="serviceCode") String svcCode);
 
     @GetMapping(value = "/hcsa-config/supple-form-item-avc-code",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<SuppleFormItemConfigDto>> getHcsaSvcSuppleFormItemBySvcCode(@RequestParam("serviceCode") String serviceId);
+    FeignResponseEntity<List<SuppleFormItemConfigDto>> getHcsaSvcSuppleFormItemBySvcCode(@RequestParam("serviceCode") String serviceId,@RequestParam("type") String type);
 }

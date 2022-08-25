@@ -453,8 +453,8 @@ public class ConfigCommClientFallback implements ConfigCommClient {
     }
 
     @Override
-    public FeignResponseEntity<List<SuppleFormItemConfigDto>> getHcsaSvcSuppleFormItemBySvcCode(String serviceId) {
-        return IaisEGPHelper.getFeignResponseEntity(serviceId);
+    public FeignResponseEntity<List<SuppleFormItemConfigDto>> getHcsaSvcSuppleFormItemBySvcCode(String serviceId,String type) {
+        return IaisEGPHelper.getFeignResponseEntity(serviceId,type);
     }
 
 }

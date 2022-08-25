@@ -80,5 +80,5 @@ public interface ConfigCommService {
 
     byte[] downloadFileRepo(String fileRepoId);
 
-    List<SuppleFormItemConfigDto> getSuppleFormItemConfigs(String serviceCode);
+    List<SuppleFormItemConfigDto> getSuppleFormItemConfigs(String serviceCode, String type);
 }

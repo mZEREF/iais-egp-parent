@@ -404,7 +404,7 @@ public class ServiceInfoDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         String currentSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
-        if (ApplicationHelper.initSupplementoryForm(currSvcInfoDto)) {
+        if (ApplicationHelper.initSupplementoryForm(currSvcInfoDto,HcsaConsts.SUPPLEMENTARY_FORM)) {
             setAppSvcRelatedInfoMap(request, currentSvcId, currSvcInfoDto, appSubmissionDto);
         }
     }
@@ -452,7 +452,7 @@ public class ServiceInfoDelegator {
         if (appSvcOtherInfoDto != null) {
             ParamUtil.setRequestAttr(bpc.request,"appSvcOtherInfoDto",appSvcOtherInfoDto);
         }
-        if (ApplicationHelper.initSupplementoryForm(currSvcInfoDto)) {
+        if (ApplicationHelper.initOtherInfoForm(currSvcInfoDto,HcsaConsts.OTHER_INFO_TYPE)) {
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
         }
     }
@@ -492,12 +492,9 @@ public class ServiceInfoDelegator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if ("next".equals(actionType)) {
             AppSvcOtherInfoDto appSvcOtherInfoDto = currSvcInfoDto.getAppSvcOtherInfoDto();
-            if (appSvcOtherInfoDto != null){
-                errorMap = AppValidatorHelper.doValidateOtherInformation(appSvcOtherInfoDto);
-            }
+            errorMap = AppValidatorHelper.doValidateOtherInformation(appSvcOtherInfoDto);
         }
         checkAction(errorMap, HcsaConsts.STEP_OTHER_INFORMATION, appSubmissionDto, bpc.request);
-
     }
 
     private void prepareOutsourcedProviders(HttpServletRequest request) {

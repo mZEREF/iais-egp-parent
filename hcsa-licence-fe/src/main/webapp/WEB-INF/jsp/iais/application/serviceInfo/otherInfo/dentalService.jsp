@@ -16,10 +16,10 @@
 <iais:row>
     <iais:field width="3" cssClass="col-md-6" mandatory="true" value="Type of medical records"/>
     <iais:value width="4" cssClass="col-md-3">
-        <label><input class="form-check-input isMedicalTypeIt" <c:if test="${true == med.isMedicalTypeIt}">checked="checked"</c:if>  type="checkbox" name="isMedicalTypeIt" value = "1" aria-invalid="true">&nbsp;&nbsp;&nbsp;IT System</label>
+        <label><input class="form-check-input isMedicalTypeIt" <c:if test="${'1' == med.isMedicalTypeIt}">checked="checked"</c:if>  type="checkbox" name="isMedicalTypeIt" value = "1" aria-invalid="true">&nbsp;&nbsp;&nbsp;IT System</label>
     </iais:value>
     <iais:value width="4" cssClass="col-md-3">
-        <label><input class="form-check-input isMedicalTypePaper" <c:if test="${true == med.isMedicalTypePaper}">checked="checked"</c:if>  type="checkbox" name="isMedicalTypePaper" value = "1" aria-invalid="true">&nbsp;&nbsp;&nbsp;Paper cards</label>
+        <label><input class="form-check-input isMedicalTypePaper" <c:if test="${'1' == med.isMedicalTypePaper}">checked="checked"</c:if>  type="checkbox" name="isMedicalTypePaper" value = "1" aria-invalid="true">&nbsp;&nbsp;&nbsp;Paper cards</label>
     </iais:value>
 </iais:row>
 <iais:row>
@@ -55,11 +55,10 @@
         <iais:input maxLength="20" type="text" cssClass="gfaValue" name="gfaValue" value="${med.gfaValue}"/>
     </iais:value>
 </iais:row>
-============================${appSvcOtherInfoDto.requireCheck1}
 <iais:row>
     <iais:field width="3" cssClass="col-md-6" mandatory="true" value="I declare that I have met URA's requirements for gross floor area"/>
     <iais:value width="4" cssClass="col-md-6">
-        <input class="form-check-input requireCheck"  type="checkbox" <c:if test="${'1' == appSvcOtherInfoDto.requireCheck}">checked="checked"</c:if> name="requireCheck" value="${appSvcOtherInfoDto.requireCheck}">
+        <input class="form-check-input dsDeclaration" <c:if test="${'1' == appSvcOtherInfoDto.dsDeclaration}">checked="checked"</c:if>  type="checkbox"  name="dsDeclaration" value="1" aria-invalid="false">
     </iais:value>
 </iais:row>
 

@@ -1770,8 +1770,9 @@ public final class AppValidatorHelper {
         return doValidateAppSvcOtherInfoTop(appSvcOtherInfoDto);
     }
 
-    protected static Map<String, String> doValidateAppSvcOtherInfoTop(AppSvcOtherInfoDto appSvcOtherInfoDto) {
-        if (appSvcOtherInfoDto != null) {
+
+    public static Map<String, String> doValidateAppSvcOtherInfoTop(AppSvcOtherInfoDto appSvcOtherInfoDto) {
+        if (appSvcOtherInfoDto == null) {
             return IaisCommonUtils.genNewHashMap();
         }
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
@@ -1785,23 +1786,33 @@ public final class AppValidatorHelper {
         AppSvcOtherInfoMedDto appSvcOtherInfoMedDto = appSvcOtherInfoDto.getAppSvcOtherInfoMedDto();
         AppSvcOtherInfoNurseDto appSvcOtherInfoNurseDto = appSvcOtherInfoDto.getAppSvcOtherInfoNurseDto();
         AppSvcOtherInfoMedDto appSvcOtherInfoMedDto1 = appSvcOtherInfoDto.getAppSvcOtherInfoMedDto1();
-
-        if (StringUtil.isEmpty(appSvcOtherInfoMedDto.getIsMedicalTypeIt()) && StringUtil.isEmpty(appSvcOtherInfoMedDto.getIsMedicalTypePaper())){
+        String isMedicalTypeIt = appSvcOtherInfoMedDto.getIsMedicalTypeIt();
+        String isMedicalTypePaper = appSvcOtherInfoMedDto.getIsMedicalTypePaper();
+        if (StringUtil.isEmpty(isMedicalTypeIt) && StringUtil.isEmpty(isMedicalTypePaper)){
             errMap.put("isMedicalTypeIt", MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of medical records", "field"));
         }
-        if (StringUtil.isEmpty(appSvcOtherInfoMedDto.getSystemOption())){
+        String systemOption = appSvcOtherInfoMedDto.getSystemOption();
+        if (StringUtil.isEmpty(systemOption)){
             errMap.put("systemOption", MessageUtil.replaceMessage("GENERAL_ERR0006", "List of options for IT system and paper cards / IT system only", "field"));
         }
-        if ("MED06".equals(appSvcOtherInfoMedDto.getOtherSystemOption())){
-            if (StringUtil.isEmpty(appSvcOtherInfoMedDto.getOtherSystemOption())){
+        if ("MED06".equals(systemOption)){
+            String otherSystemOption = appSvcOtherInfoMedDto.getOtherSystemOption();
+            if (StringUtil.isEmpty(otherSystemOption)){
                 errMap.put("otherSystemOption", MessageUtil.replaceMessage("GENERAL_ERR0006", "Please specify", "field"));
             }
         }
         if (StringUtil.isEmpty(appSvcOtherInfoMedDto.getIsOpenToPublic())){
             errMap.put("isOpenToPublic", MessageUtil.replaceMessage("GENERAL_ERR0006", "Is clinic open to general public?", "field"));
         }
+        String dsDeclaration = appSvcOtherInfoDto.getDsDeclaration();
+        if (StringUtil.isEmpty(dsDeclaration)){
+            errMap.put("dsDeclaration", MessageUtil.replaceMessage("GENERAL_ERR0006", "I declare that I have met URA's requirements for gross floor area", "field"));
+        }
+        if (StringUtil.isEmpty(appSvcOtherInfoDto.getAscsDeclaration())){
+            errMap.put("ascsDeclaration", MessageUtil.replaceMessage("GENERAL_ERR0006", "I declare that I have met URA's requirements for gross floor area", "field"));
+        }
         String gfaValue = String.valueOf(appSvcOtherInfoMedDto.getGfaValue());
-        if (StringUtil.isDigit(gfaValue)){
+        if (!StringUtil.isDigit(gfaValue)){
             errMap.put("gfaValue", MessageUtil.replaceMessage("GENERAL_ERR0006", "GFA Value (in sqm)", "field"));
         }
         String nisOpenToPublic = String.valueOf(appSvcOtherInfoNurseDto.getIsOpenToPublic());
@@ -1809,7 +1820,7 @@ public final class AppValidatorHelper {
             errMap.put("nisOpenToPublic",MessageUtil.replaceMessage("GENERAL_ERR0006","Is the clinic open to general public?","field"));
         }
         String agfaValue = String.valueOf(appSvcOtherInfoMedDto1.getGfaValue());
-        if (StringUtil.isDigit(agfaValue)){
+        if (!StringUtil.isDigit(agfaValue)){
             errMap.put("agfaValue", MessageUtil.replaceMessage("GENERAL_ERR0006", "GFA Value (in sqm)", "field"));
         }
         if (StringUtil.isEmpty(appSvcOtherInfoDto.getProvideTop())){
@@ -1826,7 +1837,7 @@ public final class AppValidatorHelper {
                     "field"));
         }
         String compCaseNum = String.valueOf(appSvcOtherInfoDto.getAppSvcOtherInfoTopDto().getCompCaseNum());
-        if (StringUtil.isDigit(compCaseNum)){
+        if (!StringUtil.isDigit(compCaseNum)){
             errMap.put("compCaseNum", MessageUtil.replaceMessage("GENERAL_ERR0006",
                     "Number of cases with complications, if any",
                     "field"));
@@ -1847,13 +1858,13 @@ public final class AppValidatorHelper {
         if ((ApplicationConsts.OTHER_INFO_SD.equals(topType)) || (ApplicationConsts.OTHER_INFO_DSP.equals(topType))){
             for (int i = 0; i < topByDrug.size(); i++) {
                 String year = String.valueOf(topByDrug.get(i).getYear());
-                if (StringUtil.isDigit(year)){
+                if (!StringUtil.isDigit(year)){
                     errMap.put("year"+ i, MessageUtil.replaceMessage("GENERAL_ERR0006",
                             "Year.",
                             "field"));
                 }
                 String abortNum = String.valueOf(topByDrug.get(i).getAbortNum());
-                if (StringUtil.isDigit(abortNum)){
+                if (!StringUtil.isDigit(abortNum)){
                     errMap.put("abortNum"+ i, MessageUtil.replaceMessage("GENERAL_ERR0006",
                             "No. of abortions",
                             "field"));
@@ -1864,13 +1875,13 @@ public final class AppValidatorHelper {
         if ((ApplicationConsts.OTHER_INFO_SSP.equals(topType)) || (ApplicationConsts.OTHER_INFO_DSP.equals(topType))){
             for (int i = 0; i < topBySurgicalProcedure.size(); i++) {
                 String year = String.valueOf(topBySurgicalProcedure.get(i).getYear());
-                if (StringUtil.isDigit(year)){
+                if (!StringUtil.isDigit(year)){
                     errMap.put("pyear"+ i, MessageUtil.replaceMessage("GENERAL_ERR0006",
                             "Year.",
                             "field"));
                 }
                 String abortNum = String.valueOf(topBySurgicalProcedure.get(i).getAbortNum());
-                if (StringUtil.isDigit(abortNum)){
+                if (!StringUtil.isDigit(abortNum)){
                     errMap.put("pabortNum"+ i, MessageUtil.replaceMessage("GENERAL_ERR0006",
                             "No. of abortions",
                             "field"));
@@ -1881,13 +1892,13 @@ public final class AppValidatorHelper {
        if (ApplicationConsts.OTHER_INFO_DSP.equals(topType)){
            for (int i = 0; i < topByAll.size(); i++) {
                String year = String.valueOf(topByAll.get(i).getYear());
-               if (StringUtil.isDigit(year)){
+               if (!StringUtil.isDigit(year)){
                    errMap.put("ayear"+ i, MessageUtil.replaceMessage("GENERAL_ERR0006",
                            "Year.",
                            "field"));
                }
                String abortNum = String.valueOf(topByAll.get(i).getAbortNum());
-               if (StringUtil.isDigit(abortNum)){
+               if (!StringUtil.isDigit(abortNum)){
                    errMap.put("aabortNum"+ i, MessageUtil.replaceMessage("GENERAL_ERR0006",
                            "No. of abortions",
                            "field"));

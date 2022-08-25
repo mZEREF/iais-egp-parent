@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.util;
 import com.ecquaria.cloud.job.executor.util.SpringHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
@@ -376,7 +377,7 @@ public class DealSessionUtil {
             currSvcInfoDto.setDeputyPoFlag(AppConsts.YES);
         }
 
-        ApplicationHelper.initSupplementoryForm(currSvcInfoDto, true);
+        ApplicationHelper.initSupplementoryForm(currSvcInfoDto, true, HcsaConsts.SUPPLEMENTARY_FORM);
 
         List<HcsaSvcDocConfigDto> svcDocConfigDtos = getConfigCommService().getAllHcsaSvcDocs(svcId);
         addPremAlignForSvcDoc(svcDocConfigDtos, currSvcInfoDto.getAppSvcDocDtoLit(), appGrpPremisesDtos);
