@@ -1,6 +1,3 @@
-<c:if test="${empty psnContent}">
-    <c:set var="psnContent" value="person-content"/>
-</c:if>
 <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -45,7 +42,6 @@
             var appType = $('input[name="applicationType"]').val();
             var licPerson = $currContent.find('input.licPerson').val();
             var needControlName = isNeedControlName(assignSelectVal, licPerson, appType);
-            console.log("isNeedControlName: " + needControlName);
             checkProfRegNo($currContent, prgNo, needControlName);
         });
     };
@@ -82,7 +78,6 @@
                 } else if (data.hasException) {
                     $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0048" escape="false" />');
                     $('#PRS_SERVICE_DOWN').modal('show');
-
                 } else if ('401' == data.statusCode) {
                     $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0054" escape="false" />');
                     $('#PRS_SERVICE_DOWN').modal('show');
@@ -137,10 +132,11 @@
                 praCerEndDate = registration['PC End Date'];
                 typeOfRegister = registration['Register Type'];
             }
+            if (needControlName && !isEmpty(data.name)) {
+                $currContent.find('.name').val(name);
+            }
         }
-        if (needControlName && !isEmpty(data.name)) {
-            $currContent.find('.name').val(name);
-        }
+        $currContent.find('.name').val(name);
         $currContent.find('.speciality p').html(specialty);
         $currContent.find('.subSpeciality p').html(subspecialty);
         $currContent.find('.qualification p').html(qualification);
