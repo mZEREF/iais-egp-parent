@@ -23,7 +23,7 @@
     </div>
 </div>
 <input type="hidden" id="saveDraftSuccess" value="${saveDraftSuccess}">
-<iais:confirm msg="This application has been saved successfully" callBack="cancelDraft();" popupOrder="saveDraft" yesBtnDesc="continue"
+<iais:confirm msg="This draft has been saved successfully" callBack="cancelDraft();" popupOrder="saveDraft" yesBtnDesc="continue"
               cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpToInbox()" />
 <%-- validation --%>
 <input type="hidden" value="${RFC_NO_CHANGE_ERROR}" id="rfcNoChangeShow">
