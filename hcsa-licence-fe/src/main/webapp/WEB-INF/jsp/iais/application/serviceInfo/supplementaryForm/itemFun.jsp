@@ -39,7 +39,19 @@
             let count = parseInt($('input[name="' + group + '"]').val());
             let maxCount = parseInt($('input[name="' + group + '-max"]').val());
             console.info("-----------" + count + "-----" + maxCount + "--------------");
-            //toggleTag($tag, count < maxCount);
+            if (maxCount <= 0) {
+                return;
+            }
+            let $target = $('[data-group="' + group + '"]:input');
+            let visibled = false;
+            if (!isEmptyNode($target)) {
+                $target.each(function(){
+                    if ($(this).is(':visible')) {
+                        visibled = true;
+                    }
+                });
+            }
+            toggleTag($tag, visibled && count < maxCount);
         });
     }
 
@@ -202,6 +214,9 @@
                     let $v = $(this);
                     let $target = $v.closest('.item-record');
                     hideTag($target);
+                    // check add more button
+                    let group = $v.data('group');
+                    hideTag($('.addMoreDiv[data-group="' + group + '"]'));
                     checkItemMandatory($v);
                 });
                 return;
@@ -248,6 +263,9 @@
                         }
                     });
                     toggleTag($target, isIncluded);
+                    // check add more button
+                    let group = $v.data('group');
+                    toggleTag($('.addMoreDiv[data-group="' + group + '"]'), isIncluded);
                     checkItemMandatory($v);
                 } else if ('4' == mandatory) {
                     let $target = $v.closest('.item-record');
