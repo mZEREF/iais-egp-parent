@@ -377,6 +377,7 @@ public class DealSessionUtil {
         }
 
         ApplicationHelper.initSupplementoryForm(currSvcInfoDto, true);
+        ApplicationHelper.initOtherInfoForm(currSvcInfoDto,true);
 
         List<HcsaSvcDocConfigDto> svcDocConfigDtos = getConfigCommService().getAllHcsaSvcDocs(svcId);
         addPremAlignForSvcDoc(svcDocConfigDtos, currSvcInfoDto.getAppSvcDocDtoLit(), appGrpPremisesDtos);
