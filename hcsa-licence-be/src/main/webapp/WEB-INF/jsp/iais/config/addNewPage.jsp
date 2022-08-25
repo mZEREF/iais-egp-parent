@@ -241,7 +241,63 @@
                 <input  type="radio" <c:if test="${!hcsaServiceConfigDto.getBusinessInformation()}"> checked</c:if> class="form-check-input other-lic co-location" name="businessInformation"  value="0">
                 <label class="form-check-label" ><span class="check-circle"></span>No</label>
               </div>
-              <span class="error-msg" class="form-check-input other-lic co-location" name="iaisErrorMsg" id="error_businessName"></span>
+              <span class="error-msg" class="form-check-input other-lic co-location" name="iaisErrorMsg" id="error_businessInformation"></span>
+            </div>
+          </div>
+          <div class="col-xs-12 col-md-9">
+            <label class="col-xs-12 col-md-7 control-label" >Other Information <span class="mandatory">*</span></label>
+            <div class="cl-xs-12 col-md-4">
+              <div class="col-xs-12 col-md-6 form-check">
+                <input  type="radio" <c:if test="${hcsaServiceConfigDto.getOtherInformation()}"> checked</c:if> class="form-check-input other-lic co-location" name="otherInformation"  value="1" >
+                <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
+              </div>
+              <div class="col-xs-12 col-md-6 form-check">
+                <input  type="radio" <c:if test="${!hcsaServiceConfigDto.getOtherInformation()}"> checked</c:if> class="form-check-input other-lic co-location" name="otherInformation"  value="0">
+                <label class="form-check-label" ><span class="check-circle"></span>No</label>
+              </div>
+              <span class="error-msg" class="form-check-input other-lic co-location" name="iaisErrorMsg" id="error_otherInformation"></span>
+            </div>
+          </div>
+          <div class="col-xs-12 col-md-9">
+            <label class="col-xs-12 col-md-7 control-label" >Supplementary Form <span class="mandatory">*</span></label>
+            <div class="cl-xs-12 col-md-4">
+              <div class="col-xs-12 col-md-6 form-check">
+                <input  type="radio" <c:if test="${hcsaServiceConfigDto.getSupplementaryForm()}"> checked</c:if> class="form-check-input other-lic co-location" name="supplementaryForm"  value="1" >
+                <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
+              </div>
+              <div class="col-xs-12 col-md-6 form-check">
+                <input  type="radio" <c:if test="${!hcsaServiceConfigDto.getSupplementaryForm()}"> checked</c:if> class="form-check-input other-lic co-location" name="supplementaryForm"  value="0">
+                <label class="form-check-label" ><span class="check-circle"></span>No</label>
+              </div>
+              <span class="error-msg" class="form-check-input other-lic co-location" name="iaisErrorMsg" id="error_supplementaryForm"></span>
+            </div>
+          </div>
+          <div class="col-xs-12 col-md-9">
+            <label class="col-xs-12 col-md-7 control-label" >Special Services Information <span class="mandatory">*</span></label>
+            <div class="cl-xs-12 col-md-4">
+              <div class="col-xs-12 col-md-6 form-check">
+                <input  type="radio" <c:if test="${hcsaServiceConfigDto.getSpecialServicesInformation()}"> checked</c:if> class="form-check-input other-lic co-location" name="specialServicesInformation"  value="1" >
+                <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
+              </div>
+              <div class="col-xs-12 col-md-6 form-check">
+                <input  type="radio" <c:if test="${!hcsaServiceConfigDto.getSpecialServicesInformation()}"> checked</c:if> class="form-check-input other-lic co-location" name="specialServicesInformation"  value="0">
+                <label class="form-check-label" ><span class="check-circle"></span>No</label>
+              </div>
+              <span class="error-msg" class="form-check-input other-lic co-location" name="iaisErrorMsg" id="error_specialServicesInformation"></span>
+            </div>
+          </div>
+          <div class="col-xs-12 col-md-9">
+            <label class="col-xs-12 col-md-7 control-label" >Outsourced Providers <span class="mandatory">*</span></label>
+            <div class="cl-xs-12 col-md-4">
+              <div class="col-xs-12 col-md-6 form-check">
+                <input  type="radio" <c:if test="${hcsaServiceConfigDto.getOutsourcedProviders()}"> checked</c:if> class="form-check-input other-lic co-location" name="outsourcedProviders"  value="1" >
+                <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
+              </div>
+              <div class="col-xs-12 col-md-6 form-check">
+                <input  type="radio" <c:if test="${!hcsaServiceConfigDto.getOutsourcedProviders()}"> checked</c:if> class="form-check-input other-lic co-location" name="outsourcedProviders"  value="0">
+                <label class="form-check-label" ><span class="check-circle"></span>No</label>
+              </div>
+              <span class="error-msg" class="form-check-input other-lic co-location" name="iaisErrorMsg" id="error_outsourcedProviders"></span>
             </div>
           </div>
         </div>

@@ -888,13 +888,13 @@ public class ConfigServiceDelegator {
             addStepSchemeDto(isNeed(slPersonnelDto), HcsaConsts.STEP_SECTION_LEADER, HcsaConsts.SECTION_LEADER, hcsaServiceStepSchemeDtos);
             addStepSchemeDto(isNeed(kahPersonnelDto), HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER, HcsaConsts.KEY_APPOINTMENT_HOLDER, hcsaServiceStepSchemeDtos);
             //
-            addStepSchemeDto(true
+            addStepSchemeDto(hcsaServiceConfigDto.getOtherInformation()
                     , HcsaConsts.STEP_OTHER_INFORMATION, HcsaConsts.OTHER_INFORMATION, hcsaServiceStepSchemeDtos);
-            addStepSchemeDto(isNeed(sottn)||isNeed(snic)||isNeed(snms)||isNeed(snds)||isNeed(spde)||isNeed(soht)||isNeed(spdo)
+            addStepSchemeDto(hcsaServiceConfigDto.getSupplementaryForm()
                     , HcsaConsts.STEP_SUPPLEMENTARY_FORM, HcsaConsts.SUPPLEMENTARY_FORM, hcsaServiceStepSchemeDtos);
-            addStepSchemeDto(true
+            addStepSchemeDto(hcsaServiceConfigDto.getSpecialServicesInformation()
                     , HcsaConsts.STEP_SPECIAL_SERVICES_FORM, HcsaConsts.SPECIAL_SERVICES_FORM, hcsaServiceStepSchemeDtos);
-            addStepSchemeDto(true
+            addStepSchemeDto(hcsaServiceConfigDto.getOutsourcedProviders()
                     , HcsaConsts.STEP_OUTSOURCED_PROVIDERS, HcsaConsts.OUTSOURCED_PROVIDERS, hcsaServiceStepSchemeDtos);
         }
 //        else if(HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(serviceType)){
