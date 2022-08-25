@@ -83,7 +83,7 @@ public class DpDataSubmissionDelegator {
         }
         if (premisesMap.isEmpty()) {
             Map<String, String> map = IaisCommonUtils.genNewHashMap(2);
-            map.put(PREMISES, "There are no active Assisted Reproduction licences");
+            map.put(PREMISES, "DS_ERR070");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(map));
         } else if (premisesMap.size() == 1) {
             premisesMap.forEach((k, v) -> {

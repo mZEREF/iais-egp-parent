@@ -20,6 +20,7 @@
         <li class="tracker-item completed"><p>Submitted</p></li>
         <li class="tracker-item disabled"><p>Invalid</p></li>
     </ul>
+    <span id="error_topErrorMsg" name="iaisErrorMsg" class="error-msg"></span>
 </c:if>
 
 <script>

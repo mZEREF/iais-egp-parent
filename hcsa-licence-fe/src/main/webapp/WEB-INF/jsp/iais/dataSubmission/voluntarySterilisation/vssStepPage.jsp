@@ -27,6 +27,7 @@
                         <%@ include file="common/navTabs.jsp" %>
                         <div class="tab-content">
                             <div class="tab-pane in active">
+                                <span id="error_topErrorMsg" name="iaisErrorMsg" class="error-msg"></span>
                                 <c:set var="currCode" value="${VSS_CURRENT_STEP.code}" scope="request"/>
                                <%-- ------------------${currCode}----------------%>
                                 <c:choose>

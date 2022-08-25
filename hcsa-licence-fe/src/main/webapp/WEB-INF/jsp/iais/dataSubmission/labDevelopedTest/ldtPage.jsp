@@ -1,6 +1,7 @@
 <%@ include file="./common/ldtHeader.jsp" %>
 <c:set value="${LdtSuperDataSubmissionDto.dsLaboratoryDevelopTestDto}" var="dsLaboratoryDevelopTestDto"/>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+    <span id="error_topErrorMsg" name="iaisErrorMsg" class="error-msg"></span>
     <input type="hidden" name="crud_action_type">
     <div class="main-content">
         <div class="container center-content">

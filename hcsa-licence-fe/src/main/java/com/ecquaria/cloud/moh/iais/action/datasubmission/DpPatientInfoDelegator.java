@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsCenterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -13,17 +14,19 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 /**
  * DpPatientInfoDelegator
@@ -41,6 +44,8 @@ public class DpPatientInfoDelegator extends DpCommonDelegator {
     private PatientService patientService;
     @Autowired
     private DpDataSubmissionService dpDataSubmissionService;
+    @Autowired
+    private LicenceClient licenceClient;
 
     @Override
     public void start(BaseProcessClass bpc) {
@@ -128,10 +133,16 @@ public class DpPatientInfoDelegator extends DpCommonDelegator {
         if ("confirm".equals(crudActionType)) {
             ValidationResult validationResult = WebValidationHelper.validateProperty(patientDto, "DRP");
             errorMap = validationResult.retrieveAll();
-                verifyRfcCommon(request, errorMap);
-                if (errorMap.isEmpty()) {
-                    valRFC(request,patientDto);
-                }
+            verifyRfcCommon(request, errorMap);
+            if (errorMap.isEmpty()) {
+                valRFC(request,patientDto);
+            }
+            //for ds center validation
+            LoginContext login = AccessUtil.getLoginUser(bpc.request);
+            List<DsCenterDto> centerDtos = licenceClient.getDsCenterDtosByOrgIdAndCentreType(login.getOrgId(), DataSubmissionConsts.DS_DRP).getEntity();
+            if (IaisCommonUtils.isEmpty(centerDtos)) {
+                errorMap.put("topErrorMsg", "DS_ERR070");
+            }
         }
         if (!errorMap.isEmpty()) {
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);

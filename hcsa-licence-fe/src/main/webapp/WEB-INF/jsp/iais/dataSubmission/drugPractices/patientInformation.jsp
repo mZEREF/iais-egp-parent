@@ -16,6 +16,7 @@
             <div class="col-xs-12">
                 <h3>Submit Patient Information</h3>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <span id="error_topErrorMsg" name="iaisErrorMsg" class="error-msg"></span>
                     <%@include file="section/patientInformationSection.jsp" %>
                     <%@include file="common/dpDsAmendment.jsp" %>
                 </div>

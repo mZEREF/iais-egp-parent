@@ -29,6 +29,7 @@
                 <div class="col-xs-12">
                     <div class="tab-gp steps-tab">
                         <%@ include file="common/navTabs.jsp" %>
+                        <span id="error_topErrorMsg" name="iaisErrorMsg" class="error-msg"></span>
                         <div class="tab-content">
                             <div class="tab-pane in active">
                                 <c:set var="currCode" value="${TOP_CURRENT_STEP.code}" scope="request"/>
