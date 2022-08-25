@@ -373,8 +373,8 @@
         if (isEmptyNode($tag)) {
             return -1;
         }
-        let specialcondition = $tag.data('specialcondition');
-        if ('SPECCON01' !== specialcondition) {
+        let condition = $tag.data('specialcondition');
+        if ('SPECCON01' !== condition) {
             return -1;
         }
         let seq = $tag.data('seq');
