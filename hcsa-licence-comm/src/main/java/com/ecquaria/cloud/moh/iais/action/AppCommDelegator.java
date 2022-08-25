@@ -576,8 +576,8 @@ public abstract class AppCommDelegator {
                     && OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(subLicenseeDto.getLicenseeType())) {
                 String assigned = ApplicationHelper.getAssignSelect(licenseeMap.keySet(), subLicenseeDto.getNationality(),
                         subLicenseeDto.getIdType(), subLicenseeDto.getIdNumber());
-                if (StringUtil.isEmpty(assignSelect) || !"-1".equals(assigned) && !IaisEGPConstant.ASSIGN_SELECT_ADD_NEW.equals(
-                        assigned)) {
+                if (StringUtil.isEmpty(assignSelect) || !"-1".equals(assigned)
+                        && !IaisEGPConstant.ASSIGN_SELECT_ADD_NEW.equals(assigned)) {
                     subLicenseeDto.setAssignSelect(assigned);
                 }
             }
@@ -739,6 +739,13 @@ public abstract class AppCommDelegator {
         log.info(StringUtil.changeForLog("the do preparePremises start ...."));
         ApplicationHelper.setTimeList(bpc.request);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        String appType = appSubmissionDto.getAppType();
+        //rfc/renew
+        boolean isRfcRenewal = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)
+                || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType);
+        if (isRfcRenewal && !ApplicationHelper.checkIsRfi(bpc.request)) {
+            setSelectLicence(appSubmissionDto);
+        }
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         //premise select select options
         ApplicationHelper.setPremSelect(bpc.request);
@@ -747,7 +754,21 @@ public abstract class AppCommDelegator {
                 AppServicesConsts.HCSASERVICEDTOLIST);
         //get premises type
         Set<String> premisesType = IaisCommonUtils.genNewHashSet();
-        boolean readOnly = ApplicationHelper.readonlyPremises(appSubmissionDto);
+        List<HcsaServiceDto> rfiHcsaService = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, "rfiHcsaService");
+        List<String> svcIds = IaisCommonUtils.genNewArrayList();
+        if (rfiHcsaService != null) {
+            rfiHcsaService.forEach(v -> svcIds.add(v.getId()));
+        } else {
+            if (hcsaServiceDtoList != null) {
+                hcsaServiceDtoList.forEach(item -> svcIds.add(item.getId()));
+            }
+        }
+        if (!IaisCommonUtils.isEmpty(svcIds)) {
+            premisesType = configCommService.getAppGrpPremisesTypeBySvcId(svcIds);
+        } else {
+            log.info(StringUtil.changeForLog("do not have select the services"));
+        }
+        /*boolean readOnly = ApplicationHelper.readonlyPremises(appSubmissionDto);
         if (readOnly) {
             AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(0);
             premisesType.add(appGrpPremisesDto.getPremisesType());
@@ -767,7 +788,7 @@ public abstract class AppCommDelegator {
             } else {
                 log.info(StringUtil.changeForLog("do not have select the services"));
             }
-        }
+        }*/
         //TODO Test
         /*if (!StringUtil.isIn(ApplicationConsts.PREMISES_TYPE_REMOTE, premisesType)) {
             premisesType.add(ApplicationConsts.PREMISES_TYPE_REMOTE);
@@ -776,7 +797,7 @@ public abstract class AppCommDelegator {
             premisesType.add(ApplicationConsts.PREMISES_TYPE_MOBILE);
         }*/
         ParamUtil.setSessionAttr(bpc.request, PREMISESTYPE, (Serializable) sortPremisesTypes(premisesType));
-        ParamUtil.setRequestAttr(bpc.request, "readOnly", readOnly);
+        //ParamUtil.setRequestAttr(bpc.request, "readOnly", readOnly);
         // check premises list
         Set<String> finalPremisesType = premisesType;
         appGrpPremisesDtoList = appGrpPremisesDtoList.stream()
@@ -814,15 +835,14 @@ public abstract class AppCommDelegator {
                 .collect(Collectors.toList());
     }
 
-    public void setSelectLicence(AppSubmissionDto appSubmissionDto, HttpServletRequest request) {
-        List<AppGrpPremisesDto> appGrpPremisesDtoList1 = appSubmissionDto.getAppGrpPremisesDtoList();
+    private void setSelectLicence(AppSubmissionDto appSubmissionDto) {
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         String licenceNo = appSubmissionDto.getLicenceNo();
         String licenseeId = appSubmissionDto.getLicenseeId();
-        for (int i = 0; i < appGrpPremisesDtoList1.size(); i++) {
+        for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
             List<LicenceDto> licenceDtoByHciCode = licCommService.getLicenceDtoByHciCode(licenseeId,
-                    appGrpPremisesDtoList1.get(i), licenceNo);
-            appGrpPremisesDtoList1.get(i).setLicenceDtos(licenceDtoByHciCode);
-            request.getSession().setAttribute("selectLicence" + i, licenceDtoByHciCode);
+                    appGrpPremisesDto, licenceNo);
+            appGrpPremisesDto.setLicenceDtos(licenceDtoByHciCode);
         }
     }
 
@@ -886,7 +906,7 @@ public abstract class AppCommDelegator {
             AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
             List<String> premisesHciList = getPremisesHciList(appSubmissionDto.getLicenseeId(), isRfi, oldAppSubmissionDto,
                     bpc.request);
-            errorMap = AppValidatorHelper.doValidatePremises(appSubmissionDto, premisesHciList, true);
+            errorMap = AppValidatorHelper.doValidatePremises(appSubmissionDto, premisesHciList, isRfi, true);
             String crud_action_type_continue = bpc.request.getParameter("crud_action_type_continue");
             if ("continue".equals(crud_action_type_continue)) {
                 errorMap.remove("hciNameUsed");
@@ -1576,8 +1596,8 @@ public abstract class AppCommDelegator {
         }
         boolean isCharity = ApplicationHelper.isCharity(bpc.request);
         FeeDto feeDto = configCommService.getGroupAmendAmount(getAmendmentFeeDto(appEditSelectDto, isCharity));
-        double amount = feeDto.getTotal();
-        double currentAmount = amount;
+        Double amount = feeDto.getTotal();
+        double currentAmount = amount == null ? 0.0 : amount;
         if (licenceById.getMigrated() == 1 && IaisEGPHelper.isActiveMigrated()) {
             currentAmount = 0.0;
         }
@@ -1665,30 +1685,11 @@ public abstract class AppCommDelegator {
                 otherAmount = premiseFee.getTotal();
             }
             log.info(StringUtil.changeForLog("The premise changed amount: " + otherAmount));
-            List<AppSubmissionDto> appSubmissionDtos;
-            if (rfcSplitFlag) {
-                HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceByServiceName(appSubmissionDto.getServiceName());
-                boolean checkSpec = false;
-                if (serviceDto != null) {
-                    checkSpec = HcsaConsts.SERVICE_TYPE_BASE.equals(serviceDto.getSvcType());
-                }
-                appSubmissionDtos = licCommService.getAlginAppSubmissionDtos(appSubmissionDto.getLicenceId(), checkSpec);
-                if (IaisCommonUtils.isNotEmpty(appSubmissionDtos)) {
-                    StreamSupport.stream(appSubmissionDtos.spliterator(), appSubmissionDtos.size() >= RfcConst.DFT_MIN_PARALLEL_SIZE)
-                            .forEach(dto -> ApplicationHelper.reSetPremeses(dto, appGrpPremisesDtoList));
-                    boolean isValid = checkAffectedAppSubmissions(appSubmissionDtos, otherAmount, draftNo, groupNo, changeSelectDto,
-                            HcsaAppConst.SECTION_PREMISES, bpc.request);
-                    if (!isValid) {
-                        return;
-                    }
-                }
-            } else {
-                appSubmissionDtos = IaisCommonUtils.genNewArrayList();
-                boolean isValid = checkAffectedAppSubmissions(appGrpPremisesDtoList, otherAmount, draftNo, groupNo, changeSelectDto,
-                        appSubmissionDtos, bpc.request);
-                if (!isValid) {
-                    return;
-                }
+            List<AppSubmissionDto> appSubmissionDtos = IaisCommonUtils.genNewArrayList();
+            boolean isValid = checkAffectedAppSubmissions(appGrpPremisesDtoList, otherAmount, draftNo, groupNo, changeSelectDto,
+                    appSubmissionDtos, bpc.request);
+            if (!isValid) {
+                return;
             }
             // add the premises affected list to the group
             if (changeSelectDto.isAutoRfc()) {
@@ -1934,16 +1935,14 @@ public abstract class AppCommDelegator {
         if (appGrpPremisesDtoList == null) {
             return true;
         }
-        int size = appGrpPremisesDtoList.size();
-        for (int i = 0; i < size; i++) {
-            AppGrpPremisesDto premisesDto = appGrpPremisesDtoList.get(i);
-            // all latest licence under the current hci code and licensee
-            List<LicenceDto> licenceDtos = (List<LicenceDto>) request.getSession().getAttribute("selectLicence" + i);
-            if (licenceDtos == null) {
-                licenceDtos = premisesDto.getLicenceDtos();
-            }
-            if (licenceDtos == null) {
-                continue;
+        for (AppGrpPremisesDto premisesDto : appGrpPremisesDtoList) {
+            String[] selectedLicences = premisesDto.getSelectedLicences();
+            List<LicenceDto> licenceDtos = null;
+            List<LicenceDto> existLicences = premisesDto.getLicenceDtos();
+            if (IaisCommonUtils.isNotEmpty(existLicences)) {
+                licenceDtos = existLicences.stream()
+                        .filter(dto -> StringUtil.isIn(dto.getId(), selectedLicences))
+                        .collect(Collectors.toList());
             }
             Map<String, String> errorMap = appCommService.checkAffectedAppSubmissions(licenceDtos, premisesDto,
                     amount, draftNo, appGroupNo, appEditSelectDto, appSubmissionDtos);

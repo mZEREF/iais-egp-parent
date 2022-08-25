@@ -25,6 +25,8 @@
 
         fileUploadEvent();
 
+        checkSelectedLicenceEvent();
+
         $("[data-toggle='tooltip']").tooltip();
     }
 
@@ -257,7 +259,7 @@
         }
         //fillForm($premContent, data, "", $('div.premContent').index($premContent));
         var suffix = $('div.premContent').index($premContent);
-        fillValue($premContent.find('.vehicleNo'), data.vehicleNo);
+        //fillValue($premContent.find('.vehicleNo'), data.vehicleNo);
         fillValue($premContent.find('.hciName'), data.hciName);
         fillValue($premContent.find('.postalCode'), data.postalCode);
         fillForm($premContent.find('.address'), data, "", suffix);
@@ -278,7 +280,8 @@
     }
 
     function checkPremDisabled($premContent, disabled) {
-        checkDisabled($premContent.find('.vehicleNo'), disabled);
+        //checkDisabled($premContent.find('.vehicleNo'), disabled);
+        disableContent();
         checkDisabled($premContent.find('.hciName'), disabled);
         checkDisabled($premContent.find('.postalCode'), disabled);
         toggleTag($premContent.find('.retrieveAddr'), !disabled);
@@ -286,6 +289,57 @@
         checkDisabled($premContent.find('.addrType'), disabled);
         checkDisabled($premContent.find('.operationDiv'), disabled);
         toggleTag($premContent.find('.opDel:first'), !disabled);
+    }
+
+    var checkSelectedLicenceEvent = function () {
+        $('input[name="selectedLicence"]').unbind('click');
+        $('input[name="selectedLicence"]').on('click', function() {
+            checkSelectedLicence($(this));
+        });
+    }
+
+    function checkSelectedLicence($tag) {
+        let isSingle = true;
+        if (isEmpty($tag) || $tag.length == 0) {
+            $tag = $('input[name="selectedLicence"]');
+            isSingle = false;
+        }
+        if ($tag.length == 0) {
+            return;
+        }
+        let nonChecked = false;
+        let allChecked = false;
+        $tag.each(function () {
+            let $input = $(this);
+            if (!$input.is(':checked')) {
+                return;
+            }
+            let data = $input.val();
+            if ('NON' == data) {
+                nonChecked = true;
+            }
+            if ('ALL' == data) {
+                allChecked = true;
+            }
+        });
+        unDisableContent($('input[name="selectedLicence"]'));
+        if (nonChecked) {
+            $('input[name="selectedLicence"]:not([value="NON"])').each(function () {
+                $(this).prop('checked', false);
+            });
+            disableContent($('input[name="selectedLicence"]:not([value="NON"])'));
+        } else if (allChecked) {
+            disableContent($('input[name="selectedLicence"][value="NON"]'));
+            if (isSingle && $tag.val() != 'ALL') {
+                $('input[name="selectedLicence"][value="ALL"]').prop('checked', false);
+            } else {
+                $('input[name="selectedLicence"]:not([value="NON"])').each(function () {
+                    $(this).prop('checked', true);
+                });
+            }
+        } else {
+            $('input[name="selectedLicence"][value="ALL"]').prop('checked', false);
+        }
     }
 
     var easMtsUseOnlyEvent = function () {

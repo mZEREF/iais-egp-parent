@@ -358,17 +358,28 @@ public class TopDataSubmissionDelegator {
                     status = result.isHasErrors()?0:1;
                 }else if (DsConfigHelper.TOP_STEP_PRESENT_TERMINATION.equals(cfg.getCode())) {
                      PreTerminationDto preTerminationDto= terminationOfPregnancyDto.getPreTerminationDto();
-                     if(needDoTop(preTerminationDto)&&terminationOfPregnancyDto.getTerminationDto()!=null){
-                         ValidationResult result = WebValidationHelper.validateProperty(terminationOfPregnancyDto.getTerminationDto(),"TOP");
-                         status = result.isHasErrors()?0:1;
+                     if(needDoTop(preTerminationDto)){
+                         if(terminationOfPregnancyDto.getTerminationDto()==null){
+                             ValidationResult result = WebValidationHelper.validateProperty(new TerminationDto(),"TOP");
+                             status = result.isHasErrors()?0:1;
+                         }else {
+                             ValidationResult result = WebValidationHelper.validateProperty(terminationOfPregnancyDto.getTerminationDto(),"TOP");
+                             status = result.isHasErrors()?0:1;
+                         }
                      }else {
                          status =1;
                      }
                 }else if (DsConfigHelper.TOP_STEP_POST_TERMINATION.equals(cfg.getCode())) {
                     PreTerminationDto preTerminationDto= terminationOfPregnancyDto.getPreTerminationDto();
-                    if(needDoTop(preTerminationDto)&&terminationOfPregnancyDto.getPostTerminationDto()!=null){
-                        ValidationResult result = WebValidationHelper.validateProperty(terminationOfPregnancyDto.getPostTerminationDto(),"TOP");
-                        status = result.isHasErrors()?0:1;
+                    if(needDoTop(preTerminationDto)){
+                        if(terminationOfPregnancyDto.getPostTerminationDto()==null){
+                            ValidationResult result = WebValidationHelper.validateProperty(new PostTerminationDto(),"TOP");
+                            status = result.isHasErrors()?0:1;
+                        }else {
+                            ValidationResult result = WebValidationHelper.validateProperty(terminationOfPregnancyDto.getPostTerminationDto(),"TOP");
+                            status = result.isHasErrors()?0:1;
+                        }
+
                     }else {
                         status =1;
                     }

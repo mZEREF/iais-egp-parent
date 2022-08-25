@@ -469,12 +469,14 @@
 <script type="text/javascript">
     $(document).ready(function () {
         initPremiseEvent();
+        checkSelectedLicence();
         $('div.premContent').each(function (k, v) {
             checkPremiseContent($(v));
         });
         if ($('div.premContent').length == 1) {
             $('div.premContent').find('.premHeader').html('');
         }
+
     });
 </script>
 

@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpSecondAddrDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOtherInfoItemAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -50,6 +51,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicDocumentRelationDt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremBusinessDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremOtherInfoAbortDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremOtherInfoItemAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremOtherInfoNurseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremOtherInfoTopDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremOtherInfoTopPersonDto;
@@ -1391,7 +1393,8 @@ public class LicenceApproveBatchjob {
                 continue;
             }
             AppPremisesRecommendationDto appPremisesRecommendationDto = licenceService.getTcu(appPremisesCorrelationDto.getId());
-            LicPremisesDto licPremisesDto = new LicPremisesDto();
+            LicPremisesDto licPremisesDto = MiscUtil.transferEntityDto(appPremisesCorrelationDto,LicPremisesDto.class);
+            licPremisesDto.setId(null);
             licPremisesDto.setPremisesId(premisesId);
             licPremisesDto.setIsPostInspNeeded(isPostInspNeeded);
 //            log.info(StringUtil.changeForLog("The BusinessName is-->："+appPremisesCorrelationDto.getBusinessName()));
@@ -1475,6 +1478,8 @@ public class LicenceApproveBatchjob {
         licPremisesDto.setLicPremSuplmItemDtos(MiscUtil.transferEntityDtos(appSvcSuplmItemDtos,LicPremSuplmItemDto.class));
         List<AppPremScopeDto> appPremScopeDtos = appPremisesCorrelationDto.getAppPremScopeDtos();
         licPremisesDto.setLicPremScopeDtos(MiscUtil.transferEntityDtos(appPremScopeDtos,LicPremScopeDto.class));
+        List<AppPremOtherInfoItemAnswerDto> appPremOtherInfoItemAnswerDtos = appPremisesCorrelationDto.getAppPremOtherInfoItemAnswerDtos();
+        licPremisesDto.setLicPremOtherInfoItemAnswerDtos(MiscUtil.transferEntityDtos(appPremOtherInfoItemAnswerDtos,LicPremOtherInfoItemAnswerDto.class));
     }
 
     private Integer isPostInspNeeded(ApplicationGroupDto applicationGroupDto) {

@@ -289,7 +289,8 @@ public class AppCommServiceImpl implements AppCommService {
                     }
                     // rfc & renewal
                     if (excludeAppPremList != null && !excludeAppPremList.isEmpty() && excludeAppPremList.stream()
-                            .anyMatch(dto -> Objects.equals(dto.getId(), premisesHciDto.getId()))) {
+                            .anyMatch(dto -> Objects.equals(dto.getId(), premisesHciDto.getId())
+                                    || Objects.equals(dto.getPremisesIndexNo(), premisesHciDto.getId()))) {
                         continue;
                     }
                     result.addAll(ApplicationHelper.genPremisesHciList(premisesHciDto));
@@ -299,7 +300,8 @@ public class AppCommServiceImpl implements AppCommService {
                 for (AppGrpPremisesDto premisesEntityDto : appGrpPremisesDtos) {
                     // rfi
                     if (excludeAppPremList != null && !excludeAppPremList.isEmpty() && excludeAppPremList.stream()
-                            .anyMatch(dto -> Objects.equals(dto.getId(), premisesEntityDto.getId()))) {
+                            .anyMatch(dto -> Objects.equals(dto.getId(), premisesEntityDto.getId())
+                                    || Objects.equals(dto.getPremisesIndexNo(), premisesEntityDto.getId()))) {
                         continue;
                     }
                     PremisesDto premisesDto = MiscUtil.transferEntityDto(premisesEntityDto, PremisesDto.class);

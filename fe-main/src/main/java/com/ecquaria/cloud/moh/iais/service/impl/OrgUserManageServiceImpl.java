@@ -255,7 +255,6 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             clientUser.setSalutation(salutation);
             clientUser.setEmail(email);
             clientUser.setDisplayName(feUserDto.getDisplayName());
-
             clientUser.setPassword(pwd);
             String chanQue = PasswordUtil.encryptPassword(AppConsts.HALP_EGP_DOMAIN, IaisEGPHelper.generateRandomString(6), null);
             String chanAn = PasswordUtil.encryptPassword(AppConsts.HALP_EGP_DOMAIN, IaisEGPHelper.generateRandomString(6), null);
@@ -265,7 +264,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             Date activeDate = new Date();
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(activeDate);
-            calendar.add(Calendar.DAY_OF_MONTH, 12);
+            calendar.add(Calendar.YEAR, 99);
             clientUser.setAccountActivateDatetime(activeDate);
             clientUser.setAccountDeactivateDatetime(calendar.getTime());
 
