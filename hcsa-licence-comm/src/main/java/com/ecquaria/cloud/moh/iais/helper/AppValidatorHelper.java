@@ -718,7 +718,7 @@ public final class AppValidatorHelper {
             }
 
             // rfc, renewal
-            if (!rfi && checkOthers) {
+            if (checkOthers) {
                 validateAffectedLicences(appSubmissionDto, errorMap, appGrpPremisesDtoList);
             }
 
