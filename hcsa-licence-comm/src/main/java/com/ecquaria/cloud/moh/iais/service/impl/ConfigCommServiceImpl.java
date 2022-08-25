@@ -370,7 +370,7 @@ public class ConfigCommServiceImpl implements ConfigCommService {
     }
 
     @Override
-    public List<SuppleFormItemConfigDto> getSuppleFormItemConfigs(String serviceCode) {
-        return configCommClient.getHcsaSvcSuppleFormItemBySvcCode(serviceCode).getEntity();
+    public List<SuppleFormItemConfigDto> getSuppleFormItemConfigs(String serviceCode, String type) {
+        return configCommClient.getHcsaSvcSuppleFormItemBySvcCode(serviceCode,type).getEntity();
     }
 }
