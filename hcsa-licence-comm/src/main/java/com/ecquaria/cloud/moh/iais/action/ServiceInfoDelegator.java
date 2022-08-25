@@ -452,7 +452,7 @@ public class ServiceInfoDelegator {
         if (appSvcOtherInfoDto != null) {
             ParamUtil.setRequestAttr(bpc.request,"appSvcOtherInfoDto",appSvcOtherInfoDto);
         }
-        if (ApplicationHelper.initOtherInfoForm(currSvcInfoDto)) {
+        if (ApplicationHelper.initOtherInfoForm(currSvcInfoDto,HcsaConsts.OTHER_INFO_TYPE)) {
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
         }
     }

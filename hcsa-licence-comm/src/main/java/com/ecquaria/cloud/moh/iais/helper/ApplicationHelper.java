@@ -2311,13 +2311,13 @@ public final class ApplicationHelper {
         return true;
     }
 
-    public static boolean initOtherInfoForm(AppSvcRelatedInfoDto currSvcInfoDto) {
-        return initOtherInfoForm(currSvcInfoDto, false);
+    public static boolean initOtherInfoForm(AppSvcRelatedInfoDto currSvcInfoDto,String type) {
+        return initOtherInfoForm(currSvcInfoDto, false,type);
     }
 
-    public static boolean initOtherInfoForm(AppSvcRelatedInfoDto currSvcInfoDto, boolean init) {
-        AppSvcSuplmFormDto appSvcSuplmFormDto = currSvcInfoDto.getAppSvcOtherInfoDto().getAppSvcSuplmFormDto();
-        appSvcSuplmFormDto = initAppSvcSuplmFormDto(currSvcInfoDto.getServiceCode(), init, HcsaConsts.OTHER_INFO_TYPE, appSvcSuplmFormDto);
+    public static boolean initOtherInfoForm(AppSvcRelatedInfoDto currSvcInfoDto, boolean init,String type) {
+        AppSvcSuplmFormDto appSvcSuplmFormDto = currSvcInfoDto.getAppSvcSuplmFormDto();
+        appSvcSuplmFormDto = initAppSvcSuplmFormDto(currSvcInfoDto.getServiceCode(), init, type, appSvcSuplmFormDto);
         if (appSvcSuplmFormDto != null){
             appSvcSuplmFormDto.setSvcConfigDto(currSvcInfoDto);
         }
