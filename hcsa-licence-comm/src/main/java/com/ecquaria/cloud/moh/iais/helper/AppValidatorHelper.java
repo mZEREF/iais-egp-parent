@@ -812,7 +812,7 @@ public final class AppValidatorHelper {
                 licNos = licBaseSpecifiedCorrelationDtos.stream()
                         .map(dto -> HcsaConsts.SERVICE_TYPE_BASE.equals(svcType) ? dto.getSpecLicId() : dto.getBaseLicId())
                         .filter(id -> !StringUtil.isIn(id, selectedLicences))
-                        .map(id -> licMap.get(id))
+                        .map(licMap::get)
                         .filter(Objects::nonNull)
                         .map(LicenceDto::getLicenceNo)
                         .collect(Collectors.joining(", "));
@@ -1235,8 +1235,6 @@ public final class AppValidatorHelper {
                     }
                     if (!ValidationUtils.isEmail(emailAddr)) {
                         errMap.put("emailAddr" + i, "GENERAL_ERR0014");
-                    } else if (emailAddr.length() > 66) {
-
                     }
                 }
 
