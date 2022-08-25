@@ -145,17 +145,15 @@
                             <div id="genders">
                                <c:forEach items="${patientInformationDto.livingChildrenGenders}" var="livingChildrenGenders" begin="0"
                                            varStatus="idxStatus">
-                                   <c:if test="${livingChildrenGenders!=''}">
-                                       <iais:row>
-                                           <iais:value cssClass="col-sm-7 col-md-5 col-xs-7 col-md-12">
-                                               <div class="form-group" id="genders" style="padding-left: 15px;padding-right: 15px;">
-                                                   <iais:select name="livingChildrenGenders" firstOption="Please Select" id="livingChildrenGenders${idxStatus.index}" codeCategory="TOP_GENDER_OF_PREGNANT_CHILDREN"
-                                                                value="${livingChildrenGenders}" cssClass="livingChildrenGenders${idxStatus.index}"/>
-                                                   <span id="error_livingChildrenGenders${idxStatus.index}" name="iaisErrorMsg" class="error-msg"></span>
-                                               </div>
-                                           </iais:value>
-                                       </iais:row>
-                                   </c:if>
+                                   <iais:row>
+                                       <iais:value cssClass="col-sm-7 col-md-5 col-xs-7 col-md-12">
+                                           <div class="form-group" id="genders" style="padding-left: 15px;padding-right: 15px;">
+                                               <iais:select name="livingChildrenGenders" firstOption="Please Select" id="livingChildrenGenders${idxStatus.index}" codeCategory="TOP_GENDER_OF_PREGNANT_CHILDREN"
+                                                            value="${livingChildrenGenders}" cssClass="livingChildrenGenders${idxStatus.index}"/>
+                                               <span id="error_livingChildrenGenders${idxStatus.index}" name="iaisErrorMsg" class="error-msg"></span>
+                                           </div>
+                                       </iais:value>
+                                   </iais:row>
 
                                 </c:forEach>
                             </div>
