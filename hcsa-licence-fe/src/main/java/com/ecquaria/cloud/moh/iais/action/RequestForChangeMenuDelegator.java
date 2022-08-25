@@ -534,7 +534,7 @@ public class RequestForChangeMenuDelegator {
 
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
 
-        Map<String, String> errorMap = AppValidatorHelper.doValidatePremises(appSubmissionDto, null, true);
+        Map<String, String> errorMap = AppValidatorHelper.doValidatePremises(appSubmissionDto, null, false, true);
         String crud_action_type_continue = bpc.request.getParameter("crud_action_type_continue");
         String crud_action_type_form_value = bpc.request.getParameter("crud_action_type_form_value");
         String crud_action_additional = bpc.request.getParameter("crud_action_additional");

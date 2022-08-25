@@ -3580,7 +3580,7 @@ public final class ApplicationHelper {
             return;
         }
         if (appGrpPremisesDtoList.stream().anyMatch(premises -> premises.getHasError() == null)) {
-            Map<String, String> errorMap = AppValidatorHelper.doValidatePremises(appSubmissionDto, null, false);
+            Map<String, String> errorMap = AppValidatorHelper.doValidatePremises(appSubmissionDto, null, false, false);
             if (!errorMap.isEmpty()) {
                 log.info(StringUtil.changeForLog("------ Has Error ------"));
                 return;

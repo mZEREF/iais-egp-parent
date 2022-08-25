@@ -906,7 +906,7 @@ public abstract class AppCommDelegator {
             AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
             List<String> premisesHciList = getPremisesHciList(appSubmissionDto.getLicenseeId(), isRfi, oldAppSubmissionDto,
                     bpc.request);
-            errorMap = AppValidatorHelper.doValidatePremises(appSubmissionDto, premisesHciList, true);
+            errorMap = AppValidatorHelper.doValidatePremises(appSubmissionDto, premisesHciList, isRfi, true);
             String crud_action_type_continue = bpc.request.getParameter("crud_action_type_continue");
             if ("continue".equals(crud_action_type_continue)) {
                 errorMap.remove("hciNameUsed");

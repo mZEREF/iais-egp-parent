@@ -261,7 +261,7 @@ public final class AppValidatorHelper {
             errorList.add(HcsaAppConst.SECTION_LICENSEE);
         }
         // premises
-        Map<String, String> premissMap = doValidatePremises(appSubmissionDto, premisesHciList, false);
+        Map<String, String> premissMap = doValidatePremises(appSubmissionDto, premisesHciList, isRfi, false);
         premissMap.remove("hciNameUsed");
         if (!premissMap.isEmpty()) {
             errorMap.putAll(premissMap);
@@ -595,7 +595,7 @@ public final class AppValidatorHelper {
     }
 
     public static Map<String, String> doValidatePremises(AppSubmissionDto appSubmissionDto, List<String> premisesHciList,
-            boolean checkOthers) {
+            boolean rfi, boolean checkOthers) {
         //do validate one premiss
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         List<String> list = IaisCommonUtils.genNewArrayList();
@@ -718,7 +718,7 @@ public final class AppValidatorHelper {
             }
 
             // rfc, renewal
-            if (checkOthers) {
+            if (!rfi && checkOthers) {
                 validateAffectedLicences(appSubmissionDto, errorMap, appGrpPremisesDtoList);
             }
 
