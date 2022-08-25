@@ -312,9 +312,11 @@
         if ('SPECCON03' !== specialcondition) {
             return;
         }
+        showWaiting();
         let regNo = getValue($tag);
         if (isEmpty(regNo)) {
             fillPrsData($tag, null);
+            dismissWaiting();
             return;
         }
         let jsonData = {
