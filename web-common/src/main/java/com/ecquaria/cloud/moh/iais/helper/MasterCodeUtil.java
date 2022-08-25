@@ -207,8 +207,8 @@ public final class MasterCodeUtil {
     //Data Submission Status
     public static final String DATA_SUBMISSION_STATUS          = "55fdea54-f29d-4a33-a7e2-184c4cdb8581";
 
-    //Other Information MED
-    public static final String OTHER_INFO_MED = "4FDB2F95-0D1E-ED11-BE77-000C298D317C";
+    //List of options for IT system and paper cards / IT system only
+    public static final String CATE_ID_OTHER_OPTION            = "4FDB2F95-0D1E-ED11-BE77-000C298D317C";
 
     //Reason for Patient Amendment
     public static final String DATA_SUBMISSION_PATIENT_AMENDMENT = "E92D33E5-6B47-EC11-BE6B-000C29FAAE4D";
