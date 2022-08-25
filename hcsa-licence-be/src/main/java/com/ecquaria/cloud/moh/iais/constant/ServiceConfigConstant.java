@@ -39,8 +39,11 @@ public class ServiceConfigConstant {
         SEQ_MAP.put(HcsaConsts.STEP_PRINCIPAL_OFFICERS, 10);
         SEQ_MAP.put(HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER, 11);
         SEQ_MAP.put(HcsaConsts.STEP_MEDALERT_PERSON, 12);
-        SEQ_MAP.put(HcsaConsts.STEP_DOCUMENTS, 13);
+        SEQ_MAP.put(HcsaConsts.STEP_OTHER_INFORMATION, 13);
         SEQ_MAP.put(HcsaConsts.STEP_SUPPLEMENTARY_FORM, 14);
+        SEQ_MAP.put(HcsaConsts.STEP_SPECIAL_SERVICES_FORM, 15);
+        SEQ_MAP.put(HcsaConsts.STEP_DOCUMENTS, 16);
+        SEQ_MAP.put(HcsaConsts.STEP_OUTSOURCED_PROVIDERS, 17);
         SEQ_MAP = Collections.unmodifiableMap(SEQ_MAP);
 
         NAME_MAP.put(ApplicationConsts.PERSONNEL_PSN_TYPE_PO, "principalOfficer");

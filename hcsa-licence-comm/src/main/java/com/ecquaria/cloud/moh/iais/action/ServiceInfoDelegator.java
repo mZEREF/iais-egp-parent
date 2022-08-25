@@ -404,7 +404,7 @@ public class ServiceInfoDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         String currentSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
-        if (ApplicationHelper.initSupplementoryForm(currSvcInfoDto,HcsaConsts.SUPPLEMENTARY_FORM)) {
+        if (ApplicationHelper.initSupplementoryForm(currSvcInfoDto)) {
             setAppSvcRelatedInfoMap(request, currentSvcId, currSvcInfoDto, appSubmissionDto);
         }
     }
@@ -452,7 +452,7 @@ public class ServiceInfoDelegator {
         if (appSvcOtherInfoDto != null) {
             ParamUtil.setRequestAttr(bpc.request,"appSvcOtherInfoDto",appSvcOtherInfoDto);
         }
-        if (ApplicationHelper.initOtherInfoForm(currSvcInfoDto,HcsaConsts.OTHER_INFO_TYPE)) {
+        if (ApplicationHelper.initOtherInfoForm(currSvcInfoDto)) {
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
         }
     }
