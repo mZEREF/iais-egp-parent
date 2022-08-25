@@ -821,7 +821,7 @@ public final class AppDataHelper {
         AppSvcOtherInfoMedDto appSvcOtherInfoMedDto = new AppSvcOtherInfoMedDto();
         ControllerHelper.get(request,appSvcOtherInfoMedDto);
         String systemOption = ParamUtil.getString(request,"systemOption");
-        if (systemOption.equals("MED06")){
+        if ("MED06".equals(systemOption)){
             String otherSystemOption = ParamUtil.getString(request,"otherSystemOption");
             appSvcOtherInfoMedDto.setOtherSystemOption(otherSystemOption);
         }
