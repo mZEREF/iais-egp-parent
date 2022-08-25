@@ -3,14 +3,18 @@ package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PostTerminationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TerminationOfPregnancyDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
+@Slf4j
 public class PostTerminationValidator implements CustomizeValidator {
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
@@ -34,6 +38,14 @@ public class PostTerminationValidator implements CustomizeValidator {
                 }
                 if(StringUtil.isEmpty(postTerminationDto.getCounsellingDate())){
                     errorMap.put("counsellingDate", "GENERAL_ERR0006");
+                }else {
+                    try {
+                        if (Formatter.compareDateByDay(postTerminationDto.getCounsellingDate()) > 0) {
+                            errorMap.put("counsellingDate", MessageUtil.replaceMessage("DS_ERR001", "Date of Counselling", "field"));
+                        }
+                    } catch (Exception e) {
+                        log.error(StringUtil.changeForLog(e.getMessage()), e);
+                    }
                 }
                 if(StringUtil.isEmpty(postTerminationDto.getCounsellingPlace())){
                     errorMap.put("TopPlace", "GENERAL_ERR0006");

@@ -52,11 +52,18 @@ public class PreTerminationValidator implements CustomizeValidator {
                 errorMap.putAll(result.retrieveAll());
             }
             if(StringUtil.isEmpty(preTerminationDto.getCounsellingDate())){
+                ValidationResult result = WebValidationHelper.validateProperty(preTerminationDto, "counsellingDate");
+                errorMap.putAll(result.retrieveAll());
+            }else {
                 if (validateDate(preTerminationDto.getCounsellingDate())){
                     errorMap.put("counsellingDate", "Invalid date");
-                } else {
-                    ValidationResult result = WebValidationHelper.validateProperty(preTerminationDto, "counsellingDate");
-                    errorMap.putAll(result.retrieveAll());
+                }
+                try {
+                    if (Formatter.compareDateByDay(preTerminationDto.getCounsellingDate()) > 0) {
+                        errorMap.put("counsellingDate", MessageUtil.replaceMessage("DS_ERR001", "Date of Counselling", "field"));
+                    }
+                } catch (Exception e) {
+                    log.error(StringUtil.changeForLog(e.getMessage()), e);
                 }
             }
             if(StringUtil.isEmpty(preTerminationDto.getCounsellingPlace())){
@@ -108,21 +115,28 @@ public class PreTerminationValidator implements CustomizeValidator {
                         if ("1".equals(preTerminationDto.getPatientAppointment())) {
                             if(StringUtil.isEmpty(preTerminationDto.getSecCounsellingDate())){
                                 errorMap.put("secCounsellingDate", "GENERAL_ERR0006");
-                            }else if(StringUtil.isNotEmpty(preTerminationDto.getCounsellingDate())){
+                            }else {
                                 try {
-                                    Date oneDate=Formatter.parseDate(preTerminationDto.getCounsellingDate());
-                                    Date secDate=Formatter.parseDate(preTerminationDto.getSecCounsellingDate());
-                                    if(secDate.before(oneDate)){
-                                        Map<String, String> params = IaisCommonUtils.genNewHashMap();
-                                        params.put("field1", "Date of Second or Final Counselling");
-                                        params.put("field2", "Date of Counselling");
-                                        errorMap.put("secCounsellingDate", MessageUtil.getMessageDesc("DS_ERR069", params));
+                                    if (Formatter.compareDateByDay(preTerminationDto.getSecCounsellingDate()) > 0) {
+                                        errorMap.put("secCounsellingDate", MessageUtil.replaceMessage("DS_ERR001", "Date of Second or Final Counselling", "field"));
                                     }
-                                }catch (ParseException ignored){
-                                    log.error("ParseException");
+                                } catch (Exception e) {
+                                    log.error(StringUtil.changeForLog(e.getMessage()), e);
                                 }
-
-
+                                if(StringUtil.isNotEmpty(preTerminationDto.getCounsellingDate())){
+                                    try {
+                                        Date oneDate=Formatter.parseDate(preTerminationDto.getCounsellingDate());
+                                        Date secDate=Formatter.parseDate(preTerminationDto.getSecCounsellingDate());
+                                        if(secDate.before(oneDate)){
+                                            Map<String, String> params = IaisCommonUtils.genNewHashMap();
+                                            params.put("field1", "Date of Second or Final Counselling");
+                                            params.put("field2", "Date of Counselling");
+                                            errorMap.put("secCounsellingDate", MessageUtil.getMessageDesc("DS_ERR069", params));
+                                        }
+                                    }catch (ParseException ignored){
+                                        log.error("ParseException");
+                                    }
+                                }
 
                             }
                             if(StringUtil.isEmpty(preTerminationDto.getSecCounsellingResult())){
