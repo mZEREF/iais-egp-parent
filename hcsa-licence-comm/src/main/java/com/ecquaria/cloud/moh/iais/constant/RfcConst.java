@@ -35,7 +35,7 @@ public class RfcConst {
 
     public static final String EDIT_LICENSEE = "licensee";
     public static final String EDIT_PREMISES = "premises";
-    public static final String EDIT_PRIMARY_DOC = "doc";
+    public static final String EDIT_SPECIALISED = "specialised";
     public static final String EDIT_SERVICE = "service";
 
     public static final String PAYMENTPROCESS = "/hcsa-licence-web/eservice/INTERNET/MohNewApplication/PreparePayment?flag=transfer";
