@@ -55,7 +55,7 @@ public class PreTerminationValidator implements CustomizeValidator {
                 ValidationResult result = WebValidationHelper.validateProperty(preTerminationDto, "counsellingDate");
                 errorMap.putAll(result.retrieveAll());
             }else {
-                if (validateDate(preTerminationDto.getCounsellingDate())){
+                if (!validateDate(preTerminationDto.getCounsellingDate())){
                     errorMap.put("counsellingDate", "Invalid date");
                 }
                 try {
