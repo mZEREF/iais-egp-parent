@@ -1,3 +1,24 @@
+<div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                    <span style="font-size: 2rem;" id="prsErrorMsg">
+                      <iais:message key="GENERAL_ERR0048" escape="false"/>
+                    </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row " style="margin-top: 5%;margin-bottom: 5%">
+                <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal"
+                        onclick="$('#PRS_SERVICE_DOWN').modal('hide');">OK
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" value="${PRS_SERVICE_DOWN}" id="PRS_SERVICE_DOWN_INPUT">
 <script type="text/javascript">
     $(function () {
         refreshRemoveBtn();
@@ -173,7 +194,7 @@
         }
         let seq = $tag.data('seq');
         let curr = $tag.data('curr');
-        let $conNodes = $('[data-parent="' + curr + '"][data-seq="' + seq + '"]');
+        let $conNodes = $('[data-parent*="' + curr + '"][data-seq="' + seq + '"]');
         let currVal = getValue($tag);
         if (!isEmptyNode($conNodes)) {
             if ($tag.is(':hidden')) {
@@ -262,19 +283,103 @@
         let seq = $tag.data('seq');
         let $target = $('[data-curr=' + targetId + '][data-seq=' + seq + ']');
         checkItemTotal($target);
+        checkPrsNo($target);
+    }
+
+    function checkPrsNo($tag) {
+        if (isEmptyNode($tag)) {
+            return;
+        }
+        let specialcondition = $tag.data('specialcondition');
+        if ('SPECCON03' !== specialcondition) {
+            return;
+        }
+        let regNo = getValue($tag);
+        if (isEmpty(regNo)) {
+            fillPrsData($tag, null);
+            return;
+        }
+        let jsonData = {
+            'prgNo': regNo
+        };
+        $.ajax({
+            'url': '${pageContext.request.contextPath}/prg-input-info',
+            'dataType': 'json',
+            'data': jsonData,
+            'type': 'GET',
+            'success': function (data) {
+                var canFill = false;
+                if (isEmpty(data)) {
+                    console.log("The return data is null for PRS");
+                } else if ('-1' == data.statusCode) {
+                    $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0042" escape="false" />');
+                    $('#PRS_SERVICE_DOWN').modal('show');
+                } else if ('-2' == data.statusCode) {
+                    $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0042" escape="false" />');
+                    $('#PRS_SERVICE_DOWN').modal('show');
+                } else if (data.hasException) {
+                    $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0048" escape="false" />');
+                    $('#PRS_SERVICE_DOWN').modal('show');
+
+                } else if ('401' == data.statusCode) {
+                    $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0054" escape="false" />');
+                    $('#PRS_SERVICE_DOWN').modal('show');
+                } else {
+                    canFill = true;
+                }
+                fillPrsData($tag, canFill ? data : null);
+                dismissWaiting();
+            },
+            'error': function () {
+                fillPrsData($tag, null);
+                dismissWaiting();
+            }
+        });
+    }
+
+    function fillPrsData($prsRegNo, data) {
+        let condId = $prsRegNo.data('curr');
+        if (isEmpty(condId)) {
+            return;
+        }
+        let $target = $('[data-condition*="' + condId + '"]');
+        if (isEmptyNode($target)) {
+            return;
+        }
+        $target.each(function () {
+            let $tag = $(this);
+            let condition = $tag.data('specialcondition');
+            if (isEmpty(condId)) {
+                return;
+            }
+            let v = "";
+            if (!isEmpty(data)) {
+                v = data[condition];
+                if (isEmpty(v) && !isEmpty(data.registration)) {
+                    let registration = data.registration[0];
+                    v = registration[condition];
+                }
+            }
+            console.info("PRS Data - " + condition + " : " + v);
+            if ($tag.is(':input')) {
+                fillValue($tag, v);
+            } else {
+                $tag.find('p').html(v);
+            }
+        });
     }
 
     function checkItemTotal($tag) {
         if (isEmptyNode($tag)) {
             return -1;
         }
-        let specialcondition = $tag.data('specialcondition');
-        if ('SPECCON01' !== specialcondition) {
+        let condition = $tag.data('specialcondition');
+        if ('SPECCON01' !== condition) {
             return -1;
         }
         let seq = $tag.data('seq');
         let curr = $tag.data('curr');
-        let $conNodes = $('[data-condition="' + curr + '"][data-seq="' + seq + '"]');
+        let $conNodes = $('[data-condition*="' + curr + '"][data-seq="' + seq + '"]');
         let total = 0;
         if (!isEmptyNode($conNodes)) {
             // calculate total
