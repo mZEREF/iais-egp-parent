@@ -1596,8 +1596,8 @@ public abstract class AppCommDelegator {
         }
         boolean isCharity = ApplicationHelper.isCharity(bpc.request);
         FeeDto feeDto = configCommService.getGroupAmendAmount(getAmendmentFeeDto(appEditSelectDto, isCharity));
-        double amount = feeDto.getTotal();
-        double currentAmount = amount;
+        Double amount = feeDto.getTotal();
+        double currentAmount = amount == null ? 0.0 : amount;
         if (licenceById.getMigrated() == 1 && IaisEGPHelper.isActiveMigrated()) {
             currentAmount = 0.0;
         }
@@ -1935,7 +1935,6 @@ public abstract class AppCommDelegator {
         if (appGrpPremisesDtoList == null) {
             return true;
         }
-        int size = appGrpPremisesDtoList.size();
         for (AppGrpPremisesDto premisesDto : appGrpPremisesDtoList) {
             String[] selectedLicences = premisesDto.getSelectedLicences();
             List<LicenceDto> licenceDtos = null;
