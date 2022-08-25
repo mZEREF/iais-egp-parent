@@ -206,7 +206,7 @@
         }
         var cntClass = $currContent.attr('class');
         var prefix = $currContent.find('.prepsn').val();
-        fillForm($content, data, prefix, $('div.' + cntClass).index($currContent));
+        fillForm($content, data, prefix, $('div.' + cntClass).index($currContent), ['psnEditDto']);
 
         $currContent.find('.speciality p').html(data.speciality);
         $currContent.find('.subSpeciality p').html(data.subSpeciality);
@@ -411,42 +411,6 @@
 
     function isNeedControlName(assignSelectVal, licPerson, appType) {
         return /*'newOfficer' == assignSelectVal &&*/ '1' != licPerson && 'APTY002' == appType;
-    }
-
-    function fillForm(ele, data, prefix, suffix) {
-        var $selector = getJqueryNode(ele);
-        if (isEmptyNode($selector)) {
-            return;
-        }
-        if (isEmpty(data)) {
-            clearFields($selector);
-            return;
-        }
-        if (isEmpty(prefix)) {
-            prefix = "";
-        }
-        if (isEmpty(suffix)) {
-            suffix = "";
-        }
-        for (var i in data) {
-            var val = data[i];
-            if (Object.prototype.toString.call(val) === "[object Object]") {
-                fillValue(ele, val, prefix, suffix);
-            }
-            var name = prefix + i + suffix;
-            var $input = $selector.find('[name="' + name + '"]');
-            if ($input.length == 0) {
-                name = prefix + capitalize(i) + suffix;
-                $input = $selector.find('[name="' + name + '"]');
-            }
-            if ($input.length == 0) {
-                continue;
-            }
-            if ($input.hasClass('field-date')) {
-                val = data[i + 'Str'];
-            }
-            fillValue($input, val, true);
-        }
     }
 
 </script>
