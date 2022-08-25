@@ -35,7 +35,6 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -205,4 +204,7 @@ public interface LicenceInboxClient {
 
     @PostMapping(value = "/data-submission/rfc-draft-data-submission/submissionId", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> deleteDraftBySubmissionId(@RequestParam(name = "submissionId") String submissionId);
+
+    @PostMapping(value = "lic-common/update-status-ds-center", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<DsCenterDto>> updateBeDsCenterStatus();
 }
