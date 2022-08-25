@@ -621,7 +621,7 @@ function clearFields(targetSelector, withoutClearError) {
     });
 }
 
-function fillForm(ele, data, prefix, suffix) {
+function fillForm(ele, data, prefix, suffix, excludeFiels) {
     var $selector = getJqueryNode(ele);
     if (isEmptyNode($selector)) {
         return;
@@ -637,9 +637,12 @@ function fillForm(ele, data, prefix, suffix) {
         suffix = "";
     }
     for (var i in data) {
+        if ($.isArray(excludeFiels) && excludeFiels.includes(i)) {
+            continue;
+        }
         var value = data[i];
         if (Object.prototype.toString.call(value) === "[object Object]") {
-            //fillForm(ele, value, prefix, suffix);
+            fillForm(ele, value, prefix, suffix, excludeFiels);
             continue;
         }
         var name = prefix + i + suffix;
