@@ -6,7 +6,7 @@
     <c:set var="psnContent" value="person-content"/>
 </c:if>
 <div class="${psnContent}">
-    <input type="hidden" class="not-refresh prepsn" name="${psnContent}" value="${prepsn}"/>
+    <input type="hidden" class="not-refresh not-clear prepsn" name="${psnContent}" value="${prepsn}"/>
     <input type="hidden" class="not-refresh assignSelVal" name="${prepsn}assignSelVal" value="${person.assignSelect}"/>
     <input type="hidden" class="not-refresh licPerson" name="${prepsn}licPerson" value="${person.licPerson ? 1 : 0}"/>
     <input type="hidden" class="not-refresh isPartEdit" name="${prepsn}isPartEdit" value="0"/>
