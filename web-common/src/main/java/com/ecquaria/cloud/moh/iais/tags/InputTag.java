@@ -79,7 +79,7 @@ public class InputTag extends DivTagSupport{
         }
 
         if (!StringUtil.isEmpty(value)) {
-            html.append(" value=\"").append(StringUtil.viewHtml(value)).append('\"');
+            html.append(" value=\"").append(StringUtil.viewNonNullHtml(value)).append('\"');
         }
         if(!StringUtil.isEmpty(autocomplete)){
             html.append(" maxlength=\"").append(maxLength).append('\"');
