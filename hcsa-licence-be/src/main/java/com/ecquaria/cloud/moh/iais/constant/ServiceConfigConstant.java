@@ -20,6 +20,11 @@ public class ServiceConfigConstant {
     public static Map<String, Integer> SEQ_MAP = IaisCommonUtils.genNewHashMap();
     public static Map<String, String> NAME_MAP = IaisCommonUtils.genNewHashMap();
     public static Map<String, String> PREMISES_TYPE_MAP = Maps.newLinkedHashMap();
+    //Service Doc personnel
+    public static Map<String, String> SERVICE_DOC_PERSONNEL_BASE = IaisCommonUtils.genNewHashMap();
+    public static Map<String, String> SERVICE_DOC_PERSONNEL_SUPPLEMENTARY_FORM = IaisCommonUtils.genNewHashMap();
+    public static Map<String, String> SERVICE_DOC_PERSONNEL_SPECIAL = IaisCommonUtils.genNewHashMap();
+
 
     static {
         PREMISES_TYPE_MAP.put(ApplicationConsts.PREMISES_TYPE_PERMANENT,"Permanent Premises");
@@ -75,7 +80,43 @@ public class ServiceConfigConstant {
         NAME_MAP.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_PRACTISING_DENTIST, ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_PRACTISING_DENTIST);
         NAME_MAP.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_ORAL_HEALTHCARE_THERAPIST, ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_ORAL_HEALTHCARE_THERAPIST);
         NAME_MAP.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_PRACTICING_DOCTOR, ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_PRACTICING_DOCTOR);
-
         NAME_MAP = Collections.unmodifiableMap(NAME_MAP);
+
+        SERVICE_DOC_PERSONNEL_SUPPLEMENTARY_FORM.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_OPERATING_THEATRE_TRAINED_NURSE,"Operating Theatre Trained Nurse");
+        SERVICE_DOC_PERSONNEL_SUPPLEMENTARY_FORM.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_NURSE_IN_CHARGE, "Nurse in Charge");
+        SERVICE_DOC_PERSONNEL_SUPPLEMENTARY_FORM.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_NURSES_MEDICAL_SERVICE,"Nurses (Medical Service)" );
+        SERVICE_DOC_PERSONNEL_SUPPLEMENTARY_FORM.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_NURSES_DENTAL_SERVICE, "Nurses (Dental Service)");
+        SERVICE_DOC_PERSONNEL_SUPPLEMENTARY_FORM.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_PRACTISING_DENTIST, "Practicing Dentist");
+        SERVICE_DOC_PERSONNEL_SUPPLEMENTARY_FORM.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_ORAL_HEALTHCARE_THERAPIST, "Oral Healthcare Therapist");
+        SERVICE_DOC_PERSONNEL_SUPPLEMENTARY_FORM.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_PRACTICING_DOCTOR, "Practicing Doctor");
+
+        SERVICE_DOC_PERSONNEL_BASE.put(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, "Clinical Governance Officer (CGO)");
+        SERVICE_DOC_PERSONNEL_BASE.put(ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER, "Section Leader");
+        SERVICE_DOC_PERSONNEL_BASE.put(ApplicationConsts.PERSONNEL_PSN_TYPE_PO, "Principal Officer (PO)");
+        SERVICE_DOC_PERSONNEL_BASE.put(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, "Nominee");
+        SERVICE_DOC_PERSONNEL_BASE.put(ApplicationConsts.PERSONNEL_PSN_KAH, "Key Appointment Holder (KAH)");
+        SERVICE_DOC_PERSONNEL_BASE.put(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR, "Clinical Director");
+        SERVICE_DOC_PERSONNEL_BASE.put(ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL, "Service Personnel");
+        SERVICE_DOC_PERSONNEL_BASE.put(ApplicationConsts.PERSONNEL_VEHICLES, "Vehicles");
+        SERVICE_DOC_PERSONNEL_BASE.put(ApplicationConsts.PERSONNEL_CHARGES, "General Conveyance Charges");
+        SERVICE_DOC_PERSONNEL_BASE.put(ApplicationConsts.PERSONNEL_CHARGES_OTHER, "Medical Equipment and Other Charges");
+        SERVICE_DOC_PERSONNEL_BASE.put(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, "MedAlert Person");
+        SERVICE_DOC_PERSONNEL_BASE.put(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST, "Embryologist");
+        SERVICE_DOC_PERSONNEL_BASE.put(ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER, "AR Practitioner");
+        SERVICE_DOC_PERSONNEL_BASE.put(ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES, "Nurses");
+
+
+        SERVICE_DOC_PERSONNEL_SPECIAL.put(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, "Clinical Governance Officer (CGO)");
+        SERVICE_DOC_PERSONNEL_SPECIAL.put(ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER, "Section Leader");
+        SERVICE_DOC_PERSONNEL_SPECIAL.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR, "Emergency Department Director");
+        SERVICE_DOC_PERSONNEL_SPECIAL.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR, "Emergency Department Nursing Director");
+        SERVICE_DOC_PERSONNEL_SPECIAL.put(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE, "Nurse In Charge");
+        SERVICE_DOC_PERSONNEL_SPECIAL.put(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER, "Radiation Safety Officer (RSO)");
+        SERVICE_DOC_PERSONNEL_SPECIAL.put(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR, "Diagnostic Radiographer");
+        SERVICE_DOC_PERSONNEL_SPECIAL.put(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST, "Medical Physicist");
+        SERVICE_DOC_PERSONNEL_SPECIAL.put(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL, "Radiation Physicist");
+        SERVICE_DOC_PERSONNEL_SPECIAL.put(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM, "NM Technologist");
+
+
     }
 }

@@ -92,6 +92,31 @@ public class ConfigServiceDelegator {
 
     }
 
+    @PostMapping(value = "/getSelectOptionForServiceDocPersonnel")
+    public @ResponseBody
+    AjaxResDto getSelectOptionForServiceDocPersonnelAjx(HttpServletRequest request) {
+        log.info(StringUtil.changeForLog("the getSelectOptionForServiceDocPersonnelAjx start ..."));
+        AjaxResDto ajaxResDto = new AjaxResDto();
+        String serviceType = ParamUtil.getString(request, "serviceType");
+        String serviceCode = ParamUtil.getString(request, "serviceCode");
+        String suppFormSelect = ParamUtil.getString(request, "suppFormSelect");
+        log.info(StringUtil.changeForLog("the getSelectOptionForServiceDocPersonnelAjx serviceType is -->:"+serviceType));
+        log.info(StringUtil.changeForLog("the getSelectOptionForServiceDocPersonnelAjx serviceCode is -->:"+serviceCode));
+        log.info(StringUtil.changeForLog("the getSelectOptionForServiceDocPersonnelAjx suppFormSelect is -->:"+suppFormSelect));
+        List<SelectOption> selectOptions = getSelectOptionForServiceDocPersonnel(serviceType,serviceCode,"1".endsWith(suppFormSelect)?true:false);
+        ajaxResDto.setResCode(AppConsts.AJAX_RES_CODE_SUCCESS);
+        Map<String, String> chargesTypeAttr = IaisCommonUtils.genNewHashMap();
+        chargesTypeAttr.put("name", "selectDocPerson");
+        String chargeTypeSelHtml = ApplicationHelper.genMutilSelectOpHtml(chargesTypeAttr,
+                selectOptions, "To duplicate for the personnel?", null, false,true);
+        ajaxResDto.setResultJson(chargeTypeSelHtml);
+        log.info(StringUtil.changeForLog("the getSelectOptionForServiceDocPersonnelAjx end ..."));
+
+        return ajaxResDto;
+
+    }
+
+
     // 		start->OnStepProcess
     public void start(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("confige start "));
@@ -139,7 +164,6 @@ public class ConfigServiceDelegator {
                 ParamUtil.setRequestAttr(bpc.request,"crud_action_type_create","dovalidate");
                 ParamUtil.setRequestAttr(bpc.request,"hcsaServiceConfigDto",hcsaServiceConfigDto);
             }else{
-                //configService.saveOrUpdate(bpc.request,bpc.response,hcsaServiceConfigDto);
                 transferHcsaServiceConfigDtoForDB(hcsaServiceConfigDto);
                 configService.saveHcsaServiceConfigDto(hcsaServiceConfigDto);
             }
@@ -171,7 +195,6 @@ public class ConfigServiceDelegator {
     // 		prepareView->OnStepProcess
     public void prepareView(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("confige prepareView start"));
-        //configService.viewPageInfo(bpc.request);
         //set data for this hcsaServiceConfigDto
         String serviceId = ParamUtil.getMaskedString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         log.info(StringUtil.changeForLog("The serviceid is -->:"+serviceId));
@@ -192,7 +215,6 @@ public class ConfigServiceDelegator {
     // 		PrepeareEdit->OnStepProcess
     public void prepeareEdit(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("confige prepeareEdit start"));
-        //String serviceId = bpc.request.getParameter("crud_action_value");
         String serviceId = ParamUtil.getMaskedString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         log.info(StringUtil.changeForLog("The serviceId is -->:"+serviceId));
         HcsaServiceConfigDto hcsaServiceConfigDto = (HcsaServiceConfigDto)ParamUtil.getRequestAttr(bpc.request,"hcsaServiceConfigDto");
@@ -201,16 +223,11 @@ public class ConfigServiceDelegator {
             ParamUtil.setRequestAttr(bpc.request,"hcsaServiceConfigDto",hcsaServiceConfigDto);
         }
         preparePage(bpc.request);
-        /*List<HcsaServiceDto> hcsaServiceDtos = configService.getServicesBySvcCode(hcsaServiceConfigDto.getHcsaServiceDto().getSvcCode());
-        ParamUtil.setRequestAttr(bpc.request,"hcsaServiceDtosVersion",hcsaServiceDtos);*/
-         //configService.viewPageInfo(bpc.request);
         log.info(StringUtil.changeForLog("confige prepeareEdit end"));
     }
     // 		doUpdate->OnStepProcess
     public void doUpdate(BaseProcessClass bpc) throws  Exception{
         log.info(StringUtil.changeForLog("confige doUpdate start"));
-        /*HcsaServiceConfigDto dateOfHcsaService = getDateOfHcsaService(bpc.request);
-        configService.update(bpc.request,bpc.response,dateOfHcsaService);*/
         String crud_action_type = bpc.request.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
         log.info(StringUtil.changeForLog("The crud_action_type is -->:"+crud_action_type));
         if("back".equals(crud_action_type)){
@@ -299,13 +316,41 @@ public class ConfigServiceDelegator {
         routingStagesOption.add(new SelectOption("assign","Supervisor Assign"));
         request.setAttribute("routingStagesOption",routingStagesOption);
 
+        // for Service Doc personnel
+        List<SelectOption> serviceDocPersonnelsOption = getSelectOptionForServiceDocPersonnel(hcsaServiceConfigDto.getHcsaServiceDto().getSvcType(),
+                hcsaServiceConfigDto.getHcsaServiceDto().getSvcCode(),hcsaServiceConfigDto.getSupplementaryForm());
+        request.setAttribute("serviceDocPersonnelsOption",serviceDocPersonnelsOption);
+
         // get all Specialised service
         List<HcsaServiceDto>  specHcsaServiceDtos = configService.getActiveServicesBySvcType(HcsaConsts.SERVICE_TYPE_SPECIFIED);
         ParamUtil.setSessionAttr(request,"specHcsaServiceOptions",(Serializable)getSelectOptionForHcsaServiceDtos(specHcsaServiceDtos));
         //get all Other service
         List<HcsaServiceDto>  otherHcsaServiceDtos = configService.getActiveServicesBySvcType(HcsaConsts.SERVICE_TYPE_OTHERS);
         ParamUtil.setSessionAttr(request,"otherHcsaServiceOptions",(Serializable)getSelectOptionForHcsaServiceDtos(otherHcsaServiceDtos));
+
         return hcsaServiceConfigDto;
+    }
+
+    private List<SelectOption> getSelectOptionForServiceDocPersonnel(String serviceType,String serviceCode,Boolean isSuppFormSelect){
+        List<SelectOption> result = IaisCommonUtils.genNewArrayList();
+        if(StringUtil.isEmpty(serviceType) || HcsaConsts.SERVICE_TYPE_BASE.equals(serviceType)){
+           for(String key:ServiceConfigConstant.SERVICE_DOC_PERSONNEL_BASE.keySet()){
+             result.add(new SelectOption(key,ServiceConfigConstant.SERVICE_DOC_PERSONNEL_BASE.get(key)));
+           }
+           if(isSuppFormSelect != null && isSuppFormSelect){
+               for(String key:ServiceConfigConstant.SERVICE_DOC_PERSONNEL_SUPPLEMENTARY_FORM.keySet()){
+                   result.add(new SelectOption(key,ServiceConfigConstant.SERVICE_DOC_PERSONNEL_SUPPLEMENTARY_FORM.get(key)));
+               }
+           }
+           /*if("EAS".equals(serviceCode) || "MTS".equals(serviceCode)){
+               result.add(new SelectOption(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR,"Clinical Director"));
+           }*/
+        }else if(HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(serviceType)){
+            for(String key:ServiceConfigConstant.SERVICE_DOC_PERSONNEL_SPECIAL.keySet()){
+                result.add(new SelectOption(key,ServiceConfigConstant.SERVICE_DOC_PERSONNEL_SPECIAL.get(key)));
+            }
+        }
+        return result;
     }
 
     private List<SelectOption> getSelectOptionForHcsaServiceDtos(List<HcsaServiceDto> hcsaServiceDtos){
