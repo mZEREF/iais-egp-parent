@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.IaisUENDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -65,6 +66,7 @@ import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AcraUenBeClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
@@ -151,6 +153,9 @@ public class LicenceServiceImpl implements LicenceService {
 
     @Autowired
     private NotificationHelper notificationHelper;
+
+    @Autowired
+    private AppCommClient appCommClient;
 
     @Autowired
     private TaskService taskService;
@@ -272,38 +277,12 @@ public class LicenceServiceImpl implements LicenceService {
     public EventBusLicenceGroupDtos createFESuperLicDto(String eventRefNum,String submissionId) {
         EventBusLicenceGroupDtos eventBusLicenceGroupDtos =  getEventBusLicenceGroupDtosByRefNo(eventRefNum);
         if(eventBusLicenceGroupDtos!=null){
-            Date now = new Date();
-            EicRequestTrackingDto trackDto = licEicClient.getPendingRecordByReferenceNumber(eventRefNum).getEntity();
-            trackDto.setProcessNum(trackDto.getProcessNum() + 1);
-            trackDto.setFirstActionAt(now);
-            trackDto.setLastActionAt(now);
-            try {
-                eicCallFeSuperLic(eventBusLicenceGroupDtos);
-                trackDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-            }
-            hcsaLicenceClient.updateEicTrackStatus(trackDto);
-            //send approve notification
-            trackDto = licEicClient.getPendingRecordByReferenceNumber(eventRefNum + "uen").getEntity();
-            trackDto.setProcessNum(trackDto.getProcessNum() + 1);
-            trackDto.setFirstActionAt(now);
-            trackDto.setLastActionAt(now);
-            try{
-                //save new acra info
-//                saveNewAcra(eventBusLicenceGroupDtos);
-                //send issue uen email
-                log.info(StringUtil.changeForLog("send uen email"));
-                generateUEN(eventBusLicenceGroupDtos);
-                trackDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-            }catch (Exception e){
-                log.error(e.getMessage(),e);
-            }
-            hcsaLicenceClient.updateEicTrackStatus(trackDto);
+            boolean isAsoEmailFlow=false;
+            List<AppPremiseMiscDto> appPremiseMiscDtoList=IaisCommonUtils.genNewArrayList();
             try {
                 for (LicenceGroupDto item:eventBusLicenceGroupDtos.getLicenceGroupDtos()) {
                     for (SuperLicDto superLicDto : item.getSuperLicDtos()) {
-                        sendNotification(superLicDto);
+
                         if(superLicDto != null) {
                             LicenceDto licenceDto = superLicDto.getLicenceDto();
                             if(licenceDto != null){
@@ -318,15 +297,29 @@ public class LicenceServiceImpl implements LicenceService {
                                                 || applicationDto.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_RENEWAL)
                                                 || applicationDto.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE))) {
                                             //getAppPremisesCorrelationsByAppId
+                                            isAsoEmailFlow=true;
+                                            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_ASO_EMAIL_PENDING);
+                                            applicationClient.updateApplication(applicationDto);
                                             AppPremisesCorrelationDto appPremisesCorrelationDto = appPremisesCorrClient.getAppPremisesCorrelationsByAppId(applicationDto.getId()).getEntity().get(0);
                                             if (appPremisesCorrelationDto != null) {
-                                                List<TaskDto> oldTaskDtos= taskService.getTaskbyApplicationNo(applicationDto.getApplicationNo());
+                                                AppPremiseMiscDto appPremiseMiscDto=new AppPremiseMiscDto();
+                                                appPremiseMiscDto.setAppPremCorreId(appPremisesCorrelationDto.getId());
+                                                appPremiseMiscDto.setOtherReason(eventRefNum);
+                                                appPremiseMiscDto.setAppealType(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL);
+                                                appPremiseMiscDtoList.add(appPremiseMiscDto);
+                                                List<TaskDto> oldTaskDtos= taskService.getTaskRfi(applicationDto.getApplicationNo());
                                                 TaskDto taskDto=null;
                                                 if(oldTaskDtos.size()!=0){
                                                     for (TaskDto task:oldTaskDtos
                                                     ) {
                                                         if(task.getRoleId().equals(RoleConsts.USER_ROLE_ASO)){
+                                                            OrgUserDto aso=organizationClient.retrieveOrgUserAccountById(task.getUserId()).getEntity();
                                                             taskDto=task;
+                                                            if(aso==null){
+                                                                taskDto.setUserId(taskService.getUserIdForWorkGroup(task.getWkGrpId()).getUserId());
+                                                            }else if(!aso.getStatus().equals(AppConsts.COMMON_STATUS_ACTIVE)) {
+                                                                taskDto.setUserId(taskService.getUserIdForWorkGroup(task.getWkGrpId()).getUserId());
+                                                            }
                                                             break;
                                                         }
                                                     }
@@ -349,18 +342,63 @@ public class LicenceServiceImpl implements LicenceService {
                                 }
                             }
                         }
-
                     }
                 }
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
-            saveLicenceAppRiskInfoDtos(eventBusLicenceGroupDtos.getLicenceGroupDtos(),eventBusLicenceGroupDtos.getAuditTrailDto());
+
+            if(!isAsoEmailFlow){
+                createFESuperLicDto(eventBusLicenceGroupDtos,eventRefNum);
+
+                for (LicenceGroupDto item:eventBusLicenceGroupDtos.getLicenceGroupDtos()) {
+                    for (SuperLicDto superLicDto : item.getSuperLicDtos()) {
+                        sendNotification(superLicDto);
+                    }
+                }
+            }else if(IaisCommonUtils.isNotEmpty(appPremiseMiscDtoList)){
+                appCommClient.saveAppPremiseMiscDto(appPremiseMiscDtoList);
+            }
+
         }else{
             log.debug(StringUtil.changeForLog("This eventReo can not get the LicEicRequestTrackingDto -->:"+eventRefNum));
         }
 
         return eventBusLicenceGroupDtos;
+    }
+
+    @Override
+    public void createFESuperLicDto(EventBusLicenceGroupDtos eventBusLicenceGroupDtos,String eventRefNum){
+        Date now = new Date();
+        EicRequestTrackingDto trackDto = licEicClient.getPendingRecordByReferenceNumber(eventRefNum).getEntity();
+        trackDto.setProcessNum(trackDto.getProcessNum() + 1);
+        trackDto.setFirstActionAt(now);
+        trackDto.setLastActionAt(now);
+        try {
+            eicCallFeSuperLic(eventBusLicenceGroupDtos);
+            trackDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        hcsaLicenceClient.updateEicTrackStatus(trackDto);
+        //send approve notification
+        trackDto = licEicClient.getPendingRecordByReferenceNumber(eventRefNum + "uen").getEntity();
+        trackDto.setProcessNum(trackDto.getProcessNum() + 1);
+        trackDto.setFirstActionAt(now);
+        trackDto.setLastActionAt(now);
+        try{
+            //save new acra info
+//                saveNewAcra(eventBusLicenceGroupDtos);
+            //send issue uen email
+            log.info(StringUtil.changeForLog("send uen email"));
+            generateUEN(eventBusLicenceGroupDtos);
+            trackDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
+        hcsaLicenceClient.updateEicTrackStatus(trackDto);
+
+        saveLicenceAppRiskInfoDtos(eventBusLicenceGroupDtos.getLicenceGroupDtos(),eventBusLicenceGroupDtos.getAuditTrailDto());
     }
     private void saveLicenceAppRiskInfoDtos( List<LicenceGroupDto> licenceGroupDtos,AuditTrailDto auditTrailDto){
         log.info("----- create save-lic-app-risk-by-licdtos ");
@@ -551,7 +589,8 @@ public class LicenceServiceImpl implements LicenceService {
 
     }
 
-    private void sendNotification(SuperLicDto superLicDto){
+    @Override
+    public void sendNotification(SuperLicDto superLicDto){
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         String corpPassUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + "/main-web/eservice/INTERNET/FE_Landing";
         if(superLicDto != null) {

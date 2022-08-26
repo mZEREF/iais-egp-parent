@@ -93,6 +93,11 @@ public class AppCommClientFallback implements AppCommClient {
     }
 
     @Override
+    public FeignResponseEntity<Void> saveAppPremiseMiscDto(List<AppPremiseMiscDto> appPremiseMiscDtoList) {
+        return IaisEGPHelper.getFeignResponseEntity(appPremiseMiscDtoList);
+    }
+
+    @Override
     public FeignResponseEntity<AppSubmissionDto> getRfiAppSubmissionDtoByAppNo(String appNo) {
         return IaisEGPHelper.getFeignResponseEntity(appNo);
     }

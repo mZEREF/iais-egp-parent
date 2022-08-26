@@ -75,6 +75,9 @@ public interface AppCommClient {
             @RequestParam("appId") String appId,
             @RequestParam(value = "excludeStatus", required = false) List<String> excludeStatus);
 
+    @PostMapping(value = "/app-premise-misc-dto", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> saveAppPremiseMiscDto(@RequestBody List<AppPremiseMiscDto> appPremiseMiscDtoList);
+
     @GetMapping(path = "/app-submission/{appNo}", produces = MediaType.APPLICATION_JSON_VALUE )
     FeignResponseEntity<AppSubmissionDto> getAppSubmissionDtoByAppNo(@PathVariable("appNo") String appNo);
 

@@ -191,6 +191,12 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="preViewPage" stageIndicator="" x="470" y="250">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
  </Pages>
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Direct" name="" sourceName="/Steps/StartStep/doStart" style="oblique">
@@ -332,10 +338,16 @@
    <position>{(60,670)(330,840)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/AsoEmail" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(330,460)(1075,700)}</position>
+   <position>{(330,460)(1050,670)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/AsoEmail" style="oblique">
-   <position>{(1075,700)(330,840)}</position>
+   <position>{(1050,670)(330,840)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/preViewPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(330,460)(515,300)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Direct" name="" sourceName="/Pages/WebPage/preViewPage" style="oblique">
+   <position>{(515,300)(320,80)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
@@ -363,6 +375,7 @@
    <SwitchCase component="/Steps/AutomaticStep/ApproveWithdrawal" value="&quot;PROCWAP&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/RollBack" value="&quot;RollBack&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/AsoEmail" value="&quot;PROCEMAIL&quot;"/>
+   <SwitchCase component="/Pages/WebPage/preViewPage" value="&quot;PREVIEW&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

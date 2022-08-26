@@ -34,6 +34,7 @@
             <c:set var="isInspectorRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST064'}"/>
             <c:set var="isRouteBackStatus" value="${isInspectorRouteBackStatus || isAoRouteBackStatus || isPsoRouteBackStatus}"/>
             <c:set var="isBroadcastStatus" value="${applicationViewDto.applicationDto.status == 'APST013'}"/>
+            <c:set var="isApproveAsoEmail" value="${applicationViewDto.applicationDto.status=='APST094'}"/>
             <c:set var="isBroacastAsoPso" value="${broadcastAsoPso}"/>
             <c:set var="isBroacastAso" value="${broadcastAso}"/>
             <c:set var="isAppealType" value="${applicationViewDto.applicationDto.applicationType == 'APTY001'}"/>
@@ -41,6 +42,7 @@
             <c:set var="isAso" value="${taskDto.taskKey == '12848A70-820B-EA11-BE7D-000C29F371DC'}"/>
             <c:set var="isPso" value="${taskDto.taskKey == '13848A70-820B-EA11-BE7D-000C29F371DC'}"/>
             <c:set var="isCessation" value="${applicationViewDto.applicationDto.applicationType == 'APTY008'}"/>
+            <c:set var="isApproveAsoEmail" value="${applicationViewDto.applicationDto.status=='APST094'}"/>
             <input type="hidden" id="isAppealType" value="${isAppealType}"/>
             <input type="hidden" id="isWithDrawal" value="${isWithDrawal}"/>
             <input type="hidden" id="isCessation" value="${isCessation}"/>
@@ -96,7 +98,7 @@
                                                     <%--         Inspection end                       --%>
 
                                                 <div class="tab-pane" id="tabProcessing" role="tabpanel">
-                                                    <c:if test="${applicationViewDto.applicationDto.status=='APST050'}" var="isApproveAsoEmail">
+                                                    <c:if test="${isApproveAsoEmail}" >
                                                         <%@include file="/WEB-INF/jsp/iais/hcsaLicence/licenceGenerateEmail.jsp" %>
                                                     </c:if>
                                                     <c:if test="${!isApproveAsoEmail}">
@@ -670,6 +672,23 @@
         }
     }
 
+    //ASO Email validate
+    function emailValidate(){
+        //error_nextStage
+        var selectValue = $("[name='nextStage']").val();
+        if (selectValue == "PROCEMAIL" && ${isApproveStatus}) {
+            const remark = $('#internalRemarksId').val();
+            if(remark === null || remark === undefined || remark === "") {
+                $('#error_internalRemarks1').show();
+                return false;
+            }else{
+                return true;
+            }
+        }else{
+            return true;
+        }
+    }
+
     //appeal
         $("[name='appealRecommendationValues']").change(function selectChange() {
             if (${isAppealType}) {
@@ -753,7 +772,7 @@
             if(selectDetail != null && selectDetail != ''){
                 $('#rfiSelectValue').val(selectDetail);
             }
-            if(rfiValidate()){
+            if(rfiValidate()&&emailValidate()){
                 showWaiting();
                 document.getElementById("mainForm").submit();
                 $("#submitButton").attr("disabled", true);

@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.SuperLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 
@@ -46,6 +47,8 @@ public interface LicenceService {
     List<String> getLicenceOutDate(int outMonth);
     List<LicenceGroupDto> createSuperLicDto(EventBusLicenceGroupDtos eventBusLicenceGroupDtos);
     EventBusLicenceGroupDtos createFESuperLicDto(String eventRefNum,String submissionId);
+    void createFESuperLicDto(EventBusLicenceGroupDtos eventBusLicenceGroupDtos,String submissionId);
+    void sendNotification(SuperLicDto superLicDto);
     void sendUenEmail(EventBusLicenceGroupDtos eventBusLicenceGroupDtos);
     EventBusLicenceGroupDtos getEventBusLicenceGroupDtosByRefNo(String refNo);
 

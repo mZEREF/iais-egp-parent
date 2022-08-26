@@ -69,17 +69,25 @@
     };
 
     function uploadInternalDoc(){
-            $('#uploadFileButton').attr("disabled",true);
-            showWaiting();
-            if(validateUploadInternal())
-                callAjaxUploadFile();
-            dismissWaiting();
+        $('#uploadFileButton').attr("disabled",true);
+        showWaiting();
+        if(validateUploadInternal()){
+            callAjaxUploadFile();
+            if (${isApproveAsoEmail}) {
+                $("#emailDocUpload").attr("disabled", true);
+            }
+        }
+
+        dismissWaiting();
     }
 
     function deleteFile(row,repoId) {
         showWaiting();
         $(row).parent('td').parent('tr').remove();
-         callAjaxDeleteFile(repoId);
+        callAjaxDeleteFile(repoId);
+        if (${isApproveAsoEmail}) {
+            $("#emailDocUpload").attr("disabled", false);
+        }
         dismissWaiting();
     }
     function callAjaxDeleteFile(repoId){
@@ -145,16 +153,30 @@
         file.remove();
         $('#selectedFileShowTextName').val("");
     }
-    
+
     function doAddTr(tr) {
-        $("#tbodyFileListId").append(tr);
+        if (${isApproveAsoEmail}) {
+            $("#emailFileListId").append(tr);
+        }else {
+            $("#tbodyFileListId").append(tr);
+        }
+
     }
     function removeNoData() {
-        if(isIE()||isIE11()){
-            $("#tbodyFileListId").find("tr")[0].removeNode(true);
-        }else{
-            $("#tbodyFileListId").find("tr")[0].remove();
+        if (${isApproveAsoEmail}) {
+            if(isIE()||isIE11()){
+                $("#emailFileListId").find("tr")[0].removeNode(true);
+            }else{
+                $("#emailFileListId").find("tr")[0].remove();
+            }
+        }else {
+            if(isIE()||isIE11()){
+                $("#tbodyFileListId").find("tr")[0].removeNode(true);
+            }else{
+                $("#tbodyFileListId").find("tr")[0].remove();
+            }
         }
+
     }
     function isIE(){
         if(!!window.ActiveXObject||"ActiveXObject" in window){
@@ -191,7 +213,7 @@
                 maxSize =  parseInt(maxSize);
             }
             var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
-             fileSize = parseInt(fileSize);
+            fileSize = parseInt(fileSize);
             if(fileSize>= maxSize){
                 $('#selectedFileShow').html($("#fileMaxMBMessage").val());
                 if(fileSize >= 100){

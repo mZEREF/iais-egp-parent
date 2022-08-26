@@ -106,7 +106,7 @@
                 <c:set var="isEmptyIntranetDocDtoList" value="true"/>
                 <c:if test="${not empty applicationViewDto.appIntranetDocDtoList}">
                     <c:forEach var="interalFile" items="${applicationViewDto.appIntranetDocDtoList}" varStatus="status">
-                        <c:if test="${applicationViewDto.applicationDto.applicationType != ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK || (applicationViewDto.applicationDto.applicationType == ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK && interalFile.appDocType != ApplicationConsts.APP_DOC_TYPE_SELF_DEC_FORM)}">
+                        <c:if test="${applicationViewDto.applicationDto.applicationType != ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK && interalFile.appDocType !=ApplicationConsts.APP_DOC_TYPE_EMAIL_ATTACHMENT || (applicationViewDto.applicationDto.applicationType == ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK && interalFile.appDocType != ApplicationConsts.APP_DOC_TYPE_SELF_DEC_FORM)}">
                             <c:set var="isEmptyIntranetDocDtoList" value="false"/>
                         </c:if>
                     </c:forEach>
@@ -121,9 +121,9 @@
                         </tr>
                     </c:when>
                     <c:otherwise>
-                            <c:forEach var="interalFile" items="${applicationViewDto.appIntranetDocDtoList}"
-                                       varStatus="status">
-                                <c:if test="${applicationViewDto.applicationDto.applicationType != ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK || (applicationViewDto.applicationDto.applicationType == ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK && interalFile.appDocType != ApplicationConsts.APP_DOC_TYPE_SELF_DEC_FORM)}">
+                        <c:forEach var="interalFile" items="${applicationViewDto.appIntranetDocDtoList}"
+                                   varStatus="status">
+                            <c:if test="${applicationViewDto.applicationDto.applicationType != ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK && interalFile.appDocType !=ApplicationConsts.APP_DOC_TYPE_EMAIL_ATTACHMENT || (applicationViewDto.applicationDto.applicationType == ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK && interalFile.appDocType != ApplicationConsts.APP_DOC_TYPE_SELF_DEC_FORM)}">
                                 <tr>
                                     <td >
                                         <p>

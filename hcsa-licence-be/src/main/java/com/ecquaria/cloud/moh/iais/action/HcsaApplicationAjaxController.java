@@ -20,15 +20,6 @@ import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationUploadFileValidate;
-import java.io.Serializable;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -41,6 +32,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author zhilin
@@ -114,9 +114,9 @@ public class HcsaApplicationAjaxController{
                 //save file to file DB
                 String repo_id = fileRepoClient.saveFiles(selectedFile, JsonUtil.parseToJson(fileRepoDto)).getEntity();
                 appIntranetDocDto.setFileRepoId(repo_id);
-    //            appIntranetDocDto.set
+                //            appIntranetDocDto.set
                 ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");
-                if(applicationViewDto.getApplicationDto().getStatus().equals(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED)){
+                if(applicationViewDto.getApplicationDto().getStatus().equals(ApplicationConsts.APPLICATION_STATUS_ASO_EMAIL_PENDING)){
                     appIntranetDocDto.setAppDocType(ApplicationConsts.APP_DOC_TYPE_EMAIL_ATTACHMENT);
                 }else {
                     appIntranetDocDto.setAppDocType(ApplicationConsts.APP_DOC_TYPE_COM);
@@ -125,7 +125,7 @@ public class HcsaApplicationAjaxController{
                 appIntranetDocDto.setId(id);
              // set appIntranetDocDto to seesion
             List<AppIntranetDocDto> appIntranetDocDtos;
-            if(applicationViewDto != null && applicationViewDto.getAppIntranetDocDtoList() != null){
+            if(applicationViewDto.getAppIntranetDocDtoList() != null){
                 appIntranetDocDtos = applicationViewDto.getAppIntranetDocDtoList();
             }else {
                 appIntranetDocDtos = new ArrayList<>(5);
@@ -192,7 +192,7 @@ public class HcsaApplicationAjaxController{
                 }
             }
             if(appIntranetDocDe!= null)
-            appIntranetDocDtos.remove( appIntranetDocDe);
+                appIntranetDocDtos.remove( appIntranetDocDe);
             boolean isUpload = false;
             for(AppIntranetDocDto appIntranetDocDto : appIntranetDocDtos){
                 if(appIntranetDocDto.getIsUpload() != null && appIntranetDocDto.getIsUpload()){
