@@ -213,8 +213,7 @@ public class WithOutRenewalDelegator {
         bpc.request.getSession().setAttribute("coMap", coMap);
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.CURR_ORG_USER_ACCOUNT, null);
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.LICPERSONSELECTMAP, null);
-        //inbox draft number
-
+        HttpServletRequest request = bpc.request;
         //init page value
         //instructions
         ParamUtil.setRequestAttr(bpc.request, "page_value", PAGE1);
@@ -232,10 +231,10 @@ public class WithOutRenewalDelegator {
         if (StringUtil.isEmpty(draftNo)) {
             appSubmissionDtoList = outRenewalService.getAppSubmissionDtos(licenceIDList);
             if (!IaisCommonUtils.isEmpty(appSubmissionDtoList) && appSubmissionDtoList.size() == 1) {
-                setMaxFileIndexIntoSession(bpc.request, appSubmissionDtoList.get(0));
+                ApplicationHelper.reSetMaxFileIndex(appSubmissionDtoList.get(0).getMaxFileIndex(), request);
             }
             log.info("can not find licence id for without renewal");
-            ParamUtil.setSessionAttr(bpc.request, "backUrl", "initLic");
+            ParamUtil.setSessionAttr(request, "backUrl", "initLic");
         } else {
             AppSubmissionDto appSubmissionDtoDraft = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
             licenceIDList = new ArrayList<>(1);
@@ -250,12 +249,12 @@ public class WithOutRenewalDelegator {
 
             AppDataHelper.initDeclarationFiles(appSubmissionDtoDraft.getAppDeclarationDocDtos(),appSubmissionDtoDraft.getAppType(),bpc.request);
             ParamUtil.setSessionAttr(bpc.request, LOADING_DRAFT, AppConsts.YES);
-            setMaxFileIndexIntoSession(bpc.request,appSubmissionDtoDraft);
+            ApplicationHelper.reSetMaxFileIndex(appSubmissionDtoDraft.getMaxFileIndex(), request);
             appSubmissionDtoList.add(appSubmissionDtoDraft);
             ParamUtil.setSessionAttr(bpc.request, "backUrl", "initApp");
-            loadCoMap(bpc, appSubmissionDtoDraft);
+            DealSessionUtil.loadCoMap(appSubmissionDtoDraft, bpc.request);
             List<AppSubmissionDto> submissionDtos = outRenewalService.getAppSubmissionDtos(licenceIDList);
-            appSubmissionDtoDraft.setOldRenewAppSubmissionDto(setMaxFileIndexIntoSession(bpc.request,submissionDtos.get(0)));
+            appSubmissionDtoDraft.setOldRenewAppSubmissionDto(submissionDtos.get(0));
             log.info("---------run setDraftRfCData start------------");
             setDraftRfCData(bpc.request,draftNo,appSubmissionDtoDraft);
             log.info("---------run setDraftRfCData end------------");
@@ -356,9 +355,8 @@ public class WithOutRenewalDelegator {
                 }
                 appSubmissionDto.setServiceName(serviceName);
                 if (licenceIDList.size() == 1) {
-                    appEditSelectDto.setPremisesEdit(true);
-                    appEditSelectDto.setSpecialisedEdit(true);
-                    appEditSelectDto.setServiceEdit(true);
+                    appEditSelectDto = ApplicationHelper.createAppEditSelectDto(true);
+                    appEditSelectDto.setLicenseeEdit(false);
                     ParamUtil.setSessionAttr(bpc.request, SINGLE_SERVICE, "Y");
                     ParamUtil.setSessionAttr(bpc.request,"renew_licence_no",appSubmissionDto.getLicenceNo());
                 } else {
@@ -397,6 +395,30 @@ public class WithOutRenewalDelegator {
         }
         renewDto.setAppSubmissionDtos(appSubmissionDtoList);
         List<AppSubmissionDto> cloneAppsbumissionDtos = IaisCommonUtils.genNewArrayList();
+        if (appSubmissionDtoList != null && appSubmissionDtoList.size() != 0) {
+            appSubmissionDtoList.get(0).setOneLicDoRenew(true);
+            AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) request.getSession().getAttribute(
+                    "oldRenewAppSubmissionDto");
+            boolean flag = false;
+            if (oldAppSubmissionDto == null) {
+                oldAppSubmissionDto = appSubmissionDtoList.get(0);
+                flag = true;
+            }
+            Object loadingDraft = ParamUtil.getSessionAttr(bpc.request, LOADING_DRAFT);
+            if (loadingDraft != null) {
+                AppSubmissionDto oldAppSubmisDto = appSubmissionDtoList.get(0).getOldRenewAppSubmissionDto();
+                if (oldAppSubmisDto != null) {
+                    oldAppSubmissionDto = oldAppSubmisDto;
+                }
+            }
+            if (flag) {
+                if (renewDto.getAppSubmissionDtos().get(0).getOldRenewAppSubmissionDto() == null) {
+                    Object object = CopyUtil.copyMutableObject(oldAppSubmissionDto);
+                    renewDto.getAppSubmissionDtos().get(0).setOldRenewAppSubmissionDto((AppSubmissionDto) object);
+                }
+                bpc.request.getSession().setAttribute("oldRenewAppSubmissionDto", oldAppSubmissionDto);
+            }
+        }
         CopyUtil.copyMutableObjectList(appSubmissionDtoList, cloneAppsbumissionDtos);
         ParamUtil.setSessionAttr(bpc.request, "oldSubmissionDtos", (Serializable) cloneAppsbumissionDtos);
         ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR, renewDto);
@@ -416,19 +438,6 @@ public class WithOutRenewalDelegator {
 
     }
 
-    private  AppSubmissionDto setMaxFileIndexIntoSession(HttpServletRequest request, AppSubmissionDto appSubmissionDto){
-        appSubmissionDto.setOneLicDoRenew(true);
-        //set max file index into session
-        Integer maxFileIndex = appSubmissionDto.getMaxFileIndex();
-        if(maxFileIndex == null){
-            maxFileIndex = 0;
-        }else{
-            maxFileIndex ++;
-        }
-        ParamUtil.setSessionAttr(request,IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR,maxFileIndex);
-        return appSubmissionDto;
-    }
-
     private void setDraftRfCData(HttpServletRequest request,String draftNo, AppSubmissionDto appSubmissionDto) {
         if (StringUtil.isNotEmpty(draftNo)) {
             appSubmissionDto.setLicenseeId(ApplicationHelper.getLicenseeId(request));
@@ -445,33 +454,6 @@ public class WithOutRenewalDelegator {
         }
     }
 
-    private void loadCoMap(BaseProcessClass bpc, AppSubmissionDto appSubmissionDto) {
-        List<String> stepColor = appSubmissionDto.getStepColor();
-        if (stepColor != null) {
-            HashMap<String, String> coMap = new HashMap<>(4);
-            coMap.put("premises", "");
-            coMap.put("document", "");
-            coMap.put("information", "");
-            coMap.put("previewli", "");
-            if (!stepColor.isEmpty()) {
-                for (String str : stepColor) {
-                    if ("premises".equals(str)) {
-                        coMap.put("premises", str);
-                    } else if ("document".equals(str)) {
-                        coMap.put("document", str);
-                    } else if ("information".equals(str)) {
-                        coMap.put("information", str);
-                    } else if ("previewli".equals(str)) {
-                        coMap.put("previewli", str);
-                    } else {
-                        bpc.request.getSession().setAttribute("serviceConfig", str);
-                    }
-                }
-            }
-            bpc.getSession().setAttribute("coMap", coMap);
-        }
-    }
-
     /**
      * AutoStep: prepare
      */
@@ -484,26 +466,6 @@ public class WithOutRenewalDelegator {
         String groupId = "";
         if (appSubmissionDtos != null && appSubmissionDtos.size() != 0) {
             groupId = appSubmissionDtos.get(0).getAppGrpId();
-            AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) bpc.request.getSession().getAttribute("oldRenewAppSubmissionDto");
-            boolean flag=false;
-            if (oldAppSubmissionDto == null) {
-                oldAppSubmissionDto = appSubmissionDtos.get(0);
-                flag=true;
-            }
-            Object loadingDraft = ParamUtil.getSessionAttr(bpc.request, LOADING_DRAFT);
-            if (loadingDraft != null) {
-                AppSubmissionDto oldAppSubmisDto = appSubmissionDtos.get(0).getOldRenewAppSubmissionDto();
-                if (oldAppSubmisDto != null) {
-                    oldAppSubmissionDto = oldAppSubmisDto;
-                }
-            }
-            if(flag){
-                if(renewDto.getAppSubmissionDtos().get(0).getOldRenewAppSubmissionDto()==null){
-                    Object object = CopyUtil.copyMutableObject(oldAppSubmissionDto);
-                    renewDto.getAppSubmissionDtos().get(0).setOldRenewAppSubmissionDto((AppSubmissionDto)object);
-                }
-                bpc.request.getSession().setAttribute("oldRenewAppSubmissionDto", oldAppSubmissionDto);
-            }
         }
         String result = ParamUtil.getMaskedString(bpc.request, "result");
         if(appSubmissionDtos != null && appSubmissionDtos.size() > 0){
@@ -1225,9 +1187,8 @@ public class WithOutRenewalDelegator {
         ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
     }
     public void jumpYeMian(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        StringBuilder url = new StringBuilder(10);
-        url.append("https://").append(request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
-        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), request);
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(
+                "https://" + request.getServerName() + "/main-web/eservice/INTERNET/MohInternetInbox", request);
         IaisEGPHelper.redirectUrl(response, tokenUrl);
     }
     //doLicenceReview
@@ -1513,7 +1474,7 @@ public class WithOutRenewalDelegator {
             fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, payMethod);
             fieldMap.put(GatewayConstants.SVCREF_NO, groupNo+"_"+System.currentTimeMillis());
             try {
-                String html="";
+                String html;
                 switch (payMethod){
                     case ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT:
                         html = GatewayStripeAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, backUrl);break;

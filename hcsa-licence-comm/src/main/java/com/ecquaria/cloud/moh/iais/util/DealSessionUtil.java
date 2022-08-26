@@ -9,8 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocSecDetailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
@@ -167,6 +165,36 @@ public class DealSessionUtil {
         ParamUtil.setSessionAttr(request, HcsaAppConst.CO_MAP, coMap);
     }
 
+    public static void loadCoMap(AppSubmissionDto appSubmissionDto, HttpServletRequest request) {
+        List<String> stepColor = appSubmissionDto.getStepColor();
+        if (stepColor != null) {
+            HashMap<String, String> coMap = new HashMap<>(5);
+            coMap.put(HcsaAppConst.SECTION_LICENSEE, "");
+            coMap.put(HcsaAppConst.SECTION_PREMISES, "");
+            coMap.put(HcsaAppConst.SECTION_SPECIALISED, "");
+            coMap.put(HcsaAppConst.SECTION_SVCINFO, "");
+            coMap.put(HcsaAppConst.SECTION_PREVIEW, "");
+            if (!stepColor.isEmpty()) {
+                for (String str : stepColor) {
+                    if (HcsaAppConst.SECTION_LICENSEE.equals(str)) {
+                        coMap.put(HcsaAppConst.SECTION_LICENSEE, str);
+                    } else if (HcsaAppConst.SECTION_PREMISES.equals(str)) {
+                        coMap.put(HcsaAppConst.SECTION_PREMISES, str);
+                    } else if (HcsaAppConst.SECTION_SPECIALISED.equals(str)) {
+                        coMap.put(HcsaAppConst.SECTION_SPECIALISED, str);
+                    } else if (HcsaAppConst.SECTION_SVCINFO.equals(str)) {
+                        coMap.put(HcsaAppConst.SECTION_SVCINFO, str);
+                    } else if (HcsaAppConst.SECTION_PREVIEW.equals(str)) {
+                        coMap.put(HcsaAppConst.SECTION_PREVIEW, str);
+                    } else {
+                        ParamUtil.setSessionAttr(request, "serviceConfig", str);
+                    }
+                }
+            }
+            ParamUtil.setSessionAttr(request, HcsaAppConst.CO_MAP, coMap);
+        }
+    }
+
     public static void clearPremisesMap(HttpServletRequest request) {
         request.getSession().removeAttribute(HcsaAppConst.LIC_PREMISES_MAP);
         request.getSession().removeAttribute(HcsaAppConst.APP_PREMISES_MAP);
@@ -231,14 +259,23 @@ public class DealSessionUtil {
                 if (isRfi) {
                     //groupLicencePremiseRelationDis(appSubmissionDto);
                 } else {
-                    AppDeclarationMessageDto appDeclarationMessageDto = AppDataHelper.getAppDeclarationMessageDto(bpc.request,
-                            ApplicationConsts.APPLICATION_TYPE_RENEWAL);
-                    List<AppDeclarationDocDto> declarationFiles = AppDataHelper.getDeclarationFiles(
-                            ApplicationConsts.APPLICATION_TYPE_RENEWAL, bpc.request);
-                    appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
-                    appSubmissionDto.setAppDeclarationDocDtos(declarationFiles);
+//                    AppDeclarationMessageDto appDeclarationMessageDto = AppDataHelper.getAppDeclarationMessageDto(bpc.request,
+//                            ApplicationConsts.APPLICATION_TYPE_RENEWAL);
+//                    List<AppDeclarationDocDto> declarationFiles = AppDataHelper.getDeclarationFiles(
+//                            ApplicationConsts.APPLICATION_TYPE_RENEWAL, bpc.request);
+//                    appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
+//                    appSubmissionDto.setAppDeclarationDocDtos(declarationFiles);
                 }
-                AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
+                AppSubmissionDto oldAppSubmissionDto = null;
+                if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
+                    oldAppSubmissionDto = appSubmissionDto.getOldRenewAppSubmissionDto();
+                    if (oldAppSubmissionDto == null) {
+                        oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
+                    }
+                }
+                if (oldAppSubmissionDto == null) {
+                    oldAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
+                }
                 ApplicationHelper.setOldAppSubmissionDto(oldAppSubmissionDto, bpc.request);
             } else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
                 AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
@@ -266,7 +303,7 @@ public class DealSessionUtil {
             ParamUtil.setSessionAttr(request, HcsaAppConst.CURR_ORG_USER_ACCOUNT, (Serializable) feUserDtos);
             //existing person
             List<PersonnelListQueryDto> licPersonList = getLicCommService().getLicencePersonnelListQueryDto(licenseeId);
-            licPersonMap = ApplicationHelper.getLicPsnIntoSelMap(feUserDtos, licPersonList, licPersonMap);
+            ApplicationHelper.getLicPsnIntoSelMap(feUserDtos, licPersonList, licPersonMap);
             ParamUtil.setSessionAttr(request, HcsaAppConst.LICPERSONSELECTMAP, (Serializable) licPersonMap);
             //set data into psnMap
             Map<String, AppSvcPersonAndExtDto> personMap = IaisCommonUtils.genNewHashMap();
@@ -275,17 +312,17 @@ public class DealSessionUtil {
                     && (ApplicationHelper.checkFromDraft(request) || ApplicationHelper.checkIsRfi(request))) {
                 for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
                     String svcCode = appSvcRelatedInfoDto.getServiceCode();
-                    personMap = ApplicationHelper.initSetPsnIntoSelMap(personMap,
+                    ApplicationHelper.initSetPsnIntoSelMap(personMap,
                             appSvcRelatedInfoDto.getAppSvcCgoDtoList(), svcCode);
-                    personMap = ApplicationHelper.initSetPsnIntoSelMap(personMap,
+                    ApplicationHelper.initSetPsnIntoSelMap(personMap,
                             appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList(), svcCode);
-                    personMap = ApplicationHelper.initSetPsnIntoSelMap(personMap,
+                    ApplicationHelper.initSetPsnIntoSelMap(personMap,
                             appSvcRelatedInfoDto.getAppSvcNomineeDtoList(), svcCode);
-                    personMap = ApplicationHelper.initSetPsnIntoSelMap(personMap,
+                    ApplicationHelper.initSetPsnIntoSelMap(personMap,
                             appSvcRelatedInfoDto.getAppSvcMedAlertPersonList(), svcCode);
-                    personMap = ApplicationHelper.initSetPsnIntoSelMap(personMap,
+                    ApplicationHelper.initSetPsnIntoSelMap(personMap,
                             appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList(), svcCode);
-                    personMap = ApplicationHelper.initSetPsnIntoSelMap(personMap,
+                    ApplicationHelper.initSetPsnIntoSelMap(personMap,
                             appSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList(), svcCode);
                 }
             }
@@ -301,7 +338,7 @@ public class DealSessionUtil {
     }
 
     public static AppSubmissionDto init(AppSubmissionDto appSubmissionDto, boolean newConfig, HttpServletRequest request) {
-        if(appSubmissionDto == null) {
+        if (appSubmissionDto == null) {
             return appSubmissionDto;
         }
         String licenceId = appSubmissionDto.getLicenceId();
@@ -377,7 +414,7 @@ public class DealSessionUtil {
         }
 
         ApplicationHelper.initSupplementoryForm(currSvcInfoDto, true);
-        ApplicationHelper.initOtherInfoForm(currSvcInfoDto,true);
+        ApplicationHelper.initOtherInfoForm(currSvcInfoDto, true);
 
         List<HcsaSvcDocConfigDto> svcDocConfigDtos = getConfigCommService().getAllHcsaSvcDocs(svcId);
         addPremAlignForSvcDoc(svcDocConfigDtos, currSvcInfoDto.getAppSvcDocDtoLit(), appGrpPremisesDtos);
@@ -442,4 +479,5 @@ public class DealSessionUtil {
         }
         return appSvcDocDtoList;
     }
+
 }
