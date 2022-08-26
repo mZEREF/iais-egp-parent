@@ -404,6 +404,7 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             if (errorMap.isEmpty()) {
                 valRFC(request,drugPrescribedDispensed);
             }
+            valIsPrescribedSubmissionId(request, drugPrescribedDispensed, errorMap);
         }
         if (!errorMap.isEmpty()) {
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
@@ -508,6 +509,23 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
                     }
                 }
 
+            }
+        }
+    }
+
+    // When RFC, determine whether the user input is PrescriptionSubmissionId
+    protected void valIsPrescribedSubmissionId(HttpServletRequest request, DrugPrescribedDispensedDto drugPrescribedDispensed, Map<String, String> errorMap) {
+        if(isRfc(request)){
+            DpSuperDataSubmissionDto dpOldSuperDataSubmissionDto = DataSubmissionHelper.getOldDpSuperDataSubmissionDto(request);
+            if(dpOldSuperDataSubmissionDto != null){
+                if(dpOldSuperDataSubmissionDto.getDrugPrescribedDispensedDto()!= null){
+                    if (!drugPrescribedDispensed.getDrugSubmission().getPrescriptionSubmissionId().equals(dpOldSuperDataSubmissionDto.getDrugPrescribedDispensedDto().getDrugSubmission().getPrescriptionSubmissionId())){
+                        DrugPrescribedDispensedDto drugPrescribedDispensedDto = dpDataSubmissionService.getDrugMedicationDtoBySubmissionNo(drugPrescribedDispensed.getDrugSubmission().getPrescriptionSubmissionId());
+                        if (drugPrescribedDispensedDto != null && !DRUG_PRESCRIBED.equals(drugPrescribedDispensedDto.getDrugSubmission().getDrugType())){
+                            errorMap.put("prescriptionSubmissionId","GENERAL_ERR0008");
+                        }
+                    }
+                }
             }
         }
     }
