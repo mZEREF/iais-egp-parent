@@ -172,50 +172,8 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 }
                 //set max file index into session
                 ApplicationHelper.reSetMaxFileIndex(appSubmissionDto.getMaxFileIndex());
-                /*
-                // check premise select
-                List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-                if (!IaisCommonUtils.isEmpty(appGrpPremisesDtoList)) {
-                    Map<String, AppGrpPremisesDto> premisesDtoMap = ApplicationHelper.checkPremisesMap(appGrpPremisesDtoList, false,
-                            false, request);
-                    for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
-                        if (HcsaAppConst.NEW_PREMISES.equals(appGrpPremisesDto.getPremisesSelect())) {
-                            String premisesSelect = ApplicationHelper.getPremisesKey(appGrpPremisesDto);
-                            AppGrpPremisesDto premises = premisesDtoMap.get(premisesSelect);
-                            if (premises != null) {
-                                appGrpPremisesDto.setPremisesSelect(premisesSelect);
-                            }
-                        }
-                    }
-                }*/
 
-                List<String> stepColor = appSubmissionDto.getStepColor();
-                if (stepColor != null) {
-                    HashMap<String, String> coMap = new HashMap<>(5);
-                    coMap.put(HcsaAppConst.SECTION_LICENSEE, "");
-                    coMap.put(HcsaAppConst.SECTION_PREMISES, "");
-                    coMap.put(HcsaAppConst.SECTION_SPECIALISED, "");
-                    coMap.put(HcsaAppConst.SECTION_SVCINFO, "");
-                    coMap.put(HcsaAppConst.SECTION_PREVIEW, "");
-                    if (!stepColor.isEmpty()) {
-                        for (String str : stepColor) {
-                            if (HcsaAppConst.SECTION_LICENSEE.equals(str)) {
-                                coMap.put(HcsaAppConst.SECTION_LICENSEE, str);
-                            } else if (HcsaAppConst.SECTION_PREMISES.equals(str)) {
-                                coMap.put(HcsaAppConst.SECTION_PREMISES, str);
-                            } else if (HcsaAppConst.SECTION_SPECIALISED.equals(str)) {
-                                coMap.put(HcsaAppConst.SECTION_SPECIALISED, str);
-                            } else if (HcsaAppConst.SECTION_SVCINFO.equals(str)) {
-                                coMap.put(HcsaAppConst.SECTION_SVCINFO, str);
-                            } else if (HcsaAppConst.SECTION_PREVIEW.equals(str)) {
-                                coMap.put(HcsaAppConst.SECTION_PREVIEW, str);
-                            } else {
-                                ParamUtil.setSessionAttr(request, "serviceConfig", str);
-                            }
-                        }
-                    }
-                    ParamUtil.setSessionAttr(request, HcsaAppConst.CO_MAP, coMap);
-                }
+                DealSessionUtil.loadCoMap(appSubmissionDto, request);
                 if (appSubmissionDto.getAppGrpPremisesDtoList() != null && appSubmissionDto.getAppGrpPremisesDtoList().size() > 0) {
                     ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, appSubmissionDto);
                 } else {

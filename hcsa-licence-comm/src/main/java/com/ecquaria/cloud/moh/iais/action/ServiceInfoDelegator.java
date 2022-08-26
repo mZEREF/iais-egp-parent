@@ -145,16 +145,17 @@ public class ServiceInfoDelegator {
         if (IaisEGPConstant.YES.equals(formTab)) {
             action = null;
         }
+        AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(bpc.request);
         ServiceStepDto serviceStepDto = (ServiceStepDto) ParamUtil.getSessionAttr(bpc.request,
                 ShowServiceFormsDelegator.SERVICESTEPDTO);
         String svcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,
                 AppServicesConsts.HCSASERVICEDTOLIST);
-        getServiceStepDto(serviceStepDto, action, hcsaServiceDtoList, svcId);
+        getServiceStepDto(serviceStepDto, action, hcsaServiceDtoList, svcId, appSubmissionDto);
         //reset value
-        if (HcsaConsts.STEP_DISCIPLINE_ALLOCATION.equals(action)) {
+        /*if (HcsaConsts.STEP_DISCIPLINE_ALLOCATION.equals(action)) {
             action = serviceStepDto.getCurrentStep().getStepCode();
-        }
+        }*/
         ParamUtil.setSessionAttr(bpc.request, ShowServiceFormsDelegator.SERVICESTEPDTO, serviceStepDto);
 
         if (StringUtil.isEmpty(action)) {
@@ -1639,7 +1640,7 @@ public class ServiceInfoDelegator {
     }
 
     private ServiceStepDto getServiceStepDto(ServiceStepDto serviceStepDto, String action, List<HcsaServiceDto> hcsaServiceDtoList,
-            String svcId) {
+            String svcId, AppSubmissionDto appSubmissionDto) {
         //get the service information
         int serviceNum = -1;
         if (svcId != null && hcsaServiceDtoList != null && hcsaServiceDtoList.size() > 0) {
@@ -1673,13 +1674,11 @@ public class ServiceInfoDelegator {
             if (StringUtil.isEmpty(action)) {
                 number = 0;
             } else {
-                String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,
-                        HcsaConsts.STEP_DISCIPLINE_ALLOCATION};
                 for (int i = 0; i < hcsaServiceStepSchemeDtos.size(); i++) {
                     if (action.equals(hcsaServiceStepSchemeDtos.get(i).getStepCode())) {
                         number = i;
                         boolean toNext = currentNumber < i;
-                        while (StringUtil.isIn(hcsaServiceStepSchemeDtos.get(i++).getStepCode(), skipList)) {
+                        while (skipStep(hcsaServiceStepSchemeDtos.get(i++).getStepCode(), appSubmissionDto)) {
                             if (toNext) {
                                 number++;
                             } else {
@@ -1752,12 +1751,24 @@ public class ServiceInfoDelegator {
         return serviceStepDto;
     }
 
-    public static AppSubmissionDto getAppSubmissionDto(HttpServletRequest request) {
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
-        if (appSubmissionDto == null) {
-            appSubmissionDto = new AppSubmissionDto();
+    private boolean skipStep(String stepCode, AppSubmissionDto appSubmissionDto) {
+        String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,
+                HcsaConsts.STEP_DISCIPLINE_ALLOCATION};
+        if (StringUtil.isIn(stepCode, skipList)) {
+            return true;
         }
-        return appSubmissionDto;
+        if (HcsaConsts.STEP_SPECIAL_SERVICES_FORM.equals(stepCode)) {
+            List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
+            if (appPremSpecialisedDtoList == null || appPremSpecialisedDtoList.isEmpty() || appPremSpecialisedDtoList.stream()
+                    .noneMatch(AppPremSpecialisedDto::isExistCheckedRels)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static AppSubmissionDto getAppSubmissionDto(HttpServletRequest request) {
+        return ApplicationHelper.getAppSubmissionDto(request);
     }
 
     private void setAppSvcRelatedInfoMap(HttpServletRequest request, String currentSvcId, AppSvcRelatedInfoDto currSvcInfoDto) {

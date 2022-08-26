@@ -193,7 +193,7 @@ public final class ApplicationHelper {
         if (appSubmissionDto == null) {
             log.info(StringUtil.changeForLog("appSubmissionDto is empty "));
             appSubmissionDto = new AppSubmissionDto();
-            setOldAppSubmissionDto(appSubmissionDto, request);
+            //setOldAppSubmissionDto(appSubmissionDto, request);
         }
         return appSubmissionDto;
     }
