@@ -1007,7 +1007,6 @@ public final class AppValidatorHelper {
         String unitNo = appGrpPremisesDto.getUnitNo();
         String blkNo = appGrpPremisesDto.getBlkNo();
         String addrType = appGrpPremisesDto.getAddrType();
-        appGrpPremisesDto.setFloorNo(ApplicationHelper.handleFloorNo(floorNo));
         String floorNoKey = ApplicationHelper.getParamName(String.valueOf(i), "floorNo0");
         String unitNoKey = ApplicationHelper.getParamName(String.valueOf(i), "unitNo0");
         boolean empty = StringUtil.isEmpty(floorNo);
@@ -1030,8 +1029,7 @@ public final class AppValidatorHelper {
             errorMap.put(unitNoKey, repLength("Unit No.", "5"));
         }
         if (addrTypeFlag) {
-            String floorNoErr = errorMap.get(floorNoKey);
-            String sb = ApplicationHelper.handleFloorNo(floorNo, floorNoErr) + AppConsts.DFT_DELIMITER +
+            String sb = StringUtil.getNonNull(floorNo) + AppConsts.DFT_DELIMITER +
                     StringUtil.getNonNull(blkNo) + AppConsts.DFT_DELIMITER + unitNo;
             floorUnitList.add(sb);
         }
@@ -1076,9 +1074,6 @@ public final class AppValidatorHelper {
                     flag = false;
                     errorMap.put(unitErrName + opIndex, repLength("Unit No.", "5"));
                 }
-                String floorNoErr = errorMap.get(floorErrName + opIndex);
-                floorNo = ApplicationHelper.handleFloorNo(floorNo, floorNoErr);
-                operationalUnitDto.setFloorNo(floorNo);
                 if (flag) {
                     if (!StringUtil.isEmpty(floorNo) && !StringUtil.isEmpty(unitNo)) {
                         String blkNo = appGrpPremisesDto.getBlkNo();
@@ -1488,7 +1483,7 @@ public final class AppValidatorHelper {
         if (file != null) {
             long size = file.getSize();
             String filename = file.getOriginalFilename();
-            String fileType = filename.substring(filename.lastIndexOf('.') + 1);
+            String fileType = filename == null ? "" : filename.substring(filename.lastIndexOf('.') + 1);
             String s = fileType.toUpperCase();
             if (!fileTypes.contains(s)) {
                 map.put("fileType", Boolean.FALSE);
@@ -2518,7 +2513,7 @@ public final class AppValidatorHelper {
                     continue;
                 }
                 String errorKey = preKey + appSvcDocDto.getSeqNum() + "Error";
-                Boolean flag = Boolean.FALSE;
+                boolean flag = false;
                 String substring = docName.substring(docName.lastIndexOf('.') + 1);
                 if (docSize / 1024 > uploadFileLimit) {
                     isValid = false;
@@ -2533,7 +2528,7 @@ public final class AppValidatorHelper {
                 String[] sysFileTypeArr = FileUtils.fileTypeToArray(sysFileType);
                 for (String f : sysFileTypeArr) {
                     if (f.equalsIgnoreCase(substring)) {
-                        flag = Boolean.TRUE;
+                        flag = true;
                     }
                 }
                 if (!flag) {

@@ -3428,30 +3428,6 @@ public final class ApplicationHelper {
         return appGrpPremisesDtoList;
     }
 
-    /**
-     * Handle floor no
-     *
-     * @param floorNo
-     * @param floorNoErr
-     * @return
-     */
-    public static String handleFloorNo(String floorNo, String floorNoErr) {
-        if (StringUtil.isEmpty(floorNoErr)) {
-            return handleFloorNo(floorNo);
-        }
-        return floorNo;
-    }
-
-    /**
-     * Handle floor no
-     *
-     * @param floorNo
-     * @return
-     */
-    public static String handleFloorNo(String floorNo) {
-        return IaisCommonUtils.getFloorNo(floorNo);
-    }
-
     public static Map<String, AppGrpPremisesDto> checkPremisesMap(boolean reSetCurrent, HttpServletRequest request) {
         return checkPremisesMap(reSetCurrent, false, request);
     }
