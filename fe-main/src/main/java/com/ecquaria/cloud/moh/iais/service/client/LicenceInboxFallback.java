@@ -421,4 +421,9 @@ public class LicenceInboxFallback implements LicenceInboxClient {
     public FeignResponseEntity<Void> deleteDraftBySubmissionId(String submissionId) {
         return getEntity();
     }
+
+    @Override
+    public FeignResponseEntity<List<DsCenterDto>> updateBeDsCenterStatus() {
+        return getEntity();
+    }
 }
