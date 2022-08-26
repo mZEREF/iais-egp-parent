@@ -291,6 +291,21 @@
         }
     }
 
+    function checkItemMandatoryAdditional($v) {
+        let group = $v.data('group');
+        if (isEmpty(group)) {
+            return;
+        }
+        let mandatory = $v.data('mandatory');
+        if ('3' != mandatory) {
+            return;
+        }
+        let parent = $v.data('parent');
+
+        $targetLabel.find('.mandatory').remove();
+        $targetLabel.append('<span class="mandatory">*</span>');
+    }
+
     function checkItemCondition($tag) {
         if (isEmptyNode($tag)) {
             return;
@@ -362,7 +377,8 @@
         if (isEmpty(condId)) {
             return;
         }
-        let $target = $('[data-condition*="' + condId + '"]');
+        let seq = $prsRegNo.data('seq');
+        let $target = $('[data-condition*="' + condId + '"][data-seq=' + seq + ']');
         if (isEmptyNode($target)) {
             return;
         }
