@@ -557,12 +557,6 @@ public class TopDataSubmissionDelegator {
             }
         }
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
-        //for ds center validation
-        LoginContext login = AccessUtil.getLoginUser(request);
-        List<DsCenterDto> centerDtos = licenceClient.getDsCenterDtosByOrgIdAndCentreType(login.getOrgId(), DataSubmissionConsts.DS_TOP).getEntity();
-        if (IaisCommonUtils.isEmpty(centerDtos)) {
-            errMap.put("topErrorMsg", "DS_ERR070");
-        }
         String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
         if(isRfc(request)){
             if(StringUtil.isEmpty(dataSubmissionDto.getAmendReason())){
@@ -707,6 +701,12 @@ public class TopDataSubmissionDelegator {
         }
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
+        //for ds center validation
+        LoginContext login = AccessUtil.getLoginUser(request);
+        List<DsCenterDto> centerDtos = licenceClient.getDsCenterDtosByOrgIdAndCentreType(login.getOrgId(), DataSubmissionConsts.DS_TOP).getEntity();
+        if (IaisCommonUtils.isEmpty(centerDtos)) {
+            errMap.put("topErrorMsg", "DS_ERR070");
+        }
         String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
         if("next".equals(actionType)|| DataSubmissionHelper.isToNextAction(request)){
             ValidationResult result = WebValidationHelper.validateProperty(patientInformationDto,"TOP");
