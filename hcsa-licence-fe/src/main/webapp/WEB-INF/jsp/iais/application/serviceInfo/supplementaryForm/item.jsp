@@ -4,7 +4,7 @@
 
 <c:set var="isCheckBox" value="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_CHECKBOX}"/>
 
-<iais:row cssClass="${isCheckBox ? 'form-check':''} form-level-${item.level} item-record ${itemConfigDto.id}">
+<iais:row cssClass="${isCheckBox ? 'form-check ':''}form-level-${item.level} item-record ${itemConfigDto.id}">
     <c:choose>
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_TITLE}">
             <div class="col-xs-12">
