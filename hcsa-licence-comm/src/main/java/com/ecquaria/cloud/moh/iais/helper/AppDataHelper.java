@@ -135,7 +135,7 @@ public final class AppDataHelper {
         dto.setPostalCode(postalCode);
         dto.setAddrType(addrType);
         dto.setBlkNo(blkNo);
-        dto.setFloorNo(floorNo);
+        dto.setFloorNo(IaisCommonUtils.getFloorNo(floorNo));
         dto.setUnitNo(unitNo);
         dto.setStreetName(streetName);
         dto.setBuildingName(buildingName);
@@ -226,7 +226,7 @@ public final class AppDataHelper {
         appGrpPremisesDto.setClickRetrieve(AppConsts.YES.equals(getVal(retrieveflag, i)));
         String floorNo = ParamUtil.getString(request, i + "FloorNo" + 0);
         String unitNo = ParamUtil.getString(request, i + "UnitNo" + 0);
-        appGrpPremisesDto.setFloorNo(floorNo);
+        appGrpPremisesDto.setFloorNo(IaisCommonUtils.getFloorNo(floorNo));
         appGrpPremisesDto.setUnitNo(unitNo);
 
         List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = IaisCommonUtils.genNewArrayList();
@@ -243,7 +243,7 @@ public final class AppDataHelper {
                 continue;
             }
             AppPremisesOperationalUnitDto dto = new AppPremisesOperationalUnitDto();
-            dto.setFloorNo(floorNo);
+            dto.setFloorNo(IaisCommonUtils.getFloorNo(floorNo));
             dto.setUnitNo(unitNo);
             dto.setPremType(premType);
             dto.setPremVal(premIndexNo);
@@ -325,26 +325,6 @@ public final class AppDataHelper {
 
     private static String genPageName(Object prefix, String name, Object suffix) {
         return prefix + name + suffix;
-    }
-
-    private static void addFloorNoAndUnitNo(String prefix, String floorNoName, String unitNoNmae, int opLength,
-            List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos, HttpServletRequest request) {
-        log.info(StringUtil.changeForLog("The length of additional floor and unit: " + opLength));
-        if (opLength <= 0) {
-            return;
-        }
-        for (int j = 0; j < opLength; j++) {
-            String opFloorNo = ParamUtil.getString(request, prefix + floorNoName + j);
-            String opUnitNo = ParamUtil.getString(request, prefix + unitNoNmae + j);
-            if (StringUtil.isEmpty(opFloorNo) && StringUtil.isEmpty(opUnitNo)) {
-                continue;
-            }
-            AppPremisesOperationalUnitDto operationalUnitDto = new AppPremisesOperationalUnitDto();
-            operationalUnitDto.setFloorNo(opFloorNo);
-            operationalUnitDto.setUnitNo(opUnitNo);
-            operationalUnitDto.setSeqNum(j);
-            appPremisesOperationalUnitDtos.add(operationalUnitDto);
-        }
     }
 
     public static String getFileAppendId(String appType) {
