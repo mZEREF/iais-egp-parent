@@ -19,7 +19,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PreTermination
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TerminationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TerminationOfPregnancyDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -1588,8 +1587,7 @@ public class TopDataSubmissionDelegator {
                     DataSubmissionConsts.DS_STATUS_INACTIVE);
         }
 
-        LicenseeDto licenseeDto = licenceViewService.getLicenseeDtoBylicenseeId(licenseeId);
-        String licenseeDtoName = licenseeDto.getName();
+        String licenseeDtoName = AccessUtil.getLoginUser(bpc.request).getUserName();
         String submissionNo = topSuperDataSubmissionDto.getDataSubmissionDto().getSubmissionNo();
         /*String dateStr = Formatter.formatDateTime(new Date(),"dd/MM/yyyy HH:mm:ss");*/
         try {

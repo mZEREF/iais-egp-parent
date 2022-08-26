@@ -21,7 +21,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TreatmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssDocumentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssTreatmentDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -831,8 +830,7 @@ public class VssDataSubmissionDelegator {
             vssDataSubmissionService.updateDataSubmissionDraftStatus(vssSuperDataSubmissionDto.getDraftId(),
                     DataSubmissionConsts.DS_STATUS_INACTIVE);
         }
-        LicenseeDto licenseeDto = licenceViewService.getLicenseeDtoBylicenseeId(licenseeId);
-        String licenseeDtoName = licenseeDto.getName();
+        String licenseeDtoName = AccessUtil.getLoginUser(bpc.request).getUserName();
         String submissionNo = vssSuperDataSubmissionDto.getDataSubmissionDto().getSubmissionNo();
         try {
             sendMsgAndEmail("Voluntary Sterilization", licenseeId, licenseeDtoName, submissionNo);
