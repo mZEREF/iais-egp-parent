@@ -319,6 +319,15 @@ public class VssDataSubmissionDelegator {
         if ("return".equals(crudType)) {
             return;
         }
+        //for ds center validation
+        LoginContext login = AccessUtil.getLoginUser(request);
+        List<DsCenterDto> centerDtos = licenceClient.getDsCenterDtosByOrgIdAndCentreType(login.getOrgId(), DataSubmissionConsts.DS_VSS).getEntity();
+        if (IaisCommonUtils.isEmpty(centerDtos)) {
+            Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+            errMap.put("topErrorMsg", "DS_ERR070");
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
+            return;
+        }
         DsConfig currentConfig = DsConfigHelper.getCurrentConfig(DataSubmissionConsts.DS_VSS, request);
         String currentCode = currentConfig.getCode();
         log.info(StringUtil.changeForLog(" ----- DoStep Step Code: " + currentCode + " ------ "));
@@ -689,12 +698,6 @@ public class VssDataSubmissionDelegator {
             if (ssResult != null) {
                 errMap.putAll(ssResult.retrieveAll());
             }
-        }
-        //for ds center validation
-        LoginContext login = AccessUtil.getLoginUser(request);
-        List<DsCenterDto> centerDtos = licenceClient.getDsCenterDtosByOrgIdAndCentreType(login.getOrgId(), DataSubmissionConsts.DS_VSS).getEntity();
-        if (IaisCommonUtils.isEmpty(centerDtos)) {
-            errMap.put("topErrorMsg", "DS_ERR070");
         }
         if (!errMap.isEmpty()) {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
