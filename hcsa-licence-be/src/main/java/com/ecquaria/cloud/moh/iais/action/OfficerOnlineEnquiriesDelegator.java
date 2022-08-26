@@ -46,7 +46,6 @@ import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.google.common.collect.ImmutableSet;
@@ -79,8 +78,7 @@ public class OfficerOnlineEnquiriesDelegator {
 
     @Autowired
     RequestForInformationService requestForInformationService;
-//    @Autowired
-//    HcsaConfigClient hcsaConfigClient;
+    @Autowired
     ConfigCommService configCommService;
     @Autowired
     OrganizationClient organizationClient;
