@@ -1,11 +1,12 @@
+<c:if test="${empty psnContent}">
+    <c:set var="psnContent" value="personnel-content"/>
+</c:if>
 <%@include file="/WEB-INF/jsp/iais/application/common/prsLoad.jsp" %>
 <script type="text/javascript">
     $(function () {
         let psnContent = '.${psnContent}';
         removePersonEvent(psnContent);
-        profRegNoEvent(psnContent);
         psnEditEvent(psnContent);
-        // init page
         initPerson($('div.panel-main-content'));
     });
 
@@ -60,11 +61,11 @@
         if (isEmptyNode($target)) {
             return;
         }
-        var maxCount;
+        var maxCount=0;
         if (dis=='Di'){
-            maxCount=${DirMaxCount};
+            maxCount=$target.closest('div.panel-group').find('input.DirMaxCount').val();
         }else if (dis=='Nu'){
-            maxCount=${NurMaxCount};
+            maxCount=$target.closest('div.panel-group').find('input.NurMaxCount').val();
         }
         showWaiting();
         var $tgt = $(target).find('div.personnel-content').last();
@@ -104,9 +105,9 @@
             var dis=$Content.find('input.disDiOrNu').val();
             var maxCount;
             if (dis=='Di'){
-                maxCount=${DirMaxCount};
+                maxCount=$Content.closest('div.panel-group').find('input.DirMaxCount').val();
             }else if (dis=='Nu'){
-                maxCount=${NurMaxCount};
+                maxCount=$Content.closest('div.panel-group').find('input.NurMaxCount').val();
             }
             $(this).closest('div.personnel-content').remove();
             let $currContent = $Content.find('div.personnel-content');
@@ -117,11 +118,7 @@
                 $currContent.find('.psnHeader').html('');
             }
             var len =  $Content.find('div.personnel-content').length;
-            if (len==0){
-                $Content.find('input.length').val(1);
-            }else {
-                $Content.find('input.length').val(len);
-            }
+            $Content.find('input.length').val(len);
             if(len < maxCount){
                 $Content.find('.addDiv').removeClass('hidden');
             }

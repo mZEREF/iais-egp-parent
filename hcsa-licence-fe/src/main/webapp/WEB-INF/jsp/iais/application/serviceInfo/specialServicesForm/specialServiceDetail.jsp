@@ -1,6 +1,3 @@
-<c:if test="${empty psnContent}">
-    <c:set var="psnContent" value="personnel-content"/>
-</c:if>
 <div class="personnel-content">
     <input type="hidden" class="not-refresh prepsn" name="${psnContent}" value="${prefix}"/>
     <iais:row>

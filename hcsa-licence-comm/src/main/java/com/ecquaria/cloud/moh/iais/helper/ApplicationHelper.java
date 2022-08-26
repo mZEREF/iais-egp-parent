@@ -2370,7 +2370,7 @@ public final class ApplicationHelper {
             List<String> specialServicePremiseValList = appSvcSpecialServiceInfoDtoList.stream().map(AppSvcSpecialServiceInfoDto::getPremisesVal).collect(Collectors.toList());
             List<AppPremSpecialisedDto> appPremSpecialisedDtos = appPremSpecialisedDtoList.stream().filter(s -> !specialServicePremiseValList.contains(s.getPremisesVal())).collect(Collectors.toList());
             appSvcSpecialServiceInfoDtoList.addAll(genAppSvcSpecialServiceInfoDtoList(appPremSpecialisedDtos,appSvcSpecialServiceInfoDtoList.size()));
-            refeshAddress(appSvcSpecialServiceInfoDtoList,appPremSpecialisedDtoList);
+            refreshAddress(appSvcSpecialServiceInfoDtoList,appPremSpecialisedDtoList);
             if(init==false){
                 return appSvcSpecialServiceInfoDtoList;
             }
@@ -2380,7 +2380,7 @@ public final class ApplicationHelper {
         return appSvcSpecialServiceInfoDtos;
     }
 
-    private static void refeshAddress(List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoDtoList, List<AppPremSpecialisedDto> appPremSpecialisedDtoList) {
+    private static void refreshAddress(List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoDtoList, List<AppPremSpecialisedDto> appPremSpecialisedDtoList) {
         Map<String,AppPremSpecialisedDto> map=IaisCommonUtils.genNewHashMap();
         for (AppPremSpecialisedDto appPremSpecialisedDto : appPremSpecialisedDtoList) {
             map.put(appPremSpecialisedDto.getPremisesVal(),appPremSpecialisedDto);
@@ -2405,10 +2405,19 @@ public final class ApplicationHelper {
                 appSvcSpecialServiceInfoDto.setAppGrpPremisesDto(appPremSpecialisedDto);
                 List<SpecialServiceSectionDto> specialServiceSectionDtoList = IaisCommonUtils.genNewArrayList();
                 for (AppPremSubSvcRelDto appPremSubSvcRelDto : appPremSpecialisedDto.getAllAppPremSubSvcRelDtoList()) {
+                    if (!appPremSubSvcRelDto.isChecked()){
+                        continue;
+                    }
                     SpecialServiceSectionDto specialServiceSectionDto = new SpecialServiceSectionDto();
                     Map<String, Integer> minCount = IaisCommonUtils.genNewHashMap();
                     Map<String, Integer> maxCount = IaisCommonUtils.genNewHashMap();
                     specialServiceSectionDto.setAppPremSubSvcRelDto(appPremSubSvcRelDto);
+                    AppSvcSuplmFormDto appSvcSuplmFormDto = specialServiceSectionDto.getAppSvcSuplmFormDto();
+                    appSvcSuplmFormDto=initAppSvcSuplmFormDto(specialServiceSectionDto.getSvcCode(), false, HcsaConsts.ITME_TYPE_SUPLFORM,appSvcSuplmFormDto);
+                    if (appSvcSuplmFormDto != null){
+                        appSvcSuplmFormDto.setAppPremSubSvcRelDto(appPremSubSvcRelDto);
+                    }
+                    specialServiceSectionDto.setAppSvcSuplmFormDto(appSvcSuplmFormDto);
                     List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = configCommService.getHcsaSvcPersonnel(
                             specialServiceSectionDto.getSvcId(),
                             ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR,
@@ -2419,8 +2428,8 @@ public final class ApplicationHelper {
                             maxCount.put(hcsaSvcPersonnelDto.getPsnType(), hcsaSvcPersonnelDto.getMaximumCount());
                         }
                     }else{
-                        maxCount.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR,2);
-                        maxCount.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR,2);
+                        maxCount.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR,0);
+                        maxCount.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR,0);
                         minCount.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR,0);
                         minCount.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR,0);
                     }
@@ -2429,6 +2438,7 @@ public final class ApplicationHelper {
                     specialServiceSectionDtoList.add(specialServiceSectionDto);
                 }
                 appSvcSpecialServiceInfoDto.setSpecialServiceSectionDtoList(specialServiceSectionDtoList);
+                appSvcSpecialServiceInfoDto.setInit(true);
                 result.add(appSvcSpecialServiceInfoDto);
                 i++;
             }

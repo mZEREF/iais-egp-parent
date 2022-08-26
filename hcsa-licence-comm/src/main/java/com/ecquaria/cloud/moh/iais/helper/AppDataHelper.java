@@ -1820,7 +1820,6 @@ public final class AppDataHelper {
                     }
                     j++;
                 }
-                appSvcSpecialServiceInfoDto.setInit(true);
                 i++;
             }
         }

@@ -41,6 +41,8 @@
                         </h4>
                     </div>
 
+                    <c:set var="appSvcSuplmFormDto" value="${specialServiceSectionDto.appSvcSuplmFormDto}"/>
+
                     <c:set var="DirMaxCount" value="0"/>
                     <c:set var="NurMaxCount" value="0"/>
                     <c:forEach var="maxCount" items="${specialServiceSectionDto.maxCount}">
@@ -51,12 +53,14 @@
                             <c:set var="NurMaxCount" value="${maxCount.value}"/>
                         </c:if>
                     </c:forEach>
+                    <input type="hidden" class ="DirMaxCount" value="${DirMaxCount}"/>
+                    <input type="hidden" class ="NurMaxCount" value="${NurMaxCount}"/>
 
                     <div class="panel-collapse collapse in"  role="tabpanel" aria-labelledby="business-heading">
                         <input type="hidden" class ="isPartEdit" name="isPartEdit${status.index}" value="0"/>
                         <div class="row panel-body" style="padding-left: 6%">
                             <c:choose>
-                                <c:when test="${DirMaxCount==0&&NurMaxCount==0}">
+                                <c:when test="${DirMaxCount==0&&NurMaxCount==0&&empty appSvcSuplmFormDto.appSvcSuplmGroupDtoList}">
                                     <div class="panel-main-content">
                                         <p><h4><iais:message key="NEW_ACK039"/></h4></p>
                                     </div>
@@ -121,6 +125,42 @@
                                             </iais:row>
                                         </div>
                                     </c:if>
+
+                                    <c:if test="${not empty appSvcSuplmFormDto.appSvcSuplmGroupDtoList}">
+                                        <div class="panel-main-content">
+                                            <c:forEach var="appSvcSuplmGroupDto" items="${appSvcSuplmFormDto.appSvcSuplmGroupDtoList}">
+                                                <c:set var="count" value="${appSvcSuplmGroupDto.count}"/>
+                                                <c:set var="baseSize" value="${appSvcSuplmGroupDto.baseSize}"/>
+                                                <c:if test="${count > 0}">
+                                                    <c:set var="groupId" value="${appSvcSuplmGroupDto.groupId}"/>
+                                                    <c:forEach var="item" items="${appSvcSuplmGroupDto.appSvcSuplmItemDtoList}" varStatus="status">
+                                                        <c:if test="${not empty groupId && status.index % baseSize == 0}">
+                                                            <iais:row cssClass="removeEditRow">
+                                                                <div class="col-xs-12 text-right removeEditDiv" data-group="${groupId}" data-seq="${item.seqNum}">
+                                                                    <h4 class="text-danger text-right">
+                                                                        <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
+                                                                    </h4>
+                                                                </div>
+                                                            </iais:row>
+                                                        </c:if>
+                                                        <%@ include file="/WEB-INF/jsp/iais/application/serviceInfo/supplementaryForm/item.jsp"%>
+                                                    </c:forEach>
+                                                    <iais:value cssClass="col-xs-12 error_${groupId}">
+                                                        <span class="error-msg " name="iaisErrorMsg" id="error_${groupId}"></span>
+                                                    </iais:value>
+                                                    <c:if test="${not empty groupId}">
+                                                        <div class="form-group col-md-12 col-xs-12 addMoreDiv" data-group="${groupId}">
+                                                            <input type="hidden" value="${count}" name="${groupId}"/>
+                                                            <input type="hidden" value="${appSvcSuplmGroupDto.maxCount}" name="${groupId}-max"/>
+                                                            <span class="addMoreBtn" style="color:deepskyblue;cursor:pointer;">
+                                                            <span style="">+ Add more</span>
+                                                        </span>
+                                                        </div>
+                                                    </c:if>
+                                                </c:if>
+                                            </c:forEach>
+                                        </div>
+                                    </c:if>
                                 </c:otherwise>
                             </c:choose>
                         </div>
@@ -132,7 +172,7 @@
 </div>
 
 <%@include file="specialServicesFormFun.jsp" %>
-
+<%@ include file="/WEB-INF/jsp/iais/application/serviceInfo/supplementaryForm/itemFun.jsp" %>
 <script>
     $(function() {
         $('.addBtn').on('click', function () {
