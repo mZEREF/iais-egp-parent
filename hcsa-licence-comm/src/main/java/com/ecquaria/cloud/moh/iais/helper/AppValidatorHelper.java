@@ -206,7 +206,7 @@ public final class AppValidatorHelper {
         List<String> premisesHciList = (List<String>) ParamUtil.getSessionAttr(bpc.request, HcsaAppConst.PREMISES_HCI_LIST);
         List<String> errorList = doPreviewSubmitValidate(previewAndSubmitMap, appSubmissionDto, premisesHciList, isRfi,
                 errorSvcConfig);
-        HashMap<String, String> coMap = (HashMap<String, String>) ParamUtil.getSessionAttr(bpc.request, HcsaAppConst.CO_MAP);
+        Map<String, String> coMap = appSubmissionDto.getCoMap();
         if (errorList.contains(HcsaAppConst.SECTION_LICENSEE)) {
             coMap.put(HcsaAppConst.SECTION_LICENSEE, "");
         } else {
@@ -227,7 +227,7 @@ public final class AppValidatorHelper {
         } else {
             coMap.put(HcsaAppConst.SECTION_SVCINFO, HcsaAppConst.SECTION_SVCINFO);
         }
-        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.CO_MAP, coMap);
+        appSubmissionDto.setCoMap(coMap);
         ParamUtil.setSessionAttr(bpc.request, "serviceConfig", errorSvcConfig.toString());
         return previewAndSubmitMap;
     }

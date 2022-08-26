@@ -78,6 +78,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -3699,7 +3700,7 @@ public final class ApplicationHelper {
         return personnelTypeSel;
     }
 
-    public static void setStepColor(Map<String, String> map, String serviceConfig, AppSubmissionDto appSubmissionDto) {
+    /*public static void setStepColor(Map<String, String> map, String serviceConfig, AppSubmissionDto appSubmissionDto) {
         List<String> strList = IaisCommonUtils.genNewArrayList();
         if (map != null) {
             map.forEach((k, v) -> {
@@ -3712,7 +3713,7 @@ public final class ApplicationHelper {
             strList.add(serviceConfig);
         }
         appSubmissionDto.setStepColor(strList);
-    }
+    }*/
 
     public static String emailAddressesToString(List<String> emailAddresses) {
         StringBuilder emailAddress = new StringBuilder();
@@ -3758,6 +3759,26 @@ public final class ApplicationHelper {
             }
         }
         return newAppSvcChckListDtos;
+    }
+
+    public static Map<String, String> createCoMap(boolean withValue) {
+        HashMap<String, String> coMap = IaisCommonUtils.genNewHashMap(5);
+        if (withValue) {
+            coMap.put(HcsaAppConst.SECTION_LICENSEE, HcsaAppConst.SECTION_LICENSEE);
+            coMap.put(HcsaAppConst.SECTION_PREMISES, HcsaAppConst.SECTION_PREMISES);
+            coMap.put(HcsaAppConst.SECTION_SPECIALISED, HcsaAppConst.SECTION_SPECIALISED);
+            coMap.put(HcsaAppConst.SECTION_SVCINFO, HcsaAppConst.SECTION_SVCINFO);
+            coMap.put(HcsaAppConst.SECTION_PREVIEW, HcsaAppConst.SECTION_PREVIEW);
+        } else {
+            coMap.put(HcsaAppConst.SECTION_LICENSEE, "");
+            coMap.put(HcsaAppConst.SECTION_PREMISES, "");
+            coMap.put(HcsaAppConst.SECTION_SPECIALISED, "");
+            coMap.put(HcsaAppConst.SECTION_SVCINFO, "");
+            coMap.put(HcsaAppConst.SECTION_PREVIEW, "");
+        }
+        coMap.put(HcsaAppConst.SECTION_MULTI_SVC, "");
+        coMap.put(HcsaAppConst.SECTION_MULTI_SS, "");
+        return coMap;
     }
 
     public static AppEditSelectDto createAppEditSelectDto(boolean canEdit) {

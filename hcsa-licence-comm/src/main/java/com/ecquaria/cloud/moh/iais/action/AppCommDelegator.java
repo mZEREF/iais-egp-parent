@@ -525,15 +525,16 @@ public abstract class AppCommDelegator {
         if (!StringUtil.isIn(actionValue, new String[]{"saveDraft", "back"})) {
             errorMap = AppValidatorHelper.doValidateSpecialisedDtoList(svcCode, appPremSpecialisedDtoList);
         }
-        HashMap<String, String> coMap = (HashMap<String, String>) request.getSession().getAttribute(HcsaAppConst.CO_MAP);
+        Map<String, String> coMap = appSubmissionDto.getCoMap();
         if (!errorMap.isEmpty()) {
             initAction(HcsaAppConst.ACTION_SPECIALISED, errorMap, appSubmissionDto, request);
             coMap.put(HcsaAppConst.SECTION_SPECIALISED, "");
+            ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
         } else {
             coMap.put(HcsaAppConst.SECTION_SPECIALISED, HcsaAppConst.SECTION_SPECIALISED);
+            ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
             saveDraft(bpc);
         }
-        request.getSession().setAttribute(HcsaAppConst.CO_MAP, coMap);
     }
 
     /**
@@ -637,16 +638,16 @@ public abstract class AppCommDelegator {
         if (!StringUtil.isIn(actionValue, new String[]{"saveDraft", "back"})) {
             AppValidatorHelper.validateSubLicenseeDto(errorMap, subLicenseeDto);
         }
-        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(HcsaAppConst.CO_MAP);
+        Map<String, String> coMap = appSubmissionDto.getCoMap();
         if (!errorMap.isEmpty()) {
             initAction(HcsaAppConst.ACTION_LICENSEE, errorMap, appSubmissionDto, bpc.request);
             coMap.put(HcsaAppConst.SECTION_LICENSEE, "");
+            ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
         } else {
             coMap.put(HcsaAppConst.SECTION_LICENSEE, HcsaAppConst.SECTION_LICENSEE);
+            ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
             saveDraft(bpc);
         }
-        bpc.request.getSession().setAttribute(HcsaAppConst.CO_MAP, coMap);
-        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
     }
 
     private SubLicenseeDto getSubLicenseeDtoFromPage(HttpServletRequest request) {
@@ -918,20 +919,20 @@ public abstract class AppCommDelegator {
             }
         }
         // check result
-        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(HcsaAppConst.CO_MAP);
+        Map<String, String> coMap = appSubmissionDto.getCoMap();
         if (errorMap.size() > 0) {
             boolean isNeedShowValidation = !"back".equals(crud_action_value);
             if (isNeedShowValidation) {
                 initAction(HcsaAppConst.ACTION_PREMISES, errorMap, appSubmissionDto, bpc.request);
             }
             coMap.put(HcsaAppConst.SECTION_PREMISES, "");
+            ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
         } else {
             coMap.put(HcsaAppConst.SECTION_PREMISES, HcsaAppConst.SECTION_PREMISES);
-            saveDraft(bpc);
             checkAppPremSpecialisedDtoList(appSubmissionDto, bpc.request);
+            ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
+            saveDraft(bpc);
         }
-        // coMap.put("serviceConfig", sB.toString());
-        bpc.request.getSession().setAttribute(HcsaAppConst.CO_MAP, coMap);
         log.info(StringUtil.changeForLog("the do doPremises end ...."));
     }
 
@@ -939,7 +940,6 @@ public abstract class AppCommDelegator {
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,
                 AppServicesConsts.HCSASERVICEDTOLIST);
         ApplicationHelper.initAppPremSpecialisedDtoList(appSubmissionDto, hcsaServiceDtoList);
-        ApplicationHelper.setAppSubmissionDto(appSubmissionDto, request);
     }
 
     private List<String> getPremisesHciList(String licenseeId, boolean isRfi, AppSubmissionDto oldAppSubmissionDto,
@@ -1090,14 +1090,7 @@ public abstract class AppCommDelegator {
         log.info(StringUtil.changeForLog("the do preparePayment start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) bpc.request.getSession().getAttribute(APP_SUBMISSIONS);
-        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(HcsaAppConst.CO_MAP);
-
         String paymentMethod;
-
-        String serviceConfig = (String) bpc.request.getSession().getAttribute("serviceConfig");
-
-        ApplicationHelper.setStepColor(coMap, serviceConfig, appSubmissionDto);
-
         //get transfer info
         AppSubmissionDto tranferSub = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "app-rfc-tranfer");
         if (tranferSub != null) {
@@ -1517,11 +1510,6 @@ public abstract class AppCommDelegator {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
         log.info(StringUtil.changeForLog("The original licence No.: " + appSubmissionDto.getLicenceNo()));
-        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(HcsaAppConst.CO_MAP);
-
-        String serviceConfig = (String) bpc.request.getSession().getAttribute("serviceConfig");
-
-        ApplicationHelper.setStepColor(coMap, serviceConfig, appSubmissionDto);
 
         Integer maxFileIndex = (Integer) ParamUtil.getSessionAttr(bpc.request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR);
         if (maxFileIndex == null) {
@@ -2076,20 +2064,18 @@ public abstract class AppCommDelegator {
     public void doSubmit(BaseProcessClass bpc) throws IOException {
         log.info(StringUtil.changeForLog("the do doSubmit start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
+        Map<String, String> coMap = appSubmissionDto.getCoMap();
         // validate all data
         Map<String, String> map = AppValidatorHelper.doPreviewAndSumbit(bpc);
         if (!map.isEmpty()) {
             //set audit
             ParamUtil.setRequestAttr(bpc.request, "Msg", map);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_PREVIEW);
-            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(HcsaAppConst.CO_MAP);
             coMap.put(HcsaAppConst.SECTION_PREVIEW, "");
-            bpc.request.getSession().setAttribute(HcsaAppConst.CO_MAP, coMap);
+            ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
             return;
         } else {
-            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(HcsaAppConst.CO_MAP);
             coMap.put(HcsaAppConst.SECTION_PREVIEW, HcsaAppConst.SECTION_PREVIEW);
-            bpc.request.getSession().setAttribute(HcsaAppConst.CO_MAP, coMap);
         }
         //sync person data
         Map<String, AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,
@@ -2147,16 +2133,6 @@ public abstract class AppCommDelegator {
             }
         }
         appSubmissionDto.setChangeSelectDto(appEditSelectDto);
-        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(HcsaAppConst.CO_MAP);
-        List<String> strList = new ArrayList<>(5);
-        coMap.forEach((k, v) -> {
-            if (!StringUtil.isEmpty(v)) {
-                strList.add(v);
-            }
-        });
-        String serviceConfig = (String) bpc.request.getSession().getAttribute("serviceConfig");
-        strList.add(serviceConfig);
-        appSubmissionDto.setStepColor(strList);
         //judge is giro acc
         boolean isGiroAcc = organizationService.isGiroAccount(appSubmissionDto.getLicenseeId());
         appSubmissionDto.setGiroAccount(isGiroAcc);

@@ -140,15 +140,16 @@ public class DealSessionUtil {
         clearPremisesMap(request);
     }
 
-    public static void initCoMap(HttpServletRequest request) {
-        initCoMap(true, request);
+    public static Map<String, String> initCoMap(HttpServletRequest request) {
+        return initCoMap(true, request);
     }
 
-    public static void initCoMap(boolean withValue, HttpServletRequest request) {
-        HashMap<String, String> coMap = (HashMap<String, String>) ParamUtil.getSessionAttr(request, HcsaAppConst.CO_MAP);
-        if (coMap == null) {
-            coMap = IaisCommonUtils.genNewHashMap(5);
-        }
+    public static Map<String, String> initCoMap(boolean withValue, HttpServletRequest request) {
+//        HashMap<String, String> coMap = (HashMap<String, String>) ParamUtil.getSessionAttr(request, HcsaAppConst.CO_MAP);
+//        if (coMap == null) {
+//            coMap = IaisCommonUtils.genNewHashMap(5);
+//        }
+        HashMap<String, String> coMap = IaisCommonUtils.genNewHashMap(5);
         if (withValue) {
             coMap.put(HcsaAppConst.SECTION_LICENSEE, HcsaAppConst.SECTION_LICENSEE);
             coMap.put(HcsaAppConst.SECTION_PREMISES, HcsaAppConst.SECTION_PREMISES);
@@ -162,10 +163,11 @@ public class DealSessionUtil {
             coMap.put(HcsaAppConst.SECTION_SVCINFO, "");
             coMap.put(HcsaAppConst.SECTION_PREVIEW, "");
         }
-        ParamUtil.setSessionAttr(request, HcsaAppConst.CO_MAP, coMap);
+        //ParamUtil.setSessionAttr(request, HcsaAppConst.CO_MAP, coMap);
+        return coMap;
     }
 
-    public static void loadCoMap(AppSubmissionDto appSubmissionDto, HttpServletRequest request) {
+    /*public static void loadCoMap(AppSubmissionDto appSubmissionDto, HttpServletRequest request) {
         List<String> stepColor = appSubmissionDto.getStepColor();
         if (stepColor != null) {
             HashMap<String, String> coMap = new HashMap<>(5);
@@ -193,7 +195,7 @@ public class DealSessionUtil {
             }
             ParamUtil.setSessionAttr(request, HcsaAppConst.CO_MAP, coMap);
         }
-    }
+    }*/
 
     public static void clearPremisesMap(HttpServletRequest request) {
         request.getSession().removeAttribute(HcsaAppConst.LIC_PREMISES_MAP);
@@ -365,6 +367,9 @@ public class DealSessionUtil {
                     licenceId, newConfig, request);
         }
         appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
+        if (appSubmissionDto.getCoMap() == null) {
+            appSubmissionDto.setCoMap(ApplicationHelper.createCoMap(true));
+        }
         return appSubmissionDto;
     }
 

@@ -68,7 +68,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.APPSUBMISSIONDTO;
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CO_MAP;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURRENTSERVICEID;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURRENTSVCCODE;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURR_STEP_CONFIG;
@@ -741,15 +740,15 @@ public class ServiceInfoDelegator {
     public void prepareJump(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do prepareJump start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(CO_MAP);
+        Map<String, String> coMap = appSubmissionDto.getCoMap();
         Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
         if (allChecked.isEmpty()) {
-            coMap.put("information", "information");
+            coMap.put(HcsaAppConst.SECTION_SVCINFO, HcsaAppConst.SECTION_SVCINFO);
         } else {
-            coMap.put("information", "");
+            coMap.put(HcsaAppConst.SECTION_SVCINFO, "");
         }
-
-        bpc.request.getSession().setAttribute(CO_MAP, coMap);
+        setAppSubmissionDto(appSubmissionDto, bpc.request);
+//        bpc.request.getSession().setAttribute(CO_MAP, coMap);
         log.debug(StringUtil.changeForLog("the do prepareJump end ...."));
     }
 
@@ -1769,6 +1768,10 @@ public class ServiceInfoDelegator {
 
     public static AppSubmissionDto getAppSubmissionDto(HttpServletRequest request) {
         return ApplicationHelper.getAppSubmissionDto(request);
+    }
+
+    public static void setAppSubmissionDto(AppSubmissionDto appSubmissionDto, HttpServletRequest request) {
+        ApplicationHelper.setAppSubmissionDto(appSubmissionDto, request);
     }
 
     private void setAppSvcRelatedInfoMap(HttpServletRequest request, String currentSvcId, AppSvcRelatedInfoDto currSvcInfoDto) {

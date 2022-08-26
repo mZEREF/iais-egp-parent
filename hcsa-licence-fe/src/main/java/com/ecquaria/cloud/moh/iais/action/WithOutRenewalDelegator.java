@@ -252,7 +252,7 @@ public class WithOutRenewalDelegator {
             ApplicationHelper.reSetMaxFileIndex(appSubmissionDtoDraft.getMaxFileIndex(), request);
             appSubmissionDtoList.add(appSubmissionDtoDraft);
             ParamUtil.setSessionAttr(bpc.request, "backUrl", "initApp");
-            DealSessionUtil.loadCoMap(appSubmissionDtoDraft, bpc.request);
+            //DealSessionUtil.loadCoMap(appSubmissionDtoDraft, bpc.request);
             List<AppSubmissionDto> submissionDtos = outRenewalService.getAppSubmissionDtos(licenceIDList);
             appSubmissionDtoDraft.setOldRenewAppSubmissionDto(submissionDtos.get(0));
             log.info("---------run setDraftRfCData start------------");

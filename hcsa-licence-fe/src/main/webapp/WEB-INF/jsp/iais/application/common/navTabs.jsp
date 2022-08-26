@@ -14,6 +14,7 @@
 <c:set var="isNew" value="${'APTY002' == AppSubmissionDto.appType}" scope="request"/>
 <c:set var="isRFC" value="${'APTY005' == AppSubmissionDto.appType}" scope="request"/>
 <c:set var="isRenew" value="${'APTY004' == AppSubmissionDto.appType}" scope="request"/>
+<c:set var="coMap" value="${AppSubmissionDto.coMap}" scope="request"/>
 
 <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
 <input type="hidden" name="crud_action_type_form_page" value="">

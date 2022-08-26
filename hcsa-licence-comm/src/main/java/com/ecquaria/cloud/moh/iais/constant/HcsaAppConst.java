@@ -37,13 +37,14 @@ public final class HcsaAppConst {
     public static final String TITLE_SPECIALISED                            = "Primary Documents";
     public static final String TITLE_SVCINFO                                = "Service-Related Information";
 
-    public static final String CO_MAP                                       = "coMap";
-
     public static final String SECTION_LICENSEE                             = "licensee";
     public static final String SECTION_PREMISES                             = "premises";
     public static final String SECTION_SPECIALISED                          = "specialised";
     public static final String SECTION_SVCINFO                              = "information";
     public static final String SECTION_PREVIEW                              = "previewli";
+
+    public static final String SECTION_MULTI_SVC                            = "multiSvc";
+    public static final String SECTION_MULTI_SS                             = "multiSpecialised";
 
     public static final String CURR_SVC_INFO                                = "currSvcInfoDto";
     public static final String CURR_SVC_STEP                                = "currentStep";

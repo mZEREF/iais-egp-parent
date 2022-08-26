@@ -173,7 +173,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 //set max file index into session
                 ApplicationHelper.reSetMaxFileIndex(appSubmissionDto.getMaxFileIndex());
 
-                DealSessionUtil.loadCoMap(appSubmissionDto, request);
+                //DealSessionUtil.loadCoMap(appSubmissionDto, request);
                 if (appSubmissionDto.getAppGrpPremisesDtoList() != null && appSubmissionDto.getAppGrpPremisesDtoList().size() > 0) {
                     ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, appSubmissionDto);
                 } else {
@@ -250,7 +250,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                     }
                 }
                 ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, appSubmissionDto);
-                DealSessionUtil.initCoMap(request);
+                //DealSessionUtil.initCoMap(request);
                 //control premises edit
                 handlePremises(appSubmissionDto, appNo);
                 ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, appSubmissionDto);
@@ -300,6 +300,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
             appSubmissionDto.setLicenseeId(ApplicationHelper.getLicenseeId(request));
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
+            appSubmissionDto.setCoMap(ApplicationHelper.createCoMap(false));
             String premisesId = "";
             for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
                 String premId = appSvcRelatedInfoDto.getLicPremisesId();
@@ -334,15 +335,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
         log.info(StringUtil.changeForLog("the do preparePayment start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) bpc.request.getSession().getAttribute(APP_SUBMISSIONS);
-        HashMap<String, String> coMap = bpc.request.getSession().getAttribute(HcsaAppConst.CO_MAP) == null ?
-                null : (HashMap<String, String>) bpc.request.getSession().getAttribute(HcsaAppConst.CO_MAP);
-
         String paymentMethod;
-
-        String serviceConfig = (String) bpc.request.getSession().getAttribute("serviceConfig");
-
-        ApplicationHelper.setStepColor(coMap, serviceConfig, appSubmissionDto);
-
         //get transfer info
         AppSubmissionDto tranferSub = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "app-rfc-tranfer");
         if (tranferSub != null) {
@@ -664,9 +657,9 @@ public class NewApplicationDelegator extends AppCommDelegator {
             jumpYeMian(bpc.request, bpc.response);
             return;
         }
-        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(HcsaAppConst.CO_MAP);
-
-        String serviceConfig = (String) bpc.request.getSession().getAttribute("serviceConfig");
+//        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(HcsaAppConst.CO_MAP);
+//
+//        String serviceConfig = (String) bpc.request.getSession().getAttribute("serviceConfig");
 
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         if (StringUtil.isEmpty(appSubmissionDto.getDraftNo())) {
@@ -680,7 +673,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
         bpc.request.getSession().removeAttribute(HcsaAppConst.SELECT_DRAFT_NO);
         appSubmissionDto.setOldDraftNo(oldDraftNo);
 
-        ApplicationHelper.setStepColor(coMap, serviceConfig, appSubmissionDto);
+        //ApplicationHelper.setStepColor(coMap, serviceConfig, appSubmissionDto);
         Integer maxFileIndex = (Integer) ParamUtil.getSessionAttr(bpc.request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR);
         if (maxFileIndex == null) {
             maxFileIndex = 0;
