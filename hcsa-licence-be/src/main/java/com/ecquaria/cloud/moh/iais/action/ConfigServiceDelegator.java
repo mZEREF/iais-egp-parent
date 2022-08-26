@@ -852,13 +852,14 @@ public class ConfigServiceDelegator {
             hcsaSvcPersonnelDtos.add(SP002);//AR Practitioner
             hcsaSvcPersonnelDtos.add(SP003);//Nurses
             hcsaSvcPersonnelDtos.add(sottn);//Operating Theatre Trained Nurse
-            hcsaSvcPersonnelDtos.add(snic);//Nurse in Charge
-            hcsaSvcPersonnelDtos.add(snms);//Nurses (Medical Service)
-            hcsaSvcPersonnelDtos.add(snds);//Nurses (Dental Service)
-            hcsaSvcPersonnelDtos.add(spde);//Practising Dentist
-            hcsaSvcPersonnelDtos.add(soht);//Oral Healthcare Therapist
-            hcsaSvcPersonnelDtos.add(spdo);//Practicing Doctor
-
+            if(hcsaServiceConfigDto.getSupplementaryForm()){
+                hcsaSvcPersonnelDtos.add(snic);//Nurse in Charge
+                hcsaSvcPersonnelDtos.add(snms);//Nurses (Medical Service)
+                hcsaSvcPersonnelDtos.add(snds);//Nurses (Dental Service)
+                hcsaSvcPersonnelDtos.add(spde);//Practising Dentist
+                hcsaSvcPersonnelDtos.add(soht);//Oral Healthcare Therapist
+                hcsaSvcPersonnelDtos.add(spdo);//Practicing Doctor
+            }
         }else if(HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(serviceType)){
             hcsaSvcPersonnelDtos.add(edd);//Emergency Department Director
             hcsaSvcPersonnelDtos.add(ednd);//Emergency Department Nursing Director
