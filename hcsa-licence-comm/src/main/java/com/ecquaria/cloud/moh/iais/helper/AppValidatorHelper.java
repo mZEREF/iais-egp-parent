@@ -3136,9 +3136,8 @@ public final class AppValidatorHelper {
                     }
                 }
 
-                if ((2 == mandatoryType || 3 == mandatoryType) && StringUtil.isEmpty(inputValue)) {
-                    checkConditonMandatory(itemMap, radioBatchMap, errorMap, appSvcSuplmItemDto, itemConfigDto);
-                }
+                checkConditonMandatory(itemMap, radioBatchMap, errorMap, appSvcSuplmItemDto, itemConfigDto);
+
             }
         }
         return errorMap;
@@ -3146,6 +3145,11 @@ public final class AppValidatorHelper {
 
     private static void checkConditonMandatory(Map<String, AppSvcSuplmItemDto> itemMap, Map<String, List<AppSvcSuplmItemDto>> radioBatchMap,
             Map<String, String> errorMap, AppSvcSuplmItemDto appSvcSuplmItemDto, SuppleFormItemConfigDto itemConfigDto) {
+        int mandatoryType = itemConfigDto.getMandatoryType();
+        String inputValue = appSvcSuplmItemDto.getInputValue();
+        if (!(2 == mandatoryType || 3 == mandatoryType || 5 == mandatoryType) || !StringUtil.isEmpty(inputValue)) {
+            return;
+        }
         int seqNum = appSvcSuplmItemDto.getSeqNum();
         String radioBatchNum = itemConfigDto.getRadioBatchNum();
         String parentItemId = itemConfigDto.getParentItemId();
@@ -3158,6 +3162,11 @@ public final class AppValidatorHelper {
             AppSvcSuplmItemDto condDto = itemMap.get(id + seqNum);
             if (condDto != null) {
                 conditions.add(condDto);
+            } else if (condDto == null && 5 == mandatoryType) {
+                condDto = itemMap.get(id + 0);
+                if (condDto != null) {
+                    conditions.add(condDto);
+                }
             }
         }
         if (conditions.isEmpty()) {
