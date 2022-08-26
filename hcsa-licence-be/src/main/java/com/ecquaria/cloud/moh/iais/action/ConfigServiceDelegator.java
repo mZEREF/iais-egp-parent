@@ -851,8 +851,8 @@ public class ConfigServiceDelegator {
             hcsaSvcPersonnelDtos.add(SP001);//Embryologist
             hcsaSvcPersonnelDtos.add(SP002);//AR Practitioner
             hcsaSvcPersonnelDtos.add(SP003);//Nurses
-            hcsaSvcPersonnelDtos.add(sottn);//Operating Theatre Trained Nurse
             if(hcsaServiceConfigDto.getSupplementaryForm()){
+                hcsaSvcPersonnelDtos.add(sottn);//Operating Theatre Trained Nurse
                 hcsaSvcPersonnelDtos.add(snic);//Nurse in Charge
                 hcsaSvcPersonnelDtos.add(snms);//Nurses (Medical Service)
                 hcsaSvcPersonnelDtos.add(snds);//Nurses (Dental Service)
