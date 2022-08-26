@@ -101,7 +101,7 @@
         });
         rowAry.forEach(function (item) {
             $('div[class="' + item + '"]').each(function (index, ele) {
-                resetItem($(ele), index);
+                resetItem($(ele).find('[data-seq]'), index);
             });
         });
     }
@@ -196,7 +196,8 @@
             checkItemMandatory($(this));
         });
         $target.on('blur', function () {
-            checkItem($(this));
+            checkItemCondition($(this));
+            checkPrsNo($(this));
         });
     }
 
@@ -290,7 +291,7 @@
         }
     }
 
-    function checkItem($tag) {
+    function checkItemCondition($tag) {
         if (isEmptyNode($tag)) {
             return;
         }
@@ -301,7 +302,6 @@
         let seq = $tag.data('seq');
         let $target = $('[data-curr=' + targetId + '][data-seq=' + seq + ']');
         checkItemTotal($target);
-        checkPrsNo($target);
     }
 
     function checkPrsNo($tag) {
