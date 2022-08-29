@@ -131,10 +131,11 @@
                                             <c:forEach var="appSvcSuplmGroupDto" items="${appSvcSuplmFormDto.appSvcSuplmGroupDtoList}">
                                                 <c:set var="count" value="${appSvcSuplmGroupDto.count}"/>
                                                 <c:set var="baseSize" value="${appSvcSuplmGroupDto.baseSize}"/>
+                                                <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}"/>
                                                 <c:if test="${count > 0}">
                                                     <c:set var="groupId" value="${appSvcSuplmGroupDto.groupId}"/>
-                                                    <c:forEach var="item" items="${appSvcSuplmGroupDto.appSvcSuplmItemDtoList}" varStatus="status">
-                                                        <c:if test="${not empty groupId && status.index % baseSize == 0}">
+                                                    <c:forEach var="item" items="${appSvcSuplmGroupDto.appSvcSuplmItemDtoList}" varStatus="suplmFormStatus">
+                                                        <c:if test="${not empty groupId && suplmFormStatus.index % baseSize == 0}">
                                                             <iais:row cssClass="removeEditRow">
                                                                 <div class="col-xs-12 text-right removeEditDiv" data-group="${groupId}" data-seq="${item.seqNum}">
                                                                     <h4 class="text-danger text-right">

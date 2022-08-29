@@ -3231,6 +3231,9 @@ public final class AppValidatorHelper {
                         validateSpecialServicePerson(specialServiceSectionDto.getAppSvcChargedNurseDtoList().get(x),prefix+i+j+"nur",""+x,appType,errorMap,nurNames);
                     }
                 }
+                if(!IaisCommonUtils.isEmpty(specialServiceSectionDto.getAppSvcSuplmFormDto().getAppSvcSuplmGroupDtoList())){
+                    errorMap.putAll(doValidateSupplementaryForm(specialServiceSectionDto.getAppSvcSuplmFormDto()));
+                }
             }
         }
     }

@@ -2363,7 +2363,7 @@ public final class ApplicationHelper {
 
     public static List<AppSvcSpecialServiceInfoDto> initAppSvcSpecialServiceInfoDtoList(AppSvcRelatedInfoDto currSvcInfoDto,
             List<AppPremSpecialisedDto> appPremSpecialisedDtoList) {
-        return initAppSvcSpecialServiceInfoDtoList(currSvcInfoDto, appPremSpecialisedDtoList, true);
+        return initAppSvcSpecialServiceInfoDtoList(currSvcInfoDto, appPremSpecialisedDtoList, false);
     }
 
     public static List<AppSvcSpecialServiceInfoDto> initAppSvcSpecialServiceInfoDtoList(AppSvcRelatedInfoDto currSvcInfoDto,
@@ -2371,23 +2371,20 @@ public final class ApplicationHelper {
         if (currSvcInfoDto == null) {
             return IaisCommonUtils.genNewArrayList();
         }
+        Map<String,AppPremSpecialisedDto> appPremSpecialisedDtoMap=IaisCommonUtils.genNewHashMap();
+        for (AppPremSpecialisedDto appPremSpecialisedDto : appPremSpecialisedDtoList) {
+            appPremSpecialisedDtoMap.put(appPremSpecialisedDto.getPremisesVal(),appPremSpecialisedDto);
+        }
         List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoDtoList = currSvcInfoDto.getAppSvcSpecialServiceInfoList();
-        if (init&&!IaisCommonUtils.isEmpty(appSvcSpecialServiceInfoDtoList)) {
-            for (AppSvcSpecialServiceInfoDto appSvcSpecialServiceInfoDto : appSvcSpecialServiceInfoDtoList) {
-                if (appSvcSpecialServiceInfoDto.isInit()) {
-                    init = false;
-                    break;
-                }
-            }
+        if (!init&&!IaisCommonUtils.isEmpty(appSvcSpecialServiceInfoDtoList)) {
             List<String> appSpecialPremValList = appPremSpecialisedDtoList.stream().map(AppPremSpecialisedDto::getPremisesVal).collect(Collectors.toList());
             appSvcSpecialServiceInfoDtoList=appSvcSpecialServiceInfoDtoList.stream().filter(s->appSpecialPremValList.contains(s.getPremisesVal())).collect(Collectors.toList());
+            resetSpecialServiceSectionDto(appSvcSpecialServiceInfoDtoList,appPremSpecialisedDtoMap);
             List<String> specialServicePremiseValList = appSvcSpecialServiceInfoDtoList.stream().map(AppSvcSpecialServiceInfoDto::getPremisesVal).collect(Collectors.toList());
             List<AppPremSpecialisedDto> appPremSpecialisedDtos = appPremSpecialisedDtoList.stream().filter(s -> !specialServicePremiseValList.contains(s.getPremisesVal())).collect(Collectors.toList());
             appSvcSpecialServiceInfoDtoList.addAll(genAppSvcSpecialServiceInfoDtoList(appPremSpecialisedDtos,appSvcSpecialServiceInfoDtoList.size()));
             refreshAddress(appSvcSpecialServiceInfoDtoList,appPremSpecialisedDtoList);
-            if(init==false){
-                return appSvcSpecialServiceInfoDtoList;
-            }
+            return appSvcSpecialServiceInfoDtoList;
         }
         List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoDtos = genAppSvcSpecialServiceInfoDtoList(appPremSpecialisedDtoList,0);
         currSvcInfoDto.setAppSvcSpecialServiceInfoList(appSvcSpecialServiceInfoDtos);
@@ -2410,7 +2407,6 @@ public final class ApplicationHelper {
     private static List<AppSvcSpecialServiceInfoDto> genAppSvcSpecialServiceInfoDtoList(
             List<AppPremSpecialisedDto> appPremSpecialisedDtoList,int specialServiceListSize) {
         List<AppSvcSpecialServiceInfoDto> result = IaisCommonUtils.genNewArrayList();
-        ConfigCommService configCommService = getConfigCommService();
         int i = specialServiceListSize+1;
         if (!IaisCommonUtils.isEmpty(appPremSpecialisedDtoList)) {
             for (AppPremSpecialisedDto appPremSpecialisedDto : appPremSpecialisedDtoList) {
@@ -2418,38 +2414,9 @@ public final class ApplicationHelper {
                 appPremSpecialisedDto.setPremiseIndex(i);
                 appSvcSpecialServiceInfoDto.setAppGrpPremisesDto(appPremSpecialisedDto);
                 List<SpecialServiceSectionDto> specialServiceSectionDtoList = IaisCommonUtils.genNewArrayList();
-                for (AppPremSubSvcRelDto appPremSubSvcRelDto : appPremSpecialisedDto.getAllAppPremSubSvcRelDtoList()) {
-                    if (!appPremSubSvcRelDto.isChecked()){
-                        continue;
-                    }
-                    SpecialServiceSectionDto specialServiceSectionDto = new SpecialServiceSectionDto();
-                    Map<String, Integer> minCount = IaisCommonUtils.genNewHashMap();
-                    Map<String, Integer> maxCount = IaisCommonUtils.genNewHashMap();
-                    specialServiceSectionDto.setAppPremSubSvcRelDto(appPremSubSvcRelDto);
-                    AppSvcSuplmFormDto appSvcSuplmFormDto = specialServiceSectionDto.getAppSvcSuplmFormDto();
-                    appSvcSuplmFormDto=initAppSvcSuplmFormDto(specialServiceSectionDto.getSvcCode(), false, HcsaConsts.ITME_TYPE_SUPLFORM,appSvcSuplmFormDto);
-                    if (appSvcSuplmFormDto != null){
-                        appSvcSuplmFormDto.setAppPremSubSvcRelDto(appPremSubSvcRelDto);
-                    }
-                    specialServiceSectionDto.setAppSvcSuplmFormDto(appSvcSuplmFormDto);
-                    List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = configCommService.getHcsaSvcPersonnel(
-                            specialServiceSectionDto.getSvcId(),
-                            ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR,
-                            ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR);
-                    if (!IaisCommonUtils.isEmpty(hcsaSvcPersonnelDtoList)) {
-                        for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto : hcsaSvcPersonnelDtoList) {
-                            minCount.put(hcsaSvcPersonnelDto.getPsnType(), hcsaSvcPersonnelDto.getMandatoryCount());
-                            maxCount.put(hcsaSvcPersonnelDto.getPsnType(), hcsaSvcPersonnelDto.getMaximumCount());
-                        }
-                    }else{
-                        maxCount.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR,0);
-                        maxCount.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR,0);
-                        minCount.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR,0);
-                        minCount.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR,0);
-                    }
-                    specialServiceSectionDto.setMaxCount(maxCount);
-                    specialServiceSectionDto.setMinCount(minCount);
-                    specialServiceSectionDtoList.add(specialServiceSectionDto);
+                List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList = appPremSpecialisedDto.getAllAppPremSubSvcRelDtoList().stream().filter(AppPremSubSvcRelDto::isChecked).collect(Collectors.toList());
+                if (!IaisCommonUtils.isEmpty(appPremSubSvcRelDtoList)){
+                    specialServiceSectionDtoList.addAll(genSpecialServiceSectionDtoList(appPremSubSvcRelDtoList));
                 }
                 appSvcSpecialServiceInfoDto.setSpecialServiceSectionDtoList(specialServiceSectionDtoList);
                 appSvcSpecialServiceInfoDto.setInit(true);
@@ -2458,6 +2425,62 @@ public final class ApplicationHelper {
             }
         }
         return result;
+    }
+
+    private static void resetSpecialServiceSectionDto(List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoDtoList, Map<String, AppPremSpecialisedDto> appPremSpecialisedDtoMap) {
+        for (int i=0;i<appSvcSpecialServiceInfoDtoList.size();i++){
+            AppSvcSpecialServiceInfoDto appSvcSpecialServiceInfoDto = appSvcSpecialServiceInfoDtoList.get(i);
+            List<AppPremSubSvcRelDto> allAppPremSubSvcRelDtos = appPremSpecialisedDtoMap.get(appSvcSpecialServiceInfoDto.getPremisesVal()).getAllAppPremSubSvcRelDtoList();
+
+            List<AppPremSubSvcRelDto> allAppPremSubSvcRelDtoList = allAppPremSubSvcRelDtos.stream().filter(AppPremSubSvcRelDto::isChecked).collect(Collectors.toList());
+            List<String> collect = allAppPremSubSvcRelDtoList.stream().map(AppPremSubSvcRelDto::getSvcId).collect(Collectors.toList());
+
+            List<SpecialServiceSectionDto> specialServiceSectionDtoList = appSvcSpecialServiceInfoDto.getSpecialServiceSectionDtoList();
+            List<SpecialServiceSectionDto> specialServiceSectionDtos = specialServiceSectionDtoList.stream().filter(s -> collect.contains(s.getSvcId())).collect(Collectors.toList());
+
+            List<String> collect1 = specialServiceSectionDtos.stream().map(s -> s.getSvcId()).collect(Collectors.toList());
+            List<AppPremSubSvcRelDto> appPremSubSvcRelDtos = allAppPremSubSvcRelDtoList.stream().filter(s -> !collect1.contains(s.getSvcId())).collect(Collectors.toList());
+            if(!IaisCommonUtils.isEmpty(appPremSubSvcRelDtos)) {
+                specialServiceSectionDtos.addAll(genSpecialServiceSectionDtoList(appPremSubSvcRelDtos));
+            }
+            appSvcSpecialServiceInfoDto.setSpecialServiceSectionDtoList(specialServiceSectionDtos);
+        }
+    }
+
+    private static List<SpecialServiceSectionDto> genSpecialServiceSectionDtoList(List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList) {
+        ConfigCommService configCommService = getConfigCommService();
+        List<SpecialServiceSectionDto> specialServiceSectionDtoList = IaisCommonUtils.genNewArrayList();
+        for (AppPremSubSvcRelDto appPremSubSvcRelDto : appPremSubSvcRelDtoList) {
+            SpecialServiceSectionDto specialServiceSectionDto = new SpecialServiceSectionDto();
+            Map<String, Integer> minCount = IaisCommonUtils.genNewHashMap();
+            Map<String, Integer> maxCount = IaisCommonUtils.genNewHashMap();
+            specialServiceSectionDto.setAppPremSubSvcRelDto(appPremSubSvcRelDto);
+            AppSvcSuplmFormDto appSvcSuplmFormDto = specialServiceSectionDto.getAppSvcSuplmFormDto();
+            appSvcSuplmFormDto=initAppSvcSuplmFormDto(specialServiceSectionDto.getSvcCode(), false, HcsaConsts.ITME_TYPE_SUPLFORM,appSvcSuplmFormDto);
+            if (appSvcSuplmFormDto != null){
+                appSvcSuplmFormDto.setAppPremSubSvcRelDto(appPremSubSvcRelDto);
+            }
+            specialServiceSectionDto.setAppSvcSuplmFormDto(appSvcSuplmFormDto);
+            List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = configCommService.getHcsaSvcPersonnel(
+                    specialServiceSectionDto.getSvcId(),
+                    ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR,
+                    ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR);
+            if (!IaisCommonUtils.isEmpty(hcsaSvcPersonnelDtoList)) {
+                for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto : hcsaSvcPersonnelDtoList) {
+                    minCount.put(hcsaSvcPersonnelDto.getPsnType(), hcsaSvcPersonnelDto.getMandatoryCount());
+                    maxCount.put(hcsaSvcPersonnelDto.getPsnType(), hcsaSvcPersonnelDto.getMaximumCount());
+                }
+            }else{
+                maxCount.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR,0);
+                maxCount.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR,0);
+                minCount.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR,0);
+                minCount.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR,0);
+            }
+            specialServiceSectionDto.setMaxCount(maxCount);
+            specialServiceSectionDto.setMinCount(minCount);
+            specialServiceSectionDtoList.add(specialServiceSectionDto);
+        }
+        return specialServiceSectionDtoList;
     }
 
     private static List<AppPremSpecialisedDto> addBaseSvc(List<AppPremSpecialisedDto> appPremSpecialisedDtoList) {

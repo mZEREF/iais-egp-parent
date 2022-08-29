@@ -90,7 +90,7 @@
                     callback($currContent, canFill ? data : null);
                 } else {
                     fillPrsInfo($currContent, canFill ? data : null, needControlName);
-                    disablePrsInfo($currContent, canFill);
+                    disablePrsInfo($currContent, canFill, needControlName);
                 }
                 dismissWaiting();
             },

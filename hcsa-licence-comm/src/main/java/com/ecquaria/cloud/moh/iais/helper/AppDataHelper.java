@@ -1818,6 +1818,9 @@ public final class AppDataHelper {
                         }
                         specialServiceSectionDto.setAppSvcChargedNurseDtoList(appSvcChargedNurseDtoList);
                     }
+                    if(!IaisCommonUtils.isEmpty(specialServiceSectionDto.getAppSvcSuplmFormDto().getAppSvcSuplmGroupDtoList())){
+                        setAppSvcSuplmFormDto(specialServiceSectionDto.getAppSvcSuplmFormDto(),request);
+                    }
                     j++;
                 }
                 i++;
