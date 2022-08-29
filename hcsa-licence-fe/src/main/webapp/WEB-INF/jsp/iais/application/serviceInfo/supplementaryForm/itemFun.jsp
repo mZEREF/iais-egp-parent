@@ -86,6 +86,10 @@
             $('.removeEditRow [data-group="' + group + '"][data-seq="' + index + '"]').closest('.removeEditRow').remove();
             $('[data-group="' + group + '"][data-seq="' + index + '"]:not(.removeEditDiv)').closest('.item-record').remove();
             resetAllItemIndex(group);
+            let $cal4 = $('[data-condition="' + group + '"][data-specialcondition="SPECCON04"]');
+            if (!isEmptyNode($cal4)) {
+                checkItemTotal($cal4);
+            }
         });
     }
 
@@ -158,6 +162,10 @@
             resetItemIndex($itemRecords, index);
             $target.before($itemRecords);
             $('input[name="' + group + '"]').val(index + 1);
+            let $cal4 = $('[data-condition="' + group + '"][data-specialcondition="SPECCON04"]');
+            if (!isEmptyNode($cal4)) {
+                checkItemTotal($cal4);
+            }
             removeBtnEvent();
             refreshAddBtn();
             clearFields($('[data-group="' + group + '"][data-seq="' + index + '"]'));
@@ -217,7 +225,7 @@
                     hideTag($target);
                     // check add more button
                     let group = $v.data('group');
-                    if (isEmpty(group)) {
+                    if (!isEmpty(group)) {
                         hideTag($('.addMoreDiv[data-group="' + group + '"]'));
                         $('.removeEditRow [data-group="' + group + '"]:not([data-seq="0"])').closest('.removeEditRow').remove();
                         $('[data-group="' + group + '"]:not([data-seq="0"])').closest('.item-record').remove();
@@ -262,7 +270,6 @@
                         return;
                     }
                     let isIncluded = false;
-
                     conVal.split('#').forEach(function (currentValue) {
                         if (ary.includes(currentValue)) {
                             isIncluded = true;
@@ -296,7 +303,7 @@
                     if (isEmpty(group)) {
                         return;
                     }
-                    let total = $('input[name="' + group + '"]');
+                    let total = $('input[name="' + group + '"]').val();
                     let conVal = $v.data('mandatory-cond');
                     if (isEmpty(conVal)) {
                         return;
@@ -308,7 +315,7 @@
                         }
                     });
                     let v = $v.data('curr');
-                    for (let i = 0; i <  total; i++) {
+                    for (let i = 0; i < total; i++) {
                         let $newV = $('[data-curr="' + v + '"][data-seq="' + i + '"]');
                         let $target = $newV.closest('.item-record');
                         let $targetLabel = $target.find('.item-label');
@@ -470,7 +477,7 @@
             let seq = $tag.data('seq');
             let curr = $tag.data('curr');
             let group = $tag.data('condition');
-            let total = $('input[name="' + group + '"]');
+            let total = $('input[name="' + group + '"]').val();
             if ($tag.is(':input')) {
                 fillValue($tag, total);
             } else {

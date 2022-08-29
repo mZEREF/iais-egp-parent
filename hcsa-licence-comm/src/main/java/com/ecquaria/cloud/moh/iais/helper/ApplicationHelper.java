@@ -832,18 +832,32 @@ public final class ApplicationHelper {
         return isNewApp || isOther;
     }
 
-    public static void reSetPremeses(AppSubmissionDto appSubmissionDto, AppGrpPremisesDto appGrpPremisesDto) {
+    public static void reSetPremeses(AppSubmissionDto appSubmissionDto, AppGrpPremisesDto source) {
         List<AppGrpPremisesDto> appGrpPremisesDtos = new ArrayList<>(1);
-        appGrpPremisesDtos.add(appGrpPremisesDto);
+        appGrpPremisesDtos.add(source);
         reSetPremeses(appSubmissionDto, appGrpPremisesDtos);
     }
 
-    public static void reSetPremeses(AppSubmissionDto appSubmissionDto, List<AppGrpPremisesDto> appGrpPremisesDtos) {
+    public static void reSetPremeses(AppSubmissionDto appSubmissionDto, List<AppGrpPremisesDto> sourceList) {
+        if (appSubmissionDto == null || sourceList == null || sourceList.isEmpty()) {
+            return;
+        }
         log.info(StringUtil.changeForLog("The original Licence: " + appSubmissionDto.getLicenceNo()
                 + " - appGrpNo: " + appSubmissionDto.getAppGrpNo()));
-        List<AppGrpPremisesDto> copyMutableObjects = (List<AppGrpPremisesDto>) CopyUtil.copyMutableObjectList(appGrpPremisesDtos);
-        reSetAdditionalFields(copyMutableObjects, appSubmissionDto.getAppGrpPremisesDtoList());
-        appSubmissionDto.setAppGrpPremisesDtoList(copyMutableObjects);
+        List<AppGrpPremisesDto> targetList = appSubmissionDto.getAppGrpPremisesDtoList();
+        int sourceSize = sourceList.size();
+        int size = targetList.size();
+        for (int i = 0; i < size; i++) {
+            AppGrpPremisesDto source;
+            if (i < sourceSize) {
+                source = sourceList.get(i);
+            } else {
+                source = sourceList.get(0);
+            }
+            AppGrpPremisesDto appGrpPremisesDto = targetList.get(i);
+            IaisCommonUtils.syncPremise(source, appGrpPremisesDto);
+        }
+        appSubmissionDto.setAppGrpPremisesDtoList(targetList);
     }
 
     /*public static List<AppSvcPrincipalOfficersDto> transferCgoToPsnDtoList(List<AppSvcPrincipalOfficersDto> appSvcCgoDtos) {

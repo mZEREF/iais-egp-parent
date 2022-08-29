@@ -634,6 +634,11 @@
       <rtexprvalue>false</rtexprvalue>
       <type>boolean</type>
     </attribute>
+    <attribute>
+      <name>data</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
   </tag>
   <tag>
     <description>Generate date-picker.</description>
