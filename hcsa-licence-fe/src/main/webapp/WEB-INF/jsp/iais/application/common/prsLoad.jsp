@@ -54,7 +54,7 @@
                 callback($currContent, null);
             } else {
                 fillPrsInfo($currContent, null, needControlName);
-                disablePrsInfo($currContent, false);
+                disablePrsInfo($currContent, false, needControlName);
             }
             dismissWaiting();
             return;
@@ -99,7 +99,7 @@
                     callback($currContent, null);
                 } else {
                     fillPrsInfo($currContent, null, needControlName);
-                    disablePrsInfo($currContent, false);
+                    disablePrsInfo($currContent, false, needControlName);
                 }
                 dismissWaiting();
             }

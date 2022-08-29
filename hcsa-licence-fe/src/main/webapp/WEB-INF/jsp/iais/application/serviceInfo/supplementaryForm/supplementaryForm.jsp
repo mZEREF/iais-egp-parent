@@ -25,6 +25,7 @@
         </div>
     </iais:row>
 
+    <c:set var="itemPrefix" value=""/>
     <c:set var="appSvcSuplmFormDto" value="${currSvcInfoDto.appSvcSuplmFormDto}"/>
 
     <c:forEach var="appSvcSuplmGroupDto" items="${appSvcSuplmFormDto.appSvcSuplmGroupDtoList}">
@@ -35,7 +36,7 @@
             <c:forEach var="item" items="${appSvcSuplmGroupDto.appSvcSuplmItemDtoList}" varStatus="status">
                 <c:if test="${not empty groupId && status.index % baseSize == 0}">
                     <iais:row cssClass="removeEditRow">
-                        <div class="col-xs-12 text-right removeEditDiv" data-group="${groupId}" data-seq="${item.seqNum}">
+                        <div class="col-xs-12 text-right removeEditDiv" data-group="${groupId}" data-seq="${item.seqNum}" data-prefix="${itemPrefix}">
                             <h4 class="text-danger text-right">
                                 <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
                             </h4>
@@ -48,9 +49,9 @@
                 <span class="error-msg " name="iaisErrorMsg" id="error_${groupId}"></span>
             </iais:value>
             <c:if test="${not empty groupId}">
-                <div class="form-group col-md-12 col-xs-12 addMoreDiv" data-group="${groupId}">
-                    <input class="not-clear" type="hidden" value="${count}" name="${groupId}"/>
-                    <input class="not-clear" type="hidden" value="${appSvcSuplmGroupDto.maxCount}" name="${groupId}-max"/>
+                <div class="form-group col-md-12 col-xs-12 addMoreDiv" data-group="${groupId}" data-prefix="${itemPrefix}">
+                    <input class="not-clear" type="hidden" value="${count}" name="${itemPrefix}${groupId}"/>
+                    <input class="not-clear" type="hidden" value="${appSvcSuplmGroupDto.maxCount}" name="${itemPrefix}${groupId}-max"/>
                     <span class="addMoreBtn" style="color:deepskyblue;cursor:pointer;">
                         <span style="">+ Add more</span>
                     </span>

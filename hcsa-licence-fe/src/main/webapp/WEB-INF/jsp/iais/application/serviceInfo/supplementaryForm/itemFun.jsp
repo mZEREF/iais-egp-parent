@@ -36,13 +36,17 @@
         $('.addMoreDiv').each(function () {
             let $tag = $(this);
             let group = $tag.data('group');
-            let count = parseInt($('input[name="' + group + '"]').val());
-            let maxCount = parseInt($('input[name="' + group + '-max"]').val());
+            let prefix = $tag.data('prefix');
+            if (isEmpty(prefix)) {
+                prefix = "";
+            }
+            let count = parseInt($('input[name="' + prefix + group + '"]').val());
+            let maxCount = parseInt($('input[name="' + prefix + group + '-max"]').val());
             console.info("-----------" + count + "-----" + maxCount + "--------------");
             if (maxCount <= 0) {
                 return;
             }
-            let $target = $('[data-group="' + group + '"]:input');
+            let $target = $('[data-group="' + group + '"][data-prefix="' + prefix + '"]:input');
             let visibled = false;
             if (!isEmptyNode($target)) {
                 $target.each(function(){
@@ -60,8 +64,13 @@
         $('.removeEditDiv[data-group]').each(function () {
             let $tag = $(this);
             let group = $tag.data('group');
-            if (!rmv_ary.includes(group)) {
-                rmv_ary.push(group);
+            let prefix = $tag.data('prefix');
+            if (isEmpty(prefix)) {
+                prefix = "";
+            }
+            let data = prefix + group;
+            if (!rmv_ary.includes(data)) {
+                rmv_ary.push(data);
             }
         });
         rmv_ary.forEach(function (item) {
@@ -83,21 +92,28 @@
             let $tag = $v.closest('.removeEditDiv');
             let group = $tag.data('group');
             let index = $tag.data('seq');
-            $('.removeEditRow [data-group="' + group + '"][data-seq="' + index + '"]').closest('.removeEditRow').remove();
-            $('[data-group="' + group + '"][data-seq="' + index + '"]:not(.removeEditDiv)').closest('.item-record').remove();
-            resetAllItemIndex(group);
-            let $cal4 = $('[data-condition="' + group + '"][data-specialcondition="SPECCON04"]');
+            let prefix = $tag.data('prefix');
+            if (isEmpty(prefix)) {
+                prefix = "";
+            }
+            $('.removeEditRow [data-group="' + group + '"][data-seq="' + index + '"][data-prefix="' + prefix + '"]').closest('.removeEditRow').remove();
+            $('[data-group="' + group + '"][data-seq="' + index + '"][data-prefix="' + prefix + '"]:not(.removeEditDiv)').closest('.item-record').remove();
+            resetAllItemIndex(group, prefix);
+            let $cal4 = $('[data-prefix="' + prefix + '"][data-condition="' + group + '"][data-specialcondition="SPECCON04"]');
             if (!isEmptyNode($cal4)) {
                 checkItemTotal($cal4);
             }
         });
     }
 
-    function resetAllItemIndex(group) {
+    function resetAllItemIndex(group, prefix) {
+        if (isEmpty(prefix)) {
+            prefix = "";
+        }
         refreshRemoveBtn();
         refreshAddBtn();
         let rowAry = [];
-        $('[data-group="' + group + '"]:not(.removeEditDiv)').closest('.item-record').each(function () {
+        $('[data-group="' + group + '"][data-prefix="' + prefix + '"]:not(.removeEditDiv)').closest('.item-record').each(function () {
             let data = $(this).attr('class');
             if (!rowAry.includes(data)) {
                 rowAry.push(data);
@@ -123,21 +139,25 @@
         if (isEmptyNode($ele)) {
             return;
         }
+        let prefix = $ele.data('prefix');
+        if (isEmpty(prefix)) {
+            prefix = "";
+        }
         //let odlIndex = $ele.data('seq');
         $ele.attr('data-seq', index);
         let baseName = $ele.data('base');
         if (!isEmpty(baseName)) {
-            $ele.attr('name', baseName + index);
+            $ele.attr('name', prefix + baseName + index);
         }
         let oldId = $ele.attr('id');
         if (!isEmpty(oldId)) {
             let baseId = $ele.data('id');
             if (!isEmpty(baseId)) {
-                $ele.attr('id', baseId + index);
+                $ele.attr('id', prefix + baseId + index);
             }
             let $eleLabel = $('label[for="' + oldId + '"]');
             if (!isEmptyNode($eleLabel)) {
-                $eleLabel.attr('for', baseId + index);
+                $eleLabel.attr('for', prefix + baseId + index);
             }
         }
         refreshLabel($ele, index);
@@ -150,27 +170,31 @@
             let $tag = $(this);
             let $target = $tag.closest('.addMoreDiv');
             let group = $target.data('group');
-            let index = parseInt($('input[name="' + group + '"]').val());
+            let prefix = $tag.data('prefix');
+            if (isEmpty(prefix)) {
+                prefix = "";
+            }
+            let index = parseInt($('input[name="' + prefix + group + '"]').val());
             // remove the group error message
-            $('.error_' + group).remove();
-            let $romveRow = $('.removeEditRow [data-group="' + group + '"][data-seq="0"]').closest('.removeEditRow').clone();
+            $('.error_'  + prefix + group).remove();
+            let $romveRow = $('.removeEditRow [data-group="' + group + '"][data-seq="0"][data-prefix="' + prefix + '"]').closest('.removeEditRow').clone();
             resetItemIndex($romveRow, index);
             showTag($romveRow);
             $target.before($romveRow);
             // main content
-            let $itemRecords = $('[data-group="' + group + '"][data-seq="0"]:not(.removeEditDiv)').closest('.item-record').clone();
+            let $itemRecords = $('[data-group="' + group + '"][data-seq="0"][data-prefix="' + prefix + '"]:not(.removeEditDiv)').closest('.item-record').clone();
             resetItemIndex($itemRecords, index);
             $target.before($itemRecords);
-            $('input[name="' + group + '"]').val(index + 1);
-            let $cal4 = $('[data-condition="' + group + '"][data-specialcondition="SPECCON04"]');
+            $('input[name="' + prefix + group + '"]').val(index + 1);
+            let $cal4 = $('[data-prefix="' + prefix + '"][data-condition="' + group + '"][data-specialcondition="SPECCON04"]');
             if (!isEmptyNode($cal4)) {
                 checkItemTotal($cal4);
             }
             removeBtnEvent();
             refreshAddBtn();
-            clearFields($('[data-group="' + group + '"][data-seq="' + index + '"]'));
+            clearFields($('[data-group="' + group + '"][data-seq="' + index + '"][data-prefix="' + prefix + '"]'));
             checkItemEvent();
-            $('.item-record [data-curr]').each(function () {
+            $('.item-record [data-curr][data-prefix="' + prefix + '"]').each(function () {
                 checkItemMandatory($(this));
             });
         });
@@ -213,9 +237,13 @@
         if (isEmptyNode($tag)) {
             return;
         }
+        let prefix = $tag.data('prefix');
+        if (isEmpty(prefix)) {
+            prefix = "";
+        }
         let seq = $tag.data('seq');
         let curr = $tag.data('curr');
-        let $conNodes = $('[data-parent*="' + curr + '"][data-seq="' + seq + '"]');
+        let $conNodes = $('[data-parent*="' + curr + '"][data-seq="' + seq + '"][data-prefix="' + prefix + '"]');
         let currVal = getValue($tag);
         if (!isEmptyNode($conNodes)) {
             if ($tag.is(':hidden')) {
@@ -226,10 +254,10 @@
                     // check add more button
                     let group = $v.data('group');
                     if (!isEmpty(group)) {
-                        hideTag($('.addMoreDiv[data-group="' + group + '"]'));
-                        $('.removeEditRow [data-group="' + group + '"]:not([data-seq="0"])').closest('.removeEditRow').remove();
-                        $('[data-group="' + group + '"]:not([data-seq="0"])').closest('.item-record').remove();
-                        $('input[name="' + group + '"]').val(1);
+                        hideTag($('.addMoreDiv[data-group="' + group + '"][data-prefix="' + prefix + '"]'));
+                        $('.removeEditRow [data-group="' + group + '"][data-prefix="' + prefix + '"]:not([data-seq="0"])').closest('.removeEditRow').remove();
+                        $('[data-group="' + group + '"][data-prefix="' + prefix + '"]:not([data-seq="0"])').closest('.item-record').remove();
+                        $('input[name="' + prefix + group + '"]').val(1);
                     }
                     checkItemMandatory($v);
                 });
@@ -278,7 +306,7 @@
                     toggleTag($target, isIncluded);
                     // check add more button
                     let group = $v.data('group');
-                    toggleTag($('.addMoreDiv[data-group="' + group + '"]'), isIncluded);
+                    toggleTag($('.addMoreDiv[data-group="' + group + '"][data-prefix="' + prefix + '"]'), isIncluded);
                     checkItemMandatory($v);
                 } else if ('4' == mandatory) {
                     let $target = $v.closest('.item-record');
@@ -316,7 +344,7 @@
                     });
                     let v = $v.data('curr');
                     for (let i = 0; i < total; i++) {
-                        let $newV = $('[data-curr="' + v + '"][data-seq="' + i + '"]');
+                        let $newV = $('[data-curr="' + v + '"][data-seq="' + i + '"][data-prefix="' + prefix + '"]');
                         let $target = $newV.closest('.item-record');
                         let $targetLabel = $target.find('.item-label');
                         if (!isEmptyNode($targetLabel)) {
@@ -327,7 +355,7 @@
                         checkItemMandatory($newV);
                     }
                     // check add more button
-                    toggleTag($('.addMoreDiv[data-group="' + group + '"]'), isIncluded);
+                    toggleTag($('.addMoreDiv[data-group="' + group + '"][data-prefix="' + prefix + '"]'), isIncluded);
                 }
             });
         }
@@ -342,8 +370,12 @@
         if (isEmpty(targetId)) {
             return;
         }
+        let prefix = $tag.data('prefix');
+        if (isEmpty(prefix)) {
+            prefix = "";
+        }
         let seq = $tag.data('seq');
-        let $target = $('[data-curr=' + targetId + '][data-seq=' + seq + ']');
+        let $target = $('[data-curr=' + targetId + '][data-seq=' + seq + '][data-prefix=' + prefix + ']');
         checkItemTotal($target);
     }
 
@@ -406,7 +438,11 @@
             return;
         }
         let seq = $prsRegNo.data('seq');
-        let $target = $('[data-condition*="' + condId + '"][data-seq=' + seq + ']');
+        let prefix = $prsRegNo.data('prefix');
+        if (isEmpty(prefix)) {
+            prefix = "";
+        }
+        let $target = $('[data-condition*="' + condId + '"][data-seq=' + seq + '][data-prefix=' + prefix + ']');
         if (isEmptyNode($target)) {
             return;
         }
@@ -437,11 +473,15 @@
         if (isEmptyNode($tag)) {
             return -1;
         }
+        let prefix = $tag.data('prefix');
+        if (isEmpty(prefix)) {
+            prefix = "";
+        }
         let condition = $tag.data('specialcondition');
         if ('SPECCON01' === condition) {
             let seq = $tag.data('seq');
             let curr = $tag.data('curr');
-            let $conNodes = $('[data-condition*="' + curr + '"][data-seq="' + seq + '"]');
+            let $conNodes = $('[data-condition*="' + curr + '"][data-seq="' + seq + '"][data-prefix=' + prefix + ']');
             let total = 0;
             if (!isEmptyNode($conNodes)) {
                 // calculate total
@@ -469,7 +509,7 @@
                 if (isEmptyNode($target)) {
                     $target = $tag;
                 }
-                $('[name="' + curr + seq + '"]').val(total);
+                $('[name="' + prefix + curr + seq + '"]').val(total);
                 $target.html(total);
             }
             return total;
@@ -477,7 +517,7 @@
             let seq = $tag.data('seq');
             let curr = $tag.data('curr');
             let group = $tag.data('condition');
-            let total = $('input[name="' + group + '"]').val();
+            let total = $('input[name="' + prefix + group + '"]').val();
             if ($tag.is(':input')) {
                 fillValue($tag, total);
             } else {
@@ -485,7 +525,7 @@
                 if (isEmptyNode($target)) {
                     $target = $tag;
                 }
-                $('[name="' + curr + seq + '"]').val(total);
+                $('[name="' + prefix + curr + seq + '"]').val(total);
                 $target.html(total);
             }
             return total;
