@@ -49,8 +49,8 @@
             </iais:value>
             <c:if test="${not empty groupId}">
                 <div class="form-group col-md-12 col-xs-12 addMoreDiv" data-group="${groupId}">
-                    <input type="hidden" value="${count}" name="${groupId}"/>
-                    <input type="hidden" value="${appSvcSuplmGroupDto.maxCount}" name="${groupId}-max"/>
+                    <input class="not-clear" type="hidden" value="${count}" name="${groupId}"/>
+                    <input class="not-clear" type="hidden" value="${appSvcSuplmGroupDto.maxCount}" name="${groupId}-max"/>
                     <span class="addMoreBtn" style="color:deepskyblue;cursor:pointer;">
                         <span style="">+ Add more</span>
                     </span>
