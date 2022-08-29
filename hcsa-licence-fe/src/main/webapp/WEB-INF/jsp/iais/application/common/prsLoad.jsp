@@ -46,15 +46,17 @@
         });
     };
 
-    function checkProfRegNo($currContent, prgNo, needControlName, callback) {
+    function checkProfRegNo($currContent, prgNo, needControlName) {
         showWaiting();
+        let callback = getPrsCallback();
         if (isEmpty(prgNo)) {
-            fillPrsInfo($currContent, null, needControlName);
-            disablePrsInfo($currContent, false);
-            dismissWaiting();
             if (typeof callback === 'function') {
                 callback($currContent, null);
+            } else {
+                fillPrsInfo($currContent, null, needControlName);
+                disablePrsInfo($currContent, false);
             }
+            dismissWaiting();
             return;
         }
         var jsonData = {
@@ -84,16 +86,21 @@
                 } else {
                     canFill = true;
                 }
-                fillPrsInfo($currContent, canFill ? data : null, needControlName);
-                disablePrsInfo($currContent, canFill);
                 if (typeof callback === 'function') {
                     callback($currContent, canFill ? data : null);
+                } else {
+                    fillPrsInfo($currContent, canFill ? data : null, needControlName);
+                    disablePrsInfo($currContent, canFill);
                 }
                 dismissWaiting();
             },
             'error': function () {
-                fillPrsInfo($currContent, null, needControlName);
-                disablePrsInfo($currContent, false);
+                if (typeof callback === 'function') {
+                    callback($currContent, null);
+                } else {
+                    fillPrsInfo($currContent, null, needControlName);
+                    disablePrsInfo($currContent, false);
+                }
                 dismissWaiting();
             }
         });
@@ -132,11 +139,10 @@
                 praCerEndDate = registration['PC End Date'];
                 typeOfRegister = registration['Register Type'];
             }
-            if (needControlName && !isEmpty(data.name)) {
-                $currContent.find('.name').val(name);
-            }
         }
-        $currContent.find('.name').val(name);
+        if (needControlName) {
+            $currContent.find('.name').val(name);
+        }
         $currContent.find('.speciality p').html(specialty);
         $currContent.find('.subSpeciality p').html(subspecialty);
         $currContent.find('.qualification p').html(qualification);
@@ -177,4 +183,7 @@
         return /*'newOfficer' == assignSelectVal &&*/ '1' != licPerson && 'APTY002' == appType;
     }
 
+    function getPrsCallback(){
+        return null;
+    }
 </script>
