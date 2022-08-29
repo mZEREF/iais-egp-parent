@@ -292,16 +292,16 @@
                     toggleTag($target, isIncluded);
                     checkItemMandatory($v);
                 } else if ('5' == mandatory) {
-                    let group = $tag.data('group');
+                    let group = $v.data('group');
+                    if (isEmpty(group)) {
+                        return;
+                    }
                     let total = $('input[name="' + group + '"]');
-
-
                     let conVal = $v.data('mandatory-cond');
                     if (isEmpty(conVal)) {
                         return;
                     }
                     let isIncluded = false;
-
                     conVal.split('#').forEach(function (currentValue) {
                         if (ary.includes(currentValue)) {
                             isIncluded = true;
