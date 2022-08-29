@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.BeDashboardConstant;
@@ -18,12 +19,14 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.impl.ApplicationServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -216,13 +219,14 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                         }
                     }
                     // final stage
-                }else{
+                } else {
                 }
             }
         }
         //validate vehicle EAS / MTS
         errMap = valiVehicleEasMts(request, errMap, applicationViewDto, nextStage, nextStageReplys, appVehicleFlag, recommendationStr, decisionValue);
-        tcuVerification(errMap,applicationViewDto);
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        tcuVerification(errMap, applicationViewDto, loginContext.getCurRoleId());
         return errMap;
     }
 
@@ -464,17 +468,20 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
     }
 
 
-    private void tcuVerification(Map<String, String> errMap, ApplicationViewDto applicationViewDto){
-        if(applicationViewDto.isShowTcu() && applicationViewDto.isTcuFlag()){
-            if( StringUtil.isEmpty(applicationViewDto.getTuc())){
-                errMap.put("tcuDate",ERROR_CODE_GENERAL_ERR0006);
-            }else {
+    private void tcuVerification(Map<String, String> errMap, ApplicationViewDto applicationViewDto, String roleId) {
+        if (Arrays.asList(RoleConsts.USER_ROLE_AO1, RoleConsts.USER_ROLE_AO2, RoleConsts.USER_ROLE_AO3).contains(roleId)) {
+            return;
+        }
+        if (applicationViewDto.isShowTcu() && applicationViewDto.isTcuFlag()) {
+            if (StringUtil.isEmpty(applicationViewDto.getTuc())) {
+                errMap.put("tcuDate", ERROR_CODE_GENERAL_ERR0006);
+            } else {
                 try {
                     Date tcuDate = Formatter.parseDate(applicationViewDto.getTuc());
-                    if(tcuDate.getTime()< System.currentTimeMillis()){
-                            errMap.put("tcuDate","UC_INSTA004_ERR002");
-                            }
-                }catch (Exception e){
+                    if (tcuDate.getTime() < System.currentTimeMillis()) {
+                        errMap.put("tcuDate", "UC_INSTA004_ERR002");
+                    }
+                } catch (Exception e) {
                     errMap.put("tcuDate","SYSPAM_ERROR0008");
                 }
             }
