@@ -2705,12 +2705,10 @@ public final class AppValidatorHelper {
 
     public static void specialValidate(Map<String, String> errorMap,AppSvcPersonnelDto appSvcPersonnelDto,int i,List<String> errorName){
         String signal = "GENERAL_ERR0006";
-
         String personnelSel = appSvcPersonnelDto.getPersonnelType();
         String name = appSvcPersonnelDto.getName();
-
         if (StringUtils.isEmpty(personnelSel)) {
-            errorMap.put("personnelSelErrorMsg" + i, signal);
+            errorMap.put("personnelType" + i, signal);
         }
 //                  SPPT004
         if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE.equals(personnelSel)) {
@@ -2729,9 +2727,9 @@ public final class AppValidatorHelper {
                 }
             }
             if (StringUtil.isEmpty(profRegNo)) {
-                errorMap.put("regnNo" + i, signal);
+                errorMap.put("profRegNo" + i, signal);
             } else if (profRegNo.length() > 20) {
-                errorMap.put("regnNo" + i, signal);
+                errorMap.put("profRegNo" + i, signal);
             }//SPPT001
         } else if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(personnelSel)) {
             String designation = appSvcPersonnelDto.getDesignation();
@@ -2753,14 +2751,6 @@ public final class AppValidatorHelper {
 //                    designation
             if (StringUtil.isEmpty(designation)) {
                 errorMap.put("designation" + i, signal);
-                //Others
-            } else if (HcsaAppConst.DESIGNATION_OTHERS.equals(designation)) {
-                String otherDesignation = appSvcPersonnelDto.getOtherDesignation();
-                if (StringUtil.isEmpty(otherDesignation)) {
-                    errorMap.put("otherDesignation" + i, signal);
-                } else if (otherDesignation.length() > 100) {
-                    errorMap.put("otherDesignation" + i, signal);
-                }
             }
             if (StringUtil.isEmpty(wrkExpYear)) {
                 errorMap.put("wrkExpYear" + i, signal);
@@ -3162,6 +3152,12 @@ public final class AppValidatorHelper {
             AppSvcSuplmItemDto condDto = itemMap.get(id + seqNum);
             if (condDto != null) {
                 conditions.add(condDto);
+            } else if (seqNum > 0) {
+                // batch
+                condDto = itemMap.get(id + 0);
+                if (condDto != null) {
+                    conditions.add(condDto);
+                }
             } else if (condDto == null && 5 == mandatoryType) {
                 condDto = itemMap.get(id + 0);
                 if (condDto != null) {
