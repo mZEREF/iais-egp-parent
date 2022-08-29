@@ -1217,7 +1217,7 @@
     $(document).ready(function () {
         premisesSelect();
         serviceTypeChange();
-        toSupplementaryForm(fasle);
+        toSupplementaryForm(false);
     });
     function cancel() {
 
