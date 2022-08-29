@@ -24,7 +24,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesUpdateEmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.EmailAttachmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
@@ -125,7 +124,6 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationProcessUploadFileValidate;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationViewValidate;
 import com.ecquaria.cloudfeign.FeignException;
@@ -134,7 +132,6 @@ import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -1303,7 +1300,7 @@ public class HcsaApplicationDelegator {
 
         AppIntranetDocDto appIntranetDocDto = fillUpCheckListGetAppClient.getAppIntranetDocByPremIdAndStatusAndAppDocType(refNo, AppConsts.COMMON_STATUS_ACTIVE, ApplicationConsts.APP_DOC_TYPE_EMAIL_ATTACHMENT).getEntity();
 
-        if(appIntranetDocDto!=null){
+        if(appIntranetDocDto!=null&&appIntranetDocDto.getFileRepoId()!=null){
             Map<String, byte[]> attachments =IaisCommonUtils.genNewHashMap();
             attachments.put(appIntranetDocDto.getDocName(),fileRepoClient.getFileFormDataBase(appIntranetDocDto.getFileRepoId()).getEntity());
             emailParam.setAttachments(attachments);
@@ -2429,6 +2426,36 @@ public class HcsaApplicationDelegator {
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),
                 applicationDto.getStatus(), taskDto.getTaskKey(), null, taskDto.getWkGrpId(), internalRemarks, externalRemarks, processDecision, taskDto.getRoleId());
         broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);
+
+        //aso email for appeal history
+        if(applicationType.equals(ApplicationConsts.APPLICATION_TYPE_APPEAL)&&processDecision.equals(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL)){
+            AppPremiseMiscDto appPremiseMiscDto=applicationViewDto.getPremiseMiscDto();
+            if(appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO)
+                    ||appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME)){
+
+                ApplicationDto entity = applicationClient.getApplicationById(appPremiseMiscDto.getRelateRecId()).getEntity();
+                appPremisesRoutingHistoryDto.setApplicationNo(entity.getApplicationNo());
+                appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
+
+            }
+            if(appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_LICENCE_CHANGE_PERIOD)){
+                List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenceClient.getLicCorrBylicId(appPremiseMiscDto.getRelateRecId()).getEntity();
+                if(!IaisCommonUtils.isEmpty(licAppCorrelationDtos)) {
+                    log.debug(StringUtil.changeForLog("licAppCorrelationDtos is Not null=======> Licence Id = " + appPremiseMiscDto.getRelateRecId()));
+                    for (LicAppCorrelationDto licAppCorrelationDto : licAppCorrelationDtos) {
+                        String appId = licAppCorrelationDto.getApplicationId();
+                        ApplicationDto oldAppDto=applicationClient.getApplicationById(appId).getEntity();
+                        appPremisesRoutingHistoryDto.setApplicationNo(oldAppDto.getApplicationNo());
+                        appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
+                    }
+                }
+            }
+            if(!appPremisesRoutingHistoryDto.getApplicationNo().equals(applicationDto.getApplicationNo())){
+                appPremisesRoutingHistoryDto.setApplicationNo(applicationDto.getApplicationNo());
+                broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);
+            }
+        }
+
         //update application status
         broadcastApplicationDto.setRollBackApplicationDto((ApplicationDto) CopyUtil.copyMutableObject(applicationDto));
         String oldStatus = applicationDto.getStatus();
@@ -4320,6 +4347,19 @@ public class HcsaApplicationDelegator {
         if (!isBeCessationFlow
                 && (hasRollBackHistoryList && RoleConsts.USER_ROLE_AO3.equals(taskRole) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationStatus))) {
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL, "Approve"));
+            if(applicationType.equals(ApplicationConsts.APPLICATION_TYPE_RENEWAL)||
+                    applicationType.equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)||
+                    applicationType.equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
+                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL, "Approve (ASO Email)"));
+
+            }else if(applicationType.equals(ApplicationConsts.APPLICATION_TYPE_APPEAL)){
+                AppPremiseMiscDto appPremiseMiscDto=applicationViewDto.getPremiseMiscDto();
+                if(appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO)
+                        ||appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME)
+                        ||appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_LICENCE_CHANGE_PERIOD)){
+                    nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL, "Approve (ASO Email)"));
+                }
+            }
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_BROADCAST_QUERY, "Broadcast"));
             if ((status.contains(applicationStatus) || ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationStatus))
                     && RoleConsts.USER_ROLE_ASO.equals(taskRole)) {
@@ -4550,6 +4590,19 @@ public class HcsaApplicationDelegator {
                             if(noContainsFlag) {
                                 nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,
                                         "Approve"));
+                                if(applicationType.equals(ApplicationConsts.APPLICATION_TYPE_RENEWAL)||
+                                        applicationType.equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)||
+                                        applicationType.equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
+                                    nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL, "Approve (ASO Email)"));
+
+                                }else if(applicationType.equals(ApplicationConsts.APPLICATION_TYPE_APPEAL)){
+                                    AppPremiseMiscDto appPremiseMiscDto=applicationViewDto.getPremiseMiscDto();
+                                    if(appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO)
+                                            ||appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME)
+                                            ||appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_LICENCE_CHANGE_PERIOD)){
+                                        nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL, "Approve (ASO Email)"));
+                                    }
+                                }
                                 ParamUtil.setSessionAttr(request, "nextStages", (Serializable) nextStageList);
                                 ParamUtil.setSessionAttr(request, "Ao1Ao2Approve", "Y");
                             }
@@ -4563,6 +4616,19 @@ public class HcsaApplicationDelegator {
                 //if  this is the last stage
                 routingStage.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,
                         "Approve"));
+            }
+            if(applicationType.equals(ApplicationConsts.APPLICATION_TYPE_RENEWAL)||
+                    applicationType.equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)||
+                    applicationType.equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
+                routingStage.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL, "Approve (ASO Email)"));
+
+            }else if(applicationType.equals(ApplicationConsts.APPLICATION_TYPE_APPEAL)){
+                AppPremiseMiscDto appPremiseMiscDto=applicationViewDto.getPremiseMiscDto();
+                if(appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO)
+                        ||appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME)
+                        ||appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_LICENCE_CHANGE_PERIOD)){
+                    routingStage.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL, "Approve (ASO Email)"));
+                }
             }
         }
         if (ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())) {
