@@ -1,20 +1,17 @@
 <div class="personnel-content" id="personnelRemoveId${status.index}">
-
     <input type="hidden" class="not-refresh " name="${logo}speCount" value="size"/>
-
     <input type="hidden" name="indexNo" value="${appSvcPersonnelDto.indexNo}"/>
     <iais:row cssClass="personnel-header">
         <iais:value width="5" cssClass="col-xs-12 col-md-6">
             <strong>
-                <c:out value="Service Personnel "/>
-                <label class="assign-psn-item"></label>
+                <c:out value="ServicePersonnel "/>
+                <label class="assign-psn-item">${index+1}</label>
             </strong>
         </iais:value>
         <iais:value width="7" cssClass="col-xs-12 col-md-4 text-right">
-
-            <div class=" removeBtn <c:if test="${index == 0}">hidden</c:if>">
+            <div class="removeEditDiv <c:if test="${index == 0}">hidden</c:if>">
                 <h4 class="text-danger">
-                    <em class="fa fa-times-circle del-size-36 cursorPointer"></em>
+                    <em class="fa fa-times-circle del-size-36 removeBtns cursorPointer"></em>
                 </h4>
             </div>
         </iais:value>
@@ -33,9 +30,8 @@
         <div class="personnel-sel">
             <iais:field width="5" mandatory="true" value="Select Service Personnel" cssClass="col-sm-5"/>
             <iais:value width="7" cssClass="col-sm-5 col-md-7">
-                <iais:select cssClass="personnelSel" name="personnelSel" options="ServicePersonnelType"
+                <iais:select cssClass="personnelType" name="personnelType${index}" options="ServicePersonnelType"
                              value="${appSvcPersonnelDto.personnelType}" firstOption="Please Select"></iais:select>
-                <span class="error-msg" name="iaisErrorMsg" id="error_personnelSelErrorMsg${status.index}"></span>
             </iais:value>
         </div>
     </iais:row>
@@ -45,47 +41,39 @@
             <iais:field width="5" mandatory="true" value="Name" cssClass="col-sm-5"/>
             <iais:value width="7" cssClass="col-sm-5 col-md-7">
                 <input type="hidden" name="prsLoading" value="${appSvcPersonnelDto.prsLoading}"/>
-                <iais:input maxLength="66" type="text" name="name" value="${appSvcPersonnelDto.name}"></iais:input>
-                <span class="error-msg" name="iaisErrorMsg" id="error_name${status.index}"></span>
+                <iais:input maxLength="66" cssClass="name" type="text" name="name${index}" value="${appSvcPersonnelDto.name}"></iais:input>
             </iais:value>
         </iais:row>
         <%--   designation --%>
         <iais:row cssClass="personnel-designation hidden ">
             <iais:field width="5" mandatory="true" value="Designation" cssClass="col-sm-5"/>
             <iais:value width="7" cssClass="col-sm-5 col-md-7">
-                <iais:select cssClass="designation" name="designation" options="NuclearMedicineImagingDesignation"
+                <iais:select cssClass="designation" name="designation${index}" options="NuclearMedicineImagingDesignation"
                              value="${appSvcPersonnelDto.designation}" firstOption="Please Select"></iais:select>
-                <span class="error-msg" name="iaisErrorMsg" id="error_designation${status.index}"></span>
             </iais:value>
         </iais:row>
         <%--    qualification--%>
         <iais:row cssClass="personnel-qualification hidden ">
             <iais:field width="5" mandatory="true" value="Qualification" cssClass="col-sm-5"/>
             <iais:value width="7" cssClass="col-sm-5 col-md-7">
-                <iais:input maxLength="100" type="text" name="qualification"
+                <iais:input maxLength="100" cssClass="qualification" type="text" name="qualification${index}"
                             value="${appSvcPersonnelDto.qualification}"></iais:input>
-                <span class="error-msg" name="iaisErrorMsg" id="error_qualification${status.index}"></span>
             </iais:value>
         </iais:row>
-
         <%--    regnNo--%>
         <iais:row cssClass="personnel-regnNo hidden ">
             <iais:field width="5" mandatory="true" value="Professional Regn. No. " cssClass="col-sm-5"/>
             <iais:value width="7" cssClass="col-sm-5 col-md-7">
-                <iais:input maxLength="20" type="text" name="regnNo" value="${appSvcPersonnelDto.profRegNo}"
-                            onblur="aaa(this)"></iais:input>
-                <span class="error-msg" name="iaisErrorMsg" id="error_regnNo${status.index}"></span>
+                <iais:input maxLength="20" cssClass="profRegNo" type="text" name="profRegNo${index}" value="${appSvcPersonnelDto.profRegNo}"></iais:input>
             </iais:value>
         </iais:row>
         <%--    years--%>
         <iais:row cssClass="personnel-wrkExpYear hidden ">
             <iais:field width="5" mandatory="true" value="Relevant working experience (Years)" cssClass="col-sm-5"/>
             <iais:value width="7" cssClass="col-sm-5 col-md-7">
-                <iais:input maxLength="2" type="text" name="wrkExpYear"
+                <iais:input maxLength="2" cssClass="wrkExpYear" type="text" name="wrkExpYear${index}"
                             value="${appSvcPersonnelDto.wrkExpYear}"></iais:input>
-                <span class="error-msg" name="iaisErrorMsg" id="error_wrkExpYear${status.index}"></span>
             </iais:value>
         </iais:row>
-
     </div>
 </div>

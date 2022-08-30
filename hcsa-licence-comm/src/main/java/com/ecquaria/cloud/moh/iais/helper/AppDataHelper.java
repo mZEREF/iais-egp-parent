@@ -1843,6 +1843,9 @@ public final class AppDataHelper {
                         }
                         specialServiceSectionDto.setAppSvcChargedNurseDtoList(appSvcChargedNurseDtoList);
                     }
+                    if(!IaisCommonUtils.isEmpty(specialServiceSectionDto.getAppSvcSuplmFormDto().getAppSvcSuplmGroupDtoList())){
+                        setAppSvcSuplmFormDto(specialServiceSectionDto.getAppSvcSuplmFormDto(),request);
+                    }
                     j++;
                 }
                 i++;
@@ -1911,14 +1914,13 @@ public final class AppDataHelper {
        if (StringUtil.isEmpty(svcPersonnelDto.getIndexNo()))  {
            svcPersonnelDto.setIndexNo(UUID.randomUUID().toString());
        }
-        if (prefix=="SP999"){
+        if ("SP999".equals(prefix)){
             svcPersonnelDto.setPersonnelType(ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS);
+        }else if(StringUtil.isNotEmpty(personnelType)) {
+            svcPersonnelDto.setPersonnelType(personnelType);
+        }else if("".equals(prefix)){
         }else {
-            if (StringUtil.isEmpty(personnelType)){
-                svcPersonnelDto.setPersonnelType(prefix);
-            }else {
-                svcPersonnelDto.setPersonnelType(personnelType);
-            }
+            svcPersonnelDto.setPersonnelType(prefix);
         }
         String profRegNos = svcPersonnelDto.getProfRegNo();
         if (!StringUtil.isEmpty(profRegNos)) {
@@ -1974,41 +1976,6 @@ public final class AppDataHelper {
         return svcPersonnelDto;
     }
 
-    public static AppSvcPersonnelDto getAppSvcPersonnelDto(HttpServletRequest request, int i) {
-        String[] personnelSels = ParamUtil.getStrings(request, "personnelSel");
-        String[] designations = ParamUtil.getStrings(request, "designation");
-        String[] otherDesignationss = ParamUtil.getStrings(request, "otherDesignation");
-        String[] names = ParamUtil.getStrings(request, "name");
-        String[] qualifications = ParamUtil.getStrings(request, "qualification");
-        String[] wrkExpYears = ParamUtil.getStrings(request, "wrkExpYear");
-        String[] professionalRegnNos = ParamUtil.getStrings(request, "regnNo");
-        String[] indexNos = ParamUtil.getStrings(request, "indexNo");
-        AppSvcPersonnelDto appSvcPersonnelDto = new AppSvcPersonnelDto();
-        String regnNo = getVal(professionalRegnNos, i);
-        String personnelSel = getVal(personnelSels, i);
-        String designation = getVal(designations, i);
-        String otherDesignations = getVal(otherDesignationss, i);
-        String name = getVal(names, i);
-        String qualification = getVal(qualifications, i);
-        String wrkExpYear = getVal(wrkExpYears, i);
-        String indexNo = getVal(indexNos, i);
-        if (!StringUtil.isEmpty(indexNo)) {
-            appSvcPersonnelDto.setIndexNo(indexNo);
-        } else {
-            appSvcPersonnelDto.setIndexNo(UUID.randomUUID().toString());
-        }
-        appSvcPersonnelDto.setProfRegNo(regnNo);
-        appSvcPersonnelDto.setPersonnelType(personnelSel);
-        appSvcPersonnelDto.setDesignation(designation);
-        appSvcPersonnelDto.setOtherDesignation(otherDesignations);
-        appSvcPersonnelDto.setName(name);
-        appSvcPersonnelDto.setQualification(qualification);
-        appSvcPersonnelDto.setWrkExpYear(wrkExpYear);
-
-        appSvcPersonnelDto.setSeqNum(i);
-        return appSvcPersonnelDto;
-    }
-
     public static SvcPersonnelDto genAppSvcPersonnelDtoList(HttpServletRequest request, SvcPersonnelDto
             svcPersonnelDto) {
         if (StringUtil.isEmpty(svcPersonnelDto)) {
@@ -2062,7 +2029,7 @@ public final class AppDataHelper {
             normalList.add(dto);
         }
         for (int i = 0; i < speCount; i++) {
-            AppSvcPersonnelDto dto = getAppSvcPersonnelDto(request,i);
+            AppSvcPersonnelDto dto = getAppSvcPersonnelParam(request,"",String.valueOf(i),null);
             specialList.add(dto);
         }
 
@@ -2699,6 +2666,9 @@ public final class AppDataHelper {
     }
 
     public static void setAppSvcSuplmFormDto(AppSvcSuplmFormDto appSvcSuplmFormDto, HttpServletRequest request) {
+        setAppSvcSuplmFormDto(appSvcSuplmFormDto, "", request);
+    }
+    public static void setAppSvcSuplmFormDto(AppSvcSuplmFormDto appSvcSuplmFormDto, String prefix, HttpServletRequest request) {
         if (appSvcSuplmFormDto == null) {
             log.info("The AppSvcSuplmFormDto is null!!!!");
             return;
@@ -2716,18 +2686,18 @@ public final class AppDataHelper {
             }
             int count = ParamUtil.getInt(request, groupId, 1);
             int baseSize = groupDto.getBaseSize();
-            groupDto.setAppSvcSuplmItemDtoList(genAppSvcSuplmItemDtoList(appSvcSuplmItemDtoList, baseSize, count, request));
+            groupDto.setAppSvcSuplmItemDtoList(genAppSvcSuplmItemDtoList(appSvcSuplmItemDtoList, baseSize, count, prefix, request));
             groupDto.setCount(count);
         }
     }
 
     private static List<AppSvcSuplmItemDto> genAppSvcSuplmItemDtoList(List<AppSvcSuplmItemDto> appSvcSuplmItemDtoList, int baseSize,
-            int count, HttpServletRequest request) {
+            int count, String prefix, HttpServletRequest request) {
         List<AppSvcSuplmItemDto> result = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < count; i++) {
             for (int j = 0; j < baseSize; j++) {
                 AppSvcSuplmItemDto dto = CopyUtil.copyMutableObject(appSvcSuplmItemDtoList.get(j));
-                dto.setInputValue(getInputValue(request, i, dto));
+                dto.setInputValue(getInputValue(dto, prefix, i, request));
                 dto.setSeqNum(i);
                 result.add(dto);
             }
@@ -2735,15 +2705,15 @@ public final class AppDataHelper {
         return result;
     }
 
-    private static String getInputValue(HttpServletRequest request, int i, AppSvcSuplmItemDto dto) {
+    private static String getInputValue(AppSvcSuplmItemDto dto, String prefix, int i, HttpServletRequest request) {
         String inputValue = null;
-        String value = ParamUtil.getString(request, dto.getItemConfigId() + i);
+        String value = ParamUtil.getString(request, prefix + dto.getItemConfigId() + i);
         if (StringUtil.isNotEmpty(value)) {
             inputValue = value;
         } else {
             String radioBatchNum = dto.getItemConfigDto().getRadioBatchNum();
             if (StringUtil.isNotEmpty(radioBatchNum)) {
-                String[] strings = ParamUtil.getStrings(request, radioBatchNum + i);
+                String[] strings = ParamUtil.getStrings(request, prefix + radioBatchNum + i);
                 if (StringUtil.isIn(dto.getItemConfigId(), strings)) {
                     inputValue = dto.getItemConfigId();
                 }

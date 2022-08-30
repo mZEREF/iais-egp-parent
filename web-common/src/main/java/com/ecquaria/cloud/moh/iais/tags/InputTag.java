@@ -26,6 +26,7 @@ public class InputTag extends DivTagSupport{
     private boolean needDisabled;
     private String onInput;
     private String onblur;
+    private String data;
     public InputTag() {
         super();
         cleanFields();
@@ -51,6 +52,7 @@ public class InputTag extends DivTagSupport{
         setPlaceholder(null);
         setOnInput(null);
         setOnblur(null);
+        setData(null);
     }
 
     @Override
@@ -77,7 +79,9 @@ public class InputTag extends DivTagSupport{
         if (!StringUtil.isEmpty(cssClass)) {
             html.append(" class=\"").append(cssClass).append('\"');
         }
-
+        if (!StringUtil.isEmpty(data)) {
+            html.append(" ").append(data);
+        }
         if (!StringUtil.isEmpty(value)) {
             html.append(" value=\"").append(StringUtil.viewNonNullHtml(value)).append('\"');
         }
@@ -167,5 +171,8 @@ public class InputTag extends DivTagSupport{
         this.onInput = onInput;
     }
     public void setOnblur(String onblur){this.onblur =onblur;}
+    public void setData(String data) {
+        this.data = data;
+    }
 
 }

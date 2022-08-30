@@ -52,6 +52,7 @@ public final class FieldTag extends DivTagSupport {
         setOnclick(null);
         setWidth(0);
         setMandatory(Boolean.FALSE);
+        setData(null);
     }
 
     // Releases any resources we may have (or inherit)

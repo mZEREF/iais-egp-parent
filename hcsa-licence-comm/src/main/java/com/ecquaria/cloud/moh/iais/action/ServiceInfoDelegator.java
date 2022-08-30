@@ -1188,7 +1188,6 @@ public class ServiceInfoDelegator {
         int speCount = 0;
         int norCount = 0;
         if (currentSvcCode != null) {
-//            AppServicesConsts.SERVICE_CODE_ASSISTED_REPRODUCTION.equals(currentSvcCode)
           if (AppServicesConsts.SERVICE_CODE_ASSISTED_REPRODUCTION.equals(currentSvcCode)) {
                 emCount = Optional.ofNullable(svcPersonnelDto.getEmbryologistList())
                         .map(List::size)
