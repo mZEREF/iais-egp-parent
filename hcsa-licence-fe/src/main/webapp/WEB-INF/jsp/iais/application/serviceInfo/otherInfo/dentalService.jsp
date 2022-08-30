@@ -16,10 +16,10 @@
 <iais:row>
     <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Type of medical records"/>
     <iais:value width="3" cssClass="col-md-3">
-        <label><input class="form-check-input isMedicalTypeIt" <c:if test="${'1' == med.isMedicalTypeIt}">checked="checked"</c:if>  type="checkbox" name="isMedicalTypeIt" value = "1" aria-invalid="true">&nbsp;&nbsp;&nbsp;IT System</label>
+        <label><input class="form-check-input isMedicalTypeIt" <c:if test="${'1' == med.isMedicalTypeIt}">checked="checked"</c:if>  type="checkbox" name="isMedicalTypeIt" value = "1" aria-invalid="true">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IT System</label>
     </iais:value>
     <iais:value width="3" cssClass="col-md-3">
-        <label><input class="form-check-input isMedicalTypePaper" <c:if test="${'1' == med.isMedicalTypePaper}">checked="checked"</c:if>  type="checkbox" name="isMedicalTypePaper" value = "1" aria-invalid="true">&nbsp;&nbsp;&nbsp;Paper cards</label>
+        <label><input class="form-check-input isMedicalTypePaper" <c:if test="${'1' == med.isMedicalTypePaper}">checked="checked"</c:if>  type="checkbox" name="isMedicalTypePaper" value = "1" aria-invalid="true">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Paper cards</label>
     </iais:value>
 </iais:row>
 <iais:row>
