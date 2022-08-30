@@ -27,8 +27,11 @@
         addMoreEvent();
         checkItemEvent();
         $('.item-record [data-curr]').each(function () {
-            checkItemMandatory($(this));
-            checkItemTotal($(this));
+            let $target = $(this);
+            checkItemMandatory($target);
+            checkItemTotal($target);
+            let index = $target.data('seq');
+            refreshLabel($target, index);
         });
     });
 
@@ -178,7 +181,7 @@
             let $tag = $(this);
             let $target = $tag.closest('.addMoreDiv');
             let group = $target.data('group');
-            let prefix = $tag.data('prefix');
+            let prefix = $target.data('prefix');
             if (isEmpty(prefix)) {
                 prefix = "";
             }
