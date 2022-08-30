@@ -15,8 +15,8 @@
 <c:set var="title" value="Amendment" />
 <c:set var="smallTitle" value="You are Amending for Assisted Reproduction" />
 
-<%@ include file="section/arHeader.jsp" %>
-
+<%@ include file="common/header.jsp" %>
+<%--@elvariable id="arSuperDataSubmissionDto" type="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto"--%>
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/ar_selection.js"></script>
 <form method="post" id="mainForm" action=<%=continueURL%>>
   <div class="main-content">

@@ -1,374 +1,394 @@
-<div class="form-check-gp col-xs-12 col-md-12">
-  <div class="col-xs-12 col-md-6">
-    <p>Is the sample donated from overseas or locally? <span class="mandatory">*</span></p>
-  </div>
-  <div class="col-xs-12 col-md-6">
-    <div class="form-check form-check-inline">
-      <input class="form-check-input triggerObj" id="localDonate" type="radio" name="sampleRoot" value="local"/>
-      <label class="form-check-label" for="localDonate">
-        <span class="check-circle"></span>Local
-      </label>
+<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/ar_donor_sample.js"></script>
+<c:set var="donorSampleDto" value="${arSuperDataSubmissionDto.donorSampleDto}"/>
+<iais:row>
+    <iais:field style="padding-left:0" width="6" value="Is the sample donated from overseas or locally?"
+                cssClass="col-md-6" mandatory="true"/>
+    <iais:value width="6" cssClass="col-md-6">
+        <iais:value width="6" cssClass="col-md-6" style="padding-left:0">
+            <div class="form-check" style="padding: 0;">
+                <input class="form-check-input" id="localDonate" type="radio" name="directedDonation"
+                       <c:if test="${donorSampleDto.directedDonation}">checked</c:if>
+                       value="1"/>
+                <label class="form-check-label" for="localDonate">
+                    <span class="check-circle"></span>Local
+                </label>
+            </div>
+        </iais:value>
+        <iais:value width="6" cssClass="col-md-6">
+            <div class="form-check">
+                <input class="form-check-input" id="overseasDonate" type="radio" name="directedDonation"
+                       <c:if test="${donorSampleDto.directedDonation eq false}">checked</c:if>
+                       value="0"/>
+                <label class="form-check-label" for="overseasDonate">
+                    <span class="check-circle"></span>Overseas
+                </label>
+            </div>
+        </iais:value>
+        <span class="error-msg" name="iaisErrorMsg" id="error_directedDonation"></span>
+    </iais:value>
+</iais:row>
+
+<iais:row>
+    <iais:field style="padding-left:0" width="6" value="Type of Sample " cssClass="col-md-6" mandatory="true"/>
+    <iais:value width="6" cssClass="col-md-6">
+        <iais:select name="sampleType" id="sampleType" firstOption="Please Select" codeCategory="CATE_ID_DONATED_TYPE"
+                     value="${donorSampleDto.sampleType}"/>
+    </iais:value>
+</iais:row>
+
+<div id="femaleDonorDiv">
+    <iais:row>
+        <iais:field style="padding-left:0" width="6" value="Is the Female Donor's Identity Known? " cssClass="col-md-6"
+                    mandatory="true"/>
+        <iais:value width="6" cssClass="col-md-6">
+            <iais:value width="6" cssClass="col-md-6" style="padding-left:0">
+                <div class="form-check" style="padding: 0;">
+                    <input class="form-check-input" type="radio" id="knownF" name="donorIdentityKnown"
+                           <c:if test="${donorSampleDto.donorIdentityKnown eq 'DIK002'}">checked</c:if>
+                           value="DIK002"/>
+                    <label class="form-check-label" for="knownF">
+                        <span class="check-circle"></span>No
+                    </label>
+                </div>
+            </iais:value>
+            <iais:value width="6" cssClass="col-md-6">
+                <div class="form-check">
+                    <input class="form-check-input" id="unKnownF" type="radio" name="donorIdentityKnown"
+                           <c:if test="${donorSampleDto.donorIdentityKnown eq 'DIK001'}">checked</c:if>
+                           value="DIK001"/>
+                    <label class="form-check-label" for="unKnownF">
+                        <span class="check-circle"></span>Yes
+                    </label>
+                </div>
+            </iais:value>
+            <span class="error-msg" name="iaisErrorMsg" id="error_donorIdentityKnown"></span>
+        </iais:value>
+    </iais:row>
+
+    <div id="knowFIdDiv">
+        <iais:row>
+            <iais:field style="padding-left:0" width="6" value="Does the Female Donor have a NRIC/FIN number? "
+                        cssClass="col-md-6"
+                        mandatory="true"/>
+            <iais:value width="6" cssClass="col-md-6">
+                <iais:value width="6" cssClass="col-md-6" style="padding-left:0">
+                    <div class="form-check" style="padding: 0;">
+                        <input class="form-check-input" id="noIdNUmberF" type="radio" name="hasIdNumberF"
+                               <c:if test="${donorSampleDto.idType eq 'DTV_IT003'}">checked</c:if>
+                               value="0"/>
+                        <label class="form-check-label" for="noIdNUmberF">
+                            <span class="check-circle"></span>No
+                        </label>
+                    </div>
+                </iais:value>
+                <iais:value width="6" cssClass="col-md-6">
+                    <div class="form-check">
+                        <input class="form-check-input" id="hasIdNumberF" type="radio" name="hasIdNumberF"
+                               <c:if test="${donorSampleDto.idType eq 'DTV_IT001' || donorSampleDto.idType eq 'DTV_IT002'}">checked</c:if>
+                               value="1"/>
+                        <label class="form-check-label" for="hasIdNumberF">
+                            <span class="check-circle"></span>Yes
+                        </label>
+                    </div>
+                </iais:value>
+                <span class="error-msg" name="iaisErrorMsg" id="error_hasIdNumberF"></span>
+            </iais:value>
+        </iais:row>
+
+        <iais:row id="idNumberRow">
+            <iais:field style="padding-left:0" width="6" value="Female Donor's Passport Number " cssClass="col-md-6"
+                        mandatory="true" id="fPassportNumberField"/>
+            <iais:field style="padding-left:0" width="6" value="Female Donor's NRIC/FIN Number " cssClass="col-md-6"
+                        mandatory="true" id="fNricNumberField"/>
+            <iais:value width="6" cssClass="col-md-6">
+                <iais:input maxLength="20" type="text" name="idNumber" value="${donorSampleDto.idNumber}"/>
+            </iais:value>
+        </iais:row>
     </div>
-    <div class="form-check form-check-inline">
-      <input class="form-check-input triggerObj" id="overseasDonate" type="radio" name="sampleRoot" value="overseas"/>
-      <label class="form-check-label" for="overseasDonate">
-        <span class="check-circle"></span>Overseas
-      </label>
-    </div>
-  </div>
-  <span class="error-msg" name="iaisErrorMsg" id="error_sampleRoot"></span>
+
+    <iais:row>
+        <iais:field style="padding-left:0" width="6" value="Female Donor Sample Code " cssClass="col-md-6"
+                    mandatory="true"/>
+        <iais:value width="6" cssClass="col-md-6">
+            <iais:input maxLength="20" type="text" name="donorSampleCode" value="${donorSampleDto.donorSampleCode}"/>
+        </iais:value>
+    </iais:row>
+
+    <iais:row>
+        <iais:field style="padding-left:0" width="6" value="Age of Female Donor at the Point of Donation "
+                    mandatory="true"
+                    cssClass="col-md-6"/>
+        <iais:value width="6" cssClass="col-md-6">
+            <iais:input maxLength="3" type="text" name="donorSampleAge" id="donorSampleAge"
+                        value="${donorSampleDto.donorSampleAge}"/>
+        </iais:value>
+    </iais:row>
 </div>
 
-<div class="col-xs-12 col-md-12">
-  <div class="col-xs-12 col-md-6">
-    <label for="sampleType">Type of Sample <span class="mandatory">*</span></label></div>
+<div id="maleDonorDiv">
+    <iais:row>
+        <iais:field style="padding-left:0" width="6" value="Is the Male Donor's Identity Known? " cssClass="col-md-6"
+                    mandatory="true"/>
+        <iais:value width="6" cssClass="col-md-6">
+            <iais:value width="6" cssClass="col-md-6" style="padding-left:0">
+                <div class="form-check" style="padding: 0;">
+                    <input class="form-check-input" id="knownM" type="radio" name="maleDonorIdentityKnow"
+                           <c:if test="${donorSampleDto.maleDonorIdentityKnow eq false}">checked</c:if>
+                           value="0"/>
+                    <label class="form-check-label" for="knownM">
+                        <span class="check-circle"></span>No
+                    </label>
+                </div>
+            </iais:value>
+            <iais:value width="6" cssClass="col-md-6">
+                <div class="form-check">
+                    <input class="form-check-input" id="unKnownM" type="radio" name="maleDonorIdentityKnow"
+                           <c:if test="${donorSampleDto.maleDonorIdentityKnow}">checked</c:if>
+                           value="1"/>
+                    <label class="form-check-label" for="unKnownM">
+                        <span class="check-circle"></span>Yes
+                    </label>
+                </div>
+            </iais:value>
+            <span class="error-msg" name="iaisErrorMsg" id="error_maleDonorIdentityKnow"></span>
+        </iais:value>
+    </iais:row>
 
-  <div class="col-xs-12 col-md-6">
-    <select name="sampleType" id="sampleType" class="triggerObj">
-      <option value="">Please Select</option>
-      <option value="DONTY001">Fresh Oocyte(s)</option>
-      <option value="DONTY002">Frozen Oocyte(s)</option>
-      <option value="DONTY003">Frozen Embryo(s)</option>
-      <option value="DONTY004">Frozen Sperm</option>
-    </select>
-  </div>
+    <div id="knowMIdDiv">
+        <iais:row>
+            <iais:field style="padding-left:0" width="6" value="Does the Male Donor have a NRIC/FIN number? "
+                        cssClass="col-md-6"
+                        mandatory="true"/>
+            <iais:value width="6" cssClass="col-md-6">
+                <iais:value width="6" cssClass="col-md-6" style="padding-left:0">
+                    <div class="form-check" style="padding: 0;">
+                        <input class="form-check-input" id="noIdNUmberM" type="radio" name="hasIdNumberM"
+                               <c:if test="${donorSampleDto.idTypeMale eq 'DTV_IT003'}">checked</c:if>
+                               value="0"/>
+                        <label class="form-check-label" for="noIdNUmberM">
+                            <span class="check-circle"></span>No
+                        </label>
+                    </div>
+                </iais:value>
+                <iais:value width="6" cssClass="col-md-6">
+                    <div class="form-check">
+                        <input class="form-check-input" id="hasIdNumberM" type="radio" name="hasIdNumberM"
+                               <c:if test="${donorSampleDto.idTypeMale eq 'DTV_IT001' || donorSampleDto.idTypeMale eq 'DTV_IT002'}">checked</c:if>
+                               value="1"/>
+                        <label class="form-check-label" for="hasIdNumberM">
+                            <span class="check-circle"></span>Yes
+                        </label>
+                    </div>
+                </iais:value>
+                <span class="error-msg" name="iaisErrorMsg" id="error_hasIdNumberM"></span>
+            </iais:value>
+        </iais:row>
 
-  <span class="error-msg" name="iaisErrorMsg" id="error_sampleType"></span>
+        <iais:row id="mIdNumberRow">
+            <iais:field style="padding-left:0" width="6" value="Male Donor's Passport Number " mandatory="true"
+                        cssClass="col-md-6" id="mPassportNumberField"/>
+            <iais:field style="padding-left:0" width="6" value="Male Donor's NRIC/FIN Number " mandatory="true"
+                        cssClass="col-md-6" id="mNricNumberField"/>
+            <iais:value width="6" cssClass="col-md-6">
+                <iais:input maxLength="20" type="text" name="idNumberMale" id="donorPassportM"
+                            value="${donorSampleDto.idNumberMale}"/>
+            </iais:value>
+        </iais:row>
+    </div>
+
+    <iais:row>
+        <iais:field style="padding-left:0" width="6" value="Male Donor Sample Code " mandatory="true"
+                    cssClass="col-md-6"/>
+        <iais:value width="6" cssClass="col-md-6">
+            <iais:input maxLength="20" type="text" name="maleDonorSampleCode" id="maleDonorSampleCode"
+                        value="${donorSampleDto.maleDonorSampleCode}"/>
+        </iais:value>
+    </iais:row>
+
+    <iais:row>
+        <iais:field style="padding-left:0" width="6" value="Age of Male Donor at the Point of Donation "
+                    mandatory="true" cssClass="col-md-6"/>
+        <iais:value width="6" cssClass="col-md-6">
+            <iais:input maxLength="3" type="text" name="maleDonorSampleAge" id="maleDonorSampleAge"
+                        value="${donorSampleDto.maleDonorSampleAge}"/>
+        </iais:value>
+    </iais:row>
 </div>
 
+<iais:row id="sampleFromRow">
+    <iais:field style="padding-left:0" width="6" value="Which Institution was the Sample Donated From? "
+                cssClass="col-md-6"
+                mandatory="true"/>
+    <iais:value width="6" cssClass="col-md-6" id="sampleFromSel">
+        <iais:select name="sampleFromHciCode" options="donorSampleFromSelOpts"
+                     value="${donorSampleDto.sampleFromHciCode}"/>
+    </iais:value>
+    <iais:value width="6" cssClass="col-md-6" id="sampleFromText">
+        <iais:input maxLength="256" type="text" name="sampleFromOthers" value="${donorSampleDto.sampleFromOthers}"/>
+    </iais:value>
+</iais:row>
 
-<div id="femaleSampleType"  <c:if test="${sampleType ne 'DONTY001' or sampleType ne 'DONTY002' or sampleType ne 'DONTY003'}">style="display: none" </c:if>>
-  <div class="col-xs-12 col-md-12">
-    <div class="col-xs-12 col-md-6">
-      <label>Is the Female Donor's Identity Known? <span class="mandatory">*</span></label>
-    </div>
-    <div class="col-xs-12 col-md-6">
-      <div class="form-check form-check-inline">
-        <input class="form-check-input triggerObj" id="knownF" type="radio" name="isKnowIdentityF" value="N"/>
-        <label class="form-check-label" for="knownF">
-          <span class="check-circle"></span>No
+<iais:row id="sampleFromOtherRow">
+    <iais:field style="padding-left:0" width="6" value="If 'Others', Please Specify the Name of the Institution "
+                cssClass="col-md-6" mandatory="true"/>
+    <iais:value width="6" cssClass="col-md-6">
+        <iais:input maxLength="100" type="text" name="sampleFromOthers" value="${donorSampleDto.sampleFromOthers}"/>
+        <span class="error-msg" name="iaisErrorMsg" id="error_sampleFromOthersFromHci"></span>
+    </iais:value>
+</iais:row>
+
+<iais:row>
+    <iais:field style="padding-left:0" width="6" value="Reason(s) for Donation " cssClass="col-md-6" mandatory="true"/>
+    <iais:value width="6" cssClass="col-md-6">
+        <iais:select name="donationReason" id="donationReason" firstOption="Please Select"
+                     codeCategory="CATE_ID_DONATION_REASON"
+                     value="${donorSampleDto.donationReason}"/>
+    </iais:value>
+</iais:row>
+
+<iais:row id="reasonOtherRow">
+    <iais:field style="padding-left:0" width="6" value="If 'Others', please specify the reason for donation "
+                cssClass="col-md-6" mandatory="true"/>
+    <iais:value width="6" cssClass="col-md-6">
+        <iais:input maxLength="100" type="text" name="otherDonationReason"
+                    value="${donorSampleDto.otherDonationReason}"/>
+    </iais:value>
+</iais:row>
+
+<iais:row>
+    <iais:field style="padding-left:0" width="6" value="Purpose of Donation " cssClass="col-md-6" mandatory="true"/>
+    <iais:value width="6" cssClass="col-md-6">
+            <div class="form-check col-xs-12" style="padding: 0;">
+                <input class="form-check-input" type="checkbox"
+                       name="donatedForResearch"
+                       value="1"
+                       id="donatedForResearch"
+                       <c:if test="${donorSampleDto.donatedForResearch}">checked</c:if>
+                       aria-invalid="false">
+                <label class="form-check-label"
+                       for="donatedForResearch"><span
+                        class="check-square"></span>Research</label>
+            </div>
+            <div class="form-check col-xs-12" style="padding: 0;">
+                <input class="form-check-input" type="checkbox"
+                       name="donatedForTraining"
+                       value="1"
+                       id="donatedForTraining"
+                       <c:if test="${donorSampleDto.donatedForTraining}">checked</c:if>
+                       aria-invalid="false">
+                <label class="form-check-label"
+                       for="donatedForTraining"><span
+                        class="check-square"></span>Training</label>
+            </div>
+            <div class="form-check col-xs-12" style="padding: 0;">
+                <input class="form-check-input" type="checkbox"
+                       name="donatedForTreatment"
+                       value="1"
+                       id="donatedForTreatment"
+                       <c:if test="${donorSampleDto.donatedForTreatment}">checked</c:if>
+                       aria-invalid="false">
+                <label class="form-check-label"
+                       for="donatedForTreatment"><span
+                        class="check-square"></span>Treatment</label>
+            </div>
+            <span class="error-msg" name="iaisErrorMsg" id="error_donationPurpose"></span>
+    </iais:value>
+</iais:row>
+
+<div id="researchDiv">
+    <iais:row>
+        <iais:field style="padding-left:0" width="6" value="No. Donated for Research (Usable for Treatment) "
+                    mandatory="true"
+                    cssClass="col-md-6"/>
+        <iais:value width="6" cssClass="col-md-6">
+            <iais:input maxLength="3" type="text" name="donResForTreatNum" value="${donorSampleDto.donResForTreatNum}"/>
+        </iais:value>
+    </iais:row>
+
+    <iais:row>
+        <iais:field style="padding-left:0" width="6" value="No. Donated for Research (Not Usable for Treatment) "
+                    mandatory="true"
+                    cssClass="col-md-6"/>
+        <iais:value width="6" cssClass="col-md-6">
+            <iais:input maxLength="3" type="text" name="donResForCurCenNotTreatNum"
+                        value="${donorSampleDto.donResForCurCenNotTreatNum}"/>
+        </iais:value>
+    </iais:row>
+
+    <iais:row>
+        <iais:field style="padding-left:0" width="6" value="Type of Research for Which Gamete(s) Was Donated "
+                    mandatory="true"
+                    cssClass="col-md-6"/>
+        <iais:value width="6" cssClass="col-md-6">
+            <div class="form-check" style="padding-left:0">
+                <input class="form-check-input" type="checkbox" value="1" id="donatedForResearchHescr"
+                       <c:if test="${donorSampleDto.donatedForResearchHescr}">checked</c:if>
+                       name="donatedForResearchHescr">
+                <label class="form-check-label" for="donatedForResearchHescr">
+                    <span class="check-square"></span>Human Embryonic Stem Cell Research
+                </label>
+            </div>
+            <div class="form-check" style="padding-left:0">
+                <input class="form-check-input" type="checkbox" value="1" id="donatedForResearchRrar"
+                       <c:if test="${donorSampleDto.donatedForResearchRrar}">checked</c:if>
+                       name="donatedForResearchRrar">
+                <label class="form-check-label" for="donatedForResearchRrar">
+                    <span class="check-square"></span>Research Related to Assisted Reproduction
+                </label>
+            </div>
+            <div class="form-check" style="padding-left:0">
+                <input class="form-check-input" type="checkbox" value="1" id="donatedForResearchOther"
+                       <c:if test="${donorSampleDto.donatedForResearchOther}">checked</c:if>
+                       name="donatedForResearchOther">
+                <label class="form-check-label" for="donatedForResearchOther">
+                    <span class="check-square"></span>Other Type of Research
+                </label>
+            </div>
+            <span class="error-msg" name="iaisErrorMsg" id="error_gameteResType"></span>
+        </iais:value>
+    </iais:row>
+
+    <iais:row>
+        <label class="col-xs-6 col-md-4 control-label col-md-6" style="padding-left:0">Please indicate the Other Type of
+            Research
+            <span class="mandatory" id="otherResearchStar">*</span>
         </label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input triggerObj" id="unKnownF" type="radio" name="isKnowIdentityF" value="Y"/>
-        <label class="form-check-label" for="unKnownF">
-          <span class="check-circle"></span>Yes
-        </label>
-      </div>
-    </div>
-    <span class="error-msg" name="iaisErrorMsg" id="error_isKnowIdentityF"></span>
-  </div>
-
-  <div id="isKnowIdentityFSection"  <c:if test="${isKnowIdentityF ne 'Y'}">style="display: none" </c:if>>
-    <div class="col-xs-12 col-md-12">
-      <div class="col-xs-12 col-md-6">
-        <label for="sampleType">Does the Female Donor have a NRIC/FIN number? <span class="mandatory">*</span></label>
-      </div>
-
-      <div class="col-xs-12 col-md-6">
-        <div class="form-check form-check-inline">
-          <input class="form-check-input triggerObj" id="noIdNUmberF" type="radio" name="hasIdNumberF" value="N"/>
-          <label class="form-check-label" for="noIdNUmberF">
-            <span class="check-circle"></span>No
-          </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input triggerObj" id="hasIdNumberF" type="radio" name="hasIdNumberF" value="Y"/>
-          <label class="form-check-label" for="hasIdNumberF">
-            <span class="check-circle"></span>Yes
-          </label>
-        </div>
-      </div>
-      <span class="error-msg" name="iaisErrorMsg" id="error_hasIdNumberF"></span>
-    </div>
-
-    <div class="col-xs-12 col-md-12" id="noIdSectionF"  <c:if test="${hasIdNumberF ne 'N'}">style="display: none" </c:if>>
-        <div class="col-xs-12 col-md-6">
-          <label for="donorPassportF">Female Donor's Passport Number <span class="mandatory">*</span></label>
-        </div>
-        <div class="col-xs-12 col-md-6">
-          <input type="text" id="donorPassportF" name="donorPassportF" maxlength="" autocomplete="off">
-        </div>
-      <span class="error-msg" name="iaisErrorMsg" id="error_donorPassportF"></span>
-    </div>
-
-    <div class="col-xs-12 col-md-12" id="hasIdSectionF"  <c:if test="${hasIdNumberF ne 'Y'}">style="display: none" </c:if>>
-      <div class="col-xs-12 col-md-6">
-        <label for="donorIdNumberF">Female Donor's NRIC/FIN Number <span class="mandatory">*</span></label>
-      </div>
-      <div class="col-xs-12 col-md-6">
-        <input type="text" id="donorIdNumberF" name="donorIdNumberF" maxlength="" autocomplete="off">
-      </div>
-    </div>
-
-  </div>
-
-  <div class="col-xs-12 col-md-12">
-    <div class="col-xs-12 col-md-6">
-      <label for="sampleCodeF">Female Donor Sample Code <span class="mandatory">*</span></label>
-    </div>
-    <div class="col-xs-12 col-md-6">
-      <input type="text" id="sampleCodeF" name="sampleCodeF" maxlength="" autocomplete="off">
-    </div>
-    <span class="error-msg" name="iaisErrorMsg" id="error_sampleCodeF"></span>
-  </div>
-
-  <div class="col-xs-12 col-md-12">
-    <div class="col-xs-12 col-md-6">
-      <label for="donationAgeF">Age of Female Donor at the Point of Donation <span class="mandatory">*</span></label>
-    </div>
-    <div class="col-xs-12 col-md-6">
-      <input type="text" id="donationAgeF" name="donationAgeF" maxlength="" autocomplete="off">
-    </div>
-    <span class="error-msg" name="iaisErrorMsg" id="error_donationAgeF"></span>
-  </div>
-
+        <iais:value width="6" cssClass="col-md-6">
+            <iais:input maxLength="3" type="text" name="donatedForResearchOtherType"
+                        value="${donorSampleDto.donatedForResearchOtherType}"/>
+        </iais:value>
+    </iais:row>
 </div>
 
-<div id="maleSampleType"  <c:if test="${sampleType ne 'DONTY004' or sampleType ne 'DONTY003'}">style="display: none" </c:if>>
-  <div class="col-xs-12 col-md-12">
-    <div class="col-xs-12 col-md-6">
-      <label>Is the Male Donor's Identity Known? <span class="mandatory">*</span></label>
-    </div>
-    <div class="col-xs-12 col-md-6">
-      <div class="form-check form-check-inline">
-        <input class="form-check-input triggerObj" id="knownM" type="radio" name="isKnowIdentityM" value="N"/>
-        <label class="form-check-label" for="knownM">
-          <span class="check-circle"></span>No
-        </label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input triggerObj" id="unKnownM" type="radio" name="isKnowIdentityM" value="Y"/>
-        <label class="form-check-label" for="unKnownM">
-          <span class="check-circle"></span>Yes
-        </label>
-      </div>
-    </div>
-    <span class="error-msg" name="iaisErrorMsg" id="error_isKnowIdentityN"></span>
-  </div>
+<iais:row id="trainingNumRow">
+    <iais:field style="padding-left:0" width="6" value="No. Donated for Training " mandatory="true"
+                cssClass="col-md-6"/>
+    <iais:value width="6" cssClass="col-md-6">
+        <iais:input maxLength="3" type="text" name="trainingNum" value="${donorSampleDto.trainingNum}"/>
+    </iais:value>
+</iais:row>
 
-  <div id="isKnowIdentityMSection"  <c:if test="${isKnowIdentityF ne 'Y'}">style="display: none" </c:if>>
-    <div class="col-xs-12 col-md-12">
-      <div class="col-xs-12 col-md-6">
-        <label>Does the Male Donor have a NRIC/FIN number? <span class="mandatory">*</span></label>
-      </div>
+<iais:row id="treatmentNumRow">
+    <iais:field style="padding-left:0" width="6" value="No. Donated for Treatment " mandatory="true"
+                cssClass="col-md-6"/>
+    <iais:value width="6" cssClass="col-md-6">
+        <iais:input maxLength="3" type="text" name="treatNum" value="${donorSampleDto.treatNum}"/>
+    </iais:value>
+</iais:row>
 
-      <div class="col-xs-12 col-md-6">
-        <div class="form-check form-check-inline">
-          <input class="form-check-input triggerObj" id="noIdNUmberM" type="radio" name="hasIdNumberM" value="N"/>
-          <label class="form-check-label" for="noIdNUmberM">
-            <span class="check-circle"></span>No
-          </label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input triggerObj" id="hasIdNumberM" type="radio" name="hasIdNumberM" value="Y"/>
-          <label class="form-check-label" for="hasIdNumberM">
-            <span class="check-circle"></span>Yes
-          </label>
-        </div>
-      </div>
-      <span class="error-msg" name="iaisErrorMsg" id="error_hasIdNumberM"></span>
-    </div>
+<iais:row>
+    <iais:field style="padding-left:0" width="6" value="Total No. Donated " mandatory="true"
+                cssClass="col-md-6"/>
+    <iais:value width="6" cssClass="col-md-6">
+        <p id="donatedNum">0</p>
+    </iais:value>
+</iais:row>
 
-    <div class="col-xs-12 col-md-12" id="noIdSectionM"  <c:if test="${hasIdNumberM ne 'N'}">style="display: none" </c:if>>
-      <div class="col-xs-12 col-md-6">
-        <label for="donorPassportM">Male Donor's Passport Number <span class="mandatory">*</span></label>
-      </div>
-      <div class="col-xs-12 col-md-6">
-        <input type="text" id="donorPassportM" name="donorPassportM" maxlength="" autocomplete="off">
-      </div>
-      <span class="error-msg" name="iaisErrorMsg" id="error_donorPassportM"></span>
-    </div>
-
-    <div class="col-xs-12 col-md-12" id="hasIdSectionM"  <c:if test="${hasIdNumberM ne 'Y'}">style="display: none" </c:if>>
-      <div class="col-xs-12 col-md-6">
-        <label for="donorIdNumberM">Male Donor's NRIC/FIN Number <span class="mandatory">*</span></label>
-      </div>
-      <div class="col-xs-12 col-md-6">
-        <input type="text" id="donorIdNumberM" name="donorIdNumberM" maxlength="" autocomplete="off">
-      </div>
-    </div>
-
-  </div>
-
-  <div class="col-xs-12 col-md-12">
-    <div class="col-xs-12 col-md-6">
-      <label for="sampleCodeM">Male Donor Sample Code <span class="mandatory">*</span></label>
-    </div>
-    <div class="col-xs-12 col-md-6">
-      <input type="text" id="sampleCodeM" name="sampleCodeM" maxlength="" autocomplete="off">
-    </div>
-    <span class="error-msg" name="iaisErrorMsg" id="error_sampleCodeM"></span>
-  </div>
-
-  <div class="col-xs-12 col-md-12">
-    <div class="col-xs-12 col-md-6">
-      <label for="donationAgeM">Age of Male Donor at the Point of Donation <span class="mandatory">*</span></label>
-    </div>
-    <div class="col-xs-12 col-md-6">
-      <input type="text" id="donationAgeM" name="donationAgeM" maxlength="" autocomplete="off">
-    </div>
-    <span class="error-msg" name="iaisErrorMsg" id="error_donationAgeM"></span>
-  </div>
-</div>
-
-<div id="sampleRootSection"  <c:if test="${sampleRoot ne 'local' or sampleRoot ne 'overseas'}">style="display:none;"</c:if>>
-  <div class="col-xs-12 col-md-12">
-    <div class="col-xs-12 col-md-6">
-      <label for="institutionLocal">Which Institution was the Sample Donated From? <span class="mandatory">*</span></label>
-    </div>
-
-    <div class="col-xs-12 col-md-6">
-      <div id="localDonateSection"  <c:if test="${sampleRoot ne 'local'}">style="display: none"</c:if>>
-        <select name="institution" id="institutionLocal">
-          <option value="">Please Select</option>
-        </select>
-      </div>
-
-      <div id="overseasDonateSection"  <c:if test="${sampleRoot ne 'overseas'}">style="display: none"</c:if>>
-        <input type="text" id="institutionOverseas" name="institution" maxlength="" autocomplete="off">
-      </div>
-    </div>
-    <span class="error-msg" name="iaisErrorMsg" id="error_institution"></span>
-  </div>
-</div>
-
-<div class="col-xs-12 col-md-12">
-  <div class="col-xs-12 col-md-6">
-    <label for="donationReason">Reason(s) for Donation <span class="mandatory">*</span></label>
-  </div>
-
-  <div class="col-xs-12 col-md-6">
-    <select name="donationReason" id="donationReason">
-      <option value="">Please Select</option>
-      <option value="DONRES001">Gamete / embryos not usable for treatment</option>
-      <option value="DONRES002">Completed treatment</option>
-      <option value="DONRES003">Abandoned treatment</option>
-      <option value="DONRES004">Others</option>
-    </select>
-  </div>
-
-  <span class="error-msg" name="iaisErrorMsg" id="error_donationReason"></span>
-</div>
-
-<div class="col-xs-12 col-md-12">
-  <div class="col-xs-12 col-md-6">
-    <label>Purpose of Donation <span class="mandatory">*</span></label>
-  </div>
-  <div class="col-xs-12 col-md-6">
-    <div class="form-check">
-      <input class="form-check-input triggerObj" type="checkbox" value="research" id="donPurposeResearch" name="donationPurpose">
-      <label class="form-check-label" for="donPurposeResearch">
-        <span class="check-square"></span>Research
-      </label>
-    </div>
-    <div class="form-check">
-      <input class="form-check-input triggerObj" type="checkbox" value="training" id="donPurposeTraining" name="donationPurpose">
-      <label class="form-check-label" for="donPurposeTraining">
-        <span class="check-square"></span>Training
-      </label>
-    </div>
-    <div class="form-check">
-      <input class="form-check-input triggerObj" type="checkbox" value="treatment" id="donPurposeTreatment" name="donationPurpose">
-      <label class="form-check-label" for="donPurposeTreatment">
-        <span class="check-square"></span>Treatment
-      </label>
-    </div>
-  </div>
-
-  <span class="error-msg" name="iaisErrorMsg" id="error_donationPurpose"></span>
-</div>
-
-<div id="dpResearchSection"   <c:if test="${donationPurpose ne 'research'}">style="display: none"</c:if>>
-  <div class="col-xs-12 col-md-12">
-    <div class="col-xs-12 col-md-6">
-      <label for="usableTRTResearchDONNo">No. Donated for Research (Usable for Treatment) <span class="mandatory">*</span></label>
-    </div>
-    <div class="col-xs-12 col-md-6">
-      <input type="text" id="usableTRTResearchDONNo" name="usableTRTResearchDONNo" maxlength="" autocomplete="off">
-    </div>
-    <span class="error-msg" name="iaisErrorMsg" id="error_usableTRTResearchDONNo"></span>
-  </div>
-
-  <div class="col-xs-12 col-md-12">
-    <div class="col-xs-12 col-md-6">
-      <label for="uselessTRTResearchDONNo">No. Donated for Research (Usable for Treatment) <span class="mandatory">*</span></label>
-    </div>
-    <div class="col-xs-12 col-md-6">
-      <input type="text" id="uselessTRTResearchDONNo" name="uselessTRTResearchDONNo" maxlength="" autocomplete="off">
-    </div>
-    <span class="error-msg" name="iaisErrorMsg" id="error_uselessTRTResearchDONNo"></span>
-  </div>
-
-  <div class="col-xs-12 col-md-12">
-    <div class="col-xs-12 col-md-6">
-      <label>Type of Research for Which Gamete(s) Was Donated <span class="mandatory">*</span></label>
-    </div>
-    <div class="col-xs-12 col-md-6">
-      <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="GRESTY001" id="hescrResearch" name="gameteResType">
-        <label class="form-check-label" for="hescrResearch">
-          <span class="check-square"></span>Human Embryonic Stem Cell Research
-        </label>
-      </div>
-      <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="GRESTY002" id="rrtarResearch" name="gameteResType">
-        <label class="form-check-label" for="rrtarResearch">
-          <span class="check-square"></span>Research Related to Assisted Reproduction
-        </label>
-      </div>
-      <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="GRESTY003" id="otherResearch" name="gameteResType">
-        <label class="form-check-label" for="otherResearch">
-          <span class="check-square"></span>Other Type of Research
-        </label>
-      </div>
-    </div>
-    <span class="error-msg" name="iaisErrorMsg" id="error_gameteResType"></span>
-  </div>
-
-  <div class="col-xs-12 col-md-12">
-    <div class="col-xs-12 col-md-6">
-      <label for="otherResType">Please indicate the Other Type of Research
-        <span class="mandatory" id="otherResTypeMandatory" <c:if test="${gameteResType ne 'GRESTY003'}">style="display: none" </c:if>>*</span>
-      </label>
-    </div>
-    <div class="col-xs-12 col-md-6">
-      <input type="text" id="otherResType" name="otherResType" maxlength="" autocomplete="off">
-    </div>
-    <span class="error-msg" name="iaisErrorMsg" id="error_otherResType"></span>
-  </div>
-</div>
-
-<div id="dpTrainingSection"  <c:if test="${donationPurpose ne 'training'}">style="display: none"</c:if>>
-  <div class="col-xs-12 col-md-12">
-    <div class="col-xs-12 col-md-6">
-      <label for="trainingDONNo">No. Donated for Training <span class="mandatory">*</span></label>
-    </div>
-    <div class="col-xs-12 col-md-6">
-      <input type="text" id="trainingDONNo" name="trainingDONNo" maxlength="" autocomplete="off">
-    </div>
-    <span class="error-msg" name="iaisErrorMsg" id="error_trainingDONNo"></span>
-  </div>
-</div>
-
-<div id="dpTreatmentSection"  <c:if test="${donationPurpose ne 'treatment'}">style="display: none"</c:if>>
-  <div class="col-xs-12 col-md-12">
-    <div class="col-xs-12 col-md-6">
-      <label for="treatmentDONNo">No. Donated for Treatment <span class="mandatory">*</span></label>
-    </div>
-    <div class="col-xs-12 col-md-6">
-      <input type="text" id="treatmentDONNo" name="treatmentDONNo" maxlength="" autocomplete="off">
-    </div>
-    <span class="error-msg" name="iaisErrorMsg" id="error_treatmentDONNo"></span>
-  </div>
-</div>
-
-<div class="col-xs-12 col-md-12">
-  <div class="col-xs-12 col-md-6">
-    <label>Total No. Donated</label>
-  </div>
-  <div class="col-xs-12 col-md-6">
-    <label>0</label>
-  </div>
-</div>
+<iais:confirm msg="DS_ERR044"
+              callBack="$('#spermAgeConfirm').hide();" popupOrder="spermAgeConfirm" needCancel="false"
+              yesBtnCls="btn btn-secondary" yesBtnDesc="Close"
+              needFungDuoJi="false" />
+<iais:confirm msg="DS_ERR045"
+              callBack="$('#oocyteAgeConfirm').hide();" popupOrder="oocyteAgeConfirm" needCancel="false"
+              yesBtnCls="btn btn-secondary" yesBtnDesc="Close"
+              needFungDuoJi="false" />

@@ -85,7 +85,7 @@
                  <iais:row id="idNo${arDonorIndex}Row"  style="${!donorDto.directedDonation ? 'display: none;' : ''}">
                      <iais:field width="5" value="ID No." mandatory="true"/>
                      <iais:value width="2" cssClass="col-md-2">
-                         <iais:select name="idType${arDonorIndex}" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${donorDto.idType}"
+                         <iais:select name="idType${arDonorIndex}" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE_DTV" value="${donorDto.idType}"
                                       cssClass="idTypeSel${arDonorIndex}" onchange="removeAges('${arDonorIndex}')"/>
                      </iais:value>
                      <iais:value width="3" cssClass="col-md-3">

@@ -458,28 +458,6 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public DonorSampleDto getDonorSampleDto(boolean directedDonation, String idType, String idNumber, String donorSampleCodeType,
-            String donorSampleCode,String liceId,String hciCode) {
-        return ((StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNumber)) &&
-                (StringUtil.isEmpty(donorSampleCodeType) || StringUtil.isEmpty(
-                        donorSampleCode))) ? null : arFeClient.getDonorSampleDto(directedDonation,
-                idType, idNumber, donorSampleCodeType,donorSampleCode,liceId,hciCode).getEntity();
-    }
-
-    @Override
-    public DonorSampleDto getDonorSampleDto(DonorSampleDto donorSampleDto) {
-        String donorSampleCodeType = StringUtil.isEmpty(donorSampleDto.getIdType()) ? donorSampleDto.getIdType() : StringUtil.isIn(
-                donorSampleDto.getIdType(),
-                new String[]{DataSubmissionConsts.AR_ID_TYPE_PINK_IC, DataSubmissionConsts.AR_ID_TYPE_BLUE_IC, DataSubmissionConsts.AR_ID_TYPE_FIN_NO, DataSubmissionConsts.AR_ID_TYPE_PASSPORT_NO}) ? donorSampleDto.getIdType() : DataSubmissionConsts.AR_ID_TYPE_CODE;
-        return getDonorSampleDto(donorSampleDto.isDirectedDonation(),
-                donorSampleDto.getIdType()
-                , donorSampleDto.getIdNumber()
-                , donorSampleCodeType
-                , DataSubmissionConsts.AR_ID_TYPE_CODE.equalsIgnoreCase(
-                        donorSampleCodeType) ? donorSampleDto.getDonorSampleCode() : donorSampleDto.getIdNumber(),null,null);
-    }
-
-    @Override
     public ArSuperDataSubmissionDto setIuiCycleStageDtoDefaultVal(ArSuperDataSubmissionDto arSuperDataSubmission) {
         if (arSuperDataSubmission != null) {
             IuiCycleStageDto iuiCycleStageDto = arSuperDataSubmission.getIuiCycleStageDto();
@@ -540,12 +518,34 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
 
     @Override
     public List<DonorSampleAgeDto> getDonorSampleAgeDtoBySampleKey(String sampleKey) {
+        if (StringUtil.isEmpty(sampleKey)){
+            return IaisCommonUtils.genNewArrayList();
+        }
         return arFeClient.getDonorSampleAgeDtoBySampleKey(sampleKey).getEntity();
     }
 
     @Override
     public List<DonorSampleDto> getDonorSampleDtoBySampleKey(String sampleKey) {
+        if (StringUtil.isEmpty(sampleKey)){
+            return IaisCommonUtils.genNewArrayList();
+        }
         return arFeClient.getDonorSampleDtoBySampleKey(sampleKey).getEntity();
+    }
+
+    @Override
+    public List<DonorSampleAgeDto> getDonorSampleAgeDtos(String idType, String idNo) {
+        if (StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNo)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        return arFeClient.getDonorSampleAges(idType, idNo).getEntity();
+    }
+
+    @Override
+    public String getDonorSampleKey(String idType, String idNo) {
+        if (StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNo)) {
+            return null;
+        }
+        return arFeClient.getDonorSampleKey(idType, idNo).getEntity();
     }
 
     @Override

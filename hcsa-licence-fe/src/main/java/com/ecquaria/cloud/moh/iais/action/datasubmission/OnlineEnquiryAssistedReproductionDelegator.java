@@ -1396,7 +1396,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
     private DonorSampleDto setflagMsg(DonorSampleDto donorSampleDto){
         if(donorSampleDto != null){
             List<DonorSampleAgeDto> donorSampleAgeDtos = donorSampleDto.getDonorSampleAgeDtos();
-            if(IaisCommonUtils.isNotEmpty(donorSampleAgeDtos) && !donorSampleDto.isDirectedDonation()){
+            if(IaisCommonUtils.isNotEmpty(donorSampleAgeDtos) && !donorSampleDto.getDirectedDonation()){
                 for(DonorSampleAgeDto donorSampleAgeDto : donorSampleAgeDtos){
                     int age = donorSampleAgeDto.getAge();
                     if(DataSubmissionConsts.DONOR_SAMPLE_TYPE_SPERM.equals(donorSampleDto.getSampleType())){

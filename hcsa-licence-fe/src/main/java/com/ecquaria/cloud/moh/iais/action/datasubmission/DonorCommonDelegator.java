@@ -6,14 +6,18 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationProperty;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
+import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.validation.dataSubmission.DonorValidator;
 import lombok.extern.slf4j.Slf4j;
 
@@ -100,30 +104,31 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
 
     protected void valiateDonorDtos(HttpServletRequest request,List<DonorDto> arDonorDtos){
         int valiateArDonor = ParamUtil.getInt(request,CRUD_ACTION_VALUE_VALIATE_DONOR);
-        if(valiateArDonor >-1){
+        if(valiateArDonor >-1) {
             DonorDto arDonorDto = arDonorDtos.get(valiateArDonor);
-            Map<String, String> errorMapVal = DonorValidator.valCommonField(IaisCommonUtils.genNewHashMap(2),arDonorDto,true);
-            if(IaisCommonUtils.isNotEmpty(errorMapVal)){
-                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMapVal));
+            Map<String, String> errorMapVal = DonorValidator.valCommonField(IaisCommonUtils.genNewHashMap(2), arDonorDto, true);
+            if (IaisCommonUtils.isNotEmpty(errorMapVal)) {
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMapVal));
                 return;
             }
-            DonorSampleDto donorSampleDto = arDataSubmissionService.getDonorSampleDto(arDonorDto.isDirectedDonation(),
-                    arDonorDto.getIdType(),
-                    arDonorDto.getIdNumber(),
-                    arDonorDto.getIdType(),
-                    arDonorDto.getDonorSampleCode(),
-                    DataSubmissionHelper.getLoginContext(request).getLicenseeId(),
-                    DataSubmissionHelper.getCurrentArDataSubmission(request).getHciCode());
-            if(donorSampleDto == null || IaisCommonUtils.isEmpty(donorSampleDto.getDonorSampleAgeDtos())){
+            String idNumber = arDonorDto.getIdNumber();
+            if (!arDonorDto.isDirectedDonation()){
+                idNumber = arDonorDto.getDonorSampleCode();
+            }
+            String donorSampleKey = arDataSubmissionService.getDonorSampleKey(arDonorDto.getIdType(), idNumber);
+            List<DonorSampleAgeDto> donorSampleAgeDtos = arDataSubmissionService.getDonorSampleAgeDtoBySampleKey(donorSampleKey);
+            //TODO, from ages
+            int donorUseSize = 0;
+            if (donorSampleKey == null || IaisCommonUtils.isEmpty(donorSampleAgeDtos)) {
                 Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(2);
                 String dsErr;
-                if(donorSampleDto == null){
-                    errorMap.put("field1","The corresponding donor");
-                    errorMap.put("field2","the AR centre");
-                    dsErr =  MessageUtil.getMessageDesc("DS_ERR012",errorMap).trim();
-                }else {
-                    errorMap.put("field","The donor's age(s)");
-                    dsErr = MessageUtil.getMessageDesc("DS_ERR020",errorMap).trim();
+                if (donorSampleKey == null) {
+                    errorMap.put("field1", "The corresponding donor");
+                    errorMap.put("field2", "the AR centre");
+                    dsErr = MessageUtil.getMessageDesc("DS_ERR012", errorMap).trim();
+                } else {
+                    errorMap.put("field", "The donor's age(s)");
+                    dsErr = MessageUtil.getMessageDesc("DS_ERR020", errorMap).trim();
                 }
                 errorMap.clear();
                 errorMap.put("validateDonor" +(arDonorDto.isDirectedDonation() ? "Yes" : "No") +arDonorDto.getArDonorIndex(),dsErr);
@@ -131,17 +136,17 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
             }else {
                 Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
                 arDonorDtos.forEach( donorDto -> {
-                    if(donorSampleDto.getSampleKey().equalsIgnoreCase(donorDto.getDonorSampleKey()) && donorDto.getArDonorIndex() != valiateArDonor){
-                            errorMap.put("validateDonor" +(arDonorDto.isDirectedDonation() ? "Yes" : "No") +arDonorDto.getArDonorIndex(), MessageUtil.replaceMessage("DS_ERR016","This donor","field"));
-                        setDonorDtoByDonorSampleDto(donorDto,donorSampleDto,request);
+                    if (donorSampleKey.equalsIgnoreCase(donorDto.getDonorSampleKey()) && donorDto.getArDonorIndex() != valiateArDonor) {
+                        errorMap.put("validateDonor" + (arDonorDto.isDirectedDonation() ? "Yes" : "No") + arDonorDto.getArDonorIndex(), MessageUtil.replaceMessage("DS_ERR016", "This donor", "field"));
+                        setDonorDtoByDonorSampleDto(donorDto, donorSampleKey, donorSampleAgeDtos, donorUseSize, request);
                     }
                 });
                 if(errorMap.isEmpty()){
-                    if(donorSampleDto.getDonorUseSize() >= Integer.parseInt(MasterCodeUtil.getCodeDesc("DSPC_004"))){
+                    if (donorUseSize >= Integer.parseInt(MasterCodeUtil.getCodeDesc("DSPC_004"))) {
                         ParamUtil.setRequestAttr(request, "donorResultMoreValue", AppConsts.YES);
                     }
-                    setDonorDtoByDonorSampleDto(arDonorDto,donorSampleDto,request);
-                }else {
+                    setDonorDtoByDonorSampleDto(arDonorDto, donorSampleKey, donorSampleAgeDtos, donorUseSize, request);
+                } else {
                     clearDonorAges(arDonorDto);
                     ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 }
@@ -149,38 +154,37 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
         }
     }
 
-    private void setDonorDtoByDonorSampleDto(DonorDto arDonorDto, DonorSampleDto donorSampleDto,HttpServletRequest request){
-        arDonorDto.setDonorIdentityKnown(donorSampleDto.getDonorIdentityKnown());
-        setRfcDonorSelectData(request,donorSampleDto);
-        List<DonorSampleAgeDto> ages = donorSampleDto.getDonorSampleAgeDtos();
-        arDonorDto.setDonorSampleAgeDtos(ages);
-        arDonorDto.setDonorUseSize(donorSampleDto.getDonorUseSize());
-        arDonorDto.setDonorSampleKey(donorSampleDto.getSampleKey());
-        arDonorDto.setDonorSampleId(donorSampleDto.getId());
-        if(!donorSampleDto.isDirectedDonation()){
-            arDonorDto.setSource(donorSampleDto.getSampleFromHciCode());
-            arDonorDto.setOtherSource(donorSampleDto.getSampleFromOthers());
-        }
-        if(IaisCommonUtils.isNotEmpty(ages)){
+    private void setDonorDtoByDonorSampleDto(DonorDto arDonorDto, String sampleKey, List<DonorSampleAgeDto> donorSampleAgeDtos, int useSize, HttpServletRequest request) {
+        setRfcDonorSelectData(request, sampleKey, donorSampleAgeDtos);
+        arDonorDto.setDonorSampleKey(sampleKey);
+        arDonorDto.setDonorSampleAgeDtos(donorSampleAgeDtos);
+        arDonorDto.setDonorUseSize(useSize);
+        //todo
+//        if(!donorSampleDto.getDirectedDonation()){
+//            arDonorDto.setSource(donorSampleDto.getSampleFromHciCode());
+//            arDonorDto.setOtherSource(donorSampleDto.getSampleFromOthers());
+//        }
+        if (IaisCommonUtils.isNotEmpty(donorSampleAgeDtos)) {
             arDonorDto.setResetDonor(AppConsts.NO);
             setAgeList(arDonorDto);
         }
     }
 
-    private  void setRfcDonorSelectData(HttpServletRequest request,DonorSampleDto donorSampleDto){
-        if(isRfc(request)){
-            List<DonorSampleAgeDto> oldDonorSampleAgeDtos =(List<DonorSampleAgeDto>) ParamUtil.getSessionAttr(request,OLD_DONORS_SELECTED);
-            if(IaisCommonUtils.isNotEmpty(oldDonorSampleAgeDtos)){
-                List<DonorSampleAgeDto> ages = donorSampleDto.getDonorSampleAgeDtos();
-                for (DonorSampleAgeDto donorSampleAgeDto : oldDonorSampleAgeDtos){
-                    if(donorSampleDto.getSampleKey().equalsIgnoreCase(donorSampleAgeDto.getSampleKey())){
+    private void setRfcDonorSelectData(HttpServletRequest request, String sampleKey, List<DonorSampleAgeDto> donorSampleAgeDtos) {
+        if (isRfc(request)) {
+            List<DonorSampleAgeDto> oldDonorSampleAgeDtos = (List<DonorSampleAgeDto>) ParamUtil.getSessionAttr(request, OLD_DONORS_SELECTED);
+            if (IaisCommonUtils.isNotEmpty(oldDonorSampleAgeDtos)) {
+                List<DonorSampleAgeDto> ages = donorSampleAgeDtos;
+                for (DonorSampleAgeDto donorSampleAgeDto : oldDonorSampleAgeDtos) {
+                    if (sampleKey.equalsIgnoreCase(donorSampleAgeDto.getSampleKey())) {
                         boolean isHaveSel = false;
                         for (DonorSampleAgeDto donorSampleAgeDtoF : ages) {
-                            if(donorSampleAgeDtoF.getId().equalsIgnoreCase(donorSampleAgeDto.getId())){
-                                isHaveSel = true;break;
+                            if (donorSampleAgeDtoF.getId().equalsIgnoreCase(donorSampleAgeDto.getId())) {
+                                isHaveSel = true;
+                                break;
                             }
                         }
-                        if(!isHaveSel){
+                        if (!isHaveSel) {
                             donorSampleAgeDto.setStatus(DataSubmissionConsts.DONOR_AGE_STATUS_ACTIVE);
                             ages.add(donorSampleAgeDto);
                         }
@@ -293,11 +297,11 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
 
 
 
-    protected List<SelectOption> getSampleDropDown(){
-        List<SelectOption> selectOptions  = IaisCommonUtils.genNewArrayList(4);
-        selectOptions.add(new SelectOption(DataSubmissionConsts.AR_ID_TYPE_CODE,"Code"));
-        MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_DS_ID_TYPE).stream().forEach(
-                obj -> selectOptions.add(new SelectOption(obj.getCode(),obj.getCodeValue()))
+    protected List<SelectOption> getSampleDropDown() {
+        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList(4);
+        selectOptions.add(new SelectOption(DataSubmissionConsts.DTV_ID_TYPE_CODE, "Code"));
+        MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_DS_ID_TYPE_DTV).forEach(
+                obj -> selectOptions.add(new SelectOption(obj.getCode(), obj.getCodeValue()))
         );
         return selectOptions;
     }
