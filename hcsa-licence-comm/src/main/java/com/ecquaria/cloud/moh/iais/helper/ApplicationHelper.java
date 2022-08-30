@@ -28,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSpecialServiceInfoDto;
@@ -2312,17 +2313,16 @@ public final class ApplicationHelper {
         return true;
     }
 
-    public static boolean initOtherInfoForm(AppSvcRelatedInfoDto currSvcInfoDto) {
-        return initOtherInfoForm(currSvcInfoDto, false);
-    }
-
     public static boolean initOtherInfoForm(AppSvcRelatedInfoDto currSvcInfoDto, boolean init) {
-        AppSvcSuplmFormDto appSvcSuplmFormDto = currSvcInfoDto.getAppSvcSuplmFormDto();
-        appSvcSuplmFormDto = initAppSvcSuplmFormDto(currSvcInfoDto.getServiceCode(), init, HcsaConsts.ITEM_TYPE_TOP, appSvcSuplmFormDto);
-        if (appSvcSuplmFormDto != null){
-            appSvcSuplmFormDto.setSvcConfigDto(currSvcInfoDto);
+        AppSvcOtherInfoDto appSvcOtherInfoDto = currSvcInfoDto.getAppSvcOtherInfoDto();
+        if (appSvcOtherInfoDto == null){
+            appSvcOtherInfoDto = new AppSvcOtherInfoDto();
         }
-        currSvcInfoDto.setAppSvcSuplmFormDto(appSvcSuplmFormDto);
+        AppSvcSuplmFormDto appSvcSuplmFormDto = appSvcOtherInfoDto.getAppSvcSuplmFormDto();
+        appSvcSuplmFormDto = initAppSvcSuplmFormDto(AppServicesConsts.SERVICE_CODE_SUB_TOP, init, HcsaConsts.ITEM_TYPE_TOP, appSvcSuplmFormDto);
+        appSvcSuplmFormDto.setSvcConfigDto(currSvcInfoDto);
+        appSvcOtherInfoDto.setAppSvcSuplmFormDto(appSvcSuplmFormDto);
+        currSvcInfoDto.setAppSvcOtherInfoDto(appSvcOtherInfoDto);
         return true;
     }
 
@@ -2330,9 +2330,9 @@ public final class ApplicationHelper {
         if (appSvcSuplmFormDto == null) {
             appSvcSuplmFormDto = new AppSvcSuplmFormDto();
         }
-        if (!init && appSvcSuplmFormDto.isInit()) {
-            return null;
-        }
+//        if (!init && appSvcSuplmFormDto.isInit()) {
+//            return null;
+//        }
         ConfigCommService configCommService = getConfigCommService();
         List<SuppleFormItemConfigDto> configDtos = configCommService.getSuppleFormItemConfigs(code, type);
         appSvcSuplmFormDto.setSuppleFormItemConfigDtos(configDtos, (svcId, addMoreBatchNum) -> {

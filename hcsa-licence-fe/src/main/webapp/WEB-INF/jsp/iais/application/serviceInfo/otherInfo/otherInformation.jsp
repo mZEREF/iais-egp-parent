@@ -13,12 +13,12 @@
 <c:set var="med" value="${appSvcOtherInfoDto.appSvcOtherInfoMedDto}"/>
 <c:set var="m" value="${appSvcOtherInfoDto.appSvcOtherInfoMedDto1}"/>
 <c:set var="n" value="${appSvcOtherInfoDto.appSvcOtherInfoNurseDto}"/>
-
 <div class="row form-horizontal">
     <%@include file="dentalService.jsp" %>
     <%@include file="renalDialysisCentreService.jsp"%>
     <%@include file="ambulatorySurgicalCentreService.jsp"%>
     <%@include file="otherInformationTopPerson.jsp" %>
+    <%@include file="otherInfoItemForm.jsp"%>
     <%@include file="documentation.jsp" %>
     <%@include file="aboutTop.jsp" %>
     <%@include file="yFV.jsp"%>
@@ -28,8 +28,6 @@
     $(document).ready(function () {
         firstRadio();
         topRadio();
-        requireCheckBox();
-        rCheckBox();
     });
 
     function firstRadio() {
@@ -124,36 +122,6 @@
             $('div.addTopBySurgicalProcedureDiv').removeClass("hidden");
             $('div.addTopAllDiv').removeClass("hidden");
         }
-    }
-
-    function requireCheckBox(){
-        $('.requireCheck').unbind('click');
-        $(".requireCheck").click(function(){
-            if($(this).is(":checked")){
-                console.log("选中");
-                $('input[name="requireCheck"]').val(1);
-                console.log("选中:..."+ $('input[name="requireCheck"]').val());
-            }else{
-                console.log("未选中");
-                $('input[name="requireCheck"]').val(0);
-                console.log("未选中:..."+ $('input[name="requireCheck"]').val());
-            }
-        });
-    }
-
-    function rCheckBox(){
-        $('.requireCheck1').unbind('click');
-        $(".requireCheck1").click(function(){
-            if($(this).is(":checked")){
-                console.log("选中");
-                $('input[name="requireCheck1"]').val(1);
-                console.log("选中:..."+ $('input[name="requireCheck1"]').val());
-            }else{
-                console.log("未选中");
-                $('input[name="requireCheck1"]').val(0);
-                console.log("未选中:..."+ $('input[name="requireCheck1"]').val());
-            }
-        });
     }
 
 </script>

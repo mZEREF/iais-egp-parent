@@ -775,29 +775,13 @@ public final class AppDataHelper {
 
     public static AppSvcOtherInfoDto genAppSvcOtherInfoDto(HttpServletRequest request, String appType){
         AppSvcOtherInfoDto appSvcOtherInfoDto = new AppSvcOtherInfoDto();
-        AppSvcOtherInfoTopDto appSvcOtherInfoTopDtos = new AppSvcOtherInfoTopDto();
-        List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos = IaisCommonUtils.genNewArrayList();
-        List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos1 = IaisCommonUtils.genNewArrayList();
-        List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos2 = IaisCommonUtils.genNewArrayList();
-        List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos3 = IaisCommonUtils.genNewArrayList();
+        String topType = ParamUtil.getString(request,"topType");
         String currentSvcId = (String) ParamUtil.getSessionAttr(request,CURRENTSERVICEID);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request,currentSvcId);
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
         String provideTop = ParamUtil.getString(request,"provideTop");
-        // AppSvcOtherInfoTopDto
-        String topType = ParamUtil.getString(request,"topType");
-        String hasConsuAttendCourse = ParamUtil.getString(request,"hasConsuAttendCourse");
-        String isProvideHpb = ParamUtil.getString(request,"isProvideHpb");
-        String isOutcomeProcRecord = ParamUtil.getString(request,"isOutcomeProcRecord");
-        String compCaseNum = ParamUtil.getString(request,"compCaseNum");
-        appSvcOtherInfoTopDtos.setTopType(topType);
-        appSvcOtherInfoTopDtos.setHasConsuAttendCourse(hasConsuAttendCourse);
-        appSvcOtherInfoTopDtos.setIsProvideHpb(isProvideHpb);
-        appSvcOtherInfoTopDtos.setIsOutcomeProcRecord(isOutcomeProcRecord);
-        appSvcOtherInfoTopDtos.setCompCaseNum(compCaseNum);
         String dsDeclaration = ParamUtil.getString(request,"dsDeclaration");
         String ascsDeclaration = ParamUtil.getString(request,"ascsDeclaration");
-        //med
         AppSvcOtherInfoMedDto appSvcOtherInfoMedDto = new AppSvcOtherInfoMedDto();
         ControllerHelper.get(request,appSvcOtherInfoMedDto);
         String systemOption = ParamUtil.getString(request,"systemOption");
@@ -805,15 +789,49 @@ public final class AppDataHelper {
             String otherSystemOption = ParamUtil.getString(request,"otherSystemOption");
             appSvcOtherInfoMedDto.setOtherSystemOption(otherSystemOption);
         }
-        //a
         AppSvcOtherInfoMedDto appSvcOtherInfoMedDto1 = new AppSvcOtherInfoMedDto();
         String gfValue = ParamUtil.getString(request,"agfaValue");
         appSvcOtherInfoMedDto1.setGfaValue(gfValue);
-
-        //n
         AppSvcOtherInfoNurseDto appSvcOtherInfoNurseDto = new AppSvcOtherInfoNurseDto();
         ControllerHelper.get(request,appSvcOtherInfoNurseDto);
-        // List<AppSvcOtherInfoTopPersonDto>
+
+        appSvcOtherInfoDto.setProvideTop(provideTop);
+        appSvcOtherInfoDto.setDsDeclaration(dsDeclaration);
+        appSvcOtherInfoDto.setAscsDeclaration(ascsDeclaration);
+        appSvcOtherInfoDto.setAppSvcOtherInfoTopPersonDtoList(getAppSvcOtherInfoTopPersonDtoPractitioners(request,appType,isRfi,appSvcRelatedInfoDto));
+        appSvcOtherInfoDto.setAppSvcOtherInfoTopPersonDtoList1(getAppSvcOtherInfoTopPersonDtoAnaesthetists(request,appType,isRfi,appSvcRelatedInfoDto));
+        appSvcOtherInfoDto.setAppSvcOtherInfoTopPersonDtoList2(getAppSvcOtherInfoTopPersonDtoNurses(request,appType,isRfi,appSvcRelatedInfoDto));
+        appSvcOtherInfoDto.setAppSvcOtherInfoTopPersonDtoList3(getAppSvcOtherInfoTopPersonDtoCounsellors(request,appType,isRfi,appSvcRelatedInfoDto));
+        appSvcOtherInfoDto.setAppSvcOtherInfoAbortDtoList(getAppSvcOtherInfoAbortDto1(request,appType,topType,isRfi,appSvcRelatedInfoDto));
+        appSvcOtherInfoDto.setAppSvcOtherInfoAbortDtoList1(getAppSvcOtherInfoAbortDto2(request,appType,topType,isRfi,appSvcRelatedInfoDto));
+        appSvcOtherInfoDto.setAppSvcOtherInfoAbortDtoList2(getAppSvcOtherInfoAbortDto3(request,appType,topType,isRfi,appSvcRelatedInfoDto));
+        appSvcOtherInfoDto.setAppSvcOtherInfoTopDto(getAppSvcOtherInfoTopDto(request));
+        appSvcOtherInfoDto.setAppSvcOtherInfoMedDto(appSvcOtherInfoMedDto);
+        appSvcOtherInfoDto.setAppSvcOtherInfoMedDto1(appSvcOtherInfoMedDto1);
+        appSvcOtherInfoDto.setAppSvcOtherInfoNurseDto(appSvcOtherInfoNurseDto);
+
+        setAppSvcSuplmFormDto(appSvcOtherInfoDto.getAppSvcSuplmFormDto(), request);
+        return appSvcOtherInfoDto;
+    }
+
+    //other top
+    public static AppSvcOtherInfoTopDto getAppSvcOtherInfoTopDto(HttpServletRequest request){
+        AppSvcOtherInfoTopDto result = new AppSvcOtherInfoTopDto();
+        String topType = ParamUtil.getString(request,"topType");
+        String hasConsuAttendCourse = ParamUtil.getString(request,"hasConsuAttendCourse");
+        String isProvideHpb = ParamUtil.getString(request,"isProvideHpb");
+        String isOutcomeProcRecord = ParamUtil.getString(request,"isOutcomeProcRecord");
+        String compCaseNum = ParamUtil.getString(request,"compCaseNum");
+        result.setTopType(topType);
+        result.setHasConsuAttendCourse(hasConsuAttendCourse);
+        result.setIsProvideHpb(isProvideHpb);
+        result.setIsOutcomeProcRecord(isOutcomeProcRecord);
+        result.setCompCaseNum(compCaseNum);
+        return result;
+    }
+    //other top person practitioners
+    public static List<AppSvcOtherInfoTopPersonDto> getAppSvcOtherInfoTopPersonDtoPractitioners(HttpServletRequest request,String appType,boolean isRfi,AppSvcRelatedInfoDto appSvcRelatedInfoDto){
+        List<AppSvcOtherInfoTopPersonDto> result = IaisCommonUtils.genNewArrayList();
         int cdLength = ParamUtil.getInt(request,"cdLength");
         for (int i = 0; i < cdLength; i++) {
             boolean getDataByIndexNo = false;
@@ -831,17 +849,21 @@ public final class AppDataHelper {
             if (getDataByIndexNo) {
                 AppSvcOtherInfoTopPersonDto appPremOtherInfoTopPersonDto = getSvcOtherInfoTopPersonByIdNo(appSvcRelatedInfoDto, idNo, psnType);
                 if (appPremOtherInfoTopPersonDto != null) {
-                    appSvcOtherInfoTopPersonDtos.add(appPremOtherInfoTopPersonDto);
+                    result.add(appPremOtherInfoTopPersonDto);
                 }
             } else if (getPageData) {
                 AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto = new AppSvcOtherInfoTopPersonDto();
                 ControllerHelper.get(request,appSvcOtherInfoTopPersonDto,String.valueOf(i));
                 appSvcOtherInfoTopPersonDto.setSeqNum(i);
                 appSvcOtherInfoTopPersonDto.setIdNo(idNo);
-                appSvcOtherInfoTopPersonDtos.add(appSvcOtherInfoTopPersonDto);
+                result.add(appSvcOtherInfoTopPersonDto);
             }
         }
-        //anaLength
+        return result;
+    }
+    //other top person anaesthetists
+    public static List<AppSvcOtherInfoTopPersonDto> getAppSvcOtherInfoTopPersonDtoAnaesthetists(HttpServletRequest request,String appType,boolean isRfi,AppSvcRelatedInfoDto appSvcRelatedInfoDto){
+        List<AppSvcOtherInfoTopPersonDto> result = IaisCommonUtils.genNewArrayList();
         int anaLength = ParamUtil.getInt(request,"anaLength");
         for (int i = 0; i < anaLength; i++) {
             boolean getDataByIndexNo = false;
@@ -859,14 +881,13 @@ public final class AppDataHelper {
             if (getDataByIndexNo) {
                 AppSvcOtherInfoTopPersonDto appPremOtherInfoTopPersonDto = getSvcOtherInfoTopPersonByIdNo(appSvcRelatedInfoDto, idNo, apsnType);
                 if (appPremOtherInfoTopPersonDto != null) {
-                    appSvcOtherInfoTopPersonDtos1.add(appPremOtherInfoTopPersonDto);
+                    result.add(appPremOtherInfoTopPersonDto);
                 }
             } else if (getPageData) {
                 String profRegNo = ParamUtil.getString(request, "aprofRegNo" + i);
                 String name = ParamUtil.getString(request, "aname" + i);
                 String regType = ParamUtil.getString(request, "aregType" + i);
                 String qualification = ParamUtil.getString(request, "aqualification" + i);
-
                 AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto = new AppSvcOtherInfoTopPersonDto();
                 appSvcOtherInfoTopPersonDto.setPsnType(apsnType);
                 appSvcOtherInfoTopPersonDto.setProfRegNo(profRegNo);
@@ -875,11 +896,14 @@ public final class AppDataHelper {
                 appSvcOtherInfoTopPersonDto.setQualification(qualification);
                 appSvcOtherInfoTopPersonDto.setSeqNum(i);
                 appSvcOtherInfoTopPersonDto.setIdNo(idNo);
-
-                appSvcOtherInfoTopPersonDtos1.add(appSvcOtherInfoTopPersonDto);
+                result.add(appSvcOtherInfoTopPersonDto);
             }
         }
-        //nLength
+        return result;
+    }
+    //other top person nurses
+    public static List<AppSvcOtherInfoTopPersonDto> getAppSvcOtherInfoTopPersonDtoNurses(HttpServletRequest request,String appType,boolean isRfi,AppSvcRelatedInfoDto appSvcRelatedInfoDto){
+        List<AppSvcOtherInfoTopPersonDto> result = IaisCommonUtils.genNewArrayList();
         int nLength = ParamUtil.getInt(request,"nLength");
         for (int i = 0; i < nLength; i++) {
             boolean getDataByIndexNo = false;
@@ -897,7 +921,7 @@ public final class AppDataHelper {
             if (getDataByIndexNo) {
                 AppSvcOtherInfoTopPersonDto appPremOtherInfoTopPersonDto = getSvcOtherInfoTopPersonByIdNo(appSvcRelatedInfoDto, nname, npsnType);
                 if (appPremOtherInfoTopPersonDto != null) {
-                    appSvcOtherInfoTopPersonDtos2.add(appPremOtherInfoTopPersonDto);
+                    result.add(appPremOtherInfoTopPersonDto);
                 }
             } else if (getPageData) {
                 String nqualification = ParamUtil.getString(request, "nqualification" + i);
@@ -906,10 +930,14 @@ public final class AppDataHelper {
                 appSvcOtherInfoTopPersonDto.setName(nname);
                 appSvcOtherInfoTopPersonDto.setQualification(nqualification);
                 appSvcOtherInfoTopPersonDto.setSeqNum(i);
-                appSvcOtherInfoTopPersonDtos2.add(appSvcOtherInfoTopPersonDto);
+                result.add(appSvcOtherInfoTopPersonDto);
             }
         }
-        //cLength
+        return result;
+    }
+    //other top person counsellors
+    public static List<AppSvcOtherInfoTopPersonDto> getAppSvcOtherInfoTopPersonDtoCounsellors(HttpServletRequest request,String appType,boolean isRfi,AppSvcRelatedInfoDto appSvcRelatedInfoDto){
+        List<AppSvcOtherInfoTopPersonDto> result = IaisCommonUtils.genNewArrayList();
         int cLength = ParamUtil.getInt(request,"cLength");
         for (int i = 0; i < cLength; i++) {
             boolean getDataByIndexNo = false;
@@ -927,7 +955,7 @@ public final class AppDataHelper {
             if (getDataByIndexNo) {
                 AppSvcOtherInfoTopPersonDto appPremOtherInfoTopPersonDto = getSvcOtherInfoTopPersonByIdNo(appSvcRelatedInfoDto, cidNo, cpsnType);
                 if (appPremOtherInfoTopPersonDto != null) {
-                    appSvcOtherInfoTopPersonDtos3.add(appPremOtherInfoTopPersonDto);
+                    result.add(appPremOtherInfoTopPersonDto);
                 }
             } else if (getPageData) {
                 String cqualification = ParamUtil.getString(request, "cqualification" + i);
@@ -938,14 +966,15 @@ public final class AppDataHelper {
                 appSvcOtherInfoTopPersonDto.setQualification(cqualification);
                 appSvcOtherInfoTopPersonDto.setSeqNum(i);
                 appSvcOtherInfoTopPersonDto.setIdNo(cidNo);
-
-                appSvcOtherInfoTopPersonDtos3.add(appSvcOtherInfoTopPersonDto);
+                result.add(appSvcOtherInfoTopPersonDto);
             }
         }
-        //Abort
-        List<AppSvcOtherInfoAbortDto> appSvcOtherInfoAboutDtos = IaisCommonUtils.genNewArrayList();
-        List<AppSvcOtherInfoAbortDto> appSvcOtherInfoAboutDtos1 = IaisCommonUtils.genNewArrayList();
-        List<AppSvcOtherInfoAbortDto> appSvcOtherInfoAboutDtos2 = IaisCommonUtils.genNewArrayList();
+        return result;
+    }
+
+    //other abort
+    public static List<AppSvcOtherInfoAbortDto> getAppSvcOtherInfoAbortDto1(HttpServletRequest request,String appType,String topType,boolean isRfi,AppSvcRelatedInfoDto appSvcRelatedInfoDto){
+        List<AppSvcOtherInfoAbortDto> result = IaisCommonUtils.genNewArrayList();
         int atdLength = ParamUtil.getInt(request,"atdLength");
         for (int i = 0; i < atdLength; i++) {
             boolean getDataByIndexNo = false;
@@ -961,7 +990,7 @@ public final class AppDataHelper {
             if (getDataByIndexNo) {
                 AppSvcOtherInfoAbortDto appSvcOtherInfoAboutDto = getSvcOtherInfoAboutByTopType(appSvcRelatedInfoDto,ApplicationConsts.OTHER_INFO_SD,"1");
                 if (appSvcOtherInfoAboutDto != null) {
-                    appSvcOtherInfoAboutDtos.add(appSvcOtherInfoAboutDto);
+                    result.add(appSvcOtherInfoAboutDto);
                 }
             } else if (getPageData) {
                 String year = ParamUtil.getString(request,"year"+i);
@@ -973,9 +1002,14 @@ public final class AppDataHelper {
                     appSvcOtherInfoAboutDto.setYear(year);
                     appSvcOtherInfoAboutDto.setAbortNum(abortNum);
                 }
-                appSvcOtherInfoAboutDtos.add(appSvcOtherInfoAboutDto);
+                result.add(appSvcOtherInfoAboutDto);
             }
         }
+        return result;
+    }
+
+    public static List<AppSvcOtherInfoAbortDto> getAppSvcOtherInfoAbortDto2(HttpServletRequest request,String appType,String topType,boolean isRfi,AppSvcRelatedInfoDto appSvcRelatedInfoDto){
+        List<AppSvcOtherInfoAbortDto> result = IaisCommonUtils.genNewArrayList();
         int pLength = ParamUtil.getInt(request,"pLength");
         for (int i = 0; i < pLength; i++) {
             boolean getDataByIndexNo = false;
@@ -991,7 +1025,7 @@ public final class AppDataHelper {
             if (getDataByIndexNo) {
                 AppSvcOtherInfoAbortDto appSvcOtherInfoAboutDto = getSvcOtherInfoAboutByTopType(appSvcRelatedInfoDto,ApplicationConsts.OTHER_INFO_SSP,"2");
                 if (appSvcOtherInfoAboutDto != null) {
-                    appSvcOtherInfoAboutDtos1.add(appSvcOtherInfoAboutDto);
+                    result.add(appSvcOtherInfoAboutDto);
                 }
             } else if (getPageData) {
                 String year = ParamUtil.getString(request,"pyear"+i);
@@ -1004,9 +1038,14 @@ public final class AppDataHelper {
                     appSvcOtherInfoAboutDto.setAbortNum(abortNum);
 
                 }
-                appSvcOtherInfoAboutDtos1.add(appSvcOtherInfoAboutDto);
+                result.add(appSvcOtherInfoAboutDto);
             }
         }
+        return result;
+    }
+
+    public static List<AppSvcOtherInfoAbortDto> getAppSvcOtherInfoAbortDto3(HttpServletRequest request,String appType,String topType,boolean isRfi,AppSvcRelatedInfoDto appSvcRelatedInfoDto){
+        List<AppSvcOtherInfoAbortDto> result = IaisCommonUtils.genNewArrayList();
         int aLength = ParamUtil.getInt(request,"aLength");
         for (int i = 0; i < aLength; i++) {
             boolean getDataByIndexNo = false;
@@ -1022,7 +1061,7 @@ public final class AppDataHelper {
             if (getDataByIndexNo) {
                 AppSvcOtherInfoAbortDto appSvcOtherInfoAboutDto = getSvcOtherInfoAboutByTopType(appSvcRelatedInfoDto,ApplicationConsts.OTHER_INFO_DSP,"3");
                 if (appSvcOtherInfoAboutDto != null) {
-                    appSvcOtherInfoAboutDtos2.add(appSvcOtherInfoAboutDto);
+                    result.add(appSvcOtherInfoAboutDto);
                 }
             } else if (getPageData) {
                 String year = ParamUtil.getString(request,"ayear"+i);
@@ -1035,24 +1074,10 @@ public final class AppDataHelper {
                     appSvcOtherInfoAboutDto.setYear(year);
                     appSvcOtherInfoAboutDto.setAbortNum(abortNum);
                 }
-                appSvcOtherInfoAboutDtos2.add(appSvcOtherInfoAboutDto);
+                result.add(appSvcOtherInfoAboutDto);
             }
         }
-        appSvcOtherInfoDto.setProvideTop(provideTop);
-        appSvcOtherInfoDto.setDsDeclaration(dsDeclaration);
-        appSvcOtherInfoDto.setAscsDeclaration(ascsDeclaration);
-        appSvcOtherInfoDto.setAppSvcOtherInfoTopPersonDtoList(appSvcOtherInfoTopPersonDtos);
-        appSvcOtherInfoDto.setAppSvcOtherInfoTopPersonDtoList1(appSvcOtherInfoTopPersonDtos1);
-        appSvcOtherInfoDto.setAppSvcOtherInfoTopPersonDtoList2(appSvcOtherInfoTopPersonDtos2);
-        appSvcOtherInfoDto.setAppSvcOtherInfoTopPersonDtoList3(appSvcOtherInfoTopPersonDtos3);
-        appSvcOtherInfoDto.setAppSvcOtherInfoAbortDtoList1(appSvcOtherInfoAboutDtos1);
-        appSvcOtherInfoDto.setAppSvcOtherInfoAbortDtoList2(appSvcOtherInfoAboutDtos2);
-        appSvcOtherInfoDto.setAppSvcOtherInfoTopDto(appSvcOtherInfoTopDtos);
-        appSvcOtherInfoDto.setAppSvcOtherInfoAbortDtoList(appSvcOtherInfoAboutDtos);
-        appSvcOtherInfoDto.setAppSvcOtherInfoMedDto(appSvcOtherInfoMedDto);
-        appSvcOtherInfoDto.setAppSvcOtherInfoMedDto1(appSvcOtherInfoMedDto1);
-        appSvcOtherInfoDto.setAppSvcOtherInfoNurseDto(appSvcOtherInfoNurseDto);
-        return appSvcOtherInfoDto;
+        return result;
     }
 
     public static AppSvcChargesPageDto genAppSvcChargesDto(HttpServletRequest request, String appType) {

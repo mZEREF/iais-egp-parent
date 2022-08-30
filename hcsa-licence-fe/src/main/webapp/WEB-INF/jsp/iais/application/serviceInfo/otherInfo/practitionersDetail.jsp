@@ -14,49 +14,49 @@
     </iais:row>
     <input type="hidden" name="psnType${index}" value="practitioners">
     <iais:row>
-        <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Professional Regn. No."/>
-        <iais:value width="6" cssClass="col-md-6">
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Professional Regn. No."/>
+        <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="20" type="text" cssClass="profRegNo" name="profRegNo${index}" value="${person.profRegNo}"/>
         </iais:value>
     </iais:row>
 
     <iais:row>
-        <iais:field width="6" cssClass="col-md-6" mandatory="true" value="NRIC/FIN No."/>
-        <iais:value width="6" cssClass="col-md-6">
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="NRIC/FIN No."/>
+        <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="20" type="text" cssClass="idNo" name="idNo${index}" value="${person.idNo}"/>
         </iais:value>
     </iais:row>
 
     <iais:row>
-        <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Type of Registration"/>
-        <iais:value width="6" cssClass="col-md-6">
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Type of Registration"/>
+        <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="20" type="text" cssClass="regType" name="regType${index}" value="${person.regType}"/>
         </iais:value>
     </iais:row>
 
     <iais:row>
-        <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Name of medical practitioner"/>
-        <iais:value width="6" cssClass="col-md-6">
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Name of medical practitioner"/>
+        <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="20" type="text" cssClass="name" name="name${index}" value="${person.name}"/>
         </iais:value>
     </iais:row>
 
     <iais:row>
-        <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Specialties"/>
-        <iais:value width="6" cssClass="col-md-6">
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Specialties"/>
+        <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="20" type="text" cssClass="speciality" name="speciality${index}" value="${person.speciality}"/>
         </iais:value>
     </iais:row>
 
     <iais:row>
-        <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Qualifications"/>
-        <iais:value width="6" cssClass="col-md-6">
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Qualifications"/>
+        <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="20" type="text" cssClass="qualification" name="qualification${index}" value="${person.qualification}"/>
         </iais:value>
     </iais:row>
 
     <iais:row cssClass="row control control-caption-horizontal">
-        <iais:value width="6" cssClass="col-md-6">
+        <iais:value width="5" cssClass="col-md-5">
             <label class="form-check-label" >Is the medical practitioners authorised by MOH to perform Abortion
                 (if No, please upload a copy of the Obstetrics & Gynaecology certificate and
                 <a href="${pageContext.request.contextPath}/co-non-hcsa-template-top" style="color:deepskyblue;cursor:pointer;text-decoration: underline;">From 2</a>

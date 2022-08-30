@@ -14,36 +14,36 @@
 
     <input type="hidden" name="apsnType${index}" value="anaesthetists">
     <iais:row>
-        <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Professional Regn. No."/>
-        <iais:value width="6" cssClass="col-md-6">
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Professional Regn. No."/>
+        <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="20" type="text" cssClass="aprofRegNo" name="aprofRegNo${index}" value="${person.profRegNo}"/>
         </iais:value>
     </iais:row>
 
     <iais:row>
-        <iais:field width="6" cssClass="col-md-6" mandatory="true" value="NRIC/FIN No."/>
-        <iais:value width="6" cssClass="col-md-6">
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="NRIC/FIN No."/>
+        <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="20" type="text" cssClass="idANo" name="idANo${index}" value="${person.idNo}"/>
         </iais:value>
     </iais:row>
 
     <iais:row>
-        <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Type of Registration"/>
-        <iais:value width="6" cssClass="col-md-6">
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Type of Registration"/>
+        <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="20" type="text" cssClass="aregType" name="aregType${index}" value="${person.regType}"/>
         </iais:value>
     </iais:row>
 
     <iais:row>
-        <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Name of anaesthetists"/>
-        <iais:value width="6" cssClass="col-md-6">
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Name of anaesthetists"/>
+        <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="20" type="text" cssClass="aname" name="aname${index}" value="${person.name}"/>
         </iais:value>
     </iais:row>
 
     <iais:row>
-        <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Qualifications"/>
-        <iais:value width="6" cssClass="col-md-6">
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Qualifications"/>
+        <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="20" type="text" cssClass="aqualification" name="aqualification${index}" value="${person.qualification}"/>
         </iais:value>
     </iais:row>
