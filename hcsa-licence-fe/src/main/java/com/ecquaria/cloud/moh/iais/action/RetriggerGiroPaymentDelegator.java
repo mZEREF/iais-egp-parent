@@ -214,7 +214,9 @@ public class RetriggerGiroPaymentDelegator {
         //remove page edit button
         appSubmissionDto.setAppEditSelectDto(new AppEditSelectDto());
 
-        DealSessionUtil.init(appSubmissionDto, true, bpc.request);
+        List<HcsaServiceDto> hcsaServiceDtoList = DealSessionUtil.getServiceConfigsFormApp(appSubmissionDto);
+        DealSessionUtil.setHcsaServiceDtoList(hcsaServiceDtoList, bpc.request);
+        DealSessionUtil.init(appSubmissionDto, hcsaServiceDtoList, false, bpc.request);
         //set premises info
         /*if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
@@ -239,11 +241,11 @@ public class RetriggerGiroPaymentDelegator {
             }
 
 //            List<String> serviceConfigIds = IaisCommonUtils.genNewArrayList();
-            List<HcsaServiceDto> hcsaServiceDtoList = IaisCommonUtils.genNewArrayList();
+//            List<HcsaServiceDto> hcsaServiceDtoList = IaisCommonUtils.genNewArrayList();
             for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-                String currentSvcId = appSvcRelatedInfoDto.getServiceId();
+//                String currentSvcId = appSvcRelatedInfoDto.getServiceId();
 //                serviceConfigIds.add(appSvcRelatedInfoDto.getServiceId());
-                hcsaServiceDtoList.add(HcsaServiceCacheHelper.getServiceById(currentSvcId));
+//                hcsaServiceDtoList.add(HcsaServiceCacheHelper.getServiceById(currentSvcId));
                 String relLicenceNo = appSvcRelatedInfoDto.getRelLicenceNo();
                 if(!StringUtil.isEmpty(relLicenceNo)){
                     LicenceDto licenceDto = requestForChangeService.getLicenceDtoByLicenceId(relLicenceNo);
@@ -254,10 +256,10 @@ public class RetriggerGiroPaymentDelegator {
             }
 //            List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getHcsaServiceDtosById(serviceConfigIds);
             //do sort
-            if(!IaisCommonUtils.isEmpty(hcsaServiceDtoList)){
-                hcsaServiceDtoList = ApplicationHelper.sortHcsaServiceDto(hcsaServiceDtoList);
-            }
-            ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
+//            if(!IaisCommonUtils.isEmpty(hcsaServiceDtoList)){
+//                hcsaServiceDtoList = ApplicationHelper.sortHcsaServiceDto(hcsaServiceDtoList);
+//            }
+//            ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
 
         }else{
             log.info("appSvcRelatedInfoDtos is empty ...");

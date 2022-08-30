@@ -769,7 +769,7 @@ public class ServiceInfoDelegator {
             AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, svcId, appNo);
             List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
 //            ApplicationHelper.initShowDocumentList(appSvcRelatedInfoDto, appPremSpecialisedDtoList);
-            List<HcsaServiceDto> serviceConfigs = ApplicationHelper.getServiceConfigsFormApp(appSubmissionDto);
+//            List<HcsaServiceDto> serviceConfigs = ApplicationHelper.getServiceConfigsFormApp(appSubmissionDto);
 //            List<AppPremSpecialisedDto> appPremSpecialisedDtoList = ApplicationHelper.initAppPremSpecialisedDtoList(appSubmissionDto,
 //                    serviceConfigs);
             ApplicationHelper.initShowDocumentList(appSvcRelatedInfoDto, appPremSpecialisedDtoList, false);

@@ -16,14 +16,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
+import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -37,16 +35,21 @@ import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.OrganizationService;
 import lombok.extern.slf4j.Slf4j;
-import sop.util.CopyUtil;
-import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.PREMISESTYPE;
 
 /**
  * @author Wenkang
@@ -57,10 +60,6 @@ public class DealSessionUtil {
 
     private static ConfigCommService getConfigCommService() {
         return SpringHelper.getBean(ConfigCommService.class);
-    }
-
-    private static AppCommService getAppCommService() {
-        return SpringHelper.getBean(AppCommService.class);
     }
 
     private static LicCommService getLicCommService() {
@@ -206,8 +205,10 @@ public class DealSessionUtil {
         request.getSession().removeAttribute("easMtsPremSel");
     }
 
-    public static void initSession(BaseProcessClass bpc) throws CloneNotSupportedException {
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO);
+    public static void initSession(HttpServletRequest request) throws CloneNotSupportedException {
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, HcsaAppConst.APPSUBMISSIONDTO);
+        List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,
+                AppServicesConsts.HCSASERVICEDTOLIST);
         if (appSubmissionDto == null) {
             appSubmissionDto = new AppSubmissionDto();
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
@@ -215,8 +216,6 @@ public class DealSessionUtil {
             AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
             appGrpPremisesDtoList.add(appGrpPremisesDto);
             appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
-            List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,
-                    AppServicesConsts.HCSASERVICEDTOLIST);
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = IaisCommonUtils.genNewArrayList();
             AppSvcRelatedInfoDto appSvcRelatedInfoDto;
             for (HcsaServiceDto svc : hcsaServiceDtos) {
@@ -228,18 +227,13 @@ public class DealSessionUtil {
                 appSvcRelatedInfoDtoList.add(appSvcRelatedInfoDto);
             }
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
-            //set licseeId and psn drop down
-            setLicseeAndPsnDropDown(ApplicationHelper.getLicenseeId(bpc.request), appSvcRelatedInfoDtoList, bpc.request);
         } else {
-            String appType = appSubmissionDto.getAppType();
-            boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
+            boolean isRfi = ApplicationHelper.checkIsRfi(request);
             //set svc info,this fun will set oldAppSubmission
-            appSubmissionDto = ApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
+            appSubmissionDto = ApplicationHelper.setSubmissionDtoSvcData(request, appSubmissionDto);
             //Object rfi = ParamUtil.getSessionAttr(bpc.request, REQUESTINFORMATIONCONFIG);
             //rfi just show one service
             if (isRfi) {
-                List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,
-                        AppServicesConsts.HCSASERVICEDTOLIST);
                 List<HcsaServiceDto> oneHcsaServiceDto = IaisCommonUtils.genNewArrayList();
                 for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
                     if (hcsaServiceDto.getId().equals(appSubmissionDto.getRfiServiceId())) {
@@ -247,16 +241,13 @@ public class DealSessionUtil {
                         break;
                     }
                 }
-                ParamUtil.setSessionAttr(bpc.request, "rfiHcsaService", (Serializable) hcsaServiceDtos);
-                ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) oneHcsaServiceDto);
+                ParamUtil.setSessionAttr(request, "rfiHcsaService", (Serializable) CopyUtil.copyMutableObjectList(hcsaServiceDtos));
+                hcsaServiceDtos = oneHcsaServiceDto;
+                setHcsaServiceDtoList(oneHcsaServiceDto, request);
             }
-            init(appSubmissionDto, true, bpc.request);
-
-            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             //set licseeId and psn drop down
-            setLicseeAndPsnDropDown(appSubmissionDto.getLicenseeId(), appSvcRelatedInfoDtos, bpc.request);
-
-            if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) || isRfi) {
+            //setLicseeAndPsnDropDown(appSubmissionDto.getLicenseeId(), appSvcRelatedInfoDtos, bpc.request);
+            /*if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) || isRfi) {
                 //set oldAppSubmission when rfi,rfc,rene
                 if (isRfi) {
                     //groupLicencePremiseRelationDis(appSubmissionDto);
@@ -282,18 +273,98 @@ public class DealSessionUtil {
             } else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
                 AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
                 ApplicationHelper.setOldAppSubmissionDto(oldAppSubmissionDto, bpc.request);
-            }
+            }*/
         }
+        //String appType = appSubmissionDto.getAppType();
+        //initPremiseTypes(hcsaServiceDtos, true, request);
+        init(appSubmissionDto, hcsaServiceDtos, true, request);
 
-        AppEditSelectDto changeSelectDto1 = appSubmissionDto.getChangeSelectDto() == null ? new AppEditSelectDto() : appSubmissionDto.getChangeSelectDto();
-        appSubmissionDto.setChangeSelectDto(changeSelectDto1);
+        //set licseeId and psn drop down
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        setLicseeAndPsnDropDown(ApplicationHelper.getLicenseeId(request), appSvcRelatedInfoDtos, request);
 
-        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, appSubmissionDto);
-        ParamUtil.setSessionAttr(bpc.request, "IndexNoCount", 0);
+        AppEditSelectDto changeSelectDto = appSubmissionDto.getChangeSelectDto() == null ? new AppEditSelectDto() : appSubmissionDto.getChangeSelectDto();
+        appSubmissionDto.setChangeSelectDto(changeSelectDto);
+
+        ApplicationHelper.setAppSubmissionDto(appSubmissionDto, request);
+        ParamUtil.setSessionAttr(request, "IndexNoCount", 0);
 
         //init svc psn conifg
         Map<String, List<HcsaSvcPersonnelDto>> svcConfigInfo = null;
-        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.SERVICEALLPSNCONFIGMAP, (Serializable) svcConfigInfo);
+        ParamUtil.setSessionAttr(request, HcsaAppConst.SERVICEALLPSNCONFIGMAP, (Serializable) svcConfigInfo);
+    }
+
+    public static List<HcsaServiceDto> getServiceConfigsFormApp(AppSubmissionDto appSubmissionDto) {
+        if (appSubmissionDto == null) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        List<String> serviceConfigIds = IaisCommonUtils.genNewArrayList();
+        List<String> names = IaisCommonUtils.genNewArrayList();
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)) {
+            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList) {
+                if (!StringUtil.isEmpty(appSvcRelatedInfoDto.getServiceId())) {
+                    serviceConfigIds.add(appSvcRelatedInfoDto.getServiceId());
+                }
+                //if get the data from licence, only have the serviceName
+                if (!StringUtil.isEmpty(appSvcRelatedInfoDto.getServiceName())) {
+                    names.add(appSvcRelatedInfoDto.getServiceName());
+                }
+
+            }
+        }
+        ConfigCommService configCommService = getConfigCommService();
+        List<HcsaServiceDto> hcsaServiceDtoList = null;
+        if (!serviceConfigIds.isEmpty()) {
+            hcsaServiceDtoList = configCommService.getHcsaServiceDtosByIds(serviceConfigIds);
+        } else if (!names.isEmpty()) {
+            hcsaServiceDtoList = configCommService.getActiveHcsaSvcByNames(names);
+        }
+        return hcsaServiceDtoList;
+    }
+
+    public static void setHcsaServiceDtoList(List<HcsaServiceDto> hcsaServiceDtoList, HttpServletRequest request) {
+        ParamUtil.setSessionAttr(request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
+    }
+
+    public static Set<String> initPremiseTypes(List<HcsaServiceDto> hcsaServiceDtoList, boolean init, HttpServletRequest request){
+        Set<String> premisesType = (Set<String>) ParamUtil.getSessionAttr(request, PREMISESTYPE);
+        if (!init && IaisCommonUtils.isNotEmpty(premisesType)) {
+            return premisesType;
+        }
+        premisesType = IaisCommonUtils.genNewHashSet();
+        List<HcsaServiceDto> rfiHcsaService = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request, "rfiHcsaService");
+        List<String> svcIds = IaisCommonUtils.genNewArrayList();
+        if (rfiHcsaService != null) {
+            rfiHcsaService.forEach(v -> svcIds.add(v.getId()));
+        } else {
+            if (hcsaServiceDtoList == null) {
+                hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,
+                        AppServicesConsts.HCSASERVICEDTOLIST);
+            }
+            if (hcsaServiceDtoList != null) {
+                hcsaServiceDtoList.forEach(item -> svcIds.add(item.getId()));
+            }
+        }
+        if (!IaisCommonUtils.isEmpty(svcIds)) {
+            premisesType = getConfigCommService().getAppGrpPremisesTypeBySvcId(svcIds);
+        } else {
+            log.info(StringUtil.changeForLog("do not have select the services"));
+        }
+        ParamUtil.setSessionAttr(request, PREMISESTYPE, (Serializable) sortPremisesTypes(premisesType));
+        return premisesType;
+    }
+
+    private static List<String> sortPremisesTypes(Collection<String> premisesTypes) {
+        if (premisesTypes == null) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        if (premisesTypes.size() <= 1) {
+            return new ArrayList<>(premisesTypes);
+        }
+        return premisesTypes.stream()
+                .sorted(Comparator.comparingInt(IaisCommonUtils::getPremSeqNum))
+                .collect(Collectors.toList());
     }
 
     public static void setLicseeAndPsnDropDown(String licenseeId, List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos,
@@ -335,15 +406,18 @@ public class DealSessionUtil {
         }
     }
 
+    // view
     public static AppSubmissionDto init(AppSubmissionDto appSubmissionDto) {
-        return init(appSubmissionDto, true, null);
+        return init(appSubmissionDto, getServiceConfigsFormApp(appSubmissionDto), false, null);
     }
 
-    public static AppSubmissionDto init(AppSubmissionDto appSubmissionDto, boolean newConfig, HttpServletRequest request) {
+    // edit
+    public static AppSubmissionDto init(AppSubmissionDto appSubmissionDto, List<HcsaServiceDto> hcsaServiceDtos,
+            boolean init, HttpServletRequest request) {
         if (appSubmissionDto == null) {
             return appSubmissionDto;
         }
-        String licenceId = appSubmissionDto.getLicenceId();
+        //String licenceId = appSubmissionDto.getLicenceId();
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         if (!IaisCommonUtils.isEmpty(appGrpPremisesDtoList)) {
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
@@ -357,9 +431,7 @@ public class DealSessionUtil {
         }
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
 
-        List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,
-                AppServicesConsts.HCSASERVICEDTOLIST);
-        ApplicationHelper.initAppPremSpecialisedDtoList(appSubmissionDto, hcsaServiceDtoList);
+        ApplicationHelper.initAppPremSpecialisedDtoList(appSubmissionDto, hcsaServiceDtos);
 
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         for (AppSvcRelatedInfoDto currSvcInfoDto : appSvcRelatedInfoDtoList) {
@@ -369,8 +441,8 @@ public class DealSessionUtil {
             if (StringUtil.isEmpty(currSvcInfoDto.getLicenceId())) {
                 currSvcInfoDto.setLicenceId(appSubmissionDto.getLicenceId());
             }
-            init(currSvcInfoDto, appGrpPremisesDtoList, appSubmissionDto.getAppPremSpecialisedDtoList(),
-                    licenceId, newConfig, request);
+            init(currSvcInfoDto, appGrpPremisesDtoList, appSubmissionDto.getAppPremSpecialisedDtoList(), hcsaServiceDtos,
+                    init, request);
         }
         appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
         if (appSubmissionDto.getCoMap() == null) {
@@ -380,12 +452,13 @@ public class DealSessionUtil {
     }
 
     public static AppSvcRelatedInfoDto init(AppSvcRelatedInfoDto currSvcInfoDto, List<AppGrpPremisesDto> appGrpPremisesDtos,
-            List<AppPremSpecialisedDto> appPremSpecialisedDtoList, String licenceId, boolean newConfig, HttpServletRequest request) {
+            List<AppPremSpecialisedDto> appPremSpecialisedDtoList, List<HcsaServiceDto> hcsaServiceDtos,
+            boolean init, HttpServletRequest request) {
         if (currSvcInfoDto == null) {
             return currSvcInfoDto;
         }
         String svcId = currSvcInfoDto.getServiceId();
-        if (!StringUtil.isEmpty(licenceId) && !newConfig) {
+        /*if (!StringUtil.isEmpty(licenceId) && !newConfig) {
             String licAlignAppSvcId = "";
             List<LicAppCorrelationDto> licAppCorrelationDtos = getLicCommService().getLicCorrBylicId(licenceId);
             if (licAppCorrelationDtos != null && licAppCorrelationDtos.size() > 0) {
@@ -398,7 +471,7 @@ public class DealSessionUtil {
             if (!StringUtil.isEmpty(licAlignAppSvcId)) {
                 svcId = licAlignAppSvcId;
             }
-        }
+        }*/
         String name = currSvcInfoDto.getServiceName();
         HcsaServiceDto hcsaServiceDto = null;
         if (!StringUtil.isEmpty(svcId)) {
@@ -424,11 +497,11 @@ public class DealSessionUtil {
             currSvcInfoDto.setDeputyPoFlag(AppConsts.YES);
         }
 
-        ApplicationHelper.initSupplementoryForm(currSvcInfoDto, true);
-        ApplicationHelper.initOtherInfoForm(currSvcInfoDto, true);
+        ApplicationHelper.initSupplementoryForm(currSvcInfoDto, init);
+        ApplicationHelper.initOtherInfoForm(currSvcInfoDto, init);
 
-        List<HcsaSvcDocConfigDto> svcDocConfigDtos = getConfigCommService().getAllHcsaSvcDocs(svcId);
-        addPremAlignForSvcDoc(svcDocConfigDtos, currSvcInfoDto.getAppSvcDocDtoLit(), appGrpPremisesDtos);
+//        List<HcsaSvcDocConfigDto> svcDocConfigDtos = getConfigCommService().getAllHcsaSvcDocs(svcId);
+//        addPremAlignForSvcDoc(svcDocConfigDtos, currSvcInfoDto.getAppSvcDocDtoLit(), appGrpPremisesDtos);
         List<DocumentShowDto> documentShowDtos = ApplicationHelper.initShowDocumentList(currSvcInfoDto, appPremSpecialisedDtoList);
         if (documentShowDtos != null && request != null) {
             HttpSession session = request.getSession();
@@ -458,7 +531,7 @@ public class DealSessionUtil {
     }
 
     //for single premises
-    public static void addPremAlignForSvcDoc(List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos, List<AppSvcDocDto> appSvcDocDtos,
+    /*public static void addPremAlignForSvcDoc(List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos, List<AppSvcDocDto> appSvcDocDtos,
             List<AppGrpPremisesDto> appGrpPremisesDtos) {
         if (IaisCommonUtils.isEmpty(hcsaSvcDocConfigDtos) || IaisCommonUtils.isEmpty(appSvcDocDtos)
                 || IaisCommonUtils.isEmpty(appGrpPremisesDtos) || appGrpPremisesDtos.size() != 1) {
@@ -477,7 +550,7 @@ public class DealSessionUtil {
                 }
             }
         }
-    }
+    }*/
 
     private static List<AppSvcDocDto> getAppSvcDocDtoByConfigId(List<AppSvcDocDto> appSvcDocDtos, String configId) {
         List<AppSvcDocDto> appSvcDocDtoList = IaisCommonUtils.genNewArrayList();

@@ -611,7 +611,7 @@ public class ApplicationAjaxController {
                 for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
                     hcsaServiceDtos.add(HcsaServiceCacheHelper.getServiceByCode(appSvcRelatedInfoDto.getServiceCode()));
                 }
-                hcsaServiceDtos = ApplicationHelper.sortHcsaServiceDto(hcsaServiceDtos);
+//                hcsaServiceDtos = ApplicationHelper.sortHcsaServiceDto(hcsaServiceDtos);
                 for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
                     svcNameList.add("<strong>" + hcsaServiceDto.getSvcName() + "</strong>");
                     serviceName.append("<div class=\"col-xs-12\"><p class=\"ack-font-20\">- <strong>")

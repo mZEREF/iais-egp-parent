@@ -154,10 +154,10 @@ public final class AppDataHelper {
      */
     public static List<AppGrpPremisesDto> genAppGrpPremisesDtoList(HttpServletRequest request) {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
-        boolean readonly = ApplicationHelper.readonlyPremises(appSubmissionDto);
+        /*boolean readonly = ApplicationHelper.readonlyPremises(appSubmissionDto);
         if (readonly) {
             return appSubmissionDto.getAppGrpPremisesDtoList();
-        }
+        }*/
         List<AppGrpPremisesDto> appGrpPremisesDtoList = IaisCommonUtils.genNewArrayList();
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,
                 AppServicesConsts.HCSASERVICEDTOLIST);
