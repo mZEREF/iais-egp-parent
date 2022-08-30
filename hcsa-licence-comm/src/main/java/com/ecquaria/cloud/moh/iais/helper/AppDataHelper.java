@@ -1844,7 +1844,7 @@ public final class AppDataHelper {
                         specialServiceSectionDto.setAppSvcChargedNurseDtoList(appSvcChargedNurseDtoList);
                     }
                     if(!IaisCommonUtils.isEmpty(specialServiceSectionDto.getAppSvcSuplmFormDto().getAppSvcSuplmGroupDtoList())){
-                        setAppSvcSuplmFormDto(specialServiceSectionDto.getAppSvcSuplmFormDto(),request);
+                        setAppSvcSuplmFormDto(specialServiceSectionDto.getAppSvcSuplmFormDto(),prefix+i+j,request);
                     }
                     j++;
                 }
@@ -2684,7 +2684,7 @@ public final class AppDataHelper {
             if (IaisCommonUtils.isEmpty(appSvcSuplmItemDtoList)) {
                 continue;
             }
-            int count = ParamUtil.getInt(request, groupId, 1);
+            int count = ParamUtil.getInt(request, prefix+groupId, 1);
             int baseSize = groupDto.getBaseSize();
             groupDto.setAppSvcSuplmItemDtoList(genAppSvcSuplmItemDtoList(appSvcSuplmItemDtoList, baseSize, count, prefix, request));
             groupDto.setCount(count);

@@ -2382,7 +2382,7 @@ public final class ApplicationHelper {
             List<String> specialServicePremiseValList = appSvcSpecialServiceInfoDtoList.stream().map(AppSvcSpecialServiceInfoDto::getPremisesVal).collect(Collectors.toList());
             List<AppPremSpecialisedDto> appPremSpecialisedDtos = appPremSpecialisedDtoList.stream().filter(s -> !specialServicePremiseValList.contains(s.getPremisesVal())).collect(Collectors.toList());
             appSvcSpecialServiceInfoDtoList.addAll(genAppSvcSpecialServiceInfoDtoList(appPremSpecialisedDtos,appSvcSpecialServiceInfoDtoList.size()));
-            refreshAddress(appSvcSpecialServiceInfoDtoList,appPremSpecialisedDtoList);
+            refreshAddress(appSvcSpecialServiceInfoDtoList,appPremSpecialisedDtoMap);
             return appSvcSpecialServiceInfoDtoList;
         }
         List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoDtos = genAppSvcSpecialServiceInfoDtoList(appPremSpecialisedDtoList,0);
@@ -2390,14 +2390,10 @@ public final class ApplicationHelper {
         return appSvcSpecialServiceInfoDtos;
     }
 
-    private static void refreshAddress(List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoDtoList, List<AppPremSpecialisedDto> appPremSpecialisedDtoList) {
-        Map<String,AppPremSpecialisedDto> map=IaisCommonUtils.genNewHashMap();
-        for (AppPremSpecialisedDto appPremSpecialisedDto : appPremSpecialisedDtoList) {
-            map.put(appPremSpecialisedDto.getPremisesVal(),appPremSpecialisedDto);
-        }
+    private static void refreshAddress(List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoDtoList,Map<String,AppPremSpecialisedDto> appPremSpecialisedDtoMap) {
         for (int i=0;i<appSvcSpecialServiceInfoDtoList.size();i++){
             AppSvcSpecialServiceInfoDto appSvcSpecialServiceInfoDto = appSvcSpecialServiceInfoDtoList.get(i);
-            AppPremSpecialisedDto appPremSpecialisedDto = map.get(appSvcSpecialServiceInfoDto.getPremisesVal());
+            AppPremSpecialisedDto appPremSpecialisedDto = appPremSpecialisedDtoMap.get(appSvcSpecialServiceInfoDto.getPremisesVal());
             appPremSpecialisedDto.setPremiseIndex(i+1);
             appSvcSpecialServiceInfoDto.setAppGrpPremisesDto(appPremSpecialisedDto);
         }
@@ -2430,13 +2426,10 @@ public final class ApplicationHelper {
         for (int i=0;i<appSvcSpecialServiceInfoDtoList.size();i++){
             AppSvcSpecialServiceInfoDto appSvcSpecialServiceInfoDto = appSvcSpecialServiceInfoDtoList.get(i);
             List<AppPremSubSvcRelDto> allAppPremSubSvcRelDtos = appPremSpecialisedDtoMap.get(appSvcSpecialServiceInfoDto.getPremisesVal()).getAllAppPremSubSvcRelDtoList();
-
             List<AppPremSubSvcRelDto> allAppPremSubSvcRelDtoList = allAppPremSubSvcRelDtos.stream().filter(AppPremSubSvcRelDto::isChecked).collect(Collectors.toList());
             List<String> collect = allAppPremSubSvcRelDtoList.stream().map(AppPremSubSvcRelDto::getSvcId).collect(Collectors.toList());
-
             List<SpecialServiceSectionDto> specialServiceSectionDtoList = appSvcSpecialServiceInfoDto.getSpecialServiceSectionDtoList();
             List<SpecialServiceSectionDto> specialServiceSectionDtos = specialServiceSectionDtoList.stream().filter(s -> collect.contains(s.getSvcId())).collect(Collectors.toList());
-
             List<String> collect1 = specialServiceSectionDtos.stream().map(s -> s.getSvcId()).collect(Collectors.toList());
             List<AppPremSubSvcRelDto> appPremSubSvcRelDtos = allAppPremSubSvcRelDtoList.stream().filter(s -> !collect1.contains(s.getSvcId())).collect(Collectors.toList());
             if(!IaisCommonUtils.isEmpty(appPremSubSvcRelDtos)) {

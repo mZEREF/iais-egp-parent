@@ -496,6 +496,12 @@ public final class AppValidatorHelper {
                     addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
                     break;
                 }
+                case HcsaConsts.STEP_SPECIAL_SERVICES_FORM: {
+                    List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = dto.getAppSvcSpecialServiceInfoList();
+                    doValidateSpecialServicesForm(appSvcSpecialServiceInfoList,"", errorMap);
+                    addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
+                    break;
+                }
                 case HcsaConsts.STEP_DOCUMENTS:
                     doValidateSvcDocuments(dto.getDocumentShowDtoList(), errorMap);
                     addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
@@ -3225,8 +3231,7 @@ public final class AppValidatorHelper {
         }
     }
 
-    public static void doValidateSpecialServicesForm(List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList, String appType,
-            String licenceId, Map<String, String> errorMap) {
+    public static void doValidateSpecialServicesForm(List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList, String appType, Map<String, String> errorMap) {
         if (appSvcSpecialServiceInfoList == null || appSvcSpecialServiceInfoList.isEmpty()) {
             return;
         }
@@ -3237,7 +3242,6 @@ public final class AppValidatorHelper {
             List<String> nurNames=IaisCommonUtils.genNewArrayList();
             for (int j=0;j<specialServiceSectionDtoList.size();j++){
                 SpecialServiceSectionDto specialServiceSectionDto=specialServiceSectionDtoList.get(j);
-
                 if (specialServiceSectionDto.getAppSvcDirectorDtoList()!=null){
                     for (int x=0;x<specialServiceSectionDto.getAppSvcDirectorDtoList().size();x++){
                         validateSpecialServicePerson(specialServiceSectionDto.getAppSvcDirectorDtoList().get(x),prefix+i+j+"dir",""+x,appType,errorMap,dirNames);
@@ -3249,7 +3253,7 @@ public final class AppValidatorHelper {
                     }
                 }
                 if(!IaisCommonUtils.isEmpty(specialServiceSectionDto.getAppSvcSuplmFormDto().getAppSvcSuplmGroupDtoList())){
-                    errorMap.putAll(doValidateSupplementaryForm(specialServiceSectionDto.getAppSvcSuplmFormDto()));
+                    errorMap.putAll(doValidateSupplementaryForm(specialServiceSectionDto.getAppSvcSuplmFormDto(),prefix+i+j));
                 }
             }
         }
