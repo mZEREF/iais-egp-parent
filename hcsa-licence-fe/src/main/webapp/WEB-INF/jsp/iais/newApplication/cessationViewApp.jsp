@@ -2,6 +2,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<%
+  //handle to the Engine APIs
+  sop.webflow.rt.api.BaseProcessClass process =
+          (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
+%>
+
 <div class="main-content">
   <div class="container">
     <p class="print"><div style="font-size: 16px;text-align: right"><a onclick="printCSPDF()"> <em class="fa fa-print"></em>Print</a></div></p>
