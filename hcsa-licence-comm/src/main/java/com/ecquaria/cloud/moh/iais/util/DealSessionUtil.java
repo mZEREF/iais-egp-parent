@@ -30,7 +30,6 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AppDataHelper;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
-import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.OrganizationService;
@@ -43,7 +42,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -128,7 +126,7 @@ public class DealSessionUtil {
         session.removeAttribute(HcsaAppConst.PRIMARY_DOC_CONFIG);
         session.removeAttribute(HcsaAppConst.SVC_DOC_CONFIG);
         session.removeAttribute("app-rfc-tranfer");
-        initCoMap(false, request);
+        //initCoMap(false, request);
         //request For Information Loading
         session.removeAttribute(HcsaAppConst.REQUESTINFORMATIONCONFIG);
         session.removeAttribute("HcsaSvcSubtypeOrSubsumedDto");
@@ -140,11 +138,11 @@ public class DealSessionUtil {
         clearPremisesMap(request);
     }
 
-    public static Map<String, String> initCoMap(HttpServletRequest request) {
-        return initCoMap(true, request);
-    }
+//    public static Map<String, String> initCoMap(HttpServletRequest request) {
+//        return initCoMap(true, request);
+//    }
 
-    public static Map<String, String> initCoMap(boolean withValue, HttpServletRequest request) {
+   /* public static Map<String, String> initCoMap(boolean withValue, HttpServletRequest request) {
 //        HashMap<String, String> coMap = (HashMap<String, String>) ParamUtil.getSessionAttr(request, HcsaAppConst.CO_MAP);
 //        if (coMap == null) {
 //            coMap = IaisCommonUtils.genNewHashMap(5);
@@ -165,7 +163,7 @@ public class DealSessionUtil {
         }
         //ParamUtil.setSessionAttr(request, HcsaAppConst.CO_MAP, coMap);
         return coMap;
-    }
+    }*/
 
     /*public static void loadCoMap(AppSubmissionDto appSubmissionDto, HttpServletRequest request) {
         List<String> stepColor = appSubmissionDto.getStepColor();
@@ -328,7 +326,7 @@ public class DealSessionUtil {
         ParamUtil.setSessionAttr(request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
     }
 
-    public static Set<String> initPremiseTypes(List<HcsaServiceDto> hcsaServiceDtoList, boolean init, HttpServletRequest request){
+    public static Set<String> initPremiseTypes(List<HcsaServiceDto> hcsaServiceDtoList, boolean init, HttpServletRequest request) {
         Collection<String> collection = (Collection<String>) ParamUtil.getSessionAttr(request, PREMISESTYPE);
         if (!init && IaisCommonUtils.isNotEmpty(collection)) {
             return new HashSet<>(collection);
@@ -382,8 +380,9 @@ public class DealSessionUtil {
             //set data into psnMap
             Map<String, AppSvcPersonAndExtDto> personMap = IaisCommonUtils.genNewHashMap();
             personMap.putAll(licPersonMap);
-            if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)
-                    && (ApplicationHelper.checkFromDraft(request) || ApplicationHelper.checkIsRfi(request))) {
+            boolean loadCurrPsn = !IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)
+                    && (ApplicationHelper.checkFromDraft(request) || ApplicationHelper.checkIsRfi(request));
+            if (loadCurrPsn) {
                 for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
                     String svcCode = appSvcRelatedInfoDto.getServiceCode();
                     ApplicationHelper.initSetPsnIntoSelMap(personMap,

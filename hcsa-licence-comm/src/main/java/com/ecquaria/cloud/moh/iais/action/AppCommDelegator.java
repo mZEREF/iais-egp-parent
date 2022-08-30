@@ -67,10 +67,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -78,9 +75,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -95,7 +90,6 @@ import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.COND_TYPE_RFI;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.IS_EDIT;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.LICENSEE_MAP;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.LICENSEE_OPTIONS;
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.PREMISESTYPE;
 
 /**
  * @author chenlei on 5/3/2022.
@@ -194,7 +188,7 @@ public abstract class AppCommDelegator {
             appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
             appSubmissionDto.setNeedEditController(true);
             ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, appSubmissionDto);
-            DealSessionUtil.initCoMap(request);
+            //DealSessionUtil.initCoMap(request);
         }
         log.info(StringUtil.changeForLog("the do requestForChangeLoading end ...."));
     }

@@ -222,7 +222,7 @@ public class ApplicationDelegator extends AppCommDelegator {
         // BE init
         appSubmissionDto.setUserAgreement(true);
         // Tab tooltip
-        DealSessionUtil.initCoMap(request);
+        //DealSessionUtil.initCoMap(request);
         //control premises edit
         handlePremises(appSubmissionDto, appNo);
         ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, appSubmissionDto);

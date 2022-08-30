@@ -3721,6 +3721,12 @@ public final class ApplicationHelper {
         return newAppSvcChckListDtos;
     }
 
+    /**
+     * Tab tooltip
+     *
+     * @param withValue whether init value or not
+     * @return tooltip Map
+     */
     public static Map<String, String> createCoMap(boolean withValue) {
         HashMap<String, String> coMap = IaisCommonUtils.genNewHashMap(5);
         if (withValue) {
