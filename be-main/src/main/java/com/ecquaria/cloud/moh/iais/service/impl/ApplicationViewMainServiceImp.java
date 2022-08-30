@@ -350,32 +350,9 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
         for (int i = 0; i <appSupDocDtos.size(); i++) {
             for (int j = 0; j <docTitleList.size() ; j++) {
                 if ((appSupDocDtos.get(i).getFile()).equals(docTitleList.get(j).getId())){
-                    String psnIndex = StringUtil.nullToEmpty(map1.get(appSupDocDtos.get(i).getFile()));
-                    if("0".equals(docTitleList.get(j).getDupForPrem())&&docTitleList.get(j).getDupForPerson()!=null){
-                        switch (docTitleList.get(j).getDupForPerson()){
-                            case "1" :   appSupDocDtos.get(i).setFile("Clinical Governance Officer "+ psnIndex +": "+docTitleList.get(j).getDocTitle()) ;break;
-                            case "2" :   appSupDocDtos.get(i).setFile("Principal Officers "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
-                            case "4" :   appSupDocDtos.get(i).setFile("Nominee "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
-                            case "8" :   appSupDocDtos.get(i).setFile("MedAlert Person "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
-                            case "16":   appSupDocDtos.get(i).setFile("Service Personnel "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
-                            case "32":   appSupDocDtos.get(i).setFile("Clinical Director "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
-                            default:     appSupDocDtos.get(i).setFile(docTitleList.get(j).getDocTitle());
-                        }
-                    }else if(docTitleList.get(j).getDupForPerson()!=null && "1".equals(docTitleList.get(j).getDupForPrem())){
-                        switch (docTitleList.get(j).getDupForPerson()){
-                            case "1" :   appSupDocDtos.get(i).setFile("Premises 1: Clinical Governance Officer "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
-                            case "2" :   appSupDocDtos.get(i).setFile(" Premises 1: Principal Officers "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
-                            case "4" :   appSupDocDtos.get(i).setFile("Premises 1: Nominee "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
-                            case "8" :   appSupDocDtos.get(i).setFile("Premises 1: MedAlert Person "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
-                            case "16":   appSupDocDtos.get(i).setFile("Service Personnel "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
-                            case "32":   appSupDocDtos.get(i).setFile("Premises 1: Clinical Director "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
-                            default:     appSupDocDtos.get(i).setFile(docTitleList.get(j).getDocTitle());
-                        }
-                    }else if(docTitleList.get(j).getDupForPerson()==null && "1".equals(docTitleList.get(j).getDupForPrem())){
-                        appSupDocDtos.get(i).setFile("Premises 1 :"+docTitleList.get(j).getDocTitle());
-                    }else {
-                        appSupDocDtos.get(i).setFile(docTitleList.get(j).getDocTitle());
-                    }
+                    Integer psnIndex = map1.get(appSupDocDtos.get(i).getFile());
+                    appSupDocDtos.get(i).setFile(IaisCommonUtils.getDocDisplayTitle(docTitleList.get(j).getDupForPerson(),
+                            docTitleList.get(j).getDocTitle(), psnIndex, true));
                 }
             }
             for (int j = 0; j <userNameList.size() ; j++) {

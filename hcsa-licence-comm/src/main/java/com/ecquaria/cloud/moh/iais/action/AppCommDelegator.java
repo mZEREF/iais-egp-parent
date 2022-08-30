@@ -77,6 +77,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -120,15 +124,15 @@ public abstract class AppCommDelegator {
      * @param bpc
      * @throws
      */
-    public void doStart(BaseProcessClass bpc) throws CloneNotSupportedException {
+    public void doStart(BaseProcessClass bpc) throws Exception {
         log.info(StringUtil.changeForLog("the do Start start ...."));
-        HcsaServiceCacheHelper.flushServiceMapping();
+        CompletableFuture<String> future = HcsaServiceCacheHelper.flushServiceMappingAsync();
         DealSessionUtil.clearSession(bpc.request);
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW_APPLICATION, AuditTrailConsts.FUNCTION_NEW_APPLICATION);
         //fro draft loading
         String draftNo = ParamUtil.getMaskedString(bpc.request, HcsaAppConst.DRAFT_NUMBER);
         //for rfi loading
         String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW_APPLICATION, AuditTrailConsts.FUNCTION_NEW_APPLICATION);
         log.info(StringUtil.changeForLog("DraftNumber: + " + draftNo + " ----- AppNo: " + appNo));
         // rfc or renew
         requestForChangeOrRenewLoading(bpc.request);
@@ -139,25 +143,12 @@ public abstract class AppCommDelegator {
         //load new application info
         loadingNewAppInfo(bpc.request);
         //for loading Service Config
-        boolean flag = loadingServiceConfig(bpc);
+        String statust = future.get(5, TimeUnit.SECONDS);
+        boolean flag = AppConsts.SUCCESS.equals(statust) && loadingServiceConfig(bpc);
         log.info(StringUtil.changeForLog("The loadingServiceConfig -->:" + flag));
         if (flag) {
             //init session and data reomve function to DealSessionUtil
             DealSessionUtil.initSession(bpc);
-        }
-        bpc.request.getSession().setAttribute("RFC_ERR004", MessageUtil.getMessageDesc("RFC_ERR004"));
-        // app type and licence id
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,
-                APPSUBMISSIONDTO);
-        if (appSubmissionDto != null && appSubmissionDto.getAppSvcRelatedInfoDtoList() != null) {
-            for (AppSvcRelatedInfoDto dto : appSubmissionDto.getAppSvcRelatedInfoDtoList()) {
-                if (StringUtil.isEmpty(dto.getApplicationType())) {
-                    dto.setApplicationType(appSubmissionDto.getAppType());
-                }
-                if (StringUtil.isEmpty(dto.getLicenceId())) {
-                    dto.setLicenceId(appSubmissionDto.getLicenceId());
-                }
-            }
         }
         log.info(StringUtil.changeForLog("the do Start end ...."));
     }

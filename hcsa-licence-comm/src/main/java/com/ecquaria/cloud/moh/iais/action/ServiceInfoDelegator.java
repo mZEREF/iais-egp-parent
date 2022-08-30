@@ -1745,7 +1745,6 @@ public class ServiceInfoDelegator {
                 }
             }
         }
-
         return serviceStepDto;
     }
 
@@ -1919,20 +1918,8 @@ public class ServiceInfoDelegator {
         ParamUtil.setSessionAttr(request, PERSONSELECTMAP, (Serializable) newPersonMap);
         ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, appSubmissionDto);
         //remove dirty psn doc info
-        String dupForPerson = null;
         String personType = personList.get(0).getPsnType();
-        if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(personType)) {
-            dupForPerson = ApplicationConsts.DUP_FOR_PERSON_CGO;
-        } else if (ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(personType)) {
-            dupForPerson = ApplicationConsts.DUP_FOR_PERSON_CD;
-        } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(personType)) {
-            dupForPerson = ApplicationConsts.DUP_FOR_PERSON_MAP;
-        } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(personType)) {
-            dupForPerson = ApplicationConsts.DUP_FOR_PERSON_PO;
-        } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(personType)) {
-            dupForPerson = ApplicationConsts.DUP_FOR_PERSON_DPO;
-        }
-        removeDirtyPsnDoc(dupForPerson, request);
+        removeDirtyPsnDoc(personType, request);
 
         return newPersonMap;
     }
@@ -2062,9 +2049,9 @@ public class ServiceInfoDelegator {
         }
     }
 
-    private void removeDirtyPsnDoc(final String dupForPerson, HttpServletRequest request) {
+    private void removeDirtyPsnDoc(final String psnType, HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("remove dirty psn doc info start ..."));
-        if (StringUtil.isEmpty(dupForPerson)) {
+        if (StringUtil.isEmpty(psnType)) {
             return;
         }
         CountDownLatch countDownLatch = new CountDownLatch(1);
@@ -2072,10 +2059,10 @@ public class ServiceInfoDelegator {
             String currentSvcId = ApplicationHelper.getCurrentServiceId(request);
             AppSvcRelatedInfoDto currentSvcRelatedDto = ApplicationHelper.getAppSvcRelatedInfo(request, currentSvcId);
             List<HcsaSvcDocConfigDto> svcDocConfigDtos = configCommService.getAllHcsaSvcDocs(currentSvcId);
-            List<AppSvcPrincipalOfficersDto> psnDtoList = ApplicationHelper.getPsnByDupForPerson(currentSvcRelatedDto,
-                    dupForPerson);
+            List<AppSvcPrincipalOfficersDto> psnDtoList = ApplicationHelper.getBasePersonnel(currentSvcRelatedDto,
+                    psnType);
             List<AppSvcDocDto> appSvcDocDtoList = currentSvcRelatedDto.getAppSvcDocDtoLit();
-            List<HcsaSvcDocConfigDto> targetConfigDtos = getDocConfigDtoByDupForPerson(svcDocConfigDtos, dupForPerson);
+            List<HcsaSvcDocConfigDto> targetConfigDtos = getDocConfigDtoByDupForPerson(svcDocConfigDtos, psnType);
             if (!IaisCommonUtils.isEmpty(appSvcDocDtoList) && !IaisCommonUtils.isEmpty(targetConfigDtos)
                     && !IaisCommonUtils.isEmpty(psnDtoList)) {
                 log.info("appSvcDocDtoList size is {}", appSvcDocDtoList.size());
@@ -2114,7 +2101,7 @@ public class ServiceInfoDelegator {
             }
             countDownLatch.countDown();
         });
-        if (ApplicationConsts.DUP_FOR_PERSON_MAP.equals(dupForPerson)) {
+        if (ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnType)) {
             try {
                 countDownLatch.await();
             } catch (InterruptedException e) {

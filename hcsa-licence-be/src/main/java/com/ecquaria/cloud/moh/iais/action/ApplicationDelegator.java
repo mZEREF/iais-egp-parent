@@ -57,48 +57,6 @@ public class ApplicationDelegator extends AppCommDelegator {
     private ApplicationService applicationService;
 
     /**
-     * StartStep: Start
-     *
-     * @param bpc
-     * @throws
-     */
-    public void doStart(BaseProcessClass bpc) throws CloneNotSupportedException {
-        log.info(StringUtil.changeForLog("the do Start start ...."));
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_TYPE, null);
-        if (!checkData(HcsaAppConst.CHECKED_ALL, bpc.request)) {
-            return;
-        }
-        HcsaServiceCacheHelper.flushServiceMapping();
-        DealSessionUtil.clearSession(bpc.request);
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW_APPLICATION, AuditTrailConsts.FUNCTION_NEW_APPLICATION);
-        //for rfi loading
-        requestForInformationLoading(bpc.request, null);
-        //for loading Service Config
-        boolean flag = loadingServiceConfig(bpc);
-        log.info(StringUtil.changeForLog("The loadingServiceConfig -->:" + flag));
-        if (flag) {
-            //init session and data reomve function to DealSessionUtil
-            DealSessionUtil.initSession(bpc);
-        }
-        // the mandatory declaration message in preview page
-        // RFC_ERR004 - Please agree to the terms and conditions/declaration statement
-        bpc.request.getSession().setAttribute("RFC_ERR004", MessageUtil.getMessageDesc("RFC_ERR004"));
-        // app type and licence id
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
-        if (appSubmissionDto != null && appSubmissionDto.getAppSvcRelatedInfoDtoList() != null) {
-            for (AppSvcRelatedInfoDto dto : appSubmissionDto.getAppSvcRelatedInfoDtoList()) {
-                if (StringUtil.isEmpty(dto.getApplicationType())) {
-                    dto.setApplicationType(appSubmissionDto.getAppType());
-                }
-                if (StringUtil.isEmpty(dto.getLicenceId())) {
-                    dto.setLicenceId(appSubmissionDto.getLicenceId());
-                }
-            }
-        }
-        log.info(StringUtil.changeForLog("the do Start end ...."));
-    }
-
-    /**
      * Check Data For Edit App
      *
      * @param check   {@link HcsaAppConst#CHECKED_ALL}: do all check; {@link HcsaAppConst#CHECKED_BTN_SHOW}: check for

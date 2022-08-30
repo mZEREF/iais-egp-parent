@@ -511,9 +511,7 @@ public class AppCommServiceImpl implements AppCommService {
                                     if (titleName.equals(svcDocConfigDto.getDocTitle())) {
                                         AppSvcDocDto newAppSvcDocDto = CopyUtil.copyMutableObject(appSvcDocDto);
                                         newAppSvcDocDto.setSvcDocId(svcDocConfigDto.getId());
-                                        newAppSvcDocDto.setDupForPerson(svcDocConfigDto.getDupForPerson());
-                                        newAppSvcDocDto.setDupForPrem(svcDocConfigDto.getDupForPrem());
-                                        newAppSvcDocDto.setPersonType(ApplicationHelper.getPsnType(newAppSvcDocDto.getDupForPerson()));
+                                        newAppSvcDocDto.setPersonType(svcDocConfigDto.getDupForPerson());
                                         newAppSvcDocDtoList.add(newAppSvcDocDto);
                                         break;
                                     }

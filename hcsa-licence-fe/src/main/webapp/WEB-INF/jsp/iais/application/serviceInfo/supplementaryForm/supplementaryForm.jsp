@@ -30,8 +30,8 @@
 
     <c:forEach var="appSvcSuplmGroupDto" items="${appSvcSuplmFormDto.appSvcSuplmGroupDtoList}">
         <c:set var="count" value="${appSvcSuplmGroupDto.count}"/>
-        <c:set var="baseSize" value="${appSvcSuplmGroupDto.baseSize}"/>
         <c:if test="${count > 0}">
+            <c:set var="baseSize" value="${appSvcSuplmGroupDto.baseSize}"/>
             <c:set var="groupId" value="${appSvcSuplmGroupDto.groupId}"/>
             <c:forEach var="item" items="${appSvcSuplmGroupDto.appSvcSuplmItemDtoList}" varStatus="status">
                 <c:if test="${not empty groupId && status.index % baseSize == 0}">

@@ -2575,7 +2575,7 @@ public final class AppDataHelper {
                     appSvcDocDto.setPsnIndexNo(psnIndexNo);
                     appSvcDocDto.setSeqNum(seqNum);
                     //appSvcDocDto.setDupForPrem(documentShowDto.getDupForPrem());
-                    appSvcDocDto.setDupForPerson(docSecDetailDto.getDupForPerson());
+                    //appSvcDocDto.setDupForPerson(docSecDetailDto.getDupForPerson());
                     appSvcDocDto.setPersonType(docSecDetailDto.getPsnType());
                     setAppSvcDocDtoFileds(appSvcDocDto, appGrpId, appNo);
                     String key = ApplicationHelper.getFileMapKey(premVal, svcId, svcDocId, psnIndexNo, seqNum);

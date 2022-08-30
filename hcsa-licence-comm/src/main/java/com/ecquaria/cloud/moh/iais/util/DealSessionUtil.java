@@ -363,6 +363,12 @@ public class DealSessionUtil {
 
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         for (AppSvcRelatedInfoDto currSvcInfoDto : appSvcRelatedInfoDtoList) {
+            if (StringUtil.isEmpty(currSvcInfoDto.getApplicationType())) {
+                currSvcInfoDto.setApplicationType(appSubmissionDto.getAppType());
+            }
+            if (StringUtil.isEmpty(currSvcInfoDto.getLicenceId())) {
+                currSvcInfoDto.setLicenceId(appSubmissionDto.getLicenceId());
+            }
             init(currSvcInfoDto, appGrpPremisesDtoList, appSubmissionDto.getAppPremSpecialisedDtoList(),
                     licenceId, newConfig, request);
         }

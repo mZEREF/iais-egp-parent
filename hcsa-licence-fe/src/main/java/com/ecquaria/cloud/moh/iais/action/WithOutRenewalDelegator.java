@@ -299,7 +299,7 @@ public class WithOutRenewalDelegator {
 
                 boolean isRfi = false;
 
-                List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+                /*List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
                 //svc doc set align
                 if(appGrpPremisesDtos != null && appGrpPremisesDtos.size() > 0){
                     String premTye = appGrpPremisesDtos.get(0).getPremisesType();
@@ -314,7 +314,7 @@ public class WithOutRenewalDelegator {
                     }
                 }
                 appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
-
+*/
                 /*List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = ApplicationHelper.transferCgoToPsnDtoList(appSvcRelatedInfoDto.getAppSvcCgoDtoList());
                 String svcCode = appSvcRelatedInfoDto.getServiceCode();
                 ApplicationHelper.initSetPsnIntoSelMap(licPersonMap, appSvcCgoDtos, svcCode);

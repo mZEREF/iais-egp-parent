@@ -23,6 +23,7 @@ import org.apache.http.HttpStatus;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -121,6 +122,29 @@ public final class HcsaServiceCacheHelper {
 						i, RedisCacheHelper.NOT_EXPIRE));
 			}
 		}
+	}
+
+	public static CompletableFuture<String> flushServiceMappingAsync() {
+		return CompletableFuture.supplyAsync(() -> {
+			HcsaServiceClient serviceClient = SpringContextHelper.getContext().getBean(HcsaServiceClient.class);
+			if (serviceClient != null) {
+				FeignResponseEntity<List<HcsaServiceDto>> result = serviceClient.getActiveServices();
+				int status = result.getStatusCode();
+
+				log.info(StringUtil.changeForLog("HcsaServiceCacheHelper status  =====>" + status));
+
+				if (status == HttpStatus.SC_OK) {
+					List<HcsaServiceDto> serviceList = result.getEntity();
+					RedisCacheHelper redisCacheHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
+					redisCacheHelper.clear(RedisNameSpaceConstant.CACHE_NAME_HCSA_SERVICE);
+					redisCacheHelper.set(RedisNameSpaceConstant.CACHE_NAME_HCSA_SERVICE,
+							RedisNameSpaceConstant.KEY_NAME_HCSA_SERVICE_LIST, serviceList);
+					serviceList.forEach(i -> redisCacheHelper.set(RedisNameSpaceConstant.CACHE_NAME_HCSA_SERVICE, i.getId(),
+							i, RedisCacheHelper.NOT_EXPIRE));
+				}
+			}
+			return AppConsts.SUCCESS;
+		});
 	}
 
 	public static List<HcsaServiceDto> receiveAllHcsaService(){

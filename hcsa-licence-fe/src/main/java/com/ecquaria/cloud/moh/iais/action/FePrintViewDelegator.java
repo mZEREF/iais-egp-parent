@@ -192,7 +192,7 @@ public class FePrintViewDelegator {
                         appSvcClinicalDirectorDtos.addAll(appSvcClinicalDirectorDtos1);
                     }
                     appSvcRelatedInfoDto.setSvcDocConfig(svcDocConfig);
-                    Map<String,List<AppSvcDocDto>> reloadSvcDocMap = ApplicationHelper.genSvcDocReloadMap(svcDocConfig,appSubmissionDto.getAppGrpPremisesDtoList(),appSvcRelatedInfoDto);
+//                    Map<String,List<AppSvcDocDto>> reloadSvcDocMap = ApplicationHelper.genSvcDocReloadMap(svcDocConfig,appSubmissionDto.getAppGrpPremisesDtoList(),appSvcRelatedInfoDto);
                     //appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
                 }
             }
