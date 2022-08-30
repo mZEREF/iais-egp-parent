@@ -9,6 +9,7 @@
         <%@include file="viewRenalDialysisCentreService.jsp"%>
         <%@include file="viewAmbulatorySurgicalCentreService.jsp"%>
         <%@include file="viewOtherInformationTopPerson.jsp"%>
+        <%@include file="viewOtherForm.jsp"%>
         <%@include file="viewDoucmentation.jsp"%>
         <%@include file="viewAbort.jsp"%>
     </div>
