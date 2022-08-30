@@ -27,8 +27,11 @@
         addMoreEvent();
         checkItemEvent();
         $('.item-record [data-curr]').each(function () {
-            checkItemMandatory($(this));
-            checkItemTotal($(this));
+            let $target = $(this);
+            checkItemMandatory($target);
+            checkItemTotal($target);
+            let index = $target.data('seq');
+            refreshLabel($target, index);
         });
     });
 
@@ -178,7 +181,7 @@
             let $tag = $(this);
             let $target = $tag.closest('.addMoreDiv');
             let group = $target.data('group');
-            let prefix = $tag.data('prefix');
+            let prefix = $target.data('prefix');
             if (isEmpty(prefix)) {
                 prefix = "";
             }
@@ -383,7 +386,7 @@
             prefix = "";
         }
         let seq = $tag.data('seq');
-        let $target = $('[data-curr=' + targetId + '][data-seq=' + seq + '][data-prefix=' + prefix + ']');
+        let $target = $('[data-curr="' + targetId + '"][data-seq="' + seq + '"][data-prefix="' + prefix + '"]');
         checkItemTotal($target);
     }
 
@@ -450,7 +453,7 @@
         if (isEmpty(prefix)) {
             prefix = "";
         }
-        let $target = $('[data-condition*="' + condId + '"][data-seq=' + seq + '][data-prefix=' + prefix + ']');
+        let $target = $('[data-condition*="' + condId + '"][data-seq="' + seq + '"][data-prefix="' + prefix + '"]');
         if (isEmptyNode($target)) {
             return;
         }
@@ -489,7 +492,7 @@
         if ('SPECCON01' === condition) {
             let seq = $tag.data('seq');
             let curr = $tag.data('curr');
-            let $conNodes = $('[data-condition*="' + curr + '"][data-seq="' + seq + '"][data-prefix=' + prefix + ']');
+            let $conNodes = $('[data-condition*="' + curr + '"][data-seq="' + seq + '"][data-prefix="' + prefix + '"]');
             let total = 0;
             if (!isEmptyNode($conNodes)) {
                 // calculate total

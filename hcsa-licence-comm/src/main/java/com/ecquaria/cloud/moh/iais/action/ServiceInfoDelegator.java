@@ -393,8 +393,7 @@ public class ServiceInfoDelegator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String crud_action_type = ParamUtil.getRequestString(request, "nextStep");
         if ("next".equals(crud_action_type)) {
-            AppValidatorHelper.doValidateSpecialServicesForm(appSvcSpecialServiceInfoList, appSubmissionDto.getAppType(),
-                    appSubmissionDto.getLicenceId(), errorMap);
+            AppValidatorHelper.doValidateSpecialServicesForm(appSvcSpecialServiceInfoList, appSubmissionDto.getAppType(),errorMap);
         }
         checkAction(errorMap, HcsaConsts.STEP_SPECIAL_SERVICES_FORM, appSubmissionDto, request);
         log.debug(StringUtil.changeForLog("do SpecialServicesForm end ..."));
@@ -1188,6 +1187,7 @@ public class ServiceInfoDelegator {
         int speCount = 0;
         int norCount = 0;
         if (currentSvcCode != null) {
+//            AppServicesConsts.SERVICE_CODE_ASSISTED_REPRODUCTION.equals(currentSvcCode)
           if (AppServicesConsts.SERVICE_CODE_ASSISTED_REPRODUCTION.equals(currentSvcCode)) {
                 emCount = Optional.ofNullable(svcPersonnelDto.getEmbryologistList())
                         .map(List::size)
@@ -1217,6 +1217,12 @@ public class ServiceInfoDelegator {
         }
 //      fang
         ParamUtil.setRequestAttr(bpc.request, "svcPersonnelDto",svcPersonnelDto);
+        List<HcsaSvcPersonnelDto> psnConfig = configCommService.getHcsaSvcPersonnel(currentSvcId,
+                ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL);
+        int svcPersonnelMax = Optional.ofNullable(psnConfig.get(0))
+                .map(HcsaSvcPersonnelDto::getMaximumCount)
+                .orElse(6);
+        ParamUtil.setRequestAttr(bpc.request, "svcPersonnelMax", svcPersonnelMax);
         List<SelectOption> personnelTypeSel = ApplicationHelper.genPersonnelTypeSel(currentSvcCode);
         ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.SERVICEPERSONNELTYPE, personnelTypeSel);
         List<SelectOption> designation = genPersonnelDesignSel(currentSvcCode);
@@ -1269,6 +1275,35 @@ public class ServiceInfoDelegator {
                 Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                 appSubmissionDto.setClickEditPage(clickEditPages);
             }
+//            validate mandatory count
+            int psnLength = 0;
+            if (!IaisCommonUtils.isEmpty(svcPersonnelDto.getArPractitionerList()) || !IaisCommonUtils.isEmpty(svcPersonnelDto.getEmbryologistList()) || !IaisCommonUtils.isEmpty(svcPersonnelDto.getNurseList())) {
+               int arCount = Optional.ofNullable(svcPersonnelDto.getArPractitionerList())
+                        .map(List::size)
+                        .orElse(1);
+               int nurCount = Optional.ofNullable(svcPersonnelDto.getNurseList())
+                       .map(List::size)
+                       .orElse(1);
+               int EmCount = Optional.ofNullable(svcPersonnelDto.getEmbryologistList())
+                        .map(List::size)
+                        .orElse(1);
+                psnLength = (arCount > nurCount && arCount > EmCount) ? arCount : ((nurCount > EmCount) ? nurCount : EmCount);
+            }
+            if (!IaisCommonUtils.isEmpty(svcPersonnelDto.getSpecialList())){
+                psnLength = Optional.ofNullable(svcPersonnelDto.getSpecialList())
+                        .map(List::size)
+                        .orElse(1);
+            }
+            if (!IaisCommonUtils.isEmpty(svcPersonnelDto.getNormalList())){
+                psnLength = Optional.ofNullable(svcPersonnelDto.getNormalList())
+                        .map(List::size)
+                        .orElse(1);
+            }
+
+            List<HcsaSvcPersonnelDto> psnConfig = configCommService.getHcsaSvcPersonnel(currentSvcId,
+                    ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL);
+            AppValidatorHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL, errorMap,
+                    psnLength, "psnSvcPersonnel", HcsaConsts.SERVICE_PERSONNEL);
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }
         boolean isValid = checkAction(errorMap, HcsaConsts.STEP_SERVICE_PERSONNEL, appSubmissionDto, bpc.request);

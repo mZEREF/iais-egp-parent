@@ -18,8 +18,8 @@
         pageController('');
         let flag = $("#curr").val();
         if (flag == 'NMI' || 'NMA' == flag) {
-          let length = $('.personnel-content').length;
-            if (length == 1){
+            let length = $('.personnel-content').length;
+            if (length == 1) {
                 $('.personnel-content').find('.assign-psn-item').html('')
             }
             $('.personnel-content').each(function (k, v) {
@@ -44,9 +44,11 @@
         //no
         profRegNoEvent($('.personnel-content'));
         removePersonEvent();
+        let target = $('.special-person')
+        controlCountEvent($(target))
     });
 
-    function initPage(target){
+    function initPage(target) {
         var $target = $(target);
         if (isEmptyNode($target)) {
             return;
@@ -55,12 +57,14 @@
             if ($(v).find('div.personnel-content').length == 1) {
                 $(v).find('.assign-psn-item').html('');
             }
+            controlCountEvent($(v), true)
             $(v).find('div.personnel-content').each(function (i, x) {
-                var flag=isEmpty($(x).find('input.profRegNo').val())?false:true;
-                disablePersonnel($(x),flag,true);
+                var flag = isEmpty($(x).find('input.profRegNo').val()) ? false : true;
+                disablePersonnel($(x), flag, true);
             })
         });
     }
+
     function disablePersonnel($currContent, flag, needControlName) {
         if (flag) {
             disableContent($currContent.find('.specialtyGetDate'));
@@ -85,6 +89,7 @@
             }
         }
     }
+
     var personnelSel = function () {
         $('.personnelType').change(function () {
             var personnelSel = $(this).val();
@@ -124,7 +129,8 @@
             $personnelContentEle.find('.personnel-wrkExpYear').removeClass('hidden');
             $personnelContentEle.find('.personnel-regnNo ').addClass('hidden');
             if ('Y' == prsFlag) {
-                inputCancelReadonly($personnelContentEle.find('.name'));;
+                inputCancelReadonly($personnelContentEle.find('.name'));
+                ;
             }
         } else if ('SPPT003' == personnelSel) {
             $personnelContentEle.find('.personnel-designation').addClass('hidden');
@@ -154,6 +160,7 @@
             }
         }
     }
+
     //common
     function addPersonnels(target) {
         var $target = $(target);
@@ -168,10 +175,10 @@
         fillValue($tgt.find('input.locateWtihNonHcsa'), locateWtihNonHcsa);
         var $currContent = $(target).find('div.personnel-content').last();
         $currContent.find('.date_picker').datepicker({
-            format:"dd/mm/yyyy",
-            autoclose:true,
-            todayHighlight:true,
-            orientation:'bottom'
+            format: "dd/mm/yyyy",
+            autoclose: true,
+            todayHighlight: true,
+            orientation: 'bottom'
         });
         clearFields($currContent);
         $currContent.find('.speciality').html('');
@@ -180,10 +187,28 @@
         $currContent.find('.qualification').html('');
         refreshIndex($currContent, $(target).find('div.personnel-content').length - 1);
         $(target).find('div.personnel-content').first().find('.assign-psn-item').html('1');
-        disablePersonnel($currContent, false,true);
+        disablePersonnel($currContent, false, true);
+        controlCountEvent($target, true);
         removePersonEvent();
         profRegNoEvent($currContent);
         dismissWaiting();
+    }
+
+    function controlCountEvent($target, flag) {
+        var psnLength = $target.find('div.personnel-content').length;
+        let count = '${svcPersonnelMax}'
+        if (flag) {
+            if (psnLength >= count) {
+                $target.find('.addDpoDiv').addClass('hidden');
+            } else
+                $target.find('.addDpoDiv').removeClass('hidden');
+        } else {
+            if (psnLength >= count) {
+                $target.find('.addSpecialListBtn').addClass('hidden');
+            } else
+                $target.find('.addSpecialListBtn').removeClass('hidden');
+        }
+
     }
 
     function refreshIndex($target, k) {
@@ -197,6 +222,7 @@
         $('.removeBtn').on('click', function () {
             var $Content = $(this).closest('div.panel-main-content');
             $(this).closest('div.personnel-content').remove();
+            controlCountEvent($Content, true)
             let $currContent = $Content.find('div.personnel-content');
             $currContent.each(function (k, v) {
                 refreshIndex($(v), k);
@@ -214,7 +240,7 @@
     //special
     $('.addSpecialListBtn').click(function () {
         showWaiting();
-        let target =  $('div.personnel-content:last')
+        let target = $('div.personnel-content:last')
         let src = target.clone();
         clearFields(src);
         target.after(src);
@@ -222,7 +248,9 @@
         pageController($('.personnel-content:last'));
         $('.personnel-content').first().find('.assign-psn-item').html('1');
         var psnLength = $('.personnel-content').length;
-        let $target =  $('div.personnel-content:last')
+        let $target = $('div.personnel-content:last')
+        let targets = $('.special-person');
+        controlCountEvent($(targets))
         refreshIndex($target, psnLength - 1);
         profRegNoEvent($('.personnel-content:last'));
         dismissWaiting();
@@ -251,10 +279,11 @@
             var $psnContentEle = $(this).closest('.personnel-content');
             $psnContentEle.remove();
             $('.personnel-content').each(function (k, v) {
-                refreshIndex($(v),k)
+                refreshIndex($(v), k)
             });
+            let targets = $('.special-person')
+            controlCountEvent($(targets))
             var psnLength = $('.personnel-content').length;
-            console.log("----psnLength-----",psnLength)
             if (psnLength <= 1) {
                 $('.assign-psn-item:eq(0)').html('');
             }
@@ -277,6 +306,7 @@
     function cancel() {
         $('#PRS_SERVICE_DOWN').modal('hide');
     }
+
     var fileUploadEvent = function () {
         $('.file-upload').unbind('click');
         $('.file-upload').click(function () {

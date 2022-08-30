@@ -22,7 +22,7 @@
     }
 </style>
 
-<div class="row form-horizontal">
+<div class="row form-horizontal special-person">
     <input type="hidden" id="curr" name="currentSvcCode" value="${currentSvcCode}"/>
     <c:choose>
         <c:when test="${'BLB' ==currentSvcCode}">
