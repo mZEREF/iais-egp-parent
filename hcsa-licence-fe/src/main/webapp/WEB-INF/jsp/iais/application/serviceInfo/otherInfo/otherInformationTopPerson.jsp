@@ -14,7 +14,7 @@
 </iais:row>
 
 <iais:row cssClass="row control control-caption-horizontal holdPregnancyDiv">
-    <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Do you provide Termination of Pregnancy&nbsp;"/>
+    <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Do you provide Termination of Pregnancy&nbsp;"/>
     <input type="hidden" class="provideTopVal" name="provideTopVal" value="${provideTop}"/>
     <iais:value width="3" cssClass="form-check col-md-3">
         <input class="form-check-input provideTop" <c:if test="${'1' == provideTop}">checked="checked"</c:if>  type="radio" name="provideTop" value = "1" aria-invalid="false">
@@ -148,7 +148,7 @@
 
     <div class="lowt <c:if test="${'1' != provideTop}">hidden</c:if>">
         <iais:row cssClass="row control control-caption-horizontal">
-            <iais:value width="6" cssClass="col-md-6">
+            <iais:value width="5" cssClass="col-md-5">
                 <label class="form-check-label" style="padding-top: 25px;">My counsellor(s) has attended the TOP counselling refresher course (Please upload the certificates in the document page)
                     <span class="mandatory">*</span>
                 </label>
@@ -166,7 +166,7 @@
         </iais:row>
 
         <iais:row cssClass="row control control-caption-horizontal">
-            <iais:value width="6" cssClass="col-md-6">
+            <iais:value width="5" cssClass="col-md-5">
                 <label class="form-check-label" style="padding-top: 25px;">The service provider has the necessary counselling facilities e.g. TV set, video player, video on abortion produced by HPB in different languages and the pamphlets produced by HPB
                     <span class="mandatory">*</span>
                 </label>

@@ -18,20 +18,14 @@
         </c:if>
         <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
     </c:if>
-    <iais:row>
-        <div class="col-xs-12">
-            <h2 class="app-title"><c:out value="${currStepName}"/></h2>
-            <p><span class="error-msg" name="iaisErrorMSg" id="error_psnMandatory"></span></p>
-        </div>
-    </iais:row>
 
     <c:set var="itemPrefix" value=""/>
-    <c:set var="appSvcSuplmFormDto" value="${currSvcInfoDto.appSvcSuplmFormDto}"/>
+    <c:set var="appSvcSuplmFormDto" value="${currSvcInfoDto.appSvcOtherInfoDto.appSvcSuplmFormDto}"/>
 
     <c:forEach var="appSvcSuplmGroupDto" items="${appSvcSuplmFormDto.appSvcSuplmGroupDtoList}">
         <c:set var="count" value="${appSvcSuplmGroupDto.count}"/>
+        <c:set var="baseSize" value="${appSvcSuplmGroupDto.baseSize}"/>
         <c:if test="${count > 0}">
-            <c:set var="baseSize" value="${appSvcSuplmGroupDto.baseSize}"/>
             <c:set var="groupId" value="${appSvcSuplmGroupDto.groupId}"/>
             <c:forEach var="item" items="${appSvcSuplmGroupDto.appSvcSuplmItemDtoList}" varStatus="status">
                 <c:if test="${not empty groupId && status.index % baseSize == 0}">
@@ -43,13 +37,13 @@
                         </div>
                     </iais:row>
                 </c:if>
-                <%@ include file="item.jsp" %>
+                <%@ include file="/WEB-INF/jsp/iais/application/serviceInfo/supplementaryForm/item.jsp" %>
             </c:forEach>
             <iais:value cssClass="col-xs-12 error_${groupId}">
                 <span class="error-msg " name="iaisErrorMsg" id="error_${groupId}"></span>
             </iais:value>
             <c:if test="${not empty groupId}">
-                <div class="form-group col-md-12 col-xs-12 addMoreDiv" data-group="${groupId}" data-prefix="${itemPrefix}">
+                <div class="form-group col-md-12 col-xs-12 addMoreDiv hidden" data-group="${groupId}" data-prefix="${itemPrefix}  ">
                     <input class="not-clear" type="hidden" value="${count}" name="${itemPrefix}${groupId}"/>
                     <input class="not-clear" type="hidden" value="${appSvcSuplmGroupDto.maxCount}" name="${itemPrefix}${groupId}-max"/>
                     <span class="addMoreBtn" style="color:deepskyblue;cursor:pointer;">
@@ -61,7 +55,7 @@
     </c:forEach>
 </div>
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
-<%@include file="itemFun.jsp" %>
+<%@include file="/WEB-INF/jsp/iais/application/serviceInfo/supplementaryForm/itemFun.jsp" %>
 <script type="text/javascript">
     $(function () {
 

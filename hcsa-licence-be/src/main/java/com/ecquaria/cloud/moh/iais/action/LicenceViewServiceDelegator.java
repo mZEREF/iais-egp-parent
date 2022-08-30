@@ -1332,7 +1332,8 @@ public class LicenceViewServiceDelegator {
         if (upFileName != null && entity != null) {
             entity.setDocTitle(upFileName);
         }
-        return ApplicationHelper.getDocDisplayTitle(entity, num);
+        return "";
+        //return ApplicationHelper.getDocDisplayTitle(entity, num);
     }
 
     private void docDealWith(Map<String, List<AppSvcDocDto>> multipleSvcDoc,AppSvcDocDto v,String key){

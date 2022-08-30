@@ -205,6 +205,6 @@ public interface LicenceInboxClient {
     @PostMapping(value = "/data-submission/rfc-draft-data-submission/submissionId", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> deleteDraftBySubmissionId(@RequestParam(name = "submissionId") String submissionId);
 
-    @PostMapping(value = "lic-common/update-status-ds-center", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "lic-common/update-status-ds-center", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<DsCenterDto>> updateBeDsCenterStatus();
 }

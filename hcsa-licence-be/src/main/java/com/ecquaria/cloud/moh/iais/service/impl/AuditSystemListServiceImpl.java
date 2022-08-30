@@ -1004,7 +1004,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
                             appSvcDocDtoListIterator.remove();
                         }
                     }
-                    setSvcDocsDupForPerson(appSvcDocDtoLit);
+                    //setSvcDocsDupForPerson(appSvcDocDtoLit);
                 }
             }
         }
@@ -1059,7 +1059,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         return false;
     }
 
-    private void  setSvcDocsDupForPerson(List<AppSvcDocDto> appSvcDocDtoLit){
+    /*private void  setSvcDocsDupForPerson(List<AppSvcDocDto> appSvcDocDtoLit){
         if(IaisCommonUtils.isNotEmpty(appSvcDocDtoLit)){
             appSvcDocDtoLit.forEach((v)->{
                 if(StringUtil.isNotEmpty(v.getSvcDocId())){
@@ -1067,5 +1067,5 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
                 }
             });
         }
-    }
+    }*/
 }

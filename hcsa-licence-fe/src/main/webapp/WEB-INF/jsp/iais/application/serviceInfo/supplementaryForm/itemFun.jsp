@@ -27,8 +27,11 @@
         addMoreEvent();
         checkItemEvent();
         $('.item-record [data-curr]').each(function () {
-            checkItemMandatory($(this));
-            checkItemTotal($(this));
+            let $target = $(this);
+            checkItemMandatory($target);
+            checkItemTotal($target);
+            let index = $target.data('seq');
+            refreshLabel($target, index);
         });
     });
 
@@ -49,7 +52,7 @@
             let $target = $('[data-group="' + group + '"][data-prefix="' + prefix + '"]:input');
             let visibled = false;
             if (!isEmptyNode($target)) {
-                $target.each(function(){
+                $target.each(function () {
                     if ($(this).is(':visible')) {
                         visibled = true;
                     }
@@ -68,19 +71,27 @@
             if (isEmpty(prefix)) {
                 prefix = "";
             }
-            let data = prefix + group;
-            if (!rmv_ary.includes(data)) {
-                rmv_ary.push(data);
+            let includes = false;
+            let len = rmv_ary.length;
+            for (let i = 0; i < len; i++) {
+                let obj = rmv_ary[i];
+                if (obj.prefix == prefix && obj.group == group) {
+                    includes = true;
+                    break;
+                }
+            }
+            if (!includes) {
+                rmv_ary.push({prefix: prefix, group: group});
             }
         });
         rmv_ary.forEach(function (item) {
-            let $removeTag = $('.removeEditDiv[data-group="' + item + '"]');
+            let $removeTag = $('.removeEditDiv[data-group="' + item.group + '"][data-prefix="' + item.prefix + '"]');
             $removeTag.each(function (index, ele) {
                 let $tag = $(ele);
                 toggleTag($tag.closest('.removeEditRow'), index != 0);
                 $tag.attr('data-seq', index);
             });
-            $('input[name="' + item + '"]').val($removeTag.length);
+            $('input[name="' + item.prefix + item.group + '"]').val($removeTag.length);
         });
 
     }
@@ -170,13 +181,13 @@
             let $tag = $(this);
             let $target = $tag.closest('.addMoreDiv');
             let group = $target.data('group');
-            let prefix = $tag.data('prefix');
+            let prefix = $target.data('prefix');
             if (isEmpty(prefix)) {
                 prefix = "";
             }
             let index = parseInt($('input[name="' + prefix + group + '"]').val());
             // remove the group error message
-            $('.error_'  + prefix + group).remove();
+            $('.error_' + prefix + group).remove();
             let $romveRow = $('.removeEditRow [data-group="' + group + '"][data-seq="0"][data-prefix="' + prefix + '"]').closest('.removeEditRow').clone();
             resetItemIndex($romveRow, index);
             showTag($romveRow);

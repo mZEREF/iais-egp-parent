@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
@@ -229,7 +228,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                     Integer personTypeNum = appSupDocDto.getPersonTypeNum();
                     String personType = appSupDocDto.getPersonType();
                     Integer integer = map1.get(entity.getDocTitle() + personType + personTypeNum);
-                    appSupDocDto.setFile(ApplicationHelper.getDocDisplayTitle(entity, integer));
+                    appSupDocDto.setFile(IaisCommonUtils.getDocDisplayTitle(personType, entity.getDocTitle(), integer, true));
                 }
             }
             for (int j = 0; j < userNameList.size(); j++) {

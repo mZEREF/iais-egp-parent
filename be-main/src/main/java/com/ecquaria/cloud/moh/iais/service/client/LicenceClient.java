@@ -54,6 +54,6 @@ public interface LicenceClient {
     @PostMapping(value = "/lic-common/licenceList", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Map<String, LicenceDto>> getLicenceList(@RequestBody List<String> licIds);
 
-    @PostMapping(value = "lic-common/update-status-ds-center", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "lic-common/update-status-ds-center", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<DsCenterDto>> updateBeDsCenterStatus();
 }

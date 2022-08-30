@@ -393,8 +393,7 @@ public class ServiceInfoDelegator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String crud_action_type = ParamUtil.getRequestString(request, "nextStep");
         if ("next".equals(crud_action_type)) {
-            AppValidatorHelper.doValidateSpecialServicesForm(appSvcSpecialServiceInfoList, appSubmissionDto.getAppType(),
-                    appSubmissionDto.getLicenceId(), errorMap);
+            AppValidatorHelper.doValidateSpecialServicesForm(appSvcSpecialServiceInfoList, appSubmissionDto.getAppType(),errorMap);
         }
         checkAction(errorMap, HcsaConsts.STEP_SPECIAL_SERVICES_FORM, appSubmissionDto, request);
         log.debug(StringUtil.changeForLog("do SpecialServicesForm end ..."));
@@ -446,13 +445,13 @@ public class ServiceInfoDelegator {
         log.debug(StringUtil.changeForLog("prePareOtherInformationDirector start ..."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
-        AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId);
+        AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId,null);
         // Other Information Director config
         AppSvcOtherInfoDto appSvcOtherInfoDto = currSvcInfoDto.getAppSvcOtherInfoDto();
         if (appSvcOtherInfoDto != null) {
             ParamUtil.setRequestAttr(bpc.request,"appSvcOtherInfoDto",appSvcOtherInfoDto);
         }
-        if (ApplicationHelper.initOtherInfoForm(currSvcInfoDto)) {
+        if (ApplicationHelper.initOtherInfoForm(currSvcInfoDto, false)) {
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
         }
     }
@@ -476,7 +475,7 @@ public class ServiceInfoDelegator {
             }
         }
         String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
-        AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId);
+        AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId,null);
         String isEdit = ParamUtil.getString(bpc.request, IS_EDIT);
         boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
         boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto,
@@ -486,8 +485,8 @@ public class ServiceInfoDelegator {
             AppSvcOtherInfoDto appSvcOtherInfoDto = AppDataHelper.genAppSvcOtherInfoDto(bpc.request,
                     appSubmissionDto.getAppType());
             currSvcInfoDto.setAppSvcOtherInfoDto(appSvcOtherInfoDto);
-            setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
             reSetChangesForApp(appSubmissionDto);
+            setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
         }
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if ("next".equals(actionType)) {
@@ -1781,7 +1780,6 @@ public class ServiceInfoDelegator {
                 }
             }
         }
-
         return serviceStepDto;
     }
 
@@ -1955,20 +1953,8 @@ public class ServiceInfoDelegator {
         ParamUtil.setSessionAttr(request, PERSONSELECTMAP, (Serializable) newPersonMap);
         ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, appSubmissionDto);
         //remove dirty psn doc info
-        String dupForPerson = null;
         String personType = personList.get(0).getPsnType();
-        if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(personType)) {
-            dupForPerson = ApplicationConsts.DUP_FOR_PERSON_CGO;
-        } else if (ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(personType)) {
-            dupForPerson = ApplicationConsts.DUP_FOR_PERSON_CD;
-        } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(personType)) {
-            dupForPerson = ApplicationConsts.DUP_FOR_PERSON_MAP;
-        } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(personType)) {
-            dupForPerson = ApplicationConsts.DUP_FOR_PERSON_PO;
-        } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(personType)) {
-            dupForPerson = ApplicationConsts.DUP_FOR_PERSON_DPO;
-        }
-        removeDirtyPsnDoc(dupForPerson, request);
+        removeDirtyPsnDoc(personType, request);
 
         return newPersonMap;
     }
@@ -2098,9 +2084,9 @@ public class ServiceInfoDelegator {
         }
     }
 
-    private void removeDirtyPsnDoc(final String dupForPerson, HttpServletRequest request) {
+    private void removeDirtyPsnDoc(final String psnType, HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("remove dirty psn doc info start ..."));
-        if (StringUtil.isEmpty(dupForPerson)) {
+        if (StringUtil.isEmpty(psnType)) {
             return;
         }
         CountDownLatch countDownLatch = new CountDownLatch(1);
@@ -2108,10 +2094,10 @@ public class ServiceInfoDelegator {
             String currentSvcId = ApplicationHelper.getCurrentServiceId(request);
             AppSvcRelatedInfoDto currentSvcRelatedDto = ApplicationHelper.getAppSvcRelatedInfo(request, currentSvcId);
             List<HcsaSvcDocConfigDto> svcDocConfigDtos = configCommService.getAllHcsaSvcDocs(currentSvcId);
-            List<AppSvcPrincipalOfficersDto> psnDtoList = ApplicationHelper.getPsnByDupForPerson(currentSvcRelatedDto,
-                    dupForPerson);
+            List<AppSvcPrincipalOfficersDto> psnDtoList = ApplicationHelper.getBasePersonnel(currentSvcRelatedDto,
+                    psnType);
             List<AppSvcDocDto> appSvcDocDtoList = currentSvcRelatedDto.getAppSvcDocDtoLit();
-            List<HcsaSvcDocConfigDto> targetConfigDtos = getDocConfigDtoByDupForPerson(svcDocConfigDtos, dupForPerson);
+            List<HcsaSvcDocConfigDto> targetConfigDtos = getDocConfigDtoByDupForPerson(svcDocConfigDtos, psnType);
             if (!IaisCommonUtils.isEmpty(appSvcDocDtoList) && !IaisCommonUtils.isEmpty(targetConfigDtos)
                     && !IaisCommonUtils.isEmpty(psnDtoList)) {
                 log.info("appSvcDocDtoList size is {}", appSvcDocDtoList.size());
@@ -2150,7 +2136,7 @@ public class ServiceInfoDelegator {
             }
             countDownLatch.countDown();
         });
-        if (ApplicationConsts.DUP_FOR_PERSON_MAP.equals(dupForPerson)) {
+        if (ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnType)) {
             try {
                 countDownLatch.await();
             } catch (InterruptedException e) {

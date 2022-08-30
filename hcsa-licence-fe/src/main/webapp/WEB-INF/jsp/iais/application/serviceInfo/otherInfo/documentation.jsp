@@ -13,7 +13,7 @@
     </div>
 </iais:row>
 <iais:row cssClass="row control control-caption-horizontal">
-    <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Outcome of procedures are recorded "/>
+    <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Outcome of procedures are recorded "/>
     <input type="hidden" class="isOutcomeProcRecordVal" name="isOutcomeProcRecordVal" value="${appSvcOtherInfoTop.isOutcomeProcRecord}"/>
     <iais:value width="3" cssClass="form-check col-md-3">
         <input class="form-check-input isOutcomeProcRecord" <c:if test="${true == appSvcOtherInfoTop.isOutcomeProcRecord}">checked="checked"</c:if>  type="radio" name="isOutcomeProcRecord" value = "1" aria-invalid="false">
@@ -34,16 +34,16 @@
 </iais:row>
 
 <iais:row>
-    <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Number of cases with complications, if any"/>
-    <iais:value width="6" cssClass="col-md-6">
+    <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Number of cases with complications, if any"/>
+    <iais:value width="7" cssClass="col-md-7">
         <iais:input maxLength="100" type="text" cssClass="compCaseNum" name="compCaseNum" value="${appSvcOtherInfoTop.compCaseNum}"/>
     </iais:value>
 </iais:row>
 
 <iais:row>
-    <iais:field width="6" cssClass="col-md-12" mandatory="false" value="Statistics on abortion (For renewal application only)"/>
+    <iais:field width="5" cssClass="col-md-12" mandatory="false" value="Statistics on abortion (For renewal application only)"/>
 </iais:row>
 
 <iais:row>
-    <iais:field width="6" cssClass="col-md-12" mandatory="false" value="Number of abortions performed during the previous 2 years"/>
+    <iais:field width="5" cssClass="col-md-12" mandatory="false" value="Number of abortions performed during the previous 2 years"/>
 </iais:row>

@@ -144,17 +144,6 @@ public class NewApplicationDelegator extends AppCommDelegator {
     @Autowired
     private SelfAssessmentService selfAssessmentService;
 
-    /**
-     * StartStep: Start
-     *
-     * @param bpc
-     * @throws
-     */
-    @Override
-    public void doStart(BaseProcessClass bpc) throws CloneNotSupportedException {
-        super.doStart(bpc);
-    }
-
     @Override
     protected void loadingDraft(HttpServletRequest request, String draftNo) {
         log.info(StringUtil.changeForLog("the do loadingDraft start ...."));
@@ -936,7 +925,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                         appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
                         appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
                         appSvcRelatedInfoDto.setServiceType(hcsaServiceDto.getSvcType());
-                        List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+//                        List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
                         List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(svcId);
                         //ApplicationHelper.setDocInfo(appSvcDocDtos, svcDocConfig);
                         ParamUtil.setSessionAttr(request, HcsaAppConst.SVC_DOC_CONFIG, (Serializable) svcDocConfig);
@@ -946,10 +935,10 @@ public class NewApplicationDelegator extends AppCommDelegator {
                         //ApplicationHelper.addPremAlignForSvcDoc(svcDocConfig, appSvcDocDtos, newPremisesDtos);
                         //appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
                         //set svc doc title
-                        Map<String, List<AppSvcDocDto>> reloadSvcDocMap = ApplicationHelper.genSvcDocReloadMap(svcDocConfig,
-                                newPremisesDtos, appSvcRelatedInfoDto);
+//                        Map<String, List<AppSvcDocDto>> reloadSvcDocMap = ApplicationHelper.genSvcDocReloadMap(svcDocConfig,
+//                                newPremisesDtos, appSvcRelatedInfoDto);
 //                        appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
-                        appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
+//                        appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
                         // sort po and dpo
                         appSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(
                                 ApplicationHelper.sortKeyPersonnel(appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList()));

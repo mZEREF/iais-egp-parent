@@ -15,22 +15,22 @@
 
     <input type="hidden" name="cpsnType${index}" value="counsellors">
     <iais:row>
-        <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Name of certified TOP counsellors(Only Doctor/Nurse)"/>
-        <iais:value width="6" cssClass="col-md-6">
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Name of certified TOP counsellors(Only Doctor/Nurse)"/>
+        <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="20" type="text" cssClass="cname" name="cname${index}" value="${person.name}"/>
         </iais:value>
     </iais:row>
 
     <iais:row>
-        <iais:field width="6" cssClass="col-md-6" mandatory="true" value="NRIC/FIN No."/>
-        <iais:value width="6" cssClass="col-md-6">
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="NRIC/FIN No."/>
+        <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="20" type="text" cssClass="cidNo" name="cidNo${index}" value="${person.idNo}"/>
         </iais:value>
     </iais:row>
 
     <iais:row>
-        <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Qualifications"/>
-        <iais:value width="6" cssClass="col-md-6">
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Qualifications"/>
+        <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="20" type="text" cssClass="cqualification" name="cqualification${index}" value="${person.qualification}"/>
         </iais:value>
     </iais:row>

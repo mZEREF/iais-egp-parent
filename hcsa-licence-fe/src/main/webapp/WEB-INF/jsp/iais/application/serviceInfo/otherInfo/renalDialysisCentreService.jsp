@@ -14,28 +14,28 @@
 </iais:row>
 
 <iais:row>
-    <iais:field width="3" cssClass="col-md-6" value="Nurses per Shift"/>
-    <iais:value width="4" cssClass="col-md-6">
+    <iais:field width="5" cssClass="col-md-5" value="Nurses per Shift"/>
+    <iais:value width="7" cssClass="col-md-7">
         <iais:input maxLength="20" type="text" cssClass="perShiftNum" name="perShiftNum" value="${n.perShiftNum}"/>
     </iais:value>
 </iais:row>
 
 <iais:row>
-    <iais:field width="3" cssClass="col-md-6" value="Total number of dialysis stations"/>
-    <iais:value width="4" cssClass="col-md-6">
+    <iais:field width="5" cssClass="col-md-5" value="Total number of dialysis stations"/>
+    <iais:value width="7" cssClass="col-md-7">
         <iais:input maxLength="20" type="text" cssClass="dialysisStationsNum" name="dialysisStationsNum" value="${n.dialysisStationsNum}"/>
     </iais:value>
 </iais:row>
 
 <iais:row>
-    <iais:field width="3" cssClass="col-md-6" value="Number of Hep B stations"/>
-    <iais:value width="4" cssClass="col-md-6">
+    <iais:field width="5" cssClass="col-md-5" value="Number of Hep B stations"/>
+    <iais:value width="7" cssClass="col-md-7">
         <iais:input maxLength="20" type="text" cssClass="helpBStationNum" name="helpBStationNum" value="${n.helpBStationNum}"/>
     </iais:value>
 </iais:row>
 
 <iais:row>
-    <iais:field width="6" cssClass="col-md-6" mandatory="true" value="Is the clinic open to general public?"/>
+    <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Is the clinic open to general public?"/>
     <iais:value width="3" cssClass="form-check col-md-3">
         <input class="form-check-input nisOpenToPublic" <c:if test="${'1' == n.isOpenToPublic}">checked="checked"</c:if>  type="radio" name="nisOpenToPublic" value = "1" aria-invalid="false">
         <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
