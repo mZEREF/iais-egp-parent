@@ -74,13 +74,14 @@
             <iais:field width="12" cssClass="col-md-12" mandatory="false" value="Declaration"/>
         </iais:row>
         <iais:row>
-            <div class="col-md-2 col-xs-2" style="width: 2px;">
-                <input class="form-check-input" name="declaration"  type="checkbox" aria-invalid="false" value="true" checked="checked" >
-            </div>
-            <div class="col-md-10 col-xs-10">
-                <span>I declare the information in my application to be true, to the best of my knowledge.
+            <div class="form-check">
+                <input class="form-check-input" name="declaration" value="1"
+                       type="checkbox" aria-invalid="false" checked="checked" />
+                <label class="form-check-label">
+                    <span class="check-square"></span><c:out value="I declare the information in my application to be true, to the best of my knowledge.
                         I also understand that approval of the licence is dependent on satisfactory compliance with the relevant requirements under
-                        the Healthcare Services Act, Regulations and Guidelines and the TOP Act, Regulations and Guidelines.</span>
+                        the Healthcare Services Act, Regulations and Guidelines and the TOP Act, Regulations and Guidelines."/>
+                </label>
             </div>
         </iais:row>
     </div>

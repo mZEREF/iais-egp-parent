@@ -22,7 +22,12 @@
 
 <iais:row>
     <iais:field width="5" cssClass="col-md-5" mandatory="true" value="I declare that I have met URA's requirements for gross floor area"/>
-    <iais:value width="7" cssClass="col-md-7">
-        <input class="form-check-input ascsDeclaration"  type="checkbox" <c:if test="${'1' == appSvcOtherInfoDto.ascsDeclaration}">checked="checked"</c:if> name="ascsDeclaration" value="1">
-    </iais:value>
+    <div class="form-check col-md-3">
+        <input class="form-check-input" name="ascsDeclaration" value="1"
+               type="checkbox" aria-invalid="false"
+               <c:if test="${'1' == appSvcOtherInfoDto.ascsDeclaration}">checked="checked"</c:if> />
+        <label class="form-check-label">
+            <span class="check-square"></span><c:out value=""/>
+        </label>
+    </div>
 </iais:row>
