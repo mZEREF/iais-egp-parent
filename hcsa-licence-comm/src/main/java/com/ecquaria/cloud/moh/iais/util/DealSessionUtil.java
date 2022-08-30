@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -328,11 +329,11 @@ public class DealSessionUtil {
     }
 
     public static Set<String> initPremiseTypes(List<HcsaServiceDto> hcsaServiceDtoList, boolean init, HttpServletRequest request){
-        Set<String> premisesType = (Set<String>) ParamUtil.getSessionAttr(request, PREMISESTYPE);
-        if (!init && IaisCommonUtils.isNotEmpty(premisesType)) {
-            return premisesType;
+        Collection<String> collection = (Collection<String>) ParamUtil.getSessionAttr(request, PREMISESTYPE);
+        if (!init && IaisCommonUtils.isNotEmpty(collection)) {
+            return new HashSet<>(collection);
         }
-        premisesType = IaisCommonUtils.genNewHashSet();
+        Set<String> premisesType = IaisCommonUtils.genNewHashSet();
         List<HcsaServiceDto> rfiHcsaService = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request, "rfiHcsaService");
         List<String> svcIds = IaisCommonUtils.genNewArrayList();
         if (rfiHcsaService != null) {
