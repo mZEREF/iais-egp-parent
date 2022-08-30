@@ -207,6 +207,18 @@
                 </iais:value>
             </iais:row>
         </div>
+        <div id="preCounsNoCondReasons"
+             <c:if test="${preTerminationDto.counsellingGiven != true || preTerminationDto.counsellingAge>=16 || patientInformationDto.maritalStatus =='TOPMS002' || preTerminationDto.counsellingPlace == 'AR_SC_001' || preTerminationDto.counsellingPlace ==null || preTerminationDto.counsellingAge ==null}">style="display: none"</c:if> >
+            <iais:row>
+                <iais:field width="5" value="Reason why Counselling was Not Conducted at HPB Counselling Centre"
+                            mandatory="true"/>
+                <iais:value width="7" cssClass="col-md-7">
+                    <iais:input maxLength="100" type="text" name="preCounsNoCondReason"
+                                value="${preTerminationDto.preCounsNoCondReason}"/>
+                    <span class="error-msg" name="iaisErrorMsg" id="error_preCounsNoCondReason"></span>
+                </iais:value>
+            </iais:row>
+        </div>
         <iais:row>
             <label class="col-xs-5 col-md-4 control-label">Result of Counselling
                 <span id="counsellingResult" class="mandatory">
@@ -219,18 +231,6 @@
                              value="${preTerminationDto.counsellingResult}" id="counsellingResults"
                              cssClass="counsellingResult"/>
                 <span class="error-msg" name="iaisErrorMsg" id="error_counsellingResult"></span>
-            </iais:value>
-        </iais:row>
-    </div>
-    <div id="preCounsNoCondReasons"
-         <c:if test="${preTerminationDto.counsellingGiven != true || preTerminationDto.counsellingAge>=16 || patientInformationDto.maritalStatus =='TOPMS002' || preTerminationDto.counsellingPlace == 'AR_SC_001' || preTerminationDto.counsellingPlace ==null || preTerminationDto.counsellingAge ==null}">style="display: none"</c:if> >
-        <iais:row>
-            <iais:field width="5" value="Reason why Counselling was Not Conducted at HPB Counselling Centre"
-                        mandatory="true"/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="100" type="text" name="preCounsNoCondReason"
-                            value="${preTerminationDto.preCounsNoCondReason}"/>
-                <span class="error-msg" name="iaisErrorMsg" id="error_preCounsNoCondReason"></span>
             </iais:value>
         </iais:row>
     </div>
