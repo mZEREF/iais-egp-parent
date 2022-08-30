@@ -773,7 +773,7 @@ public final class AppDataHelper {
         return isPartEdit || canEdit || isNewOfficer;
     }
 
-    public static AppSvcOtherInfoDto genAppSvcOtherInfoDto(HttpServletRequest request, String appType){
+    public static AppSvcOtherInfoDto genAppSvcOtherInfoDto(HttpServletRequest request, String appType,AppSvcOtherInfoDto appSvcOtherInfoDto1){
         AppSvcOtherInfoDto appSvcOtherInfoDto = new AppSvcOtherInfoDto();
         String topType = ParamUtil.getString(request,"topType");
         String currentSvcId = (String) ParamUtil.getSessionAttr(request,CURRENTSERVICEID);
@@ -809,8 +809,9 @@ public final class AppDataHelper {
         appSvcOtherInfoDto.setAppSvcOtherInfoMedDto(appSvcOtherInfoMedDto);
         appSvcOtherInfoDto.setAppSvcOtherInfoMedDto1(appSvcOtherInfoMedDto1);
         appSvcOtherInfoDto.setAppSvcOtherInfoNurseDto(appSvcOtherInfoNurseDto);
-
-        setAppSvcSuplmFormDto(appSvcOtherInfoDto.getAppSvcSuplmFormDto(), request);
+        setAppSvcSuplmFormDto(appSvcOtherInfoDto1.getAppSvcSuplmFormDto(), request);
+        appSvcOtherInfoDto1.getAppSvcSuplmFormDto();
+        appSvcOtherInfoDto.setAppSvcSuplmFormDto(appSvcOtherInfoDto1.getAppSvcSuplmFormDto());
         return appSvcOtherInfoDto;
     }
 
@@ -2664,7 +2665,6 @@ public final class AppDataHelper {
         }
         return appPremScopeDtoList;
     }
-
     public static void setAppSvcSuplmFormDto(AppSvcSuplmFormDto appSvcSuplmFormDto, HttpServletRequest request) {
         setAppSvcSuplmFormDto(appSvcSuplmFormDto, "", request);
     }

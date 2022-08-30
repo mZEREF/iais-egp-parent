@@ -1896,7 +1896,7 @@ public final class AppValidatorHelper {
             }
             errMap.putAll(getValidateAppSvcOtherInfoTopPerson(appSvcOtherInfoDto));
             errMap.putAll(getValidateAppSvcOtherInfoTopAbort(appSvcOtherInfoDto,topType));
-            errMap.putAll(doValidateSupplementaryForm(appSvcOtherInfoDto.getAppSvcSuplmFormDto(),""));
+            errMap.putAll(doValidateSupplementaryForm(appSvcOtherInfoDto.getAppSvcSuplmFormDto()));
         }
 
         return errMap;

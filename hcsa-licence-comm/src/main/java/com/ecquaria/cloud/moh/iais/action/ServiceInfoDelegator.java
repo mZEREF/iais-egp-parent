@@ -448,10 +448,6 @@ public class ServiceInfoDelegator {
         String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId,null);
         // Other Information Director config
-        AppSvcOtherInfoDto appSvcOtherInfoDto = currSvcInfoDto.getAppSvcOtherInfoDto();
-        if (appSvcOtherInfoDto != null) {
-            ParamUtil.setRequestAttr(bpc.request,"appSvcOtherInfoDto",appSvcOtherInfoDto);
-        }
         if (ApplicationHelper.initOtherInfoForm(currSvcInfoDto, false)) {
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
         }
@@ -477,6 +473,10 @@ public class ServiceInfoDelegator {
         }
         String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId,null);
+        AppSvcOtherInfoDto appSvcOtherInfoDto1 = currSvcInfoDto.getAppSvcOtherInfoDto();
+        if (appSvcOtherInfoDto1 == null){
+            appSvcOtherInfoDto1 = new AppSvcOtherInfoDto();
+        }
         String isEdit = ParamUtil.getString(bpc.request, IS_EDIT);
         boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
         boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto,
@@ -484,7 +484,7 @@ public class ServiceInfoDelegator {
         if (isGetDataFromPage) {
             //get data from page
             AppSvcOtherInfoDto appSvcOtherInfoDto = AppDataHelper.genAppSvcOtherInfoDto(bpc.request,
-                    appSubmissionDto.getAppType());
+                    appSubmissionDto.getAppType(),appSvcOtherInfoDto1);
             currSvcInfoDto.setAppSvcOtherInfoDto(appSvcOtherInfoDto);
             reSetChangesForApp(appSubmissionDto);
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
