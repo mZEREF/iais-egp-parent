@@ -5,6 +5,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
+import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
@@ -15,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
@@ -41,6 +43,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.APPSUBMISSIONDTO;
 
@@ -162,6 +165,7 @@ public class ApplicationDelegator extends AppCommDelegator {
         AppSubmissionDto appSubmissionDto = appCommService.getAppSubmissionDtoByAppNo(appNo);
         appSubmissionDto.setAmountStr("N/A");
         String appType = appSubmissionDto.getAppType();
+        boolean isNew = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
         boolean isRenewalOrRfc = ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)
                 || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType);
         loadingRfiGrpServiceConfig(appSubmissionDto, request);
@@ -185,14 +189,25 @@ public class ApplicationDelegator extends AppCommDelegator {
         }
         appSubmissionDto.setNeedEditController(true);
         // App Edit Selecti Dto (RFI)
-        AppEditSelectDto appEditSelectDto = applicationViewDto.getAppEditSelectDto();
-        if (appEditSelectDto != null) {
-            appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
+        AppEditSelectDto appEditSelectDto = ApplicationHelper.createAppEditSelectDto(true);
+        if (isRenewalOrRfc) {
+            Optional<String> licenseeType = Optional.ofNullable(appSubmissionDto.getSubLicenseeDto())
+                    .map(SubLicenseeDto::getLicenseeType)
+                    .filter(type -> OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(type));
+            if (!licenseeType.isPresent()) {
+                appEditSelectDto.setLicenseeEdit(false);
+            }
+        } else if (isNew) {
+            Optional<String> licenseeType = Optional.ofNullable(appSubmissionDto.getSubLicenseeDto())
+                    .map(SubLicenseeDto::getLicenseeType)
+                    .filter(type -> OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(type));
+            if (licenseeType.isPresent()) {
+                appEditSelectDto.setLicenseeEdit(false);
+            }
+        } else {
+            appEditSelectDto = applicationViewDto.getAppEditSelectDto();
         }
-        if (appEditSelectDto == null && appSubmissionDto.getAppEditSelectDto() == null) {
-            appEditSelectDto = ApplicationHelper.createAppEditSelectDto(true);
-            appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
-        }
+        appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
         log.info(StringUtil.changeForLog("App Edit Selecti Dto (RFI): " + JsonUtil.parseToJson(appEditSelectDto)));
         if (isRenewalOrRfc && StringUtil.isEmpty(appSubmissionDto.getLicenceNo())) {
             // set the required information
@@ -207,7 +222,7 @@ public class ApplicationDelegator extends AppCommDelegator {
         // BE init
         appSubmissionDto.setUserAgreement(true);
         // Tab tooltip
-        DealSessionUtil.initCoMap(request);
+        //DealSessionUtil.initCoMap(request);
         //control premises edit
         handlePremises(appSubmissionDto, appNo);
         ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, appSubmissionDto);

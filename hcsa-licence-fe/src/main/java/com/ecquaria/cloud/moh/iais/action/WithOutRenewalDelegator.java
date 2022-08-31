@@ -536,8 +536,6 @@ public class WithOutRenewalDelegator {
         RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
         List<AppSubmissionDto> newAppSubmissionDtos = renewDto.getAppSubmissionDtos();
         if(!IaisCommonUtils.isEmpty(newAppSubmissionDtos)){
-            List<HcsaSvcDocConfigDto> primaryDocConfig = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request,
-                    HcsaAppConst.PRIMARY_DOC_CONFIG);
             for(AppSubmissionDto appSubmissionDto:newAppSubmissionDtos){
                 DealSessionUtil.init(appSubmissionDto);
             }

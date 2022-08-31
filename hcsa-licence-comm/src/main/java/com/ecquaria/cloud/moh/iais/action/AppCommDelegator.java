@@ -67,10 +67,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -78,9 +75,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -95,7 +90,6 @@ import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.COND_TYPE_RFI;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.IS_EDIT;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.LICENSEE_MAP;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.LICENSEE_OPTIONS;
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.PREMISESTYPE;
 
 /**
  * @author chenlei on 5/3/2022.
@@ -148,7 +142,7 @@ public abstract class AppCommDelegator {
         log.info(StringUtil.changeForLog("The loadingServiceConfig -->:" + flag));
         if (flag) {
             //init session and data reomve function to DealSessionUtil
-            DealSessionUtil.initSession(bpc);
+            DealSessionUtil.initSession(bpc.request);
         }
         log.info(StringUtil.changeForLog("the do Start end ...."));
     }
@@ -194,7 +188,7 @@ public abstract class AppCommDelegator {
             appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
             appSubmissionDto.setNeedEditController(true);
             ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, appSubmissionDto);
-            DealSessionUtil.initCoMap(request);
+            //DealSessionUtil.initCoMap(request);
         }
         log.info(StringUtil.changeForLog("the do requestForChangeLoading end ...."));
     }
@@ -376,9 +370,9 @@ public abstract class AppCommDelegator {
         } else if (!names.isEmpty()) {
             hcsaServiceDtoList = HcsaServiceCacheHelper.getHcsaSvcsByNames(names);
         }
-        if (hcsaServiceDtoList != null) {
-            hcsaServiceDtoList = ApplicationHelper.sortHcsaServiceDto(hcsaServiceDtoList);
-        }
+//        if (hcsaServiceDtoList != null) {
+//            hcsaServiceDtoList = ApplicationHelper.sortHcsaServiceDto(hcsaServiceDtoList);
+//        }
         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
         log.info(StringUtil.changeForLog("the do loadingServiceConfig end ...."));
         return true;
@@ -744,56 +738,10 @@ public abstract class AppCommDelegator {
         //get svcCode to get svcId
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,
                 AppServicesConsts.HCSASERVICEDTOLIST);
-        //get premises type
-        Set<String> premisesType = IaisCommonUtils.genNewHashSet();
-        List<HcsaServiceDto> rfiHcsaService = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, "rfiHcsaService");
-        List<String> svcIds = IaisCommonUtils.genNewArrayList();
-        if (rfiHcsaService != null) {
-            rfiHcsaService.forEach(v -> svcIds.add(v.getId()));
-        } else {
-            if (hcsaServiceDtoList != null) {
-                hcsaServiceDtoList.forEach(item -> svcIds.add(item.getId()));
-            }
-        }
-        if (!IaisCommonUtils.isEmpty(svcIds)) {
-            premisesType = configCommService.getAppGrpPremisesTypeBySvcId(svcIds);
-        } else {
-            log.info(StringUtil.changeForLog("do not have select the services"));
-        }
-        /*boolean readOnly = ApplicationHelper.readonlyPremises(appSubmissionDto);
-        if (readOnly) {
-            AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(0);
-            premisesType.add(appGrpPremisesDto.getPremisesType());
-        } else {
-            List<HcsaServiceDto> rfiHcsaService = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, "rfiHcsaService");
-            List<String> svcIds = IaisCommonUtils.genNewArrayList();
-            if (rfiHcsaService != null) {
-                rfiHcsaService.forEach(v -> svcIds.add(v.getId()));
-            } else {
-                if (hcsaServiceDtoList != null) {
-                    hcsaServiceDtoList.forEach(item -> svcIds.add(item.getId()));
-                }
-            }
-            if (!IaisCommonUtils.isEmpty(svcIds)) {
-                log.debug(StringUtil.changeForLog("svc id List :" + JsonUtil.parseToJson(svcIds)));
-                premisesType = configCommService.getAppGrpPremisesTypeBySvcId(svcIds);
-            } else {
-                log.info(StringUtil.changeForLog("do not have select the services"));
-            }
-        }*/
-        //TODO Test
-        /*if (!StringUtil.isIn(ApplicationConsts.PREMISES_TYPE_REMOTE, premisesType)) {
-            premisesType.add(ApplicationConsts.PREMISES_TYPE_REMOTE);
-        }
-        if (!StringUtil.isIn(ApplicationConsts.PREMISES_TYPE_MOBILE, premisesType)) {
-            premisesType.add(ApplicationConsts.PREMISES_TYPE_MOBILE);
-        }*/
-        ParamUtil.setSessionAttr(bpc.request, PREMISESTYPE, (Serializable) sortPremisesTypes(premisesType));
-        //ParamUtil.setRequestAttr(bpc.request, "readOnly", readOnly);
         // check premises list
-        Set<String> finalPremisesType = premisesType;
+        Set<String> premisesType = DealSessionUtil.initPremiseTypes(hcsaServiceDtoList, false, bpc.request);
         appGrpPremisesDtoList = appGrpPremisesDtoList.stream()
-                .filter(dto -> StringUtil.isEmpty(dto.getPremisesType()) || finalPremisesType.contains(dto.getPremisesType()))
+                .filter(dto -> StringUtil.isEmpty(dto.getPremisesType()) || premisesType.contains(dto.getPremisesType()))
                 .collect(Collectors.toList());
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
 
@@ -813,18 +761,6 @@ public abstract class AppCommDelegator {
         ParamUtil.setRequestAttr(bpc.request, "isMultiPremService", ApplicationHelper.isMultiPremService(hcsaServiceDtoList));
         ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
         log.info(StringUtil.changeForLog("the do preparePremises end ...."));
-    }
-
-    private List<String> sortPremisesTypes(Collection<String> premisesTypes) {
-        if (premisesTypes == null) {
-            return IaisCommonUtils.genNewArrayList();
-        }
-        if (premisesTypes.size() <= 1) {
-            return new ArrayList<>(premisesTypes);
-        }
-        return premisesTypes.stream()
-                .sorted(Comparator.comparingInt(IaisCommonUtils::getPremSeqNum))
-                .collect(Collectors.toList());
     }
 
     private void setSelectLicence(AppSubmissionDto appSubmissionDto) {

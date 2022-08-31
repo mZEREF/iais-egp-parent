@@ -14,9 +14,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpSecondAddrDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOpenPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOtherInfoItemAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
@@ -24,11 +26,18 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubLicenseeCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcClinicalDirectorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoAbortDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoMedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoNurseDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoTopDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoTopPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSuplmItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -368,6 +377,15 @@ public class UploadFileServiceImpl implements UploadFileService {
         List<AppPremNonLicRelationDto> appPremNonLicRelationDtos=applicationListDto.getAppPremNonLicRelations();
         List<AppPremScopeDto> appPremScopeDtos=applicationListDto.getAppPremScopes();
         List<AppPremSubSvcRelDto> appPremSubSvcRelDtos=applicationListDto.getAppPremSubSvcRels();
+         List<AppSvcSuplmItemDto> appSvcSuplmItemDtos=applicationListDto.getAppSvcSuplmItems();
+         List<AppPremOtherInfoItemAnswerDto> appPremOtherInfoItemAnswerDtos=applicationListDto.getAppPremOtherInfoItemAnswers();
+         List<AppSvcBusinessDto> appSvcBusinessDtos=applicationListDto.getAppSvcBusinesses();
+         List<AppGrpSecondAddrDto> appGrpSecondAddrDtos=applicationListDto.getAppGrpSecondAddrs();
+         List<AppSvcOtherInfoMedDto> appSvcOtherInfoMedDtos=applicationListDto.getAppSvcOtherInfoMeds();
+         List<AppSvcOtherInfoNurseDto> appSvcOtherInfoNurseDtos=applicationListDto.getAppSvcOtherInfoNurses();
+         List<AppSvcOtherInfoTopDto> appSvcOtherInfoTopDtos=applicationListDto.getAppSvcOtherInfoTops();
+         List<AppSvcOtherInfoAbortDto> appSvcOtherInfoAbortDtos=applicationListDto.getAppSvcOtherInfoAborts();
+         List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos=applicationListDto.getAppSvcOtherInfoTopPersons();
 
         List<ApplicationListFileDto> applicationListFileDtoList=IaisCommonUtils.genNewArrayList();
         if(IaisCommonUtils.isNotEmpty(applicationGroup)){
@@ -432,6 +450,25 @@ public class UploadFileServiceImpl implements UploadFileService {
                 Set<AppPremSubSvcRelDto> appPremSubSvcRelDtoSet=new HashSet<>(16);
                 List<AppPremNonLicRelationDto> appPremNonLicRelationDtoList=IaisCommonUtils.genNewArrayList();
                 Set<AppPremNonLicRelationDto> appPremNonLicRelationDtoSet=new HashSet<>(16);
+
+                List<AppSvcSuplmItemDto> appSvcSuplmItemDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppSvcSuplmItemDto> appSvcSuplmItemDtoSet=new HashSet<>();
+                List<AppPremOtherInfoItemAnswerDto> appPremOtherInfoItemAnswerDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppPremOtherInfoItemAnswerDto> appPremOtherInfoItemAnswerDtoSet=new HashSet<>();
+                List<AppSvcBusinessDto> appSvcBusinessDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppSvcBusinessDto> appSvcBusinessDtoSet=new HashSet<>();
+                List<AppGrpSecondAddrDto> appGrpSecondAddrDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppGrpSecondAddrDto> appGrpSecondAddrDtoSet=new HashSet<>();
+                List<AppSvcOtherInfoMedDto> appSvcOtherInfoMedDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppSvcOtherInfoMedDto> appSvcOtherInfoMedDtoSet=new HashSet<>();
+                List<AppSvcOtherInfoNurseDto> appSvcOtherInfoNurseDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppSvcOtherInfoNurseDto> appSvcOtherInfoNurseDtoSet=new HashSet<>();
+                List<AppSvcOtherInfoTopDto> appSvcOtherInfoTopDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppSvcOtherInfoTopDto> appSvcOtherInfoTopDtoSet=new HashSet<>();
+                List<AppSvcOtherInfoAbortDto> appSvcOtherInfoAbortDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppSvcOtherInfoAbortDto> appSvcOtherInfoAbortDtoSet=new HashSet<>();
+                List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtoSet=new HashSet<>();
                 groupDtos.add(every);
                 String groupId = every.getId();
                 if(subLicenseeDtos!=null){
@@ -475,6 +512,14 @@ public class UploadFileServiceImpl implements UploadFileService {
                                 String appGrpPremId = appPremNonLicRelationDto.getPremId();
                                 if(appliGrpPremisesDtoId.equals(appGrpPremId)){
                                     appPremNonLicRelationDtoSet.add(appPremNonLicRelationDto);
+                                }
+                            }
+                        }
+                        if(appGrpSecondAddrDtos!=null){
+                            for(AppGrpSecondAddrDto appGrpSecondAddrDto : appGrpSecondAddrDtos){
+                                String appGrpPremId = appGrpSecondAddrDto.getAppGrpPremisesId();
+                                if(appliGrpPremisesDtoId.equals(appGrpPremId)){
+                                    appGrpSecondAddrDtoSet.add(appGrpSecondAddrDto);
                                 }
                             }
                         }
@@ -592,6 +637,70 @@ public class UploadFileServiceImpl implements UploadFileService {
                                         appPremSubSvcRelDtoSet.add(appPremSubSvcRelDto);
                                     }
                                 }
+                                if(appSvcSuplmItemDtos!=null){
+                                    for (AppSvcSuplmItemDto appSvcSuplmItemDto:appSvcSuplmItemDtos
+                                    ) {
+                                        if(appSvcSuplmItemDto.getAppPremCorreId().equals(premisesCorrelationDtoId)){
+                                            appSvcSuplmItemDtoSet.add(appSvcSuplmItemDto);
+                                        }
+                                    }
+                                }
+                                if(appPremOtherInfoItemAnswerDtos!=null){
+                                    for (AppPremOtherInfoItemAnswerDto appPremOtherInfoItemAnswerDto:appPremOtherInfoItemAnswerDtos
+                                    ) {
+                                        if(appPremOtherInfoItemAnswerDto.getAppPremCorrId().equals(premisesCorrelationDtoId)){
+                                            appPremOtherInfoItemAnswerDtoSet.add(appPremOtherInfoItemAnswerDto);
+                                        }
+                                    }
+                                }
+                                if(appSvcBusinessDtos!=null){
+                                    for (AppSvcBusinessDto appSvcBusinessDto:appSvcBusinessDtos
+                                    ) {
+                                        if(appSvcBusinessDto.getAppPremId().equals(premisesCorrelationDtoId)){
+                                            appSvcBusinessDtoSet.add(appSvcBusinessDto);
+                                        }
+                                    }
+                                }
+                                if(appSvcOtherInfoMedDtos!=null){
+                                    for (AppSvcOtherInfoMedDto appSvcOtherInfoMedDto:appSvcOtherInfoMedDtos
+                                    ) {
+                                        if(appSvcOtherInfoMedDto.getAppPremId().equals(premisesCorrelationDtoId)){
+                                            appSvcOtherInfoMedDtoSet.add(appSvcOtherInfoMedDto);
+                                        }
+                                    }
+                                }
+                                if(appSvcOtherInfoNurseDtos!=null){
+                                    for (AppSvcOtherInfoNurseDto appSvcOtherInfoNurseDto:appSvcOtherInfoNurseDtos
+                                    ) {
+                                        if(appSvcOtherInfoNurseDto.getAppPremId().equals(premisesCorrelationDtoId)){
+                                            appSvcOtherInfoNurseDtoSet.add(appSvcOtherInfoNurseDto);
+                                        }
+                                    }
+                                }
+                                if(appSvcOtherInfoTopDtos!=null){
+                                    for (AppSvcOtherInfoTopDto appSvcOtherInfoTopDto:appSvcOtherInfoTopDtos
+                                    ) {
+                                        if(appSvcOtherInfoTopDto.getAppPremId().equals(premisesCorrelationDtoId)){
+                                            appSvcOtherInfoTopDtoSet.add(appSvcOtherInfoTopDto);
+                                        }
+                                    }
+                                }
+                                if(appSvcOtherInfoAbortDtos!=null){
+                                    for (AppSvcOtherInfoAbortDto appSvcOtherInfoAbortDto:appSvcOtherInfoAbortDtos
+                                    ) {
+                                        if(appSvcOtherInfoAbortDto.getAppPremId().equals(premisesCorrelationDtoId)){
+                                            appSvcOtherInfoAbortDtoSet.add(appSvcOtherInfoAbortDto);
+                                        }
+                                    }
+                                }
+                                if(appSvcOtherInfoTopPersonDtos!=null){
+                                    for (AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto:appSvcOtherInfoTopPersonDtos
+                                    ) {
+                                        if(appSvcOtherInfoTopPersonDto.getAppPremId().equals(premisesCorrelationDtoId)){
+                                            appSvcOtherInfoTopPersonDtoSet.add(appSvcOtherInfoTopPersonDto);
+                                        }
+                                    }
+                                }
                                 if(appSvcClinicalDirectors!=null){
                                     for (AppSvcClinicalDirectorDto appSvcClinicalDirectorDto:appSvcClinicalDirectors
                                     ) {
@@ -706,6 +815,33 @@ public class UploadFileServiceImpl implements UploadFileService {
                 applicationListFileDto.setAppPremScopes(appPremScopeDtoList);
                 applicationListFileDto.setAppPremSubSvcRels(appPremSubSvcRelDtoList);
                 applicationListFileDto.setAppPremNonLicRelations(appPremNonLicRelationDtoList);
+                appSvcBusinessDtoList.addAll(appSvcBusinessDtoSet);
+                applicationListFileDto.setAppSvcBusinesses(appSvcBusinessDtoList);
+
+                appGrpSecondAddrDtoList.addAll(appGrpSecondAddrDtoSet);
+                applicationListFileDto.setAppGrpSecondAddrs(appGrpSecondAddrDtoList);
+
+                appSvcOtherInfoMedDtoList.addAll(appSvcOtherInfoMedDtoSet);
+                applicationListFileDto.setAppSvcOtherInfoMeds(appSvcOtherInfoMedDtoList);
+
+                appSvcOtherInfoNurseDtoList.addAll(appSvcOtherInfoNurseDtoSet);
+                applicationListFileDto.setAppSvcOtherInfoNurses(appSvcOtherInfoNurseDtoList);
+
+                appSvcOtherInfoTopDtoList.addAll(appSvcOtherInfoTopDtoSet);
+                applicationListFileDto.setAppSvcOtherInfoTops(appSvcOtherInfoTopDtoList);
+
+                appSvcOtherInfoTopPersonDtoList.addAll(appSvcOtherInfoTopPersonDtoSet);
+                applicationListFileDto.setAppSvcOtherInfoTopPersons(appSvcOtherInfoTopPersonDtoList);
+
+                appSvcOtherInfoAbortDtoList.addAll(appSvcOtherInfoAbortDtoSet);
+                applicationListFileDto.setAppSvcOtherInfoAborts(appSvcOtherInfoAbortDtoList);
+
+                appSvcSuplmItemDtoList.addAll(appSvcSuplmItemDtoSet);
+                applicationListFileDto.setAppSvcSuplmItems(appSvcSuplmItemDtoList);
+
+                appPremOtherInfoItemAnswerDtoList.addAll(appPremOtherInfoItemAnswerDtoSet);
+                applicationListFileDto.setAppPremOtherInfoItemAnswers(appPremOtherInfoItemAnswerDtoList);
+
                 applicationListFileDtoList.add(applicationListFileDto);
             }
 
