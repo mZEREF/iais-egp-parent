@@ -1,3 +1,5 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FamilyPlanDto" %>
+<%@ page import="java.math.BigDecimal" %>
 <div class="panel panel-default">
     <div class="panel-heading ">
         <h4 class="panel-title">
@@ -37,8 +39,14 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div
-                        <c:if test="${familyPlanDto.gestAgeBaseOnUltrWeek<13 || familyPlanDto.gestAgeBaseOnUltrWeek>24}">style="display: none"</c:if> >
+                <%
+                    FamilyPlanDto familyPlanDto = (FamilyPlanDto) ParamUtil.getSessionAttr(request, "familyPlanDto");
+                    int weeks = Integer.parseInt(familyPlanDto.getGestAgeBaseOnUltrWeek());
+                    BigDecimal b1 = new BigDecimal(familyPlanDto.getGestAgeBaseOnUltrDay());
+                    BigDecimal b2 = new BigDecimal(Integer.toString(7));
+                    weeks = weeks + b1.divide(b2, 0, BigDecimal.ROUND_DOWN).intValue();
+                %>
+                <div<%if (weeks < 13 && weeks > 24) {%>style="display: none"<%}%>>
                     <iais:row>
                         <iais:field width="6" value="Given Counselling On Mid-Trimester Pregnancy Termination"/>
                         <iais:value width="6" display="true">

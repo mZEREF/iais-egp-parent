@@ -46,8 +46,14 @@
             </iais:value>
         </iais:row>
     </div>
-    <div id="counsellingGivenOnMin"
-         <c:if test="${familyPlanDto.gestAgeBaseOnUltrWeek<13 || familyPlanDto.gestAgeBaseOnUltrWeek>24}">style="display: none"</c:if> >
+    <%
+            FamilyPlanDto familyPlanDto = (FamilyPlanDto) ParamUtil.getSessionAttr(request, "familyPlanDto");
+            int weeks = Integer.parseInt(familyPlanDto.getGestAgeBaseOnUltrWeek());
+            BigDecimal b1 = new BigDecimal(familyPlanDto.getGestAgeBaseOnUltrDay());
+            BigDecimal b2 = new BigDecimal(Integer.toString(7));
+            weeks = weeks + b1.divide(b2, 0, BigDecimal.ROUND_DOWN).intValue();
+    %>
+        <div id="counsellingGivenOnMin"<%if (weeks < 13 && weeks > 24) {%>style="display: none"<%}%>>
         <iais:row>
             <iais:field width="5" value="Given Counselling On Mid-Trimester Pregnancy Termination" mandatory="true"/>
             <iais:value width="3" cssClass="col-md-3">
