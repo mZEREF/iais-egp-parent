@@ -29,11 +29,7 @@
             <iais:field width="5" cssClass="col-md-5 item-label" value="${itemConfigDto.displayInfo}"/>
             <iais:value width="7" cssClass="col-md-7">
                 <c:forEach var="idx" begin="0" end="${item.codes.size() - 1}">
-                    <div class="form-check <c:if test="${item.codes[idx] == item.inputValue}">active"</c:if>>
-                        <div class="form-check-label" aria-label="premise-1-cytology"><span class="check-circle"></span>
-                            <c:out value="${item.labels[idx]}"/>
-                        </div>
-                    </div>
+                    <c:if test="${item.codes[idx] == item.inputValue}"><c:out value="${item.labels[idx]}"/></c:if>
                 </c:forEach>
             </iais:value>
         </c:when>
