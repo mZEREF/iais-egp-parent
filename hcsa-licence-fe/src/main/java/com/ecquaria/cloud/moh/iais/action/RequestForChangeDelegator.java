@@ -380,7 +380,7 @@ public class RequestForChangeDelegator {
         // prepare AppEditSelectDto and some service info
         appSubmissionService.setPreviewDta(appSubmissionDto,bpc);
         // init
-        DealSessionUtil.init(appSubmissionDto);
+        DealSessionUtil.initView(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO,appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request,RfcConst.FIRSTVIEW,AppConsts.TRUE);

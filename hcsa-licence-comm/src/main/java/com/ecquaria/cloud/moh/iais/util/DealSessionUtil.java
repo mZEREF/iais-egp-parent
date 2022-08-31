@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.util;
 import com.ecquaria.cloud.job.executor.util.SpringHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
@@ -16,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSuplmFormDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
@@ -407,13 +409,13 @@ public class DealSessionUtil {
     }
 
     // view
-    public static AppSubmissionDto init(AppSubmissionDto appSubmissionDto) {
+    public static AppSubmissionDto initView(AppSubmissionDto appSubmissionDto) {
         return init(appSubmissionDto, getServiceConfigsFormApp(appSubmissionDto), false, null);
     }
 
     // edit
     public static AppSubmissionDto init(AppSubmissionDto appSubmissionDto, List<HcsaServiceDto> hcsaServiceDtos,
-            boolean init, HttpServletRequest request) {
+            boolean reset, HttpServletRequest request) {
         if (appSubmissionDto == null) {
             return appSubmissionDto;
         }
@@ -442,7 +444,7 @@ public class DealSessionUtil {
                 currSvcInfoDto.setLicenceId(appSubmissionDto.getLicenceId());
             }
             init(currSvcInfoDto, appGrpPremisesDtoList, appSubmissionDto.getAppPremSpecialisedDtoList(), hcsaServiceDtos,
-                    init, request);
+                    reset, request);
         }
         appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
         if (appSubmissionDto.getCoMap() == null) {
@@ -453,7 +455,7 @@ public class DealSessionUtil {
 
     public static AppSvcRelatedInfoDto init(AppSvcRelatedInfoDto currSvcInfoDto, List<AppGrpPremisesDto> appGrpPremisesDtos,
             List<AppPremSpecialisedDto> appPremSpecialisedDtoList, List<HcsaServiceDto> hcsaServiceDtos,
-            boolean init, HttpServletRequest request) {
+            boolean reset, HttpServletRequest request) {
         if (currSvcInfoDto == null) {
             return currSvcInfoDto;
         }
@@ -487,21 +489,36 @@ public class DealSessionUtil {
             currSvcInfoDto.setServiceName(hcsaServiceDto.getSvcName());
         }
         //set service step
-        List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId =
+        List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemes =
                 getConfigCommService().getHcsaServiceStepSchemesByServiceId(svcId);
-        currSvcInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
+        currSvcInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemes);
         List<AppSvcPrincipalOfficersDto> dpoList = currSvcInfoDto.getAppSvcNomineeDtoList();
         if (IaisCommonUtils.isEmpty(dpoList)) {
             currSvcInfoDto.setDeputyPoFlag(AppConsts.NO);
         } else {
             currSvcInfoDto.setDeputyPoFlag(AppConsts.YES);
         }
+        for (HcsaServiceStepSchemeDto hcsaServiceStepScheme : hcsaServiceStepSchemes) {
+            String stepCode = hcsaServiceStepScheme.getStepCode();
+            if (HcsaConsts.STEP_SUPPLEMENTARY_FORM.equals(stepCode)) {
+                ApplicationHelper.initSupplementoryForm(currSvcInfoDto, reset);
+                if (!reset) {
+                    AppSvcSuplmFormDto appSvcSuplmFormDto = currSvcInfoDto.getAppSvcSuplmFormDto();
+                    if (appSvcSuplmFormDto != null) {
+                        appSvcSuplmFormDto.checkDisplay();
+                    }
+                }
+            } else if (HcsaConsts.STEP_OTHER_INFORMATION.equals(stepCode)) {
+                ApplicationHelper.initOtherInfoForm(currSvcInfoDto, reset);
+                if (!reset) {
+                    AppSvcSuplmFormDto appSvcSuplmFormDto = currSvcInfoDto.getAppSvcOtherInfoDto().getAppSvcSuplmFormDto();
+                    if (appSvcSuplmFormDto != null) {
+                        appSvcSuplmFormDto.checkDisplay();
+                    }
+                }
+            }
+        }
 
-        ApplicationHelper.initSupplementoryForm(currSvcInfoDto, init);
-        ApplicationHelper.initOtherInfoForm(currSvcInfoDto, init);
-
-//        List<HcsaSvcDocConfigDto> svcDocConfigDtos = getConfigCommService().getAllHcsaSvcDocs(svcId);
-//        addPremAlignForSvcDoc(svcDocConfigDtos, currSvcInfoDto.getAppSvcDocDtoLit(), appGrpPremisesDtos);
         List<DocumentShowDto> documentShowDtos = ApplicationHelper.initShowDocumentList(currSvcInfoDto, appPremSpecialisedDtoList);
         if (documentShowDtos != null && request != null) {
             HttpSession session = request.getSession();

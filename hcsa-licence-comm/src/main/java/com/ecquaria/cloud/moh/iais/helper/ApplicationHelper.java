@@ -2264,9 +2264,9 @@ public final class ApplicationHelper {
         return initSupplementoryForm(currSvcInfoDto, false);
     }
 
-    public static boolean initSupplementoryForm(AppSvcRelatedInfoDto currSvcInfoDto, boolean init) {
+    public static boolean initSupplementoryForm(AppSvcRelatedInfoDto currSvcInfoDto, boolean reset) {
         AppSvcSuplmFormDto appSvcSuplmFormDto = currSvcInfoDto.getAppSvcSuplmFormDto();
-        appSvcSuplmFormDto = initAppSvcSuplmFormDto(currSvcInfoDto.getServiceCode(), init, HcsaConsts.ITME_TYPE_SUPLFORM,
+        appSvcSuplmFormDto = initAppSvcSuplmFormDto(currSvcInfoDto.getServiceCode(), reset, HcsaConsts.ITME_TYPE_SUPLFORM,
                 appSvcSuplmFormDto);
         if (appSvcSuplmFormDto != null) {
             appSvcSuplmFormDto.setSvcConfigDto(currSvcInfoDto);
@@ -2289,12 +2289,12 @@ public final class ApplicationHelper {
         return true;
     }
 
-    private static AppSvcSuplmFormDto initAppSvcSuplmFormDto(String code, boolean init, String type,
+    private static AppSvcSuplmFormDto initAppSvcSuplmFormDto(String code, boolean reset, String type,
             AppSvcSuplmFormDto appSvcSuplmFormDto) {
         if (appSvcSuplmFormDto == null) {
             appSvcSuplmFormDto = new AppSvcSuplmFormDto();
         }
-        if (!init && appSvcSuplmFormDto.isInit()) {
+        if (!reset && appSvcSuplmFormDto.isInit()) {
             return appSvcSuplmFormDto;
         }
         ConfigCommService configCommService = getConfigCommService();

@@ -29,11 +29,12 @@
             <iais:field width="5" cssClass="col-md-5 item-label" value="${itemConfigDto.displayInfo}"/>
             <iais:value width="7" cssClass="col-md-7">
                 <c:forEach var="idx" begin="0" end="${item.codes.size() - 1}">
-                    <c:if test="${item.codes[idx] == item.inputValue}"><c:out value="${item.labels[idx]}"/></c:if>
+                    <div class="form-check active">
+                        <div class="form-check-label" aria-label="premise-1-cytology"><span class="check-circle"></span>
+                            <c:if test="${item.codes[idx] == item.inputValue}"><c:out value="${item.labels[idx]}"/></c:if>
+                        </div>
+                    </div>
                 </c:forEach>
-            </iais:value>
-            <iais:value cssClass="col-md-offset-5 col-md-7 col-xs-12">
-                <span class="error-msg " name="iaisErrorMsg" id="error_${itemConfigDto.id}${item.seqNum}"></span>
             </iais:value>
         </c:when>
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_CHECKBOX}">

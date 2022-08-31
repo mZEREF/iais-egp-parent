@@ -907,7 +907,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 List<AppGrpPremisesDto> newPremisesDtos = IaisCommonUtils.genNewArrayList();
                 filtrationAppGrpPremisesDtos(applicationDto.getApplicationNo(), appSubmissionDto, newPremisesDtos);
                 appSubmissionDto.setAppGrpPremisesDtoList(newPremisesDtos);
-                DealSessionUtil.init(appSubmissionDto);
+                DealSessionUtil.initView(appSubmissionDto);
                 String svcId = applicationDto.getServiceId();
                 if (!StringUtil.isEmpty(svcId) && !StringUtil.isEmpty(applicationDto.getApplicationNo())) {
                     List<AppSvcRelatedInfoDto> newSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();

@@ -768,10 +768,6 @@ public class ServiceInfoDelegator {
             AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
             AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, svcId, appNo);
             List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
-//            ApplicationHelper.initShowDocumentList(appSvcRelatedInfoDto, appPremSpecialisedDtoList);
-//            List<HcsaServiceDto> serviceConfigs = ApplicationHelper.getServiceConfigsFormApp(appSubmissionDto);
-//            List<AppPremSpecialisedDto> appPremSpecialisedDtoList = ApplicationHelper.initAppPremSpecialisedDtoList(appSubmissionDto,
-//                    serviceConfigs);
             ApplicationHelper.initShowDocumentList(appSvcRelatedInfoDto, appPremSpecialisedDtoList, false);
             ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
             ParamUtil.setSessionAttr(bpc.request, "iframeId", iframeId);

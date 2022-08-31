@@ -14,7 +14,9 @@
         <c:if test="${batchSize > 0}">
             <c:set var="groupId" value="${appSvcSuplmGroupDto.groupId}"/>
             <c:forEach var="item" items="${appSvcSuplmGroupDto.appSvcSuplmItemDtoList}" varStatus="status">
-                <%@ include file="viewItem.jsp" %>
+                <c:if test="${item.display}">
+                    <%@ include file="viewItem.jsp" %>
+                </c:if>
             </c:forEach>
         </c:if>
     </c:forEach>
