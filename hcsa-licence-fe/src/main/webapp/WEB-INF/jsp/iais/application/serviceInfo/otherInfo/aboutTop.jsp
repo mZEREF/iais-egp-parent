@@ -71,12 +71,12 @@
     </div>
     <div class="de <c:if test="${'0' == provideTop}">hidden</c:if>">
         <iais:row>
-            <iais:field width="12" cssClass="col-md-12" mandatory="false" value="Declaration"/>
+            <iais:field width="12" cssClass="col-md-12" mandatory="true" value="Declaration"/>
         </iais:row>
         <iais:row>
             <div class="form-check">
                 <input class="form-check-input" name="declaration" value="1"
-                       type="checkbox" aria-invalid="false" checked="checked" />
+                       type="checkbox" aria-invalid="false" <c:if test="${'1' == currSvcInfoDto.appSvcOtherInfoDto.declaration}">checked="checked"</c:if> />
                 <label class="form-check-label">
                     <span class="check-square"></span><c:out value="I declare the information in my application to be true, to the best of my knowledge.
                         I also understand that approval of the licence is dependent on satisfactory compliance with the relevant requirements under

@@ -155,12 +155,12 @@
             </iais:value>
             <input type="hidden" class="hasConsuAttendCourseVal" name="hasConsuAttendCourseVal" value="${appSvcOtherInfoTop.hasConsuAttendCourse}"/>
             <iais:value width="3" cssClass="form-check col-md-3">
-                <input class="form-check-input hasConsuAttendCourse" <c:if test="${true == appSvcOtherInfoTop.hasConsuAttendCourse}">checked="checked"</c:if>  type="radio" name="hasConsuAttendCourse" value = "1" aria-invalid="false">
+                <input class="form-check-input hasConsuAttendCourse" <c:if test="${'1' == appSvcOtherInfoTop.hasConsuAttendCourse}">checked="checked"</c:if>  type="radio" name="hasConsuAttendCourse" value = "1" aria-invalid="false">
                 <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
             </iais:value>
 
             <iais:value width="3" cssClass="form-check col-md-3">
-                <input class="form-check-input hasConsuAttendCourse" <c:if test="${false == appSvcOtherInfoTop.hasConsuAttendCourse}">checked="checked"</c:if>  type="radio" name="hasConsuAttendCourse" value = "0" aria-invalid="false">
+                <input class="form-check-input hasConsuAttendCourse" <c:if test="${'0' == appSvcOtherInfoTop.hasConsuAttendCourse}">checked="checked"</c:if>  type="radio" name="hasConsuAttendCourse" value = "0" aria-invalid="false">
                 <label class="form-check-label" ><span class="check-circle"></span>No</label>
             </iais:value>
         </iais:row>
@@ -173,12 +173,12 @@
             </iais:value>
             <input type="hidden" class="isProvideHpbVal" name="isProvideHpbVal" value="${appSvcOtherInfoTop.isProvideHpb}"/>
             <iais:value width="3" cssClass="form-check col-md-3">
-                <input class="form-check-input isProvideHpb" <c:if test="${true == appSvcOtherInfoTop.isProvideHpb}">checked="checked"</c:if>  type="radio" name="isProvideHpb" value = "1" aria-invalid="false">
+                <input class="form-check-input isProvideHpb" <c:if test="${'1' == appSvcOtherInfoTop.isProvideHpb}">checked="checked"</c:if>  type="radio" name="isProvideHpb" value = "1" aria-invalid="false">
                 <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
             </iais:value>
 
             <iais:value width="3" cssClass="form-check col-md-3">
-                <input class="form-check-input isProvideHpb" <c:if test="${false == appSvcOtherInfoTop.isProvideHpb}">checked="checked"</c:if>  type="radio" name="isProvideHpb" value = "0" aria-invalid="false">
+                <input class="form-check-input isProvideHpb" <c:if test="${'0' == appSvcOtherInfoTop.isProvideHpb}">checked="checked"</c:if>  type="radio" name="isProvideHpb" value = "0" aria-invalid="false">
                 <label class="form-check-label" ><span class="check-circle"></span>No</label>
             </iais:value>
         </iais:row>
