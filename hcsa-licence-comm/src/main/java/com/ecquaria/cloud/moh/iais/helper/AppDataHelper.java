@@ -782,6 +782,7 @@ public final class AppDataHelper {
         String provideTop = ParamUtil.getString(request,"provideTop");
         String dsDeclaration = ParamUtil.getString(request,"dsDeclaration");
         String ascsDeclaration = ParamUtil.getString(request,"ascsDeclaration");
+        String declaration = ParamUtil.getString(request,"declaration");
         AppSvcOtherInfoMedDto appSvcOtherInfoMedDto = new AppSvcOtherInfoMedDto();
         ControllerHelper.get(request,appSvcOtherInfoMedDto);
         String systemOption = ParamUtil.getString(request,"systemOption");
@@ -798,6 +799,7 @@ public final class AppDataHelper {
         appSvcOtherInfoDto.setProvideTop(provideTop);
         appSvcOtherInfoDto.setDsDeclaration(dsDeclaration);
         appSvcOtherInfoDto.setAscsDeclaration(ascsDeclaration);
+        appSvcOtherInfoDto.setDeclaration(declaration);
         appSvcOtherInfoDto.setAppSvcOtherInfoTopPersonDtoList(getAppSvcOtherInfoTopPersonDtoPractitioners(request,appType,isRfi,appSvcRelatedInfoDto));
         appSvcOtherInfoDto.setAppSvcOtherInfoTopPersonDtoList1(getAppSvcOtherInfoTopPersonDtoAnaesthetists(request,appType,isRfi,appSvcRelatedInfoDto));
         appSvcOtherInfoDto.setAppSvcOtherInfoTopPersonDtoList2(getAppSvcOtherInfoTopPersonDtoNurses(request,appType,isRfi,appSvcRelatedInfoDto));
