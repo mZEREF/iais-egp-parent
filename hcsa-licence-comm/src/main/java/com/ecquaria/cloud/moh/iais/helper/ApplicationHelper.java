@@ -46,7 +46,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremisesTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.SuppleFormItemConfigDto;
@@ -2296,7 +2295,7 @@ public final class ApplicationHelper {
             appSvcSuplmFormDto = new AppSvcSuplmFormDto();
         }
         if (!init && appSvcSuplmFormDto.isInit()) {
-            return null;
+            return appSvcSuplmFormDto;
         }
         ConfigCommService configCommService = getConfigCommService();
         List<SuppleFormItemConfigDto> configDtos = configCommService.getSuppleFormItemConfigs(code, type);
