@@ -13,15 +13,15 @@
     </div>
 </iais:row>
 <iais:row cssClass="row control control-caption-horizontal">
-    <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Outcome of procedures are recorded "/>
+    <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Outcome of procedures are recorded"/>
     <input type="hidden" class="isOutcomeProcRecordVal" name="isOutcomeProcRecordVal" value="${appSvcOtherInfoTop.isOutcomeProcRecord}"/>
     <iais:value width="3" cssClass="form-check col-md-3">
-        <input class="form-check-input isOutcomeProcRecord" <c:if test="${true == appSvcOtherInfoTop.isOutcomeProcRecord}">checked="checked"</c:if>  type="radio" name="isOutcomeProcRecord" value = "1" aria-invalid="false">
+        <input class="form-check-input isOutcomeProcRecord" <c:if test="${'1' == appSvcOtherInfoTop.isOutcomeProcRecord}">checked="checked"</c:if>  type="radio" name="isOutcomeProcRecord" value = "1" aria-invalid="false">
         <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
     </iais:value>
 
     <iais:value width="3" cssClass="form-check col-md-3">
-        <input class="form-check-input isOutcomeProcRecord" <c:if test="${false == appSvcOtherInfoTop.isOutcomeProcRecord}">checked="checked"</c:if>  type="radio" name="isOutcomeProcRecord" value = "0" aria-invalid="false">
+        <input class="form-check-input isOutcomeProcRecord" <c:if test="${'0' == appSvcOtherInfoTop.isOutcomeProcRecord}">checked="checked"</c:if>  type="radio" name="isOutcomeProcRecord" value = "0" aria-invalid="false">
         <label class="form-check-label" ><span class="check-circle"></span>No</label>
     </iais:value>
 </iais:row>
