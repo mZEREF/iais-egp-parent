@@ -1034,7 +1034,7 @@ public class ServiceInfoDelegator {
                 reSetChangesForApp(appSubmissionDto);
             }
             int maxPsnTypeNum = getMaxPersonTypeNumber(appSvcDocDtos, oldDocs);
-            AppDataHelper.genSvcDocuments(documentShowDtoList, appGrpId, appNo, maxPsnTypeNum, saveFileMap, request);
+            AppDataHelper.genSvcDocuments(documentShowDtoList, maxPsnTypeNum, currSvcInfoDto.getServiceId(), saveFileMap, request);
         }
         AppValidatorHelper.doValidateSvcDocuments(documentShowDtoList, errorMap);
         if (isGetDataFromPage) {

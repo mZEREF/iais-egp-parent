@@ -252,15 +252,6 @@ public class AppCommServiceImpl implements AppCommService {
     }
 
     @Override
-    public List<AppSvcDocDto> getMaxSeqNumSvcDocList(String appGrpId) {
-        log.info(StringUtil.changeForLog("App Grp Id is " + appGrpId));
-        if (StringUtil.isEmpty(appGrpId)) {
-            return IaisCommonUtils.genNewArrayList();
-        }
-        return appCommClient.getMaxSeqNumSvcDocList(appGrpId).getEntity();
-    }
-
-    @Override
     public List<String> getHciFromPendAppAndLic(String licenseeId, List<HcsaServiceDto> hcsaServiceDtos,
             List<PremisesDto> excludePremisesList, List<AppGrpPremisesDto> excludeAppPremList) {
         List<String> result = IaisCommonUtils.genNewArrayList();
@@ -680,23 +671,6 @@ public class AppCommServiceImpl implements AppCommService {
             appSubmissionDtos.add(appSubmissionDto);
         }
         return errorMap;
-    }
-
-    @Override
-    public AppSvcDocDto getMaxVersionSvcComDoc(String appGrpId, String configDocId,String seqNum) {
-        return appCommClient.getMaxVersionSvcComDoc(appGrpId,configDocId,seqNum).getEntity();
-    }
-
-    @Override
-    public AppSvcDocDto getMaxVersionSvcSpecDoc(String svcDocId, String appGrpId, String appNo, int seqNum) {
-        if (!StringUtil.isEmpty(appGrpId) && !StringUtil.isEmpty(svcDocId) && !StringUtil.isEmpty(appNo)) {
-            AppSvcDocDto appSvcDocDto = new AppSvcDocDto();
-            appSvcDocDto.setAppGrpId(appGrpId);
-            appSvcDocDto.setSvcDocId(svcDocId);
-            appSvcDocDto.setSeqNum(seqNum);
-            return getMaxVersionSvcSpecDoc(appSvcDocDto, appNo);
-        }
-        return null;
     }
 
     @Override

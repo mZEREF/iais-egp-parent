@@ -47,8 +47,6 @@ public interface AppCommService {
 
     List<AppGrpPremisesDto> getActivePendingPremiseList(String licenseeId);
 
-    List<AppSvcDocDto> getMaxSeqNumSvcDocList(String appGrpId);
-
     List<String> getHciFromPendAppAndLic(String licenseeId, List<HcsaServiceDto> hcsaServiceDtos,
             List<PremisesDto> excludePremisesList, List<AppGrpPremisesDto> excludeAppPremList);
 
@@ -70,10 +68,6 @@ public interface AppCommService {
 
     Map<String, String> checkAffectedAppSubmissions(AppSubmissionDto appSubmissionDto, LicenceDto licence, Double amount,
             String draftNo, String appGroupNo, AppEditSelectDto appEditSelectDto, List<AppSubmissionDto> appSubmissionDtos);
-
-    AppSvcDocDto getMaxVersionSvcComDoc(String appGrpId, String configDocId, String valueOf);
-
-    AppSvcDocDto getMaxVersionSvcSpecDoc(String svcDocId, String appGrpId, String appNo, int seqNum);
 
     AppSvcDocDto getMaxVersionSvcSpecDoc(AppSvcDocDto appSvcDocDto,String appNo);
 
