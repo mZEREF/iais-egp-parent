@@ -42,6 +42,7 @@ import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
+import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import com.ecquaria.cloud.moh.iais.validation.ValidateCharges;
 import com.ecquaria.cloud.moh.iais.validation.ValidateVehicle;
 import lombok.extern.slf4j.Slf4j;
@@ -766,9 +767,8 @@ public class ServiceInfoDelegator {
         if (!StringUtil.isEmpty(svcId)) {
             log.info(StringUtil.changeForLog("get current svc info...."));
             AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
+            DealSessionUtil.initView(appSubmissionDto);
             AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, svcId, appNo);
-            List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
-            ApplicationHelper.initShowDocumentList(appSvcRelatedInfoDto, appPremSpecialisedDtoList, false);
             ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
             ParamUtil.setSessionAttr(bpc.request, "iframeId", iframeId);
         }

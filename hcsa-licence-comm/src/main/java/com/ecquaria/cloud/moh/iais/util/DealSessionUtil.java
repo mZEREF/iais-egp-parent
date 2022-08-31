@@ -516,35 +516,40 @@ public class DealSessionUtil {
                         appSvcSuplmFormDto.checkDisplay();
                     }
                 }
+            } else if (HcsaConsts.STEP_DOCUMENTS.equals(stepCode)) {
+                List<DocumentShowDto> documentShowDtos = ApplicationHelper.initShowDocumentList(currSvcInfoDto, appPremSpecialisedDtoList);
+                initDocumentSession(documentShowDtos, request);
             }
         }
+        return currSvcInfoDto;
+    }
 
-        List<DocumentShowDto> documentShowDtos = ApplicationHelper.initShowDocumentList(currSvcInfoDto, appPremSpecialisedDtoList);
-        if (documentShowDtos != null && request != null) {
-            HttpSession session = request.getSession();
-            for (DocumentShowDto documentShowDto : documentShowDtos) {
-                for (DocSectionDto docSectionDto : documentShowDto.getDocSectionList()) {
-                    String svcCode = docSectionDto.getSvcCode();
-                    String premisesVal = documentShowDto.getPremisesVal();
-                    List<DocSecDetailDto> docSecDetailList = docSectionDto.getDocSecDetailList();
-                    int secSize = docSecDetailList.size();
-                    for (int j = 0; j < secSize; j++) {
-                        String docKey = ApplicationHelper.getSvcDocKey(j, svcCode, premisesVal);
-                        DocSecDetailDto docSecDetailDto = docSecDetailList.get(j);
-                        if (docSecDetailDto.isExistDoc()) {
-                            Map<String, Map<String, File>> fileMap = IaisCommonUtils.genNewHashMap();
-                            for (AppSvcDocDto appSvcDocDto : docSecDetailDto.getAppSvcDocDtoList()) {
-                                fileMap.put(docKey + appSvcDocDto.getSeqNum(), null);
-                            }
-                            session.setAttribute(IaisEGPConstant.SEESION_FILES_MAP_AJAX + docKey, fileMap);
-                        } else {
-                            session.removeAttribute(IaisEGPConstant.SEESION_FILES_MAP_AJAX + docKey);
+    private static void initDocumentSession(List<DocumentShowDto> documentShowDtos, HttpServletRequest request) {
+        if (documentShowDtos == null || request == null) {
+            return;
+        }
+        HttpSession session = request.getSession();
+        for (DocumentShowDto documentShowDto : documentShowDtos) {
+            for (DocSectionDto docSectionDto : documentShowDto.getDocSectionList()) {
+                String svcCode = docSectionDto.getSvcCode();
+                String premisesVal = documentShowDto.getPremisesVal();
+                List<DocSecDetailDto> docSecDetailList = docSectionDto.getDocSecDetailList();
+                int secSize = docSecDetailList.size();
+                for (int j = 0; j < secSize; j++) {
+                    String docKey = ApplicationHelper.getSvcDocKey(j, svcCode, premisesVal);
+                    DocSecDetailDto docSecDetailDto = docSecDetailList.get(j);
+                    if (docSecDetailDto.isExistDoc()) {
+                        Map<String, Map<String, File>> fileMap = IaisCommonUtils.genNewHashMap();
+                        for (AppSvcDocDto appSvcDocDto : docSecDetailDto.getAppSvcDocDtoList()) {
+                            fileMap.put(docKey + appSvcDocDto.getSeqNum(), null);
                         }
+                        session.setAttribute(IaisEGPConstant.SEESION_FILES_MAP_AJAX + docKey, fileMap);
+                    } else {
+                        session.removeAttribute(IaisEGPConstant.SEESION_FILES_MAP_AJAX + docKey);
                     }
                 }
             }
         }
-        return currSvcInfoDto;
     }
 
     //for single premises
