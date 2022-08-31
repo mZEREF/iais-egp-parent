@@ -2,8 +2,8 @@
 <c:set var="patient" value="${patientInfoDto.patient}" />
 <c:set var="previous" value="${patientInfoDto.previous}" />
 <c:set var="husband" value="${patientInfoDto.husband}" />
-
-<div class="form-check-gp col-xs-12 col-md-12">
+<input type="hidden" name="registeredPatient">
+<iais:row cssClass="form-check-gp">
     <p class="form-check-title">Does the patient have a NRIC/FIN number?</p>
     <div class="form-check form-check-inline">
         <input class="form-check-input triggerObj" id="noIdNumber" type="radio" name="hasIdNumber" value="N" <c:if test="${patient.hasIdNumber eq 'N'}">checked</c:if>/>
@@ -18,9 +18,9 @@
         </label>
     </div>
     <span class="error-msg" name="iaisErrorMsg" id="error_hasIdNumber"></span>
-</div>
+</iais:row>
 
-<div class="col-xs-12 col-md-12" style="display: none" id="indicateIdentitySection">
+<iais:row cssClass="form-check-gp" style="display: none" id="indicateIdentitySection">
     <div id="passportIdentify" style="display: none">
         <p style="font-weight: 600;font-size: 2rem">Please indicate the patient's passport number</p>
     </div>
@@ -37,20 +37,18 @@
         </div>
     </div>
     <span class="error-msg" name="iaisErrorMsg" id="error_idNumber"></span>
-</div>
+</iais:row>
 
-<div id="amendPatientSection" style="display: none">
-    <div class="col-xs-12 col-md-12" style="border-bottom: 1px #333333 solid">
+<iais:row cssClass="form-check-gp"  id="amendPatientSection" style="display: none">
+    <div style="border-bottom: 1px #333333 solid">
         <span style="font-size:14px">This patient was previously registered in your AR Centre. Please confirm the patient's details below, or click "Amend" to update the details.</span>
     </div>
     <div id="registeredPTDetail" class="col-xs-12 col-md-12" style="color: #7F7F7F;font-size: 13px;font-weight: 400;padding: 10px 0"></div>
     <div id="registeredTRTDetail" class="col-xs-12 col-md-12" style="color: #7F7F7F;font-size: 13px;font-weight: 400;padding: 10px 0"></div>
     <div id="registeredHBDetail" class="col-xs-12 col-md-12" style="color: #7F7F7F;font-size: 13px;font-weight: 400;padding: 10px 0"></div>
     <a class="btn btn-primary" href="javascript:void(0);" id="pt-amend">Amend</a>
-    <c:if test="${needShowCycle}">
-        <%@include file="cycleStage.jsp"%>
-    </c:if>
-</div>
+    <%@include file="cycleStage.jsp"%>
+</iais:row>
 
 <div id="registerPatientSection" style="display: none">
 

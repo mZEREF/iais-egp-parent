@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="0" minorVersion="0" name="MohARAndIUIDataSubmission" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohARAndIUIDataSubmission" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices />
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Start" x="230" y="-30">
@@ -100,6 +100,127 @@
     <JavaCode defClass="" executor="" methodName="prepareAck_OnStepProcess_0" name="prepareAck_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareStage" x="700" y="580">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareStage_OnStepProcess_0" name="prepareStage_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="ARCycle" processname="MohARCycleStage" project="" version="-1" x="950" y="230">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="IUICycle" processname="MohIUICycleStage" project="" version="-1" x="950" y="300">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="EFOCycle" processname="MohIUICycleStage" project="" version="-1" x="950" y="370">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="OocyteRetrieval" processname="MohOocyteRetrieval" project="" version="-1" x="930" y="440">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="Fertilisation" processname="MohFertilisation" project="" version="-1" x="950" y="510">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="EmbryoCreated" processname="MohEmbryoCreated" project="" version="-1" x="940" y="590">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="Thawing" processname="MohThawing" project="" version="-1" x="970" y="650">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="Preimplantation" processname="MohPreimplantation" project="" version="-1" x="950" y="720">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="EmbryoTransfer" processname="MohEmbryoTransfer" project="" version="-1" x="950" y="790">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="ARTreatmentSubsidies" processname="MohARTreatmentSubsidies" project="" version="-1" x="920" y="860">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="IUITreatmentSubsidies" processname="MohIUITreatmentSubsidies" project="" version="-1" x="920" y="920">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="OutcomeEmbryoTransferred" processname="MohOutcomeEmbryoTransferred" project="" version="-1" x="910" y="980">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="Outcome" processname="MohOutcome" project="" version="-1" x="970" y="1040">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="OutcomePregnancy" processname="MohOutcomePregnancy" project="" version="-1" x="940" y="1100">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="Freezing" processname="MohFreezing" project="" version="-1" x="970" y="1180">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="Donation" processname="MohDonation" project="" version="-1" x="970" y="1250">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="Disposal" processname="MohDisposal" project="" version="-1" x="970" y="1320">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="EndCycle" processname="MohEndCycle" project="" version="-1" x="970" y="1390">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="TransferInOut" processname="MohTransferInOut" project="" version="-1" x="950" y="1460">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
+  </InvokeStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AmendPatientPage" stageIndicator="" x="600" y="80">
@@ -204,6 +325,129 @@
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/Ack" style="oblique">
    <position>{(800,420)(910,200)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareStage" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(360,250)(720,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareStage" style="rectanular">
+   <position>{(720,600)(840,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/ARCycle" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(840,600)(970,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/IUICycle" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(840,600)(970,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/EFOCycle" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(840,600)(970,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/OocyteRetrieval" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(840,600)(950,460)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/Fertilisation" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(840,600)(970,530)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/EmbryoCreated" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(840,600)(960,610)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/Thawing" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(840,600)(990,670)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/Preimplantation" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(840,600)(970,740)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/EmbryoTransfer" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(840,600)(970,810)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/ARTreatmentSubsidies" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(840,600)(940,880)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/IUITreatmentSubsidies" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(840,600)(940,940)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/OutcomeEmbryoTransferred" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(840,600)(930,1000)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/Outcome" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(840,600)(990,1060)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/OutcomePregnancy" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(840,600)(960,1120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/Freezing" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(840,600)(990,1200)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/Donation" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(840,600)(990,1270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/Disposal" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(840,600)(990,1340)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/EndCycle" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(840,600)(990,1410)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/TransferInOut" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(840,600)(970,1480)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/ARCycle" style="oblique">
+   <position>{(970,250)(1130,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/IUICycle" style="oblique">
+   <position>{(970,320)(1130,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/EFOCycle" style="oblique">
+   <position>{(970,390)(1130,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/OocyteRetrieval" style="oblique">
+   <position>{(950,460)(1130,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/Fertilisation" style="oblique">
+   <position>{(970,530)(1130,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/EmbryoCreated" style="oblique">
+   <position>{(960,610)(1130,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/Thawing" style="oblique">
+   <position>{(990,670)(1130,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/Preimplantation" style="oblique">
+   <position>{(970,740)(1130,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/EmbryoTransfer" style="oblique">
+   <position>{(970,810)(1130,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/ARTreatmentSubsidies" style="oblique">
+   <position>{(940,880)(1130,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/IUITreatmentSubsidies" style="oblique">
+   <position>{(940,940)(1130,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/OutcomeEmbryoTransferred" style="oblique">
+   <position>{(930,1000)(1130,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/Outcome" style="oblique">
+   <position>{(990,1060)(1130,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/OutcomePregnancy" style="oblique">
+   <position>{(960,1120)(1130,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/Freezing" style="oblique">
+   <position>{(990,1200)(1130,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/Donation" style="oblique">
+   <position>{(990,1270)(1130,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/Disposal" style="oblique">
+   <position>{(990,1340)(1130,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/EndCycle" style="oblique">
+   <position>{(990,1410)(1130,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/TransferInOut" style="oblique">
+   <position>{(970,1480)(1130,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge2" style="rectanular">
+   <position>{(1130,600)(910,200)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions />
  <Switches>
@@ -216,11 +460,37 @@
    <SwitchCase component="/Steps/AutomaticStep/prepareConfirm" value="&quot;confirm&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/Submission" value="&quot;submission&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/PrepareAck" value="&quot;ack&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareStage" value="&quot;stage&quot;" />
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type_ct" name="Switch2" x="820" y="580">
+   <Description />
+   <SwitchCase component="/Steps/InvokeStep/ARCycle" value="&quot;AR_CL001&quot;" />
+   <SwitchCase component="/Steps/InvokeStep/IUICycle" value="&quot;AR_CL002&quot;" />
+   <SwitchCase component="/Steps/InvokeStep/EFOCycle" value="&quot;AR_CL003&quot;" />
+   <SwitchCase component="/Steps/InvokeStep/OocyteRetrieval" value="&quot;AR_STG001&quot;" />
+   <SwitchCase component="/Steps/InvokeStep/Fertilisation" value="&quot;AR_STG002&quot;" />
+   <SwitchCase component="/Steps/InvokeStep/EmbryoCreated" value="&quot;AR_STG003&quot;" />
+   <SwitchCase component="/Steps/InvokeStep/Thawing" value="&quot;AR_STG004&quot;" />
+   <SwitchCase component="/Steps/InvokeStep/Preimplantation" value="&quot;AR_STG005&quot;" />
+   <SwitchCase component="/Steps/InvokeStep/EmbryoTransfer" value="&quot;AR_STG006&quot;" />
+   <SwitchCase component="/Steps/InvokeStep/ARTreatmentSubsidies" value="&quot;AR_STG007&quot;" />
+   <SwitchCase component="/Steps/InvokeStep/IUITreatmentSubsidies" value="&quot;AR_STG008&quot;" />
+   <SwitchCase component="/Steps/InvokeStep/OutcomeEmbryoTransferred" value="&quot;AR_STG009&quot;" />
+   <SwitchCase component="/Steps/InvokeStep/Outcome" value="&quot;AR_STG010&quot;" />
+   <SwitchCase component="/Steps/InvokeStep/OutcomePregnancy" value="&quot;AR_STG011&quot;" />
+   <SwitchCase component="/Steps/InvokeStep/Freezing" value="&quot;AR_STG012&quot;" />
+   <SwitchCase component="/Steps/InvokeStep/Donation" value="&quot;AR_STG013&quot;" />
+   <SwitchCase component="/Steps/InvokeStep/Disposal" value="&quot;AR_STG014&quot;" />
+   <SwitchCase component="/Steps/InvokeStep/EndCycle" value="&quot;AR_STG015&quot;" />
+   <SwitchCase component="/Steps/InvokeStep/TransferInOut" value="&quot;AR_STG016&quot;" />
   </Switch>
  </Switches>
  <Branches />
  <Merges>
   <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="890" y="180">
+   <Description />
+  </Merge>
+  <Merge defClass="" executor="" icon="" name="Merge2" type="Or" x="1110" y="580">
    <Description />
   </Merge>
  </Merges>

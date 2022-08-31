@@ -1,4 +1,6 @@
 $(function (){
+    bindButton();
+
     $("input[name='submissionMethod']").change(function (){
         let checkedSelector = $("input[name='submissionMethod']:checked");
         let val = checkedSelector.val();
@@ -8,8 +10,6 @@ $(function (){
 
         if(val === 'DS_MTD001' && isChecked){
             $formEntrySection.show();
-            $donorSampleSection.hide();
-            reloadSection($donorSampleSection);
         }else if(val === 'DS_MTD002' && isChecked){
             $formEntrySection.hide();
             $donorSampleSection.show();
@@ -57,7 +57,6 @@ $(function (){
       if(checkedNum){
           let currentVal = checkedSelector.val();
           if(currentVal !== "" || currentVal !== null){
-              reloadSection($indicateIdentitySection);
               $indicateIdentitySection.show();
               if(currentVal === 'Y'){
                   $passportIdentify.hide();
@@ -77,316 +76,157 @@ $(function (){
           }
       }else{
           $indicateIdentitySection.hide();
+          reloadSection($indicateIdentitySection);
       }
     });
-
 
     $("#validatePAT").click(function (){
         let isPatHasId = $("input[name='hasIdNumber']:checked").val();
         let identityNo = $("#identityNo").val();
 
-        let identityType = (isPatHasId === 'Y'? 'NRICORFIN':'PASSPORT');
-        if(isEmpty(isPatHasId)){
+        let identityType = (isPatHasId === 'Y' ? 'NRICORFIN' : 'PASSPORT');
+        if (isEmpty(isPatHasId)) {
             identityType = "";
         }
 
-        validatePatient(identityType,identityNo);
+        validatePatient(identityType, identityNo);
     });
 
-    function validatePatient(isPatHasId, identityNo) {
-        showWaiting();
-        $.ajax({
-            url: $('#_contextPath').val() + '/ar/validate-patient-info',
-            dataType: 'json',
-            data: {
-                "isPatHasId":isPatHasId,
-                "identityNo":identityNo
-            },
-            type: 'POST',
-            success: function (data) {
-                let $registerPatientSection = $("#registerPatientSection");
-                let $amendPatientSection = $("#amendPatientSection");
-                if(data.needShowError){
-                    $registerPatientSection.hide();
-                    $amendPatientSection.hide();
-                }else{
-                    $registerPatientSection.hide();
-                    $amendPatientSection.hide();
-                    if(data.registeredPT){
-                        $registerPatientSection.hide();
-                        $amendPatientSection.show();
-
-
-                        let $registeredPTDetail = $("#registeredPTDetail");
-                        let $registeredTRTDetail = $("#registeredTRTDetail");
-                        let $registeredHBDetail = $("#registeredHBDetail");
-                        $registeredTRTDetail.html(data.preArPatient);
-                        $registeredHBDetail.html(data.arHusband);
-                        $registeredPTDetail.html(data.arPatient);
-
-                        $registeredPTDetail.show();
-                        if(isEmpty(data.preArPatient)){
-                            $registeredTRTDetail.css("display","none");
-                        }else{
-                            $registeredTRTDetail.css("display","block");
-                        }
-                        if(isEmpty(data.arHusband)){
-                            $registeredHBDetail.css("display","none");
-                        }else{
-                            $registeredHBDetail.css("display","block");
-                        }
-                    }else{
-                        $registerPatientSection.show();
-                        $amendPatientSection.hide();
-                    }
-                }
-
-                dismissWaiting();
-            },
-            error: function (data) {
-                console.log("err");
-                dismissWaiting();
-            }
-        });
-    }
-
-    $("input[name ='previousIdentificationWIFE']").change(function (){
-        let checkedSelector = $("input[name='previousIdentificationWIFE']:checked");
+    $("input[name ='previousIdentification']").change(function () {
+        let checkedSelector = $("input[name='previousIdentification']:checked");
         let val = checkedSelector.val();
         let isChecked = checkedSelector.length;
         let previousPatientSection = $("#previousPatientSection");
 
-        if("1" === val && isChecked){
+        if ("1" === val && isChecked) {
             previousPatientSection.show();
-        } else if("0" === val && isChecked){
+        } else if ("0" === val && isChecked) {
             previousPatientSection.hide();
-        } else{
+        } else {
             previousPatientSection.hide();
         }
     });
 
-    $("input[name ='hbHasIdNumber']").change(function (){
-        let checkedSelector = $("input[name='hbHasIdNumber']:checked");
+    $("input[name ='hasIdNumberHbd']").change(function () {
+        let checkedSelector = $("input[name='hasIdNumberHbd']:checked");
         let val = checkedSelector.val();
         let isChecked = checkedSelector.length;
         let hbIdNumberSection = $("#hbIdNumberSection");
         let hbNoNumberSection = $("#hbNoNumberSection");
         let hbIdTypeSection = $("#hbIdTypeSection");
 
-        if(val === 'Y' && isChecked){
+        if (val === 'Y' && isChecked) {
             hbIdNumberSection.show();
             hbNoNumberSection.hide();
             hbIdTypeSection.show();
-        } else if(val === 'N' && isChecked){
+        } else if (val === 'N' && isChecked) {
             hbIdNumberSection.hide();
             hbNoNumberSection.show();
             hbIdTypeSection.hide();
-        } else{
+        } else {
             hbIdNumberSection.hide();
             hbNoNumberSection.hide();
             hbIdTypeSection.hide();
-        }
-    });
-
-    // donated sample local or overseas
-    $("input[name = 'sampleRoot']").change(function (){
-        let checkedSelector = $("input[name='sampleRoot']:checked");
-        let val = checkedSelector.val();
-        let isChecked = checkedSelector.length;
-        let localSelector = $("#localDonateSection");
-        let sampleRootSelector = $("#sampleRootSection");
-        let overseasSelector = $("#overseasDonateSection");
-
-        if(val === 'local' && isChecked){
-            sampleRootSelector.show();
-            localSelector.show();
-            overseasSelector.hide();
-            reloadSection(overseasSelector);
-        }else if(val === 'overseas' && isChecked){
-            sampleRootSelector.show();
-            localSelector.hide();
-            overseasSelector.show();
-            reloadSection(localSelector);
-        }else{
-            sampleRootSelector.hide();
-            localSelector.hide();
-            overseasSelector.hide();
-        }
-    });
-
-
-    // sample type
-    //DONTY001,DONTY002 ==> female
-    //DONTY004 ==> male
-    //DONTY003 ==> both
-    $("#sampleType").change(function (){
-        let val = $("#sampleType").val();
-        let femaleSelector = $("#femaleSampleType");
-        let maleSelector = $("#maleSampleType");
-
-        switch (val){
-            case "DONTY001":
-            case "DONTY002":
-                femaleSelector.show();
-                maleSelector.hide();
-                reloadSection(maleSelector);
-                break;
-            case "DONTY003":
-                femaleSelector.show();
-                maleSelector.show();
-                break;
-            case "DONTY004":
-                femaleSelector.hide();
-                maleSelector.show();
-                reloadSection(femaleSelector);
-                break;
-            default:
-                femaleSelector.hide();
-                maleSelector.hide();
-                reloadSection(maleSelector);
-                reloadSection(femaleSelector);
-                break;
-        }
-    });
-
-
-    $("input[name = 'isKnowIdentityF']").change(function (){
-        let checkedSelector = $("input[name='isKnowIdentityF']:checked");
-        let val = checkedSelector.val();
-        let isChecked = checkedSelector.length;
-        let isKnowIdentityFSection = $("#isKnowIdentityFSection");
-
-
-        if(val === 'N' && isChecked){
-            isKnowIdentityFSection.hide();
-            reloadSection(isKnowIdentityFSection);
-        }else if(val === 'Y' && isChecked){
-            isKnowIdentityFSection.show();
-        }else{
-            isKnowIdentityFSection.hide();
-        }
-    });
-
-    $("input[name = 'hasIdNumberF']").change(function (){
-       let noIdSectionF = $("#noIdSectionF");
-       let hasIdSectionF = $("#hasIdSectionF");
-       let checkedSelector = $("input[name='hasIdNumberF']:checked");
-       let val = checkedSelector.val();
-       let isChecked = checkedSelector.length;
-
-       if(val === 'N' && isChecked){
-           noIdSectionF.show();
-           hasIdSectionF.hide();
-           reloadSection(hasIdSectionF);
-       }else if(val === 'Y' && isChecked){
-           noIdSectionF.hide();
-           hasIdSectionF.show();
-           reloadSection(noIdSectionF);
-       }else{
-           noIdSectionF.hide();
-           hasIdSectionF.hide();
-       }
-    });
-
-    $("input[name = 'isKnowIdentityM']").change(function (){
-        let checkedSelector = $("input[name='isKnowIdentityM']:checked");
-        let val = checkedSelector.val();
-        let isChecked = checkedSelector.length;
-        let isKnowIdentityMSection = $("#isKnowIdentityMSection");
-
-        if(val === 'N' && isChecked){
-            isKnowIdentityMSection.hide();
-            reloadSection(isKnowIdentityMSection);
-        }else if(val === 'Y' && isChecked){
-            isKnowIdentityMSection.show();
-        }else{
-            isKnowIdentityMSection.hide();
-        }
-    });
-
-    $("input[name = 'hasIdNumberM']").change(function (){
-        let noIdSectionM = $("#noIdSectionM");
-        let hasIdSectionM = $("#hasIdSectionM");
-        let checkedSelector = $("input[name='hasIdNumberM']:checked");
-        let val = checkedSelector.val();
-        let isChecked = checkedSelector.length;
-
-        if(val === 'N' && isChecked){
-            noIdSectionM.show();
-            hasIdSectionM.hide();
-            reloadSection(hasIdSectionM);
-        }else if(val === 'Y' && isChecked){
-            noIdSectionM.hide();
-            hasIdSectionM.show();
-            reloadSection(noIdSectionM);
-        }else{
-            noIdSectionM.hide();
-            hasIdSectionM.hide();
-        }
-    });
-
-    $("#donPurposeResearch").change(function (){
-        let isChecked = $("#donPurposeResearch").prop("checked");
-        let dpResearchSection = $("#dpResearchSection");
-       if(isChecked){
-           dpResearchSection.show();
-       }else{
-           dpResearchSection.hide();
-           reloadSection(dpResearchSection);
-       }
-    });
-
-    $("#donPurposeTraining").change(function (){
-        let isChecked = $("#donPurposeTraining").prop("checked");
-        let dpTrainingSection = $("#dpTrainingSection");
-        if(isChecked){
-            dpTrainingSection.show();
-        }else{
-            dpTrainingSection.hide();
-            reloadSection(dpTrainingSection);
-        }
-    });
-
-    $("#donPurposeTreatment").change(function (){
-        let isChecked = $("#donPurposeTreatment").prop("checked");
-        let dpTreatmentSection = $("#dpTreatmentSection");
-        if(isChecked){
-            dpTreatmentSection.show();
-        }else{
-            dpTreatmentSection.hide();
-            reloadSection(dpTreatmentSection);
         }
     });
 
     triggerAllEventOnce();
+
 })
 
-
 function reloadSection(selector){
-    $(selector).find("input[type = 'radio']").prop("checked",false).change();
-    $(selector).find("input[type = 'text']").val("");
+    console.warn("reloadSection %o", selector)
+    $(selector).find("input[type = 'radio']").prop("checked", false).change();
+    $(selector).find("input[type = 'text']").val("").change();
     $(selector).find("input[type = 'checkbox']").prop("checked",false).change();
     $(selector).find('select').val(null).change();
     $(selector).find('select').niceSelect("update");
 }
 
+function validatePatient(isPatHasId, identityNo) {
+    let centreSel = $('#centreSel option:selected').val();
+    clearErrorMsg();
+    if (!centreSel) {
+        $("#error_noArLicences").html("This is a mandatory field.")
+        return
+    }
+    $("#cycleRadioDiv").empty();
+    showWaiting();
+    $.ajax({
+        url: $('#_contextPath').val() + '/ar/validate-patient-info',
+        dataType: 'json',
+        data: {
+            "isPatHasId": isPatHasId,
+            "identityNo": identityNo,
+            "centreSel": centreSel
+        },
+        type: 'POST',
+        success: function (data) {
+            let $registerPatientSection = $("#registerPatientSection");
+            let $amendPatientSection = $("#amendPatientSection");
+            if (data.needShowError) {
+                $registerPatientSection.hide();
+                $amendPatientSection.hide();
+            } else {
+                $registerPatientSection.hide();
+                $amendPatientSection.hide();
+                $("#registeredPatient").val(data.registeredPT ? 'Y' : 'N');
+                if (data.registeredPT) {
+                    $registerPatientSection.hide();
+                    $amendPatientSection.show();
 
-function triggerAllEventOnce(){
+
+                    let $registeredPTDetail = $("#registeredPTDetail");
+                    let $registeredTRTDetail = $("#registeredTRTDetail");
+                    let $registeredHBDetail = $("#registeredHBDetail");
+                    $registeredTRTDetail.html(data.preArPatient);
+                    $registeredHBDetail.html(data.arHusband);
+                    $registeredPTDetail.html(data.arPatient);
+
+                    $registeredPTDetail.show();
+                    if (isEmpty(data.preArPatient)) {
+                        $registeredTRTDetail.css("display", "none");
+                    } else {
+                        $registeredTRTDetail.css("display", "block");
+                    }
+                    if (isEmpty(data.arHusband)) {
+                        $registeredHBDetail.css("display", "none");
+                    } else {
+                        $registeredHBDetail.css("display", "block");
+                    }
+                    $("#cycleRadioDiv").prepend(data.cycleRadio)
+                    const $cycleRadio = $("input[name='cycleRadio']");
+                    $cycleRadio.unbind("change")
+                    $cycleRadio.change(function () {
+                        const nextStageMap = JSON.parse(data.cycleNextStageMap)
+                        const nextStages = nextStageMap[this.id]
+                        const $nextStage = $("#nextStage");
+                        $nextStage.empty();
+                        $nextStage.append(nextStages)
+                        $nextStage.niceSelect("update")
+                    })
+                } else {
+                    $registerPatientSection.show();
+                    $amendPatientSection.hide();
+                }
+            }
+
+            dismissWaiting();
+        },
+        error: function (data) {
+            console.log("err");
+            dismissWaiting();
+        }
+    });
+}
+
+function triggerAllEventOnce() {
     $("input[name='submissionMethod']").trigger('change');
     $("input[name = 'submissionType']").trigger('change');
     $("input[name='hasIdNumber']").trigger('change');
-    $("input[name = 'sampleRoot']").trigger('change');
-    $("#sampleType").trigger('change');
-    $("input[name = 'isKnowIdentityF']").trigger('change');
-    $("input[name = 'hasIdNumberF']").trigger('change');
-    $("input[name = 'isKnowIdentityM']").trigger('change');
-    $("input[name = 'hasIdNumberM']").trigger('change');
-    $("#donPurposeResearch").trigger('change');
-    $("#donPurposeTraining").trigger('change');
-    $("#donPurposeTreatment").trigger('change');
     $("#validatePAT").trigger('click');
-    $("input[name ='previousIdentificationWIFE']").trigger('change');
-    $("input[name ='hbHasIdNumber']").trigger('change');
+    $("input[name ='previousIdentification']").trigger('change');
+    $("input[name ='hasIdNumberHbd']").trigger('change');
 }
 
 function reloadPATValidation(){
@@ -405,3 +245,53 @@ function reloadPATValidation(){
     $("#registerPatientSection").hide();
 }
 
+function submit(action, value, additional) {
+    $("[name='crud_type']").val(action);
+    $("[name='crud_action_value']").val(value);
+    $("[name='crud_action_additional']").val(additional);
+    var mainForm = document.getElementById('mainForm');
+    showWaiting();
+    mainForm.submit();
+}
+
+function bindButton() {
+    let currPage = $('input[name="currentStage"]').val();
+    console.log('----- ' + currPage + ' -----');
+    if (isEmpty(currPage)) {
+        currPage = "";
+    }
+    if ($('#backBtn').length > 0) {
+        $('#backBtn').click(function () {
+            showWaiting();
+            if ('confirm' === currPage) {
+                submit('page');
+            } else if ('ack' === currPage) {
+                submit('back');
+            } else {
+                submit('return');
+            }
+        });
+    }
+
+    if ($('#saveDraftBtn').length > 0) {
+        if ('ack' === currPage) {
+            $('#saveDraftBtn').remove();
+        } else {
+            $('#saveDraftBtn').click(function () {
+                showWaiting();
+                submit('draft');
+            });
+        }
+    }
+
+    if ($('#nextBtn').length > 0) {
+        $('#nextBtn').click(function () {
+            showWaiting();
+            if ('confirm' === currPage) {
+                submit('submission');
+            } else {
+                submit('confirm');
+            }
+        });
+    }
+}

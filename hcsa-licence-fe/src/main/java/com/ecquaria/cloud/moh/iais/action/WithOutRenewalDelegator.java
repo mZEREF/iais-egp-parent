@@ -27,7 +27,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -537,7 +536,7 @@ public class WithOutRenewalDelegator {
         List<AppSubmissionDto> newAppSubmissionDtos = renewDto.getAppSubmissionDtos();
         if(!IaisCommonUtils.isEmpty(newAppSubmissionDtos)){
             for(AppSubmissionDto appSubmissionDto:newAppSubmissionDtos){
-                DealSessionUtil.init(appSubmissionDto);
+                DealSessionUtil.initView(appSubmissionDto);
             }
            if(newAppSubmissionDtos.size()==1){
                AppDataHelper.initDeclarationFiles(newAppSubmissionDtos.get(0).getAppDeclarationDocDtos(),

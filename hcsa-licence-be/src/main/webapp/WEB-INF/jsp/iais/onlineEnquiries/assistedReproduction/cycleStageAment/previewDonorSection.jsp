@@ -66,7 +66,7 @@
                             <iais:field width="5" value="Donor Sample Code / ID" />
                             <iais:value width="7" cssClass="col-md-3" display="true">
                                 <c:choose>
-                                    <c:when test="${donorDto.idType == 'AR_IT_005'}">Code</c:when>
+                                    <c:when test="${donorDto.idType == 'DTV_IT004'}">Code</c:when>
                                     <c:otherwise><iais:code code="${donorDto.idType}"/></c:otherwise>
                                 </c:choose>
                             </iais:value>

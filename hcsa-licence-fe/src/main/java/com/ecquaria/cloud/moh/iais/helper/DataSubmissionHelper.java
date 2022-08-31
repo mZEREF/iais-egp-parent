@@ -287,15 +287,23 @@ public final class DataSubmissionHelper {
         String lastCycle = selectionDto.getLastCycle();
         String lastStage = selectionDto.getLastStage();
         String lastStatus = selectionDto.getLastStatus();
-        String additionalStage = selectionDto.getAdditionalStage();
         boolean undergoingCycle = selectionDto.isUndergoingCycle();
-
+        boolean frozenOocyte = selectionDto.isFrozenOocyte();
+        boolean frozenEmbryo = selectionDto.isFrozenEmbryo();
+        boolean freshNatural = selectionDto.isFreshNatural();
+        boolean freshStimulated = selectionDto.isFreshStimulated();
         // 3.3.3.2 (4) If the predecessor stage is AR Treatment Co-funding or Transfer In & Out,
         // available stages for selection will be based on the stage prior to it
         // disposal, donation
         if (DataSubmissionConsts.DS_CYCLE_AR.equals(lastCycle) && DsHelper.isSpecialStage(lastStage)) {
-            lastStage = additionalStage;
+            lastStage = selectionDto.getAdditionalStage();
         }
+        List<String> result = getNextStagesForAr(lastCycle, lastStage, lastStatus, undergoingCycle, frozenOocyte, frozenEmbryo, freshNatural, freshStimulated);
+        log.info(StringUtil.changeForLog("----- The Next Stages: " + result + " ----- "));
+        return result;
+    }
+
+    public static List<String> getNextStagesForAr(String lastCycle, String lastStage, String lastStatus, boolean undergoingCycle, boolean frozenOocyte, boolean frozenEmbryo, boolean freshNatural, boolean freshStimulated) {
         List<String> result = IaisCommonUtils.genNewArrayList();
         if (StringUtils.isEmpty(lastCycle)) {
             addStartStages(result);
@@ -310,21 +318,21 @@ public final class DataSubmissionHelper {
             result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
         } else if (DataSubmissionConsts.DS_CYCLE_AR.equals(lastCycle)) {
             if (DataSubmissionConsts.AR_CYCLE_AR.equals(lastStage)) {
-                if (selectionDto.isFreshNatural() || selectionDto.isFreshStimulated()) {
+                if (freshNatural || freshStimulated) {
                     result.add(DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL);
                 }
-                if (selectionDto.isFrozenOocyte() || selectionDto.isFrozenEmbryo()) {
+                if (frozenOocyte || frozenEmbryo) {
                     result.add(DataSubmissionConsts.AR_STAGE_THAWING);
                 }
             } else if (DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL.equals(lastStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_FERTILISATION);
                 result.add(DataSubmissionConsts.AR_STAGE_FREEZING);
-                if (selectionDto.isFrozenOocyte()) {
+                if (frozenOocyte) {
                     result.add(DataSubmissionConsts.AR_STAGE_THAWING);
                 }
             } else if (DataSubmissionConsts.AR_STAGE_THAWING.equals(lastStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_FERTILISATION);
-                if (selectionDto.isFrozenEmbryo()) {
+                if (frozenEmbryo) {
                     result.add(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING);
                     result.add(DataSubmissionConsts.AR_STAGE_EMBRYO_TRANSFER);
                 }
@@ -386,7 +394,6 @@ public final class DataSubmissionHelper {
                 result.add(DataSubmissionConsts.AR_STAGE_FREEZING);
             }
         }
-        log.info(StringUtil.changeForLog("----- The Next Stages: " + result + " ----- "));
         return result;
     }
 

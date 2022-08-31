@@ -6,208 +6,356 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAge
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * DonorSampleDtoValidator
- *
- * @author suocheng
- * @date 11/15/2021
- */
+import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 @Slf4j
 public class DonorSampleDtoValidator implements CustomizeValidator {
 
 
     @Override
     public Map<String, String> validate(Object obj, String profile, HttpServletRequest request) {
-        log.info(StringUtil.changeForLog("The DonorSampleDtoValidator start ..."));
-        GenerateIdClient generateIdClient = SpringContextHelper.getContext().getBean(GenerateIdClient .class);
-        ArDataSubmissionService arDataSubmissionService = SpringContextHelper.getContext().getBean(ArDataSubmissionService .class);
-        Map<String, String> map = IaisCommonUtils.genNewHashMap();
-        DonorSampleDto donorSampleDto = (DonorSampleDto)obj;
-        donorSampleDto.setAgeErrorMsg(null);
-        ValidationResult result = null;
-        ValidationResult donorIdentityKnownResult = null;
-        ValidationResult sampleFromOthersResult = null;
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        ArDataSubmissionService arDataSubmissionService = SpringContextHelper.getContext().getBean(ArDataSubmissionService.class);
+        DonorSampleDto donorSampleDto = (DonorSampleDto) obj;
 
-        //sampleKey if exit set the old eles generate new
-        DonorSampleDto donorSampleDtoFromDb = null;
-        String sampleKey = donorSampleDto.getSampleKey();
-        log.info(StringUtil.changeForLog("The DonorSampleDtoValidator sampleKey is -->:"+sampleKey));
-        if(StringUtil.isEmpty(sampleKey)){
-            String donorSampleCodeType = StringUtil.isEmpty(donorSampleDto.getIdType()) ? donorSampleDto.getIdType() : StringUtil.isIn(donorSampleDto.getIdType(),new String[]{DataSubmissionConsts.AR_ID_TYPE_PINK_IC,DataSubmissionConsts.AR_ID_TYPE_BLUE_IC,DataSubmissionConsts.AR_ID_TYPE_FIN_NO,DataSubmissionConsts.AR_ID_TYPE_PASSPORT_NO}) ? donorSampleDto.getIdType() : DataSubmissionConsts.AR_ID_TYPE_CODE;
-             donorSampleDtoFromDb =  arDataSubmissionService.getDonorSampleDto(donorSampleDto.isDirectedDonation(),
-                     donorSampleDto.getIdType()
-                    ,donorSampleDto.getIdNumber()
-                     ,donorSampleCodeType
-                    ,DataSubmissionConsts.AR_ID_TYPE_CODE.equalsIgnoreCase(donorSampleCodeType) ? donorSampleDto.getDonorSampleCode() : donorSampleDto.getIdNumber(),null,null);
-
-        }else{
-            List<DonorSampleDto> donorSampleDtos =  arDataSubmissionService.getDonorSampleDtoBySampleKey(sampleKey);
-            if(IaisCommonUtils.isNotEmpty(donorSampleDtos)){
-                donorSampleDtoFromDb = donorSampleDtos.get(0);
-            }
+        if (validateLocally(donorSampleDto, errorMap)) {
+            validateFrom(donorSampleDto, errorMap);
         }
-        if(donorSampleDtoFromDb != null){
-            sampleKey = donorSampleDtoFromDb.getSampleKey();
-            List<DonorSampleAgeDto> donorSampleAgeDtos =  arDataSubmissionService.getDonorSampleAgeDtoBySampleKey(sampleKey);
-            donorSampleDtoFromDb.setDonorSampleAgeDtos(donorSampleAgeDtos);
-        }
-        if(StringUtil.isEmpty(sampleKey)){
-            log.info(StringUtil.changeForLog("Generated a new samplekey"));
-            donorSampleDto.setSampleKey(generateIdClient.getSeqId().getEntity());
-        }else{
-            donorSampleDto.setSampleKey(sampleKey);
-        }
-        //countLive  77526
-//        if(countLive(donorSampleDtoFromDb) >3){
-//            map.put("directedDonationYesDonorLive","DS_ERR053");
-//            map.put("donorSampleCodeRowDonorLive","DS_ERR053");
-//            map.put("donorDetailDonorLive","DS_ERR053");
-//        }
-        if(donorSampleDto.isDirectedDonation()){
-             result = WebValidationHelper.validateProperty(donorSampleDto, "directedDonationY");
-        }else{
-            result = WebValidationHelper.validateProperty(donorSampleDto, "directedDonationN");
-            String sampleFromHciCode = donorSampleDto.getSampleFromHciCode();
-            if(DataSubmissionConsts.AR_SOURCE_OTHER.equals(sampleFromHciCode)){
-                sampleFromOthersResult = WebValidationHelper.validateProperty(donorSampleDto, "sampleFromOthers");
-            }
-            String donorIdentityKnown = donorSampleDto.getDonorIdentityKnown();
-            if(DataSubmissionConsts.DONOR_IDENTITY_KNOWN.equals(donorIdentityKnown)){
-                donorIdentityKnownResult = WebValidationHelper.validateProperty(donorSampleDto, "donorIdentityKnown");
-            }else{
-                donorIdentityKnownResult = WebValidationHelper.validateProperty(donorSampleDto, "donorIdentityAnonymous");
-            }
-        }
-        if (result != null) {
-            map.putAll(result.retrieveAll());
-        }
-        if (donorIdentityKnownResult != null) {
-            map.putAll(donorIdentityKnownResult.retrieveAll());
-        }
-        if (sampleFromOthersResult != null) {
-            map.putAll(sampleFromOthersResult.retrieveAll());
-        }
-        //validate the ages
-        String[] ages = donorSampleDto.getAges();
-        if(ages != null){
-            for(int i =0 ;i<ages.length;i++){
-                String age = ages[i];
-                log.info(StringUtil.changeForLog("The age is -->:"+age));
-                //empty
-                if(StringUtil.isEmpty(age)){
-                    map.put("ages"+i,"GENERAL_ERR0006");
-                    //Number
-                }else if(!StringUtil.isNumber(age)){
-                    map.put("ages"+i,"GENERAL_ERR0002");
-                    //length
-                }else if(age.length()>2){
-                    map.put("ages"+i,"GENERAL_ERR0041");
-                    //donor sample
-                }
-                else if(!donorSampleDto.isDirectedDonation()){
-                    String sampleType = donorSampleDto.getSampleType();
-                    log.info(StringUtil.changeForLog("The sampleType is -->:"+sampleType));
-                    int ageInt = Integer.parseInt(age);
-                    if(DataSubmissionConsts.DONOR_SAMPLE_TYPE_SPERM.equals(sampleType)){
-                        if(ageInt<21 || ageInt>40 ){
-                            //map.put("ages"+i,"DS_ERR044");
-                            donorSampleDto.setAgeErrorMsg(StringUtil.viewNonNullHtml(MessageUtil.getMessageDesc("DS_ERR044")));
+        if (validateSampleType(donorSampleDto, errorMap)) {
+            if (showFemale(donorSampleDto)) {
+                boolean idValidated = true;
+                if (validateFemaleIdenrityKnown(donorSampleDto, errorMap)) {
+                    if (DataSubmissionConsts.DONOR_IDENTITY_KNOWN.equals(donorSampleDto.getDonorIdentityKnown())) {
+                        if (validateFemaleHasNric(donorSampleDto, errorMap)) {
+                            idValidated = validateFemaleIdNumber(donorSampleDto, errorMap);
                         }
-                    }else if(DataSubmissionConsts.DONOR_SAMPLE_TYPE_OOCYTE.equals(sampleType)
-                            ||DataSubmissionConsts.DONOR_SAMPLE_TYPE_EMBRYO.equals(sampleType)){
-                        if(ageInt<21 || ageInt>35 ){
-                            //map.put("ages"+i,"DS_ERR045");
-                            donorSampleDto.setAgeErrorMsg(StringUtil.viewNonNullHtml(MessageUtil.getMessageDesc("DS_ERR045")));
+                        validateFemaleSimpleCode(donorSampleDto, errorMap);
+                    } else {
+                        idValidated = validateFemaleSimpleCode(donorSampleDto, errorMap);
+                    }
+                }
+                validateFemaleAge(donorSampleDto, errorMap, arDataSubmissionService, idValidated);
+            }
+            if (showMale(donorSampleDto)) {
+                boolean idValidated = true;
+                if (validateMaleIdenrityKnown(donorSampleDto, errorMap)) {
+                    if (donorSampleDto.getMaleDonorIdentityKnow()) {
+                        if (validateMaleHasNric(donorSampleDto, errorMap)) {
+                            idValidated = validateMaleIdNumber(donorSampleDto, errorMap);
                         }
+                        validateMaleSimpleCode(donorSampleDto, errorMap);
+                    } else {
+                        idValidated = validateMaleSimpleCode(donorSampleDto, errorMap);
                     }
                 }
-                //Repetition
-                List<DonorSampleAgeDto> donorSampleAgeDtos = donorSampleDto.getDonorSampleAgeDtos();
-                if(IaisCommonUtils.isNotEmpty(donorSampleAgeDtos)){
-                    donorSampleDtoFromDb.setDonorSampleAgeDtos(donorSampleAgeDtos);
-                }
-                if(IaisCommonUtils.isEmpty(map)&&isRepetition(age,ages,donorSampleDtoFromDb)){
-                    map.put("ages"+i,"DS_ERR046");
-                }
+                validateMaleAge(donorSampleDto, errorMap, arDataSubmissionService, idValidated);
             }
-        }else if(IaisCommonUtils.isEmpty(donorSampleDto.getDonorSampleAgeDtos())){
-            map.put("nullAges","GENERAL_ERR0006");
-            log.info(StringUtil.changeForLog("The Ages is null"));
         }
-
-        //RFC
-        if(DataSubmissionConsts.DS_APP_TYPE_RFC .equals(donorSampleDto.getAppType())){
-            ValidationResult amendReasonResult = WebValidationHelper.validateProperty(donorSampleDto, "donorSampleRFC");
-            if (amendReasonResult != null) {
-                map.putAll(amendReasonResult.retrieveAll());
+        validateReason(donorSampleDto, errorMap);
+        if (validatePurpose(donorSampleDto, errorMap)) {
+            if (donorSampleDto.isDonatedForResearch()) {
+                validateDonResForTreatNum(donorSampleDto, errorMap);
+                validateDonResForCurCenNotTreatNum(donorSampleDto, errorMap);
+                validateGameteResType(donorSampleDto, errorMap);
+                validateDonatedForResearchOtherType(donorSampleDto, errorMap);
             }
-            if(DataSubmissionConsts.DONOR_SAMPLE_AMEND_REASON_OTHERS.equals(donorSampleDto.getAmendReason())){
-                ValidationResult amendReasonOtherResult = WebValidationHelper.validateProperty(donorSampleDto, "donorSampleRFCOther");
-                if (amendReasonOtherResult != null) {
-                    map.putAll(amendReasonOtherResult.retrieveAll());
-                }
+            if (donorSampleDto.isDonatedForTraining()) {
+                validateTrainingNum(donorSampleDto, errorMap);
+            }
+            if (donorSampleDto.isDonatedForTreatment()) {
+                validateDonatedForTreatNum(donorSampleDto, errorMap);
             }
         }
 
-        log.info(StringUtil.changeForLog("The DonorSampleDtoValidator end ..."));
-        return map;
-    }
-    private int countLive(DonorSampleDto donorSampleDtoFromDb ){
-        int result = 0;
-        if(donorSampleDtoFromDb != null){
-            List<DonorSampleAgeDto> donorSampleAgeDtos = donorSampleDtoFromDb.getDonorSampleAgeDtos();
-            if(IaisCommonUtils.isNotEmpty(donorSampleAgeDtos)){
-                for(DonorSampleAgeDto donorSampleAgeDto : donorSampleAgeDtos){
-                    if(DataSubmissionConsts.DONOR_AGE_STATUS_LIVE_BIRTH.equals(donorSampleAgeDto.getStatus())){
-                        result ++;
-                    }
-                }
-            }
-        }
-
-        return result;
-
-    }
-    private boolean isRepetition(String age,String[] ages,DonorSampleDto donorSampleDto){
-        boolean result = false;
-        if(StringUtil.isNotEmpty(age) && ages != null && ages.length >1){
-           int count = 0;
-           for(String everyAge:ages){
-               if(age.equals(everyAge)){
-                  count ++;
-               }
-           }
-           if(count >1){
-               result = true;
-           }
-           log.info(StringUtil.changeForLog("The count is -->:"+count));
-        }
-        if(donorSampleDto != null && !result){
-            List<DonorSampleAgeDto> donorSampleAgeDtos = donorSampleDto.getDonorSampleAgeDtos();
-            if(IaisCommonUtils.isNotEmpty(donorSampleAgeDtos)){
-                for(DonorSampleAgeDto donorSampleAgeDto : donorSampleAgeDtos){
-                    if(StringUtil.isNotEmpty(age) && Integer.parseInt(age) == donorSampleAgeDto.getAge()
-                            && donorSampleAgeDto.isAvailable()){
-                        result = true;
-                        log.info(StringUtil.changeForLog("The isRepetition exit in the old DonorSampleAgeDto"));
-                        break;
-                    }
-                }
-            }
-        }
-        log.info(StringUtil.changeForLog("The isRepetition result is -->:"+result));
-        return result;
+        return errorMap;
     }
 
+    private boolean validateLocally(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
+        if (Objects.isNull(donorSampleDto.getDirectedDonation())) {
+            errorMap.put("directedDonation", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateSampleType(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
+        if (StringUtil.isEmpty(donorSampleDto.getSampleType())) {
+            errorMap.put("sampleType", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateFemaleIdenrityKnown(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
+        if (StringUtil.isEmpty(donorSampleDto.getDonorIdentityKnown())) {
+            errorMap.put("donorIdentityKnown", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateFemaleHasNric(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
+        if (StringUtil.isEmpty(donorSampleDto.getIdType())) {
+            errorMap.put("hasIdNumberF", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateFemaleIdNumber(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
+        int maxLength = 9;
+        if (DataSubmissionConsts.DTV_ID_TYPE_PASSPORT.equals(donorSampleDto.getIdType())) {
+            maxLength = 20;
+        }
+        if (StringUtil.isEmpty(donorSampleDto.getIdNumber())) {
+            errorMap.put("idNumber", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+            return false;
+        } else if (donorSampleDto.getIdNumber().length() > maxLength) {
+            Map<String, String> params = IaisCommonUtils.genNewHashMap();
+            params.put("field", "The field");
+            params.put("maxlength", String.valueOf(maxLength));
+            errorMap.put("idNumber", MessageUtil.getMessageDesc("GENERAL_ERR0041", params));
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateFemaleSimpleCode(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
+        if (StringUtil.isEmpty(donorSampleDto.getDonorSampleCode())) {
+            errorMap.put("donorSampleCode", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateFemaleAge(DonorSampleDto donorSampleDto, Map<String, String> errorMap, ArDataSubmissionService arDataSubmissionService, boolean idValidated) {
+        if (StringUtil.isEmpty(donorSampleDto.getDonorSampleAge())) {
+            errorMap.put("donorSampleAge", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+            return false;
+        }
+        if (idValidated) {
+            List<DonorSampleAgeDto> donorSampleDtoAgeList;
+            if (DataSubmissionConsts.DONOR_IDENTITY_KNOWN.equals(donorSampleDto.getDonorIdentityKnown())) {
+                String sampleKey = arDataSubmissionService.getDonorSampleKey(donorSampleDto.getIdType(), donorSampleDto.getIdNumber());
+                if (StringUtil.isNotEmpty(sampleKey)) {
+                    donorSampleDtoAgeList = arDataSubmissionService.getDonorSampleAgeDtoBySampleKey(sampleKey);
+                } else {
+                    donorSampleDtoAgeList = arDataSubmissionService.getDonorSampleAgeDtos(DataSubmissionConsts.DTV_ID_TYPE_CODE, donorSampleDto.getDonorSampleCode());
+                }
+            } else {
+                donorSampleDtoAgeList = arDataSubmissionService.getDonorSampleAgeDtos(DataSubmissionConsts.DTV_ID_TYPE_CODE, donorSampleDto.getDonorSampleCode());
+            }
+            if (IaisCommonUtils.isNotEmpty(donorSampleDtoAgeList)) {
+                donorSampleDto.setSampleKey(donorSampleDtoAgeList.get(0).getSampleKey());
+            }
+            if (IaisCommonUtils.isNotEmpty(donorSampleDtoAgeList
+                    .stream()
+                    .filter(it -> it.getAge() == Integer.parseInt(donorSampleDto.getDonorSampleAge()))
+                    .collect(Collectors.toList()))) {
+                errorMap.put("donorSampleAge", "DS_ERR046");
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean validateMaleIdenrityKnown(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
+        if (StringUtil.isEmpty(donorSampleDto.getMaleDonorIdentityKnow())) {
+            errorMap.put("maleDonorIdentityKnow", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateMaleHasNric(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
+        if (StringUtil.isEmpty(donorSampleDto.getIdTypeMale())) {
+            errorMap.put("hasIdNumberM", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateMaleIdNumber(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
+        int maxLength = 9;
+        if (DataSubmissionConsts.DTV_ID_TYPE_PASSPORT.equals(donorSampleDto.getIdTypeMale())) {
+            maxLength = 20;
+        }
+        if (StringUtil.isEmpty(donorSampleDto.getIdNumberMale())) {
+            errorMap.put("idNumberMale", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+            return false;
+        } else if (donorSampleDto.getIdNumberMale().length() > maxLength) {
+            Map<String, String> params = IaisCommonUtils.genNewHashMap();
+            params.put("field", "The field");
+            params.put("maxlength", String.valueOf(maxLength));
+            errorMap.put("idNumberMale", MessageUtil.getMessageDesc("GENERAL_ERR0041", params));
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateMaleSimpleCode(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
+        if (StringUtil.isEmpty(donorSampleDto.getMaleDonorSampleCode())) {
+            errorMap.put("maleDonorSampleCode", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateMaleAge(DonorSampleDto donorSampleDto, Map<String, String> errorMap, ArDataSubmissionService arDataSubmissionService, boolean idValidated) {
+        if (StringUtil.isEmpty(donorSampleDto.getMaleDonorSampleAge())) {
+            errorMap.put("maleDonorSampleAge", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+            return false;
+        }
+        if (idValidated) {
+            List<DonorSampleAgeDto> donorSampleDtoAgeList;
+            if (donorSampleDto.getMaleDonorIdentityKnow()) {
+                String sampleKey = arDataSubmissionService.getDonorSampleKey(donorSampleDto.getIdTypeMale(), donorSampleDto.getIdNumberMale());
+                if (StringUtil.isNotEmpty(sampleKey)) {
+                    donorSampleDtoAgeList = arDataSubmissionService.getDonorSampleAgeDtoBySampleKey(sampleKey);
+                } else {
+                    donorSampleDtoAgeList = arDataSubmissionService.getDonorSampleAgeDtos(DataSubmissionConsts.DTV_ID_TYPE_CODE, donorSampleDto.getMaleDonorSampleCode());
+                }
+            } else {
+                donorSampleDtoAgeList = arDataSubmissionService.getDonorSampleAgeDtos(DataSubmissionConsts.DTV_ID_TYPE_CODE, donorSampleDto.getMaleDonorSampleCode());
+            }
+            if (IaisCommonUtils.isNotEmpty(donorSampleDtoAgeList)) {
+                donorSampleDto.setSampleKeyMale(donorSampleDtoAgeList.get(0).getSampleKey());
+            }
+            if (IaisCommonUtils.isNotEmpty(donorSampleDtoAgeList
+                    .stream()
+                    .filter(it -> it.getAge() == Integer.parseInt(donorSampleDto.getMaleDonorSampleAge()))
+                    .collect(Collectors.toList()))) {
+                errorMap.put("maleDonorSampleAge", "DS_ERR046");
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean validateFrom(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
+        Boolean directedDonation = donorSampleDto.getDirectedDonation();
+        String fromHciCode = donorSampleDto.getSampleFromHciCode();
+        if (Boolean.FALSE.equals(directedDonation) || DataSubmissionConsts.AR_SOURCE_OTHER.equals(fromHciCode)) {
+            if (StringUtil.isEmpty(donorSampleDto.getSampleFromOthers())) {
+                errorMap.put(DataSubmissionConsts.AR_SOURCE_OTHER.equals(fromHciCode) ? "sampleFromOthersFromHci" : "sampleFromOthers",
+                        MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                return false;
+            }
+        } else {
+            if (StringUtil.isEmpty(fromHciCode)) {
+                errorMap.put("sampleFromHciCode", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean validateReason(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
+        String reason = donorSampleDto.getDonationReason();
+        if (DataSubmissionConsts.DONATION_REASON_OTHERS.equals(reason)) {
+            if (StringUtil.isEmpty(donorSampleDto.getOtherDonationReason())) {
+                errorMap.put("otherDonationReason", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                return false;
+            }
+        } else {
+            if (StringUtil.isEmpty(reason)) {
+                errorMap.put("donationReason", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean validatePurpose(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
+        if (!donorSampleDto.isDonatedForResearch()
+                && !donorSampleDto.isDonatedForTraining()
+                && !donorSampleDto.isDonatedForTreatment()) {
+            errorMap.put("donationPurpose", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateDonResForTreatNum(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
+        if (donorSampleDto.isDonatedForResearch() && StringUtil.isEmpty(donorSampleDto.getDonResForTreatNum())) {
+            errorMap.put("donResForTreatNum", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateDonResForCurCenNotTreatNum(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
+        if (donorSampleDto.isDonatedForResearch() && StringUtil.isEmpty(donorSampleDto.getDonResForCurCenNotTreatNum())) {
+            errorMap.put("donResForCurCenNotTreatNum", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateGameteResType(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
+        if (donorSampleDto.isDonatedForResearch()) {
+            if (!donorSampleDto.isDonatedForResearchHescr()
+                    && !donorSampleDto.isDonatedForResearchRrar()
+                    && !donorSampleDto.isDonatedForResearchOther()) {
+                errorMap.put("gameteResType", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean validateDonatedForResearchOtherType(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
+        if (donorSampleDto.isDonatedForResearchOther()) {
+            if (StringUtil.isEmpty(donorSampleDto.getDonatedForResearchOtherType())) {
+                errorMap.put("donatedForResearchOtherType", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean validateTrainingNum(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
+        if (donorSampleDto.isDonatedForTraining()) {
+            if (StringUtil.isEmpty(donorSampleDto.getTrainingNum())) {
+                errorMap.put("trainingNum", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean validateDonatedForTreatNum(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
+        if (donorSampleDto.isDonatedForTreatment()) {
+            if (StringUtil.isEmpty(donorSampleDto.getTreatNum())) {
+                errorMap.put("treatNum", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean showFemale(DonorSampleDto donorSampleDto) {
+        return Arrays.asList(
+                DataSubmissionConsts.DONATED_TYPE_FRESH_OOCYTE,
+                DataSubmissionConsts.DONATED_TYPE_FROZEN_OOCYTE,
+                DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO
+        ).contains(donorSampleDto.getSampleType());
+    }
+
+    private boolean showMale(DonorSampleDto donorSampleDto) {
+        return Arrays.asList(
+                DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO,
+                DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM
+        ).contains(donorSampleDto.getSampleType());
+    }
 }

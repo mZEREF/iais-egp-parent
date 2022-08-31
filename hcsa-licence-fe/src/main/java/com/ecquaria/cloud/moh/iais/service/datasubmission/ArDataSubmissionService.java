@@ -82,8 +82,6 @@ public interface ArDataSubmissionService {
 
     Date getLastCompletedCycleStartDate(String patientCode, String hciCode);
 
-    DonorSampleDto getDonorSampleDto(boolean directedDonation,String idType,String idNumber,String donorSampleCodeType,String donorSampleCode,String liceId,String hciCode);
-
     /**
       * @author: shicheng
       * @Date 2021/11/15
@@ -106,6 +104,10 @@ public interface ArDataSubmissionService {
     List<DonorSampleAgeDto> getDonorSampleAgeDtoBySampleKey(String sampleKey);
 
     List<DonorSampleDto> getDonorSampleDtoBySampleKey(String sampleKey);
+
+    List<DonorSampleAgeDto>  getDonorSampleAgeDtos(String idType, String idNo);
+
+    String getDonorSampleKey(String idType, String idNo);
 
     List<String> saveFileRepo(List<File> files);
 
@@ -132,8 +134,6 @@ public interface ArDataSubmissionService {
     ArCurrentInventoryDto getArCurrentInventoryDtoByConds(String hciCode, String licenseeId, String patientCode, String svcName);
 
     ArCurrentInventoryDto getArCurrentInventoryDtoBySubmissionNo(String submissionNo, boolean hasAfter);
-
-    DonorSampleDto getDonorSampleDto(DonorSampleDto donorSampleDto);
 
     void remindAndDeleteDraftSubJob();
 

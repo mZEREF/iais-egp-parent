@@ -32,9 +32,6 @@
                     <c:if test="${item.codes[idx] == item.inputValue}"><c:out value="${item.labels[idx]}"/></c:if>
                 </c:forEach>
             </iais:value>
-            <iais:value cssClass="col-md-offset-5 col-md-7 col-xs-12">
-                <span class="error-msg " name="iaisErrorMsg" id="error_${itemConfigDto.id}${item.seqNum}"></span>
-            </iais:value>
         </c:when>
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_CHECKBOX}">
             <c:if test="${itemConfigDto.id == item.inputValue}">

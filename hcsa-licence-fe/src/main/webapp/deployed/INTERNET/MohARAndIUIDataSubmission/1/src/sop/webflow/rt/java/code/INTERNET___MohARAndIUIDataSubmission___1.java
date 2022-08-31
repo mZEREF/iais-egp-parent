@@ -18,7 +18,7 @@ public class INTERNET___MohARAndIUIDataSubmission___1 extends BaseProcessClass {
 
 	public void start_OnStepProcess_0() throws Exception {
 	// 		Start->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doStart", this);
+		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
 	public void init_OnStepProcess_0() throws Exception {
@@ -58,17 +58,17 @@ public class INTERNET___MohARAndIUIDataSubmission___1 extends BaseProcessClass {
 
 	public void pageConfirmAction_OnStepProcess_0() throws Exception {
 	// 		PageConfirmAction->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doPageConfirmAction", this);
+		EngineHelper.delegate(DELEGATOR, "pageConfirmAction", this);
 	}
 
 	public void submission_OnStepProcess_0() throws Exception {
 		// 		Submission->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doSubmission", this);
+		EngineHelper.delegate(DELEGATOR, "submission", this);
 	}
 
 	public void saveDraft_OnStepProcess_0() throws Exception {
 	// 		SaveDraft->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doDraft", this);
+		EngineHelper.delegate(DELEGATOR, "saveDraft", this);
 	}
 
 	public void doBack_OnStepProcess_0() throws Exception {
@@ -79,5 +79,10 @@ public class INTERNET___MohARAndIUIDataSubmission___1 extends BaseProcessClass {
 	public void prepareAck_OnStepProcess_0() throws Exception {
 		// 		PrepareAck->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prepareAck", this);
+	}
+	
+	public void prepareStage_OnStepProcess_0() throws Exception {
+		// 		prepareStage->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareStage", this);
 	}
 }
