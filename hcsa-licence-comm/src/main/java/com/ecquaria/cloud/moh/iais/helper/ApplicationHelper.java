@@ -856,7 +856,7 @@ public final class ApplicationHelper {
                 source = sourceList.get(0);
             }
             AppGrpPremisesDto appGrpPremisesDto = targetList.get(i);
-            IaisCommonUtils.syncPremise(source, appGrpPremisesDto);
+          IaisCommonUtils.syncPremise(source, appGrpPremisesDto);
         }
         appSubmissionDto.setAppGrpPremisesDtoList(targetList);
     }

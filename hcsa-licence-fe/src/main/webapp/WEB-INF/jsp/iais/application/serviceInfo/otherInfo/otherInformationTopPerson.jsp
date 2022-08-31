@@ -42,19 +42,19 @@
         </iais:row>
 
         <iais:row cssClass="row control control-caption-horizontal">
-            <input type="hidden" class="topTypeVal" name="topTypeVal" value="${appSvcOtherInfoDto.appSvcOtherInfoTopDto.topType}"/>
+            <input type="hidden" class="topTypeVal" name="topTypeVal" value="${currSvcInfoDto.appSvcOtherInfoDto.appSvcOtherInfoTopDto.topType}"/>
             <iais:value width="4" cssClass="form-check col-md-4">
-                <input class="form-check-input topType " <c:if test="${'1' == appSvcOtherInfoDto.appSvcOtherInfoTopDto.topType}">checked="checked"</c:if>  type="radio" name="topType" value = "1" aria-invalid="false" onclick="getTopTypeValue(this)">
+                <input class="form-check-input topType " <c:if test="${'1' == currSvcInfoDto.appSvcOtherInfoDto.appSvcOtherInfoTopDto.topType}">checked="checked"</c:if>  type="radio" name="topType" value = "1" aria-invalid="false" onclick="getTopTypeValue(this)">
                 <label class="form-check-label" ><span class="check-circle"></span>Termination of Pregnancy(Solely by Drug)</label>
             </iais:value>
 
             <iais:value width="4" cssClass="form-check col-md-4">
-                <input class="form-check-input topType" <c:if test="${'0' == appSvcOtherInfoDto.appSvcOtherInfoTopDto.topType}">checked="checked"</c:if>  type="radio" name="topType" value = "0" aria-invalid="false" onclick="getTopTypeValue(this)">
+                <input class="form-check-input topType" <c:if test="${'0' == currSvcInfoDto.appSvcOtherInfoDto.appSvcOtherInfoTopDto.topType}">checked="checked"</c:if>  type="radio" name="topType" value = "0" aria-invalid="false" onclick="getTopTypeValue(this)">
                 <label class="form-check-label" ><span class="check-circle"></span>Termination of Pregnancy(Solely by Surgical Procedure)</label>
             </iais:value>
 
             <iais:value width="4" cssClass="form-check col-md-4">
-                <input class="form-check-input topType" <c:if test="${'-1' == appSvcOtherInfoDto.appSvcOtherInfoTopDto.topType}">checked="checked"</c:if>  type="radio" name="topType" value = "-1" aria-invalid="false" onclick="getTopTypeValue(this)">
+                <input class="form-check-input topType" <c:if test="${'-1' == currSvcInfoDto.appSvcOtherInfoDto.appSvcOtherInfoTopDto.topType}">checked="checked"</c:if>  type="radio" name="topType" value = "-1" aria-invalid="false" onclick="getTopTypeValue(this)">
                 <label class="form-check-label" ><span class="check-circle"></span>Termination of Pregnancy(Drug and Surgical Procedure)</label>
             </iais:value>
         </iais:row>
@@ -200,10 +200,6 @@
         removeCounsellors();
 
     });
-
-    // function initRadio(){
-    //     $('div.allOtherInformation').addClass("hidden");
-    // }
 
     let medAuthByMoh = function() {
         $('.medAuthByMoh').unbind('click');

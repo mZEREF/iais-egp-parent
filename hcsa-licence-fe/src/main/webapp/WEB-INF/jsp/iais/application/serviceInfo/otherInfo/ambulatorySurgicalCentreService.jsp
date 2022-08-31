@@ -25,7 +25,7 @@
     <div class="form-check col-md-3">
         <input class="form-check-input" name="ascsDeclaration" value="1"
                type="checkbox" aria-invalid="false"
-               <c:if test="${'1' == appSvcOtherInfoDto.ascsDeclaration}">checked="checked"</c:if> />
+               <c:if test="${'1' == currSvcInfoDto.appSvcOtherInfoDto.ascsDeclaration}">checked="checked"</c:if> />
         <label class="form-check-label">
             <span class="check-square"></span><c:out value=""/>
         </label>

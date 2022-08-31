@@ -1,18 +1,18 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
-<c:set var="provideTop" value="${appSvcOtherInfoDto.provideTop}"/>
-<c:set var="practitioners" value="${appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList}"/>
-<c:set var="anaesthetists" value="${appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList1}"/>
-<c:set var="nurses" value="${appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList2}"/>
-<c:set var="counsellors" value="${appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList3}"/>
-<c:set var="appSvcOtherInfoTop" value="${appSvcOtherInfoDto.appSvcOtherInfoTopDto}" />
-<c:set var="topByDrug" value="${appSvcOtherInfoDto.appSvcOtherInfoAbortDtoList}"/>
-<c:set var="topBySurgicalProcedure" value="${appSvcOtherInfoDto.appSvcOtherInfoAbortDtoList1}"/>
-<c:set var="topByAll" value="${appSvcOtherInfoDto.appSvcOtherInfoAbortDtoList2}"/>
-<c:set var="med" value="${appSvcOtherInfoDto.appSvcOtherInfoMedDto}"/>
-<c:set var="m" value="${appSvcOtherInfoDto.appSvcOtherInfoMedDto1}"/>
-<c:set var="n" value="${appSvcOtherInfoDto.appSvcOtherInfoNurseDto}"/>
+<c:set var="provideTop" value="${currSvcInfoDto.appSvcOtherInfoDto.provideTop}"/>
+<c:set var="practitioners" value="${currSvcInfoDto.appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList}"/>
+<c:set var="anaesthetists" value="${currSvcInfoDto.appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList1}"/>
+<c:set var="nurses" value="${currSvcInfoDto.appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList2}"/>
+<c:set var="counsellors" value="${currSvcInfoDto.appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList3}"/>
+<c:set var="appSvcOtherInfoTop" value="${currSvcInfoDto.appSvcOtherInfoDto.appSvcOtherInfoTopDto}" />
+<c:set var="topByDrug" value="${currSvcInfoDto.appSvcOtherInfoDto.appSvcOtherInfoAbortDtoList}"/>
+<c:set var="topBySurgicalProcedure" value="${currSvcInfoDto.appSvcOtherInfoDto.appSvcOtherInfoAbortDtoList1}"/>
+<c:set var="topByAll" value="${currSvcInfoDto.appSvcOtherInfoDto.appSvcOtherInfoAbortDtoList2}"/>
+<c:set var="med" value="${currSvcInfoDto.appSvcOtherInfoDto.appSvcOtherInfoMedDto}"/>
+<c:set var="m" value="${currSvcInfoDto.appSvcOtherInfoDto.appSvcOtherInfoMedDto1}"/>
+<c:set var="n" value="${currSvcInfoDto.appSvcOtherInfoDto.appSvcOtherInfoNurseDto}"/>
 <div class="row form-horizontal">
     <%@include file="dentalService.jsp" %>
     <%@include file="renalDialysisCentreService.jsp"%>
