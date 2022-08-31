@@ -515,14 +515,17 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
 
     // When RFC, determine whether the user input is PrescriptionSubmissionId
     protected void valIsPrescribedSubmissionId(HttpServletRequest request, DrugPrescribedDispensedDto drugPrescribedDispensed, Map<String, String> errorMap) {
-        if(isRfc(request)){
+        if(DRUG_DISPENSED.equals(drugPrescribedDispensed.getDrugSubmission().getDrugType()) && isRfc(request)){
             DpSuperDataSubmissionDto dpOldSuperDataSubmissionDto = DataSubmissionHelper.getOldDpSuperDataSubmissionDto(request);
             if(dpOldSuperDataSubmissionDto != null){
                 if(dpOldSuperDataSubmissionDto.getDrugPrescribedDispensedDto()!= null){
-                    if (!drugPrescribedDispensed.getDrugSubmission().getPrescriptionSubmissionId().equals(dpOldSuperDataSubmissionDto.getDrugPrescribedDispensedDto().getDrugSubmission().getPrescriptionSubmissionId())){
-                        DrugPrescribedDispensedDto drugPrescribedDispensedDto = dpDataSubmissionService.getDrugMedicationDtoBySubmissionNo(drugPrescribedDispensed.getDrugSubmission().getPrescriptionSubmissionId());
-                        if (drugPrescribedDispensedDto != null && !DRUG_PRESCRIBED.equals(drugPrescribedDispensedDto.getDrugSubmission().getDrugType())){
-                            errorMap.put("prescriptionSubmissionId","GENERAL_ERR0008");
+                    if (drugPrescribedDispensed.getDrugSubmission() != null) {
+                        String newPrescriptionSubmissionId = drugPrescribedDispensed.getDrugSubmission().getPrescriptionSubmissionId();
+                        if (StringUtils.hasLength(newPrescriptionSubmissionId) && !newPrescriptionSubmissionId.equals(dpOldSuperDataSubmissionDto.getDrugPrescribedDispensedDto().getDrugSubmission().getPrescriptionSubmissionId())) {
+                            DrugPrescribedDispensedDto drugPrescribedDispensedDto = dpDataSubmissionService.getDrugMedicationDtoBySubmissionNo(newPrescriptionSubmissionId);
+                            if (drugPrescribedDispensedDto != null) {
+                                errorMap.put("prescriptionSubmissionId", "GENERAL_ERR0008");
+                            }
                         }
                     }
                 }
