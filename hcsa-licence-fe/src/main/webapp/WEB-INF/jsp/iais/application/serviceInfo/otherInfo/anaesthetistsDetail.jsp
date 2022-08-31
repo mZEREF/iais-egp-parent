@@ -1,4 +1,5 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
+<c:set var="psnType" value="${ApplicationConsts.OTHER_TOP_ANAESTHETISTS}"/>
 <div class="person-detail anaesthetists  <c:if test="${'1' != provideTop}">hidden</c:if>">
     <iais:row>
         <div class="col-xs-12 col-md-10" style="padding-top: 25px;">
@@ -13,7 +14,7 @@
         </div>
     </iais:row>
 
-    <input type="hidden" name="apsnType${index}" value="${ApplicationConsts.OTHER_TOP_ANAESTHETISTS}">
+    <input type="hidden" name="apsnType${index}" value="${psnType}">
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Professional Regn. No."/>
         <iais:value width="7" cssClass="col-md-7">
