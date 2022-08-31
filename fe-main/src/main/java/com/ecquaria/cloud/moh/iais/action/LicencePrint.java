@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -53,60 +52,37 @@ public class LicencePrint {
                 String fileName = "LICENCE" + fileNum ;
                 File pdfFile = new File(fileName+".pdf");
                 Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+                String ftlName = null;
                 map.put("licenceNo",StringUtil.viewNonNullHtml(licenceViewDto.getLicenceNo()));
                 map.put("licenseeName",StringUtil.viewNonNullHtml(licenceViewDto.getLicenseeName()));
                 map.put("serviceName",StringUtil.viewNonNullHtml(licenceViewDto.getServiceName()));
-                map.put("hivTesting","<br/>");
-//                if(StringUtil.isEmpty(licenceViewDto.getHivTesting())){
-//                    map.put("hivTesting","<br/>");
-//                }else{
-//                    map.put("hivTesting",licenceViewDto.getHivTesting());
-//                }
-                if(StringUtil.isNotEmpty(licenceViewDto.getBaseServiceName())){
-                    map.put("baseServiceName",StringUtil.viewNonNullHtml(licenceViewDto.getBaseServiceName()));
-                }
-                //map.put("hciName",licenceViewDto.getHciName());
-                map.put("businessName",StringUtil.isEmpty(licenceViewDto.getBusinessName())?AppConsts.EMPTY_STR_NA
-                        :StringUtil.viewNonNullHtml(licenceViewDto.getBusinessName()));
-                map.put("address",StringUtil.viewNonNullHtml(licenceViewDto.getAddress()));
-                List<String> vehicleNoList = licenceViewDto.getVehicleNoList();
+                map.put("businessName",StringUtil.viewNonNullHtml(licenceViewDto.getBusinessName()));
+                map.put("premisesType",StringUtil.viewNonNullHtml(licenceViewDto.getPremiseTypeDisply()));
+                map.put("lable",StringUtil.viewNonNullHtml(licenceViewDto.getLable()));
+                List<String> contentList = licenceViewDto.getContent();
                 List<String> eachPageList = IaisCommonUtils.genNewArrayList();
-                for(int i = 0;i<vehicleNoList.size();i++){
+                for(int i = 0;i<contentList.size();i++){
                     if(i == 0){
-                        map.put("vehicleNo",vehicleNoList.get(i));
-                    }else if (i>0 && i < vehicleNoList.size() -1){
-                        eachPageList.add(vehicleNoList.get(i));
+                        map.put("content",contentList.get(i));
+                    }else if (i > 0 && i < contentList.size() -1){
+                        eachPageList.add(contentList.get(i));
                     }else {
-                        map.put("vehicleNo2",vehicleNoList.get(i));
+                        map.put("content2",contentList.get(i));
                     }
                 }
                 if(IaisCommonUtils.isNotEmpty(eachPageList)){
                     map.put("lists",eachPageList);
                 }
-                if(vehicleNoList.size()!=1){
-                    map.put("total",vehicleNoList.size());
-                }else{
-                    map.put("vehicleNo",licenceViewDto.getVehicleNo());
-                }
                 map.put("startDate",licenceViewDto.getStartDate());
                 map.put("endDate",licenceViewDto.getEndDate());
-                OutputStream outputStream = java.nio.file.Files.newOutputStream(Paths.get(fileName+".pdf"));
+                if(contentList.size()==1){
+                    ftlName = "p2_single_licence.ftl";
+                }else{
+                    ftlName = "multiple_licence.ftl";
+                }
                 try {
-                    String ftlName = null;
-                    if(StringUtil.isNotEmpty(licenceViewDto.getBaseServiceName())){
-                       if(vehicleNoList.size()==1){
-                           ftlName = "sls_single_licence.ftl";
-                       }else{
-                           ftlName = "sls_multiple_licence.ftl";
-                       }
-                    }else{
-                        if(vehicleNoList.size()==1){
-                            ftlName = "single_licence.ftl";
-                        }else{
-                            ftlName = "multiple_licence.ftl";
-                        }
-                    }
                     log.info(StringUtil.changeForLog("The ftlName is -->:"+ftlName));
+                    OutputStream outputStream = java.nio.file.Files.newOutputStream(Paths.get(fileName+".pdf"));
                     pdfGenerator.generate(outputStream, ftlName, map);
                 }catch (Exception e){
                     log.error(e.getMessage(),e);
