@@ -35,9 +35,9 @@
                 <div class="panel panel-default">
                     <div class="panel-heading " id="business-heading"  role="tab">
                         <h4 class="panel-title">
-                            <strong >
-                                <c:out value="${specialServiceSectionDto.svcName}"/>
-                            </strong>
+                            <a role="button" class="" data-toggle="collapse" href="#${status.index}${subSvcRelStatus.index}SSI" aria-expanded="true" aria-controls="DPO">
+                                <strong><c:out value="${specialServiceSectionDto.svcName}"/></strong>
+                            </a>
                         </h4>
                     </div>
 
@@ -56,7 +56,7 @@
                     <input type="hidden" class ="DirMaxCount" value="${DirMaxCount}"/>
                     <input type="hidden" class ="NurMaxCount" value="${NurMaxCount}"/>
 
-                    <div class="panel-collapse collapse in"  role="tabpanel" aria-labelledby="business-heading">
+                    <div id="${status.index}${subSvcRelStatus.index}SSI" class="panel-collapse collapse in"  role="tabpanel" aria-labelledby="business-heading">
                         <input type="hidden" class ="isPartEdit" name="isPartEdit${status.index}" value="0"/>
                         <div class="row panel-body" style="padding-left: 6%">
                             <c:choose>
@@ -171,7 +171,6 @@
         </c:forEach>
     </c:forEach>
 </div>
-
 <%@include file="specialServicesFormFun.jsp" %>
 <%@ include file="/WEB-INF/jsp/iais/application/serviceInfo/supplementaryForm/itemFun.jsp" %>
 <script>
