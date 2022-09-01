@@ -841,9 +841,9 @@ public class NewApplicationDelegator extends AppCommDelegator {
                     /**
                      * preview
                      */
-                    if (!IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())) {
+                    /*if (!IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())) {
                         svcRelatedInfoView(appSubmissionDto, bpc.request, applicationDto.getServiceId(), appNo);
-                    }
+                    }*/
                     if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
                         AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();
                         if (appDeclarationMessageDto != null) {
@@ -908,7 +908,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 appSubmissionDto.setAppGrpPremisesDtoList(newPremisesDtos);
                 DealSessionUtil.initView(appSubmissionDto);
                 String svcId = applicationDto.getServiceId();
-                if (!StringUtil.isEmpty(svcId) && !StringUtil.isEmpty(applicationDto.getApplicationNo())) {
+                /*if (!StringUtil.isEmpty(svcId) && !StringUtil.isEmpty(applicationDto.getApplicationNo())) {
                     List<AppSvcRelatedInfoDto> newSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
                     Optional<AppSvcRelatedInfoDto> optional = appSubmissionDto.getAppSvcRelatedInfoDtoList().stream()
                             .filter(dto -> applicationDto.getApplicationNo().equals(dto.getAppNo()))
@@ -944,7 +944,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                         newSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
                     }
                     appSubmissionDto.setAppSvcRelatedInfoDtoList(newSvcRelatedInfoDtos);
-                }
+                }*/
             }
         }
     }
