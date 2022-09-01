@@ -2295,17 +2295,18 @@ public final class ApplicationHelper {
     }
 
     public static boolean initOtherInfoForm(AppSvcRelatedInfoDto currSvcInfoDto, boolean init) {
-        /*AppSvcOtherInfoDto appSvcOtherInfoDto = currSvcInfoDto.getAppSvcOtherInfoDto();
+        List<AppSvcOtherInfoDto> appSvcOtherInfoDto = currSvcInfoDto.getAppSvcOtherInfoList();
         if (appSvcOtherInfoDto == null) {
-            appSvcOtherInfoDto = new AppSvcOtherInfoDto();
+            appSvcOtherInfoDto = IaisCommonUtils.genNewArrayList();
         }
-        AppSvcSuplmFormDto appSvcSuplmFormDto = appSvcOtherInfoDto.getAppSvcSuplmFormDto();
-        appSvcSuplmFormDto = initAppSvcSuplmFormDto(AppServicesConsts.SERVICE_CODE_SUB_TOP, init, HcsaConsts.ITEM_TYPE_TOP,
-                appSvcSuplmFormDto);
-        appSvcSuplmFormDto.setSvcConfigDto(currSvcInfoDto);
-        appSvcOtherInfoDto.setAppSvcSuplmFormDto(appSvcSuplmFormDto);
-        currSvcInfoDto.setAppSvcOtherInfoDto(appSvcOtherInfoDto);
-        return true;*/
+        for (AppSvcOtherInfoDto svcOtherInfoDto : appSvcOtherInfoDto) {
+            AppSvcSuplmFormDto appSvcSuplmFormDto = svcOtherInfoDto.getAppSvcSuplmFormDto();
+            appSvcSuplmFormDto = initAppSvcSuplmFormDto(AppServicesConsts.SERVICE_CODE_SUB_TOP, init, HcsaConsts.ITEM_TYPE_TOP,
+                    appSvcSuplmFormDto);
+            appSvcSuplmFormDto.setSvcConfigDto(currSvcInfoDto);
+            svcOtherInfoDto.setAppSvcSuplmFormDto(appSvcSuplmFormDto);
+        }
+        currSvcInfoDto.setAppSvcOtherInfoList(appSvcOtherInfoDto);
         return true;
     }
 
