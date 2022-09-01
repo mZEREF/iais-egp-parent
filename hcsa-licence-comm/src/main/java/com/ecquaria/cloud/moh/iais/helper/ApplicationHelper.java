@@ -2267,14 +2267,20 @@ public final class ApplicationHelper {
                 appSvcSuplmFormList.stream().allMatch(AppSvcSuplmFormDto::isInit)) {
             return false;
         }
+
         List<AppSvcSuplmFormDto> newList = IaisCommonUtils.genNewArrayList();
         ConfigCommService configCommService = getConfigCommService();
         List<SuppleFormItemConfigDto> configDtos = configCommService.getSuppleFormItemConfigs(currSvcInfoDto.getServiceCode(), HcsaConsts.ITME_TYPE_SUPLFORM);
         for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
-            AppSvcSuplmFormDto appSvcSuplmFormDto = appSvcSuplmFormList.stream()
-                    .filter(dto -> Objects.equals(appGrpPremisesDto.getPremisesIndexNo(), dto.getPremisesVal()))
-                    .findAny()
-                    .orElseGet(AppSvcSuplmFormDto::new);
+            AppSvcSuplmFormDto appSvcSuplmFormDto;
+            if (appSvcSuplmFormList != null) {
+                appSvcSuplmFormDto = appSvcSuplmFormList.stream()
+                        .filter(dto -> Objects.equals(appGrpPremisesDto.getPremisesIndexNo(), dto.getPremisesVal()))
+                        .findAny()
+                        .orElseGet(AppSvcSuplmFormDto::new);
+            } else {
+                appSvcSuplmFormDto = new AppSvcSuplmFormDto();
+            }
             if (!reset && appSvcSuplmFormDto.isInit()) {
                 newList.add(appSvcSuplmFormDto);
                 continue;
