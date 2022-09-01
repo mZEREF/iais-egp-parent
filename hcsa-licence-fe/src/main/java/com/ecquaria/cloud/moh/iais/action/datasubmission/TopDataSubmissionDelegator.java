@@ -50,6 +50,11 @@ import com.ecquaria.cloud.moh.iais.service.datasubmission.DocInfoService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -60,10 +65,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
 
 import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.ACTION_TYPE_CONFIRM;
 import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.COUNSE_LLING_PLACE;
@@ -677,6 +678,8 @@ public class TopDataSubmissionDelegator {
                 }else{
                     patientInformationDto.setLivingChildrenGenders(null);
                 }
+            } else if(Integer.parseInt(patientInformationDto.getLivingChildrenNo()) <= 0){
+                patientInformationDto.setLivingChildrenGenders(null);
             }
         }
         if(StringUtil.isEmpty(patientInformationDto.getOrgId())){
