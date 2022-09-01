@@ -119,7 +119,7 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
                     preDrugMedicationDtos =  drugPrescribedDispensedDto.getDrugMedicationDtos();
                 }
                 if(IaisCommonUtils.isEmpty(preDrugMedicationDtos)){
-                    errorMap.put("prescriptionSubmissionId", "Please enter the correct prescription submission ID.");
+                    errorMap.put("prescriptionSubmissionId", "GENERAL_ERR0008");
                 }else{
                     drugSubmission.setMedication(drugPrescribedDispensedDto.getDrugSubmission().getMedication());
                     //judge whether a prescription belongs to the patient

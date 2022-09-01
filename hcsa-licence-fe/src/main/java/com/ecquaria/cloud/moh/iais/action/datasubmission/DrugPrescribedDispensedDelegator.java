@@ -88,7 +88,7 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
                     getDrugMedicationDtoBySubmissionNo(prescriptionSubmissionId);
             if(drugPrescribedDispensedDto == null ||
                     IaisCommonUtils.isEmpty(drugPrescribedDispensedDto.getDrugMedicationDtos()) || !DRUG_PRESCRIBED.equals(drugPrescribedDispensedDto.getDrugSubmission().getDrugType())){
-                errorMap.put("prescriptionSubmissionId", "Please enter the correct prescription submission ID.");
+                errorMap.put("prescriptionSubmissionId", "GENERAL_ERR0008");
             }else{
                 ajaxResDto.setResCode(AppConsts.AJAX_RES_CODE_SUCCESS);
                 ajaxResDto.setResultJson(drugPrescribedDispensedDto.getDrugSubmission().getMedication());
