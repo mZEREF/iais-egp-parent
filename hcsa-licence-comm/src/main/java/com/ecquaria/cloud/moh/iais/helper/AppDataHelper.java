@@ -153,7 +153,7 @@ public final class AppDataHelper {
      * @return: AppGrpPremisesDto
      */
     public static List<AppGrpPremisesDto> genAppGrpPremisesDtoList(HttpServletRequest request) {
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
+        //AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
         /*boolean readonly = ApplicationHelper.readonlyPremises(appSubmissionDto);
         if (readonly) {
             return appSubmissionDto.getAppGrpPremisesDtoList();

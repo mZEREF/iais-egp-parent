@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSpecialServiceInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSuplmFormDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -400,6 +401,13 @@ public class DealSessionUtil {
                             appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList(), svcCode);
                     ApplicationHelper.initSetPsnIntoSelMap(personMap,
                             appSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList(), svcCode);
+                    List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = appSvcRelatedInfoDto.getAppSvcSpecialServiceInfoList();
+                    if (IaisCommonUtils.isNotEmpty(appSvcSpecialServiceInfoList)) {
+                        for (AppSvcSpecialServiceInfoDto appSvcSpecialServiceInfoDto : appSvcSpecialServiceInfoList) {
+                            List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = appSvcSpecialServiceInfoDto.getAppSvcCgoDtoList();
+                            ApplicationHelper.initSetPsnIntoSelMap(personMap, appSvcCgoDtoList, svcCode);
+                        }
+                    }
                 }
             }
             ParamUtil.setSessionAttr(request, HcsaAppConst.PERSONSELECTMAP, (Serializable) personMap);
@@ -590,6 +598,47 @@ public class DealSessionUtil {
             }
         }
         return appSvcDocDtoList;
+    }
+
+    public static void reSetInit(AppSubmissionDto appSubmissionDto){
+        List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
+        if (IaisCommonUtils.isNotEmpty(appPremSpecialisedDtoList)) {
+            appPremSpecialisedDtoList.forEach(dto -> {
+                if (dto.isInit()) {
+                    dto.setInit(false);
+                }
+            });
+        }
+        for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSubmissionDto.getAppSvcRelatedInfoDtoList()) {
+            reSetInit(appSvcRelatedInfoDto);
+        }
+    }
+
+    public static void reSetInit(AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
+        List<AppSvcSuplmFormDto> appSvcSuplmFormList = appSvcRelatedInfoDto.getAppSvcSuplmFormList();
+        if (IaisCommonUtils.isNotEmpty(appSvcSuplmFormList)) {
+            appSvcSuplmFormList.forEach(dto -> {
+                if (dto.isInit()) {
+                    dto.setInit(false);
+                }
+            });
+        }
+        List<AppSvcOtherInfoDto> appSvcOtherInfoList = appSvcRelatedInfoDto.getAppSvcOtherInfoList();
+        if (IaisCommonUtils.isNotEmpty(appSvcOtherInfoList)) {
+            appSvcOtherInfoList.forEach(dto -> {
+                if (dto.isInit()) {
+                    dto.setInit(false);
+                }
+            });
+        }
+        List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = appSvcRelatedInfoDto.getAppSvcSpecialServiceInfoList();
+        if (IaisCommonUtils.isNotEmpty(appSvcSpecialServiceInfoList)) {
+            appSvcSpecialServiceInfoList.forEach(dto -> {
+                if (dto.isInit()) {
+                    dto.setInit(false);
+                }
+            });
+        }
     }
 
 }

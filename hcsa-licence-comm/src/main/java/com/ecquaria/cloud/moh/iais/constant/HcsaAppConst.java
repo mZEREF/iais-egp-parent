@@ -172,5 +172,7 @@ public final class HcsaAppConst {
     public static final String ACTION_JUMP                                  = "jump";
     public static final String ACTION_RFI                                   = "information";
     public static final String ACTION_PAYMENT                               = "payment";
+    public static final String ACTION_BACK                                  = "back";
+    public static final String ACTION_NEXT                                  = "next";
 
 }

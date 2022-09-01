@@ -158,6 +158,45 @@ public final class RfcHelper {
         return false;
     }
 
+    public static boolean isChangeAppPremisesAddress(List<AppGrpPremisesDto> appGrpPremisesDtoList,
+            List<AppGrpPremisesDto> oldAppGrpPremisesDtoList) {
+        if (appGrpPremisesDtoList == null || oldAppGrpPremisesDtoList == null) {
+            return false;
+        }
+        if (IaisCommonUtils.listChange(appGrpPremisesDtoList, oldAppGrpPremisesDtoList)) {
+            return true;
+        }
+        for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
+            AppGrpPremisesDto oldAppGrpPremisesDto = oldAppGrpPremisesDtoList.stream()
+                    .filter(dto -> Objects.equals(dto.getPremisesIndexNo(), appGrpPremisesDto.getPremisesIndexNo()))
+                    .findAny()
+                    .orElse(null);
+            if (isChangeAppPremAddress(appGrpPremisesDto, oldAppGrpPremisesDto)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isChangeAppPremAddress(AppGrpPremisesDto appGrpPremisesDto, AppGrpPremisesDto oldAppGrpPremisesDto) {
+        if (appGrpPremisesDto == null) {
+            return true;
+        }
+        if (oldAppGrpPremisesDto == null) {
+            return false;
+        }
+        if (!Objects.equals(appGrpPremisesDto.getPremisesType(), oldAppGrpPremisesDto.getPremisesType())) {
+            return true;
+        }
+        if (!appGrpPremisesDto.getNonAutoAddressWithoutFU().equals(oldAppGrpPremisesDto.getNonAutoAddressWithoutFU())) {
+            return true;
+        }
+        if (isChangeFloorUnit(appGrpPremisesDto, oldAppGrpPremisesDto)) {
+            return true;
+        }
+        return !Objects.equals(appGrpPremisesDto.getBuildingName(), oldAppGrpPremisesDto.getBuildingName());
+    }
+
     public static boolean isChangeGrpPremisesAutoFields(List<AppGrpPremisesDto> appGrpPremisesDtoList,
             List<AppGrpPremisesDto> oldAppGrpPremisesDtoList) {
         if (appGrpPremisesDtoList == null || oldAppGrpPremisesDtoList == null) {

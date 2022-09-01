@@ -424,7 +424,7 @@ public class ApplicationDelegator extends AppCommDelegator {
     }
 
     @Override
-    protected void sendRfcSubmittedEmail(List<AppSubmissionDto> appSubmissionDtos, String pmtMethod) throws Exception {
+    protected void sendRfcSubmittedEmail(List<AppSubmissionDto> appSubmissionDtos, String pmtMethod) {
         throw new IaisRuntimeException("Illegal method");
     }
 
