@@ -47,7 +47,8 @@
         </iais:row>
     </div>
     <%
-            FamilyPlanDto familyPlanDto = (FamilyPlanDto) ParamUtil.getSessionAttr(request, "familyPlanDto");
+            TopSuperDataSubmissionDto topSuperDataSubmissionDto = (TopSuperDataSubmissionDto) ParamUtil.getSessionAttr(request, "topSuperDataSubmissionDto");
+            FamilyPlanDto familyPlanDto =topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getFamilyPlanDto();
             int weeks = 0;
             if (familyPlanDto != null) {
                 weeks = Integer.parseInt(familyPlanDto.getGestAgeBaseOnUltrWeek());
@@ -56,7 +57,7 @@
                 weeks = weeks + b1.divide(b2, 0, BigDecimal.ROUND_DOWN).intValue();
             }
     %>
-        <div id="counsellingGivenOnMin"<%if (weeks < 13 && weeks > 24) {%>style="display: none"<%}%>>
+        <div id="counsellingGivenOnMin"<%if (weeks < 13 || weeks > 24) {%>style="display: none"<%}%>>
         <iais:row>
             <iais:field width="5" value="Given Counselling On Mid-Trimester Pregnancy Termination" mandatory="true"/>
             <iais:value width="3" cssClass="col-md-3">
@@ -91,7 +92,7 @@
         </iais:row>
     </div>
     <div id="patientSign"
-         <c:if test="${familyPlanDto.gestAgeBaseOnUltrWeek<13 || familyPlanDto.gestAgeBaseOnUltrWeek>24}">style="display: none"</c:if>>
+         <%if (weeks < 13 || weeks > 24) {%>style="display: none"<%}%>>
         <iais:row>
             <iais:field width="5"
                         value="Patient Sign the Acknowledgement For Counselling On Mid-Trimester Pregnancy Termination"

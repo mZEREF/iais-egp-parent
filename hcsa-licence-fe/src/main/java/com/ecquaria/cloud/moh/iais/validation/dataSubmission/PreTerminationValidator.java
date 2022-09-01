@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Map;
@@ -153,7 +154,11 @@ public class PreTerminationValidator implements CustomizeValidator {
             }
         }
         if(!StringUtil.isEmpty(familyPlanDto.getGestAgeBaseOnUltrWeek())){
-            if(Integer.parseInt(familyPlanDto.getGestAgeBaseOnUltrWeek())>=13 && Integer.parseInt(familyPlanDto.getGestAgeBaseOnUltrWeek())<=24){
+            int weeks = Integer.parseInt(familyPlanDto.getGestAgeBaseOnUltrWeek());
+            BigDecimal b1 = new BigDecimal(familyPlanDto.getGestAgeBaseOnUltrDay());
+            BigDecimal b2 = new BigDecimal(Integer.toString(7));
+            weeks = weeks + b1.divide(b2, 0, BigDecimal.ROUND_DOWN).intValue();
+            if(weeks>=13 && weeks<=24){
                 if(StringUtil.isEmpty(preTerminationDto.getCounsellingGivenOnMin())){
                     errorMap.put("counsellingGivenOnMin", "GENERAL_ERR0006");
                 }

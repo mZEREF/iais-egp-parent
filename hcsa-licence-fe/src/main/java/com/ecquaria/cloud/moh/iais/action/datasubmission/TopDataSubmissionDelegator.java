@@ -1086,7 +1086,7 @@ public class TopDataSubmissionDelegator {
         ParamUtil.setSessionAttr(request, "topDates", null);
         if(StringUtil.isNotEmpty(preTerminationDto.getCounsellingDate())){
             try {
-                if(StringUtil.isNotEmpty(terminationDto.getTopDate())){
+                if(terminationDto!=null&&StringUtil.isNotEmpty(terminationDto.getTopDate())){
                     if(StringUtil.isNotEmpty(preTerminationDto.getCounsellingResult())&&!preTerminationDto.getCounsellingResult().equals("TOPPCR003")){
                         if(preTerminationDto.getCounsellingResult().equals("TOPPCR001")){
                             if(StringUtil.isNotEmpty(preTerminationDto.getSecCounsellingResult())&&!preTerminationDto.getSecCounsellingResult().equals("TOPSP003")&&!preTerminationDto.getSecCounsellingResult().equals("TOPSP001")){
@@ -1236,7 +1236,7 @@ public class TopDataSubmissionDelegator {
             BigDecimal b1 = new BigDecimal(familyPlanDto.getGestAgeBaseOnUltrDay());
             BigDecimal b2 = new BigDecimal(Integer.toString(7));
             weeks = weeks + b1.divide(b2, 0, BigDecimal.ROUND_DOWN).intValue();
-            if (weeks < 13 && weeks > 24) {
+            if (weeks < 13 || weeks > 24) {
                 preTerminationDto.setCounsellingGivenOnMin(null);
                 preTerminationDto.setPatientSign(null);
             }
@@ -1845,16 +1845,17 @@ public class TopDataSubmissionDelegator {
     private boolean needDoTop(PreTerminationDto preTerminationDto){
         if(preTerminationDto!=null&&preTerminationDto.getCounsellingGiven()!=null){
             if(preTerminationDto.getCounsellingGiven()){
-                if(preTerminationDto.getCounsellingResult()!=null&&!"TOPPCR003".equals(preTerminationDto.getCounsellingResult())) {
-                    if ("1".equals(preTerminationDto.getPatientAppointment())) {
-                        return !"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult());
+                if(preTerminationDto.getCounsellingResult()!=null){
+                    if("TOPPCR003".equals(preTerminationDto.getCounsellingResult())){
+                        return false;
                     }else {
-                        return true;
+                        if("TOPPCR001".equals(preTerminationDto.getCounsellingResult())){
+                            if ("1".equals(preTerminationDto.getPatientAppointment())) {
+                                return !"TOPSP001".equals(preTerminationDto.getSecCounsellingResult()) && !"TOPSP003".equals(preTerminationDto.getSecCounsellingResult());
+                            }
+                        }
                     }
                 }
-                return false;
-            }else {
-                return true;
             }
         }
         return true;

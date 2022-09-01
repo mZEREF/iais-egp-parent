@@ -1,5 +1,6 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FamilyPlanDto" %>
 <%@ page import="java.math.BigDecimal" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto" %>
 <div class="panel panel-default">
     <div class="panel-heading ">
         <h4 class="panel-title">
@@ -40,7 +41,8 @@
                     </iais:row>
                 </div>
                 <%
-                    FamilyPlanDto familyPlanDto = (FamilyPlanDto) ParamUtil.getSessionAttr(request, "familyPlanDto");
+                    TopSuperDataSubmissionDto topSuperDataSubmissionDto = (TopSuperDataSubmissionDto) ParamUtil.getSessionAttr(request, "topSuperDataSubmissionDto");
+                    FamilyPlanDto familyPlanDto =topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getFamilyPlanDto();
                     int weeks = 0;
                     if (familyPlanDto != null) {
                         weeks = Integer.parseInt(familyPlanDto.getGestAgeBaseOnUltrWeek());
@@ -49,7 +51,7 @@
                         weeks = weeks + b1.divide(b2, 0, BigDecimal.ROUND_DOWN).intValue();
                     }
                 %>
-                <div<%if (weeks < 13 && weeks > 24) {%>style="display: none"<%}%>>
+                <div <%if (weeks < 13 || weeks > 24) {%>style="display: none"<%}%>>
                     <iais:row>
                         <iais:field width="6" value="Given Counselling On Mid-Trimester Pregnancy Termination"/>
                         <iais:value width="6" display="true">
