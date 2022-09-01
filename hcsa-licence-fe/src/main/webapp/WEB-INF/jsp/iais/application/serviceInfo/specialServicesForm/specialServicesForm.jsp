@@ -6,7 +6,6 @@
 <input type="hidden" id="isEditHiddenVal" class="person-content-edit" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
 
 <div class="row form-horizontal">
-
     <c:if test="${AppSubmissionDto.needEditController }">
         <c:if test="${(isRfc || isRenew) && !isRfi}">
             <iais:row>
@@ -19,46 +18,39 @@
         </c:if>
         <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
     </c:if>
-
     <c:forEach var="appSvcSpecialServiceInfo" items="${appSvcSpecialServiceInfoList}" varStatus="status">
-
         <iais:row>
             <div class="col-xs-12 app-title">
                 <p><c:out value="${appSvcSpecialServiceInfo.premName}"/></p>
                 <p>Address: <c:out value="${appSvcSpecialServiceInfo.premAddress}"/></p>
             </div>
         </iais:row>
-
-        <c:forEach var="specialServiceSectionDto" items="${appSvcSpecialServiceInfo.specialServiceSectionDtoList}" varStatus="subSvcRelStatus">
-
-            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="panel-group" id="specialService" role="tablist" aria-multiselectable="true">
+            <c:forEach var="specialServiceSectionDto" items="${appSvcSpecialServiceInfo.specialServiceSectionDtoList}" varStatus="subSvcRelStatus">
                 <div class="panel panel-default">
-                    <div class="panel-heading " id="business-heading"  role="tab">
+                    <div class="panel-heading " role="tab">
                         <h4 class="panel-title">
-                            <a role="button" class="" data-toggle="collapse" href="#${status.index}${subSvcRelStatus.index}SSI" aria-expanded="true" aria-controls="DPO">
+                            <a role="button" class="" data-toggle="collapse" href="#${status.index}${subSvcRelStatus.index}SSI" aria-expanded="true" aria-controls="${status.index}${subSvcRelStatus.index}SSI">
                                 <strong><c:out value="${specialServiceSectionDto.svcName}"/></strong>
                             </a>
                         </h4>
+                        <c:set var="appSvcSuplmFormDto" value="${specialServiceSectionDto.appSvcSuplmFormDto}"/>
+                        <c:set var="DirMaxCount" value="0"/>
+                        <c:set var="NurMaxCount" value="0"/>
+                        <c:forEach var="maxCount" items="${specialServiceSectionDto.maxCount}">
+                            <c:if test="${maxCount.key == ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR}">
+                                <c:set var="DirMaxCount" value="${maxCount.value}"/>
+                            </c:if>
+                            <c:if test="${maxCount.key == ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR}">
+                                <c:set var="NurMaxCount" value="${maxCount.value}"/>
+                            </c:if>
+                        </c:forEach>
+                        <input type="hidden" class ="DirMaxCount" value="${DirMaxCount}"/>
+                        <input type="hidden" class ="NurMaxCount" value="${NurMaxCount}"/>
                     </div>
-
-                    <c:set var="appSvcSuplmFormDto" value="${specialServiceSectionDto.appSvcSuplmFormDto}"/>
-
-                    <c:set var="DirMaxCount" value="0"/>
-                    <c:set var="NurMaxCount" value="0"/>
-                    <c:forEach var="maxCount" items="${specialServiceSectionDto.maxCount}">
-                        <c:if test="${maxCount.key == ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR}">
-                            <c:set var="DirMaxCount" value="${maxCount.value}"/>
-                        </c:if>
-                        <c:if test="${maxCount.key == ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR}">
-                            <c:set var="NurMaxCount" value="${maxCount.value}"/>
-                        </c:if>
-                    </c:forEach>
-                    <input type="hidden" class ="DirMaxCount" value="${DirMaxCount}"/>
-                    <input type="hidden" class ="NurMaxCount" value="${NurMaxCount}"/>
-
-                    <div id="${status.index}${subSvcRelStatus.index}SSI" class="panel-collapse collapse in"  role="tabpanel" aria-labelledby="business-heading">
+                    <div id="${status.index}${subSvcRelStatus.index}SSI" class="panel-collapse collapse in">
                         <input type="hidden" class ="isPartEdit" name="isPartEdit${status.index}" value="0"/>
-                        <div class="row panel-body" style="padding-left: 6%">
+                        <div class="panel-body">
                             <c:choose>
                                 <c:when test="${DirMaxCount==0&&NurMaxCount==0&&empty appSvcSuplmFormDto.appSvcSuplmGroupDtoList}">
                                     <div class="panel-main-content">
@@ -95,7 +87,6 @@
                                             </iais:row>
                                         </div>
                                     </c:if>
-
                                     <c:if test="${NurMaxCount!=0}">
                                         <div class="panel-main-content">
                                             <c:choose>
@@ -125,7 +116,6 @@
                                             </iais:row>
                                         </div>
                                     </c:if>
-
                                     <c:if test="${not empty appSvcSuplmFormDto.appSvcSuplmGroupDtoList}">
                                         <div class="panel-main-content">
                                             <c:set var="itemPrefix" value="${status.index}${subSvcRelStatus.index}"/>
@@ -167,8 +157,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </c:forEach>
+            </c:forEach>
+        </div>
     </c:forEach>
 </div>
 <%@include file="specialServicesFormFun.jsp" %>

@@ -28,7 +28,7 @@
     <input type="hidden" name="isPartEdit" value="0"/>
     <%--    name--%>
     <iais:row>
-        <iais:field width="5" mandatory="true" value="Name"/>
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Name"/>
         <iais:value width="3" cssClass="col-md-3">
             <iais:select cssClass="salutation" name="${prefix}salutation${index}" firstOption="Please Select" codeCategory="CATE_ID_SALUTATION" value="${appSvcPersonnelDto.salutation}"/>
         </iais:value>
@@ -39,7 +39,7 @@
 
     <%--   Designation --%>
     <iais:row>
-        <iais:field width="5" mandatory="true" value="Designation"/>
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Designation"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:select cssClass="designation" name="${prefix}designation${index}" value="${appSvcPersonnelDto.designation}" options="designationOpList" firstOption="Please Select"/>
         </iais:value>
@@ -47,7 +47,7 @@
 
     <%--   Professional Board --%>
     <iais:row>
-        <iais:field width="5" mandatory="true" value="Professional Board"/>
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Professional Board"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:select cssClass="professionBoard" name="${prefix}professionBoard${index}"
                          codeCategory="CATE_ID_PROFESSION_BOARD"
@@ -57,7 +57,7 @@
 
     <%--  Professional Type  --%>
     <iais:row>
-        <iais:field width="5" mandatory="true" value="Professional Type"/>
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Professional Type"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:select cssClass="professionType" name="${prefix}professionType${index}"
                          codeCategory="CATE_ID_PROFESSIONAL_TYPE"
@@ -67,7 +67,7 @@
 
     <%--    Professional Regn. No--%>
     <iais:row>
-        <iais:field width="5" mandatory="true" value="Professional Regn. No."/>
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Professional Regn. No."/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="20" type="text" cssClass="profRegNo" name="${prefix}profRegNo${index}"
                         value="${appSvcPersonnelDto.profRegNo}"/>
@@ -76,7 +76,7 @@
 
     <%--    Type of Current Registration--%>
     <iais:row>
-        <iais:field width="5" mandatory="true" value="Type of Current Registration"/>
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Type of Current Registration"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="50" type="text" cssClass="typeOfCurrRegi" name="${prefix}typeOfCurrRegi${index}"
                         value="${appSvcPersonnelDto.typeOfCurrRegi}"/>
@@ -85,7 +85,7 @@
 
     <%--   Current Registration Date --%>
     <iais:row>
-        <iais:field width="5" mandatory="true" value="Current Registration Date"/>
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Current Registration Date"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:datePicker cssClass="currRegiDate" name="${prefix}currRegiDate${index}"
                              value="${appSvcPersonnelDto.currRegiDate}"/>
@@ -94,7 +94,7 @@
 
     <%--    Practicing Certificate End Date--%>
     <iais:row>
-        <iais:field width="5" mandatory="true" value="Practicing Certificate End Date"/>
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Practicing Certificate End Date"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:datePicker cssClass="praCerEndDate" name="${prefix}praCerEndDate${index}"
                              value="${appSvcPersonnelDto.praCerEndDate}"/>
@@ -104,7 +104,7 @@
 
     <%--    Type of Register--%>
     <iais:row>
-        <iais:field width="5" mandatory="true" value="Type of Register"/>
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Type of Register"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="50" type="text" cssClass="typeOfRegister" name="${prefix}typeOfRegister${index}"
                         value="${appSvcPersonnelDto.typeOfRegister}"/>
@@ -113,7 +113,7 @@
 
     <%--           Specialty --%>
     <iais:row>
-        <iais:field width="5" value="Specialty"/>
+        <iais:field width="5" cssClass="col-md-5" value="Specialty"/>
         <iais:value width="7" cssClass="col-md-7 speciality" display="true">
             <c:out value="${appSvcPersonnelDto.speciality}"/>
         </iais:value>
@@ -121,7 +121,7 @@
 
     <%--   Sub-Specialty --%>
     <iais:row>
-        <iais:field width="5" value="Sub-Specialty"/>
+        <iais:field width="5" cssClass="col-md-5" value="Sub-Specialty"/>
         <iais:value width="7" cssClass="col-md-7 subSpeciality" display="true">
             <c:out value="${appSvcPersonnelDto.subSpeciality}"/>
         </iais:value>
@@ -129,7 +129,7 @@
 
     <%--   Other Specialties --%>
     <iais:row>
-        <iais:field width="5" value="Other Specialties"/>
+        <iais:field width="5" cssClass="col-md-5" value="Other Specialties"/>
         <iais:value width="7" cssClass="col-md-7 othersubSpeciality">
             <c:out value="${appSvcPersonnelDto.specialityOther}"/>
         </iais:value>
@@ -137,7 +137,7 @@
 
     <%--  Date when specialty was obtained  --%>
     <iais:row>
-        <iais:field width="5" mandatory="true" value="Date when specialty was obtained"/>
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Date when specialty was obtained"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:datePicker cssClass="specialtyGetDate" name="${prefix}specialtyGetDate${index}"
                              value="${appSvcPersonnelDto.specialtyGetDate}"/>
@@ -146,7 +146,7 @@
 
     <%--    Qualification--%>
     <iais:row>
-        <iais:field width="5" value="Qualification"/>
+        <iais:field width="5" cssClass="col-md-5" value="Qualification"/>
         <iais:value width="7" cssClass="col-md-7 qualification" display="true">
             <c:out value="${appSvcPersonnelDto.qualification}"/>
         </iais:value>
@@ -154,7 +154,7 @@
 
     <%--           Relevant working experience(Years) --%>
     <iais:row>
-        <iais:field width="5" mandatory="true" value="Relevant working experience(Years)"/>
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Relevant working experience(Years)"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input cssClass="wrkExpYear" maxLength="2" type="text" name="${prefix}wrkExpYear${index}"
                         value="${appSvcPersonnelDto.wrkExpYear}"/>
