@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSuplmFormDto;
@@ -501,19 +502,24 @@ public class DealSessionUtil {
         for (HcsaServiceStepSchemeDto hcsaServiceStepScheme : hcsaServiceStepSchemes) {
             String stepCode = hcsaServiceStepScheme.getStepCode();
             if (HcsaConsts.STEP_SUPPLEMENTARY_FORM.equals(stepCode)) {
-                ApplicationHelper.initSupplementoryForm(currSvcInfoDto, reset);
+                ApplicationHelper.initSupplementoryForm(currSvcInfoDto, appGrpPremisesDtos, reset);
                 if (!reset) {
-                    AppSvcSuplmFormDto appSvcSuplmFormDto = currSvcInfoDto.getAppSvcSuplmFormDto();
-                    if (appSvcSuplmFormDto != null) {
-                        appSvcSuplmFormDto.checkDisplay();
+                    List<AppSvcSuplmFormDto> appSvcSuplmFormList = currSvcInfoDto.getAppSvcSuplmFormList();
+                    if (IaisCommonUtils.isNotEmpty(appSvcSuplmFormList)) {
+                        appSvcSuplmFormList.forEach(dto -> dto.checkDisplay());
                     }
                 }
             } else if (HcsaConsts.STEP_OTHER_INFORMATION.equals(stepCode)) {
                 ApplicationHelper.initOtherInfoForm(currSvcInfoDto, reset);
                 if (!reset) {
-                    AppSvcSuplmFormDto appSvcSuplmFormDto = currSvcInfoDto.getAppSvcOtherInfoDto().getAppSvcSuplmFormDto();
-                    if (appSvcSuplmFormDto != null) {
-                        appSvcSuplmFormDto.checkDisplay();
+                    List<AppSvcOtherInfoDto> appSvcOtherInfoList = currSvcInfoDto.getAppSvcOtherInfoList();
+                    if (IaisCommonUtils.isNotEmpty(appSvcOtherInfoList)) {
+                        appSvcOtherInfoList.forEach(dto -> {
+                            AppSvcSuplmFormDto appSvcSuplmFormDto = dto.getAppSvcSuplmFormDto();
+                            if (appSvcSuplmFormDto != null) {
+                                appSvcSuplmFormDto.checkDisplay();
+                            }
+                        });
                     }
                 }
             } else if (HcsaConsts.STEP_DOCUMENTS.equals(stepCode)) {

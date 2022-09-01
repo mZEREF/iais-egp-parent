@@ -2260,23 +2260,46 @@ public final class ApplicationHelper {
         return result;
     }
 
-    public static boolean initSupplementoryForm(AppSvcRelatedInfoDto currSvcInfoDto) {
-        return initSupplementoryForm(currSvcInfoDto, false);
+    public static boolean initSupplementoryForm(AppSvcRelatedInfoDto currSvcInfoDto, List<AppGrpPremisesDto> appGrpPremisesDtos) {
+        return initSupplementoryForm(currSvcInfoDto, appGrpPremisesDtos, false);
     }
 
-    public static boolean initSupplementoryForm(AppSvcRelatedInfoDto currSvcInfoDto, boolean reset) {
-        AppSvcSuplmFormDto appSvcSuplmFormDto = currSvcInfoDto.getAppSvcSuplmFormDto();
-        appSvcSuplmFormDto = initAppSvcSuplmFormDto(currSvcInfoDto.getServiceCode(), reset, HcsaConsts.ITME_TYPE_SUPLFORM,
-                appSvcSuplmFormDto);
-        if (appSvcSuplmFormDto != null) {
-            appSvcSuplmFormDto.setSvcConfigDto(currSvcInfoDto);
+    public static boolean initSupplementoryForm(AppSvcRelatedInfoDto currSvcInfoDto, List<AppGrpPremisesDto> appGrpPremisesDtos,
+            boolean reset) {
+        List<AppSvcSuplmFormDto> appSvcSuplmFormList = currSvcInfoDto.getAppSvcSuplmFormList();
+        if (!reset && appSvcSuplmFormList != null &&
+                appSvcSuplmFormList.stream().allMatch(AppSvcSuplmFormDto::isInit)) {
+            return false;
         }
-        currSvcInfoDto.setAppSvcSuplmFormDto(appSvcSuplmFormDto);
+        List<AppSvcSuplmFormDto> newList = IaisCommonUtils.genNewArrayList();
+        ConfigCommService configCommService = getConfigCommService();
+        List<SuppleFormItemConfigDto> configDtos = configCommService.getSuppleFormItemConfigs(currSvcInfoDto.getServiceCode(), HcsaConsts.ITME_TYPE_SUPLFORM);
+        for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
+            AppSvcSuplmFormDto appSvcSuplmFormDto = appSvcSuplmFormList.stream()
+                    .filter(dto -> Objects.equals(appGrpPremisesDto.getPremisesIndexNo(), dto.getPremisesVal()))
+                    .findAny()
+                    .orElseGet(AppSvcSuplmFormDto::new);
+            if (!reset && appSvcSuplmFormDto.isInit()) {
+                newList.add(appSvcSuplmFormDto);
+                continue;
+            }
+            appSvcSuplmFormDto.setSvcConfigDto(currSvcInfoDto);
+            appSvcSuplmFormDto.setSuppleFormItemConfigDtos(configDtos, (svcId, addMoreBatchNum) -> {
+                List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList = configCommService.getHcsaSvcPersonnel(svcId, addMoreBatchNum);
+                if (IaisCommonUtils.isNotEmpty(hcsaSvcPersonnelList)) {
+                    return hcsaSvcPersonnelList.get(0);
+                }
+                return null;
+            });
+            appSvcSuplmFormDto.setInit(true);
+            newList.add(appSvcSuplmFormDto);
+        }
+        currSvcInfoDto.setAppSvcSuplmFormList(newList);
         return true;
     }
 
     public static boolean initOtherInfoForm(AppSvcRelatedInfoDto currSvcInfoDto, boolean init) {
-        AppSvcOtherInfoDto appSvcOtherInfoDto = currSvcInfoDto.getAppSvcOtherInfoDto();
+        /*AppSvcOtherInfoDto appSvcOtherInfoDto = currSvcInfoDto.getAppSvcOtherInfoDto();
         if (appSvcOtherInfoDto == null) {
             appSvcOtherInfoDto = new AppSvcOtherInfoDto();
         }
@@ -2286,6 +2309,7 @@ public final class ApplicationHelper {
         appSvcSuplmFormDto.setSvcConfigDto(currSvcInfoDto);
         appSvcOtherInfoDto.setAppSvcSuplmFormDto(appSvcSuplmFormDto);
         currSvcInfoDto.setAppSvcOtherInfoDto(appSvcOtherInfoDto);
+        return true;*/
         return true;
     }
 
