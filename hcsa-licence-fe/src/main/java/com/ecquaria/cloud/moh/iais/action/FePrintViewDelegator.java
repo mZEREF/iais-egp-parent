@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.helper.AppDataHelper;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
+import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -146,7 +147,8 @@ public class FePrintViewDelegator {
         log.debug(StringUtil.changeForLog("print view prepareData start ..."));
         List<AppSubmissionDto> appSubmissionDtoList = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request,SESSION_VIEW_SUBMISSONS);
         for(AppSubmissionDto appSubmissionDto:appSubmissionDtoList){
-            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            DealSessionUtil.initView(appSubmissionDto);
+            /*List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
             List<AppSvcPrincipalOfficersDto> principalOfficersDtos = IaisCommonUtils.genNewArrayList();
             List<AppSvcPrincipalOfficersDto> deputyPrincipalOfficersDtos = IaisCommonUtils.genNewArrayList();
@@ -160,7 +162,7 @@ public class FePrintViewDelegator {
                     List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(svcId);
                     appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
                     //set svc doc
-                    List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(svcId);
+                    //List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(svcId);
                     List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
                     if(!IaisCommonUtils.isEmpty(appSvcCgoDtos)){
                         appSvcCgoDtoList.addAll(appSvcCgoDtos);
@@ -183,19 +185,19 @@ public class FePrintViewDelegator {
                     if(!IaisCommonUtils.isEmpty(appSvcMedAlertPsnDtos)){
                         medAlertPsnDtos.addAll(appSvcMedAlertPsnDtos);
                     }
-                    /*List<AppSvcPersonnelDto> appSvcPersonnelDtos1 = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
+                    *//*List<AppSvcPersonnelDto> appSvcPersonnelDtos1 = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
                     if(!IaisCommonUtils.isEmpty(appSvcPersonnelDtos1)){
                         appSvcPersonnelDtos.addAll(appSvcPersonnelDtos1);
-                    }*/
+                    }*//*
                     List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos1 = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
                     if (!IaisCommonUtils.isEmpty(appSvcClinicalDirectorDtos1)){
                         appSvcClinicalDirectorDtos.addAll(appSvcClinicalDirectorDtos1);
                     }
-                    appSvcRelatedInfoDto.setSvcDocConfig(svcDocConfig);
+                    //appSvcRelatedInfoDto.setSvcDocConfig(svcDocConfig);
 //                    Map<String,List<AppSvcDocDto>> reloadSvcDocMap = ApplicationHelper.genSvcDocReloadMap(svcDocConfig,appSubmissionDto.getAppGrpPremisesDtoList(),appSvcRelatedInfoDto);
                     //appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
                 }
-            }
+            }*/
         }
         ParamUtil.setSessionAttr(bpc.request,SESSION_VIEW_SUBMISSONS, (Serializable) appSubmissionDtoList);
         ParamUtil.setRequestAttr(bpc.request,ATTR_PRINT_VIEW,"test");

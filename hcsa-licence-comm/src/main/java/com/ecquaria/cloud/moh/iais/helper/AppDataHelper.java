@@ -52,6 +52,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ReflectionUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
+import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.AppDeclarationDocShowPageDto;
@@ -79,7 +80,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.APPSUBMISSIONDTO;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURRENTSERVICEID;
 
 /**
@@ -379,7 +379,7 @@ public final class AppDataHelper {
         request.getSession().setAttribute(IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId, map);
     }
 
-    public static AppDeclarationMessageDto getAppDeclarationMessageDto(HttpServletRequest request, String type) {
+    public static AppDeclarationMessageDto getAppDeclarationMessageDto(HttpServletRequest request, String type) throws ParseException {
         AppDeclarationMessageDto appDeclarationMessageDto = new AppDeclarationMessageDto();
         appDeclarationMessageDto.setAppType(type);
         appDeclarationMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -391,13 +391,8 @@ public final class AppDataHelper {
             appDeclarationMessageDto.setPreliminaryQuestionKindly(preliminaryQuestionKindly);
             appDeclarationMessageDto.setPreliminaryQuestionItem1(preliminaryQuestionItem1);
             appDeclarationMessageDto.setPreliminaryQuestiontem2(preliminaryQuestiontem2);
-            if (effectiveDt != null) {
-                try {
-                    Date parse = new SimpleDateFormat("dd/MM/yyyy").parse(effectiveDt);
-                    appDeclarationMessageDto.setEffectiveDt(parse);
-                } catch (ParseException e) {
-
-                }
+            if (CommonValidator.isDate(effectiveDt)) {
+                appDeclarationMessageDto.setEffectiveDt(Formatter.parseDate(effectiveDt));
             }
         } else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(type)) {
             String preliminaryQuestionKindly = request.getParameter("preliminaryQuestionKindly");
@@ -491,13 +486,13 @@ public final class AppDataHelper {
             if (file != null) {
                 long length = file.length();
                 if (length > 0) {
-                    Long size = length / 1024;
+                    long size = length / 1024;
                     files.add(file);
                     AppDeclarationDocDto docDto = new AppDeclarationDocDto();
                     docDto.setDocName(file.getName());
                     String fileMd5 = FileUtils.getFileMd5(file);
                     docDto.setMd5Code(FileUtils.getFileMd5(file));
-                    docDto.setDocSize(Integer.valueOf(size.toString()));
+                    docDto.setDocSize(Integer.valueOf(Long.toString(size)));
                     docDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                     docDto.setSeqNum(Integer.valueOf(index));
                     Optional<Integer> versions = pageShowFileHashMap.entrySet()
@@ -511,7 +506,7 @@ public final class AppDataHelper {
                     pageShowFileDto.setIndex(index);
                     pageShowFileDto.setFileName(file.getName());
                     pageShowFileDto.setFileMapId(fileAppendId + "Div" + index);
-                    pageShowFileDto.setSize(Integer.valueOf(size.toString()));
+                    pageShowFileDto.setSize(Integer.valueOf(Long.toString(size)));
                     pageShowFileDto.setMd5Code(fileMd5);
                     pageDtos.add(pageShowFileDto);
                 }
@@ -2105,7 +2100,7 @@ public final class AppDataHelper {
         return genKeyPersonnels(ApplicationConsts.PERSONNEL_PSN_KAH, "", request);
     }
 
-
+/*
     public static List<AppSvcPrincipalOfficersDto> genAppSvcMedAlertPerson(HttpServletRequest request) {
         log.info(StringUtil.changeForLog("genAppSvcMedAlertPerson star ..."));
         AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(request);
@@ -2293,7 +2288,7 @@ public final class AppDataHelper {
         }
         log.info(StringUtil.changeForLog("genAppSvcMedAlertPerson end ..."));
         return medAlertPersons;
-    }
+    }*/
 
     public static List<AppSvcBusinessDto> genAppSvcBusinessDtoList(HttpServletRequest request,
             List<AppGrpPremisesDto> appGrpPremisesDtos,

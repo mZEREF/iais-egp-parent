@@ -283,6 +283,10 @@ public abstract class AppCommDelegator {
         if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
             return;
         }
+        List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
+
+
+
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDtoByServiceId(appSubmissionDto.getAppSvcRelatedInfoDtoList(),
                 appSubmissionDto.getRfiServiceId(), appNo);
         if (appSvcRelatedInfoDto == null) {
