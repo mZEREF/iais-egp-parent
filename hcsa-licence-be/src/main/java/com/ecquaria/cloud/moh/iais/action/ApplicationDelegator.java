@@ -16,9 +16,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
@@ -346,7 +348,12 @@ public class ApplicationDelegator extends AppCommDelegator {
                     .append(bpc.request.getServerName());
             LoginContext loginContext = ApplicationHelper.getLoginContext(bpc.request);
             if (RoleConsts.USER_ROLE_INSPECTIOR.equals(loginContext.getCurRoleId())) {
-                url.append("/hcsa-licence-web/eservice/INTRANET/MohInspectionPreInspector/InspectionPreInspectorPre");
+                TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
+                if (taskDto != null) {
+                    url.append(taskDto.getProcessUrl()).append("?taskId=").append(MaskUtil.maskValue("taskId",taskDto.getId()));
+                } else {
+                    url.append("/hcsa-licence-web/eservice/INTRANET/MohInspectionPreInspector/InspectionPreInspectorPre");
+                }
             } else {
                 url.append("/hcsa-licence-web/eservice/INTRANET/ApplicationView/prepareData");
             }
