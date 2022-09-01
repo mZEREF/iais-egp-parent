@@ -2209,12 +2209,12 @@ public final class ApplicationHelper {
     }
 
     public static List<AppPremSpecialisedDto> initAppPremSpecialisedDtoList(AppSubmissionDto appSubmissionDto,
-            List<HcsaServiceDto> hcsaServiceDtoList, boolean init) {
+            List<HcsaServiceDto> hcsaServiceDtoList, boolean reset) {
         if (appSubmissionDto == null || IaisCommonUtils.isEmpty(hcsaServiceDtoList)) {
             return IaisCommonUtils.genNewArrayList();
         }
         List<AppPremSpecialisedDto> appPremSpecialisedDtos = appSubmissionDto.getAppPremSpecialisedDtoList();
-        if (!init && appPremSpecialisedDtos != null
+        if (!reset && appPremSpecialisedDtos != null
                 && appPremSpecialisedDtos.stream().allMatch(AppPremSpecialisedDto::isInit)) {
             return appPremSpecialisedDtos;
         }
