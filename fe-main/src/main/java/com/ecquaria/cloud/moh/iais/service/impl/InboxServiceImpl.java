@@ -45,6 +45,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -522,9 +524,39 @@ public class InboxServiceImpl implements InboxService {
         appInboxClient.deleteDraftByNo(draftNo);
     }
 
-    class innerLicenceViewData{
+    @Getter
+    @Setter
+    class InnerLicenceViewData{
         String value;
+        List<String> innerLicenceViewDatas;
 
+    }
+
+    private List<InnerLicenceViewData> tidyInnerLicenceViewData(List<LicPremisesScopeDto> licPremisesScopeDtos,List<LicPremSubSvcRelDto> licPremSubSvcRelDtos ){
+        List<InnerLicenceViewData> result = IaisCommonUtils.genNewArrayList();
+        if(IaisCommonUtils.isNotEmpty(licPremisesScopeDtos)){
+            for (LicPremisesScopeDto licPremisesScopeDto : licPremisesScopeDtos){
+                InnerLicenceViewData innerLicenceViewData = new InnerLicenceViewData();
+                innerLicenceViewData.setValue(licPremisesScopeDto.getSubTypeId());
+                result.add(innerLicenceViewData);
+            }
+        }
+        if(IaisCommonUtils.isNotEmpty(licPremSubSvcRelDtos)){
+            InnerLicenceViewData innerLicenceViewData = new InnerLicenceViewData();
+            List<String> innerLicenceViewDataList = IaisCommonUtils.genNewArrayList();
+            for (LicPremSubSvcRelDto licPremSubSvcRelDto : licPremSubSvcRelDtos){
+                if(licPremSubSvcRelDto.getLevel() == 0){
+                    innerLicenceViewData = new InnerLicenceViewData();
+                    innerLicenceViewData.setValue(licPremSubSvcRelDto.getSvcCode());
+                    innerLicenceViewDataList = IaisCommonUtils.genNewArrayList();
+                    innerLicenceViewData.setInnerLicenceViewDatas(innerLicenceViewDataList);
+                    result.add(innerLicenceViewData);
+                }else{
+                    innerLicenceViewDataList.add(licPremSubSvcRelDto.getSvcCode());
+                }
+            }
+        }
+        return result;
     }
 
     @Override
@@ -532,18 +564,23 @@ public class InboxServiceImpl implements InboxService {
         LicenceViewDto licenceViewDto =  licenceInboxClient.getAllStatusLicenceByLicenceId(licenceId).getEntity();
         List<LicPremisesScopeDto> licPremisesScopeDtos = licenceViewDto.getLicPremisesScopeDtos();
         List<LicPremSubSvcRelDto> licPremSubSvcRelDtos = licenceViewDto.getLicPremSubSvcRelDtos();
+        List<InnerLicenceViewData> innerLicenceViewDataList = tidyInnerLicenceViewData(licPremisesScopeDtos,licPremSubSvcRelDtos);
         List<String> disciplinesSpecifieds = IaisCommonUtils.genNewArrayList();
-        if(IaisCommonUtils.isNotEmpty(licPremisesScopeDtos)){
+        if(IaisCommonUtils.isNotEmpty(innerLicenceViewDataList)){
             StringBuilder str = new StringBuilder();
             int eachPage =14;
-            for(int i = 0;i<licPremisesScopeDtos.size();i++) {
+            for(int i = 0;i<innerLicenceViewDataList.size();i++) {
                 int d = (i + 1) % eachPage;
-                str.append("<li>").append(licPremisesScopeDtos.get(i).getSubTypeId());
+                str.append("<li>").append(innerLicenceViewDataList.get(i).getValue());
+                List<String> innerLicenceViewDatas = innerLicenceViewDataList.get(i).getInnerLicenceViewDatas();
+                if(IaisCommonUtils.isNotEmpty(innerLicenceViewDatas)){
+
+                }
                 if (d == 0) {
                     str.append("</li>");
                     disciplinesSpecifieds.add(str.toString());
                     str = new StringBuilder();
-                } else if (i == licPremisesScopeDtos.size() - 1) {
+                } else if (i == innerLicenceViewDataList.size() - 1) {
                     str.append("</li>");
                     disciplinesSpecifieds.add(str.toString());
                 } else {
@@ -553,12 +590,6 @@ public class InboxServiceImpl implements InboxService {
 
 
         }
-//        if(licenceViewDto!=null){
-//            LicenceDto licenceDto = licenceViewDto.getLicenceDto();
-//            String licenseeId = licenceDto.getLicenseeId();
-//            LicenseeDto licenseeDto = this.getLicenseeDtoBylicenseeId(licenseeId);
-//            licenceViewDto.setLicenseeDto(licenseeDto);
-//        }
         return licenceViewDto;
     }
 
