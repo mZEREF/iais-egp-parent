@@ -2260,10 +2260,6 @@ public final class ApplicationHelper {
         return result;
     }
 
-    public static boolean initSupplementoryForm(AppSvcRelatedInfoDto currSvcInfoDto, List<AppGrpPremisesDto> appGrpPremisesDtos) {
-        return initSupplementoryForm(currSvcInfoDto, appGrpPremisesDtos, false);
-    }
-
     public static boolean initSupplementoryForm(AppSvcRelatedInfoDto currSvcInfoDto, List<AppGrpPremisesDto> appGrpPremisesDtos,
             boolean reset) {
         List<AppSvcSuplmFormDto> appSvcSuplmFormList = currSvcInfoDto.getAppSvcSuplmFormList();

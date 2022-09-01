@@ -404,7 +404,7 @@ public class ServiceInfoDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         String currentSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
-        if (ApplicationHelper.initSupplementoryForm(currSvcInfoDto)) {
+        if (ApplicationHelper.initSupplementoryForm(currSvcInfoDto, appSubmissionDto.getAppGrpPremisesDtoList(), false)) {
             setAppSvcRelatedInfoMap(request, currentSvcId, currSvcInfoDto, appSubmissionDto);
         }
     }
@@ -421,17 +421,17 @@ public class ServiceInfoDelegator {
         }
         String currentSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
-        AppSvcSuplmFormDto appSvcSuplmFormDto = currSvcInfoDto.getAppSvcSuplmFormDto();
+        List<AppSvcSuplmFormDto> appSvcSuplmFormList = currSvcInfoDto.getAppSvcSuplmFormList();
         boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(RfcConst.EDIT_SERVICE, request);
         log.info(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
         if (isGetDataFromPage) {
-            AppDataHelper.setAppSvcSuplmFormDto(appSvcSuplmFormDto, request);
+            AppDataHelper.setAppSvcSuplmFormList(appSvcSuplmFormList, request);
             setAppSvcRelatedInfoMap(request, currentSvcId, currSvcInfoDto, appSubmissionDto);
         }
         // validateion
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if ("next".equals(action)) {
-            errorMap = AppValidatorHelper.doValidateSupplementaryForm(appSvcSuplmFormDto);
+            errorMap = AppValidatorHelper.doValidateSupplementaryFormList(appSvcSuplmFormList);
         }
         checkAction(errorMap, HcsaConsts.STEP_SUPPLEMENTARY_FORM, appSubmissionDto, request);
     }

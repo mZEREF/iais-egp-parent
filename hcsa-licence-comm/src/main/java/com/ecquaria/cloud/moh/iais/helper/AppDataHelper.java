@@ -2704,8 +2704,14 @@ public final class AppDataHelper {
         return appPremScopeDtoList;
     }
 
-    public static void setAppSvcSuplmFormDto(AppSvcSuplmFormDto appSvcSuplmFormDto, HttpServletRequest request) {
-        setAppSvcSuplmFormDto(appSvcSuplmFormDto, "", request);
+    public static void setAppSvcSuplmFormList(List<AppSvcSuplmFormDto> appSvcSuplmFormList, HttpServletRequest request) {
+        if (IaisCommonUtils.isEmpty(appSvcSuplmFormList)) {
+            log.info("The appSvcSuplmFormList is null!!!!");
+            return;
+        }
+        for (AppSvcSuplmFormDto appSvcSuplmFormDto : appSvcSuplmFormList) {
+            setAppSvcSuplmFormDto(appSvcSuplmFormDto, appSvcSuplmFormDto.getPremisesVal(), request);
+        }
     }
 
     public static void setAppSvcSuplmFormDto(AppSvcSuplmFormDto appSvcSuplmFormDto, String prefix, HttpServletRequest request) {

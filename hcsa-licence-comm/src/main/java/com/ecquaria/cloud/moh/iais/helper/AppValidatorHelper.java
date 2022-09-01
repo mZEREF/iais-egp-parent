@@ -490,7 +490,7 @@ public final class AppValidatorHelper {
                     break;
                 }
                 case HcsaConsts.STEP_SUPPLEMENTARY_FORM: {
-                    Map<String, String> map = doValidateSupplementaryForm(dto.getAppSvcSuplmFormDto());
+                    Map<String, String> map = doValidateSupplementaryFormList(dto.getAppSvcSuplmFormList());
                     if (!map.isEmpty()) {
                         errorMap.putAll(map);
                     }
@@ -3041,8 +3041,16 @@ public final class AppValidatorHelper {
         return errorMap;
     }
 
-    public static Map<String, String> doValidateSupplementaryForm(AppSvcSuplmFormDto appSvcSuplmFormDto) {
-        return doValidateSupplementaryForm(appSvcSuplmFormDto, "");
+    public static Map<String, String> doValidateSupplementaryFormList(List<AppSvcSuplmFormDto> appSvcSuplmFormList) {
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        if (IaisCommonUtils.isEmpty(appSvcSuplmFormList)) {
+            log.info("The appSvcSuplmFormList is null!!!!");
+            return errorMap;
+        }
+        for (AppSvcSuplmFormDto appSvcSuplmFormDto : appSvcSuplmFormList) {
+            errorMap.putAll(doValidateSupplementaryForm(appSvcSuplmFormDto, appSvcSuplmFormDto.getPremisesVal()));
+        }
+        return errorMap;
     }
 
     public static Map<String, String> doValidateSupplementaryForm(AppSvcSuplmFormDto appSvcSuplmFormDto, String prefix) {
