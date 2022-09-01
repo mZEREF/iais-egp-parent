@@ -52,7 +52,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ReflectionUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
-import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.AppDeclarationDocShowPageDto;
@@ -67,7 +66,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.sql.Time;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -379,7 +377,7 @@ public final class AppDataHelper {
         request.getSession().setAttribute(IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId, map);
     }
 
-    public static AppDeclarationMessageDto getAppDeclarationMessageDto(HttpServletRequest request, String type) throws ParseException {
+    public static AppDeclarationMessageDto getAppDeclarationMessageDto(HttpServletRequest request, String type) {
         AppDeclarationMessageDto appDeclarationMessageDto = new AppDeclarationMessageDto();
         appDeclarationMessageDto.setAppType(type);
         appDeclarationMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -392,7 +390,11 @@ public final class AppDataHelper {
             appDeclarationMessageDto.setPreliminaryQuestionItem1(preliminaryQuestionItem1);
             appDeclarationMessageDto.setPreliminaryQuestiontem2(preliminaryQuestiontem2);
             if (CommonValidator.isDate(effectiveDt)) {
-                appDeclarationMessageDto.setEffectiveDt(Formatter.parseDate(effectiveDt));
+                try {
+                    appDeclarationMessageDto.setEffectiveDt(Formatter.parseDate(effectiveDt));
+                } catch (ParseException e) {
+                    log.warn(StringUtil.changeForLog(e.getMessage()), e);
+                }
             }
         } else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(type)) {
             String preliminaryQuestionKindly = request.getParameter("preliminaryQuestionKindly");
