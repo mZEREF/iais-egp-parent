@@ -740,7 +740,6 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 /**
                  * cessation
                  */
-
                 if (ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())) {
                     String cess_ack002 = MessageUtil.getMessageDesc("CESS_ACK002");
                     ParamUtil.setSessionAttr(bpc.request, "cess_ack002", cess_ack002);

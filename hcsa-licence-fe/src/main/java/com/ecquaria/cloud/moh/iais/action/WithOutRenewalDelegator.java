@@ -733,7 +733,7 @@ public class WithOutRenewalDelegator {
         }
 
         // app group misc
-        appCommService.saveAutoRFCLinkAppGroupMisc(notAutoGroupId,autoGroupId);
+        appCommService.saveAutoRfcLinkAppGroupMisc(notAutoGroupId,autoGroupId);
 
         ParamUtil.setSessionAttr(bpc.request,"rfcAppSubmissionDtos", (Serializable) rfcAppSubmissionDtos);
         ParamUtil.setSessionAttr(bpc.request, "serviceNamesAck", (Serializable) serviceNamesAck);

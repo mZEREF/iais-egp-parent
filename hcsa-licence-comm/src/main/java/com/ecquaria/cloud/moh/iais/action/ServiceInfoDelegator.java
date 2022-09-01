@@ -67,6 +67,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.APPSUBMISSIONDTO;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURRENTSERVICEID;
@@ -1445,7 +1447,7 @@ public class ServiceInfoDelegator {
             }
             List<String> ids = ApplicationHelper.getRelatedId(currSvcInfoDto.getAppId(), appSubmissionDto.getLicenceId(),
                     currSvcInfoDto.getServiceName());
-            List<AppSvcVehicleDto> oldAppSvcVehicleDto = appCommService.getActiveVehicles(ids);
+            List<AppSvcVehicleDto> oldAppSvcVehicleDto = appCommService.getActiveVehicles(ids, true);
             new ValidateVehicle().doValidateVehicles(map, appSvcVehicleDtos, currSvcInfoDto.getAppSvcVehicleDtoList(),
                     oldAppSvcVehicleDto);
         }
@@ -1454,12 +1456,7 @@ public class ServiceInfoDelegator {
     }
 
     public void prepareClinicalDirector(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("prePareClinicalDirector start ..."));
-        log.debug(StringUtil.changeForLog("prepareClinicalDirector start ..."));
-
-        String currSvcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
         String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
-        AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId);
         // Clinical Director config
         List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList = configCommService.getHcsaSvcPersonnel(currSvcId,
                 ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR);
@@ -1467,11 +1464,9 @@ public class ServiceInfoDelegator {
             HcsaSvcPersonnelDto hcsaSvcPersonnelDto = hcsaSvcPersonnelList.get(0);
             ParamUtil.setRequestAttr(bpc.request, CURR_STEP_CONFIG, hcsaSvcPersonnelDto);
         }
-
         // Assgined person dropdown options
         List<SelectOption> personList = ApplicationHelper.genAssignPersonSel(bpc.request, true);
         ParamUtil.setRequestAttr(bpc.request, CURR_STEP_PSN_OPTS, personList);
-        log.debug(StringUtil.changeForLog("prePareClinicalDirector end ..."));
     }
 
     /**

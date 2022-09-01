@@ -375,7 +375,7 @@ public final class AppValidatorHelper {
                     List<String> ids = ApplicationHelper.getRelatedId(dto.getAppId(), dto.getLicenceId(),
                             dto.getServiceName());
 
-                    List<AppSvcVehicleDto> otherExistedVehicles = getAppCommService().getActiveVehicles(ids);
+                    List<AppSvcVehicleDto> otherExistedVehicles = getAppCommService().getActiveVehicles(ids, true);
                     List<AppSvcVehicleDto> appSvcVehicleDtos = IaisCommonUtils.genNewArrayList();
                     if (!IaisCommonUtils.isEmpty(dtos)) {
                         for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : dtos) {
@@ -669,9 +669,10 @@ public final class AppValidatorHelper {
                                         ApplicationConsts.PREMISES_TYPE_CONVEYANCE_SHOW, "type"));
                             }
                             AppSvcRelatedInfoDto dto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+                            AppCommService appCommService = getAppCommService();
                             List<String> ids = ApplicationHelper.getRelatedId(dto.getAppId(), dto.getLicenceId(),
                                     dto.getServiceName());
-                            List<String> vehicles = getAppCommService().getActiveConveyanceVehicles(ids);
+                            List<String> vehicles = appCommService.getActiveConveyanceVehicles(ids, true);
                             validateVehicleNo(errorMap, i, vehicleNo, distinctVehicleNos, vehicles);
                             // Co-Location Services
                             validateCoLocation(errorMap, i, appGrpPremisesDto.getLocateWtihHcsa(),

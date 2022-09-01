@@ -38,6 +38,7 @@
                                                      aria-multiselectable="true" style="margin-top: 40px" >
                                                     <jsp:include page="/WEB-INF/jsp/iais/application/inboxView/inboxLicensee.jsp"/>
                                                     <jsp:include page="/WEB-INF/jsp/iais/application/inboxView/inboxPremise.jsp" />
+                                                    <jsp:include page="/WEB-INF/jsp/iais/application/inboxView/inboxSpecialised.jsp" />
                                                     <jsp:include page="/WEB-INF/jsp/iais/application/inboxView/viewForm.jsp" />
                                                     <c:if test="${AppSubmissionDto.appType != 'APTY009'}">
                                                         <%@include file="declarations/declarations.jsp"%>

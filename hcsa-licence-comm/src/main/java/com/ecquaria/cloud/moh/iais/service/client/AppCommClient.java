@@ -79,7 +79,8 @@ public interface AppCommClient {
     FeignResponseEntity<Void> saveAppPremiseMiscDto(@RequestBody List<AppPremiseMiscDto> appPremiseMiscDtoList);
 
     @GetMapping(path = "/app-submission/{appNo}", produces = MediaType.APPLICATION_JSON_VALUE )
-    FeignResponseEntity<AppSubmissionDto> getAppSubmissionDtoByAppNo(@PathVariable("appNo") String appNo);
+    FeignResponseEntity<AppSubmissionDto> getAppSubmissionDtoByAppNo(@PathVariable("appNo") String appNo,
+            @RequestParam(name="onlyItself", required = false) Boolean onlyItself);
 
     @GetMapping(path = "/rfi-app-submission/{appNo}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionDto> getRfiAppSubmissionDtoByAppNo(@PathVariable("appNo") String appNo);

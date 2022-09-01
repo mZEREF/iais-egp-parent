@@ -89,7 +89,7 @@ public class AppCommServiceImpl implements AppCommService {
         if (StringUtil.isEmpty(appNo)) {
             return null;
         }
-        return appCommClient.getAppSubmissionDtoByAppNo(appNo).getEntity();
+        return appCommClient.getAppSubmissionDtoByAppNo(appNo, true).getEntity();
     }
 
     @Override
@@ -170,12 +170,10 @@ public class AppCommServiceImpl implements AppCommService {
                         List<String> qualification = professionalResponseDto.getQualification();
                         List<String> subspecialty = professionalResponseDto.getSubspecialty();
                         if (qualification != null && qualification.size() > 1) {
-                            professionalResponseDto.setQualification(Collections.singletonList(qualification.stream()
-                                    .collect(Collectors.joining(","))));
+                            professionalResponseDto.setQualification(Collections.singletonList(String.join(", ", qualification)));
                         }
                         if (subspecialty != null && subspecialty.size() > 1) {
-                            professionalResponseDto.setSubspecialty(Collections.singletonList(subspecialty.stream()
-                                    .collect(Collectors.joining(","))));
+                            professionalResponseDto.setSubspecialty(Collections.singletonList(String.join(", ", subspecialty)));
                         }
                     }
                     if (professionalResponseDto == null) {
@@ -262,9 +260,9 @@ public class AppCommServiceImpl implements AppCommService {
             }
             log.info(StringUtil.changeForLog("Svc Names: " + svcNames));
             AppPremisesDoQueryDto appPremisesDoQueryDto = new AppPremisesDoQueryDto();
-            List<HcsaServiceDto> HcsaServiceDtoList = configCommService.getHcsaServiceByNames(svcNames);
+            List<HcsaServiceDto> hcsaServiceDtoList = configCommService.getHcsaServiceByNames(svcNames);
             List<String> svcIds = IaisCommonUtils.genNewArrayList();
-            for (HcsaServiceDto hcsaServiceDto : HcsaServiceDtoList) {
+            for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtoList) {
                 svcIds.add(hcsaServiceDto.getId());
             }
             appPremisesDoQueryDto.setLicenseeId(licenseeId);
@@ -305,12 +303,26 @@ public class AppCommServiceImpl implements AppCommService {
     }
 
     @Override
-    public List<AppSvcVehicleDto> getActiveVehicles(List<String> excludeIds) {
-        //TODO need to be removed before UAT
-        List<AppSvcVehicleDto> result = getAppActiveVehicles(excludeIds);
-        log.error(StringUtil.changeForLog("App Vehicle size: " + result.size()));
-        result = getLicActiveVehicles(excludeIds);
+    public List<AppSvcVehicleDto> getActiveVehicles(List<String> excludeIds, boolean withConvenyance) {
+        //TODO start need to be removed before UAT
+        log.error(StringUtil.changeForLog("App Vehicle size: " + getAppActiveVehicles(excludeIds).size()));
+        //TODO end only test
+        List<AppSvcVehicleDto> result = getLicActiveVehicles(excludeIds);
         log.info(StringUtil.changeForLog("App Vehicle size: " + result.size()));
+        if (withConvenyance) {
+            List<String> vehicles = getActiveConveyanceVehicles(excludeIds, false);
+            if (vehicles.size() > 0) {
+                result.addAll(StreamSupport.stream(vehicles.spliterator(),
+                        vehicles.size() > RfcConst.DFT_MIN_PARALLEL_SIZE)
+                        .map(vehicle -> {
+                            AppSvcVehicleDto dto = new AppSvcVehicleDto();
+                            dto.setVehicleNum(vehicle);
+                            dto.setVehicleName(vehicle);
+                            return dto;
+                        })
+                        .collect(Collectors.toList()));
+            }
+        }
         return result;
     }
 
@@ -369,7 +381,7 @@ public class AppCommServiceImpl implements AppCommService {
     }
 
     @Override
-    public List<String> getActiveConveyanceVehicles(List<String> excludeIds) {
+    public List<String> getActiveConveyanceVehicles(List<String> excludeIds, boolean withAppSvcs) {
         List<String> result = IaisCommonUtils.genNewArrayList();
         if (excludeIds == null) {
             excludeIds = IaisCommonUtils.genNewArrayList(0);
@@ -384,7 +396,6 @@ public class AppCommServiceImpl implements AppCommService {
             }
             result.add(premisesDto.getVehicleNo());
         }
-
         List<AppGrpPremisesDto> appGrpPremisesDtos = appCommClient.getActivePendingPremisesByPremType(premType).getEntity();
         for (AppGrpPremisesDto premisesDto : appGrpPremisesDtos) {
             List<ApplicationDto> appDtos = premisesDto.getApplicationDtos();
@@ -392,6 +403,16 @@ public class AppCommServiceImpl implements AppCommService {
                 continue;
             }
             result.add(premisesDto.getVehicleNo());
+        }
+        log.info(StringUtil.changeForLog("Conveyance Vehicle size: " + result.size()));
+        if (withAppSvcs) {
+            List<AppSvcVehicleDto> activeVehicles = getActiveVehicles(excludeIds, false);
+            if (!activeVehicles.isEmpty()) {
+                result.addAll(StreamSupport.stream(activeVehicles.spliterator(),
+                        activeVehicles.size() > RfcConst.DFT_MIN_PARALLEL_SIZE)
+                        .map(AppSvcVehicleDto::getVehicleNum)
+                        .collect(Collectors.toList()));
+            }
         }
         return result;
     }
@@ -411,7 +432,7 @@ public class AppCommServiceImpl implements AppCommService {
 
     @Override
     public void transform(AppSubmissionDto appSubmissionDto, String licenseeId, String appType, boolean isRfi) {
-        Double amount = 0.0;
+        double amount = 0.0;
         //judge is the preInspection
         PreOrPostInspectionResultDto preOrPostInspectionResultDto = configCommService.judgeIsPreInspection(appSubmissionDto);
         if (preOrPostInspectionResultDto == null) {
@@ -441,18 +462,16 @@ public class AppCommServiceImpl implements AppCommService {
                     HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(name);
                     // configCommService.getActiveHcsaServiceDtoByName(serviceName);
                     svcId = hcsaServiceDto.getId();
-                    if (hcsaServiceDto != null) {
-                        appSvcRelatedInfoDto.setServiceId(svcId);
-                        appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
-                        appSvcRelatedInfoDto.setServiceType(hcsaServiceDto.getSvcType());
-                    }
+                    appSvcRelatedInfoDto.setServiceId(svcId);
+                    appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
+                    appSvcRelatedInfoDto.setServiceType(hcsaServiceDto.getSvcType());
                 }
             }
         }
         if (!StringUtil.isEmpty(licenseeId)) {
             appSubmissionDto.setLicenseeId(licenseeId);
         }
-        changeDocToNewVersion(appSubmissionDto, isRfi);
+        //changeDocToNewVersion(appSubmissionDto, isRfi);
         appSubmissionDto.setAmount(appSubmissionDto.getAmount() == null ? amount : appSubmissionDto.getAmount());
         appSubmissionDto.setAuditTrailDto(AuditTrailHelper.getCurrentAuditTrailDto());
         appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
@@ -523,7 +542,7 @@ public class AppCommServiceImpl implements AppCommService {
     }
 
     @Override
-    public void saveAutoRFCLinkAppGroupMisc(String notAutoGroupId, String autoGroupId) {
+    public void saveAutoRfcLinkAppGroupMisc(String notAutoGroupId, String autoGroupId) {
         log.info(StringUtil.changeForLog("The GrouptId: " + notAutoGroupId + " | " + autoGroupId));
         if (StringUtil.isEmpty(notAutoGroupId) || StringUtil.isEmpty(autoGroupId)) {
             return;

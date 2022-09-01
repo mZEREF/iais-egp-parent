@@ -50,9 +50,9 @@ public interface AppCommService {
     List<String> getHciFromPendAppAndLic(String licenseeId, List<HcsaServiceDto> hcsaServiceDtos,
             List<PremisesDto> excludePremisesList, List<AppGrpPremisesDto> excludeAppPremList);
 
-    List<AppSvcVehicleDto> getActiveVehicles(List<String> excludeIds);
+    List<AppSvcVehicleDto> getActiveVehicles(List<String> excludeIds, boolean withConvenyance);
 
-    List<String> getActiveConveyanceVehicles(List<String> excludeIds);
+    List<String> getActiveConveyanceVehicles(List<String> excludeIds, boolean withAppSvcs);
 
     List<AppPremiseMiscDto> getActiveWithdrawAppPremiseMiscsByApp(String appId);
 
@@ -60,7 +60,7 @@ public interface AppCommService {
 
     String getSeqId();
 
-    void saveAutoRFCLinkAppGroupMisc(String notAutoGroupId, String autoGroupId);
+    void saveAutoRfcLinkAppGroupMisc(String notAutoGroupId, String autoGroupId);
 
     Map<String, String> checkAffectedAppSubmissions(List<LicenceDto> selectLicence, AppGrpPremisesDto appGrpPremisesDto,
             double amount, String draftNo, String appGroupNo, AppEditSelectDto appEditSelectDto,

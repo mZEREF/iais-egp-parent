@@ -284,8 +284,11 @@ public abstract class AppCommDelegator {
             return;
         }
         List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
-
-
+        if (appPremSpecialisedDtoList != null && appPremSpecialisedDtoList.size() > 1) {
+            appSubmissionDto.setAppPremSpecialisedDtoList(appPremSpecialisedDtoList.stream()
+                    .filter(dto -> Objects.equals(appNo, dto.getAppNo()))
+                    .collect(Collectors.toList()));
+        }
 
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDtoByServiceId(appSubmissionDto.getAppSvcRelatedInfoDtoList(),
                 appSubmissionDto.getRfiServiceId(), appNo);
@@ -1818,7 +1821,7 @@ public abstract class AppCommDelegator {
             }
         }
         // app group misc
-        appCommService.saveAutoRFCLinkAppGroupMisc(notAutoGroupId, autoGroupId);
+        appCommService.saveAutoRfcLinkAppGroupMisc(notAutoGroupId, autoGroupId);
         handleDraft(draftNo, ApplicationHelper.getLicenseeId(bpc.request), appSubmissionDto, appSubmissionDtoList);
         log.info(StringUtil.changeForLog("------ Save Data End ------"));
         bpc.request.getSession().setAttribute(APP_SUBMISSIONS, appSubmissionDtoList);
