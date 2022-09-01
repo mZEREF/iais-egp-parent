@@ -461,40 +461,40 @@ public class ServiceInfoDelegator {
      */
     private void doOtherInformation(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("doOtherInformation start ..."));
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        String actionType = ParamUtil.getRequestString(bpc.request, "nextStep");
-        String appType = appSubmissionDto.getAppType();
-        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)
-                || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
-            if (RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(actionType)
-                    || RfcConst.RFC_BTN_OPTION_SKIP.equals(actionType)) {
-                return;
-            }
-        }
-        String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
-        AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId,null);
-        AppSvcOtherInfoDto appSvcOtherInfoDto1 = currSvcInfoDto.getAppSvcOtherInfoDto();
-        if (appSvcOtherInfoDto1 == null){
-            appSvcOtherInfoDto1 = new AppSvcOtherInfoDto();
-        }
-        String isEdit = ParamUtil.getString(bpc.request, IS_EDIT);
-        boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
-        boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto,
-                RfcConst.EDIT_SERVICE, isEdit, isRfi);
-        if (isGetDataFromPage) {
-            //get data from page
-            AppSvcOtherInfoDto appSvcOtherInfoDto = AppDataHelper.genAppSvcOtherInfoDto(bpc.request,
-                    appSubmissionDto.getAppType(),appSvcOtherInfoDto1);
-            currSvcInfoDto.setAppSvcOtherInfoDto(appSvcOtherInfoDto);
-            reSetChangesForApp(appSubmissionDto);
-            setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
-        }
-        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        if ("next".equals(actionType)) {
-            AppSvcOtherInfoDto appSvcOtherInfoDto = currSvcInfoDto.getAppSvcOtherInfoDto();
-            errorMap = AppValidatorHelper.doValidateOtherInformation(appSvcOtherInfoDto);
-        }
-        checkAction(errorMap, HcsaConsts.STEP_OTHER_INFORMATION, appSubmissionDto, bpc.request);
+//        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+//        String actionType = ParamUtil.getRequestString(bpc.request, "nextStep");
+//        String appType = appSubmissionDto.getAppType();
+//        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)
+//                || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
+//            if (RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(actionType)
+//                    || RfcConst.RFC_BTN_OPTION_SKIP.equals(actionType)) {
+//                return;
+//            }
+//        }
+//        String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
+//        AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId,null);
+//        AppSvcOtherInfoDto appSvcOtherInfoDto1 = currSvcInfoDto.getAppSvcOtherInfoDto();
+//        if (appSvcOtherInfoDto1 == null){
+//            appSvcOtherInfoDto1 = new AppSvcOtherInfoDto();
+//        }
+//        String isEdit = ParamUtil.getString(bpc.request, IS_EDIT);
+//        boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
+//        boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto,
+//                RfcConst.EDIT_SERVICE, isEdit, isRfi);
+//        if (isGetDataFromPage) {
+//            //get data from page
+//            AppSvcOtherInfoDto appSvcOtherInfoDto = AppDataHelper.genAppSvcOtherInfoDto(bpc.request,
+//                    appSubmissionDto.getAppType(),appSvcOtherInfoDto1);
+//            currSvcInfoDto.setAppSvcOtherInfoDto(appSvcOtherInfoDto);
+//            reSetChangesForApp(appSubmissionDto);
+//            setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
+//        }
+//        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+//        if ("next".equals(actionType)) {
+//            AppSvcOtherInfoDto appSvcOtherInfoDto = currSvcInfoDto.getAppSvcOtherInfoDto();
+//            errorMap = AppValidatorHelper.doValidateOtherInformation(appSvcOtherInfoDto);
+//        }
+//        checkAction(errorMap, HcsaConsts.STEP_OTHER_INFORMATION, appSubmissionDto, bpc.request);
     }
 
     private void prepareOutsourcedProviders(HttpServletRequest request) {

@@ -669,22 +669,22 @@ public final class AppDataHelper {
             String c) {
         AppSvcOtherInfoAbortDto result = null;
         if (appSvcRelatedInfoDto != null && !StringUtil.isEmpty(topType)) {
-            AppSvcOtherInfoDto appSvcOtherInfoDto = appSvcRelatedInfoDto.getAppSvcOtherInfoDto();
-            if (appSvcOtherInfoDto != null) {
-                AppSvcOtherInfoTopDto appSvcOtherInfoTopDto = appSvcOtherInfoDto.getAppSvcOtherInfoTopDto();
-                if (AppConsts.OTHER_INFO_ABORT_ONE.equals(c)) {
-                    List<AppSvcOtherInfoAbortDto> appSvcOtherInfoAboutDtos = appSvcOtherInfoDto.getAppSvcOtherInfoAbortDtoList();
-                    result = getOtherInfoByTopType(appSvcOtherInfoAboutDtos, appSvcOtherInfoTopDto, topType);
-                }
-                if (AppConsts.OTHER_INFO_ABORT_TWO.equals(c)) {
-                    List<AppSvcOtherInfoAbortDto> appSvcOtherInfoAboutDtos = appSvcOtherInfoDto.getAppSvcOtherInfoAbortDtoList1();
-                    result = getOtherInfoByTopType(appSvcOtherInfoAboutDtos, appSvcOtherInfoTopDto, topType);
-                }
-                if (AppConsts.OTHER_INFO_ABORT_THREE.equals(c)) {
-                    List<AppSvcOtherInfoAbortDto> appSvcOtherInfoAboutDtos = appSvcOtherInfoDto.getAppSvcOtherInfoAbortDtoList2();
-                    result = getOtherInfoByTopType(appSvcOtherInfoAboutDtos, appSvcOtherInfoTopDto, topType);
-                }
-            }
+//            AppSvcOtherInfoDto appSvcOtherInfoDto = appSvcRelatedInfoDto.getAppSvcOtherInfoDto();
+//            if (appSvcOtherInfoDto != null) {
+//                AppSvcOtherInfoTopDto appSvcOtherInfoTopDto = appSvcOtherInfoDto.getAppSvcOtherInfoTopDto();
+//                if (AppConsts.OTHER_INFO_ABORT_ONE.equals(c)) {
+//                    List<AppSvcOtherInfoAbortDto> appSvcOtherInfoAboutDtos = appSvcOtherInfoDto.getAppSvcOtherInfoAbortDtoList();
+//                    result = getOtherInfoByTopType(appSvcOtherInfoAboutDtos, appSvcOtherInfoTopDto, topType);
+//                }
+//                if (AppConsts.OTHER_INFO_ABORT_TWO.equals(c)) {
+//                    List<AppSvcOtherInfoAbortDto> appSvcOtherInfoAboutDtos = appSvcOtherInfoDto.getAppSvcOtherInfoAbortDtoList1();
+//                    result = getOtherInfoByTopType(appSvcOtherInfoAboutDtos, appSvcOtherInfoTopDto, topType);
+//                }
+//                if (AppConsts.OTHER_INFO_ABORT_THREE.equals(c)) {
+//                    List<AppSvcOtherInfoAbortDto> appSvcOtherInfoAboutDtos = appSvcOtherInfoDto.getAppSvcOtherInfoAbortDtoList2();
+//                    result = getOtherInfoByTopType(appSvcOtherInfoAboutDtos, appSvcOtherInfoTopDto, topType);
+//                }
+//            }
         }
         return result;
     }
@@ -693,25 +693,25 @@ public final class AppDataHelper {
             String psnType) {
         AppSvcOtherInfoTopPersonDto result = null;
         if (appSvcRelatedInfoDto != null && !StringUtil.isEmpty(idNo)) {
-            AppSvcOtherInfoDto appSvcOtherInfoDto = appSvcRelatedInfoDto.getAppSvcOtherInfoDto();
-            if (appSvcOtherInfoDto != null) {
-                if (AppConsts.OTHER_INFO_P.equals(psnType)) {
-                    List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos = appSvcOtherInfoDto.getAppSvcOtherInfoTopPersonDtoList();
-                    result = getOtherInfoByIdNo(appSvcOtherInfoTopPersonDtos, idNo);
-                }
-                if (AppConsts.OTHER_INFO_A.equals(psnType)) {
-                    List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos1 = appSvcOtherInfoDto.getAppSvcOtherInfoTopPersonDtoList1();
-                    result = getOtherInfoByIdNo(appSvcOtherInfoTopPersonDtos1, idNo);
-                }
-                if (AppConsts.OTHER_INFO_N.equals(psnType)) {
-                    List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos2 = appSvcOtherInfoDto.getAppSvcOtherInfoTopPersonDtoList2();
-                    result = getOtherInfoByIdNo(appSvcOtherInfoTopPersonDtos2, idNo);
-                }
-                if (AppConsts.OTHER_INFO_C.equals(psnType)) {
-                    List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos3 = appSvcOtherInfoDto.getAppSvcOtherInfoTopPersonDtoList3();
-                    result = getOtherInfoByIdNo(appSvcOtherInfoTopPersonDtos3, idNo);
-                }
-            }
+//            AppSvcOtherInfoDto appSvcOtherInfoDto = appSvcRelatedInfoDto.getAppSvcOtherInfoDto();
+//            if (appSvcOtherInfoDto != null) {
+//                if (AppConsts.OTHER_INFO_P.equals(psnType)) {
+//                    List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos = appSvcOtherInfoDto.getAppSvcOtherInfoTopPersonDtoList();
+//                    result = getOtherInfoByIdNo(appSvcOtherInfoTopPersonDtos, idNo);
+//                }
+//                if (AppConsts.OTHER_INFO_A.equals(psnType)) {
+//                    List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos1 = appSvcOtherInfoDto.getAppSvcOtherInfoTopPersonDtoList1();
+//                    result = getOtherInfoByIdNo(appSvcOtherInfoTopPersonDtos1, idNo);
+//                }
+//                if (AppConsts.OTHER_INFO_N.equals(psnType)) {
+//                    List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos2 = appSvcOtherInfoDto.getAppSvcOtherInfoTopPersonDtoList2();
+//                    result = getOtherInfoByIdNo(appSvcOtherInfoTopPersonDtos2, idNo);
+//                }
+//                if (AppConsts.OTHER_INFO_C.equals(psnType)) {
+//                    List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos3 = appSvcOtherInfoDto.getAppSvcOtherInfoTopPersonDtoList3();
+//                    result = getOtherInfoByIdNo(appSvcOtherInfoTopPersonDtos3, idNo);
+//                }
+//            }
         }
         return result;
     }
@@ -824,7 +824,7 @@ public final class AppDataHelper {
         appSvcOtherInfoDto.setAppSvcOtherInfoMedDto(appSvcOtherInfoMedDto);
         appSvcOtherInfoDto.setAppSvcOtherInfoMedDto1(appSvcOtherInfoMedDto1);
         appSvcOtherInfoDto.setAppSvcOtherInfoNurseDto(appSvcOtherInfoNurseDto);
-        setAppSvcSuplmFormDto(appSvcOtherInfoDto1.getAppSvcSuplmFormDto(), request);
+        //setAppSvcSuplmFormDto(appSvcOtherInfoDto1.getAppSvcSuplmFormDto(), request);
         appSvcOtherInfoDto1.getAppSvcSuplmFormDto();
         appSvcOtherInfoDto.setAppSvcSuplmFormDto(appSvcOtherInfoDto1.getAppSvcSuplmFormDto());
         return appSvcOtherInfoDto;

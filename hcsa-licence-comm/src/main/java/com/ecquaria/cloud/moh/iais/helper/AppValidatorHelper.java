@@ -481,12 +481,12 @@ public final class AppValidatorHelper {
                     break;
                 }
                 case HcsaConsts.STEP_OTHER_INFORMATION:{
-                    AppSvcOtherInfoDto appSvcOtherInfoDtos = dto.getAppSvcOtherInfoDto();
-                    Map<String,String> map = doValidateOtherInformation(appSvcOtherInfoDtos);
-                    if (!map.isEmpty()){
-                        errorMap.putAll(map);
-                    }
-                    addErrorStep(currentStep,stepName,errorMap.size() != prevSize,errorList);
+//                    AppSvcOtherInfoDto appSvcOtherInfoDtos = dto.getAppSvcOtherInfoDto();
+//                    Map<String,String> map = doValidateOtherInformation(appSvcOtherInfoDtos);
+//                    if (!map.isEmpty()){
+//                        errorMap.putAll(map);
+//                    }
+//                    addErrorStep(currentStep,stepName,errorMap.size() != prevSize,errorList);
                     break;
                 }
                 case HcsaConsts.STEP_SUPPLEMENTARY_FORM: {
@@ -1910,7 +1910,7 @@ public final class AppValidatorHelper {
                 errMap.putAll(getValidateAppSvcOtherInfoTopAbort(appSvcOtherInfoDto,topType));
             }
             errMap.putAll(getValidateAppSvcOtherInfoTopPerson(appSvcOtherInfoDto));
-            errMap.putAll(doValidateSupplementaryForm(appSvcOtherInfoDto.getAppSvcSuplmFormDto()));
+//            errMap.putAll(doValidateSupplementaryForm(appSvcOtherInfoDto.getAppSvcSuplmFormDto()));
         }
 
         return errMap;
