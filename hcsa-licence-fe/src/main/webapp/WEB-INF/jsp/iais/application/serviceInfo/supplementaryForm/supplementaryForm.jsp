@@ -24,40 +24,50 @@
             <p><span class="error-msg" name="iaisErrorMSg" id="error_psnMandatory"></span></p>
         </div>
     </iais:row>
+    <c:set var="appSvcSuplmFormList" value="${currSvcInfoDto.appSvcSuplmFormList}"/>
 
-    <c:set var="itemPrefix" value=""/>
-    <c:set var="appSvcSuplmFormDto" value="${currSvcInfoDto.appSvcSuplmFormDto}"/>
+    <c:forEach var="appSvcSuplmFormDto" items="${appSvcSuplmFormList}">
 
-    <c:forEach var="appSvcSuplmGroupDto" items="${appSvcSuplmFormDto.appSvcSuplmGroupDtoList}">
-        <c:set var="count" value="${appSvcSuplmGroupDto.count}"/>
-        <c:if test="${count > 0}">
-            <c:set var="baseSize" value="${appSvcSuplmGroupDto.baseSize}"/>
-            <c:set var="groupId" value="${appSvcSuplmGroupDto.groupId}"/>
-            <c:forEach var="item" items="${appSvcSuplmGroupDto.appSvcSuplmItemDtoList}" varStatus="status">
-                <c:if test="${not empty groupId && status.index % baseSize == 0}">
-                    <iais:row cssClass="removeEditRow">
-                        <div class="col-xs-12 text-right removeEditDiv" data-group="${groupId}" data-seq="${item.seqNum}" data-prefix="${itemPrefix}">
-                            <h4 class="text-danger text-right">
-                                <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
-                            </h4>
-                        </div>
-                    </iais:row>
+        <iais:row>
+            <div class="col-xs-12">
+                <div class="app-title">${appSvcSuplmFormDto.premName}</div>
+                <p class="font-18 bold">${appSvcSuplmFormDto.premAddress}</p>
+            </div>
+        </iais:row>
+
+        <c:set var="itemPrefix" value="${appSvcSuplmFormDto.premisesVal}"/>
+
+        <c:forEach var="appSvcSuplmGroupDto" items="${appSvcSuplmFormDto.appSvcSuplmGroupDtoList}">
+            <c:set var="count" value="${appSvcSuplmGroupDto.count}"/>
+            <c:if test="${count > 0}">
+                <c:set var="baseSize" value="${appSvcSuplmGroupDto.baseSize}"/>
+                <c:set var="groupId" value="${appSvcSuplmGroupDto.groupId}"/>
+                <c:forEach var="item" items="${appSvcSuplmGroupDto.appSvcSuplmItemDtoList}" varStatus="status">
+                    <c:if test="${not empty groupId && status.index % baseSize == 0}">
+                        <iais:row cssClass="removeEditRow">
+                            <div class="col-xs-12 text-right removeEditDiv" data-group="${groupId}" data-seq="${item.seqNum}" data-prefix="${itemPrefix}">
+                                <h4 class="text-danger text-right">
+                                    <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
+                                </h4>
+                            </div>
+                        </iais:row>
+                    </c:if>
+                    <%@ include file="item.jsp" %>
+                </c:forEach>
+                <iais:value cssClass="col-xs-12 error_${groupId}">
+                    <span class="error-msg " name="iaisErrorMsg" id="error_${groupId}"></span>
+                </iais:value>
+                <c:if test="${not empty groupId}">
+                    <div class="form-group col-md-12 col-xs-12 addMoreDiv" data-group="${groupId}" data-prefix="${itemPrefix}">
+                        <input class="not-clear" type="hidden" value="${count}" name="${itemPrefix}${groupId}"/>
+                        <input class="not-clear" type="hidden" value="${appSvcSuplmGroupDto.maxCount}" name="${itemPrefix}${groupId}-max"/>
+                        <span class="addMoreBtn" style="color:deepskyblue;cursor:pointer;">
+                                <span style="">+ Add more</span>
+                            </span>
+                    </div>
                 </c:if>
-                <%@ include file="item.jsp" %>
-            </c:forEach>
-            <iais:value cssClass="col-xs-12 error_${groupId}">
-                <span class="error-msg " name="iaisErrorMsg" id="error_${groupId}"></span>
-            </iais:value>
-            <c:if test="${not empty groupId}">
-                <div class="form-group col-md-12 col-xs-12 addMoreDiv" data-group="${groupId}" data-prefix="${itemPrefix}">
-                    <input class="not-clear" type="hidden" value="${count}" name="${itemPrefix}${groupId}"/>
-                    <input class="not-clear" type="hidden" value="${appSvcSuplmGroupDto.maxCount}" name="${itemPrefix}${groupId}-max"/>
-                    <span class="addMoreBtn" style="color:deepskyblue;cursor:pointer;">
-                        <span style="">+ Add more</span>
-                    </span>
-                </div>
             </c:if>
-        </c:if>
+        </c:forEach>
     </c:forEach>
 </div>
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
