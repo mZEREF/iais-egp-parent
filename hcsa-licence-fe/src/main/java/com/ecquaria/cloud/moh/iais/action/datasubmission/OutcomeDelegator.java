@@ -14,6 +14,8 @@ import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.A;
+import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +34,11 @@ import java.util.Map;
 public class OutcomeDelegator extends CommonDelegator{
     public static final String OUTCOME_OF_EMBRYO_TRANSFERREDS = "OutcomeEmbryoTransferreds";
 
+    @Autowired
+    private OutcomePregnancyDelegator outcomePregnancyDelegator;
+    @Autowired
+    private OutcomeEmbryoTransferredDelegator outcomeEmbryoTransferredDelegator;
+
     @Override
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -47,6 +54,7 @@ public class OutcomeDelegator extends CommonDelegator{
     public void preparePage(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
+        outcomePregnancyDelegator.preparePage(bpc);
     }
 
     @Override
@@ -71,19 +79,30 @@ public class OutcomeDelegator extends CommonDelegator{
                 EmbryoTransferredOutcomeStageDto embryoTransferredOutcomeStageDto =
                         arSuperDataSubmissionDto.getEmbryoTransferredOutcomeStageDto() == null ? new EmbryoTransferredOutcomeStageDto() : arSuperDataSubmissionDto.getEmbryoTransferredOutcomeStageDto();
                 PregnancyOutcomeStageDto pregnancyOutcomeStageDto =
-                        arSuperDataSubmissionDto.getEmbryoTransferredOutcomeStageDto() == null ? new PregnancyOutcomeStageDto() : arSuperDataSubmissionDto.getPregnancyOutcomeStageDto();
-                if (pregnancyOutcomeStageDto == null) {
-                    pregnancyOutcomeStageDto = new PregnancyOutcomeStageDto();
-                }
-                if (embryoTransferredOutcomeStageDto == null) {
-                    embryoTransferredOutcomeStageDto = new EmbryoTransferredOutcomeStageDto();
-                }
-                ControllerHelper.get(request, pregnancyOutcomeStageDto);
+                        arSuperDataSubmissionDto.getPregnancyOutcomeStageDto() == null ? new PregnancyOutcomeStageDto() : arSuperDataSubmissionDto.getPregnancyOutcomeStageDto();
                 ControllerHelper.get(request, embryoTransferredOutcomeStageDto);
-                arSuperDataSubmissionDto.setPregnancyOutcomeStageDto(pregnancyOutcomeStageDto);
-                arSuperDataSubmissionDto.setEmbryoTransferredOutcomeStageDto(embryoTransferredOutcomeStageDto);
-                //ValidationResult validationPregnancyResult = WebValidationHelper.validateProperty(pregnancyOutcomeStageDto,"save");
+                outcomePregnancyDelegator.fromPageData(pregnancyOutcomeStageDto, request);
+                String crud_action_type = ParamUtil.getRequestString(request, IntranetUserConstant.CRUD_ACTION_TYPE);
+                if ("confirm".equals(crud_action_type)) {
+                    ValidationResult validationResult1 = WebValidationHelper.validateProperty(embryoTransferredOutcomeStageDto, "save");
+                    ValidationResult validationResult2 = WebValidationHelper.validateProperty(pregnancyOutcomeStageDto, "save");
 
+                    errorMap = validationResult1.retrieveAll();
+                    errorMap.putAll(validationResult2.retrieveAll());
+                    verifyRfcCommon(request, errorMap);
+                    if(errorMap.isEmpty()){
+                        outcomeEmbryoTransferredDelegator.valRFC(request, embryoTransferredOutcomeStageDto);
+                        outcomePregnancyDelegator.valRFC(request, pregnancyOutcomeStageDto);
+
+                    }
+                    if (!errorMap.isEmpty()) {
+                        WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                        ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMAP, errorMap);
+                        ParamUtil.setRequestAttr(request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                        ParamUtil.setRequestAttr(request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
+                    }
+                }
+                arSuperDataSubmissionDto.setEmbryoTransferredOutcomeStageDto(embryoTransferredOutcomeStageDto);
             }
 
             if(StringUtil.isEmpty(pregnancyDetected)){

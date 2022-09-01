@@ -26,9 +26,10 @@
                 <%@include file="common/viewTitle.jsp" %>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <%@include file="section/previewOutcomeStageDetail.jsp"%>
-<%--                    <div id="pregnancy">--%>
-<%--                        <%@include file="section/pregnancyOutcomeStageSection.jsp" %>--%>
-<%--                    </div>--%>
+                    <c:set var="outcomeStageDto" value="${arSuperDataSubmissionDto.outcomeStageDto}" />
+                    <c:if test="${outcomeStageDto.pregnancyDetected == true }">
+                        <%@include file="section/previewPregnancyOutcomeStageDetail.jsp" %>
+                    </c:if>
                     <%@include file="common/previewDsAmendment.jsp" %>
                     <%@include file="common/arDeclaration.jsp" %>
                 </div>
@@ -37,17 +38,3 @@
         </div>
     </div>
 </form>
-
-<script type="text/javascript">
-    $(document).ready(function() {
-        pregnancyDetect()
-    })
-    function pregnancyDetect() {
-        console.log(document.getElementById('pregnancyDetected'));
-        if (document.getElementById('pregnancyDetected').innerText == 'Yes') {
-            $("#pregnancy").show();
-        } else {
-            $("#pregnancy").hide();
-        }
-    }
-</script>
