@@ -1,8 +1,10 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -14,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -53,6 +56,7 @@ public class LicencePrint {
                 File pdfFile = new File(fileName+".pdf");
                 Map<String, Object> map = IaisCommonUtils.genNewHashMap();
                 String ftlName = null;
+                int totle = 0;
                 map.put("licenceNo",StringUtil.viewNonNullHtml(licenceViewDto.getLicenceNo()));
                 map.put("licenseeName",StringUtil.viewNonNullHtml(licenceViewDto.getLicenseeName()));
                 map.put("serviceName",StringUtil.viewNonNullHtml(licenceViewDto.getServiceName()));
@@ -61,6 +65,7 @@ public class LicencePrint {
                 map.put("lable",StringUtil.viewNonNullHtml(licenceViewDto.getLable()));
                 List<String> contentList = licenceViewDto.getContent();
                 List<String> eachPageList = IaisCommonUtils.genNewArrayList();
+                totle = totle+ eachPageList.size();
                 for(int i = 0;i<contentList.size();i++){
                     if(i == 0){
                         map.put("content",contentList.get(i));
@@ -73,9 +78,19 @@ public class LicencePrint {
                 if(IaisCommonUtils.isNotEmpty(eachPageList)){
                     map.put("lists",eachPageList);
                 }
+                map.put("content2Page",totle);
                 map.put("startDate",licenceViewDto.getStartDate());
                 map.put("endDate",licenceViewDto.getEndDate());
-
+                List<String> disciplinesSpecifieds = licenceViewDto.getDisciplinesSpecifieds();
+                map.put("disciplinesSpecifiedsFirst","");
+                if(disciplinesSpecifieds.size() >0){
+                    totle = totle+ disciplinesSpecifieds.size();
+                 map.put("needDisciplinesSpecifieds",true);
+                 map.put("disciplinesSpecifiedsFirst",disciplinesSpecifieds.get(0));
+                 map.put("disciplinesSpecifieds",disciplinesSpecifieds.remove(0));
+                }
+                map.put("tody",Formatter.formatDateTime(new Date(),AppConsts.DATE_FORMAT_LICENCE));
+                map.put("totle",totle);
                 if(contentList.size()==1){
                     ftlName = "p2_single_licence.ftl";
                 }else{
