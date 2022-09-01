@@ -75,10 +75,11 @@ public class LicencePrint {
                 }
                 map.put("startDate",licenceViewDto.getStartDate());
                 map.put("endDate",licenceViewDto.getEndDate());
+
                 if(contentList.size()==1){
                     ftlName = "p2_single_licence.ftl";
                 }else{
-                    ftlName = "multiple_licence.ftl";
+                    ftlName = "p2_multiple_licence.ftl";
                 }
                 try {
                     log.info(StringUtil.changeForLog("The ftlName is -->:"+ftlName));

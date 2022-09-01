@@ -362,7 +362,7 @@
             </div>
 
             <div class="text-box">
-              <p><strong>WONG MOH SIM </strong>is authorised by the Director of Medical Services to provide the following disciplines/ specified tests as part of its Clinical Laboratory Service (licenced under <strong>L/9700126/CLB/001/225),</strong> subject to its compliance with the Healthcare Services Act 2020, and all regulations, rules, code of practices and directions issued thereunder, as well as any license conditions that may be imposed by the Director of Medical Services relating to the provision of such disciplines/ specified tests: </p>
+              <p><strong>${licenseeName} </strong>is authorised by the Director of Medical Services to provide the following disciplines/ specified tests as part of its Clinical Laboratory Service (licenced under <strong>${licenceNo}),</strong> subject to its compliance with the Healthcare Services Act 2020, and all regulations, rules, code of practices and directions issued thereunder, as well as any license conditions that may be imposed by the Director of Medical Services relating to the provision of such disciplines/ specified tests: </p>
               <div class="lic-list">
                 <ol>
                   <li>Anatomic Pathology</li>
@@ -400,6 +400,43 @@
             <div class="lic-footer">
               <p style="font-style: italic;">Updated as of 17 March 2022</p>
               <p>Ministry of Health | Page 2 of 2</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="instruction-content center-content">
+          <div class="licence_box2">
+            <div class="lic-headerbox"></div>
+            <div class="lic-number">
+              <h2>AUTHORISED <br> DISCIPLINES/SPECIFIED TESTS</h2>
+            </div>
+
+            <div class="text-box">
+              <div class="lic-list">
+                <ol start="15">
+                  <li>Anatomic Pathology</li>
+                  <li>Chemical Pathology <br>
+                    - Glycated Haemoglobin
+                  </li>
+                  <li>Clinical Toxicology</li>
+                  <li>Cytogenetics <br>
+                    - Pre-implantation genetic testing for monogenic or single gene defects <br>
+                    - Pre-implantation genetic testing for chromosomal structural rearrangements
+                  </li>
+                  <li>Cytology</li>
+                  <li>Haematology<br>
+                    - Malaria parasite testing
+                  </li>
+                </ol>
+              </div>
+            </div>
+
+            <div class="lic-footer">
+              <p style="font-style: italic;">Updated as of 17 March 2022</p>
+              <p>Ministry of Health | Page 3 of 3</p>
             </div>
           </div>
         </div>

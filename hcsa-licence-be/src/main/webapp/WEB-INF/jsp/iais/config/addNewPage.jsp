@@ -6,7 +6,7 @@
 <%@ page import="com.ecquaria.cloud.RedirectUtil" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.constant.ServiceConfigConstant" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ServiceConfigConstant" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.ParamUtil" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>

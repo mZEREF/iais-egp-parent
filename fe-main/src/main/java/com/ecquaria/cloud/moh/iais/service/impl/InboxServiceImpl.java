@@ -11,6 +11,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDraftD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremSubSvcRelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -39,15 +41,14 @@ import com.ecquaria.cloud.moh.iais.service.client.FeUserClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
@@ -521,9 +522,37 @@ public class InboxServiceImpl implements InboxService {
         appInboxClient.deleteDraftByNo(draftNo);
     }
 
+    class innerLicenceViewData{
+        String value;
+
+    }
+
     @Override
     public LicenceViewDto getLicenceViewDtoByLicenceId(String licenceId) {
         LicenceViewDto licenceViewDto =  licenceInboxClient.getAllStatusLicenceByLicenceId(licenceId).getEntity();
+        List<LicPremisesScopeDto> licPremisesScopeDtos = licenceViewDto.getLicPremisesScopeDtos();
+        List<LicPremSubSvcRelDto> licPremSubSvcRelDtos = licenceViewDto.getLicPremSubSvcRelDtos();
+        List<String> disciplinesSpecifieds = IaisCommonUtils.genNewArrayList();
+        if(IaisCommonUtils.isNotEmpty(licPremisesScopeDtos)){
+            StringBuilder str = new StringBuilder();
+            int eachPage =14;
+            for(int i = 0;i<licPremisesScopeDtos.size();i++) {
+                int d = (i + 1) % eachPage;
+                str.append("<li>").append(licPremisesScopeDtos.get(i).getSubTypeId());
+                if (d == 0) {
+                    str.append("</li>");
+                    disciplinesSpecifieds.add(str.toString());
+                    str = new StringBuilder();
+                } else if (i == licPremisesScopeDtos.size() - 1) {
+                    str.append("</li>");
+                    disciplinesSpecifieds.add(str.toString());
+                } else {
+                    str.append("</li>");
+                }
+            }
+
+
+        }
 //        if(licenceViewDto!=null){
 //            LicenceDto licenceDto = licenceViewDto.getLicenceDto();
 //            String licenseeId = licenceDto.getLicenseeId();
