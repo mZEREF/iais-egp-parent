@@ -2490,16 +2490,11 @@ public final class ApplicationHelper {
     }
 
     public static List<DocumentShowDto> initShowDocumentList(AppSvcRelatedInfoDto currSvcInfoDto,
-            List<AppPremSpecialisedDto> appPremSpecialisedDtoList) {
-        return initShowDocumentList(currSvcInfoDto, appPremSpecialisedDtoList, true);
-    }
-
-    public static List<DocumentShowDto> initShowDocumentList(AppSvcRelatedInfoDto currSvcInfoDto,
-            List<AppPremSpecialisedDto> appPremSpecialisedDtoList, boolean init) {
+            List<AppPremSpecialisedDto> appPremSpecialisedDtoList, boolean reset) {
         if (currSvcInfoDto == null) {
             return IaisCommonUtils.genNewArrayList();
         }
-        if (!init && IaisCommonUtils.isNotEmpty(currSvcInfoDto.getDocumentShowDtoList())) {
+        if (!reset && IaisCommonUtils.isNotEmpty(currSvcInfoDto.getDocumentShowDtoList())) {
             return currSvcInfoDto.getDocumentShowDtoList();
         }
         List<DocumentShowDto> documentShowDtos = genDocumentShowDtoList(addBaseSvc(appPremSpecialisedDtoList), currSvcInfoDto);

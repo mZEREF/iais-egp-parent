@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
@@ -1223,4 +1224,27 @@ public final class RfcHelper {
         return result;
     }
 
+    public static boolean isChangedList(List<String> l1, List<String> l2) {
+        if (l1 == null || l2 == null) {
+            return false;
+        }
+        int size = l1.size();
+        if (size != l2.size()) {
+            return true;
+        }
+        List<String> l3 = new ArrayList<>(l1);
+        l1.removeAll(l2);
+        l2.removeAll(l3);
+        return !l1.isEmpty() || !l2.isEmpty();
+    }
+
+    public static List<String> getSpecialServiceList(AppSubmissionDto appSubmissionDto) {
+        List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
+        if (IaisCommonUtils.isEmpty(appPremSpecialisedDtoList)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        List<String> result = IaisCommonUtils.genNewArrayList();
+        appPremSpecialisedDtoList.forEach(dto -> dto.getCheckedAppPremSubSvcRelDtoList().forEach(rel -> result.add(dto.getPremisesVal() + dto.getBaseSvcId() + rel.getSvcId())));
+        return result;
+    }
 }

@@ -441,7 +441,6 @@ public class DealSessionUtil {
             }
         }
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
-
         ApplicationHelper.initAppPremSpecialisedDtoList(appSubmissionDto, hcsaServiceDtos);
 
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -531,7 +530,8 @@ public class DealSessionUtil {
                     }
                 }
             } else if (HcsaConsts.STEP_DOCUMENTS.equals(stepCode)) {
-                List<DocumentShowDto> documentShowDtos = ApplicationHelper.initShowDocumentList(currSvcInfoDto, appPremSpecialisedDtoList);
+                List<DocumentShowDto> documentShowDtos = ApplicationHelper.initShowDocumentList(currSvcInfoDto,
+                        appPremSpecialisedDtoList, reset);
                 initDocumentSession(documentShowDtos, request);
             }
         }
@@ -600,36 +600,40 @@ public class DealSessionUtil {
         return appSvcDocDtoList;
     }
 
-    public static void reSetInit(AppSubmissionDto appSubmissionDto){
-        List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
-        if (IaisCommonUtils.isNotEmpty(appPremSpecialisedDtoList)) {
-            appPremSpecialisedDtoList.forEach(dto -> {
-                if (dto.isInit()) {
-                    dto.setInit(false);
-                }
-            });
+    public static void reSetInit(AppSubmissionDto appSubmissionDto, String type){
+        if (HcsaAppConst.SECTION_PREMISES.equals(type)) {
+            List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
+            if (IaisCommonUtils.isNotEmpty(appPremSpecialisedDtoList)) {
+                appPremSpecialisedDtoList.forEach(dto -> {
+                    if (dto.isInit()) {
+                        dto.setInit(false);
+                    }
+                });
+            }
         }
         for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSubmissionDto.getAppSvcRelatedInfoDtoList()) {
-            reSetInit(appSvcRelatedInfoDto);
+            reSetInit(appSvcRelatedInfoDto, type);
         }
     }
 
-    public static void reSetInit(AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
-        List<AppSvcSuplmFormDto> appSvcSuplmFormList = appSvcRelatedInfoDto.getAppSvcSuplmFormList();
-        if (IaisCommonUtils.isNotEmpty(appSvcSuplmFormList)) {
-            appSvcSuplmFormList.forEach(dto -> {
-                if (dto.isInit()) {
-                    dto.setInit(false);
-                }
-            });
-        }
-        List<AppSvcOtherInfoDto> appSvcOtherInfoList = appSvcRelatedInfoDto.getAppSvcOtherInfoList();
-        if (IaisCommonUtils.isNotEmpty(appSvcOtherInfoList)) {
-            appSvcOtherInfoList.forEach(dto -> {
-                if (dto.isInit()) {
-                    dto.setInit(false);
-                }
-            });
+    public static void reSetInit(AppSvcRelatedInfoDto appSvcRelatedInfoDto, String type) {
+        if (HcsaAppConst.SECTION_PREMISES.equals(type)) {
+            List<AppSvcSuplmFormDto> appSvcSuplmFormList = appSvcRelatedInfoDto.getAppSvcSuplmFormList();
+            if (IaisCommonUtils.isNotEmpty(appSvcSuplmFormList)) {
+                appSvcSuplmFormList.forEach(dto -> {
+                    if (dto.isInit()) {
+                        dto.setInit(false);
+                    }
+                });
+            }
+            List<AppSvcOtherInfoDto> appSvcOtherInfoList = appSvcRelatedInfoDto.getAppSvcOtherInfoList();
+            if (IaisCommonUtils.isNotEmpty(appSvcOtherInfoList)) {
+                appSvcOtherInfoList.forEach(dto -> {
+                    if (dto.isInit()) {
+                        dto.setInit(false);
+                    }
+                });
+            }
         }
         List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = appSvcRelatedInfoDto.getAppSvcSpecialServiceInfoList();
         if (IaisCommonUtils.isNotEmpty(appSvcSpecialServiceInfoList)) {
@@ -639,6 +643,7 @@ public class DealSessionUtil {
                 }
             });
         }
+        appSvcRelatedInfoDto.setDocumentShowDtoList(null);
     }
 
 }

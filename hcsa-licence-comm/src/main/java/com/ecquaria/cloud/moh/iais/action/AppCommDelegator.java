@@ -495,13 +495,15 @@ public abstract class AppCommDelegator {
     public void doSpecialised(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
-
+        List<String> oldSpecialSerices = null;
         boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(RfcConst.EDIT_SPECIALISED, request);
         log.info(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
         List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
         String svcCode = ParamUtil.getString(request, HcsaAppConst.SPECIALISED_SVC_CODE);
         log.info(StringUtil.changeForLog("Svc Code: " + svcCode));
         if (isGetDataFromPage) {
+            AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(request);
+            oldSpecialSerices = RfcHelper.getSpecialServiceList(oldAppSubmissionDto != null ? oldAppSubmissionDto : appSubmissionDto);
             AppDataHelper.setSpecialisedData(appPremSpecialisedDtoList, svcCode, request);
             appSubmissionDto.setAppPremSpecialisedDtoList(appPremSpecialisedDtoList);
             ApplicationHelper.setAppSubmissionDto(appSubmissionDto, request);
@@ -519,8 +521,18 @@ public abstract class AppCommDelegator {
             ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
         } else {
             coMap.put(HcsaAppConst.SECTION_SPECIALISED, HcsaAppConst.SECTION_SPECIALISED);
+            checkSpecialisedChanged(appSubmissionDto, oldSpecialSerices);
             ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
             saveDraft(bpc);
+        }
+    }
+
+    protected void checkSpecialisedChanged(AppSubmissionDto appSubmissionDto, List<String> oldSpecialSerices) {
+        List<String> specialServiceList = RfcHelper.getSpecialServiceList(appSubmissionDto);
+        boolean changed = RfcHelper.isChangedList(specialServiceList, oldSpecialSerices);
+        log.info(StringUtil.changeForLog("App Specialised Changed: " + changed));
+        if (changed) {
+            DealSessionUtil.reSetInit(appSubmissionDto, HcsaAppConst.SECTION_SPECIALISED);
         }
     }
 
@@ -868,7 +880,7 @@ public abstract class AppCommDelegator {
                 oldAppGrpPremisesDtoList);
         log.info(StringUtil.changeForLog("App Premises Changed: " + changed));
         if (changed) {
-            DealSessionUtil.reSetInit(appSubmissionDto);
+            DealSessionUtil.reSetInit(appSubmissionDto, HcsaAppConst.SECTION_PREMISES);
         }
     }
 
