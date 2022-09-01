@@ -924,7 +924,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public List<IUICycleStageDto> AvailableStageList(HttpServletRequest request) {
+    public List<IUICycleStageDto> availableStageList(HttpServletRequest request) {
         ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(request);
         CycleStageSelectionDto selectionDto = currentArDataSubmission.getSelectionDto();
         // get from cycleStageSelectionSection.jsp, user select next stage

@@ -146,5 +146,5 @@ public interface ArDataSubmissionService {
 
     ArSuperDataSubmissionDto getDraftArSuperDataSubmissionDtoByConds(String orgId, String hciCode, String submissionStage, String userId);
 
-    List<IUICycleStageDto> AvailableStageList(HttpServletRequest request);
+    List<IUICycleStageDto> availableStageList(HttpServletRequest request);
 }
