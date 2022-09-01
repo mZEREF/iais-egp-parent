@@ -25,7 +25,7 @@
                                    value="true"
                                    <c:if test="${outcomeStageDto.pregnancyDetected}">checked</c:if>
                                    id="radioYes"
-                                   aria-invalid="false">
+                                   aria-invalid="false" onclick="pregnancyDetect()">
                             <label class="form-check-label"
                                    for="radioYes"><span
                                     class="check-circle"></span>Yes</label>
@@ -40,7 +40,7 @@
                                    value="false"
                                    <c:if test="${outcomeStageDto.pregnancyDetected=='false'}">checked</c:if>
                                    id="radioNo"
-                                   aria-invalid="false">
+                                   aria-invalid="false" onclick="pregnancyDetect()">
                             <label class="form-check-label"
                                    for="radioNo"><span
                                     class="check-circle"></span>No</label>

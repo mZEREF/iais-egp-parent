@@ -3,19 +3,21 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.OutcomeStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -28,6 +30,13 @@ import java.util.Map;
 @Delegator("outcomeDelegator")
 @Slf4j
 public class OutcomeDelegator extends CommonDelegator{
+    public static final String OUTCOME_OF_EMBRYO_TRANSFERREDS = "OutcomeEmbryoTransferreds";
+
+    @Override
+    public void start(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setSessionAttr(request,OUTCOME_OF_EMBRYO_TRANSFERREDS, (Serializable) MasterCodeUtil.retrieveByCategory(MasterCodeUtil.OUTCOME_OF_EMBRYO_TRANSFERRED));
+    }
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("crud_action_type is ======>"+ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE)));
@@ -57,6 +66,26 @@ public class OutcomeDelegator extends CommonDelegator{
             ValidationResult validationResult = WebValidationHelper.validateProperty(outcomeStageDto, "save");
 
             Map<String, String> errorMap = validationResult.retrieveAll();
+            if ("true".equals(pregnancyDetected)) {
+                HttpServletRequest request = bpc.request;
+                EmbryoTransferredOutcomeStageDto embryoTransferredOutcomeStageDto =
+                        arSuperDataSubmissionDto.getEmbryoTransferredOutcomeStageDto() == null ? new EmbryoTransferredOutcomeStageDto() : arSuperDataSubmissionDto.getEmbryoTransferredOutcomeStageDto();
+                PregnancyOutcomeStageDto pregnancyOutcomeStageDto =
+                        arSuperDataSubmissionDto.getEmbryoTransferredOutcomeStageDto() == null ? new PregnancyOutcomeStageDto() : arSuperDataSubmissionDto.getPregnancyOutcomeStageDto();
+                if (pregnancyOutcomeStageDto == null) {
+                    pregnancyOutcomeStageDto = new PregnancyOutcomeStageDto();
+                }
+                if (embryoTransferredOutcomeStageDto == null) {
+                    embryoTransferredOutcomeStageDto = new EmbryoTransferredOutcomeStageDto();
+                }
+                ControllerHelper.get(request, pregnancyOutcomeStageDto);
+                ControllerHelper.get(request, embryoTransferredOutcomeStageDto);
+                arSuperDataSubmissionDto.setPregnancyOutcomeStageDto(pregnancyOutcomeStageDto);
+                arSuperDataSubmissionDto.setEmbryoTransferredOutcomeStageDto(embryoTransferredOutcomeStageDto);
+                //ValidationResult validationPregnancyResult = WebValidationHelper.validateProperty(pregnancyOutcomeStageDto,"save");
+
+            }
+
             if(StringUtil.isEmpty(pregnancyDetected)){
                 errorMap.put("pregnancyDetected" ,"GENERAL_ERR0006");
             }

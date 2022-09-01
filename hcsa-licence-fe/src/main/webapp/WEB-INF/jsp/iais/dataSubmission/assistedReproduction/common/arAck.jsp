@@ -29,6 +29,14 @@
         <div class="container center-content">
             <div style="margin-top:-30px;">
                 <div class="col-xs-12 text-right">
+                    <c:choose>
+                        <c:when test="${arSuperDataSubmissionDto.selectionDto.lastCycle eq 'DSCL_009'}">
+                            <%@include file="iuiHeadStepNavTab.jsp" %>
+                        </c:when>
+                        <c:when test="${arSuperDataSubmissionDto.selectionDto.lastCycle eq 'DSCL_008'}">
+                            <%@include file="headStepNavTab.jsp" %>
+                        </c:when>
+                    </c:choose>
                     <p class="print ack-font-16">
                         <label class="fa fa-print" style="color: #147aab;" onclick="printData()"></label> <a onclick="printData()" href="javascript:void(0);">Print</a>
                     </p>

@@ -15,10 +15,20 @@
     <div class="main-content">
         <div class="container center-content">
             <div class="col-xs-12">
-                <%@include file="common/headStepNavTab.jsp" %>
+                <c:choose>
+                    <c:when test="${arSuperDataSubmissionDto.selectionDto.lastCycle eq 'DSCL_009'}">
+                        <%@include file="common/iuiHeadStepNavTab.jsp" %>
+                    </c:when>
+                    <c:when test="${arSuperDataSubmissionDto.selectionDto.lastCycle eq 'DSCL_008'}">
+                        <%@include file="common/headStepNavTab.jsp" %>
+                    </c:when>
+                </c:choose>
                 <%@include file="common/viewTitle.jsp" %>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <%@include file="section/previewOutcomeStageDetail.jsp"%>
+<%--                    <div id="pregnancy">--%>
+<%--                        <%@include file="section/pregnancyOutcomeStageSection.jsp" %>--%>
+<%--                    </div>--%>
                     <%@include file="common/previewDsAmendment.jsp" %>
                     <%@include file="common/arDeclaration.jsp" %>
                 </div>
@@ -27,3 +37,17 @@
         </div>
     </div>
 </form>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        pregnancyDetect()
+    })
+    function pregnancyDetect() {
+        console.log(document.getElementById('pregnancyDetected'));
+        if (document.getElementById('pregnancyDetected').innerText == 'Yes') {
+            $("#pregnancy").show();
+        } else {
+            $("#pregnancy").hide();
+        }
+    }
+</script>

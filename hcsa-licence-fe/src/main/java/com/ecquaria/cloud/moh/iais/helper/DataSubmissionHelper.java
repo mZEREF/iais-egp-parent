@@ -710,6 +710,14 @@ public final class DataSubmissionHelper {
         return stages;
     }
 
+    public static List<String> getAllIUICycleStages(){
+        List<String> stages = new ArrayList<>(3);
+        stages.add(DataSubmissionConsts.AR_CYCLE_IUI);
+        stages.add(DataSubmissionConsts.AR_STAGE_OUTCOME);
+        stages.add(DataSubmissionConsts.AR_STAGE_IUI_TREATMENT_SUBSIDIES);
+        return stages;
+    }
+
     public static List<SelectOption> genOptions(Map<String, String> map, String firstOption, boolean sort) {
         List<SelectOption> opts = IaisCommonUtils.genNewArrayList();
         if (map != null && !map.isEmpty()) {

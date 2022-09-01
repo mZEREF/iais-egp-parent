@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.dto.ARCycleStageDto;
+import com.ecquaria.cloud.moh.iais.dto.IUICycleStageDto;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
@@ -144,4 +145,6 @@ public interface ArDataSubmissionService {
     void jumpJudgement(HttpServletRequest request);
 
     ArSuperDataSubmissionDto getDraftArSuperDataSubmissionDtoByConds(String orgId, String hciCode, String submissionStage, String userId);
+
+    List<IUICycleStageDto> AvailableStageList(HttpServletRequest request);
 }

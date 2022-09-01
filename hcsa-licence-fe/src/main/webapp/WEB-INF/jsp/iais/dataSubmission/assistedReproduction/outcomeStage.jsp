@@ -10,6 +10,8 @@
 
 <%-- current page: stage--%>
 <input type="hidden" name="ar_page" value="stage"/>
+<%-- pregnancyOutcome --%>
+<input type="hidden" name="pregnancyOutcome" value="section/pregnancyOutStageSection.jsp"/>
 <%--preview/ack--%>
 <%@ include file="common/arHeader.jsp" %>
 
@@ -17,10 +19,20 @@
     <div class="main-content">
         <div class="container center-content">
             <div class="col-xs-12">
-                <%@include file="common/headStepNavTab.jsp" %>
+                <c:choose>
+                    <c:when test="${arSuperDataSubmissionDto.selectionDto.lastCycle eq 'DSCL_009'}">
+                        <%@include file="common/iuiHeadStepNavTab.jsp" %>
+                    </c:when>
+                    <c:when test="${arSuperDataSubmissionDto.selectionDto.lastCycle eq 'DSCL_008'}">
+                        <%@include file="common/headStepNavTab.jsp" %>
+                    </c:when>
+                </c:choose>
                 <h3>Please key in the cycle information below.</h3>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <%@include file="section/outcomeStageSection.jsp" %>
+                    <div id="pregnancy">
+                        <%@include file="section/pregnancyOutcomeStageSection.jsp" %>
+                    </div>
                     <%@include file="common/dsAmendment.jsp" %>
                 </div>
                 <%@include file="common/arFooter.jsp" %>
@@ -28,3 +40,16 @@
         </div>
     </div>
 </form>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        pregnancyDetect()
+    })
+    function pregnancyDetect() {
+        if (document.getElementById('radioYes').checked) {
+            $("#pregnancy").show();
+        } else {
+            $("#pregnancy").hide();
+        }
+    }
+</script>

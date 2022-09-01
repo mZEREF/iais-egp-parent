@@ -17,7 +17,7 @@
                 <c:set var="outcomeStageDto" value="${arSuperDataSubmissionDto.outcomeStageDto}" />
                 <iais:row>
                     <iais:field width="6" value="Is Clinical Pregnancy Detected?"/>
-                    <iais:value width="6" display="true">
+                    <iais:value width="6" display="true" id="pregnancyDetected">
                         <c:if test="${outcomeStageDto.pregnancyDetected == true }">Yes</c:if>
                         <c:if test="${outcomeStageDto.pregnancyDetected == false }">No</c:if>
                     </iais:value>
