@@ -105,7 +105,7 @@
                                     </iais:row>
 
                                     <%--this section display when checkboxs choose Form Entry--%>
-                                    <div id="formEntrySection" style="display: none">
+                                    <div id="formEntryDiv">
                                         <iais:row cssClass="form-check-gp">
                                             <p class="form-check-title">Do you want to register a Donor Sample
                                                 Only?</p>
@@ -113,7 +113,7 @@
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input triggerObj" id="donorSampleN"
                                                        type="radio" name="submissionType" value="AR_TP001"
-                                                       <c:if test="${arSuperDataSubmissionDto.submissionType eq 'AR_TP001'}">checked</c:if>/>
+                                                       <c:if test="${arSuperDataSubmissionDto.submissionType eq 'AR_TP001' or arSuperDataSubmissionDto.submissionType eq 'AR_TP002'}">checked</c:if>/>
 
                                                 <label class="form-check-label" for="donorSampleN">
                                                     <span class="check-circle"></span>No
@@ -134,17 +134,16 @@
                                                   id="error_submissionType"></span>
                                         </iais:row>
 
-                                        <div id="donorSampleSection" style="display: none">
+                                        <div id="donorSampleDiv">
                                             <%@include file="section/donorSample.jsp" %>
                                         </div>
 
-                                        <div id="patientSection" style="display: none">
+                                        <div id="patientDiv">
                                             <%@include file="section/arPatient.jsp" %>
                                         </div>
                                     </div>
 
-                                    <%--this section display when checkboxs choose Batch Upload--%>
-                                    <div id="batchUpload" style="display: none">
+                                    <div id="batchUploadDiv">
                                         <h1>TODO</h1>
                                     </div>
                                 </div>
@@ -171,4 +170,25 @@
     <iais:confirm msg="DS_MSG036" callBack="submit('page', 'needCycle');" popupOrder="_draftModal" yesBtnDesc="Yes"
                   cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" needFungDuoJi="false"
                   cancelBtnDesc="No" cancelFunc="submit('confirm', 'noCycle')"/>
+</c:if>
+
+<%--
+There is an existing draft for Patient Information. Please either resume from draft or continue to submit for a new patient.(DS_MSG001)
+There is an existing cycle stage draft for this patient. Please either resume from draft or continue to submit for a new cycle stage.(DS_MSG002)
+There is an existing draft for Donor Sample. Please either resume from draft or continue to submit a new donor sample.(DS_MSG008)
+--%>
+<c:if test="${hasDraft && arSuperDataSubmissionDto.submissionType eq 'AR_TP001'}">
+    <iais:confirm msg="DS_MSG001" callBack="submit('page', 'resume');" popupOrder="_draftModal" yesBtnDesc="Resume from draft"
+                  cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
+                  cancelBtnDesc="Continue" cancelFunc="submit('page', 'delete')" needFungDuoJi="false"/>
+</c:if>
+<c:if test="${hasDraft && arSuperDataSubmissionDto.submissionType eq 'AR_TP002'}">
+    <iais:confirm msg="DS_MSG002" callBack="submit('stage', 'resume');" popupOrder="_draftModal" yesBtnDesc="Resume from draft"
+                  cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
+                  cancelBtnDesc="Continue" cancelFunc="submit('stage', 'delete');" needFungDuoJi="false"/>
+</c:if>
+<c:if test="${hasDraft && arSuperDataSubmissionDto.submissionType eq 'AR_TP003'}">
+    <iais:confirm msg="DS_MSG008" callBack="submit('page', 'resume');" popupOrder="_draftModal" yesBtnDesc="Resume from draft"
+                  cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
+                  cancelBtnDesc="Continue" cancelFunc="submit('page', 'delete');" needFungDuoJi="false"/>
 </c:if>

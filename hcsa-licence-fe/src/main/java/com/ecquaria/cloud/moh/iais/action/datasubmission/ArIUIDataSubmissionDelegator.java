@@ -30,17 +30,11 @@ import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.DsRfcHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDonorSampleService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,6 +43,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.JUMP_ACTION_TYPE;
 
 @Delegator("arIUIDataSubmissionDelegator")
 @Slf4j
@@ -113,13 +117,14 @@ public class ArIUIDataSubmissionDelegator {
     }
 
     public void doARIUIDataSubmission(BaseProcessClass bpc) {
-        String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
-        if (ACTION_TYPE_RETURN.equals(actionType)){
+        HttpServletRequest request = bpc.request;
+        String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
+        if (ACTION_TYPE_RETURN.equals(actionType)) {
             return;
         }
-        String submissionType = ParamUtil.getString(bpc.request, "submissionType");
-        String submissionMethod = ParamUtil.getString(bpc.request, "submissionMethod");
+        String submissionType = ParamUtil.getString(request, "submissionType");
+        String submissionMethod = ParamUtil.getString(request, "submissionMethod");
 
         //submissionMethod: Form Entry/Batch Upload
         //submissionType: Yes(donor sample)/No(patient)
@@ -131,41 +136,106 @@ public class ArIUIDataSubmissionDelegator {
         if (!StringUtils.hasLength(submissionType)) {
             errorMap.put("submissionType", "GENERAL_ERR0006");
         }
-
+        String isRegister = ParamUtil.getString(request, "registeredPatient");
+        submissionType = AppConsts.YES.equals(isRegister) ? submissionType : DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE;
         //prepare ArSubmissionDto for donor sample or patient or cycle
-        ArSuperDataSubmissionDto currentSuper = prepareArSuperDataSubmissionDto(bpc, submissionType, submissionMethod, errorMap);
-        DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, bpc.request);
+        ArSuperDataSubmissionDto currentSuper = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        if (currentSuper == null) {
+            currentSuper = prepareArSuperDataSubmissionDto(request, submissionType, submissionMethod, errorMap);
+        }
+        DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, request);
 
-        if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(submissionType)) {
-            String isRegister = ParamUtil.getString(bpc.request, "registeredPatient");
-            if (AppConsts.YES.equals(isRegister)) {
-                PatientInfoDto patientInfo = (PatientInfoDto) ParamUtil.getSessionAttr(bpc.request, PATIENT_INFO_DTO);
-                if (Objects.isNull(patientInfo)) {
-                    patientInfo = prepareSavePatient(bpc, currentSuper.getOrgId(), currentSuper.getAppType(), false);
-                }
-                currentSuper.setPatientInfoDto(patientInfo);
-            } else {
-                String nextStage = ParamUtil.getString(bpc.request, "nextStage");
-                CycleStageSelectionDto selectionDto = (CycleStageSelectionDto) ParamUtil.getSessionAttr(bpc.request, "selectionDto");
-                PatientInfoDto patientInfoDto = (PatientInfoDto) ParamUtil.getSessionAttr(bpc.request, PATIENT_INFO_DTO);
-                currentSuper.setSelectionDto(selectionDto);
-                currentSuper.setPatientInfoDto(patientInfoDto);
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_STAGE);
-                ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, nextStage);
+        // from draft confirm
+        String hciCode = Optional.ofNullable(currentSuper.getPremisesDto())
+                .map(PremisesDto::getHciCode)
+                .orElse("");
+        String actionValue = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        CycleStageSelectionDto selectionDto = currentSuper.getSelectionDto();
+        if ("resume".equals(actionValue)) {
+            ArSuperDataSubmissionDto arSuperDataSubmissionDtoDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftById(
+                    currentSuper.getDraftId());
+            if (arSuperDataSubmissionDtoDraft != null) {
+                DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDtoDraft, request);
             }
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
+            ParamUtil.setRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, selectionDto.getStage());
+            return;
+        } else if ("delete".equals(actionValue)) {
+            String orgId = currentSuper.getOrgId();
+            arDataSubmissionService.deleteArSuperDataSubmissionDtoDraftByConds(selectionDto.getPatientIdType(),
+                    selectionDto.getPatientIdNumber(), selectionDto.getPatientNationality(),
+                    orgId, hciCode);
+            currentSuper.setDraftNo(null);
+            currentSuper.setDraftId(null);
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
+            ParamUtil.setRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, selectionDto.getStage());
+            return;
+        }
+
+        boolean hasNewCycle = false;
+        if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(submissionType)) {
+            PatientInfoDto patientInfo = (PatientInfoDto) ParamUtil.getSessionAttr(request, PATIENT_INFO_DTO);
+            if (Objects.isNull(patientInfo)) {
+                patientInfo = prepareSavePatient(bpc, currentSuper.getOrgId(), currentSuper.getAppType(), false);
+            }
+            currentSuper.setPatientInfoDto(patientInfo);
+        } else if (DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE.equals(submissionType)) {
+            selectionDto = (CycleStageSelectionDto) ParamUtil.getSessionAttr(request, "selectionDto");
+            PatientInfoDto patientInfoDto = (PatientInfoDto) ParamUtil.getSessionAttr(request, PATIENT_INFO_DTO);
+            String nextStage = ParamUtil.getString(request, "nextStage");
+            String cycleRadio = ParamUtil.getString(request, "cycleRadio");
+            String hasCycle = ParamUtil.getString(request, "hasCycle");
+            currentSuper.getDataSubmissionDto().setCycleStage(nextStage);
+            selectionDto.setStage(nextStage);
+            currentSuper.setPatientInfoDto(patientInfoDto);
+            ParamUtil.setRequestAttr(request, "cycleRadio", cycleRadio);
+            hasNewCycle = "N".equals(hasCycle) || "newCycle".equals(cycleRadio);
+            if ( hasNewCycle && StringUtil.isEmpty(nextStage)) {
+                errorMap.put("nextStage", "GENERAL_ERR0006");
+            }
+            if (StringUtil.isEmpty(cycleRadio)) {
+                errorMap.put("cycleRadio", "GENERAL_ERR0006");
+            }
+            if (errorMap.isEmpty()) {
+                if (!"newCycle".equals(cycleRadio)) {
+                    selectionDto = arDataSubmissionService.getCycleStageSelectionDtoByConds(patientInfoDto.getPatient().getPatientCode(),
+                            hciCode, cycleRadio);
+                    selectionDto.setHciCode(hciCode);
+                    if (StringUtil.isNotEmpty(selectionDto.getLastStage())) {
+                        selectionDto.setLastStageDesc(MasterCodeUtil.getCodeDesc(selectionDto.getLastStage()));
+                    } else {
+                        selectionDto.setLastStageDesc("-");
+                    }
+                }
+            }
+            currentSuper.setSelectionDto(selectionDto);
+            currentSuper.setCycleDto(DataSubmissionHelper.initCycleDto(selectionDto, currentSuper.getSvcName(), hciCode, DataSubmissionHelper.getLicenseeId(request)));
+            ParamUtil.setRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, nextStage);
         } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(submissionType)) {
-            DonorSampleDto donorSampleDto = arDonorSampleService.genDonorSampleDtoByPage(bpc.request);
+            DonorSampleDto donorSampleDto = arDonorSampleService.genDonorSampleDtoByPage(request);
             currentSuper.setDonorSampleDto(donorSampleDto);
             ValidationResult validationResult = WebValidationHelper.validateProperty(donorSampleDto, "save");
             errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_CONFIRM);
         }
 
-        if (ACTION_TYPE_SUBMISSION.equals(actionType) && !errorMap.isEmpty()) {
-            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
+        if (ACTION_TYPE_SUBMISSION.equals(actionType)) {
+            if (!errorMap.isEmpty()) {
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                ParamUtil.setRequestAttr(request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(request, IntranetUserConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
+            } else if (DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE.equals(submissionType)) {
+                // start new stage
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_STAGE);
+                if (hasNewCycle && !haveStageDraft(request)) {
+                    ParamUtil.setRequestAttr(bpc.request, JUMP_ACTION_TYPE, "jump");
+                }
+            } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(submissionType)) {
+                // submit donor sample
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_CONFIRM);
+            }
         }
+        DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, request);
     }
 
 
@@ -286,6 +356,49 @@ public class ArIUIDataSubmissionDelegator {
     }
 
     public void prepareStage(BaseProcessClass bpc) {
+        // clear crud_action_type, because sub stage need switch
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, null);
+    }
+
+    private boolean haveStageDraft(HttpServletRequest request) {
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        CycleStageSelectionDto selectionDto = arSuperDataSubmissionDto.getSelectionDto();
+        String orgId = arSuperDataSubmissionDto.getOrgId();
+        String userId = "";
+        LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
+        if (loginContext != null) {
+            userId = loginContext.getUserId();
+        }
+        String hciCode = Optional.ofNullable(arSuperDataSubmissionDto.getPremisesDto())
+                .map(PremisesDto::getHciCode)
+                .orElse("");
+
+        String actionValue = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        List<ArSuperDataSubmissionDto> dataSubmissionDraftList = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(
+                selectionDto.getPatientIdType(), selectionDto.getPatientIdNumber(), selectionDto.getPatientNationality(),
+                orgId, hciCode, true, userId);
+        if (IaisCommonUtils.isNotEmpty(dataSubmissionDraftList)) {
+            dataSubmissionDraftList = dataSubmissionDraftList.stream()
+                    .filter(arDraft -> arDraft.getSelectionDto().getStage().equals(selectionDto.getStage()))
+                    .collect(Collectors.toList());
+            if (DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT.equals(selectionDto.getStage()) && IaisCommonUtils.isNotEmpty(dataSubmissionDraftList)) {
+                dataSubmissionDraftList = dataSubmissionDraftList.stream()
+                        .filter(arSuperDataSubmissionDto1 -> StringUtil.isEmpty(arSuperDataSubmissionDto1.getTransferInOutStageDto().getBindSubmissionId()))
+                        .collect(Collectors.toList());
+            }
+        }
+        ArSuperDataSubmissionDto dataSubmissionDraft = null;
+        if (IaisCommonUtils.isNotEmpty(dataSubmissionDraftList)) {
+            dataSubmissionDraft = dataSubmissionDraftList.get(0);
+        }
+        if (dataSubmissionDraft != null) {
+            arSuperDataSubmissionDto.setDraftId(dataSubmissionDraft.getDraftId());
+            arSuperDataSubmissionDto.setDraftNo(dataSubmissionDraft.getDraftNo());
+            DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, request);
+            ParamUtil.setRequestAttr(request, "hasDraft", Boolean.TRUE);
+            return true;
+        }
+        return false;
     }
 
 
@@ -429,13 +542,12 @@ public class ArIUIDataSubmissionDelegator {
     }
 
 
-    public ArSuperDataSubmissionDto prepareArSuperDataSubmissionDto(BaseProcessClass bpc, String submissionType, String submissionMethod, Map<String, String> errorMap) {
+    private ArSuperDataSubmissionDto prepareArSuperDataSubmissionDto(HttpServletRequest request, String submissionType, String submissionMethod, Map<String, String> errorMap) {
         // check premises
-        HttpSession session = bpc.request.getSession();
-        String centreSel = ParamUtil.getString(bpc.request, CENTRE_SEL);
-        Map<String, PremisesDto> premisesMap = (Map<String, PremisesDto>) session.getAttribute(
-                DataSubmissionConstant.AR_PREMISES_MAP);
-        PremisesDto premisesDto = (PremisesDto) session.getAttribute(DataSubmissionConstant.AR_PREMISES);
+        HttpSession session = request.getSession();
+        String centreSel = ParamUtil.getString(request, CENTRE_SEL);
+        Map<String, PremisesDto> premisesMap = (Map<String, PremisesDto>) ParamUtil.getSessionAttr(request, DataSubmissionConstant.AR_PREMISES_MAP);
+        PremisesDto premisesDto = (PremisesDto) ParamUtil.getSessionAttr(request, DataSubmissionConstant.AR_PREMISES);
         if (!StringUtils.isEmpty(centreSel)) {
             if (premisesMap != null) {
                 premisesDto = premisesMap.get(centreSel);
@@ -449,7 +561,7 @@ public class ArIUIDataSubmissionDelegator {
             errorMap.put(CENTRE_SEL, "There are no active Assisted Reproduction licences");
         }
 
-        ArSuperDataSubmissionDto currentSuper = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        ArSuperDataSubmissionDto currentSuper = DataSubmissionHelper.getCurrentArDataSubmission(request);
         boolean reNew = isNeedReNew(currentSuper, submissionType, submissionMethod, premisesDto);
         if (reNew) {
             currentSuper = new ArSuperDataSubmissionDto();
@@ -457,45 +569,11 @@ public class ArIUIDataSubmissionDelegator {
 
         String orgId = "";
         String licenseeId = "";
-        String userId = "";
-        LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
+        LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
         if (loginContext != null) {
             orgId = loginContext.getOrgId();
             licenseeId = loginContext.getLicenseeId();
-            userId = loginContext.getUserId();
         }
-
-        if (!errorMap.isEmpty()) {
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-        } else {
-            String hciCode = premisesDto != null ? premisesDto.getHciCode() : "";
-            String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
-            log.info(StringUtil.changeForLog("Action Type: " + actionValue));
-            if (StringUtil.isEmpty(actionValue)) {
-                ArSuperDataSubmissionDto dataSubmissionDraft = null;
-                if (!DataSubmissionConsts.DS_METHOD_FILE_UPLOAD.equals(submissionMethod)) {
-                    dataSubmissionDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(
-                            orgId, submissionType, hciCode, userId);
-                }
-                if (dataSubmissionDraft != null/* && !Objects.equals(dataSubmissionDraft.getDraftNo(), currentSuper.getDraftNo())*/) {
-                    ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
-                }
-            } else if ("resume".equals(actionValue)) {
-                currentSuper = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(orgId, submissionType,
-                        hciCode, userId);
-                if (currentSuper == null) {
-                    log.warn("Can't resume data!");
-                    currentSuper = new ArSuperDataSubmissionDto();
-                } else {
-                    reNew = false;
-                }
-            } else if ("delete".equals(actionValue)) {
-                arDataSubmissionService.deleteArSuperDataSubmissionDtoDraftByConds(orgId, submissionType, hciCode);
-                currentSuper = new ArSuperDataSubmissionDto();
-                reNew = true;
-            }
-        }
-
         currentSuper.setOrgId(orgId);
         currentSuper.setLicenseeId(licenseeId);
         currentSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_NEW);
@@ -508,7 +586,7 @@ public class ArIUIDataSubmissionDelegator {
             currentSuper.setDataSubmissionDto(DataSubmissionHelper.initDataSubmission(currentSuper, true));
             currentSuper.setCycleDto(DataSubmissionHelper.initCycleDto(currentSuper, true));
         }
-        DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, bpc.request);
+        DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, request);
         return currentSuper;
     }
 

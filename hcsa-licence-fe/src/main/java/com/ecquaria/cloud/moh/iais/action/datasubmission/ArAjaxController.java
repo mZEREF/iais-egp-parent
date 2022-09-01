@@ -10,7 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.HusbandDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
-import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -30,7 +29,6 @@ import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -216,7 +214,7 @@ public class ArAjaxController {
     public @ResponseBody
     Map<String, Object> validatePatientInfo(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the AR patient info validation start ...."));
-        Map<String, Object> situation = Maps.newHashMapWithExpectedSize(3);
+        Map<String, Object> result = Maps.newHashMapWithExpectedSize(3);
         String isPatHasId = ParamUtil.getString(request, "isPatHasId");
         String identityNo = ParamUtil.getString(request, "identityNo");
         String centreSel = ParamUtil.getString(request, "centreSel");
@@ -224,16 +222,16 @@ public class ArAjaxController {
         PremisesDto premisesDto = premisesMap.get(centreSel);
 
         //validate indeed field is not empty
-        situation.put("needShowError", false);
+        result.put("needShowError", false);
         if (!StringUtils.hasLength(isPatHasId) || !StringUtils.hasLength(identityNo)) {
             if (!StringUtils.hasLength(isPatHasId)) {
-                situation.put("error_hasIdNumber", "");
+                result.put("error_hasIdNumber", "");
             }
             if (!StringUtils.hasLength(identityNo)) {
-                situation.put("error_identityNo", "");
+                result.put("error_identityNo", "");
             }
-            situation.put("needShowError", true);
-            return situation;
+            result.put("needShowError", true);
+            return result;
         }
 
         //do passport/FIN/NRIC validate
@@ -247,9 +245,9 @@ public class ArAjaxController {
             identityNoValidate = true;
         }
         if(!identityNoValidate){
-            situation.put("error_identityNo","");
-            situation.put("needShowError",true);
-            return situation;
+            result.put("error_identityNo","");
+            result.put("needShowError",true);
+            return result;
         }
 
 
@@ -257,30 +255,45 @@ public class ArAjaxController {
         PatientInfoDto patientInfoDto = patientService.getPatientInfoDtoByIdTypeAndIdNumber(isPatHasId,identityNo);
         ParamUtil.setSessionAttr(request,"patientInfoDto",patientInfoDto);
         if(ObjectUtils.isEmpty(patientInfoDto)){
-            situation.put("registeredPT",false);
+            result.put("registeredPT",false);
 
             //deal with the issue that happened when ArDataSubmission is exist and key unregistered id
             request.getSession().removeAttribute(DataSubmissionConstant.AR_DATA_SUBMISSION);
-            return situation;
+            return result;
         }
-        situation.put("registeredPT",true);
+        result.put("registeredPT",true);
+
         PatientDto patientDto = patientInfoDto.getPatient();
-        StringBuilder patientHtml = new StringBuilder();
-        patientHtml.append("<span style=\"display:block\">").append("Details of Patient").append("</span>");
-        patientHtml.append("<span style=\"display:block\">").append("Name (as per NRIC/Passport): ").append(patientDto.getName()).append("</span>");
-        patientHtml.append("<span style=\"display:block\">").append("Date of Birth: ").append(patientDto.getBirthDate()).append("</span>");
-        patientHtml.append("<span style=\"display:block\">").append("Nationality: ").append(patientDto.getNationality()).append("</span>");
-        patientHtml.append("<span style=\"display:block\">").append("Ethnicity: ").append(patientDto.getEthnicGroup()).append("</span>");
-        situation.put("arPatient", patientHtml);
-        PatientDto previous = patientInfoDto.getPrevious();
-        if (!ObjectUtils.isEmpty(previous)) {
-            StringBuilder previousHtml = new StringBuilder();
-            previousHtml.append("<span style=\"display:block\">").append("Other Identification ID Used in Previous AR Treatment").append("</span>");
-            previousHtml.append("<span style=\"display:block\">").append("ID No.: ").append(previous.getIdNumber()).append("</span>");
-            previousHtml.append("<span style=\"display:block\">").append("Name: ").append(previous.getName()).append("</span>");
-            previousHtml.append("<span style=\"display:block\">").append("Nationality: ").append(previous.getNationality()).append("</span>");
-            situation.put("preArPatient", previousHtml);
+        result.put("ptName", patientDto.getName());
+        result.put("ptBirth", patientDto.getBirthDate());
+        result.put("ptNat", MasterCodeUtil.getCodeDesc(patientDto.getNationality()));
+        String ethStr = "";
+        if (DataSubmissionConsts.ETHNIC_GROUP_OTHER.equals(patientDto.getEthnicGroup())){
+            ethStr = patientDto.getEthnicGroupOther();
+        } else {
+            ethStr = MasterCodeUtil.getCodeDesc(patientDto.getEthnicGroup());
         }
+        result.put("ptEth", ethStr);
+
+        PatientDto previous = patientInfoDto.getPrevious();
+        if (previous != null) {
+            result.put("ptPreId", previous.getIdNumber());
+            result.put("ptPreName", previous.getName());
+            result.put("ptPreNat", MasterCodeUtil.getCodeDesc(previous.getNationality()));
+        }
+
+        HusbandDto husband = patientInfoDto.getHusband();
+        result.put("husName", husband.getName());
+        result.put("husBirth", husband.getBirthDate());
+        result.put("husNat", MasterCodeUtil.getCodeDesc(husband.getNationality()));
+        String busEthStr = "";
+        if (DataSubmissionConsts.ETHNIC_GROUP_OTHER.equals(husband.getEthnicGroup())){
+            ethStr = husband.getEthnicGroupOther();
+        } else {
+            ethStr = MasterCodeUtil.getCodeDesc(husband.getEthnicGroup());
+        }
+        result.put("husEth", ethStr);
+
         LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
         String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
         String hciCode = premisesDto.getHciCode();
@@ -288,66 +301,31 @@ public class ArAjaxController {
                 hciCode);
         ParamUtil.setSessionAttr(request, "selectionDto", dbDto);
         ParamUtil.setSessionAttr(request, "patientInfoDto", patientInfoDto);
-        List<DsCycleRadioDto> dsCycleRadioDtos = dbDto.getDsCycleRadioDtos();
-        situation.put("cycleRadio", genCycleRadioHtmls(dsCycleRadioDtos));
-        situation.put("cycleNextStageMap", JSONObject.valueToString(genCycleNextStageMap(dsCycleRadioDtos)));
-        HusbandDto husband = patientInfoDto.getHusband();
-        if (!ObjectUtils.isEmpty(husband)) {
-            StringBuilder husbandHtml = new StringBuilder();
-            husbandHtml.append("<span style=\"display:block\">").append("Husband Details (If Applicable)").append("</span>");
-            husbandHtml.append("<span style=\"display:block\">").append("Name (as per NRIC/Passport): ").append(husband.getIdNumber()).append("</span>");
-            husbandHtml.append("<span style=\"display:block\">").append("Date of Birth: ").append(husband.getBirthDate()).append("</span>");
-            husbandHtml.append("<span style=\"display:block\">").append("Nationality: ").append(husband.getNationality()).append("</span>");
-            husbandHtml.append("<span style=\"display:block\">").append("Ethnicity: ").append(husband.getEthnicGroup()).append("</span>");
-            situation.put("arHusband", husbandHtml);
-        }
-        log.debug(StringUtil.changeForLog("the AR patient info validation end ...."));
-        return situation;
-    }
 
-    public static Map<String, String> genCycleNextStageMap(List<DsCycleRadioDto> dsCycleRadioDtos) {
-        Map<String, String> result = IaisCommonUtils.genNewHashMap();
-        for (int i = 0; i < dsCycleRadioDtos.size(); i++) {
-            DsCycleRadioDto dsCycleRadioDto = dsCycleRadioDtos.get(i);
-            CycleDto cycleDto = dsCycleRadioDto.getCycleDto();
-            String lastCycle = cycleDto.getCycleType();
-            String lastStage = dsCycleRadioDto.getLastDataSubmissionDto().getCycleStage();
-            String lastStatus = cycleDto.getStatus();
-            boolean undergoingCycle = dsCycleRadioDto.isUndergoingCycle();
-            boolean frozenOocyte = dsCycleRadioDto.isFrozenOocyte();
-            boolean frozenEmbryo = dsCycleRadioDto.isFrozenEmbryo();
-            boolean freshNatural = dsCycleRadioDto.isFreshNatural();
-            boolean freshStimulated = dsCycleRadioDto.isFreshStimulated();
-            if (DataSubmissionConsts.DS_CYCLE_AR.equals(lastCycle) && DsHelper.isSpecialStage(lastStage)) {
-                lastStage = dsCycleRadioDto.getAdditionalStage();
-            }
-            List<String> nextStagesForAr = DataSubmissionHelper.getNextStagesForAr(lastCycle, lastStage, lastStatus, undergoingCycle, frozenOocyte, frozenEmbryo, freshNatural, freshStimulated);
-            result.put("cycleRadio" + i, DataSubmissionHelper.genOptionHtmlsWithFirst((nextStagesForAr)));
-        }
-        result.put("cycleRadio", DataSubmissionHelper.genOptionHtmlsWithFirst(DataSubmissionHelper.getNextStagesForAr(null, null, null, false, false, false, false, false)));
+        result.put("cycles", getCycleDataList(dbDto.getDsCycleRadioDtos()));
+        result.put("nextStageOptions", genNextStageOptions());
+        log.debug(StringUtil.changeForLog("the AR patient info validation end ...."));
         return result;
     }
 
-    public static String genCycleRadioHtmls(List<DsCycleRadioDto> dsCycleRadioDtos) {
+    public static String genNextStageOptions() {
+        return DataSubmissionHelper.genOptionHtmlsWithFirst(DataSubmissionHelper.getNextStagesForAr(null, null, null, false, false, false, false, false));
+    }
+
+    public static List<Map<String,String>> getCycleDataList(List<DsCycleRadioDto> dsCycleRadioDtos) {
+        List<Map<String,String>> result = IaisCommonUtils.genNewArrayList();
         if (IaisCommonUtils.isEmpty(dsCycleRadioDtos)) {
-            return "";
+            return result;
         }
-        StringBuilder data = new StringBuilder();
-        int i = 0;
         for (DsCycleRadioDto dsCycleRadioDto : dsCycleRadioDtos) {
             CycleDto cycleDto = dsCycleRadioDto.getCycleDto();
-            data.append("<div class=\"form-check col-xs-12\" style=\"padding: 0;\">\n");
-            data.append(String.format("<input class=\"form-check-input\" id=\"cycleRadio%d\" type=\"radio\" name=\"cycleRadio\" value=\"%s\">\n", i, cycleDto.getId()));
-            data.append(String.format("<label class=\"form-check-label\" for=\"cycleRadio%d\">\n", i));
-            data.append(String.format("<span class=\"check-circle\"></span>[%s] Submission ID %s\n",
-                    MasterCodeUtil.getCodeDesc(cycleDto.getCycleType()),
-                    dsCycleRadioDto.getStartDataSubmissionDto().getSubmissionNo()
-            ));
-            data.append("</label>\n");
-            data.append("</div>");
-            i++;
+            Map<String,String> cycleData = IaisCommonUtils.genNewHashMap();
+            cycleData.put("id",cycleDto.getId());
+            cycleData.put("type",MasterCodeUtil.getCodeDesc(cycleDto.getCycleType()));
+            cycleData.put("no",dsCycleRadioDto.getStartDataSubmissionDto().getSubmissionNo());
+            result.add(cycleData);
         }
-        return data.toString();
+        return  result;
     }
 
     private String generateDropDownHtml(List<SelectOption> options, String firstOption) {

@@ -5,13 +5,15 @@
     <iais:field width="5" value="Does the patient's husband have a NRIC/FIN number?" mandatory="true"/>
     <iais:value width="7" cssClass="col-md-7">
         <div class="form-check form-check-inline">
-            <input class="form-check-input" id="hbNoIdNUmber" type="radio" name="hasIdNumber${suffix}" value="N" <c:if test="${person.hasIdNumber eq 'N'}">checked</c:if> />
+            <input class="form-check-input" id="hbNoIdNUmber" type="radio" name="hasIdNumber${suffix}" value="N"
+                   <c:if test="${person.idType eq 'AR_IT_004'}">checked</c:if> />
             <label class="form-check-label" for="hbNoIdNUmber">
                 <span class="check-circle"></span>No
             </label>
         </div>
         <div class="form-check form-check-inline">
-            <input class="form-check-input" id="hbHasIdNUmber" type="radio" name="hasIdNumber${suffix}" value="Y" <c:if test="${person.hasIdNumber eq 'Y'}">checked</c:if> />
+            <input class="form-check-input" id="hbHasIdNUmber" type="radio" name="hasIdNumber${suffix}" value="Y"
+                   <c:if test="${patient.idType eq 'AR_IT_001' or patient.idType eq 'AR_IT_002' or patient.idType eq 'AR_IT_003'}">checked</c:if> />
             <label class="form-check-label" for="hbHasIdNUmber">
                 <span class="check-circle"></span>Yes
             </label>

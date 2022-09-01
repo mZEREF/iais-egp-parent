@@ -1,87 +1,29 @@
-$(function (){
+$(function () {
     bindButton();
 
-    $("input[name='submissionMethod']").change(function (){
-        let checkedSelector = $("input[name='submissionMethod']:checked");
-        let val = checkedSelector.val();
-        let isChecked = checkedSelector.length;
-        let $donorSampleSection = $("#donorSampleSection");
-        let $formEntrySection = $("#formEntrySection");
-
-        if(val === 'DS_MTD001' && isChecked){
-            $formEntrySection.show();
-        }else if(val === 'DS_MTD002' && isChecked){
-            $formEntrySection.hide();
-            $donorSampleSection.show();
-            reloadSection($formEntrySection);
-        }else{
-            $formEntrySection.hide();
-            $donorSampleSection.hide();
-        }
-
-    });
+    $("input[name='submissionMethod']").change(function () {
+        showFormEntryDiv();
+        showBatchUploadDiv();
+    }).trigger('change');
 
     // checkbox donor sample
-    $("input[name='submissionType']").change(function (){
-        let checkedSelector = $("input[name='submissionType']:checked");
-        let val = checkedSelector.val();
-        let isChecked = checkedSelector.length;
-
-        let sectionSelector = $("#donorSampleSection");
-        let patientSection = $("#patientSection");
-
-        if(val === 'AR_TP003' && isChecked){
-            sectionSelector.show();
-            patientSection.hide();
-            reloadSection(patientSection);
-        }else if(val === 'AR_TP001' && isChecked){
-            patientSection.show();
-            sectionSelector.hide();
-            reloadSection(sectionSelector);
-            reloadPATValidation();
-        }else{
-            sectionSelector.hide();
-            patientSection.hide();
-        }
-
-    });
+    $("input[name='submissionType']").change(function () {
+        showDonorSampleDiv();
+        showPatientDiv();
+    }).trigger('change');
 
     //indicate patient section 1.id 2.passport
-    $("input[name='hasIdNumber']").change(function (){
-      let checkedSelector = $("input[name='hasIdNumber']:checked");
-      let checkedNum = checkedSelector.length;
-      let $passportIdentify = $("#passportIdentify");
-      let $idIdentify = $("#idIdentify");
-      let $indicateIdentitySection = $("#indicateIdentitySection");
-      let $idTypeSection = $("#idTypeSection");
-      if(checkedNum){
-          let currentVal = checkedSelector.val();
-          if(currentVal !== "" || currentVal !== null){
-              $indicateIdentitySection.show();
-              if(currentVal === 'Y'){
-                  $passportIdentify.hide();
-                  $idIdentify.show();
-                  $idTypeSection.show();
-                  reloadPATValidation();
-              }else if(currentVal === 'N'){
-                  $passportIdentify.show();
-                  $idIdentify.hide();
-                  $idTypeSection.hide();
-                  reloadPATValidation();
-              }else{
-                  $passportIdentify.hide();
-                  $idIdentify.hide();
-                  $idTypeSection.hide();
-              }
-          }
-      }else{
-          $indicateIdentitySection.hide();
-          reloadSection($indicateIdentitySection);
-      }
-    });
+    $("input[name='ptHasIdNumber']").change(showPatientIdentify).trigger('change');
 
-    $("#validatePAT").click(function (){
-        let isPatHasId = $("input[name='hasIdNumber']:checked").val();
+    $('input[name="registeredPatient"]').change(showAmendOrNewPatientSection).trigger('change');
+
+    $('input[name="hasCycle"]').change(function (){
+        showCycleRadioRow();
+        showNextStageRow();
+    }).trigger('change');
+
+    $("#validatePAT").click(function () {
+        let isPatHasId = $("input[name='ptHasIdNumber']:checked").val();
         let identityNo = $("#identityNo").val();
 
         let identityType = (isPatHasId === 'Y' ? 'NRICORFIN' : 'PASSPORT');
@@ -134,11 +76,10 @@ $(function (){
 
 })
 
-function reloadSection(selector){
-    console.warn("reloadSection %o", selector)
+function reloadSection(selector) {
     $(selector).find("input[type = 'radio']").prop("checked", false).change();
     $(selector).find("input[type = 'text']").val("").change();
-    $(selector).find("input[type = 'checkbox']").prop("checked",false).change();
+    $(selector).find("input[type = 'checkbox']").prop("checked", false).change();
     $(selector).find('select').val(null).change();
     $(selector).find('select').niceSelect("update");
 }
@@ -150,7 +91,7 @@ function validatePatient(isPatHasId, identityNo) {
         $("#error_noArLicences").html("This is a mandatory field.")
         return
     }
-    $("#cycleRadioDiv").empty();
+    $('#newCycleRadio').prevUntil("#cycleRadioStart").remove();
     showWaiting();
     $.ajax({
         url: $('#_contextPath').val() + '/ar/validate-patient-info',
@@ -162,74 +103,64 @@ function validatePatient(isPatHasId, identityNo) {
         },
         type: 'POST',
         success: function (data) {
-            let $registerPatientSection = $("#registerPatientSection");
-            let $amendPatientSection = $("#amendPatientSection");
             if (data.needShowError) {
-                $registerPatientSection.hide();
-                $amendPatientSection.hide();
+                $('input[name="registeredPatient"]').val('N').trigger('change');
             } else {
-                $registerPatientSection.hide();
-                $amendPatientSection.hide();
-                $("#registeredPatient").val(data.registeredPT ? 'Y' : 'N');
+                $('input[name="registeredPatient"]').val(data.registeredPT ? 'Y' : 'N').trigger('change');
                 if (data.registeredPT) {
-                    $registerPatientSection.hide();
-                    $amendPatientSection.show();
-
-
-                    let $registeredPTDetail = $("#registeredPTDetail");
-                    let $registeredTRTDetail = $("#registeredTRTDetail");
-                    let $registeredHBDetail = $("#registeredHBDetail");
-                    $registeredTRTDetail.html(data.preArPatient);
-                    $registeredHBDetail.html(data.arHusband);
-                    $registeredPTDetail.html(data.arPatient);
-
-                    $registeredPTDetail.show();
-                    if (isEmpty(data.preArPatient)) {
-                        $registeredTRTDetail.css("display", "none");
+                    const $registeredTRTDetail = $("#registeredTRTDetail");
+                    $('#ptName').html(data.ptName);
+                    $('#ptBirth').html(data.ptBirth);
+                    $('#ptNat').html(data.ptNat);
+                    $('#ptEth').html(data.ptEth);
+                    if (data.ptPreId) {
+                        $registeredTRTDetail.show();
+                        $('#ptPreId').html(data.ptPreId);
+                        $('#ptPreName').html(data.ptPreName);
+                        $('#ptPreNat').html(data.ptPreNat);
                     } else {
-                        $registeredTRTDetail.css("display", "block");
+                        $registeredTRTDetail.hide();
                     }
-                    if (isEmpty(data.arHusband)) {
-                        $registeredHBDetail.css("display", "none");
+                    $('#husName').html(data.husName);
+                    $('#husBirth').html(data.husBirth);
+                    $('#husNat').html(data.husNat);
+                    $('#husEth').html(data.husEth);
+
+                    const $nextStage = $("#nextStage");
+                    $nextStage.empty();
+                    $nextStage.append(data.nextStageOptions);
+                    $nextStage.niceSelect("update");
+
+                    if (data.cycles && data.cycles.length > 0){
+                        $('#ptNameTitle').html(data.ptName);
+                        $('#patIdNoTitle').html(identityNo);
+                        for (let i = 0; i < data.cycles.length; i++) {
+                            let cycle = data.cycles[i];
+                            const radioHtml = `
+                                <div class="form-check col-xs-12" style="padding: 0;">
+                                    <input class="form-check-input" id="cycleRadio${i}" type="radio" name="cycleRadio" value="${cycle.id}">
+                                    <label class="form-check-label" for="cycleRadio${i}">
+                                        <span class="check-circle"></span>[${cycle.type}] Submission ID ${cycle.no}
+                                    </label>
+                                </div>`;
+                            $("#newCycleRadio").before(radioHtml)
+                        }
+                        $('input[name="hasCycle"]').val('Y').trigger('change');
                     } else {
-                        $registeredHBDetail.css("display", "block");
+                        $('#newCycleRadio').val('N').trigger('change');
                     }
-                    $("#cycleRadioDiv").prepend(data.cycleRadio)
-                    const $cycleRadio = $("input[name='cycleRadio']");
-                    $cycleRadio.unbind("change")
-                    $cycleRadio.change(function () {
-                        const nextStageMap = JSON.parse(data.cycleNextStageMap)
-                        const nextStages = nextStageMap[this.id]
-                        const $nextStage = $("#nextStage");
-                        $nextStage.empty();
-                        $nextStage.append(nextStages)
-                        $nextStage.niceSelect("update")
-                    })
-                } else {
-                    $registerPatientSection.show();
-                    $amendPatientSection.hide();
                 }
             }
-
             dismissWaiting();
         },
-        error: function (data) {
+        error: function () {
             console.log("err");
             dismissWaiting();
         }
     });
 }
 
-function triggerAllEventOnce() {
-    $("input[name='submissionMethod']").trigger('change');
-    $("input[name = 'submissionType']").trigger('change');
-    $("input[name='hasIdNumber']").trigger('change');
-    $("#validatePAT").trigger('click');
-    $("input[name ='previousIdentification']").trigger('change');
-    $("input[name ='hasIdNumberHbd']").trigger('change');
-}
-
-function reloadPATValidation(){
+function reloadPATValidation() {
     let $registeredPTDetail = $("#registeredPTDetail");
     let $registeredTRTDetail = $("#registeredTRTDetail");
     let $registeredHBDetail = $("#registeredHBDetail");
@@ -293,5 +224,136 @@ function bindButton() {
                 submit('confirm');
             }
         });
+    }
+}
+
+function jumpToInbox() {
+    showWaiting();
+    var token = $('input[name="OWASP_CSRFTOKEN"]').val();
+    var url = "/main-web/eservice/INTERNET/MohInternetInbox";
+    if (!isEmpty(token)) {
+        url += '?OWASP_CSRFTOKEN=' + token;
+    }
+    document.location = url;
+}
+
+function showDraftModal() {
+    const saveDraft = $('#saveDraft');
+    if ($('#saveDraftSuccess').val() === 'success' && saveDraft.length > 0) {
+        saveDraft.modal('show');
+        setTimeout(function () {
+            $('#saveDraftSuccess').val('');
+        }, 2000);
+    }
+    // draft modal
+    var $draft = $("#_draftModal");
+    if ($draft.length > 0) {
+        $draft.modal('show');
+    }
+}
+
+function showFormEntryDiv() {
+    const formEntryDiv = $('#formEntryDiv')
+    const submissionMethodVal = $('input[name="submissionMethod"]:checked').val();
+    if (submissionMethodVal === 'DS_MTD001') {
+        formEntryDiv.show();
+    } else {
+        formEntryDiv.hide();
+        clearFields(formEntryDiv);
+        showDonorSampleDiv();
+        showPatientDiv();
+    }
+}
+
+function showBatchUploadDiv() {
+    const batchUploadDiv = $('#batchUploadDiv')
+    const submissionMethodVal = $('input[name="submissionMethod"]:checked').val();
+    if (submissionMethodVal === 'DS_MTD002') {
+        batchUploadDiv.show();
+    } else {
+        batchUploadDiv.hide();
+        clearFields(batchUploadDiv);
+    }
+}
+
+function showDonorSampleDiv() {
+    const donorSampleDiv = $('#donorSampleDiv')
+    const submissionTypeVal = $('input[name="submissionType"]:checked').val();
+    if (submissionTypeVal === 'AR_TP003') {
+        donorSampleDiv.show();
+    } else {
+        donorSampleDiv.hide();
+        reloadSection(donorSampleDiv);
+    }
+}
+
+function showPatientDiv() {
+    const patientDiv = $('#patientDiv')
+    const submissionTypeVal = $('input[name="submissionType"]:checked').val();
+    if (submissionTypeVal === 'AR_TP001') {
+        patientDiv.show();
+    } else {
+        patientDiv.hide();
+        reloadSection(patientDiv);
+    }
+}
+
+function showPatientIdentify() {
+    const hasIdNumberVal = $("input[name='ptHasIdNumber']:checked").val();
+    const indicateIdentitySection = $("#indicateIdentitySection");
+    const idIdentify = $("#idIdentify");
+    const passportIdentify = $("#passportIdentify");
+
+    indicateIdentitySection.show();
+    passportIdentify.hide();
+    idIdentify.hide();
+    if (hasIdNumberVal === 'Y') {
+        idIdentify.show();
+    } else if (hasIdNumberVal === 'N') {
+        passportIdentify.show();
+    } else {
+        indicateIdentitySection.hide();
+    }
+}
+
+function showAmendOrNewPatientSection() {
+    const registeredPatientVal = $('input[name="registeredPatient"]').val();
+    const amendPatientSection = $("#amendPatientSection");
+    const registerPatientSection = $("#registerPatientSection");
+
+    amendPatientSection.hide();
+    registerPatientSection.hide();
+    if (registeredPatientVal === 'Y'){
+        amendPatientSection.show();
+    } else if (registeredPatientVal === 'N'){
+        registerPatientSection.show();
+    }
+}
+
+function showCycleRadioRow() {
+    const hasCycleVal = $('input[name="hasCycle"]').val();
+    const cycleRadioRow = $('#cycleRadioRow');
+    const cycleRadio = $("input[name='cycleRadio']");
+
+    if (hasCycleVal === 'Y') {
+        cycleRadioRow.show();
+        cycleRadio.change(showNextStageRow)
+    } else {
+        cycleRadioRow.hide();
+        clearFields(cycleRadioRow);
+        cycleRadio.unbind("change")
+    }
+}
+
+function showNextStageRow(){
+    const cycleRadioVal = $("input[name='cycleRadio']:checked").val();
+    const hasCycleVal = $('input[name="hasCycle"]').val();
+    const nextStageRow = $('#nextStageRow');
+
+    if (hasCycleVal === 'N' || cycleRadioVal === 'newCycle'){
+        nextStageRow.show();
+    } else {
+        nextStageRow.hide();
+        clearFields(nextStageRow);
     }
 }
