@@ -39,7 +39,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -75,6 +74,14 @@ import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sop.servlet.webflow.HttpHandler;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -87,13 +94,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import sop.servlet.webflow.HttpHandler;
-import sop.webflow.rt.api.BaseProcessClass;
 
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.ACKMESSAGE;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.ACKSTATUS;
@@ -704,9 +704,11 @@ public class NewApplicationDelegator extends AppCommDelegator {
             if (applicationDto != null) {
                 if (ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(applicationDto.getStatus())) {
                     String applicationMsgNo = getApplicationMsgNo(appNo);
-                    if (StringUtil.isNotEmpty(applicationMsgNo)){
+                    if (StringUtil.isNotEmpty(applicationMsgNo)) {
                         List<InterMessageDto> interMessageDtos = appSubmissionService.getInterMessageByRefNo(applicationMsgNo);
-                        Optional<InterMessageDto> interMessageDtoOptional = interMessageDtos.stream().filter(interMessageDto -> !MessageConstants.MESSAGE_STATUS_RESPONSE.equals(interMessageDto.getStatus())).findFirst();
+                        Optional<InterMessageDto> interMessageDtoOptional = interMessageDtos.stream().filter(
+                                interMessageDto -> !MessageConstants.MESSAGE_STATUS_RESPONSE.equals(
+                                        interMessageDto.getStatus())).findFirst();
                         if (interMessageDtoOptional.isPresent()) {
                             InterMessageDto interMessageBySubjectLike = interMessageDtoOptional.get();
                             List<AppEditSelectDto> entity = applicationFeClient.getAppEditSelectDtos(applicationDto.getId(),
@@ -881,83 +883,15 @@ public class NewApplicationDelegator extends AppCommDelegator {
     private String getApplicationMsgNo(String appNo) {
         if (StringUtil.isNotEmpty(appNo)) {
             AppPremisesCorrelationDto correlation = selfAssessmentService.getCorrelationByAppNo(appNo);
-            if (correlation != null){
-                AppPremiseMiscDto appPremiseMiscDto = cessationClient.getAppPremiseMiscDtoListByCon(correlation.getId(), ApplicationConsts.APPLICATION_RFI_MSG).getEntity();
-                if (appPremiseMiscDto != null){
-                    return  appPremiseMiscDto.getOtherReason();
+            if (correlation != null) {
+                AppPremiseMiscDto appPremiseMiscDto = cessationClient.getAppPremiseMiscDtoListByCon(correlation.getId(),
+                        ApplicationConsts.APPLICATION_RFI_MSG).getEntity();
+                if (appPremiseMiscDto != null) {
+                    return appPremiseMiscDto.getOtherReason();
                 }
             }
         }
         return null;
-    }
-
-    private void premiseView(AppSubmissionDto appSubmissionDto, ApplicationDto applicationDto, HttpServletRequest request)
-            throws CloneNotSupportedException {
-        if (appSubmissionDto == null || applicationDto == null) {
-            return;
-        }
-        if (!IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList())) {
-            if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())
-                    || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())
-                    || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())
-                    || ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationDto.getApplicationType())) {
-                log.info(StringUtil.changeForLog("InboxToView AppNo -->" + applicationDto.getApplicationNo()));
-                /*List<AppGrpPremisesDto> newPremisesDtos = IaisCommonUtils.genNewArrayList();
-                filtrationAppGrpPremisesDtos(applicationDto.getApplicationNo(), appSubmissionDto, newPremisesDtos);
-                appSubmissionDto.setAppGrpPremisesDtoList(newPremisesDtos);*/
-                DealSessionUtil.initView(appSubmissionDto);
-                //String svcId = applicationDto.getServiceId();
-                /*if (!StringUtil.isEmpty(svcId) && !StringUtil.isEmpty(applicationDto.getApplicationNo())) {
-                    List<AppSvcRelatedInfoDto> newSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
-                    Optional<AppSvcRelatedInfoDto> optional = appSubmissionDto.getAppSvcRelatedInfoDtoList().stream()
-                            .filter(dto -> applicationDto.getApplicationNo().equals(dto.getAppNo()))
-                            .findAny();
-                    if (!optional.isPresent()) {
-                        optional = appSubmissionDto.getAppSvcRelatedInfoDtoList().stream()
-                                .filter(dto -> svcId.equals(dto.getServiceId()))
-                                .findAny();
-                    }
-                    if (optional.isPresent()) {
-                        AppSvcRelatedInfoDto appSvcRelatedInfoDto = optional.get();
-                        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(svcId);
-                        appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
-                        appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
-                        appSvcRelatedInfoDto.setServiceType(hcsaServiceDto.getSvcType());
-//                        List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
-                        List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(svcId);
-                        //ApplicationHelper.setDocInfo(appSvcDocDtos, svcDocConfig);
-                        ParamUtil.setSessionAttr(request, HcsaAppConst.SVC_DOC_CONFIG, (Serializable) svcDocConfig);
-                        //set dupForPsn attr
-                        //ApplicationHelper.setDupForPersonAttr(request, appSvcRelatedInfoDto);
-                        //svc doc add align for dup for prem
-                        //ApplicationHelper.addPremAlignForSvcDoc(svcDocConfig, appSvcDocDtos, newPremisesDtos);
-                        //appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
-                        //set svc doc title
-//                        Map<String, List<AppSvcDocDto>> reloadSvcDocMap = ApplicationHelper.genSvcDocReloadMap(svcDocConfig,
-//                                newPremisesDtos, appSvcRelatedInfoDto);
-//                        appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
-//                        appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
-                        // sort po and dpo
-                        appSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(
-                                ApplicationHelper.sortKeyPersonnel(appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList()));
-                        newSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
-                    }
-                    appSubmissionDto.setAppSvcRelatedInfoDtoList(newSvcRelatedInfoDtos);
-                }*/
-            }
-        }
-    }
-
-    private void svcRelatedInfoView(AppSubmissionDto appSubmissionDto, HttpServletRequest request, String serviceId, String appNo) {
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDtoByServiceId(appSubmissionDto.getAppSvcRelatedInfoDtoList(),
-                serviceId, appNo);
-        List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(
-                appSvcRelatedInfoDto.getServiceId());
-        appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
-        String svcId = appSvcRelatedInfoDto.getServiceId();
-        HcsaServiceDto hcsaServiceDto = serviceConfigService.getHcsaServiceDtoById(svcId);
-        ParamUtil.setRequestAttr(request, HcsaAppConst.HCSASERVICEDTO, hcsaServiceDto);
-        ParamUtil.setSessionAttr(request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
     }
 
     protected List<AppPremisesRoutingHistoryDto> getRoutingHistoryDtos(String appNo) {
@@ -1011,7 +945,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
 
     @Override
     protected AppSubmissionDto submitRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto,
-                                                        String appType) {
+            String appType) {
         AppSubmissionDto appSubmissionDto;
         if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(
                 appType)) {
@@ -1136,7 +1070,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
 
     @Override
     protected void handleDraft(String draftNo, String licenseeId, AppSubmissionDto appSubmissionDto,
-                               List<AppSubmissionDto> appSubmissionDtoList) {
+            List<AppSubmissionDto> appSubmissionDtoList) {
         appSubmissionService.doSaveDraft(appSubmissionDto);
         List<String> licenceIds = appSubmissionDtoList.parallelStream()
                 .map(AppSubmissionDto::getLicenceId)

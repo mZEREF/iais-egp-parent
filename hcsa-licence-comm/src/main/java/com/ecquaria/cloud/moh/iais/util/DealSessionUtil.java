@@ -42,7 +42,6 @@ import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.OrganizationService;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.nullness.Opt;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -424,7 +423,8 @@ public class DealSessionUtil {
             log.info(StringUtil.changeForLog("user info is empty....."));
         }
     }
-    public static void initViewRequest(AppSubmissionDto appSubmissionDto, HttpServletRequest request) {
+
+    /*public static void initViewRequest(AppSubmissionDto appSubmissionDto, HttpServletRequest request) {
         if (appSubmissionDto == null || request == null) {
             return;
         }
@@ -440,7 +440,7 @@ public class DealSessionUtil {
                 .map(appPremSpecialisedDtoList -> appPremSpecialisedDtoList.get(0).getBaseSvcCode())
                 .orElse(null);
         ParamUtil.setRequestAttr(request, HcsaAppConst.SPECIALISED_SVC_CODE, svcCode);
-    }
+    }*/
 
     public static AppSubmissionDto initView(AppSubmissionDto appSubmissionDto) {
         return init(appSubmissionDto, getServiceConfigsFormApp(appSubmissionDto), false, null);
@@ -449,7 +449,7 @@ public class DealSessionUtil {
     public static AppSubmissionDto init(AppSubmissionDto appSubmissionDto, List<HcsaServiceDto> hcsaServiceDtos,
             boolean forceInit, HttpServletRequest request) {
         if (appSubmissionDto == null) {
-            return appSubmissionDto;
+            return null;
         }
         log.info(StringUtil.changeForLog("ForceInit: " + forceInit));
         String appType = appSubmissionDto.getAppType();
@@ -494,7 +494,7 @@ public class DealSessionUtil {
             List<AppPremSpecialisedDto> appPremSpecialisedDtoList, List<HcsaServiceDto> hcsaServiceDtos,
             boolean forceInit, HttpServletRequest request) {
         if (currSvcInfoDto == null) {
-            return currSvcInfoDto;
+            return null;
         }
         String svcId = currSvcInfoDto.getServiceId();
         /*if (!StringUtil.isEmpty(licenceId) && !newConfig) {
@@ -546,7 +546,7 @@ public class DealSessionUtil {
                     }
                 }
             } else if (HcsaConsts.STEP_OTHER_INFORMATION.equals(stepCode)) {
-                ApplicationHelper.initOtherInfoForm(currSvcInfoDto,appGrpPremisesDtos, forceInit);
+                ApplicationHelper.initOtherInfoForm(currSvcInfoDto, appGrpPremisesDtos, forceInit);
                 if (!forceInit) {
                     List<AppSvcOtherInfoDto> appSvcOtherInfoList = currSvcInfoDto.getAppSvcOtherInfoList();
                     if (IaisCommonUtils.isNotEmpty(appSvcOtherInfoList)) {
@@ -619,7 +619,9 @@ public class DealSessionUtil {
                 if (appPremSpecialisedDtos != null) {
                     appPremSpecialisedDto = appPremSpecialisedDtos.stream()
                             .filter(dto -> Objects.equals(dto.getPremisesVal(), appGrpPremisesDto.getPremisesIndexNo())
-                                    && Objects.equals(dto.getBaseSvcId(), serviceDto.getId()))
+                                    && (StringUtil.isNotEmpty(dto.getBaseSvcId()) && dto.getBaseSvcId().equals(serviceDto.getId())
+                                    || StringUtil.isNotEmpty(dto.getBaseSvcName())
+                                    && dto.getBaseSvcName().equals(serviceDto.getSvcName())))
                             .findAny()
                             .orElseGet(AppPremSpecialisedDto::new);
                 } else {
