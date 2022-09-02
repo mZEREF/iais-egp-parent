@@ -66,7 +66,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.sql.Time;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -326,58 +325,6 @@ public final class AppDataHelper {
         return prefix + name + suffix;
     }
 
-    public static String getFileAppendId(String appType) {
-        StringBuilder s = new StringBuilder("selected");
-        if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
-            s.append("New");
-        } else if (ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType)) {
-            s.append("Cess");
-        } else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
-            s.append("RFC");
-        } else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
-            s.append("RENEW");
-        }
-        s.append("File");
-        return s.toString();
-    }
-
-    public static void initDeclarationFiles(List<AppDeclarationDocDto> appDeclarationDocDtos, String appType,
-            HttpServletRequest request) {
-        if (IaisCommonUtils.isEmpty(appDeclarationDocDtos)) {
-            return;
-        }
-        String fileAppendId = getFileAppendId(appType);
-        AppDeclarationDocShowPageDto dto = (AppDeclarationDocShowPageDto) request.getSession().getAttribute(
-                fileAppendId + "DocShowPageDto");
-        if (Objects.nonNull(dto)) {
-            return;
-        }
-        List<PageShowFileDto> pageShowFileDtos = IaisCommonUtils.genNewArrayList();
-        HashMap<String, File> map = IaisCommonUtils.genNewHashMap();
-        Map<String, PageShowFileDto> pageShowFileHashMap = IaisCommonUtils.genNewHashMap();
-        for (AppDeclarationDocDto viewDoc : appDeclarationDocDtos) {
-            String index = String.valueOf(Optional.ofNullable(viewDoc.getSeqNum()).orElse(0));
-            PageShowFileDto pageShowFileDto = new PageShowFileDto();
-            pageShowFileDto.setFileMapId(fileAppendId + "Div" + index);
-            pageShowFileDto.setIndex(index);
-            pageShowFileDto.setFileName(viewDoc.getDocName());
-            pageShowFileDto.setSize(viewDoc.getDocSize());
-            pageShowFileDto.setMd5Code(viewDoc.getMd5Code());
-            pageShowFileDto.setFileUploadUrl(viewDoc.getFileRepoId());
-            pageShowFileDto.setVersion(Optional.ofNullable(viewDoc.getVersion()).orElse(1));
-            pageShowFileDtos.add(pageShowFileDto);
-            map.put(fileAppendId + index, null);
-            pageShowFileHashMap.put(fileAppendId + index, pageShowFileDto);
-        }
-        // put page entity to sesstion
-        dto = new AppDeclarationDocShowPageDto();
-        dto.setFileMaxIndex(appDeclarationDocDtos.size());
-        dto.setPageShowFileDtos(pageShowFileDtos);
-        dto.setPageShowFileHashMap(pageShowFileHashMap);
-        request.getSession().setAttribute(fileAppendId + "DocShowPageDto", dto);
-        request.getSession().setAttribute(IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId, map);
-    }
-
     public static AppDeclarationMessageDto getAppDeclarationMessageDto(HttpServletRequest request, String type) {
         AppDeclarationMessageDto appDeclarationMessageDto = new AppDeclarationMessageDto();
         appDeclarationMessageDto.setAppType(type);
@@ -390,12 +337,11 @@ public final class AppDataHelper {
             appDeclarationMessageDto.setPreliminaryQuestionKindly(preliminaryQuestionKindly);
             appDeclarationMessageDto.setPreliminaryQuestionItem1(preliminaryQuestionItem1);
             appDeclarationMessageDto.setPreliminaryQuestiontem2(preliminaryQuestiontem2);
-            if (effectiveDt != null) {
+            if (CommonValidator.isDate(effectiveDt)) {
                 try {
-                    Date parse = new SimpleDateFormat("dd/MM/yyyy").parse(effectiveDt);
-                    appDeclarationMessageDto.setEffectiveDt(parse);
+                    appDeclarationMessageDto.setEffectiveDt(Formatter.parseDate(effectiveDt));
                 } catch (ParseException e) {
-
+                    log.warn(StringUtil.changeForLog(e.getMessage()), e);
                 }
             }
         } else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(type)) {
@@ -466,7 +412,7 @@ public final class AppDataHelper {
     }
 
     public static List<AppDeclarationDocDto> getDeclarationFiles(String appType, HttpServletRequest request, boolean forPrint) {
-        String fileAppendId = getFileAppendId(appType);
+        String fileAppendId = ApplicationHelper.getFileAppendId(appType);
         Map<String, File> fileMap = (Map<String, File>) ParamUtil.getSessionAttr(request,
                 IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId);
         if (IaisCommonUtils.isEmpty(fileMap)) {
@@ -490,13 +436,13 @@ public final class AppDataHelper {
             if (file != null) {
                 long length = file.length();
                 if (length > 0) {
-                    Long size = length / 1024;
+                    long size = length / 1024;
                     files.add(file);
                     AppDeclarationDocDto docDto = new AppDeclarationDocDto();
                     docDto.setDocName(file.getName());
                     String fileMd5 = FileUtils.getFileMd5(file);
                     docDto.setMd5Code(FileUtils.getFileMd5(file));
-                    docDto.setDocSize(Integer.valueOf(size.toString()));
+                    docDto.setDocSize(Integer.valueOf(Long.toString(size)));
                     docDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                     docDto.setSeqNum(Integer.valueOf(index));
                     Optional<Integer> versions = pageShowFileHashMap.entrySet()
@@ -510,7 +456,7 @@ public final class AppDataHelper {
                     pageShowFileDto.setIndex(index);
                     pageShowFileDto.setFileName(file.getName());
                     pageShowFileDto.setFileMapId(fileAppendId + "Div" + index);
-                    pageShowFileDto.setSize(Integer.valueOf(size.toString()));
+                    pageShowFileDto.setSize(Integer.valueOf(Long.toString(size)));
                     pageShowFileDto.setMd5Code(fileMd5);
                     pageDtos.add(pageShowFileDto);
                 }
@@ -2105,7 +2051,7 @@ public final class AppDataHelper {
         return genKeyPersonnels(ApplicationConsts.PERSONNEL_PSN_KAH, "", request);
     }
 
-
+/*
     public static List<AppSvcPrincipalOfficersDto> genAppSvcMedAlertPerson(HttpServletRequest request) {
         log.info(StringUtil.changeForLog("genAppSvcMedAlertPerson star ..."));
         AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(request);
@@ -2293,7 +2239,7 @@ public final class AppDataHelper {
         }
         log.info(StringUtil.changeForLog("genAppSvcMedAlertPerson end ..."));
         return medAlertPersons;
-    }
+    }*/
 
     public static List<AppSvcBusinessDto> genAppSvcBusinessDtoList(HttpServletRequest request,
             List<AppGrpPremisesDto> appGrpPremisesDtos,

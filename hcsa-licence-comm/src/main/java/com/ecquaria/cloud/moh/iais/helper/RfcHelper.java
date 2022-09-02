@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
@@ -31,8 +32,10 @@ import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.util.PageDataCopyUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -1223,4 +1226,20 @@ public final class RfcHelper {
         return result;
     }
 
+    public static <T extends Comparable> boolean isChangedList(List<T> l1, List<T> l2) {
+        if (l1 == null || l2 == null) {
+            return false;
+        }
+        return !IaisCommonUtils.isSame(l1, l2);
+    }
+
+    public static List<String> getSpecialServiceList(AppSubmissionDto appSubmissionDto) {
+        List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
+        if (IaisCommonUtils.isEmpty(appPremSpecialisedDtoList)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        List<String> result = IaisCommonUtils.genNewArrayList();
+        appPremSpecialisedDtoList.forEach(dto -> dto.getCheckedAppPremSubSvcRelDtoList().forEach(rel -> result.add(dto.getPremisesVal() + dto.getBaseSvcId() + rel.getSvcId())));
+        return result;
+    }
 }

@@ -740,7 +740,6 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 /**
                  * cessation
                  */
-
                 if (ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())) {
                     String cess_ack002 = MessageUtil.getMessageDesc("CESS_ACK002");
                     ParamUtil.setSessionAttr(bpc.request, "cess_ack002", cess_ack002);
@@ -842,9 +841,9 @@ public class NewApplicationDelegator extends AppCommDelegator {
                     /**
                      * preview
                      */
-                    if (!IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())) {
+                    /*if (!IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())) {
                         svcRelatedInfoView(appSubmissionDto, bpc.request, applicationDto.getServiceId(), appNo);
-                    }
+                    }*/
                     if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
                         AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();
                         if (appDeclarationMessageDto != null) {
@@ -860,18 +859,18 @@ public class NewApplicationDelegator extends AppCommDelegator {
                             RenewDto renewDto = new RenewDto();
                             renewDto.setAppSubmissionDtos(Collections.singletonList(appSubmissionDto));
                             bpc.request.setAttribute("renewDto", renewDto);
-                            AppDataHelper.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),
-                                    appSubmissionDto.getAppType(), bpc.request);
+//                            AppDataHelper.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),
+//                                    appSubmissionDto.getAppType(), bpc.request);
                             bpc.request.getSession().setAttribute("isSingle", "Y");
                         } else {
                             bpc.request.getSession().setAttribute("isSingle", "N");
                         }
                     }
-                    if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())
+                    /*if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())
                             || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
                         AppDataHelper.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),
                                 appSubmissionDto.getAppType(), bpc.request);
-                    }
+                    }*/
                     premiseView(appSubmissionDto, applicationDto, bpc.request);
                 }
                 ParamUtil.setRequestAttr(bpc.request, "cessationForm", "Application Details");
@@ -909,7 +908,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 appSubmissionDto.setAppGrpPremisesDtoList(newPremisesDtos);
                 DealSessionUtil.initView(appSubmissionDto);
                 String svcId = applicationDto.getServiceId();
-                if (!StringUtil.isEmpty(svcId) && !StringUtil.isEmpty(applicationDto.getApplicationNo())) {
+                /*if (!StringUtil.isEmpty(svcId) && !StringUtil.isEmpty(applicationDto.getApplicationNo())) {
                     List<AppSvcRelatedInfoDto> newSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
                     Optional<AppSvcRelatedInfoDto> optional = appSubmissionDto.getAppSvcRelatedInfoDtoList().stream()
                             .filter(dto -> applicationDto.getApplicationNo().equals(dto.getAppNo()))
@@ -945,7 +944,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                         newSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
                     }
                     appSubmissionDto.setAppSvcRelatedInfoDtoList(newSvcRelatedInfoDtos);
-                }
+                }*/
             }
         }
     }

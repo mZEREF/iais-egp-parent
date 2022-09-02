@@ -13,37 +13,49 @@
                     <p>Address: <c:out value="${appSvcSpecialServiceInfo.premAddress}"/></p>
                 </div>
             </iais:row>
-            <c:forEach var="specialServiceSectionDto" items="${appSvcSpecialServiceInfo.specialServiceSectionDtoList}" varStatus="subSvcRelStatus">
-                <iais:row>
-                    <div  class="col-xs-12" style="margin-bottom: 1%;margin-top: 1%">
-                        <p><strong><c:out value="${specialServiceSectionDto.svcName}"/></strong></p>
+
+            <div class="panel-group" id="specialService" role="tablist" aria-multiselectable="true">
+                <c:forEach var="specialServiceSectionDto" items="${appSvcSpecialServiceInfo.specialServiceSectionDtoList}" varStatus="subSvcRelStatus">
+                    <div class="panel panel-default">
+                        <div class="panel-heading " role="tab">
+                            <iais:row>
+                                <div  class="col-xs-12" style="margin-bottom: 1%;margin-top: 1%">
+                                    <p><strong><c:out value="${specialServiceSectionDto.svcName}"/></strong></p>
+                                </div>
+                            </iais:row>
+                        </div>
+                        <div id="${status.index}${subSvcRelStatus.index}SSI" class="panel-collapse collapse in">
+                            <input type="hidden" class ="isPartEdit" name="isPartEdit${status.index}" value="0"/>
+                            <div class="panel-body">
+                                <c:forEach var="appSvcPersonnelDto" items="${specialServiceSectionDto.appSvcDirectorDtoList}" varStatus="direStatus">
+                                    <c:set var="index" value="${direStatus.index}"/>
+                                    <c:set var="DirectorDtoListLength" value="${specialServiceSectionDto.appSvcDirectorDtoList.size()}"/>
+                                    <c:set var="title" value="Emergency Department Director ${DirectorDtoListLength > 1?index+1:''}"/>
+                                    <%@include file="viewSpecialServicesFromDetail.jsp"%>
+                                </c:forEach>
+                                <c:forEach var="appSvcPersonnelDto" items="${specialServiceSectionDto.appSvcChargedNurseDtoList}" varStatus="nurStatus">
+                                    <c:set var="index" value="${nurStatus.index}"/>
+                                    <c:set var="NurseDtoListLength" value="${specialServiceSectionDto.appSvcChargedNurseDtoList.size()}"/>
+                                    <c:set var="title" value="Emergency Department Nurse-in-charge ${NurseDtoListLength > 1?index+1:''}"/>
+                                    <%@include file="viewSpecialServicesFromDetail.jsp"%>
+                                </c:forEach>
+                                <c:set var="appSvcSuplmFormDto" value="${specialServiceSectionDto.appSvcSuplmFormDto}"/>
+                                <c:forEach var="appSvcSuplmGroupDto" items="${appSvcSuplmFormDto.appSvcSuplmGroupDtoList}" varStatus="status">
+                                    <c:set var="batchSize" value="${appSvcSuplmGroupDto.count}"/>
+                                    <c:if test="${batchSize > 0}">
+                                        <c:set var="groupId" value="${appSvcSuplmGroupDto.groupId}"/>
+                                        <c:forEach var="item" items="${appSvcSuplmGroupDto.appSvcSuplmItemDtoList}" varStatus="status">
+                                            <c:if test="${item.display}">
+                                                <%@ include file="../supplementaryForm/viewItem.jsp" %>
+                                            </c:if>
+                                        </c:forEach>
+                                    </c:if>
+                                </c:forEach>
+                            </div>
+                        </div>
                     </div>
-                </iais:row>
-                <c:forEach var="appSvcPersonnelDto" items="${specialServiceSectionDto.appSvcDirectorDtoList}" varStatus="direStatus">
-                    <c:set var="index" value="${direStatus.index}"/>
-                    <c:set var="DirectorDtoListLength" value="${specialServiceSectionDto.appSvcDirectorDtoList.size()}"/>
-                    <c:set var="title" value="Emergency Department Director ${DirectorDtoListLength > 1?index+1:''}"/>
-                    <%@include file="viewSpecialServicesFromDetail.jsp"%>
                 </c:forEach>
-                <c:forEach var="appSvcPersonnelDto" items="${specialServiceSectionDto.appSvcChargedNurseDtoList}" varStatus="nurStatus">
-                    <c:set var="index" value="${nurStatus.index}"/>
-                    <c:set var="NurseDtoListLength" value="${specialServiceSectionDto.appSvcChargedNurseDtoList.size()}"/>
-                    <c:set var="title" value="Emergency Department Nurse-in-charge ${NurseDtoListLength > 1?index+1:''}"/>
-                    <%@include file="viewSpecialServicesFromDetail.jsp"%>
-                </c:forEach>
-                <c:set var="appSvcSuplmFormDto" value="${specialServiceSectionDto.appSvcSuplmFormDto}"/>
-                <c:forEach var="appSvcSuplmGroupDto" items="${appSvcSuplmFormDto.appSvcSuplmGroupDtoList}" varStatus="status">
-                    <c:set var="batchSize" value="${appSvcSuplmGroupDto.count}"/>
-                    <c:if test="${batchSize > 0}">
-                        <c:set var="groupId" value="${appSvcSuplmGroupDto.groupId}"/>
-                        <c:forEach var="item" items="${appSvcSuplmGroupDto.appSvcSuplmItemDtoList}" varStatus="status">
-                            <c:if test="${item.display}">
-                                <%@ include file="../supplementaryForm/viewItem.jsp" %>
-                            </c:if>
-                        </c:forEach>
-                    </c:if>
-                </c:forEach>
-            </c:forEach>
+            </div>
         </c:forEach>
     </div>
 </div>

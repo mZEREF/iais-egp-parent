@@ -143,8 +143,12 @@ public abstract class AppCommDelegator {
         boolean flag = AppConsts.SUCCESS.equals(statust) && loadingServiceConfig(bpc);
         log.info(StringUtil.changeForLog("The loadingServiceConfig -->:" + flag));
         if (flag) {
-            //init session and data reomve function to DealSessionUtil
-            DealSessionUtil.initSession(bpc.request);
+            //TODO renewal draft test
+            Object sessionAttr = ParamUtil.getSessionAttr(bpc.request, HcsaAppConst.LOADING_DRAFT);
+            log.info(StringUtil.changeForLog("Renewal Draft: " + sessionAttr));
+            //TODO end
+            boolean fromDraft = ApplicationHelper.checkFromDraft(bpc.request);
+            DealSessionUtil.initSession(fromDraft, bpc.request);
         }
         log.info(StringUtil.changeForLog("the do Start end ...."));
     }
@@ -283,6 +287,13 @@ public abstract class AppCommDelegator {
         if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
             return;
         }
+        List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
+        if (appPremSpecialisedDtoList != null && appPremSpecialisedDtoList.size() > 1) {
+            appSubmissionDto.setAppPremSpecialisedDtoList(appPremSpecialisedDtoList.stream()
+                    .filter(dto -> Objects.equals(appNo, dto.getAppNo()))
+                    .collect(Collectors.toList()));
+        }
+
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDtoByServiceId(appSubmissionDto.getAppSvcRelatedInfoDtoList(),
                 appSubmissionDto.getRfiServiceId(), appNo);
         if (appSvcRelatedInfoDto == null) {
@@ -473,7 +484,7 @@ public abstract class AppCommDelegator {
         ParamUtil.setRequestAttr(request, HcsaAppConst.SPECIALISED_SVC_CODE, svcCode);
         ParamUtil.setRequestAttr(request, HcsaAppConst.SPECIALISED_NEXT_CODE, getNextSvcCode(hcsaServiceDtoList, svcCode));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
-        ApplicationHelper.initAppPremSpecialisedDtoList(appSubmissionDto, hcsaServiceDtoList);
+        DealSessionUtil.initAppPremSpecialisedDtoList(appSubmissionDto, hcsaServiceDtoList, false);
         ApplicationHelper.setAppSubmissionDto(appSubmissionDto, request);
     }
 
@@ -495,13 +506,15 @@ public abstract class AppCommDelegator {
     public void doSpecialised(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
-
+        List<String> oldSpecialSerices = null;
         boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(RfcConst.EDIT_SPECIALISED, request);
         log.info(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
         List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
         String svcCode = ParamUtil.getString(request, HcsaAppConst.SPECIALISED_SVC_CODE);
         log.info(StringUtil.changeForLog("Svc Code: " + svcCode));
         if (isGetDataFromPage) {
+            AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(request);
+            oldSpecialSerices = RfcHelper.getSpecialServiceList(oldAppSubmissionDto != null ? oldAppSubmissionDto : appSubmissionDto);
             AppDataHelper.setSpecialisedData(appPremSpecialisedDtoList, svcCode, request);
             appSubmissionDto.setAppPremSpecialisedDtoList(appPremSpecialisedDtoList);
             ApplicationHelper.setAppSubmissionDto(appSubmissionDto, request);
@@ -519,8 +532,18 @@ public abstract class AppCommDelegator {
             ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
         } else {
             coMap.put(HcsaAppConst.SECTION_SPECIALISED, HcsaAppConst.SECTION_SPECIALISED);
+            checkSpecialisedChanged(appSubmissionDto, oldSpecialSerices);
             ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
             saveDraft(bpc);
+        }
+    }
+
+    protected void checkSpecialisedChanged(AppSubmissionDto appSubmissionDto, List<String> oldSpecialSerices) {
+        List<String> specialServiceList = RfcHelper.getSpecialServiceList(appSubmissionDto);
+        boolean changed = RfcHelper.isChangedList(specialServiceList, oldSpecialSerices);
+        log.info(StringUtil.changeForLog("App Specialised Changed: " + changed));
+        if (changed) {
+            DealSessionUtil.reSetInit(appSubmissionDto, HcsaAppConst.SECTION_SPECIALISED);
         }
     }
 
@@ -868,7 +891,7 @@ public abstract class AppCommDelegator {
                 oldAppGrpPremisesDtoList);
         log.info(StringUtil.changeForLog("App Premises Changed: " + changed));
         if (changed) {
-            DealSessionUtil.reSetInit(appSubmissionDto);
+            DealSessionUtil.reSetInit(appSubmissionDto, HcsaAppConst.SECTION_PREMISES);
         }
     }
 
@@ -998,7 +1021,7 @@ public abstract class AppCommDelegator {
             }
         }
         // init uploaded File
-        AppDataHelper.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(), appSubmissionDto.getAppType(), bpc.request);
+//        AppDataHelper.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(), appSubmissionDto.getAppType(), bpc.request);
         if (ApplicationHelper.checkIsRfi(bpc.request)) {
             ParamUtil.setSessionAttr(bpc.request, "viewPrint", "Y");
         } else {
@@ -1154,7 +1177,7 @@ public abstract class AppCommDelegator {
             appSubmissionDto.setAppDeclarationDocDtos(AppDataHelper.getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request));
             String preQuesKindly = appSubmissionDto.getAppDeclarationMessageDto().getPreliminaryQuestionKindly();
             // validation
-            AppValidatorHelper.validateDeclarationDoc(errorMap, AppDataHelper.getFileAppendId(appSubmissionDto.getAppType()),
+            AppValidatorHelper.validateDeclarationDoc(errorMap, ApplicationHelper.getFileAppendId(appSubmissionDto.getAppType()),
                     "0".equals(preQuesKindly), bpc.request);
         }
 
@@ -1460,7 +1483,7 @@ public abstract class AppCommDelegator {
                 AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();
                 DeclarationsUtil.declarationsValidate(map, appDeclarationMessageDto, appSubmissionDto.getAppType());
                 String preQuesKindly = appDeclarationMessageDto == null ? null : appDeclarationMessageDto.getPreliminaryQuestionKindly();
-                AppValidatorHelper.validateDeclarationDoc(map, AppDataHelper.getFileAppendId(appSubmissionDto.getAppType()),
+                AppValidatorHelper.validateDeclarationDoc(map, ApplicationHelper.getFileAppendId(appSubmissionDto.getAppType()),
                         "0".equals(preQuesKindly), bpc.request);
             }
         }
@@ -1802,7 +1825,7 @@ public abstract class AppCommDelegator {
             }
         }
         // app group misc
-        appCommService.saveAutoRFCLinkAppGroupMisc(notAutoGroupId, autoGroupId);
+        appCommService.saveAutoRfcLinkAppGroupMisc(notAutoGroupId, autoGroupId);
         handleDraft(draftNo, ApplicationHelper.getLicenseeId(bpc.request), appSubmissionDto, appSubmissionDtoList);
         log.info(StringUtil.changeForLog("------ Save Data End ------"));
         bpc.request.getSession().setAttribute(APP_SUBMISSIONS, appSubmissionDtoList);

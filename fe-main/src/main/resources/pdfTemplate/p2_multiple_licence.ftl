@@ -82,7 +82,7 @@
       position: relative;
     }
     .licence_box  {
-      background-image: url("http://localhost:8080/main-web/img/license-mainbg.png");
+      background-image: url("http://localhost:8080/main-web/img/license-mainbg.jpg");
       background-repeat: no-repeat;
       background-size: 100% auto;
       background-position: center top;
@@ -159,7 +159,7 @@
       /*margin-top: 10px;*/
       margin: 0px;
       font-weight: 700;
-      /*text-transform: uppercase;*/
+      text-transform: uppercase;
     }
     .lic-dateinfo {
       margin-top: 20px;
@@ -309,7 +309,7 @@
                       <p>${businessName}</p>
                     </td>
                     <td>
-                      <p> ${premisesType}</p>
+                      <p> ${address}</p>
                     </td>
                     <td>
                     ${content}
@@ -319,40 +319,156 @@
                 </table>
               </div>
             </div>
-            <span>*Any notice or correspondence to be issued to the Licensee will be made to this address.</span>
-            <div class="lic-dateinfo">
-               <table width = "100%" >
-                 <tr align = "left">
-                   <td width = "29%">
-                     <div class="col-xs-12 col-md-6" style="padding-left: 0px">
-                       <p>LICENCE START DATE</p>
-                       <h3>${startDate}</h3>
-                     </div>
-                   </td>
-                   <td width = "71%" align = "left">
-                     <div class="col-xs-12 col-md-6">
-                       <p>LICENCE END DATE</p>
-                       <h3>${endDate}</h3>
-                     </div>
-                   </td>
-                 </tr>
-               </table>
+
+            <div class="lic-footer">
+              <p >This licence is issued under the Healthcare Services Act 2020 and is subject to its provisions, as well as any regulations, rules, code of practices and directions issued under it, and any conditions imposed by the Director of Medical Services. The licence is valid from the licence start date until the licence end date, unless revoked, suspended, ceased or surrendered.</p>
+              <p><br></br></p>
+              <p style = "font-size: 14pt;text-align: center;">Ministry of Health | Page 1 of ${total}</p>
             </div>
-          <div class="lic-signature-info">
-            <p>DIRECTOR OF MEDICAL SERVICES <br></br>
-              SINGAPORE </p>
-            <span>This is a computer -generated document. No Signature is required</span>
-          </div>
-          <div class="lic-footer" >
-            <p >This licence is issued under the Healthcare Services Act 2020 and is subject to its provisions, as well as any regulations, rules, code of practices and directions issued under it, and any conditions imposed by the Director of Medical Services. The licence is valid from the licence start date until the licence end date, unless revoked, suspended, ceased or surrendered.</p>
-            <p><br></br></p>
-            <p style = "font-size: 14pt;text-align: center;">Ministry of Health | Page 1 of ${totle}</p>
           </div>
         </div>
       </div>
     </div>
-  </div>
-    <#if needDisciplinesSpecifieds??>
+<#if lists??>
+  <#list lists as s>
+                           <div class="row">
+                             <div class="col-xs-12">
+                               <div class="instruction-content center-content">
+                                 <div class="licence_box">
+                                   <div class="lic-headerbox"></div>
+                                   <div class="lic-title">
+                                     <h2><br></br></h2>
+                                     <h2>LICENCE</h2>
+                                     <h2>ISSUED PURSUANT TO <br>
+                                       SECTION 11(1)(a) OF THE HEALTHCARE SERVICES ACT 2020 (HCSA)</h2>
+                                   </div>
+                                   <div class="lic-number">
+                                     <p>LICENCE NO.</p>
+                                     <h2>${licenceNo}</h2>
+                                   </div>
+                                   <br></br>
+                                   <div class="lic-approved-info">
+                                     <div class="table-responsive">
+                                       <table class="table">
+                                         <thead>
+                                         <tr>
+                                           <th></th>
+                                           <th><span style="font-style: italic;"> Business Name</span></th>
+                                           <th><span style="font-style: italic;"> Mode of Service Delivery</span></th>
+                                           <th><span style="font-style: italic;"> ${lable}</span></th>
+                                         </tr>
+                                         </thead>
+                                         <tbody>
+                                         <tr>
+                                           <td>
+                                             <p>1</p>
+                                           </td>
+                                           <td>
+                                             <p>${businessName}</p>
+                                           </td>
+                                           <td>
+                                             <p> ${address}</p>
+                                           </td>
+                                           <td>
+                                             ${s!''}
+                                           </td>
+                                         </tr>
+                                         </tbody>
+                                       </table>
+                                     </div>
+                                   </div>
+
+                                   <div class="lic-footer" >
+                                     <p >This licence is issued under the Healthcare Services Act 2020 and is subject to its provisions, as well as any regulations, rules, code of practices and directions issued under it, and any conditions imposed by the Director of Medical Services. The licence is valid from the licence start date until the licence end date, unless revoked, suspended, ceased or surrendered.</p>
+                                     <p><br></br></p>
+                                     <p style = "font-size: 14pt;text-align: center;">Ministry of Health | Page ${s_index + 2} of ${total}</p>
+                                   </div>
+                                 </div>
+                               </div>
+                             </div>
+                           </div>
+  </#list>
+</#if>
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="instruction-content center-content">
+          <div class="licence_box">
+            <div class="lic-headerbox"></div>
+            <div class="lic-title">
+              <h2><br></br></h2>
+              <h2>LICENCE</h2>
+              <h2>ISSUED PURSUANT TO <br>
+                SECTION 11(1)(a) OF THE HEALTHCARE SERVICES ACT 2020 (HCSA)</h2>
+            </div>
+            <div class="lic-number">
+              <p>LICENCE NO.</p>
+              <h2>${licenceNo}</h2>
+            </div>
+            <br></br>
+            <div class="lic-approved-info">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <th></th>
+                    <th><span style="font-style: italic;"> Business Name</span></th>
+                    <th><span style="font-style: italic;"> Mode of Service Delivery</span></th>
+                    <th><span style="font-style: italic;"> ${lable}</span></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td>
+                      <p>1</p>
+                    </td>
+                    <td>
+                      <p>${businessName}</p>
+                    </td>
+                    <td>
+                      <p> ${address}</p>
+                    </td>
+                    <td>
+                    ${content2}
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <span>*Any notice or correspondence to be issued to the Licensee will be made to this address.</span>
+            <div class="lic-dateinfo">
+              <table width = "100%" >
+                <tr align = "left">
+                  <td width = "29%">
+                    <div class="col-xs-12 col-md-6" style="padding-left: 0px">
+                      <p>LICENCE START DATE</p>
+                      <h3>${startDate}</h3>
+                    </div>
+                  </td>
+                  <td width = "71%" align = "left">
+                    <div class="col-xs-12 col-md-6">
+                      <p>LICENCE END DATE</p>
+                      <h3>${endDate}</h3>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="lic-signature-info">
+              <p>DIRECTOR OF MEDICAL SERVICES <br></br>
+                SINGAPORE </p>
+              <span>This is a computer -generated document. No Signature is required</span>
+            </div>
+            <div class="lic-footer" >
+              <p >This licence is issued under the Healthcare Services Act 2020 and is subject to its provisions, as well as any regulations, rules, code of practices and directions issued under it, and any conditions imposed by the Director of Medical Services. The licence is valid from the licence start date until the licence end date, unless revoked, suspended, ceased or surrendered.</p>
+              <p><br></br></p>
+              <p style = "font-size: 14pt;text-align: center;">Ministry of Health | Page ${content2Page} of ${total}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+     <#if needDisciplinesSpecifieds??>
         <div class="row">
           <div class="col-xs-12">
             <div class="instruction-content center-content">
@@ -373,14 +489,14 @@
 
                 <div class="lic-footer">
                   <p style="font-style: italic;">Updated as of ${tody}</p>
-                  <p>Ministry of Health | Page 2 of ${totle}</p>
+                  <p>Ministry of Health | Page ${content2Page +1} of ${totle}</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      <#if disciplinesSpecifieds??>
-        <#list disciplinesSpecifieds as ds>
+       <#if disciplinesSpecifieds??>
+         <#list disciplinesSpecifieds as ds>
         <div class="row">
           <div class="col-xs-12">
             <div class="instruction-content center-content">
@@ -400,15 +516,15 @@
 
                 <div class="lic-footer">
                   <p style="font-style: italic;">Updated as of ${tody}</p>
-                  <p>Ministry of Health | Page ${s_index + 3} of ${totle}</p>
+                  <p>Ministry of Health | Page ${s_index + content2Page +2} of ${totle}</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        </#list>
-      </#if>
-    </#if>
+         </#list>
+       </#if>
+     </#if>
   </div>
 </div>
 

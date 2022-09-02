@@ -6,13 +6,18 @@
         <c:forEach var="sectionLeader" items="${currentPreviewSvcInfo.appSvcSectionLeaderList}" varStatus="status">
             <iais:row>
                 <iais:field width="5" value="Name"/>
-                <iais:value width="3" cssClass="col-md-3" display="true">
-                    <c:out value="${sectionLeader.salutation}"/>
-                </iais:value>
                 <iais:value width="4" cssClass="col-md-4" display="true">
                     <c:out value="${sectionLeader.name}"/>
                 </iais:value>
             </iais:row>
+
+            <iais:row>
+                <iais:field width="5" value="Salutation"/>
+                <iais:value width="7" cssClass="col-md-7" display="true">
+                    <iais:code code="${sectionLeader.salutation}"/>
+                </iais:value>
+            </iais:row>
+
             <iais:row>
                 <iais:field width="5" value="Qualification"/>
                 <iais:value width="7" cssClass="col-md-7" display="true">

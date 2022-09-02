@@ -103,8 +103,8 @@ public class AppCommClientFallback implements AppCommClient {
     }
 
     @Override
-    public FeignResponseEntity<AppSubmissionDto> getAppSubmissionDtoByAppNo(String appNo) {
-        return IaisEGPHelper.getFeignResponseEntity(appNo);
+    public FeignResponseEntity<AppSubmissionDto> getAppSubmissionDtoByAppNo(String appNo, Boolean onlyItself) {
+        return IaisEGPHelper.getFeignResponseEntity(appNo, onlyItself);
     }
 
     @Override

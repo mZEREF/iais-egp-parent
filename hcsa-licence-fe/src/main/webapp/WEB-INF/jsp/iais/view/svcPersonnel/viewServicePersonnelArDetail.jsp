@@ -1,6 +1,6 @@
 <div class="personnel-content">
     <iais:row>
-        <iais:field width="5"  value="Name"/>
+        <iais:field width="5" value="Name"/>
         <iais:value width="7" cssClass="col-md-7" display="true">
             <c:out value="${appSvcPersonnelDto.name}"/>
         </iais:value>
@@ -8,7 +8,7 @@
     <iais:row>
         <iais:field width="5" value="Designation"/>
         <iais:value width="7" cssClass="col-md-7" display="true">
-            <c:out value="${appSvcPersonnelDto.designation}"/>
+            <iais:code code="${appSvcPersonnelDto.designation}"/>
         </iais:value>
     </iais:row>
     <iais:row>
@@ -66,7 +66,7 @@
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="5"  value="Expiry Date (BCLS and AED)"/>
+        <iais:field width="5" value="Expiry Date (BCLS and AED)"/>
         <iais:value width="7" cssClass="col-md-7" display="true">
             <c:out value="${appSvcPersonnelDto.bclsExpiryDate}"/>
         </iais:value>

@@ -109,6 +109,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.LOADING_DRAFT;
+
 
 /**
  * AutoRenewalDelegator
@@ -133,7 +135,6 @@ public class WithOutRenewalDelegator {
     private static final String CONTROL_SWITCH = "controlSwitch";
     private static final String EDIT = "doEdit";
     private static final String PREFIXTITLE = "prefixTitle";
-    private static final String LOADING_DRAFT = "loadingDraft";
     private static final String SINGLE_SERVICE = "isSingle";
     @Autowired
     WithOutRenewalService outRenewalService;
@@ -246,7 +247,7 @@ public class WithOutRenewalDelegator {
                         .append("/main-web/eservice/INTERNET/MohInternetInbox").toString(), bpc.request, bpc.response);
             }
 
-            AppDataHelper.initDeclarationFiles(appSubmissionDtoDraft.getAppDeclarationDocDtos(),appSubmissionDtoDraft.getAppType(),bpc.request);
+//            AppDataHelper.initDeclarationFiles(appSubmissionDtoDraft.getAppDeclarationDocDtos(),appSubmissionDtoDraft.getAppType(),bpc.request);
             ParamUtil.setSessionAttr(bpc.request, LOADING_DRAFT, AppConsts.YES);
             ApplicationHelper.reSetMaxFileIndex(appSubmissionDtoDraft.getMaxFileIndex(), request);
             appSubmissionDtoList.add(appSubmissionDtoDraft);
@@ -254,9 +255,6 @@ public class WithOutRenewalDelegator {
             //DealSessionUtil.loadCoMap(appSubmissionDtoDraft, bpc.request);
             List<AppSubmissionDto> submissionDtos = outRenewalService.getAppSubmissionDtos(licenceIDList);
             appSubmissionDtoDraft.setOldRenewAppSubmissionDto(submissionDtos.get(0));
-            log.info("---------run setDraftRfCData start------------");
-            setDraftRfCData(bpc.request,draftNo,appSubmissionDtoDraft);
-            log.info("---------run setDraftRfCData end------------");
         }
 
         //get licensee ID
@@ -437,22 +435,6 @@ public class WithOutRenewalDelegator {
 
     }
 
-    private void setDraftRfCData(HttpServletRequest request,String draftNo, AppSubmissionDto appSubmissionDto) {
-        if (StringUtil.isNotEmpty(draftNo)) {
-            appSubmissionDto.setLicenseeId(ApplicationHelper.getLicenseeId(request));
-        } else {
-            Enumeration<?> names = request.getSession().getAttributeNames();
-            if (names != null) {
-                while (names.hasMoreElements()) {
-                    String name = (String) names.nextElement();
-                    if (name.startsWith("selectLicence")) {
-                        request.getSession().removeAttribute(name);
-                    }
-                }
-            }
-        }
-    }
-
     /**
      * AutoStep: prepare
      */
@@ -538,10 +520,10 @@ public class WithOutRenewalDelegator {
             for(AppSubmissionDto appSubmissionDto:newAppSubmissionDtos){
                 DealSessionUtil.initView(appSubmissionDto);
             }
-           if(newAppSubmissionDtos.size()==1){
-               AppDataHelper.initDeclarationFiles(newAppSubmissionDtos.get(0).getAppDeclarationDocDtos(),
-                       ApplicationConsts.APPLICATION_TYPE_RENEWAL,bpc.request);
-           }
+//           if(newAppSubmissionDtos.size()==1){
+//               AppDataHelper.initDeclarationFiles(newAppSubmissionDtos.get(0).getAppDeclarationDocDtos(),
+//                       ApplicationConsts.APPLICATION_TYPE_RENEWAL,bpc.request);
+//           }
             appSubmissionService.setPreviewDta(newAppSubmissionDtos.get(0),bpc);
         }
         if (!IaisCommonUtils.isEmpty(oldSubmissionDtos) && !IaisCommonUtils.isEmpty(newAppSubmissionDtos)) {
@@ -733,7 +715,7 @@ public class WithOutRenewalDelegator {
         }
 
         // app group misc
-        appCommService.saveAutoRFCLinkAppGroupMisc(notAutoGroupId,autoGroupId);
+        appCommService.saveAutoRfcLinkAppGroupMisc(notAutoGroupId,autoGroupId);
 
         ParamUtil.setSessionAttr(bpc.request,"rfcAppSubmissionDtos", (Serializable) rfcAppSubmissionDtos);
         ParamUtil.setSessionAttr(bpc.request, "serviceNamesAck", (Serializable) serviceNamesAck);
@@ -1241,11 +1223,11 @@ public class WithOutRenewalDelegator {
                     appSubmissionDtos.get(0).setAppDeclarationMessageDto(appDeclarationMessageDto);
                     appSubmissionDtos.get(0).setAppDeclarationDocDtos(
                             AppDataHelper.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_RENEWAL, bpc.request));
-                    AppDataHelper.initDeclarationFiles(appSubmissionDtos.get(0).getAppDeclarationDocDtos(),
-                            ApplicationConsts.APPLICATION_TYPE_RENEWAL, bpc.request);
+//                    AppDataHelper.initDeclarationFiles(appSubmissionDtos.get(0).getAppDeclarationDocDtos(),
+//                            ApplicationConsts.APPLICATION_TYPE_RENEWAL, bpc.request);
                     String preQuesKindly = appSubmissionDtos.get(0).getAppDeclarationMessageDto().getPreliminaryQuestionKindly();
                     AppValidatorHelper.validateDeclarationDoc(allErrMap,
-                            AppDataHelper.getFileAppendId(ApplicationConsts.APPLICATION_TYPE_RENEWAL),
+                            ApplicationHelper.getFileAppendId(ApplicationConsts.APPLICATION_TYPE_RENEWAL),
                             "0".equals(preQuesKindly), bpc.request);
                 }
             }

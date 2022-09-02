@@ -375,7 +375,7 @@ public final class AppValidatorHelper {
                     List<String> ids = ApplicationHelper.getRelatedId(dto.getAppId(), dto.getLicenceId(),
                             dto.getServiceName());
 
-                    List<AppSvcVehicleDto> otherExistedVehicles = getAppCommService().getActiveVehicles(ids);
+                    List<AppSvcVehicleDto> otherExistedVehicles = getAppCommService().getActiveVehicles(ids, true);
                     List<AppSvcVehicleDto> appSvcVehicleDtos = IaisCommonUtils.genNewArrayList();
                     if (!IaisCommonUtils.isEmpty(dtos)) {
                         for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : dtos) {
@@ -669,9 +669,10 @@ public final class AppValidatorHelper {
                                         ApplicationConsts.PREMISES_TYPE_CONVEYANCE_SHOW, "type"));
                             }
                             AppSvcRelatedInfoDto dto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+                            AppCommService appCommService = getAppCommService();
                             List<String> ids = ApplicationHelper.getRelatedId(dto.getAppId(), dto.getLicenceId(),
                                     dto.getServiceName());
-                            List<String> vehicles = getAppCommService().getActiveConveyanceVehicles(ids);
+                            List<String> vehicles = appCommService.getActiveConveyanceVehicles(ids, true);
                             validateVehicleNo(errorMap, i, vehicleNo, distinctVehicleNos, vehicles);
                             // Co-Location Services
                             validateCoLocation(errorMap, i, appGrpPremisesDto.getLocateWtihHcsa(),
@@ -1265,7 +1266,7 @@ public final class AppValidatorHelper {
         if (personList == null || personList.isEmpty()) {
             return IaisCommonUtils.genNewHashMap();
         }
-        String psnType = null;
+        String psnType;
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         if (psnList == null) {
             psnList = IaisCommonUtils.genNewArrayList();
@@ -2122,10 +2123,10 @@ public final class AppValidatorHelper {
         String[] s = blacklist.split("[ ]+");
         name = name.toUpperCase(AppConsts.DFT_LOCALE);
         String[] target = name.split("[ ]+");
-        for (int index = 0; index < s.length; index++) {
-            String t = s[index].toUpperCase();
+        for (String value : s) {
+            String t = value.toUpperCase();
             if (Arrays.stream(target).parallel().anyMatch(x -> x.equals(t))) {
-                map.put(name.indexOf(t), s[index]);
+                map.put(name.indexOf(t), value);
             }
         }
         return map;
@@ -2486,23 +2487,6 @@ public final class AppValidatorHelper {
         return errorMap;
     }
 
-    private static void doAppSvcCgoDto(List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, Map map,
-            List<AppSvcPrincipalOfficersDto> list) {
-        if (list == null) {
-            if (hcsaSvcPersonnelDtos != null) {
-                for (HcsaSvcPersonnelDto every : hcsaSvcPersonnelDtos) {
-                    String psnType = every.getPsnType();
-                    if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)) {
-                        log.info("PERSONNEL_PSN_TYPE_CGO null");
-                        map.put(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, "CGO can't be null");
-                        return;
-                    }
-
-                }
-            }
-        }
-    }
-
     public static void doValidateSvcDocuments(List<DocumentShowDto> documentShowDtoList, Map<String, String> errorMap) {
         if (IaisCommonUtils.isEmpty(documentShowDtoList)) {
             return;
@@ -2556,6 +2540,7 @@ public final class AppValidatorHelper {
                 for (String f : sysFileTypeArr) {
                     if (f.equalsIgnoreCase(substring)) {
                         flag = true;
+                        break;
                     }
                 }
                 if (!flag) {
@@ -2959,7 +2944,6 @@ public final class AppValidatorHelper {
                 .map(dto -> validateLicences(dto.getLicenceId(),
                         dto.getAppGrpPremisesDtoList().stream().map(AppGrpPremisesDto::getPremisesType).collect(Collectors.toSet()),
                         type))
-                .filter(Objects::nonNull)
                 .collect(IaisCommonUtils::genNewHashMap, Map::putAll, Map::putAll);
     }
 
@@ -3087,79 +3071,16 @@ public final class AppValidatorHelper {
                     if (StringUtil.isEmpty(inputValue) && 1 == mandatoryType) {
                         errorMap.put(errorKey, "GENERAL_ERR0006");
                     }
-                    if (StringUtil.isNotEmpty(inputValue)) {
-                        int maxLength = itemConfigDto.getMaxLength();
-                        if (maxLength > 0 && inputValue.length() > maxLength) {
-                            errorMap.put(errorKey, repLength(itemConfigDto.getDisplayInfo(), String.valueOf(maxLength)));
-                        }
-                        String dataType = Optional.ofNullable(itemConfigDto.getDataType()).orElse("");
-                        if (HcsaConsts.SUPFORM_DATA_TYPE_INTEGER.equals(dataType)) {
-                            if (!StringUtil.isDigit(inputValue)) {
-                                //GENERAL_ERR0002 - Only numbers are allowed.
-                                errorMap.put(errorKey, "GENERAL_ERR0002");
-                            }
-                        } else if (HcsaConsts.SUPFORM_DATA_TYPE_INT_NOT_NEGATIVE.equals(dataType)) {
-                            if (!StringUtil.isNumber(inputValue)) {
-                                errorMap.put(errorKey, "GENERAL_ERR0002");
-                            } else {
-                                int i = Integer.parseInt(inputValue);
-                                if (i < 0) {
-                                    errorMap.put(errorKey, "GENERAL_ERR0074");
-                                }
-                            }
-                        } else if (HcsaConsts.SUPFORM_DATA_TYPE_INT_POSITIVE.equals(dataType)) {
-                            if (!StringUtil.isNumber(inputValue)) {
-                                errorMap.put(errorKey, "GENERAL_ERR0002");
-                            } else {
-                                int i = Integer.parseInt(inputValue);
-                                if (i <= 0) {
-                                    errorMap.put(errorKey, "GENERAL_ERR0075");
-                                }
-                            }
-                        } else if (HcsaConsts.SUPFORM_DATA_TYPE_DOUBLE.equals(dataType)) {
-                            if (!StringUtil.isNumber(inputValue)) {
-                                errorMap.put(errorKey, "GENERAL_ERR0002");
-                            }
-                        } else if (HcsaConsts.SUPFORM_DATA_TYPE_DATE.equals(dataType)) {
-                            if (!CommonValidator.isDate(inputValue)) {
-                                //GENERAL_ERR0033 - Invalid Date Format.
-                                errorMap.put(errorKey, "GENERAL_ERR0033");
-                            }
-                        } else if (HcsaConsts.SUPFORM_DATA_TYPE_FUT_DATE.equals(dataType)) {
-                            if (!CommonValidator.isDate(inputValue)) {
-                                //GENERAL_ERR0033 - Invalid Date Format.
-                                errorMap.put(errorKey, "GENERAL_ERR0033");
-                            } else if (compareDateByDay(inputValue) <= 0) {
-                                // GENERAL_ERR0026 - {field} must be a future date
-                                errorMap.put(errorKey,
-                                        MessageUtil.replaceMessage("GENERAL_ERR0026", itemConfigDto.getDisplayInfo(), "field"));
-                            }
-                        } else if (HcsaConsts.SUPFORM_DATA_TYPE_FUT_DATE_NOW.equals(dataType)) {
-                            if (!CommonValidator.isDate(inputValue)) {
-                                //GENERAL_ERR0033 - Invalid Date Format.
-                                errorMap.put(errorKey, "GENERAL_ERR0033");
-                            }
-                        } else if (HcsaConsts.SUPFORM_DATA_TYPE_PAST_DATE.equals(dataType)) {
-                            if (!CommonValidator.isDate(inputValue)) {
-                                //GENERAL_ERR0033 - Invalid Date Format.
-                                errorMap.put(errorKey, "GENERAL_ERR0033");
-                            }
-                        } else if (HcsaConsts.SUPFORM_DATA_TYPE_PAST_DATE_NOW.equals(dataType)) {
-                            if (!CommonValidator.isDate(inputValue)) {
-                                //GENERAL_ERR0033 - Invalid Date Format.
-                                errorMap.put(errorKey, "GENERAL_ERR0033");
-                            } else if (compareDateByDay(inputValue) <= 0) {
-                                // DS_ERR001 - {{field} cannot be future date.
-                                errorMap.put(errorKey,
-                                        MessageUtil.replaceMessage("DS_ERR001", itemConfigDto.getDisplayInfo(), "field"));
-                            }
-                        }
-                    }
+                    validateSuplText(errorMap, itemConfigDto, inputValue, errorKey);
                 } else if (HcsaConsts.SUPFORM_ITEM_TYPE_RADIO.equals(itemType)) {
                     if (StringUtil.isEmpty(inputValue) && 1 == mandatoryType) {
                         errorMap.put(errorKey, "GENERAL_ERR0006");
                     }
                 } else if (HcsaConsts.SUPFORM_ITEM_TYPE_CHECKBOX.equals(itemType)) {
+                    if (StringUtil.isEmpty(inputValue) && 1 == mandatoryType) {
+                        errorMap.put(errorKey, "GENERAL_ERR0006");
+                    }
+                } else if (HcsaConsts.SUPFORM_ITEM_TYPE_SELECT.equals(itemType)) {
                     if (StringUtil.isEmpty(inputValue) && 1 == mandatoryType) {
                         errorMap.put(errorKey, "GENERAL_ERR0006");
                     }
@@ -3170,6 +3091,79 @@ public final class AppValidatorHelper {
             }
         }
         return errorMap;
+    }
+
+    private static void validateSuplText(Map<String, String> errorMap, SuppleFormItemConfigDto itemConfigDto, String inputValue,
+            String errorKey) {
+        if (StringUtil.isEmpty(inputValue)) {
+            return;
+        }
+        int maxLength = itemConfigDto.getMaxLength();
+        if (maxLength > 0 && inputValue.length() > maxLength) {
+            errorMap.put(errorKey, repLength(itemConfigDto.getDisplayInfo(), String.valueOf(maxLength)));
+        }
+        String dataType = Optional.ofNullable(itemConfigDto.getDataType()).orElse("");
+        switch (dataType) {
+            case HcsaConsts.SUPFORM_DATA_TYPE_INTEGER:
+                if (!StringUtil.isDigit(inputValue)) {
+                    //GENERAL_ERR0002 - Only numbers are allowed.
+                    errorMap.put(errorKey, "GENERAL_ERR0002");
+                }
+                break;
+            case HcsaConsts.SUPFORM_DATA_TYPE_INT_NOT_NEGATIVE:
+                if (!StringUtil.isNumber(inputValue)) {
+                    errorMap.put(errorKey, "GENERAL_ERR0002");
+                } else {
+                    int i = Integer.parseInt(inputValue);
+                    if (i < 0) {
+                        errorMap.put(errorKey, "GENERAL_ERR0074");
+                    }
+                }
+                break;
+            case HcsaConsts.SUPFORM_DATA_TYPE_INT_POSITIVE:
+                if (!StringUtil.isNumber(inputValue)) {
+                    errorMap.put(errorKey, "GENERAL_ERR0002");
+                } else {
+                    int i = Integer.parseInt(inputValue);
+                    if (i <= 0) {
+                        errorMap.put(errorKey, "GENERAL_ERR0075");
+                    }
+                }
+                break;
+            case HcsaConsts.SUPFORM_DATA_TYPE_DOUBLE:
+                if (!StringUtil.isNumber(inputValue)) {
+                    errorMap.put(errorKey, "GENERAL_ERR0002");
+                }
+                break;
+            case HcsaConsts.SUPFORM_DATA_TYPE_DATE:
+            case HcsaConsts.SUPFORM_DATA_TYPE_FUT_DATE_NOW:
+            case HcsaConsts.SUPFORM_DATA_TYPE_PAST_DATE:
+                if (!CommonValidator.isDate(inputValue)) {
+                    //GENERAL_ERR0033 - Invalid Date Format.
+                    errorMap.put(errorKey, "GENERAL_ERR0033");
+                }
+                break;
+            case HcsaConsts.SUPFORM_DATA_TYPE_FUT_DATE:
+                if (!CommonValidator.isDate(inputValue)) {
+                    //GENERAL_ERR0033 - Invalid Date Format.
+                    errorMap.put(errorKey, "GENERAL_ERR0033");
+                } else if (compareDateByDay(inputValue) <= 0) {
+                    // GENERAL_ERR0026 - {field} must be a future date
+                    errorMap.put(errorKey,
+                            MessageUtil.replaceMessage("GENERAL_ERR0026", itemConfigDto.getDisplayInfo(), "field"));
+                }
+                break;
+            case HcsaConsts.SUPFORM_DATA_TYPE_PAST_DATE_NOW:
+                if (!CommonValidator.isDate(inputValue)) {
+                    //GENERAL_ERR0033 - Invalid Date Format.
+                    errorMap.put(errorKey, "GENERAL_ERR0033");
+                } else if (compareDateByDay(inputValue) <= 0) {
+                    // DS_ERR001 - {{field} cannot be future date.
+                    errorMap.put(errorKey,
+                            MessageUtil.replaceMessage("DS_ERR001", itemConfigDto.getDisplayInfo(), "field"));
+                }
+                break;
+        }
     }
 
     private static void checkConditonMandatory(Map<String, AppSvcSuplmItemDto> itemMap, Map<String, List<AppSvcSuplmItemDto>> radioBatchMap,
@@ -3198,7 +3192,7 @@ public final class AppValidatorHelper {
                 if (condDto != null) {
                     conditions.add(condDto);
                 }
-            } else if (condDto == null && 5 == mandatoryType) {
+            } else if (5 == mandatoryType) {
                 condDto = itemMap.get(id + 0);
                 if (condDto != null) {
                     conditions.add(condDto);

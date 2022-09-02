@@ -83,6 +83,7 @@ public final class HcsaAppConst {
     public static final String LICPERSONSELECTMAP                           = "LicPersonSelectMap";
 
     public static final String DRAFTCONFIG                                  = "DraftConfig";
+    public static final String LOADING_DRAFT                                = "loadingDraft";
     public static final String GROUPLICENCECONFIG                           = "GroupLicenceConfig";
     public static final String RFI_REPLY_SVC_DTO                            = "rfiReplySvcDto";
     public static final String ASSESSMENTCONFIG                             = "AssessMentConfig";

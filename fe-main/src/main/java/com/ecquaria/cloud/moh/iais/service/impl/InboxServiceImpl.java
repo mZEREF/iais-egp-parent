@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
@@ -532,22 +533,52 @@ public class InboxServiceImpl implements InboxService {
 
     }
 
+    private String getHcsaServiceSubTypeDisplayName(List<HcsaServiceSubTypeDto> hcsaServiceSubTypeDtos,String id){
+          String result = "";
+          for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto : hcsaServiceSubTypeDtos){
+             if(hcsaServiceSubTypeDto.getId().equals(id)){
+                 result = hcsaServiceSubTypeDto.getSubtypeName();
+                 break;
+             }
+          }
+          return result;
+    }
+    private String getHcsaServiceDtoDisplayName(List<HcsaServiceDto> hcsaServiceDtos,String code){
+        String result = "";
+        for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtos){
+            if(hcsaServiceDto.getSvcCode().equals(code)){
+                result = hcsaServiceDto.getSvcName();
+                break;
+            }
+        }
+        return result;
+    }
     private List<InnerLicenceViewData> tidyInnerLicenceViewData(List<LicPremisesScopeDto> licPremisesScopeDtos,List<LicPremSubSvcRelDto> licPremSubSvcRelDtos ){
         List<InnerLicenceViewData> result = IaisCommonUtils.genNewArrayList();
         if(IaisCommonUtils.isNotEmpty(licPremisesScopeDtos)){
+            List<String> ids = IaisCommonUtils.genNewArrayList();
+            for (LicPremisesScopeDto licPremisesScopeDto : licPremisesScopeDtos){
+                ids.add(licPremisesScopeDto.getSubTypeId());
+            }
+            List<HcsaServiceSubTypeDto> hcsaServiceSubTypeDtos = configInboxClient.getHcsaServiceSubTypeDtosByIds(ids).getEntity();
             for (LicPremisesScopeDto licPremisesScopeDto : licPremisesScopeDtos){
                 InnerLicenceViewData innerLicenceViewData = new InnerLicenceViewData();
-                innerLicenceViewData.setValue(licPremisesScopeDto.getSubTypeId());
+                innerLicenceViewData.setValue(getHcsaServiceSubTypeDisplayName(hcsaServiceSubTypeDtos,licPremisesScopeDto.getSubTypeId()));
                 result.add(innerLicenceViewData);
             }
         }
         if(IaisCommonUtils.isNotEmpty(licPremSubSvcRelDtos)){
+            List<String> svcCodes = IaisCommonUtils.genNewArrayList();
+            for (LicPremSubSvcRelDto licPremSubSvcRelDto : licPremSubSvcRelDtos){
+                svcCodes.add(licPremSubSvcRelDto.getSvcCode());
+            }
+            List<HcsaServiceDto> hcsaServiceDtos = configInboxClient.getHcsaServiceDtoByCode(svcCodes).getEntity();
             InnerLicenceViewData innerLicenceViewData = new InnerLicenceViewData();
             List<String> innerLicenceViewDataList = IaisCommonUtils.genNewArrayList();
             for (LicPremSubSvcRelDto licPremSubSvcRelDto : licPremSubSvcRelDtos){
                 if(licPremSubSvcRelDto.getLevel() == 0){
                     innerLicenceViewData = new InnerLicenceViewData();
-                    innerLicenceViewData.setValue(licPremSubSvcRelDto.getSvcCode());
+                    innerLicenceViewData.setValue(getHcsaServiceDtoDisplayName(hcsaServiceDtos,licPremSubSvcRelDto.getSvcCode()));
                     innerLicenceViewDataList = IaisCommonUtils.genNewArrayList();
                     innerLicenceViewData.setInnerLicenceViewDatas(innerLicenceViewDataList);
                     result.add(innerLicenceViewData);
@@ -574,7 +605,13 @@ public class InboxServiceImpl implements InboxService {
                 str.append("<li>").append(innerLicenceViewDataList.get(i).getValue());
                 List<String> innerLicenceViewDatas = innerLicenceViewDataList.get(i).getInnerLicenceViewDatas();
                 if(IaisCommonUtils.isNotEmpty(innerLicenceViewDatas)){
-
+                  str.append("<br></br>");
+                  for(int j = 0 ; j < innerLicenceViewDatas.size(); j++){
+                      str.append("- "+innerLicenceViewDatas.get(j));
+                      if(j != innerLicenceViewDatas.size() -1){
+                          str.append("<br></br>");
+                      }
+                  }
                 }
                 if (d == 0) {
                     str.append("</li>");
@@ -587,9 +624,8 @@ public class InboxServiceImpl implements InboxService {
                     str.append("</li>");
                 }
             }
-
-
         }
+        licenceViewDto.setDisciplinesSpecifieds(disciplinesSpecifieds);
         return licenceViewDto;
     }
 

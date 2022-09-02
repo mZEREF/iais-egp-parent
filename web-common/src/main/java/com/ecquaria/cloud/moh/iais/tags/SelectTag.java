@@ -38,7 +38,7 @@ public class SelectTag extends DivTagSupport {
     private boolean needSort;
     private boolean multiSelect;
     private List<SelectOption> optionsSelections;
-
+    private String data;
 
     public SelectTag() {
         super();
@@ -66,6 +66,7 @@ public class SelectTag extends DivTagSupport {
         setMultiSelect(false);
         setMultiValues(null);
         setOptionsSelections(null);
+        setData(null);
     }
 
     public void setHidden(String hidden) {
@@ -104,6 +105,9 @@ public class SelectTag extends DivTagSupport {
             }
             if (!StringUtil.isEmpty(style)) {
                 html.append(" style=\"").append(style).append('\"');
+            }
+            if (!StringUtil.isEmpty(data)) {
+                html.append(" ").append(data);
             }
             if (multiSelect) {
                 html.append(" multiple=\"multiple\"");
@@ -276,4 +280,9 @@ public class SelectTag extends DivTagSupport {
     public void setOptionsSelections(List<SelectOption> optionsSelections) {
         this.optionsSelections = optionsSelections;
     }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+
 }

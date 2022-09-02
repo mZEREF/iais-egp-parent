@@ -123,8 +123,7 @@ public class AppealServiceImpl implements AppealService {
     private static final String APPEALING_FOR = "appealingFor";
     private static final String TYPE = "type";
 
-    @Value("${iais.email.sender}")
-    private String mailSender;
+
 
     @Autowired
     private SystemParamConfig systemParamConfig;
