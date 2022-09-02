@@ -97,7 +97,6 @@
             var thisVal = $(this).val();
             console.log(thisVal)
             if("DES999" == thisVal){
-                //清空里面的值
                 $(this).closest('.personnel-content').find('.otherDesignationDiv').removeClass('hidden');
             }else{
                 $(this).closest('.personnel-content').find('.otherDesignationDiv').addClass('hidden');
