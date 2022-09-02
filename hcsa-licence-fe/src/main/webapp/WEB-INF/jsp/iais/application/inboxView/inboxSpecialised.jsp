@@ -2,25 +2,25 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<c:forEach var="specialised" items="${AppSubmissionDto.appPremSpecialisedDtoList}">
-    <c:if test="${empty categorySectionName}"><c:set var="categorySectionName" value="${specialised.categorySectionName}"/></c:if>
-    <c:if test="${empty specialSvcSecName}"><c:set var="specialSvcSecName" value="${specialised.specialSvcSecName}"/></c:if>
-</c:forEach>
-<c:set var="specialisedTitle">${categorySectionName}<c:if test="${not empty categorySectionName}"> & </c:if>${specialSvcSecName}</c:set>
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h4 class="panel-title">
-            <a class="collapsed" data-toggle="collapse" href="#previewSpecialised" role="button" aria-expanded="true">
-                <%--Category/Discipline & Specialised Service/Specified Test--%>
-                ${specialisedTitle} - ${hcsaServiceDto.svcName}
-            </a>
-        </h4>
-    </div>
-    <div id="previewSpecialised" class="panel-collapse collapse ">
-        <div class="panel-body">
-            <div class="panel-main-content form-horizontal min-row">
-                <jsp:include page="/WEB-INF/jsp/iais/view/specialised/viewSpecialisedContent.jsp"/>
+
+<c:set var="specialisedTitle"><iais:message key="GENERAL_TITLE01" escape="false"/></c:set>
+<c:set var="appPremSpecialisedDtoList" value="${AppSubmissionDto.appPremSpecialisedDtoList}" />
+<c:forEach var="specialised" items="${appPremSpecialisedDtoList}">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a class="collapsed" data-toggle="collapse" href="#previewSpecialised" role="button" aria-expanded="true">
+                    <%--Category/Discipline & Specialised Service/Specified Test--%>
+                    ${specialisedTitle} - ${specialised.baseSvcName}
+                </a>
+            </h4>
+        </div>
+        <div id="previewSpecialised" class="panel-collapse collapse ">
+            <div class="panel-body">
+                <div class="panel-main-content form-horizontal min-row">
+                    <jsp:include page="/WEB-INF/jsp/iais/view/specialised/viewSpecialisedContent.jsp"/>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</c:forEach>

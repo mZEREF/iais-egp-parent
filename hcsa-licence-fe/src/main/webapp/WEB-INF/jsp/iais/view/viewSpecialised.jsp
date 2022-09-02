@@ -2,31 +2,16 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<c:forEach var="hcsaServiceDto" items="${hcsaServiceDtoList}" varStatus="status" >
-    <c:set var="specialised_svc_code" value="${hcsaServiceDto.svcCode}" />
-    <c:if test="${empty printView}">
-        <c:choose>
-            <c:when test="${!FirstView}">
-                <c:set var="headingSign" value="${fn:contains(serviceConfig, specialised_svc_code) ? 'incompleted' : 'completed'}" />
-            </c:when>
-            <c:when test="${needShowErr}">
-                <c:set var="headingSign" value="${fn:contains(serviceConfig, specialised_svc_code) ? 'incompleted' : 'completed'}" />
-            </c:when>
-        </c:choose>
+<c:set var="specialisedTitle"><iais:message key="GENERAL_TITLE01" escape="false"/></c:set>
+<c:forEach var="specialised" items="${AppSubmissionDto.appPremSpecialisedDtoList}" varStatus="status">
+    <c:if test="${empty printView && (!FirstView || needShowErr)}">
+        <c:set var="headingSign" value="${fn:contains(coMap.multiSpecialised, specialised.baseSvcCode) ? 'incompleted' : 'completed'}" />
     </c:if>
-
-    <c:forEach var="specialised" items="${AppSubmissionDto.appPremSpecialisedDtoList}">
-        <c:if test="${specialised_svc_code == specialised.baseSvcCode}">
-            <c:if test="${empty categorySectionName}"><c:set var="categorySectionName" value="${specialised.categorySectionName}" /></c:if>
-            <c:if test="${empty specialSvcSecName}"><c:set var="specialSvcSecName" value="${specialised.specialSvcSecName}" /></c:if>
-        </c:if>
-    </c:forEach>
-    <c:set var="specialisedTitle">${categorySectionName}<c:if test="${not empty categorySectionName}"> & </c:if>${specialSvcSecName}</c:set>
     <div class="panel panel-default">
         <div class="panel-heading ${headingSign}">
             <h4 class="panel-title">
                 <a class="collapsed" data-toggle="collapse" href="#previewSpecialised${status.index}" role="button" aria-expanded="true">
-                    ${specialisedTitle} - ${hcsaServiceDto.svcName}
+                    ${specialisedTitle} - ${specialised.baseSvcName}
                 </a>
             </h4>
         </div>

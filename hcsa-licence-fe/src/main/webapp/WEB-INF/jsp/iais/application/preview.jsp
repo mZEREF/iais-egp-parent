@@ -53,9 +53,15 @@
                                                         <input type="hidden" name="iframeId" value="svcIframe${status.index}"/>
                                                         <input type="hidden" name="maskId" value="<iais:mask name="svc${status.index}" value="${hcsaServiceDto.id}"/>"/>
                                                         <input type="hidden" name="maskName" value="svc${status.index}"/>
-
-                                                        <div class="panel-heading  <c:if test="${fn:contains(serviceConfig,hcsaServiceDto.id)}">incompleted</c:if> <c:if test="${fn:contains(serviceConfig,hcsaServiceDto.id)==false}">completed</c:if>  "  id="headingServiceInfo" role="tab">
-                                                            <h4 class="panel-title svcTitle"><a  class="svc-pannel-collapse collapsed"  role="button" data-toggle="collapse" href="#collapseServiceInfo${status.index}" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information - ${hcsaServiceDto.svcName}</a></h4>
+                                                        <c:if test="${empty printView && doRenewViewYes ne '1' && (!FirstView || needShowErr)}">
+                                                            <c:set var="headingSign" value="${fn:contains(serviceConfig, hcsaServiceDto.id) ? 'incompleted' : 'completed'}" />
+                                                        </c:if>
+                                                        <div class="panel-heading  ${headingSign}" id="headingServiceInfo${status.index}" role="tab">
+                                                            <h4 class="panel-title svcTitle">
+                                                                <a class="svc-pannel-collapse collapsed"  role="button" data-toggle="collapse" href="#collapseServiceInfo${status.index}" aria-expanded="true" aria-controls="collapseServiceInfo">
+                                                                    Service Related Information - ${hcsaServiceDto.svcName}
+                                                                </a>
+                                                            </h4>
                                                         </div>
 
                                                         <div class=" panel-collapse collapse" id="collapseServiceInfo${status.index}" role="tabpanel" aria-labelledby="headingServiceInfo${status.index}" >

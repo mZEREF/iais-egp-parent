@@ -1,14 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
-<c:if test="${empty printView}">
-    <c:choose>
-        <c:when test="${!FirstView}">
-            <c:set var="headingSign" value="${coMap.premises == 'premises' ? 'completed' : 'incompleted'}"/>
-        </c:when>
-        <c:when test="${needShowErr}">
-            <c:set var="headingSign" value="${not empty svcSecMap.premiss ? 'incompleted' : 'completed'}" />
-        </c:when>
-    </c:choose>
+<c:if test="${empty printView && (!FirstView || needShowErr)}">
+    <c:set var="headingSign" value="${coMap.premises == 'premises' ? 'completed' : 'incompleted'}"/>
 </c:if>
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}" id="headingPremise" role="tab">

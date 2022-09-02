@@ -42,6 +42,7 @@ import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.OrganizationService;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.nullness.Opt;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -422,6 +423,23 @@ public class DealSessionUtil {
             ParamUtil.setSessionAttr(request, HcsaAppConst.LICPERSONSELECTMAP, (Serializable) licPersonMap);
             log.info(StringUtil.changeForLog("user info is empty....."));
         }
+    }
+    public static void initViewRequest(AppSubmissionDto appSubmissionDto, HttpServletRequest request) {
+        if (appSubmissionDto == null || request == null) {
+            return;
+        }
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = Optional.ofNullable(appSubmissionDto.getAppSvcRelatedInfoDtoList())
+                .filter(IaisCommonUtils::isNotEmpty)
+                .map(appSvcRelatedInfoDtoList -> appSvcRelatedInfoDtoList.get(0))
+                .orElse(null);
+        ParamUtil.setRequestAttr(request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
+//        HcsaServiceDto hcsaServiceDto = getConfigCommService().getHcsaServiceDtoById(svcId);
+//        ParamUtil.setRequestAttr(request, HcsaAppConst.HCSASERVICEDTO, hcsaServiceDto);
+        String svcCode = Optional.ofNullable(appSubmissionDto.getAppPremSpecialisedDtoList())
+                .filter(IaisCommonUtils::isNotEmpty)
+                .map(appPremSpecialisedDtoList -> appPremSpecialisedDtoList.get(0).getBaseSvcCode())
+                .orElse(null);
+        ParamUtil.setRequestAttr(request, HcsaAppConst.SPECIALISED_SVC_CODE, svcCode);
     }
 
     public static AppSubmissionDto initView(AppSubmissionDto appSubmissionDto) {

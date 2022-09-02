@@ -44,12 +44,16 @@
                 <div class="row">
                   <div class="col-xs-12">
                     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                      <%@include file="../view/licensee/previewLicensee.jsp"%>
-                      <%@include file="../common/previewPremises.jsp"%>
-                      <%@include file="../common/previewPrimary.jsp"%>
+                      <jsp:include page="/WEB-INF/jsp/iais/view/viewLicensee.jsp"/>
+                      <jsp:include page="/WEB-INF/jsp/iais/view/viewPremises.jsp"/>
+                      <jsp:include page="/WEB-INF/jsp/iais/view/viewSpecialised.jsp"/>
                       <div class="panel panel-default svc-content">
                         <div class="panel-heading"  id="headingServiceInfo" role="tab">
-                          <h4 class="panel-title"><a class="svc-pannel-collapse collapsed"  role="button" data-toggle="collapse" href="#collapseServiceInfo${status.index}" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information </a></h4>
+                          <h4 class="panel-title">
+                            <a class="svc-pannel-collapse collapsed"  role="button" data-toggle="collapse" href="#collapseServiceInfo${status.index}" aria-expanded="true" aria-controls="collapseServiceInfo">
+                              Service Related Information - ${currentPreviewSvcInfo.serviceName}
+                            </a>
+                          </h4>
                         </div>
 
                         <div class=" panel-collapse collapse" id="collapseServiceInfo" role="tabpanel" aria-labelledby="headingServiceInfo">
@@ -60,7 +64,7 @@
                             </div>
                             </p>
                             <div class="panel-main-content">
-                              <%@include file="../common/previewSvcInfo.jsp"%>
+                              <jsp:include page="/WEB-INF/jsp/iais/view/viewSvcInfo.jsp"/>
                             </div>
                           </div>
                         </div>

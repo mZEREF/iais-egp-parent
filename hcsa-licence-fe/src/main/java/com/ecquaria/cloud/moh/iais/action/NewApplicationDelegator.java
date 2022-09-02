@@ -40,7 +40,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -56,7 +55,6 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.AppSelectSvcDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PmtReturnUrlDto;
-import com.ecquaria.cloud.moh.iais.helper.AppDataHelper;
 import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
@@ -175,7 +173,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
         if (draftNumber != null) {
             //ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.DRAFTCONFIG, null);
             String entryType = ParamUtil.getString(request, "entryType");
-            if (!StringUtil.isEmpty(entryType) && entryType.equals("assessment")) {
+            if (!StringUtil.isEmpty(entryType) && "assessment".equals(entryType)) {
                 ParamUtil.setSessionAttr(request, HcsaAppConst.ASSESSMENTCONFIG, "test");
             }
         }
@@ -282,7 +280,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
         AppSelectSvcDto appSelectSvcDto = (AppSelectSvcDto) ParamUtil.getSessionAttr(request, HcsaAppConst.APP_SELECT_SERVICE);
         if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos) && appSubmissionDto == null && appSelectSvcDto != null) {
             String entryType = ParamUtil.getString(request, "entryType");
-            if (!StringUtil.isEmpty(entryType) && entryType.equals("assessment")) {
+            if (!StringUtil.isEmpty(entryType) && "assessment".equals(entryType)) {
                 ParamUtil.setSessionAttr(request, HcsaAppConst.ASSESSMENTCONFIG, "test");
             }
             appSubmissionDto = new AppSubmissionDto();
@@ -682,9 +680,8 @@ public class NewApplicationDelegator extends AppCommDelegator {
 
     @Override
     public void jumpYeMian(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        StringBuilder url = new StringBuilder(10);
-        url.append("https://").append(request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
-        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), request);
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(
+                "https://" + request.getServerName() + "/main-web/eservice/INTERNET/MohInternetInbox", request);
         IaisEGPHelper.redirectUrl(response, tokenUrl);
     }
 
@@ -714,7 +711,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                             InterMessageDto interMessageBySubjectLike = interMessageDtoOptional.get();
                             List<AppEditSelectDto> entity = applicationFeClient.getAppEditSelectDtos(applicationDto.getId(),
                                     ApplicationConsts.APPLICATION_EDIT_TYPE_RFI).getEntity();
-                            String url = "";
+                            String url;
                             String s = MaskUtil.maskValue("appNo", applicationDto.getApplicationNo());
                             if (!entity.isEmpty()) {
                                 boolean rfcFlag = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(
@@ -728,7 +725,6 @@ public class NewApplicationDelegator extends AppCommDelegator {
                                     return;
                                 }
                             }
-
                             url = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_CALL_BACK_URL_NEWAPPLICATION + s;
                             sendURL(bpc.request, bpc.response, url);
                             bpc.request.getSession().setAttribute(AppConsts.SESSION_INTER_INBOX_MESSAGE_ID,
@@ -871,7 +867,10 @@ public class NewApplicationDelegator extends AppCommDelegator {
                         AppDataHelper.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),
                                 appSubmissionDto.getAppType(), bpc.request);
                     }*/
-                    premiseView(appSubmissionDto, applicationDto, bpc.request);
+                    //premiseView(appSubmissionDto, applicationDto, bpc.request);
+                    DealSessionUtil.initView(appSubmissionDto);
+                    ParamUtil.setRequestAttr(bpc.request, "currentPreviewSvcInfo",
+                            appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0));
                 }
                 ParamUtil.setRequestAttr(bpc.request, "cessationForm", "Application Details");
                 ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
@@ -903,11 +902,11 @@ public class NewApplicationDelegator extends AppCommDelegator {
                     || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())
                     || ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationDto.getApplicationType())) {
                 log.info(StringUtil.changeForLog("InboxToView AppNo -->" + applicationDto.getApplicationNo()));
-                List<AppGrpPremisesDto> newPremisesDtos = IaisCommonUtils.genNewArrayList();
+                /*List<AppGrpPremisesDto> newPremisesDtos = IaisCommonUtils.genNewArrayList();
                 filtrationAppGrpPremisesDtos(applicationDto.getApplicationNo(), appSubmissionDto, newPremisesDtos);
-                appSubmissionDto.setAppGrpPremisesDtoList(newPremisesDtos);
+                appSubmissionDto.setAppGrpPremisesDtoList(newPremisesDtos);*/
                 DealSessionUtil.initView(appSubmissionDto);
-                String svcId = applicationDto.getServiceId();
+                //String svcId = applicationDto.getServiceId();
                 /*if (!StringUtil.isEmpty(svcId) && !StringUtil.isEmpty(applicationDto.getApplicationNo())) {
                     List<AppSvcRelatedInfoDto> newSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
                     Optional<AppSvcRelatedInfoDto> optional = appSubmissionDto.getAppSvcRelatedInfoDtoList().stream()
