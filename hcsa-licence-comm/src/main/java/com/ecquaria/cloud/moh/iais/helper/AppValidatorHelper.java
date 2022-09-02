@@ -2771,6 +2771,13 @@ public final class AppValidatorHelper {
 //                    designation
             if (StringUtil.isEmpty(designation)) {
                 errorMap.put("designation" + i, signal);
+            } else if ("Others".equals(designation)) {
+                String otherDesignation = appSvcPersonnelDto.getOtherDesignation();
+                if (StringUtil.isEmpty(otherDesignation)) {
+                    errorMap.put("otherDesignation" + i,signal);
+                } else if (otherDesignation.length() > 100) {
+                    errorMap.put("otherDesignation" + i, signal);
+                }
             }
             if (StringUtil.isEmpty(wrkExpYear)) {
                 errorMap.put("wrkExpYear" + i, signal);

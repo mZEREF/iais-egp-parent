@@ -1,4 +1,4 @@
-<div class="personnel-content" id="personnelRemoveId${status.index}">
+<div class="personnel-content">
     <input type="hidden" class="not-refresh " name="${logo}speCount" value="size"/>
     <input type="hidden" name="indexNo" value="${appSvcPersonnelDto.indexNo}"/>
     <iais:row cssClass="personnel-header">
@@ -54,6 +54,16 @@
                              value="${appSvcPersonnelDto.designation}" firstOption="Please Select"></iais:select>
             </iais:value>
         </iais:row>
+
+        <iais:row cssClass="${appSvcPersonnelDto.designation=='Others' ? '' : 'hidden'} otherDesignationDiv">
+            <iais:field width="5" value="OtherDesignation" mandatory="true"/>
+            <iais:value width="7" cssClass="col-md-7">
+                <iais:input maxLength="100" type="text" cssClass="otherDesignation"
+                            name="otherDesignation${index}"
+                            value="${appSvcPersonnelDto.otherDesignation}"/>
+            </iais:value>
+        </iais:row>
+
         <%--    qualification--%>
         <iais:row cssClass="personnel-qualification hidden ">
             <iais:field width="5" mandatory="true" value="Qualification" cssClass="col-sm-5"/>

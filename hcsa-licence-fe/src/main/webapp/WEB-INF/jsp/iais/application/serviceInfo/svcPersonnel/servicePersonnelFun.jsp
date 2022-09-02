@@ -95,8 +95,8 @@
         $('.designation').unbind('change');
         $('.designation').change(function () {
             var thisVal = $(this).val();
-            console.log(thisVal)
-            if("DES999" == thisVal){
+            console.log('===========>',thisVal)
+            if("DES999" == thisVal || "Others" == thisVal){
                 $(this).closest('.personnel-content').find('.otherDesignationDiv').removeClass('hidden');
             }else{
                 $(this).closest('.personnel-content').find('.otherDesignationDiv').addClass('hidden');
@@ -175,7 +175,6 @@
             }
         }
     }
-
     //common
     function addPersonnels(target) {
         var $target = $(target);
@@ -200,6 +199,7 @@
         $currContent.find('.subSpeciality').html('');
         $currContent.find('.othersubSpeciality').html('');
         $currContent.find('.qualification').html('');
+        $currContent.find('.otherDesignationDiv').addClass('hidden')
         refreshIndex($currContent, $(target).find('div.personnel-content').length - 1);
         $(target).find('div.personnel-content').first().find('.assign-psn-item').html('1');
         disablePersonnel($currContent, false, true);
@@ -263,12 +263,14 @@
         spRemove();
         pageController($('.personnel-content:last'));
         $('.personnel-content').first().find('.assign-psn-item').html('1');
+        $('.personnel-content').last().find('.otherDesignationDiv').addClass('hidden')
         var psnLength = $('.personnel-content').length;
         let $target = $('div.personnel-content:last')
         let targets = $('.special-person');
         controlCountEvent($(targets))
         refreshIndex($target, psnLength - 1);
         profRegNoEvent($('.personnel-content:last'));
+        designationChange()
         dismissWaiting();
     });
 

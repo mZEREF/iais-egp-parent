@@ -11,6 +11,23 @@
             <c:out value="${appSvcPersonnelDto.name}"/>
         </iais:value>
     </iais:row>
+
+    <c:if test="${appSvcPersonnelDto.personnelType == 'SPPT001'}">
+        <iais:row>
+            <iais:field width="5" value="Designation" cssClass="col-sm-5"/>
+            <iais:value width="7" cssClass="col-sm-5 col-md-7" display="true">
+                <c:out value="${appSvcPersonnelDto.designation}"/>
+            </iais:value>
+        </iais:row>
+    </c:if>
+
+    <iais:row cssClass="${appSvcPersonnelDto.designation=='Others' ? '' : 'hidden'}">
+        <iais:field width="5" value="OtherDesignation" cssClass="col-sm-5"/>
+        <iais:value width="7" cssClass="col-sm-5 col-md-7" display="true">
+            <c:out value="${appSvcPersonnelDto.otherDesignation}"/>
+        </iais:value>
+    </iais:row>
+
     <c:if test="${appSvcPersonnelDto.personnelType == 'SPPT001'}||${appSvcPersonnelDto.personnelType == 'SPPT002'}">
         <iais:row>
             <iais:field width="5" value="Qualification" cssClass="col-sm-5"/>
