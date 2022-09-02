@@ -2602,7 +2602,15 @@ public final class AppValidatorHelper {
             String designation = appSvcPersonnelDto.getDesignation();
             if (StringUtil.isEmpty(designation)) {
                 errorMap.put(prefix + "designation" + i, signal);
+            } else if (MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation)) {
+                String otherDesignation = appSvcPersonnelDto.getOtherDesignation();
+                if (StringUtil.isEmpty(otherDesignation)) {
+                    errorMap.put(prefix + "otherDesignation" + i,signal);
+                } else if (otherDesignation.length() > 100) {
+                    errorMap.put(prefix + "otherDesignation" + i, signal);
+                }
             }
+
             //              profRegNo
             String profRegNo = appSvcPersonnelDto.getProfRegNo();
             if (StringUtil.isEmpty(profRegNo)) {

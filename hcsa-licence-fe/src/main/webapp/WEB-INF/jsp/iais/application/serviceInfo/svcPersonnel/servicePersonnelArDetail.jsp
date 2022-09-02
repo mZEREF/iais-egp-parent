@@ -39,6 +39,15 @@
                          firstOption="Please Select"/>
         </iais:value>
     </iais:row>
+
+    <iais:row cssClass="${appSvcPersonnelDto.designation=='DES999' ? '' : 'hidden'} otherDesignationDiv">
+        <iais:field width="5" value="OtherDesignation" mandatory="true"/>
+        <iais:value width="7" cssClass="col-md-7">
+            <iais:input maxLength="100" type="text" cssClass="otherDesignation" name="${logo}otherDesignation${index}"
+                        value="${appSvcPersonnelDto.otherDesignation}"/>
+        </iais:value>
+    </iais:row>
+
     <%--    Professional Regn. No--%>
     <iais:row>
         <iais:field width="5" mandatory="true" value="Professional Regn. No."/>

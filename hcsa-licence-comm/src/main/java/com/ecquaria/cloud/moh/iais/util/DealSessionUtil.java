@@ -29,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeO
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
@@ -647,6 +648,13 @@ public class DealSessionUtil {
 
     public static void initDeclarationFiles(List<AppDeclarationDocDto> appDeclarationDocDtos, String appType,
             HttpServletRequest request) {
+        if (request == null) {
+            request = MiscUtil.getCurrentRequest();
+        }
+        if (request == null) {
+            log.info("The request is null!");
+            return;
+        }
         String fileAppendId = ApplicationHelper.getFileAppendId(appType);
         if (IaisCommonUtils.isEmpty(appDeclarationDocDtos)) {
             request.getSession().removeAttribute(fileAppendId + "DocShowPageDto");
