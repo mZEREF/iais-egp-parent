@@ -32,10 +32,8 @@ import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.util.PageDataCopyUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.formula.functions.T;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -182,11 +180,8 @@ public final class RfcHelper {
     }
 
     public static boolean isChangeAppPremAddress(AppGrpPremisesDto appGrpPremisesDto, AppGrpPremisesDto oldAppGrpPremisesDto) {
-        if (appGrpPremisesDto == null) {
+        if (appGrpPremisesDto == null || oldAppGrpPremisesDto == null) {
             return true;
-        }
-        if (oldAppGrpPremisesDto == null) {
-            return false;
         }
         if (!Objects.equals(appGrpPremisesDto.getPremisesType(), oldAppGrpPremisesDto.getPremisesType())) {
             return true;
@@ -1224,13 +1219,6 @@ public final class RfcHelper {
             }
         }
         return result;
-    }
-
-    public static <T extends Comparable> boolean isChangedList(List<T> l1, List<T> l2) {
-        if (l1 == null || l2 == null) {
-            return false;
-        }
-        return !IaisCommonUtils.isSame(l1, l2);
     }
 
     public static List<String> getSpecialServiceList(AppSubmissionDto appSubmissionDto) {
