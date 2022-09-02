@@ -541,7 +541,7 @@ public class DealSessionUtil {
                 }
             } else if (HcsaConsts.STEP_SPECIAL_SERVICES_FORM.equals(stepCode)) {
                 ApplicationHelper.initAppSvcSpecialServiceInfoDtoList(currSvcInfoDto,appPremSpecialisedDtoList);
-                if (!reset) {
+                if (!forceInit) {
                     List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = currSvcInfoDto.getAppSvcSpecialServiceInfoList();
                     if (IaisCommonUtils.isNotEmpty(appSvcSpecialServiceInfoList)) {
                         appSvcSpecialServiceInfoList.forEach(dto->{
