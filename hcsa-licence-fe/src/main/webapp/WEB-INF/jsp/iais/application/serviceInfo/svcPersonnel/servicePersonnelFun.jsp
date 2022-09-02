@@ -41,6 +41,7 @@
         }
         init = 1;
         fileUploadEvent()
+        designationChange()
         //no
         profRegNoEvent($('.personnel-content'));
         removePersonEvent();
@@ -89,6 +90,21 @@
             }
         }
     }
+
+    var designationChange = function () {
+        $('.designation').unbind('change');
+        $('.designation').change(function () {
+            var thisVal = $(this).val();
+            console.log(thisVal)
+            if("DES999" == thisVal){
+                //清空里面的值
+                $(this).closest('.personnel-content').find('.otherDesignationDiv').removeClass('hidden');
+            }else{
+                $(this).closest('.personnel-content').find('.otherDesignationDiv').addClass('hidden');
+                $(this).closest('.personnel-content').find('.otherDesignation').val('')
+            }
+        });
+    };
 
     var personnelSel = function () {
         $('.personnelType').change(function () {
@@ -191,6 +207,7 @@
         controlCountEvent($target, true);
         removePersonEvent();
         profRegNoEvent($currContent);
+        designationChange()
         dismissWaiting();
     }
 

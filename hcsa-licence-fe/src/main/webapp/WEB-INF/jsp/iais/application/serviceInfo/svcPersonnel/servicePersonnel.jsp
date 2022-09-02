@@ -70,7 +70,7 @@
     <c:set var="specialCount" value="${svcPersonnelDto.specialCount}"/>
     <c:set var="normalCount" value="${svcPersonnelDto.normalCount}"/>
     <c:if test="${arPractitionerCount != 0}">
-        <div class="panel-main-content">
+        <div class="panel-main-content" id="arContent">
             <iais:row>
                 <div class="col-xs-12">
                     <p class="app-title" ><c:out value="Service Personnel"/></p>
@@ -84,13 +84,19 @@
             </c:forEach>
 
             <div class="form-group col-md-12 col-xs-12 addDpoDiv">
-         <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">
-         <span style="">+ Add Another AR Practitioner</span>
-         </span>
+         <span class="addListBtn" style="color:deepskyblue;cursor:pointer;"> <span style="">+ Add Another AR Practitioner</span> </span>
             </div>
-            <div class="form-group col-md-12 col-xs-12 addDpoDiv">
-                <span style="">Total Number of AR Practitioner</span>
-            </div>
+<%--            <div class="form-group col-md-12 col-xs-12">--%>
+<%--                <span style="">Total Number of AR Practitioner</span>--%>
+<%--            </div>--%>
+
+            <iais:row>
+                <iais:field width="5" value="Total Number of AR Practitioner"/>
+                <iais:value width="7" cssClass="col-md-7" display="true">
+                    <span id="arNumber">0<span>
+                </iais:value>
+            </iais:row>
+
         </div>
     </c:if>
 

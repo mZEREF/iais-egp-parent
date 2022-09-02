@@ -41,14 +41,16 @@
             <iais:field width="5" mandatory="true" value="Name" cssClass="col-sm-5"/>
             <iais:value width="7" cssClass="col-sm-5 col-md-7">
                 <input type="hidden" name="prsLoading" value="${appSvcPersonnelDto.prsLoading}"/>
-                <iais:input maxLength="66" cssClass="name" type="text" name="name${index}" value="${appSvcPersonnelDto.name}"></iais:input>
+                <iais:input maxLength="66" cssClass="name" type="text" name="name${index}"
+                            value="${appSvcPersonnelDto.name}"></iais:input>
             </iais:value>
         </iais:row>
         <%--   designation --%>
         <iais:row cssClass="personnel-designation hidden ">
             <iais:field width="5" mandatory="true" value="Designation" cssClass="col-sm-5"/>
             <iais:value width="7" cssClass="col-sm-5 col-md-7">
-                <iais:select cssClass="designation" name="designation${index}" options="NuclearMedicineImagingDesignation"
+                <iais:select cssClass="designation" name="designation${index}"
+                             options="NuclearMedicineImagingDesignation"
                              value="${appSvcPersonnelDto.designation}" firstOption="Please Select"></iais:select>
             </iais:value>
         </iais:row>
@@ -64,7 +66,8 @@
         <iais:row cssClass="personnel-regnNo hidden ">
             <iais:field width="5" mandatory="true" value="Professional Regn. No. " cssClass="col-sm-5"/>
             <iais:value width="7" cssClass="col-sm-5 col-md-7">
-                <iais:input maxLength="20" cssClass="profRegNo" type="text" name="profRegNo${index}" value="${appSvcPersonnelDto.profRegNo}"></iais:input>
+                <iais:input maxLength="20" cssClass="profRegNo" type="text" name="profRegNo${index}"
+                            value="${appSvcPersonnelDto.profRegNo}"></iais:input>
             </iais:value>
         </iais:row>
         <%--    years--%>
