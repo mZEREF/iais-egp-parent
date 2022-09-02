@@ -484,7 +484,7 @@ public abstract class AppCommDelegator {
         ParamUtil.setRequestAttr(request, HcsaAppConst.SPECIALISED_SVC_CODE, svcCode);
         ParamUtil.setRequestAttr(request, HcsaAppConst.SPECIALISED_NEXT_CODE, getNextSvcCode(hcsaServiceDtoList, svcCode));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
-        ApplicationHelper.initAppPremSpecialisedDtoList(appSubmissionDto, hcsaServiceDtoList);
+        DealSessionUtil.initAppPremSpecialisedDtoList(appSubmissionDto, hcsaServiceDtoList, false);
         ApplicationHelper.setAppSubmissionDto(appSubmissionDto, request);
     }
 
