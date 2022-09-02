@@ -1,4 +1,5 @@
 <div class="personnel-content">
+    <c:set var="isNIC" value="${psnType == ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_NURSE_IN_CHARGE}"/>
     <input type="hidden" class="not-refresh prepsn" name="${psnContent}" value="${prefix}"/>
     <iais:row>
         <div class="col-xs-12 col-md-6">
@@ -41,7 +42,17 @@
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Designation"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:select cssClass="designation" name="${prefix}designation${index}" value="${appSvcPersonnelDto.designation}" options="designationOpList" firstOption="Please Select"/>
+            <iais:select cssClass="designation" name="${prefix}designation${index}" value="${appSvcPersonnelDto.designation}"
+                         options="designationOpList" firstOption="Please Select"
+                         onchange="toggleOther(this, 'DES999', '.otheDesignationDiv');"/>
+        </iais:value>
+    </iais:row>
+
+    <iais:row cssClass="${appSvcPersonnelDto.designation=='DES999' ? '' : 'hidden'} otheDesignationDiv">
+        <iais:field width="5" cssClass="col-md-5" value=""/>
+        <iais:value width="7" cssClass="col-md-7">
+            <iais:input maxLength="100" type="text" cssClass="otherDesignation" name="${prefix}otherDesignation${index}"
+                        value="${appSvcPersonnelDto.otherDesignation}"/>
         </iais:value>
     </iais:row>
 
@@ -160,5 +171,16 @@
                         value="${appSvcPersonnelDto.wrkExpYear}"/>
         </iais:value>
     </iais:row>
+
+    <c:if test="${isNIC}">
+        <%--          Expiry Date (BCLS and AED)  --%>
+        <iais:row>
+            <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Expiry Date (BCLS and AED)"/>
+            <iais:value width="7" cssClass="col-md-7">
+                <iais:datePicker cssClass="bclsExpiryDate" name="${logo}bclsExpiryDate${index}"
+                                 value="${appSvcPersonnelDto.bclsExpiryDate}"/>
+            </iais:value>
+        </iais:row>
+    </c:if>
     <hr/>
 </div>

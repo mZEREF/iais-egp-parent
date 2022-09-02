@@ -3287,6 +3287,7 @@ public final class AppValidatorHelper {
 
     private static void validateSpecialServicePerson(AppSvcPersonnelDto appSvcPersonnelDto, String prefix, String subfix, String appType, Map<String, String> errorMap,List<String> names) {
         String signal = "GENERAL_ERR0006";
+        String personnelType = appSvcPersonnelDto.getPersonnelType();
 
         String salutation = appSvcPersonnelDto.getSalutation();
         if (StringUtil.isEmpty(salutation)) {
@@ -3312,12 +3313,14 @@ public final class AppValidatorHelper {
         String designation = appSvcPersonnelDto.getDesignation();
         if (StringUtil.isEmpty(designation)) {
             errorMap.put(prefix + "designation" + subfix, signal);
-        } else if (HcsaAppConst.DESIGNATION_OTHERS.equals(designation)) {
+        } else if (MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation)) {
             String otherDesignation = appSvcPersonnelDto.getOtherDesignation();
             if (StringUtil.isEmpty(otherDesignation)) {
-                errorMap.put(prefix + "otherDesignation" + subfix, signal);
+                errorMap.put(prefix + "otherDesignation" + subfix,
+                        MessageUtil.replaceMessage("GENERAL_ERR0006", "Others Designation", "field"));
             } else if (otherDesignation.length() > 100) {
-                errorMap.put(prefix + "otherDesignation" + subfix, signal);
+                String general_err0041 = repLength("Others Designation", "100");
+                errorMap.put(prefix + "otherDesignation" + subfix, general_err0041);
             }
         }
 
@@ -3385,6 +3388,15 @@ public final class AppValidatorHelper {
             }
         }
 
+        if (ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_NURSE_IN_CHARGE.equals(personnelType)){
+            String bclsExpiryDateStr = appSvcPersonnelDto.getBclsExpiryDate();
+            if (StringUtil.isEmpty(bclsExpiryDateStr)) {
+                errorMap.put(prefix + "bclsExpiryDate" + subfix, signal);
+            } else {
+                if (!isEarly(bclsExpiryDateStr, currRegiDate)) {
+                    errorMap.put(prefix + "bclsExpiryDate" + subfix, "SC_ERR009");
+                }
+            }
+        }
     }
-
 }

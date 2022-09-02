@@ -37,7 +37,11 @@
                         <c:set var="appSvcSuplmFormDto" value="${specialServiceSectionDto.appSvcSuplmFormDto}"/>
                         <c:set var="DirMaxCount" value="0"/>
                         <c:set var="NurMaxCount" value="0"/>
+                        <c:set var="NICMaxCount" value="0"/>
                         <c:forEach var="maxCount" items="${specialServiceSectionDto.maxCount}">
+                            <c:if test="${maxCount.key == ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_NURSE_IN_CHARGE}">
+                                <c:set var="NICMaxCount" value="${maxCount.value}"/>
+                            </c:if>
                             <c:if test="${maxCount.key == ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR}">
                                 <c:set var="DirMaxCount" value="${maxCount.value}"/>
                             </c:if>
@@ -47,17 +51,48 @@
                         </c:forEach>
                         <input type="hidden" class ="DirMaxCount" value="${DirMaxCount}"/>
                         <input type="hidden" class ="NurMaxCount" value="${NurMaxCount}"/>
+                        <input type="hidden" class ="NICMaxCount" value="${NICMaxCount}"/>
                     </div>
                     <div id="${status.index}${subSvcRelStatus.index}SSI" class="panel-collapse collapse in">
                         <input type="hidden" class ="isPartEdit" name="isPartEdit${status.index}" value="0"/>
                         <div class="panel-body">
                             <c:choose>
-                                <c:when test="${DirMaxCount==0&&NurMaxCount==0&&empty appSvcSuplmFormDto.appSvcSuplmGroupDtoList}">
+                                <c:when test="${DirMaxCount==0&&NurMaxCount==0&&NICMaxCount==0&&empty appSvcSuplmFormDto.appSvcSuplmGroupDtoList}">
                                     <div class="panel-main-content">
                                         <p><h4><iais:message key="NEW_ACK039"/></h4></p>
                                     </div>
                                 </c:when>
                                 <c:otherwise>
+                                    <c:if test="${NICMaxCount!=0}">
+                                        <div class="panel-main-content">
+                                            <c:choose>
+                                                <c:when test="${specialServiceSectionDto.appSvcNICDtoList != null && specialServiceSectionDto.appSvcNICDtoList.size()>1}">
+                                                    <input class="length" type="hidden" name="${status.index}${subSvcRelStatus.index}NICDtoListLength" value="${specialServiceSectionDto.appSvcNICDtoList.size()}"/>
+                                                    <c:set var="NICDtoListLength" value="${specialServiceSectionDto.appSvcNICDtoList.size()}"/>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <input class="length" type="hidden" name="${status.index}${subSvcRelStatus.index}NICDtoListLength" value="1"/>
+                                                    <c:set var="NICDtoListLength" value="1"/>
+                                                </c:otherwise>
+                                            </c:choose>
+                                            <c:forEach begin="0" end="${NICDtoListLength - 1}" step="1" varStatus="nicStatus">
+                                                <c:set var="index" value="${nicStatus.index}"/>
+                                                <c:set var="appSvcPersonnelDto" value="${specialServiceSectionDto.appSvcNICDtoList[index]}"/>
+                                                <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}nic"/>
+                                                <c:set var="psnType" value="${ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_NURSE_IN_CHARGE}"/>
+                                                <c:set var="title" value="Nurse in Charge"/>
+                                                <%@include file="specialServiceDetail.jsp" %>
+                                            </c:forEach>
+                                            <iais:row>
+                                                <div class="col-md-12 col-xs-12 addDiv <c:if test="${NICDtoListLength >= NICMaxCount}">hidden</c:if>">
+                                                    <input type="hidden" class ="psnType" value="Nic"/>
+                                                    <span class="addBtn" style="color:deepskyblue;cursor:pointer;">
+                                                    <span style="">Add more</span>
+                                                </span>
+                                                </div>
+                                            </iais:row>
+                                        </div>
+                                    </c:if>
                                     <c:if test="${DirMaxCount!=0}">
                                         <div class="panel-main-content">
                                             <c:choose>
@@ -74,12 +109,13 @@
                                                 <c:set var="index" value="${direStatus.index}"/>
                                                 <c:set var="appSvcPersonnelDto" value="${specialServiceSectionDto.appSvcDirectorDtoList[index]}"/>
                                                 <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}dir"/>
+                                                <c:set var="psnType" value="${ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR}"/>
                                                 <c:set var="title" value="Emergency Department Director"/>
                                                 <%@include file="specialServiceDetail.jsp" %>
                                             </c:forEach>
                                             <iais:row>
                                                 <div class="col-md-12 col-xs-12 addDiv <c:if test="${DirectorDtoListLength >= DirMaxCount}">hidden</c:if>">
-                                                    <input type="hidden" class ="disDiOrNu" name="disDiOrNu" value="Di"/>
+                                                    <input type="hidden" class ="psnType" value="Di"/>
                                                     <span class="addBtn" style="color:deepskyblue;cursor:pointer;">
                                                     <span style="">Add more</span>
                                                 </span>
@@ -103,12 +139,13 @@
                                                 <c:set var="index" value="${nurStatus.index}"/>
                                                 <c:set var="appSvcPersonnelDto" value="${specialServiceSectionDto.appSvcChargedNurseDtoList[index]}"/>
                                                 <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}nur"/>
+                                                <c:set var="psnType" value="${ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR}"/>
                                                 <c:set var="title" value="Emergency Department Nurse-in-charge"/>
                                                 <%@include file="specialServiceDetail.jsp"%>
                                             </c:forEach>
                                             <iais:row>
                                                 <div class="col-md-12 col-xs-12 addDiv <c:if test="${NurseDtoListLength >= NurMaxCount}">hidden</c:if>">
-                                                    <input type="hidden" class ="disDiOrNu" name="disDiOrNu" value="Nu"/>
+                                                    <input type="hidden" class ="psnType" value="Nu"/>
                                                     <span class="addBtn" style="color:deepskyblue;cursor:pointer;">
                                                     <span style="">Add more</span>
                                                 </span>
@@ -166,7 +203,7 @@
 <script>
     $(function() {
         $('.addBtn').on('click', function () {
-            var dis=$(this).closest('div.addDiv').find('input.disDiOrNu').val();
+            var dis=$(this).closest('div.addDiv').find('input.psnType').val();
             addPersonnel($(this).closest('div.panel-main-content'),dis);
         });
     });

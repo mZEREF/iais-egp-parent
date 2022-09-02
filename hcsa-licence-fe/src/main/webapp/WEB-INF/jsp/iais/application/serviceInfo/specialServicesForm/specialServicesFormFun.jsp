@@ -66,6 +66,8 @@
             maxCount=$target.closest('div.panel-group').find('input.DirMaxCount').val();
         }else if (dis=='Nu'){
             maxCount=$target.closest('div.panel-group').find('input.NurMaxCount').val();
+        }else if (dis=='Nic'){
+            maxCount=$target.closest('div.panel-group').find('input.NICMaxCount').val();
         }
         showWaiting();
         var $tgt = $(target).find('div.personnel-content').last();
@@ -102,12 +104,14 @@
         $('.removeBtn').unbind('click');
         $('.removeBtn').on('click', function () {
             var $Content = $(this).closest('div.panel-main-content');
-            var dis=$Content.find('input.disDiOrNu').val();
+            var dis=$Content.find('input.psnType').val();
             var maxCount;
             if (dis=='Di'){
                 maxCount=$Content.closest('div.panel-group').find('input.DirMaxCount').val();
             }else if (dis=='Nu'){
                 maxCount=$Content.closest('div.panel-group').find('input.NurMaxCount').val();
+            }else if (dis=='Nic'){
+                maxCount=$Content.closest('div.panel-group').find('input.NICMaxCount').val();
             }
             $(this).closest('div.personnel-content').remove();
             let $currContent = $Content.find('div.personnel-content');
@@ -123,5 +127,9 @@
                 $Content.find('.addDiv').removeClass('hidden');
             }
         });
+    }
+
+    function toggleOther(sel, val, elem) {
+        toggleOnSelect(sel, val, $(sel).closest('.form-group').siblings(elem));
     }
 </script>
