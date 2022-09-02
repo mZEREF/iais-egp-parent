@@ -2358,8 +2358,7 @@ public final class ApplicationHelper {
                 appPremSpecialisedDto.setPremiseIndex(i);
                 appSvcSpecialServiceInfoDto.setAppGrpPremisesDto(appPremSpecialisedDto);
                 List<SpecialServiceSectionDto> specialServiceSectionDtoList = IaisCommonUtils.genNewArrayList();
-                List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList = appPremSpecialisedDto.getAllAppPremSubSvcRelDtoList().stream().filter(
-                        AppPremSubSvcRelDto::isChecked).collect(Collectors.toList());
+                List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList = appPremSpecialisedDto.getCheckedAppPremSubSvcRelDtoList();
                 if (!IaisCommonUtils.isEmpty(appPremSubSvcRelDtoList)) {
                     specialServiceSectionDtoList.addAll(genSpecialServiceSectionDtoList(appPremSubSvcRelDtoList));
                 }
