@@ -718,6 +718,23 @@ public final class DataSubmissionHelper {
         return stages;
     }
 
+    public static List<String> getAllOFOCycleStages(){
+        List<String> stages = new ArrayList<>(4);
+        stages.add(DataSubmissionConsts.AR_CYCLE_EFO);
+        stages.add(DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL);
+        stages.add(DataSubmissionConsts.AR_STAGE_DONATION);
+        stages.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
+        return stages;
+    }
+
+    public static List<String> getAllSFOCycleStages(){
+        List<String> stages = new ArrayList<>(3);
+        stages.add(DataSubmissionConsts.AR_CYCLE_EFO);
+        stages.add(DataSubmissionConsts.AR_STAGE_DONATION);
+        stages.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
+        return stages;
+    }
+
     public static List<SelectOption> genOptions(Map<String, String> map, String firstOption, boolean sort) {
         List<SelectOption> opts = IaisCommonUtils.genNewArrayList();
         if (map != null && !map.isEmpty()) {

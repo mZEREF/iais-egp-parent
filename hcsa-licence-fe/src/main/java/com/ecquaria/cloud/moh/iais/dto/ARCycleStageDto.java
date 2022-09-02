@@ -12,6 +12,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class ARCycleStageDto implements Serializable {
+    private static final long serialVersionUID = 2291544600420550312L;
     private String stepKey;
     private String stepValue;
     // Determine the color of the display

@@ -171,7 +171,6 @@ public class ArCycleStagesManualDelegator {
             ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, stage);
         }
         ParamUtil.setRequestAttr(bpc.request, "stageList", arDataSubmissionService.genAvailableStageList(bpc.request));
-        ParamUtil.setRequestAttr(bpc.request, "iuistageList", arDataSubmissionService.availableStageList(bpc.request));
     }
 
     private String checkPatient(ArSuperDataSubmissionDto currentArDataSubmission, HttpServletRequest request) {

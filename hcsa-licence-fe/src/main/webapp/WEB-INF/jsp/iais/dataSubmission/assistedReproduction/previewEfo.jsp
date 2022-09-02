@@ -18,6 +18,7 @@
         <div class="container center-content">
             <div class="col-xs-12">
                 <div class="row form-group" style="border-bottom: 1px solid #D1D1D1;">
+                    <%@include file="common/headStepNavTab.jsp" %>
                     <div class="col-xs-12 col-md-10">
                         <strong style="font-size: 2rem;">Preview & Submit</strong>
                     </div>

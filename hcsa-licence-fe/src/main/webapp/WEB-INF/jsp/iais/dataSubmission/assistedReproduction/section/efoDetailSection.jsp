@@ -19,7 +19,7 @@
                     </span>
                 </h3>
                 <iais:row>
-                    <iais:field width="5" value="Premises where egg freezing only cycle is performed" mandatory="true"/>
+                    <iais:field width="5" value="Premises where Oocyte Freezing Only cycle is performed" mandatory="true"/>
                     <iais:value width="6"  display="true">
                         <c:out value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"/>
                     </iais:value>
@@ -27,7 +27,7 @@
                 <iais:row>
                     <iais:field width="5" value="Date Started" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:datePicker id="efoDateStarted" name="efoDateStarted" dateVal="${arSuperDataSubmissionDto.efoCycleStageDto.startDate}"/>
+                        <iais:datePicker id="efoDateStarted" name="efoDateStarted" dateVal="${arSuperDataSubmissionDto.efoCycleStageDto.freezingDate}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_startDate"></span>
                     </iais:value>
                 </iais:row>

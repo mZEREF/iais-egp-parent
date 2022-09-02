@@ -36,7 +36,6 @@ import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.ARCycleStageDto;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
-import com.ecquaria.cloud.moh.iais.dto.IUICycleStageDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -888,6 +887,15 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         }
         List<ARCycleStageDto> arCycleStageDtos = new ArrayList<>();
         List<String> options = DataSubmissionHelper.getAllARCycleStages();
+        if(selectionDto != null) {
+            if ("DSCL_008".equals(selectionDto.getCycle())) {
+                options = DataSubmissionHelper.getAllARCycleStages();
+            } else if ("DSCL_009".equals(selectionDto.getCycle())) {
+                options = DataSubmissionHelper.getAllIUICycleStages();
+            } else if ("DSCL_010".equals(selectionDto.getCycle())) {
+                options = DataSubmissionHelper.getAllOFOCycleStages();
+            }
+        }
         for (String option : options) {
             String codeDesc;
             // the fields displayed by WireFrame are not the same as the fields stored in the database, fix this
@@ -901,6 +909,8 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
                 codeDesc = "Transfer In & Out";
             } else if (DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(option)) {
                 codeDesc = "Completed/Abandoned Cycle";
+            } else if (DataSubmissionConsts.AR_CYCLE_IUI.equals(option)) {
+                codeDesc = "New IUI Treatment";
             } else {
                 codeDesc = MasterCodeUtil.getCodeDesc(option);
             }
@@ -919,62 +929,9 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             } else {
                 arCycleStageDtos.add(new ARCycleStageDto(option, codeDesc, DataSubmissionConstant.AR_CYCLE_STAGE_STATUS_INVALID, null));
             }
+
         }
         return arCycleStageDtos;
-    }
-
-    @Override
-    public List<IUICycleStageDto> availableStageList(HttpServletRequest request) {
-        ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(request);
-        CycleStageSelectionDto selectionDto = currentArDataSubmission.getSelectionDto();
-        // get from cycleStageSelectionSection.jsp, user select next stage
-        String stage = ParamUtil.getString(request, "stage");
-        //get from headStepNavTab.jsp , user click to change stage
-        String actionValue = ParamUtil.getString(request, "action_value");
-        String currentStage;
-        List<String> submittedStageList = new ArrayList<>();
-        List<String> notSubmittedStageList = new ArrayList<>();
-        Map<String, String> map = IaisCommonUtils.genNewHashMap();
-        //get all can action stages
-        List<String> nextStageList = DataSubmissionHelper.getNextStageForAR(selectionDto);
-        if (selectionDto != null) {
-            currentStage = StringUtils.hasLength(actionValue) ? actionValue : selectionDto.getStage();
-            String cycleId = selectionDto.getCycleId();
-            map = getCycleStageSubmitByMap(cycleId);
-            submittedStageList = new ArrayList<>(map.keySet());
-            //remove all submitted stage, result is not-submitted stage
-            nextStageList.removeAll(submittedStageList);
-            notSubmittedStageList = nextStageList;
-        } else {
-            currentStage = StringUtils.hasLength(actionValue) ? actionValue : stage;
-        }
-        List<IUICycleStageDto> iuiCycleStageDtos = new ArrayList<>();
-        List<String> options = DataSubmissionHelper.getAllIUICycleStages();
-        for (String option : options) {
-            String codeDesc;
-            // the fields displayed by WireFrame are not the same as the fields stored in the database, fix this
-            if (DataSubmissionConsts.AR_CYCLE_IUI.equals(option)) {
-                codeDesc = "New IUI Treatment";
-            } else {
-                codeDesc = MasterCodeUtil.getCodeDesc(option);
-            }
-            String permissions = determinePermissions(request, map.get(option));
-            if (option.equals(currentStage)) {
-                iuiCycleStageDtos.add(new IUICycleStageDto(option, codeDesc, DataSubmissionConstant.AR_CYCLE_STAGE_STATUS_ONGOING, permissions));
-            } else if (submittedStageList.contains(option)) {
-                iuiCycleStageDtos.add(new IUICycleStageDto(option, codeDesc, DataSubmissionConstant.AR_CYCLE_STAGE_STATUS_SUBMITTED, permissions));
-            } else if (notSubmittedStageList.contains(option)) {
-                //if only can do rfc, notSubmittedStage -> invalidStage, can't click
-                if (DataSubmissionConstant.AR_CYCLE_USER_PERMISSIONS_RFC.equals(permissions)) {
-                    iuiCycleStageDtos.add(new IUICycleStageDto(option, codeDesc, DataSubmissionConstant.AR_CYCLE_STAGE_STATUS_INVALID, null));
-                } else {
-                    iuiCycleStageDtos.add(new IUICycleStageDto(option, codeDesc, null, permissions));
-                }
-            } else {
-                iuiCycleStageDtos.add(new IUICycleStageDto(option, codeDesc, DataSubmissionConstant.AR_CYCLE_STAGE_STATUS_INVALID, null));
-            }
-        }
-        return iuiCycleStageDtos;
     }
 
     @Override
