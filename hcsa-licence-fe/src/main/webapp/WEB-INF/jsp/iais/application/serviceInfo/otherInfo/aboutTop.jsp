@@ -1,13 +1,3 @@
-<iais:row cssClass="edit-content">
-    <c:if test="${canEdit}">
-        <div class="text-right app-font-size-16">
-            <a class="edit psnEdit" href="javascript:void(0);">
-                <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
-            </a>
-        </div>
-    </c:if>
-</iais:row>
-
 <input type="hidden" name="t" value="${t}">
 <div class="topTypeAbout">
     <c:choose>
@@ -76,7 +66,7 @@
         <iais:row>
             <div class="form-check">
                 <input class="form-check-input" name="declaration" value="1"
-                       type="checkbox" aria-invalid="false" <c:if test="${'1' == currSvcInfoDto.appSvcOtherInfoDto.declaration}">checked="checked"</c:if> />
+                       type="checkbox" aria-invalid="false" <c:if test="${'1' == appSvcOtherInfoDto.declaration}">checked="checked"</c:if> />
                 <label class="form-check-label">
                     <span class="check-square"></span><c:out value="I declare the information in my application to be true, to the best of my knowledge.
                         I also understand that approval of the licence is dependent on satisfactory compliance with the relevant requirements under

@@ -966,11 +966,11 @@ public class RequestForChangeDelegator {
             log.info(StringUtil.changeForLog("draftNo is not empty"));
             bpc.request.setAttribute("RFC_DRAFT_NO",draftNo);
             AppSubmissionDto appSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
-            if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
-                AppDataHelper.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),appSubmissionDto.getAppType(),bpc.request);
-            }
+//            if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
+//                AppDataHelper.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),appSubmissionDto.getAppType(),bpc.request);
+//            }
             if(appSubmissionDto.getAppGrpPremisesDtoList() != null && appSubmissionDto.getAppGrpPremisesDtoList().size() >0){
-                List<AppDeclarationDocDto> appDeclarationDocDtos = appSubmissionDto.getAppDeclarationDocDtos();
+                /*List<AppDeclarationDocDto> appDeclarationDocDtos = appSubmissionDto.getAppDeclarationDocDtos();
                 if(appDeclarationDocDtos!=null){
                     List<PageShowFileDto> pageShowFileDtos =new ArrayList<>(5);
                     for (AppDeclarationDocDto v : appDeclarationDocDtos) {
@@ -985,7 +985,7 @@ public class RequestForChangeDelegator {
                         pageShowFileDtos.add(pageShowFileDto);
                     }
                     bpc.request.getSession().setAttribute("pageShowFileDtos",pageShowFileDtos);
-                }
+                }*/
                 ParamUtil.setSessionAttr(bpc.request, RfcConst.RFCAPPSUBMISSIONDTO, appSubmissionDto);
             }else{
                 ParamUtil.setSessionAttr(bpc.request, RfcConst.RFCAPPSUBMISSIONDTO, null);

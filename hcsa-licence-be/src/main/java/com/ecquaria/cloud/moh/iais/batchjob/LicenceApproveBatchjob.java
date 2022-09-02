@@ -55,11 +55,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremOtherInfoItemA
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremOtherInfoNurseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremOtherInfoTopDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremOtherInfoTopPersonDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremSuplmItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeAllocationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSecondAddrDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSubLicenseeInfoDto;
@@ -1477,7 +1477,7 @@ public class LicenceApproveBatchjob {
         List<AppSvcSuplmItemDto> appSvcSuplmItemDtos = appPremisesCorrelationDto.getAppSvcSuplmItemDtos();
         licPremisesDto.setLicPremSuplmItemDtos(MiscUtil.transferEntityDtos(appSvcSuplmItemDtos,LicPremSuplmItemDto.class));
         List<AppPremScopeDto> appPremScopeDtos = appPremisesCorrelationDto.getAppPremScopeDtos();
-        licPremisesDto.setLicPremScopeDtos(MiscUtil.transferEntityDtos(appPremScopeDtos,LicPremScopeDto.class));
+        licPremisesDto.setLicPremScopeDtos(MiscUtil.transferEntityDtos(appPremScopeDtos,LicPremisesScopeDto.class));
         List<AppPremOtherInfoItemAnswerDto> appPremOtherInfoItemAnswerDtos = appPremisesCorrelationDto.getAppPremOtherInfoItemAnswerDtos();
         licPremisesDto.setLicPremOtherInfoItemAnswerDtos(MiscUtil.transferEntityDtos(appPremOtherInfoItemAnswerDtos,LicPremOtherInfoItemAnswerDto.class));
     }

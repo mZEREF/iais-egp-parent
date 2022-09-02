@@ -1,3 +1,7 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:forEach var="specialised" items="${AppSubmissionDto.appPremSpecialisedDtoList}">
     <c:if test="${empty categorySectionName}"><c:set var="categorySectionName" value="${specialised.categorySectionName}"/></c:if>
     <c:if test="${empty specialSvcSecName}"><c:set var="specialSvcSecName" value="${specialised.specialSvcSecName}"/></c:if>

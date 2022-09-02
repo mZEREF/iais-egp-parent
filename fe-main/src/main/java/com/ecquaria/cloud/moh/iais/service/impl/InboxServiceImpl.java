@@ -543,7 +543,16 @@ public class InboxServiceImpl implements InboxService {
           }
           return result;
     }
-
+    private String getHcsaServiceDtoDisplayName(List<HcsaServiceDto> hcsaServiceDtos,String code){
+        String result = "";
+        for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtos){
+            if(hcsaServiceDto.getSvcCode().equals(code)){
+                result = hcsaServiceDto.getSvcName();
+                break;
+            }
+        }
+        return result;
+    }
     private List<InnerLicenceViewData> tidyInnerLicenceViewData(List<LicPremisesScopeDto> licPremisesScopeDtos,List<LicPremSubSvcRelDto> licPremSubSvcRelDtos ){
         List<InnerLicenceViewData> result = IaisCommonUtils.genNewArrayList();
         if(IaisCommonUtils.isNotEmpty(licPremisesScopeDtos)){
@@ -559,12 +568,17 @@ public class InboxServiceImpl implements InboxService {
             }
         }
         if(IaisCommonUtils.isNotEmpty(licPremSubSvcRelDtos)){
+            List<String> svcCodes = IaisCommonUtils.genNewArrayList();
+            for (LicPremSubSvcRelDto licPremSubSvcRelDto : licPremSubSvcRelDtos){
+                svcCodes.add(licPremSubSvcRelDto.getSvcCode());
+            }
+            List<HcsaServiceDto> hcsaServiceDtos = configInboxClient.getHcsaServiceDtoByCode(svcCodes).getEntity();
             InnerLicenceViewData innerLicenceViewData = new InnerLicenceViewData();
             List<String> innerLicenceViewDataList = IaisCommonUtils.genNewArrayList();
             for (LicPremSubSvcRelDto licPremSubSvcRelDto : licPremSubSvcRelDtos){
                 if(licPremSubSvcRelDto.getLevel() == 0){
                     innerLicenceViewData = new InnerLicenceViewData();
-                    innerLicenceViewData.setValue(licPremSubSvcRelDto.getSvcCode());
+                    innerLicenceViewData.setValue(getHcsaServiceDtoDisplayName(hcsaServiceDtos,licPremSubSvcRelDto.getSvcCode()));
                     innerLicenceViewDataList = IaisCommonUtils.genNewArrayList();
                     innerLicenceViewData.setInnerLicenceViewDatas(innerLicenceViewDataList);
                     result.add(innerLicenceViewData);

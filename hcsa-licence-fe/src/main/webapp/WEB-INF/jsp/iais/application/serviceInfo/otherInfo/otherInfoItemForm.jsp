@@ -6,21 +6,7 @@
        value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
 
 <div class="row form-horizontal normal-label">
-    <c:if test="${AppSubmissionDto.needEditController }">
-        <c:if test="${(isRfc || isRenew) && !isRfi}">
-            <iais:row>
-                <div class="text-right app-font-size-16">
-                    <a class="back" id="RfcSkip" href="javascript:void(0);">
-                        Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em>
-                    </a>
-                </div>
-            </iais:row>
-        </c:if>
-        <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
-    </c:if>
-
-    <c:set var="itemPrefix" value=""/>
-    <c:set var="appSvcSuplmFormDto" value="${currSvcInfoDto.appSvcOtherInfoDto.appSvcSuplmFormDto}"/>
+    <c:set var="itemPrefix" value="${appSvcOtherInfoDto.premisesVal}"/>
 
     <c:forEach var="appSvcSuplmGroupDto" items="${appSvcSuplmFormDto.appSvcSuplmGroupDtoList}">
         <c:set var="count" value="${appSvcSuplmGroupDto.count}"/>

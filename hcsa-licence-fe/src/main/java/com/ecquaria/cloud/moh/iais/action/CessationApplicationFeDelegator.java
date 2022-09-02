@@ -31,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationFeService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -311,7 +312,7 @@ public class CessationApplicationFeDelegator {
         appDeclarationMessageDto.setPreliminaryQuestiontem2(issurrendering);
         List<AppDeclarationDocDto> cessationDocData = AppDataHelper.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_CESSATION,
                 bpc.request);
-        AppDataHelper.initDeclarationFiles(cessationDocData,ApplicationConsts.APPLICATION_TYPE_CESSATION,bpc.request);
+        DealSessionUtil.initDeclarationFiles(cessationDocData,ApplicationConsts.APPLICATION_TYPE_CESSATION,bpc.request);
         List<AppCessLicDto> appCessLicDtos = IaisCommonUtils.genNewArrayList();
         for (int i = 1; i <= size; i++) {
             AppCessLicDto appCessLicDto = appCessDtosByLicIds.get(i - 1);

@@ -70,7 +70,6 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -325,58 +324,6 @@ public final class AppDataHelper {
         return prefix + name + suffix;
     }
 
-    public static String getFileAppendId(String appType) {
-        StringBuilder s = new StringBuilder("selected");
-        if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
-            s.append("New");
-        } else if (ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType)) {
-            s.append("Cess");
-        } else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
-            s.append("RFC");
-        } else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
-            s.append("RENEW");
-        }
-        s.append("File");
-        return s.toString();
-    }
-
-    public static void initDeclarationFiles(List<AppDeclarationDocDto> appDeclarationDocDtos, String appType,
-            HttpServletRequest request) {
-        if (IaisCommonUtils.isEmpty(appDeclarationDocDtos)) {
-            return;
-        }
-        String fileAppendId = getFileAppendId(appType);
-        AppDeclarationDocShowPageDto dto = (AppDeclarationDocShowPageDto) request.getSession().getAttribute(
-                fileAppendId + "DocShowPageDto");
-        if (Objects.nonNull(dto)) {
-            return;
-        }
-        List<PageShowFileDto> pageShowFileDtos = IaisCommonUtils.genNewArrayList();
-        HashMap<String, File> map = IaisCommonUtils.genNewHashMap();
-        Map<String, PageShowFileDto> pageShowFileHashMap = IaisCommonUtils.genNewHashMap();
-        for (AppDeclarationDocDto viewDoc : appDeclarationDocDtos) {
-            String index = String.valueOf(Optional.ofNullable(viewDoc.getSeqNum()).orElse(0));
-            PageShowFileDto pageShowFileDto = new PageShowFileDto();
-            pageShowFileDto.setFileMapId(fileAppendId + "Div" + index);
-            pageShowFileDto.setIndex(index);
-            pageShowFileDto.setFileName(viewDoc.getDocName());
-            pageShowFileDto.setSize(viewDoc.getDocSize());
-            pageShowFileDto.setMd5Code(viewDoc.getMd5Code());
-            pageShowFileDto.setFileUploadUrl(viewDoc.getFileRepoId());
-            pageShowFileDto.setVersion(Optional.ofNullable(viewDoc.getVersion()).orElse(1));
-            pageShowFileDtos.add(pageShowFileDto);
-            map.put(fileAppendId + index, null);
-            pageShowFileHashMap.put(fileAppendId + index, pageShowFileDto);
-        }
-        // put page entity to sesstion
-        dto = new AppDeclarationDocShowPageDto();
-        dto.setFileMaxIndex(appDeclarationDocDtos.size());
-        dto.setPageShowFileDtos(pageShowFileDtos);
-        dto.setPageShowFileHashMap(pageShowFileHashMap);
-        request.getSession().setAttribute(fileAppendId + "DocShowPageDto", dto);
-        request.getSession().setAttribute(IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId, map);
-    }
-
     public static AppDeclarationMessageDto getAppDeclarationMessageDto(HttpServletRequest request, String type) {
         AppDeclarationMessageDto appDeclarationMessageDto = new AppDeclarationMessageDto();
         appDeclarationMessageDto.setAppType(type);
@@ -464,7 +411,7 @@ public final class AppDataHelper {
     }
 
     public static List<AppDeclarationDocDto> getDeclarationFiles(String appType, HttpServletRequest request, boolean forPrint) {
-        String fileAppendId = getFileAppendId(appType);
+        String fileAppendId = ApplicationHelper.getFileAppendId(appType);
         Map<String, File> fileMap = (Map<String, File>) ParamUtil.getSessionAttr(request,
                 IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId);
         if (IaisCommonUtils.isEmpty(fileMap)) {
@@ -827,8 +774,9 @@ public final class AppDataHelper {
         appSvcOtherInfoDto.setAppSvcOtherInfoMedDto1(appSvcOtherInfoMedDto1);
         appSvcOtherInfoDto.setAppSvcOtherInfoNurseDto(appSvcOtherInfoNurseDto);
 
-        for (AppSvcOtherInfoDto svcOtherInfoDto : appSvcOtherInfoDto1) {
-            setAppSvcSuplmFormDto(svcOtherInfoDto.getAppSvcSuplmFormDto(),svcOtherInfoDto.getPremisesVal(), request);
+        List<AppSvcOtherInfoDto> appSvcOtherInfoList = appSvcRelatedInfoDto.getAppSvcOtherInfoList();
+        setAppSvcOtherFormList(appSvcOtherInfoList,request);
+        for (AppSvcOtherInfoDto svcOtherInfoDto : appSvcOtherInfoList) {
             appSvcOtherInfoDto.setAppSvcSuplmFormDto(svcOtherInfoDto.getAppSvcSuplmFormDto());
         }
         result.add(appSvcOtherInfoDto);
@@ -2716,6 +2664,19 @@ public final class AppDataHelper {
         }
         for (AppSvcSuplmFormDto appSvcSuplmFormDto : appSvcSuplmFormList) {
             setAppSvcSuplmFormDto(appSvcSuplmFormDto, appSvcSuplmFormDto.getPremisesVal(), request);
+        }
+    }
+
+    public static void setAppSvcOtherFormList(List<AppSvcOtherInfoDto> appSvcOtherInfoList, HttpServletRequest request){
+        if (IaisCommonUtils.isEmpty(appSvcOtherInfoList)) {
+            log.info("The appSvcOtherInfoList is null!!!!");
+            return;
+        }
+        for (AppSvcOtherInfoDto appSvcOtherInfoDto : appSvcOtherInfoList) {
+            if (appSvcOtherInfoDto != null){
+                setAppSvcSuplmFormDto(appSvcOtherInfoDto.getAppSvcSuplmFormDto(),"", request);
+            }
+
         }
     }
 

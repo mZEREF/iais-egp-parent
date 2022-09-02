@@ -450,7 +450,7 @@ public class ServiceInfoDelegator {
         String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId,null);
         // Other Information Director config
-        if (ApplicationHelper.initOtherInfoForm(currSvcInfoDto, false)) {
+        if (ApplicationHelper.initOtherInfoForm(currSvcInfoDto,appSubmissionDto.getAppGrpPremisesDtoList(), false)) {
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
         }
     }
