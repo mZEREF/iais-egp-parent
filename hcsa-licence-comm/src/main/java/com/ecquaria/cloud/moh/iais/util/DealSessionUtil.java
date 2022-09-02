@@ -529,6 +529,21 @@ public class DealSessionUtil {
                         });
                     }
                 }
+            } else if (HcsaConsts.STEP_SPECIAL_SERVICES_FORM.equals(stepCode)) {
+                ApplicationHelper.initAppSvcSpecialServiceInfoDtoList(currSvcInfoDto,appPremSpecialisedDtoList);
+                if (!reset) {
+                    List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = currSvcInfoDto.getAppSvcSpecialServiceInfoList();
+                    if (IaisCommonUtils.isNotEmpty(appSvcSpecialServiceInfoList)) {
+                        appSvcSpecialServiceInfoList.forEach(dto->{
+                            dto.getSpecialServiceSectionDtoList().forEach(sDto-> {
+                                AppSvcSuplmFormDto appSvcSuplmFormDto = sDto.getAppSvcSuplmFormDto();
+                                if (appSvcSuplmFormDto != null) {
+                                    appSvcSuplmFormDto.checkDisplay();
+                                }
+                            });
+                        });
+                    }
+                }
             } else if (HcsaConsts.STEP_DOCUMENTS.equals(stepCode)) {
                 List<DocumentShowDto> documentShowDtos = ApplicationHelper.initShowDocumentList(currSvcInfoDto,
                         appPremSpecialisedDtoList, reset);
