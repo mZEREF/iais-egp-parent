@@ -815,19 +815,19 @@ public abstract class AppCommDelegator {
             return;
         }
         //gen dto
-        List<AppGrpPremisesDto> oldAppGrpPremisesDtoList;
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
-        if (oldAppSubmissionDto == null) {
-            oldAppGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-        } else {
-            oldAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
-        }
         String isEdit = ParamUtil.getString(bpc.request, IS_EDIT);
         boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
         boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto, RfcConst.EDIT_PREMISES, isEdit, isRfi);
         log.info(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
         if (isGetDataFromPage) {
+            List<AppGrpPremisesDto> oldAppGrpPremisesDtoList;
+            if (oldAppSubmissionDto == null) {
+                oldAppGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+            } else {
+                oldAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
+            }
             List<AppGrpPremisesDto> appGrpPremisesDtoList = AppDataHelper.genAppGrpPremisesDtoList(bpc.request);
             appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
             if (appSubmissionDto.isNeedEditController()) {
@@ -846,6 +846,8 @@ public abstract class AppCommDelegator {
             //update address
             //ApplicationHelper.updatePremisesAddress(appSubmissionDto);
             //ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
+            // check app premises change
+            checkAppPremisesChanged(appSubmissionDto, oldAppGrpPremisesDtoList);
         }
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String crud_action_additional = ParamUtil.getString(bpc.request, "crud_action_additional");
@@ -879,7 +881,6 @@ public abstract class AppCommDelegator {
             ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
         } else {
             coMap.put(HcsaAppConst.SECTION_PREMISES, HcsaAppConst.SECTION_PREMISES);
-            checkAppPremisesChanged(appSubmissionDto, oldAppGrpPremisesDtoList);
             ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
             saveDraft(bpc);
         }
