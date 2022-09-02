@@ -518,7 +518,7 @@ public class DealSessionUtil {
                     }
                 }
             } else if (HcsaConsts.STEP_OTHER_INFORMATION.equals(stepCode)) {
-                ApplicationHelper.initOtherInfoForm(currSvcInfoDto, reset);
+                ApplicationHelper.initOtherInfoForm(currSvcInfoDto, appGrpPremisesDtos,reset);
                 if (!reset) {
                     List<AppSvcOtherInfoDto> appSvcOtherInfoList = currSvcInfoDto.getAppSvcOtherInfoList();
                     if (IaisCommonUtils.isNotEmpty(appSvcOtherInfoList)) {

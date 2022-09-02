@@ -1,12 +1,3 @@
-<iais:row cssClass="edit-content">
-    <c:if test="${canEdit}">
-        <div class="text-right app-font-size-16">
-            <a class="edit psnEdit" href="javascript:void(0);">
-                <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
-            </a>
-        </div>
-    </c:if>
-</iais:row>
 <iais:row>
     <div class="col-xs-12 col-md-6">
         <p class="bold">Documentation</p>

@@ -1,29 +1,61 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
-<c:set var="provideTop" value="${currSvcInfoDto.appSvcOtherInfoDto.provideTop}"/>
-<c:set var="practitioners" value="${currSvcInfoDto.appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList}"/>
-<c:set var="anaesthetists" value="${currSvcInfoDto.appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList1}"/>
-<c:set var="nurses" value="${currSvcInfoDto.appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList2}"/>
-<c:set var="counsellors" value="${currSvcInfoDto.appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList3}"/>
-<c:set var="appSvcOtherInfoTop" value="${currSvcInfoDto.appSvcOtherInfoDto.appSvcOtherInfoTopDto}" />
-<c:set var="topByDrug" value="${currSvcInfoDto.appSvcOtherInfoDto.appSvcOtherInfoAbortDtoList}"/>
-<c:set var="topBySurgicalProcedure" value="${currSvcInfoDto.appSvcOtherInfoDto.appSvcOtherInfoAbortDtoList1}"/>
-<c:set var="topByAll" value="${currSvcInfoDto.appSvcOtherInfoDto.appSvcOtherInfoAbortDtoList2}"/>
-<c:set var="med" value="${currSvcInfoDto.appSvcOtherInfoDto.appSvcOtherInfoMedDto}"/>
-<c:set var="m" value="${currSvcInfoDto.appSvcOtherInfoDto.appSvcOtherInfoMedDto1}"/>
-<c:set var="n" value="${currSvcInfoDto.appSvcOtherInfoDto.appSvcOtherInfoNurseDto}"/>
-<div class="row form-horizontal">
-    <%@include file="dentalService.jsp" %>
-    <%@include file="renalDialysisCentreService.jsp"%>
-    <%@include file="ambulatorySurgicalCentreService.jsp"%>
-    <%@include file="otherInformationTopPerson.jsp" %>
-    <%@include file="otherInfoItemForm.jsp"%>
-    <%@include file="documentation.jsp" %>
-    <%@include file="aboutTop.jsp" %>
-    <%@include file="yFV.jsp"%>
-</div>
 
+<div class="row form-horizontal normal-label">
+    <c:if test="${AppSubmissionDto.needEditController }">
+        <c:if test="${(isRfc || isRenew) && !isRfi}">
+            <iais:row>
+                <div class="text-right app-font-size-16">
+                    <a class="back" id="RfcSkip" href="javascript:void(0);">
+                        Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em>
+                    </a>
+                </div>
+            </iais:row>
+        </c:if>
+        <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
+    </c:if>
+    <iais:row>
+        <div class="col-xs-12">
+            <h2 class="app-title"><c:out value="${currStepName}"/></h2>
+            <p><span class="error-msg" name="iaisErrorMSg" id="error_psnMandatory"></span></p>
+        </div>
+    </iais:row>
+    <c:set var="appSvcOtherInfoList" value="${currSvcInfoDto.appSvcOtherInfoList}"/>
+    <c:forEach var="appSvcOtherInfoDto" items="${appSvcOtherInfoList}">
+        <c:set var="provideTop" value="${appSvcOtherInfoDto.provideTop}"/>
+        <c:set var="practitioners" value="${appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList}"/>
+        <c:set var="anaesthetists" value="${appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList1}"/>
+        <c:set var="nurses" value="${appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList2}"/>
+        <c:set var="counsellors" value="${appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList3}"/>
+        <c:set var="appSvcSuplmFormDto" value="${appSvcOtherInfoDto.appSvcSuplmFormDto}"/>
+        <c:set var="appSvcOtherInfoTop" value="${appSvcOtherInfoDto.appSvcOtherInfoTopDto}" />
+        <c:set var="topByDrug" value="${appSvcOtherInfoDto.appSvcOtherInfoAbortDtoList}"/>
+        <c:set var="topBySurgicalProcedure" value="${appSvcOtherInfoDto.appSvcOtherInfoAbortDtoList1}"/>
+        <c:set var="topByAll" value="${appSvcOtherInfoDto.appSvcOtherInfoAbortDtoList2}"/>
+        <c:set var="med" value="${appSvcOtherInfoDto.appSvcOtherInfoMedDto}"/>
+        <c:set var="m" value="${appSvcOtherInfoDto.appSvcOtherInfoMedDto1}"/>
+        <c:set var="n" value="${appSvcOtherInfoDto.appSvcOtherInfoNurseDto}"/>
+        <c:set var="dsDeclaration" value="${appSvcOtherInfoDto.dsDeclaration}"/>
+        <c:set var="ascsDeclaration" value="${appSvcOtherInfoDto.ascsDeclaration}"/>
+        <iais:row>
+            <div class="col-xs-12">
+                <div class="app-title">${appSvcOtherInfoDto.premName}</div>
+                <p class="font-18 bold">${appSvcOtherInfoDto.premAddress}</p>
+            </div>
+        </iais:row>
+        <div class="row form-horizontal">
+            <%@include file="dentalService.jsp" %>
+            <%@include file="renalDialysisCentreService.jsp"%>
+            <%@include file="ambulatorySurgicalCentreService.jsp"%>
+            <%@include file="otherInformationTopPerson.jsp" %>
+            <%@include file="otherInfoItemForm.jsp"%>
+            <%@include file="documentation.jsp" %>
+            <%@include file="aboutTop.jsp" %>
+            <%@include file="yFV.jsp"%>
+        </div>
+    </c:forEach>
+</div>
 <script>
     $(document).ready(function () {
         firstRadio();

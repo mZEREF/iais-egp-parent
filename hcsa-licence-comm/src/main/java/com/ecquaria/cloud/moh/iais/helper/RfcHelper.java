@@ -352,13 +352,13 @@ public final class RfcHelper {
             //changeList.add(HcsaConsts.STEP_CLINICAL_DIRECTOR);
             changePersonnel = true;
         }
-        /*List<AppSvcPersonnelDto> appSvcPersonnelDtoList = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
-        List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList = oldAppSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
-        boolean eqServicePseronnel = isChangeServicePersonnels(appSvcPersonnelDtoList, oldAppSvcPersonnelDtoList);
-        if (eqServicePseronnel) {
-            changeList.add(HcsaConsts.STEP_SERVICE_PERSONNEL);
-            changePersonnel = true;
-        }*/
+//        List<AppSvcPersonnelDto> appSvcPersonnelDtoList = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
+//        List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList = oldAppSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
+//        boolean eqServicePseronnel = isChangeServicePersonnels(appSvcPersonnelDtoList, oldAppSvcPersonnelDtoList);
+//        if (eqServicePseronnel) {
+//            changeList.add(HcsaConsts.STEP_SERVICE_PERSONNEL);
+//            changePersonnel = true;
+//        }
         if (changePersonnel) {
             return true;
         }

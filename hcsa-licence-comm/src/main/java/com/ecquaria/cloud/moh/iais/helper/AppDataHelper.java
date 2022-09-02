@@ -79,7 +79,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.APPSUBMISSIONDTO;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURRENTSERVICEID;
 
 /**
@@ -830,8 +829,9 @@ public final class AppDataHelper {
         appSvcOtherInfoDto.setAppSvcOtherInfoMedDto1(appSvcOtherInfoMedDto1);
         appSvcOtherInfoDto.setAppSvcOtherInfoNurseDto(appSvcOtherInfoNurseDto);
 
-        for (AppSvcOtherInfoDto svcOtherInfoDto : appSvcOtherInfoDto1) {
-            setAppSvcSuplmFormDto(svcOtherInfoDto.getAppSvcSuplmFormDto(),svcOtherInfoDto.getPremisesVal(), request);
+        List<AppSvcOtherInfoDto> appSvcOtherInfoList = appSvcRelatedInfoDto.getAppSvcOtherInfoList();
+        setAppSvcOtherFormList(appSvcOtherInfoList,request);
+        for (AppSvcOtherInfoDto svcOtherInfoDto : appSvcOtherInfoList) {
             appSvcOtherInfoDto.setAppSvcSuplmFormDto(svcOtherInfoDto.getAppSvcSuplmFormDto());
         }
         result.add(appSvcOtherInfoDto);
@@ -2719,6 +2719,19 @@ public final class AppDataHelper {
         }
         for (AppSvcSuplmFormDto appSvcSuplmFormDto : appSvcSuplmFormList) {
             setAppSvcSuplmFormDto(appSvcSuplmFormDto, appSvcSuplmFormDto.getPremisesVal(), request);
+        }
+    }
+
+    public static void setAppSvcOtherFormList(List<AppSvcOtherInfoDto> appSvcOtherInfoList, HttpServletRequest request){
+        if (IaisCommonUtils.isEmpty(appSvcOtherInfoList)) {
+            log.info("The appSvcOtherInfoList is null!!!!");
+            return;
+        }
+        for (AppSvcOtherInfoDto appSvcOtherInfoDto : appSvcOtherInfoList) {
+            if (appSvcOtherInfoDto != null){
+                setAppSvcSuplmFormDto(appSvcOtherInfoDto.getAppSvcSuplmFormDto(),"", request);
+            }
+
         }
     }
 
