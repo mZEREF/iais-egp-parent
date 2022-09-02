@@ -31,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.OrgUserHelper;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.CommonEmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
@@ -41,17 +42,16 @@ import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
  * TaskServiceImpl
@@ -162,7 +162,7 @@ public class TaskServiceImpl implements TaskService {
                         //0066643
                         List<OrgUserDto> orgUserDtos = taskOrganizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN).getEntity();
                         if(!IaisCommonUtils.isEmpty(orgUserDtos)){
-                            userId = orgUserDtos.get(0).getId();
+                            userId = OrgUserHelper.getSystemAdminUserId(orgUserDtos);
                             isSystemAdmin = true;
                             log.info(StringUtil.changeForLog("The getRoutingTask sendNoteToAdm "));
                             sendNoteToAdm(applicationDto.getApplicationNo(),correlationId,orgUserDtos.get(0));
@@ -269,8 +269,7 @@ public class TaskServiceImpl implements TaskService {
                             //0066643
                             List<OrgUserDto> orgUserDtos = taskOrganizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN).getEntity();
                             if(!IaisCommonUtils.isEmpty(orgUserDtos)){
-                                orgUserDto = orgUserDtos.get(0);
-                                userId = orgUserDto.getId();
+                                userId = OrgUserHelper.getSystemAdminUserId(orgUserDtos);
                                 isSystemAdmin = true;
                             }
                         }
@@ -325,6 +324,7 @@ public class TaskServiceImpl implements TaskService {
         log.debug(StringUtil.changeForLog("the do getRoutingTaskOneUserForSubmisison end ...."));
         return  result;
     }
+
 
 
 
