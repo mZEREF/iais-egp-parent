@@ -8,9 +8,9 @@
         <c:forEach var="docShowDto" items="${currentPreviewSvcInfo.documentShowDtoList}" varStatus="stat">
             <c:if test="${docShowDto.existDoc}">
                 <iais:row>
-                    <div class="col-xs-12 app-title">
-                        <p><c:out value="${docShowDto.premName}"/></p>
-                        <p>Address: <c:out value="${docShowDto.premAddress}"/></p>
+                    <div class="col-xs-12">
+                        <div class="app-title"><c:out value="${docShowDto.premName}"/></div>
+                        <p class="font-18 bold">Address: <c:out value="${docShowDto.premAddress}"/></p>
                     </div>
                 </iais:row>
                 <br/>
