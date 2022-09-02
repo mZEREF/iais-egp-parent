@@ -750,11 +750,12 @@ public final class AppDataHelper {
         appSvcOtherInfoMedDto1.setGfaValue(gfValue);
         AppSvcOtherInfoNurseDto appSvcOtherInfoNurseDto = new AppSvcOtherInfoNurseDto();
         ControllerHelper.get(request, appSvcOtherInfoNurseDto);
-
+        String provideYfVs = ParamUtil.getString(request,"provideYfVs");
         appSvcOtherInfoDto.setProvideTop(provideTop);
         appSvcOtherInfoDto.setDsDeclaration(dsDeclaration);
         appSvcOtherInfoDto.setAscsDeclaration(ascsDeclaration);
         appSvcOtherInfoDto.setDeclaration(declaration);
+        appSvcOtherInfoDto.setProvideYfVs(provideYfVs);
         appSvcOtherInfoDto.setAppSvcOtherInfoTopPersonDtoList(
                 getAppSvcOtherInfoTopPersonDtoPractitioners(request, appType, isRfi, appSvcRelatedInfoDto));
         appSvcOtherInfoDto.setAppSvcOtherInfoTopPersonDtoList1(
@@ -773,7 +774,6 @@ public final class AppDataHelper {
         appSvcOtherInfoDto.setAppSvcOtherInfoMedDto(appSvcOtherInfoMedDto);
         appSvcOtherInfoDto.setAppSvcOtherInfoMedDto1(appSvcOtherInfoMedDto1);
         appSvcOtherInfoDto.setAppSvcOtherInfoNurseDto(appSvcOtherInfoNurseDto);
-
         List<AppSvcOtherInfoDto> appSvcOtherInfoList = appSvcRelatedInfoDto.getAppSvcOtherInfoList();
         setAppSvcOtherFormList(appSvcOtherInfoList,request);
         for (AppSvcOtherInfoDto svcOtherInfoDto : appSvcOtherInfoList) {

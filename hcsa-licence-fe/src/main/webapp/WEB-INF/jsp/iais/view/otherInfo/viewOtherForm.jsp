@@ -2,7 +2,7 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 
 <div class="amend-preview-info form-horizontal min-row">
-    <c:set var="appSvcSuplmFormDto" value="${currentPreviewSvcInfo.appSvcOtherInfoDto.appSvcSuplmFormDto}"/>
+    <c:set var="appSvcSuplmFormDto" value="${appSvcOtherInfoDto.appSvcSuplmFormDto}"/>
     <c:forEach var="appSvcSuplmGroupDto" items="${appSvcSuplmFormDto.appSvcSuplmGroupDtoList}" varStatus="status">
         <c:set var="batchSize" value="${appSvcSuplmGroupDto.count}"/>
         <c:if test="${batchSize > 0}">

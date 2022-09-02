@@ -8,8 +8,8 @@
         <iais:row cssClass="row control control-caption-horizontal">
             <iais:field width="5" value="Outcome of procedures are recorded "/>
             <iais:value width="3" cssClass="col-md-7">
-                <c:if test="${true == currentPreviewSvcInfo.appSvcOtherInfoDto.appSvcOtherInfoTopDto.isOutcomeProcRecord}">Yes</c:if>
-                <c:if test="${false == currentPreviewSvcInfo.appSvcOtherInfoDto.appSvcOtherInfoTopDto.isOutcomeProcRecord}">No</c:if>
+                <c:if test="${true == appSvcOtherInfoDto.appSvcOtherInfoTopDto.isOutcomeProcRecord}">Yes</c:if>
+                <c:if test="${false == appSvcOtherInfoDto.appSvcOtherInfoTopDto.isOutcomeProcRecord}">No</c:if>
             </iais:value>
 
         </iais:row>
@@ -17,7 +17,7 @@
         <iais:row>
             <iais:field width="5" value="Number of cases with complications, if any"/>
             <iais:value width="3" cssClass="col-md-7" display="true">
-                <c:out value="${currentPreviewSvcInfo.appSvcOtherInfoDto.appSvcOtherInfoTopDto.compCaseNum}" />
+                <c:out value="${appSvcOtherInfoDto.appSvcOtherInfoTopDto.compCaseNum}" />
             </iais:value>
         </iais:row>
 

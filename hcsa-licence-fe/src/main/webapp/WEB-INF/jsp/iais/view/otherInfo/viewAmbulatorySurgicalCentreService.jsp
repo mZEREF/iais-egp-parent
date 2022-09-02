@@ -8,7 +8,7 @@
     <iais:row>
         <iais:field width="5" value="GFA Value (in sqm)"/>
         <iais:value width="3" cssClass="col-md-7" display="true">
-            <c:out value="${currentPreviewSvcInfo.appSvcOtherInfoDto.appSvcOtherInfoMedDto1.gfaValue}" />
+            <c:out value="${appSvcOtherInfoDto.appSvcOtherInfoMedDto1.gfaValue}" />
         </iais:value>
     </iais:row>
 
