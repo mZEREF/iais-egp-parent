@@ -59,7 +59,7 @@
                         </p>
                     </div>
                 </iais:row>
-                <%@include file="servicePersonnelArDetail.jsp" %>
+                <%@include file="viewServicePersonnelArDetail.jsp" %>
             </c:forEach>
         </c:if>
 
@@ -73,17 +73,11 @@
                         <p><strong>Nurse<c:if test="${nurseCount > 1}"> ${index+1}</c:if>:</strong></p>
                     </div>
                 </iais:row>
-                <%@include file="servicePersonnelNurse.jsp" %>
+                <%@include file="viewServicePersonnelNurse.jsp" %>
             </c:forEach>
         </c:if>
 
         <c:if test="${embryologistMinCount != 0}">
-            <iais:value width="7" cssClass="col-md-12">
-                <strong>
-                    <c:out value="Embryologist "/>
-                </strong>
-            </iais:value>
-
             <c:forEach begin="0" end="${embryologistMinCount - 1}" step="1" varStatus="status">
                 <c:set var="index" value="${status.index}"/>
                 <c:set var="appSvcPersonnelDto"
@@ -93,7 +87,7 @@
                         <p><strong>Embryologist<c:if test="${embryologistMinCount > 1}"> ${index+1}</c:if>:</strong></p>
                     </div>
                 </iais:row>
-                <%@include file="servicePersonnelEmbryologist.jsp" %>
+                <%@include file="viewServicePersonnelEmbryologist.jsp" %>
             </c:forEach>
         </c:if>
 
@@ -103,7 +97,7 @@
                 <c:set var="index" value="${status.index}"/>
                 <c:set var="appSvcPersonnelDto"
                        value="${currentPreviewSvcInfo.svcPersonnelDto.specialList[index]}"/>
-                <%@include file="servicePersonnelDetail.jsp" %>
+                <%@include file="viewServicePersonnelDetail.jsp" %>
             </c:forEach>
         </c:if>
 
@@ -112,7 +106,7 @@
             <c:forEach begin="0" end="${normalCount - 1}" step="1" varStatus="status">
                 <c:set var="index" value="${status.index}"/>
                 <c:set var="appSvcPersonnelDto" value="${currentPreviewSvcInfo.svcPersonnelDto.normalList[index]}"/>
-                <%@include file="servicePersonnelBlood.jsp" %>
+                <%@include file="viewServicePersonnelBlood.jsp" %>
             </c:forEach>
         </c:if>
     </div>
