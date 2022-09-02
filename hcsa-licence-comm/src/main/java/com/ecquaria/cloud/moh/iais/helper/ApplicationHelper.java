@@ -2285,6 +2285,7 @@ public final class ApplicationHelper {
                 newList.add(appSvcSuplmFormDto);
                 continue;
             }
+            appSvcSuplmFormDto.setAppGrpPremisesDto(appGrpPremisesDto);
             appSvcSuplmFormDto.setSvcConfigDto(currSvcInfoDto);
             appSvcSuplmFormDto.setSuppleFormItemConfigDtos(configDtos, (svcId, addMoreBatchNum) -> {
                 List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList = configCommService.getHcsaSvcPersonnel(svcId, addMoreBatchNum);
