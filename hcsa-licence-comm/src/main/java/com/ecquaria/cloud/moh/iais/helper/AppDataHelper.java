@@ -2674,7 +2674,7 @@ public final class AppDataHelper {
         }
         for (AppSvcOtherInfoDto appSvcOtherInfoDto : appSvcOtherInfoList) {
             if (appSvcOtherInfoDto != null){
-                setAppSvcSuplmFormDto(appSvcOtherInfoDto.getAppSvcSuplmFormDto(),"", request);
+                setAppSvcSuplmFormDto(appSvcOtherInfoDto.getAppSvcSuplmFormDto(),appSvcOtherInfoDto.getPremisesVal(), request);
             }
 
         }

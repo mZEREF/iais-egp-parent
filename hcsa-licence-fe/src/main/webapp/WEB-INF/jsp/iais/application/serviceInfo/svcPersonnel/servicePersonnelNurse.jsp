@@ -54,6 +54,17 @@
         </iais:value>
     </iais:row>
 
+
+
+    <iais:row cssClass="${appSvcPersonnelDto.designation=='DES999' ? '' : 'hidden'} otherDesignationDiv">
+        <iais:field width="5" value="OtherDesignation" mandatory="true"/>
+        <iais:value width="7" cssClass="col-md-7">
+            <iais:input maxLength="100" type="text" cssClass="otherDesignation" name="${logo}otherDesignation${index}"
+                        value="${appSvcPersonnelDto.otherDesignation}"/>
+        </iais:value>
+    </iais:row>
+
+
     <%--   Professional Board --%>
     <iais:row>
         <iais:field width="5" mandatory="true" value="Professional Board"/>
@@ -78,7 +89,6 @@
     <iais:row>
         <iais:field width="5" mandatory="true" value="Professional Regn. No."/>
         <iais:value width="7" cssClass="col-md-7">
-
             <iais:input maxLength="20" type="text" cssClass="profRegNo" name="${logo}profRegNo${index}"
                         value="${appSvcPersonnelDto.profRegNo}"/>
         </iais:value>

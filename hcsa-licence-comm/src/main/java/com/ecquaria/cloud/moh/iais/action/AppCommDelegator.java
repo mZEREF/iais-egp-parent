@@ -506,7 +506,6 @@ public abstract class AppCommDelegator {
     public void doSpecialised(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
-        List<String> oldSpecialSerices = null;
         boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(RfcConst.EDIT_SPECIALISED, request);
         log.info(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
         List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
@@ -514,10 +513,12 @@ public abstract class AppCommDelegator {
         log.info(StringUtil.changeForLog("Svc Code: " + svcCode));
         if (isGetDataFromPage) {
             AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(request);
-            oldSpecialSerices = RfcHelper.getSpecialServiceList(oldAppSubmissionDto != null ? oldAppSubmissionDto : appSubmissionDto);
+            List<String> oldSpecialSerices = RfcHelper.getSpecialServiceList(oldAppSubmissionDto != null ? oldAppSubmissionDto :
+                    appSubmissionDto);
             AppDataHelper.setSpecialisedData(appPremSpecialisedDtoList, svcCode, request);
             appSubmissionDto.setAppPremSpecialisedDtoList(appPremSpecialisedDtoList);
-            ApplicationHelper.setAppSubmissionDto(appSubmissionDto, request);
+            // check specialised change
+            checkSpecialisedChanged(appSubmissionDto, oldSpecialSerices);
         }
         // validation
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
@@ -532,7 +533,6 @@ public abstract class AppCommDelegator {
             ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
         } else {
             coMap.put(HcsaAppConst.SECTION_SPECIALISED, HcsaAppConst.SECTION_SPECIALISED);
-            checkSpecialisedChanged(appSubmissionDto, oldSpecialSerices);
             ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
             saveDraft(bpc);
         }
@@ -540,7 +540,7 @@ public abstract class AppCommDelegator {
 
     protected void checkSpecialisedChanged(AppSubmissionDto appSubmissionDto, List<String> oldSpecialSerices) {
         List<String> specialServiceList = RfcHelper.getSpecialServiceList(appSubmissionDto);
-        boolean changed = RfcHelper.isChangedList(specialServiceList, oldSpecialSerices);
+        boolean changed = !IaisCommonUtils.isSame(specialServiceList, oldSpecialSerices);
         log.info(StringUtil.changeForLog("App Specialised Changed: " + changed));
         if (changed) {
             DealSessionUtil.reSetInit(appSubmissionDto, HcsaAppConst.SECTION_SPECIALISED);
@@ -815,19 +815,19 @@ public abstract class AppCommDelegator {
             return;
         }
         //gen dto
-        List<AppGrpPremisesDto> oldAppGrpPremisesDtoList;
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
-        if (oldAppSubmissionDto == null) {
-            oldAppGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-        } else {
-            oldAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
-        }
         String isEdit = ParamUtil.getString(bpc.request, IS_EDIT);
         boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
         boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto, RfcConst.EDIT_PREMISES, isEdit, isRfi);
         log.info(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
         if (isGetDataFromPage) {
+            List<AppGrpPremisesDto> oldAppGrpPremisesDtoList;
+            if (oldAppSubmissionDto == null) {
+                oldAppGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+            } else {
+                oldAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
+            }
             List<AppGrpPremisesDto> appGrpPremisesDtoList = AppDataHelper.genAppGrpPremisesDtoList(bpc.request);
             appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
             if (appSubmissionDto.isNeedEditController()) {
@@ -846,6 +846,8 @@ public abstract class AppCommDelegator {
             //update address
             //ApplicationHelper.updatePremisesAddress(appSubmissionDto);
             //ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
+            // check app premises change
+            checkAppPremisesChanged(appSubmissionDto, oldAppGrpPremisesDtoList);
         }
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String crud_action_additional = ParamUtil.getString(bpc.request, "crud_action_additional");
@@ -879,7 +881,6 @@ public abstract class AppCommDelegator {
             ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
         } else {
             coMap.put(HcsaAppConst.SECTION_PREMISES, HcsaAppConst.SECTION_PREMISES);
-            checkAppPremisesChanged(appSubmissionDto, oldAppGrpPremisesDtoList);
             ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
             saveDraft(bpc);
         }
