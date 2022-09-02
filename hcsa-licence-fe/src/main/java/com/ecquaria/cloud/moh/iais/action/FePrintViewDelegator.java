@@ -124,8 +124,8 @@ public class FePrintViewDelegator {
                             appSubmissionDtos.get(0).setAppDeclarationMessageDto(appDeclarationMessageDto);
                             appSubmissionDtos.get(0).setAppDeclarationDocDtos(
                                     AppDataHelper.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_RENEWAL, request));
-                            AppDataHelper.initDeclarationFiles(appSubmissionDtos.get(0).getAppDeclarationDocDtos(),
-                                    ApplicationConsts.APPLICATION_TYPE_RENEWAL, request);
+//                            AppDataHelper.initDeclarationFiles(appSubmissionDtos.get(0).getAppDeclarationDocDtos(),
+//                                    ApplicationConsts.APPLICATION_TYPE_RENEWAL, request);
                         }
                     }
                     appSubmissionDtoList.addAll(appSubmissionDtos);

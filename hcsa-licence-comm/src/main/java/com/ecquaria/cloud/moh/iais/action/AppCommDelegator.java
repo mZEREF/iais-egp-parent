@@ -143,8 +143,12 @@ public abstract class AppCommDelegator {
         boolean flag = AppConsts.SUCCESS.equals(statust) && loadingServiceConfig(bpc);
         log.info(StringUtil.changeForLog("The loadingServiceConfig -->:" + flag));
         if (flag) {
-            //init session and data reomve function to DealSessionUtil
-            DealSessionUtil.initSession(bpc.request);
+            //TODO renewal draft test
+            Object sessionAttr = ParamUtil.getSessionAttr(bpc.request, HcsaAppConst.LOADING_DRAFT);
+            log.info(StringUtil.changeForLog("Renewal Draft: " + sessionAttr));
+            //TODO end
+            boolean fromDraft = ApplicationHelper.checkFromDraft(bpc.request);
+            DealSessionUtil.initSession(fromDraft, bpc.request);
         }
         log.info(StringUtil.changeForLog("the do Start end ...."));
     }
@@ -1017,7 +1021,7 @@ public abstract class AppCommDelegator {
             }
         }
         // init uploaded File
-        AppDataHelper.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(), appSubmissionDto.getAppType(), bpc.request);
+//        AppDataHelper.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(), appSubmissionDto.getAppType(), bpc.request);
         if (ApplicationHelper.checkIsRfi(bpc.request)) {
             ParamUtil.setSessionAttr(bpc.request, "viewPrint", "Y");
         } else {
@@ -1173,7 +1177,7 @@ public abstract class AppCommDelegator {
             appSubmissionDto.setAppDeclarationDocDtos(AppDataHelper.getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request));
             String preQuesKindly = appSubmissionDto.getAppDeclarationMessageDto().getPreliminaryQuestionKindly();
             // validation
-            AppValidatorHelper.validateDeclarationDoc(errorMap, AppDataHelper.getFileAppendId(appSubmissionDto.getAppType()),
+            AppValidatorHelper.validateDeclarationDoc(errorMap, ApplicationHelper.getFileAppendId(appSubmissionDto.getAppType()),
                     "0".equals(preQuesKindly), bpc.request);
         }
 
@@ -1479,7 +1483,7 @@ public abstract class AppCommDelegator {
                 AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();
                 DeclarationsUtil.declarationsValidate(map, appDeclarationMessageDto, appSubmissionDto.getAppType());
                 String preQuesKindly = appDeclarationMessageDto == null ? null : appDeclarationMessageDto.getPreliminaryQuestionKindly();
-                AppValidatorHelper.validateDeclarationDoc(map, AppDataHelper.getFileAppendId(appSubmissionDto.getAppType()),
+                AppValidatorHelper.validateDeclarationDoc(map, ApplicationHelper.getFileAppendId(appSubmissionDto.getAppType()),
                         "0".equals(preQuesKindly), bpc.request);
             }
         }

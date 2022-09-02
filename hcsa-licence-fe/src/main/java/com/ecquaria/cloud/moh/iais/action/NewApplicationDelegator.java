@@ -859,18 +859,18 @@ public class NewApplicationDelegator extends AppCommDelegator {
                             RenewDto renewDto = new RenewDto();
                             renewDto.setAppSubmissionDtos(Collections.singletonList(appSubmissionDto));
                             bpc.request.setAttribute("renewDto", renewDto);
-                            AppDataHelper.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),
-                                    appSubmissionDto.getAppType(), bpc.request);
+//                            AppDataHelper.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),
+//                                    appSubmissionDto.getAppType(), bpc.request);
                             bpc.request.getSession().setAttribute("isSingle", "Y");
                         } else {
                             bpc.request.getSession().setAttribute("isSingle", "N");
                         }
                     }
-                    if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())
+                    /*if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())
                             || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
                         AppDataHelper.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),
                                 appSubmissionDto.getAppType(), bpc.request);
-                    }
+                    }*/
                     premiseView(appSubmissionDto, applicationDto, bpc.request);
                 }
                 ParamUtil.setRequestAttr(bpc.request, "cessationForm", "Application Details");

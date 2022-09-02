@@ -32,8 +32,10 @@ import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.util.PageDataCopyUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -1224,18 +1226,11 @@ public final class RfcHelper {
         return result;
     }
 
-    public static boolean isChangedList(List<String> l1, List<String> l2) {
+    public static <T extends Comparable> boolean isChangedList(List<T> l1, List<T> l2) {
         if (l1 == null || l2 == null) {
             return false;
         }
-        int size = l1.size();
-        if (size != l2.size()) {
-            return true;
-        }
-        List<String> l3 = new ArrayList<>(l1);
-        l1.removeAll(l2);
-        l2.removeAll(l3);
-        return !l1.isEmpty() || !l2.isEmpty();
+        return !IaisCommonUtils.isSame(l1, l2);
     }
 
     public static List<String> getSpecialServiceList(AppSubmissionDto appSubmissionDto) {
