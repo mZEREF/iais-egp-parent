@@ -98,7 +98,7 @@
             <iais:field width="5" cssClass="col-md-5 item-label" mandatory="${itemConfigDto.mandatoryType == 1}"
                         data="${item.labelData}" value="${itemConfigDto.displayInfo}${itemConfigDto.mandatoryType == 2 ? ' ' : ''}"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:select data="${itemData}" name="${itemPrefix}${itemConfigDto.id}${item.seqNum}" options="${item.radioLabels}" value="${item.inputValue}" firstOption="Please Select"/>
+                <iais:select data="${itemData}" name="${itemPrefix}${itemConfigDto.id}${item.seqNum}" options="${itemConfigDto.radioLabels}" value="${item.inputValue}" firstOption="Please Select"/>
             </iais:value>
         </c:when>
     </c:choose>
