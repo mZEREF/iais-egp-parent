@@ -14,6 +14,7 @@
             <%@include file="viewOtherForm.jsp"%>
             <%@include file="viewDoucmentation.jsp"%>
             <%@include file="viewAbort.jsp"%>
+            <%@include file="viewYfVs.jsp"%>
         </div>
     </c:forEach>
 </div>

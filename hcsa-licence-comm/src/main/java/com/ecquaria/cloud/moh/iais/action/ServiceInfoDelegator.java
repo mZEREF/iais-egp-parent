@@ -67,8 +67,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.APPSUBMISSIONDTO;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURRENTSERVICEID;
@@ -450,7 +448,7 @@ public class ServiceInfoDelegator {
         String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId,null);
         // Other Information Director config
-        if (ApplicationHelper.initOtherInfoForm(currSvcInfoDto,appSubmissionDto.getAppGrpPremisesDtoList(), false)) {
+        if (ApplicationHelper.initOtherInfoForm(currSvcInfoDto,appSubmissionDto.getAppGrpPremisesDtoList(), false,bpc.request)) {
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
         }
     }
@@ -483,7 +481,7 @@ public class ServiceInfoDelegator {
         if (isGetDataFromPage) {
             //get data from page
            appSvcOtherInfoDtos  = AppDataHelper.genAppSvcOtherInfoList(bpc.request,
-                    appSubmissionDto.getAppType(),appSvcOtherInfoDtos);
+                    appSubmissionDto.getAppType());
             currSvcInfoDto.setAppSvcOtherInfoList(appSvcOtherInfoDtos);
             reSetChangesForApp(appSubmissionDto);
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);

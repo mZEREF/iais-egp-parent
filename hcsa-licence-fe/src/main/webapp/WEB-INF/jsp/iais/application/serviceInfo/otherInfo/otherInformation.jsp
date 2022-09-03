@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
-
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
 <div class="row form-horizontal normal-label">
     <c:if test="${AppSubmissionDto.needEditController }">
         <c:if test="${(isRfc || isRenew) && !isRfi}">
@@ -38,6 +38,8 @@
         <c:set var="n" value="${appSvcOtherInfoDto.appSvcOtherInfoNurseDto}"/>
         <c:set var="dsDeclaration" value="${appSvcOtherInfoDto.dsDeclaration}"/>
         <c:set var="ascsDeclaration" value="${appSvcOtherInfoDto.ascsDeclaration}"/>
+        <c:set var="orgUse" value="${appSvcOtherInfoDto.orgUserDto}"/>
+
         <iais:row>
             <div class="col-xs-12">
                 <div class="app-title">${appSvcOtherInfoDto.premName}</div>

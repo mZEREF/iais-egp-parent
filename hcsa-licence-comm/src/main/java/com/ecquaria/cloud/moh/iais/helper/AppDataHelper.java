@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.job.executor.util.SpringHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -42,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.RegistrationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
@@ -59,7 +61,10 @@ import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
+import com.ecquaria.cloud.moh.iais.service.client.ComSystemAdminClient;
 import lombok.extern.slf4j.Slf4j;
+import sop.iwe.SessionManager;
+import sop.rbac.user.User;
 import sop.util.DateUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -726,8 +731,7 @@ public final class AppDataHelper {
         return isPartEdit || canEdit || isNewOfficer;
     }
 
-    public static List<AppSvcOtherInfoDto> genAppSvcOtherInfoList(HttpServletRequest request, String appType,
-            List<AppSvcOtherInfoDto> appSvcOtherInfoDto1) {
+    public static List<AppSvcOtherInfoDto> genAppSvcOtherInfoList(HttpServletRequest request, String appType) {
         AppSvcOtherInfoDto appSvcOtherInfoDto = new AppSvcOtherInfoDto();
         List<AppSvcOtherInfoDto> result = IaisCommonUtils.genNewArrayList();
         String currentSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
@@ -751,6 +755,14 @@ public final class AppDataHelper {
         AppSvcOtherInfoNurseDto appSvcOtherInfoNurseDto = new AppSvcOtherInfoNurseDto();
         ControllerHelper.get(request, appSvcOtherInfoNurseDto);
         String provideYfVs = ParamUtil.getString(request,"provideYfVs");
+        String yfCommencementDateStr = ParamUtil.getString(request,"yfCommencementDate");
+        appSvcOtherInfoDto.setYfCommencementDateStr(yfCommencementDateStr);
+        if (StringUtil.isEmpty(yfCommencementDateStr)){
+            appSvcOtherInfoDto.setYfCommencementDate(null);
+        }else {
+            Date date = DateUtil.parseDate(yfCommencementDateStr,Formatter.DATE);
+            appSvcOtherInfoDto.setYfCommencementDate(date);
+        }
         appSvcOtherInfoDto.setProvideTop(provideTop);
         appSvcOtherInfoDto.setDsDeclaration(dsDeclaration);
         appSvcOtherInfoDto.setAscsDeclaration(ascsDeclaration);
@@ -774,6 +786,7 @@ public final class AppDataHelper {
         appSvcOtherInfoDto.setAppSvcOtherInfoMedDto(appSvcOtherInfoMedDto);
         appSvcOtherInfoDto.setAppSvcOtherInfoMedDto1(appSvcOtherInfoMedDto1);
         appSvcOtherInfoDto.setAppSvcOtherInfoNurseDto(appSvcOtherInfoNurseDto);
+        appSvcOtherInfoDto.setOrgUserDto(getOtherInfoYfVs(request));
         List<AppSvcOtherInfoDto> appSvcOtherInfoList = appSvcRelatedInfoDto.getAppSvcOtherInfoList();
         setAppSvcOtherFormList(appSvcOtherInfoList,request);
         for (AppSvcOtherInfoDto svcOtherInfoDto : appSvcOtherInfoList) {
@@ -781,6 +794,13 @@ public final class AppDataHelper {
         }
         result.add(appSvcOtherInfoDto);
         return result;
+    }
+    //YfVs
+    public static OrgUserDto getOtherInfoYfVs(HttpServletRequest request){
+        User user = SessionManager.getInstance(request).getCurrentUser();
+        ComSystemAdminClient client = SpringContextHelper.getContext().getBean(ComSystemAdminClient.class);
+        OrgUserDto orgUserDto = client.retrieveOrgUserAccount(user.getId()).getEntity();
+        return orgUserDto;
     }
 
     //other top
@@ -1858,6 +1878,7 @@ public final class AppDataHelper {
         }
         return appSvcSpecialServiceInfoDtoList;
     }
+
 
     private static void setPsnValue(AppSvcPrincipalOfficersDto person, AppPsnEditDto appPsnEditDto, String fieldName,
             String prefix, String suffix, HttpServletRequest request) {

@@ -2242,7 +2242,7 @@ public final class ApplicationHelper {
         return true;
     }
 
-    public static boolean initOtherInfoForm(AppSvcRelatedInfoDto currSvcInfoDto, List<AppGrpPremisesDto> appGrpPremisesDtos, boolean init) {
+    public static boolean initOtherInfoForm(AppSvcRelatedInfoDto currSvcInfoDto, List<AppGrpPremisesDto> appGrpPremisesDtos, boolean init, HttpServletRequest request) {
         List<AppSvcOtherInfoDto> appSvcOtherInfoList = currSvcInfoDto.getAppSvcOtherInfoList();
         if (!init && appSvcOtherInfoList != null &&
                 appSvcOtherInfoList.stream().allMatch(AppSvcOtherInfoDto::isInit)) {
@@ -2257,6 +2257,9 @@ public final class ApplicationHelper {
                         .findAny()
                         .orElseGet(AppSvcOtherInfoDto::new);
                 for (AppSvcOtherInfoDto svcOtherInfoDto : appSvcOtherInfoList) {
+                    if (request != null){
+                        svcOtherInfoDto.setOrgUserDto(AppDataHelper.getOtherInfoYfVs(request));
+                    }
                     appSvcOtherInfoDto = svcOtherInfoDto;
                 }
 

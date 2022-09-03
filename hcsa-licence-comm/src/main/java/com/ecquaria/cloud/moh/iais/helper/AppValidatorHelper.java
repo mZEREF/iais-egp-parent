@@ -481,12 +481,12 @@ public final class AppValidatorHelper {
                     break;
                 }
                 case HcsaConsts.STEP_OTHER_INFORMATION:{
-//                    AppSvcOtherInfoDto appSvcOtherInfoDtos = dto.getAppSvcOtherInfoDto();
-//                    Map<String,String> map = doValidateOtherInformation(appSvcOtherInfoDtos);
-//                    if (!map.isEmpty()){
-//                        errorMap.putAll(map);
-//                    }
-//                    addErrorStep(currentStep,stepName,errorMap.size() != prevSize,errorList);
+                    List<AppSvcOtherInfoDto> appSvcOtherInfoDtos = dto.getAppSvcOtherInfoList();
+                    Map<String,String> map = doValidateOtherInformation(appSvcOtherInfoDtos);
+                    if (!map.isEmpty()){
+                        errorMap.putAll(map);
+                    }
+                    addErrorStep(currentStep,stepName,errorMap.size() != prevSize,errorList);
                     break;
                 }
                 case HcsaConsts.STEP_SUPPLEMENTARY_FORM: {
@@ -1888,6 +1888,18 @@ public final class AppValidatorHelper {
                             "Number of cases with complications, if any",
                             "field"));
                 }
+            }
+
+            if (StringUtil.isEmpty(svcOtherInfoDto.getProvideYfVs())){
+                errMap.put("provideYfVs", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                        "Do you provide Yellow Fever Vaccination Service",
+                        "field"));
+            }
+
+            if (StringUtil.isEmpty(svcOtherInfoDto.getYfCommencementDateStr())){
+                errMap.put("yfCommencementDate", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                        "Date of Commencement",
+                        "field"));
             }
             if (StringUtil.isEmpty(svcOtherInfoDto.getProvideTop())){
                 errMap.put("provideTop", MessageUtil.replaceMessage("GENERAL_ERR0006", "Please indicate&nbsp;", "field"));
