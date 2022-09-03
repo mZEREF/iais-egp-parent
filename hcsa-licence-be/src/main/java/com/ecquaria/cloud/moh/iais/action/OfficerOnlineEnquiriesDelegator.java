@@ -22,7 +22,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ApplicationLicenceQue
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -808,14 +807,14 @@ public class OfficerOnlineEnquiriesDelegator {
         }
 
         List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(rfiApplicationQueryDto.getLicenceId()).getEntity();
-        String appPremisesKey=MiscUtil.getPremisesKey(rfiApplicationQueryDto.getHciName(),rfiApplicationQueryDto.getPostalCode(),rfiApplicationQueryDto.getBlkNo(),"","",rfiApplicationQueryDto.getFloorNo(),rfiApplicationQueryDto.getUnitNo(),null);
+        String appPremisesKey=IaisCommonUtils.getPremisesKey(rfiApplicationQueryDto.getHciName(),rfiApplicationQueryDto.getPostalCode(),rfiApplicationQueryDto.getBlkNo(),"","",rfiApplicationQueryDto.getFloorNo(),rfiApplicationQueryDto.getUnitNo(),null);
 
         boolean addressEquals=false;
         for (PremisesDto premisesDto:premisesDtoList
         ) {
-            String licPremisesKey=MiscUtil.getPremisesKey(premisesDto.getHciName(),premisesDto.getPostalCode(),premisesDto.getBlkNo(),"","",premisesDto.getFloorNo(),premisesDto.getUnitNo(),null);
+            String licPremisesKey=IaisCommonUtils.getPremisesKey(premisesDto.getHciName(),premisesDto.getPostalCode(),premisesDto.getBlkNo(),"","",premisesDto.getFloorNo(),premisesDto.getUnitNo(),null);
             List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtoList=hcsaLicenceClient.getPremisesFloorUnits(premisesDto.getId()).getEntity();
-            String licAddress=MiscUtil.getAddressForApp(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode(),appPremisesOperationalUnitDtoList);
+            String licAddress=IaisCommonUtils.getAddressForApp(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode(),appPremisesOperationalUnitDtoList);
             if(StringUtil.isEmpty(premisesDto.getBlkNo())){
                 licAddress=" "+licAddress;
             }
