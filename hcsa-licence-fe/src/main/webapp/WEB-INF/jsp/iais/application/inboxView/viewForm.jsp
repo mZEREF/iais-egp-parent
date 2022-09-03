@@ -15,11 +15,7 @@
     </div>
     <div class="panel-collapse collapse " id="collapseServer" role="tabpanel" aria-labelledby="headingOne">
         <div class="panel-body">
-            <div class="pop-up">
-                <div class="pop-up-body">
-                    <jsp:include page="/WEB-INF/jsp/iais/view/viewSvcInfo.jsp"/>
-                </div>
-            </div>
+            <jsp:include page="/WEB-INF/jsp/iais/view/viewSvcInfo.jsp"/>
         </div>
     </div>
 </div>

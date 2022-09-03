@@ -44,10 +44,10 @@
             hideTag($premContent.find('.easMtsSelect'));
             hideTag($premContent.find('.mobileSelect'));
             hideTag($premContent.find('.remoteSelect'));
-            hideTag($premContent.find('.vehicleRow'));
-            hideTag($premContent.find('.easMtsAddFields'));
             showTag($premContent.find('.scdfRefNoRow'));
             showTag($premContent.find('.certIssuedDtRow'));
+            hideTag($premContent.find('.vehicleRow'));
+            hideTag($premContent.find('.easMtsAddFields'));
             showTag($premContent.find('.co-location-div'));
         } else if ('CONVEYANCE' === premType) {
             hideTag($premContent.find('.permanentSelect'));
@@ -57,10 +57,8 @@
             hideTag($premContent.find('.remoteSelect'));
             hideTag($premContent.find('.scdfRefNoRow'));
             hideTag($premContent.find('.certIssuedDtRow'));
-            hideTag($premContent.find('.vehicleRow'));
-            hideTag($premContent.find('.easMtsAddFields'));
-            hideTag($premContent.find('.co-location-div'));
             showTag($premContent.find('.vehicleRow'));
+            hideTag($premContent.find('.easMtsAddFields'));
             showTag($premContent.find('.co-location-div'));
         } else if ('EASMTS' === premType) {
             hideTag($premContent.find('.permanentSelect'));
@@ -71,8 +69,8 @@
             hideTag($premContent.find('.scdfRefNoRow'));
             hideTag($premContent.find('.certIssuedDtRow'));
             hideTag($premContent.find('.vehicleRow'));
-            hideTag($premContent.find('.co-location-div'));
             showTag($premContent.find('.easMtsAddFields'));
+            hideTag($premContent.find('.co-location-div'));
         } else if ('MOBILE' === premType) {
             hideTag($premContent.find('.permanentSelect'));
             hideTag($premContent.find('.conveyanceSelect'));

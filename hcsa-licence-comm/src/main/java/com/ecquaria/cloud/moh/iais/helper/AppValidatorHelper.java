@@ -935,7 +935,7 @@ public final class AppValidatorHelper {
             if (distinctVehicleNos.contains(vehicleNo)) {
                 // NEW_ERR0012 - This is a repeated entry
                 errorMap.put("vehicleNo" + index, "NEW_ERR0012");
-            } else if (vehicles.contains(vehicleNo)) {
+            } else if (vehicles.stream().anyMatch(v -> vehicleNo.equalsIgnoreCase(v))) {
                 // NEW_ERR0016 - This record already exists.
                 errorMap.put("vehicleNo" + index, "NEW_ERR0016");
             } else {

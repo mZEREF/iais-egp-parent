@@ -16,12 +16,10 @@
     </div>
     <div id="previewLicensee" class="panel-collapse collapse <c:if test="${!empty printFlag}">in</c:if>">
         <div class="panel-body">
+            <iais:row>
+                <div class="app-title">Licensee Details</div>
+            </iais:row>
             <div class="panel-main-content form-horizontal min-row">
-                <iais:row>
-                    <iais:value width="10">
-                        <p class="app-title">Licensee Details</p>
-                    </iais:value>
-                </iais:row>
                 <c:if test="${subLicenseeDto.licenseeType ne soloType}">
                     <iais:row>
                         <iais:field width="5" value="Licensee Type"/>
@@ -30,7 +28,6 @@
                         </iais:value>
                     </iais:row>
                 </c:if>
-
                 <%@include file="/WEB-INF/jsp/iais/view/licensee/viewLicenseeCom.jsp"%>
             </div>
         </div>

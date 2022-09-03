@@ -18,7 +18,7 @@
         <div id="previewSpecialised" class="panel-collapse collapse ">
             <div class="panel-body">
                 <div class="panel-main-content form-horizontal min-row">
-                    <jsp:include page="/WEB-INF/jsp/iais/view/specialised/viewSpecialisedContent.jsp"/>
+                    <%@include file="/WEB-INF/jsp/iais/view/specialised/viewSpecialisedContent.jsp"%>
                 </div>
             </div>
         </div>

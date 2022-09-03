@@ -1,4 +1,4 @@
-<div class="row form-horizontal">
+<div class="form-horizontal">
     <div class="specialised-content" style="padding-bottom: 1.5rem;">
         <iais:row style="padding-bottom: 1rem;">
             <div class="col-xs-12">
@@ -9,7 +9,7 @@
 
         <c:if test="${specialised.existCheckedScopes}">
             <div class="">
-                <div class="font-18 bold">${specialised.categorySectionName}</div>
+                <div class="app-title">${specialised.categorySectionName}</div>
             </div>
             <iais:row>
                 <fieldset class="fieldset-content col-xs-12">
@@ -31,7 +31,7 @@
 
         <c:if test="${specialised.existCheckedRels}">
             <div class="">
-                <div class="font-18 bold">${specialised.specialSvcSecName}</div>
+                <div class="app-title">${specialised.specialSvcSecName}</div>
                 <div><iais:message key="NEW_ACK037"/></div>
             </div>
             <iais:row>

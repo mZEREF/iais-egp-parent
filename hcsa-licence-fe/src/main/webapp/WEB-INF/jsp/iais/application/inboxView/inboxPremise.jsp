@@ -10,10 +10,10 @@
         <div class="panel-body">
             <c:forEach var="appGrpPremDto" items="${AppSubmissionDto.appGrpPremisesDtoList}"
                        varStatus="status">
+                <iais:row>
+                    <div class="app-title">Mode of Service Delivery</div>
+                </iais:row>
                 <div class="panel-main-content form-horizontal min-row">
-                    <div class="row">
-                        <p><strong>Mode of Service Delivery ${status.index+1}</strong></p>
-                    </div>
                     <%@include file="/WEB-INF/jsp/iais/view/premises/viewPremisesContent.jsp"%>
                 </div>
             </c:forEach>

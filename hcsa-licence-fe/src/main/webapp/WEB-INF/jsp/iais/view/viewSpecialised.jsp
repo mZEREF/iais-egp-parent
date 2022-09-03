@@ -18,7 +18,7 @@
         <div id="previewSpecialised${status.index}" class="panel-collapse collapse <c:if test="${!empty printFlag}">in</c:if>">
             <div class="panel-body">
                 <c:if test="${(empty AppSubmissionDto.appEditSelectDto || AppSubmissionDto.appEditSelectDto.specialisedEdit)
-                && empty printView && (empty isSingle || isSingle == 'Y')}">
+                        && empty printView && (empty isSingle || isSingle == 'Y')}">
                     <p><div class="text-right app-font-size-16"><a href="#" id="specialisedEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></div></p>
                 </c:if>
                 <div class="panel-main-content form-horizontal min-row">

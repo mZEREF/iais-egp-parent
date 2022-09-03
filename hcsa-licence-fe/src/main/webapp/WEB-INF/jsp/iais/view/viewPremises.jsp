@@ -5,7 +5,11 @@
 </c:if>
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}" id="headingPremise" role="tab">
-        <h4 class="panel-title"><a role="button" class="collapsed" style="text-decoration: none;" data-toggle="collapse" href="#collapsePremise${documentIndex}" aria-expanded="true" aria-controls="collapsePremise"  name="printControlNameForApp">Mode of Service Delivery</a></h4>
+        <h4 class="panel-title">
+            <a role="button" class="collapsed" data-toggle="collapse" href="#collapsePremise${documentIndex}" aria-expanded="true" aria-controls="collapsePremise" name="printControlNameForApp">
+                Mode of Service Delivery
+            </a>
+        </h4>
     </div>
     <div class="panel-collapse collapse <c:if test="${!empty printFlag}">in</c:if>" id="collapsePremise${documentIndex}" role="tabpanel" aria-labelledby="headingPremise">
         <div class="panel-body">
@@ -14,10 +18,10 @@
             </c:if>
             <c:forEach var="appGrpPremDto" items="${AppSubmissionDto.appGrpPremisesDtoList}"
                        varStatus="status">
+                <iais:row>
+                    <div class="app-title">Mode of Service Delivery ${status.index+1}</div>
+                </iais:row>
                 <div class="panel-main-content form-horizontal min-row">
-                    <div class="row col-xs-12">
-                        <p class="app-title">Mode of Service Delivery ${status.index+1}</p>
-                    </div>
                     <%@include file="premises/viewPremisesContent.jsp"%>
                 </div>
             </c:forEach>
