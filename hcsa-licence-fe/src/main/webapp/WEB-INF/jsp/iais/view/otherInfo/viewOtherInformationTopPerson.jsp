@@ -1,7 +1,7 @@
 <div class="amended-service-info-gp">
     <iais:row>
         <div class="col-xs-12">
-            <p><strong>Other Information</strong></p>
+            <p><strong>Termination of Pregnancy (TOP)</strong></p>
         </div>
     </iais:row>
     <div class="amend-preview-info form-horizontal min-row">

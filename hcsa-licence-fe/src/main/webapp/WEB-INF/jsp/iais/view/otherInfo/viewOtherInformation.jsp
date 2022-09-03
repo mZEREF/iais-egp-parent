@@ -1,11 +1,19 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
-<div class="amended-service-info-gp">
+<div class="amended-service-info-gp form-horizontal min-row">
     <iais:row>
-        <label class="app-title">${currStepName}</label>
+        <div class="col-xs-12">
+            <p class="app-title"><c:out value="${currStepName}"/></p>
+        </div>
     </iais:row>
     <c:set var="appSvcOtherInfoList" value="${currentPreviewSvcInfo.appSvcOtherInfoList}"/>
     <c:forEach var="appSvcOtherInfoDto" items="${appSvcOtherInfoList}">
+        <iais:row>
+            <div class="col-xs-12">
+                <div class="app-title">${appSvcOtherInfoDto.premName}</div>
+                <p class="font-18 bold">${appSvcOtherInfoDto.premAddress}</p>
+            </div>
+        </iais:row>
         <div class="amend-preview-info form-horizontal min-row">
             <%@include file="viewDentalService.jsp"%>
             <%@include file="viewRenalDialysisCentreService.jsp"%>
