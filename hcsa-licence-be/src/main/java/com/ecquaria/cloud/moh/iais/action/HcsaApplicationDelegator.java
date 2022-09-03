@@ -909,6 +909,9 @@ public class HcsaApplicationDelegator {
             } else if ("decisionReject".equals(decisionValue)) {
                 //DMS REJECT
                 successInfo = "LOLEV_ACK027";
+            } else if (ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL.equals(decisionValue)) {
+                //ASO Email
+                successInfo = "LOLEV_ACK055";
             } else {
                 successInfo = "LOLEV_ACK028";
             }
@@ -2322,9 +2325,13 @@ public class HcsaApplicationDelegator {
         String externalRemarks = ParamUtil.getString(bpc.request, "comments");
         String processDecision = ParamUtil.getString(bpc.request, "nextStage");
         String nextStageReplys = ParamUtil.getString(bpc.request, "nextStageReplys");
+        String decisionValues = ParamUtil.getString(bpc.request, "decisionValues");
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         if (!StringUtil.isEmpty(nextStageReplys) && StringUtil.isEmpty(processDecision)) {
             processDecision = nextStageReplys;
+        }
+        if (ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL.equals(decisionValues)) {
+            processDecision = ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL;
         }
         log.info(StringUtil.changeForLog("The processDecision is -- >:" + processDecision));
         //judge the final status is Approve or Reject.
@@ -4163,6 +4170,7 @@ public class HcsaApplicationDelegator {
                 boolean isAso = HcsaConsts.ROUTING_STAGE_ASO.equals(taskKey) || RoleConsts.USER_ROLE_ASO.equals(roleId);
                 boolean isPso = HcsaConsts.ROUTING_STAGE_PSO.equals(taskKey) || RoleConsts.USER_ROLE_PSO.equals(roleId);
                 boolean isAO = RoleConsts.USER_ROLE_AO1.equals(roleId) || RoleConsts.USER_ROLE_AO2.equals(roleId) || RoleConsts.USER_ROLE_AO3.equals(roleId);
+                boolean isBroadcast = RoleConsts.USER_ROLE_BROADCAST.equals(roleId) ;
                 //pso
                 if (isPso || isAso) {
                     if (isAppealApprove) {
@@ -4178,7 +4186,7 @@ public class HcsaApplicationDelegator {
                         ParamUtil.setRequestAttr(request, "otherChrono", chronoUnit);
                         ParamUtil.setRequestAttr(request, "otherNumber", recomInNumber);
                     }
-                } else if (isAO) {
+                } else if (isAO || isBroadcast) {
                     if (isAppealApprove) {
                         recomDecision = "Approve";
                     } else if (isAppealReject) {
@@ -4396,13 +4404,6 @@ public class HcsaApplicationDelegator {
                 applicationType.equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
             decisionValues.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL, "Approve (ASO Email)"));
 
-        }else if(applicationType.equals(ApplicationConsts.APPLICATION_TYPE_APPEAL)){
-            AppPremiseMiscDto appPremiseMiscDto=applicationViewDto.getPremiseMiscDto();
-            if(appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO)
-                    ||appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME)
-                    ||appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_LICENCE_CHANGE_PERIOD)){
-                decisionValues.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL, "Approve (ASO Email)"));
-            }
         }
         ParamUtil.setSessionAttr(request, "decisionValues", (Serializable) decisionValues);
     }
