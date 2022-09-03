@@ -1389,12 +1389,13 @@ public final class ApplicationHelper {
      * set premises dropdown options
      *
      * @param request
+     * @return
      */
-    public static void setPremSelect(HttpServletRequest request) {
+    public static Map<String, AppGrpPremisesDto> setPremSelect(HttpServletRequest request) {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,
                 HcsaAppConst.APPSUBMISSIONDTO);
         String appType = appSubmissionDto != null ? appSubmissionDto.getAppType() : ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION;
-        checkPremisesMap(true, true, request);
+        Map<String, AppGrpPremisesDto> premisesMap = checkPremisesMap(true, true, request);
         Map<String, AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) request.getSession()
                 .getAttribute(HcsaAppConst.LIC_PREMISES_MAP);
         Map<String, AppGrpPremisesDto> appPremisesMap = (Map<String, AppGrpPremisesDto>) request.getSession()
@@ -1412,7 +1413,7 @@ public final class ApplicationHelper {
             setPremSelect(premisesSelect, premiseType, addtional, appPremisesMap);
             ParamUtil.setSessionAttr(request, sessionKey, (Serializable) premisesSelect);
         });
-
+        return premisesMap;
     }
 
     private static void setPremSelect(List<SelectOption> premisesSelect, String premiseType, String addtional,

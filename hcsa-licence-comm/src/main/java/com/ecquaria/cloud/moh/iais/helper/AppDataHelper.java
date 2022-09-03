@@ -2490,7 +2490,7 @@ public final class AppDataHelper {
 
 
     private static boolean isExistingPsn(String assign, String licPsn) {
-        return !HcsaAppConst.NEW_PSN.equals(assign) && !"-1".equals(assign) && AppConsts.YES.equals(licPsn);
+        return !HcsaAppConst.NEW_PSN.equals(assign) && !HcsaAppConst.DFT_FIRST_CODE.equals(assign) && AppConsts.YES.equals(licPsn);
     }
 
     private static boolean isNeedLoadName(String appType, String licPsn) {

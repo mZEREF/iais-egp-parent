@@ -759,16 +759,34 @@ public abstract class AppCommDelegator {
         }
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         //premise select select options
-        ApplicationHelper.setPremSelect(bpc.request);
+        Map<String, AppGrpPremisesDto> premisesMap = ApplicationHelper.setPremSelect(bpc.request);
         //get svcCode to get svcId
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,
                 AppServicesConsts.HCSASERVICEDTOLIST);
         // check premises list
+        List<AppGrpPremisesDto> removeList = new ArrayList<>();
         Set<String> premisesType = DealSessionUtil.initPremiseTypes(hcsaServiceDtoList, false, bpc.request);
-        appGrpPremisesDtoList = appGrpPremisesDtoList.stream()
-                .filter(dto -> StringUtil.isEmpty(dto.getPremisesType()) || premisesType.contains(dto.getPremisesType()))
-                .collect(Collectors.toList());
+        for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
+            if (!StringUtil.isEmpty(appGrpPremisesDto.getPremisesType())
+                    && !premisesType.contains(appGrpPremisesDto.getPremisesType())) {
+                // configuration changed
+                removeList.add(appGrpPremisesDto);
+                continue;
+            }
+            String premisesSelect = appGrpPremisesDto.getPremisesSelect();
+            if (!StringUtil.isEmpty(premisesSelect) && !HcsaAppConst.DFT_FIRST_CODE.equals(premisesSelect)
+                    && !HcsaAppConst.NEW_PREMISES.equals(premisesSelect) ) {
+                // re-set premise select for error record
+                if (premisesMap.get(premisesSelect) == null) {
+                    appGrpPremisesDto.setPremisesSelect(HcsaAppConst.NEW_PREMISES);
+                }
+            }
+        }
+        if (removeList.size() > 0) {
+            appGrpPremisesDtoList.removeAll(removeList);
+        }
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
+
 
         int baseSvcCount = 0;
         if (hcsaServiceDtoList != null) {
