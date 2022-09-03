@@ -182,6 +182,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_ASO,
             ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_PSO,
             ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR,
+            ApplicationConsts.APPLICATION_STATUS_ASO_EMAIL_PENDING
     };
     private static final String[] licStatus=new String[]{
             ApplicationConsts.LICENCE_STATUS_ACTIVE,

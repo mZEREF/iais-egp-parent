@@ -49,7 +49,6 @@ public class InspectionMainServiceImpl implements InspectionMainService {
     private static final String[] PSO_STATUS = new String[]{
             ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING,
             ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
-            ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE,
             ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ROUTE_BACK,
             ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_PSO
     };
@@ -58,10 +57,10 @@ public class InspectionMainServiceImpl implements InspectionMainService {
             ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING,
             ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
             ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
-            ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE,
             ApplicationConsts.APPLICATION_STATUS_PSO_ROUTE_BACK,
             ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ROUTE_BACK,
-            ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_ASO
+            ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_ASO,
+            ApplicationConsts.APPLICATION_STATUS_ASO_EMAIL_PENDING
     };
 
     private static final String[] AO1_STATUS = new String[]{
