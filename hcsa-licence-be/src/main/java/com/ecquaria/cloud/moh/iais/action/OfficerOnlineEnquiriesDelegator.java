@@ -36,6 +36,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
+import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
@@ -48,7 +49,6 @@ import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import com.google.common.collect.ImmutableSet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -108,19 +108,6 @@ public class OfficerOnlineEnquiriesDelegator {
             .sortField("LIC_APP_KEY_ID").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
 
 
-    private static final Set<String> appStatuses = ImmutableSet.of(
-            ApplicationConsts.APPLICATION_STATUS_APPROVED,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
-            ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE,
-            ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING,
-            ApplicationConsts.APPLICATION_STATUS_REJECTED,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT,
-            ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS,
-            ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO
-    );
 
 
     public void start(BaseProcessClass bpc) {
@@ -383,9 +370,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("appType", applicationType);
                 }
                 if(!StringUtil.isEmpty(status)){
-                    if(!appStatuses.contains(status)){
-                        filters.put("appStatus", status);
-                    }
+                    filters.put("appStatus", status);
                 }
                 if(!StringUtil.isEmpty(appSubDate)){
                     filters.put("subDate", appSubDate);
@@ -542,9 +527,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("appType", applicationType);appCount++;
                 }
                 if(!StringUtil.isEmpty(status)){
-                    if(!appStatuses.contains(status)){
-                        filters.put("appStatus", status);
-                    }
+                    filters.put("appStatus", status);
                     appCount++;
                 }
                 if(!StringUtil.isEmpty(appSubDate)){
@@ -665,6 +648,8 @@ public class OfficerOnlineEnquiriesDelegator {
             }
             if(status!=null){
                 setSearchParamAppStatus(status,appParam);
+            }else {
+                appParam.removeFilter("appStatus");
             }
             if(!StringUtil.isEmpty(svcSubType) ){
                 List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
@@ -733,37 +718,43 @@ public class OfficerOnlineEnquiriesDelegator {
 
     private void setSearchParamAppStatus(String status,SearchParam appParam ){
         switch (status){
-            case ApplicationConsts.APPLICATION_STATUS_APPROVED:
-                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST005' OR oev.appStatus = 'APST050')");
-                break;
-            case ApplicationConsts.APPLICATION_STATUS_REJECTED:
-                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST006' OR oev.appStatus = 'APST074')");
-                break;
-            case ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION:
-                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST001' OR oev.appStatus = 'APST077')");
-                break;
-            case ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION:
-                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST023' OR oev.appStatus = 'APST028' OR oev.appStatus = 'APST061')");
-                break;
-            case ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE:
-                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST053' OR oev.appStatus = 'APST064' )");
-                break;
-            case ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST:
-                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST062' OR oev.appStatus = 'APST065' OR oev.appStatus = 'APST066' OR oev.appStatus = 'APST067' OR oev.appStatus = 'APST013')");
-                break;
-            case ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING:
-                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST040' OR oev.appStatus = 'APST068' OR oev.appStatus = 'APST069' OR oev.appStatus = 'APST070' OR oev.appStatus = 'APST071')");
-                break;
-            case ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE:
-                appParam.addParam("appStatus_APPROVED", "(oev.appStatus = 'APST054' OR oev.appStatus = 'APST063')");
-                break;
             case ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS:
-                appParam.addParam("appStatus_APPROVED", "(oev.PMT_STATUS = 'PMT02' OR oev.PMT_STATUS = 'PMT01')");
+                appParam.addParam("appStatusAll", "(oev.PMT_STATUS = 'PMT02' OR oev.PMT_STATUS = 'PMT01')");
                 break;
             case ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO:
-                appParam.addParam("appStatus_APPROVED", "(oev.PMT_STATUS = 'PMT03' )");
+                appParam.addParam("appStatusAll", "(oev.PMT_STATUS = 'PMT03' )");
                 break;
             default:
+                List<String> inParams = IaisCommonUtils.genNewArrayList();
+                if (ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION.equals(status)){
+                    inParams = MasterCodeUtil.getCodeKeyByCodeValue("Pending Inspection");
+                }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(status)){
+                    inParams = MasterCodeUtil.getCodeKeyByCodeValue("Pending Screening");
+                } else if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01.equals(status)){
+                    inParams = MasterCodeUtil.getCodeKeyByCodeValue("Pending Approval");
+                }else if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(status)){
+                    inParams = MasterCodeUtil.getCodeKeyByCodeValue("Approved");
+                }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING.equals(status)){
+                    inParams = MasterCodeUtil.getCodeKeyByCodeValue("Pending Re-Scheduling");
+                }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING.equals(status)){
+                    inParams = MasterCodeUtil.getCodeKeyByCodeValue("Pending Scheduling");
+                }else if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(status)){
+                    inParams = MasterCodeUtil.getCodeKeyByCodeValue("Pending Clarification");
+                }else if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(status)){
+                    inParams = MasterCodeUtil.getCodeKeyByCodeValue("Rejected");
+                }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION.equals(status)){
+                    inParams = MasterCodeUtil.getCodeKeyByCodeValue("Pending Clarification");
+                }else if(ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE.equals(status)){
+                    inParams = MasterCodeUtil.getCodeKeyByCodeValue("Inspector Enquire");
+                }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)){
+                    inParams = MasterCodeUtil.getCodeKeyByCodeValue("Pending Internal Clarification");
+                }else if(ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE.equals(status)){
+                    inParams = MasterCodeUtil.getCodeKeyByCodeValue("Professional Screening Officer Enquire");
+                }
+                else{
+                    inParams.add(status);
+                }
+                SqlHelper.builderInSql(appParam, "oev.appStatus", "appStatusAll", inParams);
         }
     }
 
@@ -794,11 +785,7 @@ public class OfficerOnlineEnquiriesDelegator {
         }
 
         String appStatus=ParamUtil.getString(request, "application_status");
-        if(!StringUtil.isEmpty(appStatus) &&(appStatuses.contains(appStatus))
-        )
-        {
-            licParam.getFilters().put("appStatus",appStatus);
-        }
+
         ParamUtil.setSessionAttr(request,"SearchParam", licParam);
     }
 
@@ -821,15 +808,14 @@ public class OfficerOnlineEnquiriesDelegator {
         }
 
         List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(rfiApplicationQueryDto.getLicenceId()).getEntity();
-        String appPremisesKey= IaisCommonUtils.getPremisesKey(rfiApplicationQueryDto.getHciName(),rfiApplicationQueryDto.getPostalCode(),
-                rfiApplicationQueryDto.getBlkNo(),"","",rfiApplicationQueryDto.getFloorNo(),rfiApplicationQueryDto.getUnitNo(),null);
+        String appPremisesKey=MiscUtil.getPremisesKey(rfiApplicationQueryDto.getHciName(),rfiApplicationQueryDto.getPostalCode(),rfiApplicationQueryDto.getBlkNo(),"","",rfiApplicationQueryDto.getFloorNo(),rfiApplicationQueryDto.getUnitNo(),null);
 
         boolean addressEquals=false;
-        for (PremisesDto premisesDto:premisesDtoList ) {
-            String licPremisesKey=IaisCommonUtils.getPremisesKey(premisesDto);
+        for (PremisesDto premisesDto:premisesDtoList
+        ) {
+            String licPremisesKey=MiscUtil.getPremisesKey(premisesDto.getHciName(),premisesDto.getPostalCode(),premisesDto.getBlkNo(),"","",premisesDto.getFloorNo(),premisesDto.getUnitNo(),null);
             List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtoList=hcsaLicenceClient.getPremisesFloorUnits(premisesDto.getId()).getEntity();
-            String licAddress=IaisCommonUtils.getAddressForApp(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),
-                    premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode(),appPremisesOperationalUnitDtoList);
+            String licAddress=MiscUtil.getAddressForApp(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode(),appPremisesOperationalUnitDtoList);
             if(StringUtil.isEmpty(premisesDto.getBlkNo())){
                 licAddress=" "+licAddress;
             }
@@ -1030,9 +1016,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("appStatus"))){
                     String status= (String) parm.getFilters().get("appStatus");
-                    if(!appStatuses.contains(status)){
-                        filters.put("appStatus", parm.getFilters().get("appStatus"));
-                    }
+                    filters.put("appStatus", status);
                     appCount++;
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("subDate"))){
@@ -1151,6 +1135,8 @@ public class OfficerOnlineEnquiriesDelegator {
                         String status= (String) parm.getFilters().get("appStatus");
                         if(status!=null){
                             setSearchParamAppStatus(status,appParam);
+                        }else {
+                            appParam.removeFilter("appStatus");
                         }
                         if(!StringUtil.isEmpty(parm.getFilters().get("serviceSubTypeName")) ){
                             List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
@@ -1235,10 +1221,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("appType", parm.getFilters().get("appType"));appCount++;
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("appStatus"))){
-                    String status= (String) parm.getFilters().get("appStatus");
-                    if(!appStatuses.contains(status)){
-                        filters.put("appStatus", parm.getFilters().get("appStatus"));
-                    }
+                    filters.put("appStatus", parm.getFilters().get("appStatus"));
                     appCount++;
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("subDate"))){
@@ -1357,6 +1340,8 @@ public class OfficerOnlineEnquiriesDelegator {
                         String status= (String) parm.getFilters().get("appStatus");
                         if(status!=null){
                             setSearchParamAppStatus(status,appParam);
+                        }else {
+                            appParam.removeFilter("appStatus");
                         }
                         if(!StringUtil.isEmpty(parm.getFilters().get("serviceSubTypeName")) ){
                             List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
@@ -1482,10 +1467,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("appType", parm.getFilters().get("appType"));appCount++;
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("appStatus"))){
-                    String status= (String) parm.getFilters().get("appStatus");
-                    if(!appStatuses.contains(status)){
-                        filters.put("appStatus", parm.getFilters().get("appStatus"));
-                    }
+                    filters.put("appStatus", parm.getFilters().get("appStatus"));
                     appCount++;
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("subDate"))){
@@ -1601,6 +1583,8 @@ public class OfficerOnlineEnquiriesDelegator {
                     String status= (String) parm.getFilters().get("appStatus");
                     if(status!=null){
                         setSearchParamAppStatus(status,appParam);
+                    }else {
+                        appParam.removeFilter("appStatus");
                     }
                     if(!StringUtil.isEmpty(parm.getFilters().get("serviceSubTypeName")) ){
                         List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();

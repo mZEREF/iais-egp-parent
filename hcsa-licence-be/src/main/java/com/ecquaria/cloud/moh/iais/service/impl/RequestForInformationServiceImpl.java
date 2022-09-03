@@ -178,9 +178,10 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             ApplicationConsts.APPLICATION_STATUS_REJECTED,
             ApplicationConsts.APPLICATION_STATUS_WITHDRAWN,
             ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK_CANCELED,
-            //ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS,
-            ApplicationConsts.APPLICATION_STATUS_GIRO_PAYMENT_FAIL,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_PAYMENT_RESUBMIT
+            ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO,
+            ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_ASO,
+            ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_PSO,
+            ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR,
     };
     private static final String[] licStatus=new String[]{
             ApplicationConsts.LICENCE_STATUS_ACTIVE,
@@ -616,7 +617,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                 }
             }
             for (Map.Entry<Integer,List<LicPremisesReqForInfoDocDto>> multiFileDto:licPremisesReqForInfoMultiFileDto.entrySet()
-                 ) {
+            ) {
                 stringBuilder.append("<p>   ").append(' ').append("Documentations : ").append(multiFileDto.getValue().get(0).getTitle()).append("</p>");
             }
         }
