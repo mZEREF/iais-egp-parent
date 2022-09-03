@@ -27,16 +27,22 @@
                         <div id="${status.index}${subSvcRelStatus.index}SSI" class="panel-collapse collapse in">
                             <input type="hidden" class ="isPartEdit" name="isPartEdit${status.index}" value="0"/>
                             <div class="panel-body">
+                                <c:forEach var="appSvcPersonnelDto" items="${specialServiceSectionDto.appSvcNurseDtoList}" varStatus="nicStatus">
+                                    <c:set var="index" value="${nicStatus.index}"/>
+                                    <c:set var="NurseDtoListLength" value="${specialServiceSectionDto.appSvcNurseDtoList.size()}"/>
+                                    <c:set var="title" value="Nurse in Charge ${NurseDtoListLength > 1?index+1:''}"/>
+                                    <%@include file="viewSpecialServicesFromDetail.jsp"%>
+                                </c:forEach>
                                 <c:forEach var="appSvcPersonnelDto" items="${specialServiceSectionDto.appSvcDirectorDtoList}" varStatus="direStatus">
                                     <c:set var="index" value="${direStatus.index}"/>
                                     <c:set var="DirectorDtoListLength" value="${specialServiceSectionDto.appSvcDirectorDtoList.size()}"/>
                                     <c:set var="title" value="Emergency Department Director ${DirectorDtoListLength > 1?index+1:''}"/>
                                     <%@include file="viewSpecialServicesFromDetail.jsp"%>
                                 </c:forEach>
-                                <c:forEach var="appSvcPersonnelDto" items="${specialServiceSectionDto.appSvcChargedNurseDtoList}" varStatus="nurStatus">
+                                <c:forEach var="appSvcPersonnelDto" items="${specialServiceSectionDto.appSvcNurseDirectorDtoList}" varStatus="nurStatus">
                                     <c:set var="index" value="${nurStatus.index}"/>
-                                    <c:set var="NurseDtoListLength" value="${specialServiceSectionDto.appSvcChargedNurseDtoList.size()}"/>
-                                    <c:set var="title" value="Emergency Department Nurse-in-charge ${NurseDtoListLength > 1?index+1:''}"/>
+                                    <c:set var="NurseDtoListLength" value="${specialServiceSectionDto.appSvcNurseDirectorDtoList.size()}"/>
+                                    <c:set var="title" value="Emergency Department Nurse Director ${NurseDtoListLength > 1?index+1:''}"/>
                                     <%@include file="viewSpecialServicesFromDetail.jsp"%>
                                 </c:forEach>
                                 <c:set var="appSvcSuplmFormDto" value="${specialServiceSectionDto.appSvcSuplmFormDto}"/>

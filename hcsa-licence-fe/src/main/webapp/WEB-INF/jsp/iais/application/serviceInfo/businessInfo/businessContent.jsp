@@ -34,7 +34,7 @@
                 <div class="panel-heading " id="business-heading"  role="tab">
                     <h4 class="panel-title">
                         <strong >
-                            <c:out value="${appGrpPremisesDto.premisesType}"/>: <c:out value="${appGrpPremisesDto.address}"/>
+                            <c:out value="${appGrpPremisesDto.premTypeNameOnly}"/>: <c:out value="${appGrpPremisesDto.address}"/>
                         </strong>
                     </h4>
                 </div>
