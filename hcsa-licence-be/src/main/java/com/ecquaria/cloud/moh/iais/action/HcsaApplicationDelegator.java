@@ -95,6 +95,7 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.SelectHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
@@ -233,6 +234,10 @@ public class HcsaApplicationDelegator {
 
     @Autowired
     private AppCommClient appCommClient;
+
+
+    @Autowired
+    private AppCommService appCommService;
 
     @Value("${iais.email.sender}")
     private String mailSender;
