@@ -605,7 +605,7 @@ public final class AppValidatorHelper {
             boolean rfi, boolean checkOthers) {
         //do validate one premiss
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
-        List<String> list = IaisCommonUtils.genNewArrayList();
+        List<String> addressList = IaisCommonUtils.genNewArrayList();
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         Set<String> distinctVehicleNos = IaisCommonUtils.genNewHashSet();
         boolean needAppendMsg = false;
@@ -634,7 +634,6 @@ public final class AppValidatorHelper {
                     errorMap.put("premisesSelect" + i, selectPremises);
                 } else {
                     //List<String> floorUnitNo = new ArrayList<>(10);
-                    List<String> floorUnitList = IaisCommonUtils.genNewArrayList();
                     String hciName = appGrpPremisesDto.getHciName();
                     String hciNameKey = "hciName" + i;
                     //migrated licence need  judge
@@ -705,8 +704,7 @@ public final class AppValidatorHelper {
                             }
                             break;
                     }
-
-                    Map<String, String> map = validateContactInfo(appGrpPremisesDto, i, floorUnitList, list);
+                    Map<String, String> map = validateContactInfo(appGrpPremisesDto, i, addressList);
                     if (!map.isEmpty()) {
                         errorMap.putAll(map);
                     } else {
@@ -883,32 +881,48 @@ public final class AppValidatorHelper {
         }
         if (StringUtil.isEmpty(locateWtihNonHcsa)) {
             errorMap.put("locateWtihNonHcsa" + index, "GENERAL_ERR0006");
-        } else if (AppConsts.YES.equals(locateWtihNonHcsa)) {
-            if (IaisCommonUtils.isEmpty(appPremNonLicRelationDtos)) {
-                errorMap.put(index + "CoBusinessName0", "GENERAL_ERR0006");
-                errorMap.put(index + "CoSvcName0", "GENERAL_ERR0006");
-            } else {
-                int i = 0;
-                for (AppPremNonLicRelationDto appPremNonLicRelationDto : appPremNonLicRelationDtos) {
-                    String coBusinessName = appPremNonLicRelationDto.getBusinessName();
-                    String coSvcName = appPremNonLicRelationDto.getProvidedService();
-                    if (StringUtil.isEmpty(coBusinessName) && StringUtil.isEmpty(coSvcName)) {
-                        continue;
-                    }
-                    if (StringUtil.isEmpty(coBusinessName)) {
-                        errorMap.put(index + "CoBusinessName" + i, "GENERAL_ERR0006");
-                    } else if (coBusinessName.length() > 100) {
-                        errorMap.put(index + "CoBusinessName" + i, repLength("Business Name", "100"));
-                    }
-                    if (StringUtil.isEmpty(coSvcName)) {
-                        errorMap.put(index + "CoSvcName" + i, "GENERAL_ERR0006");
-                    } else if (coSvcName.length() > 100) {
-                        errorMap.put(index + "CoSvcName" + i, repLength("Services Provided", "100"));
-                    }
-                    i++;
+        } else if (!AppConsts.YES.equals(locateWtihNonHcsa)) {
+            return;
+        }
+        if (IaisCommonUtils.isEmpty(appPremNonLicRelationDtos)) {
+            errorMap.put(index + "CoBusinessName0", "GENERAL_ERR0006");
+            errorMap.put(index + "CoSvcName0", "GENERAL_ERR0006");
+        } else {
+            List<String> nonLicRelList = IaisCommonUtils.genNewArrayList();
+            int i = 0;
+            for (AppPremNonLicRelationDto appPremNonLicRelationDto : appPremNonLicRelationDtos) {
+                String coBusinessName = appPremNonLicRelationDto.getBusinessName();
+                String coSvcName = appPremNonLicRelationDto.getProvidedService();
+                if (StringUtil.isEmpty(coBusinessName) && StringUtil.isEmpty(coSvcName)) {
+                    continue;
                 }
-
+                boolean isValid = true;
+                if (StringUtil.isEmpty(coBusinessName)) {
+                    errorMap.put(index + "CoBusinessName" + i, "GENERAL_ERR0006");
+                    isValid = false;
+                } else if (coBusinessName.length() > 100) {
+                    errorMap.put(index + "CoBusinessName" + i, repLength("Business Name", "100"));
+                    isValid = false;
+                }
+                if (StringUtil.isEmpty(coSvcName)) {
+                    errorMap.put(index + "CoSvcName" + i, "GENERAL_ERR0006");
+                    isValid = false;
+                } else if (coSvcName.length() > 100) {
+                    errorMap.put(index + "CoSvcName" + i, repLength("Services Provided", "100"));
+                    isValid = false;
+                }
+                if (isValid) {
+                    String data = coBusinessName + AppConsts.DFT_DELIMITER3 + coSvcName;
+                    if (nonLicRelList.contains(data)) {
+                        // NEW_ERR0012 - This is a repeated entry
+                        errorMap.put(index + "CoBusinessName" + i, "NEW_ERR0012");
+                    } else {
+                        nonLicRelList.add(data);
+                    }
+                }
+                i++;
             }
+
         }
 
     }
@@ -945,8 +959,7 @@ public final class AppValidatorHelper {
 
     }
 
-    private static Map<String, String> validateContactInfo(AppGrpPremisesDto appGrpPremisesDto, int i, List<String> floorUnitList,
-            List<String> list) {
+    private static Map<String, String> validateContactInfo(AppGrpPremisesDto appGrpPremisesDto, int i, List<String> addressList) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String postalCode = appGrpPremisesDto.getPostalCode();
         String buildingName = appGrpPremisesDto.getBuildingName();
@@ -977,6 +990,7 @@ public final class AppValidatorHelper {
             errorMap.put(blkNoKey, general_err0041);
         }
         // validate floor and units
+        List<String> floorUnitList = IaisCommonUtils.genNewArrayList();
         validateOperaionUnits(appGrpPremisesDto, i, floorUnitList, errorMap);
         String postalCodeKey = "postalCode" + i;
         if (!StringUtil.isEmpty(postalCode)) {
@@ -989,17 +1003,15 @@ public final class AppValidatorHelper {
                 errorMap.put(postalCodeKey, "NEW_ERR0004");
             } else {
                 if (!floorUnitList.isEmpty()) {
-                    List<String> sbList = new ArrayList<>();
                     for (String str : floorUnitList) {
-                        String sb = postalCode + AppConsts.DFT_DELIMITER + str;
-                        if (list.contains(sb)) {
+                        String sb = postalCode + AppConsts.DFT_DELIMITER3 + str;
+                        if (addressList.contains(sb)) {
                             // NEW_ACK010 - Please take note this premises address is licenced under another licensee.
                             errorMap.put(postalCodeKey, "NEW_ACK010");
                         } else {
-                            sbList.add(sb);
+                            addressList.add(sb);
                         }
                     }
-                    list.addAll(sbList);
                 }
             }
         } else {
@@ -1037,8 +1049,8 @@ public final class AppValidatorHelper {
             errorMap.put(unitNoKey, repLength("Unit No.", "5"));
         }
         if (addrTypeFlag) {
-            String sb = StringUtil.getNonNull(floorNo) + AppConsts.DFT_DELIMITER +
-                    StringUtil.getNonNull(blkNo) + AppConsts.DFT_DELIMITER + unitNo;
+            String sb = StringUtil.getNonNull(floorNo) + AppConsts.DFT_DELIMITER3 +
+                    StringUtil.getNonNull(blkNo) + AppConsts.DFT_DELIMITER3 + unitNo;
             floorUnitList.add(sb);
         }
 
@@ -1085,8 +1097,8 @@ public final class AppValidatorHelper {
                 if (flag) {
                     if (!StringUtil.isEmpty(floorNo) && !StringUtil.isEmpty(unitNo)) {
                         String blkNo = appGrpPremisesDto.getBlkNo();
-                        String floorUnitStr = floorNo + AppConsts.DFT_DELIMITER +
-                                StringUtil.getNonNull(blkNo) + AppConsts.DFT_DELIMITER + unitNo;
+                        String floorUnitStr = floorNo + AppConsts.DFT_DELIMITER3 +
+                                StringUtil.getNonNull(blkNo) + AppConsts.DFT_DELIMITER3 + unitNo;
                         if (floorUnitList.contains(floorUnitStr)) {
                             errorMap.put(floorUnitErrName + opIndex, "NEW_ERR0017");
                         } else {
