@@ -774,7 +774,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                 appPremPhOpenPeriodDtoList.addAll(appPremPhOpenPeriodDtoSet);
                 appPremNonLicRelationDtoList.addAll(appPremNonLicRelationDtoSet);
                 appPremScopeDtoList.addAll(appPremScopeDtoSet);
-                appPremSubSvcRelDtoSet.addAll(appPremSubSvcRelDtoList);
+                appPremSubSvcRelDtoList.addAll(appPremSubSvcRelDtoSet);
                 applicationListFileDto.setAppPremPhOpenPeriods(appPremPhOpenPeriodDtoList);
                 appPremisesCorrelationDtoList.addAll(appPremisesCorrelationDtos);
                 applicationListFileDto.setAppPremisesCorrelation (appPremisesCorrelationDtoList);
