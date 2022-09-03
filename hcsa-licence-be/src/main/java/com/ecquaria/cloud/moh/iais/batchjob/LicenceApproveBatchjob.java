@@ -50,6 +50,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicDocumentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicDocumentRelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremBusinessDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremNonLicRelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremOtherInfoAbortDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremOtherInfoItemAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremOtherInfoNurseDto;
@@ -1334,6 +1335,7 @@ public class LicenceApproveBatchjob {
             premisesDto.setOrganizationId(organizationId);
             List<AppGrpSecondAddrDto> appGrpSecondAddrDtos = appGrpPremisesDto.getAppGrpSecondAddrDtos();
             premisesDto.setLicSecondAddrDtos(MiscUtil.transferEntityDtos(appGrpSecondAddrDtos,LicSecondAddrDto.class));
+            premisesDto.setLicPremNonLicRelationDtos(MiscUtil.transferEntityDtos(appGrpPremisesDto.getAppPremNonLicRelationDtos(),LicPremNonLicRelationDto.class));
             /*List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodDtoList();
             List<LicPremPhOpenPeriodDto> licPremPhOpenPeriodDtos = IaisCommonUtils.genNewArrayList();
             if (!IaisCommonUtils.isEmpty(appPremPhOpenPeriodDtos)) {
