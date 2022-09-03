@@ -2226,10 +2226,6 @@ public final class ApplicationHelper {
             } else {
                 appSvcSuplmFormDto = new AppSvcSuplmFormDto();
             }
-            if (!reset && appSvcSuplmFormDto.isInit()) {
-                newList.add(appSvcSuplmFormDto);
-                continue;
-            }
             appSvcSuplmFormDto.setAppGrpPremisesDto(appGrpPremisesDto);
             appSvcSuplmFormDto.setSvcConfigDto(currSvcInfoDto);
             appSvcSuplmFormDto.setSuppleFormItemConfigDtos(configDtos, (svcId, addMoreBatchNum) -> {
