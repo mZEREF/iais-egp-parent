@@ -10,10 +10,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocSecDetailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.SpecialServiceSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoDto;
@@ -24,8 +26,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSuplmFormDt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.SuppleFormItemConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -36,6 +41,7 @@ import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.AppDeclarationDocShowPageDto;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
+import com.ecquaria.cloud.moh.iais.helper.AppDataHelper;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
@@ -538,7 +544,7 @@ public class DealSessionUtil {
         for (HcsaServiceStepSchemeDto hcsaServiceStepScheme : hcsaServiceStepSchemes) {
             String stepCode = hcsaServiceStepScheme.getStepCode();
             if (HcsaConsts.STEP_SUPPLEMENTARY_FORM.equals(stepCode)) {
-                ApplicationHelper.initSupplementoryForm(currSvcInfoDto, appGrpPremisesDtos, forceInit);
+                initSupplementoryForm(currSvcInfoDto, appGrpPremisesDtos, forceInit);
                 if (!forceInit) {
                     List<AppSvcSuplmFormDto> appSvcSuplmFormList = currSvcInfoDto.getAppSvcSuplmFormList();
                     if (IaisCommonUtils.isNotEmpty(appSvcSuplmFormList)) {
@@ -546,7 +552,7 @@ public class DealSessionUtil {
                     }
                 }
             } else if (HcsaConsts.STEP_OTHER_INFORMATION.equals(stepCode)) {
-                ApplicationHelper.initOtherInfoForm(currSvcInfoDto, appGrpPremisesDtos, forceInit,request);
+                initOtherInfoForm(currSvcInfoDto, appGrpPremisesDtos, forceInit, request);
                 if (!forceInit) {
                     List<AppSvcOtherInfoDto> appSvcOtherInfoList = currSvcInfoDto.getAppSvcOtherInfoList();
                     if (IaisCommonUtils.isNotEmpty(appSvcOtherInfoList)) {
@@ -559,7 +565,7 @@ public class DealSessionUtil {
                     }
                 }
             } else if (HcsaConsts.STEP_SPECIAL_SERVICES_FORM.equals(stepCode)) {
-                ApplicationHelper.initAppSvcSpecialServiceInfoDtoList(currSvcInfoDto, appPremSpecialisedDtoList);
+                initAppSvcSpecialServiceInfoDtoList(currSvcInfoDto, appPremSpecialisedDtoList);
                 if (!forceInit) {
                     List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = currSvcInfoDto.getAppSvcSpecialServiceInfoList();
                     if (IaisCommonUtils.isNotEmpty(appSvcSpecialServiceInfoList)) {
@@ -572,7 +578,7 @@ public class DealSessionUtil {
                     }
                 }
             } else if (HcsaConsts.STEP_DOCUMENTS.equals(stepCode)) {
-                List<DocumentShowDto> documentShowDtos = ApplicationHelper.initShowDocumentList(currSvcInfoDto,
+                List<DocumentShowDto> documentShowDtos = initShowDocumentList(currSvcInfoDto,
                         appPremSpecialisedDtoList, forceInit);
                 initDocumentSession(documentShowDtos, request);
             }
@@ -638,6 +644,239 @@ public class DealSessionUtil {
         return result;
     }
 
+    public static boolean initSupplementoryForm(AppSvcRelatedInfoDto currSvcInfoDto, List<AppGrpPremisesDto> appGrpPremisesDtos,
+            boolean reset) {
+        List<AppSvcSuplmFormDto> appSvcSuplmFormList = currSvcInfoDto.getAppSvcSuplmFormList();
+        if (!reset && appSvcSuplmFormList != null &&
+                appSvcSuplmFormList.stream().allMatch(AppSvcSuplmFormDto::isInit)) {
+            return false;
+        }
+        List<AppSvcSuplmFormDto> newList = IaisCommonUtils.genNewArrayList();
+        ConfigCommService configCommService = getConfigCommService();
+        List<SuppleFormItemConfigDto> configDtos = configCommService.getSuppleFormItemConfigs(currSvcInfoDto.getServiceCode(), HcsaConsts.ITME_TYPE_SUPLFORM);
+        for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
+            AppSvcSuplmFormDto appSvcSuplmFormDto;
+            if (appSvcSuplmFormList != null) {
+                appSvcSuplmFormDto = appSvcSuplmFormList.stream()
+                        .filter(dto -> Objects.equals(appGrpPremisesDto.getPremisesIndexNo(), dto.getPremisesVal()))
+                        .findAny()
+                        .orElseGet(AppSvcSuplmFormDto::new);
+            } else {
+                appSvcSuplmFormDto = new AppSvcSuplmFormDto();
+            }
+            appSvcSuplmFormDto.setAppGrpPremisesDto(appGrpPremisesDto);
+            appSvcSuplmFormDto.setSvcConfigDto(currSvcInfoDto);
+            appSvcSuplmFormDto.setSuppleFormItemConfigDtos(configDtos, (svcId, addMoreBatchNum) -> {
+                List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList = configCommService.getHcsaSvcPersonnel(svcId, addMoreBatchNum);
+                if (IaisCommonUtils.isNotEmpty(hcsaSvcPersonnelList)) {
+                    return hcsaSvcPersonnelList.get(0);
+                }
+                return null;
+            });
+            appSvcSuplmFormDto.setInit(true);
+            newList.add(appSvcSuplmFormDto);
+        }
+        currSvcInfoDto.setAppSvcSuplmFormList(newList);
+        return true;
+    }
+
+    public static boolean initOtherInfoForm(AppSvcRelatedInfoDto currSvcInfoDto, List<AppGrpPremisesDto> appGrpPremisesDtos, boolean init, HttpServletRequest request) {
+        List<AppSvcOtherInfoDto> appSvcOtherInfoList = currSvcInfoDto.getAppSvcOtherInfoList();
+        if (!init && appSvcOtherInfoList != null &&
+                appSvcOtherInfoList.stream().allMatch(AppSvcOtherInfoDto::isInit)) {
+            return false;
+        }
+        List<AppSvcOtherInfoDto> newList = IaisCommonUtils.genNewArrayList();
+        for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
+            AppSvcOtherInfoDto appSvcOtherInfoDto;
+            if (appSvcOtherInfoList != null){
+                appSvcOtherInfoDto = appSvcOtherInfoList.stream()
+                        .filter(dto -> Objects.equals(appGrpPremisesDto.getPremisesIndexNo(), dto.getPremisesVal()))
+                        .findAny()
+                        .orElseGet(AppSvcOtherInfoDto::new);
+                for (AppSvcOtherInfoDto svcOtherInfoDto : appSvcOtherInfoList) {
+                    if (request != null){
+                        svcOtherInfoDto.setOrgUserDto(AppDataHelper.getOtherInfoYfVs(request));
+                    }
+                    appSvcOtherInfoDto = svcOtherInfoDto;
+                }
+
+            }else {
+                appSvcOtherInfoDto = new AppSvcOtherInfoDto();
+            }
+            if (!init && appSvcOtherInfoDto.isInit()) {
+                newList.add(appSvcOtherInfoDto);
+                continue;
+            }
+            AppSvcSuplmFormDto appSvcSuplmFormDto = initAppSvcSuplmFormDto(AppServicesConsts.SERVICE_CODE_SUB_TOP,init,HcsaConsts.ITEM_TYPE_TOP,appSvcOtherInfoDto.getAppSvcSuplmFormDto());
+            appSvcSuplmFormDto.setSvcConfigDto(currSvcInfoDto);
+            appSvcOtherInfoDto.setAppGrpPremisesDto(appGrpPremisesDto);
+            appSvcOtherInfoDto.setAppSvcSuplmFormDto(appSvcSuplmFormDto);
+            appSvcOtherInfoDto.setInit(true);
+            newList.add(appSvcOtherInfoDto);
+        }
+        currSvcInfoDto.setAppSvcOtherInfoList(newList);
+        return true;
+    }
+
+    private static AppSvcSuplmFormDto initAppSvcSuplmFormDto(String code, boolean reset, String type,
+            AppSvcSuplmFormDto appSvcSuplmFormDto) {
+        if (appSvcSuplmFormDto == null) {
+            appSvcSuplmFormDto = new AppSvcSuplmFormDto();
+        }
+        if (!reset && appSvcSuplmFormDto.isInit()) {
+            return appSvcSuplmFormDto;
+        }
+        ConfigCommService configCommService = getConfigCommService();
+        List<SuppleFormItemConfigDto> configDtos = configCommService.getSuppleFormItemConfigs(code, type);
+        appSvcSuplmFormDto.setSuppleFormItemConfigDtos(configDtos, (svcId, addMoreBatchNum) -> {
+            List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList = configCommService.getHcsaSvcPersonnel(svcId, addMoreBatchNum);
+            if (IaisCommonUtils.isNotEmpty(hcsaSvcPersonnelList)) {
+                return hcsaSvcPersonnelList.get(0);
+            }
+            return null;
+        });
+        appSvcSuplmFormDto.setInit(true);
+        return appSvcSuplmFormDto;
+    }
+
+    public static List<AppSvcSpecialServiceInfoDto> initAppSvcSpecialServiceInfoDtoList(AppSvcRelatedInfoDto currSvcInfoDto,
+            List<AppPremSpecialisedDto> appPremSpecialisedDtoList) {
+        return initAppSvcSpecialServiceInfoDtoList(currSvcInfoDto, appPremSpecialisedDtoList, false);
+    }
+
+    public static List<AppSvcSpecialServiceInfoDto> initAppSvcSpecialServiceInfoDtoList(AppSvcRelatedInfoDto currSvcInfoDto,
+            List<AppPremSpecialisedDto> appPremSpecialisedDtoList, boolean init) {
+        if (currSvcInfoDto == null) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        Map<String, AppPremSpecialisedDto> appPremSpecialisedDtoMap = IaisCommonUtils.genNewHashMap();
+        for (AppPremSpecialisedDto appPremSpecialisedDto : appPremSpecialisedDtoList) {
+            appPremSpecialisedDtoMap.put(appPremSpecialisedDto.getPremisesVal(), appPremSpecialisedDto);
+        }
+        List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoDtoList = currSvcInfoDto.getAppSvcSpecialServiceInfoList();
+        if (!init && !IaisCommonUtils.isEmpty(appSvcSpecialServiceInfoDtoList)) {
+            List<String> appSpecialPremValList = appPremSpecialisedDtoList.stream().map(AppPremSpecialisedDto::getPremisesVal).collect(
+                    Collectors.toList());
+            appSvcSpecialServiceInfoDtoList = appSvcSpecialServiceInfoDtoList.stream().filter(
+                    s -> appSpecialPremValList.contains(s.getPremisesVal())).collect(Collectors.toList());
+            resetSpecialServiceSectionDto(appSvcSpecialServiceInfoDtoList, appPremSpecialisedDtoMap);
+            List<String> specialServicePremiseValList = appSvcSpecialServiceInfoDtoList.stream().map(
+                    AppSvcSpecialServiceInfoDto::getPremisesVal).collect(Collectors.toList());
+            List<AppPremSpecialisedDto> appPremSpecialisedDtos = appPremSpecialisedDtoList.stream().filter(
+                    s -> !specialServicePremiseValList.contains(s.getPremisesVal())).collect(Collectors.toList());
+            appSvcSpecialServiceInfoDtoList.addAll(
+                    genAppSvcSpecialServiceInfoDtoList(appPremSpecialisedDtos, appSvcSpecialServiceInfoDtoList.size()));
+            refreshAddress(appSvcSpecialServiceInfoDtoList, appPremSpecialisedDtoMap);
+            return appSvcSpecialServiceInfoDtoList;
+        }
+        List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoDtos = genAppSvcSpecialServiceInfoDtoList(appPremSpecialisedDtoList,
+                0);
+        currSvcInfoDto.setAppSvcSpecialServiceInfoList(appSvcSpecialServiceInfoDtos);
+        return appSvcSpecialServiceInfoDtos;
+    }
+
+    private static void refreshAddress(List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoDtoList,
+            Map<String, AppPremSpecialisedDto> appPremSpecialisedDtoMap) {
+        for (int i = 0; i < appSvcSpecialServiceInfoDtoList.size(); i++) {
+            AppSvcSpecialServiceInfoDto appSvcSpecialServiceInfoDto = appSvcSpecialServiceInfoDtoList.get(i);
+            AppPremSpecialisedDto appPremSpecialisedDto = appPremSpecialisedDtoMap.get(appSvcSpecialServiceInfoDto.getPremisesVal());
+            appPremSpecialisedDto.setPremiseIndex(i + 1);
+            appSvcSpecialServiceInfoDto.setAppGrpPremisesDto(appPremSpecialisedDto);
+        }
+    }
+
+    private static List<AppSvcSpecialServiceInfoDto> genAppSvcSpecialServiceInfoDtoList(
+            List<AppPremSpecialisedDto> appPremSpecialisedDtoList, int specialServiceListSize) {
+        List<AppSvcSpecialServiceInfoDto> result = IaisCommonUtils.genNewArrayList();
+        int i = specialServiceListSize + 1;
+        if (!IaisCommonUtils.isEmpty(appPremSpecialisedDtoList)) {
+            for (AppPremSpecialisedDto appPremSpecialisedDto : appPremSpecialisedDtoList) {
+                AppSvcSpecialServiceInfoDto appSvcSpecialServiceInfoDto = new AppSvcSpecialServiceInfoDto();
+                appPremSpecialisedDto.setPremiseIndex(i);
+                appSvcSpecialServiceInfoDto.setAppGrpPremisesDto(appPremSpecialisedDto);
+                List<SpecialServiceSectionDto> specialServiceSectionDtoList = IaisCommonUtils.genNewArrayList();
+                List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList = appPremSpecialisedDto.getCheckedAppPremSubSvcRelDtoList();
+                if (!IaisCommonUtils.isEmpty(appPremSubSvcRelDtoList)) {
+                    specialServiceSectionDtoList.addAll(genSpecialServiceSectionDtoList(appPremSubSvcRelDtoList,appPremSpecialisedDto));
+                }
+                appSvcSpecialServiceInfoDto.setSpecialServiceSectionDtoList(specialServiceSectionDtoList);
+                appSvcSpecialServiceInfoDto.setInit(true);
+                result.add(appSvcSpecialServiceInfoDto);
+                i++;
+            }
+        }
+        return result;
+    }
+
+    private static void resetSpecialServiceSectionDto(List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoDtoList,
+            Map<String, AppPremSpecialisedDto> appPremSpecialisedDtoMap) {
+        for (int i = 0; i < appSvcSpecialServiceInfoDtoList.size(); i++) {
+            AppSvcSpecialServiceInfoDto appSvcSpecialServiceInfoDto = appSvcSpecialServiceInfoDtoList.get(i);
+            AppPremSpecialisedDto appPremSpecialisedDto = appPremSpecialisedDtoMap.get(appSvcSpecialServiceInfoDto.getPremisesVal());
+            List<AppPremSubSvcRelDto> allAppPremSubSvcRelDtoList = appPremSpecialisedDto.getCheckedAppPremSubSvcRelDtoList();
+            if (IaisCommonUtils.isEmpty(allAppPremSubSvcRelDtoList)){
+                return;
+            }
+            List<String> collect = allAppPremSubSvcRelDtoList.stream().map(AppPremSubSvcRelDto::getSvcId).collect(Collectors.toList());
+            List<SpecialServiceSectionDto> specialServiceSectionDtoList = appSvcSpecialServiceInfoDto.getSpecialServiceSectionDtoList();
+            List<SpecialServiceSectionDto> specialServiceSectionDtos = specialServiceSectionDtoList.stream().filter(
+                    s -> collect.contains(s.getSvcId())).collect(Collectors.toList());
+            List<String> collect1 = specialServiceSectionDtos.stream().map(s -> s.getSvcId()).collect(Collectors.toList());
+            List<AppPremSubSvcRelDto> appPremSubSvcRelDtos = allAppPremSubSvcRelDtoList.stream().filter(
+                    s -> !collect1.contains(s.getSvcId())).collect(Collectors.toList());
+            if (!IaisCommonUtils.isEmpty(appPremSubSvcRelDtos)) {
+                specialServiceSectionDtos.addAll(genSpecialServiceSectionDtoList(appPremSubSvcRelDtos,appPremSpecialisedDto));
+            }
+            appSvcSpecialServiceInfoDto.setSpecialServiceSectionDtoList(specialServiceSectionDtos);
+        }
+    }
+
+    private static List<SpecialServiceSectionDto> genSpecialServiceSectionDtoList(
+            List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList,AppPremSpecialisedDto appPremSpecialisedDto) {
+        ConfigCommService configCommService = getConfigCommService();
+        List<SpecialServiceSectionDto> specialServiceSectionDtoList = IaisCommonUtils.genNewArrayList();
+        if (IaisCommonUtils.isEmpty(appPremSubSvcRelDtoList)){
+            return specialServiceSectionDtoList;
+        }
+        for (AppPremSubSvcRelDto appPremSubSvcRelDto : appPremSubSvcRelDtoList) {
+            SpecialServiceSectionDto specialServiceSectionDto = new SpecialServiceSectionDto();
+            Map<String, Integer> minCount = IaisCommonUtils.genNewHashMap();
+            Map<String, Integer> maxCount = IaisCommonUtils.genNewHashMap();
+            specialServiceSectionDto.setAppPremSubSvcRelDto(appPremSubSvcRelDto);
+            AppSvcSuplmFormDto appSvcSuplmFormDto = specialServiceSectionDto.getAppSvcSuplmFormDto();
+            appSvcSuplmFormDto = initAppSvcSuplmFormDto(specialServiceSectionDto.getSvcCode(), false, HcsaConsts.ITME_TYPE_SUPLFORM,
+                    appSvcSuplmFormDto);
+            if (appSvcSuplmFormDto != null) {
+                appSvcSuplmFormDto.setAppGrpPremisesDto(appPremSpecialisedDto);
+                appSvcSuplmFormDto.setAppPremSubSvcRelDto(appPremSubSvcRelDto);
+            }
+            specialServiceSectionDto.setAppSvcSuplmFormDto(appSvcSuplmFormDto);
+            List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = configCommService.getHcsaSvcPersonnel(
+                    specialServiceSectionDto.getSvcId(),
+                    ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_NURSE_IN_CHARGE,
+                    ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR,
+                    ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR);
+            if (!IaisCommonUtils.isEmpty(hcsaSvcPersonnelDtoList)) {
+                for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto : hcsaSvcPersonnelDtoList) {
+                    minCount.put(hcsaSvcPersonnelDto.getPsnType(), hcsaSvcPersonnelDto.getMandatoryCount());
+                    maxCount.put(hcsaSvcPersonnelDto.getPsnType(), hcsaSvcPersonnelDto.getMaximumCount());
+                }
+            } else {
+                maxCount.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_NURSE_IN_CHARGE, 0);
+                maxCount.put(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR, 0);
+                maxCount.put(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR, 0);
+                minCount.put(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_NURSE_IN_CHARGE, 0);
+                minCount.put(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR, 0);
+                minCount.put(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR, 0);
+            }
+            specialServiceSectionDto.setMaxCount(maxCount);
+            specialServiceSectionDto.setMinCount(minCount);
+            specialServiceSectionDtoList.add(specialServiceSectionDto);
+        }
+        return specialServiceSectionDtoList;
+    }
+
     private static void initDocumentSession(List<DocumentShowDto> documentShowDtos, HttpServletRequest request) {
         if (documentShowDtos == null || request == null) {
             return;
@@ -664,6 +903,151 @@ public class DealSessionUtil {
                 }
             }
         }
+    }
+
+    private static List<AppPremSpecialisedDto> addBaseSvc(List<AppPremSpecialisedDto> appPremSpecialisedDtoList) {
+        if (IaisCommonUtils.isEmpty(appPremSpecialisedDtoList)) {
+            return appPremSpecialisedDtoList;
+        }
+        String baseSvcId = appPremSpecialisedDtoList.get(0).getBaseSvcId();
+        ConfigCommService configCommService = getConfigCommService();
+        HcsaServiceDto svcConfig = configCommService.getHcsaServiceDtoById(baseSvcId);
+        List<AppPremSpecialisedDto> result = IaisCommonUtils.genNewArrayList();
+        CopyUtil.copyMutableObjectList(appPremSpecialisedDtoList, result);
+        for (AppPremSpecialisedDto appPremSpecialisedDto : result) {
+            List<AppPremSubSvcRelDto> appPremSubSvcRelDtos = appPremSpecialisedDto.getCheckedAppPremSubSvcRelDtoList();
+            if (appPremSubSvcRelDtos == null) {
+                appPremSubSvcRelDtos = IaisCommonUtils.genNewArrayList();
+            }
+            AppPremSubSvcRelDto relDto = new AppPremSubSvcRelDto();
+            relDto.setSvcConfigDto(svcConfig);
+            relDto.setChecked(true);
+            appPremSubSvcRelDtos.add(relDto);
+            appPremSpecialisedDto.setAppPremSubSvcRelDtoList(appPremSubSvcRelDtos);
+        }
+        return result;
+    }
+
+    public static List<DocumentShowDto> initShowDocumentList(AppSvcRelatedInfoDto currSvcInfoDto,
+            List<AppPremSpecialisedDto> appPremSpecialisedDtoList, boolean reset) {
+        if (currSvcInfoDto == null) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        if (!reset && IaisCommonUtils.isNotEmpty(currSvcInfoDto.getDocumentShowDtoList())) {
+            return currSvcInfoDto.getDocumentShowDtoList();
+        }
+        List<DocumentShowDto> documentShowDtos = genDocumentShowDtoList(addBaseSvc(appPremSpecialisedDtoList), currSvcInfoDto);
+        currSvcInfoDto.setDocumentShowDtoList(documentShowDtos);
+        return documentShowDtos;
+    }
+
+    private static List<DocumentShowDto> genDocumentShowDtoList(List<AppPremSpecialisedDto> appPremSpecialisedDtoList,
+            AppSvcRelatedInfoDto currSvcInfoDto) {
+        List<DocumentShowDto> result = IaisCommonUtils.genNewArrayList();
+        if (!IaisCommonUtils.isEmpty(appPremSpecialisedDtoList) && currSvcInfoDto != null) {
+            ConfigCommService configCommService = getConfigCommService();
+            for (AppPremSpecialisedDto appPremSpecialisedDto : appPremSpecialisedDtoList) {
+                if (!Objects.equals(appPremSpecialisedDto.getBaseSvcCode(), currSvcInfoDto.getServiceCode())) {
+                    continue;
+                }
+                DocumentShowDto docShowDto = new DocumentShowDto();
+                docShowDto.setAppGrpPremisesDto(appPremSpecialisedDto);
+                List<DocSectionDto> docSectionDtoList = IaisCommonUtils.genNewArrayList();
+                for (AppPremSubSvcRelDto relDto : appPremSpecialisedDto.getCheckedAppPremSubSvcRelDtoList()) {
+                    DocSectionDto docSectionDto = new DocSectionDto();
+                    docSectionDto.setSvcConfigDto(relDto);
+                    List<HcsaSvcDocConfigDto> docConfigDtos = configCommService.getAllHcsaSvcDocs(relDto.getSvcId());
+                    docSectionDto.setDocSecDetailList(genDocSecDetailList(docConfigDtos, relDto,
+                            appPremSpecialisedDto.getPremisesVal(), currSvcInfoDto));
+                    docSectionDtoList.add(docSectionDto);
+                }
+                docSectionDtoList.sort(Comparator.comparing(DocSectionDto::getSvcIndex).thenComparing(DocSectionDto::getSvcName));
+                docShowDto.setDocSectionList(docSectionDtoList);
+                result.add(docShowDto);
+            }
+        }
+        result.sort(Comparator.comparing(DocumentShowDto::getPremiseIndex));
+        return result;
+    }
+
+    private static List<DocSecDetailDto> genDocSecDetailList(List<HcsaSvcDocConfigDto> svcDocConfigDtos,
+            AppPremSubSvcRelDto appPremSubSvcRelDto, String premisesVal, AppSvcRelatedInfoDto currSvcInfoDto) {
+        List<DocSecDetailDto> result = IaisCommonUtils.genNewArrayList();
+        if (IaisCommonUtils.isEmpty(svcDocConfigDtos) || appPremSubSvcRelDto == null
+                || StringUtil.isEmpty(premisesVal) || currSvcInfoDto == null) {
+            return result;
+        }
+        List<AppSvcDocDto> appSvcDocDtos = currSvcInfoDto.getAppSvcDocDtoLit();
+        for (HcsaSvcDocConfigDto svcDocConfig : svcDocConfigDtos) {
+            String dupForPerson = svcDocConfig.getDupForPerson();
+            String configId = svcDocConfig.getId();
+            boolean isBaseSvc = HcsaConsts.SERVICE_TYPE_BASE.equals(appPremSubSvcRelDto.getSvcType());
+            if (StringUtil.isEmpty(dupForPerson)) {
+                DocSecDetailDto dto = new DocSecDetailDto();
+                dto.setDocConfigDto(svcDocConfig, ApplicationHelper.isBackend());
+                List<AppSvcDocDto> appSvcDocDtoList = getAppSvcDocDtoByConfigId(appSvcDocDtos, configId, premisesVal, "",
+                        currSvcInfoDto.getServiceId(), appPremSubSvcRelDto.getSvcId(), isBaseSvc);
+                dto.setAppSvcDocDtoList(appSvcDocDtoList);
+                result.add(dto);
+            } else {
+                List<AppSvcPrincipalOfficersDto> psnList;
+                String specialSvcId = null;
+                if (!isBaseSvc) {
+                    psnList = ApplicationHelper.getSpecialPersonnel(currSvcInfoDto.getAppSvcSpecialServiceInfoList(), dupForPerson,
+                            premisesVal, appPremSubSvcRelDto);
+                    specialSvcId = appPremSubSvcRelDto.getSvcId();
+                } else {
+                    psnList = ApplicationHelper.getBasePersonnel(currSvcInfoDto, dupForPerson);
+                }
+                if (IaisCommonUtils.isNotEmpty(psnList)) {
+                    int i = 1;
+                    boolean needPsnTypeIndex = psnList.size() > 1;
+                    for (AppSvcPrincipalOfficersDto psn : psnList) {
+                        List<AppSvcDocDto> appSvcDocDtoList = getAppSvcDocDtoByConfigId(appSvcDocDtos, configId, premisesVal,
+                                psn.getIndexNo(), currSvcInfoDto.getServiceId(), specialSvcId, isBaseSvc);
+                        DocSecDetailDto dto = new DocSecDetailDto();
+                        if (needPsnTypeIndex) {
+                            dto.setPsnTypeIndex(i++);
+                        }
+                        dto.setDocConfigDto(svcDocConfig, ApplicationHelper.isBackend());
+                        dto.setAppSvcDocDtoList(appSvcDocDtoList);
+                        dto.setPsnIndexNo(psn.getIndexNo());
+                        result.add(dto);
+                    }
+                }
+            }
+        }
+        return result.stream()
+                .sorted(Comparator.comparing(DocSecDetailDto::getDispOrder)
+                        .thenComparing(DocSecDetailDto::sortPsnTypeIndex))
+                .peek(doc -> {
+                    if (doc.isExistDoc()) {
+                        doc.getAppSvcDocDtoList().sort(Comparator.comparing(AppSvcDocDto::getSeqNum));
+                    }
+                })
+                .collect(Collectors.toList());
+    }
+
+    private static List<AppSvcDocDto> getAppSvcDocDtoByConfigId(List<AppSvcDocDto> appSvcDocDtos, String docConfigId, String premIndex,
+            String psnIndex, String baseSvcId, String specialSvcId, boolean isBaseDoc) {
+        List<AppSvcDocDto> appSvcDocDtoList = IaisCommonUtils.genNewArrayList();
+        if (!IaisCommonUtils.isEmpty(appSvcDocDtos) && !StringUtil.isEmpty(docConfigId)) {
+            premIndex = StringUtil.getNonNull(premIndex);
+            psnIndex = StringUtil.getNonNull(psnIndex);
+            for (AppSvcDocDto appSvcDocDto : appSvcDocDtos) {
+                String currPremIndex = StringUtil.getNonNull(appSvcDocDto.getPremisesVal());
+                String currPsnIndex = StringUtil.getNonNull(appSvcDocDto.getPsnIndexNo());
+                String currSvcId = appSvcDocDto.getSvcId();
+                if (docConfigId.equals(appSvcDocDto.getSvcDocId())
+                        && premIndex.equals(currPremIndex)
+                        && psnIndex.equals(currPsnIndex)
+                        && baseSvcId.equals(appSvcDocDto.getBaseSvcId())
+                        && (isBaseDoc ? StringUtil.isEmpty(currSvcId) : Objects.equals(currSvcId, specialSvcId))) {
+                    appSvcDocDtoList.add(appSvcDocDto);
+                }
+            }
+        }
+        return appSvcDocDtoList;
     }
 
     public static void initDeclarationFiles(List<AppDeclarationDocDto> appDeclarationDocDtos, String appType,

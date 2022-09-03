@@ -366,7 +366,7 @@ public class ServiceInfoDelegator {
                 appPremSpecialisedDtoList.add(appPremSpecialisedDto);
             }
         }
-        List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = ApplicationHelper.initAppSvcSpecialServiceInfoDtoList(
+        List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = DealSessionUtil.initAppSvcSpecialServiceInfoDtoList(
                 currSvcInfoDto, appPremSpecialisedDtos);
         currSvcInfoDto.setAppSvcSpecialServiceInfoList(appSvcSpecialServiceInfoList);
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
@@ -404,7 +404,7 @@ public class ServiceInfoDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         String currentSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
-        if (ApplicationHelper.initSupplementoryForm(currSvcInfoDto, appSubmissionDto.getAppGrpPremisesDtoList(), false)) {
+        if (DealSessionUtil.initSupplementoryForm(currSvcInfoDto, appSubmissionDto.getAppGrpPremisesDtoList(), false)) {
             setAppSvcRelatedInfoMap(request, currentSvcId, currSvcInfoDto, appSubmissionDto);
         }
     }
@@ -448,7 +448,7 @@ public class ServiceInfoDelegator {
         String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId,null);
         // Other Information Director config
-        if (ApplicationHelper.initOtherInfoForm(currSvcInfoDto,appSubmissionDto.getAppGrpPremisesDtoList(), false,bpc.request)) {
+        if (DealSessionUtil.initOtherInfoForm(currSvcInfoDto,appSubmissionDto.getAppGrpPremisesDtoList(), false,bpc.request)) {
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
         }
         ParamUtil.setRequestAttr(bpc.request, "orgUserDto",AppDataHelper.getOtherInfoYfVs(bpc.request));
@@ -722,7 +722,7 @@ public class ServiceInfoDelegator {
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currentSvcId);
         if (IaisCommonUtils.isEmpty(currSvcInfoDto.getDocumentShowDtoList())) {
-            ApplicationHelper.initShowDocumentList(currSvcInfoDto, appSubmissionDto.getAppPremSpecialisedDtoList(), true);
+            DealSessionUtil.initShowDocumentList(currSvcInfoDto, appSubmissionDto.getAppPremSpecialisedDtoList(), true);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currSvcInfoDto, appSubmissionDto);
         }
         log.info(StringUtil.changeForLog("the do prepareDocuments end ...."));
