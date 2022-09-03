@@ -139,6 +139,13 @@ public class HcsaApplicationAjaxController{
                         .collect(Collectors.toList())
                         .size();
             }
+            if(ApplicationConsts.APPLICATION_STATUS_ASO_EMAIL_PENDING.equals(applicationViewDto.getApplicationDto().getStatus())){
+                fileSizes = appIntranetDocDtos
+                        .stream()
+                        .filter(appIntranetDocDto1 -> ApplicationConsts.APP_DOC_TYPE_EMAIL_ATTACHMENT.equals(appIntranetDocDto1.getAppDocType()))
+                        .collect(Collectors.toList())
+                        .size();
+            }
             if(index == null){
                 index = fileSizes;
             }else {
@@ -208,6 +215,13 @@ public class HcsaApplicationAjaxController{
                 fileSizes = appIntranetDocDtos
                         .stream()
                         .filter(appIntranetDocDto1 -> !ApplicationConsts.APP_DOC_TYPE_SELF_DEC_FORM.equals(appIntranetDocDto1.getAppDocType()))
+                        .collect(Collectors.toList())
+                        .size();
+            }
+            if(ApplicationConsts.APPLICATION_STATUS_ASO_EMAIL_PENDING.equals(applicationViewDto.getApplicationDto().getStatus())){
+                fileSizes = appIntranetDocDtos
+                        .stream()
+                        .filter(appIntranetDocDto1 -> ApplicationConsts.APP_DOC_TYPE_EMAIL_ATTACHMENT.equals(appIntranetDocDto1.getAppDocType()))
                         .collect(Collectors.toList())
                         .size();
             }

@@ -1,4 +1,5 @@
 
+<c:set var="isApproveAsoEmail" value="${applicationViewDto.applicationDto.status=='APST094'}"/>
 
 <div class="modal fade" id="uploadDoc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <input type="hidden" id="fileMaxSize" name="fileMaxSize" value="${applicationViewDto.systemMaxFileSize}">
@@ -19,7 +20,9 @@
                         <label class="col-xs-12 col-md-4 control-label">Document</label>
                         <div class="col-xs-8 col-sm-8 col-md-8">
                             <p><input type="text" maxlength="50" id="fileRemark" name="fileRemark" value="${fileRemarkString}"></p>
-                            <br /> <small class="error" ><span id ="fileRemarkShow" style="color: #D22727; font-size: 1.6rem"></span></small>
+                            <br /> <small class="error" ><span id ="fileRemarkShow" style="color: #D22727; font-size: 1.6rem;display: none">
+                            <iais:message key="GENERAL_ERR0041" params="maxCountMap" />
+                        </span></small>
                         </div>
                     </div>
                     <div class="form-group">
@@ -36,7 +39,7 @@
                             <div hidden><input class = "inputtext-required" id = "selectedFile" name = "selectedFile" type="file" onclick="javascript:fileClicked(event)" onchange="javascript:fileChanged(event)"></div>
                         </div>
 
-                    </div>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -61,7 +64,7 @@
 
     function closeUploadDoc(){
         $('#selectedFileShow').html('')
-        $('#fileRemarkShow').html('')
+        $('#fileRemarkShow').hide()
         $('#fileRemark').val('');
         $('#uploadDoc').dialog().dialog('close');
         $('#uploadDoc').dialog('open');
@@ -73,9 +76,9 @@
         showWaiting();
         if(validateUploadInternal()){
             callAjaxUploadFile();
-            if (${isApproveAsoEmail}) {
-                $("#emailDocUpload").attr("disabled", true);
-            }
+
+        }else {
+            $('#uploadFileButton').attr("disabled",false);
         }
 
         dismissWaiting();
@@ -85,9 +88,7 @@
         showWaiting();
         $(row).parent('td').parent('tr').remove();
         callAjaxDeleteFile(repoId);
-        if (${isApproveAsoEmail}) {
-            $("#emailDocUpload").attr("disabled", false);
-        }
+
         dismissWaiting();
     }
     function callAjaxDeleteFile(repoId){
@@ -198,12 +199,12 @@
         var fileType = $("#fileUploadType").val();
         var flag = true;
         $('#selectedFileShow').html('')
-        $('#fileRemarkShow').html('')
+        $('#fileRemarkShow').hide()
         var selectedFile = $('#uploadDoc').find('[name="selectedFile"]').val();
 
         var file = $('#selectedFile').get(0).files[0];
         if(selectedFile == null || selectedFile== "" ||file==null|| file==undefined){
-            $('#selectedFileShow').html('This is mandatory.');
+            $('#selectedFileShow').html('This is a mandatory field.');
             $('#uploadFileButton').attr("disabled", false);
             return false;
         }else {
@@ -236,23 +237,23 @@
                 var list = fileName.split(".");
                 fileName = list[list.length-1];
                 if(fileType.indexOf(fileName.toUpperCase()) == -1){
-                   var fileTypelist = fileType.split(",");
-                   if(fileTypelist.length >5) {
-                       var stringBiff = "";
-                       for(var indexlist = 0;indexlist <fileTypelist.length; indexlist++){
-                           if(indexlist== 0){
-                               stringBiff += fileTypelist[indexlist];
-                           }else if(indexlist== fileTypelist.length-1){
-                               stringBiff += fileTypelist[indexlist]+"<br/>";
-                           }  else if(indexlist %5 == 0) {
-                               stringBiff += fileTypelist[indexlist] +"," +"<br/>";
+                    var fileTypelist = fileType.split(",");
+                    if(fileTypelist.length >5) {
+                        var stringBiff = "";
+                        for(var indexlist = 0;indexlist <fileTypelist.length; indexlist++){
+                            if(indexlist== fileTypelist.length-1){
+                                stringBiff += fileTypelist[indexlist]+"<br/>";
+                            }else  if(indexlist== 0){
+                                stringBiff += fileTypelist[indexlist]+",";
+                            } else if(indexlist %5 == 0) {
+                                stringBiff += fileTypelist[indexlist] +"," +"<br/>";
 
-                           }else {
-                               stringBiff += fileTypelist[indexlist] +",";
-                           }
-                       }
-                       fileType = stringBiff;
-                   }
+                            }else {
+                                stringBiff += fileTypelist[indexlist] +",";
+                            }
+                        }
+                        fileType = stringBiff;
+                    }
                     $('#selectedFileShow').html('Only files with the following extensions are allowed:'+ fileType +'. Please re-upload the file.');
                     flag = flag && false;
                 }
@@ -262,7 +263,7 @@
         var fileRemarkMaxLength = 50;
         var fileRemarkLength = $('#fileRemark').val().length;
         if(fileRemarkLength > fileRemarkMaxLength){
-            $('#fileRemarkShow').html('Exceeding the maximum length by ' + fileRemarkMaxLength );
+            $('#fileRemarkShow').show();
             $('#uploadFileButton').attr("disabled", false);
             flag = flag && false;
         }

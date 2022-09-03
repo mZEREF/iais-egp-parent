@@ -52,8 +52,10 @@ public class ActiveBeUserBatchJob {
             }
             if(!IaisCommonUtils.isEmpty(orgUserDtosInActive)){
                 for(OrgUserDto orgUserDto : orgUserDtosInActive){
-                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DEACTIVATED);
-                }
+                    OrgUserDto entity = intranetUserClient.retrieveOneOrgUserAccount(orgUserDto.getUserId()).getEntity();
+                    if(entity==null){
+                        orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
+                    }                }
                 intranetUserService.createIntranetUsers(orgUserDtosInActive);
             }
         }catch (Exception e){

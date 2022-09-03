@@ -35,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
+import com.ecquaria.cloud.moh.iais.service.client.IntranetUserClient;
 import com.ecquaria.cloud.pwd.util.PasswordUtil;
 import com.ecquaria.cloud.rbac.role.Role;
 import lombok.extern.slf4j.Slf4j;
@@ -76,6 +77,9 @@ public class MohIntranetUserDelegator {
 
     @Autowired
     private SystemParamConfig systemParamConfig;
+
+    @Autowired
+    private IntranetUserClient intranetUserClient;
 
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>user");
@@ -308,7 +312,10 @@ public class MohIntranetUserDelegator {
             orgUserDto.setAvailable(Boolean.FALSE);
             orgUserDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             intranetUserService.updateOrgUser(orgUserDto);
-            deleteEgpUser(userId);
+            OrgUserDto entity = intranetUserClient.retrieveOneOrgUserAccount(userId).getEntity();
+            if(entity==null){
+                deleteEgpUser(userId);
+            }
         } else {
             ParamUtil.setRequestAttr(request, "deleteMod", "no");
         }

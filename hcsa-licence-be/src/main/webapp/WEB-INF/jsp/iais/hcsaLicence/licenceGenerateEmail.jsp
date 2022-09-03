@@ -4,6 +4,7 @@
 <input type="hidden" id="nextStage" name="nextStage" value="PROCEMAIL"/>
 <input type="hidden" id="saveDraftEmail" name="saveDraftEmail" value="">
 <input type="hidden" id="perViewEmail" name="perViewEmail" value="">
+<input type="hidden" id="template_content_size" name="template_content_size" value="-1">
 
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <br/>
@@ -16,32 +17,32 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="table-gp">
-            <div class="form-group">
+        <iais:section title="">
+            <div >
                 <iais:row>
-                    <label class="col-xs-0 col-md-2 control-label col-sm-2">Subject</label>
-                    <div class="col-sm-9">
-                        <p><input name="subject" type="text" id="subject"
-                                  title="subject" readonly
-                                  value="${appPremisesUpdateEmailDto.subject}"></p>
-                    </div>
+                    <iais:field value="Current Status" required="false"/>
+                    <iais:value width="10"><p>${applicationViewDto.currentStatus}</p></iais:value>
                 </iais:row>
             </div>
-            <div class="form-group">
+            <div >
                 <iais:row>
-                    <label class="col-xs-0 col-md-2 control-label col-sm-2">Content</label>
+                    <label class="col-xs-0 col-md-2 control-label col-sm-2">Message Content</label>
                     <div class="col-sm-9">
-        <textarea name="mailContent" cols="108" rows="50"
-                  id="htmlEditroArea"
-                  title="content">${appPremisesUpdateEmailDto.mailContent}</textarea>
+                <textarea name="mailContent" cols="108" rows="50"
+                          id="htmlEditroArea"
+                          title="content">${appPremisesUpdateEmailDto.mailContent}</textarea>
                     </div>
                 </iais:row>
             </div>
             <br>
-            <div class="form-group">
-                <div class="col-sm-12 ">
+            <div>
+                <div class="col-sm-12 row">
                     <p><span>These are documents uploaded by an agency officer to support back office processing.</span>
                     </p>
                 </div>
+            </div>
+            <br>
+            <div >
                 <table aria-describedby="" class="table">
                     <thead>
                     <tr>
@@ -55,7 +56,7 @@
                     </thead>
                     <tbody  id="emailFileListId">
                     <c:choose>
-                        <c:when test="${empty applicationViewDto.appIntranetDocDtoList}">
+                        <c:when test="${!hasEmailAttaDoc}">
                             <tr>
                                 <td colspan="6" align="left">
                                     <iais:message key="GENERAL_ACK018"
@@ -70,7 +71,7 @@
                                     <tr>
                                         <td >
                                             <p>
-                                                Officer Document Upload
+                                                <c:out value="${emailFile.docDesc}"></c:out>
                                             </p>
                                         </td>
                                         <td >
@@ -106,6 +107,7 @@
                     </tbody>
                 </table>
             </div>
+        </iais:section>
 
         </div>
     </div>
@@ -123,7 +125,7 @@
             Preview
         </button>
         <button class="btn btn-primary next" style="float:right" type="button" id="draftButton" onclick="javascript:doSaveDraftEmail();">Save Draft</button>
-        <button name="submitBtn" id="submitButton" style="float:right" type="button" class="btn btn-primary">
+        <button name="submitBtn" onclick="chkMailContent()" id="submitButton" style="float:right" type="button" class="btn btn-primary">
             Submit
         </button>
     </iais:action>
@@ -132,18 +134,16 @@
 <br/><br/>
 <iais:confirm msg="LOLEV_ACK056"  popupOrder="saveDraftPop"
               yesBtnDesc="Close" needFungDuoJi="true" needCancel="false"
-              callBack="$('#saveDraftPop').modal('hide');"/>
-
+              callBack="$('#saveDraftPop').modal('hide');"></iais:confirm>
+<iais:confirm msg="${confirm_err_msg}" yesBtnDesc="OK" needFungDuoJi="true" needCancel="false" callBack="$('#supportArea').modal('hide');" popupOrder="supportArea" ></iais:confirm>
 <script>
     $(document).ready(function () {
         if("Y"=='${doSaveDraftEmail}'){
             $('#saveDraftPop').modal('show');
         }
 
-        if("Y"=='${hasAsoEmailDoc}'){
-            $("#emailDocUpload").attr("disabled", true);
-        }else {
-            $("#emailDocUpload").attr("disabled", false);
+        if("Y"=='${doValidEmail}'){
+            $('#supportArea').modal('show');
         }
     })
 
@@ -151,14 +151,25 @@
     function doSaveDraftEmail(){
         showWaiting();
         $('#saveDraftEmail').val("Y")
+        chkMailContent()
         document.getElementById("mainForm").submit();
         $("#submitButton").attr("disabled", true);
         $("#draftButton").attr("disabled", true);
     }
 
+    function chkMailContent() {
+        var lists = $('.tox-statusbar__wordcount').text().split(" ");
+        if(lists[1] == 'characters'){
+            $('.tox-statusbar__wordcount').click();
+        }
+        var length = $('.tox-statusbar__wordcount').text().split(" ")[0];
+        $("#template_content_size").val(length);
+    }
+
     function doOpenEmailView() {
         showWaiting();
         $('#perViewEmail').val("Y")
+        chkMailContent()
         document.getElementById("mainForm").submit();
         $("#submitButton").attr("disabled", true);
         $("#draftButton").attr("disabled", true);

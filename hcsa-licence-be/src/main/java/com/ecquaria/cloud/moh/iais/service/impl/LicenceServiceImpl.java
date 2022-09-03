@@ -89,6 +89,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -309,24 +310,53 @@ public class LicenceServiceImpl implements LicenceService {
                                                 appPremiseMiscDtoList.add(appPremiseMiscDto);
                                                 List<TaskDto> oldTaskDtos= taskService.getTaskRfi(applicationDto.getApplicationNo());
                                                 TaskDto taskDto=null;
-                                                if(oldTaskDtos.size()!=0){
+                                                boolean hasAso=false;
+                                                List<TaskDto> taskDtoList=IaisCommonUtils.genNewArrayList();
+                                                if(IaisCommonUtils.isNotEmpty(oldTaskDtos)){
                                                     for (TaskDto task:oldTaskDtos
+                                                    ) {
+                                                        if(task.getSlaDateCompleted()!=null){
+                                                            taskDtoList.add(task);
+                                                        }
+                                                    }
+                                                }
+                                                taskDtoList.sort(Comparator.comparing(TaskDto::getSlaDateCompleted));
+                                                if(taskDtoList.size()!=0){
+                                                    for (TaskDto task:taskDtoList
                                                     ) {
                                                         if(task.getRoleId().equals(RoleConsts.USER_ROLE_ASO)){
                                                             OrgUserDto aso=organizationClient.retrieveOrgUserAccountById(task.getUserId()).getEntity();
                                                             taskDto=task;
-                                                            if(aso==null){
-                                                                taskDto.setUserId(taskService.getUserIdForWorkGroup(task.getWkGrpId()).getUserId());
-                                                            }else if(!aso.getStatus().equals(AppConsts.COMMON_STATUS_ACTIVE)) {
-                                                                taskDto.setUserId(taskService.getUserIdForWorkGroup(task.getWkGrpId()).getUserId());
+                                                            if(aso!=null&&aso.getStatus().equals(AppConsts.COMMON_STATUS_ACTIVE)&&aso.getAvailable()){
+                                                                hasAso=true;
+                                                                break;
                                                             }
-                                                            break;
                                                         }
                                                     }
                                                 }
                                                 if(taskDto!=null){
+                                                    if(!hasAso){
+                                                        String userId=null;
+
+                                                        TaskDto taskScoreDto=taskService.getUserIdForWorkGroup(taskDto.getWkGrpId());
+                                                        if(taskScoreDto != null){
+                                                            userId = taskScoreDto.getUserId();
+                                                            taskDto.setUserId(userId);
+                                                        }else{
+                                                            List<OrgUserDto> orgUserDtos = organizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN).getEntity();
+                                                            if(!IaisCommonUtils.isEmpty(orgUserDtos)){
+                                                                OrgUserDto orgUserDto = orgUserDtos.get(0);
+                                                                userId = orgUserDto.getId();
+                                                                taskDto.setUserId(userId);
+                                                                taskDto.setWkGrpId(null);
+                                                            }else {
+                                                                taskDto.setUserId(userId);
+                                                            }
+                                                        }
+                                                    }
                                                     taskDto.setDateAssigned(new Date());
                                                     taskDto.setId(null);
+                                                    taskDto.setRefNo(appPremisesCorrelationDto.getId());
                                                     taskDto.setSlaDateCompleted(null);
                                                     taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
                                                     AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();

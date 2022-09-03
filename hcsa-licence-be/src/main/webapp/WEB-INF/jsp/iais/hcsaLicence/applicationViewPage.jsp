@@ -34,7 +34,7 @@
             <c:set var="isInspectorRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST064'}"/>
             <c:set var="isRouteBackStatus" value="${isInspectorRouteBackStatus || isAoRouteBackStatus || isPsoRouteBackStatus}"/>
             <c:set var="isBroadcastStatus" value="${applicationViewDto.applicationDto.status == 'APST013'}"/>
-            <c:set var="isApproveAsoEmail" value="${applicationViewDto.applicationDto.status=='APST094'}"/>
+            <c:set var="isApproveStatus" value="${applicationViewDto.applicationDto.status == 'APST005'}"/>
             <c:set var="isBroacastAsoPso" value="${broadcastAsoPso}"/>
             <c:set var="isBroacastAso" value="${broadcastAso}"/>
             <c:set var="isAppealType" value="${applicationViewDto.applicationDto.applicationType == 'APTY001'}"/>
@@ -42,7 +42,8 @@
             <c:set var="isAso" value="${taskDto.taskKey == '12848A70-820B-EA11-BE7D-000C29F371DC'}"/>
             <c:set var="isPso" value="${taskDto.taskKey == '13848A70-820B-EA11-BE7D-000C29F371DC'}"/>
             <c:set var="isCessation" value="${applicationViewDto.applicationDto.applicationType == 'APTY008'}"/>
-            <c:set var="isApproveAsoEmail" value="${applicationViewDto.applicationDto.status=='APST094'}"/>
+            <c:set var="roleId" value="${taskDto.roleId}"/>
+
             <input type="hidden" id="isAppealType" value="${isAppealType}"/>
             <input type="hidden" id="isWithDrawal" value="${isWithDrawal}"/>
             <input type="hidden" id="isCessation" value="${isCessation}"/>
@@ -75,8 +76,8 @@
                                                                                  data-toggle="tab">Info</a></div>
                                                     <div class="swiper-slide"><a href="#tabDocuments" id="doDocument" aria-controls="tabDocuments"
                                                                                  role="tab" data-toggle="tab">Documents</a></div>
-<%--                                                    <div class="swiper-slide"><a href="#tabInspection" aria-controls="tabProcessing"--%>
-<%--                                                                                 role="tab" data-toggle="tab">Inspection${!isAso && !isPso || isAoRouteBackStatus || isBroadcastStatus ? ' Report' : ''}</a></div>--%>
+                                                        <%--                                                    <div class="swiper-slide"><a href="#tabInspection" aria-controls="tabProcessing"--%>
+                                                        <%--                                                                                 role="tab" data-toggle="tab">Inspection${!isAso && !isPso || isAoRouteBackStatus || isBroadcastStatus ? ' Report' : ''}</a></div>--%>
                                                     <div class="swiper-slide"><a href="#tabProcessing" id="doProcess" aria-controls="tabProcessing"
                                                                                  role="tab" data-toggle="tab">Processing</a></div>
                                                 </div>
@@ -95,13 +96,12 @@
                                                 <div class="tab-pane" id="tabInspection" role="tabpanel">
                                                     <%@include file="/WEB-INF/jsp/iais/report/ao1Report.jsp" %>
                                                 </div>
-                                                    <%--         Inspection end                       --%>
-
-                                                <div class="tab-pane" id="tabProcessing" role="tabpanel">
-                                                    <c:if test="${isApproveAsoEmail}" >
-                                                        <%@include file="/WEB-INF/jsp/iais/hcsaLicence/licenceGenerateEmail.jsp" %>
-                                                    </c:if>
-                                                    <c:if test="${!isApproveAsoEmail}">
+                                                <%--         Inspection end                       --%>
+                                            <div class="tab-pane" id="tabProcessing" role="tabpanel">
+                                                <c:if test="${applicationViewDto.applicationDto.status=='APST094'}" >
+                                                    <%@include file="/WEB-INF/jsp/iais/hcsaLicence/licenceGenerateEmail.jsp" %>
+                                                </c:if>
+                                                <c:if test="${applicationViewDto.applicationDto.status!='APST094'}">
                                                     <span id="error_document" name="iaisErrorMsg" class="error-msg"></span>
                                                     <br/><br/>
                                                     <div class="alert alert-info" role="alert">
@@ -130,9 +130,9 @@
                                                                                 <iais:value width="10">
                                                                                     <div class="input-group">
                                                                                         <div class="ax_default text_area">
-                                                                                        <textarea id="internalRemarksId"
-                                                                                                  name="internalRemarks" cols="70"
-                                                                                                  rows="7" maxlength="300">${internalRemarks}</textarea>
+                                                                                    <textarea id="internalRemarksId"
+                                                                                              name="internalRemarks" cols="70"
+                                                                                              rows="7" maxlength="300">${internalRemarks}</textarea>
                                                                                             <br>
                                                                                             <span id="error_internalRemarks" name="iaisErrorMsg" class="error-msg"></span>
                                                                                             <span id="error_internalRemarks1" class="error-msg" style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
@@ -214,7 +214,7 @@
                                                                                                  firstOption="Please Select"
                                                                                                  options="rollBackValues"
                                                                                                  value="${selectRollBackCr}"/>
-                                                                                    <span style="font-size: 1.6rem; color: #D22727; display: none" id="err_rollBackTo" >This field is mandatory</span>
+                                                                                    <span style="font-size: 1.6rem; color: #D22727; display: none" id="err_rollBackTo" ><iais:message key="GENERAL_ERR0006"/></span>
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
@@ -252,7 +252,7 @@
                                                                                                  value="${selectVerified}"></iais:select>
                                                                                 </iais:value>
                                                                             </iais:row>
-                                                                          <%@include file="aoSelect.jsp" %>
+                                                                            <%@include file="aoSelect.jsp" %>
                                                                         </div>
 
                                                                         <div id="comments" class="hidden">
@@ -464,7 +464,7 @@
                                                             </div>
                                                         </div>
                                                     </form>
-                                                    </c:if>
+                                                </c:if>
 
                                                     <%@include file="/WEB-INF/jsp/iais/inspectionncList/processHistory.jsp"%>
                                                 </div>
@@ -479,8 +479,8 @@
             </div>
 
 
-        </form>
-        <iais:confirm msg="GENERAL_ACK018"  needCancel="false" callBack="tagConfirmCallbacksupportReport()" popupOrder="supportReport" ></iais:confirm>
+    </form>
+    <iais:confirm msg="GENERAL_ACK018"  needCancel="false" callBack="tagConfirmCallbacksupportReport()" popupOrder="supportReport" ></iais:confirm>
 
     <iais:confirm msg="INSPE_ACK001" popupOrder="confirmTag"
                   cancelFunc="$('#confirmTag').modal('hide');" cancelBtnCls="btn btn-secondary" cancelBtnDesc="NO"
@@ -555,14 +555,19 @@
     });
     function recommendationRemoveRequired() {
         if ('${applicationViewDto.applicationDto.status}' == 'APST013' ||  '${applicationViewDto.applicationDto.status}' == 'APST062' ||  '${applicationViewDto.applicationDto.status}' == 'APST065' ||  '${applicationViewDto.applicationDto.status}' == 'APST066' || '${applicationViewDto.applicationDto.status}' == 'APST067') {
-        $('#recommendationFieldTrue').addClass('hidden');
-        $('#recommendationFieldFalse').removeClass('hidden');
+            $('#recommendationFieldTrue').addClass('hidden');
+            $('#recommendationFieldFalse').removeClass('hidden');
         }
     }
     function checkInspectionShow(){
         if('${isShowInspection}' == 'N'){
             $('#ApplicationViewInspection').css('display', 'none');
-<%--            ${'#applicationSlidInspection'}.css('display', 'none');--%>
+            <%--            ${'#applicationSlidInspection'}.css('display', 'none');--%>
+        }
+
+        if('${applicationViewDto.applicationDto.status}' == "APST094"){
+            $('#ApplicationViewInspection').css('display', 'none');
+            <%--            ${'#applicationSlidInspection'}.css('display', 'none');--%>
         }
     }
 
@@ -672,15 +677,20 @@
         }
     }
 
-    //ASO Email validate
-    function emailValidate(){
+    //Level routing validate
+    function sameLevelValidate(){
         //error_nextStage
         var selectValue = $("[name='nextStage']").val();
-        if (selectValue == "PROCEMAIL" && ${isApproveStatus}) {
-            const remark = $('#internalRemarksId').val();
-            if(remark === null || remark === undefined || remark === "") {
-                $('#error_internalRemarks1').show();
-                return false;
+        if (selectValue == "PROCVER" ) {
+            var selectValueTo = $("[name='verified']").val();
+            if(selectValueTo == '${roleId}'){
+                const remark = $('#internalRemarksId').val();
+                if(remark === null || remark === undefined || remark === "") {
+                    $('#error_internalRemarks1').show();
+                    return false;
+                }else{
+                    return true;
+                }
             }else{
                 return true;
             }
@@ -690,11 +700,11 @@
     }
 
     //appeal
-        $("[name='appealRecommendationValues']").change(function selectChange() {
-            if (${isAppealType}) {
-                checkAppealRecommendation();
-            }
-        });
+    $("[name='appealRecommendationValues']").change(function selectChange() {
+        if (${isAppealType}) {
+            checkAppealRecommendation();
+        }
+    });
 
 
     function checkAppealRecommendation(){
@@ -734,8 +744,8 @@
 
     function DMSCheck(){
         if('${applicationViewDto.applicationDto.status}' == 'APST014'){
-                $('#recommendationFieldTrue').removeClass('hidden');
-                $('#recommendationFieldFalse').addClass('hidden');
+            $('#recommendationFieldTrue').removeClass('hidden');
+            $('#recommendationFieldFalse').addClass('hidden');
             var isRequestForChange = $('#isRequestForChange').val();
             if(isRequestForChange != 'Y') {
                 checkRecommendationDMS();
@@ -772,7 +782,7 @@
             if(selectDetail != null && selectDetail != ''){
                 $('#rfiSelectValue').val(selectDetail);
             }
-            if(rfiValidate()&&emailValidate()){
+            if(rfiValidate()&&sameLevelValidate()){
                 showWaiting();
                 document.getElementById("mainForm").submit();
                 $("#submitButton").attr("disabled", true);

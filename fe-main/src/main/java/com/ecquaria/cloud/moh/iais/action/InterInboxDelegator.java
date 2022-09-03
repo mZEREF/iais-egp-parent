@@ -284,7 +284,9 @@ public class InterInboxDelegator {
         String msgContent = ParamUtil.getMaskedString(request,InboxConst.CRUD_ACTION_VALUE);
         if(msgContent==null){
             msgContent= (String) ParamUtil.getSessionAttr(request,InboxConst.MESSAGE_CONTENT);
-            msgContent = StringEscapeUtils.unescapeHtml4(msgContent.replaceAll("<.span*?>", ""));
+            if(StringUtil.isNotEmpty(msgContent)){
+                msgContent = StringEscapeUtils.unescapeHtml4(msgContent.replaceAll("<.span*?>", ""));
+            }
         }
         if(MsgPage==null){
             MsgPage="msg_view";
