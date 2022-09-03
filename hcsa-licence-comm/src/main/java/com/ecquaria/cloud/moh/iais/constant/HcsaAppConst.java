@@ -12,6 +12,7 @@ public final class HcsaAppConst {
 
     private HcsaAppConst() {throw new IllegalStateException("HcsaAppConst class");}
 
+    public static final String DFT_FIRST_CODE                               = "-1";
     public static final String NEW_PREMISES                                 = "newPremise";
     public static final String NEW_PSN                                      = "newOfficer";
     public static final String PLEASEINDICATE                               = HcsaConsts.SUBTYPE_PLEASEINDICATE;

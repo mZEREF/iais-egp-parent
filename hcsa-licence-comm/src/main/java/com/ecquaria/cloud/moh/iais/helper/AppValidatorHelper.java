@@ -626,7 +626,7 @@ public final class AppValidatorHelper {
             } else {
                 String premisesSelect = appGrpPremisesDto.getPremisesSelect();
                 String appType = appSubmissionDto.getAppType();
-                if (StringUtil.isEmpty(premisesSelect) || "-1".equals(premisesSelect)) {
+                if (StringUtil.isEmpty(premisesSelect) || HcsaAppConst.DFT_FIRST_CODE.equals(premisesSelect)) {
                     if ("".equals(selectPremises)) {
                         selectPremises = MessageUtil.replaceMessage("GENERAL_ERR0006", "Add or select a premises from the list",
                                 "field");
@@ -949,7 +949,7 @@ public final class AppValidatorHelper {
             if (distinctVehicleNos.contains(vehicleNo)) {
                 // NEW_ERR0012 - This is a repeated entry
                 errorMap.put("vehicleNo" + index, "NEW_ERR0012");
-            } else if (vehicles.stream().anyMatch(v -> vehicleNo.equalsIgnoreCase(v))) {
+            } else if (vehicles.stream().anyMatch(vehicleNo::equalsIgnoreCase)) {
                 // NEW_ERR0016 - This record already exists.
                 errorMap.put("vehicleNo" + index, "NEW_ERR0016");
             } else {
@@ -1185,7 +1185,7 @@ public final class AppValidatorHelper {
         List<String> stringList = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < medAlertPsnDtos.size(); i++) {
             String assignSelect = medAlertPsnDtos.get(i).getAssignSelect();
-            if ("-1".equals(assignSelect) || StringUtil.isEmpty(assignSelect)) {
+            if (HcsaAppConst.DFT_FIRST_CODE.equals(assignSelect) || StringUtil.isEmpty(assignSelect)) {
                 errMap.put("assignSelect" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Assign a MedAlert Person", "field"));
             } else {
                 String idTyp = medAlertPsnDtos.get(i).getIdType();
@@ -1288,7 +1288,7 @@ public final class AppValidatorHelper {
             AppSvcPrincipalOfficersDto person = personList.get(i);
             psnType = person.getPsnType();
             String assignSelect = person.getAssignSelect();
-            if ("-1".equals(assignSelect) || StringUtil.isEmpty(assignSelect)) {
+            if (HcsaAppConst.DFT_FIRST_CODE.equals(assignSelect) || StringUtil.isEmpty(assignSelect)) {
                 errMap.put(prefix + "assignSelect" + i, "GENERAL_ERR0006");
             } else {
                 String idTyp = person.getIdType();
@@ -2231,7 +2231,7 @@ public final class AppValidatorHelper {
     public static boolean validateId(String nationality, String idType, String idNo, String keyNationality, String keyIdType,
             String keyIdNo, Map<String, String> errMap) {
         boolean isValid = true;
-        if ("-1".equals(idType) || StringUtil.isEmpty(idType)) {
+        if (HcsaAppConst.DFT_FIRST_CODE.equals(idType) || StringUtil.isEmpty(idType)) {
             errMap.put(keyIdType, MessageUtil.replaceMessage("GENERAL_ERR0006", "ID Type", "field"));
             isValid = false;
         }
@@ -2250,7 +2250,7 @@ public final class AppValidatorHelper {
         }
         if (OrganizationConstants.ID_TYPE_PASSPORT.equals(idType)) {
             // check it only for Passport
-            if ("-1".equals(nationality) || StringUtil.isEmpty(nationality)) {
+            if (HcsaAppConst.DFT_FIRST_CODE.equals(nationality) || StringUtil.isEmpty(nationality)) {
                 errMap.put(keyNationality, MessageUtil.replaceMessage("GENERAL_ERR0006", "Country of issuance", "field"));
                 isValid = false;
             }
