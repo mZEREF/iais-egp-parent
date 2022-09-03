@@ -894,6 +894,8 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
                 options = DataSubmissionHelper.getAllIUICycleStages();
             } else if ("DSCL_010".equals(selectionDto.getCycle())) {
                 options = DataSubmissionHelper.getAllOFOCycleStages();
+            } else if ("DSCL_016".equals(selectionDto.getCycle())) {
+                options = DataSubmissionHelper.getAllSFOCycleStages();
             }
         }
         for (String option : options) {

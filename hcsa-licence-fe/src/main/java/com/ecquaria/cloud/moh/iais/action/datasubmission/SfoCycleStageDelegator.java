@@ -5,7 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EfoCycleStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.SfoCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -30,44 +30,38 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-/**
- * EfoCycleStageDelegator
- *
- * @author junyu
- * @date 2021/10/21
- */
-@Delegator("efoCycleStageDelegator")
+@Delegator("sfoCycleStageDelegator")
 @Slf4j
-public class EfoCycleStageDelegator extends CommonDelegator{
+public class SfoCycleStageDelegator extends CommonDelegator{
     @Autowired
     private ArFeClient arFeClient;
 
     @Override
     public void start(BaseProcessClass bpc) {
-        AuditTrailHelper.auditFunction("Assisted Reproduction", "EFO Cycle Stage");
+        AuditTrailHelper.auditFunction("Assisted Reproduction", "SFO Cycle Stage");
 
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto=DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         if(arSuperDataSubmissionDto==null){
             arSuperDataSubmissionDto=new ArSuperDataSubmissionDto();
         }
-        if(arSuperDataSubmissionDto.getEfoCycleStageDto()==null){
-            arSuperDataSubmissionDto.setEfoCycleStageDto(new EfoCycleStageDto());
-            arSuperDataSubmissionDto.getEfoCycleStageDto().setIsMedicallyIndicated(1);
-            arSuperDataSubmissionDto.getEfoCycleStageDto().setPerformed(arSuperDataSubmissionDto.getPremisesDto().getPremiseLabel());
+        if(arSuperDataSubmissionDto.getSfoCycleStageDto()==null){
+            arSuperDataSubmissionDto.setSfoCycleStageDto(new SfoCycleStageDto());
+            arSuperDataSubmissionDto.getSfoCycleStageDto().setIsMedicallyIndicated(1);
+            arSuperDataSubmissionDto.getSfoCycleStageDto().setPerformed(arSuperDataSubmissionDto.getPremisesDto().getPremiseLabel());
         }
         Date startDate = DateUtil.parseDate(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getBirthDate(), AppConsts.DEFAULT_DATE_FORMAT);
-        arSuperDataSubmissionDto.getEfoCycleStageDto().setYearNum(getYear(startDate,new Date()));
-        arSuperDataSubmissionDto.getEfoCycleStageDto().setMonthNum(getMon(startDate,new Date()));
+        arSuperDataSubmissionDto.getSfoCycleStageDto().setYearNum(getYear(startDate,new Date()));
+        arSuperDataSubmissionDto.getSfoCycleStageDto().setMonthNum(getMon(startDate,new Date()));
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
 
     }
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
-        log.info(StringUtil.changeForLog("crud_action_type is ======>"+ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE)));
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Oocyte Freezing Only Cycle</strong>");
-        List<SelectOption> efoReasonSelectOption= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_EFO_REASON);
-        ParamUtil.setRequestAttr(bpc.request,"efoReasonSelectOption",efoReasonSelectOption);
+        log.info(StringUtil.changeForLog("crud_action_type is ======>"+ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE)));
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Egg Freezing Only Cycle</strong>");
+        List<SelectOption> sfoReasonSelectOption= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_EFO_REASON);
+        ParamUtil.setRequestAttr(bpc.request,"sfoReasonSelectOption",sfoReasonSelectOption);
 
     }
 
@@ -75,7 +69,7 @@ public class EfoCycleStageDelegator extends CommonDelegator{
     @Override
     public void pageAction(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        EfoCycleStageDto efoCycleStageDto=arSuperDataSubmissionDto.getEfoCycleStageDto();
+        SfoCycleStageDto sfoCycleStageDto=arSuperDataSubmissionDto.getSfoCycleStageDto();
         HttpServletRequest request=bpc.request;
         String othersReason = ParamUtil.getRequestString(request, "othersReason");
         String textReason = ParamUtil.getRequestString(request, "textReason");
@@ -83,25 +77,23 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         int indicated =  ParamUtil.getInt(request, "indicatedRadio");
         String startDateStr = ParamUtil.getRequestString(request, "efoDateStarted");
         Date startDate = DateUtil.parseDate(startDateStr, AppConsts.DEFAULT_DATE_FORMAT);
-        String cryopresNum = ParamUtil.getString(request,"cryopresNum");
-        if (cryopresNum != null) {
-            efoCycleStageDto.setCryopresNum(Integer.parseInt(cryopresNum));
-        }
-        efoCycleStageDto.setStartDate(startDate);
-        efoCycleStageDto.setIsMedicallyIndicated(indicated);
+        int cryopresNum = ParamUtil.getInt(request,"cryopresNum");
+        sfoCycleStageDto.setStartDate(startDate);
+        sfoCycleStageDto.setCryopresNum(cryopresNum);
+        sfoCycleStageDto.setIsMedicallyIndicated(indicated);
         if(indicated==1){
-            efoCycleStageDto.setReason(reasonSelect);
+            sfoCycleStageDto.setReason(reasonSelect);
             if(othersReason!=null&& DataSubmissionConsts.EFO_REASON_OTHERS.equals(reasonSelect)){
-                efoCycleStageDto.setOtherReason(othersReason);
+                sfoCycleStageDto.setOtherReason(othersReason);
             }
         }
         if(indicated==0){
-            efoCycleStageDto.setReason(textReason);
+            sfoCycleStageDto.setReason(textReason);
         }
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
         String actionType=ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
         if("confirm".equals(actionType)){
-            ValidationResult validationResult = WebValidationHelper.validateProperty(efoCycleStageDto, "save");
+            ValidationResult validationResult = WebValidationHelper.validateProperty(sfoCycleStageDto, "save");
             Map<String, String> errorMap = validationResult.retrieveAll();
             verifyRfcCommon(request, errorMap);
             if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
@@ -109,7 +101,7 @@ public class EfoCycleStageDelegator extends CommonDelegator{
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
             }
-            valRFC(bpc.request,efoCycleStageDto);
+            valRFC(bpc.request,sfoCycleStageDto);
         }
     }
 
@@ -145,10 +137,10 @@ public class EfoCycleStageDelegator extends CommonDelegator{
 
     }
 
-    protected void valRFC(HttpServletRequest request, EfoCycleStageDto efoCycleStageDto){
+    protected void valRFC(HttpServletRequest request, SfoCycleStageDto sfoCycleStageDto){
         if(isRfc(request)){
             ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(request);
-            if(arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getEfoCycleStageDto()!= null && efoCycleStageDto.equals(arOldSuperDataSubmissionDto.getEfoCycleStageDto())){
+            if(arOldSuperDataSubmissionDto != null && arOldSuperDataSubmissionDto.getSfoCycleStageDto()!= null && sfoCycleStageDto.equals(arOldSuperDataSubmissionDto.getEfoCycleStageDto())){
                 ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,ACTION_TYPE_PAGE);
             }

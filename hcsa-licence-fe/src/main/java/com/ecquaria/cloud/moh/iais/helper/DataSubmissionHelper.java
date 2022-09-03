@@ -391,7 +391,14 @@ public final class DataSubmissionHelper {
                     || DataSubmissionConsts.AR_STAGE_DISPOSAL.equals(lastStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
                 result.add(DataSubmissionConsts.AR_STAGE_DONATION);
-                result.add(DataSubmissionConsts.AR_STAGE_FREEZING);
+            }
+        } else if (DataSubmissionConsts.DS_CYCLE_SFO.equals(lastCycle)) {
+            if (DataSubmissionConsts.AR_CYCLE_SFO.equals(lastStage) || StringUtil.isEmpty(lastStage)) {
+                result.add(DataSubmissionConsts.AR_STAGE_DONATION);
+            } else if (DataSubmissionConsts.AR_STAGE_DONATION.equals(lastStage)
+                    || DataSubmissionConsts.AR_STAGE_DISPOSAL.equals(lastStage)) {
+                result.add(DataSubmissionConsts.AR_STAGE_DONATION);
+                result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
             }
         }
         return result;
@@ -401,6 +408,7 @@ public final class DataSubmissionHelper {
         result.add(DataSubmissionConsts.AR_CYCLE_AR);
         result.add(DataSubmissionConsts.AR_CYCLE_IUI);
         result.add(DataSubmissionConsts.AR_CYCLE_EFO);
+        result.add(DataSubmissionConsts.AR_CYCLE_SFO);
     }
 
     public static CycleDto initCycleDto(CycleStageSelectionDto selectionDto, String serviceName, String hciCode, String licenseeId) {
@@ -425,6 +433,8 @@ public final class DataSubmissionHelper {
             cycle = DataSubmissionConsts.DS_CYCLE_IUI;
         } else if (DataSubmissionConsts.AR_CYCLE_EFO.equals(stage)) {
             cycle = DataSubmissionConsts.DS_CYCLE_EFO;
+        } else if (DataSubmissionConsts.AR_CYCLE_SFO.equals(stage)) {
+            cycle = DataSubmissionConsts.DS_CYCLE_SFO;
         } else if (DsHelper.isSpecialFinalStatus(selectionDto.getLastStatus())) {
             cycleDto = selectionDto.getLastCycleDto();
             cycle = cycleDto.getCycleType();
@@ -729,7 +739,7 @@ public final class DataSubmissionHelper {
 
     public static List<String> getAllSFOCycleStages(){
         List<String> stages = new ArrayList<>(3);
-        stages.add(DataSubmissionConsts.AR_CYCLE_EFO);
+        stages.add(DataSubmissionConsts.AR_CYCLE_SFO);
         stages.add(DataSubmissionConsts.AR_STAGE_DONATION);
         stages.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
         return stages;
