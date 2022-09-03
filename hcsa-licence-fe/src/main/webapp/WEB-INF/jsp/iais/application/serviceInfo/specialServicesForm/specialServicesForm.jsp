@@ -42,10 +42,10 @@
                             <c:if test="${maxCount.key == ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_NURSE_IN_CHARGE}">
                                 <c:set var="NICMaxCount" value="${maxCount.value}"/>
                             </c:if>
-                            <c:if test="${maxCount.key == ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR}">
+                            <c:if test="${maxCount.key == ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR}">
                                 <c:set var="DirMaxCount" value="${maxCount.value}"/>
                             </c:if>
-                            <c:if test="${maxCount.key == ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR}">
+                            <c:if test="${maxCount.key == ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR}">
                                 <c:set var="NurMaxCount" value="${maxCount.value}"/>
                             </c:if>
                         </c:forEach>
@@ -66,9 +66,9 @@
                                     <c:if test="${NICMaxCount!=0}">
                                         <div class="panel-main-content">
                                             <c:choose>
-                                                <c:when test="${specialServiceSectionDto.appSvcNICDtoList != null && specialServiceSectionDto.appSvcNICDtoList.size()>1}">
-                                                    <input class="length" type="hidden" name="${status.index}${subSvcRelStatus.index}NICDtoListLength" value="${specialServiceSectionDto.appSvcNICDtoList.size()}"/>
-                                                    <c:set var="NICDtoListLength" value="${specialServiceSectionDto.appSvcNICDtoList.size()}"/>
+                                                <c:when test="${specialServiceSectionDto.appSvcNurseDtoList != null && specialServiceSectionDto.appSvcNurseDtoList.size()>1}">
+                                                    <input class="length" type="hidden" name="${status.index}${subSvcRelStatus.index}NICDtoListLength" value="${specialServiceSectionDto.appSvcNurseDtoList.size()}"/>
+                                                    <c:set var="NICDtoListLength" value="${specialServiceSectionDto.appSvcNurseDtoList.size()}"/>
                                                 </c:when>
                                                 <c:otherwise>
                                                     <input class="length" type="hidden" name="${status.index}${subSvcRelStatus.index}NICDtoListLength" value="1"/>
@@ -77,7 +77,7 @@
                                             </c:choose>
                                             <c:forEach begin="0" end="${NICDtoListLength - 1}" step="1" varStatus="nicStatus">
                                                 <c:set var="index" value="${nicStatus.index}"/>
-                                                <c:set var="appSvcPersonnelDto" value="${specialServiceSectionDto.appSvcNICDtoList[index]}"/>
+                                                <c:set var="appSvcPersonnelDto" value="${specialServiceSectionDto.appSvcNurseDtoList[index]}"/>
                                                 <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}nic"/>
                                                 <c:set var="psnType" value="${ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_NURSE_IN_CHARGE}"/>
                                                 <c:set var="title" value="Nurse in Charge"/>
@@ -109,7 +109,7 @@
                                                 <c:set var="index" value="${direStatus.index}"/>
                                                 <c:set var="appSvcPersonnelDto" value="${specialServiceSectionDto.appSvcDirectorDtoList[index]}"/>
                                                 <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}dir"/>
-                                                <c:set var="psnType" value="${ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR}"/>
+                                                <c:set var="psnType" value="${ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR}"/>
                                                 <c:set var="title" value="Emergency Department Director"/>
                                                 <%@include file="specialServiceDetail.jsp" %>
                                             </c:forEach>
@@ -126,9 +126,9 @@
                                     <c:if test="${NurMaxCount!=0}">
                                         <div class="panel-main-content">
                                             <c:choose>
-                                                <c:when test="${specialServiceSectionDto.appSvcChargedNurseDtoList != null && specialServiceSectionDto.appSvcChargedNurseDtoList.size()>1}">
-                                                    <input class="length" type="hidden" name="${status.index}${subSvcRelStatus.index}NurseDtoListLength" value="${specialServiceSectionDto.appSvcChargedNurseDtoList.size()}"/>
-                                                    <c:set var="NurseDtoListLength" value="${specialServiceSectionDto.appSvcChargedNurseDtoList.size()}"/>
+                                                <c:when test="${specialServiceSectionDto.appSvcNurseDirectorDtoList != null && specialServiceSectionDto.appSvcNurseDirectorDtoList.size()>1}">
+                                                    <input class="length" type="hidden" name="${status.index}${subSvcRelStatus.index}NurseDtoListLength" value="${specialServiceSectionDto.appSvcNurseDirectorDtoList.size()}"/>
+                                                    <c:set var="NurseDtoListLength" value="${specialServiceSectionDto.appSvcNurseDirectorDtoList.size()}"/>
                                                 </c:when>
                                                 <c:otherwise>
                                                     <input class="length" type="hidden" name="${status.index}${subSvcRelStatus.index}NurseDtoListLength" value="1"/>
@@ -137,10 +137,10 @@
                                             </c:choose>
                                             <c:forEach begin="0" end="${NurseDtoListLength - 1}" step="1" varStatus="nurStatus">
                                                 <c:set var="index" value="${nurStatus.index}"/>
-                                                <c:set var="appSvcPersonnelDto" value="${specialServiceSectionDto.appSvcChargedNurseDtoList[index]}"/>
+                                                <c:set var="appSvcPersonnelDto" value="${specialServiceSectionDto.appSvcNurseDirectorDtoList[index]}"/>
                                                 <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}nur"/>
-                                                <c:set var="psnType" value="${ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR}"/>
-                                                <c:set var="title" value="Emergency Department Nurse-in-charge"/>
+                                                <c:set var="psnType" value="${ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR}"/>
+                                                <c:set var="title" value="Emergency Department Nurse Director"/>
                                                 <%@include file="specialServiceDetail.jsp"%>
                                             </c:forEach>
                                             <iais:row>

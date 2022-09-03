@@ -3273,9 +3273,9 @@ public final class AppValidatorHelper {
                         validateSpecialServicePerson(specialServiceSectionDto.getAppSvcDirectorDtoList().get(x),prefix+i+j+"dir",""+x,appType,errorMap,dirNames);
                     }
                 }
-                if (specialServiceSectionDto.getAppSvcChargedNurseDtoList()!=null){
-                    for (int x=0;x<specialServiceSectionDto.getAppSvcChargedNurseDtoList().size();x++){
-                        validateSpecialServicePerson(specialServiceSectionDto.getAppSvcChargedNurseDtoList().get(x),prefix+i+j+"nur",""+x,appType,errorMap,nurNames);
+                if (specialServiceSectionDto.getAppSvcNurseDirectorDtoList()!=null){
+                    for (int x=0;x<specialServiceSectionDto.getAppSvcNurseDirectorDtoList().size();x++){
+                        validateSpecialServicePerson(specialServiceSectionDto.getAppSvcNurseDirectorDtoList().get(x),prefix+i+j+"nur",""+x,appType,errorMap,nurNames);
                     }
                 }
                 if(!IaisCommonUtils.isEmpty(specialServiceSectionDto.getAppSvcSuplmFormDto().getAppSvcSuplmGroupDtoList())){
