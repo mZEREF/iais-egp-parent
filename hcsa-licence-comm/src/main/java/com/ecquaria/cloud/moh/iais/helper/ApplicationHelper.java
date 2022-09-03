@@ -2199,10 +2199,6 @@ public final class ApplicationHelper {
         return initAppPremSpecialisedDtoList(appSubmissionDto, hcsaServiceDtoList, initSpecialised);
     }*/
 
-    private static ConfigCommService getConfigCommService() {
-        return SpringHelper.getBean(ConfigCommService.class);
-    }
-
     public static String genMutilSelectOpHtml(Map<String, String> attrMap, List<SelectOption> selectOptionList, String firestOption,
             List<String> checkedVals, boolean multiSelect, boolean isTransfer) {
         StringBuilder sBuffer = new StringBuilder(100);
