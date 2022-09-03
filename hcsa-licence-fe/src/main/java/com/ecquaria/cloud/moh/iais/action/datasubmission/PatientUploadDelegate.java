@@ -260,7 +260,7 @@ public class PatientUploadDelegate {
             DsRfcHelper.prepare(patient);
             dto.setPatient(patient);
             dto.setIsPreviousIdentification(patientInfoExcelDto.getIsPreviousIdentification());
-            if (patient.isPreviousIdentification()) {
+            if (Boolean.TRUE.equals(patient.getPreviousIdentification())) {
                 String preIdType = DataSubmissionHelper.getCode(patientInfoExcelDto.getPreIdType(), idTypes);
                 String preIdNumber = patientInfoExcelDto.getPreIdNumber();
                 String preNationality = DataSubmissionHelper.getCode(patientInfoExcelDto.getPreNationality(), nationalities);
@@ -402,7 +402,7 @@ public class PatientUploadDelegate {
                     newDto.setDataSubmissionDto(dataSubmissionDto);
                     PatientDto patient = dto.getPatient();
                     String patientCode = patient.getPatientCode();
-                    if (patient.isPreviousIdentification() && dto.getPrevious() != null) {
+                    if (Boolean.TRUE.equals(patient.getPreviousIdentification()) && dto.getPrevious() != null) {
                         patientCode = dto.getPrevious().getPatientCode();
                     }
                     patient.setPatientCode(patientService.getPatientCode(patientCode));

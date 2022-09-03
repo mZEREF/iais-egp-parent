@@ -107,7 +107,7 @@
     <JavaCode defClass="" executor="" methodName="prepareStage_OnStepProcess_0" name="prepareStage_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <InvokeStep defClass="" executor="" icon="" name="Step1" processname="MohARCycleStagesManual" project="" version="-1" x="810" y="500">
+  <InvokeStep defClass="" executor="" icon="" name="ARCycleStagesManual" processname="MohARCycleStagesManual" project="INTERNET" version="-1" x="780" y="500">
    <Description />
    <probepoint type="none" />
    <OnStepProcess />
@@ -220,11 +220,11 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareStage" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
    <position>{(360,250)(700,520)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/InvokeStep/Step1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareStage" style="rectanular">
-   <position>{(700,520)(830,520)}</position>
+  <SynchronousLink destinationName="/Steps/InvokeStep/ARCycleStagesManual" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareStage" style="rectanular">
+   <position>{(700,520)(800,520)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/Step1" style="oblique">
-   <position>{(830,520)(910,200)}</position>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/ARCycleStagesManual" style="oblique">
+   <position>{(800,520)(910,200)}</position>
   </SynchronousLink>
  </Links>
  <Conditions />

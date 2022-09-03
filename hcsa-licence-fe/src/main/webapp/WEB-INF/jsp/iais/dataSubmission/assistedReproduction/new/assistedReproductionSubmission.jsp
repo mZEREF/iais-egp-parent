@@ -72,79 +72,79 @@
 
                                         <span class="error-msg" name="iaisErrorMsg"
                                               id="error_noArLicences"></span>
-                                        <span class="error-msg" name="iaisErrorMsg"
-                                              id="error_noSelectCenter"><iais:message key="GENERAL_ACK006"/> </span>
                                     </iais:row>
 
-                                    <iais:row cssClass="form-check-gp">
-                                        <p class="form-check-title">Please select the mode of submission</p>
-
-                                        <div class="form-check" style="padding-left:0">
-                                            <input class="form-check-input" id="DS_MTD001" type="radio"
-                                                   name="submissionMethod" value="DS_MTD001"
-                                                   <c:if test="${arSuperDataSubmissionDto.submissionMethod eq 'DS_MTD001'}">checked</c:if> />
-
-                                            <label class="form-check-label" for="DS_MTD001">
-                                                <span class="check-circle"></span>Form Entry (Submit Single Record)
-                                            </label>
-                                        </div>
-
-                                        <div class="form-check" style="padding-left:0">
-                                            <input class="form-check-input" id="DS_MTD002" type="radio"
-                                                   name="submissionMethod" value="DS_MTD002"
-                                                   <c:if test="${arSuperDataSubmissionDto.submissionMethod eq 'DS_MTD002'}">checked</c:if> />
-
-                                            <label class="form-check-label" for="DS_MTD002">
-                                                <span class="check-circle"></span>Batch Upload (Submit Multiple
-                                                Records via File Upload)
-                                            </label>
-                                        </div>
-
-                                        <span class="error-msg" name="iaisErrorMsg"
-                                              id="error_submissionMethod"></span>
-                                    </iais:row>
-
-                                    <%--this section display when checkboxs choose Form Entry--%>
-                                    <div id="formEntryDiv">
+                                    <div id="allContentDiv">
                                         <iais:row cssClass="form-check-gp">
-                                            <p class="form-check-title">Do you want to register a Donor Sample
-                                                Only?</p>
+                                            <p class="form-check-title">Please select the mode of submission</p>
 
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input triggerObj" id="donorSampleN"
-                                                       type="radio" name="submissionType" value="AR_TP001"
-                                                       <c:if test="${arSuperDataSubmissionDto.submissionType eq 'AR_TP001' or arSuperDataSubmissionDto.submissionType eq 'AR_TP002'}">checked</c:if>/>
+                                            <div class="form-check" style="padding-left:0">
+                                                <input class="form-check-input" id="DS_MTD001" type="radio"
+                                                       name="submissionMethod" value="DS_MTD001"
+                                                       <c:if test="${arSuperDataSubmissionDto.submissionMethod eq 'DS_MTD001'}">checked</c:if> />
 
-                                                <label class="form-check-label" for="donorSampleN">
-                                                    <span class="check-circle"></span>No
+                                                <label class="form-check-label" for="DS_MTD001">
+                                                    <span class="check-circle"></span>Form Entry (Submit Single Record)
                                                 </label>
                                             </div>
 
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input triggerObj" id="donorSampleY"
-                                                       type="radio" name="submissionType" value="AR_TP003"
-                                                       <c:if test="${arSuperDataSubmissionDto.submissionType eq 'AR_TP003'}">checked</c:if>/>
+                                            <div class="form-check" style="padding-left:0">
+                                                <input class="form-check-input" id="DS_MTD002" type="radio"
+                                                       name="submissionMethod" value="DS_MTD002"
+                                                       <c:if test="${arSuperDataSubmissionDto.submissionMethod eq 'DS_MTD002'}">checked</c:if> />
 
-                                                <label class="form-check-label" for="donorSampleY">
-                                                    <span class="check-circle"></span>Yes
+                                                <label class="form-check-label" for="DS_MTD002">
+                                                    <span class="check-circle"></span>Batch Upload (Submit Multiple
+                                                    Records via File Upload)
                                                 </label>
                                             </div>
 
                                             <span class="error-msg" name="iaisErrorMsg"
-                                                  id="error_submissionType"></span>
+                                                  id="error_submissionMethod"></span>
                                         </iais:row>
 
-                                        <div id="donorSampleDiv">
-                                            <%@include file="section/donorSample.jsp" %>
+                                        <%--this section display when checkboxs choose Form Entry--%>
+                                        <div id="formEntryDiv">
+                                            <iais:row cssClass="form-check-gp">
+                                                <p class="form-check-title">Do you want to register a Donor Sample
+                                                    Only?</p>
+
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input triggerObj" id="donorSampleN"
+                                                           type="radio" name="submissionType" value="AR_TP001"
+                                                           <c:if test="${arSuperDataSubmissionDto.submissionType eq 'AR_TP001' or arSuperDataSubmissionDto.submissionType eq 'AR_TP002'}">checked</c:if>/>
+
+                                                    <label class="form-check-label" for="donorSampleN">
+                                                        <span class="check-circle"></span>No
+                                                    </label>
+                                                </div>
+
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input triggerObj" id="donorSampleY"
+                                                           type="radio" name="submissionType" value="AR_TP003"
+                                                           <c:if test="${arSuperDataSubmissionDto.submissionType eq 'AR_TP003'}">checked</c:if>/>
+
+                                                    <label class="form-check-label" for="donorSampleY">
+                                                        <span class="check-circle"></span>Yes
+                                                    </label>
+                                                </div>
+
+                                                <span class="error-msg" name="iaisErrorMsg"
+                                                      id="error_submissionType"></span>
+                                            </iais:row>
+
+                                            <div id="donorSampleDiv">
+                                                <%@include file="section/donorSample.jsp" %>
+                                            </div>
+
+                                            <div id="patientDiv">
+                                                <%@include file="section/arPatient.jsp" %>
+                                            </div>
                                         </div>
 
-                                        <div id="patientDiv">
-                                            <%@include file="section/arPatient.jsp" %>
+                                        <div id="batchUploadDiv">
+                                            <h1>TODO</h1>
                                         </div>
-                                    </div>
-
-                                    <div id="batchUploadDiv">
-                                        <h1>TODO</h1>
                                     </div>
                                 </div>
                             </div>

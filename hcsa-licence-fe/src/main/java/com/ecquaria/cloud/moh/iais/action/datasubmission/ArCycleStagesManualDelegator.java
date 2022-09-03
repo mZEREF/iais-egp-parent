@@ -357,7 +357,7 @@ public class ArCycleStagesManualDelegator {
         StringBuilder url = new StringBuilder();
         url.append(InboxConst.URL_HTTPS)
                 .append(bpc.request.getServerName())
-                .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohARDataSubmission/PrepareARSubmission");
+                .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohARAndIUIDataSubmission/PreARIUIDataSubmission");
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
         IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }

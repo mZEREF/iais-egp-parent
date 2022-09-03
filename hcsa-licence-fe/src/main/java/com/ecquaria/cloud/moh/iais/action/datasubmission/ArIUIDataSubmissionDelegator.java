@@ -32,11 +32,11 @@ import com.ecquaria.cloud.moh.iais.helper.DsRfcHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
-import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDonorSampleService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -46,9 +46,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.HEAD;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -70,13 +70,16 @@ public class ArIUIDataSubmissionDelegator {
     private static final String CENTRE_SEL = "centreSel";
     private static final String CURRENT_STAGE = "currentStage";
     public static final String PATIENT_INFO_DTO = "patientInfoDto";
+    public static final String SAVE_DRAFT_SUCCESS = "saveDraftSuccess";
+    public static final String EXISTED_PATIENT = "existedPatient";
+    public static final String HAS_CYCLE = "hasCycle";
+    public static final String CYCLE_SELECT = "cycleRadio";
 
+    @Autowired
+    private GenerateIdClient generateIdClient;
 
     @Autowired
     private PatientService patientService;
-
-    @Autowired
-    private ArDonorSampleService arDonorSampleService;
 
     @Autowired
     private ArDataSubmissionService arDataSubmissionService;
@@ -113,8 +116,17 @@ public class ArIUIDataSubmissionDelegator {
         } else {
             List<SelectOption> arCenterSelOpts = DataSubmissionHelper.genPremisesOptions(premisesMap);
             ParamUtil.setRequestAttr(bpc.request, "premisesOpts", arCenterSelOpts);
-            ParamUtil.setRequestAttr(bpc.request, "donorSampleFromSelOpts", arDonorSampleService.getSampleFromSelOpts(bpc.request));
+            ParamUtil.setRequestAttr(bpc.request, "donorSampleFromSelOpts", getSampleFromSelOpts(bpc.request));
         }
+        List<SelectOption> nricFinTypeSelOpts = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_DS_ID_TYPE).stream()
+                .filter(it -> !it.getCode().equals(DataSubmissionConsts.AR_ID_TYPE_PASSPORT_NO))
+                .map(it -> new SelectOption(it.getCode(), it.getDescription()))
+                .collect(Collectors.toList());
+        ParamUtil.setRequestAttr(bpc.request, "nricFinTypeSelOpts", nricFinTypeSelOpts);
+        List<SelectOption> newCycleOpts = MasterCodeUtil.retrieveOptionsByCodes(
+                DataSubmissionHelper.getNextStagesForAr(null, null, null, false, false, false, false, false)
+                        .toArray(new String[]{}));
+        ParamUtil.setRequestAttr(bpc.request, "newCycleOpts", newCycleOpts);
     }
 
     public void doARIUIDataSubmission(BaseProcessClass bpc) {
@@ -126,25 +138,14 @@ public class ArIUIDataSubmissionDelegator {
         }
         String submissionType = ParamUtil.getString(request, "submissionType");
         String submissionMethod = ParamUtil.getString(request, "submissionMethod");
-
-        //submissionMethod: Form Entry/Batch Upload
-        //submissionType: Yes(donor sample)/No(patient)
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         validateCommonPage(submissionType, submissionMethod, errorMap);
         String existedPatient = ParamUtil.getString(request, EXISTED_PATIENT);
         ParamUtil.setSessionAttr(request, EXISTED_PATIENT, existedPatient);
         submissionType = IaisEGPConstant.YES.equals(existedPatient) ? DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE : submissionType;
 
-        if (!StringUtils.hasLength(submissionType)) {
-            errorMap.put("submissionType", "GENERAL_ERR0006");
-        }
-        String isRegister = ParamUtil.getString(request, "registeredPatient");
-        submissionType = AppConsts.YES.equals(isRegister) ? submissionType : DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE;
         //prepare ArSubmissionDto for donor sample or patient or cycle
-        ArSuperDataSubmissionDto currentSuper = DataSubmissionHelper.getCurrentArDataSubmission(request);
-        if (currentSuper == null) {
-            currentSuper = prepareArSuperDataSubmissionDto(request, submissionType, submissionMethod, errorMap);
-        }
+        ArSuperDataSubmissionDto currentSuper = prepareArSuperDataSubmissionDto(request, submissionType, submissionMethod, errorMap);
         DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, request);
 
         // from draft confirm
@@ -153,42 +154,26 @@ public class ArIUIDataSubmissionDelegator {
                 .orElse("");
         String actionValue = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
         CycleStageSelectionDto selectionDto = currentSuper.getSelectionDto();
-        if ("resume".equals(actionValue)) {
-            ArSuperDataSubmissionDto arSuperDataSubmissionDtoDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftById(
-                    currentSuper.getDraftId());
-            if (arSuperDataSubmissionDtoDraft != null) {
-                DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDtoDraft, request);
-            }
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
-            ParamUtil.setRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, selectionDto.getStage());
-            return;
-        } else if ("delete".equals(actionValue)) {
-            String orgId = currentSuper.getOrgId();
-            arDataSubmissionService.deleteArSuperDataSubmissionDtoDraftByConds(selectionDto.getPatientIdType(),
-                    selectionDto.getPatientIdNumber(), selectionDto.getPatientNationality(),
-                    orgId, hciCode);
-            currentSuper.setDraftNo(null);
-            currentSuper.setDraftId(null);
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
-            ParamUtil.setRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, selectionDto.getStage());
+        if (processDraftConfirmAction(request, actionType, hciCode, actionValue, selectionDto)) {
             return;
         }
 
         boolean hasNewCycle = false;
         if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(submissionType)) {
-            PatientInfoDto patientInfo = (PatientInfoDto) ParamUtil.getSessionAttr(request, PATIENT_INFO_DTO);
-            if (Objects.isNull(patientInfo)) {
-                patientInfo = prepareSavePatient(bpc, currentSuper.getOrgId(), currentSuper.getAppType(), false);
+            PatientInfoDto patientInfo = genPatientByPage(request, currentSuper.getOrgId(),false);
+            String previousIdentification = ParamUtil.getString(request, "previousIdentification");
+            if (StringUtil.isEmpty(previousIdentification) || StringUtil.isEmpty(patientInfo.getHusband().getIdType())) {
+                ParamUtil.setRequestAttr(request, "jumpValidateHusband", AppConsts.YES);
+                errorMap.put("previousIdentification", "GENERAL_ERR0006");
             }
+            if (Boolean.TRUE.equals(patientInfo.getPatient().getPreviousIdentification()) && !patientInfo.isRetrievePrevious()) {
+                errorMap.put("preIdNumber", "DS_MSG006");
+            }
+            ValidationResult validationResult = WebValidationHelper.validateProperty(patientInfo, "save");
+            errorMap.putAll(validationResult.retrieveAll());
             currentSuper.setPatientInfoDto(patientInfo);
         } else if (DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE.equals(submissionType)) {
-            selectionDto = (CycleStageSelectionDto) ParamUtil.getSessionAttr(request, "selectionDto");
             PatientInfoDto patientInfoDto = (PatientInfoDto) ParamUtil.getSessionAttr(request, PATIENT_INFO_DTO);
-            String nextStage = ParamUtil.getString(request, "nextStage");
-            String cycleRadio = ParamUtil.getString(request, "cycleRadio");
-            String hasCycle = ParamUtil.getString(request, "hasCycle");
-            currentSuper.getDataSubmissionDto().setCycleStage(nextStage);
-            selectionDto.setStage(nextStage);
             currentSuper.setPatientInfoDto(patientInfoDto);
             if (ACTION_TYPE_AMEND.equals(actionType)) {
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_AMEND);
@@ -220,23 +205,20 @@ public class ArIUIDataSubmissionDelegator {
                         }
                     }
                 }
+                currentSuper.setSelectionDto(selectionDto);
+                currentSuper.setCycleDto(DataSubmissionHelper.initCycleDto(selectionDto, currentSuper.getSvcName(), hciCode, DataSubmissionHelper.getLicenseeId(request)));
+                ParamUtil.setRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, nextStage);
             }
-            currentSuper.setSelectionDto(selectionDto);
-            currentSuper.setCycleDto(DataSubmissionHelper.initCycleDto(selectionDto, currentSuper.getSvcName(), hciCode, DataSubmissionHelper.getLicenseeId(request)));
-            ParamUtil.setRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, nextStage);
         } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(submissionType)) {
-            DonorSampleDto donorSampleDto = arDonorSampleService.genDonorSampleDtoByPage(request);
+            DonorSampleDto donorSampleDto = genDonorSampleDtoByPage(request);
             currentSuper.setDonorSampleDto(donorSampleDto);
             ValidationResult validationResult = WebValidationHelper.validateProperty(donorSampleDto, "save");
-            errorMap = validationResult.retrieveAll();
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_CONFIRM);
+            errorMap.putAll(validationResult.retrieveAll());
         }
 
         if (ACTION_TYPE_SUBMISSION.equals(actionType)) {
-            if (!errorMap.isEmpty()) {
-                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-                ParamUtil.setRequestAttr(request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                ParamUtil.setRequestAttr(request, IntranetUserConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
+            if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(submissionType)) {
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_CONFIRM);
             } else if (DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE.equals(submissionType)) {
                 // start new stage
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_STAGE);
@@ -247,6 +229,7 @@ public class ArIUIDataSubmissionDelegator {
                 // submit donor sample
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_CONFIRM);
             }
+            processErrorMsg(errorMap, request);
         }
         DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, request);
     }
@@ -257,12 +240,40 @@ public class ArIUIDataSubmissionDelegator {
     }
 
     public void doAmendPatient(BaseProcessClass bpc) {
-        ParamUtil.setRequestAttr(bpc.request, CURRENT_STAGE, ACTION_TYPE_AMEND);
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        HttpServletRequest request = bpc.request;
+        String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         arSuperDataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
-        PatientInfoDto patientInfoDto = prepareSavePatient(bpc, DataSubmissionConsts.DS_APP_TYPE_RFC, true);
-        arSuperDataSubmissionDto.setPatientInfoDto(patientInfoDto);
-        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, bpc.request);
+
+        if (ACTION_TYPE_RETURN.equals(actionType)){
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
+            return;
+        }
+
+        PatientInfoDto patientInfo = genPatientByPage(request, arSuperDataSubmissionDto.getOrgId(), true);
+        arSuperDataSubmissionDto.setPatientInfoDto(patientInfo);
+
+        if (ACTION_TYPE_SUBMISSION.equals(actionType)) {
+            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+            ValidationResult validationResult = WebValidationHelper.validateProperty(patientInfo, "rfc");
+            errorMap.putAll(validationResult.retrieveAll());
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
+            processErrorMsg(errorMap, request);
+        }
+
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, request);
+    }
+
+    private boolean processErrorMsg(Map<String, String> errorMap, HttpServletRequest request) {
+        if (IaisCommonUtils.isNotEmpty(errorMap)) {
+            String currentStage = (String) ParamUtil.getRequestAttr(request, CURRENT_STAGE);
+            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+            ParamUtil.setRequestAttr(request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, currentStage);
+            return true;
+        }
+        return false;
     }
 
     public void prepareConfirm(BaseProcessClass bpc) {
@@ -310,17 +321,9 @@ public class ArIUIDataSubmissionDelegator {
         log.info(StringUtil.changeForLog("The doReturn start ..."));
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         String currentStage = ParamUtil.getRequestString(bpc.request, CURRENT_STAGE);
-        String uri = InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox";
-
-        String submissionType = arSuperDataSubmission.getSubmissionType();
-        if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(submissionType)) {
-            if (ACTION_TYPE_AMEND.equals(currentStage)) {
-                uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARAndIUIDataSubmission/1/PreARIUIDataSubmission";
-            } else if(CommonDelegator.ACTION_TYPE_PAGE.equals(currentStage)){
-                 uri = InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox";
-            }
-        } else if(DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(submissionType)){
-            uri = InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox";
+        String uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohDataSubmission/PrepareCompliance";
+        if (ACTION_TYPE_AMEND.equals(currentStage)) {
+            uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARAndIUIDataSubmission/1/PreARIUIDataSubmission";
         }
         StringBuilder url = new StringBuilder();
         url.append(InboxConst.URL_HTTPS)
@@ -338,15 +341,11 @@ public class ArIUIDataSubmissionDelegator {
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.SUBMITTED_BY, DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
     }
 
-    public PatientInfoDto prepareSavePatient(BaseProcessClass bpc, String appType, boolean isAmend) {
-        return prepareSavePatient(bpc, null, appType, isAmend);
-    }
-
     public void pageConfirmAction(BaseProcessClass bpc) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
-        String crud_action_type = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crud_action_type);
-        if (ACTION_TYPE_SUBMISSION.equals(crud_action_type)) {
+        String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
+        if (ACTION_TYPE_SUBMISSION.equals(actionType)) {
             String[] declaration = ParamUtil.getStrings(bpc.request, "declaration");
             if (declaration == null || declaration.length == 0) {
                 errorMap.put("declaration", "GENERAL_ERR0006");
@@ -358,6 +357,9 @@ public class ArIUIDataSubmissionDelegator {
             } else {
                 dataSubmissionDto.setDeclaration(null);
             }
+        }else if (ACTION_TYPE_RETURN.equals(actionType)){
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
+            return;
         }
 
         if (!errorMap.isEmpty()) {
@@ -366,12 +368,47 @@ public class ArIUIDataSubmissionDelegator {
         }
     }
 
-    public void init(BaseProcessClass bpc) {
-    }
-
     public void prepareStage(BaseProcessClass bpc) {
         // clear crud_action_type, because sub stage need switch
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, null);
+    }
+
+    public void init(BaseProcessClass bpc) {
+    }
+
+    private void validateCommonPage(String submissionType, String submissionMethod, Map<String, String> errorMap) {
+        if (!StringUtils.hasLength(submissionMethod)) {
+            errorMap.put("submissionMethod", "GENERAL_ERR0006");
+        }
+
+        if (!StringUtils.hasLength(submissionType)) {
+            errorMap.put("submissionType", "GENERAL_ERR0006");
+        }
+    }
+
+    private boolean processDraftConfirmAction(HttpServletRequest request, String actionType, String hciCode, String actionValue, CycleStageSelectionDto selectionDto) {
+        ArSuperDataSubmissionDto currentSuper = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        if ("resume".equals(actionValue)) {
+            ArSuperDataSubmissionDto arSuperDataSubmissionDtoDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftById(
+                    currentSuper.getDraftId());
+            if (arSuperDataSubmissionDtoDraft != null) {
+                DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDtoDraft, request);
+            }
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
+            ParamUtil.setRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, selectionDto.getStage());
+            return true;
+        } else if ("delete".equals(actionValue)) {
+            String orgId = currentSuper.getOrgId();
+            arDataSubmissionService.deleteArSuperDataSubmissionDtoDraftByConds(selectionDto.getPatientIdType(),
+                    selectionDto.getPatientIdNumber(), selectionDto.getPatientNationality(),
+                    orgId, hciCode);
+            currentSuper.setDraftNo(null);
+            currentSuper.setDraftId(null);
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
+            ParamUtil.setRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, selectionDto.getStage());
+            return true;
+        }
+        return false;
     }
 
     private boolean haveStageDraft(HttpServletRequest request) {
@@ -415,85 +452,74 @@ public class ArIUIDataSubmissionDelegator {
         return false;
     }
 
-
-    /**
-     * @param isAmend : decide amend patient or not - just using for amending patient's details
-     **/
-    public PatientInfoDto prepareSavePatient(BaseProcessClass bpc, String orgId, String appType, boolean isAmend) {
+    public PatientInfoDto genPatientByPage(HttpServletRequest request, String orgId, boolean isAmend) {
         PatientInfoDto patientInfo = new PatientInfoDto();
         if (isAmend) {
-            patientInfo = (PatientInfoDto) ParamUtil.getSessionAttr(bpc.request, PATIENT_INFO_DTO);
+            patientInfo = (PatientInfoDto) ParamUtil.getSessionAttr(request, PATIENT_INFO_DTO);
         }
 
-        PatientDto patient = ControllerHelper.get(bpc.request, PatientDto.class);
-        HusbandDto husband = ControllerHelper.get(bpc.request, HusbandDto.class, "Hbd");
+        PatientDto patient = ControllerHelper.get(request, PatientDto.class);
+        HusbandDto husband = ControllerHelper.get(request, HusbandDto.class, "Hbd");
 
-
-        //next is difference of handling about new and amend
         if (isAmend) {
             //amend just replace field need filled
             PatientDto oldPatient = patientInfo.getPatient();
-           oldPatient.setName(patient.getName());
-           oldPatient.setBirthDate(patient.getBirthDate());
-           oldPatient.setNationality(patient.getNationality());
-           String newEthnicGroup = patient.getEthnicGroup();
-           oldPatient.setEthnicGroup(newEthnicGroup);
-           if(DataSubmissionConsts.EFO_REASON_OTHERS.equals(newEthnicGroup)){
-               oldPatient.setEthnicGroupOther(patient.getEthnicGroupOther());
-           }
-           patient = oldPatient;
+            oldPatient.setName(patient.getName());
+            oldPatient.setBirthDate(patient.getBirthDate());
+            oldPatient.setNationality(patient.getNationality());
+            oldPatient.setEthnicGroup(patient.getEthnicGroup());
+            oldPatient.setEthnicGroupOther(patient.getEthnicGroupOther());
+            oldPatient.setPreviousIdentification(Boolean.TRUE);
+            patient = oldPatient;
 
 
-           HusbandDto oldHusband = patientInfo.getHusband();
+            HusbandDto oldHusband = patientInfo.getHusband();
             oldHusband.setName(husband.getName());
             oldHusband.setBirthDate(husband.getBirthDate());
             oldHusband.setNationality(husband.getNationality());
-            String newEthnicGroup1 = husband.getEthnicGroup();
-            oldHusband.setEthnicGroup(newEthnicGroup1);
-            if(DataSubmissionConsts.EFO_REASON_OTHERS.equals(newEthnicGroup)){
-                oldHusband.setEthnicGroupOther(husband.getEthnicGroupOther());
-            }
+            oldHusband.setEthnicGroup(husband.getEthnicGroup());
+            oldHusband.setEthnicGroupOther(husband.getEthnicGroupOther());
             husband = oldHusband;
-
         } else {
-            String identityNo = ParamUtil.getString(bpc.request,"identityNo");
-            String hasIdNumber = ParamUtil.getString(bpc.request,"hasIdNumber");
-            if("N".equals(hasIdNumber)){
-                patient.setIdType(DataSubmissionConsts.AR_ID_TYPE_PASSPORT_NO);
-            }
+            String identityNo = ParamUtil.getString(request, "identityNo");
+            String hasIdNumber = ParamUtil.getString(request, "ptHasIdNumber");
+            String idType = patientService.judgeIdType(hasIdNumber, identityNo);
+
+            patient.setIdType(idType);
             patient.setIdNumber(identityNo);
-            //this code is used temporarily,may update in future
             patient.setOrgId(orgId);
 
-            patientInfo.setIsPreviousIdentification(patient.isPreviousIdentification() ? IaisEGPConstant.YES : IaisEGPConstant.NO);
+            String hubHasIdNumber = ParamUtil.getString(request, "hubHasIdNumber");
+            String hubIdType = patientService.judgeIdType(hubHasIdNumber, husband.getIdNumber());
+            husband.setIdType(hubIdType);
+
+            patientInfo.setIsPreviousIdentification(Boolean.TRUE.equals(Boolean.TRUE.equals(patient.getPreviousIdentification())) ? IaisEGPConstant.YES : IaisEGPConstant.NO);
         }
 
-        patientInfo.setAppType(appType);
+        patientInfo.setAppType(isAmend?DataSubmissionConsts.DS_APP_TYPE_NEW:DataSubmissionConsts.DS_APP_TYPE_NEW);
         DsRfcHelper.prepare(patient);
         patientInfo.setPatient(patient);
-
 
         DsRfcHelper.prepare(husband);
         patientInfo.setHusband(husband);
 
-
-        //previous patient info
         String patientCode = null;
-        if (patient.isPreviousIdentification()) {
-            patientInfo.setRetrievePrevious(true);
-            PatientDto previous = ControllerHelper.get(bpc.request, PatientDto.class, "pre", "");
+        if (Boolean.TRUE.equals(patient.getPreviousIdentification())) {
+            PatientDto previous = ControllerHelper.get(request, PatientDto.class, "pre", "");
 
             PatientDto db = retrievePrePatient(patient, previous);
 
             if (db != null && !StringUtils.isEmpty(db.getId())) {
+                patientInfo.setRetrievePrevious(true);
                 previous = db;
+            } else {
+                patientInfo.setRetrievePrevious(false);
             }
 
             patientInfo.setPrevious(previous);
 
             // retrieve patient code if exist previous patient information
             patientCode = previous.getPatientCode();
-
         } else {
             patientInfo.setRetrievePrevious(false);
             patientInfo.setPrevious(null);
@@ -524,35 +550,9 @@ public class ArIUIDataSubmissionDelegator {
     }
 
     private PatientDto retrievePrePatient(PatientDto patient, PatientDto previous) {
-        PatientDto db = new PatientDto();
-        //get id number type
-        String idDiff = checkIdentityNoType(previous.getIdNumber());
-
-        //idType is marked as a list due to this special type NRIC owns two type - PINK IC or BLUE IC
-        List<String> idTypes = new ArrayList<>(2);
-        if (OrganizationConstants.ID_TYPE_NRIC.equals(idDiff)) {
-            idTypes.add(DataSubmissionConsts.AR_ID_TYPE_PINK_IC);
-            idTypes.add(DataSubmissionConsts.AR_ID_TYPE_BLUE_IC);
-        }else if(OrganizationConstants.ID_TYPE_FIN.equals(idDiff)){
-            idTypes.add(DataSubmissionConsts.AR_ID_TYPE_FIN_NO);
-        }else{
-            idTypes.add(DataSubmissionConsts.AR_ID_TYPE_PASSPORT_NO);
-        }
-
-        if(idTypes.size() == 1){
-            db = patientService.getActiveArPatientByConds(idTypes.get(0), previous.getIdNumber(),
-                    previous.getNationality(), patient.getOrgId());
-        }
-        //no way to tell different types of identity number,so search two times
-        if(idTypes.size() > 1){
-            String firstIdType = idTypes.get(0);
-            String secondIdType = idTypes.get(1);
-            PatientDto nric= patientService.getActiveArPatientByConds(firstIdType, previous.getIdNumber(), previous.getNationality(), patient.getOrgId());
-            db = ObjectUtils.isEmpty(nric)?
-                    (patientService.getActiveArPatientByConds(secondIdType, previous.getIdNumber(), previous.getNationality(), patient.getOrgId()))
-                    :nric;
-        }
-        return db;
+        String idType = patientService.judgeIdType(previous.getIdNumber());
+        return patientService.getActiveArPatientByConds(idType, previous.getIdNumber(),
+                previous.getNationality(), patient.getOrgId());
     }
 
 
@@ -588,9 +588,9 @@ public class ArIUIDataSubmissionDelegator {
             orgId = loginContext.getOrgId();
             licenseeId = loginContext.getLicenseeId();
         }
+        currentSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_NEW);
         currentSuper.setOrgId(orgId);
         currentSuper.setLicenseeId(licenseeId);
-        currentSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_NEW);
         currentSuper.setCentreSel(centreSel);
         currentSuper.setPremisesDto(premisesDto);
         currentSuper.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -632,5 +632,40 @@ public class ArIUIDataSubmissionDelegator {
         return OrganizationConstants.ID_TYPE_PASSPORT;
     }
 
+    private DonorSampleDto genDonorSampleDtoByPage(HttpServletRequest request) {
+        DonorSampleDto donorSampleDto = ControllerHelper.get(request, DonorSampleDto.class);
+        String sampleType = donorSampleDto.getSampleType();
 
+        if (Arrays.asList(
+                DataSubmissionConsts.DONATED_TYPE_FRESH_OOCYTE,
+                DataSubmissionConsts.DONATED_TYPE_FROZEN_OOCYTE,
+                DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO
+        ).contains(sampleType)) {
+            donorSampleDto.setSampleKey(generateIdClient.getSeqId().getEntity());
+        }
+        if (Arrays.asList(
+                DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM,
+                DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO
+        ).contains(sampleType)) {
+            donorSampleDto.setSampleKeyMale(generateIdClient.getSeqId().getEntity());
+        }
+
+        String hasIdNumberF = ParamUtil.getString(request, "hasIdNumberF");
+        String idNo = donorSampleDto.getIdNumber();
+        donorSampleDto.setIdType(patientService.judgeIdType(hasIdNumberF, idNo));
+
+        String hasIdNumberM = ParamUtil.getString(request, "hasIdNumberM");
+        String idNoM = donorSampleDto.getIdNumberMale();
+        donorSampleDto.setIdTypeMale(patientService.judgeIdType(hasIdNumberM, idNoM));
+
+        return donorSampleDto;
+    }
+
+    private List<SelectOption> getSampleFromSelOpts(HttpServletRequest request) {
+        Map<String, String> stringStringMap = IaisCommonUtils.genNewHashMap();
+        DataSubmissionHelper.setArPremisesMap(request).values().forEach(v -> stringStringMap.put(v.getHciCode(), v.getPremiseLabel()));
+        List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
+        selectOptions.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER, "Others"));
+        return selectOptions;
+    }
 }

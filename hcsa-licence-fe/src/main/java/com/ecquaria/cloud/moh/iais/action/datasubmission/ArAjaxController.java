@@ -236,7 +236,7 @@ public class ArAjaxController {
 
         //do passport/FIN/NRIC validate
         boolean identityNoValidate = false;
-        if("NRICORFIN".equals(isPatHasId)){
+        if("1".equals(isPatHasId)){
             boolean finValidation = SgNoValidator.validateFin(identityNo);
             boolean nricValidation = SgNoValidator.validateNric(identityNo);
 
@@ -250,9 +250,9 @@ public class ArAjaxController {
             return result;
         }
 
-
         //by passport or NRIC NUMBER to search patient info from database
-        PatientInfoDto patientInfoDto = patientService.getPatientInfoDtoByIdTypeAndIdNumber(isPatHasId,identityNo);
+        String idType = patientService.judgeIdType(isPatHasId,identityNo);
+        PatientInfoDto patientInfoDto = patientService.getPatientInfoDtoByIdTypeAndIdNumber(idType,identityNo);
         ParamUtil.setSessionAttr(request,"patientInfoDto",patientInfoDto);
         if(ObjectUtils.isEmpty(patientInfoDto)){
             result.put("registeredPT",false);
@@ -302,30 +302,13 @@ public class ArAjaxController {
         ParamUtil.setSessionAttr(request, "selectionDto", dbDto);
         ParamUtil.setSessionAttr(request, "patientInfoDto", patientInfoDto);
 
-        result.put("cycles", getCycleDataList(dbDto.getDsCycleRadioDtos()));
-        result.put("nextStageOptions", genNextStageOptions());
+        result.put("cycles", dbDto.getDsCycleRadioDtos());
         log.debug(StringUtil.changeForLog("the AR patient info validation end ...."));
         return result;
     }
 
     public static String genNextStageOptions() {
         return DataSubmissionHelper.genOptionHtmlsWithFirst(DataSubmissionHelper.getNextStagesForAr(null, null, null, false, false, false, false, false));
-    }
-
-    public static List<Map<String,String>> getCycleDataList(List<DsCycleRadioDto> dsCycleRadioDtos) {
-        List<Map<String,String>> result = IaisCommonUtils.genNewArrayList();
-        if (IaisCommonUtils.isEmpty(dsCycleRadioDtos)) {
-            return result;
-        }
-        for (DsCycleRadioDto dsCycleRadioDto : dsCycleRadioDtos) {
-            CycleDto cycleDto = dsCycleRadioDto.getCycleDto();
-            Map<String,String> cycleData = IaisCommonUtils.genNewHashMap();
-            cycleData.put("id",cycleDto.getId());
-            cycleData.put("type",MasterCodeUtil.getCodeDesc(cycleDto.getCycleType()));
-            cycleData.put("no",dsCycleRadioDto.getStartDataSubmissionDto().getSubmissionNo());
-            result.add(cycleData);
-        }
-        return  result;
     }
 
     private String generateDropDownHtml(List<SelectOption> options, String firstOption) {
