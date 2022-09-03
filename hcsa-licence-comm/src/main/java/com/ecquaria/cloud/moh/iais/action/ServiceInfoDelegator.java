@@ -451,6 +451,7 @@ public class ServiceInfoDelegator {
         if (ApplicationHelper.initOtherInfoForm(currSvcInfoDto,appSubmissionDto.getAppGrpPremisesDtoList(), false,bpc.request)) {
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
         }
+        ParamUtil.setRequestAttr(bpc.request, "orgUserDto",AppDataHelper.getOtherInfoYfVs(bpc.request));
     }
 
     /**

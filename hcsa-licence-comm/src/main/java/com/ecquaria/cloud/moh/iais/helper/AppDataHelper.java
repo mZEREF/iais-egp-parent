@@ -1727,6 +1727,8 @@ public final class AppDataHelper {
                 person.setOtherDesignation(null);
             }
         }
+
+
         setPsnValue(person, appPsnEditDto, "professionBoard", prefix, suffix, request);
         setPsnValue(person, appPsnEditDto, "professionType", prefix, suffix, request);
         setPsnValue(person, appPsnEditDto, "profRegNo", prefix, suffix, request);
@@ -1741,8 +1743,8 @@ public final class AppDataHelper {
         setPsnValue(person, appPsnEditDto, "emailAddr", prefix, suffix, request);
         setPsnValue(person, appPsnEditDto, "holdCerByEMS", prefix, suffix, request);
         setPsnValue(person, appPsnEditDto, "aclsExpiryDate", prefix, suffix, true, request);
-        setPsnValue(person, appPsnEditDto, "relevantExperience", prefix, suffix, request);
         setPsnValue(person, appPsnEditDto, "bclsExpiryDate", prefix, suffix, true, request);
+        setPsnValue(person, appPsnEditDto, "relevantExperience", prefix, suffix, request);
 
         if (person.getPsnEditDto() == null) {
             if (appPsnEditDto == null) {
@@ -1903,6 +1905,8 @@ public final class AppDataHelper {
                     log.info(StringUtil.changeForLog(e.getMessage()), e);
                 }
             }
+            String bclsExpiryDateStr = ParamUtil.getString(request,prefix + fieldName + suffix);
+            person.setBclsExpiryDateStr(bclsExpiryDateStr);
             ReflectionUtil.setPropertyObj(fieldName + "Str", value, person);
             ReflectionUtil.setPropertyObj(fieldName, value, person);
         } else {
