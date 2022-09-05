@@ -10,7 +10,7 @@
             <iais:row>
                 <div class="col-xs-12 app-title">
                     <p><c:out value="${appSvcSpecialServiceInfo.premName}"/></p>
-                    <p>Address: <c:out value="${appSvcSpecialServiceInfo.premAddress}"/></p>
+                    <p><c:if test="${not empty appSvcSpecialServiceInfo.premAddress}"> Address: </c:if><c:out value="${appSvcSpecialServiceInfo.premAddress}"/></p>
                 </div>
             </iais:row>
 

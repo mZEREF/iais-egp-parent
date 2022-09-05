@@ -3290,6 +3290,7 @@ public final class AppValidatorHelper {
             List<SpecialServiceSectionDto> specialServiceSectionDtoList=appSvcSpecialServiceInfoList.get(i).getSpecialServiceSectionDtoList();
             List<String> dirNames=IaisCommonUtils.genNewArrayList();
             List<String> nurNames=IaisCommonUtils.genNewArrayList();
+            List<String> nurseNames=IaisCommonUtils.genNewArrayList();
             for (int j=0;j<specialServiceSectionDtoList.size();j++){
                 SpecialServiceSectionDto specialServiceSectionDto=specialServiceSectionDtoList.get(j);
                 if (specialServiceSectionDto.getAppSvcDirectorDtoList()!=null){
@@ -3304,7 +3305,7 @@ public final class AppValidatorHelper {
                 }
                 if (specialServiceSectionDto.getAppSvcNurseDtoList()!=null){
                     for (int x=0;x<specialServiceSectionDto.getAppSvcNurseDtoList().size();x++){
-                        validateSpecialServicePerson(specialServiceSectionDto.getAppSvcNurseDtoList().get(x),prefix+i+j+"nic",""+x,appType,errorMap,nurNames);
+                        validateSpecialServicePerson(specialServiceSectionDto.getAppSvcNurseDtoList().get(x),prefix+i+j+"nic",""+x,appType,errorMap,nurseNames);
                     }
                 }
                 if(!IaisCommonUtils.isEmpty(specialServiceSectionDto.getAppSvcSuplmFormDto().getAppSvcSuplmGroupDtoList())){
@@ -3330,9 +3331,8 @@ public final class AppValidatorHelper {
             String general_err0041 = repLength("Name", "110");
             errorMap.put(prefix+"name" + subfix, general_err0041);
         }else{
-            String target = salutation + name;
-            boolean flag = names.stream().anyMatch(target::equalsIgnoreCase);
-            if (flag) {
+            String target = StringUtil.toUpperCase(salutation + name);
+            if (names.contains(target)) {
                 errorMap.put(prefix+"name" + subfix, "Cannot use duplicate names");
             }else {
                 names.add(target);

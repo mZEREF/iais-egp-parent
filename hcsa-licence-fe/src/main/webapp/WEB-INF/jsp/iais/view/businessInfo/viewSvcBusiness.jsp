@@ -9,7 +9,7 @@
         <c:forEach items="${currentPreviewSvcInfo.appSvcBusinessDtoList}" var="businessDto" varStatus="status">
             <iais:row>
                 <div  class="col-xs-12" style="margin-bottom: 1%;margin-top: 1%">
-                    <p><strong >${businessDto.premType}: ${businessDto.premAddress}</strong></p>
+                    <p><strong >${businessDto.premTypeNameOnly}: ${businessDto.premAddress}</strong></p>
                 </div>
             </iais:row>
             <c:set var="isSpecialService" value="${businessDto.currService==AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL||businessDto.currService==AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL}"/>

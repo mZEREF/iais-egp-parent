@@ -783,6 +783,26 @@ public class DealSessionUtil {
             AppPremSpecialisedDto appPremSpecialisedDto = appPremSpecialisedDtoMap.get(appSvcSpecialServiceInfoDto.getPremisesVal());
             appPremSpecialisedDto.setPremiseIndex(i + 1);
             appSvcSpecialServiceInfoDto.setAppGrpPremisesDto(appPremSpecialisedDto);
+            refreshSpecialSection(appSvcSpecialServiceInfoDto,appPremSpecialisedDto);
+        }
+    }
+
+    private static void refreshSpecialSection(AppSvcSpecialServiceInfoDto appSvcSpecialServiceInfoDto,
+                                              AppPremSpecialisedDto appPremSpecialisedDto) {
+        List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList = appPremSpecialisedDto.getAllAppPremSubSvcRelDtoList();
+        Map<String,AppPremSubSvcRelDto> appPremSubSvcRelDtoMap=IaisCommonUtils.genNewHashMap();
+        if (IaisCommonUtils.isEmpty(appPremSubSvcRelDtoList)){
+            return;
+        }
+        for (AppPremSubSvcRelDto appPremSubSvcRelDto : appPremSubSvcRelDtoList) {
+            appPremSubSvcRelDtoMap.put(appPremSubSvcRelDto.getSvcId(),appPremSubSvcRelDto);
+        }
+        List<SpecialServiceSectionDto> specialServiceSectionDtoList = appSvcSpecialServiceInfoDto.getSpecialServiceSectionDtoList();
+        if (IaisCommonUtils.isEmpty(specialServiceSectionDtoList)){
+            return;
+        }
+        for (SpecialServiceSectionDto specialServiceSectionDto : specialServiceSectionDtoList) {
+            specialServiceSectionDto.setAppPremSubSvcRelDto(appPremSubSvcRelDtoMap.get(specialServiceSectionDto.getSvcId()));
         }
     }
 
