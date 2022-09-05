@@ -342,7 +342,7 @@
                     if (isEmpty(group)) {
                         return;
                     }
-                    let total = $('input[name="' + group + '"]').val();
+                    let total = $('input[name="' + prefix + group + '"]').val();
                     let conVal = $v.data('mandatory-cond');
                     if (isEmpty(conVal)) {
                         return;
