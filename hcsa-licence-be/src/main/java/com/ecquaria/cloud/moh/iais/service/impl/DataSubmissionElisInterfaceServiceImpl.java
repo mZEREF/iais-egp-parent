@@ -567,7 +567,7 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
         log.info(StringUtil.changeForLog("The eicFeOrganization end ..."));
     }
 
-    private void callEicSaveElisInterfaceDto(ELISInterfaceDto elisInterfaceDto){
+    public void callEicSaveElisInterfaceDto(ELISInterfaceDto elisInterfaceDto){
         beEicGatewayClient.saveElisInterfaceDto(elisInterfaceDto).getEntity();
     }
 
