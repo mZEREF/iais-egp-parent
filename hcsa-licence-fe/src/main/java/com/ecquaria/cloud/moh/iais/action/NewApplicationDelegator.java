@@ -158,7 +158,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                     log.info(StringUtil.changeForLog("appSvcRelatedInfoDtoList is empty"));
                 }
                 //set max file index into session
-                ApplicationHelper.reSetMaxFileIndex(appSubmissionDto.getMaxFileIndex());
+                //ApplicationHelper.reSetMaxFileIndex(appSubmissionDto.getMaxFileIndex());
 
                 //DealSessionUtil.loadCoMap(appSubmissionDto, request);
                 if (appSubmissionDto.getAppGrpPremisesDtoList() != null && appSubmissionDto.getAppGrpPremisesDtoList().size() > 0) {
@@ -200,7 +200,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 loadingRfiGrpServiceConfig(appSubmissionDto, request);
                 svcRelatedInfoRFI(appSubmissionDto, appNo);
                 //set max file index into session
-                ApplicationHelper.reSetMaxFileIndex(appSubmissionDto.getMaxFileIndex());
+                //ApplicationHelper.reSetMaxFileIndex(appSubmissionDto.getMaxFileIndex());
 
                 appSubmissionDto.setRfiAppNo(appNo);
                 //clear svcDoc id
@@ -660,12 +660,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
         bpc.request.getSession().removeAttribute(HcsaAppConst.SELECT_DRAFT_NO);
         appSubmissionDto.setOldDraftNo(oldDraftNo);
 
-        //ApplicationHelper.setStepColor(coMap, serviceConfig, appSubmissionDto);
-        Integer maxFileIndex = (Integer) ParamUtil.getSessionAttr(bpc.request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR);
-        if (maxFileIndex == null) {
-            maxFileIndex = 0;
-        }
-        appSubmissionDto.setMaxFileIndex(maxFileIndex);
+        DealSessionUtil.initMaxFileIndex(appSubmissionDto, bpc.request);
         //set psn dropdown
         //setPsnDroTo(appSubmissionDto, bpc);
         appSubmissionDto = appSubmissionService.doSaveDraft(appSubmissionDto);

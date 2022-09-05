@@ -56,7 +56,6 @@ import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PersonFieldDto;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
-import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.client.LicCommClient;
 import lombok.extern.slf4j.Slf4j;
@@ -571,7 +570,7 @@ public final class ApplicationHelper {
         targetSvcInfo.setAppSvcDocDtoLit(sourceSvcInfo.getAppSvcDocDtoLit());
     }
 
-    public static int getMaxFileIndex(Integer maxSeqNum, boolean checkGlobal, HttpServletRequest request) {
+    /*public static int getMaxFileIndex(Integer maxSeqNum, boolean checkGlobal, HttpServletRequest request) {
         int seqNum = maxSeqNum != null ? maxSeqNum + 1 : 0;
         Integer maxFileIndex = 0;
         if (checkGlobal && request != null) {
@@ -585,14 +584,12 @@ public final class ApplicationHelper {
         }
         return seqNum;
     }
-
-    public static void reSetMaxFileIndex(Integer maxSeqNum, HttpServletRequest request) {
-        getMaxFileIndex(maxSeqNum, true, request);
-    }
-
+*/
+/*
     public static void reSetMaxFileIndex(Integer maxSeqNum) {
         reSetMaxFileIndex(maxSeqNum, MiscUtil.getCurrentRequest());
     }
+*/
 
     /*public static void setServiceConfig(AppSvcRelatedInfoDto appSvcRelatedInfoDto, List<HcsaServiceDto> hcsaServiceDtoList){
         if (appSvcRelatedInfoDto == null) {
@@ -2872,29 +2869,78 @@ public final class ApplicationHelper {
         return riskLevelResult;
     }
 
+    /**
+     * Tab tooltip
+     *
+     * @param withValue whether init value or not
+     * @return tooltip Map
+     */
+    public static Map<String, String> createCoMap(boolean withValue) {
+        HashMap<String, String> coMap = IaisCommonUtils.genNewHashMap(5);
+        if (withValue) {
+            coMap.put(HcsaAppConst.SECTION_LICENSEE, HcsaAppConst.SECTION_LICENSEE);
+            coMap.put(HcsaAppConst.SECTION_PREMISES, HcsaAppConst.SECTION_PREMISES);
+            coMap.put(HcsaAppConst.SECTION_SPECIALISED, HcsaAppConst.SECTION_SPECIALISED);
+            coMap.put(HcsaAppConst.SECTION_SVCINFO, HcsaAppConst.SECTION_SVCINFO);
+            coMap.put(HcsaAppConst.SECTION_PREVIEW, HcsaAppConst.SECTION_PREVIEW);
+        } else {
+            coMap.put(HcsaAppConst.SECTION_LICENSEE, "");
+            coMap.put(HcsaAppConst.SECTION_PREMISES, "");
+            coMap.put(HcsaAppConst.SECTION_SPECIALISED, "");
+            coMap.put(HcsaAppConst.SECTION_SVCINFO, "");
+            coMap.put(HcsaAppConst.SECTION_PREVIEW, "");
+        }
+        coMap.put(HcsaAppConst.SECTION_MULTI_SVC, "");
+        coMap.put(HcsaAppConst.SECTION_MULTI_SS, "");
+        return coMap;
+    }
+
+    public static AppEditSelectDto createAppEditSelectDto(boolean canEdit) {
+        AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+        if (canEdit) {
+            appEditSelectDto.setLicenseeEdit(true);
+            appEditSelectDto.setPremisesEdit(true);
+            appEditSelectDto.setPremisesListEdit(true);
+            appEditSelectDto.setSpecialisedEdit(true);
+            appEditSelectDto.setServiceEdit(true);
+        }
+        appEditSelectDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        appEditSelectDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        return appEditSelectDto;
+    }
+
     public static boolean canLicenseeEdit(AppSubmissionDto appSubmissionDto, boolean isRFI) {
         if (appSubmissionDto == null || appSubmissionDto.getSubLicenseeDto() == null) {
             return false;
         }
-        String licenseeType = appSubmissionDto.getSubLicenseeDto().getLicenseeType();
         String appType = appSubmissionDto.getAppType();
         boolean oldLicenseeEdit = Optional.ofNullable(appSubmissionDto.getAppEditSelectDto())
                 .map(AppEditSelectDto::isLicenseeEdit)
                 .orElse(Boolean.TRUE);
-        return canLicenseeEdit(licenseeType, appType, oldLicenseeEdit, isRFI);
+        return canLicenseeEdit(appSubmissionDto.getSubLicenseeDto(), appType, oldLicenseeEdit, isRFI);
     }
 
-    public static boolean canLicenseeEdit(String licenseeType, String appType, boolean oldLicenseeEdit, boolean isRFI) {
+    public static boolean canLicenseeEdit(SubLicenseeDto subLicenseeDto, String appType, boolean oldLicenseeEdit, boolean isRFI) {
+        if (subLicenseeDto == null) {
+            return oldLicenseeEdit;
+        }
+        String licenseeType = subLicenseeDto.getLicenseeType();
         if (OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(licenseeType)) {
             return false;
         }
         if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
             return !isRFI || oldLicenseeEdit;
         }
-        if (OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(licenseeType)) {
-            return oldLicenseeEdit;
+        boolean isRenewalOrRfc = ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)
+                || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType);
+        if (isRenewalOrRfc) {
+            if (OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(licenseeType)) {
+                return oldLicenseeEdit;
+            } else {
+                return false;
+            }
         }
-        return false;
+        return oldLicenseeEdit;
     }
 
     public static List<SelectOption> genSubLicessOption(Map<String, SubLicenseeDto> licenseeMap) {
@@ -3324,46 +3370,6 @@ public final class ApplicationHelper {
             }
         }
         return newAppSvcChckListDtos;
-    }
-
-    /**
-     * Tab tooltip
-     *
-     * @param withValue whether init value or not
-     * @return tooltip Map
-     */
-    public static Map<String, String> createCoMap(boolean withValue) {
-        HashMap<String, String> coMap = IaisCommonUtils.genNewHashMap(5);
-        if (withValue) {
-            coMap.put(HcsaAppConst.SECTION_LICENSEE, HcsaAppConst.SECTION_LICENSEE);
-            coMap.put(HcsaAppConst.SECTION_PREMISES, HcsaAppConst.SECTION_PREMISES);
-            coMap.put(HcsaAppConst.SECTION_SPECIALISED, HcsaAppConst.SECTION_SPECIALISED);
-            coMap.put(HcsaAppConst.SECTION_SVCINFO, HcsaAppConst.SECTION_SVCINFO);
-            coMap.put(HcsaAppConst.SECTION_PREVIEW, HcsaAppConst.SECTION_PREVIEW);
-        } else {
-            coMap.put(HcsaAppConst.SECTION_LICENSEE, "");
-            coMap.put(HcsaAppConst.SECTION_PREMISES, "");
-            coMap.put(HcsaAppConst.SECTION_SPECIALISED, "");
-            coMap.put(HcsaAppConst.SECTION_SVCINFO, "");
-            coMap.put(HcsaAppConst.SECTION_PREVIEW, "");
-        }
-        coMap.put(HcsaAppConst.SECTION_MULTI_SVC, "");
-        coMap.put(HcsaAppConst.SECTION_MULTI_SS, "");
-        return coMap;
-    }
-
-    public static AppEditSelectDto createAppEditSelectDto(boolean canEdit) {
-        AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
-        if (canEdit) {
-            appEditSelectDto.setLicenseeEdit(true);
-            appEditSelectDto.setPremisesEdit(true);
-            appEditSelectDto.setPremisesListEdit(true);
-            appEditSelectDto.setSpecialisedEdit(true);
-            appEditSelectDto.setServiceEdit(true);
-        }
-        appEditSelectDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        appEditSelectDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-        return appEditSelectDto;
     }
 
     public static List<AppSvcPrincipalOfficersDto> sortKeyPersonnel(List<AppSvcPrincipalOfficersDto> persons) {

@@ -81,6 +81,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURRENTSERVICEID;
 
@@ -2540,11 +2541,12 @@ public final class AppDataHelper {
         return arrs[index];
     }
 
-    public static void genSvcDocuments(List<DocumentShowDto> documentShowDtoList, int maxPsnTypeNum, String baseSvcId,
+    public static void genSvcDocuments(List<DocumentShowDto> documentShowDtoList, /*int maxPsnTypeNum, */String baseSvcId,
             Map<String, File> saveFileMap, HttpServletRequest request) {
         if (documentShowDtoList == null || documentShowDtoList.isEmpty()) {
             return;
         }
+        AtomicInteger psnTypeNum = new AtomicInteger();
         for (DocumentShowDto documentShowDto : documentShowDtoList) {
             String premisesVal = documentShowDto.getPremisesVal();
             List<DocSectionDto> docSectionList = documentShowDto.getDocSectionList();
@@ -2557,14 +2559,14 @@ public final class AppDataHelper {
                     DocSecDetailDto docSecDetailDto = docSecDetailList.get(j);
                     List<AppSvcDocDto> appSvcDocDtoList = genSvcPersonDoc(documentShowDto, docSectionDto, docSecDetailDto, docKey,
                             saveFileMap, request);
-                    if (StringUtil.isNotEmpty(docSecDetailDto.getPsnType()) && !appSvcDocDtoList.isEmpty()) {
-                        Optional<Integer> max = appSvcDocDtoList.stream()
+                    if (!appSvcDocDtoList.isEmpty()) {
+                       /* Optional<Integer> max = appSvcDocDtoList.stream()
                                 .map(AppSvcDocDto::getPersonTypeNum)
                                 .filter(Objects::nonNull)
                                 .max(Comparator.naturalOrder());
-                        Integer psnTypeNum = max.isPresent() ? max.get() : ++maxPsnTypeNum;
+                        Integer psnTypeNum = max.isPresent() ? max.get() : ++maxPsnTypeNum;*/
                         appSvcDocDtoList.forEach(doc -> {
-                            doc.setPersonTypeNum(psnTypeNum);
+                            doc.setPersonTypeNum(psnTypeNum.getAndIncrement());
                             doc.setBaseSvcId(baseSvcId);
                         });
                     } else if (!appSvcDocDtoList.isEmpty()) {

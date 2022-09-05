@@ -3,9 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
-import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
@@ -16,7 +14,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
@@ -28,22 +25,16 @@ import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.helper.RfcHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
-import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.APPSUBMISSIONDTO;
 
@@ -170,8 +161,6 @@ public class ApplicationDelegator extends AppCommDelegator {
                 || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType);
         loadingRfiGrpServiceConfig(appSubmissionDto, request);
         svcRelatedInfoRFI(appSubmissionDto, appNo);
-        //set max file index into session
-        ApplicationHelper.reSetMaxFileIndex(appSubmissionDto.getMaxFileIndex());
         appSubmissionDto.setRfiAppNo(appNo);
         //clear svcDoc id
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -189,21 +178,11 @@ public class ApplicationDelegator extends AppCommDelegator {
         }
         appSubmissionDto.setNeedEditController(true);
         // App Edit Selecti Dto (RFI)
-        AppEditSelectDto appEditSelectDto = ApplicationHelper.createAppEditSelectDto(true);
-        if (isRenewalOrRfc) {
-            Optional<String> licenseeType = Optional.ofNullable(appSubmissionDto.getSubLicenseeDto())
-                    .map(SubLicenseeDto::getLicenseeType)
-                    .filter(type -> OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(type));
-            if (!licenseeType.isPresent()) {
-                appEditSelectDto.setLicenseeEdit(false);
-            }
-        } else if (isNew) {
-            Optional<String> licenseeType = Optional.ofNullable(appSubmissionDto.getSubLicenseeDto())
-                    .map(SubLicenseeDto::getLicenseeType)
-                    .filter(type -> OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(type));
-            if (licenseeType.isPresent()) {
-                appEditSelectDto.setLicenseeEdit(false);
-            }
+        AppEditSelectDto appEditSelectDto;
+        if (isRenewalOrRfc || isNew) {
+            appEditSelectDto = ApplicationHelper.createAppEditSelectDto(true);
+            appEditSelectDto.setLicenseeEdit(ApplicationHelper.canLicenseeEdit(appSubmissionDto.getSubLicenseeDto(), appType,
+                    true, true));
         } else {
             appEditSelectDto = applicationViewDto.getAppEditSelectDto();
         }

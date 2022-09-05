@@ -231,7 +231,7 @@ public class WithOutRenewalDelegator {
         if (StringUtil.isEmpty(draftNo)) {
             appSubmissionDtoList = outRenewalService.getAppSubmissionDtos(licenceIDList);
             if (!IaisCommonUtils.isEmpty(appSubmissionDtoList) && appSubmissionDtoList.size() == 1) {
-                ApplicationHelper.reSetMaxFileIndex(appSubmissionDtoList.get(0).getMaxFileIndex(), request);
+                //ApplicationHelper.reSetMaxFileIndex(appSubmissionDtoList.get(0).getMaxFileIndex(), request);
             }
             log.info("can not find licence id for without renewal");
             ParamUtil.setSessionAttr(request, "backUrl", "initLic");
@@ -249,7 +249,7 @@ public class WithOutRenewalDelegator {
 
 //            AppDataHelper.initDeclarationFiles(appSubmissionDtoDraft.getAppDeclarationDocDtos(),appSubmissionDtoDraft.getAppType(),bpc.request);
             ParamUtil.setSessionAttr(bpc.request, LOADING_DRAFT, AppConsts.YES);
-            ApplicationHelper.reSetMaxFileIndex(appSubmissionDtoDraft.getMaxFileIndex(), request);
+            //ApplicationHelper.reSetMaxFileIndex(appSubmissionDtoDraft.getMaxFileIndex(), request);
             appSubmissionDtoList.add(appSubmissionDtoDraft);
             ParamUtil.setSessionAttr(bpc.request, "backUrl", "initApp");
             //DealSessionUtil.loadCoMap(appSubmissionDtoDraft, bpc.request);
@@ -1274,14 +1274,14 @@ public class WithOutRenewalDelegator {
 
             AppSubmissionDto appSubmissionDto = appSubmissionDtos.get(0);
 
-            requestForChangeService.setRelatedInfoBaseServiceId(appSubmissionDto);
+            /*requestForChangeService.setRelatedInfoBaseServiceId(appSubmissionDto);
             String baseServiceId = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getBaseServiceId();
             if(StringUtil.isEmpty(baseServiceId)){
                 rfc_err020= rfc_err020.replace("{ServiceName}",appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName());
                 ParamUtil.setRequestAttr(bpc.request,"SERVICE_CONFIG_CHANGE",rfc_err020);
                 ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
                 return;
-            }
+            }*/
 
             //check other eff
             if(/*!ConfigHelper.getBoolean("halp.rfc.split.flag",false) && */appSubmissionDtos.size() ==1) {

@@ -1030,8 +1030,8 @@ public class ServiceInfoDelegator {
                 appSubmissionDto.setClickEditPage(clickEditPages);
                 reSetChangesForApp(appSubmissionDto);
             }
-            int maxPsnTypeNum = getMaxPersonTypeNumber(appSvcDocDtos, oldDocs);
-            AppDataHelper.genSvcDocuments(documentShowDtoList, maxPsnTypeNum, currSvcInfoDto.getServiceId(), saveFileMap, request);
+            //int maxPsnTypeNum = getMaxPersonTypeNumber(appSvcDocDtos, oldDocs);
+            AppDataHelper.genSvcDocuments(documentShowDtoList, /*maxPsnTypeNum, */currSvcInfoDto.getServiceId(), saveFileMap, request);
         }
         AppValidatorHelper.doValidateSvcDocuments(documentShowDtoList, errorMap);
         if (isGetDataFromPage) {
@@ -1083,7 +1083,7 @@ public class ServiceInfoDelegator {
         }
     }
 
-    private int getMaxPersonTypeNumber(List<AppSvcDocDto> newAppSvcDocDtos, List<AppSvcDocDto> oldAppSvcDocDtos) {
+    /*private int getMaxPersonTypeNumber(List<AppSvcDocDto> newAppSvcDocDtos, List<AppSvcDocDto> oldAppSvcDocDtos) {
         int maxPersonTypeNumber = 0;
         maxPersonTypeNumber = getMaxNumber(maxPersonTypeNumber, newAppSvcDocDtos);
         maxPersonTypeNumber = getMaxNumber(maxPersonTypeNumber, oldAppSvcDocDtos);
@@ -1100,7 +1100,7 @@ public class ServiceInfoDelegator {
             }
         }
         return maxPersonTypeNumber;
-    }
+    }*/
 
     /**
      * StartStep: doSaveDraft
