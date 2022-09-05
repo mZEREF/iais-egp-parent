@@ -886,7 +886,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             currentStage = StringUtils.hasLength(actionValue) ? actionValue : stage;
         }
         List<ARCycleStageDto> arCycleStageDtos = new ArrayList<>();
-        List<String> options = DataSubmissionHelper.getAllARCycleStages();
+        List<String> options = new ArrayList<>();
         if(selectionDto != null) {
             if ("DSCL_008".equals(selectionDto.getCycle())) {
                 options = DataSubmissionHelper.getAllARCycleStages();

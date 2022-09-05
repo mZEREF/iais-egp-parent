@@ -168,6 +168,9 @@ public class ArCycleStagesManualDelegator {
                 }
             }
             log.info(StringUtil.changeForLog("Stage: " + stage));
+            if (DataSubmissionConsts.AR_CYCLE_SFO.equals(stage)) {
+                stage = DataSubmissionConsts.AR_CYCLE_EFO;
+            }
             ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, stage);
         }
         ParamUtil.setRequestAttr(bpc.request, "stageList", arDataSubmissionService.genAvailableStageList(bpc.request));

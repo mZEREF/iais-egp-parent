@@ -18,7 +18,12 @@
                 <%@include file="common/headStepNavTab.jsp" %>
                 <h3>Please key in the cycle information below.</h3>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <%@include file="section/efoDetailSection.jsp" %>
+                    <c:if test="${arSuperDataSubmissionDto.selectionDto.cycle == 'DSCL_010'}">
+                        <%@include file="section/efoDetailSection.jsp" %>
+                    </c:if>
+                    <c:if test="${arSuperDataSubmissionDto.selectionDto.cycle == 'DSCL_016'}">
+                        <%@include file="section/sfoDetailSection.jsp" %>
+                    </c:if>
                     <%@include file="common/dsAmendment.jsp" %>
                 </div>
                 <%@include file="common/arFooter.jsp" %>

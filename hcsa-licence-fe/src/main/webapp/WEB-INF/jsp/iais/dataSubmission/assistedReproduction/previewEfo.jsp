@@ -29,7 +29,12 @@
                     </div>
                 </div>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <%@include file="section/previewEfoDetail.jsp" %>
+                    <c:if test="${arSuperDataSubmissionDto.selectionDto.cycle == 'DSCL_010'}">
+                        <%@include file="section/previewEfoDetail.jsp" %>
+                    </c:if>
+                    <c:if test="${arSuperDataSubmissionDto.selectionDto.cycle == 'DSCL_016'}">
+                        <%@include file="section/previewSfoDetail.jsp" %>
+                    </c:if>
                     <%@include file="common/previewDsAmendment.jsp" %>
                     <%@include file="common/arDeclaration.jsp" %>
                 </div>

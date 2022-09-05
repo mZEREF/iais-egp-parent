@@ -6,7 +6,7 @@
     <div class="panel-heading" style="padding-left: 90px;">
         <h4 class="panel-title">
             <strong>
-                Oocyte Freezing Only Cycle
+                Sperm Freezing Only Cycle
             </strong>
         </h4>
     </div>
@@ -19,7 +19,7 @@
                     </span>
                 </h3>
                 <iais:row>
-                    <iais:field width="5" value="Premises where Oocyte Freezing Only Cycle is Performed" mandatory="true"/>
+                    <iais:field width="5" value="Premises where Sperm Freezing Only Cycle is Performed" mandatory="true"/>
                     <iais:value width="6"  display="true">
                         <c:out value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"/>
                     </iais:value>
@@ -98,3 +98,4 @@
         </div>
     </div>
 </div>
+
