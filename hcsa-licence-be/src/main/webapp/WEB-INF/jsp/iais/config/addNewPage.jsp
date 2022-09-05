@@ -359,7 +359,7 @@
         </div>
 
 
-        <div class="form-group">
+        <div class="form-group" id ="cdDiv">
           <div class="col-xs-12 col-md-9">
             <label class="col-xs-12 col-md-7 control-label" >Clinical Director&nbsp;<span class="mandatory">*</span></label>
             <div class="col-xs-12 col-md-2">
@@ -374,7 +374,7 @@
         </div>
       </div>
 
-      <div class="form-group">
+      <div class="form-group" id ="cgoDiv">
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" >Clinical Governance Officer (CGO)&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
@@ -1218,6 +1218,7 @@
         premisesSelect();
         serviceTypeChange();
         toSupplementaryForm(false);
+        controlEAS();
     });
     function cancel() {
 
@@ -1276,6 +1277,9 @@
         serviceDocpersonnel(true);
     });
 
+    $('#serviceCode').change(function(){
+        controlEAS();
+    });
     function serviceTypeChange(){
         var val = $('#ServiceType').val();
         //for other service
@@ -1545,6 +1549,17 @@
             $('#supplementaryForm').hide();
         }
         serviceDocpersonnel(IsClick);
+    }
+
+    function controlEAS() {
+        var serviceCode = $('#serviceCode').val();
+        if("EAS"==serviceCode || "MTS" == serviceCode){
+            $('#cdDiv').show();
+            $('#cgoDiv').hide();
+        }else{
+            $('#cdDiv').hide();
+            $('#cgoDiv').show();
+        }
     }
 </script>
 </>
