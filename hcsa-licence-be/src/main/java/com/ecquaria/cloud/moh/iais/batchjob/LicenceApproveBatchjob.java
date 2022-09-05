@@ -59,9 +59,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremOtherInfoTopPe
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremSuplmItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSecondAddrDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSubLicenseeInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSvcChargesDto;
@@ -724,7 +722,7 @@ public class LicenceApproveBatchjob {
                 log.info(StringUtil.changeForLog("The allPremisesGroupDtos isExist is -->:" + isExist));
                 if (!isExist) {
                     premisesDto.setVersion(getVersionByHciCode(hciCode));
-                    List<LicPremisesScopeGroupDto> licPremisesScopeGroupDtoList = premisesGroupDto.getLicPremisesScopeGroupDtoList();
+                    /*List<LicPremisesScopeGroupDto> licPremisesScopeGroupDtoList = premisesGroupDto.getLicPremisesScopeGroupDtoList();
                     if (!IaisCommonUtils.isEmpty(licPremisesScopeGroupDtoList)) {
                         for (LicPremisesScopeGroupDto licPremisesScopeGroupDto : licPremisesScopeGroupDtoList) {
                             LicPremisesScopeAllocationDto licPremisesScopeAllocationDto = licPremisesScopeGroupDto.getLicPremisesScopeAllocationDto();
@@ -739,7 +737,7 @@ public class LicenceApproveBatchjob {
                                 log.debug(StringUtil.changeForLog(errorMsg));
                             }
                         }
-                    }
+                    }*/
                     allPremisesGroupDtos.add(premisesGroupDto);
                 }
             }
