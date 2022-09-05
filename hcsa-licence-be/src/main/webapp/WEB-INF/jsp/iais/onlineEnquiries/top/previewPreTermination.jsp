@@ -48,7 +48,7 @@
                         weeks = Integer.parseInt(familyPlanDto.getGestAgeBaseOnUltrWeek());
                         BigDecimal b1 = new BigDecimal(familyPlanDto.getGestAgeBaseOnUltrDay());
                         BigDecimal b2 = new BigDecimal(Integer.toString(7));
-                        weeks = weeks + b1.divide(b2, 0, BigDecimal.ROUND_DOWN).intValue();
+                        weeks = weeks + b1.divide(b2, 0, BigDecimal.ROUND_UP).intValue();
                     }
                 %>
                 <div <%if (weeks < 13 || weeks > 24) {%>style="display: none"<%}%>>
