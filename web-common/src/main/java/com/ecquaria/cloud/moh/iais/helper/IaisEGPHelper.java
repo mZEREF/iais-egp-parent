@@ -659,18 +659,25 @@ public final class IaisEGPHelper extends EGPHelper {
         int year1 = calendarStart.get(Calendar.YEAR);
         int year2 = calendarEnd.get(Calendar.YEAR);
         if (year1 != year2){
-            int timeDistance = 0;
-            for (int i = year1 ; i < year2 ;i++){
-                if (i%4==0 && i%100!=0||i%400==0) {
-                    timeDistance += 366;
-                }else {
-                    timeDistance += 365;
-                }
-            }
-            return  timeDistance + (day2-day1+1);
+            return  compareYear(year1, year2) + (day2-day1+1);
         }else {
             return day2-day1+1;
         }
+    }
+
+    private static int compareYear(int year1, int year2){
+        int flag = year2 >= year1?1:-1;
+        int timeDistance = 0;
+        int max = Integer.max(year1, year2);
+        int min = Integer.min(year1, year2);
+        for (int i = min ; i < max ;i++){
+            if (i%4==0 && i%100!=0||i%400==0) {
+                timeDistance += 366;
+            }else {
+                timeDistance += 365;
+            }
+        }
+        return  timeDistance*flag;
     }
 
     public static HttpHeaders getHttpHeadersForEic(MediaType mediaType, String date, String authorization, String dateSec,
