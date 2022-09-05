@@ -41,7 +41,7 @@
                     </iais:row>
                 </div>
                 <%
-                    TopSuperDataSubmissionDto topSuperDataSubmissionDto = (TopSuperDataSubmissionDto) ParamUtil.getSessionAttr(request, "topSuperDataSubmissionDto");
+                    TopSuperDataSubmissionDto topSuperDataSubmissionDto = (TopSuperDataSubmissionDto) ParamUtil.getRequestAttr(request, "topSuperDataSubmissionDto");
                     FamilyPlanDto familyPlanDto =topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getFamilyPlanDto();
                     int weeks = 0;
                     if (familyPlanDto != null) {
