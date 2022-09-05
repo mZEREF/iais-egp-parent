@@ -1,9 +1,12 @@
-<c:set var="patientInfoDto" value="${arSuperDataSubmissionDto.patientInfoDto}" />
-<c:set var="patient" value="${patientInfoDto.patient}" />
-<c:set var="previous" value="${patientInfoDto.previous}" />
-<c:set var="husband" value="${patientInfoDto.husband}" />
-<input type="hidden" name="registeredPatient">
-<input type="hidden" name="hasCycle">
+<%--@elvariable id="cycleRadio" type="java.lang.String"--%>
+<%--@elvariable id="existedPatient" type="java.lang.String"--%>
+<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/arSelection/patient.js"></script>
+<c:set var="patientInfoDto" value="${arSuperDataSubmissionDto.patientInfoDto}"/>
+<c:set var="patient" value="${patientInfoDto.patient}"/>
+<c:set var="previous" value="${patientInfoDto.previous}"/>
+<c:set var="husband" value="${patientInfoDto.husband}"/>
+<input type="hidden" name="existedPatient" value="${existedPatient}">
+<input type="hidden" name="hasCycle" value="${arSuperDataSubmissionDto.selectionDto.dsCycleRadioDtos.size()>0?'Y':'N'}">
 <iais:row cssClass="form-check-gp">
     <p class="form-check-title">Does the patient have a NRIC/FIN number?</p>
     <div class="form-check form-check-inline">

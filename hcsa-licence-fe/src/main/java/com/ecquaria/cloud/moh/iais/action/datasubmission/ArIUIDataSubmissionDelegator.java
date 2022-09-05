@@ -89,6 +89,7 @@ public class ArIUIDataSubmissionDelegator {
         session.removeAttribute(DataSubmissionConstant.AR_PREMISES_MAP);
         session.removeAttribute(DataSubmissionConstant.AR_DATA_SUBMISSION);
         session.removeAttribute(PATIENT_INFO_DTO);
+        session.removeAttribute(EXISTED_PATIENT);
     }
 
     public void prepareSwitch(BaseProcessClass bpc) {
@@ -129,9 +130,10 @@ public class ArIUIDataSubmissionDelegator {
         //submissionMethod: Form Entry/Batch Upload
         //submissionType: Yes(donor sample)/No(patient)
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        if (!StringUtils.hasLength(submissionMethod)) {
-            errorMap.put("submissionMethod", "GENERAL_ERR0006");
-        }
+        validateCommonPage(submissionType, submissionMethod, errorMap);
+        String existedPatient = ParamUtil.getString(request, EXISTED_PATIENT);
+        ParamUtil.setSessionAttr(request, EXISTED_PATIENT, existedPatient);
+        submissionType = IaisEGPConstant.YES.equals(existedPatient) ? DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE : submissionType;
 
         if (!StringUtils.hasLength(submissionType)) {
             errorMap.put("submissionType", "GENERAL_ERR0006");
@@ -188,23 +190,34 @@ public class ArIUIDataSubmissionDelegator {
             currentSuper.getDataSubmissionDto().setCycleStage(nextStage);
             selectionDto.setStage(nextStage);
             currentSuper.setPatientInfoDto(patientInfoDto);
-            ParamUtil.setRequestAttr(request, "cycleRadio", cycleRadio);
-            hasNewCycle = "N".equals(hasCycle) || "newCycle".equals(cycleRadio);
-            if ( hasNewCycle && StringUtil.isEmpty(nextStage)) {
-                errorMap.put("nextStage", "GENERAL_ERR0006");
-            }
-            if (StringUtil.isEmpty(cycleRadio)) {
-                errorMap.put("cycleRadio", "GENERAL_ERR0006");
-            }
-            if (errorMap.isEmpty()) {
-                if (!"newCycle".equals(cycleRadio)) {
-                    selectionDto = arDataSubmissionService.getCycleStageSelectionDtoByConds(patientInfoDto.getPatient().getPatientCode(),
-                            hciCode, cycleRadio);
-                    selectionDto.setHciCode(hciCode);
-                    if (StringUtil.isNotEmpty(selectionDto.getLastStage())) {
-                        selectionDto.setLastStageDesc(MasterCodeUtil.getCodeDesc(selectionDto.getLastStage()));
-                    } else {
-                        selectionDto.setLastStageDesc("-");
+            if (ACTION_TYPE_AMEND.equals(actionType)) {
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_AMEND);
+            } else {
+                // jump to sub stage
+                selectionDto = (CycleStageSelectionDto) ParamUtil.getSessionAttr(request, "selectionDto");
+                String nextStage = ParamUtil.getString(request, "nextStage");
+                String cycleRadio = ParamUtil.getString(request, CYCLE_SELECT);
+                ParamUtil.setRequestAttr(request, CYCLE_SELECT, cycleRadio);
+                String hasCycle = ParamUtil.getString(request, HAS_CYCLE);
+                currentSuper.getDataSubmissionDto().setCycleStage(nextStage);
+                selectionDto.setStage(nextStage);
+                hasNewCycle = "N".equals(hasCycle) || "newCycle".equals(cycleRadio);
+                if (hasNewCycle && StringUtil.isEmpty(nextStage)) {
+                    errorMap.put("nextStage", "GENERAL_ERR0006");
+                }
+                if ("Y".equals(hasCycle) && StringUtil.isEmpty(cycleRadio)) {
+                    errorMap.put(CYCLE_SELECT, "GENERAL_ERR0006");
+                }
+                if (errorMap.isEmpty()) {
+                    if (!"newCycle".equals(cycleRadio)) {
+                        selectionDto = arDataSubmissionService.getCycleStageSelectionDtoByConds(patientInfoDto.getPatient().getPatientCode(),
+                                hciCode, cycleRadio);
+                        selectionDto.setHciCode(hciCode);
+                        if (StringUtil.isNotEmpty(selectionDto.getLastStage())) {
+                            selectionDto.setLastStageDesc(MasterCodeUtil.getCodeDesc(selectionDto.getLastStage()));
+                        } else {
+                            selectionDto.setLastStageDesc("-");
+                        }
                     }
                 }
             }
@@ -280,6 +293,7 @@ public class ArIUIDataSubmissionDelegator {
         // set next stage
         String submissionType = arSuperDataSubmission.getSubmissionType();
         if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(submissionType)) {
+            ParamUtil.setSessionAttr(bpc.request, EXISTED_PATIENT, IaisEGPConstant.YES);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, CommonDelegator.ACTION_TYPE_PAGE);
         } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(submissionType)) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_ACK);
