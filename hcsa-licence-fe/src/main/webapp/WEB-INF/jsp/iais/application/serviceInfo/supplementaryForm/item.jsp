@@ -1,4 +1,5 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil" %>
 
 <c:set var="itemConfigDto" value="${item.itemConfigDto}"/>
 <c:set var="isCheckBox" value="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_CHECKBOX}"/>
@@ -98,7 +99,7 @@
             <iais:field width="5" cssClass="col-md-5 item-label" mandatory="${itemConfigDto.mandatoryType == 1}"
                         data="${item.labelData}" value="${itemConfigDto.displayInfo}${itemConfigDto.mandatoryType == 2 ? ' ' : ''}"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:select data="${itemData}" name="${itemPrefix}${itemConfigDto.id}${item.seqNum}" options="${itemConfigDto.radioLabels}" value="${item.inputValue}" firstOption="Please Select"/>
+                <iais:select data="${itemData}" name="${itemPrefix}${itemConfigDto.id}${item.seqNum}" codeCategory="${MasterCodeUtil.CATE_TDO_TYPE}" value="${item.inputValue}" firstOption="Please Select"/>
             </iais:value>
         </c:when>
     </c:choose>
