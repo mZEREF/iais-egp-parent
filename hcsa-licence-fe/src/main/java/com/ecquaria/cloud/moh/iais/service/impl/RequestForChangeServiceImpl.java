@@ -15,7 +15,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicBaseSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeIndividualDto;
@@ -457,7 +456,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         break;
                     }
                 }
-                if(!StringUtil.isEmpty(baseService)){
+               /* if(!StringUtil.isEmpty(baseService)){
                     String service_name = configCommClient.getServiceNameById(baseService).getEntity();
                     List<LicBaseSpecifiedCorrelationDto> entity = licCommService.getLicBaseSpecifiedCorrelationDtos(HcsaConsts.SERVICE_TYPE_SPECIFIED, licenceId);
                     if(entity!=null && !entity.isEmpty()){
@@ -472,7 +471,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             }
                         }
                     }
-                }
+                }*/
 
             }
             var1.setServiceId(activeHcsaServiceDtoByName.getId());
@@ -508,7 +507,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     log.info(StringUtil.changeForLog("The base service is empty!"));
                     return flag==true ?String.valueOf(false):"";
                 }
-
+/*
                 List<LicBaseSpecifiedCorrelationDto> entity = licCommService.getLicBaseSpecifiedCorrelationDtos(HcsaConsts.SERVICE_TYPE_SPECIFIED, licenceDto.getId());
                 if(entity==null||entity.isEmpty()){
                     log.info(StringUtil.changeForLog("The related base service is empty!"));
@@ -530,7 +529,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             return flag == true ? String.valueOf(true) : baseService;
                         }
                     }
-                }
+                }*/
 
             }
         }

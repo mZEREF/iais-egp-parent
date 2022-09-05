@@ -45,7 +45,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursRel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.CheckCoLocationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicBaseSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -74,12 +73,6 @@ import com.ecquaria.cloud.moh.iais.validation.ValidateCharges;
 import com.ecquaria.cloud.moh.iais.validation.ValidateClincalDirector;
 import com.ecquaria.cloud.moh.iais.validation.ValidateVehicle;
 import com.ecquaria.egp.core.common.constants.AppConstants;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.sql.Time;
 import java.text.ParseException;
@@ -102,9 +95,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @Auther chenlei on 5/4/2022.
@@ -807,7 +804,7 @@ public final class AppValidatorHelper {
         if (selectedLicences == null || selectedLicences.length == 0 || selectedLicences[0] == null) {
             errorMap.put("selectedLicences", "GENERAL_ERR0006");
         } else {
-            Map<String, LicenceDto> licMap = IaisCommonUtils.isEmpty(licenceDtos) ?
+            /*Map<String, LicenceDto> licMap = IaisCommonUtils.isEmpty(licenceDtos) ?
                     IaisCommonUtils.genNewHashMap() : licenceDtos.stream()
                     .collect(Collectors.toMap(LicenceDto::getId, Function.identity()));
             String svcType = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceType();
@@ -829,7 +826,7 @@ public final class AppValidatorHelper {
                 data.put("action", "check");
                 data.put("data", licNos);
                 errorMap.put("selectedLicences", MessageUtil.getMessageDesc("RFC_ERR025", data));
-            }
+            }*/
         }
     }
 
