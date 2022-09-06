@@ -1378,7 +1378,9 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         copyAppPremisesSpecialDocDto.setFileRepoId(appPremisesSpecialDocDto.getFileRepoId());
         copyAppPremisesSpecialDocDto.setDocSize(appPremisesSpecialDocDto.getDocSize()+"KB");
         OrgUserDto user = applicationViewService.getUserById(appPremisesSpecialDocDto.getSubmitBy());
-        copyAppPremisesSpecialDocDto.setSubmitByName(user.getDisplayName());
+        if(user!=null){
+            copyAppPremisesSpecialDocDto.setSubmitByName(user.getDisplayName());
+        }
         copyAppPremisesSpecialDocDto.setSubmitDtString(Formatter.formatDateTime(appPremisesSpecialDocDto.getSubmitDt(), "dd/MM/yyyy HH:mm:ss"));
         return  copyAppPremisesSpecialDocDto;
     }
