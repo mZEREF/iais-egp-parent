@@ -2541,7 +2541,7 @@ public final class AppDataHelper {
         return arrs[index];
     }
 
-    public static void genSvcDocuments(List<DocumentShowDto> documentShowDtoList, /*int maxPsnTypeNum, */String baseSvcId,
+    public static void setAppSvcDocuments(List<DocumentShowDto> documentShowDtoList, String baseSvcId,
             Map<String, File> saveFileMap, HttpServletRequest request) {
         if (documentShowDtoList == null || documentShowDtoList.isEmpty()) {
             return;
@@ -2560,11 +2560,6 @@ public final class AppDataHelper {
                     List<AppSvcDocDto> appSvcDocDtoList = genSvcPersonDoc(documentShowDto, docSectionDto, docSecDetailDto, docKey,
                             saveFileMap, request);
                     if (!appSvcDocDtoList.isEmpty()) {
-                       /* Optional<Integer> max = appSvcDocDtoList.stream()
-                                .map(AppSvcDocDto::getPersonTypeNum)
-                                .filter(Objects::nonNull)
-                                .max(Comparator.naturalOrder());
-                        Integer psnTypeNum = max.isPresent() ? max.get() : ++maxPsnTypeNum;*/
                         appSvcDocDtoList.forEach(doc -> {
                             doc.setPersonTypeNum(psnTypeNum.getAndIncrement());
                             doc.setBaseSvcId(baseSvcId);
