@@ -1524,6 +1524,7 @@ public class LicenceApproveBatchjob {
             //to use in the create to get the Relation.
             licKeyPersonnelDto.setId(appSvcKeyPersonnelDto.getId());
             licKeyPersonnelDto.setPsnType(appSvcKeyPersonnelDto.getPsnType());
+            licKeyPersonnelDto.setPremSubSvcRelId(appSvcKeyPersonnelDto.getPremSubSvcRelId());
             personnelsDto.setLicKeyPersonnelDto(licKeyPersonnelDto);
             result.add(personnelsDto);
         }
@@ -1618,6 +1619,7 @@ public class LicenceApproveBatchjob {
                 licDocumentDto.setLicPersonType(appSvcDocDto.getPersonType());
                 licDocumentDto.setLicPersonTypeNum(appSvcDocDto.getPersonTypeNum());
                 licDocumentDto.setLicSvcSpePsnId(appSvcDocDto.getAppSvcPersonId());
+                licDocumentDto.setPremSubSvcRelId(appSvcDocDto.getPremSubSvcRelId());
                 //set the old premises Id ,get the releation when the save.
                 String premisesId = getPremisesByAppPremCorreId(appPremisesCorrelationDtos, appSvcDocDto.getAppPremCorreId());
                 if (StringUtil.isEmpty(premisesId)) {
