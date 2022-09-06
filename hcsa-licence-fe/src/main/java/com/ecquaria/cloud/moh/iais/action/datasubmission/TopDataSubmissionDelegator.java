@@ -1236,8 +1236,8 @@ public class TopDataSubmissionDelegator {
             weeksU = weeks + b1.divide(b2, 0, BigDecimal.ROUND_UP).intValue();
             weeksD = weeks + b1.divide(b2, 0, BigDecimal.ROUND_DOWN).intValue();
             if (weeksD < 13 || weeksU > 24) {
-                preTerminationDto.setCounsellingGivenOnMin(null);
-                preTerminationDto.setPatientSign(null);
+                preTerminationDto.setCounsellingGivenOnMin(false);
+                preTerminationDto.setPatientSign(false);
             }
         }
         if(preTerminationDto.getCounsellingGiven()!=null){
