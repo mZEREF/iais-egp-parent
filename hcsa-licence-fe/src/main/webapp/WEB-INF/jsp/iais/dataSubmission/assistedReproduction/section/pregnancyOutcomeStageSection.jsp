@@ -1,26 +1,29 @@
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/pregnancyOutcomeStage.js"></script>
 <c:set var="pregnancyOutcomeStageDto" value="${arSuperDataSubmissionDto.pregnancyOutcomeStageDto}"/>
+<c:set var="cycle" value="${arSuperDataSubmissionDto.selectionDto.cycle}"/>
 <div class="panel panel-default">
     <div class="panel-heading" style="padding-left: 90px;">
         <h4 class="panel-title">
             <strong>
-                Outcome of Pregnancy
+                <c:if test="${cycle == 'DSCL_008'}">Outcome</c:if>
+                <c:if test="${cycle == 'DSCL_009'}">Outcome of IUI Cycle</c:if>
             </strong>
         </h4>
     </div>
-    <div id="etoDetails" class="panel-collapse collapse in">
-        <div class="panel-body" style="padding-left: 45px;">
+
+
+    <div id="cycleDetails" class="panel-collapse collapse in">
+        <div class="panel-body">
             <div class="panel-main-content form-horizontal">
-                <c:set var="embryoTransferredOutcomeStageDto" value="${arSuperDataSubmissionDto.embryoTransferredOutcomeStageDto}"/>
                 <h3>
                     <label ><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label>
                     <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
                     </span>
                 </h3>
                 <iais:row>
-                    <iais:field width="5" value="Outcome of Embryo Transferred" mandatory="true"/>
+                    <iais:field width="6" value="Outcome of Embryo Transferred" mandatory="true"/>
 
-                    <iais:value width="7" cssClass="col-md-7">
+                    <iais:value width="6" cssClass="col-md-6">
                         <c:forEach items="${OutcomeEmbryoTransferreds}" var="OutcomeEmbryoTransferred">
                             <c:set var="OutcomeEmbryoTransferredCode" value="${OutcomeEmbryoTransferred.code}"/>
                             <div class="form-check"
@@ -47,18 +50,6 @@
                         <span id="error_transferedOutcome" name="iaisErrorMsg" class="error-msg"></span>
                     </iais:value>
                 </iais:row>
-            </div>
-        </div>
-    </div>
-
-    <div id="cycleDetails" class="panel-collapse collapse in">
-        <div class="panel-body">
-            <div class="panel-main-content form-horizontal">
-                <h3>
-                    <label ><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label>
-                    <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
-                    </span>
-                </h3>
                 <iais:row>
                     <iais:field width="6" value="Order Shown in 1st Ultrasound (if Pregnancy confirmed)"
                                 cssClass="col-md-6"/>

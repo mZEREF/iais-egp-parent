@@ -1,31 +1,16 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:set var="pregnancyOutcomeStageDto" value="${arSuperDataSubmissionDto.pregnancyOutcomeStageDto}"/>
 <c:set var="embryoTransferredOutcomeStageDto" value="${arSuperDataSubmissionDto.embryoTransferredOutcomeStageDto}"/>
+<c:set var="cycle" value="${arSuperDataSubmissionDto.selectionDto.cycle}"/>
 
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
             <a class="collapsed" href="#cycleDetails" data-toggle="collapse">
-                Outcome of Pregnancy
+                <c:if test="${cycle == 'DSCL_008'}">Outcome</c:if>
+                <c:if test="${cycle == 'DSCL_009'}">Outcome of IUI Cycle</c:if>
             </a>
         </h4>
-    </div>
-    <div id="etoDetails" class="panel-collapse collapse">
-        <div class="panel-body">
-            <div class="panel-main-content form-horizontal ">
-                <h3>
-                    <label ><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label>
-                    <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
-                    </span>
-                </h3>
-                <iais:row>
-                    <iais:field width="5" value="Outcome of Embryo Transferred"/>
-                    <iais:value width="7" cssClass="col-md-7" display="true" >
-                        <iais:code code="${embryoTransferredOutcomeStageDto.transferedOutcome}"/>
-                    </iais:value>
-                </iais:row>
-            </div>
-        </div>
     </div>
     <div id="cycleDetails" class="panel-collapse collapse">
         <div class="panel-body">
@@ -35,6 +20,12 @@
                     <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
                     </span>
                 </h3>
+                <iais:row>
+                    <iais:field width="6" value="Outcome of Embryo Transferred" cssClass="col-md-6"/>
+                    <iais:value width="6" cssClass="col-md-6" display="true" >
+                        <iais:code code="${embryoTransferredOutcomeStageDto.transferedOutcome}"/>
+                    </iais:value>
+                </iais:row>
                 <iais:row>
                     <iais:field width="6" value="Order Shown in 1st Ultrasound (if Pregnancy confirmed)"
                                 cssClass="col-md-6"/>
