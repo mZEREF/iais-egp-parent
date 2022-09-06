@@ -309,7 +309,7 @@
                       <p>${businessName}</p>
                     </td>
                     <td>
-                      <p> ${address}</p>
+                      <p> ${premisesType}</p>
                     </td>
                     <td>
                     ${content}
@@ -367,7 +367,7 @@
                                              <p>${businessName}</p>
                                            </td>
                                            <td>
-                                             <p> ${address}</p>
+                                             <p> ${premisesType}</p>
                                            </td>
                                            <td>
                                              ${s!''}
@@ -425,7 +425,7 @@
                       <p>${businessName}</p>
                     </td>
                     <td>
-                      <p> ${address}</p>
+                      <p> ${premisesType}</p>
                     </td>
                     <td>
                     ${content2}
