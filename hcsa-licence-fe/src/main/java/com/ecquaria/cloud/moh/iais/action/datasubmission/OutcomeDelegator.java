@@ -14,7 +14,6 @@ import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -89,7 +88,7 @@ public class OutcomeDelegator extends CommonDelegator{
 
                     errorMap = validationResult1.retrieveAll();
                     errorMap.putAll(validationResult2.retrieveAll());
-                    verifyRfcCommon(request, errorMap);
+                    verifyCommon(request, errorMap);
                     if(errorMap.isEmpty()){
                         outcomeEmbryoTransferredDelegator.valRFC(request, embryoTransferredOutcomeStageDto);
                         outcomePregnancyDelegator.valRFC(request, pregnancyOutcomeStageDto);
@@ -112,7 +111,7 @@ public class OutcomeDelegator extends CommonDelegator{
 
             if ("confirm".equals(crud_action_type)) {
                 errorMap = validationResult.retrieveAll();
-                verifyRfcCommon(bpc.request, errorMap);
+                verifyCommon(bpc.request, errorMap);
                 if(errorMap.isEmpty()){
                     valRFC(bpc.request, outcomeStageDto);
                 }

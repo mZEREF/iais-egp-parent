@@ -215,6 +215,7 @@
                         <span class="error-msg" name="iaisErrorMsg" id="error_thawedOocytesZiftNum"></span>
                     </iais:value>
                 </iais:row>
+                <%@include file="hasDisposalRow.jsp"%>
             </div>
         </div>
     </div>

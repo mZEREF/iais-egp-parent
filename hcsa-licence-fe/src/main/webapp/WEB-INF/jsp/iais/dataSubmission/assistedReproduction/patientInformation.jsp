@@ -34,6 +34,7 @@
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <%@include file="section/patientDetailSection.jsp" %>
                     <%@include file="section/husbandDetailSection.jsp" %>
+                    <%@include file="section/disposalStageDetailSection.jsp" %>
                     <c:if test="${arSuperDataSubmissionDto.appType eq 'DSTY_005'}">
                         <%@include file="common/dsAmendment.jsp" %>
                     </c:if>

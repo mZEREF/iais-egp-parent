@@ -1,5 +1,17 @@
 $(document).ready(function() {
-    $('input[type="text"]').blur(function () {
+    $('input[name="hasDisposal"]').change(function () {
+        const hasDisposalValue = $('input[name="hasDisposal"]:checked').val()
+        const disposalDiv = $('#disposalDiv')
+        if (hasDisposalValue === '1'){
+            disposalDiv.show()
+        } else {
+            disposalDiv.hide()
+            clearFields(disposalDiv)
+            $('#disposedType').trigger('change')
+            $('#disposedType input[type="text"]').trigger('blur')
+        }
+    })
+    $('#disposalDiv input[type="text"]').blur(function () {
 
         var immature = $('#immature').val();
         var abnormallyFertilised = $('#abnormallyFertilised').val();

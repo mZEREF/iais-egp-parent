@@ -27,6 +27,7 @@
                     <div id="pregnancy">
                         <%@include file="section/pregnancyOutcomeStageSection.jsp" %>
                     </div>
+                    <%@include file="section/disposalStageDetailSection.jsp" %>
                     <%@include file="common/dsAmendment.jsp" %>
                 </div>
                 <%@include file="common/arFooter.jsp" %>

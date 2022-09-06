@@ -103,7 +103,7 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         if("confirm".equals(actionType)){
             ValidationResult validationResult = WebValidationHelper.validateProperty(efoCycleStageDto, "save");
             Map<String, String> errorMap = validationResult.retrieveAll();
-            verifyRfcCommon(request, errorMap);
+            verifyCommon(request, errorMap);
             if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));

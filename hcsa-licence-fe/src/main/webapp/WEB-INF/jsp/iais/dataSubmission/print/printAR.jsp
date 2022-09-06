@@ -91,6 +91,7 @@
         <%@include file="../assistedReproduction/section/previewTransferInOutStageDetail.jsp" %>
     </c:when>
 </c:choose>
+<%@include file="../assistedReproduction/section/previewDisposalDetail.jsp" %>
 <%@include file="../assistedReproduction/common/previewDsAmendment.jsp" %>
 <%@include file="../assistedReproduction/common/arDeclaration.jsp" %>
 

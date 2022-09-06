@@ -17,8 +17,8 @@
              <div class="panel-main-content form-horizontal">
                 <c:if test="${donorFrom == 'ar'}">
                 <iais:row >
-                    <iais:field width="5" value="Please Indicate" mandatory="false"/>
-                    <iais:value width="7" cssClass="col-md-7">
+                    <iais:field width="6" cssClass="col-md-6" value="Please Indicate" mandatory="false"/>
+                    <iais:value width="6" cssClass="col-md-6">
                         <c:forEach items="${donorUsedTypes}" var="donorUsedType">
                             <c:set var="donorUsedTypeCode" value="${donorUsedType.code}"/>
                             <div class="form-check col-xs-7"  style="padding-left: 0px;">
@@ -40,7 +40,7 @@
                 </c:if>
 
                  <iais:row >
-                     <iais:field width="5" value="Donor ${donorDto.arDonorIndex+1}" />
+                     <iais:field width="6" cssClass="col-md-6" value="Donor ${donorDto.arDonorIndex+1}" />
                      <iais:value width="5" cssClass="col-md-5" display="true"/>
                      <iais:value width="2" cssClass="col-md-2" display="true">
                          <c:if test="${donorDto.arDonorIndex >0}">
@@ -52,7 +52,7 @@
                  </iais:row>
 
                  <iais:row>
-                     <iais:field width="5" value="Is this a Directed Donation?" mandatory="true"/>
+                     <iais:field width="6" cssClass="col-md-6" value="Is this a Directed Donation?" mandatory="true"/>
                      <iais:value width="3" cssClass="col-md-3">
                          <div class="form-check" style="padding-left: 0px;" onchange="showDonor('${arDonorIndex}')">
                              <input class="form-check-input"
@@ -83,7 +83,7 @@
 
                  </iais:row>
                  <iais:row id="idNo${arDonorIndex}Row"  style="${!donorDto.directedDonation ? 'display: none;' : ''}">
-                     <iais:field width="5" value="ID No." mandatory="true"/>
+                     <iais:field width="6" cssClass="col-md-6" value="ID No." mandatory="true"/>
                      <iais:value width="2" cssClass="col-md-2">
                          <iais:select name="idType${arDonorIndex}" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE_DTV" value="${donorDto.idType}"
                                       cssClass="idTypeSel${arDonorIndex}" onchange="removeAges('${arDonorIndex}')"/>
@@ -102,7 +102,7 @@
                  </iais:row>
 
                  <iais:row id="donorSampleCode${arDonorIndex}Row"   style="${donorDto.directedDonation ? 'display: none;' : ''}">
-                     <iais:field width="5" value="Donor Sample Code / ID" mandatory="true"/>
+                     <iais:field width="6" cssClass="col-md-6" value="Donor Sample Code / ID" mandatory="true"/>
                      <iais:value width="2" cssClass="col-md-2">
                          <iais:select name="idTypeSample${arDonorIndex}" firstOption="Please Select" options="donorSampleDropDown" value="${donorDto.idType}"
                                       cssClass="idSampleTypeSel${arDonorIndex}" onchange="removeAges('${arDonorIndex}')"/>
@@ -121,16 +121,16 @@
                  </iais:row>
 
                  <iais:row id="source${arDonorIndex}Row" style="${(!donorDto.directedDonation && donorDto.donorSampleKey != null) ? '': 'display: none;' }">
-                     <iais:field width="5" value="Source (i.e. AR Centre or Bank Name)" />
-                     <iais:value width="7" cssClass="col-md-7" display="true" >
+                     <iais:field width="6" cssClass="col-md-6" value="Source (i.e. AR Centre or Bank Name)" />
+                     <iais:value width="6" cssClass="col-md-6" display="true" >
                          <iais:optionText value="${donorDto.source}" selectionOptions="donorSourseDropDown"/>
                          <input type="hidden" name="source${arDonorIndex}" id="source${arDonorIndex}" value="${donorDto.source}" onchange="sourceChange(this,'${DataSubmissionConsts.AR_SOURCE_OTHER}', 'otherSource${arDonorIndex}Row','${arDonorIndex}');"/>
                      </iais:value>
                  </iais:row>
 
                  <iais:row id="otherSource${arDonorIndex}Row" style="${donorDto.source eq DataSubmissionConsts.AR_SOURCE_OTHER ? '' : 'display: none'}">
-                     <iais:field width="5" value="Source (Others)" />
-                     <iais:value width="7" cssClass="col-md-7" display="true" >
+                     <iais:field width="6" cssClass="col-md-6" value="Source (Others)" />
+                     <iais:value width="6" cssClass="col-md-6" display="true" >
                          <c:out value="${donorDto.otherSource}" />
                          <iais:input maxLength="100" type="hidden" name="otherSource${arDonorIndex}" id="otherSource${arDonorIndex}" value="${donorDto.otherSource}" onchange="removeAges('${arDonorIndex}')" />
                      </iais:value>
@@ -138,7 +138,7 @@
 
                  <c:if test="${not empty donorDto.ageList}">
                  <iais:row id="age${arDonorIndex}Row">
-                     <iais:field width="5" value="Donor's Age at Donation" mandatory="true"/>
+                     <iais:field width="6" cssClass="col-md-6" value="Donor's Age at Donation" mandatory="true"/>
                      <iais:value width="4" cssClass="col-md-4">
                          <iais:select name="age${arDonorIndex}" firstOption="Please Select"  optionsSelections="${donorDto.ageList}" value="${donorDto.age}"
                                       cssClass="donorAgeDonation${arDonorIndex}"/>
@@ -147,7 +147,7 @@
                  </c:if>
 
                      <iais:row id="relation${arDonorIndex}Row" style="${donorDto.directedDonation && !empty donorDto.donorSampleKey ? '' : 'display: none;'}">
-                         <iais:field width="5" value="Donor relation to patient" mandatory="true" />
+                         <iais:field width="6" cssClass="col-md-6" value="Donor relation to patient" mandatory="true" />
                          <iais:value width="3" cssClass="col-md-3" >
                              <div class="form-check" style="padding-left: 0px;">
                                  <input class="form-check-input"
@@ -162,7 +162,7 @@
                                          class="check-circle"></span>Friend</label>
                              </div>
                          </iais:value>
-                         <iais:value width="4" cssClass="col-md-4" >
+                         <iais:value width="3" cssClass="col-md-3" >
                              <div class="form-check" style="padding-left: 0px;">
                                  <input class="form-check-input" type="radio"
                                         name="relation${arDonorIndex}"
@@ -175,7 +175,7 @@
                                          class="check-circle"></span>Relative</label>
                              </div>
                          </iais:value>
-                         <iais:value width="4" cssClass="col-md-4"/>
+                         <iais:value width="6" cssClass="col-md-6"/>
                          <iais:value width="3" cssClass="col-md-3">
                              <span id="error_relation${arDonorIndex}" name="iaisErrorMsg" class="error-msg"></span>
                          </iais:value>

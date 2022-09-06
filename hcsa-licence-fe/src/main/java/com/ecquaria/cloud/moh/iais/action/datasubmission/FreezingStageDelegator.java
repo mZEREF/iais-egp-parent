@@ -111,7 +111,7 @@ public class FreezingStageDelegator extends CommonDelegator {
         if (CommonDelegator.ACTION_TYPE_CONFIRM.equals(actionType)) {
             ValidationResult validationResult = WebValidationHelper.validateProperty(arSubFreezingStageDto, "common");
             errorMap = validationResult.retrieveAll();
-            verifyRfcCommon(bpc.request, errorMap);
+            verifyCommon(bpc.request, errorMap);
             if(errorMap.isEmpty()){
                 valRFC(bpc.request, arSubFreezingStageDto);
             }

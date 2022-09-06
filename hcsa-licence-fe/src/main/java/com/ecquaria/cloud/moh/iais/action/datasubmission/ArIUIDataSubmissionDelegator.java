@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserCons
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
@@ -194,7 +195,7 @@ public class ArIUIDataSubmissionDelegator {
                     errorMap.put(CYCLE_SELECT, "GENERAL_ERR0006");
                 }
                 if (errorMap.isEmpty()) {
-                    if (!"newCycle".equals(cycleRadio)) {
+                    if (!hasNewCycle) {
                         selectionDto = arDataSubmissionService.getCycleStageSelectionDtoByConds(patientInfoDto.getPatient().getPatientCode(),
                                 hciCode, cycleRadio);
                         selectionDto.setHciCode(hciCode);
@@ -205,8 +206,18 @@ public class ArIUIDataSubmissionDelegator {
                         }
                     }
                 }
+                String licenseeId = DataSubmissionHelper.getLicenseeId(request);
+                currentSuper.setCycleDto(DataSubmissionHelper.initCycleDto(selectionDto, currentSuper.getSvcName(), hciCode, licenseeId));
+                ArCurrentInventoryDto arCurrentInventoryDto = arDataSubmissionService.getArCurrentInventoryDtoByConds(hciCode, licenseeId, selectionDto.getPatientCode(), currentSuper.getSvcName());
+                if (arCurrentInventoryDto == null) {
+                    arCurrentInventoryDto = new ArCurrentInventoryDto();
+                    arCurrentInventoryDto.setHciCode(hciCode);
+                    arCurrentInventoryDto.setSvcName(currentSuper.getSvcName());
+                    arCurrentInventoryDto.setLicenseeId(licenseeId);
+                    arCurrentInventoryDto.setPatientCode(selectionDto.getPatientCode());
+                }
+                currentSuper.setArCurrentInventoryDto(arCurrentInventoryDto);
                 currentSuper.setSelectionDto(selectionDto);
-                currentSuper.setCycleDto(DataSubmissionHelper.initCycleDto(selectionDto, currentSuper.getSvcName(), hciCode, DataSubmissionHelper.getLicenseeId(request)));
                 ParamUtil.setRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, nextStage);
             }
         } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(submissionType)) {

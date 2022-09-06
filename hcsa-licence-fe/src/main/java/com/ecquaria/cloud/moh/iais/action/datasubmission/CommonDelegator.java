@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.RedirectUtil;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
@@ -11,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSub
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DisposalStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsCenterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoTransferredOutcomeStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EndCycleStageDto;
@@ -29,16 +31,17 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
 
 import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.ACTION_TYPE;
 
@@ -56,7 +59,8 @@ public abstract class CommonDelegator {
     protected static final String ACTION_TYPE_CONFIRM = "confirm";
     protected static final String ACTION_TYPE_DRAFT = "draft";
     protected static final String ACTION_TYPE_SUBMISSION = "submission";
-    protected final static String  DONOR_SOURSE_OTHERS    = "Others";
+    protected final static String DONOR_SOURSE_OTHERS = "Others";
+    private final static String HAS_DISPOSAL = "hasDisposal";
     @Autowired
     protected ArDataSubmissionService arDataSubmissionService;
     @Autowired
@@ -219,6 +223,7 @@ public abstract class CommonDelegator {
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_PREVIEW);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_ART);
         prepareConfim(bpc);
+        processDisposalInvCommon(bpc.request);
     }
 
     /**
@@ -391,10 +396,31 @@ public abstract class CommonDelegator {
         String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
         getRfcCommon(bpc.request);
+        getDisposalCommon(bpc.request);
         pageAction(bpc);
+        valDisposalRFCCommon(bpc.request);
         if ("return".equals(actionType)) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, null);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
+        }
+    }
+
+    protected void valDisposalRFCCommon(HttpServletRequest request) {
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        DisposalStageDto disposalStageDto = arSuperDataSubmissionDto.getDisposalStageDto();
+        if (StringUtil.isEmpty(ParamUtil.getRequestString(request, IaisEGPConstant.ERRORMSG))
+                && AppConsts.YES.equals(ParamUtil.getRequestString(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR))
+                && isRfc(request)) {
+            ArSuperDataSubmissionDto arOldSuperDataSubmissionDto = DataSubmissionHelper.getOldArDataSubmission(request);
+            DisposalStageDto oldDisposalStageDto = arOldSuperDataSubmissionDto.getDisposalStageDto();
+            if ((disposalStageDto == null && oldDisposalStageDto != null) || (disposalStageDto != null && oldDisposalStageDto == null)) {
+                ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.NO);
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_CONFIRM);
+            }
+            if (disposalStageDto != null && !disposalStageDto.equals(oldDisposalStageDto)) {
+                ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.NO);
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_CONFIRM);
+            }
         }
     }
 
@@ -505,7 +531,7 @@ public abstract class CommonDelegator {
                 }
             }
         }
-        verifyRfcCommon(request,errorMap);
+        verifyCommon(request, errorMap);
         if (!errorMap.isEmpty()) {
             log.info(StringUtil.changeForLog("----- Error Massage: " + errorMap + " -----"));
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
@@ -519,26 +545,47 @@ public abstract class CommonDelegator {
         return true;
     }
 
-    protected void verifyRfcCommon(HttpServletRequest request,Map<String,String> errorMap){
-      if(isRfc(request)){
-          ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
-          DataSubmissionDto dataSubmissionDto = arSuperDataSubmissionDto.getDataSubmissionDto();
-          if(StringUtil.isEmpty(dataSubmissionDto.getAmendReason())){
-              errorMap.put("amendReason","GENERAL_ERR0006");
-          }else if(isOthers(dataSubmissionDto.getAmendReason()) && StringUtil.isEmpty(dataSubmissionDto.getAmendReasonOther())){
-              errorMap.put("amendReasonOther","GENERAL_ERR0006");
-          }
-      }
+    protected void verifyCommon(HttpServletRequest request, Map<String, String> errorMap) {
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        DataSubmissionDto dataSubmissionDto = arSuperDataSubmissionDto.getDataSubmissionDto();
+        if (isRfc(request)) {
+            if (StringUtil.isEmpty(dataSubmissionDto.getAmendReason())) {
+                errorMap.put("amendReason", "GENERAL_ERR0006");
+            } else if (isOthers(dataSubmissionDto.getAmendReason()) && StringUtil.isEmpty(dataSubmissionDto.getAmendReasonOther())) {
+                errorMap.put("amendReasonOther", "GENERAL_ERR0006");
+            }
+        }
+        DisposalStageDto disposalStageDto = arSuperDataSubmissionDto.getDisposalStageDto();
+        if (disposalStageDto != null) {
+            ValidationResult validationResult = WebValidationHelper.validateProperty(disposalStageDto, "save");
+            errorMap.putAll(validationResult.retrieveAll());
+        }
     }
 
-    protected void getRfcCommon(HttpServletRequest request){
-        if(isRfc(request)){
+    private void getDisposalCommon(HttpServletRequest request) {
+        String hasDisposal = ParamUtil.getString(request, HAS_DISPOSAL);
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        if (AppConsts.YES.equals(hasDisposal)) {
+            DisposalStageDto disposalStageDto = arSuperDataSubmissionDto.getDisposalStageDto();
+            if (disposalStageDto == null) {
+                disposalStageDto = new DisposalStageDto();
+            }
+            setDisposalByPage(disposalStageDto, request);
+            arSuperDataSubmissionDto.setDisposalStageDto(disposalStageDto);
+            DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, request);
+        } else {
+            arSuperDataSubmissionDto.setDisposalStageDto(null);
+        }
+    }
+
+    protected void getRfcCommon(HttpServletRequest request) {
+        if (isRfc(request)) {
             ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
             DataSubmissionDto dataSubmissionDto = arSuperDataSubmissionDto.getDataSubmissionDto();
-            dataSubmissionDto.setAmendReason(ParamUtil.getString(request,"amendReason"));
-            if(isOthers(dataSubmissionDto.getAmendReason())){
-                dataSubmissionDto.setAmendReasonOther(ParamUtil.getString(request,"amendReasonOther"));
-            }else {
+            dataSubmissionDto.setAmendReason(ParamUtil.getString(request, "amendReason"));
+            if (isOthers(dataSubmissionDto.getAmendReason())) {
+                dataSubmissionDto.setAmendReasonOther(ParamUtil.getString(request, "amendReasonOther"));
+            } else {
                 dataSubmissionDto.setAmendReasonOther(null);
             }
         }
@@ -583,12 +630,215 @@ public abstract class CommonDelegator {
     }
 
     //TODO from ar center
-    protected final List<SelectOption> getSourseList(HttpServletRequest request){
-        Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap();
-        DataSubmissionHelper.setArPremisesMap(request).values().stream().forEach(v->stringStringMap.put(v.getHciCode(),v.getPremiseLabel()));
+    protected final List<SelectOption> getSourseList(HttpServletRequest request) {
+        Map<String, String> stringStringMap = IaisCommonUtils.genNewHashMap();
+        DataSubmissionHelper.setArPremisesMap(request).values().stream().forEach(v -> stringStringMap.put(v.getHciCode(), v.getPremiseLabel()));
         List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
-        selectOptions.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER,DONOR_SOURSE_OTHERS));
+        selectOptions.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER, DONOR_SOURSE_OTHERS));
         return selectOptions;
     }
 
+    private void setDisposalByPage(DisposalStageDto disposalStageDto, HttpServletRequest request) {
+        String disposedType = ParamUtil.getString(request, "disposedType");
+        disposalStageDto.setDisposedType(disposedType);
+        int totalNum = 0;
+        boolean isInt = true;
+        if (disposedType != null) {
+            switch (disposedType) {
+                case DataSubmissionConsts.DISPOSAL_TYPE_FRESH_OOCYTE:
+                case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_OOCYTE:
+                case DataSubmissionConsts.DISPOSAL_TYPE_THAWED_OOCYTE:
+                    disposalStageDto.setDisposedTypeDisplay(1);
+                    Integer immature = null;
+                    try {
+                        String immatureString = ParamUtil.getString(request, "immature");
+                        disposalStageDto.setImmatureString(immatureString);
+                        if (StringUtil.isEmpty(immatureString)) {
+                            disposalStageDto.setImmature(null);
+                        } else {
+                            immature = ParamUtil.getInt(request, "immature");
+                            totalNum += immature;
+                            disposalStageDto.setImmature(immature);
+                        }
+
+                    } catch (Exception e) {
+                        log.error("no int");
+                        isInt = false;
+                        disposalStageDto.setImmature(null);
+                    }
+                    Integer abnormallyFertilised = null;
+                    try {
+                        String abnormallyFertilisedString = ParamUtil.getString(request, "abnormallyFertilised");
+                        disposalStageDto.setAbnormallyFertilisedString(abnormallyFertilisedString);
+                        if (StringUtil.isEmpty(abnormallyFertilisedString)) {
+                            disposalStageDto.setAbnormallyFertilised(null);
+                        } else {
+                            abnormallyFertilised = ParamUtil.getInt(request, "abnormallyFertilised");
+                            totalNum += abnormallyFertilised;
+                            disposalStageDto.setAbnormallyFertilised(abnormallyFertilised);
+                        }
+
+                    } catch (Exception e) {
+                        log.error("no int");
+                        isInt = false;
+                        disposalStageDto.setAbnormallyFertilised(null);
+                    }
+                    Integer unfertilised = null;
+                    try {
+                        String unfertilisedString = ParamUtil.getString(request, "unfertilised");
+                        disposalStageDto.setUnfertilisedString(unfertilisedString);
+                        if (StringUtil.isEmpty(unfertilisedString)) {
+                            disposalStageDto.setUnfertilised(null);
+                        } else {
+                            unfertilised = ParamUtil.getInt(request, "unfertilised");
+                            totalNum += unfertilised;
+                            disposalStageDto.setUnfertilised(unfertilised);
+                        }
+
+                    } catch (Exception e) {
+                        isInt = false;
+                        disposalStageDto.setUnfertilised(null);
+                        log.error("no int");
+                    }
+                    Integer atretic = null;
+                    try {
+                        String atreticString = ParamUtil.getString(request, "atretic");
+                        disposalStageDto.setAtreticString(atreticString);
+                        if (StringUtil.isEmpty(atreticString)) {
+                            disposalStageDto.setAtretic(null);
+                        } else {
+                            atretic = ParamUtil.getInt(request, "atretic");
+                            totalNum += atretic;
+                            disposalStageDto.setAtretic(atretic);
+                        }
+
+                    } catch (Exception e) {
+                        isInt = false;
+                        disposalStageDto.setAtretic(null);
+                        log.error("no int");
+                    }
+                    Integer damaged = null;
+                    try {
+                        String damagedString = ParamUtil.getString(request, "damaged");
+                        disposalStageDto.setDamagedString(damagedString);
+                        if (StringUtil.isEmpty(damagedString)) {
+                            disposalStageDto.setDamaged(null);
+                        } else {
+                            damaged = ParamUtil.getInt(request, "damaged");
+                            totalNum += damaged;
+                            disposalStageDto.setDamaged(damaged);
+                        }
+
+                    } catch (Exception e) {
+                        isInt = false;
+                        disposalStageDto.setDamaged(null);
+                        log.error("no int");
+                    }
+                    Integer lysedOrDegenerated = null;
+                    try {
+                        String lysedOrDegeneratedString = ParamUtil.getString(request, "lysedOrDegenerated");
+                        disposalStageDto.setLysedOrDegeneratedString(lysedOrDegeneratedString);
+                        if (StringUtil.isEmpty(lysedOrDegeneratedString)) {
+                            disposalStageDto.setLysedOrDegenerated(null);
+                        } else {
+                            lysedOrDegenerated = ParamUtil.getInt(request, "lysedOrDegenerated");
+                            totalNum += lysedOrDegenerated;
+                            disposalStageDto.setLysedOrDegenerated(lysedOrDegenerated);
+                        }
+
+                    } catch (Exception e) {
+                        isInt = false;
+                        disposalStageDto.setLysedOrDegenerated(null);
+                        log.error("no int");
+                    }
+                    break;
+                case DataSubmissionConsts.DISPOSAL_TYPE_FRESH_EMBRYO:
+                case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_EMBRYO:
+                case DataSubmissionConsts.DISPOSAL_TYPE_THAWED_EMBRYO:
+                    disposalStageDto.setDisposedTypeDisplay(2);
+                    Integer unhealthyNum = null;
+                    try {
+                        String unhealthyNumString = ParamUtil.getString(request, "unhealthyNum");
+                        disposalStageDto.setUnhealthyNumString(unhealthyNumString);
+                        if (StringUtil.isEmpty(unhealthyNumString)) {
+                            disposalStageDto.setUnhealthyNum(null);
+                        } else {
+                            unhealthyNum = ParamUtil.getInt(request, "unhealthyNum");
+                            totalNum += unhealthyNum;
+                            disposalStageDto.setUnhealthyNum(unhealthyNum);
+                        }
+
+                    } catch (Exception e) {
+                        disposalStageDto.setUnhealthyNum(null);
+                        isInt = false;
+                        log.error("no int");
+                    }
+                    break;
+                case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_SPERM:
+                    disposalStageDto.setDisposedTypeDisplay(3);
+                    break;
+                default:
+            }
+        }
+
+        Integer otherDiscardedNum = null;
+        try {
+            String otherDiscardedNumString = ParamUtil.getString(request, "otherDiscardedNum");
+            disposalStageDto.setOtherDiscardedNumString(otherDiscardedNumString);
+            if (StringUtil.isEmpty(otherDiscardedNumString)) {
+                disposalStageDto.setOtherDiscardedNum(null);
+            } else {
+                otherDiscardedNum = ParamUtil.getInt(request, "otherDiscardedNum");
+                totalNum += otherDiscardedNum;
+                disposalStageDto.setOtherDiscardedNum(otherDiscardedNum);
+            }
+
+        } catch (Exception e) {
+            disposalStageDto.setOtherDiscardedNum(null);
+            isInt = false;
+            log.error("no int");
+        }
+        String otherDiscardedReason = ParamUtil.getString(request, "otherDiscardedReason");
+        disposalStageDto.setOtherDiscardedReason(otherDiscardedReason);
+        if (isInt) {
+            disposalStageDto.setTotalNum(totalNum);
+        } else {
+            disposalStageDto.setTotalNum(null);
+        }
+    }
+
+    private void processDisposalInvCommon(HttpServletRequest request) {
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        ArChangeInventoryDto arChangeInventoryDto = arSuperDataSubmissionDto.getArChangeInventoryDto();
+        if (arChangeInventoryDto == null) {
+            arChangeInventoryDto = new ArChangeInventoryDto();
+        }
+        DisposalStageDto disposalStageDto = arSuperDataSubmissionDto.getDisposalStageDto();
+        if (disposalStageDto != null) {
+            switch (disposalStageDto.getDisposedType()) {
+                case DataSubmissionConsts.DISPOSAL_TYPE_FRESH_OOCYTE:
+                    arChangeInventoryDto.setFreshOocyteNum(arChangeInventoryDto.getFreshOocyteNum() - disposalStageDto.getTotalNum());
+                    break;
+                case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_OOCYTE:
+                    arChangeInventoryDto.setFrozenOocyteNum(arChangeInventoryDto.getFrozenOocyteNum() - disposalStageDto.getTotalNum());
+                    break;
+                case DataSubmissionConsts.DISPOSAL_TYPE_THAWED_OOCYTE:
+                    arChangeInventoryDto.setThawedOocyteNum(arChangeInventoryDto.getThawedOocyteNum() - disposalStageDto.getTotalNum());
+                    break;
+                case DataSubmissionConsts.DISPOSAL_TYPE_FRESH_EMBRYO:
+                    arChangeInventoryDto.setFreshEmbryoNum(arChangeInventoryDto.getFreshEmbryoNum() - disposalStageDto.getTotalNum());
+                    break;
+                case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_EMBRYO:
+                    arChangeInventoryDto.setFrozenEmbryoNum(arChangeInventoryDto.getFrozenEmbryoNum() - disposalStageDto.getTotalNum());
+                    break;
+                case DataSubmissionConsts.DISPOSAL_TYPE_THAWED_EMBRYO:
+                    arChangeInventoryDto.setThawedEmbryoNum(arChangeInventoryDto.getThawedEmbryoNum() - disposalStageDto.getTotalNum());
+                    break;
+                case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_SPERM:
+                    arChangeInventoryDto.setFrozenSpermNum(arChangeInventoryDto.getFrozenSpermNum() - disposalStageDto.getTotalNum());
+                    break;
+                default:
+            }
+        }
+    }
 }

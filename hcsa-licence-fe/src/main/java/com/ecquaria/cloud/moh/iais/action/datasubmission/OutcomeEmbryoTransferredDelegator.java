@@ -76,7 +76,7 @@ public class OutcomeEmbryoTransferredDelegator extends CommonDelegator{
 
             errorMap = validationResult.retrieveAll();
             errorMap.putAll(validationResult1.retrieveAll());
-            verifyRfcCommon(request, errorMap);
+            verifyCommon(request, errorMap);
             if(errorMap.isEmpty()){
                 valRFC(request, embryoTransferredOutcomeStageDto);
                 outcomePregnancyDelegator.valRFC(request, pregnancyOutcomeStageDto);

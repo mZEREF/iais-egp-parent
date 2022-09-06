@@ -76,12 +76,14 @@
                   <iais:row>
                     <iais:field value="Cryopreservation Date" mandatory="true"/>
                     <iais:value cssClass="col-md-7">
-                      <iais:datePicker id = "cryopreservationDate" name = "cryopreservationDate" dateVal="${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedDate}"></iais:datePicker>
+                      <iais:datePicker id = "cryopreservationDate" name = "cryopreservationDate" dateVal="${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedDate}"/>
                       <span class="error-msg" name="iaisErrorMsg" id="error_cryopreservedDate"></span>
                     </iais:value>
                   </iais:row>
+                  <%@include file="section/hasDisposalRow.jsp"%>
                 </div>
               </div>
+              <%@include file="section/disposalStageDetailSection.jsp" %>
               <%@include file="common/dsAmendment.jsp" %>
             </div>
           </div>

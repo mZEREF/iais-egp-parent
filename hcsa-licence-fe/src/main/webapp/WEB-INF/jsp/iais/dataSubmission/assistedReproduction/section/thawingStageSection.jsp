@@ -99,6 +99,9 @@
                         </iais:value>
                     </iais:row>
                 </div>
+                <c:set var="disFieldWidth" value="6"/>
+                <c:set var="disValueWidth" value="6"/>
+                <%@include file="hasDisposalRow.jsp"%>
             </div>
         </div>
     </div>

@@ -16,9 +16,9 @@
                     </span>
                 </h3>
                 <iais:row>
-                    <iais:field width="5" value="Outcome of Embryo Transferred" mandatory="true"/>
+                    <iais:field width="6" cssClass="col-md-6" value="Outcome of Embryo Transferred" mandatory="true"/>
 
-                    <iais:value width="7" cssClass="col-md-7">
+                    <iais:value width="6" cssClass="col-md-6">
                         <c:forEach items="${OutcomeEmbryoTransferreds}" var="OutcomeEmbryoTransferred">
                             <c:set var="OutcomeEmbryoTransferredCode" value="${OutcomeEmbryoTransferred.code}"/>
                             <div class="form-check"

@@ -16,16 +16,16 @@
                 <c:set var="amendReasonCodeCategoryOther" value="${dataSubmission.submissionType == 'AR_TP003' ? 'DSA_002' :
                         (dataSubmission.submissionType == 'AR_TP002' ? 'PCS_002' : 'PTA_003')}"/>
                 <iais:row>
-                    <iais:field width="5" value="Reason for Amendment" id="amendReasonLabel" mandatory="true"/>
-                    <iais:value width="7" cssClass="col-md-7">
+                    <iais:field width="6" cssClass="col-md-6" value="Reason for Amendment" id="amendReasonLabel" mandatory="true"/>
+                    <iais:value width="6" cssClass="col-md-6">
                         <iais:select name="amendReason" firstOption="Please Select" codeCategory="${amendReasonCodeCategory}"
                                      value="${dataSubmission.amendReason}" cssClass="amendReasonSel"
                                      onchange="toggleOnSelect(this, '${amendReasonCodeCategoryOther}', 'amendReasonOtherDiv')"/>
                     </iais:value>
                 </iais:row>
                 <iais:row id="amendReasonOtherDiv" style="${dataSubmission.amendReason ne amendReasonCodeCategoryOther ? 'display:none'  : null }" >
-                    <iais:field width="5" value="Reason for Amendment (Others)" mandatory="true"/>
-                    <iais:value width="7" cssClass="col-md-7">
+                    <iais:field width="6" cssClass="col-md-6" value="Reason for Amendment (Others)" mandatory="true"/>
+                    <iais:value width="6" cssClass="col-md-6">
                         <iais:input maxLength="50" type="text" name="amendReasonOther" id="amendReasonOther"
                                     value="${dataSubmission.amendReasonOther}"/>
                     </iais:value>

@@ -177,6 +177,7 @@
                                          dateVal="${embryoTransferStageDto.secondTransferDate}"/>
                     </iais:value>
                 </iais:row>
+                <%@include file="hasDisposalRow.jsp"%>
             </div>
         </div>
     </div>

@@ -16,7 +16,7 @@
                     </span>
                 </h3>
                 <iais:row>
-                    <iais:field width="6" value="Is Clinical Pregnancy Detected?" mandatory="true"/>
+                    <iais:field width="6" cssClass="col-md-6" value="Is Clinical Pregnancy Detected?" mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-3">
                         <div class="form-check">
                             <input class="form-check-input"
@@ -47,6 +47,7 @@
                         </div>
                     </iais:value>
                 </iais:row>
+                <%@include file="hasDisposalRow.jsp"%>
             </div>
         </div>
     </div>

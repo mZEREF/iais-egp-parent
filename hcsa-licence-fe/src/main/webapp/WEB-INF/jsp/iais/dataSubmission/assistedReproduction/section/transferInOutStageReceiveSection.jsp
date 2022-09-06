@@ -47,7 +47,7 @@
                             <iais:input maxLength="2" type="text" name="oocyteNum"
                                         value="${transferInOutStageDto.oocyteNum}"/>
                         </iais:value>
-                        <iais:value width="4" cssClass="col-md-4">
+                        <iais:value width="3" cssClass="col-md-3">
                             <input type="hidden" value="${outStageOocyte}">
                             <div class="form-check col-xs-12">
                                 <input class="form-check-input" type="checkbox"
@@ -71,7 +71,7 @@
                             <iais:input maxLength="2" type="text" name="embryoNum"
                                         value="${transferInOutStageDto.embryoNum}"/>
                         </iais:value>
-                        <iais:value width="4" cssClass="col-md-4">
+                        <iais:value width="3" cssClass="col-md-3">
                             <input type="hidden" value="${outStageEmbryo}">
                             <div class="form-check col-xs-12">
                                 <input class="form-check-input" type="checkbox"
@@ -168,6 +168,7 @@
                         <c:out value="${transferInOutStageDto.transferDate}"/>
                     </iais:value>
                 </iais:row>
+                <%@include file="hasDisposalRow.jsp"%>
             </div>
 
         </div>

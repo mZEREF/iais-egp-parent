@@ -72,6 +72,7 @@
                     <span id="error_isThereAppeal" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:row>
                 <span id="error_isThereAppealShow" name="iaisErrorMsg" class="error-msg"></span>
+                <%@include file="hasDisposalRow.jsp"%>
             </div>
         </div>
     </div>

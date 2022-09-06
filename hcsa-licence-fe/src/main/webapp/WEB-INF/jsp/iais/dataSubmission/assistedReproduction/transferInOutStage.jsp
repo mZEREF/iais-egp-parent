@@ -23,8 +23,9 @@
                         </c:when>
                         <c:otherwise>
                             <%@include file="section/transferInOutStageSection.jsp" %>
-                            <%@include file="common/dsAmendment.jsp" %>
                         </c:otherwise>
+                        <%@include file="section/previewDisposalDetail.jsp" %>
+                        <%@include file="common/dsAmendment.jsp" %>
                     </c:choose>
                 </div>
                 <%@include file="common/arFooter.jsp" %>

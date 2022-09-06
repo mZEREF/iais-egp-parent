@@ -178,6 +178,7 @@
                         <iais:datePicker id="transferDate" name="transferDate" value="${transferInOutStageDto.transferDate}"/>
                     </iais:value>
                 </iais:row>
+                <%@include file="hasDisposalRow.jsp"%>
             </div>
 
         </div>

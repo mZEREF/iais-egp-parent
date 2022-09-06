@@ -101,7 +101,7 @@ public class OutcomePregnancyDelegator extends CommonDelegator {
         if ("confirm".equals(crud_action_type)) {
             ValidationResult validationResult = WebValidationHelper.validateProperty(pregnancyOutcomeStageDto, "save");
             errorMap = validationResult.retrieveAll();
-            verifyRfcCommon(request, errorMap);
+            verifyCommon(request, errorMap);
             if(errorMap.isEmpty()){
                 valRFC(request, pregnancyOutcomeStageDto);
             }
