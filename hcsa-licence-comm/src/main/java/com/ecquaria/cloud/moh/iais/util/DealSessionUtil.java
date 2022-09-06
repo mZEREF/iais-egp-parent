@@ -1216,13 +1216,15 @@ public class DealSessionUtil {
                 });
             }
         }
-        List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = appSvcRelatedInfoDto.getAppSvcSpecialServiceInfoList();
-        if (IaisCommonUtils.isNotEmpty(appSvcSpecialServiceInfoList)) {
-            appSvcSpecialServiceInfoList.forEach(dto -> {
-                if (dto.isInit()) {
-                    dto.setInit(false);
-                }
-            });
+        if (!HcsaAppConst.SECTION_SVCINFO.equals(type)) {
+            List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = appSvcRelatedInfoDto.getAppSvcSpecialServiceInfoList();
+            if (IaisCommonUtils.isNotEmpty(appSvcSpecialServiceInfoList)) {
+                appSvcSpecialServiceInfoList.forEach(dto -> {
+                    if (dto.isInit()) {
+                        dto.setInit(false);
+                    }
+                });
+            }
         }
         appSvcRelatedInfoDto.setDocumentShowDtoList(null);
     }

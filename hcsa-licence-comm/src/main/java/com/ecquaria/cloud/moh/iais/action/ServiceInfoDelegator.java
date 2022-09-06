@@ -105,6 +105,8 @@ public class ServiceInfoDelegator {
         log.debug(StringUtil.changeForLog("the do doStart start ...."));
 
         AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(bpc.request);
+        DealSessionUtil.reSetInit(appSubmissionDto, HcsaAppConst.SECTION_SVCINFO);
+        ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
 //        if (IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList())) {
 //            List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,
 //                    AppServicesConsts.HCSASERVICEDTOLIST);
@@ -113,7 +115,7 @@ public class ServiceInfoDelegator {
 //        }
 
         //svc
-        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.RELOADSVCDOC, null);
+//        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.RELOADSVCDOC, null);
         //ParamUtil.setSessionAttr(bpc.request, SERVICEPERSONNELCONFIG, null);
 
         List<SelectOption> designationOpList = ApplicationHelper.genDesignationOpList();
