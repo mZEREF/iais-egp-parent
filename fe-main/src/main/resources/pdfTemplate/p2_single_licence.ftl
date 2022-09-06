@@ -76,7 +76,7 @@
       background-size: 100% auto;
       background-position: center top;
       /*background-attachment: fixed;*/
-      height: 1500px;/*100%*/
+      height: 2000px;/*100%*/
       padding: 30px 75px;
       width: 100%;
       position: relative;
@@ -274,7 +274,7 @@
             <div class="lic-title">
               <h2><br></br></h2>
               <h2>LICENCE</h2>
-              <h2>ISSUED PURSUANT TO <br>
+              <h2>ISSUED PURSUANT TO <br></br>
                 SECTION 11(1)(a) OF THE HEALTHCARE SERVICES ACT 2020 (HCSA)</h2>
             </div>
             <div class="lic-number">
@@ -359,7 +359,8 @@
               <div class="licence_box2">
                 <div class="lic-headerbox"></div>
                 <div class="lic-number">
-                  <h2>AUTHORISED <br> DISCIPLINES/SPECIFIED TESTS</h2>
+                  <h2><br></br></h2>
+                  <h2>AUTHORISED <br></br> DISCIPLINES/SPECIFIED TESTS</h2>
                 </div>
 
                 <div class="text-box">
@@ -372,8 +373,8 @@
                 </div>
 
                 <div class="lic-footer">
-                  <p style="font-style: italic;">Updated as of ${tody}</p>
-                  <p>Ministry of Health | Page 2 of ${totle}</p>
+                  <p style="font-style: italic;text-align: center;">Updated as of ${tody}</p>
+                  <p style="text-align: center;">Ministry of Health | Page 2 of ${totle}</p>
                 </div>
               </div>
             </div>
@@ -387,20 +388,21 @@
               <div class="licence_box2">
                 <div class="lic-headerbox"></div>
                 <div class="lic-number">
-                  <h2>AUTHORISED <br> DISCIPLINES/SPECIFIED TESTS</h2>
+                  <h2><br></br></h2>
+                  <h2>AUTHORISED <br></br> DISCIPLINES/SPECIFIED TESTS</h2>
                 </div>
 
                 <div class="text-box">
                   <div class="lic-list">
-                    <ol start="${(s_index + 1)*15}">
+                    <ol start="${(ds_index + 1)*15}">
                       ${ds!''}
                     </ol>
                   </div>
                 </div>
 
                 <div class="lic-footer">
-                  <p style="font-style: italic;">Updated as of ${tody}</p>
-                  <p>Ministry of Health | Page ${s_index + 3} of ${totle}</p>
+                  <p style="font-style: italic;text-align: center;">Updated as of ${tody}</p>
+                  <p style="text-align: center;">Ministry of Health | Page ${ds_index + 3} of ${totle}</p>
                 </div>
               </div>
             </div>
