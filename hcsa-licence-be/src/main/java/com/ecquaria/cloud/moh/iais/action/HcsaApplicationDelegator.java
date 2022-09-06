@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
@@ -3612,6 +3613,9 @@ public class HcsaApplicationDelegator {
         appPremisesCorrelationDto.setOldCorrelationId(correlationId);
         String newCorrelationId = appPremisesCorrelationDto.getId();
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId,taskDto.getRoleId());
+        ParamUtil.setSessionAttr(bpc.request, HcsaLicenceBeConstant.APP_SPECIAL_FLAG, "edit");
+        ParamUtil.setSessionAttr(bpc.request, HcsaLicenceBeConstant.APP_OTHER_FLAG, "edit");
+        initApplicationViewDtoSubSvc(applicationViewDto);
         applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
         //set can tcu date
         setShowAndEditTcuDate(bpc.request,applicationViewDto,taskDto);
@@ -3706,6 +3710,29 @@ public class HcsaApplicationDelegator {
 
         //set Aso Email
         setAsoEmail(bpc.request,applicationViewDto);
+    }
+
+    private void initApplicationViewDtoSubSvc(ApplicationViewDto applicationViewDto) {
+        List<AppPremSubSvcRelDto> appPremSpecialSubSvcRelDtoList = applicationViewDto.getAppPremSpecialSubSvcRelDtoList();
+        if (IaisCommonUtils.isEmpty(appPremSpecialSubSvcRelDtoList)){
+            return;
+        }
+        for (AppPremSubSvcRelDto appPremSubSvcRelDto : appPremSpecialSubSvcRelDtoList) {
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(appPremSubSvcRelDto.getSvcId());
+            if (hcsaServiceDto!=null){
+                appPremSubSvcRelDto.setSvcConfigDto(hcsaServiceDto);
+            }
+        }
+        List<AppPremSubSvcRelDto> appPremOthersSubSvcRelDtoList = applicationViewDto.getAppPremOthersSubSvcRelDtoList();
+        if (IaisCommonUtils.isEmpty(appPremOthersSubSvcRelDtoList)){
+            return;
+        }
+        for (AppPremSubSvcRelDto appPremSubSvcRelDto : appPremOthersSubSvcRelDtoList) {
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(appPremSubSvcRelDto.getSvcId());
+            if (hcsaServiceDto!=null){
+                appPremSubSvcRelDto.setSvcConfigDto(hcsaServiceDto);
+            }
+        }
     }
 
     private void setShowAndEditTcuDate(HttpServletRequest request,ApplicationViewDto applicationViewDto,TaskDto taskDto){
