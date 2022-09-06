@@ -73,6 +73,12 @@ import com.ecquaria.cloud.moh.iais.validation.ValidateCharges;
 import com.ecquaria.cloud.moh.iais.validation.ValidateClincalDirector;
 import com.ecquaria.cloud.moh.iais.validation.ValidateVehicle;
 import com.ecquaria.egp.core.common.constants.AppConstants;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.sql.Time;
 import java.text.ParseException;
@@ -97,11 +103,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @Auther chenlei on 5/4/2022.
@@ -1364,7 +1365,6 @@ public final class AppValidatorHelper {
                 String praCerEndDate = person.getPraCerEndDateStr();
                 String typeOfRegister = person.getTypeOfRegister();
                 String otherQualification = person.getOtherQualification();
-                String holdCerByEMS = person.getHoldCerByEMS();
                 if (StringUtil.isIn(psnType, new String[]{ApplicationConsts.PERSONNEL_PSN_TYPE_CGO})) {
                     if (StringUtil.isEmpty(professionType)) {
                         errMap.put(prefix + "professionType" + i,
@@ -1411,9 +1411,6 @@ public final class AppValidatorHelper {
                     }
                     if (StringUtil.isEmpty(designation)) {
                         errMap.put(prefix + "designation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation", "field"));
-                    }
-                    if (StringUtil.isEmpty(holdCerByEMS)){
-                        errMap.put(prefix + "holdCerByEMS" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Clinical Governance Officer (CGO) holds a valid certification issued by an Emergency Medical Services ('EMS') Medical Directors workshop", "field"));
                     }
                 }
 

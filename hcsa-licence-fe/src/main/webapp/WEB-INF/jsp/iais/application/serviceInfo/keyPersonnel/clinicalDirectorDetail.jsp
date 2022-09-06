@@ -159,7 +159,7 @@
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" cssClass="col-md-5" mandatory="" value=""/>
+            <iais:field width="5" cssClass="col-md-5" />
             <iais:value width="7" cssClass="col-md-7 col-xs-12">
                 <span class="error-msg" name="iaisErrorMSg" id="${prepsn}holdCerByEMS${index}"></span>
             </iais:value>
