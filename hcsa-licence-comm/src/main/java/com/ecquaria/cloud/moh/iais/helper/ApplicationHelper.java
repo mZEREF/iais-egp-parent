@@ -93,7 +93,6 @@ import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURRENTSERVICEID
 public final class ApplicationHelper {
 
     private static Map<String, String> PSN_STEP_MAP;
-    private static Map<String, String> NAME_MAP;
 
     static {
         PSN_STEP_MAP = IaisCommonUtils.genNewHashMap();
@@ -109,20 +108,6 @@ public final class ApplicationHelper {
         PSN_STEP_MAP.put(ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER, HcsaConsts.STEP_SECTION_LEADER);
         PSN_STEP_MAP.put(ApplicationConsts.PERSONNEL_PSN_KAH, HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER);
         PSN_STEP_MAP = Collections.unmodifiableMap(PSN_STEP_MAP);
-
-        NAME_MAP = IaisCommonUtils.genNewHashMap();
-        NAME_MAP.put(ApplicationConsts.PERSONNEL_PSN_TYPE_PO, HcsaConsts.CLINICAL_GOVERNANCE_OFFICER);
-        NAME_MAP.put(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, HcsaConsts.NOMINEE);
-        NAME_MAP.put(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, HcsaConsts.CLINICAL_GOVERNANCE_OFFICER);
-        NAME_MAP.put(ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL, HcsaConsts.SERVICE_PERSONNEL);
-        NAME_MAP.put(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, HcsaConsts.MEDALERT_PERSON);
-        NAME_MAP.put(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR, HcsaConsts.CLINICAL_DIRECTOR);
-        NAME_MAP.put(ApplicationConsts.PERSONNEL_VEHICLES, HcsaConsts.VEHICLE);
-        NAME_MAP.put(ApplicationConsts.PERSONNEL_CHARGES, "General Conveyance Charges");
-        NAME_MAP.put(ApplicationConsts.PERSONNEL_CHARGES_OTHER, "Medical Equipment and Other Charges");
-        NAME_MAP.put(ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER, HcsaConsts.SECTION_LEADER);
-        NAME_MAP.put(ApplicationConsts.PERSONNEL_PSN_KAH, HcsaConsts.KEY_APPOINTMENT_HOLDER);
-        NAME_MAP = Collections.unmodifiableMap(NAME_MAP);
     }
 
     private ApplicationHelper() {
@@ -139,10 +124,6 @@ public final class ApplicationHelper {
 
     public static String getStep(String personType) {
         return PSN_STEP_MAP.get(personType);
-    }
-
-    public static String getName(String personType) {
-        return NAME_MAP.get(personType);
     }
 
     public static LoginContext getLoginContext() {
@@ -268,31 +249,6 @@ public final class ApplicationHelper {
             }
         }
         return appSvcRelatedInfoDto;
-    }
-
-    public static List<AppSvcPrincipalOfficersDto> getKeyPersonnels(String psnType, HttpServletRequest request) {
-        return getKeyPersonnels(psnType, getAppSvcRelatedInfo(request));
-    }
-
-    public static List<AppSvcPrincipalOfficersDto> getKeyPersonnels(String psnType, AppSvcRelatedInfoDto sourceReletedInfo) {
-        List<AppSvcPrincipalOfficersDto> sourceList = null;
-        if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)) {
-            sourceList = sourceReletedInfo.getAppSvcCgoDtoList();
-        } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnType)) {
-            sourceList = sourceReletedInfo.getAppSvcMedAlertPersonList();
-        } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType)) {
-            sourceList = sourceReletedInfo.getAppSvcPrincipalOfficersDtoList();
-        } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnType)) {
-            sourceList = sourceReletedInfo.getAppSvcNomineeDtoList();
-        } else if (ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType)) {
-            sourceList = sourceReletedInfo.getAppSvcClinicalDirectorDtoList();
-        } else if (ApplicationConsts.PERSONNEL_PSN_KAH.equals(psnType)) {
-            sourceList = sourceReletedInfo.getAppSvcKeyAppointmentHolderDtoList();
-        }
-        if (sourceList == null) {
-            sourceList = IaisCommonUtils.genNewArrayList();
-        }
-        return sourceList;
     }
 
     public static void reSetAdditionalFields(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto,
@@ -532,41 +488,12 @@ public final class ApplicationHelper {
         }
         AppSvcRelatedInfoDto sourceSvcInfo = sourceSvcInfoList.get(0);
         AppSvcRelatedInfoDto targetSvcInfo = targetSvcInfoList.get(0);
-        if (personnelEditList.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO)
-                || personnelEditList.contains(HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS)) {
-            List<AppSvcPrincipalOfficersDto> deList = IaisCommonUtils.genNewArrayList(sourceSvcInfo.getAppSvcCgoDtoList().size());
-            CopyUtil.copyMutableObjectList(sourceSvcInfo.getAppSvcCgoDtoList(), deList);
-            targetSvcInfo.setAppSvcCgoDtoList(deList);
+        for (String psnType : personnelEditList) {
+            List<AppSvcPrincipalOfficersDto> keyPersonnel = getKeyPersonnel(psnType, sourceSvcInfo);
+            List<AppSvcPrincipalOfficersDto> desList = IaisCommonUtils.genNewArrayList(sourceSvcInfo.getAppSvcCgoDtoList().size());
+            CopyUtil.copyMutableObjectList(keyPersonnel, desList);
+            setKeyPersonnel(desList, psnType, sourceSvcInfo);
         }
-        if (personnelEditList.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP)
-                || personnelEditList.contains(HcsaConsts.STEP_MEDALERT_PERSON)) {
-            List<AppSvcPrincipalOfficersDto> deList = IaisCommonUtils.genNewArrayList(
-                    sourceSvcInfo.getAppSvcMedAlertPersonList().size());
-            CopyUtil.copyMutableObjectList(sourceSvcInfo.getAppSvcMedAlertPersonList(), deList);
-            targetSvcInfo.setAppSvcMedAlertPersonList(deList);
-        }
-        if (personnelEditList.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_PO)
-                || personnelEditList.contains(HcsaConsts.STEP_PRINCIPAL_OFFICERS)) {
-            List<AppSvcPrincipalOfficersDto> deList = IaisCommonUtils.genNewArrayList(
-                    sourceSvcInfo.getAppSvcPrincipalOfficersDtoList().size());
-            CopyUtil.copyMutableObjectList(sourceSvcInfo.getAppSvcPrincipalOfficersDtoList(), deList);
-            targetSvcInfo.setAppSvcPrincipalOfficersDtoList(deList);
-        }
-        if (personnelEditList.contains(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR)
-                || personnelEditList.contains(HcsaConsts.STEP_CLINICAL_DIRECTOR)) {
-            List<AppSvcPrincipalOfficersDto> deList = IaisCommonUtils.genNewArrayList(
-                    sourceSvcInfo.getAppSvcClinicalDirectorDtoList().size());
-            CopyUtil.copyMutableObjectList(sourceSvcInfo.getAppSvcClinicalDirectorDtoList(), deList);
-            targetSvcInfo.setAppSvcClinicalDirectorDtoList(deList);
-        }
-        if (personnelEditList.contains(ApplicationConsts.PERSONNEL_PSN_KAH)
-                || personnelEditList.contains(HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER)) {
-            List<AppSvcPrincipalOfficersDto> deList = IaisCommonUtils.genNewArrayList(
-                    sourceSvcInfo.getAppSvcKeyAppointmentHolderDtoList().size());
-            CopyUtil.copyMutableObjectList(sourceSvcInfo.getAppSvcKeyAppointmentHolderDtoList(), deList);
-            targetSvcInfo.setAppSvcKeyAppointmentHolderDtoList(deList);
-        }
-
         targetSvcInfo.setAppSvcDocDtoLit(sourceSvcInfo.getAppSvcDocDtoLit());
     }
 
@@ -2089,18 +2016,6 @@ public final class ApplicationHelper {
     public static List<AppSvcPrincipalOfficersDto> getBasePersonnel(AppSvcRelatedInfoDto appSvcRelatedInfoDto, String psnType) {
         List<AppSvcPrincipalOfficersDto> psnDtoList = IaisCommonUtils.genNewArrayList();
         switch (psnType) {
-            case ApplicationConsts.PERSONNEL_PSN_TYPE_CGO:
-                psnDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
-                break;
-            case ApplicationConsts.PERSONNEL_PSN_TYPE_PO:
-                psnDtoList = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
-                break;
-            case ApplicationConsts.PERSONNEL_PSN_TYPE_DPO:
-                psnDtoList = appSvcRelatedInfoDto.getAppSvcNomineeDtoList();
-                break;
-            case ApplicationConsts.PERSONNEL_PSN_TYPE_MAP:
-                psnDtoList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
-                break;
             case ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL:
                 SvcPersonnelDto svcPersonnelDto = appSvcRelatedInfoDto.getSvcPersonnelDto();
                 if (svcPersonnelDto != null) {
@@ -2111,13 +2026,11 @@ public final class ApplicationHelper {
                     addSvcPersonnel(svcPersonnelDto.getNormalList(), psnDtoList);
                 }
                 break;
-            case ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR:
-                psnDtoList = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
-                break;
             case ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER:
                 addSvcPersonnel(appSvcRelatedInfoDto.getAppSvcSectionLeaderList(), psnDtoList);
                 break;
             default:
+                psnDtoList = getKeyPersonnel(psnType, appSvcRelatedInfoDto);
                 break;
         }
         return IaisCommonUtils.getList(psnDtoList);
@@ -3411,5 +3324,69 @@ public final class ApplicationHelper {
         }
         s.append("File");
         return s.toString();
+    }
+
+    public static List<AppSvcPrincipalOfficersDto> getKeyPersonnel(String psnType, HttpServletRequest request) {
+        return getKeyPersonnel(psnType, getAppSvcRelatedInfo(request));
+    }
+
+    public static List<AppSvcPrincipalOfficersDto> getKeyPersonnel(String psnType, AppSvcRelatedInfoDto appSvcRelatedInfoDto){
+        if (StringUtil.isEmpty(psnType) || appSvcRelatedInfoDto == null) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        List<AppSvcPrincipalOfficersDto> result = null;
+        switch (psnType) {
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_CGO:
+                result = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+                break;
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_PO:
+                result = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
+                break;
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_DPO:
+                result = appSvcRelatedInfoDto.getAppSvcNomineeDtoList();
+                break;
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_MAP:
+                result = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
+                break;
+            case ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR:
+                result = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
+                break;
+            case ApplicationConsts.PERSONNEL_PSN_KAH:
+                result = appSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList();
+                break;
+            default:
+                break;
+        }
+        return IaisCommonUtils.getList(result);
+    }
+
+    public static void setKeyPersonnel(List<AppSvcPrincipalOfficersDto> sourceList, String psnType,
+            AppSvcRelatedInfoDto appSvcRelatedInfoDto){
+        if (StringUtil.isEmpty(psnType) || appSvcRelatedInfoDto == null) {
+            return;
+        }
+        List<AppSvcPrincipalOfficersDto> result = null;
+        switch (psnType) {
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_CGO:
+                appSvcRelatedInfoDto.setAppSvcCgoDtoList(sourceList);
+                break;
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_PO:
+                appSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(sourceList);
+                break;
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_DPO:
+                appSvcRelatedInfoDto.setAppSvcNomineeDtoList(sourceList);
+                break;
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_MAP:
+                appSvcRelatedInfoDto.setAppSvcMedAlertPersonList(sourceList);
+                break;
+            case ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR:
+                appSvcRelatedInfoDto.setAppSvcClinicalDirectorDtoList(sourceList);
+                break;
+            case ApplicationConsts.PERSONNEL_PSN_KAH:
+                appSvcRelatedInfoDto.setAppSvcKeyAppointmentHolderDtoList(sourceList);
+                break;
+            default:
+                break;
+        }
     }
 }

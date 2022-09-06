@@ -1,8 +1,21 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
+<c:set var="permanent" value="${ApplicationConsts.PREMISES_TYPE_PERMANENT}" />
+<c:set var="conv" value="${ApplicationConsts.PREMISES_TYPE_CONVEYANCE}" />
+<c:set var="easMts" value="${ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE}" />
+<c:set var="mobile" value="${ApplicationConsts.PREMISES_TYPE_MOBILE}" />
+<c:set var="remote" value="${ApplicationConsts.PREMISES_TYPE_REMOTE}" />
+<c:set var="permanentShow" value="${ApplicationConsts.PREMISES_TYPE_PERMANENT_SHOW}" />
+<c:set var="convShow" value="${ApplicationConsts.PREMISES_TYPE_CONVEYANCE_SHOW}" />
+<c:set var="easMtsShow" value="${ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE_SHOW}" />
+<c:set var="mobileShow" value="${ApplicationConsts.PREMISES_TYPE_MOBILE_SHOW}" />
+<c:set var="remoteShow" value="${ApplicationConsts.PREMISES_TYPE_REMOTE_SHOW}" />
+
+<c:set var="mosdName" value="${ApplicationConsts.MODE_OF_SVC_DELIVERY}" />
 
 <div class="panel panel-default">
   <div class="panel-heading" id="headingPremise" role="tab">
     <h4 class="panel-title"><a  class="collapsed" role="button" data-toggle="collapse" href="#collapsePremise"
-                                aria-expanded="true" aria-controls="collapsePremise">Mode of Service Delivery</a>
+                                aria-expanded="true" aria-controls="collapsePremise"><c:out value="${mosdName}" /> </a>
     </h4>
   </div>
   <div class="panel-collapse collapse" id="collapsePremise" role="tabpanel"
@@ -23,50 +36,55 @@
           <div class="preview-info">
             <div class="row">
               <div class="col-md-6">
-                <label>Mode of Service Delivery ${status.index+1} </label>
+                <label>${mosdName} ${status.index+1} </label>
               </div>
             </div>
 
             <div class="row">
               <div class="col-md-6">
-                Mode of Service Delivery
+                ${mosdName}
               </div>
               <div class="col-md-6">
                 <div class="col-md-6">
                   <span class="newVal " attr="${appGrpPremDto.premisesType}">
-                    <c:if test="${appGrpPremDto.premisesType=='OFFSITE'}">
-                       Off-site
+                    <c:if test="${appGrpPremDto.premisesType == permanent}">
+                        ${permanentShow}
                     </c:if>
-                   <c:if test="${appGrpPremDto.premisesType=='ONSITE'}">
-                      Premises
-                   </c:if>
-                    <c:if test="${appGrpPremDto.premisesType=='CONVEYANCE'}">
-                       Conveyance
-                   </c:if>
-                    <c:if test="${appGrpPremDto.premisesType=='EASMTS'}">
-                       Conveyance (in a mobile clinic / ambulance)
+                    <c:if test="${appGrpPremDto.premisesType == conv}">
+                        ${convShow}
+                    </c:if>
+                    <c:if test="${appGrpPremDto.premisesType == easMts}">
+                        ${easMtsShow}
+                    </c:if>
+                    <c:if test="${appGrpPremDto.premisesType == mobile}">
+                        ${mobileShow}
+                    </c:if>
+                    <c:if test="${appGrpPremDto.premisesType == remote}">
+                        ${remoteShow}
                     </c:if>
                 </div>
                 <div class="col-md-6">
                   <span class="oldVal " attr="${oldAppGrpPremDto.premisesType}" style="display: none">
-                     <c:if test="${oldAppGrpPremDto.premisesType=='OFFSITE'}">
-                       Off-site
+                     <c:if test="${oldAppGrpPremDto.premisesType == permanent}">
+                       ${permanentShow}
                      </c:if>
-                   <c:if test="${oldAppGrpPremDto.premisesType=='ONSITE'}">
-                     Premises
-                   </c:if>
-                    <c:if test="${oldAppGrpPremDto.premisesType=='CONVEYANCE'}">
-                      Conveyance
+                    <c:if test="${oldAppGrpPremDto.premisesType == conv}">
+                      ${convShow}
                     </c:if>
-                    <c:if test="${oldAppGrpPremDto.premisesType=='EASMTS'}">
-                      Conveyance (in a mobile clinic / ambulance)
+                    <c:if test="${oldAppGrpPremDto.premisesType == easMts}">
+                      ${easMtsShow}
+                    </c:if>
+                    <c:if test="${oldAppGrpPremDto.premisesType == mobile}">
+                      ${mobileShow}
+                    </c:if>
+                    <c:if test="${oldAppGrpPremDto.premisesType == remote}">
+                      ${remoteShow}
                     </c:if>
                   </span>
                 </div>
               </div>
             </div>
-
-            <c:if test="${'ONSITE'==appGrpPremDto.premisesType}">
+            <c:if test="${permanent == appGrpPremDto.premisesType || permanent == oldAppGrpPremDto.premisesType}">
               <div class="row">
                 <div class="col-md-6">
                   Fire Safety & Shelter Bureau Ref. No.
@@ -88,16 +106,31 @@
                 </div>
                 <div class="col-md-6">
                   <div class="col-md-6">
-                       <span class="newVal " attr="${appGrpPremDto.certIssuedDt}">
-                      <fmt:formatDate value="${appGrpPremDto.certIssuedDt}" pattern="dd/MM/yyyy"/>
+                    <span class="newVal " attr="${appGrpPremDto.certIssuedDtStr}">
+                      <c:out value="${appGrpPremDto.certIssuedDtStr}"/>
                     </span>
                   </div>
                   <div class="col-md-6">
-                    <c:if test="${appSubmissionDto.oldAppSubmissionDto!=null}">
-                       <span class="oldVal " attr="${oldAppGrpPremDto.certIssuedDt}"
-                             style="display: none"><fmt:formatDate value="${oldAppGrpPremDto.certIssuedDt}" pattern="dd/MM/yyyy"/>
-                          </span>
-                    </c:if>
+                    <span class="oldVal " attr="${oldAppGrpPremDto.certIssuedDtStr}" style="display: none">
+                      <c:out value="${oldAppGrpPremDto.certIssuedDtStr}"/>
+                      </span>
+                  </div>
+                </div>
+              </div>
+            </c:if>
+            <c:if test="${conv == appGrpPremDto.premisesType || conv == oldAppGrpPremDto.premisesType}">
+              <div class="row">
+                <div class="col-md-6"> Vehicle No.</div>
+                <div class="col-md-6">
+                  <div  class="col-md-6">
+                    <span class="newVal " attr="<c:out value="${appGrpPremDto.vehicleNo}"/>">
+                      <c:out value="${appGrpPremDto.vehicleNo}"/>
+                    </span>
+                  </div>
+                  <div  class="col-md-6">
+                    <span class="oldVal " attr="<c:out value="${oldAppGrpPremDto.vehicleNo}"/>" style="display: none">
+                      <c:out value="${appGrpPremDto.vehicleNo}"/>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -107,7 +140,7 @@
                 Business Name
                 <a class="btn-tooltip styleguide-tooltip" id="hciNameClick" <c:if test="${empty appGrpPremDto.applicationViewHciNameDtos}">style="display: none" </c:if> data-toggle="tooltip" data-html="true" title="" data-original-title="">i</a>
               </div>
-              <div  class="col-md-7" style="position: absolute;z-index: 100;left: 40%;background-color: #EEEEEE;display: none;margin-top: 2%;overflow-y: scroll" id="hciNameShowOrHidden">
+              <div class="col-md-7" style="position: absolute;z-index: 100;left: 40%;background-color: #EEEEEE;display: none;margin-top: 2%;overflow-y: scroll" id="hciNameShowOrHidden">
                 <p>The  Business Name is currently used by another licensee</p>
                 <br>
                 <table aria-describedby="" border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;text-align: center;background-color: #ffffff;width: 100%">
@@ -124,35 +157,18 @@
                     </tr>
                   </c:forEach>
                 </table>
-
               </div>
 
               <div class="col-md-6">
                 <div class="col-md-12">
                   <span class="newVal " attr="${appGrpPremDto.hciName}"><c:out value="${appGrpPremDto.hciName}"/></span>
                   <br>
-                  <span class="oldVal " attr="${oldAppGrpPremDto.hciName}"
-                        style="display: none"><c:out value="${oldAppGrpPremDto.hciName}"/></span>
+                  <span class="oldVal " attr="${oldAppGrpPremDto.hciName}" style="display: none">
+                    <c:out value="${oldAppGrpPremDto.hciName}"/>
+                  </span>
                 </div>
-
               </div>
             </div>
-            <c:if test="${'CONVEYANCE'==appGrpPremDto.premisesType}">
-              <div class="row">
-                <div class="col-md-6">
-                  Vehicle No.
-                </div>
-                <div class="col-md-6">
-                  <div  class="col-md-6">
-                    <span class="newVal " attr="${appGrpPremDto.conveyanceVehicleNo}"><c:out value="${appGrpPremDto.conveyanceVehicleNo}"/></span>
-                  </div>
-                  <div  class="col-md-6">
-                       <span class="oldVal " attr="${oldAppGrpPremDto.conveyanceVehicleNo}"
-                             style="display: none"><c:out value="${oldAppGrpPremDto.conveyanceVehicleNo}"/></span>
-                  </div>
-                </div>
-              </div>
-            </c:if>
             <div class="row">
               <div class="col-md-6">
                 Postal Code
@@ -174,16 +190,13 @@
                       </tr>
                       </c:forEach>
                     </table>
-
                 </div>
-
-
               <div class="col-md-6">
                 <div  class="col-md-6">
-                     <span class="newVal " attr="${appGrpPremDto.postalCode}"><c:out value="${appGrpPremDto.postalCode}"/></span>
+                  <span class="newVal " attr="${appGrpPremDto.postalCode}"><c:out value="${appGrpPremDto.postalCode}"/></span>
                 </div>
                 <div  class="col-md-6">
-                     <span class="oldVal " attr="${oldAppGrpPremDto.postalCode}" style="display: none"><c:out value="${oldAppGrpPremDto.postalCode}"/></span>
+                  <span class="oldVal " attr="${oldAppGrpPremDto.postalCode}" style="display: none"><c:out value="${oldAppGrpPremDto.postalCode}"/></span>
                 </div>
               </div>
             </div>
@@ -194,18 +207,14 @@
               </div>
               <div class="col-md-6">
                 <div class="col-md-6">
-                        <span class="newVal " attr="${appGrpPremDto.addrType}">
-                        <c:if test="${appGrpPremDto.addrType=='ADDTY001'}"> Apt Blk</c:if>
-                        <c:if test="${appGrpPremDto.addrType=='ADDTY002'}"> Without Apt Blk</c:if>
-
-                        </span>
-
+                  <span class="newVal " attr="${appGrpPremDto.addrType}">
+                    <iais:code code="${appGrpPremDto.addrType}"/>
+                  </span>
                 </div>
                 <div class="col-md-6">
-                       <span class="oldVal " attr="${oldAppGrpPremDto.addrType}" style="display: none">
-                            <c:if test="${oldAppGrpPremDto.addrType=='ADDTY001'}"> Apt Blk</c:if>
-                            <c:if test="${oldAppGrpPremDto.addrType=='ADDTY002'}"> Without Apt Blk</c:if>
-                       </span>
+                  <span class="oldVal " attr="${oldAppGrpPremDto.addrType}" style="display: none">
+                    <iais:code code="${oldAppGrpPremDto.addrType}"/>
+                  </span>
                 </div>
               </div>
             </div>
@@ -215,10 +224,10 @@
               </div>
               <div class="col-md-6">
                 <div class="col-md-6">
-                     <span class="newVal " attr="${appGrpPremDto.blkNo}"><c:out value="${appGrpPremDto.blkNo}"/></span>
+                  <span class="newVal " attr="${appGrpPremDto.blkNo}"><c:out value="${appGrpPremDto.blkNo}"/></span>
                 </div>
                 <div class="col-md-6">
-                    <span class="oldVal " attr="${oldAppGrpPremDto.blkNo}" style="display: none"><c:out value="${oldAppGrpPremDto.blkNo}"/></span>
+                  <span class="oldVal " attr="${oldAppGrpPremDto.blkNo}" style="display: none"><c:out value="${oldAppGrpPremDto.blkNo}"/></span>
                 </div>
               </div>
             </div>
@@ -229,39 +238,21 @@
               </div>
               <div class="col-md-6">
                 <div class="col-md-6">
-                     <span class="newVal " attr="${appGrpPremDto.floorNo}${appGrpPremDto.unitNo}">
-                       <c:out value="${appGrpPremDto.floorNo}-${appGrpPremDto.unitNo}"/>
-                     </span>
-
+                   <span class="newVal " attr="${appGrpPremDto.floorNo}${appGrpPremDto.unitNo}">
+                     <c:out value="${appGrpPremDto.floorNo}-${appGrpPremDto.unitNo}"/>
+                   </span>
                 </div>
                 <div class="col-md-6">
-                       <span class="oldVal " attr="${oldAppGrpPremDto.floorNo}${oldAppGrpPremDto.unitNo}" style="display: none">
-                         <c:out value="${oldAppGrpPremDto.floorNo}-${oldAppGrpPremDto.unitNo}"/>
-                       </span>
+                   <span class="oldVal " attr="${oldAppGrpPremDto.floorNo}${oldAppGrpPremDto.unitNo}" style="display: none">
+                     <c:out value="${oldAppGrpPremDto.floorNo}-${oldAppGrpPremDto.unitNo}"/>
+                   </span>
                 </div>
               </div>
             </div>
 
-
-         <%--   <div class="row">
-              <div class="col-md-6">
-                Unit No.
-              </div>
-              <div class="col-md-6">
-                <div class="col-md-6"><span class="newVal " attr="${appGrpPremDto.unitNo}"><c:out value="${appGrpPremDto.unitNo}"/></span>
-
-                </div>
-                <div class="col-md-6">
-                        <span class="oldVal " attr="${oldAppGrpPremDto.unitNo}"
-                              style="display: none"><c:out value="${oldAppGrpPremDto.unitNo}"/></span>
-                </div>
-              </div>
-            </div>
---%>
             <c:forEach items="${appGrpPremDto.appPremisesOperationalUnitDtos}" var="appPremisesOperationalUnitDto" varStatus="unitIndex">
               <div class="row">
                 <div class="col-md-6">
-
                 </div>
                 <div class="col-md-6">
                   <div class="col-md-6">
@@ -301,9 +292,13 @@
               </div>
               <div class="col-md-6">
                 <div class="col-md-12">
-                   <span class="newVal " attr="${appGrpPremDto.streetName}">${appGrpPremDto.streetName}</span>
+                   <span class="newVal " attr="<c:out value="${appGrpPremDto.streetName}"/>">
+                       <c:out value="${appGrpPremDto.streetName}"/>
+                   </span>
                    <br>
-                   <span class="oldVal " attr="${oldAppGrpPremDto.streetName}" style="display: none">${oldAppGrpPremDto.streetName}</span>
+                   <span class="oldVal " attr="<c:out value="${oldAppGrpPremDto.streetName}"/>" style="display: none">
+                       <c:out value="${oldAppGrpPremDto.streetName}"/>
+                   </span>
                 </div>
               </div>
 
@@ -314,60 +309,73 @@
               </div>
               <div class="col-md-6">
                 <div class="col-md-12">
-                  <span class="newVal " attr="${appGrpPremDto.buildingName}">${appGrpPremDto.buildingName}</span>
+                  <span class="newVal " attr="<c:out value="${appGrpPremDto.buildingName}"/>">
+                    <c:out value="${appGrpPremDto.buildingName}"/>
+                  </span>
                   <br>
-                  <span class="oldVal " attr="${oldAppGrpPremDto.buildingName}" style="display: none">${oldAppGrpPremDto.buildingName }</span>
+                  <span class="oldVal " attr="<c:out value="${oldAppGrpPremDto.buildingName}"/>" style="display: none">
+                    <c:out value="${oldAppGrpPremDto.buildingName}"/>
+                  </span>
                 </div>
                 <div class="col-md-6">
 
                 </div>
               </div>
             </div>
-            <c:if test="${appGrpPremDto.premisesType != 'EASMTS'}">
-            <div class="row">
-              <div class="col-md-6">
-                Email
-              </div>
-              <div class="col-md-6">
+            <c:if test="${appGrpPremDto.premisesType == permanent || appGrpPremDto.premisesType == conv
+                || oldAppGrpPremDto.premisesType == permanent || oldAppGrpPremDto.premisesType == conv}">
+              <div class="row">
                 <div class="col-md-12">
-                  <span class="newVal " attr="${appGrpPremDto.easMtsPubEmail}">${appGrpPremDto.easMtsPubEmail}</span>
-                  <br>
-                  <span class="oldVal " attr="${oldAppGrpPremDto.easMtsPubEmail}" style="display: none">${oldAppGrpPremDto.easMtsPubEmail }</span>
-                </div>
-                <div class="col-md-6">
+                  Co-Location Service
                 </div>
               </div>
-            </div>
-            </c:if>
-            <c:if test="${'ONSITE'==appGrpPremDto.premisesType}">
               <div class="row">
                 <div class="col-md-6">
-                  Are you co-locating with another licensee?
+                  Are you co-locating with a service that is licensed under HCSA?
                 </div>
                 <div class="col-md-6">
                   <div class="col-md-6">
-                     <span class="newVal" attr="${appGrpPremDto.locateWithOthers}">
-                      <c:if test="${appGrpPremDto.locateWithOthers=='0'}">
-                        No
-                      </c:if>
-                       <c:if test="${appGrpPremDto.locateWithOthers=='1'}">
-                         Yes
-                       </c:if>
+                    <span class="newVal" attr="${appGrpPremDto.locateWithOthers}">
+                      <c:choose>
+                        <c:when test="${appGrpPremDto.locateWtihHcsa == '1'}">Yes</c:when>
+                        <c:when test="${appGrpPremDto.locateWtihHcsa == '0'}">No</c:when>
+                      </c:choose>
                     </span>
                   </div>
                   <div class="col-md-6">
-                     <span class="oldVal" style="display: none" attr="${oldAppGrpPremDto.locateWithOthers}">
-                      <c:if test="${oldAppGrpPremDto.locateWithOthers=='0'}">
-                        No
-                      </c:if>
-                       <c:if test="${oldAppGrpPremDto.locateWithOthers=='1'}">
-                         Yes
-                       </c:if>
+                    <span class="oldVal" style="display: none" attr="${oldAppGrpPremDto.locateWithOthers}">
+                      <c:choose>
+                        <c:when test="${oldAppGrpPremDto.locateWtihHcsa == '1'}">Yes</c:when>
+                        <c:when test="${oldAppGrpPremDto.locateWtihHcsa == '0'}">No</c:when>
+                      </c:choose>
                     </span>
                   </div>
-
                 </div>
               </div>
+              <div class="row">
+                <div class="col-md-6">
+                  Are you co-locating with a service that is not licensed under HCSA?
+                </div>
+                <div class="col-md-6">
+                  <div class="col-md-6">
+                    <span class="newVal" attr="${appGrpPremDto.locateWtihNonHcsa}">
+                      <c:choose>
+                        <c:when test="${appGrpPremDto.locateWtihNonHcsa == '1'}">Yes</c:when>
+                        <c:when test="${appGrpPremDto.locateWtihNonHcsa == '0'}">No</c:when>
+                      </c:choose>
+                    </span>
+                  </div>
+                  <div class="col-md-6">
+                    <span class="oldVal" style="display: none" attr="${oldAppGrpPremDto.locateWtihNonHcsa}">
+                      <c:choose>
+                        <c:when test="${oldAppGrpPremDto.locateWtihNonHcsa == '1'}">Yes</c:when>
+                        <c:when test="${oldAppGrpPremDto.locateWtihNonHcsa == '0'}">No</c:when>
+                      </c:choose>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
               <div class="row">
                 <div class="col-md-6">
                   Office Telephone No.
@@ -386,7 +394,7 @@
                 </div>
               </div>
             </c:if>
-            <c:if test="${appGrpPremDto.premisesType=='OFFSITE' || appGrpPremDto.premisesType=='ONSITE' || appGrpPremDto.premisesType=='CONVEYANCE'}">
+            <%--<c:if test="${appGrpPremDto.premisesType=='OFFSITE' || appGrpPremDto.premisesType=='ONSITE' || appGrpPremDto.premisesType=='CONVEYANCE'}">
               <div class="row">
                 <div class="col-md-6">
                   Operating Hours
@@ -618,8 +626,8 @@
                   </div>
                 </div>
               </c:forEach>
-            </c:if>
-            <c:if test="${appGrpPremDto.premisesType=='EASMTS'}">
+            </c:if>--%>
+            <c:if test="${appGrpPremDto.premisesType == easMts}">
               <div class="row">
                 <div class="col-md-6">
                   For public/in-house use only?
@@ -627,12 +635,12 @@
                 <div class="col-md-6">
                     <div class="col-md-6">
                       <span class="newVal " attr="${appGrpPremDto.easMtsUseOnly}">
-                        <iais:code code="${appGrpPremDto.easMtsUseOnly}"></iais:code>
+                        <iais:code code="${appGrpPremDto.easMtsUseOnly}"/>
                       </span>
                     </div>
                     <div class="col-md-6">
                       <span class="oldVal " style="display: none" attr="${oldAppGrpPremDto.easMtsUseOnly}">
-                         <iais:code code="${oldAppGrpPremDto.easMtsUseOnly}"></iais:code>
+                         <iais:code code="${oldAppGrpPremDto.easMtsUseOnly}"/>
                       </span>
                     </div>
                 </div>
@@ -644,11 +652,11 @@
                 <div class="col-md-6">
                     <div class="col-md-12">
                       <span class="newVal " attr="${appGrpPremDto.easMtsPubEmail}">
-                        <c:out value="${appGrpPremDto.easMtsPubEmail}"></c:out>
+                        <c:out value="${appGrpPremDto.easMtsPubEmail}"/>
                       </span>
                       <br>
                       <span class="oldVal " style="display: none" attr="${oldAppGrpPremDto.easMtsPubEmail}">
-                           <c:out value="${oldAppGrpPremDto.easMtsPubEmail}"></c:out>
+                           <c:out value="${oldAppGrpPremDto.easMtsPubEmail}"/>
                       </span>
                     </div>
                 </div>
@@ -660,12 +668,12 @@
                 <div class="col-md-6">
                   <div class="col-md-6">
                     <span class="newVal " attr="${appGrpPremDto.easMtsPubHotline}">
-                      <c:out value="${appGrpPremDto.easMtsPubHotline}"></c:out>
+                      <c:out value="${appGrpPremDto.easMtsPubHotline}"/>
                     </span>
                   </div>
                   <div class="col-md-6">
                     <span class="oldVal " style="display: none" attr="${oldAppGrpPremDto.easMtsPubHotline}">
-                      <c:out value="${oldAppGrpPremDto.easMtsPubHotline}"></c:out>
+                      <c:out value="${oldAppGrpPremDto.easMtsPubHotline}"/>
                     </span>
                   </div>
                 </div>

@@ -1005,27 +1005,8 @@ public class ServiceInfoDelegator {
         String currentSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
         List<DocumentShowDto> documentShowDtoList = currSvcInfoDto.getDocumentShowDtoList();
-        List<AppSvcDocDto> appSvcDocDtos = currSvcInfoDto.getAppSvcDocDtoLit();
         Map<String, File> saveFileMap = IaisCommonUtils.genNewHashMap();
         if (isGetDataFromPage) {
-            AppSubmissionDto oldSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(request);
-            List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtos = null;
-            String appGrpId = "";
-            String appNo = "";
-            if (oldSubmissionDto != null) {
-                oldAppSvcRelatedInfoDtos = oldSubmissionDto.getAppSvcRelatedInfoDtoList();
-                appGrpId = oldSubmissionDto.getAppGrpId();
-                appNo = oldSubmissionDto.getRfiAppNo();
-            }
-            List<AppSvcDocDto> oldDocs = IaisCommonUtils.genNewArrayList();
-            if (!IaisCommonUtils.isEmpty(oldAppSvcRelatedInfoDtos)) {
-                for (AppSvcRelatedInfoDto oldSvcRelDto : oldAppSvcRelatedInfoDtos) {
-                    if (currentSvcId.equals(oldSvcRelDto.getServiceId())) {
-                        oldDocs = oldSvcRelDto.getAppSvcDocDtoLit();
-                        break;
-                    }
-                }
-            }
             if (appSubmissionDto.isNeedEditController()) {
                 Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                 //clickEditPages.add(APPLICATION_SVC_PAGE_NAME_DOCUMENT);
@@ -1037,7 +1018,7 @@ public class ServiceInfoDelegator {
         }
         AppValidatorHelper.doValidateSvcDocuments(documentShowDtoList, errorMap);
         if (isGetDataFromPage) {
-            appSvcDocDtos = documentShowDtoList.stream()
+            List<AppSvcDocDto> appSvcDocDtos = documentShowDtoList.stream()
                     .map(DocumentShowDto::allDocuments)
                     .collect(ArrayList::new, ArrayList::addAll, ArrayList::addAll);
             saveSvcFileAndSetFileId(appSvcDocDtos, saveFileMap);

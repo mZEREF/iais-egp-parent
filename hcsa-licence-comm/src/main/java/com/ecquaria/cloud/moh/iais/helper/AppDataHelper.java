@@ -73,7 +73,6 @@ import java.sql.Time;
 import java.text.ParseException;
 import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
@@ -1678,7 +1677,7 @@ public final class AppDataHelper {
             log.info(StringUtil.changeForLog("Non changed:" + nonChanged));
             log.info(StringUtil.changeForLog("PageData:" + pageData));
             if (nonChanged) {
-                person = ApplicationHelper.getKeyPersonnels(psnType, currSvcInfoDto).stream()
+                person = ApplicationHelper.getKeyPersonnel(psnType, currSvcInfoDto).stream()
                         .filter(dto -> Objects.equals(indexNo, dto.getIndexNo()))
                         .findAny()
                         .orElseGet(AppSvcPrincipalOfficersDto::new);

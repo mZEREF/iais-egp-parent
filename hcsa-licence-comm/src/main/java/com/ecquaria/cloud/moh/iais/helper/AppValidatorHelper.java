@@ -588,14 +588,15 @@ public final class AppValidatorHelper {
             }
         } else if (list.size() < mandatoryCount) {
             String mandatoryErrMsg = MessageUtil.getMessageDesc("NEW_ERR0025");
-            mandatoryErrMsg = mandatoryErrMsg.replace("{psnType}", ApplicationHelper.getName(psnType));
+            mandatoryErrMsg = mandatoryErrMsg.replace("{psnType}", IaisCommonUtils.getPersonName(psnType, ApplicationHelper.isBackend()));
             mandatoryErrMsg = mandatoryErrMsg.replace("{mandatoryCount}", String.valueOf(mandatoryCount));
             map.put("error" + psnType, mandatoryErrMsg);
             isValid = false;
         }
         if (!isValid) {
-            String stepName = getStepName(ApplicationHelper.getStep(psnType), stepDtos);
-            addErrorStep(ApplicationHelper.getStep(psnType), stepName, true, errorList);
+            String step = ApplicationHelper.getStep(psnType);
+            String stepName = getStepName(step, stepDtos);
+            addErrorStep(step, stepName, true, errorList);
         }
     }
 
