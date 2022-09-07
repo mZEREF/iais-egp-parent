@@ -109,6 +109,8 @@ public class DealSessionUtil {
         session.removeAttribute(IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId);
         // View and Print
         session.removeAttribute("viewPrint");
+        // File index
+        session.removeAttribute(IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR);
 
         //clear Session
         session.removeAttribute(HcsaAppConst.ACTION);
@@ -473,6 +475,8 @@ public class DealSessionUtil {
         }
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
         initAppPremSpecialisedDtoList(appSubmissionDto, hcsaServiceDtos, forceInit);
+        //set max file index into session
+        initMaxFileIndex(appSubmissionDto.getMaxFileIndex(), request);
 
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         for (AppSvcRelatedInfoDto currSvcInfoDto : appSvcRelatedInfoDtoList) {
@@ -520,7 +524,7 @@ public class DealSessionUtil {
         String name = currSvcInfoDto.getServiceName();
         HcsaServiceDto hcsaServiceDto = null;
         if (!StringUtil.isEmpty(svcId)) {
-            hcsaServiceDto = getConfigCommService().getHcsaServiceDtoById(svcId);
+            hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(svcId);
         } else if (!StringUtil.isEmpty(name)) {
             hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(name);
         }
@@ -1026,12 +1030,13 @@ public class DealSessionUtil {
                         List<AppSvcDocDto> appSvcDocDtoList = getAppSvcDocDtoByConfigId(appSvcDocDtos, configId, premisesVal,
                                 psn.getIndexNo(), currSvcInfoDto.getServiceId(), specialSvcId, isBaseSvc);
                         DocSecDetailDto dto = new DocSecDetailDto();
-                        if (needPsnTypeIndex) {
-                            dto.setPsnTypeIndex(i++);
-                        }
                         dto.setDocConfigDto(svcDocConfig, ApplicationHelper.isBackend());
                         dto.setAppSvcDocDtoList(appSvcDocDtoList);
                         dto.setPsnIndexNo(psn.getIndexNo());
+                        if (needPsnTypeIndex) {
+                            dto.setPsnTypeIndex(i++);
+                            dto.initDisplayTitle();
+                        }
                         result.add(dto);
                     }
                 }
@@ -1116,6 +1121,32 @@ public class DealSessionUtil {
         request.getSession().setAttribute(IaisEGPConstant.SEESION_FILES_MAP_AJAX + fileAppendId, map);
     }
 
+    public static void initMaxFileIndex(AppSubmissionDto appSubmissionDto, HttpServletRequest request) {
+        if (appSubmissionDto == null) {
+            return;
+        }
+        appSubmissionDto.setMaxFileIndex(initMaxFileIndex(appSubmissionDto.getMaxFileIndex(), true, request));
+    }
+
+    public static void initMaxFileIndex(Integer maxSeqNum, HttpServletRequest request) {
+        initMaxFileIndex(maxSeqNum, true, request);
+    }
+
+    public static int initMaxFileIndex(Integer maxSeqNum, boolean checkGlobal, HttpServletRequest request) {
+        int seqNum = maxSeqNum != null ? maxSeqNum : 0;
+        Integer maxFileIndex = 0;
+        if (checkGlobal && request != null) {
+            maxFileIndex = (Integer) ParamUtil.getSessionAttr(request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR);
+        }
+        if (maxFileIndex != null && (maxFileIndex > seqNum)) {
+            seqNum = maxFileIndex;
+        }
+        if (checkGlobal && request != null) {
+            ParamUtil.setSessionAttr(request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR, seqNum);
+        }
+        return seqNum;
+    }
+
     //for single premises
     /*public static void addPremAlignForSvcDoc(List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos, List<AppSvcDocDto> appSvcDocDtos,
             List<AppGrpPremisesDto> appGrpPremisesDtos) {
@@ -1138,7 +1169,7 @@ public class DealSessionUtil {
         }
     }*/
 
-    private static List<AppSvcDocDto> getAppSvcDocDtoByConfigId(List<AppSvcDocDto> appSvcDocDtos, String configId) {
+/*    private static List<AppSvcDocDto> getAppSvcDocDtoByConfigId(List<AppSvcDocDto> appSvcDocDtos, String configId) {
         List<AppSvcDocDto> appSvcDocDtoList = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(appSvcDocDtos) && !StringUtil.isEmpty(configId)) {
             for (AppSvcDocDto appSvcDocDto : appSvcDocDtos) {
@@ -1148,7 +1179,7 @@ public class DealSessionUtil {
             }
         }
         return appSvcDocDtoList;
-    }
+    }*/
 
     public static void reSetInit(AppSubmissionDto appSubmissionDto, String type) {
         if (HcsaAppConst.SECTION_PREMISES.equals(type)) {
@@ -1185,13 +1216,15 @@ public class DealSessionUtil {
                 });
             }
         }
-        List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = appSvcRelatedInfoDto.getAppSvcSpecialServiceInfoList();
-        if (IaisCommonUtils.isNotEmpty(appSvcSpecialServiceInfoList)) {
-            appSvcSpecialServiceInfoList.forEach(dto -> {
-                if (dto.isInit()) {
-                    dto.setInit(false);
-                }
-            });
+        if (!HcsaAppConst.SECTION_SVCINFO.equals(type)) {
+            List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = appSvcRelatedInfoDto.getAppSvcSpecialServiceInfoList();
+            if (IaisCommonUtils.isNotEmpty(appSvcSpecialServiceInfoList)) {
+                appSvcSpecialServiceInfoList.forEach(dto -> {
+                    if (dto.isInit()) {
+                        dto.setInit(false);
+                    }
+                });
+            }
         }
         appSvcRelatedInfoDto.setDocumentShowDtoList(null);
     }

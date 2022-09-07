@@ -278,12 +278,8 @@ public class TopDataSubmissionDelegator {
                 topSuperDataSubmissionDto=initTopSuperDataSubmissionDto(bpc.request);
                 DataSubmissionHelper.setCurrentTopDataSubmission(topSuperDataSubmissionDto, bpc.request);
             }
-        }else
-        if(DataSubmissionConsts.DS_APP_TYPE_RFC.equals(topSuperDataSubmissionDto.getDataSubmissionDto().getAppType())){
-            TopSuperDataSubmissionDto oldTopSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDto(topSuperDataSubmissionDto.getDataSubmissionDto().getSubmissionNo());
-            ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.TOP_OLD_DATA_SUBMISSION, oldTopSuperDataSubmissionDto);
-
         }
+
         List<DsConfig> configList =DsConfigHelper.initTopConfig(bpc.request);
 
         for (DsConfig cfg:configList
@@ -1232,13 +1228,16 @@ public class TopDataSubmissionDelegator {
         PreTerminationDto preTerminationDto =terminationOfPregnancyDto.getPreTerminationDto();
         FamilyPlanDto familyPlanDto=terminationOfPregnancyDto.getFamilyPlanDto();
         if (familyPlanDto != null) {
+            int weeksD = 0;
+            int weeksU = 0;
             int weeks = Integer.parseInt(familyPlanDto.getGestAgeBaseOnUltrWeek());
             BigDecimal b1 = new BigDecimal(familyPlanDto.getGestAgeBaseOnUltrDay());
             BigDecimal b2 = new BigDecimal(Integer.toString(7));
-            weeks = weeks + b1.divide(b2, 0, BigDecimal.ROUND_DOWN).intValue();
-            if (weeks < 13 || weeks > 24) {
-                preTerminationDto.setCounsellingGivenOnMin(null);
-                preTerminationDto.setPatientSign(null);
+            weeksU = weeks + b1.divide(b2, 0, BigDecimal.ROUND_UP).intValue();
+            weeksD = weeks + b1.divide(b2, 0, BigDecimal.ROUND_DOWN).intValue();
+            if (weeksD < 13 || weeksU > 24) {
+                preTerminationDto.setCounsellingGivenOnMin(false);
+                preTerminationDto.setPatientSign(false);
             }
         }
         if(preTerminationDto.getCounsellingGiven()!=null){

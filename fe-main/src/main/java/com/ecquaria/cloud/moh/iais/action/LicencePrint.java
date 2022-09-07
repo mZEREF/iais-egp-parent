@@ -65,7 +65,9 @@ public class LicencePrint {
                 map.put("lable",StringUtil.viewNonNullHtml(licenceViewDto.getLable()));
                 List<String> contentList = licenceViewDto.getContent();
                 List<String> eachPageList = IaisCommonUtils.genNewArrayList();
-                totle = totle+ eachPageList.size();
+                /*contentList.add("<p>test0</p>");
+                contentList.add("<p>test1</p>");*/
+                totle = totle+ contentList.size();
                 for(int i = 0;i<contentList.size();i++){
                     if(i == 0){
                         map.put("content",contentList.get(i));
@@ -82,12 +84,17 @@ public class LicencePrint {
                 map.put("startDate",licenceViewDto.getStartDate());
                 map.put("endDate",licenceViewDto.getEndDate());
                 List<String> disciplinesSpecifieds = licenceViewDto.getDisciplinesSpecifieds();
+                /*disciplinesSpecifieds.add("<li>test</li>");
+                disciplinesSpecifieds.add("<li>test1</li>");*/
                 map.put("disciplinesSpecifiedsFirst","");
                 if(disciplinesSpecifieds.size() >0){
                     totle = totle+ disciplinesSpecifieds.size();
                  map.put("needDisciplinesSpecifieds",true);
                  map.put("disciplinesSpecifiedsFirst",disciplinesSpecifieds.get(0));
-                 map.put("disciplinesSpecifieds",disciplinesSpecifieds.remove(0));
+                 if(disciplinesSpecifieds.size() >1){
+                     disciplinesSpecifieds.remove(0);
+                     map.put("disciplinesSpecifieds",disciplinesSpecifieds);
+                 }
                 }
                 map.put("tody",Formatter.formatDateTime(new Date(),AppConsts.DATE_FORMAT_LICENCE));
                 map.put("totle",totle);

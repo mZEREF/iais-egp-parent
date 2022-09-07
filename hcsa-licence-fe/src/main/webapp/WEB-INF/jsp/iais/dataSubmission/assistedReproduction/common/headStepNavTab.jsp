@@ -3,6 +3,7 @@
 <input type="hidden" name="jump_to_submitted_stage" id="jump_to_submitted_stage" value="">
 <input type="hidden" name="target_stage_user_permissions" id="target_stage_user_permissions" value="">
 <%--@elvariable id="stageList" type="java.util.List<com.ecquaria.cloud.moh.iais.dto.ARCycleStageDto>"--%>
+
 <c:if test="${not empty stageList}">
     <ul class="stage-tracker">
         <c:forEach var="stage" items="${stageList}" varStatus="status" begin="0" end="6">
@@ -22,6 +23,8 @@
     </ul>
     <span id="error_topErrorMsg" name="iaisErrorMsg" class="error-msg"></span>
 </c:if>
+
+
 
 <script>
     $(function () {

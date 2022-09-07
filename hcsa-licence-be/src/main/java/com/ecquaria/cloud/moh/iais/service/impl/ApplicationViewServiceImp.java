@@ -292,7 +292,9 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         for(AppIntranetDocDto intranetDocDto : intranetDocDtos){
             intranetDocDto.setDocSize(intranetDocDto.getDocSize()+"KB");
             OrgUserDto user = applicationViewService.getUserById(intranetDocDto.getSubmitBy());
-            intranetDocDto.setSubmitByName(user.getDisplayName());
+            if(user!=null){
+                intranetDocDto.setSubmitByName(user.getDisplayName());
+            }
             intranetDocDto.setSubmitDtString(Formatter.formatDateTime(intranetDocDto.getSubmitDt(), "dd/MM/yyyy HH:mm:ss"));
         }
         applicationViewDto.setAppIntranetDocDtoList(intranetDocDtos);

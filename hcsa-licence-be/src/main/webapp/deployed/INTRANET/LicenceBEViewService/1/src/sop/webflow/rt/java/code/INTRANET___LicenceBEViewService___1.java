@@ -23,7 +23,7 @@ public class INTRANET___LicenceBEViewService___1 extends BaseProcessClass {
 
 	public void prepareViewForm_OnStepProcess_0() throws Exception {
 	// 		PrepareViewForm->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "PrepareViewData", this);
+		EngineHelper.delegate(DELEGATOR, "prepareViewData", this);
 	}
 
 	public void saveSelect_OnStepProcess_0() throws Exception {

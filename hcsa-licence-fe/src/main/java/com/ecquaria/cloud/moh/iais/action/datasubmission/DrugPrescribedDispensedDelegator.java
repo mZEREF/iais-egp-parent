@@ -500,7 +500,7 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
             DpSuperDataSubmissionDto dpOldSuperDataSubmissionDto = DataSubmissionHelper.getOldDpSuperDataSubmissionDto(request);
             if(dpOldSuperDataSubmissionDto != null){
                 if(dpOldSuperDataSubmissionDto.getDrugPrescribedDispensedDto()!= null){
-                    drugPrescribedDispensed.getDrugSubmission().setIdNumber(drugPrescribedDispensed.getDrugSubmission().getIdNumber().toLowerCase());
+                    drugPrescribedDispensed.getDrugSubmission().setIdNumber(drugPrescribedDispensed.getDrugSubmission().getIdNumber());
                     if(drugPrescribedDispensed.getDrugSubmission().equals(dpOldSuperDataSubmissionDto.getDrugPrescribedDispensedDto().getDrugSubmission())){
                         if(drugPrescribedDispensed.getDrugMedicationDtos().equals(dpOldSuperDataSubmissionDto.getDrugPrescribedDispensedDto().getDrugMedicationDtos())){
                             ParamUtil.setRequestAttr(request, DataSubmissionConstant.RFC_NO_CHANGE_ERROR, AppConsts.YES);

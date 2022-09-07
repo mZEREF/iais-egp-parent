@@ -1,10 +1,12 @@
 package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.DpFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
@@ -117,5 +119,39 @@ import java.util.List;
             return null;
         }
         return dpFeClient.getPatientDtoBySubmissionId(submissionId).getEntity();
+    }
+
+    @Override
+    public String judgeIdType(String isNricFin, String idNo) {
+        String idType = null;
+        if (AppConsts.NO.equals(isNricFin)) {
+            idType = DataSubmissionConsts.DTV_ID_TYPE_PASSPORT;
+        } else if (StringUtil.isEmpty(isNricFin)) {
+            return null;
+        } else if (StringUtil.isNotEmpty(isNricFin)) {
+            boolean isNric = SgNoValidator.validateNric(idNo);
+            boolean isFin = SgNoValidator.validateFin(idNo);
+            if (isNric) {
+                idType = DataSubmissionConsts.DTV_ID_TYPE_NRIC;
+            } else if (isFin) {
+                idType = DataSubmissionConsts.DTV_ID_TYPE_FIN;
+            }
+        }
+        return idType;
+    }
+
+    @Override
+    public String judgeIdType(String idNo) {
+        String idType = DataSubmissionConsts.DTV_ID_TYPE_PASSPORT;
+        if (StringUtil.isNotEmpty(idNo)) {
+            boolean isNric = SgNoValidator.validateNric(idNo);
+            boolean isFin = SgNoValidator.validateFin(idNo);
+            if (isNric) {
+                idType = DataSubmissionConsts.DTV_ID_TYPE_NRIC;
+            } else if (isFin){
+                idType = DataSubmissionConsts.DTV_ID_TYPE_FIN;
+            }
+        }
+        return idType;
     }
 }

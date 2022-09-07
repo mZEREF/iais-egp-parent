@@ -6,7 +6,7 @@
     <div class="panel-heading" style="padding-left: 90px;">
         <h4 class="panel-title">
             <strong>
-                Egg Freezing Only Cycle
+                Oocyte Freezing Only Cycle
             </strong>
         </h4>
     </div>
@@ -19,20 +19,20 @@
                     </span>
                 </h3>
                 <iais:row>
-                    <iais:field width="5" value="Premises where egg freezing only cycle is performed" mandatory="true"/>
+                    <iais:field width="5" value="Premises where Oocyte Freezing Only Cycle is Performed" mandatory="true"/>
                     <iais:value width="6"  display="true">
                         <c:out value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Date Started" mandatory="true"/>
+                    <iais:field width="5" value="Date of Freezing" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:datePicker id="efoDateStarted" name="efoDateStarted" dateVal="${arSuperDataSubmissionDto.efoCycleStageDto.startDate}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_startDate"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Patient's Age as of This Treatment" mandatory="false"/>
+                    <iais:field width="5" value="Patient's Age at Date of Freezing" mandatory="false"/>
                     <iais:value width="6"  display="true">
                         <%ArSuperDataSubmissionDto arSuperDataSubmissionDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(request,"arSuperDataSubmissionDto");%>
                         <%=IaisCommonUtils.getYearsAndMonths(arSuperDataSubmissionDto.getEfoCycleStageDto().getYearNum(), arSuperDataSubmissionDto.getEfoCycleStageDto().getMonthNum())%>
@@ -88,6 +88,12 @@
                         </iais:value>
                     </iais:row>
                 </div>
+                <iais:row id="cryopresNum">
+                    <iais:field  width="5" value="No.Cryopreserved" mandatory="true"/>
+                    <iais:value width="7" cssClass="col-md-7">
+                        <iais:input type="text" maxLength="50" value="${arSuperDataSubmissionDto.efoCycleStageDto.cryopresNum}" name="cryopresNum" />
+                    </iais:value>
+                </iais:row>
             </div>
         </div>
     </div>

@@ -17,6 +17,7 @@
                             <c:choose>
                                 <c:when test="${askType == 'rollBack'}"><iais:message key="INSPE_ACK002"/></c:when>
                                 <c:when test="${askType == 'Y'}"><iais:message key="UC_INSP_ACK005"/></c:when>
+                                <c:when test="${askType == 'laterally'}"><iais:message key="LOLEV_ACK057"/></c:when>
                                 <c:otherwise><iais:message key="LOLEV_ACK036"/></c:otherwise>
                             </c:choose>
                         </h2>

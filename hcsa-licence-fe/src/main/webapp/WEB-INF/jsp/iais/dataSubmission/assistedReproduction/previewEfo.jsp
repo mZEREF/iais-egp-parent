@@ -18,6 +18,7 @@
         <div class="container center-content">
             <div class="col-xs-12">
                 <div class="row form-group" style="border-bottom: 1px solid #D1D1D1;">
+                    <%@include file="common/headStepNavTab.jsp" %>
                     <div class="col-xs-12 col-md-10">
                         <strong style="font-size: 2rem;">Preview & Submit</strong>
                     </div>
@@ -28,7 +29,12 @@
                     </div>
                 </div>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <%@include file="section/previewEfoDetail.jsp" %>
+                    <c:if test="${arSuperDataSubmissionDto.selectionDto.cycle == 'DSCL_010'}">
+                        <%@include file="section/previewEfoDetail.jsp" %>
+                    </c:if>
+                    <c:if test="${arSuperDataSubmissionDto.selectionDto.cycle == 'DSCL_016'}">
+                        <%@include file="section/previewSfoDetail.jsp" %>
+                    </c:if>
                     <%@include file="common/previewDsAmendment.jsp" %>
                     <%@include file="common/arDeclaration.jsp" %>
                 </div>

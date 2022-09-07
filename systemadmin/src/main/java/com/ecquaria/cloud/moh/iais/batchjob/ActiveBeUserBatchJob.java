@@ -46,16 +46,17 @@ public class ActiveBeUserBatchJob {
         try {
             if(!IaisCommonUtils.isEmpty(orgUserDtosActive)){
                 for(OrgUserDto orgUserDto : orgUserDtosActive){
-                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
+                    OrgUserDto entity = intranetUserClient.retrieveOneOrgUserAccount(orgUserDto.getUserId()).getEntity();
+                    if(entity==null){
+                        orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
+                    }
                 }
                 intranetUserService.createIntranetUsers(orgUserDtosActive);
             }
             if(!IaisCommonUtils.isEmpty(orgUserDtosInActive)){
                 for(OrgUserDto orgUserDto : orgUserDtosInActive){
-                    OrgUserDto entity = intranetUserClient.retrieveOneOrgUserAccount(orgUserDto.getUserId()).getEntity();
-                    if(entity==null){
-                        orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
-                    }                }
+                    orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DEACTIVATED);
+                }
                 intranetUserService.createIntranetUsers(orgUserDtosInActive);
             }
         }catch (Exception e){

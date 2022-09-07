@@ -2,7 +2,6 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto" %>
 <%--@elvariable id="headingSign" type="java.lang.String"--%>
-<%--@elvariable id="arSuperDataSubmissionDto" type="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto"--%>
 <%
     ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
     DonorSampleDto donorSampleDto = arSuperDataSubmissionDto.getDonorSampleDto();

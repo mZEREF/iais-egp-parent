@@ -106,7 +106,7 @@
                 <c:set var="isEmptyIntranetDocDtoList" value="true"/>
                 <c:if test="${not empty applicationViewDto.appIntranetDocDtoList}">
                     <c:forEach var="interalFile" items="${applicationViewDto.appIntranetDocDtoList}" varStatus="status">
-                        <c:if test="${applicationViewDto.applicationDto.applicationType != ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK && interalFile.appDocType !=ApplicationConsts.APP_DOC_TYPE_EMAIL_ATTACHMENT || (applicationViewDto.applicationDto.applicationType == ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK && interalFile.appDocType != ApplicationConsts.APP_DOC_TYPE_SELF_DEC_FORM)}">
+                        <c:if test="${applicationViewDto.applicationDto.applicationType != ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK && interalFile.appDocType !=ApplicationConsts.APP_DOC_TYPE_EMAIL_ATTACHMENT&&( interalFile.appDocType !=ApplicationConsts.APP_DOC_TYPE_PAST_INS_REPORT && isShowInspection=='N')|| (applicationViewDto.applicationDto.applicationType == ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK && interalFile.appDocType != ApplicationConsts.APP_DOC_TYPE_SELF_DEC_FORM)}">
                             <c:set var="isEmptyIntranetDocDtoList" value="false"/>
                         </c:if>
                     </c:forEach>
@@ -127,12 +127,11 @@
                                 <tr>
                                     <td >
                                         <p>
-                                            <c:if test="${interalFile.appDocType == ApplicationConsts.APP_DOC_TYPE_CHECK_LIST}">
-                                                Letter Written to Licensee
-                                            </c:if>
-                                            <c:if test="${interalFile.appDocType != ApplicationConsts.APP_DOC_TYPE_CHECK_LIST}">
-                                                <c:out value="${interalFile.docDesc}"></c:out>
-                                            </c:if>
+                                            <c:choose>
+                                                <c:when test="${interalFile.appDocType == ApplicationConsts.APP_DOC_TYPE_CHECK_LIST}">Letter Written to Licensee</c:when>
+                                                <c:when test="${interalFile.appDocType == ApplicationConsts.APP_DOC_TYPE_PAST_INS_REPORT}">Inspection Report</c:when>
+                                                <c:otherwise><c:out value="${interalFile.docDesc}"/></c:otherwise>
+                                            </c:choose>
                                         </p>
                                     </td>
                                     <td >
@@ -153,21 +152,21 @@
                                     <td >
                                         <p>${interalFile.submitDtString}</p>
                                     </td>
-                                <c:if test="${iais_Audit_Trail_dto_Attr.functionName != AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY}">
-                                    <td >
-                                        <c:if test="${interalFile.appDocType == ApplicationConsts.APP_DOC_TYPE_COM || interalFile.appDocType == ApplicationConsts.APP_DOC_TYPE_CHECK_LIST_MOBILE}">
-                                            <button type="button" class="btn btn-secondary-del btn-sm"
-                                                    onclick="javascript:deleteFile(this,'<iais:mask name="interalFileId"
-                                                                                                    value="${interalFile.id}"/>');">
-                                                Delete</button>
-                                        </c:if>
-                                    </td>
-                                </c:if>
+                                    <c:if test="${iais_Audit_Trail_dto_Attr.functionName != AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY}">
+                                        <td >
+                                            <c:if test="${interalFile.appDocType == ApplicationConsts.APP_DOC_TYPE_COM || interalFile.appDocType == ApplicationConsts.APP_DOC_TYPE_CHECK_LIST_MOBILE}">
+                                                <button type="button" class="btn btn-secondary-del btn-sm"
+                                                        onclick="javascript:deleteFile(this,'<iais:mask name="interalFileId"
+                                                                                                        value="${interalFile.id}"/>');">
+                                                    Delete</button>
+                                            </c:if>
+                                        </td>
+                                    </c:if>
                                 </tr>
-                                </c:if>
-                            </c:forEach>
-                        </c:otherwise>
-                    </c:choose>
+                            </c:if>
+                        </c:forEach>
+                    </c:otherwise>
+                </c:choose>
 
                 </tbody>
             </table>
@@ -194,11 +193,11 @@
             data,
             function (data) {
                 if(data != null ){
-                 if(data.verify == 'N'){
-                     $('#support').modal('show');
-                 }else {
-                     $("#"+verify+"Down").click();
-                 }
+                    if(data.verify == 'N'){
+                        $('#support').modal('show');
+                    }else {
+                        $("#"+verify+"Down").click();
+                    }
                     dismissWaiting();
                 }
             }

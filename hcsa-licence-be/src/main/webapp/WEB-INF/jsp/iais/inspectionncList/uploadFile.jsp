@@ -14,30 +14,30 @@
             </div>
             <div class="modal-body">
                 <form id="fileUploadForm" name="fileUploadForm" enctype="multipart/form-data"
-                  action="" method="post">
+                      action="" method="post">
                     <div class="form-horizontal">
-                    <div class="form-group">
-                        <label class="col-xs-12 col-md-4 control-label">Document</label>
-                        <div class="col-xs-8 col-sm-8 col-md-8">
-                            <p><input type="text" maxlength="50" id="fileRemark" name="fileRemark" value="${fileRemarkString}"></p>
-                            <br /> <small class="error" ><span id ="fileRemarkShow" style="color: #D22727; font-size: 1.6rem;display: none">
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-4 control-label">Document</label>
+                            <div class="col-xs-8 col-sm-8 col-md-8">
+                                <p><input type="text" maxlength="50" id="fileRemark" name="fileRemark" value="${fileRemarkString}"></p>
+                                <br /> <small class="error" ><span id ="fileRemarkShow" style="color: #D22727; font-size: 1.6rem;display: none">
                             <iais:message key="GENERAL_ERR0041" params="maxCountMap" />
                         </span></small>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-xs-12 col-md-4 control-label">Upload your files <span style="color: red"> *</span></label>
-                        <div class="col-xs-8 col-sm-8 col-md-8">
-                            <div style="margin-left: -5%" class="col-md-5">
-                            <p><input  id = "selectedFileShowText" name = "selectedFileShowText"  type="text"   value="Select File" readonly>
-                                </p>
                             </div>
-                            <div style="margin-left: -8%" class="col-md-8">
-                                <input  id = "selectedFileShowTextName" name = "selectedFileShowTextName"  type="text"   readonly>
-                                <small class="error"><span id="selectedFileShow" style="color: #D22727; font-size: 1.6rem"></span></small>
-                            </div>
-                            <div hidden><input class = "inputtext-required" id = "selectedFile" name = "selectedFile" type="file" onclick="javascript:fileClicked(event)" onchange="javascript:fileChanged(event)"></div>
                         </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-4 control-label">Upload your files <span style="color: red"> *</span></label>
+                            <div class="col-xs-8 col-sm-8 col-md-8">
+                                <div style="margin-left: -5%" class="col-md-5">
+                                    <p><input  id = "selectedFileShowText" name = "selectedFileShowText"  type="text"   value="Select File" readonly>
+                                    </p>
+                                </div>
+                                <div style="margin-left: -8%" class="col-md-8">
+                                    <input  id = "selectedFileShowTextName" name = "selectedFileShowTextName"  type="text"   readonly>
+                                    <small class="error"><span id="selectedFileShow" style="color: #D22727; font-size: 1.6rem"></span></small>
+                                </div>
+                                <div hidden><input class = "inputtext-required" id = "selectedFile" name = "selectedFile" type="file" onclick="javascript:fileClicked(event)" onchange="javascript:fileChanged(event)"></div>
+                            </div>
 
                         </div>
                     </div>
@@ -61,6 +61,13 @@
     function openUploadDoc(){
         $('#uploadDoc').dialog('open');
     };
+
+    $('#tabDocuments').click(function a() {
+        $('#selectedFileShow').html('')
+    })
+    $('#tabProcessing').click(function b() {
+        $('#selectedFileShow').html('')
+    })
 
     function closeUploadDoc(){
         $('#selectedFileShow').html('')

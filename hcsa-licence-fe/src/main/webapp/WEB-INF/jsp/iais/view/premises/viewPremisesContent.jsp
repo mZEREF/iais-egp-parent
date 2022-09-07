@@ -1,8 +1,14 @@
-<c:set var="permanent" value="PERMANENT" />
-<c:set var="conv" value="CONVEYANCE" />
-<c:set var="easMts" value="EASMTS" />
-<c:set var="mobile" value="MOBILE" />
-<c:set var="remote" value="REMOTE" />
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
+<c:set var="permanent" value="${ApplicationConsts.PREMISES_TYPE_PERMANENT}" />
+<c:set var="conv" value="${ApplicationConsts.PREMISES_TYPE_CONVEYANCE}" />
+<c:set var="easMts" value="${ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE}" />
+<c:set var="mobile" value="${ApplicationConsts.PREMISES_TYPE_MOBILE}" />
+<c:set var="remote" value="${ApplicationConsts.PREMISES_TYPE_REMOTE}" />
+<c:set var="permanentShow" value="${ApplicationConsts.PREMISES_TYPE_PERMANENT_SHOW}" />
+<c:set var="convShow" value="${ApplicationConsts.PREMISES_TYPE_CONVEYANCE_SHOW}" />
+<c:set var="easMtsShow" value="${ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE_SHOW}" />
+<c:set var="mobileShow" value="${ApplicationConsts.PREMISES_TYPE_MOBILE_SHOW}" />
+<c:set var="remoteShow" value="${ApplicationConsts.PREMISES_TYPE_REMOTE_SHOW}" />
 
 <c:set var="premType" value="${appGrpPremDto.premisesType}" />
 
@@ -11,19 +17,19 @@
         <iais:field width="5" value="Mode of Service Delivery"/>
         <iais:value width="7" display="true">
             <c:if test="${premType == permanent}">
-                Permanent Premises
+                ${permanentShow}
             </c:if>
             <c:if test="${premType == conv}">
-                Conveyance
+                ${convShow}
             </c:if>
             <c:if test="${premType == easMts}">
-                Conveyance (in a mobile clinic / ambulance)
+                ${easMtsShow}
             </c:if>
             <c:if test="${premType == mobile}">
-                Mobile Delivery
+                ${mobileShow}
             </c:if>
             <c:if test="${premType == remote}">
-                Remote Delivery
+                ${remoteShow}
             </c:if>
         </iais:value>
     </iais:row>

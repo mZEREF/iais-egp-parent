@@ -25,7 +25,6 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
-import ecq.commons.helper.DateHelper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +62,8 @@ public class ChangeTcuDateDelegator {
     private final String ACTION_SUBMIT = "submit";
     private final String ACTION_DOWNLOAD = "download";
 
+    private final String CRUD_TYPE_TCU = "crud_type_tcu";
+
     private final LicenceService licenceService;
     private final RequestForInformationService requestForInformationService;
     private final FilterParameter filterParameter = new FilterParameter.Builder()
@@ -99,10 +100,10 @@ public class ChangeTcuDateDelegator {
 
     public void preSwitch(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        String action = ParamUtil.getRequestString(request, IaisEGPConstant.CRUD_TYPE);
+        String action = ParamUtil.getRequestString(request, CRUD_TYPE_TCU);
         if (StringUtil.isEmpty(action)) {
             action = ACTION_PREMISE_LIST;
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_TYPE, action);
+            ParamUtil.setRequestAttr(request, CRUD_TYPE_TCU, action);
         }
         log.info("----- preSwitch action:{} -----", action);
     }
@@ -145,7 +146,7 @@ public class ChangeTcuDateDelegator {
                 ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SEARCH_RESULT_CHANGE_TUC_DATE, searchResult);
             }
         }
-        ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_TYPE, action);
+        ParamUtil.setRequestAttr(request, CRUD_TYPE_TCU, action);
         log.info("----- premiseListAction action:{} -----", action);
     }
 
@@ -176,7 +177,7 @@ public class ChangeTcuDateDelegator {
             }
         }
 
-        ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_TYPE, action);
+        ParamUtil.setRequestAttr(request, CRUD_TYPE_TCU, action);
     }
 
     private void saveNewTCUDate(SearchResult<LicPremisesQueryDto> searchResult, int size, List<String> newTcuDates, List<String> newTcuDateRemarks) {
@@ -219,12 +220,12 @@ public class ChangeTcuDateDelegator {
 
     public void submit(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_TYPE, ACTION_PREMISE_LIST);
+        ParamUtil.setRequestAttr(request, CRUD_TYPE_TCU, ACTION_PREMISE_LIST);
     }
 
     public void download(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_TYPE, ACTION_PREMISE_LIST);
+        ParamUtil.setRequestAttr(request, CRUD_TYPE_TCU, ACTION_PREMISE_LIST);
     }
 
     @SneakyThrows
@@ -244,7 +245,7 @@ public class ChangeTcuDateDelegator {
         ParamUtil.setSessionAttr(request, keyPsnName, psnName);
         ParamUtil.setSessionAttr(request, keyPsnType, psnType);
 
-        ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_TYPE, ACTION_PREMISE_LIST);
+        ParamUtil.setRequestAttr(request, CRUD_TYPE_TCU, ACTION_PREMISE_LIST);
 
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         validateSearch(filterParam, tcuDateFromStr, fromDate, tcuDateToStr, toDate, errMap);
@@ -313,14 +314,14 @@ public class ChangeTcuDateDelegator {
         HttpServletRequest request = bpc.request;
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         CrudHelper.doSorting(searchParam, bpc.request);
-        ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_TYPE, ACTION_PREMISE_LIST);
+        ParamUtil.setRequestAttr(request, CRUD_TYPE_TCU, ACTION_PREMISE_LIST);
     }
 
     public void changePage(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         CrudHelper.doPaging(searchParam, bpc.request);
-        ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_TYPE, ACTION_PREMISE_LIST);
+        ParamUtil.setRequestAttr(request, CRUD_TYPE_TCU, ACTION_PREMISE_LIST);
     }
 
     private LicPremisesQueryDto getFilterParamFromPage(HttpServletRequest request) {

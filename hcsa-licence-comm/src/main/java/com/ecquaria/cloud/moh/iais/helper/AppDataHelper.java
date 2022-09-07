@@ -73,7 +73,6 @@ import java.sql.Time;
 import java.text.ParseException;
 import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
@@ -81,6 +80,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURRENTSERVICEID;
 
@@ -1677,7 +1677,7 @@ public final class AppDataHelper {
             log.info(StringUtil.changeForLog("Non changed:" + nonChanged));
             log.info(StringUtil.changeForLog("PageData:" + pageData));
             if (nonChanged) {
-                person = ApplicationHelper.getKeyPersonnels(psnType, currSvcInfoDto).stream()
+                person = ApplicationHelper.getKeyPersonnel(psnType, currSvcInfoDto).stream()
                         .filter(dto -> Objects.equals(indexNo, dto.getIndexNo()))
                         .findAny()
                         .orElseGet(AppSvcPrincipalOfficersDto::new);
@@ -2540,11 +2540,12 @@ public final class AppDataHelper {
         return arrs[index];
     }
 
-    public static void genSvcDocuments(List<DocumentShowDto> documentShowDtoList, int maxPsnTypeNum, String baseSvcId,
+    public static void setAppSvcDocuments(List<DocumentShowDto> documentShowDtoList, String baseSvcId,
             Map<String, File> saveFileMap, HttpServletRequest request) {
         if (documentShowDtoList == null || documentShowDtoList.isEmpty()) {
             return;
         }
+        AtomicInteger psnTypeNum = new AtomicInteger();
         for (DocumentShowDto documentShowDto : documentShowDtoList) {
             String premisesVal = documentShowDto.getPremisesVal();
             List<DocSectionDto> docSectionList = documentShowDto.getDocSectionList();
@@ -2557,14 +2558,9 @@ public final class AppDataHelper {
                     DocSecDetailDto docSecDetailDto = docSecDetailList.get(j);
                     List<AppSvcDocDto> appSvcDocDtoList = genSvcPersonDoc(documentShowDto, docSectionDto, docSecDetailDto, docKey,
                             saveFileMap, request);
-                    if (StringUtil.isNotEmpty(docSecDetailDto.getPsnType()) && !appSvcDocDtoList.isEmpty()) {
-                        Optional<Integer> max = appSvcDocDtoList.stream()
-                                .map(AppSvcDocDto::getPersonTypeNum)
-                                .filter(Objects::nonNull)
-                                .max(Comparator.naturalOrder());
-                        Integer psnTypeNum = max.isPresent() ? max.get() : ++maxPsnTypeNum;
+                    if (!appSvcDocDtoList.isEmpty()) {
                         appSvcDocDtoList.forEach(doc -> {
-                            doc.setPersonTypeNum(psnTypeNum);
+                            doc.setPersonTypeNum(psnTypeNum.getAndIncrement());
                             doc.setBaseSvcId(baseSvcId);
                         });
                     } else if (!appSvcDocDtoList.isEmpty()) {

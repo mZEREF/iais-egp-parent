@@ -105,6 +105,8 @@ public class ServiceInfoDelegator {
         log.debug(StringUtil.changeForLog("the do doStart start ...."));
 
         AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(bpc.request);
+        DealSessionUtil.reSetInit(appSubmissionDto, HcsaAppConst.SECTION_SVCINFO);
+        ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
 //        if (IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList())) {
 //            List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,
 //                    AppServicesConsts.HCSASERVICEDTOLIST);
@@ -113,7 +115,7 @@ public class ServiceInfoDelegator {
 //        }
 
         //svc
-        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.RELOADSVCDOC, null);
+//        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.RELOADSVCDOC, null);
         //ParamUtil.setSessionAttr(bpc.request, SERVICEPERSONNELCONFIG, null);
 
         List<SelectOption> designationOpList = ApplicationHelper.genDesignationOpList();
@@ -1003,39 +1005,20 @@ public class ServiceInfoDelegator {
         String currentSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
         List<DocumentShowDto> documentShowDtoList = currSvcInfoDto.getDocumentShowDtoList();
-        List<AppSvcDocDto> appSvcDocDtos = currSvcInfoDto.getAppSvcDocDtoLit();
         Map<String, File> saveFileMap = IaisCommonUtils.genNewHashMap();
         if (isGetDataFromPage) {
-            AppSubmissionDto oldSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(request);
-            List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtos = null;
-            String appGrpId = "";
-            String appNo = "";
-            if (oldSubmissionDto != null) {
-                oldAppSvcRelatedInfoDtos = oldSubmissionDto.getAppSvcRelatedInfoDtoList();
-                appGrpId = oldSubmissionDto.getAppGrpId();
-                appNo = oldSubmissionDto.getRfiAppNo();
-            }
-            List<AppSvcDocDto> oldDocs = IaisCommonUtils.genNewArrayList();
-            if (!IaisCommonUtils.isEmpty(oldAppSvcRelatedInfoDtos)) {
-                for (AppSvcRelatedInfoDto oldSvcRelDto : oldAppSvcRelatedInfoDtos) {
-                    if (currentSvcId.equals(oldSvcRelDto.getServiceId())) {
-                        oldDocs = oldSvcRelDto.getAppSvcDocDtoLit();
-                        break;
-                    }
-                }
-            }
             if (appSubmissionDto.isNeedEditController()) {
                 Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                 //clickEditPages.add(APPLICATION_SVC_PAGE_NAME_DOCUMENT);
                 appSubmissionDto.setClickEditPage(clickEditPages);
                 reSetChangesForApp(appSubmissionDto);
             }
-            int maxPsnTypeNum = getMaxPersonTypeNumber(appSvcDocDtos, oldDocs);
-            AppDataHelper.genSvcDocuments(documentShowDtoList, maxPsnTypeNum, currSvcInfoDto.getServiceId(), saveFileMap, request);
+            //int maxPsnTypeNum = getMaxPersonTypeNumber(appSvcDocDtos, oldDocs);
+            AppDataHelper.setAppSvcDocuments(documentShowDtoList, currSvcInfoDto.getServiceId(), saveFileMap, request);
         }
         AppValidatorHelper.doValidateSvcDocuments(documentShowDtoList, errorMap);
         if (isGetDataFromPage) {
-            appSvcDocDtos = documentShowDtoList.stream()
+            List<AppSvcDocDto> appSvcDocDtos = documentShowDtoList.stream()
                     .map(DocumentShowDto::allDocuments)
                     .collect(ArrayList::new, ArrayList::addAll, ArrayList::addAll);
             saveSvcFileAndSetFileId(appSvcDocDtos, saveFileMap);
@@ -1083,7 +1066,7 @@ public class ServiceInfoDelegator {
         }
     }
 
-    private int getMaxPersonTypeNumber(List<AppSvcDocDto> newAppSvcDocDtos, List<AppSvcDocDto> oldAppSvcDocDtos) {
+    /*private int getMaxPersonTypeNumber(List<AppSvcDocDto> newAppSvcDocDtos, List<AppSvcDocDto> oldAppSvcDocDtos) {
         int maxPersonTypeNumber = 0;
         maxPersonTypeNumber = getMaxNumber(maxPersonTypeNumber, newAppSvcDocDtos);
         maxPersonTypeNumber = getMaxNumber(maxPersonTypeNumber, oldAppSvcDocDtos);
@@ -1100,7 +1083,7 @@ public class ServiceInfoDelegator {
             }
         }
         return maxPersonTypeNumber;
-    }
+    }*/
 
     /**
      * StartStep: doSaveDraft

@@ -196,10 +196,12 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
 
         if(isNeedInsp &&!StringUtil.isEmpty(auditTaskDataFillterDto.getInspectorId()) && !StringUtil.isEmpty(auditTaskDataFillterDto.getAuditId())){
             OrgUserDto user = applicationViewService.getUserById(auditTaskDataFillterDto.getInspectorId());
-            auditTaskDataFillterDto.setInspector(user.getDisplayName());
-            Map<String,String> userIdToEmails = new HashMap<>(1);
-            userIdToEmails.put(user.getDisplayName(),user.getEmail());
-            auditTaskDataFillterDto.setUserIdToEmails(userIdToEmails);
+            if(user!=null){
+                auditTaskDataFillterDto.setInspector(user.getDisplayName());
+                Map<String,String> userIdToEmails = new HashMap<>(1);
+                userIdToEmails.put(user.getDisplayName(),user.getEmail());
+                auditTaskDataFillterDto.setUserIdToEmails(userIdToEmails);
+            }
             auditTaskDataFillterDto.setAudited(true);
         }
         return auditTaskDataFillterDto;

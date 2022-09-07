@@ -274,6 +274,9 @@ public final class MasterCodeUtil {
     // Data Submission Id Type(dp,top,vs)
     public static final String CATE_ID_DS_ID_TYPE_DTV ="7CAE7440-31F4-445F-A063-2351E9483175";
 
+    //Trained Dental Hygienist/ Dental Therapist/ Oral Health Therapist Type
+    public static final String CATE_TDO_TYPE                             = "5E60874E-6C2B-ED11-BE6D-000C29FAAE4D";
+
 
 
 

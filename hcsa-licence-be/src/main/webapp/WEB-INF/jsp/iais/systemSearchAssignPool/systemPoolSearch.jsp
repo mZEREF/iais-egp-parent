@@ -63,7 +63,7 @@
                     <iais:row>
                       <iais:field value="Application Status"/>
                       <iais:value width="18">
-                        <iais:select name="application_status" options="appStatusOption" firstOption="Please Select" value="${systemSearchParam.filters['application_status']}" ></iais:select>
+                        <iais:select name="application_status" needSort="true" options="appStatusOption" firstOption="Please Select" value="${systemSearchParam.filters['application_status']}" ></iais:select>
                       </iais:value>
                     </iais:row>
                     <iais:row>

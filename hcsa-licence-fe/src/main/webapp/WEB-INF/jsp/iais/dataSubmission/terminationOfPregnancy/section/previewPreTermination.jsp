@@ -42,15 +42,17 @@
                 <%
                     TopSuperDataSubmissionDto topSuperDataSubmissionDto = (TopSuperDataSubmissionDto) ParamUtil.getSessionAttr(request, "topSuperDataSubmissionDto");
                     FamilyPlanDto familyPlanDto =topSuperDataSubmissionDto.getTerminationOfPregnancyDto().getFamilyPlanDto();
-                    int weeks = 0;
+                    int weeksD = 0;
+                    int weeksU = 0;
                     if (familyPlanDto != null) {
-                        weeks = Integer.parseInt(familyPlanDto.getGestAgeBaseOnUltrWeek());
+                        int weeks = Integer.parseInt(familyPlanDto.getGestAgeBaseOnUltrWeek());
                         BigDecimal b1 = new BigDecimal(familyPlanDto.getGestAgeBaseOnUltrDay());
                         BigDecimal b2 = new BigDecimal(Integer.toString(7));
-                        weeks = weeks + b1.divide(b2, 0, BigDecimal.ROUND_DOWN).intValue();
+                        weeksU = weeks + b1.divide(b2, 0, BigDecimal.ROUND_UP).intValue();
+                        weeksD = weeks + b1.divide(b2, 0, BigDecimal.ROUND_DOWN).intValue();
                     }
                 %>
-                <div <%if (weeks < 13 || weeks > 24) {%>style="display: none"<%}%>>
+                <div <%if (weeksD < 13 || weeksU > 24) {%>style="display: none"<%}%>>
                     <iais:row>
                         <iais:field width="6" value="Given Counselling On Mid-Trimester Pregnancy Termination"/>
                         <iais:value width="6" display="true">

@@ -28,8 +28,12 @@
         const internalRemarkStar = $('#internalRemarkStar');
         const rollBackToRow = $('#rollBackToRow');
 
-        if ('<%=InspectionConstants.PROCESS_DECI_ROLL_BACK%>' === nextStageValue || (customValue && customValue=== nextStageValue)) {
-            rollBackToRow.show();
+        if ('<%=InspectionConstants.PROCESS_DECI_ROLL_BACK%>' === nextStageValue ||'PROCRLR' === nextStageValue || (customValue && customValue=== nextStageValue)) {
+            if('PROCRLR' !== nextStageValue){
+                rollBackToRow.show();
+            }else{
+                rollBackToRow.hide();
+            }
             internalRemarkStar.show();
         } else {
             rollBackToRow.hide();
@@ -50,6 +54,7 @@
             const internalRemarksVal = $('.internalRemarks').val();
             let pass = true;
             if (internalRemarksVal === null || internalRemarksVal === undefined || internalRemarksVal === ''){
+                internalMsg.html('The field is mandatory.');
                 internalMsg.show();
                 pass = false;
             }

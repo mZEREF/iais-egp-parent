@@ -5,11 +5,9 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
@@ -45,7 +43,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppPremCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicBaseSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicDocumentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicDocumentRelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
@@ -59,9 +56,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremOtherInfoTopPe
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremSuplmItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSecondAddrDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSubLicenseeInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSvcChargesDto;
@@ -80,17 +75,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicInspectionGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremInspGrpCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
@@ -234,7 +224,7 @@ public class LicenceApproveBatchjob {
                         //update baseApplicationNo expiry Date
                         updateExpiryDateByBaseApplicationNo(licenceGroupDtos);
                         //add the originLicenceLicBaseSpecifiedCorrelationDtos
-                        setOriginLicenceLicBaseSpecifiedCorrelationDtos(licenceGroupDtos);
+                       // setOriginLicenceLicBaseSpecifiedCorrelationDtos(licenceGroupDtos);
 
                         //
                         String eventBusSubmissionId = generateIdClient.getSeqId().getEntity();
@@ -297,7 +287,7 @@ public class LicenceApproveBatchjob {
             }
         }
     }
-    private void setOriginLicenceLicBaseSpecifiedCorrelationDtos(List<LicenceGroupDto> licenceGroupDtos){
+   /* private void setOriginLicenceLicBaseSpecifiedCorrelationDtos(List<LicenceGroupDto> licenceGroupDtos){
         log.info(StringUtil.changeForLog("The setOriginLicenceLicBaseSpecifiedCorrelationDtos is strat ..."));
         if(!IaisCommonUtils.isEmpty(licenceGroupDtos)){
             log.info(StringUtil.changeForLog("The setOriginLicenceLicBaseSpecifiedCorrelationDtos licenceGroupDtos.size() is -->:"+licenceGroupDtos.size()));
@@ -323,7 +313,7 @@ public class LicenceApproveBatchjob {
             }
         }
         log.info(StringUtil.changeForLog("The setOriginLicenceLicBaseSpecifiedCorrelationDtos is end ..."));
-    }
+    }*/
     private void updateExpiryDateByAlignFlag(List<LicenceGroupDto> licenceGroupDtos){
         log.info(StringUtil.changeForLog("The updateExpiryDateByAlignFlag is strat ..."));
         if(!IaisCommonUtils.isEmpty(licenceGroupDtos)){
@@ -724,7 +714,7 @@ public class LicenceApproveBatchjob {
                 log.info(StringUtil.changeForLog("The allPremisesGroupDtos isExist is -->:" + isExist));
                 if (!isExist) {
                     premisesDto.setVersion(getVersionByHciCode(hciCode));
-                    List<LicPremisesScopeGroupDto> licPremisesScopeGroupDtoList = premisesGroupDto.getLicPremisesScopeGroupDtoList();
+                    /*List<LicPremisesScopeGroupDto> licPremisesScopeGroupDtoList = premisesGroupDto.getLicPremisesScopeGroupDtoList();
                     if (!IaisCommonUtils.isEmpty(licPremisesScopeGroupDtoList)) {
                         for (LicPremisesScopeGroupDto licPremisesScopeGroupDto : licPremisesScopeGroupDtoList) {
                             LicPremisesScopeAllocationDto licPremisesScopeAllocationDto = licPremisesScopeGroupDto.getLicPremisesScopeAllocationDto();
@@ -739,7 +729,7 @@ public class LicenceApproveBatchjob {
                                 log.debug(StringUtil.changeForLog(errorMsg));
                             }
                         }
-                    }
+                    }*/
                     allPremisesGroupDtos.add(premisesGroupDto);
                 }
             }
@@ -810,7 +800,7 @@ public class LicenceApproveBatchjob {
         log.debug(StringUtil.changeForLog("The isPostInspNeeded is -->:" + isPostInspNeeded));
         String appGroupType = applicationGroupDto.getAppType();
         log.debug(StringUtil.changeForLog("The appGroupType is -->:" + appGroupType));
-        licenceGroupDto.setAppType(appGroupType);
+       // licenceGroupDto.setAppType(appGroupType);
 
         LicenseeDto oldLicenseeDto = getOrganizationIdBylicenseeId(applicationGroupDto.getLicenseeId());
         //get organizationId
@@ -926,10 +916,10 @@ public class LicenceApproveBatchjob {
 
                     //create the lic_fee_group_item
                     //do not need create in the Dto
-                    //todo:lic_base_specified_correlation
+
                     //
 
-                        sendEmailAndSms(applicationDto, licenceDto, oldLicenseeDto, originLicenceDto, serviceId,applicationListDto.getAppPremisesRecommendationDto());
+                      //  sendEmailAndSms(applicationDto, licenceDto, oldLicenseeDto, originLicenceDto, serviceId,applicationListDto.getAppPremisesRecommendationDto());
                 }
                 //part premises
                 boolean isPartPremises = firstApplicationDto.isPartPremises();
@@ -1038,7 +1028,7 @@ public class LicenceApproveBatchjob {
         log.debug(StringUtil.changeForLog("The isPostInspNeeded is -->:" + isPostInspNeeded));
         String appGroupType = applicationGroupDto.getAppType();
         log.debug(StringUtil.changeForLog("The appGroupType is -->:" + appGroupType));
-        licenceGroupDto.setAppType(appGroupType);
+        //licenceGroupDto.setAppType(appGroupType);
         LicenseeDto oldLicenseeDto = getOrganizationIdBylicenseeId(applicationGroupDto.getLicenseeId());
         //get organizationId
         String organizationId = oldLicenseeDto.getOrganizationId();
@@ -1534,6 +1524,7 @@ public class LicenceApproveBatchjob {
             //to use in the create to get the Relation.
             licKeyPersonnelDto.setId(appSvcKeyPersonnelDto.getId());
             licKeyPersonnelDto.setPsnType(appSvcKeyPersonnelDto.getPsnType());
+            licKeyPersonnelDto.setPremSubSvcRelId(appSvcKeyPersonnelDto.getPremSubSvcRelId());
             personnelsDto.setLicKeyPersonnelDto(licKeyPersonnelDto);
             result.add(personnelsDto);
         }
@@ -1628,6 +1619,7 @@ public class LicenceApproveBatchjob {
                 licDocumentDto.setLicPersonType(appSvcDocDto.getPersonType());
                 licDocumentDto.setLicPersonTypeNum(appSvcDocDto.getPersonTypeNum());
                 licDocumentDto.setLicSvcSpePsnId(appSvcDocDto.getAppSvcPersonId());
+                licDocumentDto.setPremSubSvcRelId(appSvcDocDto.getPremSubSvcRelId());
                 //set the old premises Id ,get the releation when the save.
                 String premisesId = getPremisesByAppPremCorreId(appPremisesCorrelationDtos, appSvcDocDto.getAppPremCorreId());
                 if (StringUtil.isEmpty(premisesId)) {
@@ -2006,7 +1998,7 @@ public class LicenceApproveBatchjob {
         return result;
     }
 
-    private void sendSMS(String msgId, String licenseeId, Map<String, Object> msgInfoMap){
+   /* private void sendSMS(String msgId, String licenseeId, Map<String, Object> msgInfoMap){
         //MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(msgId).getEntity();
         //String templateMessageByContent = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), msgInfoMap);
         String templateMessageByContent = "send sms";
@@ -2019,9 +2011,9 @@ public class LicenceApproveBatchjob {
         if (!IaisCommonUtils.isEmpty(recipts)) {
             emailClient.sendSMS(recipts,smsDto,refNo);
         }
-    }
+    }*/
 
-    private void sendEmailAndSms(ApplicationDto applicationDto, LicenceDto licenceDto,
+    /*private void sendEmailAndSms(ApplicationDto applicationDto, LicenceDto licenceDto,
                                  LicenseeDto oldLicenseeDto, LicenceDto originLicenceDto, String serviceId,AppPremisesRecommendationDto recommendationDto) {
         log.info(StringUtil.changeForLog("The sendEmailAndSms start ..."));
         String applicationNo = applicationDto.getApplicationNo();
@@ -2053,151 +2045,11 @@ public class LicenceApproveBatchjob {
             log.info(StringUtil.changeForLog("send notification applicantName : " + applicantName));
             //new application send email zhilin
             if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())) {
-//                applicationTypeShow = MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-//                Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-//                map.put("ApplicantName", applicantName);
-//                map.put("ApplicationType", applicationTypeShow);
-//                map.put("ApplicationNumber", applicationNo);
-//                map.put("applicationDate", appDate);
-//                map.put("licenceNumber", licenceNo);
-//                map.put("isSpecial", "N");
-//                map.put("isCorpPass", "N");
-//                if(inspectionRecommendation != null){
-//                    map.put("inInspection", "Y");
-//                    map.put("inspectionText", inspectionRecommendation.getRemarks());
-//                }else {
-//                    map.put("inInspection", "N");
-//                }
-//                if(organizationDto != null){
-//                    if(StringUtil.isEmpty(organizationDto.getUenNo())){
-//                        map.put("isCorpPass", "Y");
-//                        map.put("corpPassLink", corpPassUrl);
-//                    }
-//                }
-//                map.put("systemLink", loginUrl);
-//
-//                map.put("createHyperlink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_CREATE_LINK));
-//                map.put("regulationLink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_REGULATIONS_LINK));
-//                map.put("link", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_LINK));
-//                map.put("scdfLink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_SCDF_LINK));
-//                map.put("momLink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_MOM_LINK));
-//
-//                map.put("phoneNumber", systemPhoneNumber);
-//                map.put("emailAddress1", systemAddressOne);
-//                map.put("emailAddress2", systemAddressTwo);
-//                map.put("MOH_AGENCY_NAME", MohName);
-//
-//                try {
-//                    String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ applicationNo +" is approved ";
-//                    EmailParam emailParam = new EmailParam();
-//                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVED_ID);
-//                    emailParam.setTemplateContent(map);
-//                    emailParam.setQueryCode(applicationNo);
-//                    emailParam.setReqRefNum(applicationNo);
-//                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-//                    emailParam.setRefId(applicationNo);
-//                    emailParam.setSubject(subject);
-//                    //send email
-//                    log.info(StringUtil.changeForLog("send new application email"));
-//                    notificationHelper.sendNotification(emailParam);
-//                    log.info(StringUtil.changeForLog("send new application email end"));
-//                    //send sms
-//                    EmailParam smsParam = new EmailParam();
-//                    smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVED_SMS_ID);
-//                    smsParam.setSubject(subject);
-//                    smsParam.setQueryCode(applicationNo);
-//                    smsParam.setReqRefNum(applicationNo);
-//                    smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-//                    smsParam.setRefId(applicationNo);
-//                    log.info(StringUtil.changeForLog("send new application sms"));
-//                    notificationHelper.sendNotification(smsParam);
-//                    log.info(StringUtil.changeForLog("send new application sms end"));
-//                    //send message
-//                    EmailParam messageParam = new EmailParam();
-//                    messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVED_MESSAGE_ID);
-//                    messageParam.setTemplateContent(map);
-//                    messageParam.setQueryCode(applicationNo);
-//                    messageParam.setReqRefNum(applicationNo);
-//                    messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-//                    messageParam.setRefId(applicationNo);
-//                    messageParam.setSubject(subject);
-//                    messageParam.setSvcCodeList(svcCodeList);
-//                    log.info(StringUtil.changeForLog("send new application message"));
-//                    notificationHelper.sendNotification(messageParam);
-//                    log.info(StringUtil.changeForLog("send new application message end"));
-//                }catch (Exception e){
-//                    log.error(e.getMessage(), e);
-//                }
+
 
                 //zhilin
             } else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())) {
-//                Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-//                map.put("ApplicantName", applicantName);
-//                map.put("ApplicationType", applicationTypeShow);
-//                map.put("ApplicationNumber", applicationNo);
-//                map.put("applicationDate", appDate);
-//                map.put("licenceNumber", licenceNo);
-//                map.put("isSpecial", "N");
-//                if(inspectionRecommendation != null){
-//                    map.put("inInspection", "Y");
-//                    map.put("inspectionText", inspectionRecommendation.getRemarks());
-//                }else {
-//                    map.put("inInspection", "N");
-//                }
-//                map.put("systemLink", loginUrl);
-//
-//                map.put("createHyperlink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_CREATE_LINK));
-//                map.put("regulationLink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_REGULATIONS_LINK));
-//                map.put("link", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_LINK));
-//                map.put("scdfLink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_SCDF_LINK));
-//                map.put("momLink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_MOM_LINK));
-//                map.put("irasLink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_IRAS_LINK));
-//
-//                map.put("phoneNumber", systemPhoneNumber);
-//                map.put("emailAddress1", systemAddressOne);
-//                map.put("emailAddress2", systemAddressTwo);
-//                map.put("MOH_AGENCY_NAME", MohName);
-//                try {
-//                    String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ applicationNo +" is approved ";
-//                    EmailParam emailParam = new EmailParam();
-//                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_APPROVE);
-//                    emailParam.setTemplateContent(map);
-//                    emailParam.setQueryCode(applicationNo);
-//                    emailParam.setReqRefNum(applicationNo);
-//                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-//                    emailParam.setRefId(applicationNo);
-//                    emailParam.setSubject(subject);
-//                    //send email
-//                    log.info(StringUtil.changeForLog("send renewal application email"));
-//                    notificationHelper.sendNotification(emailParam);
-//                    log.info(StringUtil.changeForLog("send renewal application email end"));
-//                    //send sms
-//                    EmailParam smsParam = new EmailParam();
-//                    smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_APPROVE_SMS);
-//                    smsParam.setSubject(subject);
-//                    smsParam.setQueryCode(applicationNo);
-//                    smsParam.setReqRefNum(applicationNo);
-//                    smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-//                    smsParam.setRefId(applicationNo);
-//                    log.info(StringUtil.changeForLog("send renewal application sms"));
-//                    notificationHelper.sendNotification(smsParam);
-//                    log.info(StringUtil.changeForLog("send renewal application sms end"));
-//                    //send message
-//                    EmailParam messageParam = new EmailParam();
-//                    messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_APPROVE_MESSAGE);
-//                    messageParam.setTemplateContent(map);
-//                    messageParam.setQueryCode(applicationNo);
-//                    messageParam.setReqRefNum(applicationNo);
-//                    messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-//                    messageParam.setRefId(applicationNo);
-//                    messageParam.setSubject(subject);
-//                    messageParam.setSvcCodeList(svcCodeList);
-//                    log.info(StringUtil.changeForLog("send renewal application message"));
-//                    notificationHelper.sendNotification(messageParam);
-//                    log.info(StringUtil.changeForLog("send renewal application message end"));
-//                }catch (Exception e){
-//                    log.error(e.getMessage(), e);
-//                }
+
                 //guying
             } else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())) {
                 //Send notification to transferor when licence transfer application is approve
@@ -2206,7 +2058,7 @@ public class LicenceApproveBatchjob {
             }
             log.info(StringUtil.changeForLog("The sendEmailAndSms end ..."));
         }
-    }
+    }*/
 
     @Setter
     @Getter
@@ -2224,7 +2076,7 @@ public class LicenceApproveBatchjob {
         if (success.size() > 0) {
             updateExpiryDateByAlignFlag(licenceGroupDtos);
             updateExpiryDateByBaseApplicationNo(licenceGroupDtos);
-            setOriginLicenceLicBaseSpecifiedCorrelationDtos(licenceGroupDtos);
+            //setOriginLicenceLicBaseSpecifiedCorrelationDtos(licenceGroupDtos);
             AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
             EventBusLicenceGroupDtos eventBusLicenceGroupDtos = new EventBusLicenceGroupDtos();
             String evenRefNum = String.valueOf(System.currentTimeMillis());

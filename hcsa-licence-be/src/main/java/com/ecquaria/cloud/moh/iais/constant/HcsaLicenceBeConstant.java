@@ -52,6 +52,10 @@ public class HcsaLicenceBeConstant {
 
     public static final String APP_VEHICLE_FLAG = "appVehicleFlag";
 
+    public static final String APP_SPECIAL_FLAG = "appSpecialFlag";
+
+    public static final String APP_OTHER_FLAG = "appOtherFlag";
+
     public static final String APP_VEHICLE_NO_LIST ="appVehicleNoList";
 
     public static final String EDIT_VEHICLE_FLAG = InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT + "_"+ InspectionConstants.SWITCH_ACTION_EDIT;

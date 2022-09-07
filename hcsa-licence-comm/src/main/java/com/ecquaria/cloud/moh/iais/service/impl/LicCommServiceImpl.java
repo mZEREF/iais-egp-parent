@@ -13,7 +13,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.CheckCoLocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicBaseSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
@@ -30,15 +29,13 @@ import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.client.LicCommClient;
 import com.ecquaria.cloud.moh.iais.util.PageDataCopyUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * @author chenlei on 5/3/2022.
@@ -129,14 +126,14 @@ public class LicCommServiceImpl implements LicCommService {
         return licCommClient.getGiroAccountsByLicIds(licIds).getEntity();
     }
 
-    @Override
+ /*   @Override
     public List<LicBaseSpecifiedCorrelationDto> getLicBaseSpecifiedCorrelationDtos(String svcType, String originLicenceId) {
         log.info(StringUtil.changeForLog("Params: " + svcType + " - " + originLicenceId));
         if (StringUtil.isEmpty(svcType) || StringUtil.isEmpty(originLicenceId)) {
             return IaisCommonUtils.genNewArrayList();
         }
         return licCommClient.getLicBaseSpecifiedCorrelationDtos(svcType, originLicenceId).getEntity();
-    }
+    }*/
 
     @Override
     public boolean baseSpecLicenceRelation(LicenceDto licenceDto) {
@@ -170,7 +167,7 @@ public class LicCommServiceImpl implements LicCommService {
                     return flag ? String.valueOf(false) : "";
                 }
 
-                List<LicBaseSpecifiedCorrelationDto> entity = getLicBaseSpecifiedCorrelationDtos(
+               /* List<LicBaseSpecifiedCorrelationDto> entity = getLicBaseSpecifiedCorrelationDtos(
                         HcsaConsts.SERVICE_TYPE_SPECIFIED, licenceDto.getId());
                 if (entity == null || entity.isEmpty()) {
                     log.info(StringUtil.changeForLog("The related base service is empty!"));
@@ -189,7 +186,7 @@ public class LicCommServiceImpl implements LicCommService {
                             return flag ? String.valueOf(true) : baseService;
                         }
                     }
-                }
+                }*/
 
             }
         }

@@ -73,7 +73,7 @@
                     <iais:row>
                       <iais:field value="Application Status"/>
                       <iais:value width="18">
-                        <iais:select name="application_status" options="appStatusOption" firstOption="Please Select"
+                        <iais:select name="application_status" options="appStatusOption" firstOption="Please Select" needSort="true"
                                      value="${supTaskSearchParam.filters['application_status']}"></iais:select>
                       </iais:value>
                     </iais:row>

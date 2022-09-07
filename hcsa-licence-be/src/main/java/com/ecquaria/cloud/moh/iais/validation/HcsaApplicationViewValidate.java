@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -51,6 +52,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         String date = ParamUtil.getDate(request, "tuc");
         String recommendationStr = ParamUtil.getString(request,"recommendation");
         String appVehicleFlag = (String)ParamUtil.getSessionAttr(request, "appVehicleFlag");
+        String appSpecialFlag = (String)ParamUtil.getSessionAttr(request, "appSpecialFlag");
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");
         String status = applicationViewDto.getApplicationDto().getStatus();
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request,"taskDto");
@@ -106,9 +108,10 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         //DMS recommendation
         String generalErrSix = MessageUtil.replaceMessage(ERROR_CODE_GENERAL_ERR0006,"Processing Decision", "field");
         if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status)){
-            //verify upload file
-            checkIsUploadDMS(applicationViewDto,errMap);
-
+            if(StringUtil.isNotEmpty(decisionValue)&&!decisionValue.equals(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY)){
+                //verify upload file
+                checkIsUploadDMS(applicationViewDto,errMap);
+            }
             if(StringUtil.isEmpty(decisionValue)){
                 errMap.put("decisionValues",generalErrSix);
             }else{
@@ -224,7 +227,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             }
         }
         //validate vehicle EAS / MTS
-        errMap = valiVehicleEasMts(request, errMap, applicationViewDto, nextStage, nextStageReplys, appVehicleFlag, recommendationStr, decisionValue);
+        errMap = valiVehicleEasMts(request, errMap, applicationViewDto, nextStage, nextStageReplys, appVehicleFlag, recommendationStr, decisionValue,appSpecialFlag);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         tcuVerification(errMap, applicationViewDto, loginContext.getCurRoleId());
         return errMap;
@@ -232,12 +235,14 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
 
     private Map<String, String> valiVehicleEasMts(HttpServletRequest request, Map<String, String> errMap, ApplicationViewDto applicationViewDto,
                                                   String nextStage, String nextStageReplys, String appVehicleFlag, String recommendationStr,
-                                                  String decisionValue) {
-        if (applicationViewDto != null && (VERIFIED.equals(nextStage) || "PROCREP".equals(nextStageReplys)) && InspectionConstants.SWITCH_ACTION_EDIT.equals(appVehicleFlag))  {
+                                                  String decisionValue,String appSpecialFlag) {
+
+        if (applicationViewDto != null && (VERIFIED.equals(nextStage) || "PROCREP".equals(nextStageReplys)) && (InspectionConstants.SWITCH_ACTION_EDIT.equals(appVehicleFlag)||InspectionConstants.SWITCH_ACTION_EDIT.equals(appSpecialFlag)))  {
             List<String> rejectCode = IaisCommonUtils.genNewArrayList(2);
             rejectCode.add(RECOMMENDATION_REJECT);
             rejectCode.add(DECISION_REJECT);
             valiVehicleEasMtsCommon(request, errMap, applicationViewDto, recommendationStr, rejectCode, decisionValue);
+            valiSpecialEasMtsCommon(request, errMap, applicationViewDto, recommendationStr, rejectCode, decisionValue);
         }
         return errMap;
     }
@@ -317,6 +322,74 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                     applicationViewDto.setAppSvcVehicleDtos(appSvcVehicleDtos);
                 }
             }
+        }
+    }
+
+    public static void valiSpecialEasMtsCommon(HttpServletRequest request, Map<String, String> errMap, ApplicationViewDto applicationViewDto,
+                                                String recommendationStr, List<String> rejectCode, String decisionValue){
+        List<AppPremSubSvcRelDto> subSvcRelDtoList = applicationViewDto.getAppPremSpecialSubSvcRelDtoList();
+
+        if (!IaisCommonUtils.isEmpty(subSvcRelDtoList)) {
+            boolean appVeh = !rejectCode.contains(StringUtil.getNonNull(recommendationStr)) && !rejectCode.contains(StringUtil.getNonNull(decisionValue));
+            for (int i = 0; i < subSvcRelDtoList.size(); i++) {
+
+                String[] specialSubSvcRadios = ParamUtil.getStrings(request, "specialSubSvcRadio" + i);
+                String specialSubSvcRemarks = ParamUtil.getRequestString(request, "specialSubSvcRemarks" + i);
+                //status not empty
+                if(appVeh){
+                    if (specialSubSvcRadios == null || specialSubSvcRadios.length == 0) {
+                        errMap.put("specialSubSvcRadioError" + i, ERROR_CODE_GENERAL_ERR0006);
+                        subSvcRelDtoList.get(i).setStatus(null);
+                    } else {
+                        String specialSubSvcRadio = specialSubSvcRadios[0];
+                        if (StringUtil.isEmpty(specialSubSvcRadio)) {
+                            errMap.put("specialSubSvcRadioError" + i, ERROR_CODE_GENERAL_ERR0006);
+                            subSvcRelDtoList.get(i).setStatus(null);
+                        } else {
+                            String specialSubSvcStatusCode;
+                            if(BeDashboardConstant.SWITCH_ACTION_APPROVE.equals(specialSubSvcRadio)) {
+                                specialSubSvcStatusCode = ApplicationConsts.RECORD_STATUS_APPROVE_CODE;
+                            } else {
+                                specialSubSvcStatusCode = ApplicationConsts.RECORD_STATUS_REJECT_CODE;
+                            }
+                            subSvcRelDtoList.get(i).setStatus(specialSubSvcStatusCode);
+                        }
+                    }
+                }else {
+                    subSvcRelDtoList.get(i).setStatus(ApplicationConsts.RECORD_STATUS_REJECT_CODE);
+                }
+
+                //remark length vali
+                if (StringUtil.isEmpty(specialSubSvcRemarks)) {
+                    subSvcRelDtoList.get(i).setRemarks(specialSubSvcRemarks);
+                } else {
+                    if (specialSubSvcRemarks.length() <= 400) {
+                        subSvcRelDtoList.get(i).setRemarks(specialSubSvcRemarks);
+                    } else {
+                        Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
+                        repMap.put("number", "400");
+                        repMap.put("fieldNo", "Remarks");
+                        errMap.put("specialSubSvcRemarksError" + i, MessageUtil.getMessageDesc("GENERAL_ERR0036", repMap));
+                    }
+                }
+            }
+            //not reject, At least one approve
+            if(appVeh){
+                boolean approveFlag = false;
+                for(AppPremSubSvcRelDto subSvcRelDto : subSvcRelDtoList) {
+                    if(subSvcRelDto != null) {
+                        if(!StringUtil.isEmpty(subSvcRelDto.getStatus()) && ApplicationConsts.RECORD_STATUS_APPROVE_CODE.equals(subSvcRelDto.getStatus())) {
+                            approveFlag = true;
+                        } else if(StringUtil.isEmpty(subSvcRelDto.getStatus())) {
+                            approveFlag = true;
+                        }
+                    }
+                }
+                if(!approveFlag) {
+                    errMap.put("specialApproveOne", "NEW_ERR0033");
+                }
+            }
+            applicationViewDto.setAppPremSpecialSubSvcRelDtoList(subSvcRelDtoList);
         }
     }
     /**

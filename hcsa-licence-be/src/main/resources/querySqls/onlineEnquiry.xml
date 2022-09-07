@@ -6,23 +6,23 @@
             from
             (
             select
-            p.id,
+            t3.id,
             t1.licence_id as licence_id,
             t2.name as name,
-            p.prof_reg_no as prof_reg_no,
+            t3.prof_reg_no as prof_reg_no,
             t2.designation as designation,
             t1.psn_type as psn_type,
             t4.licence_no,
             t4.svc_name
             from lic_key_personnel t1
             join  key_personnel t2 on t1.person_id = t2.id
-            join key_personnel_ext t3 on t1.psn_ext_id = p.id and p.person_id = t2.id
+            join key_personnel_ext t3 on t1.psn_ext_id = t3.id and t3.person_id = t2.id
             join licence t4 on t1.licence_id = t4.id) a,
             (
             select distinct
-            p.id,
-            p.licence_no,
-            p.svc_name as service_name,
+            t3.id,
+            t3.licence_no,
+            t3.svc_name as service_name,
             t2.hci_code as hci_code,
             t2.postal_code as postal_code,
             t2.hci_name as hci_name,
@@ -59,9 +59,9 @@
               ) as practice_location
             from lic_premises t1
             join premises t2 on t1.premises_id = t2.id
-            join licence t3 on t1.licence_id = p.id
+            join licence t3 on t1.licence_id = t3.id
             join (select licence_no,
-            max(version) as version from licence group by licence_no) inner_lic on inner_lic.licence_no = p.licence_no and inner_lic.version = p.version
+            max(version) as version from licence group by licence_no) inner_lic on inner_lic.licence_no = t3.licence_no and inner_lic.version = t3.version
             ) b
             where a.licence_id = b.id
             <#if id??> AND a.id = :id >0 </#if>

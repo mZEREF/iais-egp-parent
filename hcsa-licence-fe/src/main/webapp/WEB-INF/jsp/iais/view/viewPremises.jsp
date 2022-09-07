@@ -1,5 +1,9 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+
+<c:set var="mosdName" value="${ApplicationConsts.MODE_OF_SVC_DELIVERY}" />
+
 <c:if test="${empty printView && (!FirstView || needShowErr)}">
     <c:set var="headingSign" value="${coMap.premises == 'premises' ? 'completed' : 'incompleted'}"/>
 </c:if>
@@ -7,7 +11,7 @@
     <div class="panel-heading ${headingSign}" id="headingPremise" role="tab">
         <h4 class="panel-title">
             <a role="button" class="collapsed" data-toggle="collapse" href="#collapsePremise${documentIndex}" aria-expanded="true" aria-controls="collapsePremise" name="printControlNameForApp">
-                Mode of Service Delivery
+                ${mosdName}
             </a>
         </h4>
     </div>
@@ -19,7 +23,7 @@
             <c:forEach var="appGrpPremDto" items="${AppSubmissionDto.appGrpPremisesDtoList}"
                        varStatus="status">
                 <iais:row>
-                    <div class="app-title">Mode of Service Delivery ${status.index+1}</div>
+                    <div class="app-title">${mosdName} ${status.index+1}</div>
                 </iais:row>
                 <div class="panel-main-content form-horizontal min-row">
                     <%@include file="premises/viewPremisesContent.jsp"%>

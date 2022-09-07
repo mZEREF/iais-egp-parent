@@ -464,6 +464,7 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
         List<DsElisDoctorDto> doctorDtoList = new ArrayList<>();
         ELISInterfaceDto elisInterfaceDto = new ELISInterfaceDto();
         elisInterfaceDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        elisInterfaceDto.setDoctorSource(source);
         if (topDoctorFile.exists()) {
             List<DsElisDoctorDto> topDoctorDtoList = FileUtils.transformCsvToJavaBean(topDoctorFile, DsElisDoctorDto.class, false, '|');
             if (IaisCommonUtils.isNotEmpty(topDoctorDtoList)) {
@@ -567,7 +568,7 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
         log.info(StringUtil.changeForLog("The eicFeOrganization end ..."));
     }
 
-    private void callEicSaveElisInterfaceDto(ELISInterfaceDto elisInterfaceDto){
+    public void callEicSaveElisInterfaceDto(ELISInterfaceDto elisInterfaceDto){
         beEicGatewayClient.saveElisInterfaceDto(elisInterfaceDto).getEntity();
     }
 

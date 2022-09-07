@@ -29,7 +29,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.GenerateLicenceDt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicBaseSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -320,16 +319,18 @@ public class LicenceServiceImpl implements LicenceService {
                                                         }
                                                     }
                                                 }
-                                                taskDtoList.sort(Comparator.comparing(TaskDto::getSlaDateCompleted));
+                                                taskDtoList.sort(Comparator.comparing(TaskDto::getSlaDateCompleted).reversed());
                                                 if(taskDtoList.size()!=0){
                                                     for (TaskDto task:taskDtoList
                                                     ) {
                                                         if(task.getRoleId().equals(RoleConsts.USER_ROLE_ASO)){
                                                             OrgUserDto aso=organizationClient.retrieveOrgUserAccountById(task.getUserId()).getEntity();
                                                             taskDto=task;
-                                                            if(aso!=null&&aso.getStatus().equals(AppConsts.COMMON_STATUS_ACTIVE)&&aso.getAvailable()){
-                                                                hasAso=true;
-                                                                break;
+                                                            if(aso!=null){
+                                                                if(aso.getUserRoles().contains(RoleConsts.USER_ROLE_ASO)&&aso.getStatus().equals(AppConsts.COMMON_STATUS_ACTIVE)&&aso.getAvailable()){
+                                                                    hasAso=true;
+                                                                    break;
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -345,12 +346,22 @@ public class LicenceServiceImpl implements LicenceService {
                                                         }else{
                                                             List<OrgUserDto> orgUserDtos = organizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN).getEntity();
                                                             if(!IaisCommonUtils.isEmpty(orgUserDtos)){
-                                                                OrgUserDto orgUserDto = orgUserDtos.get(0);
-                                                                userId = orgUserDto.getId();
-                                                                taskDto.setUserId(userId);
-                                                                taskDto.setWkGrpId(null);
+                                                                OrgUserDto userDto=null;
+                                                                for (OrgUserDto orgUserDto:orgUserDtos
+                                                                ) {
+                                                                    if(orgUserDto.getAvailable()&&orgUserDto.getStatus().equals(AppConsts.COMMON_STATUS_ACTIVE)){
+                                                                        userDto=orgUserDto;
+                                                                        break;
+                                                                    }
+                                                                }
+                                                                if(userDto!=null){
+                                                                    taskDto.setUserId(userDto.getId());
+                                                                    taskDto.setWkGrpId(null);
+                                                                }else {
+                                                                    taskDto.setUserId(null);
+                                                                }
                                                             }else {
-                                                                taskDto.setUserId(userId);
+                                                                taskDto.setUserId(null);
                                                             }
                                                         }
                                                     }
@@ -1237,10 +1248,10 @@ public class LicenceServiceImpl implements LicenceService {
         return result;
     }
 
-    @Override
+   /* @Override
     public List<LicBaseSpecifiedCorrelationDto> getLicBaseSpecifiedCorrelationDtos(String svcType, String originLicenceId) {
         return licCommService.getLicBaseSpecifiedCorrelationDtos(svcType,originLicenceId);
-    }
+    }*/
     @Override
     public  void changePostInsForTodoAudit( ApplicationViewDto applicationViewDto ){
         if(applicationViewDto.getLicPremisesAuditDto() != null && ApplicationConsts.INCLUDE_RISK_TYPE_INSPECTION_KEY.equalsIgnoreCase(applicationViewDto.getLicPremisesAuditDto().getIncludeRiskType())){

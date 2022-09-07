@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
@@ -28,8 +29,10 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
+import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +43,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -55,7 +59,10 @@ public class InsReportAoDelegator  {
     private InsRepService insRepService;
     @Autowired
     private TaskService taskService;
-
+    @Autowired
+    private InspEmailService inspEmailService;
+    @Autowired
+    private AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
     @Autowired
     private FillupChklistService fillupChklistService;
     @Autowired
@@ -184,6 +191,43 @@ public class InsReportAoDelegator  {
 
     }
 
+    public void laterally(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String userId = loginContext.getUserId();
+        ApplicationViewDto applicationViewDto= (ApplicationViewDto) ParamUtil.getSessionAttr(request,APPLICATIONVIEWDTO);
+        TaskDto taskDto= (TaskDto) ParamUtil.getSessionAttr(request,TASKDTO);
+        String historyRemarks = ParamUtil.getRequestString(bpc.request, "processRemarks");
+
+        String lrSelect = ParamUtil.getRequestString(bpc.request, "lrSelect");
+        log.info(StringUtil.changeForLog("The lrSelect is -->:"+lrSelect));
+        if(StringUtil.isNotEmpty(lrSelect)){
+            String[] lrSelects =  lrSelect.split("_");
+            String aoWorkGroupId = lrSelects[0];
+            String aoUserId = lrSelects[1];
+            inspEmailService.completedTask(taskDto);
+            List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
+            taskDto.setUserId(aoUserId);
+            taskDto.setDateAssigned(new Date());
+            taskDto.setId(null);
+            taskDto.setWkGrpId(aoWorkGroupId);
+            taskDto.setSlaDateCompleted(null);
+            taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+            taskDtos.add(taskDto);
+            taskService.createTasks(taskDtos);
+            createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY,taskDto,userId,historyRemarks, taskDto.getTaskKey());
+            createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW,ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW, taskDto,userId,"",taskDto.getTaskKey());
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+            ParamUtil.setSessionAttr(bpc.request,HcsaLicenceBeConstant.REPORT_ACK_CLARIFICATION_FLAG,"laterally");
+        }else {
+            Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
+            errMap.put("lrSelect", "GENERAL_ERR0006");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
+            WebValidationHelper.saveAuditTrailForNoUseResult(errMap);
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+        }
+    }
+
     public void approve(BaseProcessClass bpc) throws Exception {
         log.debug(StringUtil.changeForLog("the inspectorReportAction start ...."));
         InspectionReportDto insRepDto = (InspectionReportDto) ParamUtil.getSessionAttr(bpc.request, INSREPDTO);
@@ -241,8 +285,24 @@ public class InsReportAoDelegator  {
         if (!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType))) {
             riskLevelResult.add(new SelectOption("rollBack", MasterCodeUtil.getCodeDesc(InspectionConstants.PROCESS_DECI_ROLL_BACK)));
         }
+        riskLevelResult.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY, "Route Laterally"));
         return riskLevelResult;
     }
 
-
+    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appNo, String appStatus, String decision,
+                                                                         TaskDto taskDto, String userId, String remarks,String subStage) {
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
+        appPremisesRoutingHistoryDto.setApplicationNo(appNo);
+        appPremisesRoutingHistoryDto.setStageId(taskDto.getTaskKey());
+        appPremisesRoutingHistoryDto.setProcessDecision(decision);
+        appPremisesRoutingHistoryDto.setAppStatus(appStatus);
+        appPremisesRoutingHistoryDto.setActionby(userId);
+        appPremisesRoutingHistoryDto.setInternalRemarks(remarks);
+        appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        appPremisesRoutingHistoryDto.setRoleId(taskDto.getRoleId());
+        appPremisesRoutingHistoryDto.setWrkGrpId(taskDto.getWkGrpId());
+        appPremisesRoutingHistoryDto.setSubStage(subStage);
+        appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
+        return appPremisesRoutingHistoryDto;
+    }
 }

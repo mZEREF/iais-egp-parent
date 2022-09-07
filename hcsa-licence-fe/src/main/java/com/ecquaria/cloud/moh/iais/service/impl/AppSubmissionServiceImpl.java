@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesDoQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -30,7 +31,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.HcsaFeeBundleItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeIndividualDto;
@@ -69,6 +69,7 @@ import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
+import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
@@ -93,7 +94,6 @@ import sop.webflow.rt.api.Process;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -124,6 +124,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     private LicenceClient licenceClient;
     @Autowired
     private EventBusHelper eventBusHelper;
+    @Autowired
+    private AppEicClient appEicClient;
     @Autowired
     private ComFileRepoClient comFileRepoClient;
     @Autowired
@@ -1460,7 +1462,34 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         }
     }
 
-
+    /**
+     * Event bus call back method
+     * <p>
+     * EventbusCallBackDelegate#callbackMethod
+     * <p>
+     * EventBusConsts.OPERATION_REQUEST_RFC_RENEW_INFORMATION_SUBMIT
+     *
+     * @param eventRefNum
+     * @param submissionId
+     */
+    public void updateInboxMsgStatus(String eventRefNum, String submissionId) {
+        if (!StringUtil.isEmpty(eventRefNum)) {
+            log.debug(StringUtil.changeForLog("--------------- releaseTimeForInsUserCallBack eventRefNum :"
+                    + eventRefNum + " submissionId :" + submissionId + "--------------------"));
+            EicRequestTrackingDto eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eventRefNum).getEntity();
+            String jsonObj = eicRequestTrackingDto.getDtoObject();
+            if (!StringUtil.isEmpty(jsonObj)) {
+                AppSubmissionDto appSubmissionDto = JsonUtil.parseToObject(jsonObj, AppSubmissionDto.class);
+                if (appSubmissionDto != null) {
+                    String rfiMsgId = appSubmissionDto.getRfiMsgId();
+                    log.debug(StringUtil.changeForLog("rfiMsgId:" + rfiMsgId));
+                    feMessageClient.updateMsgStatus(rfiMsgId, MessageConstants.MESSAGE_STATUS_RESPONSE);
+                }
+            } else {
+                log.debug(StringUtil.changeForLog("jsonObj is empty"));
+            }
+        }
+    }
 
     private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos){
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){

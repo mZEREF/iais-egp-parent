@@ -4,7 +4,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <div class="amended-service-info-gp">
-    <label class="title-font-size">${stepNameMap['SVST007']}</label>
+    <label class="title-font-size">${currStepName}</label>
     <div class="amend-preview-info">
         <div class="form-check-gp">
             <div class="row">

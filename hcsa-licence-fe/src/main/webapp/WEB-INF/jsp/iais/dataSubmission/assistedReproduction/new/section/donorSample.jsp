@@ -1,4 +1,4 @@
-<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/ar_donor_sample.js"></script>
+<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/arSelection/ar_donor_sample.js"></script>
 <c:set var="donorSampleDto" value="${arSuperDataSubmissionDto.donorSampleDto}"/>
 <iais:row>
     <iais:field style="padding-left:0" width="6" value="Is the sample donated from overseas or locally?"

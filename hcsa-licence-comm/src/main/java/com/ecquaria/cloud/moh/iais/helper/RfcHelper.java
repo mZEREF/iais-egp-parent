@@ -17,8 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOf
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicBaseSpecifiedCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
@@ -30,14 +29,15 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
+import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import com.ecquaria.cloud.moh.iais.util.PageDataCopyUtil;
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @Auther chenlei on 5/3/2022.
@@ -996,6 +996,11 @@ public final class RfcHelper {
         }
     }
 
+    /**
+     * TODO need to be changed
+     *
+     * @param appSubmissionDto
+     */
     public static void setRelatedInfoBaseServiceId(AppSubmissionDto appSubmissionDto) {
         if (appSubmissionDto == null) {
             return;
@@ -1032,7 +1037,7 @@ public final class RfcHelper {
                         break;
                     }
                 }
-                if (!StringUtil.isEmpty(baseService)) {
+                /*if (!StringUtil.isEmpty(baseService)) {
                     String service_name = configCommService.getServiceNameById(baseService);
                     List<LicBaseSpecifiedCorrelationDto> entity = licCommService.getLicBaseSpecifiedCorrelationDtos(
                             HcsaConsts.SERVICE_TYPE_SPECIFIED, licenceId);
@@ -1048,7 +1053,7 @@ public final class RfcHelper {
                             }
                         }
                     }
-                }
+                }*/
             }
             var1.setServiceId(activeHcsaServiceDtoByName.getId());
         }
@@ -1230,4 +1235,35 @@ public final class RfcHelper {
         appPremSpecialisedDtoList.forEach(dto -> dto.getCheckedAppPremSubSvcRelDtoList().forEach(rel -> result.add(dto.getPremisesVal() + dto.getBaseSvcId() + rel.getSvcId())));
         return result;
     }
+
+    public static void beforeSubmit(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto,
+            AppEditSelectDto appEditSelectDto, String appGrpNo, String appType, HttpServletRequest request) {
+        if (appSubmissionDto == null) {
+            return;
+        }
+        appSubmissionDto.setAppGrpId(null);
+        appSubmissionDto.setFromBe(ApplicationHelper.isBackend());
+        appSubmissionDto.setAppType(appType);
+        // max file index
+        DealSessionUtil.initMaxFileIndex(appSubmissionDto, request);
+
+        //judge is the preInspection
+        PreOrPostInspectionResultDto preOrPostInspectionResultDto = getConfigCommService().judgeIsPreInspection(appSubmissionDto);
+        if (preOrPostInspectionResultDto == null) {
+            appSubmissionDto.setPreInspection(true);
+            appSubmissionDto.setRequirement(true);
+        } else {
+            appSubmissionDto.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
+            appSubmissionDto.setRequirement(preOrPostInspectionResultDto.isRequirement());
+        }
+        //set Risk Score
+        setRiskToDto(appSubmissionDto);
+        // reSetAdditionalFields
+        ApplicationHelper.reSetAdditionalFields(appSubmissionDto, appEditSelectDto, appGrpNo);
+        ApplicationHelper.reSetAdditionalFields(appSubmissionDto, oldAppSubmissionDto);
+        // bind application
+        setRelatedInfoBaseServiceId(appSubmissionDto);
+
+    }
+
 }

@@ -1492,11 +1492,11 @@ public abstract class AppCommDelegator {
         AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
         log.info(StringUtil.changeForLog("The original licence No.: " + appSubmissionDto.getLicenceNo()));
 
-        Integer maxFileIndex = (Integer) ParamUtil.getSessionAttr(bpc.request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR);
+        /*Integer maxFileIndex = (Integer) ParamUtil.getSessionAttr(bpc.request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR);
         if (maxFileIndex == null) {
             maxFileIndex = 0;
         }
-        appSubmissionDto.setMaxFileIndex(maxFileIndex);
+        appSubmissionDto.setMaxFileIndex(maxFileIndex);*/
         // validate the submission data
         Map<String, String> map = AppValidatorHelper.doPreviewAndSumbit(bpc);
         boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
@@ -1544,17 +1544,16 @@ public abstract class AppCommDelegator {
             AppValidatorHelper.setErrorRequest(map, false, bpc.request);
             return;
         }
-        RfcHelper.setRelatedInfoBaseServiceId(appSubmissionDto);
-        String baseServiceId = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getBaseServiceId();
+        /*String baseServiceId = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getBaseServiceId();
         if (StringUtil.isEmpty(baseServiceId)) {
             bpc.request.setAttribute(RfcConst.SERVICE_CONFIG_CHANGE, MessageUtil.getMessageDesc("RFC_ERR020"));
             return;
-        }
+        }*/
         // change edit
         AppEditSelectDto appEditSelectDto = RfcHelper.rfcChangeModuleEvaluationDto(appSubmissionDto, oldAppSubmissionDto);
         boolean isAutoRfc = appEditSelectDto.isAutoRfc();
         // reSet: isNeedNewLicNo and self assessment flag
-        ApplicationHelper.reSetAdditionalFields(appSubmissionDto, oldAppSubmissionDto, appEditSelectDto);
+        //ApplicationHelper.reSetAdditionalFields(appSubmissionDto, oldAppSubmissionDto, appEditSelectDto);
         appSubmissionDto.setChangeSelectDto(appEditSelectDto);
         log.info(StringUtil.changeForLog(appSubmissionDto.getLicenceNo() + " - App Edit Select Dto: "
                 + JsonUtil.parseToJson(appEditSelectDto)));
@@ -1573,10 +1572,11 @@ public abstract class AppCommDelegator {
         log.info(StringUtil.changeForLog("the current amount is -->:" + currentAmount));
         appSubmissionDto.setAmount(currentAmount);
 
+        String appType = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE;
         String appGroupNo = null;
         String autoGroupNo = null;
         String draftNo = Optional.ofNullable(appSubmissionDto.getDraftNo())
-                .orElseGet(() -> appCommService.getDraftNo(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE));
+                .orElseGet(() -> appCommService.getDraftNo(appType));
         log.info(StringUtil.changeForLog("the draft is -->:" + draftNo));
         if (isAutoRfc) {
             autoGroupNo = getRfcGroupNo(null);
@@ -1587,7 +1587,7 @@ public abstract class AppCommDelegator {
         }
         appSubmissionDto.setDraftNo(draftNo);
 
-        //judge is the preInspection
+        /*//judge is the preInspection
         PreOrPostInspectionResultDto preOrPostInspectionResultDto = configCommService.judgeIsPreInspection(appSubmissionDto);
         if (preOrPostInspectionResultDto == null) {
             appSubmissionDto.setPreInspection(true);
@@ -1597,7 +1597,8 @@ public abstract class AppCommDelegator {
             appSubmissionDto.setRequirement(preOrPostInspectionResultDto.isRequirement());
         }
         //set Risk Score
-        RfcHelper.setRiskToDto(appSubmissionDto);
+        RfcHelper.setRiskToDto(appSubmissionDto);*/
+        RfcHelper.beforeSubmit(appSubmissionDto, oldAppSubmissionDto, appEditSelectDto, null, appType, bpc.request);
         // set status
         appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
         if (MiscUtil.doubleEquals(0.0, currentAmount)) {
@@ -2069,17 +2070,18 @@ public abstract class AppCommDelegator {
                 HcsaAppConst.PERSONSELECTMAP);
         ApplicationHelper.syncPsnData(appSubmissionDto, personMap);
 
+        String appType = appSubmissionDto.getAppType();
         String draftNo = appSubmissionDto.getDraftNo();
         if (StringUtil.isEmpty(draftNo)) {
-            draftNo = appCommService.getDraftNo(appSubmissionDto.getAppType());
+            draftNo = appCommService.getDraftNo(appType);
             appSubmissionDto.setDraftNo(draftNo);
         }
         //get appGroupNo
-        String appGroupNo = appCommService.getGroupNo(appSubmissionDto.getAppType());
+        String appGroupNo = appCommService.getGroupNo(appType);
         log.info(StringUtil.changeForLog("the appGroupNo is -->:" + appGroupNo));
-        appSubmissionDto.setAppGrpNo(appGroupNo);
-        //clear appGrpId
-        appSubmissionDto.setAppGrpId(null);
+//        appSubmissionDto.setAppGrpNo(appGroupNo);
+//        //clear appGrpId
+//        appSubmissionDto.setAppGrpId(null);
         //get Amount
         FeeDto feeDto = getNewAppAmount(appSubmissionDto, ApplicationHelper.isCharity(bpc.request));
         appSubmissionDto.setFeeInfoDtos(feeDto.getFeeInfoDtos());
@@ -2090,46 +2092,17 @@ public abstract class AppCommDelegator {
             appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
         }*/
         appSubmissionDto.setAmount(amount);
-        //judge is the preInspection
-        PreOrPostInspectionResultDto preOrPostInspectionResultDto = configCommService.judgeIsPreInspection(appSubmissionDto);
-        if (preOrPostInspectionResultDto == null) {
-            appSubmissionDto.setPreInspection(true);
-            appSubmissionDto.setRequirement(true);
-        } else {
-            appSubmissionDto.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
-            appSubmissionDto.setRequirement(preOrPostInspectionResultDto.isRequirement());
-        }
 
-        //set Risk Score
-        RfcHelper.setRiskToDto(appSubmissionDto);
-
-        //set psn dropdown
-        //setPsnDroTo(appSubmissionDto, bpc);
-        //rfi select control
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
-        appEditSelectDto.setLicenseeEdit(ApplicationHelper.canLicenseeEdit(appSubmissionDto, false));
-        appEditSelectDto.setPremisesEdit(true);
-        appEditSelectDto.setSpecialisedEdit(true);
-        appEditSelectDto.setServiceEdit(true);
-        for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-            if (!StringUtil.isEmpty(appSvcRelatedInfoDto.getRelLicenceNo()) || !StringUtil.isEmpty(
-                    appSvcRelatedInfoDto.getAlignLicenceNo())) {
-                appEditSelectDto.setPremisesEdit(false);
-                break;
-            }
-        }
+        AppEditSelectDto appEditSelectDto = ApplicationHelper.createAppEditSelectDto(true);
+        appEditSelectDto.setLicenseeEdit(ApplicationHelper.canLicenseeEdit(appSubmissionDto.getSubLicenseeDto(),
+                appSubmissionDto.getAppType(), true, true));
         appSubmissionDto.setChangeSelectDto(appEditSelectDto);
         //judge is giro acc
         boolean isGiroAcc = organizationService.isGiroAccount(appSubmissionDto.getLicenseeId());
         appSubmissionDto.setGiroAccount(isGiroAcc);
-        //handler primary doc
-        Integer maxFileIndex = (Integer) ParamUtil.getSessionAttr(bpc.request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR);
-        if (maxFileIndex == null) {
-            maxFileIndex = 0;
-        }
-        appSubmissionDto.setMaxFileIndex(maxFileIndex);
-        ApplicationHelper.reSetAdditionalFields(appSubmissionDto, true, false, appGroupNo);
+
+        RfcHelper.beforeSubmit(appSubmissionDto, null, appEditSelectDto, appGroupNo, appType, bpc.request);
+
         appSubmissionDto = submit(appSubmissionDto);
 
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);

@@ -23,4 +23,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto
     PatientInfoDto getPatientInfoDto(String patientCode);
 
     PatientDto getPatientDtoBySubmissionId(String submissionId);
-}
+
+        String judgeIdType(String isNricFin, String idNo);
+
+        String judgeIdType(String idNo);
+    }

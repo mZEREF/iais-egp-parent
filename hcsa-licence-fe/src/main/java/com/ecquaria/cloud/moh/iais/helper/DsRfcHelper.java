@@ -50,7 +50,7 @@ public final class DsRfcHelper {
         if (StringUtil.isEmpty(patient.getPatientType()) || force) {
             patient.setPatientType(patientType);
         }
-        if (!patient.isPreviousIdentification()) {
+        if (!Boolean.TRUE.equals(patient.getPreviousIdentification())) {
             patient.setPreviousIdentificationId(null);
         }
         return patient;

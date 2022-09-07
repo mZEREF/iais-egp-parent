@@ -45,7 +45,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursRel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.CheckCoLocationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicBaseSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -102,7 +101,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -590,14 +588,15 @@ public final class AppValidatorHelper {
             }
         } else if (list.size() < mandatoryCount) {
             String mandatoryErrMsg = MessageUtil.getMessageDesc("NEW_ERR0025");
-            mandatoryErrMsg = mandatoryErrMsg.replace("{psnType}", ApplicationHelper.getName(psnType));
+            mandatoryErrMsg = mandatoryErrMsg.replace("{psnType}", IaisCommonUtils.getPersonName(psnType, ApplicationHelper.isBackend()));
             mandatoryErrMsg = mandatoryErrMsg.replace("{mandatoryCount}", String.valueOf(mandatoryCount));
             map.put("error" + psnType, mandatoryErrMsg);
             isValid = false;
         }
         if (!isValid) {
-            String stepName = getStepName(ApplicationHelper.getStep(psnType), stepDtos);
-            addErrorStep(ApplicationHelper.getStep(psnType), stepName, true, errorList);
+            String step = ApplicationHelper.getStep(psnType);
+            String stepName = getStepName(step, stepDtos);
+            addErrorStep(step, stepName, true, errorList);
         }
     }
 
@@ -807,7 +806,7 @@ public final class AppValidatorHelper {
         if (selectedLicences == null || selectedLicences.length == 0 || selectedLicences[0] == null) {
             errorMap.put("selectedLicences", "GENERAL_ERR0006");
         } else {
-            Map<String, LicenceDto> licMap = IaisCommonUtils.isEmpty(licenceDtos) ?
+            /*Map<String, LicenceDto> licMap = IaisCommonUtils.isEmpty(licenceDtos) ?
                     IaisCommonUtils.genNewHashMap() : licenceDtos.stream()
                     .collect(Collectors.toMap(LicenceDto::getId, Function.identity()));
             String svcType = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceType();
@@ -829,7 +828,7 @@ public final class AppValidatorHelper {
                 data.put("action", "check");
                 data.put("data", licNos);
                 errorMap.put("selectedLicences", MessageUtil.getMessageDesc("RFC_ERR025", data));
-            }
+            }*/
         }
     }
 
@@ -1367,7 +1366,6 @@ public final class AppValidatorHelper {
                 String praCerEndDate = person.getPraCerEndDateStr();
                 String typeOfRegister = person.getTypeOfRegister();
                 String otherQualification = person.getOtherQualification();
-                String holdCerByEMS = person.getHoldCerByEMS();
                 if (StringUtil.isIn(psnType, new String[]{ApplicationConsts.PERSONNEL_PSN_TYPE_CGO})) {
                     if (StringUtil.isEmpty(professionType)) {
                         errMap.put(prefix + "professionType" + i,
@@ -1414,9 +1412,6 @@ public final class AppValidatorHelper {
                     }
                     if (StringUtil.isEmpty(designation)) {
                         errMap.put(prefix + "designation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation", "field"));
-                    }
-                    if (StringUtil.isEmpty(holdCerByEMS)){
-                        errMap.put(prefix + "holdCerByEMS" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Clinical Governance Officer (CGO) holds a valid certification issued by an Emergency Medical Services ('EMS') Medical Directors workshop", "field"));
                     }
                 }
 

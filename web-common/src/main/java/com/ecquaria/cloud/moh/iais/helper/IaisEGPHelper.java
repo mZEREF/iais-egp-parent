@@ -104,6 +104,8 @@ public final class IaisEGPHelper extends EGPHelper {
             ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
             ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE,
             ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE,
+            ApplicationConsts.APPLICATION_STATUS_ASO_EMAIL_PENDING,
+            ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_ASO
     };
 
     private static final String[] AO1_STATUS = new String[]{
@@ -494,9 +496,9 @@ public final class IaisEGPHelper extends EGPHelper {
     }
     /**
     * @description: format date
-    * @param: 
-    * @return: 
-    * @author: yichen 
+    * @param:
+    * @return:
+    * @author: yichen
     */
     public static Date parseToDate(String val) {
         if(StringUtils.isEmpty(val)){
@@ -659,18 +661,25 @@ public final class IaisEGPHelper extends EGPHelper {
         int year1 = calendarStart.get(Calendar.YEAR);
         int year2 = calendarEnd.get(Calendar.YEAR);
         if (year1 != year2){
-            int timeDistance = 0;
-            for (int i = year1 ; i < year2 ;i++){
-                if (i%4==0 && i%100!=0||i%400==0) {
-                    timeDistance += 366;
-                }else {
-                    timeDistance += 365;
-                }
-            }
-            return  timeDistance + (day2-day1+1);
+            return  compareYear(year1, year2) + (day2-day1+1);
         }else {
             return day2-day1+1;
         }
+    }
+
+    private static int compareYear(int year1, int year2){
+        int flag = year2 >= year1?1:-1;
+        int timeDistance = 0;
+        int max = Integer.max(year1, year2);
+        int min = Integer.min(year1, year2);
+        for (int i = min ; i < max ;i++){
+            if (i%4==0 && i%100!=0||i%400==0) {
+                timeDistance += 366;
+            }else {
+                timeDistance += 365;
+            }
+        }
+        return  timeDistance*flag;
     }
 
     public static HttpHeaders getHttpHeadersForEic(MediaType mediaType, String date, String authorization, String dateSec,

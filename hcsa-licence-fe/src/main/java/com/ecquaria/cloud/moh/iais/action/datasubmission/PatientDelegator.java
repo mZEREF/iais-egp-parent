@@ -41,7 +41,7 @@ public class PatientDelegator extends CommonDelegator {
             PatientInfoDto patientInfoDto = arSuperDataSubmission.getPatientInfoDto();
             PatientDto patient = patientInfoDto.getPatient();
             patientInfoDto.setPrevious((PatientDto) CopyUtil.copyMutableObject(patient));
-            patient.setPreviousIdentification(true);
+            patient.setPreviousIdentification(Boolean.TRUE);
             patientInfoDto.setRetrievePrevious(true);
             patientInfoDto.setPatient(patient);
             patientInfoDto.setAppType(arSuperDataSubmission.getAppType());
@@ -92,11 +92,11 @@ public class PatientDelegator extends CommonDelegator {
         String patientCode = null;
         // check previous
         if (!DataSubmissionConsts.DS_APP_TYPE_NEW.equals(currentArDataSubmission.getAppType())) {
-            patient.setPreviousIdentification(true);
+            patient.setPreviousIdentification(Boolean.TRUE);
             PatientDto previous = patientInfo.getPrevious();
             patientCode = previous.getPatientCode();
         } else {
-            if (patient.isPreviousIdentification()) {
+            if (Boolean.TRUE.equals(patient.getPreviousIdentification())) {
                 String retrievePrevious = ParamUtil.getString(request, "retrievePrevious");
                 patientInfo.setRetrievePrevious(AppConsts.YES.equals(retrievePrevious));
                 PatientDto previous = ControllerHelper.get(request, PatientDto.class, "pre");

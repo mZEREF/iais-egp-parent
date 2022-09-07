@@ -7,7 +7,7 @@
     String webroot1=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT;
 %>
 
-<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/ar_selection.js"></script>
+<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/arSelection/ar_selection.js"></script>
 <input type="hidden" name="currentStage" value="${currentStage}"/>
 <input type="hidden" name="_contextPath" id="_contextPath" value="${pageContext.request.contextPath}"/>
 <input type="hidden" name="printflag" id="printflag" value="${printflag}">

@@ -76,13 +76,13 @@
       background-size: 100% auto;
       background-position: center top;
       /*background-attachment: fixed;*/
-      height: 1500px;/*100%*/
+      height: 2000px;/*100%*/
       padding: 30px 75px;
       width: 100%;
       position: relative;
     }
     .licence_box  {
-      background-image: url("http://localhost:8080/main-web/img/license-mainbg.jpg");
+      background-image: url("http://localhost:8080/main-web/img/license-mainbg.png");
       background-repeat: no-repeat;
       background-size: 100% auto;
       background-position: center top;
@@ -274,7 +274,7 @@
             <div class="lic-title">
               <h2><br></br></h2>
               <h2>LICENCE</h2>
-              <h2>ISSUED PURSUANT TO <br>
+              <h2>ISSUED PURSUANT TO <br></br>
                 SECTION 11(1)(a) OF THE HEALTHCARE SERVICES ACT 2020 (HCSA)</h2>
             </div>
             <div class="lic-number">
@@ -309,7 +309,7 @@
                       <p>${businessName}</p>
                     </td>
                     <td>
-                      <p> ${address}</p>
+                      <p> ${premisesType}</p>
                     </td>
                     <td>
                     ${content}
@@ -323,7 +323,7 @@
             <div class="lic-footer">
               <p >This licence is issued under the Healthcare Services Act 2020 and is subject to its provisions, as well as any regulations, rules, code of practices and directions issued under it, and any conditions imposed by the Director of Medical Services. The licence is valid from the licence start date until the licence end date, unless revoked, suspended, ceased or surrendered.</p>
               <p><br></br></p>
-              <p style = "font-size: 14pt;text-align: center;">Ministry of Health | Page 1 of ${total}</p>
+              <p style = "font-size: 14pt;text-align: center;">Ministry of Health | Page 1 of ${totle}</p>
             </div>
           </div>
         </div>
@@ -339,7 +339,7 @@
                                    <div class="lic-title">
                                      <h2><br></br></h2>
                                      <h2>LICENCE</h2>
-                                     <h2>ISSUED PURSUANT TO <br>
+                                     <h2>ISSUED PURSUANT TO <br></br>
                                        SECTION 11(1)(a) OF THE HEALTHCARE SERVICES ACT 2020 (HCSA)</h2>
                                    </div>
                                    <div class="lic-number">
@@ -367,7 +367,7 @@
                                              <p>${businessName}</p>
                                            </td>
                                            <td>
-                                             <p> ${address}</p>
+                                             <p> ${premisesType}</p>
                                            </td>
                                            <td>
                                              ${s!''}
@@ -381,7 +381,7 @@
                                    <div class="lic-footer" >
                                      <p >This licence is issued under the Healthcare Services Act 2020 and is subject to its provisions, as well as any regulations, rules, code of practices and directions issued under it, and any conditions imposed by the Director of Medical Services. The licence is valid from the licence start date until the licence end date, unless revoked, suspended, ceased or surrendered.</p>
                                      <p><br></br></p>
-                                     <p style = "font-size: 14pt;text-align: center;">Ministry of Health | Page ${s_index + 2} of ${total}</p>
+                                     <p style = "font-size: 14pt;text-align: center;">Ministry of Health | Page ${s_index + 2} of ${totle}</p>
                                    </div>
                                  </div>
                                </div>
@@ -397,7 +397,7 @@
             <div class="lic-title">
               <h2><br></br></h2>
               <h2>LICENCE</h2>
-              <h2>ISSUED PURSUANT TO <br>
+              <h2>ISSUED PURSUANT TO <br></br>
                 SECTION 11(1)(a) OF THE HEALTHCARE SERVICES ACT 2020 (HCSA)</h2>
             </div>
             <div class="lic-number">
@@ -425,7 +425,7 @@
                       <p>${businessName}</p>
                     </td>
                     <td>
-                      <p> ${address}</p>
+                      <p> ${premisesType}</p>
                     </td>
                     <td>
                     ${content2}
@@ -462,7 +462,7 @@
             <div class="lic-footer" >
               <p >This licence is issued under the Healthcare Services Act 2020 and is subject to its provisions, as well as any regulations, rules, code of practices and directions issued under it, and any conditions imposed by the Director of Medical Services. The licence is valid from the licence start date until the licence end date, unless revoked, suspended, ceased or surrendered.</p>
               <p><br></br></p>
-              <p style = "font-size: 14pt;text-align: center;">Ministry of Health | Page ${content2Page} of ${total}</p>
+              <p style = "font-size: 14pt;text-align: center;">Ministry of Health | Page ${content2Page} of ${totle}</p>
             </div>
           </div>
         </div>
@@ -475,7 +475,8 @@
               <div class="licence_box2">
                 <div class="lic-headerbox"></div>
                 <div class="lic-number">
-                  <h2>AUTHORISED <br> DISCIPLINES/SPECIFIED TESTS</h2>
+                  <h2><br></br></h2>
+                  <h2>AUTHORISED <br></br> DISCIPLINES/SPECIFIED TESTS</h2>
                 </div>
 
                 <div class="text-box">
@@ -488,8 +489,8 @@
                 </div>
 
                 <div class="lic-footer">
-                  <p style="font-style: italic;">Updated as of ${tody}</p>
-                  <p>Ministry of Health | Page ${content2Page +1} of ${totle}</p>
+                  <p style="font-style: italic;text-align: center;">Updated as of ${tody}</p>
+                  <p style="text-align: center;">Ministry of Health | Page ${content2Page +1} of ${totle}</p>
                 </div>
               </div>
             </div>
@@ -503,20 +504,21 @@
               <div class="licence_box2">
                 <div class="lic-headerbox"></div>
                 <div class="lic-number">
-                  <h2>AUTHORISED <br> DISCIPLINES/SPECIFIED TESTS</h2>
+                  <h2><br></br></h2>
+                  <h2>AUTHORISED <br></br> DISCIPLINES/SPECIFIED TESTS</h2>
                 </div>
 
                 <div class="text-box">
                   <div class="lic-list">
-                    <ol start="${(s_index + 1)*15}">
+                    <ol start="${(ds_index + 1)*15}">
                       ${ds!''}
                     </ol>
                   </div>
                 </div>
 
                 <div class="lic-footer">
-                  <p style="font-style: italic;">Updated as of ${tody}</p>
-                  <p>Ministry of Health | Page ${s_index + content2Page +2} of ${totle}</p>
+                  <p style="font-style: italic;text-align: center;">Updated as of ${tody}</p>
+                  <p style="text-align: center;">Ministry of Health | Page ${ds_index + content2Page +2} of ${totle}</p>
                 </div>
               </div>
             </div>
