@@ -1,78 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="5" minorVersion="0" name="MohInspectionReportAO" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
- <WebServices />
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohInspectionReportAO" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Step1" x="40" y="100">
-   <Description />
-   <probepoint type="none" />
+   <Description/>
+   <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="step1_OnStepProcess_0" name="step1_OnStepProcess_0" />
+    <JavaCode defClass="" executor="" methodName="step1_OnStepProcess_0" name="step1_OnStepProcess_0"/>
    </OnStepProcess>
   </StartStep>
   <AutomaticStep defClass="" executor="" icon="" name="InspectionReportInit" x="0" y="300">
-   <Description />
-   <probepoint type="none" />
+   <Description/>
+   <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="inspectionReportInit_OnStepProcess_0" name="inspectionReportInit_OnStepProcess_0" />
+    <JavaCode defClass="" executor="" methodName="inspectionReportInit_OnStepProcess_0" name="inspectionReportInit_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="InspectorReportPre" x="180" y="300">
-   <Description />
-   <probepoint type="none" />
+   <Description/>
+   <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="inspectorReportPre_OnStepProcess_0" name="inspectorReportPre_OnStepProcess_0" />
+    <JavaCode defClass="" executor="" methodName="inspectorReportPre_OnStepProcess_0" name="inspectorReportPre_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="Roback" x="780" y="100">
-   <Description />
-   <probepoint type="none" />
+   <Description/>
+   <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="roback_OnStepProcess_0" name="roback_OnStepProcess_0" />
+    <JavaCode defClass="" executor="" methodName="roback_OnStepProcess_0" name="roback_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="Approve" x="620" y="200">
-   <Description />
-   <probepoint type="none" />
+   <Description/>
+   <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="approve_OnStepProcess_0" name="approve_OnStepProcess_0" />
+    <JavaCode defClass="" executor="" methodName="approve_OnStepProcess_0" name="approve_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="InspectorReportAction" x="430" y="100">
-   <Description />
-   <probepoint type="none" />
+   <Description/>
+   <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="inspectorReportAction_OnStepProcess_0" name="inspectorReportAction_OnStepProcess_0" />
+    <JavaCode defClass="" executor="" methodName="inspectorReportAction_OnStepProcess_0" name="inspectorReportAction_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="CrRollBack" x="770" y="180">
-   <Description />
-   <probepoint type="none" />
+  <AutomaticStep defClass="" executor="" icon="" name="Verified" x="820" y="220">
+   <Description/>
+   <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="crRollBack_OnStepProcess_0" name="crRollBack_OnStepProcess_0" />
+    <JavaCode defClass="" executor="" methodName="verified_OnStepProcess_0" name="verified_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AOReportPage" stageIndicator="" x="200" y="100">
-   <OnPageLoad />
-   <OnPageSubmit />
-   <Description />
-   <probepoint type="none" />
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page2" stageIndicator="" x="910" y="320">
-   <OnPageLoad />
-   <OnPageSubmit />
-   <Description />
-   <probepoint type="none" />
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page1" stageIndicator="" x="620" y="500">
-   <OnPageLoad />
-   <OnPageSubmit />
-   <Description />
-   <probepoint type="none" />
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
   </WebPage>
  </Pages>
- <Forms />
+ <Forms/>
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionReportInit" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Step1" style="rectanular">
    <position>{(60,120)(20,320)}</position>
@@ -119,37 +119,45 @@
   <SynchronousLink destinationName="/Pages/WebPage/AOReportPage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
    <position>{(910,120)(240,36)(220,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/CrRollBack" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/action" style="rectanular">
-   <position>{(640,120)(790,200)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Verified" linkstyle="Direct" name="" sourceName="/Switches/Switch/action" style="oblique">
+   <position>{(640,120)(865,270)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/CrRollBack" style="oblique">
-   <position>{(790,200)(910,120)}</position>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond3" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Verified" style="oblique">
+   <position>{(865,270)(775,370)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Page2" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond3" style="rectanular">
+   <position>{(775,370)(930,340)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/AOReportPage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond3" style="rectanular">
+   <position>{(775,370)(241,13)(220,120)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/InspectorReportPre" componentIfTrue="/Pages/WebPage/Page1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="620" y="300">
-   <Description />
+   <Description/>
   </Condition>
   <Condition componentIfFalse="/Pages/WebPage/AOReportPage" componentIfTrue="/Pages/WebPage/Page2" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;true&quot;" x="890" y="100">
-   <Description />
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Pages/WebPage/AOReportPage" componentIfTrue="/Pages/WebPage/Page2" defClass="" executor="" icon="" leftOperand="isValid" name="Cond3" operator="=" rightOperand="&quot;true&quot;" x="730" y="320">
+   <Description/>
   </Condition>
  </Conditions>
  <Switches>
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/Approve" executor="" icon="" leftOperand="action_type" name="action" x="620" y="100">
-   <Description />
-   <SwitchCase component="/Steps/AutomaticStep/Roback" value="&quot;back&quot;" />
-   <SwitchCase component="/Steps/AutomaticStep/Approve" value="&quot;approve&quot;" />
-   <SwitchCase component="/Steps/AutomaticStep/CrRollBack" value="&quot;rollBack&quot;" />
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/Roback" value="&quot;back&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Approve" value="&quot;approve&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Verified" value="&quot;PROCVER&quot;"/>
   </Switch>
  </Switches>
- <Branches />
+ <Branches/>
  <Merges>
   <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="910" y="500">
-   <Description />
+   <Description/>
   </Merge>
  </Merges>
- <StudioLabels />
- <StageIndicator />
- <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
 </Application>
-

@@ -80,6 +80,11 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -88,10 +93,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 /**
  * LicenceServiceImpl
@@ -318,16 +319,18 @@ public class LicenceServiceImpl implements LicenceService {
                                                         }
                                                     }
                                                 }
-                                                taskDtoList.sort(Comparator.comparing(TaskDto::getSlaDateCompleted));
+                                                taskDtoList.sort(Comparator.comparing(TaskDto::getSlaDateCompleted).reversed());
                                                 if(taskDtoList.size()!=0){
                                                     for (TaskDto task:taskDtoList
                                                     ) {
                                                         if(task.getRoleId().equals(RoleConsts.USER_ROLE_ASO)){
                                                             OrgUserDto aso=organizationClient.retrieveOrgUserAccountById(task.getUserId()).getEntity();
                                                             taskDto=task;
-                                                            if(aso!=null&&aso.getStatus().equals(AppConsts.COMMON_STATUS_ACTIVE)&&aso.getAvailable()){
-                                                                hasAso=true;
-                                                                break;
+                                                            if(aso!=null){
+                                                                if(aso.getUserRoles().contains(RoleConsts.USER_ROLE_ASO)&&aso.getStatus().equals(AppConsts.COMMON_STATUS_ACTIVE)&&aso.getAvailable()){
+                                                                    hasAso=true;
+                                                                    break;
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -343,12 +346,22 @@ public class LicenceServiceImpl implements LicenceService {
                                                         }else{
                                                             List<OrgUserDto> orgUserDtos = organizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN).getEntity();
                                                             if(!IaisCommonUtils.isEmpty(orgUserDtos)){
-                                                                OrgUserDto orgUserDto = orgUserDtos.get(0);
-                                                                userId = orgUserDto.getId();
-                                                                taskDto.setUserId(userId);
-                                                                taskDto.setWkGrpId(null);
+                                                                OrgUserDto userDto=null;
+                                                                for (OrgUserDto orgUserDto:orgUserDtos
+                                                                ) {
+                                                                    if(orgUserDto.getAvailable()&&orgUserDto.getStatus().equals(AppConsts.COMMON_STATUS_ACTIVE)){
+                                                                        userDto=orgUserDto;
+                                                                        break;
+                                                                    }
+                                                                }
+                                                                if(userDto!=null){
+                                                                    taskDto.setUserId(userDto.getId());
+                                                                    taskDto.setWkGrpId(null);
+                                                                }else {
+                                                                    taskDto.setUserId(null);
+                                                                }
                                                             }else {
-                                                                taskDto.setUserId(userId);
+                                                                taskDto.setUserId(null);
                                                             }
                                                         }
                                                     }

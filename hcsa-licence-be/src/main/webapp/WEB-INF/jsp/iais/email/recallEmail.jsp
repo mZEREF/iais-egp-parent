@@ -16,6 +16,7 @@
                         <h2>
                             <c:choose>
                                 <c:when test="${isRollBack}"><iais:message key="INSPE_ACK002" escape="true" /></c:when>
+                                <c:when test="${LATERALLY}"><iais:message key="LOLEV_ACK057" escape="true" /></c:when>
                                 <c:when test="${COMPLETED}"><iais:message key="LOLEV_ACK039" escape="true" /></c:when>
                                 <c:otherwise>
                                     <c:if test="${LEADER_SEND}" >

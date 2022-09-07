@@ -201,7 +201,10 @@ public class InspectEmailAo1Delegator  extends InspectionCheckListCommonMethodDe
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,INS_EMAIL_DTO);
         inspectionEmailTemplateDto.setRemarks(ParamUtil.getString(request, "Remarks"));
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO,inspectionEmailTemplateDto);
-//        ParamUtil.setRequestAttr(request,"rollBackTo",ParamUtil.getRequestString(request,"rollBackTo"));
+        ParamUtil.setRequestAttr(request,
+                "selectVerified",ParamUtil.getString(request, "verified")==null
+                        ? "AO1"
+                        :ParamUtil.getString(request, "verified"));
     }
 
     public void previewEmail(BaseProcessClass bpc){
@@ -251,7 +254,30 @@ public class InspectEmailAo1Delegator  extends InspectionCheckListCommonMethodDe
         inspectionEmailTemplateDto.setMessageContent(ParamUtil.getString(request,MSG_CON));
         inspectionEmailTemplateDto.setRemarks(ParamUtil.getString(request, "Remarks"));
 
-        if (InspectionConstants.PROCESS_DECI_ROLL_BACK.equals(decision)){
+        if (ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY.equals(decision)){
+            String lrSelect = ParamUtil.getRequestString(bpc.request, "lrSelect");
+            log.info(StringUtil.changeForLog("The lrSelect is -->:"+lrSelect));
+            if(StringUtil.isNotEmpty(lrSelect)){
+                String[] lrSelects =  lrSelect.split("_");
+                String aoWorkGroupId = lrSelects[0];
+                String aoUserId = lrSelects[1];
+                inspEmailService.completedTask(taskDto);
+                List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
+                taskDto.setUserId(aoUserId);
+                taskDto.setDateAssigned(new Date());
+                taskDto.setId(null);
+                taskDto.setWkGrpId(aoWorkGroupId);
+                taskDto.setSlaDateCompleted(null);
+                taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+                taskDtos.add(taskDto);
+                taskService.createTasks(taskDtos);
+                createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY,taskDto,userId,inspectionEmailTemplateDto.getRemarks(),HcsaConsts.ROUTING_STAGE_INS);
+                createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, taskDto,userId,"",HcsaConsts.ROUTING_STAGE_INS);
+                ParamUtil.setRequestAttr(request,"LATERALLY",AppConsts.TRUE);
+            }
+
+            return;
+        } else if (InspectionConstants.PROCESS_DECI_ROLL_BACK.equals(decision)){
             Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = (Map<String, AppPremisesRoutingHistoryDto>) ParamUtil.getSessionAttr(request, ROLLBACK_VALUE_MAP);
             String rollBackTo = ParamUtil.getRequestString(request, "rollBackTo");
             inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackValueMap.get(rollBackTo), inspectionEmailTemplateDto.getRemarks());
@@ -461,7 +487,7 @@ public class InspectEmailAo1Delegator  extends InspectionCheckListCommonMethodDe
                             if(vehicleOpenFlag.equals(InspectionConstants.SWITCH_ACTION_YES)&&applicationViewDto.getAppSvcVehicleDtos()!=null&&(applicationViewDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE)||applicationViewDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE))){
                                 boolean isDisplayName=false;
                                 for (AppSvcVehicleDto asvd:applicationViewDto.getAppSvcVehicleDtos()
-                                     ) {
+                                ) {
                                     if(asvd.getVehicleName().equals(ncAnswerDto.getVehicleName())){
                                         stringBuilder.append(TD).append(StringUtil.viewHtml(asvd.getDisplayName()));
                                         isDisplayName=true;
@@ -594,16 +620,21 @@ public class InspectEmailAo1Delegator  extends InspectionCheckListCommonMethodDe
                 appPremisesRoutingHistoryDto1.setProcessDecision(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRoutingHistoryDto1.getProcessDecision()}).get(0).getText());
             }
         }
-        String[] processDess = new String[]{InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT,InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT};
+        String[] processDess = new String[]{InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT,InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY};
         String appType = applicationViewDto.getApplicationDto().getApplicationType();
         if (!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType))) {
-            processDess = new String[]{InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT,InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,InspectionConstants.PROCESS_DECI_ROLL_BACK};
+            processDess = new String[]{InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT,InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,InspectionConstants.PROCESS_DECI_ROLL_BACK,ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY};
         }
         List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(processDess);
         String content= (String) ParamUtil.getSessionAttr(request,MSG_CON);
         if(content!=null){
             inspectionEmailTemplateDto.setMessageContent(content);
         }
+        List<SelectOption> routingStage = IaisCommonUtils.genNewArrayList();
+        routingStage.add(new SelectOption(RoleConsts.USER_ROLE_AO1, RoleConsts.USER_ROLE_AO1_SHOW));
+//set verified values
+        applicationViewDto.setVerified(routingStage);
+        ParamUtil.setSessionAttr(request, "verifiedValues", (Serializable) routingStage);
         inspectionEmailTemplateDto.setAppStatus(MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationViewDto.getApplicationDto().getStatus()}).get(0).getText());
         ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
         ParamUtil.setRequestAttr(request,"appPremisesRoutingHistoryDtos", appPremisesRoutingHistoryDtos);

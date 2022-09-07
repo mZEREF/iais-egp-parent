@@ -104,6 +104,8 @@ public final class IaisEGPHelper extends EGPHelper {
             ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
             ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE,
             ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE,
+            ApplicationConsts.APPLICATION_STATUS_ASO_EMAIL_PENDING,
+            ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_ASO
     };
 
     private static final String[] AO1_STATUS = new String[]{
@@ -494,9 +496,9 @@ public final class IaisEGPHelper extends EGPHelper {
     }
     /**
     * @description: format date
-    * @param: 
-    * @return: 
-    * @author: yichen 
+    * @param:
+    * @return:
+    * @author: yichen
     */
     public static Date parseToDate(String val) {
         if(StringUtils.isEmpty(val)){

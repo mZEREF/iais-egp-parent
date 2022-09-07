@@ -108,9 +108,10 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         //DMS recommendation
         String generalErrSix = MessageUtil.replaceMessage(ERROR_CODE_GENERAL_ERR0006,"Processing Decision", "field");
         if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status)){
-            //verify upload file
-            checkIsUploadDMS(applicationViewDto,errMap);
-
+            if(StringUtil.isNotEmpty(decisionValue)&&!decisionValue.equals(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY)){
+                //verify upload file
+                checkIsUploadDMS(applicationViewDto,errMap);
+            }
             if(StringUtil.isEmpty(decisionValue)){
                 errMap.put("decisionValues",generalErrSix);
             }else{

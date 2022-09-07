@@ -287,6 +287,7 @@ public class HcsaApplicationDelegator {
         AjaxResDto ajaxResDto = new AjaxResDto();
         String verified = ParamUtil.getString(request, "verified");
         log.info(StringUtil.changeForLog("verified is -->:"+verified));
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request, "taskDto");
 
         Map<String,String> error = IaisCommonUtils.genNewHashMap();
         if(StringUtil.isEmpty(verified)){
@@ -299,8 +300,13 @@ public class HcsaApplicationDelegator {
             if(StringUtil.isNotEmpty(stageId)){
                 ajaxResDto.setResCode(AppConsts.AJAX_RES_CODE_SUCCESS);
                 Map<String, String> chargesTypeAttr = IaisCommonUtils.genNewHashMap();
-                chargesTypeAttr.put("name", "aoSelect");
-                chargesTypeAttr.put("id", "aoSelect");
+                if(taskDto.getRoleId().equals(verified)){
+                    chargesTypeAttr.put("name", "lrSelect");
+                    chargesTypeAttr.put("id", "lrSelect");
+                }else {
+                    chargesTypeAttr.put("name", "aoSelect");
+                    chargesTypeAttr.put("id", "aoSelect");
+                }
 
                 List<String> checkedVals = IaisCommonUtils.genNewArrayList();
                 String aoSelect = (String) ParamUtil.getSessionAttr(request, "aoSelect");
@@ -787,6 +793,9 @@ public class HcsaApplicationDelegator {
                     nextStage = "PROCAP";
                 }
             }
+            if(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY.equals(stage)){
+                nextStage = taskDto.getRoleId();
+            }
             //request for information
             if (ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(stage)) {
                 nextStage = stage;
@@ -821,6 +830,11 @@ public class HcsaApplicationDelegator {
                     nextStage = "PROCREJ";
                 } else {
                     nextStage = "PROCAP";
+                }
+                if(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY.equals(decisionValues)){
+                    if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())){
+                        nextStage = ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS;
+                    }
                 }
             }
 
@@ -1011,6 +1025,9 @@ public class HcsaApplicationDelegator {
                 successInfo = "LOLEV_ACK055";
             }
         }
+        if (ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY.equals(nextStage) ) {
+            successInfo = "LOLEV_ACK057";
+        }
         ParamUtil.setRequestAttr(bpc.request, "successInfo", successInfo);
     }
 
@@ -1140,8 +1157,23 @@ public class HcsaApplicationDelegator {
                         getAppPremisesRoutingHistoryForCurrentStage(appNo, HcsaConsts.ROUTING_STAGE_ASO, RoleConsts.USER_ROLE_ASO, ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
             }
             if (appPremisesRoutingHistoryDto != null) {
-                rollBack(bpc, appPremisesRoutingHistoryDto.getStageId(), ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
-                        appPremisesRoutingHistoryDto.getRoleId(), appPremisesRoutingHistoryDto.getWrkGrpId(), appPremisesRoutingHistoryDto.getActionby());
+                String workGroupId=appPremisesRoutingHistoryDto.getWrkGrpId();
+                String userId=appPremisesRoutingHistoryDto.getActionby();
+                String stageId=appPremisesRoutingHistoryDto.getStageId();
+                String roleId=appPremisesRoutingHistoryDto.getRoleId();
+                if (ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY.equals(decisionValues)) {
+                    String aoSelect = ParamUtil.getRequestString(bpc.request, "lrSelect");
+                    log.info(StringUtil.changeForLog("The aoSelect is -->:"+aoSelect));
+                    if(StringUtil.isNotEmpty(aoSelect)){
+                        String[] aoSelects =  aoSelect.split("_");
+                        workGroupId = aoSelects[0];
+                        userId = aoSelects[1];
+                        stageId=HcsaConsts.ROUTING_STAGE_ASO;
+                        roleId=RoleConsts.USER_ROLE_ASO;
+                    }
+                }
+                rollBack(bpc, stageId, ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
+                        roleId, workGroupId, userId);
             } else {
                 log.debug(StringUtil.changeForLog("can not get the appPremisesRoutingHistoryDto ..."));
             }
@@ -1325,7 +1357,9 @@ public class HcsaApplicationDelegator {
                 ApplicationDto appDto = applicationService.getApplicationBytaskId(misc.getAppPremCorreId());
                 sendAsoApproveEmail(appDto,sendEmailDto,misc.getAppPremCorreId());
             }
+
         }
+
     }
 
     private void sendAsoApproveEmail(ApplicationDto applicationDto,AppPremisesUpdateEmailDto emailDto,String refNo){
@@ -2030,6 +2064,7 @@ public class HcsaApplicationDelegator {
                     maskParams.put("appealingFor", appealingFor);
                     String appealType = (String) ParamUtil.getSessionAttr(bpc.request, "type");
 /*
+                    sendAppealMessage(appealingFor,licenseeId,maskParams,serviceId,appealType,applicationDto.getApplicationNo());
 */
                     String url = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_CALL_BACK_URL_Appeal + appealingFor + "&type=" + appealType;
                     applicationService.appealRfiAndEmail(applicationViewDto, applicationDto, maskParams, url,externalRemarks);
@@ -2042,6 +2077,7 @@ public class HcsaApplicationDelegator {
                     maskParams.put("premiseId", appGrpPremId);
                 }
                 maskParams.put("appId", appId);
+//                sendCessationMessage(appId,appGrpPremId,applicationNo,licenseeId,maskParams,serviceId);
                 String url = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + InboxConst.URL_LICENCE_WEB_MODULE + "MohCessationApplication?appId=" + appId + "&premiseId=" + appGrpPremId;
                 applicationService.appealRfiAndEmail(applicationViewDto, applicationDto, maskParams, url,externalRemarks);
             } else if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)) {
@@ -2149,6 +2185,8 @@ public class HcsaApplicationDelegator {
     //***************************************
     //private methods
     //*************************************
+
+
 
 
 
@@ -2662,7 +2700,23 @@ public class HcsaApplicationDelegator {
                 if (ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING.equals(appStatus) && !StringUtil.isEmpty(newTaskDto.getWkGrpId())) {
                     setInspLeadsInRecommendation(newTaskDto, newTaskDto.getWkGrpId(), IaisEGPHelper.getCurrentAuditTrailDto());
                 }
-            } else {
+            }else if(processDecision.equals(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY)){
+                String aoWorkGroupId = null;
+                String aoUserId = null;
+                String lrSelect = ParamUtil.getRequestString(bpc.request, "lrSelect");
+                log.info(StringUtil.changeForLog("The lrSelect is -->:"+lrSelect));
+                if(StringUtil.isNotEmpty(lrSelect)){
+                    String[] lrSelects =  lrSelect.split("_");
+                    aoWorkGroupId = lrSelects[0];
+                    aoUserId = lrSelects[1];
+                }
+                TaskDto newTaskDto = taskService.getRoutingTask(applicationDto, stageId, roleId, newCorrelationId,aoWorkGroupId,aoUserId);
+                broadcastOrganizationDto.setCreateTask(newTaskDto);
+                AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), stageId, null,
+                        taskDto.getWkGrpId(), null, null, externalRemarks, taskDto.getRoleId());
+                broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
+            }
+            else {
                 String verified = ParamUtil.getRequestString(bpc.request, "verified");
                 String aoWorkGroupId = null;
                 String aoUserId = null;
@@ -4072,9 +4126,14 @@ public class HcsaApplicationDelegator {
                     emailDto.setMailContent(mesContext);
                 }
             }
+
             ParamUtil.setSessionAttr(request,"appPremisesUpdateEmailDto",emailDto);
         }
+
+
     }
+
+
 
     private void setRouteBackReview(HttpServletRequest request, ApplicationViewDto applicationViewDto, String roleId, TaskDto taskDto, String status) {
         //init session
@@ -4313,16 +4372,19 @@ public class HcsaApplicationDelegator {
                 nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_BROADCAST_QUERY, "Broadcast"));
             }
         }
+        if (RoleConsts.USER_ROLE_AO1.equals(taskRole) || RoleConsts.USER_ROLE_AO2.equals(taskRole)) {
+            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Support"));
+            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY, "Route Laterally"));
+        }
+        if (RoleConsts.USER_ROLE_ASO.equals(taskRole) ) {
+            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY, "Route Laterally"));
+        }
         if(!finalStage){
-            if (RoleConsts.USER_ROLE_AO1.equals(taskRole) || RoleConsts.USER_ROLE_AO2.equals(taskRole)) {
-                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Support"));
-            } else {
-                //62875
-                //role is ao3 && status is 'Pending AO3 Approval'  have no verified
-                if (!(RoleConsts.USER_ROLE_AO3.equals(taskRole)
-                        && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationStatus))) {
-                    nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Verified"));
-                }
+            //62875
+            //role is ao3 && status is 'Pending AO3 Approval'  have no verified
+            if (!(RoleConsts.USER_ROLE_AO3.equals(taskRole)
+                    && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationStatus))) {
+                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Verified"));
             }
         }
 
@@ -4344,22 +4406,24 @@ public class HcsaApplicationDelegator {
                         "Request For Information"));
             }
         }
-
+        boolean isRejected=recommendationIsRejected(applicationViewDto);
         //62875
         if (!isBeCessationFlow
                 && (hasRollBackHistoryList && RoleConsts.USER_ROLE_AO3.equals(taskRole) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationStatus))) {
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL, "Approve"));
-            if(applicationType.equals(ApplicationConsts.APPLICATION_TYPE_RENEWAL)||
-                    applicationType.equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)||
-                    applicationType.equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
-                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL, "Approve (ASO Email)"));
-
-            }else if(applicationType.equals(ApplicationConsts.APPLICATION_TYPE_APPEAL)){
-                AppPremiseMiscDto appPremiseMiscDto=applicationViewDto.getPremiseMiscDto();
-                if(appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO)
-                        ||appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME)
-                        ||appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_LICENCE_CHANGE_PERIOD)){
+            if(!isRejected){
+                if(applicationType.equals(ApplicationConsts.APPLICATION_TYPE_RENEWAL)||
+                        applicationType.equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)||
+                        applicationType.equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
                     nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL, "Approve (ASO Email)"));
+
+                }else if(applicationType.equals(ApplicationConsts.APPLICATION_TYPE_APPEAL)){
+                    AppPremiseMiscDto appPremiseMiscDto=applicationViewDto.getPremiseMiscDto();
+                    if(appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO)
+                            ||appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME)
+                            ||appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_LICENCE_CHANGE_PERIOD)){
+                        nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL, "Approve (ASO Email)"));
+                    }
                 }
             }
 
@@ -4421,17 +4485,18 @@ public class HcsaApplicationDelegator {
     public void setDmsProcessingDecisionDropdownValue(HttpServletRequest request) {
         List<SelectOption> decisionValues = IaisCommonUtils.genNewArrayList();
         decisionValues.add(new SelectOption("decisionApproval", "Approve"));
-        decisionValues.add(new SelectOption("decisionReject", "Reject"));
-
-
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(request, "applicationViewDto");
         String applicationType=applicationViewDto.getApplicationDto().getApplicationType();
-        if(applicationType.equals(ApplicationConsts.APPLICATION_TYPE_RENEWAL)||
-                applicationType.equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)||
-                applicationType.equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
-            decisionValues.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL, "Approve (ASO Email)"));
-
+        boolean isRejected=recommendationIsRejected(applicationViewDto);
+        if(!isRejected){
+            if(applicationType.equals(ApplicationConsts.APPLICATION_TYPE_RENEWAL)||
+                    applicationType.equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)||
+                    applicationType.equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
+                decisionValues.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL, "Approve (ASO Email)"));
+            }
         }
+        decisionValues.add(new SelectOption("decisionReject", "Reject"));
+        decisionValues.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY,"Route Laterally"));
         ParamUtil.setSessionAttr(request, "decisionValues", (Serializable) decisionValues);
     }
 
@@ -4577,15 +4642,6 @@ public class HcsaApplicationDelegator {
 
         List<SelectOption> routingStage = IaisCommonUtils.genNewArrayList();
         if (hcsaSvcRoutingStageDtoList != null) {
-            switch (taskDto.getRoleId()){
-                case RoleConsts.USER_ROLE_ASO:
-                    routingStage.add(new SelectOption(RoleConsts.USER_ROLE_ASO, RoleConsts.USER_ROLE_ADMIN_OFFICER));break;
-                case RoleConsts.USER_ROLE_AO1:
-                    routingStage.add(new SelectOption(RoleConsts.USER_ROLE_AO1, RoleConsts.USER_ROLE_AO1_SHOW));break;
-                case RoleConsts.USER_ROLE_AO2:
-                    routingStage.add(new SelectOption(RoleConsts.USER_ROLE_AO2, RoleConsts.USER_ROLE_AO2_SHOW));break;
-                default:
-            }
 
             if (hcsaSvcRoutingStageDtoList.size() > 0) {
                 for (HcsaSvcRoutingStageDto hcsaSvcRoutingStage : hcsaSvcRoutingStageDtoList) {
@@ -4609,17 +4665,20 @@ public class HcsaApplicationDelegator {
                             if(noContainsFlag) {
                                 nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,
                                         "Approve"));
-                                if(applicationType.equals(ApplicationConsts.APPLICATION_TYPE_RENEWAL)||
-                                        applicationType.equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)||
-                                        applicationType.equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
-                                    nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL, "Approve (ASO Email)"));
-
-                                }else if(applicationType.equals(ApplicationConsts.APPLICATION_TYPE_APPEAL)){
-                                    AppPremiseMiscDto appPremiseMiscDto=applicationViewDto.getPremiseMiscDto();
-                                    if(appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO)
-                                            ||appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME)
-                                            ||appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_LICENCE_CHANGE_PERIOD)){
+                                boolean isRejected=recommendationIsRejected(applicationViewDto);
+                                if(!isRejected){
+                                    if(applicationType.equals(ApplicationConsts.APPLICATION_TYPE_RENEWAL)||
+                                            applicationType.equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)||
+                                            applicationType.equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
                                         nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL, "Approve (ASO Email)"));
+
+                                    }else if(applicationType.equals(ApplicationConsts.APPLICATION_TYPE_APPEAL)){
+                                        AppPremiseMiscDto appPremiseMiscDto=applicationViewDto.getPremiseMiscDto();
+                                        if(appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO)
+                                                ||appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME)
+                                                ||appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_LICENCE_CHANGE_PERIOD)){
+                                            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL, "Approve (ASO Email)"));
+                                        }
                                     }
                                 }
                                 ParamUtil.setSessionAttr(request, "nextStages", (Serializable) nextStageList);
@@ -4631,13 +4690,6 @@ public class HcsaApplicationDelegator {
                     }
                 }
             } else {
-                switch (taskDto.getRoleId()){
-                    case RoleConsts.USER_ROLE_AO1:
-                        routingStage.add(new SelectOption(RoleConsts.USER_ROLE_AO1, RoleConsts.USER_ROLE_AO1_SHOW));break;
-                    case RoleConsts.USER_ROLE_AO2:
-                        routingStage.add(new SelectOption(RoleConsts.USER_ROLE_AO2, RoleConsts.USER_ROLE_AO2_SHOW));break;
-                    default:
-                }
                 log.debug(StringUtil.changeForLog("the do prepareData add the Approve"));
                 //if  this is the last stage
                 routingStage.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,
@@ -4658,6 +4710,10 @@ public class HcsaApplicationDelegator {
             }
         }
         if (ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())) {
+            routingStage.clear();
+            routingStage.add(new SelectOption(RoleConsts.USER_ROLE_ASO, RoleConsts.USER_ROLE_ADMIN_OFFICER));
+        }
+        if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(applicationViewDto.getApplicationDto().getStatus())){
             routingStage.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_BROADCAST_REPLY, "Broadcast Reply For Internal"));
         }
         //set verified values
@@ -4668,6 +4724,21 @@ public class HcsaApplicationDelegator {
     public void setRecommendationDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto) {
         //set recommendation dropdown
         ParamUtil.setSessionAttr(request, "recommendationDropdown", (Serializable) getRecommendationDropdown(applicationViewDto, request));
+    }
+
+    private Boolean recommendationIsRejected(ApplicationViewDto applicationViewDto){
+        String applicationType=applicationViewDto.getApplicationDto().getApplicationType();
+        AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
+        if (appPremisesRecommendationDto != null  ) {
+            if (!(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType))) {
+                Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
+                return null != recomInNumber && recomInNumber == 0;
+            } else {
+                String recomDecision = appPremisesRecommendationDto.getRecomDecision();
+                return "reject".equals(recomDecision) || InspectionReportConstants.RFC_REJECTED.equals(recomDecision) || InspectionReportConstants.REJECTED.equals(recomDecision);
+            }
+        }
+        return false;
     }
 
     public void setRecommendationOtherDropdownValue(HttpServletRequest request) {
