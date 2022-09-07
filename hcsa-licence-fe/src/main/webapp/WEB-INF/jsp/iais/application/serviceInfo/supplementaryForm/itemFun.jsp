@@ -381,24 +381,32 @@
         }
     }
 
-
     function checkItemTotalCondition($tag) {
         if (isEmptyNode($tag)) {
             return -1;
         }
+        let $target = getTotalParentNode($tag);
+        if (isEmptyNode($target)) {
+            return -1;
+        }
+        let $v = getTotalParentNode($target);
+        if (!isEmptyNode($v)) {
+            $target = $v;
+        }
+        checkItemTotal($target);
+    }
+
+    function getTotalParentNode($tag) {
         let targetId = $tag.data('condition');
         if (isEmpty(targetId)) {
-            return -1;
+            return null;
         }
         let prefix = $tag.data('prefix');
         if (isEmpty(prefix)) {
             prefix = "";
         }
         let seq = $tag.data('seq');
-        let $target = $('[data-curr="' + targetId + '"][data-seq="' + seq + '"][data-prefix="' + prefix + '"]');
-        while (checkItemTotalCondition($target) != -1) {
-        }
-        checkItemTotal($target);
+        return $('[data-curr="' + targetId + '"][data-seq="' + seq + '"][data-prefix="' + prefix + '"]');
     }
 
     function checkItemTotal($tag) {
