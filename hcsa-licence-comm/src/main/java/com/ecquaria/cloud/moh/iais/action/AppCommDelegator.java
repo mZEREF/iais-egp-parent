@@ -378,10 +378,20 @@ public abstract class AppCommDelegator {
         }
 
         List<HcsaServiceDto> hcsaServiceDtoList = null;
-        if (!serviceConfigIds.isEmpty()) {
-            hcsaServiceDtoList = configCommService.getHcsaServiceDtosByIds(serviceConfigIds);
-        } else if (!names.isEmpty()) {
-            hcsaServiceDtoList = HcsaServiceCacheHelper.getHcsaSvcsByNames(names);
+        if (ApplicationHelper.checkIsRfi(bpc.request)) {
+            if (!serviceConfigIds.isEmpty()) {
+                hcsaServiceDtoList = configCommService.getHcsaServiceDtosByIds(serviceConfigIds);
+            }
+            if (IaisCommonUtils.isEmpty(hcsaServiceDtoList)  && !names.isEmpty()) {
+                hcsaServiceDtoList = HcsaServiceCacheHelper.getHcsaSvcsByNames(names);
+            }
+        } else {
+            if (!names.isEmpty()) {
+                hcsaServiceDtoList = HcsaServiceCacheHelper.getHcsaSvcsByNames(names);
+            }
+            if (IaisCommonUtils.isEmpty(hcsaServiceDtoList) && !serviceConfigIds.isEmpty()) {
+                hcsaServiceDtoList = configCommService.getHcsaServiceDtosByIds(serviceConfigIds);
+            }
         }
 //        if (hcsaServiceDtoList != null) {
 //            hcsaServiceDtoList = ApplicationHelper.sortHcsaServiceDto(hcsaServiceDtoList);
