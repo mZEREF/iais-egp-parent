@@ -359,7 +359,12 @@ public class ApplicationDelegator extends AppCommDelegator {
             }
             String appError = (String) ParamUtil.getRequestAttr(bpc.request, HcsaAppConst.ERROR_APP);
             if (StringUtil.isNotEmpty(appError)) {
-                url.append("?").append(HcsaAppConst.ERROR_APP).append("=")
+                if (url.indexOf("?") > 0) {
+                    url.append('&');
+                } else {
+                    url.append('?');
+                }
+                url.append(HcsaAppConst.ERROR_APP).append("=")
                         .append(StringUtil.obscured(appError));
             }
         }
