@@ -318,6 +318,7 @@
                     // check add more button
                     let group = $v.data('group');
                     toggleTag($('.addMoreDiv[data-group="' + group + '"][data-prefix="' + prefix + '"]'), isIncluded);
+                    checkRemoveEvent(group,prefix,isIncluded)
                     checkItemMandatory($v);
                 } else if ('4' == mandatory) {
                     let $target = $v.closest('.item-record');
@@ -363,12 +364,21 @@
                             $targetLabel.append('<span class="mandatory">*</span>');
                         }
                         toggleTag($target, isIncluded);
+                        checkRemoveEvent(group,prefix,isIncluded)
                         checkItemMandatory($newV);
                     }
                     // check add more button
                     toggleTag($('.addMoreDiv[data-group="' + group + '"][data-prefix="' + prefix + '"]'), isIncluded);
                 }
             });
+        }
+    }
+
+    function checkRemoveEvent (group,prefix,flag){
+        if (!flag){
+            $('.removeEditRow [data-group="' + group + '"][data-prefix="' + prefix + '"]:not([data-seq="0"])').closest('.removeEditRow').remove();
+            $('[data-group="' + group + '"][data-prefix="' + prefix + '"]:not([data-seq="0"])').closest('.item-record').remove();
+            console.log('------->begin')
         }
     }
 
@@ -426,13 +436,13 @@
                 } else if (data.hasException) {
                     $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0048" escape="false" />');
                     $('#PRS_SERVICE_DOWN').modal('show');
-
                 } else if ('401' == data.statusCode) {
                     $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0054" escape="false" />');
                     $('#PRS_SERVICE_DOWN').modal('show');
                 } else {
                     canFill = true;
                 }
+                console.log("data=====>",data)
                 fillPrsData($tag, canFill ? data : null);
                 dismissWaiting();
             },
@@ -464,6 +474,7 @@
                 return;
             }
             let v = "";
+            console.log("condition===>",condition)
             if (!isEmpty(data)) {
                 v = data[condition];
                 if (isEmpty(v) && !isEmpty(data.registration)) {
@@ -528,7 +539,7 @@
             let seq = $tag.data('seq');
             let curr = $tag.data('curr');
             let group = $tag.data('condition');
-            let total = $('input[name="' + prefix + group + '"]').val();
+            let total = $('input[name="' + prefix + group + '"]').val()-1;
             if ($tag.is(':input')) {
                 fillValue($tag, total);
             } else {
