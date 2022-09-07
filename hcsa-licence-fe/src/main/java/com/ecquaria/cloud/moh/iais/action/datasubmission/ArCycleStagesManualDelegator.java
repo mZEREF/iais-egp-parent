@@ -76,10 +76,6 @@ public class ArCycleStagesManualDelegator {
         List<String> nextStages = null;
         if (selectionDto != null) {
             nextStages = DataSubmissionHelper.getNextStageForAR(selectionDto);
-            if (!IaisCommonUtils.isEmpty(selectionDto.getCycleDtos())) {
-                bpc.request.setAttribute("cycleStart_options",
-                        DataSubmissionHelper.genCycleStartOptions(selectionDto.getCycleDtos()));
-            }
         }
         String jumpActionType = (String) ParamUtil.getRequestAttr(bpc.request, JUMP_ACTION_TYPE);
         if (StringUtils.isEmpty(jumpActionType)){
@@ -238,17 +234,18 @@ public class ArCycleStagesManualDelegator {
             List<ArSuperDataSubmissionDto> dataSubmissionDraftList = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(
                     selectionDto.getPatientIdType(), selectionDto.getPatientIdNumber(), selectionDto.getPatientNationality(),
                     orgId, hciCode, true, userId);
-            if (DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT.equals(stage) && IaisCommonUtils.isNotEmpty(dataSubmissionDraftList)) {
+            if (IaisCommonUtils.isNotEmpty(dataSubmissionDraftList)) {
                 dataSubmissionDraftList = dataSubmissionDraftList.stream()
-                        .filter(arSuperDataSubmissionDto -> StringUtil.isEmpty(arSuperDataSubmissionDto.getTransferInOutStageDto().getBindSubmissionId()))
+                        .filter(arDraft -> !Objects.isNull(arDraft.getSelectionDto()))
+                        .filter(arDraft -> arDraft.getSelectionDto().getStage().equals(selectionDto.getStage()))
                         .collect(Collectors.toList());
+                if (DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT.equals(selectionDto.getStage()) && IaisCommonUtils.isNotEmpty(dataSubmissionDraftList)) {
+                    dataSubmissionDraftList = dataSubmissionDraftList.stream()
+                            .filter(arSuperDataSubmissionDto1 -> StringUtil.isEmpty(arSuperDataSubmissionDto1.getTransferInOutStageDto().getBindSubmissionId()))
+                            .collect(Collectors.toList());
+                }
             }
             ArSuperDataSubmissionDto dataSubmissionDraft;
-            if (IaisCommonUtils.isEmpty(dataSubmissionDraftList)) {
-                dataSubmissionDraft = null;
-            } else {
-                dataSubmissionDraftList = dataSubmissionDraftList.stream().filter(arDraft -> arDraft.getSelectionDto().getStage().equals(selectionDto.getStage())).collect(Collectors.toList());
-            }
             if (IaisCommonUtils.isEmpty(dataSubmissionDraftList)) {
                 dataSubmissionDraft = null;
             }else {
@@ -333,15 +330,12 @@ public class ArCycleStagesManualDelegator {
     private CycleStageSelectionDto getSelectionDtoFromPage(HttpServletRequest request) {
         ArSuperDataSubmissionDto superDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         CycleStageSelectionDto selectionDto = superDto.getSelectionDto();
-        if (selectionDto == null) {
-            selectionDto = new CycleStageSelectionDto();
-        }
-        ControllerHelper.get(request, selectionDto);
+        String nextStage = ParamUtil.getString(request, "stage");
+        selectionDto.setStage(nextStage);
         selectionDto.setCycleId(null);
-        selectionDto.setUndergoingCycle("1".equals(ParamUtil.getString(request, "undergoingCycle")));
         CycleDto cycleDto = new CycleDto();
-        cycleDto.setId(selectionDto.getCycleId());
-        cycleDto.setCycleType(ParamUtil.getString(request, "lastCycle"));
+        cycleDto.setId(null);
+        cycleDto.setCycleType(selectionDto.getLastCycle());
         selectionDto.setLastCycleDto(cycleDto);
         return selectionDto;
     }

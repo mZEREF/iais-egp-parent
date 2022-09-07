@@ -36,7 +36,7 @@ function submit(action, value, additional) {
 }
 
 function bindButton() {
-    let currPage = $('input[name="currentStage"]').val();
+    let currPage = $('input[name="currentPageStage"]').val();
     console.log('----- ' + currPage + ' -----');
     if (isEmpty(currPage)) {
         currPage = "";
@@ -66,15 +66,11 @@ function bindButton() {
     }
 
     if ($('#nextBtn').length > 0) {
-        $('#nextBtn').click(function () {
-            if(!this.attr('disabled')){
-                showWaiting();
-                submit('submission');
-            }
-        });
-
-        let currentStage = $('input[name="currentStage"]').val();
-        if ('page' == currentStage) {
+        $('#nextBtn').attr('disabled', true);
+        let currentPageStage = $('input[name="currentPageStage"]').val();
+        if ('page' == currentPageStage) {
+            $('#nextBtn').html('Preview');
+        } else if ('confirm' == currPage){
             $('#nextBtn').html('Submit');
         } else if ('confirm' == currPage){
             $('#nextBtn').html('Preview');
@@ -82,6 +78,60 @@ function bindButton() {
 
         $('#nextBtn').attr('disabled', true);
     }
+}
+
+function printData() {
+    // window.print();
+    clearErrorMsg();
+    var url = $('#_contextPath').val() + '/eservice/INTERNET/MohDsPrint';
+    var token = $('input[name="OWASP_CSRFTOKEN"]').val();
+    const isRfc = $('input[name="isRfc"]').val() === 'true';
+    const role = isRfc?'DS_AR_SUP':'DS_AR'
+    if (!isEmpty(token)) {
+        url += '?OWASP_CSRFTOKEN=' + token;
+    }
+    var printflag = $('#printflag').val();
+    if (!isEmpty(printflag)) {
+        if (url.indexOf('?') < 0) {
+            url += '?printflag=' + printflag;
+        } else {
+            url += '&printflag=' + printflag;
+        }
+    }
+    if (url.indexOf('?') < 0) {
+        url += '?role=' + role;
+    } else {
+        url += '&role=' + role;
+    }
+    var data = getDataForPrinting();
+    if (isEmpty(data)) {
+        window.open(url,'_blank');
+    } else {
+        $.ajax({
+            'url': $('#_contextPath').val() + '/ds/init-print',
+            'dataType': 'json',
+            'data': data,
+            'type': 'POST',
+            'success': function (data) {
+                window.open(url,'_blank');
+            },
+            'error':function (data) {
+                console.log("err: " + data);
+            }
+        });
+    }
+}
+
+function getDataForPrinting() {
+    var declaration = $('input[name="declaration"]:checked').val();
+    if (isEmpty(declaration)) {
+        declaration='';
+    }
+    var printflag = $('#printflag').val();
+    if (isEmpty(printflag)) {
+        printflag = '';
+    }
+    return {declaration: declaration, printflag: printflag};
 }
 
 function jumpToInbox() {
@@ -110,9 +160,12 @@ function showDraftModal() {
 }
 
 function showAllContentDiv() {
-    const centreSelVal = $('#centreSel option:selected').val();
+    let centreSelVal = $('#centreSel option:selected').val();
+    if (!centreSelVal){
+        centreSelVal = $('#centreSel').val();
+    }
     const allContentDiv = $('#allContentDiv')
-    if ($('#centreSel').length === 0 || !isEmpty(centreSelVal)){
+    if (!isEmpty(centreSelVal)){
         allContentDiv.show();
     } else {
         allContentDiv.hide();
@@ -170,9 +223,11 @@ function showPatientDiv() {
 
 function showNextBtn(){
     let nextBtn = $('#nextBtn');
+    let currPage = $('input[name="currentPageStage"]').val();
     const existedPatientVal = $('input[name="existedPatient"]').val();
     const submissionTypeVal = $('input[name="submissionType"]:checked').val();
-    if (submissionTypeVal === 'AR_TP003' || !isEmpty(existedPatientVal)){
+    nextBtn.unbind('click')
+    if ('page' !== currPage || submissionTypeVal === 'AR_TP003' || !isEmpty(existedPatientVal)) {
         nextBtn.attr('disabled', false)
     } else {
         $('#nextBtn').attr('disabled', true);

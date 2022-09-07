@@ -1,3 +1,6 @@
+<%--@elvariable id="currentPageStage" type="java.lang.String"--%>
+<%--@elvariable id="printflag" type="java.lang.String"--%>
+<%--@elvariable id="smallTitle" type="java.lang.String"--%>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 
@@ -6,7 +9,7 @@
 %>
 
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/ar_common.js"></script>
-<c:set value="${arSuperDataSubmissionDto != null && arSuperDataSubmissionDto.getDataSubmissionDto() != null && 'DSTY_005'.equalsIgnoreCase(arSuperDataSubmissionDto.getDataSubmissionDto().getAppType())}"
+<c:set value="${arSuperDataSubmissionDto != null && arSuperDataSubmissionDto.dataSubmissionDto != null && 'DSTY_005'.equalsIgnoreCase(arSuperDataSubmissionDto.dataSubmissionDto.appType)}"
        var="isRfc"/>
 <input type="hidden" name="isRfc" value="${isRfc}"/>
 <input type="hidden" name="ar_page" value="${currentPageStage}"/>

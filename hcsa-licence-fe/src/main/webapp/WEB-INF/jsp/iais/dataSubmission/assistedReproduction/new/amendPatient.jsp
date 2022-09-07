@@ -25,12 +25,6 @@
                     <div class="col-xs-12 col-md-10">
                         <strong style="font-size: 2rem;">Please provide details of the patient below</strong>
                     </div>
-                    <div class="col-xs-12 col-md-2 text-right">
-                        <p class="print" style="font-size: 16px;">
-                            <label class="fa fa-print" style="color: #147aab;" onclick="printData()"></label> <a
-                                onclick="printData()" href="javascript:void(0);">Print</a>
-                        </p>
-                    </div>
                     <br>
                 </div>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">

@@ -26,13 +26,6 @@
                     <div class="col-xs-12 col-md-10">
                         <strong style="font-size: 2rem;">Please key in the information below.</strong>
                     </div>
-
-                    <div class="col-xs-12 col-md-2 text-right">
-                        <p class="print" style="font-size: 16px;">
-                            <label class="fa fa-print" style="color: #147aab;" onclick="printData()"></label> <a onclick="printData()" href="javascript:void(0);">Print</a>
-                        </p>
-                    </div>
-
                     <br>
                 </div>
 
@@ -57,16 +50,16 @@
                                             submission</p>
 
                                         <c:choose>
-                                            <c:when test="${premisesOpts.size() > 1}">
+                                            <c:when test="${premisesOpts.size() > 2}">
                                                 <iais:select name="centreSel" options="premisesOpts"
                                                              id="centreSel"
                                                              needErrorSpan="false"
                                                              cssClass="centreSel"
                                                              value="${arSuperDataSubmissionDto.centreSel}"/>
                                             </c:when>
-
                                             <c:otherwise>
-                                                <c:out value="${premisesOpts[0].text}"/>
+                                                <c:out value="${premisesOpts[1].text}"/>
+                                                <input type="hidden" name="centreSel" id="centreSel" value="${premisesOpts[1].value}">
                                             </c:otherwise>
                                         </c:choose>
 

@@ -158,7 +158,10 @@ public class MohDsDraftDelegator {
         if (dataSubmissionDto == null) {
             uri = DEFAULT_URI;
         } else if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(dataSubmissionDto.getSubmissionType())) {
-            uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARPatientInformationManual";
+            uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARAndIUIDataSubmission/PrepareSwitch";
+            if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(dataSubmissionDto.getAppType())){
+                uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARAndIUIDataSubmission/PreAmendPatient";
+            }
         } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(dataSubmissionDto.getSubmissionType())) {
             uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARSubmitDonor";
         } else if (dataSubmissionDto.getDataSubmissionDto() == null

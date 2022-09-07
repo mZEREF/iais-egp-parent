@@ -25,7 +25,7 @@
     <div class="main-content">
         <div class="container center-content">
             <div class="col-xs-12">
-                <h3>Please key in a valid patient ID No. and select the next stage to continue</h3>
+                <h3>Please select the next stage to continue</h3>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <%@include file="section/cycleStageSelectionSection.jsp" %>
                 </div>

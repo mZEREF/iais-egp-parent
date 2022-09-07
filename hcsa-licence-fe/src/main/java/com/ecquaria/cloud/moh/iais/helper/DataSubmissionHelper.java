@@ -313,7 +313,6 @@ public final class DataSubmissionHelper {
             if (!undergoingCycle) {
                 addStartStages(result);
             }
-            result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
             result.add(DataSubmissionConsts.AR_STAGE_DONATION);
             result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
         } else if (DataSubmissionConsts.DS_CYCLE_AR.equals(lastCycle)) {
@@ -357,16 +356,11 @@ public final class DataSubmissionHelper {
                 result.add(DataSubmissionConsts.AR_STAGE_FERTILISATION);
                 result.add(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING);
                 result.add(DataSubmissionConsts.AR_STAGE_EMBRYO_TRANSFER);
-            } else if (DataSubmissionConsts.AR_STAGE_DISPOSAL.equals(lastStage)) {
-                result.add(DataSubmissionConsts.AR_STAGE_FERTILISATION);
-                result.add(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING);
-                result.add(DataSubmissionConsts.AR_STAGE_EMBRYO_TRANSFER);
-            } else if (DataSubmissionConsts.AR_STAGE_DONATION.equals(lastStage)) {
+            }  else if (DataSubmissionConsts.AR_STAGE_DONATION.equals(lastStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_FERTILISATION);
                 result.add(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING);
                 result.add(DataSubmissionConsts.AR_STAGE_EMBRYO_TRANSFER);
             }
-            result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
             result.add(DataSubmissionConsts.AR_STAGE_DONATION);
             result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
             result.add(DataSubmissionConsts.AR_STAGE_AR_TREATMENT_SUBSIDIES);
@@ -387,18 +381,14 @@ public final class DataSubmissionHelper {
             if (DataSubmissionConsts.AR_CYCLE_EFO.equals(lastStage) || StringUtil.isEmpty(lastStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL);
             } else if (DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL.equals(lastStage)
-                    || DataSubmissionConsts.AR_STAGE_DONATION.equals(lastStage)
-                    || DataSubmissionConsts.AR_STAGE_DISPOSAL.equals(lastStage)) {
-                result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
+                    || DataSubmissionConsts.AR_STAGE_DONATION.equals(lastStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_DONATION);
             }
         } else if (DataSubmissionConsts.DS_CYCLE_SFO.equals(lastCycle)) {
             if (DataSubmissionConsts.AR_CYCLE_SFO.equals(lastStage) || StringUtil.isEmpty(lastStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_DONATION);
-            } else if (DataSubmissionConsts.AR_STAGE_DONATION.equals(lastStage)
-                    || DataSubmissionConsts.AR_STAGE_DISPOSAL.equals(lastStage)) {
+            } else if (DataSubmissionConsts.AR_STAGE_DONATION.equals(lastStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_DONATION);
-                result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
             }
         }
         return result;
@@ -734,7 +724,6 @@ public final class DataSubmissionHelper {
         stages.add(DataSubmissionConsts.AR_CYCLE_EFO);
         stages.add(DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL);
         stages.add(DataSubmissionConsts.AR_STAGE_DONATION);
-        stages.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
         return stages;
     }
 
@@ -742,7 +731,6 @@ public final class DataSubmissionHelper {
         List<String> stages = new ArrayList<>(3);
         stages.add(DataSubmissionConsts.AR_CYCLE_SFO);
         stages.add(DataSubmissionConsts.AR_STAGE_DONATION);
-        stages.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
         return stages;
     }
 

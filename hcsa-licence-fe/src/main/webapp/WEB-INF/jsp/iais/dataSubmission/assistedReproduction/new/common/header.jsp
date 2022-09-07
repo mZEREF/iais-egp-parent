@@ -1,4 +1,4 @@
-<%--@elvariable id="currentStage" type="java.lang.String"--%>
+<%--@elvariable id="currentPageStage" type="java.lang.String"--%>
 <%--@elvariable id="printflag" type="java.lang.String"--%>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
@@ -8,7 +8,7 @@
 %>
 
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/arSelection/ar_selection.js"></script>
-<input type="hidden" name="currentStage" value="${currentStage}"/>
+<input type="hidden" name="currentPageStage" value="${currentPageStage}"/>
 <input type="hidden" name="_contextPath" id="_contextPath" value="${pageContext.request.contextPath}"/>
 <input type="hidden" name="printflag" id="printflag" value="${printflag}">
 

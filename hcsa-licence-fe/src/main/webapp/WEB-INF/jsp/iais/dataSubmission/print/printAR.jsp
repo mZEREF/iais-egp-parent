@@ -15,7 +15,7 @@
         <%@include file="../assistedReproduction/section/previewHusbandDetail.jsp" %>
     </c:when>
     <c:when test="${cycleType == 'DSCL_003'}">
-        <%@include file="../assistedReproduction/section/previewArSubmitDonorSection.jsp" %>
+        <%@include file="../assistedReproduction/new/section/previewSampleSection.jsp" %>
     </c:when>
     <c:when test="${cycleStage == 'AR_CL001'}">
         <%-- AR_CYCLE_AR--%>

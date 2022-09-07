@@ -42,6 +42,9 @@ $(function () {
 
 function validatePatient(isPatHasId, identityNo) {
     let centreSel = $('#centreSel option:selected').val();
+    if (!centreSel){
+        centreSel = $('#centreSel').val();
+    }
     clearErrorMsg();
     if (!centreSel) {
         $("#error_noArLicences").html("This is a mandatory field.")
