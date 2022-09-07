@@ -140,27 +140,35 @@
                 </c:choose>
             </iais:value>
         </iais:row>
-        <iais:row>
-            <iais:field width="5" value="Are you co-locating with a service that is not licensed under HCSA?"/>
-            <iais:value width="7" display="true">
-                <c:choose>
-                    <c:when test="${appGrpPremDto.locateWtihNonHcsa == '1'}">Yes</c:when>
-                    <c:when test="${appGrpPremDto.locateWtihNonHcsa == '0'}">No</c:when>
-                </c:choose>
-            </iais:value>
-        </iais:row>
-        <c:if test="${appGrpPremDto.locateWtihNonHcsa == '1'}">
+
+        <c:if test="${appGrpPremDto.locateWtihNonHcsa != '1'}">
             <iais:row>
+                <iais:field width="5" value="Are you co-locating with a service that is not licensed under HCSA?"/>
+                <iais:value width="7" display="true">No</iais:value>
+            </iais:row>
+        </c:if>
+        <c:if test="${appGrpPremDto.locateWtihNonHcsa == '1'}">
+            <iais:row cssClass="col-xs-12">
+               <%-- <div class="d-flex" style="">
+                <div class="col-xs-12 col-md-4">Are you co-locating with a service that is not licensed under HCSA?</div>
+                <div class="col-xs-12 col-md-3">Business Name</div>
+                <div class="col-xs-12 col-md-3">Services Provided</div>
+                </div>--%>
                 <table aria-describedby="" class="col-xs-12" border="0">
-                    <thead style="display: none">
+                    <thead>
                         <tr>
-                            <th scope="col" width="50%">Business Name</th>
-                            <th scope="col" width="50%">Services Provided</th>
+                            <td scope="col" class="col-xs-12 col-md-4">Are you co-locating with a service that is not licensed under HCSA?</td>
+                            <td scope="col" class="col-xs-12 col-md-3">Business Name</td>
+                            <td scope="col" class="col-xs-12 col-md-3">Services Provided</td>
                         </tr>
                     </thead>
                     <tbody>
-                    <c:forEach var="relatedDto" items="${appGrpPremDto.appPremNonLicRelationDtos}" >
-                        <tr>
+                    <c:set var="nonLicSize" value="${appGrpPremDto.appPremNonLicRelationDtos.size()}" />
+                    <c:forEach var="relatedDto" items="${appGrpPremDto.appPremNonLicRelationDtos}" varStatus="vs">
+                        <tr style="border-top: solid">
+                            <c:if test="${vs.first}">
+                            <td rowspan="${nonLicSize}">Yes</td>
+                            </c:if>
                             <td><c:out value="${relatedDto.businessName}"/></td>
                             <td><c:out value="${relatedDto.providedService}"/></td>
                         </tr>
@@ -168,6 +176,31 @@
                     </tbody>
                 </table>
             </iais:row>
+<%--
+            <iais:row cssClass="col-xs-12">
+                <table aria-describedby="" class="col-xs-12" border="0">
+                    <thead>
+                        <tr>
+                            <td scope="col" width="50%">Are you co-locating with a service that is not licensed under HCSA?</td>
+                            <td scope="col" width="50%">Business Name</td>
+                            <td scope="col" width="50%">Services Provided</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <c:set var="nonLicSize" value="${appGrpPremDto.appPremNonLicRelationDtos.size()}" />
+                    <c:forEach var="relatedDto" items="${appGrpPremDto.appPremNonLicRelationDtos}" varStatus="vs">
+                        <tr style="border-top: solid">
+                            <c:if test="${vs.first}">
+                            <td rowspan="${nonLicSize}">Yes</td>
+                            </c:if>
+                            <td><c:out value="${relatedDto.businessName}"/></td>
+                            <td><c:out value="${relatedDto.providedService}"/></td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </table>
+            </iais:row>
+--%>
         </c:if>
     </c:if>
 </div>
