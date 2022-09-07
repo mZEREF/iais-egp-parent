@@ -191,7 +191,7 @@
                   <div class="col-xs-12 col-lg-6 user-selection">
                     <h3 style="color: #3B2A85;" >For Business Users</h3>
                     <p>For corporate users with registered UEN to access and transact on behalf of their licensee.</p>
-                    <a class="btn btn-primary disabled" id="corppass" href="javascript:void(0)">Login with CorpPass</a>
+                    <a class="btn btn-primary disabled" id="corppass" href="javascript:void(0)">Login with SingPass</a>
                   </div>
                   <div class="col-xs-12 col-lg-6 user-selection">
                     <h3 style="color:#B8271E" > For Individual Users</h3>
