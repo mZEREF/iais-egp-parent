@@ -163,6 +163,11 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
                             String categoryDisciplineErro = validationResultCategoryDisciplineErrorsDto.retrieveAll().get("categoryDiscipline");
                             categoryDisciplineErrorsDto.setErrorMsg(categoryDisciplineErro);
                             result.put("categoryDiscipline",categoryDisciplineErro);
+                        }else{
+                            if(isRepeatCategoryDiscipline(categoryDisciplines,categoryDiscipline)){
+                                categoryDisciplineErrorsDto.setErrorMsg("Please don't repeat it");
+                                result.put("categoryDiscipline","Please don't repeat it");
+                            }
                         }
                         categoryDisciplineDtos.add(categoryDisciplineErrorsDto);
                     }
@@ -172,6 +177,24 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
             }
         }
         log.info(StringUtil.changeForLog("The HcsaServiceConfigValidate validateCategoryDiscipline end ..."));
+    }
+
+    private boolean isRepeatCategoryDiscipline(String[] categoryDisciplines,String categoryDiscipline){
+        boolean result = false;
+        if(StringUtil.isEmpty(categoryDiscipline)){
+            result = true;
+        }else{
+            int count = 0;
+           for(String cd : categoryDisciplines){
+              if(categoryDiscipline.equals(cd)){
+                 count ++;
+              }
+           }
+           if(count > 1){
+               result = true;
+           }
+        }
+        return result;
     }
 
     private void validateRoutingStages(HcsaServiceConfigDto hcsaServiceConfigDto,Map<String, String> result,String serviceType){
