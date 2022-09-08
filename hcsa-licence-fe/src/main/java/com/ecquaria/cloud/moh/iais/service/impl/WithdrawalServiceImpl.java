@@ -171,8 +171,9 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 recallApplicationDto.setNeedReturnFee(false);
             }
 
-            feEicGatewayClient.callEicWithTrack(recallApplicationDto, feEicGatewayClient::withdrawAppChangeTask, "withdrawAppChangeTask");
-
+            recallApplicationDto=feEicGatewayClient.callEicWithTrack(recallApplicationDto, feEicGatewayClient::withdrawAppChangeTask, "withdrawAppChangeTask").getEntity();
+            log.debug(StringUtil.changeForLog("=====>>>>>recallApplicationDto result" + recallApplicationDto.getResult()));
+            log.debug(StringUtil.changeForLog("=====>>>>>recallApplicationDto message" + recallApplicationDto.getMessage()));
             if (recallApplicationDto.getResult()){
                 for (ApplicationDto app:applicationDtoList
                      ) {
