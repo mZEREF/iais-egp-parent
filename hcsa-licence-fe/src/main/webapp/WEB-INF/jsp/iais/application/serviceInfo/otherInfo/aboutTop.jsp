@@ -14,7 +14,7 @@
         <c:set var="person" value="${topByDrug[index]}"/>
         <%@include file="aboutTopDetail1.jsp" %>
     </c:forEach>
-    <div class="col-md-12 col-xs-12 addTopByDrugDiv <c:if test="${('0' == appSvcOtherInfoTop.topType) || ('0' == provideTop)}">hidden</c:if>">
+    <div class="col-md-12 col-xs-12 addTopByDrugDiv <c:if test="${('0' == appSvcOtherInfoTop.topType) || ('0' == provideTop) || (empty appSvcOtherInfoTop.topType)}">hidden</c:if>">
         <span class="addTopByDrugBtn" style="color:deepskyblue;cursor:pointer;">
             <span>Add more</span>
         </span>
@@ -34,7 +34,7 @@
         <c:set var="person" value="${topBySurgicalProcedure[index]}"/>
         <%@include file="aboutTopDetail2.jsp" %>
     </c:forEach>
-    <div class="col-md-12 col-xs-12 addTopBySurgicalProcedureDiv <c:if test="${('1' == appSvcOtherInfoTop.topType) || ('0' == provideTop)}">hidden</c:if>">
+    <div class="col-md-12 col-xs-12 addTopBySurgicalProcedureDiv <c:if test="${('1' == appSvcOtherInfoTop.topType) || ('0' == provideTop) || (empty appSvcOtherInfoTop.topType)}">hidden</c:if>">
         <span class="addTopBySurgicalProcedureBtn" style="color:deepskyblue;cursor:pointer;">
             <span>Add more</span>
         </span>
@@ -54,12 +54,12 @@
         <c:set var="person" value="${topByAll[index]}"/>
         <%@include file="aboutTopDetail3.jsp" %>
     </c:forEach>
-    <div class="col-md-12 col-xs-12 addTopAllDiv <c:if test="${('-1' != appSvcOtherInfoTop.topType) || ('0' == provideTop)}">hidden</c:if>">
+    <div class="col-md-12 col-xs-12 addTopAllDiv <c:if test="${('-1' != appSvcOtherInfoTop.topType) || ('0' == provideTop) || (empty appSvcOtherInfoTop.topType)}">hidden</c:if>">
         <span class="addTopAllBtn" style="color:deepskyblue;cursor:pointer;">
             <span>Add more</span>
         </span>
     </div>
-    <div class="de <c:if test="${'0' == provideTop}">hidden</c:if>">
+    <div class="de <c:if test="${('0' == provideTop) || (empty appSvcOtherInfoTop.topType)}">hidden</c:if>">
         <iais:row>
             <iais:field width="12" cssClass="col-md-12" mandatory="true" value="Declaration"/>
         </iais:row>

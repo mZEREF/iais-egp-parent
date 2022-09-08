@@ -28,7 +28,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -378,6 +377,11 @@ public abstract class AppCommDelegator {
         }
 
         List<HcsaServiceDto> hcsaServiceDtoList = null;
+//        if (!serviceConfigIds.isEmpty()) {
+//            hcsaServiceDtoList = configCommService.getHcsaServiceDtosByIds(serviceConfigIds);
+//        } else if (!names.isEmpty()) {
+//            hcsaServiceDtoList = HcsaServiceCacheHelper.getHcsaSvcsByNames(names);
+//        }
         if (ApplicationHelper.checkIsRfi(bpc.request)) {
             if (!serviceConfigIds.isEmpty()) {
                 hcsaServiceDtoList = configCommService.getHcsaServiceDtosByIds(serviceConfigIds);
@@ -393,9 +397,9 @@ public abstract class AppCommDelegator {
                 hcsaServiceDtoList = configCommService.getHcsaServiceDtosByIds(serviceConfigIds);
             }
         }
-//        if (hcsaServiceDtoList != null) {
-//            hcsaServiceDtoList = ApplicationHelper.sortHcsaServiceDto(hcsaServiceDtoList);
-//        }
+        if (hcsaServiceDtoList != null) {
+            hcsaServiceDtoList = ApplicationHelper.sortHcsaServiceDto(hcsaServiceDtoList);
+        }
         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
         log.info(StringUtil.changeForLog("the do loadingServiceConfig end ...."));
         return true;

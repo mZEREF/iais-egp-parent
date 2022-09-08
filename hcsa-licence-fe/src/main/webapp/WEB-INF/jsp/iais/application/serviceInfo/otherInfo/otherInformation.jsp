@@ -39,7 +39,6 @@
         <c:set var="dsDeclaration" value="${appSvcOtherInfoDto.dsDeclaration}"/>
         <c:set var="ascsDeclaration" value="${appSvcOtherInfoDto.ascsDeclaration}"/>
         <c:set var="orgUse" value="${orgUserDto}"/>
-        ==================${currSvcInfoDto.serviceName}
         <iais:row>
             <div class="col-xs-12">
                 <div class="app-title">${appSvcOtherInfoDto.premName}</div>

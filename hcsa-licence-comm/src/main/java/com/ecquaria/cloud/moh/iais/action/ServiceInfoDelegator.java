@@ -451,11 +451,11 @@ public class ServiceInfoDelegator {
         String currSvcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId,null);
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
-        DealSessionUtil.initAppSvcOtherInfoList(currSvcInfoDto,hcsaServiceDtoList,appSubmissionDto.getAppGrpPremisesDtoList(),false);
         // Other Information Director config
-        if (DealSessionUtil.initOtherInfoForm(currSvcInfoDto,appSubmissionDto.getAppGrpPremisesDtoList(), false,bpc.request)) {
+        if (DealSessionUtil.initOtherInfoForm(currSvcInfoDto,hcsaServiceDtoList,appSubmissionDto.getAppGrpPremisesDtoList(), false,bpc.request)) {
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
         }
+        DealSessionUtil.initAppSvcOtherInfoList(currSvcInfoDto,hcsaServiceDtoList,appSubmissionDto.getAppGrpPremisesDtoList(),false);
         ParamUtil.setRequestAttr(bpc.request, "orgUserDto",AppDataHelper.getOtherInfoYfVs(bpc.request));
     }
 
@@ -1758,7 +1758,7 @@ public class ServiceInfoDelegator {
 
     private boolean skipStep(String stepCode, AppSubmissionDto appSubmissionDto) {
         String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,
-                HcsaConsts.STEP_DISCIPLINE_ALLOCATION};
+                HcsaConsts.STEP_DISCIPLINE_ALLOCATION,HcsaConsts.STEP_PRINCIPAL_OFFICERS};
         if (StringUtil.isIn(stepCode, skipList)) {
             return true;
         }
