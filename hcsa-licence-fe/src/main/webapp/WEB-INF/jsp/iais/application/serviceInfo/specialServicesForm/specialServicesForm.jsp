@@ -58,7 +58,7 @@
                         <input type="hidden" class ="isPartEdit" name="isPartEdit${status.index}" value="0"/>
                         <div class="panel-body">
                             <c:choose>
-                                <c:when test="${!specialServiceSectionDto.configPersonnel && empty appSvcSuplmFormDto.appSvcSuplmGroupDtoList}">
+                                <c:when test="${specialServiceSectionDto.empty}">
                                     <div class="panel-main-content">
                                         <p><h4><iais:message key="NEW_ACK039"/></h4></p>
                                     </div>

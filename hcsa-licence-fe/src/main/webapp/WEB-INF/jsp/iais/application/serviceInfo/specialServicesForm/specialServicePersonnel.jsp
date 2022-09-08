@@ -101,14 +101,12 @@
     </c:if>
 </c:forEach>
 <script type="text/javascript">
+    //chceck add more button via CGO Max count
     function refreshPersonOthers($target, k) {
         let cntClass = $target.attr('class');
-        if ('dpo-person-content' == cntClass) {
+        if ('CGO-person-content' == cntClass) {
             const maxDpoCount = eval('${dpoHcsaSvcPersonnelDto.maximumCount}');
-            toggleTag('.addDpoDiv', $('div.dpo-person-content').length < maxDpoCount);
-        } else {
-            const maxPoCount = eval('${currStepConfig.maximumCount}');
-            toggleTag('.addPoDiv', $('div.person-content').length < maxPoCount);
+            toggleTag('.addDpoDiv', $('div.CGO-person-content').length < maxDpoCount);
         }
     }
 
