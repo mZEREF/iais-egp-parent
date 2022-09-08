@@ -552,7 +552,7 @@ public class DealSessionUtil {
                     }
                 }
             } else if (HcsaConsts.STEP_OTHER_INFORMATION.equals(stepCode)) {
-                initOtherInfoForm(currSvcInfoDto,hcsaServiceDtos, appGrpPremisesDtos, forceInit, request);
+                initOtherInfoForm(currSvcInfoDto,appGrpPremisesDtos, forceInit, request);
                 if (!forceInit) {
                     List<AppSvcOtherInfoDto> appSvcOtherInfoList = currSvcInfoDto.getAppSvcOtherInfoList();
                     if (IaisCommonUtils.isNotEmpty(appSvcOtherInfoList)) {
@@ -730,47 +730,45 @@ public class DealSessionUtil {
         return result;
     }
 
-    public static boolean initOtherInfoForm(AppSvcRelatedInfoDto currSvcInfoDto,List<HcsaServiceDto> hcsaServiceDtoList, List<AppGrpPremisesDto> appGrpPremisesDtos,
+    public static boolean initOtherInfoForm(AppSvcRelatedInfoDto currSvcInfoDto, List<AppGrpPremisesDto> appGrpPremisesDtos,
                                             boolean forceInit, HttpServletRequest request) {
         List<AppSvcOtherInfoDto> appSvcOtherInfoList = currSvcInfoDto.getAppSvcOtherInfoList();
         if (!forceInit && appSvcOtherInfoList != null &&
                 appSvcOtherInfoList.stream().allMatch(AppSvcOtherInfoDto::isInit)) {
             return false;
         }
-
         List<AppSvcOtherInfoDto> newList = IaisCommonUtils.genNewArrayList();
         ConfigCommService configCommService = getConfigCommService();
-        for (HcsaServiceDto serviceDto : hcsaServiceDtoList) {
-            List<HcsaSvcSpecifiedCorrelationDto> svcSpecifiedCorrelationDtoList = configCommService.getSvcSpeCorrelationsByBaseSvcId(serviceDto.getId(),HcsaConsts.SERVICE_TYPE_OTHERS);
-            for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
-                AppSvcOtherInfoDto appSvcOtherInfoDto;
-                if (appSvcOtherInfoList != null) {
-                    appSvcOtherInfoDto = appSvcOtherInfoList.stream()
-                            .filter(dto -> Objects.equals(appGrpPremisesDto.getPremisesIndexNo(), dto.getPremisesVal()))
-                            .findAny()
-                            .orElseGet(AppSvcOtherInfoDto::new);
-                    for (AppSvcOtherInfoDto svcOtherInfoDto : appSvcOtherInfoList) {
-                        if (request != null) {
-                            svcOtherInfoDto.setOrgUserDto(AppDataHelper.getOtherInfoYfVs(request));
-                        }
-                        appSvcOtherInfoDto = svcOtherInfoDto;
+        List<HcsaSvcSpecifiedCorrelationDto> svcSpecifiedCorrelationDtoList = configCommService.getSvcSpeCorrelationsByBaseSvcId(currSvcInfoDto.getServiceId(),HcsaConsts.SERVICE_TYPE_OTHERS);
+        for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
+            AppSvcOtherInfoDto appSvcOtherInfoDto;
+            if (appSvcOtherInfoList != null) {
+                appSvcOtherInfoDto = appSvcOtherInfoList.stream()
+                        .filter(dto -> Objects.equals(appGrpPremisesDto.getPremisesIndexNo(), dto.getPremisesVal()))
+                        .findAny()
+                        .orElseGet(AppSvcOtherInfoDto::new);
+                for (AppSvcOtherInfoDto svcOtherInfoDto : appSvcOtherInfoList) {
+                    if (request != null) {
+                        svcOtherInfoDto.setOrgUserDto(AppDataHelper.getOtherInfoYfVs(request));
                     }
-                } else {
-                    appSvcOtherInfoDto = new AppSvcOtherInfoDto();
+                    appSvcOtherInfoDto = svcOtherInfoDto;
                 }
-                if (!forceInit && appSvcOtherInfoDto.isInit()) {
-                    newList.add(appSvcOtherInfoDto);
-                    continue;
-                }
-                AppSvcSuplmFormDto appSvcSuplmFormDto = initAppSvcSuplmFormDto(AppServicesConsts.SERVICE_CODE_SUB_TOP,forceInit,HcsaConsts.ITEM_TYPE_TOP,appSvcOtherInfoDto.getAppSvcSuplmFormDto());
-                appSvcSuplmFormDto.setSvcConfigDto(currSvcInfoDto);
-                appSvcOtherInfoDto.setAppGrpPremisesDto(appGrpPremisesDto);
-                appSvcOtherInfoDto.setSvcSpecifiedCorrelationList(svcSpecifiedCorrelationDtoList);
-                appSvcOtherInfoDto.setAppSvcSuplmFormDto(appSvcSuplmFormDto);
-                appSvcOtherInfoDto.setInit(true);
-                newList.add(appSvcOtherInfoDto);
+            } else {
+                appSvcOtherInfoDto = new AppSvcOtherInfoDto();
             }
+            if (!forceInit && appSvcOtherInfoDto.isInit()) {
+                newList.add(appSvcOtherInfoDto);
+                continue;
+            }
+            AppSvcSuplmFormDto appSvcSuplmFormDto = initAppSvcSuplmFormDto(AppServicesConsts.SERVICE_CODE_SUB_TOP,forceInit,HcsaConsts.ITEM_TYPE_TOP,appSvcOtherInfoDto.getAppSvcSuplmFormDto());
+            appSvcSuplmFormDto.setSvcConfigDto(currSvcInfoDto);
+            appSvcOtherInfoDto.setAppGrpPremisesDto(appGrpPremisesDto);
+            appSvcOtherInfoDto.setSvcSpecifiedCorrelationList(svcSpecifiedCorrelationDtoList);
+            appSvcOtherInfoDto.setAppSvcSuplmFormDto(appSvcSuplmFormDto);
+            appSvcOtherInfoDto.setInit(true);
+            newList.add(appSvcOtherInfoDto);
         }
+
         currSvcInfoDto.setAppSvcOtherInfoList(newList);
         return true;
     }
