@@ -88,8 +88,8 @@
     </iais:row>
 
     <iais:row>
-        <iais:field width="5" cssClass="col-md-5" value="Expiry Date (ACLS)"/>
-        <iais:value width="7" cssClass="col-md-7" display="true">
+        <iais:field width="5" value="Expiry Date (ACLS)"/>
+        <iais:value width="3" cssClass="col-md-7" display="true">
             <c:out value="${person.aclsExpiryDateStr}" />
         </iais:value>
     </iais:row>
@@ -105,14 +105,14 @@
 
     <iais:row>
         <iais:field width="5" value="Mobile No."/>
-        <iais:value width="7" cssClass="col-md-7" display="true">
+        <iais:value width="3" cssClass="col-md-7" display="true">
             <c:out value="${person.mobileNo}" />
         </iais:value>
     </iais:row>
 
     <iais:row>
         <iais:field width="5" value="Email Address"/>
-        <iais:value width="7" cssClass="col-md-7" display="true">
+        <iais:value width="3" cssClass="col-md-7" display="true">
             <c:out value="${person.emailAddr}" />
         </iais:value>
     </iais:row>
