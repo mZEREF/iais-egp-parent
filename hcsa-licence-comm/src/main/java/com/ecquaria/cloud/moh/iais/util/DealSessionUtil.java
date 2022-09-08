@@ -823,16 +823,20 @@ public class DealSessionUtil {
             List<AppPremSpecialisedDto> appPremSpecialisedDtoList, boolean forceInit) {
         List<AppSvcSpecialServiceInfoDto> oldList = currSvcInfoDto.getAppSvcSpecialServiceInfoList();
         List<AppSvcSpecialServiceInfoDto> result = IaisCommonUtils.genNewArrayList();
-        //int i = specialServiceListSize + 1;
         if (!IaisCommonUtils.isEmpty(appPremSpecialisedDtoList)) {
             for (AppPremSpecialisedDto appPremSpecialisedDto : appPremSpecialisedDtoList) {
                 if (!Objects.equals(appPremSpecialisedDto.getBaseSvcCode(), currSvcInfoDto.getServiceCode())) {
                     continue;
                 }
-                AppSvcSpecialServiceInfoDto appSvcSpecialServiceInfoDto = oldList.stream()
-                        .filter(dto -> Objects.equals(dto.getPremisesVal(), appPremSpecialisedDto.getPremisesVal()))
-                        .findAny()
-                        .orElseGet(AppSvcSpecialServiceInfoDto::new);
+                AppSvcSpecialServiceInfoDto appSvcSpecialServiceInfoDto;
+                if (IaisCommonUtils.isNotEmpty(oldList)){
+                    appSvcSpecialServiceInfoDto = oldList.stream()
+                            .filter(dto -> Objects.equals(dto.getPremisesVal(), appPremSpecialisedDto.getPremisesVal()))
+                            .findAny()
+                            .orElseGet(AppSvcSpecialServiceInfoDto::new);
+                }else {
+                    appSvcSpecialServiceInfoDto=new AppSvcSpecialServiceInfoDto();
+                }
                 appSvcSpecialServiceInfoDto.setAppGrpPremisesDto(appPremSpecialisedDto);
                 List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList = appPremSpecialisedDto.getCheckedAppPremSubSvcRelDtoList();
                 appSvcSpecialServiceInfoDto.setSpecialServiceSectionDtoList(genSpecialServiceSectionDtoList(

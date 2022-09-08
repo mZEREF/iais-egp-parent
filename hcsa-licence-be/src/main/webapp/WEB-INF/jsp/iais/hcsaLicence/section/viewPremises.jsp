@@ -176,7 +176,7 @@
               </div>
                 <div  class="col-md-7"  style="position: absolute;z-index: 100;left: 40%;background-color: #EEEEEE;margin-top:2%;display: none;overflow-y: scroll;" id="addressShowOrHidden">
                     <p>The address of the mode of service delivery keyed in by applicant is currently used by another licensee</p>
-                    <table aria-describedby="" border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;text-align: center;background-color: #ffffff;width: 100%">
+                    <table aria-describedby="" border="1px" style="border-collapse: collapse;border-top: 0 solid #000000;padding: 8px;text-align: center;background-color: #ffffff;width: 100%">
                       <tr>
                         <th scope="col"  class="col-md-4">Name of Licensee</th>
                         <th scope="col"  class="col-md-4">HCI Name</th>
@@ -352,47 +352,91 @@
                   </div>
                 </div>
               </div>
-              <div class="row">
-                <div class="col-md-6">
-                  Are you co-locating with a service that is not licensed under HCSA?
+              <c:if test="${appGrpPremDto.locateWtihNonHcsa == '1' || appGrpPremDto.oldAppGrpPremDto == '1'}" var="hasNonHcsa">
+                <div class="row">
+                  <table class="table" aria-describedby="" border="0" style="margin:10px 0">
+                    <thead>
+                    <tr>
+                      <td scope="col" class="col-xs-12 col-md-3" style="padding-left: 0; padding-right: 15px;">
+                        Are you co-locating with a service that is not licensed under HCSA?
+                      </td>
+                      <td scope="col" class="col-xs-12 col-md-3" style="padding-left:20px;">Business Name</td>
+                      <td scope="col" class="col-xs-12 col-md-3" style="padding-left:20px;">Services Provided</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <c:set var="nonLicSize" value="${appGrpPremDto.appPremNonLicRelationDtos.size()}" />
+                    <c:forEach var="relatedDto" items="${appGrpPremDto.appPremNonLicRelationDtos}" varStatus="nonLicVs">
+                      <c:set var="oldRelatedDto" value="${oldAppGrpPremDto.appPremNonLicRelationDtos[nonLicVs.index]}" />
+                      <tr style="border-top: ${nonLicVs.first? 'solid silver' : '2px solid black'}">
+                        <c:if test="${nonLicVs.first}">
+                          <td rowspan="${nonLicSize}" style="padding-left: 0; padding-right: 15px;">
+                            <div class="">
+                              <span class="newVal " attr="${appGrpPremDto.locateWtihNonHcsa}">
+                                <c:choose>
+                                  <c:when test="${appGrpPremDto.locateWtihNonHcsa == '1'}">Yes</c:when>
+                                  <c:when test="${appGrpPremDto.locateWtihNonHcsa == '0'}">No</c:when>
+                                </c:choose>
+                              </span>
+                              <br>
+                              <span class="oldVal" attr="${oldAppGrpPremDto.locateWtihNonHcsa}" style="display: none">
+                                  <c:choose>
+                                    <c:when test="${oldAppGrpPremDto.locateWtihNonHcsa == '1'}">Yes</c:when>
+                                    <c:when test="${oldAppGrpPremDto.locateWtihNonHcsa == '0'}">No</c:when>
+                                  </c:choose>
+                              </span>
+                            </div>
+                          </td>
+                        </c:if>
+                        <td style="padding: 5px 20px">
+                          <span class="newVal " attr="<c:out value="${relatedDto.businessName}"/>">
+                            <c:out value="${relatedDto.businessName}"/>
+                          </span>
+                          <br>
+                          <span class="oldVal" attr="<c:out value="${oldRelatedDto.businessName}"/>" style="display: none">
+                            <c:out value="${oldRelatedDto.businessName}"/>
+                          </span>
+                        </td>
+                        <td style="padding: 5px 20px">
+                          <span class="newVal " attr="<c:out value="${relatedDto.providedService}"/>">
+                            <c:out value="${relatedDto.providedService}"/>
+                          </span>
+                          <br>
+                          <span class="oldVal" attr="<c:out value="${oldRelatedDto.providedService}"/>" style="display: none">
+                            <c:out value="${oldRelatedDto.providedService}"/>
+                          </span>
+                        </td>
+                      </tr>
+                    </c:forEach>
+                    </tbody>
+                  </table>
                 </div>
-                <div class="col-md-6">
+              </c:if>
+              <c:if test="${not hasNonHcsa}">
+                <div class="row">
                   <div class="col-md-6">
+                    Are you co-locating with a service that is not licensed under HCSA?
+                  </div>
+                  <div class="col-md-6">
+                    <div class="col-md-6">
                     <span class="newVal" attr="${appGrpPremDto.locateWtihNonHcsa}">
                       <c:choose>
                         <c:when test="${appGrpPremDto.locateWtihNonHcsa == '1'}">Yes</c:when>
                         <c:when test="${appGrpPremDto.locateWtihNonHcsa == '0'}">No</c:when>
                       </c:choose>
                     </span>
-                  </div>
-                  <div class="col-md-6">
+                    </div>
+                    <div class="col-md-6">
                     <span class="oldVal" style="display: none" attr="${oldAppGrpPremDto.locateWtihNonHcsa}">
                       <c:choose>
                         <c:when test="${oldAppGrpPremDto.locateWtihNonHcsa == '1'}">Yes</c:when>
                         <c:when test="${oldAppGrpPremDto.locateWtihNonHcsa == '0'}">No</c:when>
                       </c:choose>
                     </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-
-              <div class="row">
-                <div class="col-md-6">
-                  Office Telephone No.
-                </div>
-                <div class="col-md-6">
-                  <div class="col-md-6">
-                         <span class="newVal "
-                               attr="${appGrpPremDto.offTelNo}"><c:out
-                                 value="${appGrpPremDto.offTelNo}"/></span>
-
-                  </div>
-                  <div class="col-md-6">
-                          <span class="oldVal" attr="${oldAppGrpPremDto.offTelNo}"
-                                style="display: none"><c:out value="${oldAppGrpPremDto.offTelNo}"/></span>
-                  </div>
-                </div>
-              </div>
+              </c:if>
             </c:if>
             <%--<c:if test="${appGrpPremDto.premisesType=='OFFSITE' || appGrpPremDto.premisesType=='ONSITE' || appGrpPremDto.premisesType=='CONVEYANCE'}">
               <div class="row">

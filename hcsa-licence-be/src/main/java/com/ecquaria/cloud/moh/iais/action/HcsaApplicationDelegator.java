@@ -300,9 +300,11 @@ public class HcsaApplicationDelegator {
             if(StringUtil.isNotEmpty(stageId)){
                 ajaxResDto.setResCode(AppConsts.AJAX_RES_CODE_SUCCESS);
                 Map<String, String> chargesTypeAttr = IaisCommonUtils.genNewHashMap();
+                String firstOption="By System";
                 if(taskDto.getRoleId().equals(verified)){
                     chargesTypeAttr.put("name", "lrSelect");
                     chargesTypeAttr.put("id", "lrSelect");
+                    firstOption="Please Select";
                 }else {
                     chargesTypeAttr.put("name", "aoSelect");
                     chargesTypeAttr.put("id", "aoSelect");
@@ -316,7 +318,7 @@ public class HcsaApplicationDelegator {
                 ParamUtil.setSessionAttr(request,"aoSelect",null);
                 log.info(StringUtil.changeForLog("aoSelect is -->:"+aoSelect));
                 String chargeTypeSelHtml = SelectHelper.genMutilSelectOpHtml(chargesTypeAttr, getAoSelect(request,stageId),
-                        "By System", checkedVals, false,true);
+                        firstOption, checkedVals, false,true);
 
                 String aoSelectError = (String) ParamUtil.getSessionAttr(request, "aoSelectError");
                 chargeTypeSelHtml = chargeTypeSelHtml + "<span  class=\"error-msg\" name=\"iaisErrorMsg\" id=\"error_aoSelect\">";
@@ -4379,18 +4381,21 @@ public class HcsaApplicationDelegator {
             }
         }
         if (RoleConsts.USER_ROLE_AO1.equals(taskRole) || RoleConsts.USER_ROLE_AO2.equals(taskRole)) {
-            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Support"));
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY, "Route Laterally"));
         }
         if (RoleConsts.USER_ROLE_ASO.equals(taskRole) ) {
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY, "Route Laterally"));
         }
         if(!finalStage){
-            //62875
-            //role is ao3 && status is 'Pending AO3 Approval'  have no verified
-            if (!(RoleConsts.USER_ROLE_AO3.equals(taskRole)
-                    && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationStatus))) {
-                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Verified"));
+            if (RoleConsts.USER_ROLE_AO1.equals(taskRole) || RoleConsts.USER_ROLE_AO2.equals(taskRole)) {
+                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Support"));
+            } else {
+                //62875
+                //role is ao3 && status is 'Pending AO3 Approval'  have no verified
+                if (!(RoleConsts.USER_ROLE_AO3.equals(taskRole)
+                        && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationStatus))) {
+                    nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Verified"));
+                }
             }
         }
 

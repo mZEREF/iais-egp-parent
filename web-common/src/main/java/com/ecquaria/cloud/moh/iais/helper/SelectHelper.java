@@ -3,9 +3,10 @@ package com.ecquaria.cloud.moh.iais.helper;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * SelectHelper
@@ -59,7 +60,7 @@ public class SelectHelper {
         }
         sBuffer.append("</select>").append("</div>");
         // error span
-        sBuffer.append("<div class=\"col-md-12 col-xs-12\">")
+        sBuffer.append("<div >")
                 .append("<span class=\"error-msg \" name=\"iaisErrorMsg\" id=\"error_").append(name).append("\"></span>")
                 .append("</div>");
         return sBuffer.toString();

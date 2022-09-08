@@ -154,12 +154,13 @@
         var length =chkMailContent()
         if(length>8000){
             $('#supportArea').modal('show');
+            dismissWaiting();
         }else {
             document.getElementById("mainForm").submit();
             $("#emailSubmitButton").attr("disabled", true);
             $("#draftButton").attr("disabled", true);
         }
-        dismissWaiting();
+
     }
 
     function chkMailContent() {
@@ -178,13 +179,13 @@
         var length =chkMailContent()
         if(length>8000){
             $('#supportArea').modal('show');
+            dismissWaiting();
         }else {
             $('#perViewEmail').val("Y")
             document.getElementById("mainForm").submit();
             $("#emailSubmitButton").attr("disabled", true);
             $("#draftButton").attr("disabled", true);
         }
-        dismissWaiting();
 
     }
 
@@ -220,11 +221,12 @@
         var length =chkMailContent()
         if(length>8000){
             $('#supportArea').modal('show');
+            dismissWaiting();
         }else {
             document.getElementById("mainForm").submit();
             $("#emailSubmitButton").attr("disabled", true);
         }
-        dismissWaiting();
+
 
     });
 </script>

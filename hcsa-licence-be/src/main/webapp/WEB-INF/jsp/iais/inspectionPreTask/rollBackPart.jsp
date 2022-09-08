@@ -54,7 +54,7 @@
             const internalRemarksVal = $('.internalRemarks').val();
             let pass = true;
             if (internalRemarksVal === null || internalRemarksVal === undefined || internalRemarksVal === ''){
-                internalMsg.html('The field is mandatory.');
+                internalMsg.html('This is a mandatory field.');
                 internalMsg.show();
                 pass = false;
             }
