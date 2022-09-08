@@ -2545,7 +2545,8 @@ public final class AppDataHelper {
         if (documentShowDtoList == null || documentShowDtoList.isEmpty()) {
             return;
         }
-        AtomicInteger psnTypeNum = new AtomicInteger();
+        AtomicInteger psnTypeNum = new AtomicInteger(1);
+        int i = 0;
         for (DocumentShowDto documentShowDto : documentShowDtoList) {
             String premisesVal = documentShowDto.getPremisesVal();
             List<DocSectionDto> docSectionList = documentShowDto.getDocSectionList();
@@ -2563,6 +2564,11 @@ public final class AppDataHelper {
                             doc.setPersonTypeNum(psnTypeNum.getAndIncrement());
                             doc.setBaseSvcId(baseSvcId);
                         });
+                        i += 1000;
+                        while (psnTypeNum.get() >= i) {
+                            i += 1000;
+                        }
+                        psnTypeNum.set(i + 1);
                     } else if (!appSvcDocDtoList.isEmpty()) {
                         appSvcDocDtoList.forEach(doc -> doc.setBaseSvcId(baseSvcId));
                     }

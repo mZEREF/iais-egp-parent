@@ -55,7 +55,6 @@
     });
 
     $('.proceed').click(function () {
-
         showWaiting();
         submit('jumpBank','next',null);
     });

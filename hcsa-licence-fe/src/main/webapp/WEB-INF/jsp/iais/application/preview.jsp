@@ -231,9 +231,10 @@
             showWaiting();
             submit('premises',null,null);
         });
-        $('#specialisedEdit').click(function(){
+        $('.specialisedEdit').click(function(){
             showWaiting();
             submit('specialised',null,null);
+            $("[name='specialised_svc_code']").val(action);
         });
         $('#Back').click(function(){
             showWaiting();
