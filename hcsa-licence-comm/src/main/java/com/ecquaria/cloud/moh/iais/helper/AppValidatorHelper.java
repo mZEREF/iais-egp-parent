@@ -2719,9 +2719,9 @@ public final class AppValidatorHelper {
         }
         if ("SP001".equals(prefix)) {
             //
-            String isEmbryologistAuthorized = appSvcPersonnelDto.getIsEmbryologistAuthorized();
-            if (StringUtil.isEmpty(isEmbryologistAuthorized)) {
-                errorMap.put(prefix + "isEmbryologistAuthorized" + i, signal);
+            String embryologistAuthorized = appSvcPersonnelDto.getEmbryologistAuthorized();
+            if (StringUtil.isEmpty(embryologistAuthorized)) {
+                errorMap.put(prefix + "embryologistAuthorized" + i, signal);
             }
             String numberSupervision = appSvcPersonnelDto.getNumberSupervision();
             if (StringUtil.isEmpty(numberSupervision) || numberSupervision.length() > 110) {
