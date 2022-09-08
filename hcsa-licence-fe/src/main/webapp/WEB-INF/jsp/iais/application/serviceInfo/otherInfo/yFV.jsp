@@ -3,7 +3,7 @@
         <p class="bold">Yellow Fever Vaccination </p>
     </div>
 </iais:row>
-<iais:row cssClass="row control control-caption-horizontal yFVSDiv">
+<iais:row>
     <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Do you provide Yellow Fever Vaccination Service"/>
     <input type="hidden" class="provideYfVsVal" name="provideYfVsVal" value="${appSvcOtherInfoDto.provideYfVs}"/>
     <iais:value width="3" cssClass="form-check col-md-3">
@@ -14,6 +14,13 @@
     <iais:value width="3" cssClass="form-check col-md-3">
         <input class="form-check-input provideYfVs" <c:if test="${'0' == appSvcOtherInfoDto.provideYfVs}">checked="checked"</c:if>  type="radio" name="provideYfVs" value = "0" aria-invalid="false">
         <label class="form-check-label" ><span class="check-circle"></span>No</label>
+    </iais:value>
+</iais:row>
+
+<iais:row>
+    <iais:field width="5" mandatory="" value=""/>
+    <iais:value width="7" cssClass="col-md-7">
+        <span class="error-msg col-md-7" name="iaisErrorMsg" id="error_provideYfVs"></span>
     </iais:value>
 </iais:row>
 
