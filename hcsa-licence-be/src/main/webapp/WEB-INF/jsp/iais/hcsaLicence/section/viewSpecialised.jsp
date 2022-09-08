@@ -1,6 +1,6 @@
 <c:set var="specialisedTitle"><iais:message key="GENERAL_TITLE01" escape="false"/></c:set>
 <c:forEach var="specialised" items="${AppSubmissionDto.appPremSpecialisedDtoList}" varStatus="vs">
-    <c:set var="oldSpecialisedTitle" value="${appSubmissionDto.oldAppSubmissionDto.appPremSpecialisedDtoList[status.index]}"/>
+    <c:set var="oldSpecialised" value="${appSubmissionDto.oldAppSubmissionDto.appPremSpecialisedDtoList[status.index]}"/>
     <div class="panel panel-default">
         <div class="panel-heading">
             <h4 class="panel-title">

@@ -335,7 +335,7 @@
                 </div>
                 <div class="col-md-6">
                   <div class="col-md-6">
-                    <span class="newVal" attr="${appGrpPremDto.locateWithOthers}">
+                    <span class="newVal" attr="${appGrpPremDto.locateWtihHcsa}">
                       <c:choose>
                         <c:when test="${appGrpPremDto.locateWtihHcsa == '1'}">Yes</c:when>
                         <c:when test="${appGrpPremDto.locateWtihHcsa == '0'}">No</c:when>
@@ -343,7 +343,7 @@
                     </span>
                   </div>
                   <div class="col-md-6">
-                    <span class="oldVal" style="display: none" attr="${oldAppGrpPremDto.locateWithOthers}">
+                    <span class="oldVal" style="display: none" attr="${oldAppGrpPremDto.locateWtihHcsa}">
                       <c:choose>
                         <c:when test="${oldAppGrpPremDto.locateWtihHcsa == '1'}">Yes</c:when>
                         <c:when test="${oldAppGrpPremDto.locateWtihHcsa == '0'}">No</c:when>

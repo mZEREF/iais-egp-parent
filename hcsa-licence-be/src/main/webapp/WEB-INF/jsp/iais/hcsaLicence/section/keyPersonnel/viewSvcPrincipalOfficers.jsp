@@ -7,7 +7,7 @@
     <div class="amend-preview-info">
         <div class="form-check-gp">
             <div class="row">
-                <div class="col-xs-12">
+                <div class="">
                     <c:set value="1" var="poIndex"></c:set>
                     <c:set value="1" var="dpoIndex"></c:set>
                     <c:forEach items="${currentPreviewSvcInfo.appSvcPrincipalOfficersDtoList}" var="po" varStatus="status">

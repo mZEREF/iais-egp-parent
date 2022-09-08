@@ -8,7 +8,7 @@
     <div class="amend-preview-info">
         <div class="form-check-gp">
             <div class="row">
-                <div class="col-xs-12">
+                <div class="">
                     <c:forEach var="appSvcClinicalDirectorDto" items="${currentPreviewSvcInfo.appSvcClinicalDirectorDtoList}" varStatus="status">
                         <c:set var="oldClinicalDirecotrDto"  value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index]}" />
                         <p>

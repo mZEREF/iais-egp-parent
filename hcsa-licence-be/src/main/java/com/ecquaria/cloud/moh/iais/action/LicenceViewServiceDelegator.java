@@ -228,14 +228,14 @@ public class LicenceViewServiceDelegator {
         List<String> list = IaisCommonUtils.genNewArrayList();
         list.add(serviceId);
         List<HcsaServiceStepSchemeDto> entity = hcsaConfigClient.getServiceStepsByServiceIds(list).getEntity();
-        List<String> stringList = IaisCommonUtils.genNewArrayList();
+        /*List<String> stringList = IaisCommonUtils.genNewArrayList();
         //Map<String,String> stepNameMap= Maps.newHashMapWithExpectedSize(entity.size());
         for (HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto : entity) {
             stringList.add(hcsaServiceStepSchemeDto.getStepCode());
             //stepNameMap.put(hcsaServiceStepSchemeDto.getStepCode(),hcsaServiceStepSchemeDto.getStepName());
-        }
+        }*/
         //bpc.request.getSession().setAttribute("stepNameMap", stepNameMap);
-        bpc.request.getSession().setAttribute("hcsaServiceStepSchemeDtoList", stringList);
+        bpc.request.getSession().setAttribute("hcsaServiceStepSchemeDtoList", entity);
 
         boolean canEidtPremise = canEidtPremise(applicationViewDto.getApplicationGroupDto().getId());
         ParamUtil.setRequestAttr(bpc.request, "canEidtPremise", canEidtPremise);
@@ -1020,7 +1020,7 @@ public class LicenceViewServiceDelegator {
 
     private void dealAppSvcSuplmFormList(List<AppSvcSuplmFormDto> appSvcSuplmFormList,
             List<AppSvcSuplmFormDto> oldAppSvcSuplmFormList) {
-        dealList(appSvcSuplmFormList, oldAppSvcSuplmFormList,
+        /*dealList(appSvcSuplmFormList, oldAppSvcSuplmFormList,
                 (newDto, oldList) -> oldList.stream()
                         .filter(dto -> Objects.equals(newDto.getSvcCode(), dto.getSvcCode())
                                 && Objects.equals(newDto.getPremisesType(), dto.getPremisesType())
@@ -1035,7 +1035,12 @@ public class LicenceViewServiceDelegator {
                     AppSvcSuplmFormDto newDto = CopyUtil.copyMutableObject(dto);
                     newDto.setSuppleFormItemConfigDtos(null);
                     return newDto;
-                });
+                });*/
+        resolveEquList(appSvcSuplmFormList, oldAppSvcSuplmFormList, dto -> {
+            AppSvcSuplmFormDto newDto = CopyUtil.copyMutableObject(dto);
+            newDto.setSuppleFormItemConfigDtos(null);
+            return newDto;
+        });
         int size = appSvcSuplmFormList.size();
         for (int i = 0; i < size; i++) {
             dealAppSvcSuplmForm(appSvcSuplmFormList.get(i), oldAppSvcSuplmFormList.get(i));
@@ -1140,7 +1145,7 @@ public class LicenceViewServiceDelegator {
 
     private void dealAppGrpPremisesList(List<AppGrpPremisesDto> appGrpPremisesDtoList,
             List<AppGrpPremisesDto> oldAppGrpPremisesDtoList) {
-        dealList(appGrpPremisesDtoList, oldAppGrpPremisesDtoList,
+        /*dealList(appGrpPremisesDtoList, oldAppGrpPremisesDtoList,
                 (newDto, oldList) -> oldList.stream()
                         .filter(dto -> Objects.equals(newDto.getPremisesSelect(), dto.getPremisesSelect()))
                         .findFirst()
@@ -1155,7 +1160,8 @@ public class LicenceViewServiceDelegator {
                     AppGrpPremisesDto newDto = new AppGrpPremisesDto();
                     newDto.setPremisesType(dto.getPremisesType());
                     return newDto;
-                });
+                });*/
+        resolveEquList(appGrpPremisesDtoList, oldAppGrpPremisesDtoList, dto -> new AppGrpPremisesDto());
         int size = appGrpPremisesDtoList.size();
         for (int i = 0; i < size; i++) {
             AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(i);
@@ -2130,6 +2136,25 @@ public class LicenceViewServiceDelegator {
                     }, null);
             docSecDetailDto.setAppSvcDocDtoList(appSvcDocDtoList);
             oldDocSecDetailDto.setAppSvcDocDtoList(oldAppSvcDocDtoList);
+        }
+    }
+
+    private <T> void resolveEquList(List<T> newList, List<T> oldList, Function<T, T> createFun) {
+        if (newList.isEmpty() && oldList.isEmpty()) {
+            return;
+        }
+        int newSize = newList.size();
+        int oldSize = oldList.size();
+        if (newSize == oldSize) {
+            return;
+        }
+        int i = Math.min(newSize, oldSize);
+        int j = i;
+        while (i < newSize) {
+            oldList.add(createFun.apply(newList.get(j++)));
+        }
+        while (j < oldSize) {
+            newList.add(createFun.apply(oldList.get(j++)));
         }
     }
 

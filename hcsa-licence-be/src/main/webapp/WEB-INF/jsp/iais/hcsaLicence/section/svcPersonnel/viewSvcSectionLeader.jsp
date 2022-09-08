@@ -6,7 +6,7 @@
     <div class="amend-preview-info">
         <div class="form-check-gp">
             <div class="row">
-                <div class="col-xs-12">
+                <div class="">
                     <c:forEach items="${currentPreviewSvcInfo.appSvcSectionLeaderList}" var="sectionLeader"
                                varStatus="status">
                         <c:set var="oldSectionLeader" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcSectionLeaderList[status.index]}"/>

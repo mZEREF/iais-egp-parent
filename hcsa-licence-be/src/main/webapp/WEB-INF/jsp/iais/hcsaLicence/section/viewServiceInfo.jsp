@@ -68,16 +68,10 @@
       <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/svcPersonnel/viewSvcPersonnel.jsp" />
     </c:when>
     <c:when test="${currentStep == 'SVST005'}">
-      <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/viewSvcDocument.jsp" />
+      <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/document/viewSvcDocument.jsp" />
     </c:when>
   </c:choose>
 </c:forEach>
-
-
-<%-- Document --%>
-<c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST005')}">
-
-</c:if>
 </div>
 
 <script type="text/javascript">

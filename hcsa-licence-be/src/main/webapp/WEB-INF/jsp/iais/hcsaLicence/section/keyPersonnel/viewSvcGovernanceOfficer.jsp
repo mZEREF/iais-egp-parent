@@ -6,17 +6,16 @@
 <div class="amended-service-info-gp">
     <label class="title-font-size">${currStepName}</label>
     <div class="amend-preview-info">
-        <c:forEach var="cgo" items="${currentPreviewSvcInfo.appSvcCgoDtoList}" varStatus="status">
-            <c:set var="oldCgo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index]}" />
-            <p>
-                <strong class="col-xs-6">Clinical Governance Officer
-                    <c:if test="${fn:length(currentPreviewSvcInfo.appSvcCgoDtoList)>1}">${status.index+1}</c:if>:
-                </strong>
-                <span class="col-xs-4 col-md-4"></span>
-            </p>
-            <div class="form-check-gp">
-                <div class="row">
-                    <div class="col-xs-12">
+        <div class="form-check-gp">
+            <div class="row">
+                <div class="">
+                    <c:forEach var="cgo" items="${currentPreviewSvcInfo.appSvcCgoDtoList}" varStatus="status">
+                        <c:set var="oldCgo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index]}" />
+                        <p>
+                            <strong class="col-xs-11">Clinical Governance Officer
+                                <c:if test="${fn:length(currentPreviewSvcInfo.appSvcCgoDtoList)>1}">${status.index+1}</c:if>:
+                            </strong>
+                        </p>
                         <table aria-describedby="" class="col-xs-12">
                             <tr>
                                 <th scope="col" style="display: none"></th>
@@ -341,9 +340,9 @@
                                 </td>
                             </tr>
                         </table>
-                    </div>
+                    </c:forEach>
                 </div>
             </div>
-        </c:forEach>
+        </div>
     </div>
 </div>

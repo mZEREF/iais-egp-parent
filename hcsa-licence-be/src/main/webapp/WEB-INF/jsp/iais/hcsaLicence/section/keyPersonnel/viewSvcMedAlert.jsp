@@ -8,7 +8,7 @@
     <div class="amend-preview-info">
         <div class="form-check-gp">
             <div class="row">
-                <div class="col-xs-12">
+                <div class="">
                     <c:forEach items="${currentPreviewSvcInfo.appSvcMedAlertPersonList}" var="appSvcMedAlertPerson"
                                varStatus="status">
                         <c:set var="oldMap" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index]}" />
