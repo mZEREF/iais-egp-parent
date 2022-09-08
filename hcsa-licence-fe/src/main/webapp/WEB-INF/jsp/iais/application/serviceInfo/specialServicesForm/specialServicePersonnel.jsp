@@ -143,8 +143,8 @@
             <iais:row>
                 <div class="col-md-12 col-xs-12 addDiv <c:if test="${personCount >= pMax.value}">hidden</c:if>">
                     <input type="hidden" class ="psnType" value="${psnType}"/>
-                    <input type="hidden" class ="${psnType}MaxCount" value="${pMax.value}"/>
-                    <input type="hidden" class ="${psnType}Length" value="${personCount}"/>
+                    <input type="hidden" class ="MaxCount" value="${pMax.value}"/>
+                    <input type="hidden" class ="Length" name="${status.index}${subSvcRelStatus.index}${psnType}Length" value="${personCount}"/>
                     <span class="addBtn" style="color:deepskyblue;cursor:pointer;">
                         <span style="">Add more</span>
                     </span>
@@ -164,8 +164,9 @@
     }
     $(function() {
         $('.addBtn').on('click', function () {
-            var dis=$(this).closest('div.addDiv').find('input.psnType').val();
-            addPersonnel($(this).closest('div.panel-main-content'),dis);
+            var type=$(this).closest('div.addDiv').find('input.psnType').val();
+            var maxCount=$(this).closest('div.addDiv').find('input.MaxCount').val();
+            addPerson($(this).closest('div.panel-main-content'),type,maxCount);
         });
     });
 </script>

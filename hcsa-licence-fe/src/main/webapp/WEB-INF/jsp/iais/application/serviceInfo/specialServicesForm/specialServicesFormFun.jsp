@@ -1,11 +1,10 @@
 <c:if test="${empty psnContent}">
-    <c:set var="spsnContent" value="personnel-content"/>
+    <c:set var="psnContent" value="personnel-content"/>
 </c:if>
-<%--<%@include file="../svcPersonnel/servicePersonnelFun.jsp" %>--%>
 <%@include file="/WEB-INF/jsp/iais/application/common/prsLoad.jsp" %>
 <script type="text/javascript">
     $(function () {
-        removePersonEvent();
+        removePersonnelEvent();
         initPerson($('div.panel-main-content'));
     });
 
@@ -38,18 +37,10 @@
         resetIndex($target, k);
     }
 
-    function addPersonnel(target,dis) {
+    function addPerson(target,type,maxCount) {
         var $target = $(target);
         if (isEmptyNode($target)) {
             return;
-        }
-        var maxCount=0;
-        if (dis=='Di'){
-            maxCount=$target.closest('div.panel-group').find('input.DirMaxCount').val();
-        }else if (dis=='Nu'){
-            maxCount=$target.closest('div.panel-group').find('input.NurMaxCount').val();
-        }else if (dis=='Nic'){
-            maxCount=$target.closest('div.panel-group').find('input.NICMaxCount').val();
         }
         showWaiting();
         var $tgt = $(target).find('div.personnel-content').last();
@@ -71,9 +62,8 @@
         refreshPerson($currContent, $(target).find('div.personnel-content').length - 1);
         disablePrsInfo($currContent, false,true);
         $(target).find('div.personnel-content').first().find('.psnHeader').html('1');
-        removePersonEvent();
+        removePersonnelEvent();
         profRegNoEvent($currContent);
-
         var length =  $target.find('div.personnel-content').length;
         if(length >= maxCount){
             $target.find('.addDiv').addClass('hidden');
@@ -82,26 +72,18 @@
         dismissWaiting();
     }
 
-    var removePersonEvent = function () {
+    var removePersonnelEvent = function () {
         $('.removeBtns').unbind('click');
         $('.removeBtns').on('click', function () {
             var $Content = $(this).closest('div.panel-main-content');
-            var dis=$Content.find('input.psnType').val();
-            var maxCount;
-            if (dis=='Di'){
-                maxCount=$Content.closest('div.panel-group').find('input.DirMaxCount').val();
-            }else if (dis=='Nu'){
-                maxCount=$Content.closest('div.panel-group').find('input.NurMaxCount').val();
-            }else if (dis=='Nic'){
-                maxCount=$Content.closest('div.panel-group').find('input.NICMaxCount').val();
-            }
+            var maxCount=$Content.find('input.MaxCount').val();
             $(this).closest('div.personnel-content').remove();
             let $currContent = $Content.find('div.personnel-content');
             $currContent.each(function (k, v) {
                 refreshPerson($(v), k);
             });
             if ($currContent.length == 1) {
-                $currContent.find('.psnHeader').html('');
+                $currContent.find('.assign-psn-item').html('');
             }
             var len =  $Content.find('div.personnel-content').length;
             $Content.find('input.length').val(len);

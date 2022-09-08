@@ -1831,18 +1831,12 @@ public final class AppDataHelper {
                 int j = 0;
                 for (SpecialServiceSectionDto specialServiceSectionDto : appSvcSpecialServiceInfoDto.getSpecialServiceSectionDtoList()) {
                     Map<String, Integer> maxCount = specialServiceSectionDto.getMaxCount();
-                    int nicMaxCount = maxCount.get(
-                            ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_NURSE_IN_CHARGE) != null ? maxCount.get(
-                            ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_NURSE_IN_CHARGE) : 0;
-                    int diMaxCount = maxCount.get(
-                            ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR) != null ? maxCount.get(
-                            ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR) : 0;
-                    int nuMaxCount = maxCount.get(
-                            ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR) != null ? maxCount.get(
-                            ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR) : 0;
+                    int nicMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE);
+                    int diMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR);
+                    int nuMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR);
                     if (nicMaxCount != 0) {
                         List<AppSvcPersonnelDto> appSvcNurseDtoList = IaisCommonUtils.genNewArrayList();
-                        int nicLength = ParamUtil.getInt(request, prefix + i + j + "NICDtoListLength");
+                        int nicLength = ParamUtil.getInt(request, prefix + i + j + ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE+"Length");
                         for (int x = 0; x < nicLength; x++) {
                             AppSvcPersonnelDto appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix + i + j + "nic",
                                     prefix + x, ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_NURSE_IN_CHARGE);
@@ -1852,7 +1846,7 @@ public final class AppDataHelper {
                     }
                     if (diMaxCount != 0) {
                         List<AppSvcPersonnelDto> appSvcDirectorDtoList = IaisCommonUtils.genNewArrayList();
-                        int diLength = ParamUtil.getInt(request, prefix + i + j + "DirectorDtoListLength");
+                        int diLength = ParamUtil.getInt(request, prefix + i + j +ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR+"Length");
                         for (int x = 0; x < diLength; x++) {
                             AppSvcPersonnelDto appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix + i + j + "dir",
                                     prefix + x, ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR);
@@ -1861,7 +1855,7 @@ public final class AppDataHelper {
                         specialServiceSectionDto.setAppSvcDirectorDtoList(appSvcDirectorDtoList);
                     }
                     if (nuMaxCount != 0) {
-                        int nuLength = ParamUtil.getInt(request, prefix + i + j + "NurseDtoListLength");
+                        int nuLength = ParamUtil.getInt(request, prefix + i + j +ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR+ "Length");
                         List<AppSvcPersonnelDto> appSvcNurseDirectorDtoList = IaisCommonUtils.genNewArrayList();
                         for (int x = 0; x < nuLength; x++) {
                             AppSvcPersonnelDto appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix + i + j + "nur",

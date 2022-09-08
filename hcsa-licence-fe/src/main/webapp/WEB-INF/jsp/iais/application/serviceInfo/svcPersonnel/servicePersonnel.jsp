@@ -153,6 +153,7 @@
             <c:set var="index" value="${status.index}"/>
             <c:set value="SP000" var="logo"/>
             <c:set var="appSvcPersonnelDto" value="${svcPersonnelDto.specialList[index]}"/>
+            <c:set var="title" value="ServicePersonnel "/>
             <%@include file="servicePersonnelDetail.jsp" %>
         </c:forEach>
         <div class="form-group col-md-12 col-xs-12" id="addPsnDiv">
