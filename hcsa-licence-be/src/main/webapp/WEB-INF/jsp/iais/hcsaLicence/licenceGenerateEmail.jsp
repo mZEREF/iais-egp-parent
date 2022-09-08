@@ -125,7 +125,7 @@
             Preview
         </button>
         <button class="btn btn-primary next"  type="button" id="draftButton" onclick="javascript:doSaveDraftEmail();">Save Draft</button>
-        <button name="submitBtn" onclick="chkMailContent()" id="submitButton" type="button" class="btn btn-primary">
+        <button name="submitBtn"  id="emailSubmitButton" type="button" class="btn btn-primary">
             Submit
         </button>
     </iais:action>
@@ -135,7 +135,7 @@
 <iais:confirm msg="LOLEV_ACK056"  popupOrder="saveDraftPop"
               yesBtnDesc="Close" needFungDuoJi="true" needCancel="false"
               callBack="$('#saveDraftPop').modal('hide');"></iais:confirm>
-<iais:confirm msg="${confirm_err_msg}" yesBtnDesc="OK" needFungDuoJi="true" needCancel="false" callBack="$('#supportArea').modal('hide');" popupOrder="supportArea" ></iais:confirm>
+<iais:confirm msg="${confirm_err_msg}" cancelBtnDesc="OK"  needCancel="false"  callBack="$('#supportArea').modal('hide');" popupOrder="supportArea" ></iais:confirm>
 <script>
     $(document).ready(function () {
         if("Y"=='${doSaveDraftEmail}'){
@@ -151,10 +151,15 @@
     function doSaveDraftEmail(){
         showWaiting();
         $('#saveDraftEmail').val("Y")
-        chkMailContent()
-        document.getElementById("mainForm").submit();
-        $("#submitButton").attr("disabled", true);
-        $("#draftButton").attr("disabled", true);
+        var length =chkMailContent()
+        if(length>8000){
+            $('#supportArea').modal('show');
+        }else {
+            document.getElementById("mainForm").submit();
+            $("#emailSubmitButton").attr("disabled", true);
+            $("#draftButton").attr("disabled", true);
+        }
+        dismissWaiting();
     }
 
     function chkMailContent() {
@@ -164,16 +169,22 @@
         }
         var length = $('.tox-statusbar__wordcount').text().split(" ")[0];
         $("#template_content_size").val(length);
+        return length;
     }
 
     function doOpenEmailView() {
         showWaiting();
-        $('#perViewEmail').val("Y")
-        chkMailContent()
-        document.getElementById("mainForm").submit();
-        $("#submitButton").attr("disabled", true);
-        $("#draftButton").attr("disabled", true);
 
+        var length =chkMailContent()
+        if(length>8000){
+            $('#supportArea').modal('show');
+        }else {
+            $('#perViewEmail').val("Y")
+            document.getElementById("mainForm").submit();
+            $("#emailSubmitButton").attr("disabled", true);
+            $("#draftButton").attr("disabled", true);
+        }
+        dismissWaiting();
 
     }
 
@@ -203,6 +214,19 @@
                 ' removeformat | help',
         });
     }
+
+    $("#emailSubmitButton").click(function () {
+        showWaiting();
+        var length =chkMailContent()
+        if(length>8000){
+            $('#supportArea').modal('show');
+        }else {
+            document.getElementById("mainForm").submit();
+            $("#emailSubmitButton").attr("disabled", true);
+        }
+        dismissWaiting();
+
+    });
 </script>
 
 
