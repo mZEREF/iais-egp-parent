@@ -1,12 +1,11 @@
 <c:if test="${empty psnContent}">
-    <c:set var="psnContent" value="personnel-content"/>
+    <c:set var="spsnContent" value="personnel-content"/>
 </c:if>
+<%--<%@include file="../svcPersonnel/servicePersonnelFun.jsp" %>--%>
 <%@include file="/WEB-INF/jsp/iais/application/common/prsLoad.jsp" %>
 <script type="text/javascript">
     $(function () {
-        let psnContent = '.${psnContent}';
-        removePersonEvent(psnContent);
-        psnEditEvent(psnContent);
+        removePersonEvent();
         initPerson($('div.panel-main-content'));
     });
 
@@ -22,7 +21,7 @@
                 }
             }
             if ($(v).find('div.personnel-content').length == 1) {
-                $(v).find('.psnHeader').html('');
+                $(v).find('.assign-psn-item').html('');
             }
             $(v).find('div.personnel-content').each(function (i, x) {
                 var flag=isEmpty($(x).find('input.profRegNo').val())?false:true;
@@ -33,26 +32,9 @@
 
     }
 
-    var psnEditEvent = function (target) {
-        var $target = $(target);
-        if (isEmptyNode($target)) {
-            return;
-        }
-        $target.find('.psnEdit').unbind('click');
-        $target.find('.psnEdit').on('click', function () {
-            showWaiting();
-            var $currContent = $(this).closest(target);
-            $currContent.find('input.isPartEdit').val('1');
-            $(target + '-edit').val('1');
-            hideTag($(this).closest('.edit-content'));
-            unDisableContent($currContent);
-            dismissWaiting();
-        });
-    }
-
     function refreshPerson($target, k) {
         toggleTag($target.find('.removeEditDiv'), k != 0);
-        $target.find('.psnHeader').html(k + 1);
+        $target.find('.assign-psn-item').html(k + 1);
         resetIndex($target, k);
     }
 
@@ -101,8 +83,8 @@
     }
 
     var removePersonEvent = function () {
-        $('.removeBtn').unbind('click');
-        $('.removeBtn').on('click', function () {
+        $('.removeBtns').unbind('click');
+        $('.removeBtns').on('click', function () {
             var $Content = $(this).closest('div.panel-main-content');
             var dis=$Content.find('input.psnType').val();
             var maxCount;

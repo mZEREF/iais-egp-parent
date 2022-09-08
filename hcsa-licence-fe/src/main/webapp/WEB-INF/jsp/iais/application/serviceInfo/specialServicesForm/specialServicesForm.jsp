@@ -1,7 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts" %>
 
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
 <input type="hidden" id="isEditHiddenVal" class="person-content-edit" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
@@ -58,7 +56,7 @@
                         <input type="hidden" class ="isPartEdit" name="isPartEdit${status.index}" value="0"/>
                         <div class="panel-body">
                             <c:choose>
-                                <c:when test="${specialServiceSectionDto.empty}">
+                                <c:when test="${specialServiceSectionDto.emptyDto}">
                                     <div class="panel-main-content">
                                         <p><h4><iais:message key="NEW_ACK039"/></h4></p>
                                     </div>
@@ -202,11 +200,3 @@
 </div>
 <%@include file="specialServicesFormFun.jsp" %>
 <%@ include file="/WEB-INF/jsp/iais/application/serviceInfo/supplementaryForm/itemFun.jsp" %>
-<script>
-    $(function() {
-        $('.addBtn').on('click', function () {
-            var dis=$(this).closest('div.addDiv').find('input.psnType').val();
-            addPersonnel($(this).closest('div.panel-main-content'),dis);
-        });
-    });
-</script>
