@@ -15,7 +15,7 @@ public class PaymentValidate implements CustomizeValidator {
         Map<String ,String> map= IaisCommonUtils.genNewHashMap();
         String payMethod = ParamUtil.getString(request, "payMethod");
         if(StringUtil.isEmpty(payMethod)){
-            map.put("payMethod","The field is mandatory.");
+            map.put("payMethod","This is a mandatory field.");
         }
         return map;
     }

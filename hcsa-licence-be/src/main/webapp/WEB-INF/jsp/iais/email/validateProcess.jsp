@@ -196,13 +196,13 @@
                 var lrSelect = $('[name="lrSelect"] option:selected').val();
 
                 if(lrSelect ==null || lrSelect == ""){
-                    $("#error_lrSelect").html('The field is mandatory.');
+                    $("#error_lrSelect").html('This is a mandatory field.');
                     if(remark ==null || remark == ""){
-                        $("#error_internalRemarks1").html('The field is mandatory.');
+                        $("#error_internalRemarks1").html('This is a mandatory field.');
                         $("#error_internalRemarks1").show()
                     }
                 }else if(remark ==null || remark == ""){
-                    $("#error_internalRemarks1").html('The field is mandatory.');
+                    $("#error_internalRemarks1").html('This is a mandatory field.');
                     $("#error_internalRemarks1").show()
                 }else {
                     showWaiting();

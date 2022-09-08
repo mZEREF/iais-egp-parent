@@ -696,14 +696,14 @@
             if(remark === null || remark === undefined || remark === "") {
                 $('#error_internalRemarks1').show();
                 if(lrSelect ==null || lrSelect == ""){
-                    $("#error_lrSelect").html('The field is mandatory.');
+                    $("#error_lrSelect").html('This is a mandatory field.');
                 }
                 return false;
             }
             var lrSelect = $('[name="lrSelect"] option:selected').val();
 
             if(lrSelect ==null || lrSelect == ""){
-                $("#error_lrSelect").html('The field is mandatory.');
+                $("#error_lrSelect").html('This is a mandatory field.');
                 return false;
             }
         }
