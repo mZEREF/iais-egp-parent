@@ -163,9 +163,6 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Autowired
     private InspectionService inspectionService;
 
-    @Value("${easmts.subSvc.sperate.flag}")
-    private String subSvcOpenFlag;
-
     @Override
     public List<ApplicationDto> getApplicaitonsByAppGroupId(String appGroupId) {
         return applicationClient.getGroupAppsByNo(appGroupId).getEntity();
@@ -1199,7 +1196,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         //filter appType
         boolean vehicleAppTypeFlag = getVehicleAppTypeFlag(applicationViewDto);
         //filter vehicleOpenFlag
-        if(vehicleAppTypeFlag && taskDto != null && InspectionConstants.SWITCH_ACTION_YES.equals(subSvcOpenFlag)) {
+        if(vehicleAppTypeFlag && taskDto != null) {
             boolean actionVehicleFlag = false;
             //filter stage
             List<AppPremSubSvcRelDto> list = IaisCommonUtils.genNewArrayList();
