@@ -50,9 +50,6 @@ public class BroadcastServiceImpl implements BroadcastService {
     @Value("${easmts.vehicle.sperate.flag}")
     private String vehicleOpenFlag;
 
-    @Value("${easmts.subSvc.sperate.flag}")
-    private String subSvcOpenFlag;
-
     @Override
     public BroadcastOrganizationDto svaeBroadcastOrganization(BroadcastOrganizationDto broadcastOrganizationDto,Process process,String submissionId) {
         SubmitResp submitResp = eventBusHelper.submitAsyncRequestWithoutCallback(broadcastOrganizationDto, submissionId,
@@ -132,32 +129,18 @@ public class BroadcastServiceImpl implements BroadcastService {
                 List<AppPremSubSvcRelDto> appPremSubSvcRelDtos = appPremSubSvcBeClient.getAppPremSubSvcRelDtoListByCorrIdAndType(
                         appPremSpecialSubSvcRelDtoList.get(0).getAppPremCorreId(),appPremSpecialSubSvcRelDtoList.get(0).getSvcType())
                         .getEntity();
-                //details show
-                if(InspectionConstants.SWITCH_ACTION_YES.equals(subSvcOpenFlag)) {
-                    if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)) {
-                        for(AppPremSubSvcRelDto appPremSubSvcRelDto : appPremSpecialSubSvcRelDtoList) {
-                            appPremSubSvcRelDto.setStatus(ApplicationConsts.RECORD_STATUS_REJECT_CODE);
-                            appPremSubSvcRelDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE);
-                        }
+                for(AppPremSubSvcRelDto appPremSubSvcRelDto : appPremSpecialSubSvcRelDtoList) {
+                    if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)) {
+                        appPremSubSvcRelDto.setStatus(ApplicationConsts.RECORD_STATUS_APPROVE_CODE);
+                        appPremSubSvcRelDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE);
+                    } else if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)) {
+                        appPremSubSvcRelDto.setStatus(ApplicationConsts.RECORD_STATUS_REJECT_CODE);
+                        appPremSubSvcRelDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE);
                     }
-                    broadcastApplicationDto.setAppPremSpecialSubSvcRelDtoList(appPremSpecialSubSvcRelDtoList);
-                    //set db data for roll back
-                    broadcastApplicationDto.setRollBackSpecialSubSvcRelDtos(appPremSubSvcRelDtos);
-                    //details don't show
-                } else {
-                    for(AppPremSubSvcRelDto appPremSubSvcRelDto : appPremSpecialSubSvcRelDtoList) {
-                        if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)) {
-                            appPremSubSvcRelDto.setStatus(ApplicationConsts.RECORD_STATUS_APPROVE_CODE);
-                            appPremSubSvcRelDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE);
-                        } else if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)) {
-                            appPremSubSvcRelDto.setStatus(ApplicationConsts.RECORD_STATUS_REJECT_CODE);
-                            appPremSubSvcRelDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE);
-                        }
-                    }
-                    broadcastApplicationDto.setAppPremSpecialSubSvcRelDtoList(appPremSpecialSubSvcRelDtoList);
-                    //set db data for roll back
-                    broadcastApplicationDto.setRollBackSpecialSubSvcRelDtos(appPremSubSvcRelDtos);
                 }
+                broadcastApplicationDto.setAppPremSpecialSubSvcRelDtoList(appPremSpecialSubSvcRelDtoList);
+                //set db data for roll back
+                broadcastApplicationDto.setRollBackSpecialSubSvcRelDtos(appPremSubSvcRelDtos);
             }
             List<AppPremSubSvcRelDto> appPremOthersSubSvcRelDtoList = applicationViewDto.getAppPremOthersSubSvcRelDtoList();
             if (!IaisCommonUtils.isEmpty(appPremOthersSubSvcRelDtoList)) {
@@ -165,32 +148,18 @@ public class BroadcastServiceImpl implements BroadcastService {
                 List<AppPremSubSvcRelDto> appPremSubSvcRelDtos = appPremSubSvcBeClient.getAppPremSubSvcRelDtoListByCorrIdAndType(
                         appPremOthersSubSvcRelDtoList.get(0).getAppPremCorreId(),appPremOthersSubSvcRelDtoList.get(0).getSvcType())
                         .getEntity();
-                //details show
-                if(InspectionConstants.SWITCH_ACTION_YES.equals(subSvcOpenFlag)) {
-                    if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)) {
-                        for(AppPremSubSvcRelDto appPremSubSvcRelDto : appPremOthersSubSvcRelDtoList) {
-                            appPremSubSvcRelDto.setStatus(ApplicationConsts.RECORD_STATUS_REJECT_CODE);
-                            appPremSubSvcRelDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE);
-                        }
+                for(AppPremSubSvcRelDto appPremSubSvcRelDto : appPremOthersSubSvcRelDtoList) {
+                    if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)) {
+                        appPremSubSvcRelDto.setStatus(ApplicationConsts.RECORD_STATUS_APPROVE_CODE);
+                        appPremSubSvcRelDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE);
+                    } else if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)) {
+                        appPremSubSvcRelDto.setStatus(ApplicationConsts.RECORD_STATUS_REJECT_CODE);
+                        appPremSubSvcRelDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE);
                     }
-                    broadcastApplicationDto.setAppPremOthersSubSvcRelDtoList(appPremOthersSubSvcRelDtoList);
-                    //set db data for roll back
-                    broadcastApplicationDto.setRollBackOthersSubSvcRelDtos(appPremSubSvcRelDtos);
-                    //details don't show
-                } else {
-                    for(AppPremSubSvcRelDto appPremSubSvcRelDto : appPremOthersSubSvcRelDtoList) {
-                        if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)) {
-                            appPremSubSvcRelDto.setStatus(ApplicationConsts.RECORD_STATUS_APPROVE_CODE);
-                            appPremSubSvcRelDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE);
-                        } else if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)) {
-                            appPremSubSvcRelDto.setStatus(ApplicationConsts.RECORD_STATUS_REJECT_CODE);
-                            appPremSubSvcRelDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE);
-                        }
-                    }
-                    broadcastApplicationDto.setAppPremOthersSubSvcRelDtoList(appPremOthersSubSvcRelDtoList);
-                    //set db data for roll back
-                    broadcastApplicationDto.setRollBackOthersSubSvcRelDtos(appPremSubSvcRelDtos);
                 }
+                broadcastApplicationDto.setAppPremOthersSubSvcRelDtoList(appPremOthersSubSvcRelDtoList);
+                //set db data for roll back
+                broadcastApplicationDto.setRollBackOthersSubSvcRelDtos(appPremSubSvcRelDtos);
             }
         }
         return broadcastApplicationDto;
