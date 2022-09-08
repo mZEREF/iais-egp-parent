@@ -5,7 +5,7 @@
 <input type="hidden" id="isEditHiddenVal" class="person-content-edit" name="isEdit"
        value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
 
-<div class="row form-horizontal normal-label">
+<div class="oitem <c:if test="${'1' != provideTop}">hidden</c:if> ">
     <c:set var="itemPrefix" value="${appSvcOtherInfoDto.premisesVal}"/>
 
     <c:forEach var="appSvcSuplmGroupDto" items="${appSvcSuplmFormDto.appSvcSuplmGroupDtoList}">

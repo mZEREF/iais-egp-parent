@@ -448,7 +448,10 @@ public class ServiceInfoDelegator {
         log.debug(StringUtil.changeForLog("prePareOtherInformationDirector start ..."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
+        String currSvcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId,null);
+        List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
+        DealSessionUtil.initAppSvcOtherInfoList(currSvcInfoDto,hcsaServiceDtoList,appSubmissionDto.getAppGrpPremisesDtoList(),false);
         // Other Information Director config
         if (DealSessionUtil.initOtherInfoForm(currSvcInfoDto,appSubmissionDto.getAppGrpPremisesDtoList(), false,bpc.request)) {
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
@@ -475,6 +478,7 @@ public class ServiceInfoDelegator {
             }
         }
         String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
+        String currSvcCode = (String) ParamUtil.getSessionAttr(bpc.request,CURRENTSVCCODE);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId,null);
         List<AppSvcOtherInfoDto> appSvcOtherInfoDtos = currSvcInfoDto.getAppSvcOtherInfoList();
         String isEdit = ParamUtil.getString(bpc.request, IS_EDIT);
@@ -491,7 +495,7 @@ public class ServiceInfoDelegator {
         }
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if ("next".equals(actionType)) {
-            errorMap = AppValidatorHelper.doValidateOtherInformation(appSvcOtherInfoDtos);
+            errorMap = AppValidatorHelper.doValidateOtherInformation(appSvcOtherInfoDtos,currSvcCode);
         }
         checkAction(errorMap, HcsaConsts.STEP_OTHER_INFORMATION, appSubmissionDto, bpc.request);
     }

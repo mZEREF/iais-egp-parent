@@ -39,23 +39,22 @@
         <c:set var="dsDeclaration" value="${appSvcOtherInfoDto.dsDeclaration}"/>
         <c:set var="ascsDeclaration" value="${appSvcOtherInfoDto.ascsDeclaration}"/>
         <c:set var="orgUse" value="${orgUserDto}"/>
-
+        ==================${currSvcInfoDto.serviceName}
         <iais:row>
             <div class="col-xs-12">
                 <div class="app-title">${appSvcOtherInfoDto.premName}</div>
                 <p class="font-18 bold">${appSvcOtherInfoDto.premAddress}</p>
             </div>
         </iais:row>
-        <div class="row form-horizontal">
-            <%@include file="dentalService.jsp" %>
-            <%@include file="renalDialysisCentreService.jsp"%>
-            <%@include file="ambulatorySurgicalCentreService.jsp"%>
-            <%@include file="otherInformationTopPerson.jsp" %>
-            <%@include file="otherInfoItemForm.jsp"%>
-            <%@include file="documentation.jsp" %>
-            <%@include file="aboutTop.jsp" %>
-            <%@include file="yFV.jsp"%>
-        </div>
+
+        <%@include file="dentalService.jsp" %>
+        <%@include file="renalDialysisCentreService.jsp"%>
+        <%@include file="ambulatorySurgicalCentreService.jsp"%>
+        <%@include file="otherInformationTopPerson.jsp" %>
+        <%@include file="otherInfoItemForm.jsp"%>
+        <%@include file="documentation.jsp" %>
+        <%@include file="aboutTop.jsp" %>
+        <%@include file="yFV.jsp"%>
     </c:forEach>
 </div>
 <script>
@@ -83,6 +82,7 @@
                 $('div.addCounsellorsDiv').removeClass("hidden");
                 $('div.lowt').removeClass("hidden");
                 $('div.de').removeClass("hidden");
+                $('div.oitem').removeClass("hidden");
                 topAboutHAS();
             }else {
                 $('input[name="t"]').val(0);
@@ -98,6 +98,7 @@
                 $('div.addCounsellorsDiv').addClass("hidden");
                 $('div.lowt').addClass("hidden");
                 $('div.de').addClass("hidden");
+                $('div.oitem').addClass("hidden");
                 topAboutHAS();
             }
         });

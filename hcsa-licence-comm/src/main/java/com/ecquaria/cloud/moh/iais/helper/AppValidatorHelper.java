@@ -479,8 +479,9 @@ public final class AppValidatorHelper {
                     break;
                 }
                 case HcsaConsts.STEP_OTHER_INFORMATION:{
+                    String currcode = dto.getServiceCode();
                     List<AppSvcOtherInfoDto> appSvcOtherInfoDtos = dto.getAppSvcOtherInfoList();
-                    Map<String,String> map = doValidateOtherInformation(appSvcOtherInfoDtos);
+                    Map<String,String> map = doValidateOtherInformation(appSvcOtherInfoDtos,currcode);
                     if (!map.isEmpty()){
                         errorMap.putAll(map);
                     }
@@ -1822,7 +1823,7 @@ public final class AppValidatorHelper {
         }
     }
 
-    public static Map<String, String> doValidateOtherInformation(List<AppSvcOtherInfoDto> appSvcOtherInfoDto) {
+    public static Map<String, String> doValidateOtherInformation(List<AppSvcOtherInfoDto> appSvcOtherInfoDto, String code) {
         if (appSvcOtherInfoDto == null) {
             return new HashMap<>(1);
         }

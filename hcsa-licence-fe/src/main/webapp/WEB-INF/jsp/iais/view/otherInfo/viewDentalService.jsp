@@ -8,11 +8,11 @@
     <iais:row>
         <iais:field width="5" value="Type of medical records"/>
         <iais:value width="3" cssClass="col-md-7" display="true">
-            <c:if test="${appSvcOtherInfoDto.appSvcOtherInfoMedDto.isMedicalTypeIt != null}">
-                <c:out value="${appSvcOtherInfoDto.appSvcOtherInfoMedDto.isMedicalTypeIt}" />&nbsp;&nbsp;
+            <c:if test="${appSvcOtherInfoDto.appSvcOtherInfoMedDto.isMedicalTypeIt == 1}">
+                IT System
             </c:if>
-            <c:if test="${appSvcOtherInfoDto.appSvcOtherInfoMedDto.isMedicalTypePaper != null}">
-                <c:out value="${appSvcOtherInfoDto.appSvcOtherInfoMedDto.isMedicalTypePaper}" />
+            <c:if test="${appSvcOtherInfoDto.appSvcOtherInfoMedDto.isMedicalTypePaper == 1}">
+                Paper cards
             </c:if>
         </iais:value>
     </iais:row>
@@ -20,7 +20,12 @@
     <iais:row>
         <iais:field width="5" value="List of options for IT system and paper cards / IT system only"/>
         <iais:value width="3" cssClass="col-md-7" display="true">
-            <c:out value="${appSvcOtherInfoDto.appSvcOtherInfoMedDto.systemOption}" />
+            <c:if test="${appSvcOtherInfoDto.appSvcOtherInfoMedDto.systemOption == 'MED01'}">Clinic Assist</c:if>
+            <c:if test="${appSvcOtherInfoDto.appSvcOtherInfoMedDto.systemOption == 'MED02'}">Gloco</c:if>
+            <c:if test="${appSvcOtherInfoDto.appSvcOtherInfoMedDto.systemOption == 'MED03'}">GPConnect</c:if>
+            <c:if test="${appSvcOtherInfoDto.appSvcOtherInfoMedDto.systemOption == 'MED04'}">Medi2000</c:if>
+            <c:if test="${appSvcOtherInfoDto.appSvcOtherInfoMedDto.systemOption == 'MED05'}"> Freeware/ Shareware/ GP Self-developed Software</c:if>
+            <c:if test="${appSvcOtherInfoDto.appSvcOtherInfoMedDto.systemOption == 'MED06'}">Others (please specify)</c:if>
         </iais:value>
     </iais:row>
 
