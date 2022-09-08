@@ -26,8 +26,10 @@
                 </div>
                 <div >
                     <iais:row>
-                        <label class="col-xs-0 col-md-2 control-label col-sm-2">Message Content</label>
-                        <div class="col-sm-9">
+                        <label class="col-xs-0 col-md-12 control-label col-sm-12">Message Content</label>
+                    </iais:row>
+                    <iais:row>
+                        <div class="col-sm-12">
                     <textarea name="mailContent" cols="108" rows="50"
                               id="htmlEditroArea"
                               title="content">${appPremisesUpdateEmailDto.mailContent}</textarea>
