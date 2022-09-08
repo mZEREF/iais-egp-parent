@@ -19,8 +19,11 @@
                         <c:if test="${outcomeStageDto.pregnancyDetected == false }">No</c:if>
                     </iais:value>
                 </iais:row>
-
             </div>
         </div>
     </div>
 </div>
+
+<c:if test="${outcomeStageDto.pregnancyDetected == true }">
+    <%@include file="previewPregnancyOutcomeStageDetail.jsp"%>
+</c:if>

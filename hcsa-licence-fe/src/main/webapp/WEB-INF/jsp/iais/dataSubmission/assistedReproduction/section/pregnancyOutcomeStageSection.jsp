@@ -10,11 +10,10 @@
             </strong>
         </h4>
     </div>
-
-
-    <div id="cycleDetails" class="panel-collapse collapse in">
+    <div id="etoDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
+                <c:set var="embryoTransferredOutcomeStageDto" value="${arSuperDataSubmissionDto.embryoTransferredOutcomeStageDto}"/>
                 <h3>
                     <label ><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label>
                     <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
@@ -50,6 +49,13 @@
                         <span id="error_transferedOutcome" name="iaisErrorMsg" class="error-msg"></span>
                     </iais:value>
                 </iais:row>
+            </div>
+        </div>
+    </div>
+    <div id="cycleDetails" class="panel-collapse collapse in" style="padding-left: 80px;">
+        <div class="panel-body">
+            <div class="panel-main-content form-horizontal">
+
                 <iais:row>
                     <iais:field width="6" value="Order Shown in 1st Ultrasound (if Pregnancy confirmed)"
                                 cssClass="col-md-6"/>

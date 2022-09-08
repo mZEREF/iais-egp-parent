@@ -1,5 +1,5 @@
 <div class="panel panel-default">
-    <div class="panel-heading">
+    <div class="panel-heading" style="padding-left: 90px;">
         <h4 class="panel-title">
             <strong>
                 Outcome of IUI Cycle
@@ -7,7 +7,7 @@
         </h4>
     </div>
     <div id="patientDetails" class="panel-collapse collapse in">
-        <div class="panel-body" style="padding-left: 50px">
+        <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <c:set var="outcomeStageDto" value="${arSuperDataSubmissionDto.outcomeStageDto}" />
                 <h3>
@@ -52,3 +52,20 @@
         </div>
     </div>
 </div>
+
+<div id="pregnancy">
+    <%@include file="pregnancyOutcomeStageSection.jsp" %>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        pregnancyDetect()
+    })
+    function pregnancyDetect() {
+        if (document.getElementById('radioYes').checked) {
+            $("#pregnancy").show();
+        } else {
+            $("#pregnancy").hide();
+        }
+    }
+</script>

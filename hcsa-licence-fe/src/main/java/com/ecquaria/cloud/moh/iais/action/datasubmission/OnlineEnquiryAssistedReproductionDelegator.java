@@ -865,6 +865,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         stageTypeSelectOption.add(new SelectOption(DataSubmissionConsts.AR_CYCLE_AR,MasterCodeUtil.getCodeDesc(DataSubmissionConsts.AR_CYCLE_AR)));
         stageTypeSelectOption.add(new SelectOption(DataSubmissionConsts.AR_CYCLE_IUI,MasterCodeUtil.getCodeDesc(DataSubmissionConsts.AR_CYCLE_IUI)));
         stageTypeSelectOption.add(new SelectOption(DataSubmissionConsts.AR_CYCLE_EFO,MasterCodeUtil.getCodeDesc(DataSubmissionConsts.AR_CYCLE_EFO)));
+        stageTypeSelectOption.add(new SelectOption(DataSubmissionConsts.AR_CYCLE_SFO,MasterCodeUtil.getCodeDesc(DataSubmissionConsts.AR_CYCLE_SFO)));
         ParamUtil.setRequestAttr(bpc.request,"stageTypeSelectOption",stageTypeSelectOption);
 
 

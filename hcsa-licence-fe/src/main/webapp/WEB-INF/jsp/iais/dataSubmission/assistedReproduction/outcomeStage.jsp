@@ -24,9 +24,6 @@
                 <h3>Please key in the cycle information below.</h3>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <%@include file="section/outcomeStageSection.jsp" %>
-                    <div id="pregnancy">
-                        <%@include file="section/pregnancyOutcomeStageSection.jsp" %>
-                    </div>
                     <%@include file="section/disposalStageDetailSection.jsp" %>
                     <%@include file="common/dsAmendment.jsp" %>
                 </div>
@@ -35,16 +32,3 @@
         </div>
     </div>
 </form>
-
-<script type="text/javascript">
-    $(document).ready(function() {
-        pregnancyDetect()
-    })
-    function pregnancyDetect() {
-        if (document.getElementById('radioYes').checked) {
-            $("#pregnancy").show();
-        } else {
-            $("#pregnancy").hide();
-        }
-    }
-</script>
