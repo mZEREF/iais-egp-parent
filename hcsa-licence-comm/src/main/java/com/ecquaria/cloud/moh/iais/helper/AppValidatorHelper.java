@@ -2589,33 +2589,31 @@ public final class AppValidatorHelper {
         return date1.compareTo(date2) > 0;
     }
 
-    public static void paramValidate(Map<String, String> errorMap,AppSvcPersonnelDto appSvcPersonnelDto,String prefix,int i,List<String> errorName){
+    public static void paramValidate(Map<String, String> errorMap, AppSvcPersonnelDto appSvcPersonnelDto, String prefix, int i, List<String> personnelNames) {
         String signal = "GENERAL_ERR0006";
         String name = appSvcPersonnelDto.getName();
-        if ("SP999".equals(prefix)||"SP002".equals(prefix)) {
-            if (StringUtil.isEmpty(name)) {
-                errorMap.put(prefix + "name" + i, signal);
-            } else if (name.length() > 110) {
-                errorMap.put(prefix + "name" + i, signal);
-            } else {
-                String target = prefix+name;
-                boolean flag = errorName.stream().anyMatch(target::equalsIgnoreCase);
-                if (flag) {
-                    errorMap.put(prefix+"name" + i, "SC_ERR011");
-                } else {
-                    errorName.add(target);
-                }
+        if (StringUtil.isEmpty(name)) {
+            errorMap.put(prefix + "name" + i, signal);
+        } else if (name.length() > 110) {
+            errorMap.put(prefix + "name" + i, signal);
+        }
+        if ("SP999".equals(prefix) || "SP002".equals(prefix)) {
+            String target = StringUtil.toUpperCase(prefix + name);
+            if (personnelNames.contains(target)){
+                errorMap.put(prefix + "name" + i, "SC_ERR011");
+            }else {
+                personnelNames.add(target);
             }
         }
         String wrkExpYear = appSvcPersonnelDto.getWrkExpYear();
         if (StringUtil.isEmpty(wrkExpYear)) {
-            errorMap.put(prefix+"wrkExpYear" + i, signal);
+            errorMap.put(prefix + "wrkExpYear" + i, signal);
         } else {
             if (wrkExpYear.length() > 2) {
-                errorMap.put(prefix+"wrkExpYear" + i, signal);
+                errorMap.put(prefix + "wrkExpYear" + i, signal);
             }
             if (!wrkExpYear.matches("^[0-9]*$")) {
-                errorMap.put(prefix+"wrkExpYear" + i, "GENERAL_ERR0002");
+                errorMap.put(prefix + "wrkExpYear" + i, "GENERAL_ERR0002");
             }
         }
         if ("SP002".equals(prefix) || "SP003".equals(prefix)) {
@@ -2625,12 +2623,11 @@ public final class AppValidatorHelper {
             } else if (MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation)) {
                 String otherDesignation = appSvcPersonnelDto.getOtherDesignation();
                 if (StringUtil.isEmpty(otherDesignation)) {
-                    errorMap.put(prefix + "otherDesignation" + i,signal);
+                    errorMap.put(prefix + "otherDesignation" + i, signal);
                 } else if (otherDesignation.length() > 100) {
                     errorMap.put(prefix + "otherDesignation" + i, signal);
                 }
             }
-
             //              profRegNo
             String profRegNo = appSvcPersonnelDto.getProfRegNo();
             if (StringUtil.isEmpty(profRegNo)) {
@@ -2700,7 +2697,7 @@ public final class AppValidatorHelper {
 
             }
         }
-        if ("SP999".equals(prefix)){
+        if ("SP999".equals(prefix)) {
             String qualification = appSvcPersonnelDto.getQualification();
             if (StringUtil.isEmpty(qualification)) {
                 errorMap.put(prefix + "qualification" + i, signal);
@@ -2708,97 +2705,73 @@ public final class AppValidatorHelper {
                 errorMap.put(prefix + "qualification" + i, signal);
             }
         }
-        if ("SP003".equals(prefix) || "SP001".equals(prefix)){
+        if ("SP003".equals(prefix) || "SP001".equals(prefix)) {
             String salutation = appSvcPersonnelDto.getSalutation();
             if (StringUtil.isEmpty(salutation)) {
                 errorMap.put(prefix + "salutation" + i, signal);
             }
-            if (StringUtil.isEmpty(name)) {
-                errorMap.put(prefix+"name" + i, signal);
-            } else if (name.length() > 110) {
-                errorMap.put(prefix+"name" + i, signal);
-            }else {
-                String target = salutation + prefix + name;
-                boolean flag = errorName.stream().anyMatch(target::equalsIgnoreCase);
-                if (flag) {
-                    errorMap.put(prefix+"name" + i,"SC_ERR011");
-                }else {
-                    errorName.add(target);
-                }
+            String target = StringUtil.toUpperCase(salutation + prefix + name);
+            if (personnelNames.contains(target)) {
+                errorMap.put(prefix + "name" + i, "SC_ERR011");
+            } else {
+                personnelNames.add(target);
             }
         }
-        if ("SP001".equals(prefix)){
+        if ("SP001".equals(prefix)) {
             //
-            String isEmbryologistAuthorized = appSvcPersonnelDto.getIsEmbryologistAuthorized();
-            if (StringUtil.isEmpty(isEmbryologistAuthorized)) {
-                errorMap.put(prefix+"isEmbryologistAuthorized" + i, signal);
+            String embryologistAuthorized = appSvcPersonnelDto.getEmbryologistAuthorized();
+            if (StringUtil.isEmpty(embryologistAuthorized)) {
+                errorMap.put(prefix + "embryologistAuthorized" + i, signal);
             }
             String numberSupervision = appSvcPersonnelDto.getNumberSupervision();
             if (StringUtil.isEmpty(numberSupervision) || numberSupervision.length() > 110) {
-                errorMap.put(prefix+"numberSupervision" + i, signal);
+                errorMap.put(prefix + "numberSupervision" + i, signal);
             } else if (!numberSupervision.matches("^[0-9]*$")) {
-                errorMap.put(prefix+"numberSupervision" + i, "GENERAL_ERR0002");
+                errorMap.put(prefix + "numberSupervision" + i, "GENERAL_ERR0002");
             }
         }
 
     }
 
-    public static void specialValidate(Map<String, String> errorMap,AppSvcPersonnelDto appSvcPersonnelDto,int i,List<String> errorName){
+    public static void specialValidate(Map<String, String> errorMap, AppSvcPersonnelDto appSvcPersonnelDto, int i, List<String> errorName,boolean flag) {
         String signal = "GENERAL_ERR0006";
         String personnelSel = appSvcPersonnelDto.getPersonnelType();
         String name = appSvcPersonnelDto.getName();
+        String salutation = appSvcPersonnelDto.getSalutation();
         if (StringUtils.isEmpty(personnelSel)) {
             errorMap.put("personnelType" + i, signal);
+        }
+        if (flag){
+            if (StringUtil.isEmpty(salutation)){
+                errorMap.put("salutation" + i, signal);
+            }
+        }else {
+            salutation = "";
+        }
+        if (StringUtil.isEmpty(name)) {
+            errorMap.put("name" + i, signal);
+        } else if (name.length() > 110) {
+            errorMap.put("name" + i, signal);
+        }
+        String target = personnelSel + name + salutation;
+        boolean flags = errorName.stream().anyMatch(target::equalsIgnoreCase);
+        if (flags) {
+            errorMap.put("name" + i, "SC_ERR011");
+        } else {
+            errorName.add(target);
         }
 //                  SPPT004
         if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE.equals(personnelSel)) {
             String profRegNo = appSvcPersonnelDto.getProfRegNo();
-            if (StringUtil.isEmpty(name)) {
-                errorMap.put("name" + i, signal);
-            } else if (name.length() > 110) {
-                errorMap.put("name" + i, signal);
-            }else {
-                String target = personnelSel + name;
-                boolean flag = errorName.stream().anyMatch(target::equalsIgnoreCase);
-                if (flag) {
-                    errorMap.put("name" + i,"SC_ERR011");
-                }else {
-                    errorName.add(target);
-                }
-            }
             if (StringUtil.isEmpty(profRegNo)) {
                 errorMap.put("profRegNo" + i, signal);
             } else if (profRegNo.length() > 20) {
                 errorMap.put("profRegNo" + i, signal);
             }//SPPT001
-        } else if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(personnelSel)) {
-            String designation = appSvcPersonnelDto.getDesignation();
+        }
+        if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(personnelSel) || ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(personnelSel) ) {
             String wrkExpYear = appSvcPersonnelDto.getWrkExpYear();
             String qualification = appSvcPersonnelDto.getQualification();
-            if (StringUtil.isEmpty(name)) {
-                errorMap.put("name" + i, signal);
-            } else if (name.length() > 110) {
-                errorMap.put("name" + i, signal);
-            }else {
-                String target = personnelSel + name;
-                boolean flag = errorName.stream().anyMatch(target::equalsIgnoreCase);
-                if (flag) {
-                    errorMap.put("name" + i,"SC_ERR011");
-                }else {
-                    errorName.add(target);
-                }
-            }
-//                    designation
-            if (StringUtil.isEmpty(designation)) {
-                errorMap.put("designation" + i, signal);
-            } else if ("Others".equals(designation)) {
-                String otherDesignation = appSvcPersonnelDto.getOtherDesignation();
-                if (StringUtil.isEmpty(otherDesignation)) {
-                    errorMap.put("otherDesignation" + i,signal);
-                } else if (otherDesignation.length() > 100) {
-                    errorMap.put("otherDesignation" + i, signal);
-                }
-            }
             if (StringUtil.isEmpty(wrkExpYear)) {
                 errorMap.put("wrkExpYear" + i, signal);
             } else {
@@ -2813,53 +2786,22 @@ public final class AppValidatorHelper {
                 errorMap.put("qualification" + i, signal);
             } else if (qualification.length() > 100) {
                 errorMap.put("qualification" + i, signal);
-            }//SPPT002
-        } else if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(personnelSel)) {
-            String wrkExpYear = appSvcPersonnelDto.getWrkExpYear();
-            String quaification = appSvcPersonnelDto.getQualification();
-            if (StringUtil.isEmpty(name)) {
-                errorMap.put("name" + i, signal);
-            } else if (name.length() > 110) {
-                errorMap.put("name" + i, signal);
-            }else {
-                String target = personnelSel + name;
-                boolean flag = errorName.stream().anyMatch(target::equalsIgnoreCase);
-                if (flag) {
-                    errorMap.put("name" + i,"SC_ERR011");
-                }else {
-                    errorName.add(target);
-                }
             }
-            if (StringUtil.isEmpty(wrkExpYear)) {
-                errorMap.put("wrkExpYear" + i, signal);
-            } else {
-                if (wrkExpYear.length() > 2) {
-                    errorMap.put("wrkExpYear" + i, signal);
-                }
-                if (!wrkExpYear.matches("^[0-9]*$")) {
-                    errorMap.put("wrkExpYear" + i, "GENERAL_ERR0002");
-                }
-            }
-            if (StringUtil.isEmpty(quaification)) {
-                errorMap.put("qualification" + i, signal);
-            } else if (quaification.length() > 100) {
-                errorMap.put("qualification" + i, signal);
-            }//SPPT003
-        } else if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER.equals(personnelSel)) {
-            if (StringUtil.isEmpty(name)) {
-                errorMap.put("name" + i, signal);
-            } else if (name.length() > 110) {
-                errorMap.put("name" + i, signal);
-            }else {
-                String target = personnelSel + name;
-                boolean flag = errorName.stream().anyMatch(target::equalsIgnoreCase);
-                if (flag) {
-                    errorMap.put("name" + i,"SC_ERR011");
-                }else {
-                    errorName.add(target);
+        }
+        if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(personnelSel)){
+            String designation = appSvcPersonnelDto.getDesignation();
+            if (StringUtil.isEmpty(designation)) {
+                errorMap.put("designation" + i, signal);
+            } else if ("Others".equals(designation)) {
+                String otherDesignation = appSvcPersonnelDto.getOtherDesignation();
+                if (StringUtil.isEmpty(otherDesignation)) {
+                    errorMap.put("otherDesignation" + i, signal);
+                } else if (otherDesignation.length() > 100) {
+                    errorMap.put("otherDesignation" + i, signal);
                 }
             }
         }
+
     }
 
     public static void doValidateSvcPersonnel(Map<String, String> errorMap, SvcPersonnelDto svcPersonnelDto) {
@@ -2871,39 +2813,40 @@ public final class AppValidatorHelper {
         List<AppSvcPersonnelDto> specialList = svcPersonnelDto.getSpecialList();
         List<AppSvcPersonnelDto> embryologistList = svcPersonnelDto.getEmbryologistList();
         List<AppSvcPersonnelDto> arPractitionerList = svcPersonnelDto.getArPractitionerList();
-        List<String> errorName = IaisCommonUtils.genNewArrayList();
-         if (!StringUtil.isEmpty(arPractitionerList) && arPractitionerList.size() > 0){
-           int count = arPractitionerList.size();
+        List<String> personnelNames = IaisCommonUtils.genNewArrayList();
+        if (!StringUtil.isEmpty(arPractitionerList) && arPractitionerList.size() > 0) {
+            int count = arPractitionerList.size();
             for (int i = 0; i < count; i++) {
-                paramValidate(errorMap,arPractitionerList.get(i),"SP002",i,errorName);
+                paramValidate(errorMap, arPractitionerList.get(i), ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER, i, personnelNames);
             }
         }
-        if (!StringUtil.isEmpty(nurseList) && nurseList.size() > 0){
+        if (!StringUtil.isEmpty(nurseList) && nurseList.size() > 0) {
             int count = nurseList.size();
             for (int i = 0; i < count; i++) {
-                paramValidate(errorMap,nurseList.get(i),"SP003",i,errorName);
+                paramValidate(errorMap, nurseList.get(i), ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES, i, personnelNames);
             }
         }
-        if (!StringUtil.isEmpty(embryologistList) && embryologistList.size() > 0){
+        if (!StringUtil.isEmpty(embryologistList) && embryologistList.size() > 0) {
             int count = embryologistList.size();
             for (int i = 0; i < count; i++) {
-                paramValidate(errorMap,embryologistList.get(i),"SP001",i,errorName);
+                paramValidate(errorMap, embryologistList.get(i), ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST, i, personnelNames);
             }
         }
-        if (!StringUtil.isEmpty(normalList) && normalList.size() > 0){
+        if (!StringUtil.isEmpty(normalList) && normalList.size() > 0) {
             int count = normalList.size();
             for (int i = 0; i < count; i++) {
-                paramValidate(errorMap,normalList.get(i),"SP999",i,errorName);
+                paramValidate(errorMap, normalList.get(i), "SP999", i, personnelNames);
             }
         }
-        if (!StringUtil.isEmpty(specialList) && specialList.size() > 0){
+        if (!StringUtil.isEmpty(specialList) && specialList.size() > 0) {
             int count = specialList.size();
             for (int i = 0; i < count; i++) {
-                specialValidate(errorMap,specialList.get(i),i,errorName);
+                specialValidate(errorMap, specialList.get(i), i, personnelNames,false);
             }
         }
 
-        }
+    }
+
     /**
      * check whether there is another operation for the original licence
      *

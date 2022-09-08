@@ -37,15 +37,32 @@
     </iais:row>
     <div class="new-svc-personnel-form">
         <%--        name--%>
-        <iais:row cssClass="personnel-name hidden ">
-            <iais:field width="5" mandatory="true" value="Name" cssClass="col-sm-5"/>
-            <iais:value width="7" cssClass="col-sm-5 col-md-7">
-                <input type="hidden" name="prsLoading" value="${appSvcPersonnelDto.prsLoading}"/>
-                <iais:input maxLength="66" cssClass="name" type="text" name="name${index}"
-                            value="${appSvcPersonnelDto.name}"></iais:input>
-            </iais:value>
-        </iais:row>
-        <%--   designation --%>
+
+        <c:choose>
+            <c:when test="${'SP000' == logo}">
+                <iais:row cssClass="personnel-name hidden ">
+                    <iais:field width="5" mandatory="true" value="Name" cssClass="col-sm-5"/>
+                    <iais:value width="7" cssClass="col-sm-5 col-md-7">
+                        <iais:input maxLength="66" cssClass="name" type="text" name="name${index}"
+                                    value="${appSvcPersonnelDto.name}"></iais:input>
+                    </iais:value>
+                </iais:row>
+            </c:when>
+            <c:when test="${'111' == logo}">
+                <iais:row cssClass="personnel-name hidden ">
+                    <iais:field width="5" mandatory="true" value="Name"/>
+                    <iais:value width="3" cssClass="col-md-3">
+                        <iais:select cssClass="salutation" name="salutation${index}" firstOption="Please Select"
+                                     codeCategory="CATE_ID_SALUTATION" value="${appSvcPersonnelDto.salutation}"/>
+                    </iais:value>
+                    <iais:value width="4" cssClass="col-md-4">
+                        <iais:input cssClass="name" maxLength="66" type="text" name="name${index}"
+                                    value="${appSvcPersonnelDto.name}"/>
+                    </iais:value>
+                </iais:row>
+            </c:when>
+        </c:choose>
+
         <iais:row cssClass="personnel-designation hidden ">
             <iais:field width="5" mandatory="true" value="Designation" cssClass="col-sm-5"/>
             <iais:value width="7" cssClass="col-sm-5 col-md-7">

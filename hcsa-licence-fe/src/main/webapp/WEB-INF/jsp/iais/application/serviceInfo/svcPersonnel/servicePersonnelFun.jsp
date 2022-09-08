@@ -112,11 +112,14 @@
             var prsFlag = $('input[name="prsFlag"]').val();
             if (init != 0) {
                 //clear data;
+                console.log('clear data--->',init)
                 $personnelContentEle.find('.personnel-designation .designation').val('');
                 $personnelContentEle.find('.personnel-name .name').val('');
                 $personnelContentEle.find('.personnel-regnNo .profRegNo').val('');
                 $personnelContentEle.find('.personnel-wrkExpYear .wrkExpYear').val('');
                 $personnelContentEle.find('.personnel-qualification .qualification').val('');
+                $personnelContentEle.find('.otherDesignationDiv .otherDesignation').val('');
+                $personnelContentEle.find('.personnel-name .salutation').val('');
                 if ('Y' == prsFlag) {
                     inputCancelReadonly($personnelContentEle.find('.name'));
                 }
@@ -145,7 +148,6 @@
             $personnelContentEle.find('.personnel-regnNo ').addClass('hidden');
             if ('Y' == prsFlag) {
                 inputCancelReadonly($personnelContentEle.find('.name'));
-                ;
             }
         } else if ('SPPT003' == personnelSel) {
             $personnelContentEle.find('.personnel-designation').addClass('hidden');
@@ -173,6 +175,13 @@
             if ('Y' == prsFlag) {
                 inputCancelReadonly($personnelContentEle.find('.name'));
             }
+        }
+    //    hidden otherDesignationDiv  clear designation
+        console.log('init------->',init,0);
+        if (init != 0) {
+            clearFields($personnelContentEle.find('.salutation'))
+            clearFields($personnelContentEle.find('.designation'))
+            $personnelContentEle.find('.otherDesignationDiv').addClass('hidden');
         }
     }
     //common

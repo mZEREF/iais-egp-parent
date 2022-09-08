@@ -59,22 +59,22 @@
         <iais:field value="Is the Embryologist authorized?" mandatory="true" width="5"/>
         <iais:value width="3" cssClass="col-md-3 form-check">
             <input
-                    <c:if test="${'1'==appSvcPersonnelDto.isEmbryologistAuthorized}">checked="checked"</c:if>
-                    class="form-check-input locateWtihNonHcsa" type="radio" name="${logo}isEmbryologistAuthorized${index}"
+                    <c:if test="${'1'==appSvcPersonnelDto.embryologistAuthorized}">checked="checked"</c:if>
+                    class="form-check-input locateWtihNonHcsa" type="radio" name="${logo}embryologistAuthorized${index}"
                     value="1"
                     aria-invalid="false">
             <label class="form-check-label"><span class="check-circle"></span>Yes</label>
         </iais:value>
         <iais:value width="4" cssClass="col-md-4 form-check">
             <input
-                    <c:if test="${'0'==appSvcPersonnelDto.isEmbryologistAuthorized}">checked="checked"</c:if>
-                    class="form-check-input locateWtihNonHcsa" type="radio" name="${logo}isEmbryologistAuthorized${index}"
+                    <c:if test="${'0'==appSvcPersonnelDto.embryologistAuthorized}">checked="checked"</c:if>
+                    class="form-check-input locateWtihNonHcsa" type="radio" name="${logo}embryologistAuthorized${index}"
                     value="0"
                     aria-invalid="false">
             <label class="form-check-label"><span class="check-circle"></span>No</label>
         </iais:value>
         <iais:value cssClass="col-md-offset-4 col-md-8 col-xs-12">
-            <span class="error-msg " name="iaisErrorMsg" id="error_${logo}isEmbryologistAuthorized${status.index}"></span>
+            <span class="error-msg " name="iaisErrorMsg" id="error_${logo}embryologistAuthorized${status.index}"></span>
         </iais:value>
     </iais:row>
 </div>
