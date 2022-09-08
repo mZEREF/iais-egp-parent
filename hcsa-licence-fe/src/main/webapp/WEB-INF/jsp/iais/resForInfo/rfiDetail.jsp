@@ -82,14 +82,12 @@
                                                 </div>
                                             </iais:row>
                                             <iais:row >
-                                                <iais:value width="18">
-                                                    <label>
-                                                        <textarea  maxlength="1000" name="userReply${infoReply.id}"
-                                                                    style=" font-weight:normal;width: 100%;overflow: auto;word-break: break-all;">${infoReply.userReply}</textarea>
-                                                    </label>
+                                                <div  class="col-sm-7 col-md-12 col-xs-10"  >
+                                                   <textarea rows="8" maxlength="1000" name="userReply${infoReply.id}"
+                                                              style=" font-weight:normal;width: 100%;overflow: auto;word-break: break-all;">${infoReply.userReply}</textarea>
                                                     <span id="error_userReply${infoReply.id}" name="iaisErrorMsg"
                                                           class="error-msg"></span>
-                                                </iais:value>
+                                                </div>
                                             </iais:row>
                                         </c:forEach>
                                         <c:if test="${licPreReqForInfoDto.needDocument}">
