@@ -2066,10 +2066,31 @@ public final class ApplicationHelper {
             case ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER:
                 addSvcPersonnel(sectionDto.getAppSvcSectionLeaderList(), psnDtoList);
                 break;
-            default:
-                addSvcPersonnel(sectionDto.getAppSvcNurseDirectorDtoList(), psnDtoList);
+            case ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE:
+                addSvcPersonnel(sectionDto.getAppSvcNurseDtoList(), psnDtoList);
+                break;
+            case ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER:
+                addSvcPersonnel(sectionDto.getAppSvcRadiationSafetyOfficerDtoList(), psnDtoList);
+                break;
+            case ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR:
+                addSvcPersonnel(sectionDto.getAppSvcDiagnosticRadiographerDtoList(), psnDtoList);
+                break;
+            case ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST:
+                addSvcPersonnel(sectionDto.getAppSvcMedicalPhysicistDtoList(), psnDtoList);
+                break;
+            case ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL:
+                addSvcPersonnel(sectionDto.getAppSvcRadiationPhysicistDtoList(), psnDtoList);
+                break;
+            case ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM:
+                addSvcPersonnel(sectionDto.getAppSvcNMTechnologistDtoList(), psnDtoList);
+                break;
+            case ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR:
                 addSvcPersonnel(sectionDto.getAppSvcDirectorDtoList(), psnDtoList);
-                addSvcPersonnel(sectionDto.getAppSvcPersonnelDtoList(), psnDtoList);
+                break;
+            case ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR:
+                addSvcPersonnel(sectionDto.getAppSvcNurseDirectorDtoList(), psnDtoList);
+                break;
+            default:
                 break;
         }
         return IaisCommonUtils.getList(psnDtoList);
