@@ -158,7 +158,7 @@
                     <c:forEach var="relatedDto" items="${appGrpPremDto.appPremNonLicRelationDtos}" varStatus="nonLicVs">
                         <tr style="border-top: ${nonLicVs.first? 'solid silver' : '2px solid black'}">
                             <c:if test="${nonLicVs.first}">
-                            <td rowspan="${nonLicSize}" style="padding-left: 0;">Yes</td>
+                            <td rowspan="${nonLicSize}" style="padding-left: 0;padding-right: 15px;">Yes</td>
                             </c:if>
                             <td style="padding: 5px 20px"><c:out value="${relatedDto.businessName}"/></td>
                             <td style="padding: 5px 20px"><c:out value="${relatedDto.providedService}"/></td>
