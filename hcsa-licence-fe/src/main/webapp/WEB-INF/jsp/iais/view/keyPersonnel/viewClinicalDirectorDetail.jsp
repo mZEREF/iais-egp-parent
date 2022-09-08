@@ -77,8 +77,8 @@
     </iais:row>
 
     <iais:row>
-        <iais:field width="5" cssClass="col-md-5" mandatory="false" value="Clinical Governance Officer (CGO) holds a valid certification issued by an Emergency Medical Services ('EMS') Medical Directors workshop&nbsp;"/>
-        <iais:value width="3" cssClass="form-check col-md-3">
+        <iais:field width="5" mandatory="false" value="Clinical Governance Officer (CGO) holds a valid certification issued by an Emergency Medical Services ('EMS') Medical Directors workshop&nbsp;"/>
+        <iais:value width="3" cssClass="col-md-7" display="true">
             <c:if test="${'1' == person.holdCerByEMS}">Yes</c:if>
         </iais:value>
 
