@@ -543,10 +543,10 @@ public class HcsaApplicationDelegator {
         }
         if(applicationViewDto.getApplicationDto().getStatus().equals(ApplicationConsts.APPLICATION_STATUS_ASO_EMAIL_PENDING)){
             Integer contentSize = ParamUtil.getInt(bpc.request, SystemAdminBaseConstants.TEMPLATE_CONTENT_SIZE);
+            ParamUtil.setRequestAttr(bpc.request, "confirm_err_msg", MessageUtil.replaceMessage("EMM_ERR005","8000","num"));
 
             if (contentSize > 8000) {
                 ParamUtil.setRequestAttr(bpc.request,"doValidEmail","Y");
-                ParamUtil.setRequestAttr(bpc.request, "confirm_err_msg", MessageUtil.replaceMessage("EMM_ERR005","8000","num"));
                 ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "PREPARE");
                 ParamUtil.setRequestAttr(bpc.request,"doProcess","Y");
                 String mailContent = ParamUtil.getString(bpc.request, "mailContent");
@@ -4053,6 +4053,7 @@ public class HcsaApplicationDelegator {
         ApplicationDto applicationDto =applicationViewDto.getApplicationDto();
 
         if(applicationDto.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_ASO_EMAIL_PENDING)){
+            ParamUtil.setRequestAttr(request, "confirm_err_msg", MessageUtil.replaceMessage("EMM_ERR005","8000","num"));
             if(IaisCommonUtils.isNotEmpty(applicationViewDto.getAppIntranetDocDtoList())){
                 boolean hasAsoEmailDoc=false;
                 for (AppIntranetDocDto docDto:applicationViewDto.getAppIntranetDocDtoList()
