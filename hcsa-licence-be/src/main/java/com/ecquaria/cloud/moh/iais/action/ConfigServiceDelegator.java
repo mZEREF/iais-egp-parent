@@ -338,11 +338,11 @@ public class ConfigServiceDelegator {
            for(String key:ServiceConfigConstant.SERVICE_DOC_PERSONNEL_BASE.keySet()){
              result.add(new SelectOption(key,ServiceConfigConstant.SERVICE_DOC_PERSONNEL_BASE.get(key)));
            }
-           if(isSuppFormSelect != null && isSuppFormSelect){
+          /* if(isSuppFormSelect != null && isSuppFormSelect){
                for(String key:ServiceConfigConstant.SERVICE_DOC_PERSONNEL_SUPPLEMENTARY_FORM.keySet()){
                    result.add(new SelectOption(key,ServiceConfigConstant.SERVICE_DOC_PERSONNEL_SUPPLEMENTARY_FORM.get(key)));
                }
-           }
+           }*/
            if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(serviceCode) || AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(serviceCode)){
                result.add(new SelectOption(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR,"Clinical Director"));
            }else{
