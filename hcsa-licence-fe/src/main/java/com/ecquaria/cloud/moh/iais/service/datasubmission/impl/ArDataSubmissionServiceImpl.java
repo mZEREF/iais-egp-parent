@@ -861,7 +861,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
      * Get all the data displayed in the AR Cycle navigation bar
      */
     @Override
-    public List<ARCycleStageDto> genAvailableStageList(HttpServletRequest request) {
+    public List<ARCycleStageDto> genAvailableStageList(HttpServletRequest request, boolean missOnGoing) {
         ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(request);
         CycleStageSelectionDto selectionDto = currentArDataSubmission.getSelectionDto();
         // get from cycleStageSelectionSection.jsp, user select next stage
@@ -918,7 +918,11 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             }
             String permissions = determinePermissions(request, map.get(option));
             if (option.equals(currentStage)) {
-                arCycleStageDtos.add(new ARCycleStageDto(option, codeDesc, DataSubmissionConstant.AR_CYCLE_STAGE_STATUS_ONGOING, permissions));
+                if (missOnGoing) {
+                    arCycleStageDtos.add(new ARCycleStageDto(option, codeDesc, null, permissions));
+                } else {
+                    arCycleStageDtos.add(new ARCycleStageDto(option, codeDesc, DataSubmissionConstant.AR_CYCLE_STAGE_STATUS_ONGOING, permissions));
+                }
             } else if (submittedStageList.contains(option)) {
                 arCycleStageDtos.add(new ARCycleStageDto(option, codeDesc, DataSubmissionConstant.AR_CYCLE_STAGE_STATUS_SUBMITTED, permissions));
             } else if (notSubmittedStageList.contains(option)) {

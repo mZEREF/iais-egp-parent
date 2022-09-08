@@ -37,6 +37,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.ACTION_TYPE;
 import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.JUMP_ACTION_TYPE;
 
 /**
@@ -86,6 +87,7 @@ public class ArCycleStagesManualDelegator {
         ParamUtil.setRequestAttr(bpc.request, "title", DataSubmissionHelper.getMainTitle(currentArDataSubmission.getAppType()));
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", DataSubmissionHelper.getSmallTitle(DataSubmissionConsts.DS_AR, currentArDataSubmission.getAppType(),
                 currentArDataSubmission.getSubmissionType()));
+        ParamUtil.setRequestAttr(bpc.request, "stageList", arDataSubmissionService.genAvailableStageList(bpc.request, true));
     }
 
     /**
@@ -106,10 +108,12 @@ public class ArCycleStagesManualDelegator {
             CycleStageSelectionDto selectionDto;
             if (!StringUtil.isIn(crudype, new String[]{DataSubmissionConstant.CRUD_TYPE_FROM_DRAFT, "patient",
                     DataSubmissionConstant.CRUD_TYPE_RFC})) {
-                selectionDto = getSelectionDtoFromPage(bpc.request);
+                // click head step nav
+                boolean isNavJump = "jumpStage".equals(ParamUtil.getRequestString(bpc.request, ACTION_TYPE));
+                selectionDto = getSelectionDtoFromPage(bpc.request, isNavJump);
                 currentSuper.setSelectionDto(selectionDto);
                 DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, bpc.request);
-                if (StringUtil.isIn(crudype, new String[]{"return", "back"})) {
+                if (!isNavJump && StringUtil.isIn(crudype, new String[]{"return", "back"})) {
                     ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, "back");
                     return;
                 }
@@ -169,7 +173,6 @@ public class ArCycleStagesManualDelegator {
             }
             ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, stage);
         }
-        ParamUtil.setRequestAttr(bpc.request, "stageList", arDataSubmissionService.genAvailableStageList(bpc.request));
     }
 
     private String checkPatient(ArSuperDataSubmissionDto currentArDataSubmission, HttpServletRequest request) {
@@ -327,10 +330,10 @@ public class ArCycleStagesManualDelegator {
         DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, request);
     }
 
-    private CycleStageSelectionDto getSelectionDtoFromPage(HttpServletRequest request) {
+    private CycleStageSelectionDto getSelectionDtoFromPage(HttpServletRequest request, boolean isNavJump) {
         ArSuperDataSubmissionDto superDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         CycleStageSelectionDto selectionDto = superDto.getSelectionDto();
-        String nextStage = ParamUtil.getString(request, "stage");
+        String nextStage = isNavJump?ParamUtil.getString(request, "action_value"):ParamUtil.getString(request, "stage");
         selectionDto.setStage(nextStage);
         selectionDto.setCycleId(null);
         CycleDto cycleDto = new CycleDto();

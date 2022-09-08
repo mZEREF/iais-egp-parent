@@ -137,7 +137,7 @@ public interface ArDataSubmissionService {
 
     void remindAndDeleteDraftSubJob();
 
-    List<ARCycleStageDto> genAvailableStageList(HttpServletRequest request);
+    List<ARCycleStageDto> genAvailableStageList(HttpServletRequest request, boolean missOnGoing);
 
     ArSuperDataSubmissionDto prepareArRfcData(ArSuperDataSubmissionDto arSuper, String submissionNo, HttpServletRequest request);
 
