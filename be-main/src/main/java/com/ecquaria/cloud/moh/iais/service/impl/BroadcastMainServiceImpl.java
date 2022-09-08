@@ -4,12 +4,14 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.service.BroadcastMainService;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremSubSvcBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppSvcVehicleBeMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
@@ -36,10 +38,16 @@ public class BroadcastMainServiceImpl implements BroadcastMainService {
     private AppSvcVehicleBeMainClient appSvcVehicleBeMainClient;
 
     @Autowired
+    private AppPremSubSvcBeClient appPremSubSvcBeClient;
+
+    @Autowired
     private EventBusHelper eventBusHelper;
 
     @Value("${easmts.vehicle.sperate.flag}")
     private String vehicleOpenFlag;
+
+    @Value("${easmts.subSvc.sperate.flag}")
+    private String subSvcOpenFlag;
 
     @Override
     public BroadcastOrganizationDto svaeBroadcastOrganization(BroadcastOrganizationDto broadcastOrganizationDto,Process process,String submissionId) {
@@ -102,6 +110,78 @@ public class BroadcastMainServiceImpl implements BroadcastMainService {
                     broadcastApplicationDto.setAppSvcVehicleDtos(appSvcVehicleDtos);
                     //set db data for roll back
                     broadcastApplicationDto.setRollBackAppSvcVehicleDtos(appSvcVehicleDtoList);
+                }
+            }
+        }
+        return broadcastApplicationDto;
+    }
+    public BroadcastApplicationDto setAppPremSubSvcDtoByAppView(BroadcastApplicationDto broadcastApplicationDto, ApplicationViewDto applicationViewDto,
+                                                                String appStatus, String appType) {
+        if(applicationViewDto != null) {
+            List<AppPremSubSvcRelDto> appPremSpecialSubSvcRelDtoList = applicationViewDto.getAppPremSpecialSubSvcRelDtoList();
+            if (!IaisCommonUtils.isEmpty(appPremSpecialSubSvcRelDtoList)) {
+                //get db data
+                List<AppPremSubSvcRelDto> appPremSubSvcRelDtos = appPremSubSvcBeClient.getAppPremSubSvcRelDtoListByCorrIdAndType(
+                        appPremSpecialSubSvcRelDtoList.get(0).getAppPremCorreId(),appPremSpecialSubSvcRelDtoList.get(0).getSvcType())
+                        .getEntity();
+                //details show
+                if(InspectionConstants.SWITCH_ACTION_YES.equals(subSvcOpenFlag)) {
+                    if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)) {
+                        for(AppPremSubSvcRelDto appPremSubSvcRelDto : appPremSpecialSubSvcRelDtoList) {
+                            appPremSubSvcRelDto.setStatus(ApplicationConsts.RECORD_STATUS_REJECT_CODE);
+                            appPremSubSvcRelDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE);
+                        }
+                    }
+                    broadcastApplicationDto.setAppPremSpecialSubSvcRelDtoList(appPremSpecialSubSvcRelDtoList);
+                    //set db data for roll back
+                    broadcastApplicationDto.setRollBackSpecialSubSvcRelDtos(appPremSubSvcRelDtos);
+                    //details don't show
+                } else {
+                    for(AppPremSubSvcRelDto appPremSubSvcRelDto : appPremSpecialSubSvcRelDtoList) {
+                        if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)) {
+                            appPremSubSvcRelDto.setStatus(ApplicationConsts.RECORD_STATUS_APPROVE_CODE);
+                            appPremSubSvcRelDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE);
+                        } else if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)) {
+                            appPremSubSvcRelDto.setStatus(ApplicationConsts.RECORD_STATUS_REJECT_CODE);
+                            appPremSubSvcRelDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE);
+                        }
+                    }
+                    broadcastApplicationDto.setAppPremSpecialSubSvcRelDtoList(appPremSpecialSubSvcRelDtoList);
+                    //set db data for roll back
+                    broadcastApplicationDto.setRollBackSpecialSubSvcRelDtos(appPremSubSvcRelDtos);
+                }
+            }
+            List<AppPremSubSvcRelDto> appPremOthersSubSvcRelDtoList = applicationViewDto.getAppPremOthersSubSvcRelDtoList();
+            if (!IaisCommonUtils.isEmpty(appPremOthersSubSvcRelDtoList)) {
+                //get db data
+                List<AppPremSubSvcRelDto> appPremSubSvcRelDtos = appPremSubSvcBeClient.getAppPremSubSvcRelDtoListByCorrIdAndType(
+                        appPremOthersSubSvcRelDtoList.get(0).getAppPremCorreId(),appPremOthersSubSvcRelDtoList.get(0).getSvcType())
+                        .getEntity();
+                //details show
+                if(InspectionConstants.SWITCH_ACTION_YES.equals(subSvcOpenFlag)) {
+                    if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)) {
+                        for(AppPremSubSvcRelDto appPremSubSvcRelDto : appPremOthersSubSvcRelDtoList) {
+                            appPremSubSvcRelDto.setStatus(ApplicationConsts.RECORD_STATUS_REJECT_CODE);
+                            appPremSubSvcRelDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE);
+                        }
+                    }
+                    broadcastApplicationDto.setAppPremOthersSubSvcRelDtoList(appPremOthersSubSvcRelDtoList);
+                    //set db data for roll back
+                    broadcastApplicationDto.setRollBackOthersSubSvcRelDtos(appPremSubSvcRelDtos);
+                    //details don't show
+                } else {
+                    for(AppPremSubSvcRelDto appPremSubSvcRelDto : appPremOthersSubSvcRelDtoList) {
+                        if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)) {
+                            appPremSubSvcRelDto.setStatus(ApplicationConsts.RECORD_STATUS_APPROVE_CODE);
+                            appPremSubSvcRelDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE);
+                        } else if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)) {
+                            appPremSubSvcRelDto.setStatus(ApplicationConsts.RECORD_STATUS_REJECT_CODE);
+                            appPremSubSvcRelDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE);
+                        }
+                    }
+                    broadcastApplicationDto.setAppPremOthersSubSvcRelDtoList(appPremOthersSubSvcRelDtoList);
+                    //set db data for roll back
+                    broadcastApplicationDto.setRollBackOthersSubSvcRelDtos(appPremSubSvcRelDtos);
                 }
             }
         }

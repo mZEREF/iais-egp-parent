@@ -1424,6 +1424,7 @@ public class MohHcsaBeDashboardDelegator {
         }
         //set appSvcVehicleDto
         broadcastApplicationDto = broadcastService.setAppSvcVehicleDtoByAppView(broadcastApplicationDto, applicationViewDto, appStatus, applicationType);
+        broadcastApplicationDto = broadcastService.setAppPremSubSvcDtoByAppView(broadcastApplicationDto, applicationViewDto, appStatus, applicationType);
         //save the broadcast
         broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());

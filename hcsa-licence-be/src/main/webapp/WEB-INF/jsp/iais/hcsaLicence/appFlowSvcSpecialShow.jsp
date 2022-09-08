@@ -39,14 +39,14 @@
           </c:forEach>
           </tbody>
         </table>
-        <span class="error-msg" name="iaisErrorMsg" id="error_subSvcApproveOne"></span>
+        <span class="error-msg" name="iaisErrorMsg" id="error_specialSubSvcApproveOne"></span>
       </div>
     </iais:value>
     </iais:row>
   </c:if>
   <c:if test="${'view' eq appSpecialFlag}">
     <iais:row>
-      <iais:field value="Specialised Service Processing Decision"/>
+      <iais:field value="Specialised Service <br> Processing Decision"/>
       <iais:value width="7">
         <div class="table-gp" id = "processRecRfi">
           <table aria-describedby="" class="table">

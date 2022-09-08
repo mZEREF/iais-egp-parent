@@ -100,6 +100,8 @@ public interface ApplicationService {
       */
     String getVehicleFlagToShowOrEdit(TaskDto taskDto, String vehicleOpenFlag, ApplicationViewDto applicationViewDto);
 
+    String getSubSvcFlagToShowOrEdit(TaskDto taskDto,ApplicationViewDto applicationViewDto);
+
     /**
       * @author: shicheng
       * @Date 2021/6/3

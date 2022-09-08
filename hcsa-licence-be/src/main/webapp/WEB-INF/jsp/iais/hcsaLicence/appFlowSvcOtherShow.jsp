@@ -4,16 +4,16 @@
 <c:if test="${not empty appPremOthersSubSvcRelDtoList}">
   <c:if test="${'edit' eq appOtherFlag}">
     <iais:row>
-    <iais:field value="Other Service Processing Decision" required="true"/>
+    <iais:field value="Other Service <br> Processing Decision" required="true"/>
     <iais:value width="7">
       <div class="table-gp" id = "processRecRfi">
         <table aria-describedby="" class="table">
           <thead>
             <tr>
               <th scope="col" width="5%">S/N</th>
-              <th scope="col" width="25%">Other Service</th>
-              <th scope="col" width="35%">Recommendation</th>
-              <th scope="col" width="35%">Remarks</th>
+              <th scope="col" width="40%">Other Service</th>
+              <th scope="col" width="30%">Recommendation</th>
+              <th scope="col" width="25%">Remarks</th>
             </tr>
           </thead>
           <tbody>
@@ -32,30 +32,30 @@
                 <br><span class="error-msg" name="iaisErrorMsg" id="error_otherSubSvcRadioError${status.index}"></span>
               </td>
               <td>
-                <textarea maxlength="400" id="preInspecRemarks" name="otherSubSvcRemarks${status.index}" cols="20" rows="2" style="font-size:16px"><c:out value="${appPremOthersSubSvcRelDto.remarks}"></c:out></textarea>
+                <textarea maxlength="400" id="preInspecRemarks" name="otherSubSvcRemarks${status.index}" cols="10" rows="2" style="font-size:16px"><c:out value="${appPremOthersSubSvcRelDto.remarks}"></c:out></textarea>
                 <br><span class="error-msg" name="iaisErrorMsg" id="error_otherSubSvcRemarksError${status.index}"></span>
               </td>
             </tr>
           </c:forEach>
           </tbody>
         </table>
-        <span class="error-msg" name="iaisErrorMsg" id="error_subSvcApproveOne"></span>
+        <span class="error-msg" name="iaisErrorMsg" id="error_otherSubSvcApproveOne"></span>
       </div>
     </iais:value>
     </iais:row>
   </c:if>
   <c:if test="${'view' eq appOtherFlag}">
     <iais:row>
-      <iais:field value="Specialised Service Processing Decision"/>
+      <iais:field value="Specialised Service <br> Processing Decision"/>
       <iais:value width="7">
         <div class="table-gp" id = "processRecRfi">
           <table aria-describedby="" class="table">
             <thead>
             <tr>
               <th scope="col" width="5%">S/N</th>
-              <th scope="col" width="30%">Other Service</th>
+              <th scope="col" width="40%">Other Service</th>
               <th scope="col" width="30%">Recommendation</th>
-              <th scope="col" width="35%">Remarks</th>
+              <th scope="col" width="25%">Remarks</th>
             </tr>
             </thead>
             <tbody>

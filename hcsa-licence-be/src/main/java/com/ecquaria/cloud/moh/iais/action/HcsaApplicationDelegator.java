@@ -2869,6 +2869,7 @@ public class HcsaApplicationDelegator {
         }
         //set appSvcVehicleDto
         broadcastApplicationDto = broadcastService.setAppSvcVehicleDtoByAppView(broadcastApplicationDto, applicationViewDto, appStatus, applicationType);
+        broadcastApplicationDto = broadcastService.setAppPremSubSvcDtoByAppView(broadcastApplicationDto, applicationViewDto, appStatus, applicationType);
         broadcastApplicationDto = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto, bpc.process, submissionId);
         //when reject, app type is renew rfc, save licence app correlation
         broadcastService.saveEventBeLicenseDto(appStatus, applicationDto, submissionId, evenRefNum, bpc.process);
@@ -3379,6 +3380,7 @@ public class HcsaApplicationDelegator {
         //save the broadcast
         //set vehicle No
         broadcastApplicationDto = broadcastService.replySetVehicleByRole(taskDto, applicationViewDto, broadcastApplicationDto);
+        broadcastApplicationDto = broadcastService.replySetSubSvcByRole(taskDto, applicationViewDto, broadcastApplicationDto);
         broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         String evenRefNum = String.valueOf(System.currentTimeMillis());
@@ -3457,6 +3459,7 @@ public class HcsaApplicationDelegator {
         //save the broadcast
         //set vehicle No
         broadcastApplicationDto = broadcastService.replySetVehicleByRole(taskDto, applicationViewDto, broadcastApplicationDto);
+        broadcastApplicationDto = broadcastService.replySetSubSvcByRole(taskDto, applicationViewDto, broadcastApplicationDto);
         broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         String evenRefNum = String.valueOf(System.currentTimeMillis());
@@ -3667,8 +3670,10 @@ public class HcsaApplicationDelegator {
         appPremisesCorrelationDto.setOldCorrelationId(correlationId);
         String newCorrelationId = appPremisesCorrelationDto.getId();
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId,taskDto.getRoleId());
-        ParamUtil.setSessionAttr(bpc.request, HcsaLicenceBeConstant.APP_SPECIAL_FLAG, "edit");
-        ParamUtil.setSessionAttr(bpc.request, HcsaLicenceBeConstant.APP_OTHER_FLAG, "edit");
+        ParamUtil.setSessionAttr(bpc.request, HcsaLicenceBeConstant.APP_SPECIAL_FLAG,
+                applicationService.getSubSvcFlagToShowOrEdit(taskDto,applicationViewDto));
+        ParamUtil.setSessionAttr(bpc.request, HcsaLicenceBeConstant.APP_OTHER_FLAG,
+                applicationService.getSubSvcFlagToShowOrEdit(taskDto,applicationViewDto));
         initApplicationViewDtoSubSvc(applicationViewDto);
         applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
         //set can tcu date
