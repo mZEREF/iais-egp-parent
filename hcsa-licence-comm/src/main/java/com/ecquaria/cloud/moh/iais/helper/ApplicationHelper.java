@@ -2101,6 +2101,10 @@ public final class ApplicationHelper {
             for (AppSvcPersonnelDto spDto : svcPersonnels) {
                 AppSvcPrincipalOfficersDto psnDto = new AppSvcPrincipalOfficersDto();
                 psnDto.setIndexNo(spDto.getIndexNo());
+                psnDto.setPsnType(spDto.getPersonnelType());
+                psnDto.setSalutation(spDto.getSalutation());
+                psnDto.setName(spDto.getName());
+                psnDto.setAssignSelect(spDto.getPersonnelKey());
                 psnDtoList.add(psnDto);
             }
         }

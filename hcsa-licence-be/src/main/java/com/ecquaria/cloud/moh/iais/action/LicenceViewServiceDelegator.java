@@ -5,6 +5,9 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewHciNameDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.DocSecDetailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.DocSectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.HfsmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
@@ -944,8 +947,10 @@ public class LicenceViewServiceDelegator {
 //        weekly(appGrpPremisesDtoList, oldAppGrpPremisesDtoList);
 //        ph(appGrpPremisesDtoList, oldAppGrpPremisesDtoList);
         // specialised
-        List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
-        List<AppPremSpecialisedDto> oldAppPremSpecialisedDtoList = oldAppSubmissionDto.getAppPremSpecialisedDtoList();
+        List<AppPremSpecialisedDto> appPremSpecialisedDtoList = IaisCommonUtils.getList(
+                appSubmissionDto.getAppPremSpecialisedDtoList());
+        List<AppPremSpecialisedDto> oldAppPremSpecialisedDtoList = IaisCommonUtils.getList(
+                oldAppSubmissionDto.getAppPremSpecialisedDtoList());
         dealAppPremSpecialisedDtoList(appPremSpecialisedDtoList, oldAppPremSpecialisedDtoList);
         appSubmissionDto.setAppPremSpecialisedDtoList(appPremSpecialisedDtoList);
         oldAppSubmissionDto.setAppPremSpecialisedDtoList(oldAppPremSpecialisedDtoList);
@@ -981,7 +986,12 @@ public class LicenceViewServiceDelegator {
         //new service for cr
         List<AppSvcVehicleDto> appSvcVehicleDtoList = IaisCommonUtils.getList(appSvcRelatedInfoDto.getAppSvcVehicleDtoList());
         List<AppSvcVehicleDto> oldAppSvcVehicleDtoList = IaisCommonUtils.getList(oldAppSvcRelatedInfoDto.getAppSvcVehicleDtoList());
-        dealVehicle(appSvcVehicleDtoList, oldAppSvcVehicleDtoList);
+        //dealVehicle(appSvcVehicleDtoList, oldAppSvcVehicleDtoList);
+        oldAppSvcVehicleDtoList = dealList(appSvcVehicleDtoList, oldAppSvcVehicleDtoList,
+                (newDto, oldDto) -> Objects.equals(newDto.getVehicleName(), oldDto.getVehicleName())
+                        || Objects.equals(newDto.getEngineNum(), oldDto.getEngineNum())
+                        || Objects.equals(newDto.getChassisNum(), oldDto.getChassisNum()),
+                dto -> new AppSvcVehicleDto(), null);
         appSvcRelatedInfoDto.setAppSvcVehicleDtoList(appSvcVehicleDtoList);
         oldAppSvcRelatedInfoDto.setAppSvcVehicleDtoList(oldAppSvcVehicleDtoList);
         // Charges
@@ -997,27 +1007,35 @@ public class LicenceViewServiceDelegator {
         appSvcRelatedInfoDto.setAppSvcChargesPageDto(appSvcChargesPageDto);
         oldAppSvcRelatedInfoDto.setAppSvcChargesPageDto(oldAppSvcChargesPageDto);
         // Supplementary Form
-        List<AppSvcSuplmFormDto> appSvcSuplmFormList = appSvcRelatedInfoDto.getAppSvcSuplmFormList();
-        List<AppSvcSuplmFormDto> oldAppSvcSuplmFormList = oldAppSvcRelatedInfoDto.getAppSvcSuplmFormList();
+        List<AppSvcSuplmFormDto> appSvcSuplmFormList = IaisCommonUtils.getList(appSvcRelatedInfoDto.getAppSvcSuplmFormList());
+        List<AppSvcSuplmFormDto> oldAppSvcSuplmFormList = IaisCommonUtils.getList(oldAppSvcRelatedInfoDto.getAppSvcSuplmFormList());
         dealAppSvcSuplmFormList(appSvcSuplmFormList, oldAppSvcSuplmFormList);
+        // documents
+        List<DocumentShowDto> documentShowDtoList = IaisCommonUtils.getList(appSvcRelatedInfoDto.getDocumentShowDtoList());
+        List<DocumentShowDto> oldDocumentShowDtoList = IaisCommonUtils.getList(oldAppSvcRelatedInfoDto.getDocumentShowDtoList());
+        dealDocuments(documentShowDtoList, oldDocumentShowDtoList);
+        appSvcRelatedInfoDto.setDocumentShowDtoList(documentShowDtoList);
+        oldAppSvcRelatedInfoDto.setDocumentShowDtoList(oldDocumentShowDtoList);
     }
 
     private void dealAppSvcSuplmFormList(List<AppSvcSuplmFormDto> appSvcSuplmFormList,
             List<AppSvcSuplmFormDto> oldAppSvcSuplmFormList) {
-        dealList(appSvcSuplmFormList, oldAppSvcSuplmFormList, (newDto, oldList) -> oldList.stream()
-                .filter(dto -> Objects.equals(newDto.getSvcCode(), dto.getSvcCode())
-                        && Objects.equals(newDto.getPremisesType(), dto.getPremisesType())
-                        && Objects.equals(newDto.getPremAddress(), dto.getPremAddress()))
-                .findFirst()
-                .orElseGet(() -> oldList.stream()
+        dealList(appSvcSuplmFormList, oldAppSvcSuplmFormList,
+                (newDto, oldList) -> oldList.stream()
                         .filter(dto -> Objects.equals(newDto.getSvcCode(), dto.getSvcCode())
-                                && Objects.equals(newDto.getPremisesType(), dto.getPremisesType()))
+                                && Objects.equals(newDto.getPremisesType(), dto.getPremisesType())
+                                && Objects.equals(newDto.getPremAddress(), dto.getPremAddress()))
                         .findFirst()
-                        .orElse(null)), dto -> {
-            AppSvcSuplmFormDto newDto = CopyUtil.copyMutableObject(dto);
-            newDto.setSuppleFormItemConfigDtos(null);
-            return newDto;
-        });
+                        .orElseGet(() -> oldList.stream()
+                                .filter(dto -> Objects.equals(newDto.getSvcCode(), dto.getSvcCode())
+                                        && Objects.equals(newDto.getPremisesType(), dto.getPremisesType()))
+                                .findFirst()
+                                .orElse(null)),
+                dto -> {
+                    AppSvcSuplmFormDto newDto = CopyUtil.copyMutableObject(dto);
+                    newDto.setSuppleFormItemConfigDtos(null);
+                    return newDto;
+                });
         int size = appSvcSuplmFormList.size();
         for (int i = 0; i < size; i++) {
             dealAppSvcSuplmForm(appSvcSuplmFormList.get(i), oldAppSvcSuplmFormList.get(i));
@@ -1046,21 +1064,23 @@ public class LicenceViewServiceDelegator {
 
     private void dealAppPremSpecialisedDtoList(List<AppPremSpecialisedDto> appPremSpecialisedDtoList,
             List<AppPremSpecialisedDto> oldAppPremSpecialisedDtoList) {
-        dealList(appPremSpecialisedDtoList, oldAppPremSpecialisedDtoList, (newDto, oldList) -> oldList.stream()
-                .filter(dto -> Objects.equals(newDto.getBaseSvcCode(), dto.getBaseSvcCode())
-                        && Objects.equals(newDto.getPremisesType(), dto.getPremisesType())
-                        && Objects.equals(newDto.getPremAddress(), dto.getPremAddress()))
-                .findFirst()
-                .orElseGet(() -> oldList.stream()
+        dealList(appPremSpecialisedDtoList, oldAppPremSpecialisedDtoList,
+                (newDto, oldList) -> oldList.stream()
                         .filter(dto -> Objects.equals(newDto.getBaseSvcCode(), dto.getBaseSvcCode())
-                                && Objects.equals(newDto.getPremisesType(), dto.getPremisesType()))
+                                && Objects.equals(newDto.getPremisesType(), dto.getPremisesType())
+                                && Objects.equals(newDto.getPremAddress(), dto.getPremAddress()))
                         .findFirst()
-                        .orElse(null)), dto -> {
-            AppPremSpecialisedDto newDto = CopyUtil.copyMutableObject(dto);
-            newDto.setSvcSpecifiedCorrelationList(null);
-            newDto.setSvcSubtypeList(null);
-            return newDto;
-        });
+                        .orElseGet(() -> oldList.stream()
+                                .filter(dto -> Objects.equals(newDto.getBaseSvcCode(), dto.getBaseSvcCode())
+                                        && Objects.equals(newDto.getPremisesType(), dto.getPremisesType()))
+                                .findFirst()
+                                .orElse(null)),
+                dto -> {
+                    AppPremSpecialisedDto newDto = CopyUtil.copyMutableObject(dto);
+                    newDto.setSvcSpecifiedCorrelationList(null);
+                    newDto.setSvcSubtypeList(null);
+                    return newDto;
+                });
         int size = appPremSpecialisedDtoList.size();
         for (int i = 0; i < size; i++) {
             dealAppPremSpecialisedDto(appPremSpecialisedDtoList.get(i), oldAppPremSpecialisedDtoList.get(i));
@@ -1069,16 +1089,18 @@ public class LicenceViewServiceDelegator {
 
     private void dealAppPremSpecialisedDto(AppPremSpecialisedDto appPremSpecialisedDto,
             AppPremSpecialisedDto oldAppPremSpecialisedDto) {
-        List<AppPremScopeDto> appPremScopeDtoList = appPremSpecialisedDto.getCheckedAppPremScopeDtoList();
-        List<AppPremScopeDto> oldAppPremScopeDtoList = oldAppPremSpecialisedDto.getCheckedAppPremScopeDtoList();
+        List<AppPremScopeDto> appPremScopeDtoList = IaisCommonUtils.getList(appPremSpecialisedDto.getAllAppPremScopeDtoList());
+        List<AppPremScopeDto> oldAppPremScopeDtoList = IaisCommonUtils.getList(oldAppPremSpecialisedDto.getAllAppPremScopeDtoList());
         oldAppPremScopeDtoList = dealList(appPremScopeDtoList, oldAppPremScopeDtoList,
                 (newDto, oldDto) -> Objects.equals(newDto.getScopeName(), oldDto.getScopeName()), dto -> new AppPremScopeDto(),
                 null);
         appPremSpecialisedDto.setAllAppPremScopeDtoList(appPremScopeDtoList);
         oldAppPremSpecialisedDto.setAllAppPremScopeDtoList(oldAppPremScopeDtoList);
 
-        List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList = appPremSpecialisedDto.getCheckedAppPremSubSvcRelDtoList();
-        List<AppPremSubSvcRelDto> oldAppPremSubSvcRelDtoList = oldAppPremSpecialisedDto.getCheckedAppPremSubSvcRelDtoList();
+        List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList = IaisCommonUtils.getList(
+                appPremSpecialisedDto.getAllAppPremSubSvcRelDtoList());
+        List<AppPremSubSvcRelDto> oldAppPremSubSvcRelDtoList = IaisCommonUtils.getList(
+                oldAppPremSpecialisedDto.getAllAppPremSubSvcRelDtoList());
         oldAppPremSubSvcRelDtoList = dealList(appPremSubSvcRelDtoList, oldAppPremSubSvcRelDtoList,
                 (newDto, oldDto) -> Objects.equals(newDto.getSvcCode(), oldDto.getSvcCode()), dto -> new AppPremSubSvcRelDto(),
                 null);
@@ -1107,7 +1129,8 @@ public class LicenceViewServiceDelegator {
 
     private List<AppSvcPrincipalOfficersDto> dealKeyPersonnel(List<AppSvcPrincipalOfficersDto> newList,
             List<AppSvcPrincipalOfficersDto> oldList) {
-        return dealList(newList, oldList, (newDto, oldDto) -> Objects.equals(newDto.getAssignSelect(), oldDto.getAssignSelect()),
+        return dealList(newList, oldList,
+                (newDto, oldDto) -> Objects.equals(newDto.getAssignSelect(), oldDto.getAssignSelect()),
                 dto -> {
                     AppSvcPrincipalOfficersDto newDto = new AppSvcPrincipalOfficersDto();
                     newDto.setPsnType(dto.getPsnType());
@@ -1117,20 +1140,22 @@ public class LicenceViewServiceDelegator {
 
     private void dealAppGrpPremisesList(List<AppGrpPremisesDto> appGrpPremisesDtoList,
             List<AppGrpPremisesDto> oldAppGrpPremisesDtoList) {
-        dealList(appGrpPremisesDtoList, oldAppGrpPremisesDtoList, (newDto, oldList) -> oldList.stream()
-                .filter(dto -> Objects.equals(newDto.getPremisesSelect(), dto.getPremisesSelect()))
-                .findFirst()
-                .orElse(oldList.stream()
-                        .filter(dto -> !StringUtil.isEmpty(newDto.getOldHciCode())
-                                && newDto.getOldHciCode().equals(dto.getOldHciCode())
-                                || StringUtil.isEmpty(newDto.getOldHciCode())
-                                && Objects.equals(newDto.getPremisesType(), dto.getPremisesType()))
+        dealList(appGrpPremisesDtoList, oldAppGrpPremisesDtoList,
+                (newDto, oldList) -> oldList.stream()
+                        .filter(dto -> Objects.equals(newDto.getPremisesSelect(), dto.getPremisesSelect()))
                         .findFirst()
-                        .orElse(null)), dto -> {
-            AppGrpPremisesDto newDto = new AppGrpPremisesDto();
-            newDto.setPremisesType(dto.getPremisesType());
-            return newDto;
-        });
+                        .orElse(oldList.stream()
+                                .filter(dto -> !StringUtil.isEmpty(newDto.getOldHciCode())
+                                        && newDto.getOldHciCode().equals(dto.getOldHciCode())
+                                        || StringUtil.isEmpty(newDto.getOldHciCode())
+                                        && Objects.equals(newDto.getPremisesType(), dto.getPremisesType()))
+                                .findFirst()
+                                .orElse(null)),
+                dto -> {
+                    AppGrpPremisesDto newDto = new AppGrpPremisesDto();
+                    newDto.setPremisesType(dto.getPremisesType());
+                    return newDto;
+                });
         int size = appGrpPremisesDtoList.size();
         for (int i = 0; i < size; i++) {
             AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(i);
@@ -1154,11 +1179,13 @@ public class LicenceViewServiceDelegator {
     }
 
     private void dealCoLocation(AppGrpPremisesDto appGrpPremisesDto, AppGrpPremisesDto oldAppGrpPremisesDto) {
-        List<AppPremNonLicRelationDto> appPremNonLicRelationDtos = appGrpPremisesDto.getAppPremNonLicRelationDtos();
-        List<AppPremNonLicRelationDto> oldAppPremNonLicRelationDtos = oldAppGrpPremisesDto.getAppPremNonLicRelationDtos();
-        oldAppPremNonLicRelationDtos = dealList(appPremNonLicRelationDtos, oldAppPremNonLicRelationDtos, (newDto, oldDto) ->
-                        Objects.equals(newDto.getBusinessName(), oldDto.getBusinessName())
-                                && Objects.equals(newDto.getProvidedService(), oldDto.getProvidedService()),
+        List<AppPremNonLicRelationDto> appPremNonLicRelationDtos = IaisCommonUtils.getList(
+                appGrpPremisesDto.getAppPremNonLicRelationDtos());
+        List<AppPremNonLicRelationDto> oldAppPremNonLicRelationDtos = IaisCommonUtils.getList(
+                oldAppGrpPremisesDto.getAppPremNonLicRelationDtos());
+        oldAppPremNonLicRelationDtos = dealList(appPremNonLicRelationDtos, oldAppPremNonLicRelationDtos,
+                (newDto, oldDto) -> Objects.equals(newDto.getBusinessName(), oldDto.getBusinessName())
+                        && Objects.equals(newDto.getProvidedService(), oldDto.getProvidedService()),
                 dto -> new AppPremNonLicRelationDto(), null);
         appGrpPremisesDto.setAppPremNonLicRelationDtos(appPremNonLicRelationDtos);
         oldAppGrpPremisesDto.setAppPremNonLicRelationDtos(oldAppPremNonLicRelationDtos);
@@ -2012,13 +2039,107 @@ public class LicenceViewServiceDelegator {
         return hcsaConfigClient.getHcsaSvcDocConfig(docMapJson).getEntity();
     }
 
+    private void dealDocuments(List<DocumentShowDto> documentShowDtoList, List<DocumentShowDto> oldDocumentShowDtoList) {
+        dealList(documentShowDtoList, oldDocumentShowDtoList,
+                (newDto, oldList) -> oldList.stream()
+                        .filter(dto -> Objects.equals(newDto.getPremisesType(), dto.getPremisesType())
+                                && Objects.equals(newDto.getPremAddress(), dto.getPremAddress()))
+                        .findAny()
+                        .orElseGet(() -> oldList.stream()
+                                .filter(dto -> Objects.equals(newDto.getPremisesType(), dto.getPremisesType()))
+                                .findAny()
+                                .orElse(null)),
+                dto -> {
+                    DocumentShowDto newDto = CopyUtil.copyMutableObject(dto);
+                    newDto.setDocSectionList(IaisCommonUtils.genNewArrayList());
+                    return newDto;
+                });
+        int size = documentShowDtoList.size();
+        for (int i = 0; i < size; i++) {
+            DocumentShowDto documentShowDto = documentShowDtoList.get(i);
+            DocumentShowDto oldDocumentShowDto = documentShowDtoList.get(i);
+            List<DocSectionDto> docSectionList = IaisCommonUtils.getList(documentShowDto.getDocSectionList());
+            List<DocSectionDto> oldDocSectionList = IaisCommonUtils.getList(oldDocumentShowDto.getDocSectionList());
+            dealDocSectionDtos(docSectionList, oldDocSectionList);
+            documentShowDto.setDocSectionList(docSectionList);
+            oldDocumentShowDto.setDocSectionList(oldDocSectionList);
+        }
+    }
+
+    private void dealDocSectionDtos(List<DocSectionDto> docSectionList, List<DocSectionDto> oldDocSectionList) {
+        dealList(docSectionList, oldDocSectionList,
+                (newDto, oldList) -> oldList.stream()
+                        .filter(dto -> Objects.equals(newDto.getSvcCode(), dto.getSvcCode()))
+                        .findAny().orElse(null),
+                dto -> {
+                    DocSectionDto newDto = CopyUtil.copyMutableObject(dto);
+                    newDto.setDocSecDetailList(IaisCommonUtils.genNewArrayList());
+                    return newDto;
+                });
+        int size = docSectionList.size();
+        for (int i = 0; i < size; i++) {
+            DocSectionDto docSectionDto = docSectionList.get(i);
+            DocSectionDto oldDocSectionDto = docSectionList.get(i);
+            List<DocSecDetailDto> docSecDetailList = IaisCommonUtils.getList(docSectionDto.getDocSecDetailList());
+            List<DocSecDetailDto> oldDocSecDetailList = IaisCommonUtils.getList(oldDocSectionDto.getDocSecDetailList());
+            dealDocSecDetailDtos(docSecDetailList, oldDocSecDetailList);
+            docSectionDto.setDocSecDetailList(docSecDetailList);
+            oldDocSectionDto.setDocSecDetailList(oldDocSecDetailList);
+        }
+    }
+
+    private void dealDocSecDetailDtos(List<DocSecDetailDto> docSecDetailList, List<DocSecDetailDto> oldDocSecDetailList) {
+        dealList(docSecDetailList, oldDocSecDetailList,
+                (newDto, oldList) -> oldList.stream()
+                        .filter(dto -> Objects.equals(newDto.getPersonnelKey(), dto.getPersonnelKey()))
+                        .findAny().orElse(null),
+                dto -> {
+                    DocSecDetailDto newDto = CopyUtil.copyMutableObject(dto);
+                    newDto.setAppSvcDocDtoList(IaisCommonUtils.genNewArrayList());
+                    return newDto;
+                });
+        // rest psnTypeIndex
+        Map<String, Integer> map = docSecDetailList.stream()
+                .filter(dto -> StringUtil.isNotEmpty(dto.getPsnType()))
+                .collect(Collectors.toMap(DocSecDetailDto::getPsnType, dto -> 1, (v1, v2) -> v1 + v2));
+        Map<String, Integer> psnMap = IaisCommonUtils.genNewHashMap();
+        map.forEach((k, v) -> {
+            if (v != null && v > 1) {
+                psnMap.put(k, 0);
+            }
+        });
+        int size = docSecDetailList.size();
+        for (int i = 0; i < size; i++) {
+            DocSecDetailDto docSecDetailDto = docSecDetailList.get(i);
+            DocSecDetailDto oldDocSecDetailDto = oldDocSecDetailList.get(i);
+            Integer count = psnMap.computeIfPresent(docSecDetailDto.getPsnType(), (key, oldValue) -> oldValue++);
+            docSecDetailDto.setPsnTypeIndex(count);
+            docSecDetailDto.setBackend(true);
+            docSecDetailDto.initDisplayTitle();
+            oldDocSecDetailDto.setPsnTypeIndex(count);
+            oldDocSecDetailDto.setBackend(true);
+            oldDocSecDetailDto.initDisplayTitle();
+            List<AppSvcDocDto> appSvcDocDtoList = IaisCommonUtils.getList(docSecDetailDto.getAppSvcDocDtoList());
+            List<AppSvcDocDto> oldAppSvcDocDtoList = IaisCommonUtils.getList(oldDocSecDetailDto.getAppSvcDocDtoList());
+            oldAppSvcDocDtoList = dealList(appSvcDocDtoList, oldAppSvcDocDtoList,
+                    (newDto, oldDto) -> Objects.equals(newDto.getSeqNum(), oldDto.getSeqNum()),
+                    dto -> {
+                        AppSvcDocDto newDto = new AppSvcDocDto();
+                        //newDto.setPersonTypeNum(dto.getPersonTypeNum());
+                        return newDto;
+                    }, null);
+            docSecDetailDto.setAppSvcDocDtoList(appSvcDocDtoList);
+            oldDocSecDetailDto.setAppSvcDocDtoList(oldAppSvcDocDtoList);
+        }
+    }
+
     private <T> List<T> dealList(List<T> newList, List<T> oldList, BiPredicate<T, T> check, Function<T, T> createFun,
             Comparator<T> comparator) {
+        if (newList.isEmpty() && oldList.isEmpty()) {
+            return oldList;
+        }
         int newSize = newList.size();
         int oldSize = oldList.size();
-        /*if (newSize == oldSize) {
-            return oldList;
-        }*/
         List<T> newOldList = IaisCommonUtils.genNewArrayList(Math.max(newSize, oldSize));
         for (T obj : newList) {
             T old = oldList.stream()
@@ -2046,6 +2167,9 @@ public class LicenceViewServiceDelegator {
 
     private <T> void dealList(List<T> newList, List<T> oldList, BiFunction<T, List<T>, T> check,
             Function<T, T> createFun) {
+        if (newList.isEmpty() && oldList.isEmpty()) {
+            return;
+        }
         int newSize = newList.size();
         int oldSize = oldList.size();
         List<T> newOldList = IaisCommonUtils.genNewArrayList(Math.max(newSize, oldSize));

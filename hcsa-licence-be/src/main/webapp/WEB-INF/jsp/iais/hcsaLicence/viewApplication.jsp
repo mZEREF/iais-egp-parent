@@ -41,33 +41,28 @@
                                         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                                             <%@include file="section/viewLicensee.jsp" %>
                                             <%@include file="section/viewPremises.jsp" %>
-                                            <%@include file="section/viewPrimaryDoc.jsp" %>
+                                            <%@include file="section/viewSpecialised.jsp" %>
                                             <%@include file="section/viewKeyRoles.jsp" %>
                                             <div class="panel panel-default svc-content">
 
                                                 <div class="panel-heading" id="headingServiceInfo0" role="tab">
                                                     <h4 class="panel-title"><a class="svc-pannel-collapse collapsed" role="button" data-toggle="collapse"
                                                                                href="#collapseServiceInfo0" aria-expanded="true"
-                                                                               aria-controls="collapseServiceInfo">Service Related Information
-                                                        - ${hcsaServiceDto.svcName}</a></h4>
+                                                                               aria-controls="collapseServiceInfo">
+                                                        Service Related Information - ${hcsaServiceDto.svcName}</a></h4>
                                                 </div>
 
                                                 <div class=" panel-collapse collapse" id="collapseServiceInfo0" role="tabpanel"
                                                      aria-labelledby="headingServiceInfo0">
                                                     <div class="panel-body">
                                                         <p class="text-right">
-
                                                             <c:if test="${appEdit.serviceEdit}">
                                                                 <c:if test="${rfi=='rfi'}">
                                                                     <input class="form-check-input" <c:if test="${pageEdit.serviceEdit}">checked</c:if> id="serviceCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="service">
                                                                 </c:if>
                                                             </c:if>
                                                         </p>
-                                                        <%--<iframe class="svc-iframe" title=""
-                                                                src="${pageContext.request.contextPath}/eservice/INTRANET/MOHServiceView"
-                                                                id="elemId-0" width="100%" height="100%"></iframe>--%>
                                                         <%@include file="section/viewServiceInfo.jsp" %>
-                                                        <!--scrolling="no" scrollbar="no" -->
                                                     </div>
                                                 </div>
                                             </div>

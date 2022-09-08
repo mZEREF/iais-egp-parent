@@ -1037,6 +1037,7 @@ public class DealSessionUtil {
                         dto.setDocConfigDto(svcDocConfig, ApplicationHelper.isBackend());
                         dto.setAppSvcDocDtoList(appSvcDocDtoList);
                         dto.setPsnIndexNo(psn.getIndexNo());
+                        dto.setPersonnelKey(psn.getAssignSelect());
                         if (needPsnTypeIndex) {
                             dto.setPsnTypeIndex(i++);
                             dto.initDisplayTitle();
