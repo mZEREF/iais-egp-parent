@@ -11,7 +11,7 @@
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
             <a class="collapsed" href="#cycleDetails" data-toggle="collapse">
-                Oocyte Retrieval
+                Donor Sample
             </a>
         </h4>
     </div>

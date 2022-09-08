@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -159,11 +160,18 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
         arDonorDto.setDonorSampleKey(sampleKey);
         arDonorDto.setDonorSampleAgeDtos(donorSampleAgeDtos);
         arDonorDto.setDonorUseSize(useSize);
+        List<DonorSampleDto> donorSampleDtoLis = arDataSubmissionService.getDonorSampleDtoBySampleKey(sampleKey);
         //todo
-//        if(!donorSampleDto.getDirectedDonation()){
-//            arDonorDto.setSource(donorSampleDto.getSampleFromHciCode());
-//            arDonorDto.setOtherSource(donorSampleDto.getSampleFromOthers());
-//        }
+        if (IaisCommonUtils.isNotEmpty(donorSampleDtoLis)){
+            DonorSampleDto donorSampleDto = donorSampleDtoLis.get(0);
+            arDonorDto.setDonorSampleId(donorSampleDto.getId());
+            if(!donorSampleDto.getDirectedDonation()){
+                arDonorDto.setSource(donorSampleDto.getSampleFromHciCode());
+                arDonorDto.setOtherSource(donorSampleDto.getSampleFromOthers());
+            } else {
+                arDonorDto.setSource(donorSampleDto.getSampleFromHciCode());
+            }
+        }
         if (IaisCommonUtils.isNotEmpty(donorSampleAgeDtos)) {
             arDonorDto.setResetDonor(AppConsts.NO);
             setAgeList(arDonorDto);
