@@ -365,6 +365,7 @@ public class OnlineTopEnquiryDelegator {
                         topInfo.setDoctorInformationDto(doctorInfoDto);
                         terminationDto.setDoctorInformationPE("false");
                         terminationDto.setTopDoctorInformations("false");
+                        terminationDto.setDoctorName(doctorInfoDto.getName());
                         terminationDto.setDoctorRegnNo(doctorInfoDto.getDoctorReignNo());
                         terminationDto.setSpecialty(String.valueOf(doctorInfoDto.getSpeciality()).replaceAll("(?:\\[|null|\\]| +)", ""));
                         terminationDto.setSubSpecialty(String.valueOf(doctorInfoDto.getSubSpeciality()).replaceAll("(?:\\[|null|\\]| +)", ""));

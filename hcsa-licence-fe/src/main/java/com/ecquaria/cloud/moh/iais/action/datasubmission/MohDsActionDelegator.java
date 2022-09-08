@@ -237,6 +237,7 @@ public class MohDsActionDelegator {
                         terminationDto.setDoctorInformationPE("false");
                         terminationDto.setTopDoctorInformations("false");
                         topSuperDataSubmissionDto.setDoctorInformationDto(doctorInfoDto);
+                        terminationDto.setDoctorName(doctorInfoDto.getName());
                         terminationDto.setDoctorRegnNo(doctorInfoDto.getDoctorReignNo());
                         terminationDto.setSpecialty(String.valueOf(doctorInfoDto.getSpeciality()).replaceAll("(?:\\[|null|\\]| +)", ""));
                         terminationDto.setSubSpecialty(String.valueOf(doctorInfoDto.getSubSpeciality()).replaceAll("(?:\\[|null|\\]| +)", ""));
