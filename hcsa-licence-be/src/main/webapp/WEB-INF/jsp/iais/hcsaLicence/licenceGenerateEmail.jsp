@@ -185,7 +185,7 @@
     function intiTinymce() {
         $("#htmlEditroArea").show();
         tinymce.init({
-            height:1200,
+            height:700,
 
             selector: "#htmlEditroArea",  // change this value according to your HTML
             menubar: 'file edit view insert format tools',
