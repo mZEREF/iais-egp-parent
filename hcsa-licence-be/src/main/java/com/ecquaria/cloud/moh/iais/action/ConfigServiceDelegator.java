@@ -869,13 +869,21 @@ public class ConfigServiceDelegator {
         HcsaSvcPersonnelDto SP002 = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER, request);
         HcsaSvcPersonnelDto SP003 = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES, request);
 
-        HcsaSvcPersonnelDto sottn = getHcsaSvcPersonnelDto(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_OPERATING_THEATRE_TRAINED_NURSE, request);
+        HcsaSvcPersonnelDto spmsc = getHcsaSvcPersonnelDto(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_PERSON_MANAGING_SPECIAL_CARE, request);
+        HcsaSvcPersonnelDto smdp = getHcsaSvcPersonnelDto(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_MEDICAL_DENTAL_PRACTITION, request);
+        HcsaSvcPersonnelDto srp = getHcsaSvcPersonnelDto(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_RENAL_PHYSICIAN, request);
         HcsaSvcPersonnelDto snic = getHcsaSvcPersonnelDto(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_NURSE_IN_CHARGE, request);
-        HcsaSvcPersonnelDto snms = getHcsaSvcPersonnelDto(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_NURSES_MEDICAL_SERVICE, request);
-        HcsaSvcPersonnelDto snds = getHcsaSvcPersonnelDto(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_NURSES_DENTAL_SERVICE, request);
+        HcsaSvcPersonnelDto sdtrn = getHcsaSvcPersonnelDto(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_DIALYSIS_TRAINED_REGISTERED_NURSE, request);
+        HcsaSvcPersonnelDto srnndt = getHcsaSvcPersonnelDto(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_REGISTERED_NURSES_NOT_DIALYSIS_TRAINED, request);
+        HcsaSvcPersonnelDto sen = getHcsaSvcPersonnelDto(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_ENROLLED_NURSE, request);
+        HcsaSvcPersonnelDto sa = getHcsaSvcPersonnelDto(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_ACUPUNCTURIST, request);
+        HcsaSvcPersonnelDto sam = getHcsaSvcPersonnelDto(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_ANAESTHETIST_MEDICAL, request);
+        HcsaSvcPersonnelDto stnm = getHcsaSvcPersonnelDto(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_TRAINED_NURSES_MEDICAL, request);
+        HcsaSvcPersonnelDto spdo = getHcsaSvcPersonnelDto(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_PRACTICING_DOCTOR, request);
+        HcsaSvcPersonnelDto sad = getHcsaSvcPersonnelDto(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_ANAESTHETIST_DENTAL, request);
+        HcsaSvcPersonnelDto stnd = getHcsaSvcPersonnelDto(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_TRAINED_NURSES_DENTAL, request);
         HcsaSvcPersonnelDto spde = getHcsaSvcPersonnelDto(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_PRACTISING_DENTIST, request);
         HcsaSvcPersonnelDto soht = getHcsaSvcPersonnelDto(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_ORAL_HEALTHCARE_THERAPIST, request);
-        HcsaSvcPersonnelDto spdo = getHcsaSvcPersonnelDto(ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_PRACTICING_DOCTOR, request);
 
         //for Specialised  Service
         HcsaSvcPersonnelDto edd = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR, request);
@@ -903,13 +911,21 @@ public class ConfigServiceDelegator {
             hcsaSvcPersonnelDtos.add(SP002);//AR Practitioner
             hcsaSvcPersonnelDtos.add(SP003);//Nurses
             if(hcsaServiceConfigDto.getSupplementaryForm()){
-                hcsaSvcPersonnelDtos.add(sottn);//Operating Theatre Trained Nurse
+                hcsaSvcPersonnelDtos.add(spmsc);//Person managing the Special Care Service
+                hcsaSvcPersonnelDtos.add(smdp);//Medical / Dental Practition
+                hcsaSvcPersonnelDtos.add(srp);//Renal Physician
                 hcsaSvcPersonnelDtos.add(snic);//Nurse in Charge
-                hcsaSvcPersonnelDtos.add(snms);//Nurses (Medical Service)
-                hcsaSvcPersonnelDtos.add(snds);//Nurses (Dental Service)
-                hcsaSvcPersonnelDtos.add(spde);//Practising Dentist
-                hcsaSvcPersonnelDtos.add(soht);//Oral Healthcare Therapist
+                hcsaSvcPersonnelDtos.add(sdtrn);//Dialysis Trained Registered Nurse
+                hcsaSvcPersonnelDtos.add(srnndt);//Registered Nurses not Dialysis Trained
+                hcsaSvcPersonnelDtos.add(sen);//Enrolled Nurse
+                hcsaSvcPersonnelDtos.add(sa);//Acupuncturist
+                hcsaSvcPersonnelDtos.add(sam);//Anaesthetist (Medical Service)
+                hcsaSvcPersonnelDtos.add(stnm);//Trained Nurses (Medical Service)
                 hcsaSvcPersonnelDtos.add(spdo);//Practicing Doctor
+                hcsaSvcPersonnelDtos.add(sad);//Anaesthetist (Dental Service)
+                hcsaSvcPersonnelDtos.add(stnd);//Trained Nurses (Dental Service)
+                hcsaSvcPersonnelDtos.add(spde);//Practising Dentist
+                hcsaSvcPersonnelDtos.add(soht);//Trained Dental Hygienist/ Dental Therapist / Oral Healthcare Therapist
             }
         }else if(HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(serviceType)){
             hcsaSvcPersonnelDtos.add(edd);//Emergency Department Director

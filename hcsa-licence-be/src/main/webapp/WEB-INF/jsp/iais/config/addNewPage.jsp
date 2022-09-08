@@ -682,21 +682,49 @@
           </div>
           <div class="form-group">
             <div class="col-xs-12 col-md-9">
-              <label class="col-xs-12 col-md-7 control-label" >Operating Theatre Trained Nurse&nbsp;<span class="mandatory">*</span></label>
+              <label class="col-xs-12 col-md-7 control-label" >Person managing the Special Care Service&nbsp;<span class="mandatory">*</span></label>
               <div class="col-xs-12 col-md-2">
-                <iais:input type="hidden" name="secldrId" value="${SOTTN.id}"/>
-                <iais:input maxLength="2" type="text" name="man-SOTTN" value="${SOTTN.mandatoryCount}"
+                <iais:input maxLength="2" type="text" name="man-SPMSC" value="${SPMSC.mandatoryCount}"
                             placeholder="minimum count" needErrorSpan="false"/>
-                <span class="error-msg" name="iaisErrorMsg" id="error_man-SOTTN"></span>
+                <span class="error-msg" name="iaisErrorMsg" id="error_man-SPMSC"></span>
               </div>
               <div class="col-xs-12 col-md-2">
-                <iais:input maxLength="2" type="text" name="mix-SOTTN" value="${SOTTN.maximumCount}"
+                <iais:input maxLength="2" type="text" name="mix-SPMSC" value="${SPMSC.maximumCount}"
                             placeholder="maximum count" needErrorSpan="false"/>
-                <span class="error-msg" name="iaisErrorMsg" id="error_mix-SOTTN"></span>
+                <span class="error-msg" name="iaisErrorMsg" id="error_mix-SPMSC"></span>
               </div>
             </div>
           </div>
-
+          <div class="form-group">
+              <div class="col-xs-12 col-md-9">
+                <label class="col-xs-12 col-md-7 control-label" >Medical / Dental Practition&nbsp;<span class="mandatory">*</span></label>
+                <div class="col-xs-12 col-md-2">
+                  <iais:input maxLength="2" type="text" name="man-SMDP" value="${SMDP.mandatoryCount}"
+                              placeholder="minimum count" needErrorSpan="false"/>
+                  <span class="error-msg" name="iaisErrorMsg" id="error_man-SMDP"></span>
+                </div>
+                <div class="col-xs-12 col-md-2">
+                  <iais:input maxLength="2" type="text" name="mix-SMDP" value="${SMDP.maximumCount}"
+                              placeholder="maximum count" needErrorSpan="false"/>
+                  <span class="error-msg" name="iaisErrorMsg" id="error_mix-SMDP"></span>
+                </div>
+              </div>
+            </div>
+          <div class="form-group">
+              <div class="col-xs-12 col-md-9">
+                <label class="col-xs-12 col-md-7 control-label" >Renal Physician&nbsp;<span class="mandatory">*</span></label>
+                <div class="col-xs-12 col-md-2">
+                  <iais:input maxLength="2" type="text" name="man-SRP" value="${SRP.mandatoryCount}"
+                              placeholder="minimum count" needErrorSpan="false"/>
+                  <span class="error-msg" name="iaisErrorMsg" id="error_man-SRP"></span>
+                </div>
+                <div class="col-xs-12 col-md-2">
+                  <iais:input maxLength="2" type="text" name="mix-SRP" value="${SRP.maximumCount}"
+                              placeholder="maximum count" needErrorSpan="false"/>
+                  <span class="error-msg" name="iaisErrorMsg" id="error_mix-SRP"></span>
+                </div>
+              </div>
+            </div>
           <div class="form-group">
             <div class="col-xs-12 col-md-9">
               <label class="col-xs-12 col-md-7 control-label" >Nurse in Charge&nbsp;<span class="mandatory">*</span></label>
@@ -713,74 +741,96 @@
               </div>
             </div>
           </div>
-
           <div class="form-group">
             <div class="col-xs-12 col-md-9">
-              <label class="col-xs-12 col-md-7 control-label" >Nurses (Medical Service) &nbsp;<span class="mandatory">*</span></label>
+              <label class="col-xs-12 col-md-7 control-label" >Dialysis Trained Registered Nurse&nbsp;<span class="mandatory">*</span></label>
               <div class="col-xs-12 col-md-2">
-                <iais:input type="hidden" name="secldrId" value="${SNMS.id}"/>
-                <iais:input maxLength="2" type="text" name="man-SNMS" value="${SNMS.mandatoryCount}"
+                <iais:input maxLength="2" type="text" name="man-SDTRN" value="${SDTRN.mandatoryCount}"
                             placeholder="minimum count" needErrorSpan="false"/>
-                <span class="error-msg" name="iaisErrorMsg" id="error_man-SNMS"></span>
+                <span class="error-msg" name="iaisErrorMsg" id="error_man-SDTRN"></span>
               </div>
               <div class="col-xs-12 col-md-2">
-                <iais:input maxLength="2" type="text" name="mix-SNMS" value="${SNMS.maximumCount}"
+                <iais:input maxLength="2" type="text" name="mix-SDTRN" value="${SDTRN.maximumCount}"
                             placeholder="maximum count" needErrorSpan="false"/>
-                <span class="error-msg" name="iaisErrorMsg" id="error_mix-SNMS"></span>
+                <span class="error-msg" name="iaisErrorMsg" id="error_mix-SDTRN"></span>
               </div>
             </div>
           </div>
-
           <div class="form-group">
             <div class="col-xs-12 col-md-9">
-              <label class="col-xs-12 col-md-7 control-label" >Nurses (Dental Service) &nbsp;<span class="mandatory">*</span></label>
+              <label class="col-xs-12 col-md-7 control-label" >Registered Nurses not Dialysis Trained&nbsp;<span class="mandatory">*</span></label>
               <div class="col-xs-12 col-md-2">
-                <iais:input type="hidden" name="secldrId" value="${SNDS.id}"/>
-                <iais:input maxLength="2" type="text" name="man-SNDS" value="${SNDS.mandatoryCount}"
+                <iais:input maxLength="2" type="text" name="man-SRNNDT" value="${SRNNDT.mandatoryCount}"
                             placeholder="minimum count" needErrorSpan="false"/>
-                <span class="error-msg" name="iaisErrorMsg" id="error_man-SNDS"></span>
+                <span class="error-msg" name="iaisErrorMsg" id="error_man-SRNNDT"></span>
               </div>
               <div class="col-xs-12 col-md-2">
-                <iais:input maxLength="2" type="text" name="mix-SNDS" value="${SNDS.maximumCount}"
+                <iais:input maxLength="2" type="text" name="mix-SRNNDT" value="${SRNNDT.maximumCount}"
                             placeholder="maximum count" needErrorSpan="false"/>
-                <span class="error-msg" name="iaisErrorMsg" id="error_mix-SNDS"></span>
+                <span class="error-msg" name="iaisErrorMsg" id="error_mix-SRNNDT"></span>
               </div>
             </div>
           </div>
-
           <div class="form-group">
             <div class="col-xs-12 col-md-9">
-              <label class="col-xs-12 col-md-7 control-label" >Practicing Dentist &nbsp;<span class="mandatory">*</span></label>
+              <label class="col-xs-12 col-md-7 control-label" >Enrolled Nurse&nbsp;<span class="mandatory">*</span></label>
               <div class="col-xs-12 col-md-2">
-                <iais:input type="hidden" name="secldrId" value="${SPDE.id}"/>
-                <iais:input maxLength="2" type="text" name="man-SPDE" value="${SPDE.mandatoryCount}"
-                            placeholder="minimum count" needErrorSpan="true"/>
-              </div>
-              <div class="col-xs-12 col-md-2">
-                <iais:input maxLength="2" type="text" name="mix-SPDE" value="${SPDE.maximumCount}"
-                            placeholder="maximum count" needErrorSpan="false"/>
-                <span class="error-msg" name="iaisErrorMsg" id="error_mix-SPDE"></span>
-              </div>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="col-xs-12 col-md-9">
-              <label class="col-xs-12 col-md-7 control-label" >Oral Healthcare Therapist &nbsp;<span class="mandatory">*</span></label>
-              <div class="col-xs-12 col-md-2">
-                <iais:input type="hidden" name="secldrId" value="${SOHT.id}"/>
-                <iais:input maxLength="2" type="text" name="man-SOHT" value="${SOHT.mandatoryCount}"
+                <iais:input maxLength="2" type="text" name="man-SEN" value="${SEN.mandatoryCount}"
                             placeholder="minimum count" needErrorSpan="false"/>
-                <span class="error-msg" name="iaisErrorMsg" id="error_man-SOHT"></span>
+                <span class="error-msg" name="iaisErrorMsg" id="error_man-SEN"></span>
               </div>
               <div class="col-xs-12 col-md-2">
-                <iais:input maxLength="2" type="text" name="mix-SOHT" value="${SOHT.maximumCount}"
+                <iais:input maxLength="2" type="text" name="mix-SEN" value="${SEN.maximumCount}"
                             placeholder="maximum count" needErrorSpan="false"/>
-                <span class="error-msg" name="iaisErrorMsg" id="error_mix-SOHT"></span>
+                <span class="error-msg" name="iaisErrorMsg" id="error_mix-SEN"></span>
               </div>
             </div>
           </div>
-
+          <div class="form-group">
+            <div class="col-xs-12 col-md-9">
+              <label class="col-xs-12 col-md-7 control-label" >Acupuncturist&nbsp;<span class="mandatory">*</span></label>
+              <div class="col-xs-12 col-md-2">
+                <iais:input maxLength="2" type="text" name="man-SA" value="${SA.mandatoryCount}"
+                            placeholder="minimum count" needErrorSpan="false"/>
+                <span class="error-msg" name="iaisErrorMsg" id="error_man-SA"></span>
+              </div>
+              <div class="col-xs-12 col-md-2">
+                <iais:input maxLength="2" type="text" name="mix-SA" value="${SA.maximumCount}"
+                            placeholder="maximum count" needErrorSpan="false"/>
+                <span class="error-msg" name="iaisErrorMsg" id="error_mix-SA"></span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-xs-12 col-md-9">
+              <label class="col-xs-12 col-md-7 control-label" >Anaesthetist (Medical Service)&nbsp;<span class="mandatory">*</span></label>
+              <div class="col-xs-12 col-md-2">
+                <iais:input maxLength="2" type="text" name="man-SAM" value="${SAM.mandatoryCount}"
+                            placeholder="minimum count" needErrorSpan="false"/>
+                <span class="error-msg" name="iaisErrorMsg" id="error_man-SAM"></span>
+              </div>
+              <div class="col-xs-12 col-md-2">
+                <iais:input maxLength="2" type="text" name="mix-SAM" value="${SAM.maximumCount}"
+                            placeholder="maximum count" needErrorSpan="false"/>
+                <span class="error-msg" name="iaisErrorMsg" id="error_mix-SAM"></span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-xs-12 col-md-9">
+              <label class="col-xs-12 col-md-7 control-label" >Trained Nurses (Medical Service)&nbsp;<span class="mandatory">*</span></label>
+              <div class="col-xs-12 col-md-2">
+                <iais:input maxLength="2" type="text" name="man-STNM" value="${STNM.mandatoryCount}"
+                            placeholder="minimum count" needErrorSpan="false"/>
+                <span class="error-msg" name="iaisErrorMsg" id="error_man-STNM"></span>
+              </div>
+              <div class="col-xs-12 col-md-2">
+                <iais:input maxLength="2" type="text" name="mix-STNM" value="${STNM.maximumCount}"
+                            placeholder="maximum count" needErrorSpan="false"/>
+                <span class="error-msg" name="iaisErrorMsg" id="error_mix-STNM"></span>
+              </div>
+            </div>
+          </div>
           <div class="form-group">
             <div class="col-xs-12 col-md-9">
               <label class="col-xs-12 col-md-7 control-label" >Practicing Doctor&nbsp;<span class="mandatory">*</span></label>
@@ -797,7 +847,68 @@
               </div>
             </div>
           </div>
+          <div class="form-group">
+            <div class="col-xs-12 col-md-9">
+              <label class="col-xs-12 col-md-7 control-label" >Anaesthetist (Dental Service)&nbsp;<span class="mandatory">*</span></label>
+              <div class="col-xs-12 col-md-2">
+                <iais:input maxLength="2" type="text" name="man-SAD" value="${SAD.mandatoryCount}"
+                            placeholder="minimum count" needErrorSpan="false"/>
+                <span class="error-msg" name="iaisErrorMsg" id="error_man-SAD"></span>
+              </div>
+              <div class="col-xs-12 col-md-2">
+                <iais:input maxLength="2" type="text" name="mix-SAD" value="${SAD.maximumCount}"
+                            placeholder="maximum count" needErrorSpan="false"/>
+                <span class="error-msg" name="iaisErrorMsg" id="error_mix-SAD"></span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+          <div class="col-xs-12 col-md-9">
+            <label class="col-xs-12 col-md-7 control-label" >Trained Nurses (Dental Service)&nbsp;<span class="mandatory">*</span></label>
+            <div class="col-xs-12 col-md-2">
+              <iais:input maxLength="2" type="text" name="man-STND" value="${STND.mandatoryCount}"
+                          placeholder="minimum count" needErrorSpan="false"/>
+              <span class="error-msg" name="iaisErrorMsg" id="error_man-STND"></span>
+            </div>
+            <div class="col-xs-12 col-md-2">
+              <iais:input maxLength="2" type="text" name="mix-STND" value="${STND.maximumCount}"
+                          placeholder="maximum count" needErrorSpan="false"/>
+              <span class="error-msg" name="iaisErrorMsg" id="error_mix-STND"></span>
+            </div>
+          </div>
         </div>
+          <div class="form-group">
+            <div class="col-xs-12 col-md-9">
+              <label class="col-xs-12 col-md-7 control-label" >Practicing Dentist &nbsp;<span class="mandatory">*</span></label>
+              <div class="col-xs-12 col-md-2">
+                <iais:input type="hidden" name="secldrId" value="${SPDE.id}"/>
+                <iais:input maxLength="2" type="text" name="man-SPDE" value="${SPDE.mandatoryCount}"
+                            placeholder="minimum count" needErrorSpan="true"/>
+              </div>
+              <div class="col-xs-12 col-md-2">
+                <iais:input maxLength="2" type="text" name="mix-SPDE" value="${SPDE.maximumCount}"
+                            placeholder="maximum count" needErrorSpan="false"/>
+                <span class="error-msg" name="iaisErrorMsg" id="error_mix-SPDE"></span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-xs-12 col-md-9">
+              <label class="col-xs-12 col-md-7 control-label" >Trained Dental Hygienist/ Dental Therapist / Oral Healthcare Therapist &nbsp;<span class="mandatory">*</span></label>
+              <div class="col-xs-12 col-md-2">
+                <iais:input type="hidden" name="secldrId" value="${SOHT.id}"/>
+                <iais:input maxLength="2" type="text" name="man-SOHT" value="${SOHT.mandatoryCount}"
+                            placeholder="minimum count" needErrorSpan="false"/>
+                <span class="error-msg" name="iaisErrorMsg" id="error_man-SOHT"></span>
+              </div>
+              <div class="col-xs-12 col-md-2">
+                <iais:input maxLength="2" type="text" name="mix-SOHT" value="${SOHT.maximumCount}"
+                            placeholder="maximum count" needErrorSpan="false"/>
+                <span class="error-msg" name="iaisErrorMsg" id="error_mix-SOHT"></span>
+              </div>
+            </div>
+          </div>
+          </div>
         </div>
 
       <div class="form-group">
