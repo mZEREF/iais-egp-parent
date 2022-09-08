@@ -2,16 +2,9 @@
     <input type="hidden" class="not-refresh " name="${logo}speCount" value="size"/>
     <input type="hidden" name="indexNo" value="${appSvcPersonnelDto.indexNo}"/>
     <iais:row cssClass="personnel-header">
-        <iais:value width="5" cssClass="col-xs-12 col-md-6">
+        <%--<iais:value width="5" cssClass="col-xs-12 col-md-6">
             <strong>
-                <c:choose>
-                    <c:when test="${not empty title}">
-                        <c:out value="${title} "/>
-                    </c:when>
-                    <c:otherwise>
-                        <c:out value="ServicePersonnel "/>
-                    </c:otherwise>
-                </c:choose>
+                <c:out value="${title} "/>
                 <label class="assign-psn-item">${index+1}</label>
             </strong>
         </iais:value>
@@ -21,7 +14,16 @@
                     <em class="fa fa-times-circle del-size-36 removeBtns cursorPointer"></em>
                 </h4>
             </div>
-        </iais:value>
+        </iais:value>--%>
+        <div class="col-xs-12 col-md-6">
+            <p class="bold">${title} <label class="assign-psn-item">${index+1}</label></p>
+            <p><span class="error-msg" name="iaisErrorMSg" id="error_${prepsn}personError${index}"></span></p>
+        </div>
+        <div class="col-xs-12 col-md-6 text-right removeEditDiv <c:if test="${index == 0}">hidden</c:if>">
+            <h4 class="text-danger">
+                <em class="fa fa-times-circle del-size-36 removeBtns cursorPointer"></em>
+            </h4>
+        </div>
     </iais:row>
     <iais:row>
         <c:if test="${'true' == canEdit}">
