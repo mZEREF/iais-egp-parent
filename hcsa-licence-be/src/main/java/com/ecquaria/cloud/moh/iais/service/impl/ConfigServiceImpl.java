@@ -123,6 +123,8 @@ public class ConfigServiceImpl implements ConfigService {
                 hcsaServiceConfigDto.setSpecHcsaServiceSubServicePageDtoMap(specHcsaServiceSubServicePageDtoMap);
                 hcsaServiceConfigDto.setHcsaServiceCategoryDisciplineDtoMap(hcsaServiceCategoryDisciplineDtoMap);
                 hcsaServiceConfigDto.setPremisesTypes(premisTypes.toArray(new String[premisTypes.size()]));
+                hcsaServiceConfigDto.setDisciplineSectionHeader(hcsaServiceCategoryDisciplineDtoMap.values().stream().findFirst().get().getSectionHeader());
+                hcsaServiceConfigDto.setSpecialisedSectionHeader(specHcsaServiceSubServicePageDtoMap.values().stream().findFirst().get().getSectionHeader());
             }else{
                 log.info(StringUtil.changeForLog("The hcsaSvcSpePremisesTypeDtos is null"));
             }

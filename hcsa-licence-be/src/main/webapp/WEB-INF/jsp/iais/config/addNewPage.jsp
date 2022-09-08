@@ -1114,6 +1114,26 @@
           <div class="col-xs-12 col-md-12 Sub-Types" style="margin-top: 20px ;margin-bottom: 20px">
             <label class="col-xs-12 col-md-12 control-label">Specialised Services</label>
           </div>
+          <div class="col-xs-12 col-md-9 marg-1">
+            <label class="col-xs-12 col-md-7 control-label" >Category / Discipline (Section Header)<span class="mandatory">*</span></label>
+            <div class="col-xs-10 col-md-4">
+              <div class="components">
+                <input type="text" maxlength="100"
+                       value="${hcsaServiceConfigDto.disciplineSectionHeader}" name="disciplineSectionHeader">
+                <span name="iaisErrorMsg" class="error-msg" id="error_disciplineSectionHeader"></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-12 col-md-9 marg-1">
+            <label class="col-xs-12 col-md-7 control-label" >Specialised Services (Section Header)<span class="mandatory">*</span></label>
+            <div class="col-xs-10 col-md-4">
+              <div class="components">
+                <input type="text" maxlength="100"
+                       value="${hcsaServiceConfigDto.specialisedSectionHeader}" name="specialisedSectionHeader">
+                <span name="iaisErrorMsg" class="error-msg" id="error_specialisedSectionHeader"></span>
+              </div>
+            </div>
+          </div>
 
           <c:forEach items="<%=ServiceConfigConstant.PREMISES_TYPE_MAP%>" var = "premTypeMap">
             <div class="col-xs-12 col-md-12 Sub-Types" style="margin-top: 20px ;margin-bottom: 20px" id ="${premTypeMap.key}-SVTP003">
@@ -1123,70 +1143,134 @@
                 <label class="col-xs-12 col-md-12 control-label">For ${premTypeMap.value}</label>
               </div>
 
-              <div class="col-xs-12 col-md-9 marg-1">
-                <label class="col-xs-12 col-md-7 control-label" >Category / Discipline (Section Header)</label>
-                <div class="col-xs-10 col-md-4">
-                  <div class="components">
-                    <input type="text" maxlength="100"
-                           value="${hcsaServiceConfigDto.hcsaServiceCategoryDisciplineDtoMap[premTypeMap.key].sectionHeader}" name="${premTypeMap.key}-sectionHeader">
-                    <span name="iaisErrorMsg" class="error-msg" id="error_${premTypeMap.key}-sectionHeader"></span>
-                  </div>
-                </div>
-              </div>
-              <c:if test="${hcsaServiceConfigDto.hcsaServiceCategoryDisciplineDtoMap !=null}">
-                <c:forEach items="${hcsaServiceConfigDto.hcsaServiceCategoryDisciplineDtoMap[premTypeMap.key].categoryDisciplineDtos}" var = "categoryDisciplineDto">
-                  <div class="add col-xs-12 col-md-9 marg-1">
-                    <label class="col-xs-12 col-md-7 control-label" >Category / Discipline</label>
-                    <div class="col-xs-10 col-md-4">
-                      <input type="text" maxlength="100" value="${categoryDisciplineDto.categoryDiscipline}" name="${premTypeMap.key}-categoryDisciplines">
-                      <span class="error-msg" >${categoryDisciplineDto.errorMsg}</span>
+              <c:choose>
+                <c:when test="${hcsaServiceConfigDto.hcsaServiceCategoryDisciplineDtoMap !=null}">
+                  <c:choose>
+                    <c:when test="${hcsaServiceConfigDto.hcsaServiceCategoryDisciplineDtoMap[premTypeMap.key].categoryDisciplineDtos.size() == 0}">
+                      <c:if test="${!isView}">
+                        <div class="add col-xs-12 col-md-9 marg-1">
+                          <label class="col-xs-12 col-md-7 control-label" >Category / Discipline</label>
+                          <div class="col-xs-10 col-md-4">
+                            <input type="text" maxlength="100" value="" name="${premTypeMap.key}-categoryDisciplines">
+                            <span class="error-msg" ></span>
+                          </div>
+                          <div class="col-xs-12 col-md-1">
+                            <a class="btn  btn-secondary view" onclick="removeThis(this)" >-</a>
+                          </div>
+                        </div>
+                      </c:if>
+                    </c:when>
+                    <c:otherwise>
+                      <c:forEach items="${hcsaServiceConfigDto.hcsaServiceCategoryDisciplineDtoMap[premTypeMap.key].categoryDisciplineDtos}" var = "categoryDisciplineDto">
+                        <div class="add col-xs-12 col-md-9 marg-1">
+                          <label class="col-xs-12 col-md-7 control-label" >Category / Discipline</label>
+                          <div class="col-xs-10 col-md-4">
+                            <input type="text" maxlength="100" value="${categoryDisciplineDto.categoryDiscipline}" name="${premTypeMap.key}-categoryDisciplines">
+                            <span class="error-msg" >${categoryDisciplineDto.errorMsg}</span>
+                          </div>
+                          <div class="col-xs-12 col-md-1">
+                            <a class="btn  btn-secondary view" <c:if test="${!isView}"> onclick="removeThis(this)"</c:if> >-</a>
+                          </div>
+                        </div>
+                      </c:forEach>
+                    </c:otherwise>
+                  </c:choose>
+                </c:when>
+                <c:otherwise>
+                  <c:if test="${!isView}">
+                    <div class="add col-xs-12 col-md-9 marg-1">
+                      <label class="col-xs-12 col-md-7 control-label" >Category / Discipline</label>
+                      <div class="col-xs-10 col-md-4">
+                        <input type="text" maxlength="100" value="" name="${premTypeMap.key}-categoryDisciplines">
+                        <span class="error-msg" ></span>
+                      </div>
+                      <div class="col-xs-12 col-md-1">
+                        <a class="btn  btn-secondary view" onclick="removeThis(this)" >-</a>
+                      </div>
                     </div>
-                    <div class="col-xs-12 col-md-1">
-                      <a class="btn  btn-secondary view" <c:if test="${!isView}"> onclick="removeThis(this)"</c:if> >-</a>
-                    </div>
-                  </div>
-                </c:forEach>
-              </c:if>
+                  </c:if>
+                </c:otherwise>
+              </c:choose>
               <div class="col-xs-12 col-md-12">
                 <a  class="btn  btn-secondary "   style="margin-right: 10px"
                         <c:if test="${!isView}"> onclick="addCategory(this,'${premTypeMap.key}-categoryDisciplines')" </c:if> > + </a><label > Add Item</label>
               </div>
 
-              <div class="col-xs-12 col-md-9 marg-1">
-                <label class="col-xs-12 col-md-7 control-label" >Specialised Services (Section Header)</label>
-                <div class="col-xs-10 col-md-4">
-                  <div class="components">
-                    <input type="text" maxlength="100"
-                           value="${hcsaServiceConfigDto.specHcsaServiceSubServicePageDtoMap[premTypeMap.key].sectionHeader}" name="${premTypeMap.key}-SVTP003-sectionHeader">
-                    <span name="iaisErrorMsg" class="error-msg" id="error_${premTypeMap.key}-SVTP003-sectionHeader"></span>
-                  </div>
-                </div>
-              </div>
-
-              <c:if test="${hcsaServiceConfigDto.specHcsaServiceSubServicePageDtoMap !=null}">
-                <c:forEach items="${hcsaServiceConfigDto.specHcsaServiceSubServicePageDtoMap[premTypeMap.key].hcsaServiceSubServiceErrorsDtos}" var = "hcsaServiceSubServiceErrorsDto">
-                  <div class="add col-xs-12 col-md-12"  style="margin-top: 20px ;margin-bottom: 20px">
-                    <div class="col-xs-12 col-md-5" style="padding-right: 20%;margin-left:${hcsaServiceSubServiceErrorsDto.marginLeft}px" >
-                      <iais:select name="${premTypeMap.key}-SVTP003-subServiceCodes" options="specHcsaServiceOptions" firstOption="Please Select"
-                                   value="${hcsaServiceSubServiceErrorsDto.subServiceCode}"/>
-                      <span class="error-msg" >${hcsaServiceSubServiceErrorsDto.errorMsg}</span>
+              <c:choose>
+                <c:when test="${hcsaServiceConfigDto.specHcsaServiceSubServicePageDtoMap !=null}">
+                  <c:choose>
+                    <c:when test="${hcsaServiceConfigDto.specHcsaServiceSubServicePageDtoMap[premTypeMap.key].hcsaServiceSubServiceErrorsDtos.size() == 0}">
+                      <c:if test="${!isView}">
+                        <div class="add col-xs-12 col-md-12"  style="margin-top: 20px ;margin-bottom: 20px">
+                          <div class="col-xs-12 col-md-5" style="padding-right: 20%;margin-left:${hcsaServiceSubServiceErrorsDto.marginLeft}px" >
+                            <iais:select name="${premTypeMap.key}-SVTP003-subServiceCodes" options="specHcsaServiceOptions" firstOption="Please Select"
+                                         value=""/>
+                            <span class="error-msg" ></span>
+                          </div>
+                          <div class="value">
+                            <input type="text" value="0" name="${premTypeMap.key}-SVTP003-levels" style="display: none">
+                          </div>
+                          <div  class="col-xs-12 col-md-2" style="padding-left: 3%;" >
+                            <a class="btn  btn-secondary  view" <c:if test="${!isView}"> onclick="indents(this)" </c:if>  >indent</a>
+                          </div>
+                          <div  class="col-xs-12 col-md-2" >
+                            <a class="btn  btn-secondary view" <c:if test="${!isView}"> onclick="outdent(this)" </c:if> >outdent</a>
+                          </div>
+                          <div class="col-xs-12 col-md-1">
+                            <a class="btn  btn-secondary view" <c:if test="${!isView}"> onclick="removeThis(this)" </c:if> >-</a>
+                          </div>
+                        </div>
+                      </c:if>
+                    </c:when>
+                    <c:otherwise>
+                      <c:forEach items="${hcsaServiceConfigDto.specHcsaServiceSubServicePageDtoMap[premTypeMap.key].hcsaServiceSubServiceErrorsDtos}" var = "hcsaServiceSubServiceErrorsDto">
+                        <div class="add col-xs-12 col-md-12"  style="margin-top: 20px ;margin-bottom: 20px">
+                          <div class="col-xs-12 col-md-5" style="padding-right: 20%;margin-left:${hcsaServiceSubServiceErrorsDto.marginLeft}px" >
+                            <iais:select name="${premTypeMap.key}-SVTP003-subServiceCodes" options="specHcsaServiceOptions" firstOption="Please Select"
+                                         value="${hcsaServiceSubServiceErrorsDto.subServiceCode}"/>
+                            <span class="error-msg" >${hcsaServiceSubServiceErrorsDto.errorMsg}</span>
+                          </div>
+                          <div class="value">
+                            <input type="text" value="${hcsaServiceSubServiceErrorsDto.level}" name="${premTypeMap.key}-SVTP003-levels" style="display: none">
+                          </div>
+                          <div  class="col-xs-12 col-md-2" style="padding-left: 3%;" >
+                            <a class="btn  btn-secondary  view" <c:if test="${!isView}"> onclick="indents(this)" </c:if>  >indent</a>
+                          </div>
+                          <div  class="col-xs-12 col-md-2" >
+                            <a class="btn  btn-secondary view" <c:if test="${!isView}"> onclick="outdent(this)" </c:if> >outdent</a>
+                          </div>
+                          <div class="col-xs-12 col-md-1">
+                            <a class="btn  btn-secondary view" <c:if test="${!isView}"> onclick="removeThis(this)" </c:if> >-</a>
+                          </div>
+                        </div>
+                      </c:forEach>
+                    </c:otherwise>
+                  </c:choose>
+                </c:when>
+                <c:otherwise>
+                  <c:if test="${!isView}">
+                    <div class="add col-xs-12 col-md-12"  style="margin-top: 20px ;margin-bottom: 20px">
+                      <div class="col-xs-12 col-md-5" style="padding-right: 20%;margin-left:${hcsaServiceSubServiceErrorsDto.marginLeft}px" >
+                        <iais:select name="${premTypeMap.key}-SVTP003-subServiceCodes" options="specHcsaServiceOptions" firstOption="Please Select"
+                                     value=""/>
+                        <span class="error-msg" ></span>
+                      </div>
+                      <div class="value">
+                        <input type="text" value="0" name="${premTypeMap.key}-SVTP003-levels" style="display: none">
+                      </div>
+                      <div  class="col-xs-12 col-md-2" style="padding-left: 3%;" >
+                        <a class="btn  btn-secondary  view" <c:if test="${!isView}"> onclick="indents(this)" </c:if>  >indent</a>
+                      </div>
+                      <div  class="col-xs-12 col-md-2" >
+                        <a class="btn  btn-secondary view" <c:if test="${!isView}"> onclick="outdent(this)" </c:if> >outdent</a>
+                      </div>
+                      <div class="col-xs-12 col-md-1">
+                        <a class="btn  btn-secondary view" <c:if test="${!isView}"> onclick="removeThis(this)" </c:if> >-</a>
+                      </div>
                     </div>
-                    <div class="value">
-                      <input type="text" value="${hcsaServiceSubServiceErrorsDto.level}" name="${premTypeMap.key}-SVTP003-levels" style="display: none">
-                    </div>
-                    <div  class="col-xs-12 col-md-2" style="padding-left: 3%;" >
-                      <a class="btn  btn-secondary  view" <c:if test="${!isView}"> onclick="indents(this)" </c:if>  >indent</a>
-                    </div>
-                    <div  class="col-xs-12 col-md-2" >
-                      <a class="btn  btn-secondary view" <c:if test="${!isView}"> onclick="outdent(this)" </c:if> >outdent</a>
-                    </div>
-                    <div class="col-xs-12 col-md-1">
-                      <a class="btn  btn-secondary view" <c:if test="${!isView}"> onclick="removeThis(this)" </c:if> >-</a>
-                    </div>
-                  </div>
-                </c:forEach>
-              </c:if>
-
+                  </c:if>
+                </c:otherwise>
+              </c:choose>
 
               <div class="col-xs-12 col-md-12">
                 <a  class="btn  btn-secondary "   style="margin-right: 10px" <c:if test="${!isView}">onclick="addAsItem(this,'${premTypeMap.key}','SVTP003')"</c:if>> + </a><label > Add Item</label>
@@ -1206,30 +1290,81 @@
                 <label class="col-xs-12 col-md-12 control-label">For ${premTypeMap.value}</label>
               </div>
 
-              <c:if test="${hcsaServiceConfigDto.otherHcsaServiceSubServicePageDtoMap !=null}">
-                <c:forEach items="${hcsaServiceConfigDto.otherHcsaServiceSubServicePageDtoMap[premTypeMap.key].hcsaServiceSubServiceErrorsDtos}" var = "hcsaServiceSubServiceErrorsDto">
-                  <div class="add col-xs-12 col-md-12"  style="margin-top: 20px ;margin-bottom: 20px">
-                    <div class="col-xs-12 col-md-5" style="padding-right: 20%;margin-left:${hcsaServiceSubServiceErrorsDto.marginLeft}px" >
-                      <iais:select name="${premTypeMap.key}-SVTP005-subServiceCodes" options="otherHcsaServiceOptions" firstOption="Please Select"
-                                   value="${hcsaServiceSubServiceErrorsDto.subServiceCode}"/>
-                      <span class="error-msg" >${hcsaServiceSubServiceErrorsDto.errorMsg}</span>
+              <c:choose>
+                <c:when test="${hcsaServiceConfigDto.otherHcsaServiceSubServicePageDtoMap !=null}">
+                  <c:choose>
+                    <c:when test="${hcsaServiceConfigDto.otherHcsaServiceSubServicePageDtoMap[premTypeMap.key].hcsaServiceSubServiceErrorsDtos.size() == 0}">
+                      <c:if test="${!isView}">
+                        <div class="add col-xs-12 col-md-12"  style="margin-top: 20px ;margin-bottom: 20px">
+                          <div class="col-xs-12 col-md-5" style="padding-right: 20%;margin-left:${hcsaServiceSubServiceErrorsDto.marginLeft}px" >
+                            <iais:select name="${premTypeMap.key}-SVTP005-subServiceCodes" options="otherHcsaServiceOptions" firstOption="Please Select"
+                                         value=""/>
+                            <span class="error-msg" ></span>
+                          </div>
+                          <div class="value">
+                            <input type="text" value="0" name="${premTypeMap.key}-SVTP005-levels" style="display: none">
+                          </div>
+                          <div  class="col-xs-12 col-md-2" style="padding-left: 3%;" >
+                            <a class="btn  btn-secondary  view" <c:if test="${!isView}"> onclick="indents(this)" </c:if>  >indent</a>
+                          </div>
+                          <div  class="col-xs-12 col-md-2" >
+                            <a class="btn  btn-secondary view" <c:if test="${!isView}">  onclick="outdent(this)" </c:if> >outdent</a>
+                          </div>
+                          <div class="col-xs-12 col-md-1">
+                            <a class="btn  btn-secondary view"  <c:if test="${!isView}"> onclick="removeThis(this)" </c:if> >-</a>
+                          </div>
+                        </div>
+                      </c:if>
+                    </c:when>
+                    <c:otherwise>
+                      <c:forEach items="${hcsaServiceConfigDto.otherHcsaServiceSubServicePageDtoMap[premTypeMap.key].hcsaServiceSubServiceErrorsDtos}" var = "hcsaServiceSubServiceErrorsDto">
+                        <div class="add col-xs-12 col-md-12"  style="margin-top: 20px ;margin-bottom: 20px">
+                          <div class="col-xs-12 col-md-5" style="padding-right: 20%;margin-left:${hcsaServiceSubServiceErrorsDto.marginLeft}px" >
+                            <iais:select name="${premTypeMap.key}-SVTP005-subServiceCodes" options="otherHcsaServiceOptions" firstOption="Please Select"
+                                         value="${hcsaServiceSubServiceErrorsDto.subServiceCode}"/>
+                            <span class="error-msg" >${hcsaServiceSubServiceErrorsDto.errorMsg}</span>
+                          </div>
+                          <div class="value">
+                            <input type="text" value="${hcsaServiceSubServiceErrorsDto.level}" name="${premTypeMap.key}-SVTP005-levels" style="display: none">
+                          </div>
+                          <div  class="col-xs-12 col-md-2" style="padding-left: 3%;" >
+                            <a class="btn  btn-secondary  view" <c:if test="${!isView}"> onclick="indents(this)" </c:if>  >indent</a>
+                          </div>
+                          <div  class="col-xs-12 col-md-2" >
+                            <a class="btn  btn-secondary view" <c:if test="${!isView}">  onclick="outdent(this)" </c:if> >outdent</a>
+                          </div>
+                          <div class="col-xs-12 col-md-1">
+                            <a class="btn  btn-secondary view"  <c:if test="${!isView}"> onclick="removeThis(this)" </c:if> >-</a>
+                          </div>
+                        </div>
+                      </c:forEach>
+                    </c:otherwise>
+                  </c:choose>
+                </c:when>
+                <c:otherwise>
+                  <c:if test="${!isView}">
+                    <div class="add col-xs-12 col-md-12"  style="margin-top: 20px ;margin-bottom: 20px">
+                      <div class="col-xs-12 col-md-5" style="padding-right: 20%;margin-left:${hcsaServiceSubServiceErrorsDto.marginLeft}px" >
+                        <iais:select name="${premTypeMap.key}-SVTP005-subServiceCodes" options="otherHcsaServiceOptions" firstOption="Please Select"
+                                     value=""/>
+                        <span class="error-msg" ></span>
+                      </div>
+                      <div class="value">
+                        <input type="text" value="0" name="${premTypeMap.key}-SVTP005-levels" style="display: none">
+                      </div>
+                      <div  class="col-xs-12 col-md-2" style="padding-left: 3%;" >
+                        <a class="btn  btn-secondary  view" <c:if test="${!isView}"> onclick="indents(this)" </c:if>  >indent</a>
+                      </div>
+                      <div  class="col-xs-12 col-md-2" >
+                        <a class="btn  btn-secondary view" <c:if test="${!isView}">  onclick="outdent(this)" </c:if> >outdent</a>
+                      </div>
+                      <div class="col-xs-12 col-md-1">
+                        <a class="btn  btn-secondary view"  <c:if test="${!isView}"> onclick="removeThis(this)" </c:if> >-</a>
+                      </div>
                     </div>
-                    <div class="value">
-                      <input type="text" value="${hcsaServiceSubServiceErrorsDto.level}" name="${premTypeMap.key}-SVTP005-levels" style="display: none">
-                    </div>
-                    <div  class="col-xs-12 col-md-2" style="padding-left: 3%;" >
-                      <a class="btn  btn-secondary  view" <c:if test="${!isView}"> onclick="indents(this)" </c:if>  >indent</a>
-                    </div>
-                    <div  class="col-xs-12 col-md-2" >
-                      <a class="btn  btn-secondary view" <c:if test="${!isView}">  onclick="outdent(this)" </c:if> >outdent</a>
-                    </div>
-                    <div class="col-xs-12 col-md-1">
-                      <a class="btn  btn-secondary view"  <c:if test="${!isView}"> onclick="removeThis(this)" </c:if> >-</a>
-                    </div>
-                  </div>
-                </c:forEach>
-              </c:if>
-
+                  </c:if>
+                </c:otherwise>
+              </c:choose>
 
               <div class="col-xs-12 col-md-12">
                 <a  class="btn  btn-secondary "   style="margin-right: 10px"

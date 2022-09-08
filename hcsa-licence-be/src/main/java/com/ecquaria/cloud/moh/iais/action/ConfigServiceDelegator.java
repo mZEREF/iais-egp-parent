@@ -724,16 +724,16 @@ public class ConfigServiceDelegator {
             for(String premisesType : premisesTypes){
                 //for hcsaServiceCategoryDisciplineDtoMap
                 HcsaServiceCategoryDisciplineDto hcsaServiceCategoryDisciplineDto = new HcsaServiceCategoryDisciplineDto();
-                String sectionHeader = ParamUtil.getString(request,premisesType+"-sectionHeader");
+                //String sectionHeader = ParamUtil.getString(request,premisesType+"-sectionHeader");
                 String[] categoryDisciplines = ParamUtil.getStrings(request,premisesType+"-categoryDisciplines");
-                hcsaServiceCategoryDisciplineDto.setSectionHeader(sectionHeader);
+                hcsaServiceCategoryDisciplineDto.setSectionHeader(hcsaServiceConfigDto.getDisciplineSectionHeader());
                 hcsaServiceCategoryDisciplineDto.setCategoryDisciplines(categoryDisciplines);
                 hcsaServiceCategoryDisciplineDtoMap.put(premisesType,hcsaServiceCategoryDisciplineDto);
                 hcsaServiceConfigDto.setHcsaServiceCategoryDisciplineDtoMap(hcsaServiceCategoryDisciplineDtoMap);
                 //for specHcsaServiceSubServicePageDtoMap
-                addSubServiceData(request,premisesType,HcsaConsts.SERVICE_TYPE_SPECIFIED,specHcsaServiceSubServicePageDtoMap);
+                addSubServiceData(request,premisesType,HcsaConsts.SERVICE_TYPE_SPECIFIED,specHcsaServiceSubServicePageDtoMap,hcsaServiceConfigDto.getSpecialisedSectionHeader());
                 //for otherHcsaServiceSubServicePageDtoMap
-                addSubServiceData(request,premisesType,HcsaConsts.SERVICE_TYPE_OTHERS,otherHcsaServiceSubServicePageDtoMap);
+                addSubServiceData(request,premisesType,HcsaConsts.SERVICE_TYPE_OTHERS,otherHcsaServiceSubServicePageDtoMap,null);
 
             }
             hcsaServiceConfigDto.setHcsaServiceCategoryDisciplineDtoMap(hcsaServiceCategoryDisciplineDtoMap);
@@ -746,12 +746,12 @@ public class ConfigServiceDelegator {
         log.info(StringUtil.changeForLog("The addCategoryDisciplineAndSubService end ..."));
     }
 
-    private void addSubServiceData(HttpServletRequest request,String premisesType,String serviceType,Map<String,HcsaServiceSubServicePageDto> hcsaServiceSubServicePageDtoMap){
+    private void addSubServiceData(HttpServletRequest request,String premisesType,String serviceType,Map<String,HcsaServiceSubServicePageDto> hcsaServiceSubServicePageDtoMap,String specSectionHeader){
         log.info(StringUtil.changeForLog("The addSubServiceData start ..."));
         log.info(StringUtil.changeForLog("The addSubServiceData premisesType -->:"+premisesType));
         log.info(StringUtil.changeForLog("The addSubServiceData serviceType -->:"+serviceType));
         HcsaServiceSubServicePageDto specHcsaServiceCategoryDisciplineDto = new HcsaServiceSubServicePageDto();
-        String specSectionHeader = ParamUtil.getString(request,premisesType+"-"+serviceType+"-sectionHeader");
+        //String specSectionHeader = ParamUtil.getString(request,premisesType+"-"+serviceType+"-sectionHeader");
         String[] specSubServiceCodes = ParamUtil.getStrings(request,premisesType+"-"+serviceType+"-subServiceCodes");
         String[] specLevels = ParamUtil.getStrings(request,premisesType+"-"+serviceType+"-levels");
         specHcsaServiceCategoryDisciplineDto.setSectionHeader(specSectionHeader);
@@ -965,7 +965,7 @@ public class ConfigServiceDelegator {
             addStepSchemeDto(hcsaServiceConfigDto.getSupplementaryForm()
                     , HcsaConsts.STEP_SUPPLEMENTARY_FORM, HcsaConsts.SUPPLEMENTARY_FORM, hcsaServiceStepSchemeDtos);
             addStepSchemeDto(hcsaServiceConfigDto.getSpecialServicesInformation()
-                    , HcsaConsts.STEP_SPECIAL_SERVICES_FORM, HcsaConsts.SPECIAL_SERVICES_FORM, hcsaServiceStepSchemeDtos);
+                    , HcsaConsts.STEP_SPECIAL_SERVICES_FORM, hcsaServiceConfigDto.getSpecialisedSectionHeader()+HcsaConsts.SPECIAL_SERVICES_FORM, hcsaServiceStepSchemeDtos);
             addStepSchemeDto(hcsaServiceConfigDto.getOutsourcedProviders()
                     , HcsaConsts.STEP_OUTSOURCED_PROVIDERS, HcsaConsts.OUTSOURCED_PROVIDERS, hcsaServiceStepSchemeDtos);
         }

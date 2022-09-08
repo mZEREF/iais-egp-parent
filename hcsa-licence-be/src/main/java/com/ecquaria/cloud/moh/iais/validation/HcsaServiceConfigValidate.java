@@ -125,14 +125,14 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
         Map<String,HcsaServiceSubServicePageDto> specHcsaServiceSubServicePageDtoMap = hcsaServiceConfigDto.getSpecHcsaServiceSubServicePageDtoMap();
         if(specHcsaServiceSubServicePageDtoMap != null && specHcsaServiceSubServicePageDtoMap.size() > 0){
             //for sectionHeader
-            for(String premisesType : specHcsaServiceSubServicePageDtoMap.keySet()){
+            /*for(String premisesType : specHcsaServiceSubServicePageDtoMap.keySet()){
                 HcsaServiceSubServicePageDto hcsaServiceSubServicePageDto = specHcsaServiceSubServicePageDtoMap.get(premisesType);
                 ValidationResult validationResultHcsaServiceCategoryDisciplineDto = WebValidationHelper.validateProperty(hcsaServiceSubServicePageDto,serviceType);
                 if(validationResultHcsaServiceCategoryDisciplineDto.isHasErrors()){
                     String sectionHeaderErrorMsg = validationResultHcsaServiceCategoryDisciplineDto.retrieveAll().get("sectionHeader");
                     result.put(premisesType+"-SVTP003-sectionHeader",sectionHeaderErrorMsg);
                 }
-            }
+            }*/
             //for subService
             validteSubService(specHcsaServiceSubServicePageDtoMap,result,serviceType);
         }
@@ -146,11 +146,11 @@ public class HcsaServiceConfigValidate implements CustomizeValidator {
             for(String premisesType : hcsaServiceCategoryDisciplineDtoMap.keySet()){
                 //for sectionHeader
                 HcsaServiceCategoryDisciplineDto hcsaServiceCategoryDisciplineDto = hcsaServiceCategoryDisciplineDtoMap.get(premisesType);
-                ValidationResult validationResultPermanentHscdDto = WebValidationHelper.validateProperty(hcsaServiceCategoryDisciplineDto,serviceType);
+                /*ValidationResult validationResultPermanentHscdDto = WebValidationHelper.validateProperty(hcsaServiceCategoryDisciplineDto,serviceType);
                 if(validationResultPermanentHscdDto.isHasErrors()){
                     String sectionHeaderErrorMsg = validationResultPermanentHscdDto.retrieveAll().get("sectionHeader");
                     result.put(premisesType+"-sectionHeader",sectionHeaderErrorMsg);
-                }
+                }*/
                 //for categoryDiscipline
                 String[] categoryDisciplines = hcsaServiceCategoryDisciplineDto.getCategoryDisciplines();
                 if(categoryDisciplines != null && categoryDisciplines.length>0){
