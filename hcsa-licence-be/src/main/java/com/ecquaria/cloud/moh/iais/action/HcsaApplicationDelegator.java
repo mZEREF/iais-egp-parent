@@ -4381,18 +4381,21 @@ public class HcsaApplicationDelegator {
             }
         }
         if (RoleConsts.USER_ROLE_AO1.equals(taskRole) || RoleConsts.USER_ROLE_AO2.equals(taskRole)) {
-            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Support"));
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY, "Route Laterally"));
         }
         if (RoleConsts.USER_ROLE_ASO.equals(taskRole) ) {
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY, "Route Laterally"));
         }
         if(!finalStage){
-            //62875
-            //role is ao3 && status is 'Pending AO3 Approval'  have no verified
-            if (!(RoleConsts.USER_ROLE_AO3.equals(taskRole)
-                    && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationStatus))) {
-                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Verified"));
+            if (RoleConsts.USER_ROLE_AO1.equals(taskRole) || RoleConsts.USER_ROLE_AO2.equals(taskRole)) {
+                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Support"));
+            } else {
+                //62875
+                //role is ao3 && status is 'Pending AO3 Approval'  have no verified
+                if (!(RoleConsts.USER_ROLE_AO3.equals(taskRole)
+                        && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationStatus))) {
+                    nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Verified"));
+                }
             }
         }
 
