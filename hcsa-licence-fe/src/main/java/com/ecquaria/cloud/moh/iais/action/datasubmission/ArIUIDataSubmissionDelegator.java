@@ -170,7 +170,6 @@ public class ArIUIDataSubmissionDelegator {
                 ParamUtil.setRequestAttr(request, CYCLE_SELECT, cycleRadio);
                 String hasCycle = ParamUtil.getString(request, HAS_CYCLE);
                 currentSuper.getDataSubmissionDto().setCycleStage(nextStage);
-                selectionDto.setStage(nextStage);
                 startNewCycle = "N".equals(hasCycle) || "newCycle".equals(cycleRadio);
                 if (startNewCycle && StringUtil.isEmpty(nextStage)) {
                     errorMap.put("nextStage", "GENERAL_ERR0006");
@@ -179,17 +178,20 @@ public class ArIUIDataSubmissionDelegator {
                     errorMap.put(CYCLE_SELECT, "GENERAL_ERR0006");
                 }
                 if (errorMap.isEmpty()) {
-                    if (!startNewCycle) {
-                        selectionDto = arDataSubmissionService.getCycleStageSelectionDtoByConds(patientInfoDto.getPatient().getPatientCode(),
-                                hciCode, cycleRadio);
-                        selectionDto.setHciCode(hciCode);
-                        if (StringUtil.isNotEmpty(selectionDto.getLastStage())) {
-                            selectionDto.setLastStageDesc(MasterCodeUtil.getCodeDesc(selectionDto.getLastStage()));
-                        } else {
-                            selectionDto.setLastStageDesc("-");
-                        }
+                    selectionDto = arDataSubmissionService.getCycleStageSelectionDtoByConds(patientInfoDto.getPatient().getPatientCode(),
+                            hciCode, cycleRadio);
+                    selectionDto.setHciCode(hciCode);
+                    if(startNewCycle) {
+                        selectionDto.setCycle(null);
+                        selectionDto.setUndergoingCycle(false);
+                    }
+                    if (StringUtil.isNotEmpty(selectionDto.getLastStage())) {
+                        selectionDto.setLastStageDesc(MasterCodeUtil.getCodeDesc(selectionDto.getLastStage()));
+                    } else {
+                        selectionDto.setLastStageDesc("-");
                     }
                 }
+                selectionDto.setStage(nextStage);
                 String licenseeId = DataSubmissionHelper.getLicenseeId(request);
                 currentSuper.setCycleDto(DataSubmissionHelper.initCycleDto(selectionDto, currentSuper.getSvcName(), hciCode, licenseeId));
                 ArCurrentInventoryDto arCurrentInventoryDto = arDataSubmissionService.getArCurrentInventoryDtoByConds(hciCode, licenseeId, selectionDto.getPatientCode(), currentSuper.getSvcName());

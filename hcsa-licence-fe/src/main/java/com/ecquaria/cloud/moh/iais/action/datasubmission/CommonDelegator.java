@@ -38,6 +38,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -99,9 +100,15 @@ public abstract class CommonDelegator {
         ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         ParamUtil.setRequestAttr(bpc.request, "title", DataSubmissionHelper.getMainTitle(currentArDataSubmission.getAppType()));
         String actionType = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        String jumpActionType = ParamUtil.getRequestString(bpc.request, ACTION_TYPE);
         log.info(StringUtil.changeForLog("----- Action Type: " + actionType + " -----"));
         if (StringUtil.isEmpty(actionType)) {
-            actionType = ACTION_TYPE_PAGE;
+            if ("jumpStage".equals(jumpActionType)){
+                ParamUtil.setRequestAttr(bpc.request, "missSaveDraft", IaisEGPConstant.YES);
+                actionType = ACTION_TYPE_RETURN;
+            } else {
+                actionType = ACTION_TYPE_PAGE;
+            }
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
         }
         prepareSwitch(bpc);
@@ -128,8 +135,9 @@ public abstract class CommonDelegator {
         log.info(StringUtil.changeForLog("The doReturn start ..."));
         String actionType = ParamUtil.getRequestString(bpc.request, ACTION_TYPE);
         String haveJump = (String) ParamUtil.getRequestAttr(bpc.request, "haveJump");
+        String missSaveDraft = (String) ParamUtil.getRequestAttr(bpc.request, "missSaveDraft");
         if ("jumpStage".equals(actionType)) {
-            if (!"Y".equals(haveJump)) {
+            if (!IaisEGPConstant.YES.equals(missSaveDraft) && !IaisEGPConstant.YES.equals(haveJump)) {
                 setDraftArSuperDataSubmissionDto(bpc.request);
                 doDraft(bpc);
                 ParamUtil.setRequestAttr(bpc.request, "saveDraftSuccess", null);
@@ -143,8 +151,13 @@ public abstract class CommonDelegator {
                 if (!DataSubmissionConsts.DS_APP_TYPE_NEW.equals(arSuperDataSubmission.getAppType())) {
                     uri = InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox";
                 } else {
-                    if (StringUtil.stringsContainKey(arSuperDataSubmission.getSubmissionType(), DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE, DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO)) {
-                        uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARDataSubmission/1/PrepareARSubmission";
+                    if (DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE.equals(arSuperDataSubmission.getSubmissionType())
+                    && Arrays.asList(DataSubmissionConsts.AR_CYCLE_AR,
+                            DataSubmissionConsts.AR_CYCLE_IUI,
+                            DataSubmissionConsts.AR_CYCLE_EFO,
+                            DataSubmissionConsts.AR_CYCLE_SFO)
+                            .contains(arSuperDataSubmission.getDataSubmissionDto().getCycleStage())) {
+                        uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARAndIUIDataSubmission/PreARIUIDataSubmission";
                     } else {
                         uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARCycleStagesManual";
                     }
@@ -373,6 +386,12 @@ public abstract class CommonDelegator {
                 DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_ACK);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_ACKART);
+        //update HeadStageNav
+        CycleStageSelectionDto selectionDto = arDataSubmissionService.getCycleStageSelectionDtoByConds(arSuperDataSubmission.getPatientInfoDto().getPatient().getPatientCode(),
+                arSuperDataSubmission.getHciCode(), arSuperDataSubmission.getCycleDto().getId());
+        selectionDto.setCycle(cycleType);
+        arSuperDataSubmission.setSelectionDto(selectionDto);
+        ParamUtil.setRequestAttr(bpc.request, "stageList", arDataSubmissionService.genAvailableStageList(bpc.request, true));
     }
 
     /**
