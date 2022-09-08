@@ -378,6 +378,7 @@
                                                                         </div>
                                                                         <%@include file="/WEB-INF/jsp/iais/hcsaLicence/appFlowSvcVehicleShow.jsp"%>
                                                                         <%@include file="/WEB-INF/jsp/iais/hcsaLicence/appFlowSvcSpecialShow.jsp"%>
+                                                                        <%@include file="/WEB-INF/jsp/iais/hcsaLicence/appFlowSvcOtherShow.jsp"%>
                                                                         <%--application type != appeal --%>
                                                                         <c:if test="${!isAppealType && !isCessation && !isWithDrawal}">
                                                                             <div class="fastTrack">
@@ -556,6 +557,8 @@
         //vehicle
         var recommendation = $("[name='recommendation']").val();
         appFlowVehicleShowRadio(recommendation);
+        appFlowSpecialSubSvcShowRadio(recommendation);
+        appFlowotherSubSvcShowRadio(recommendation);
     });
     function recommendationRemoveRequired() {
         if ('${applicationViewDto.applicationDto.status}' == 'APST013' ||  '${applicationViewDto.applicationDto.status}' == 'APST062' ||  '${applicationViewDto.applicationDto.status}' == 'APST065' ||  '${applicationViewDto.applicationDto.status}' == 'APST066' || '${applicationViewDto.applicationDto.status}' == 'APST067') {
@@ -631,6 +634,8 @@
         if ('${applicationViewDto.applicationDto.status}' == 'APST014'){
             var selectValue = $("[name='decisionValues']").val();
             appFlowVehicleShowRadio(selectValue);
+            appFlowSpecialSubSvcShowRadio(selectValue);
+            appFlowotherSubSvcShowRadio(selectValue);
             if(${isAppealType || isWithDrawal || isCessation}){
                 $('#appealRecommendation').addClass('hidden');
                 if("decisionApproval" == selectValue){

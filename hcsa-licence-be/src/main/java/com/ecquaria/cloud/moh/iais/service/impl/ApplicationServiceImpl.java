@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryExtDto;
@@ -161,6 +162,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Autowired
     private InspectionService inspectionService;
+
+    @Value("${easmts.subSvc.sperate.flag}")
+    private String subSvcOpenFlag;
 
     @Override
     public List<ApplicationDto> getApplicaitonsByAppGroupId(String appGroupId) {
@@ -1188,6 +1192,62 @@ public class ApplicationServiceImpl implements ApplicationService {
             }
         }
         return vehicleFlag;
+    }
+    @Override
+    public String getSubSvcFlagToShowOrEdit(TaskDto taskDto,ApplicationViewDto applicationViewDto) {
+        String subSvcFlag = AppConsts.FALSE;
+        //filter appType
+        boolean vehicleAppTypeFlag = getVehicleAppTypeFlag(applicationViewDto);
+        //filter vehicleOpenFlag
+        if(vehicleAppTypeFlag && taskDto != null && InspectionConstants.SWITCH_ACTION_YES.equals(subSvcOpenFlag)) {
+            boolean actionVehicleFlag = false;
+            //filter stage
+            List<AppPremSubSvcRelDto> list = IaisCommonUtils.genNewArrayList();
+            list.addAll(applicationViewDto.getAppPremSpecialSubSvcRelDtoList());
+            list.addAll(applicationViewDto.getAppPremOthersSubSvcRelDtoList());
+            if(!IaisCommonUtils.isEmpty(list)) {
+                ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
+                String stageId = taskDto.getTaskKey();
+                if(applicationGroupDto != null) {
+                    String newLicenseeId = applicationGroupDto.getNewLicenseeId();
+                    String licenseeId = applicationGroupDto.getLicenseeId();
+                    //filter DM data
+                    if(!StringUtil.isEmpty(newLicenseeId) && newLicenseeId.equals(licenseeId)) {
+                        subSvcFlag = InspectionConstants.SWITCH_ACTION_VIEW;
+                        actionVehicleFlag = true;
+                    }
+                }
+                if(!actionVehicleFlag){
+                    if (HcsaConsts.ROUTING_STAGE_ASO.equals(stageId) || HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)) {
+                        subSvcFlag = InspectionConstants.SWITCH_ACTION_EDIT;
+                    } else if (HcsaConsts.ROUTING_STAGE_AO1.equals(stageId) ||
+                            HcsaConsts.ROUTING_STAGE_AO2.equals(stageId) ||
+                            HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)
+                            ) {
+                           return InspectionConstants.SWITCH_ACTION_VIEW;
+                    }else if(HcsaConsts.ROUTING_STAGE_INS.equalsIgnoreCase(stageId)) {
+                         if(RoleConsts.USER_ROLE_INSPECTION_LEAD.equalsIgnoreCase(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO1.equalsIgnoreCase(taskDto.getRoleId())){
+                             return  InspectionConstants.SWITCH_ACTION_VIEW;
+                         }
+                        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+                        if (applicationDto != null && ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationDto.getStatus())) {
+                            subSvcFlag = InspectionConstants.SWITCH_ACTION_EDIT;
+                        } else {
+                            boolean aoRole =TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1.equalsIgnoreCase(taskDto.getProcessUrl());
+                            if(aoRole){
+                                return  InspectionConstants.SWITCH_ACTION_VIEW;
+                            }else {
+                                String prefix =  fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(applicationViewDto.getApplicationDto().getAppPremisesCorrelationId(),InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity()!= null ? (InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT + "_") : "";
+                                subSvcFlag = prefix + ( (RoleConsts.USER_ROLE_INSPECTIOR.equalsIgnoreCase(taskDto.getRoleId()) || RoleConsts.USER_ROLE_BROADCAST.equalsIgnoreCase(taskDto.getRoleId())) ? InspectionConstants.SWITCH_ACTION_EDIT : InspectionConstants.SWITCH_ACTION_VIEW);
+                            }
+                        }
+                     }
+                }
+            } else {
+                log.info(StringUtil.changeForLog("EAS / MTS ===>Application No" + taskDto.getApplicationNo() + "======>AppSvcVehicleDtos is NULL"));
+            }
+        }
+        return subSvcFlag;
     }
 
     private boolean getVehicleAppTypeFlag(ApplicationViewDto applicationViewDto) {

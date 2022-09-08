@@ -794,6 +794,7 @@ public class InspectionServiceImpl implements InspectionService {
         //save the broadcast
         //set vehicle No
         broadcastApplicationDto = broadcastService.replySetVehicleByRole(taskDto, applicationViewDto, broadcastApplicationDto);
+        broadcastApplicationDto = broadcastService.replySetSubSvcByRole(taskDto, applicationViewDto, broadcastApplicationDto);
         broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         String evenRefNum = String.valueOf(System.currentTimeMillis());

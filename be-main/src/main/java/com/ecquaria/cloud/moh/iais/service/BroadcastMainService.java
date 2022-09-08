@@ -25,4 +25,7 @@ public interface BroadcastMainService {
      */
     BroadcastApplicationDto setAppSvcVehicleDtoByAppView(BroadcastApplicationDto broadcastApplicationDto, ApplicationViewDto applicationViewDto,
                                                          String appStatus, String appType);
+
+    BroadcastApplicationDto setAppPremSubSvcDtoByAppView(BroadcastApplicationDto broadcastApplicationDto, ApplicationViewDto applicationViewDto,
+                                                         String appStatus, String appType);
 }

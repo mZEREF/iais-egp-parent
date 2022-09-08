@@ -30,6 +30,9 @@ public interface BroadcastService {
     BroadcastApplicationDto setAppSvcVehicleDtoByAppView(BroadcastApplicationDto broadcastApplicationDto, ApplicationViewDto applicationViewDto,
                                                          String appStatus, String appType);
 
+    BroadcastApplicationDto setAppPremSubSvcDtoByAppView(BroadcastApplicationDto broadcastApplicationDto, ApplicationViewDto applicationViewDto,
+                                                         String appStatus, String appType);
+
     /**
       * @author: shicheng
       * @Date 2021/6/24
@@ -38,6 +41,9 @@ public interface BroadcastService {
       * @Descripation: replySetVehicleByRole
       */
     BroadcastApplicationDto replySetVehicleByRole(TaskDto taskDto, ApplicationViewDto applicationViewDto, BroadcastApplicationDto broadcastApplicationDto);
+
+
+    BroadcastApplicationDto replySetSubSvcByRole(TaskDto taskDto, ApplicationViewDto applicationViewDto, BroadcastApplicationDto broadcastApplicationDto);
 
     /**
       * @author: shicheng

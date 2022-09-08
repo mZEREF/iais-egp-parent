@@ -243,6 +243,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             rejectCode.add(DECISION_REJECT);
             valiVehicleEasMtsCommon(request, errMap, applicationViewDto, recommendationStr, rejectCode, decisionValue);
             valiSpecialEasMtsCommon(request, errMap, applicationViewDto, recommendationStr, rejectCode, decisionValue);
+            valiOtherEasMtsCommon(request, errMap, applicationViewDto, recommendationStr, rejectCode, decisionValue);
         }
         return errMap;
     }
@@ -386,7 +387,75 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                     }
                 }
                 if(!approveFlag) {
-                    errMap.put("specialApproveOne", "NEW_ERR0033");
+                    errMap.put("specialSubSvcApproveOne", "NEW_ERR0033");
+                }
+            }
+            applicationViewDto.setAppPremSpecialSubSvcRelDtoList(subSvcRelDtoList);
+        }
+    }
+
+    public static void valiOtherEasMtsCommon(HttpServletRequest request, Map<String, String> errMap, ApplicationViewDto applicationViewDto,
+                                                String recommendationStr, List<String> rejectCode, String decisionValue){
+        List<AppPremSubSvcRelDto> subSvcRelDtoList = applicationViewDto.getAppPremOthersSubSvcRelDtoList();
+
+        if (!IaisCommonUtils.isEmpty(subSvcRelDtoList)) {
+            boolean appVeh = !rejectCode.contains(StringUtil.getNonNull(recommendationStr)) && !rejectCode.contains(StringUtil.getNonNull(decisionValue));
+            for (int i = 0; i < subSvcRelDtoList.size(); i++) {
+
+                String[] specialSubSvcRadios = ParamUtil.getStrings(request, "otherSubSvcRadio" + i);
+                String specialSubSvcRemarks = ParamUtil.getRequestString(request, "otherSubSvcRemarks" + i);
+                //status not empty
+                if(appVeh){
+                    if (specialSubSvcRadios == null || specialSubSvcRadios.length == 0) {
+                        errMap.put("specialSubSvcRadioError" + i, ERROR_CODE_GENERAL_ERR0006);
+                        subSvcRelDtoList.get(i).setStatus(null);
+                    } else {
+                        String specialSubSvcRadio = specialSubSvcRadios[0];
+                        if (StringUtil.isEmpty(specialSubSvcRadio)) {
+                            errMap.put("otherSubSvcRadioError" + i, ERROR_CODE_GENERAL_ERR0006);
+                            subSvcRelDtoList.get(i).setStatus(null);
+                        } else {
+                            String specialSubSvcStatusCode;
+                            if(BeDashboardConstant.SWITCH_ACTION_APPROVE.equals(specialSubSvcRadio)) {
+                                specialSubSvcStatusCode = ApplicationConsts.RECORD_STATUS_APPROVE_CODE;
+                            } else {
+                                specialSubSvcStatusCode = ApplicationConsts.RECORD_STATUS_REJECT_CODE;
+                            }
+                            subSvcRelDtoList.get(i).setStatus(specialSubSvcStatusCode);
+                        }
+                    }
+                }else {
+                    subSvcRelDtoList.get(i).setStatus(ApplicationConsts.RECORD_STATUS_REJECT_CODE);
+                }
+
+                //remark length vali
+                if (StringUtil.isEmpty(specialSubSvcRemarks)) {
+                    subSvcRelDtoList.get(i).setRemarks(specialSubSvcRemarks);
+                } else {
+                    if (specialSubSvcRemarks.length() <= 400) {
+                        subSvcRelDtoList.get(i).setRemarks(specialSubSvcRemarks);
+                    } else {
+                        Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
+                        repMap.put("number", "400");
+                        repMap.put("fieldNo", "Remarks");
+                        errMap.put("otherSubSvcRemarksError" + i, MessageUtil.getMessageDesc("GENERAL_ERR0036", repMap));
+                    }
+                }
+            }
+            //not reject, At least one approve
+            if(appVeh){
+                boolean approveFlag = false;
+                for(AppPremSubSvcRelDto subSvcRelDto : subSvcRelDtoList) {
+                    if(subSvcRelDto != null) {
+                        if(!StringUtil.isEmpty(subSvcRelDto.getStatus()) && ApplicationConsts.RECORD_STATUS_APPROVE_CODE.equals(subSvcRelDto.getStatus())) {
+                            approveFlag = true;
+                        } else if(StringUtil.isEmpty(subSvcRelDto.getStatus())) {
+                            approveFlag = true;
+                        }
+                    }
+                }
+                if(!approveFlag) {
+                    errMap.put("otherSubSvcApproveOne", "NEW_ERR0033");
                 }
             }
             applicationViewDto.setAppPremSpecialSubSvcRelDtoList(subSvcRelDtoList);

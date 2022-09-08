@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts" %>
 
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
 <input type="hidden" id="isEditHiddenVal" class="person-content-edit" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
@@ -35,7 +36,7 @@
                             </a>
                         </h4>
                         <c:set var="appSvcSuplmFormDto" value="${specialServiceSectionDto.appSvcSuplmFormDto}"/>
-                        <c:set var="DirMaxCount" value="0"/>
+                        <%--<c:set var="DirMaxCount" value="0"/>
                         <c:set var="NurMaxCount" value="0"/>
                         <c:set var="NICMaxCount" value="0"/>
                         <c:forEach var="maxCount" items="${specialServiceSectionDto.maxCount}">
@@ -51,19 +52,20 @@
                         </c:forEach>
                         <input type="hidden" class ="DirMaxCount" value="${DirMaxCount}"/>
                         <input type="hidden" class ="NurMaxCount" value="${NurMaxCount}"/>
-                        <input type="hidden" class ="NICMaxCount" value="${NICMaxCount}"/>
+                        <input type="hidden" class ="NICMaxCount" value="${NICMaxCount}"/>--%>
                     </div>
                     <div id="${status.index}${subSvcRelStatus.index}SSI" class="panel-collapse collapse in">
                         <input type="hidden" class ="isPartEdit" name="isPartEdit${status.index}" value="0"/>
                         <div class="panel-body">
                             <c:choose>
-                                <c:when test="${DirMaxCount==0&&NurMaxCount==0&&NICMaxCount==0&&empty appSvcSuplmFormDto.appSvcSuplmGroupDtoList}">
+                                <c:when test="${specialServiceSectionDto.empty}">
                                     <div class="panel-main-content">
                                         <p><h4><iais:message key="NEW_ACK039"/></h4></p>
                                     </div>
                                 </c:when>
                                 <c:otherwise>
-                                    <c:if test="${NICMaxCount!=0}">
+                                    <%@include file="specialServicePersonnel.jsp" %>
+                                    <%--<c:if test="${NICMaxCount!=0}">
                                         <div class="panel-main-content">
                                             <c:choose>
                                                 <c:when test="${specialServiceSectionDto.appSvcNurseDtoList != null && specialServiceSectionDto.appSvcNurseDtoList.size()>1}">
@@ -152,7 +154,7 @@
                                                 </div>
                                             </iais:row>
                                         </div>
-                                    </c:if>
+                                    </c:if>--%>
                                     <c:if test="${not empty appSvcSuplmFormDto.appSvcSuplmGroupDtoList}">
                                         <div class="panel-main-content">
                                             <c:set var="itemPrefix" value="${status.index}${subSvcRelStatus.index}"/>
