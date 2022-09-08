@@ -65,8 +65,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
 
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.APPSUBMISSIONDTO;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURRENTSERVICEID;
@@ -104,9 +102,9 @@ public class ServiceInfoDelegator {
     public void doStart(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doStart start ...."));
 
-        AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(bpc.request);
+        /*AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(bpc.request);
         DealSessionUtil.reSetInit(appSubmissionDto, HcsaAppConst.SECTION_SVCINFO);
-        ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
+        ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);*/
 //        if (IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList())) {
 //            List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,
 //                    AppServicesConsts.HCSASERVICEDTOLIST);
@@ -2062,61 +2060,45 @@ public class ServiceInfoDelegator {
         if (StringUtil.isEmpty(psnType)) {
             return;
         }
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        CompletableFuture.runAsync(() -> {
-            String currentSvcId = ApplicationHelper.getCurrentServiceId(request);
-            AppSvcRelatedInfoDto currentSvcRelatedDto = ApplicationHelper.getAppSvcRelatedInfo(request, currentSvcId);
-            List<HcsaSvcDocConfigDto> svcDocConfigDtos = configCommService.getAllHcsaSvcDocs(currentSvcId);
-            List<AppSvcPrincipalOfficersDto> psnDtoList = ApplicationHelper.getBasePersonnel(currentSvcRelatedDto,
-                    psnType);
-            List<AppSvcDocDto> appSvcDocDtoList = currentSvcRelatedDto.getAppSvcDocDtoLit();
-            List<HcsaSvcDocConfigDto> targetConfigDtos = getDocConfigDtoByDupForPerson(svcDocConfigDtos, psnType);
-            if (!IaisCommonUtils.isEmpty(appSvcDocDtoList) && !IaisCommonUtils.isEmpty(targetConfigDtos)
-                    && !IaisCommonUtils.isEmpty(psnDtoList)) {
-                log.info("appSvcDocDtoList size is {}", appSvcDocDtoList.size());
-                List<String> psnIndexList = IaisCommonUtils.genNewArrayList();
-                for (AppSvcPrincipalOfficersDto psnDto : psnDtoList) {
-                    if (!StringUtil.isEmpty(psnDto.getIndexNo())) {
-                        psnIndexList.add(psnDto.getIndexNo());
-                    }
+        AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(request);
+        String currentSvcId = ApplicationHelper.getCurrentServiceId(request);
+        AppSvcRelatedInfoDto currentSvcRelatedDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
+        List<HcsaSvcDocConfigDto> svcDocConfigDtos = configCommService.getAllHcsaSvcDocs(currentSvcId);
+        List<AppSvcPrincipalOfficersDto> psnDtoList = ApplicationHelper.getBasePersonnel(currentSvcRelatedDto,
+                psnType);
+        List<AppSvcDocDto> appSvcDocDtoList = currentSvcRelatedDto.getAppSvcDocDtoLit();
+        List<HcsaSvcDocConfigDto> targetConfigDtos = getDocConfigDtoByDupForPerson(svcDocConfigDtos, psnType);
+        if (!IaisCommonUtils.isEmpty(appSvcDocDtoList) && !IaisCommonUtils.isEmpty(targetConfigDtos)
+                && !IaisCommonUtils.isEmpty(psnDtoList)) {
+            log.info("appSvcDocDtoList size is {}", appSvcDocDtoList.size());
+            List<String> psnIndexList = IaisCommonUtils.genNewArrayList();
+            for (AppSvcPrincipalOfficersDto psnDto : psnDtoList) {
+                if (!StringUtil.isEmpty(psnDto.getIndexNo())) {
+                    psnIndexList.add(psnDto.getIndexNo());
                 }
-                List<String> targetConfigIdList = IaisCommonUtils.genNewArrayList();
-                for (HcsaSvcDocConfigDto hcsaSvcDocConfigDto : targetConfigDtos) {
-                    targetConfigIdList.add(hcsaSvcDocConfigDto.getId());
-                }
-                List<AppSvcDocDto> newAppSvcDocDtoList = IaisCommonUtils.genNewArrayList();
-                for (AppSvcDocDto appSvcDocDto : appSvcDocDtoList) {
-                    String svcDocId = appSvcDocDto.getSvcDocId();
-                    if (!StringUtil.isEmpty(svcDocId) && targetConfigIdList.contains(svcDocId)) {
-                        //judge align psn if existing
-                        String psnIndexNo = appSvcDocDto.getPsnIndexNo();
-                        if (psnIndexList.contains(psnIndexNo)) {
-                            newAppSvcDocDtoList.add(appSvcDocDto);
-                        }
-                    } else {
+            }
+            List<String> targetConfigIdList = IaisCommonUtils.genNewArrayList();
+            for (HcsaSvcDocConfigDto hcsaSvcDocConfigDto : targetConfigDtos) {
+                targetConfigIdList.add(hcsaSvcDocConfigDto.getId());
+            }
+            List<AppSvcDocDto> newAppSvcDocDtoList = IaisCommonUtils.genNewArrayList();
+            for (AppSvcDocDto appSvcDocDto : appSvcDocDtoList) {
+                String svcDocId = appSvcDocDto.getSvcDocId();
+                if (!StringUtil.isEmpty(svcDocId) && targetConfigIdList.contains(svcDocId)) {
+                    //judge align psn if existing
+                    String psnIndexNo = appSvcDocDto.getPsnIndexNo();
+                    if (psnIndexList.contains(psnIndexNo)) {
                         newAppSvcDocDtoList.add(appSvcDocDto);
                     }
-                }
-                log.info("newAppSvcDocDtoList size is {}", newAppSvcDocDtoList.size());
-                if (newAppSvcDocDtoList.size() != appSvcDocDtoList.size()) {
-                    synchronized (this) {
-                        AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(request);
-                        currentSvcRelatedDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
-                        currentSvcRelatedDto.setAppSvcDocDtoLit(newAppSvcDocDtoList);
-                        setAppSvcRelatedInfoMap(request, currentSvcId, currentSvcRelatedDto, appSubmissionDto);
-                    }
+                } else {
+                    newAppSvcDocDtoList.add(appSvcDocDto);
                 }
             }
-            countDownLatch.countDown();
-        });
-        if (ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnType)) {
-            try {
-                countDownLatch.await();
-            } catch (InterruptedException e) {
-                log.error(StringUtil.changeForLog(e.getMessage()), e);
-                Thread.currentThread().interrupt();
-            }
+            log.info("newAppSvcDocDtoList size is {}", newAppSvcDocDtoList.size());
+            currentSvcRelatedDto.setAppSvcDocDtoLit(newAppSvcDocDtoList);
         }
+        currentSvcRelatedDto.setDocumentShowDtoList(null);
+        setAppSvcRelatedInfoMap(request, currentSvcId, currentSvcRelatedDto, appSubmissionDto);
     }
 
     private List<HcsaSvcDocConfigDto> getDocConfigDtoByDupForPerson(List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos,
