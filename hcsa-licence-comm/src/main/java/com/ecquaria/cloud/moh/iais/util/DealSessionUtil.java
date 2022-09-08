@@ -508,21 +508,16 @@ public class DealSessionUtil {
             return null;
         }
         String svcId = currSvcInfoDto.getServiceId();
-        /*if (!StringUtil.isEmpty(licenceId) && !newConfig) {
-            String licAlignAppSvcId = "";
-            List<LicAppCorrelationDto> licAppCorrelationDtos = getLicCommService().getLicCorrBylicId(licenceId);
-            if (licAppCorrelationDtos != null && licAppCorrelationDtos.size() > 0) {
-                LicAppCorrelationDto licAppCorrelationDto = licAppCorrelationDtos.get(0);
-                ApplicationDto applicationDto = getAppCommService().getApplicationById(licAppCorrelationDto.getApplicationId());
-                if (applicationDto != null) {
-                    licAlignAppSvcId = applicationDto.getServiceId();
-                }
-            }
-            if (!StringUtil.isEmpty(licAlignAppSvcId)) {
-                svcId = licAlignAppSvcId;
-            }
-        }*/
         String name = currSvcInfoDto.getServiceName();
+        String finalSvcId = svcId;
+        if (hcsaServiceDtos.stream().noneMatch(dto -> Objects.equals(finalSvcId, dto.getId()))) {
+            if (StringUtil.isEmpty(name)) {
+                HcsaServiceDto serviceById = HcsaServiceCacheHelper.getServiceById(svcId);
+                name = serviceById.getSvcName();
+            } else {
+                svcId = null;
+            }
+        }
         HcsaServiceDto hcsaServiceDto = null;
         if (!StringUtil.isEmpty(svcId)) {
             hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(svcId);
