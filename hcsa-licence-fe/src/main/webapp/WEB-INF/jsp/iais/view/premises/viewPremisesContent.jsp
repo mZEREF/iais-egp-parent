@@ -1,4 +1,21 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
+
+<style>
+    .table td.non-hcsa-1 {
+        width: 33%;
+        padding-left: 0;
+        padding-right: 15px;
+    }
+    .table td.non-hcsa-2 {
+        width: 30%;
+        padding: 5px 0;
+    }
+    .table td.non-hcsa-3 {
+        width: 30%;
+        padding: 5px 0;
+    }
+</style>
+
 <c:set var="permanent" value="${ApplicationConsts.PREMISES_TYPE_PERMANENT}" />
 <c:set var="conv" value="${ApplicationConsts.PREMISES_TYPE_CONVEYANCE}" />
 <c:set var="easMts" value="${ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE}" />
@@ -146,11 +163,11 @@
                 <table class="table" aria-describedby="" border="0" style="margin:10px 0">
                     <thead>
                         <tr>
-                            <td scope="col" class="col-xs-12 col-md-3" style="padding-left: 0;padding-right: 15px;">
+                            <td scope="col" class="non-hcsa-1">
                                 Are you co-locating with a service that is not licensed under HCSA?
                             </td>
-                            <td scope="col" class="col-xs-12 col-md-3" style="padding-left:20px;">Business Name</td>
-                            <td scope="col" class="col-xs-12 col-md-3" style="padding-left:20px;">Services Provided</td>
+                            <td scope="col" class="non-hcsa-2">Business Name</td>
+                            <td scope="col" class="non-hcsa-3">Services Provided</td>
                         </tr>
                     </thead>
                     <tbody>
@@ -158,10 +175,10 @@
                     <c:forEach var="relatedDto" items="${appGrpPremDto.appPremNonLicRelationDtos}" varStatus="nonLicVs">
                         <tr style="border-top: ${nonLicVs.first? 'solid silver' : '2px solid black'}">
                             <c:if test="${nonLicVs.first}">
-                            <td rowspan="${nonLicSize}" style="padding-left: 0;padding-right: 15px;">Yes</td>
+                            <td rowspan="${nonLicSize}" class="non-hcsa-1">Yes</td>
                             </c:if>
-                            <td style="padding: 5px 20px"><c:out value="${relatedDto.businessName}"/></td>
-                            <td style="padding: 5px 20px"><c:out value="${relatedDto.providedService}"/></td>
+                            <td class="non-hcsa-2"><c:out value="${relatedDto.businessName}"/></td>
+                            <td class="non-hcsa-3"><c:out value="${relatedDto.providedService}"/></td>
                         </tr>
                     </c:forEach>
                     </tbody>

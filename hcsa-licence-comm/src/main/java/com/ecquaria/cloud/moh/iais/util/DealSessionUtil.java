@@ -578,7 +578,7 @@ public class DealSessionUtil {
                     }
                 }
             } else if (HcsaConsts.STEP_DOCUMENTS.equals(stepCode)) {
-                List<DocumentShowDto> documentShowDtos = initShowDocumentList(currSvcInfoDto,
+                List<DocumentShowDto> documentShowDtos = initDocumentShowList(currSvcInfoDto,
                         appPremSpecialisedDtoList, forceInit);
                 initDocumentSession(documentShowDtos, request);
             }
@@ -962,7 +962,7 @@ public class DealSessionUtil {
         return result;
     }
 
-    public static List<DocumentShowDto> initShowDocumentList(AppSvcRelatedInfoDto currSvcInfoDto,
+    public static List<DocumentShowDto> initDocumentShowList(AppSvcRelatedInfoDto currSvcInfoDto,
             List<AppPremSpecialisedDto> appPremSpecialisedDtoList, boolean forceInit) {
         if (currSvcInfoDto == null) {
             return IaisCommonUtils.genNewArrayList();
@@ -1080,6 +1080,9 @@ public class DealSessionUtil {
                         || !baseSvcId.equals(appSvcDocDto.getBaseSvcId())) {
                     continue;
                 }
+                if (appSvcDocDto.getPersonTypeNum() == null) {
+                    appSvcDocDto.setPersonTypeNum(0);
+                }
                 if (isBaseDoc && (StringUtil.isEmpty(currSvcId) || currSvcId.equals(baseSvcId)
                         || currSvcId.equals(appSvcDocDto.getBaseSvcId()))) {
                     appSvcDocDto.setSvcId(baseSvcId);
@@ -1088,6 +1091,9 @@ public class DealSessionUtil {
                     appSvcDocDtoList.add(appSvcDocDto);
                 }
             }
+        }
+        if (appSvcDocDtoList.size() > 1) {
+            appSvcDocDtos.sort(Comparator.comparing(AppSvcDocDto::getPersonTypeNum));
         }
         return appSvcDocDtoList;
     }

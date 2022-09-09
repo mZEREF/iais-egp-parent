@@ -729,7 +729,7 @@ public class ServiceInfoDelegator {
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currentSvcId);
         if (IaisCommonUtils.isEmpty(currSvcInfoDto.getDocumentShowDtoList())) {
-            DealSessionUtil.initShowDocumentList(currSvcInfoDto, appSubmissionDto.getAppPremSpecialisedDtoList(), true);
+            DealSessionUtil.initDocumentShowList(currSvcInfoDto, appSubmissionDto.getAppPremSpecialisedDtoList(), true);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currSvcInfoDto, appSubmissionDto);
         }
         log.info(StringUtil.changeForLog("the do prepareDocuments end ...."));
