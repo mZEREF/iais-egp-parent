@@ -85,7 +85,7 @@
                 $currContent.find('.assign-psn-item').html('');
             }
             var len =  $Content.find('div.personnel-content').length;
-            $Content.find('input.length').val(len);
+            $Content.find('input.Length').val(len);
             if(len < maxCount){
                 $Content.find('.addDiv').removeClass('hidden');
             }
