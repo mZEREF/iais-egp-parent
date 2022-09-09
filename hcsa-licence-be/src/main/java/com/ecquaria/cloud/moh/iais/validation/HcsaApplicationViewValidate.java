@@ -387,7 +387,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                     }
                 }
                 if(!approveFlag) {
-                    errMap.put("specialSubSvcApproveOne", "NEW_ERR0033");
+                    errMap.put("specialSubSvcApproveOne", "Must approve at least one Special Service.");
                 }
             }
             applicationViewDto.setAppPremSpecialSubSvcRelDtoList(subSvcRelDtoList);
@@ -455,7 +455,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                     }
                 }
                 if(!approveFlag) {
-                    errMap.put("otherSubSvcApproveOne", "NEW_ERR0033");
+                    errMap.put("otherSubSvcApproveOne", "Must approve at least one Other Service.");
                 }
             }
             applicationViewDto.setAppPremSpecialSubSvcRelDtoList(subSvcRelDtoList);
