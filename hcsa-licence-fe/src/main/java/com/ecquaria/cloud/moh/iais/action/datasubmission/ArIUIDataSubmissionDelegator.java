@@ -111,6 +111,9 @@ public class ArIUIDataSubmissionDelegator {
         ParamUtil.setRequestAttr(bpc.request, CURRENT_PAGE_STAGE, ACTION_TYPE_PAGE);
         //prepare ar center or it's err msg
         prepareSelOpts(bpc);
+        // patient age error msg
+        ParamUtil.setRequestAttr(bpc.request, "ageMsg", DataSubmissionHelper.getAgeMessage(DataSubmissionConstant.DS_SHOW_PATIENT));
+        ParamUtil.setRequestAttr(bpc.request, "hbdAgeMsg", DataSubmissionHelper.getAgeMessage(DataSubmissionConstant.DS_SHOW_HUSBAND));
     }
 
     public void doARIUIDataSubmission(BaseProcessClass bpc) {
@@ -228,6 +231,9 @@ public class ArIUIDataSubmissionDelegator {
 
     public void preAmendPatient(BaseProcessClass bpc) {
         ParamUtil.setRequestAttr(bpc.request, CURRENT_PAGE_STAGE, ACTION_TYPE_AMEND);
+        // patient age error msg
+        ParamUtil.setRequestAttr(bpc.request, "ageMsg", DataSubmissionHelper.getAgeMessage(DataSubmissionConstant.DS_SHOW_PATIENT));
+        ParamUtil.setRequestAttr(bpc.request, "hbdAgeMsg", DataSubmissionHelper.getAgeMessage(DataSubmissionConstant.DS_SHOW_HUSBAND));
     }
 
     public void doAmendPatient(BaseProcessClass bpc) {
@@ -267,6 +273,7 @@ public class ArIUIDataSubmissionDelegator {
         String submissionType = arSuperDataSubmissionDto.getSubmissionType();
         String printFlag = DataSubmissionConstant.PRINT_FLAG_ART;
         if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(submissionType)) {
+            DsRfcHelper.handle(arSuperDataSubmissionDto.getPatientInfoDto());
             printFlag = DataSubmissionConsts.DS_PATIENT_ART;
         }
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, printFlag);

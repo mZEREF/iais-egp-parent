@@ -109,3 +109,10 @@
     <%@include file="registerPatientSection.jsp" %>
 </div>
 
+<iais:confirm msg="${ageMsg}" callBack="$('#ageMsgDiv').modal('hide');" popupOrder="ageMsgDiv" needCancel="false"
+              yesBtnCls="btn btn-secondary" yesBtnDesc="Close"
+              needFungDuoJi="false" />
+<iais:confirm msg="${hbdAgeMsg}" callBack="$('#hbdAgeMsgDiv').modal('hide');" popupOrder="hbdAgeMsgDiv" needCancel="false"
+              yesBtnCls="btn btn-secondary" yesBtnDesc="Close"
+              needFungDuoJi="false" />
+
