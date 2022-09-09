@@ -67,7 +67,7 @@
         if(length >= maxCount){
             $target.find('.addDiv').addClass('hidden');
         }
-        $target.find('input.length').val(length);
+        $target.find('input.Length').val(length);
         dismissWaiting();
     }
 
