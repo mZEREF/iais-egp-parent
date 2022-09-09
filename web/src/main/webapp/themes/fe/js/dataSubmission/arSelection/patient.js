@@ -1,11 +1,9 @@
 $(function () {
-    $("input[name='ptHasIdNumber']").change(function(){
-        $('input[name="existedPatient"]').val(null).trigger('change');
+    $("input[name='ptHasIdNumber']").change(function() {
         showPatientIdentify();
     }).trigger('change');
 
     $("input[name='identityNo']").change(function () {
-        $('input[name="existedPatient"]').val(null).trigger('change')
     }).trigger('change');
 
     $('input[name="existedPatient"]').change(function () {
@@ -38,6 +36,10 @@ $(function () {
     $("#pt-amend").click(function () {
        submit("amend");
     });
+
+    if ($('input[name="existedPatient"]').val() === 'Y'){
+        validatePatient($("input[name='ptHasIdNumber']:checked").val(), $("#identityNo").val())
+    }
 })
 
 function validatePatient(isPatHasId, identityNo) {

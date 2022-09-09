@@ -228,6 +228,7 @@ function showPatientDiv() {
     } else {
         patientDiv.hide();
         reloadSection(patientDiv);
+        $('input[name="existedPatient"]').val(null).trigger('change');
     }
 }
 
