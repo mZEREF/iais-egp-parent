@@ -4043,7 +4043,7 @@ public class HcsaApplicationDelegator {
         //set reply processingDecision value
         setReplyProcessingDecisionDropdownValue(request, applicationViewDto);
         //set DMS processingDecision value
-        setDmsProcessingDecisionDropdownValue(request);
+        setDmsProcessingDecisionDropdownValue(request, taskDto);
         //set route back dropdown value
         setRouteBackDropdownValue(request, applicationViewDto,taskDto);
         //set roll back dropdown value
@@ -4498,7 +4498,7 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(request, "nextStageReply", (Serializable) nextStageReplyList);
     }
 
-    public void setDmsProcessingDecisionDropdownValue(HttpServletRequest request) {
+    public void setDmsProcessingDecisionDropdownValue(HttpServletRequest request,TaskDto taskDto) {
         List<SelectOption> decisionValues = IaisCommonUtils.genNewArrayList();
         decisionValues.add(new SelectOption("decisionApproval", "Approve"));
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(request, "applicationViewDto");
@@ -4512,7 +4512,9 @@ public class HcsaApplicationDelegator {
             }
         }
         decisionValues.add(new SelectOption("decisionReject", "Reject"));
-        decisionValues.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY,"Route Laterally"));
+        if(taskDto.getRoleId().equals(RoleConsts.USER_ROLE_ASO)||taskDto.getRoleId().equals(RoleConsts.USER_ROLE_AO1)||taskDto.getRoleId().equals(RoleConsts.USER_ROLE_AO2)){
+            decisionValues.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY,"Route Laterally"));
+        }
         ParamUtil.setSessionAttr(request, "decisionValues", (Serializable) decisionValues);
     }
 
