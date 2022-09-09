@@ -255,12 +255,12 @@
             dismissWaiting();
             return;
         }
-        //fillForm($premContent, data, "", $('div.premContent').index($premContent));
+        //fillFormData($premContent, data, "", $('div.premContent').index($premContent));
         var suffix = $('div.premContent').index($premContent);
         //fillValue($premContent.find('.vehicleNo'), data.vehicleNo);
         fillValue($premContent.find('.hciName'), data.hciName);
         fillValue($premContent.find('.postalCode'), data.postalCode);
-        fillForm($premContent.find('.address'), data, "", suffix);
+        fillFormData($premContent.find('.address'), data, "", suffix);
         fillValue($premContent.find('.addrType'), data.addrType);
         fillFloorUnit($premContent, data);
 

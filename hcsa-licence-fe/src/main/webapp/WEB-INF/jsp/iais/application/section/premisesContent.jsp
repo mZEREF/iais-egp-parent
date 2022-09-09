@@ -97,6 +97,46 @@
                 </div>
             </div>
             </c:if>
+
+            <c:set var="licenceDtos" value="${appGrpPremisesDto.licenceDtos}" />
+            <c:set var="selectedLicences" value="${appGrpPremisesDto.selectedLicences}" />
+            <c:set var="premCount" value="${fn:length(licenceDtos)}" />
+            <c:if test="${premCount > 0}">
+                <div class="form-horizaontal">
+                    <div class="form-check-gp">
+                        <label>
+                            Please confirm if the new change would also apply to other services provided at the existing premises.<br/>
+                            If yes, please tick the services that the change would be applied to:
+                            <span class="mandatory">*</span>
+                        </label>
+                        <div class="form-check">
+                            <input class="form-check-input" name="selectedLicence" type="checkbox" aria-invalid="false" id="NON" value="NON"
+                                   <c:if test="${StringUtil.isIn('NON', selectedLicences)}">checked</c:if>/>
+                            <label class="form-check-label" for="NON"><span class="check-square"></span> Not Applicable</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" name="selectedLicence" type="checkbox" aria-invalid="false" id="ALL" value="ALL"
+                                   <c:if test="${StringUtil.isIn('ALL', selectedLicences)}">checked</c:if>/>
+                            <label class="form-check-label" for="ALL"><span class="check-square"></span> Select All</label>
+                        </div>
+                        <c:forEach var="i" begin="0" end="${premCount - 1}">
+                            <c:set var="lic" value="${licenceDtos[i]}" />
+                            <div class="form-check">
+                                <input class="form-check-input" name="selectedLicence" type="checkbox" aria-invalid="false" id="${lic.id}" value="${lic.id}"
+                                       <c:if test="${StringUtil.isIn(lic.id, selectedLicences)}">checked</c:if>/>
+                                <label class="form-check-label" for="${lic.id}">
+                                    <span class="check-square"></span>
+                                    <c:out value="${lic.svcName}" /> licence (Licence No. ${lic.licenceNo})
+                                </label>
+                            </div>
+                        </c:forEach>
+                        <div class="form-check">
+                            <span class="error-msg" name="iaisErrorMsg" id="error_selectedLicences"></span>
+                        </div>
+                    </div>
+                </div>
+            </c:if>
+
             <div class="form-horizontal">
                 <div class="form-group premisesTypeDiv"<c:if test="${isRenew || isRFC}">hidden</c:if> >
                     <%--<label class="col-xs-12 col-md-4 control-label error-msg-type">What is your mode of service delivery ? <span class="mandatory">*</span></label>--%>

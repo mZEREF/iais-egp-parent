@@ -792,6 +792,7 @@ public abstract class AppCommDelegator {
                     && !HcsaAppConst.NEW_PREMISES.equals(premisesSelect) ) {
                 // re-set premise select for error record
                 if (premisesMap.get(premisesSelect) == null) {
+                    appGrpPremisesDto.setExistingData(AppConsts.NO);
                     appGrpPremisesDto.setPremisesSelect(HcsaAppConst.NEW_PREMISES);
                 }
             }

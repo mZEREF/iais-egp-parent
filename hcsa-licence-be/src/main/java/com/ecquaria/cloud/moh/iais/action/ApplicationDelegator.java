@@ -325,7 +325,7 @@ public class ApplicationDelegator extends AppCommDelegator {
             }
         }
         log.info(StringUtil.changeForLog("Action Type: " + crudType));
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_TYPE, crudType);
+        ParamUtil.setRequestAttr(bpc.request, "Switch2", crudType);
         log.info(StringUtil.changeForLog("the do controlSwitch end ...."));
     }
 

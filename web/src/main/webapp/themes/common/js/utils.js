@@ -621,7 +621,7 @@ function clearFields(targetSelector, withoutClearError) {
     });
 }
 
-function fillForm(ele, data, prefix, suffix, excludeFiels) {
+function fillFormData(ele, data, prefix, suffix, excludeFiels) {
     var $selector = getJqueryNode(ele);
     if (isEmptyNode($selector)) {
         return;

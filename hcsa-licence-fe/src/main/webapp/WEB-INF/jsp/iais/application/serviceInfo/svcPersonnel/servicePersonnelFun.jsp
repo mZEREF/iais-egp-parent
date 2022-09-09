@@ -369,7 +369,7 @@
                 addPersonnels($premContent);
             }
             console.log(data[i])
-            fillForm($('.personnel-content').eq(i), data[i], '', i)
+            fillFormData($('.personnel-content').eq(i), data[i], '', i)
         }
     }
 

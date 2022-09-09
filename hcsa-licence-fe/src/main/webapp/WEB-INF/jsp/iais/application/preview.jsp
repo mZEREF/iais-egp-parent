@@ -139,6 +139,11 @@
                                         </div>
                                         <div class="col-xs-12 col-md-8">
                                             <div class="button-group text-right">
+                                                <c:if test="${!isRfi}">
+                                                    <input type="hidden" id="selectDraftNo" value="${selectDraftNo}">
+                                                    <input type="hidden" id="saveDraftSuccess" value="${saveDraftSuccess}">
+                                                    <a class="btn btn-secondary" id = "SaveDraft">Save as Draft</a>
+                                                </c:if>
                                                 <a class="next btn btn-primary" id="Next">Submit</a>
                                             </div>
                                         </div>
@@ -164,7 +169,7 @@
         <div class="modal-content">
             <div class="modal-body" >
                 <div class="row">
-                    <div class="col-md-12" ><span style="font-size: 2rem;">The changes you have made affect licences with pending application</span></div>
+                    <div class="col-md-12" ><span style="font-size: 2rem;"><iais:message key="RFC_ERR026"/></span></div>
                 </div>
             </div>
             <div class="row " style="margin-top: 5%;margin-bottom: 5%">

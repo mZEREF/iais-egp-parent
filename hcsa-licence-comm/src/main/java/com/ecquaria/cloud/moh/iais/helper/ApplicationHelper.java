@@ -796,6 +796,7 @@ public final class ApplicationHelper {
         }
         for (AppSvcPrincipalOfficersDto psnDto : psnDtos) {
             if (!AppValidatorHelper.psnDoPartValidate(psnDto.getIdType(), psnDto.getIdNo(), psnDto.getName())) {
+                psnDto.setLicPerson(false);
                 continue;
             }
             String personMapKey = getPersonKey(psnDto.getNationality(), psnDto.getIdType(), psnDto.getIdNo());

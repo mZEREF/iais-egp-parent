@@ -28,36 +28,6 @@ public class INTRANET___MohApplication___1 extends BaseProcessClass {
         EngineHelper.delegate(DELEGATOR, "prepare", this);
     }
     
-    public void prepareSubLicensee_OnStepProcess_0() throws Exception {
-        // PrepareSubLicensee->OnStepProcess
-        EngineHelper.delegate(DELEGATOR, "prepareSubLicensee", this);
-    }
-    
-    public void doSubLicensee_OnStepProcess_0() throws Exception {
-        // DoSubLicensee->OnStepProcess
-        EngineHelper.delegate(DELEGATOR, "doSubLicensee", this);
-    }
-    
-    public void preparePremises_OnStepProcess_0() throws Exception {
-        // PreparePremises->OnStepProcess
-        EngineHelper.delegate(DELEGATOR, "preparePremises", this);
-    }
-    
-    public void doPremises_OnStepProcess_0() throws Exception {
-        // DoPremises->OnStepProcess
-        EngineHelper.delegate(DELEGATOR, "doPremises", this);
-    }
-    
-    public void prepareDocuments_OnStepProcess_0() throws Exception {
-        // PrepareDocuments->OnStepProcess
-        EngineHelper.delegate(DELEGATOR, "prepareDocuments", this);
-    }
-    
-    public void doDocument_OnStepProcess_0() throws Exception {
-        // DoDocument->OnStepProcess
-        EngineHelper.delegate(DELEGATOR, "doDocument", this);
-    }
-
     public void prepareForms_OnStepProcess_0() throws Exception {
     // 		PrepareForms->OnStepProcess
         EngineHelper.delegate(DELEGATOR, "prepareForms", this);
@@ -96,6 +66,16 @@ public class INTRANET___MohApplication___1 extends BaseProcessClass {
     public void prepareJump_OnStepProcess_0() throws Exception {
     // 		PrepareJump->OnStepProcess
         EngineHelper.delegate(DELEGATOR, "prepareJump", this);
+    }
+
+    public void prepareAction_OnStepProcess_0() throws Exception {
+    // 		PrepareAction->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "prepareAction", this);
+    }
+
+    public void doAction_OnStepProcess_0() throws Exception {
+    // 		DoAction->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "doAction", this);
     }
     
 }

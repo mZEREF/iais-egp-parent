@@ -181,7 +181,7 @@
         }
         var cntClass = $currContent.attr('class');
         var prefix = $currContent.find('.prepsn').val();
-        fillForm($content, data, prefix, $('div.' + cntClass).index($currContent), ['psnEditDto']);
+        fillFormData($content, data, prefix, $('div.' + cntClass).index($currContent), ['psnEditDto']);
 
         $currContent.find('.speciality p').html(data.speciality);
         $currContent.find('.subSpeciality p').html(data.subSpeciality);
