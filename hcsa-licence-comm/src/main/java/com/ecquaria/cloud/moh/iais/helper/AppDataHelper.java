@@ -2539,7 +2539,7 @@ public final class AppDataHelper {
         if (documentShowDtoList == null || documentShowDtoList.isEmpty()) {
             return;
         }
-        AtomicInteger psnTypeNum = new AtomicInteger(1);
+        AtomicInteger psnTypeNum = new AtomicInteger(1001);
         int i = 0;
         for (DocumentShowDto documentShowDto : documentShowDtoList) {
             String premisesVal = documentShowDto.getPremisesVal();
