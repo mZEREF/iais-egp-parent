@@ -28,7 +28,6 @@
             })
 
         });
-
     }
 
     function refreshPerson($target, k) {

@@ -67,10 +67,9 @@
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
                         <c:set var="index" value="${vs.index}" />
                         <c:set var="sectionLeader" value="${personList[index]}"/>
-                        <c:set var="singleName" value="${HcsaConsts.SECTION_LEADER}"/>
-                        <%@include file="../svcPersonnel/sectionLeaderDetail.jsp" %>
+                        <c:set var="title" value="${HcsaConsts.SECTION_LEADER}"/>
+                        <%@include file="sectionLeaderDetail.jsp" %>
                     </c:forEach>
-                    <%@include file="../svcPersonnel/sectionLeaderFun.jsp" %>
                 </c:when>
                 <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE}">
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
