@@ -392,7 +392,6 @@ public class UploadFileServiceImpl implements UploadFileService {
             for(ApplicationGroupDto every :applicationGroup){
 
                 Set<String> appliGrpPremisesIds=IaisCommonUtils.genNewHashSet();
-                Set<String> appSvcKeyPersonIds=IaisCommonUtils.genNewHashSet();
 
                 ApplicationListFileDto applicationListFileDto=new ApplicationListFileDto();
                 Set<ApplicationGroupDto> groupDtos=IaisCommonUtils.genNewHashSet();
@@ -717,7 +716,6 @@ public class UploadFileServiceImpl implements UploadFileService {
 
                             if(applicationDtoId.equals(applicationId) ){
                                 appSvcKeyPersonnelDtos.add(appSvcKeyPersonnelDto);
-                                appSvcKeyPersonIds.add(appSvcKeyPersonnelDto.getId());
                             }
 
                         }

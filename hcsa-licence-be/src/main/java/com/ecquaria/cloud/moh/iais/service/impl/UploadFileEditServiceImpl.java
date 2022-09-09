@@ -14,18 +14,30 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpSecondAddrDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOpenPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOtherInfoItemAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremScopeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubLicenseeCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcClinicalDirectorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoAbortDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoMedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoNurseDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoTopDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoTopPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSuplmItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -366,13 +378,24 @@ public class UploadFileEditServiceImpl implements UploadFileEditService {
         List<AppDeclarationDocDto> appDeclarationDocs = applicationListDto.getAppDeclarationDocs();
         List<AppSubLicenseeCorrelationDto> appSubLicenseeCorrelationDtos= applicationListDto.getAppSubLicenseeCorrelations();
         List<SubLicenseeDto> subLicenseeDtos=applicationListDto.getAppGrpSubLicenseeInfos();
+        List<AppPremNonLicRelationDto> appPremNonLicRelationDtos=applicationListDto.getAppPremNonLicRelations();
+        List<AppPremScopeDto> appPremScopeDtos=applicationListDto.getAppPremScopes();
+        List<AppPremSubSvcRelDto> appPremSubSvcRelDtos=applicationListDto.getAppPremSubSvcRels();
+        List<AppSvcSuplmItemDto> appSvcSuplmItemDtos=applicationListDto.getAppSvcSuplmItems();
+        List<AppPremOtherInfoItemAnswerDto> appPremOtherInfoItemAnswerDtos=applicationListDto.getAppPremOtherInfoItemAnswers();
+        List<AppSvcBusinessDto> appSvcBusinessDtos=applicationListDto.getAppSvcBusinesses();
+        List<AppGrpSecondAddrDto> appGrpSecondAddrDtos=applicationListDto.getAppGrpSecondAddrs();
+        List<AppSvcOtherInfoMedDto> appSvcOtherInfoMedDtos=applicationListDto.getAppSvcOtherInfoMeds();
+        List<AppSvcOtherInfoNurseDto> appSvcOtherInfoNurseDtos=applicationListDto.getAppSvcOtherInfoNurses();
+        List<AppSvcOtherInfoTopDto> appSvcOtherInfoTopDtos=applicationListDto.getAppSvcOtherInfoTops();
+        List<AppSvcOtherInfoAbortDto> appSvcOtherInfoAbortDtos=applicationListDto.getAppSvcOtherInfoAborts();
+        List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos=applicationListDto.getAppSvcOtherInfoTopPersons();
+
         List<ApplicationListFileDto> applicationListFileDtoList=IaisCommonUtils.genNewArrayList();
         if(IaisCommonUtils.isNotEmpty(applicationGroup)){
             for(ApplicationGroupDto every :applicationGroup){
 
                 Set<String> appliGrpPremisesIds=IaisCommonUtils.genNewHashSet();
-                Set<String> appSvcKeyPersonIds=IaisCommonUtils.genNewHashSet();
-                Set<String> appSvcPremisesScopeIds=IaisCommonUtils.genNewHashSet();
 
                 ApplicationListFileDto applicationListFileDto=new ApplicationListFileDto();
                 Set<ApplicationGroupDto> groupDtos=IaisCommonUtils.genNewHashSet();
@@ -424,7 +447,31 @@ public class UploadFileEditServiceImpl implements UploadFileEditService {
                 List<AppDeclarationDocDto> appDeclarationDocDtoList=new ArrayList<>(10);
                 List<AppSubLicenseeCorrelationDto> appSubLicenseeCorrelationDtoList= IaisCommonUtils.genNewArrayList();
                 List<SubLicenseeDto> subLicenseeDtoList=IaisCommonUtils.genNewArrayList();
-                every.setStatus(ApplicationConsts.APPLICATION_SUCCESS_ZIP);
+                List<AppPremScopeDto> appPremScopeDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppPremScopeDto> appPremScopeDtoSet=new HashSet<>(16);
+                List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppPremSubSvcRelDto> appPremSubSvcRelDtoSet=new HashSet<>(16);
+                List<AppPremNonLicRelationDto> appPremNonLicRelationDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppPremNonLicRelationDto> appPremNonLicRelationDtoSet=new HashSet<>(16);
+
+                List<AppSvcSuplmItemDto> appSvcSuplmItemDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppSvcSuplmItemDto> appSvcSuplmItemDtoSet=new HashSet<>();
+                List<AppPremOtherInfoItemAnswerDto> appPremOtherInfoItemAnswerDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppPremOtherInfoItemAnswerDto> appPremOtherInfoItemAnswerDtoSet=new HashSet<>();
+                List<AppSvcBusinessDto> appSvcBusinessDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppSvcBusinessDto> appSvcBusinessDtoSet=new HashSet<>();
+                List<AppGrpSecondAddrDto> appGrpSecondAddrDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppGrpSecondAddrDto> appGrpSecondAddrDtoSet=new HashSet<>();
+                List<AppSvcOtherInfoMedDto> appSvcOtherInfoMedDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppSvcOtherInfoMedDto> appSvcOtherInfoMedDtoSet=new HashSet<>();
+                List<AppSvcOtherInfoNurseDto> appSvcOtherInfoNurseDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppSvcOtherInfoNurseDto> appSvcOtherInfoNurseDtoSet=new HashSet<>();
+                List<AppSvcOtherInfoTopDto> appSvcOtherInfoTopDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppSvcOtherInfoTopDto> appSvcOtherInfoTopDtoSet=new HashSet<>();
+                List<AppSvcOtherInfoAbortDto> appSvcOtherInfoAbortDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppSvcOtherInfoAbortDto> appSvcOtherInfoAbortDtoSet=new HashSet<>();
+                List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtoSet=new HashSet<>();
                 groupDtos.add(every);
                 String groupId = every.getId();
                 if(subLicenseeDtos!=null){
@@ -456,10 +503,27 @@ public class UploadFileEditServiceImpl implements UploadFileEditService {
                         appGrpPremisesDtos.add(appliGrpPremisesDto);
                         appliGrpPremisesIds.add(appliGrpPremisesDto.getId());
                         String appliGrpPremisesDtoId = appliGrpPremisesDto.getId();
+
                         for(AppPremisesOperationalUnitDto appPremisesOperationalUnitDto : appPremisesOperationalUnitDtos){
                             String premisesId = appPremisesOperationalUnitDto.getPremisesId();
                             if(appliGrpPremisesDtoId.equals(premisesId)){
                                 appPremisesOperationalUnitDtoSet.add(appPremisesOperationalUnitDto);
+                            }
+                        }
+                        if(appPremNonLicRelationDtos!=null){
+                            for(AppPremNonLicRelationDto appPremNonLicRelationDto : appPremNonLicRelationDtos){
+                                String appGrpPremId = appPremNonLicRelationDto.getPremId();
+                                if(appliGrpPremisesDtoId.equals(appGrpPremId)){
+                                    appPremNonLicRelationDtoSet.add(appPremNonLicRelationDto);
+                                }
+                            }
+                        }
+                        if(appGrpSecondAddrDtos!=null){
+                            for(AppGrpSecondAddrDto appGrpSecondAddrDto : appGrpSecondAddrDtos){
+                                String appGrpPremId = appGrpSecondAddrDto.getAppGrpPremisesId();
+                                if(appliGrpPremisesDtoId.equals(appGrpPremId)){
+                                    appGrpSecondAddrDtoSet.add(appGrpSecondAddrDto);
+                                }
                             }
                         }
 
@@ -505,6 +569,7 @@ public class UploadFileEditServiceImpl implements UploadFileEditService {
                                         appPremPhOpenPeriodDtoSet.add(appPremPhOpenPeriodDto);
                                     }
                                 }
+
                                 if(appPremEventPeriods!=null){
                                     for(AppPremEventPeriodDto appPremEventPeriodDto: appPremEventPeriods){
                                         String appPremCorreId = appPremEventPeriodDto.getAppPremId();
@@ -563,6 +628,82 @@ public class UploadFileEditServiceImpl implements UploadFileEditService {
                                         appSvcChargesDtoList.add(appSvcChargesDto);
                                     }
                                 }
+                                for(AppPremScopeDto appPremScopeDto : appPremScopeDtos){
+                                    String appPremCorreId = appPremScopeDto.getAppPremCorreId();
+                                    if(premisesCorrelationDtoId.equals(appPremCorreId)){
+                                        appPremScopeDtoSet.add(appPremScopeDto);
+                                    }
+                                }
+                                for(AppPremSubSvcRelDto appPremSubSvcRelDto : appPremSubSvcRelDtos){
+                                    String appPremCorreId = appPremSubSvcRelDto.getAppPremCorreId();
+                                    if(premisesCorrelationDtoId.equals(appPremCorreId)){
+                                        appPremSubSvcRelDtoSet.add(appPremSubSvcRelDto);
+                                    }
+                                }
+                                if(appSvcSuplmItemDtos!=null){
+                                    for (AppSvcSuplmItemDto appSvcSuplmItemDto:appSvcSuplmItemDtos
+                                    ) {
+                                        if(appSvcSuplmItemDto.getAppPremCorreId().equals(premisesCorrelationDtoId)){
+                                            appSvcSuplmItemDtoSet.add(appSvcSuplmItemDto);
+                                        }
+                                    }
+                                }
+                                if(appPremOtherInfoItemAnswerDtos!=null){
+                                    for (AppPremOtherInfoItemAnswerDto appPremOtherInfoItemAnswerDto:appPremOtherInfoItemAnswerDtos
+                                    ) {
+                                        if(appPremOtherInfoItemAnswerDto.getAppPremCorrId().equals(premisesCorrelationDtoId)){
+                                            appPremOtherInfoItemAnswerDtoSet.add(appPremOtherInfoItemAnswerDto);
+                                        }
+                                    }
+                                }
+                                if(appSvcBusinessDtos!=null){
+                                    for (AppSvcBusinessDto appSvcBusinessDto:appSvcBusinessDtos
+                                    ) {
+                                        if(appSvcBusinessDto.getAppPremId().equals(premisesCorrelationDtoId)){
+                                            appSvcBusinessDtoSet.add(appSvcBusinessDto);
+                                        }
+                                    }
+                                }
+                                if(appSvcOtherInfoMedDtos!=null){
+                                    for (AppSvcOtherInfoMedDto appSvcOtherInfoMedDto:appSvcOtherInfoMedDtos
+                                    ) {
+                                        if(appSvcOtherInfoMedDto.getAppPremId().equals(premisesCorrelationDtoId)){
+                                            appSvcOtherInfoMedDtoSet.add(appSvcOtherInfoMedDto);
+                                        }
+                                    }
+                                }
+                                if(appSvcOtherInfoNurseDtos!=null){
+                                    for (AppSvcOtherInfoNurseDto appSvcOtherInfoNurseDto:appSvcOtherInfoNurseDtos
+                                    ) {
+                                        if(appSvcOtherInfoNurseDto.getAppPremId().equals(premisesCorrelationDtoId)){
+                                            appSvcOtherInfoNurseDtoSet.add(appSvcOtherInfoNurseDto);
+                                        }
+                                    }
+                                }
+                                if(appSvcOtherInfoTopDtos!=null){
+                                    for (AppSvcOtherInfoTopDto appSvcOtherInfoTopDto:appSvcOtherInfoTopDtos
+                                    ) {
+                                        if(appSvcOtherInfoTopDto.getAppPremId().equals(premisesCorrelationDtoId)){
+                                            appSvcOtherInfoTopDtoSet.add(appSvcOtherInfoTopDto);
+                                        }
+                                    }
+                                }
+                                if(appSvcOtherInfoAbortDtos!=null){
+                                    for (AppSvcOtherInfoAbortDto appSvcOtherInfoAbortDto:appSvcOtherInfoAbortDtos
+                                    ) {
+                                        if(appSvcOtherInfoAbortDto.getAppPremId().equals(premisesCorrelationDtoId)){
+                                            appSvcOtherInfoAbortDtoSet.add(appSvcOtherInfoAbortDto);
+                                        }
+                                    }
+                                }
+                                if(appSvcOtherInfoTopPersonDtos!=null){
+                                    for (AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto:appSvcOtherInfoTopPersonDtos
+                                    ) {
+                                        if(appSvcOtherInfoTopPersonDto.getAppPremId().equals(premisesCorrelationDtoId)){
+                                            appSvcOtherInfoTopPersonDtoSet.add(appSvcOtherInfoTopPersonDto);
+                                        }
+                                    }
+                                }
                                 if(appSvcClinicalDirectors!=null){
                                     for (AppSvcClinicalDirectorDto appSvcClinicalDirectorDto:appSvcClinicalDirectors
                                     ) {
@@ -579,7 +720,6 @@ public class UploadFileEditServiceImpl implements UploadFileEditService {
 
                             if(applicationDtoId.equals(applicationId) ){
                                 appSvcKeyPersonnelDtos.add(appSvcKeyPersonnelDto);
-                                appSvcKeyPersonIds.add(appSvcKeyPersonnelDto.getId());
                             }
 
                         }
@@ -634,6 +774,9 @@ public class UploadFileEditServiceImpl implements UploadFileEditService {
                 appPremEventPeriodDtoList.addAll(appPremEventPeriodDtoSet);
                 appPremOpenPeriodDtoList.addAll(appPremOpenPeriodDtoSet);
                 appPremPhOpenPeriodDtoList.addAll(appPremPhOpenPeriodDtoSet);
+                appPremNonLicRelationDtoList.addAll(appPremNonLicRelationDtoSet);
+                appPremScopeDtoList.addAll(appPremScopeDtoSet);
+                appPremSubSvcRelDtoList.addAll(appPremSubSvcRelDtoSet);
                 applicationListFileDto.setAppPremPhOpenPeriods(appPremPhOpenPeriodDtoList);
                 appPremisesCorrelationDtoList.addAll(appPremisesCorrelationDtos);
                 applicationListFileDto.setAppPremisesCorrelation (appPremisesCorrelationDtoList);
@@ -671,6 +814,36 @@ public class UploadFileEditServiceImpl implements UploadFileEditService {
                 applicationListFileDto.setAppDeclarationDocs(appDeclarationDocDtoList);
                 applicationListFileDto.setAppGrpSubLicenseeInfos(subLicenseeDtoList);
                 applicationListFileDto.setAppSubLicenseeCorrelations(appSubLicenseeCorrelationDtoList);
+                applicationListFileDto.setAppPremScopes(appPremScopeDtoList);
+                applicationListFileDto.setAppPremSubSvcRels(appPremSubSvcRelDtoList);
+                applicationListFileDto.setAppPremNonLicRelations(appPremNonLicRelationDtoList);
+                appSvcBusinessDtoList.addAll(appSvcBusinessDtoSet);
+                applicationListFileDto.setAppSvcBusinesses(appSvcBusinessDtoList);
+
+                appGrpSecondAddrDtoList.addAll(appGrpSecondAddrDtoSet);
+                applicationListFileDto.setAppGrpSecondAddrs(appGrpSecondAddrDtoList);
+
+                appSvcOtherInfoMedDtoList.addAll(appSvcOtherInfoMedDtoSet);
+                applicationListFileDto.setAppSvcOtherInfoMeds(appSvcOtherInfoMedDtoList);
+
+                appSvcOtherInfoNurseDtoList.addAll(appSvcOtherInfoNurseDtoSet);
+                applicationListFileDto.setAppSvcOtherInfoNurses(appSvcOtherInfoNurseDtoList);
+
+                appSvcOtherInfoTopDtoList.addAll(appSvcOtherInfoTopDtoSet);
+                applicationListFileDto.setAppSvcOtherInfoTops(appSvcOtherInfoTopDtoList);
+
+                appSvcOtherInfoTopPersonDtoList.addAll(appSvcOtherInfoTopPersonDtoSet);
+                applicationListFileDto.setAppSvcOtherInfoTopPersons(appSvcOtherInfoTopPersonDtoList);
+
+                appSvcOtherInfoAbortDtoList.addAll(appSvcOtherInfoAbortDtoSet);
+                applicationListFileDto.setAppSvcOtherInfoAborts(appSvcOtherInfoAbortDtoList);
+
+                appSvcSuplmItemDtoList.addAll(appSvcSuplmItemDtoSet);
+                applicationListFileDto.setAppSvcSuplmItems(appSvcSuplmItemDtoList);
+
+                appPremOtherInfoItemAnswerDtoList.addAll(appPremOtherInfoItemAnswerDtoSet);
+                applicationListFileDto.setAppPremOtherInfoItemAnswers(appPremOtherInfoItemAnswerDtoList);
+
                 applicationListFileDtoList.add(applicationListFileDto);
             }
 
