@@ -171,7 +171,7 @@
                 <iais:row cssClass="topPlace">
                     <iais:field width="5" value="Place of Surgical Termination of Pregnancy" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7" display="true" id="topPlace">
-                        ${topSuperDataSubmissionDto.premisesDto.premiseLabel}
+                        ${topSuperDataSubmissionDto.premisesDto.businessName}
                     </iais:value>
                 </iais:row>
             </div>
@@ -231,7 +231,7 @@
                     <iais:field width="5" value="Place where Drug for Termination of Pregnancy was Prescribed"
                                 mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7" display="true" id="prescribeTopPlace">
-                        ${topSuperDataSubmissionDto.premisesDto.premiseLabel}
+                        ${topSuperDataSubmissionDto.premisesDto.businessName}
                     </iais:value>
                 </iais:row>
             </div>
@@ -292,7 +292,7 @@
                     <iais:field width="5" value="Place where Drug for Termination of Pregnancy was Taken"
                                 mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7" display="true" id="topDrugPlace">
-                        ${topSuperDataSubmissionDto.premisesDto.premiseLabel}
+                        ${topSuperDataSubmissionDto.premisesDto.businessName}
                     </iais:value>
                 </iais:row>
             </div>

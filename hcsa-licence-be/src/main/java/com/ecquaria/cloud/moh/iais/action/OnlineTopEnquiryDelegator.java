@@ -214,12 +214,6 @@ public class OnlineTopEnquiryDelegator {
             }
         }
 
-        Map<String, String> map = IaisCommonUtils.genNewLinkedHashMap();
-        if (!premisesMap.isEmpty()) {
-            for (Map.Entry<String, PremisesDto> entry : premisesMap.entrySet()) {
-                map.put(entry.getKey(), entry.getValue().getPremiseLabel());
-            }
-        }
         TerminationOfPregnancyDto terminationOfPregnancyDto=topInfo.getTerminationOfPregnancyDto();
         TerminationDto terminationDto=terminationOfPregnancyDto.getTerminationDto();
         if(terminationDto!=null){
@@ -235,19 +229,19 @@ public class OnlineTopEnquiryDelegator {
             }
 
             if(StringUtil.isNotEmpty(terminationDto.getTopPlace())&&premisesMap.containsKey(terminationDto.getTopPlace())){
-                terminationDto.setTopPlace(premisesMap.get(terminationDto.getTopPlace()).getPremiseLabel());
+                terminationDto.setTopPlace(premisesMap.get(terminationDto.getTopPlace()).getBusinessName());
             }
             if(StringUtil.isNotEmpty(terminationDto.getPrescribeTopPlace())&&premisesMap.containsKey(terminationDto.getPrescribeTopPlace())){
-                terminationDto.setPrescribeTopPlace(premisesMap.get(terminationDto.getPrescribeTopPlace()).getPremiseLabel());
+                terminationDto.setPrescribeTopPlace(premisesMap.get(terminationDto.getPrescribeTopPlace()).getBusinessName());
             }
             if(StringUtil.isNotEmpty(terminationDto.getTopDrugPlace())&&premisesMap.containsKey(terminationDto.getTopDrugPlace())){
-                terminationDto.setTopDrugPlace(premisesMap.get(terminationDto.getTopDrugPlace()).getPremiseLabel());
+                terminationDto.setTopDrugPlace(premisesMap.get(terminationDto.getTopDrugPlace()).getBusinessName());
             }
         }
         PostTerminationDto postDto=terminationOfPregnancyDto.getPostTerminationDto();
         if(postDto!=null){
             if(StringUtil.isNotEmpty(postDto.getCounsellingPlace())&&premisesMap.containsKey(postDto.getCounsellingPlace())){
-                postDto.setCounsellingPlace(premisesMap.get(postDto.getCounsellingPlace()).getPremiseLabel());
+                postDto.setCounsellingPlace(premisesMap.get(postDto.getCounsellingPlace()).getBusinessName());
             }
         }
         PreTerminationDto preTerminationDto=terminationOfPregnancyDto.getPreTerminationDto();
@@ -319,7 +313,7 @@ public class OnlineTopEnquiryDelegator {
                 log.error(StringUtil.changeForLog("LateSubmit is error"));
             }
             if(StringUtil.isNotEmpty(preTerminationDto.getCounsellingPlace())&&premisesMap.containsKey(preTerminationDto.getCounsellingPlace())){
-                preTerminationDto.setCounsellingPlace(premisesMap.get(preTerminationDto.getCounsellingPlace()).getPremiseLabel());
+                preTerminationDto.setCounsellingPlace(premisesMap.get(preTerminationDto.getCounsellingPlace()).getBusinessName());
             }
             if(StringUtil.isNotEmpty(preTerminationDto.getCounsellingDate())){
                 try {
