@@ -12,7 +12,7 @@
     <iais:row>
         <iais:value width="12" display="true" cssClass="col-md-10" style="font-size: 14px">
             <div class="col-xs-6">
-                <div class="newVal " attr="${svcDoc.md5Code}<c:out value="${svcDoc.docName}"/>"/>">
+                <div class="newVal" attr="${svcDoc.md5Code}<c:out value="${svcDoc.docName}"/>">
                     <c:choose>
                         <c:when test="${empty svcDoc.fileRepoId}">
                             <c:out value="${svcDoc.docName}"/>
@@ -24,7 +24,7 @@
                 </div>
             </div>
             <div class="col-xs-6">
-                <div class="newVal " attr="${oldSvcDoc.md5Code}<c:out value="${oldSvcDoc.docName}"/>"/>">
+                <div class="oldVal" attr="${oldSvcDoc.md5Code}<c:out value="${oldSvcDoc.docName}"/>">
                     <c:choose>
                         <c:when test="${empty oldSvcDoc.fileRepoId}">
                             <c:out value="${oldSvcDoc.docName}"/>

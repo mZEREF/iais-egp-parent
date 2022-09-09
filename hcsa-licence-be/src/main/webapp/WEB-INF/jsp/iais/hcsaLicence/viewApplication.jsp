@@ -49,7 +49,7 @@
                                                     <h4 class="panel-title"><a class="svc-pannel-collapse collapsed" role="button" data-toggle="collapse"
                                                                                href="#collapseServiceInfo0" aria-expanded="true"
                                                                                aria-controls="collapseServiceInfo">
-                                                        Service Related Information - ${hcsaServiceDto.svcName}</a></h4>
+                                                        Service Related Information - ${currentPreviewSvcInfo.serviceName}</a></h4>
                                                 </div>
 
                                                 <div class=" panel-collapse collapse" id="collapseServiceInfo0" role="tabpanel"
