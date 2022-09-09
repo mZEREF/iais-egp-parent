@@ -352,7 +352,7 @@
                   </div>
                 </div>
               </div>
-              <c:if test="${appGrpPremDto.locateWtihNonHcsa == '1' || appGrpPremDto.oldAppGrpPremDto == '1'}" var="hasNonHcsa">
+              <c:if test="${appGrpPremDto.locateWtihNonHcsa == '1' || oldAppGrpPremDto.locateWtihNonHcsa == '1'}" var="hasNonHcsa">
                 <div class="row">
                   <table class="table" aria-describedby="" border="0" style="margin:10px 0">
                     <thead>
