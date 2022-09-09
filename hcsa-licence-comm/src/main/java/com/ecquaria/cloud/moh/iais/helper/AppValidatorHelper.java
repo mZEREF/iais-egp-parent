@@ -3356,7 +3356,7 @@ public final class AppValidatorHelper {
             }
         }
 
-        if (ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_NURSE_IN_CHARGE.equals(personnelType)){
+        /*if (ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_NURSE_IN_CHARGE.equals(personnelType)){
             String bclsExpiryDateStr = appSvcPersonnelDto.getBclsExpiryDate();
             if (StringUtil.isEmpty(bclsExpiryDateStr)) {
                 errorMap.put(prefix + "bclsExpiryDate" + subfix, signal);
@@ -3365,6 +3365,6 @@ public final class AppValidatorHelper {
                     errorMap.put(prefix + "bclsExpiryDate" + subfix, "SC_ERR009");
                 }
             }
-        }
+        }*/
     }
 }
