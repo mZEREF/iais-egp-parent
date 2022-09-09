@@ -207,7 +207,7 @@ public class ArIUIDataSubmissionDelegator {
                 }
                 currentSuper.setArCurrentInventoryDto(arCurrentInventoryDto);
                 currentSuper.setSelectionDto(selectionDto);
-                ParamUtil.setRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, nextStage);
+                ParamUtil.setRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, transferNextStage(nextStage));
             }
         } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(submissionType)) {
             donorSamplePageAction(request, submissionType, actionType, errorMap);
@@ -444,7 +444,7 @@ public class ArIUIDataSubmissionDelegator {
                 DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDtoDraft, request);
             }
             ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
-            ParamUtil.setRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, selectionDto.getStage());
+            ParamUtil.setRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, transferNextStage(selectionDto.getStage()));
             return true;
         } else if ("delete".equals(actionValue)) {
             String orgId = currentSuper.getOrgId();
@@ -454,7 +454,7 @@ public class ArIUIDataSubmissionDelegator {
             currentSuper.setDraftNo(null);
             currentSuper.setDraftId(null);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
-            ParamUtil.setRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, selectionDto.getStage());
+            ParamUtil.setRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, transferNextStage(selectionDto.getStage()));
             return true;
         }
         return false;
@@ -723,5 +723,9 @@ public class ArIUIDataSubmissionDelegator {
         List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
         selectOptions.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER, "Others"));
         return selectOptions;
+    }
+
+    private String transferNextStage(String nextStage) {
+        return DataSubmissionConsts.AR_CYCLE_SFO.equals(nextStage)?DataSubmissionConsts.AR_CYCLE_EFO:nextStage;
     }
 }
