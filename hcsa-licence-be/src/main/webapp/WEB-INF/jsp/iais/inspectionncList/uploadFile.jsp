@@ -63,10 +63,12 @@
     };
 
     $('#tabDocuments').click(function a() {
-        closeUploadDoc()
+        $('#selectedFileShow').html('')
+        doDeleteShowFileName();
     })
     $('#tabProcessing').click(function b() {
-        closeUploadDoc()
+        $('#selectedFileShow').html('')
+        doDeleteShowFileName();
     })
 
     function closeUploadDoc(){

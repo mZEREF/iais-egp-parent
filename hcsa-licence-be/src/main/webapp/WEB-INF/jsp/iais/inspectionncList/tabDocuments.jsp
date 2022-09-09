@@ -106,8 +106,24 @@
                 <c:set var="isEmptyIntranetDocDtoList" value="true"/>
                 <c:if test="${not empty applicationViewDto.appIntranetDocDtoList}">
                     <c:forEach var="interalFile" items="${applicationViewDto.appIntranetDocDtoList}" varStatus="status">
-                        <c:if test="${applicationViewDto.applicationDto.applicationType != ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK && interalFile.appDocType !=ApplicationConsts.APP_DOC_TYPE_EMAIL_ATTACHMENT&&( interalFile.appDocType !=ApplicationConsts.APP_DOC_TYPE_PAST_INS_REPORT && isShowInspection=='N')|| (applicationViewDto.applicationDto.applicationType == ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK && interalFile.appDocType != ApplicationConsts.APP_DOC_TYPE_SELF_DEC_FORM)}">
-                            <c:set var="isEmptyIntranetDocDtoList" value="false"/>
+                        <c:if test="${not empty applicationViewDto.appIntranetDocDtoList}">
+                            <c:forEach var="interalFile" items="${applicationViewDto.appIntranetDocDtoList}" varStatus="status">
+                                <c:if test="${applicationViewDto.applicationDto.applicationType != ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK }">
+                                    <c:set var="isEmptyIntranetDocDtoList" value="false"/>
+                                </c:if>
+                            </c:forEach>
+                            <c:forEach var="interalFile" items="${applicationViewDto.appIntranetDocDtoList}" varStatus="status">
+                                <c:if test="${ interalFile.appDocType !=ApplicationConsts.APP_DOC_TYPE_EMAIL_ATTACHMENT
+                        && ( interalFile.appDocType !=ApplicationConsts.APP_DOC_TYPE_PAST_INS_REPORT && isShowInspection!='Y') }">
+                                    <c:set var="isEmptyIntranetDocDtoList" value="false"/>
+                                </c:if>
+                            </c:forEach>
+                            <c:forEach var="interalFile" items="${applicationViewDto.appIntranetDocDtoList}" varStatus="status">
+                                <c:if test="${ applicationViewDto.applicationDto.applicationType == ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK
+                        && interalFile.appDocType != ApplicationConsts.APP_DOC_TYPE_SELF_DEC_FORM}">
+                                    <c:set var="isEmptyIntranetDocDtoList" value="false"/>
+                                </c:if>
+                            </c:forEach>
                         </c:if>
                     </c:forEach>
                 </c:if>
@@ -123,7 +139,7 @@
                     <c:otherwise>
                         <c:forEach var="interalFile" items="${applicationViewDto.appIntranetDocDtoList}"
                                    varStatus="status">
-                            <c:if test="${applicationViewDto.applicationDto.applicationType != ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK && interalFile.appDocType !=ApplicationConsts.APP_DOC_TYPE_EMAIL_ATTACHMENT && (interalFile.appDocType ==ApplicationConsts.APP_DOC_TYPE_PAST_INS_REPORT && isShowInspection=='Y') || (applicationViewDto.applicationDto.applicationType == ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK && interalFile.appDocType != ApplicationConsts.APP_DOC_TYPE_SELF_DEC_FORM)}">
+                            <c:if test="${applicationViewDto.applicationDto.applicationType != ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK && interalFile.appDocType !=ApplicationConsts.APP_DOC_TYPE_EMAIL_ATTACHMENT && (interalFile.appDocType ==ApplicationConsts.APP_DOC_TYPE_PAST_INS_REPORT && isShowInspection=='Y' || interalFile.appDocType !=ApplicationConsts.APP_DOC_TYPE_PAST_INS_REPORT &&isShowInspection!='Y') || (applicationViewDto.applicationDto.applicationType == ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK && interalFile.appDocType != ApplicationConsts.APP_DOC_TYPE_SELF_DEC_FORM)}">
                                 <tr>
                                     <td >
                                         <p>

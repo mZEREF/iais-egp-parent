@@ -60,7 +60,7 @@ public class SelectHelper {
         }
         sBuffer.append("</select>").append("</div>");
         // error span
-        sBuffer.append("<div >")
+        sBuffer.append("<div class=\"col-md-12 col-xs-12 row\">")
                 .append("<span class=\"error-msg \" name=\"iaisErrorMsg\" id=\"error_").append(name).append("\"></span>")
                 .append("</div>");
         return sBuffer.toString();

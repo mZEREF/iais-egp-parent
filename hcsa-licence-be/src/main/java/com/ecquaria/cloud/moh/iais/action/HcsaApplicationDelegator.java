@@ -321,7 +321,6 @@ public class HcsaApplicationDelegator {
                         firstOption, checkedVals, false,true);
 
                 String aoSelectError = (String) ParamUtil.getSessionAttr(request, "aoSelectError");
-                chargeTypeSelHtml = chargeTypeSelHtml + "<span  class=\"error-msg\" name=\"iaisErrorMsg\" id=\"error_aoSelect\">";
                 if(!StringUtil.isEmpty(aoSelectError)){
                     aoSelectError = MessageUtil.getMessageDesc(aoSelectError);
                     chargeTypeSelHtml = chargeTypeSelHtml +aoSelectError;
@@ -929,6 +928,9 @@ public class HcsaApplicationDelegator {
             } else if (ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL.equals(decisionValue)) {
                 //ASO Email
                 successInfo = "LOLEV_ACK055";
+            } else if (ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY.equals(decisionValue)) {
+                //ASO Email
+                successInfo = "LOLEV_ACK057";
             } else {
                 successInfo = "LOLEV_ACK028";
             }
@@ -3295,7 +3297,6 @@ public class HcsaApplicationDelegator {
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
         BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
-
         //complated this task and create the history
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
         String refNo = taskDto.getRefNo();
@@ -3308,7 +3309,12 @@ public class HcsaApplicationDelegator {
         if (!StringUtil.isEmpty(nextStageReplys) && StringUtil.isEmpty(processDecision)) {
             processDecision = nextStageReplys;
         }
-
+        if(appStatus.equals(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS)){
+            String decisionValues = ParamUtil.getString(bpc.request, "decisionValues");
+            if(StringUtil.isNotEmpty(decisionValues)&&ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY.equals(decisionValues)){
+                processDecision=ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY;
+            }
+        }
         String routeBackReview = (String) ParamUtil.getSessionAttr(bpc.request, "routeBackReview");
         if ("canRouteBackReview".equals(routeBackReview)) {
             AppPremisesRoutingHistoryExtDto appPremisesRoutingHistoryExtDto = new AppPremisesRoutingHistoryExtDto();
@@ -3382,7 +3388,6 @@ public class HcsaApplicationDelegator {
         //save the broadcast
         //set vehicle No
         broadcastApplicationDto = broadcastService.replySetVehicleByRole(taskDto, applicationViewDto, broadcastApplicationDto);
-        broadcastApplicationDto = broadcastService.replySetSubSvcByRole(taskDto, applicationViewDto, broadcastApplicationDto);
         broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         String evenRefNum = String.valueOf(System.currentTimeMillis());

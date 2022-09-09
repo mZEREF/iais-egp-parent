@@ -243,6 +243,9 @@
                                                                                 </iais:row>
                                                                             </div>
                                                                         </c:if>
+                                                                        <div id="laterallyDropdown" class="hidden">
+                                                                            <%@include file="laterallySelect.jsp" %>
+                                                                        </div>
                                                                         <div id="verifiedDropdown" class="hidden">
                                                                             <iais:row>
                                                                                 <iais:field value="Assign To" required="false"/>
@@ -253,9 +256,6 @@
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                             <%@include file="aoSelect.jsp" %>
-                                                                        </div>
-                                                                        <div id="laterallyDropdown" class="hidden">
-                                                                            <%@include file="laterallySelect.jsp" %>
                                                                         </div>
 
                                                                         <div id="comments" class="hidden">
@@ -691,24 +691,27 @@
         //error_nextStage
         var selectValue = $("[name='nextStage']").val();
         var selectValueDms = $("[name='decisionValues']").val();
+        var remark = $('#internalRemarksId').val();
+        var lrSelect = $('[name="lrSelect"] option:selected').val();
+
         if (selectValue == "PROCRLR" || selectValueDms == "PROCRLR" ) {
-            const remark = $('#internalRemarksId').val();
-            if(remark === null || remark === undefined || remark === "") {
-                $('#error_internalRemarks1').show();
-                if(lrSelect ==null || lrSelect == ""){
-                    $("#error_lrSelect").html('This is a mandatory field.');
-                }
-                return false;
-            }
-            var lrSelect = $('[name="lrSelect"] option:selected').val();
 
             if(lrSelect ==null || lrSelect == ""){
                 $("#error_lrSelect").html('This is a mandatory field.');
+                if(remark ==null || remark == ""){
+                    $("#error_internalRemarks1").html('This is a mandatory field.');
+                    $("#error_internalRemarks1").show()
+                }
+                return false;
+            }else if(remark ==null || remark == ""){
+                $("#error_internalRemarks1").html('This is a mandatory field.');
+                $("#error_internalRemarks1").show()
                 return false;
             }
         }
         return true;
     }
+
 
     //appeal
     $("[name='appealRecommendationValues']").change(function selectChange() {
@@ -932,13 +935,14 @@
     $("[name='decisionValues']").change(function selectChange() {
         var selectValue = $("[name='decisionValues']").val();
 
-        if (selectValue == "PROCVER") {
+        if (selectValue == "PROCRLR") {
             $('#internalRemarksFalse').addClass('hidden');
             $('#internalRemarksTrue').removeClass('hidden');
-            $('#verifiedDropdown').removeClass('hidden');
+            $('#laterallyDropdown').removeClass('hidden');
         }else {
             $('#internalRemarksFalse').removeClass('hidden');
             $('#internalRemarksTrue').addClass('hidden');
+            $('#laterallyDropdown').addClass('hidden');
         }
     });
 
