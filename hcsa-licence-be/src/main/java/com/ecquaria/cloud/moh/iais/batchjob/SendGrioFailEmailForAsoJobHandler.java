@@ -181,7 +181,7 @@ public class SendGrioFailEmailForAsoJobHandler extends IJobHandler {
         LicenseeDto licenseeDto = organizationLicDto.getLicenseeDto();
         LicenseeEntityDto licenseeEntityDto = organizationLicDto.getLicenseeEntityDto();
         String syName = AppConsts.MOH_AGENCY_NAME;
-        Date date = new Date();
+        Date date = applicationGroupDto.getSubmitDt();
         String appDate = Formatter.formatDateTime(date, "dd/MM/yyyy");
         String applicationTypeShow = MasterCodeUtil.getCodeDesc(applicationGroupDto.getAppType());
         param.put("officer_name","");

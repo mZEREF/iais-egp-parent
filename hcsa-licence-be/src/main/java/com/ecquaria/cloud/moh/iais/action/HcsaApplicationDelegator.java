@@ -1724,7 +1724,7 @@ public class HcsaApplicationDelegator {
     private void rejectSendNotification(BaseProcessClass bpc, ApplicationViewDto applicationViewDto) {
         //send appeal email
         String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
-        Date date = new Date();
+        Date date = applicationViewDto.getApplicationGroupDto().getSubmitDt();
         String appDate = Formatter.formatDateTime(date, "dd/MM/yyyy");
         //new application send email
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
@@ -1770,7 +1770,7 @@ public class HcsaApplicationDelegator {
             emailMap.put("ApplicantName", applicantName);
             emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE}).get(0).getText());
             emailMap.put("ApplicationNumber", applicationNo);
-            emailMap.put("ApplicationDate", Formatter.formatDate(new Date()));
+            emailMap.put("ApplicationDate", Formatter.formatDate(applicationGroupDto.getSubmitDt()));
             emailMap.put("email_address", systemParamConfig.getSystemAddressOne());
             emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
             emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
@@ -1833,7 +1833,7 @@ public class HcsaApplicationDelegator {
             emailMap.put("ApplicantName", applicantName);
             emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE}).get(0).getText());
             emailMap.put("ApplicationNumber", applicationNo);
-            emailMap.put("ApplicationDate", Formatter.formatDate(new Date()));
+            emailMap.put("ApplicationDate", Formatter.formatDate(applicationGroupDto.getSubmitDt()));
             emailMap.put("email_address", systemParamConfig.getSystemAddressOne());
             emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
             emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
@@ -2927,7 +2927,7 @@ public class HcsaApplicationDelegator {
                             msgInfoMap.put("ApplicationNumber", applicationNo);
                             msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType1));
                             msgInfoMap.put("Applicant", applicantName);
-                            msgInfoMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
+                            msgInfoMap.put("ApplicationDate", Formatter.formatDateTime(applicationGroupDto.getSubmitDt()));
                             msgInfoMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
                             sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT_EMAIL, msgInfoMap, oldApplication);
                             sendInboxMessage(oldApplication, serviceId, msgInfoMap, MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT_MESSAGE);
@@ -3600,7 +3600,7 @@ public class HcsaApplicationDelegator {
         templateContent.put("ApplicantName", applicantName);
         templateContent.put("ApplicationType", appealType);
         templateContent.put("ApplicationNo", appealNo);
-        templateContent.put("ApplicationDate", Formatter.formatDateTime(new Date(), "dd/MM/yyyy"));
+        templateContent.put("ApplicationDate", Formatter.formatDateTime(applicationGroupDto.getSubmitDt(), "dd/MM/yyyy"));
         templateContent.put("MOH_AGENCY_NAME", MohName);
         templateContent.put("emailAddress", systemParamConfig.getSystemAddressOne());
 
@@ -4101,18 +4101,20 @@ public class HcsaApplicationDelegator {
                     String mesContext=null;
                     String subject =null;
                     EmailParam emailParam=null;
+                    String appDate = Formatter.formatDateTime(applicationGroupDto.getSubmitDt(), "dd/MM/yyyy");
+
                     if(applicationDto.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)){
                         String organizationId = licenseeDto.getOrganizationId();
                         OrganizationDto organizationDto = organizationClient.getOrganizationById(organizationId).getEntity();
 
-                        emailParam=sendNewAppApproveNotification(applicantName,applicationTypeShow,applicationNo,licenceNo,organizationDto,inspectionRecommendation);
+                        emailParam=sendNewAppApproveNotification(applicantName,applicationTypeShow,applicationNo,licenceNo,organizationDto,inspectionRecommendation,appDate);
                     }
                     if(applicationDto.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_RENEWAL)){
-                        emailParam=sendRenewalAppApproveNotification(applicantName,applicationTypeShow,applicationNo,licenceNo,inspectionRecommendation);
+                        emailParam=sendRenewalAppApproveNotification(applicantName,applicationTypeShow,applicationNo,licenceNo,inspectionRecommendation,appDate);
                     }
                     if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
                         if(applicationGroupDto.getNewLicenseeId()==null){
-                            emailParam=sendRfcApproveNotification(applicantName,applicationTypeShow,applicationNo);
+                            emailParam=sendRfcApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate);
                         }
                         //transfee
                         if(applicationGroupDto.getNewLicenseeId()!=null){
@@ -4827,9 +4829,8 @@ public class HcsaApplicationDelegator {
                                                      String applicationNo,
                                                      String licenceNo,
                                                      OrganizationDto organizationDto,
-                                                     AppPremisesRecommendationDto inspectionRecommendation
-    ){
-        String appDate = Formatter.formatDateTime(new Date(), "dd/MM/yyyy");
+                                                     AppPremisesRecommendationDto inspectionRecommendation ,String appDate
+                                                     ){
         String MohName = AppConsts.MOH_AGENCY_NAME;
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         String corpPassUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + "/main-web/eservice/INTERNET/FE_Landing";
@@ -4888,14 +4889,13 @@ public class HcsaApplicationDelegator {
     }
 
     private EmailParam sendRenewalAppApproveNotification(String applicantName,
-                                                         String applicationTypeShow,
-                                                         String applicationNo,
-                                                         String licenceNo,
-                                                         AppPremisesRecommendationDto inspectionRecommendation){
+                                                   String applicationTypeShow,
+                                                   String applicationNo,
+                                                   String licenceNo,
+                                                   AppPremisesRecommendationDto inspectionRecommendation,String appDate){
         String MohName = AppConsts.MOH_AGENCY_NAME;
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-        String appDate = Formatter.formatDateTime(new Date(), "dd/MM/yyyy");
         map.put("ApplicantName", applicantName);
         map.put("ApplicationType", applicationTypeShow);
         map.put("ApplicationNumber", applicationNo);
@@ -4949,7 +4949,7 @@ public class HcsaApplicationDelegator {
         emailMap.put("name_transferee", newLicenseeDto.getName());
         emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
         emailMap.put("ApplicationNumber", applicationDto.getApplicationNo());
-        emailMap.put("ApplicationDate", Formatter.formatDate(new Date()));
+        emailMap.put("ApplicationDate", Formatter.formatDate(applicationGroupDto.getSubmitDt()));
         emailMap.put("ExistingLicensee", applicantName);
         emailMap.put("transferee_licensee", newLicenseeDto.getName());
         emailMap.put("LicenceNumber", licenceNo);
@@ -4979,10 +4979,9 @@ public class HcsaApplicationDelegator {
         return emailParam;
     }
 
-    private EmailParam sendRfcApproveNotification(String applicantName, String applicationTypeShow, String applicationNo) {
+    private EmailParam sendRfcApproveNotification(String applicantName, String applicationTypeShow, String applicationNo,String appDate) {
         String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-        String appDate = Formatter.formatDateTime(new Date(), "dd/MM/yyyy");
         emailMap.put("change", "true");
         emailMap.put("ApplicantName", applicantName);
         emailMap.put("ApplicationType", applicationTypeShow);

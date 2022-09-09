@@ -57,7 +57,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -199,7 +198,7 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
                         msgInfoMap.put("reqAppNo", applicationNo);
                         msgInfoMap.put("S_LName", serviceName);
                         msgInfoMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
-                        msgInfoMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
+                        msgInfoMap.put("ApplicationDate", Formatter.formatDateTime(applicationGroupDto.getSubmitDt()));
                         msgInfoMap.put("adminFee", ApplicationConsts.PAYMRNT_ADMIN_FEE);
                         if(hcsaServiceDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE)||hcsaServiceDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE)){
                             ApplicationDto applicationDto =hcsaAppClient.getBundledAppDtosByAppDto(h).getEntity();

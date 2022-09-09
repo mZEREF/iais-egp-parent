@@ -668,7 +668,7 @@ public class LicenceServiceImpl implements LicenceService {
                                     String applicantName = orgUserDto.getDisplayName();
                                     String organizationId = licenseeDto.getOrganizationId();
                                     OrganizationDto organizationDto = organizationClient.getOrganizationById(organizationId).getEntity();
-                                    String appDate = Formatter.formatDateTime(new Date(), "dd/MM/yyyy");
+                                    String appDate = Formatter.formatDateTime(applicationGroupDto.getSubmitDt(), "dd/MM/yyyy");
                                     String MohName = AppConsts.MOH_AGENCY_NAME;
                                     log.info(StringUtil.changeForLog("send notification applicantName : " + applicantName));
                                     String applicationTypeShow = MasterCodeUtil.getCodeDesc(applicationType);
@@ -786,7 +786,7 @@ public class LicenceServiceImpl implements LicenceService {
         emailMap.put("name_transferee", newLicenseeDto.getName());
         emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
         emailMap.put("ApplicationNumber", applicationDto.getApplicationNo());
-        emailMap.put("ApplicationDate", Formatter.formatDate(new Date()));
+        emailMap.put("ApplicationDate", Formatter.formatDate(applicationGroupDto.getSubmitDt()));
         emailMap.put("ExistingLicensee", applicantName);
         emailMap.put("transferee_licensee", newLicenseeDto.getName());
         emailMap.put("LicenceNumber", licenceNo);

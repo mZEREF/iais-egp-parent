@@ -549,17 +549,18 @@ public class ApplicationServiceImpl implements ApplicationService {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern(Formatter.DATE);
         String tatTimeStr = tatTime.format(dtf);
         ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
+        map.put("ApplicationDate",Formatter.formatDateTime( new Date(), Formatter.DATE));
         if(applicationGroupDto != null){
             OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
             if(orgUserDto != null){
                 applicantName = orgUserDto.getDisplayName();
             }
+            map.put("ApplicationDate",Formatter.formatDateTime( applicationGroupDto.getSubmitDt(), Formatter.DATE));
         }
         String messageNo = inboxMsgService.getMessageNo();
         map.put("ApplicantName",applicantName);
         map.put("ApplicationType",MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType()));
         map.put("ApplicationNumber",StringUtil.viewHtml(applicationNo));
-        map.put("ApplicationDate",Formatter.formatDateTime( new Date(), Formatter.DATE));
         map.put("Remarks","");
         map.put("COMMENTS",externalRemarks);
         map.put("systemLink",linkURL);

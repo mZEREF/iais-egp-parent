@@ -459,7 +459,9 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
     @Override
     public void rejectSendNotification(ApplicationDto applicationDto) {
         String applicationNo = applicationDto.getApplicationNo();
-        Date date = new Date();
+        ApplicationGroupDto applicationGroupDto =  applicationMainClient.getAppById(applicationDto.getAppGrpId()).getEntity();
+
+        Date date = applicationGroupDto.getSubmitDt();
         String appDate = Formatter.formatDateTime(date, "dd/MM/yyyy");
         String MohName = AppConsts.MOH_AGENCY_NAME;
         String applicationType = applicationDto.getApplicationType();
@@ -524,7 +526,7 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
         templateContent.put("ApplicantName", applicantName);
         templateContent.put("ApplicationType",  appType);
         templateContent.put("ApplicationNo", appealNo);
-        templateContent.put("ApplicationDate", Formatter.formatDateTime(new Date(),"dd/MM/yyyy"));
+        templateContent.put("ApplicationDate", Formatter.formatDateTime(applicationGroupDto.getSubmitDt(),"dd/MM/yyyy"));
         templateContent.put("MOH_AGENCY_NAME", MohName);
         templateContent.put("emailAddress", systemParamConfig.getSystemAddressOne());
 
