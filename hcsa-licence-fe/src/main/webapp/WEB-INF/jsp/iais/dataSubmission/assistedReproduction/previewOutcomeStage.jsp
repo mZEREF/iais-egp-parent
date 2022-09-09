@@ -21,9 +21,6 @@
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <%@include file="section/previewOutcomeStageDetail.jsp"%>
                     <c:set var="outcomeStageDto" value="${arSuperDataSubmissionDto.outcomeStageDto}" />
-                    <c:if test="${outcomeStageDto.pregnancyDetected == true }">
-                        <%@include file="section/previewPregnancyOutcomeStageDetail.jsp" %>
-                    </c:if>
                     <%@include file="section/previewDisposalDetail.jsp" %>
                     <%@include file="common/previewDsAmendment.jsp" %>
                     <%@include file="common/arDeclaration.jsp" %>

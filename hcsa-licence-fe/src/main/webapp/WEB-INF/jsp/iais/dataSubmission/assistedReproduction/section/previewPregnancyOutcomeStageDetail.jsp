@@ -8,7 +8,7 @@
         <h4 class="panel-title">
             <a class="collapsed" href="#cycleDetails" data-toggle="collapse">
                 <c:if test="${cycle == 'DSCL_008'}">Outcome</c:if>
-                <c:if test="${cycle == 'DSCL_009'}">Outcome of IUI Cycle</c:if>
+                <c:if test="${cycle == 'DSCL_009'}">Outcome of Pregnancy</c:if>
             </a>
         </h4>
     </div>

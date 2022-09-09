@@ -6,7 +6,7 @@
         <h4 class="panel-title">
             <strong>
                 <c:if test="${cycle == 'DSCL_008'}">Outcome</c:if>
-                <c:if test="${cycle == 'DSCL_009'}">Outcome of IUI Cycle</c:if>
+                <c:if test="${cycle == 'DSCL_009'}">Outcome of Pregnancy</c:if>
             </strong>
         </h4>
     </div>
