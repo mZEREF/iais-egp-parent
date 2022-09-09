@@ -197,6 +197,15 @@ public class ArIUIDataSubmissionDelegator {
                 selectionDto.setStage(nextStage);
                 String licenseeId = DataSubmissionHelper.getLicenseeId(request);
                 currentSuper.setCycleDto(DataSubmissionHelper.initCycleDto(selectionDto, currentSuper.getSvcName(), hciCode, licenseeId));
+                if (startNewCycle){
+                    selectionDto.setNavCurrentCycle(selectionDto.getCycle());
+                } else {
+                    selectionDto.setNavCurrentCycle(
+                            selectionDto
+                                    .getCycleDtos().stream().filter(it-> cycleRadio.equals(it.getId()))
+                                    .map(CycleDto::getCycleType).findFirst().orElse(selectionDto.getCycle())
+                    );
+                }
                 ArCurrentInventoryDto arCurrentInventoryDto = arDataSubmissionService.getArCurrentInventoryDtoByConds(hciCode, licenseeId, selectionDto.getPatientCode(), currentSuper.getSvcName());
                 if (arCurrentInventoryDto == null) {
                     arCurrentInventoryDto = new ArCurrentInventoryDto();

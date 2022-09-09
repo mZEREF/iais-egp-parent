@@ -888,13 +888,14 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         List<ARCycleStageDto> arCycleStageDtos = new ArrayList<>();
         List<String> options = new ArrayList<>();
         if(selectionDto != null) {
-            if ("DSCL_008".equals(selectionDto.getCycle())) {
+            String cycle = selectionDto.getNavCurrentCycle();
+            if (DataSubmissionConsts.DS_CYCLE_AR.equals(cycle)) {
                 options = DataSubmissionHelper.getAllARCycleStages();
-            } else if ("DSCL_009".equals(selectionDto.getCycle())) {
+            } else if (DataSubmissionConsts.DS_CYCLE_IUI.equals(cycle)) {
                 options = DataSubmissionHelper.getAllIUICycleStages();
-            } else if ("DSCL_010".equals(selectionDto.getCycle())) {
+            } else if (DataSubmissionConsts.DS_CYCLE_EFO.equals(cycle)) {
                 options = DataSubmissionHelper.getAllOFOCycleStages();
-            } else if ("DSCL_016".equals(selectionDto.getCycle())) {
+            } else if (DataSubmissionConsts.DS_CYCLE_SFO.equals(cycle)) {
                 options = DataSubmissionHelper.getAllSFOCycleStages();
             }
         }

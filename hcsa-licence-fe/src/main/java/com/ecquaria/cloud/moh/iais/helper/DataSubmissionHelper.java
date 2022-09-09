@@ -307,14 +307,15 @@ public final class DataSubmissionHelper {
         List<String> result = IaisCommonUtils.genNewArrayList();
         if (StringUtils.isEmpty(lastCycle)) {
             addStartStages(result);
-        } else if (StringUtils.isEmpty(lastStage)
-                || DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(lastStage)
-                || DsHelper.isCycleFinalStatus(lastStatus)) {
-            if (!undergoingCycle) {
-                addStartStages(result);
-            }
-            result.add(DataSubmissionConsts.AR_STAGE_DONATION);
-            result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
+            //TODO Need to reorganize
+//        } else if (StringUtils.isEmpty(lastStage)
+//                || DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(lastStage)
+//                || DsHelper.isCycleFinalStatus(lastStatus)) {
+//            if (!undergoingCycle) {
+//                addStartStages(result);
+//            }
+//            result.add(DataSubmissionConsts.AR_STAGE_DONATION);
+//            result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
         } else if (DataSubmissionConsts.DS_CYCLE_AR.equals(lastCycle)) {
             if (DataSubmissionConsts.AR_CYCLE_AR.equals(lastStage)) {
                 if (freshNatural || freshStimulated) {
