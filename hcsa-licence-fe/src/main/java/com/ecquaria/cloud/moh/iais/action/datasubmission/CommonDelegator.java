@@ -290,6 +290,7 @@ public abstract class CommonDelegator {
         DataSubmissionDto dataSubmissionDto = arSuperDataSubmission.getDataSubmissionDto();
         CycleDto cycle = arSuperDataSubmission.getCycleDto();
         String cycleType = cycle.getCycleType();
+        String navCurrentCycle = arSuperDataSubmission.getSelectionDto().getNavCurrentCycle();
         if (StringUtil.isEmpty(dataSubmissionDto.getSubmissionNo())) {
             String submissionNo = arDataSubmissionService.getSubmissionNo(arSuperDataSubmission.getSelectionDto(),
                     DataSubmissionConsts.DS_AR);
@@ -390,6 +391,7 @@ public abstract class CommonDelegator {
         CycleStageSelectionDto selectionDto = arDataSubmissionService.getCycleStageSelectionDtoByConds(arSuperDataSubmission.getPatientInfoDto().getPatient().getPatientCode(),
                 arSuperDataSubmission.getHciCode(), arSuperDataSubmission.getCycleDto().getId());
         selectionDto.setCycle(cycleType);
+        selectionDto.setNavCurrentCycle(navCurrentCycle);
         arSuperDataSubmission.setSelectionDto(selectionDto);
         ParamUtil.setRequestAttr(bpc.request, "stageList", arDataSubmissionService.genAvailableStageList(bpc.request, true));
     }
