@@ -24,11 +24,7 @@
 
 }else{
 %>
-<c:forEach var="specialised" items="${AppSubmissionDto.appPremSpecialisedDtoList}">
-    <c:if test="${empty categorySectionName}"><c:set var="categorySectionName" value="${specialised.categorySectionName}" /></c:if>
-    <c:if test="${empty specialSvcSecName}"><c:set var="specialSvcSecName" value="${specialised.specialSvcSecName}" /></c:if>
-</c:forEach>
-<c:set var="specialisedTitle">${categorySectionName}<c:if test="${not empty categorySectionName}"> & </c:if>${specialSvcSecName}</c:set>
+<c:set var="specialisedTitle"><iais:message key="GENERAL_TITLE01" escape="false"/></c:set>
 <ul id="nav-tabs-ul" class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
     <li id="licenseeli" role="presentation" class="${empty coMap.licensee ? 'incomplete' : 'complete'}">
         <a id="licensee" aria-controls="licenseeTab" role="tab" data-toggle="tab">Licensee Details</a>
