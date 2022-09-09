@@ -65,6 +65,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.APPSUBMISSIONDTO;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURRENTSERVICEID;
@@ -568,7 +569,9 @@ public class ServiceInfoDelegator {
         }
         boolean isValid = checkAction(errorMap, HcsaConsts.STEP_SECTION_LEADER, appSubmissionDto, bpc.request);
         if (isValid && isGetDataFromPage) {
-            removeDirtyPsnDoc(ApplicationConsts.DUP_FOR_PERSON_SL, bpc.request);
+            DealSessionUtil.reSetInit(appSubmissionDto, HcsaAppConst.SECTION_SVCINFO);
+            ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
+            //removeDirtyPsnDoc(ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER, bpc.request);
         }
         log.debug(StringUtil.changeForLog("doSectionLeader end ..."));
     }
@@ -1282,13 +1285,14 @@ public class ServiceInfoDelegator {
                     ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL);
             AppValidatorHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL, errorMap,
                     psnLength, "psnSvcPersonnel", HcsaConsts.SERVICE_PERSONNEL);
-            ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }
         boolean isValid = checkAction(errorMap, HcsaConsts.STEP_SERVICE_PERSONNEL, appSubmissionDto, bpc.request);
         if (isValid && isGetDataFromPage) {
+            DealSessionUtil.reSetInit(appSubmissionDto, HcsaAppConst.SECTION_SVCINFO);
             //remove dirty psn doc info
-            removeDirtyPsnDoc(ApplicationConsts.DUP_FOR_PERSON_SVCPSN, bpc.request);
+            //removeDirtyPsnDoc(ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL, bpc.request);
         }
+        ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
         log.info(StringUtil.changeForLog("the do doServicePersonnel end ...."));
     }
 
@@ -1922,10 +1926,11 @@ public class ServiceInfoDelegator {
                 LICPERSONSELECTMAP);
         Map<String, AppSvcPersonAndExtDto> newPersonMap = removeDirtyDataFromPsnDropDown(appSubmissionDto, licPersonMap, personMap);
         ParamUtil.setSessionAttr(request, PERSONSELECTMAP, (Serializable) newPersonMap);
+        DealSessionUtil.reSetInit(appSubmissionDto, HcsaAppConst.SECTION_SVCINFO);
         ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, appSubmissionDto);
         //remove dirty psn doc info
-        String personType = personList.get(0).getPsnType();
-        removeDirtyPsnDoc(personType, request);
+        /*String personType = personList.get(0).getPsnType();
+        removeDirtyPsnDoc(personType, request);*/
 
         return newPersonMap;
     }
@@ -2061,13 +2066,15 @@ public class ServiceInfoDelegator {
             return;
         }
         AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(request);
-        String currentSvcId = ApplicationHelper.getCurrentServiceId(request);
+        DealSessionUtil.reSetInit(appSubmissionDto, HcsaAppConst.SECTION_SVCINFO);
+        ApplicationHelper.setAppSubmissionDto(appSubmissionDto, request);
+        /*String currentSvcId = ApplicationHelper.getCurrentServiceId(request);
         AppSvcRelatedInfoDto currentSvcRelatedDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
         List<HcsaSvcDocConfigDto> svcDocConfigDtos = configCommService.getAllHcsaSvcDocs(currentSvcId);
         List<AppSvcPrincipalOfficersDto> psnDtoList = ApplicationHelper.getBasePersonnel(currentSvcRelatedDto,
                 psnType);
         List<AppSvcDocDto> appSvcDocDtoList = currentSvcRelatedDto.getAppSvcDocDtoLit();
-        List<HcsaSvcDocConfigDto> targetConfigDtos = getDocConfigDtoByDupForPerson(svcDocConfigDtos, psnType);
+        List<HcsaSvcDocConfigDto> targetConfigDtos = getDocConfigDtoByPsnType(svcDocConfigDtos, psnType);
         if (!IaisCommonUtils.isEmpty(appSvcDocDtoList) && !IaisCommonUtils.isEmpty(targetConfigDtos)
                 && !IaisCommonUtils.isEmpty(psnDtoList)) {
             log.info("appSvcDocDtoList size is {}", appSvcDocDtoList.size());
@@ -2098,20 +2105,17 @@ public class ServiceInfoDelegator {
             currentSvcRelatedDto.setAppSvcDocDtoLit(newAppSvcDocDtoList);
         }
         currentSvcRelatedDto.setDocumentShowDtoList(null);
-        setAppSvcRelatedInfoMap(request, currentSvcId, currentSvcRelatedDto, appSubmissionDto);
+        setAppSvcRelatedInfoMap(request, currentSvcId, currentSvcRelatedDto, appSubmissionDto);*/
     }
 
-    private List<HcsaSvcDocConfigDto> getDocConfigDtoByDupForPerson(List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos,
-            String dupForPerson) {
-        List<HcsaSvcDocConfigDto> result = IaisCommonUtils.genNewArrayList();
-        if (!IaisCommonUtils.isEmpty(hcsaSvcDocConfigDtos) && !StringUtil.isEmpty(dupForPerson)) {
-            for (HcsaSvcDocConfigDto hcsaSvcDocConfigDto : hcsaSvcDocConfigDtos) {
-                if (dupForPerson.equals(hcsaSvcDocConfigDto.getDupForPerson())) {
-                    result.add(hcsaSvcDocConfigDto);
-                }
-            }
+    private List<HcsaSvcDocConfigDto> getDocConfigDtoByPsnType(List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos,
+            String... psnType) {
+        if (IaisCommonUtils.isEmpty(hcsaSvcDocConfigDtos) || IaisCommonUtils.isSpecialEmpty(psnType)) {
+            return IaisCommonUtils.genNewArrayList();
         }
-        return result;
+        return hcsaSvcDocConfigDtos.stream()
+                .filter(config -> StringUtil.isIn(config.getDupForPerson(), psnType))
+                .collect(Collectors.toList());
     }
 
     private Map<String, String> servicePersonPrsValidate(HttpServletRequest request, Map<String, String> errorMap,
