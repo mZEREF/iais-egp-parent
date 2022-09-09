@@ -296,6 +296,7 @@ public class ArCycleStagesManualDelegator {
         }
         dataSubmission.setSubmissionType(currentSuper.getSubmissionType());
         String stage = selectionDto.getStage();
+        String navCurrentCycle = selectionDto.getNavCurrentCycle();
         if (!Objects.equals(stage, dataSubmission.getCycleStage())) {
             currentSuper = DataSubmissionHelper.reNew(currentSuper);
         }
@@ -307,6 +308,7 @@ public class ArCycleStagesManualDelegator {
             log.info("-----Retieve ArSuperDataSubmissionDto from DB-----");
             selectionDto = newDto.getSelectionDto();
             selectionDto.setStage(stage);
+            selectionDto.setNavCurrentCycle(navCurrentCycle);
             CycleDto cycleDto = DataSubmissionHelper.initCycleDto(selectionDto, currentSuper.getSvcName(), hciCode,
                     DataSubmissionHelper.getLicenseeId(request));
             currentSuper.setCycleDto(cycleDto);

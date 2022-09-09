@@ -17,7 +17,7 @@
                     </span>
                 </h3>
                 <iais:row>
-                    <iais:field width="5" value="Is this a Transfer In or Out?" mandatory="true"/>
+                    <iais:field width="6" cssClass="col-md-6" value="Is this a Transfer In or Out?" mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-3">
                         <div class="form-check">
                             <input class="form-check-input"
@@ -34,7 +34,7 @@
                         <span class="error-msg" name="iaisErrorMsg" id="error_transferType"></span>
                     </iais:value>
 
-                    <iais:value width="4" cssClass="col-md-4">
+                    <iais:value width="3" cssClass="col-md-3">
                         <div class="form-check">
                             <input class="form-check-input"
                                    type="radio"
@@ -52,8 +52,8 @@
                 </iais:row>
 
                 <iais:row>
-                    <iais:field width="5" value="What was Transferred?" mandatory="true"/>
-                    <iais:value width="7" cssClass="col-md-7">
+                    <iais:field width="6" cssClass="col-md-6" value="What was Transferred?" mandatory="true"/>
+                    <iais:value width="6" cssClass="col-md-6">
                         <c:forEach items="${transferreds}" var="transferred" varStatus="s">
                             <c:set var="transferredCode" value="${transferred.code}"/>
                             <div class="form-check col-xs-12" >
@@ -75,31 +75,31 @@
                     </iais:value>
                 </iais:row>
                         <iais:row id="transferred0">
-                            <iais:field width="5" value="No. of Oocyte(s) Transferred" mandatory="true"/>
-                            <iais:value width="7" cssClass="col-md-7">
+                            <iais:field width="6" cssClass="col-md-6" value="No. of Oocyte(s) Transferred" mandatory="true"/>
+                            <iais:value width="6" cssClass="col-md-6">
                                 <iais:input maxLength="2" type="text" name="oocyteNum"
                                             value="${transferInOutStageDto.oocyteNum}"/>
                                 <span class="error-msg" name="iaisErrorMsg" id="error_oocyteNum"></span>
                             </iais:value>
                         </iais:row>
                     <iais:row id="transferred1">
-                        <iais:field width="5" value="No. of Embryo(s) Transferred" mandatory="true"/>
-                        <iais:value width="7" cssClass="col-md-7">
+                        <iais:field width="6" cssClass="col-md-6" value="No. of Embryo(s) Transferred" mandatory="true"/>
+                        <iais:value width="6" cssClass="col-md-6">
                             <iais:input maxLength="2" type="text" name="embryoNum"
                                         value="${transferInOutStageDto.embryoNum}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_embryoNum"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row id="transferred2">
-                        <iais:field width="5" value="Vials of Sperm Transferred" mandatory="true"/>
-                        <iais:value width="7" cssClass="col-md-7">
+                        <iais:field width="6" cssClass="col-md-6" value="Vials of Sperm Transferred" mandatory="true"/>
+                        <iais:value width="6" cssClass="col-md-6">
                             <iais:input maxLength="2" type="text" name="spermVialsNum"
                                         value="${transferInOutStageDto.spermVialsNum}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_spermVialsNum"></span>
                         </iais:value>
                     </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Were the Gamete(s) or Embryo(s) from a Donor?" mandatory="true"/>
+                    <iais:field width="6" cssClass="col-md-6" value="Were the Gamete(s) or Embryo(s) from a Donor?" mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-3">
                         <div class="form-check">
                             <input class="form-check-input"
@@ -114,7 +114,7 @@
                                     class="check-circle"></span>Yes</label>
                         </div>
                     </iais:value>
-                    <iais:value width="4" cssClass="col-md-4">
+                    <iais:value width="3" cssClass="col-md-3">
                         <div class="form-check">
                             <input class="form-check-input"
                                    type="radio"
@@ -131,8 +131,8 @@
                 </iais:row>
                 <div class="inFromParts" <c:if test="${transferInOutStageDto.transferType !='in'}">style="display: none;"</c:if>>
                         <iais:row>
-                                <iais:field width="5" value="Transferred In From" mandatory="true"/>
-                            <iais:value width="7" cssClass="col-md-7">
+                            <iais:field width="6" cssClass="col-md-6" value="Transferred In From" mandatory="true"/>
+                            <iais:value width="6" cssClass="col-md-6">
                                 <c:set value="${transferInOutStageDto.transInFromHciCode eq 'Others'
                                 ?transferInOutStageDto.transInFromHciCode
                                 :transferInOutStageDto.transInFromLicenseeId.concat('/').concat(transferInOutStageDto.transInFromHciCode)}"
@@ -145,16 +145,16 @@
                         </iais:row>
 
                         <iais:row id="othersInFrom" style="${transferInOutStageDto.transInFromHciCode eq DataSubmissionConsts.TRANSFERRED_IN_FROM_OTHERS ? '' : 'display: none'}">
-                            <iais:field width="5" value="Transferred In From (Others)" mandatory="true"/>
-                            <iais:value width="7" cssClass="col-md-7">
+                            <iais:field width="6" cssClass="col-md-6" value="Transferred In From (Others)" mandatory="true"/>
+                            <iais:value width="6" cssClass="col-md-6">
                                 <iais:input  maxLength="100" type="text" name="transInFromOthers" value="${transferInOutStageDto.transInFromOthers}" />
                             </iais:value>
                         </iais:row>
                 </div>
                 <div class="outFromParts" <c:if test="${transferInOutStageDto.transferType !='out'}">style="display: none;"</c:if>>
                     <iais:row>
-                        <iais:field width="5" value="Transfer Out To" mandatory="true"/>
-                        <iais:value width="7" cssClass="col-md-7">
+                        <iais:field width="6" cssClass="col-md-6" value="Transfer Out To" mandatory="true"/>
+                        <iais:value width="6" cssClass="col-md-6">
                             <c:set value="${transferInOutStageDto.transOutToHciCode eq 'Others'
                             ?transferInOutStageDto.transOutToHciCode
                             :transferInOutStageDto.transOutToLicenseeId.concat('/').concat(transferInOutStageDto.transOutToHciCode)}"
@@ -166,15 +166,15 @@
                         </iais:value>
                     </iais:row>
                         <iais:row id="othersOutFrom" style="${transferInOutStageDto.transOutToHciCode eq DataSubmissionConsts.TRANSFERRED_IN_FROM_OTHERS ? '' : 'display: none'}">
-                            <iais:field width="5" value="Transfer Out To (Others)" mandatory="true"/>
-                            <iais:value width="7" cssClass="col-md-7">
+                            <iais:field width="6" cssClass="col-md-6" value="Transfer Out To (Others)" mandatory="true"/>
+                            <iais:value width="6" cssClass="col-md-6">
                                 <iais:input maxLength="20" type="text" name="transOutToOthers" value="${transferInOutStageDto.transOutToOthers}" />
                             </iais:value>
                         </iais:row>
                 </div>
                 <iais:row>
-                    <iais:field width="5" value="Date of Transfer" mandatory="true"/>
-                    <iais:value width="7" cssClass="col-md-7">
+                    <iais:field width="6" cssClass="col-md-6" value="Date of Transfer" mandatory="true"/>
+                    <iais:value width="6" cssClass="col-md-6">
                         <iais:datePicker id="transferDate" name="transferDate" value="${transferInOutStageDto.transferDate}"/>
                     </iais:value>
                 </iais:row>

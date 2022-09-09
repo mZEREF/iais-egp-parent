@@ -24,9 +24,9 @@
                         <c:otherwise>
                             <%@include file="section/transferInOutStageSection.jsp" %>
                         </c:otherwise>
-                        <%@include file="section/previewDisposalDetail.jsp" %>
-                        <%@include file="common/dsAmendment.jsp" %>
                     </c:choose>
+                    <%@include file="common/dsAmendment.jsp" %>
+                    <%@include file="section/disposalStageDetailSection.jsp" %>
                 </div>
                 <%@include file="common/arFooter.jsp" %>
             </div>
