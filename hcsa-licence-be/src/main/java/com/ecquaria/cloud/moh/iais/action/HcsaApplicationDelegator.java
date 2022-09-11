@@ -1153,12 +1153,23 @@ public class HcsaApplicationDelegator {
         if (application != null) {
             String appNo = application.getApplicationNo();
             log.info(StringUtil.changeForLog("The appNo is -->:" + appNo));
-            //HcsaConsts.ROUTING_STAGE_INS
-            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.
-                    getAppPremisesRoutingHistoryForCurrentStage(appNo, "14848A70-820B-EA11-BE7D-000C29F371DC", RoleConsts.USER_ROLE_INSPECTIOR, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT);
+            TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
+            List<AppPremisesRoutingHistoryDto> activeHistory = appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByCorrId(taskDto.getRefNo());
+            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = activeHistory
+                    .stream()
+                    .filter(it->appNo.equals(it.getApplicationNo())
+                            &&HcsaConsts.ROUTING_STAGE_INS.equals(it.getStageId())
+                            &&RoleConsts.USER_ROLE_INSPECTIOR.equals(it.getRoleId())
+                            &&ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT.equals(it.getAppStatus()))
+                    .findFirst().orElse(null);
             if (appPremisesRoutingHistoryDto == null) {
-                appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.
-                        getAppPremisesRoutingHistoryForCurrentStage(appNo, HcsaConsts.ROUTING_STAGE_ASO, RoleConsts.USER_ROLE_ASO, ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
+                appPremisesRoutingHistoryDto = activeHistory
+                        .stream()
+                        .filter(it->appNo.equals(it.getApplicationNo())
+                                &&HcsaConsts.ROUTING_STAGE_ASO.equals(it.getStageId())
+                                &&RoleConsts.USER_ROLE_ASO.equals(it.getRoleId())
+                                &&ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(it.getAppStatus()))
+                        .findFirst().orElse(null);
             }
             if (appPremisesRoutingHistoryDto != null) {
                 String workGroupId=appPremisesRoutingHistoryDto.getWrkGrpId();
