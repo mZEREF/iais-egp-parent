@@ -1,6 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <div class="amended-service-info-gp">
     <iais:row>
         <label class="app-title">${currStepName}</label>
@@ -27,12 +26,68 @@
                         <div id="${status.index}${subSvcRelStatus.index}SSI" class="panel-collapse collapse in">
                             <input type="hidden" class ="isPartEdit" name="isPartEdit${status.index}" value="0"/>
                             <div class="panel-body">
+                                <c:forEach var="person" items="${specialServiceSectionDto.appSvcCgoDtoList}" varStatus="cgoStatus">
+                                    <c:set var="index" value="${cgoStatus.index}"/>
+                                    <c:set var="cgoDtoListLength" value="${specialServiceSectionDto.appSvcCgoDtoList.size()}"/>
+                                    <c:set var="title" value="Clinical Governance Officer ${cgoDtoListLength > 1?index+1:''}"/>
+                                    <%@include file="viewClinicalDirectorDetail.jsp"%>
+                                </c:forEach>
+
+                                <c:forEach var="person" items="${specialServiceSectionDto.appSvcSectionLeaderList}" varStatus="slStatus">
+                                    <c:set var="index" value="${slStatus.index}"/>
+                                    <c:set var="slDtoListLength" value="${specialServiceSectionDto.appSvcSectionLeaderList.size()}"/>
+                                    <c:set var="isShowMore" value="1"/>
+                                    <c:set var="title" value="Section Leader ${slDtoListLength > 1?index+1:''}"/>
+                                    <%@include file="viewSectionLeaderDetail.jsp"%>
+                                </c:forEach>
+
                                 <c:forEach var="appSvcPersonnelDto" items="${specialServiceSectionDto.appSvcNurseDtoList}" varStatus="nicStatus">
                                     <c:set var="index" value="${nicStatus.index}"/>
                                     <c:set var="NurseDtoListLength" value="${specialServiceSectionDto.appSvcNurseDtoList.size()}"/>
                                     <c:set var="title" value="Nurse in Charge ${NurseDtoListLength > 1?index+1:''}"/>
                                     <%@include file="viewSpecialServicesFromDetail.jsp"%>
                                 </c:forEach>
+
+                                <c:forEach var="person" items="${specialServiceSectionDto.appSvcRadiationSafetyOfficerDtoList}" varStatus="rsoStatus">
+                                    <c:set var="index" value="${rsoStatus.index}"/>
+                                    <c:set var="rsoDtoListLength" value="${specialServiceSectionDto.appSvcRadiationSafetyOfficerDtoList.size()}"/>
+                                    <c:set var="isShowMore" value="0"/>
+                                    <c:set var="title" value="Radiation Safety Officer ${rsoDtoListLength > 1?index+1:''}"/>
+                                    <%@include file="viewSectionLeaderDetail.jsp"%>
+                                </c:forEach>
+
+                                <c:forEach var="person" items="${specialServiceSectionDto.appSvcDiagnosticRadiographerDtoList}" varStatus="drStatus">
+                                    <c:set var="index" value="${drStatus.index}"/>
+                                    <c:set var="drDtoListLength" value="${specialServiceSectionDto.appSvcDiagnosticRadiographerDtoList.size()}"/>
+                                    <c:set var="isShowMore" value="0"/>
+                                    <c:set var="title" value="Diagnostic Radiographer ${drDtoListLength > 1?index+1:''}"/>
+                                    <%@include file="viewSectionLeaderDetail.jsp"%>
+                                </c:forEach>
+
+                                <c:forEach var="person" items="${specialServiceSectionDto.appSvcMedicalPhysicistDtoList}" varStatus="mpStatus">
+                                    <c:set var="index" value="${mpStatus.index}"/>
+                                    <c:set var="mpDtoListLength" value="${specialServiceSectionDto.appSvcMedicalPhysicistDtoList.size()}"/>
+                                    <c:set var="isShowMore" value="1"/>
+                                    <c:set var="title" value="Medical Physicist ${mpDtoListLength > 1?index+1:''}"/>
+                                    <%@include file="viewSectionLeaderDetail.jsp"%>
+                                </c:forEach>
+
+                                <c:forEach var="person" items="${specialServiceSectionDto.appSvcRadiationPhysicistDtoList}" varStatus="rpStatus">
+                                    <c:set var="index" value="${rpStatus.index}"/>
+                                    <c:set var="rpDtoListLength" value="${specialServiceSectionDto.appSvcRadiationPhysicistDtoList.size()}"/>
+                                    <c:set var="isShowMore" value="1"/>
+                                    <c:set var="title" value="Radiation Physicist ${rpDtoListLength > 1?index+1:''}"/>
+                                    <%@include file="viewSectionLeaderDetail.jsp"%>
+                                </c:forEach>
+
+                                <c:forEach var="person" items="${specialServiceSectionDto.appSvcNMTechnologistDtoList}" varStatus="nmStatus">
+                                    <c:set var="index" value="${rpStatus.index}"/>
+                                    <c:set var="nmDtoListLength" value="${specialServiceSectionDto.appSvcNMTechnologistDtoList.size()}"/>
+                                    <c:set var="isShowMore" value="1"/>
+                                    <c:set var="title" value="Nuclear Medicine Technologist ${nmDtoListLength > 1?index+1:''}"/>
+                                    <%@include file="viewSectionLeaderDetail.jsp"%>
+                                </c:forEach>
+
                                 <c:forEach var="appSvcPersonnelDto" items="${specialServiceSectionDto.appSvcDirectorDtoList}" varStatus="direStatus">
                                     <c:set var="index" value="${direStatus.index}"/>
                                     <c:set var="DirectorDtoListLength" value="${specialServiceSectionDto.appSvcDirectorDtoList.size()}"/>
