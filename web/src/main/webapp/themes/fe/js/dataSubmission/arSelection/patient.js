@@ -34,7 +34,7 @@ $(function () {
     });
 
     $("#pt-amend").click(function () {
-       submit("amend");
+        submit("amend");
     });
 
     if ($('input[name="existedPatient"]').val() === 'Y'){

@@ -82,11 +82,7 @@ function bindButton() {
             $('#nextBtn').html('Preview');
         } else if ('confirm' == currPage){
             $('#nextBtn').html('Submit');
-        } else if ('confirm' == currPage){
-            $('#nextBtn').html('Preview');
         }
-
-        $('#nextBtn').attr('disabled', true);
     }
 }
 
@@ -240,31 +236,12 @@ function showNextBtn(){
     nextBtn.unbind('click')
     if ('page' !== currPage || submissionTypeVal === 'AR_TP003' || !isEmpty(existedPatientVal)) {
         nextBtn.attr('disabled', false)
+        nextBtn.click(function () {
+            showWaiting();
+            submit('submission');
+        });
     } else {
-        $('#nextBtn').attr('disabled', true);
-    }
-}
-
-
-function checkAge(birthDate, modalId) {
-    if (isEmpty(birthDate) || isEmpty(modalId) ) {
-        console.log(modalId + " - " + birthDate);
-        return;
-    }
-    showWaiting();
-    var url = $('#_contextPath').val() + '/ar/patient-age';
-    var options = {
-        modalId: modalId,
-        birthDate: birthDate,
-        url: url
-    }
-    callCommonAjax(options, checkBirthDateCallback);
-}
-
-function checkBirthDateCallback(data) {
-    if (isEmpty(data) || isEmpty(data.showAgeMsg) || isEmpty(data.modalId) || !data.showAgeMsg) {
-        console.log("Data - " + JSON.stringify(data, undefined, 2));
-        return;
+        nextBtn.attr('disabled', true);
     }
 }
 
