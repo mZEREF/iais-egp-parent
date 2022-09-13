@@ -37,11 +37,6 @@ import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionServic
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -52,6 +47,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 
 /**
  * @Description Data Submission Helper
@@ -61,36 +59,35 @@ import java.util.stream.Collectors;
 public final class DataSubmissionHelper {
 
     public static void clearSession(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        session.removeAttribute(DataSubmissionConstant.AR_DATA_LIST);
-        session.removeAttribute(DataSubmissionConstant.DP_DATA_LIST);
-        session.removeAttribute(DataSubmissionConstant.AR_DATA_SUBMISSION);
-        session.removeAttribute(DataSubmissionConstant.AR_OLD_DATA_SUBMISSION);
-        session.removeAttribute(DataSubmissionConstant.AR_PREMISES_MAP);
-        session.removeAttribute(DataSubmissionConstant.AR_PREMISES);
-        session.removeAttribute(DataSubmissionConstant.DP_DATA_SUBMISSION);
-        session.removeAttribute(DataSubmissionConstant.DP_OLD_DATA_SUBMISSION);
-        session.removeAttribute(DataSubmissionConstant.DP_PREMISES_MAP);
-        session.removeAttribute(DataSubmissionConstant.DP_PREMISES);
-        session.removeAttribute(DataSubmissionConstant.VSS_DATA_SUBMISSION);
-        session.removeAttribute(DataSubmissionConstant.VSS_OLD_DATA_SUBMISSION);
-        session.removeAttribute(DataSubmissionConstant.VSS_PREMISES_MAP);
-        session.removeAttribute(DataSubmissionConstant.VSS_PREMISES);
-        session.removeAttribute(DataSubmissionConstant.TOP_DATA_SUBMISSION);
-        session.removeAttribute(DataSubmissionConstant.TOP_OLD_DATA_SUBMISSION);
-        session.removeAttribute(DataSubmissionConstant.TOP_PREMISES_MAP);
-        session.removeAttribute(DataSubmissionConstant.TOP_PREMISES);
-        session.removeAttribute(DataSubmissionConstant.LAB_SUPER_DATA_SUBMISSION);
-        session.removeAttribute(DataSubmissionConstant.LDT_OLD_DATA_SUBMISSION);
-        session.removeAttribute(DataSubmissionConstant.LDT_PREMISS_OPTION);
-        session.removeAttribute(DataSubmissionConstant.LDT_CANOT_LDT);
-        session.removeAttribute(DataSubmissionConstant.LDT_IS_GUIDE);
-        session.removeAttribute(DataSubmissionConstant.AR_TRANSFER_OUT_IN_PREMISES_SEL);
-        session.removeAttribute(DataSubmissionConstant.AR_TRANSFER_BIND_STAGE_ID);
-        session.removeAttribute(DataSubmissionConstant.AR_TRANSFER_BIND_STAGE_SUPER_DTO);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_LIST, null);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.DP_DATA_LIST, null);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, null);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_OLD_DATA_SUBMISSION, null);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_PREMISES_MAP, null);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_PREMISES, null);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.DP_DATA_SUBMISSION, null);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.DP_OLD_DATA_SUBMISSION, null);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.DP_PREMISES_MAP, null);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.DP_PREMISES, null);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, null);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_OLD_DATA_SUBMISSION, null);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_PREMISES_MAP, null);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_PREMISES, null);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_DATA_SUBMISSION, null);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_OLD_DATA_SUBMISSION, null);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_PREMISES_MAP, null);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.TOP_PREMISES, null);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.LAB_SUPER_DATA_SUBMISSION, null);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.LDT_OLD_DATA_SUBMISSION, null);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.LDT_PREMISS_OPTION, null);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.LDT_CANOT_LDT, null);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.LDT_IS_GUIDE, null);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_TRANSFER_OUT_IN_PREMISES_SEL, null);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_TRANSFER_BIND_STAGE_ID, null);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_TRANSFER_BIND_STAGE_SUPER_DTO, null);
         // clear session title
-        session.removeAttribute("title");
-        session.removeAttribute("count");
+        ParamUtil.setSessionAttr(request, "title", null);
+        ParamUtil.setSessionAttr(request, "count", null);
     }
 
     public static LoginContext getLoginContext(HttpServletRequest request) {

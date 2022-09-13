@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssTreatmentDt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -84,6 +85,7 @@ import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.VS_DOC
 @Slf4j
 @Delegator("vssDataSubmissionDelegator")
 public class VssDataSubmissionDelegator {
+    private static final String SUBMIT_FLAG = "VSS_SubmitFlaaaaaa7$frg";
 
     @Autowired
     private VssDataSubmissionService vssDataSubmissionService;
@@ -145,7 +147,7 @@ public class VssDataSubmissionDelegator {
         if (vssSuperDataSubmissionDto != null) {
             ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
         }
-
+        ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, null);
     }
 
 
@@ -768,6 +770,10 @@ public class VssDataSubmissionDelegator {
      */
     public void doSubmission(BaseProcessClass bpc) {
         log.info(" ----- DoSubmission ------ ");
+        String submitFlag = (String) ParamUtil.getSessionAttr(bpc.request, SUBMIT_FLAG);
+        if (!StringUtil.isEmpty(submitFlag)) {
+            throw new IaisRuntimeException("Double submit");
+        }
         VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(bpc.request);
 
         DataSubmissionDto dataSubmissionDto = vssSuperDataSubmissionDto.getDataSubmissionDto();
@@ -842,6 +848,7 @@ public class VssDataSubmissionDelegator {
         ParamUtil.setRequestAttr(bpc.request, "submittedBy", DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_ACK);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_ACKVSS);
+        ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, AppConsts.YES);
     }
 
     /**

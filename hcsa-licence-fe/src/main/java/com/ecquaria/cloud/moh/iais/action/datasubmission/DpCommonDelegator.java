@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -54,6 +55,7 @@ import sop.webflow.rt.api.BaseProcessClass;
  */
 @Slf4j
 public abstract class DpCommonDelegator {
+    public static final String SUBMIT_FLAG = "dpSubmise__reau4@_fLAG";
 
     protected static final String ACTION_TYPE_PAGE = "page";
     protected static final String ACTION_TYPE_RETURN = "return";
@@ -98,6 +100,7 @@ public abstract class DpCommonDelegator {
     public void start(BaseProcessClass bpc) {
         HttpSession session = bpc.request.getSession();
         session.removeAttribute(DataSubmissionConstant.DP_DATA_LIST);
+        ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, null);
     }
 
     /**
@@ -246,6 +249,10 @@ public abstract class DpCommonDelegator {
      * @throws
      */
     public void doSubmission(BaseProcessClass bpc) {
+        String flag = (String) ParamUtil.getSessionAttr(bpc.request, SUBMIT_FLAG);
+        if (!StringUtil.isEmpty(flag)) {
+            throw new IaisRuntimeException("Double submit");
+        }
         log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Do Submission -----"));
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, "ack");
         submission(bpc);
@@ -350,6 +357,7 @@ public abstract class DpCommonDelegator {
         ParamUtil.setRequestAttr(bpc.request, "submittedBy", DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_ACK);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_ACKDRP);
+        ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, AppConsts.YES);
     }
 
     /**

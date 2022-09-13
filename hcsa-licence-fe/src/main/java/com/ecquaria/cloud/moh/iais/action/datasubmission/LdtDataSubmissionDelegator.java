@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsLaboratoryDe
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.LdtSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -63,6 +64,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Slf4j
 @Delegator("ldtDataSubmissionDelegator")
 public class LdtDataSubmissionDelegator {
+    private static final String SUBMIT_FLAG = "ldtSSSuuuubmitFLag";
 
     @Autowired
     private LicCommClient licCommClient;
@@ -129,6 +131,7 @@ public class LdtDataSubmissionDelegator {
 
         String isGuide = ParamUtil.getString(bpc.request, DataSubmissionConstant.LDT_IS_GUIDE);
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.LDT_IS_GUIDE, isGuide);
+        ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, null);
     }
 
     /**
@@ -165,6 +168,10 @@ public class LdtDataSubmissionDelegator {
      */
     public void submit(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Do Submission -----"));
+        String submitFlag = (String) ParamUtil.getSessionAttr(bpc.request, SUBMIT_FLAG);
+        if (!StringUtil.isEmpty(submitFlag)) {
+            throw new IaisRuntimeException("Double Submit");
+        }
         LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto = DataSubmissionHelper.getCurrentLdtSuperDataSubmissionDto(bpc.request);
 
         DataSubmissionDto dataSubmissionDto = ldtSuperDataSubmissionDto.getDataSubmissionDto();
@@ -232,6 +239,7 @@ public class LdtDataSubmissionDelegator {
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.SUBMITTED_BY, DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
         ParamUtil.setRequestAttr(bpc.request, CURRENT_PAGE, ACTION_TYPE_SUBMIT);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_ACKLDT);
+        ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, AppConsts.YES);
     }
 
     /**
