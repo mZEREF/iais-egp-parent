@@ -1,5 +1,5 @@
 <div class="personnel-content">
-    <c:set var="isNIC" value="${psnType == ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_NURSE_IN_CHARGE}"/>
+    <c:set var="isNIC" value="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE}"/>
     <input type="hidden" class="not-refresh prepsn" name="${psnContent}" value="${prefix}"/>
     <iais:row>
         <div class="col-xs-12 col-md-6">
@@ -177,7 +177,7 @@
         <iais:row>
             <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Expiry Date (BCLS and AED)"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:datePicker cssClass="bclsExpiryDate" name="${logo}bclsExpiryDate${index}"
+                <iais:datePicker cssClass="bclsExpiryDate" name="${prefix}bclsExpiryDate${index}"
                                  value="${appSvcPersonnelDto.bclsExpiryDate}"/>
             </iais:value>
         </iais:row>

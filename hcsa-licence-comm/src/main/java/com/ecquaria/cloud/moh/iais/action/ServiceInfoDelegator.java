@@ -39,6 +39,7 @@ import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
 import com.ecquaria.cloud.moh.iais.helper.AppDataHelper;
 import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
@@ -356,7 +357,7 @@ public class ServiceInfoDelegator {
     }
 
     private void prepareSpecialServicesForm(HttpServletRequest request) {
-        log.debug(StringUtil.changeForLog("prepare SpecialServicesForm start ..."));
+        log.debug(StringUtil.changeForLog("prepare SpecialServicesInformation start ..."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         String currSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request, currSvcId);
@@ -371,13 +372,51 @@ public class ServiceInfoDelegator {
                 currSvcInfoDto, appPremSpecialisedDtos);
         currSvcInfoDto.setAppSvcSpecialServiceInfoList(appSvcSpecialServiceInfoList);
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
+        List<SelectOption> personList = ApplicationHelper.genAssignPersonSel(request, true);
+        ParamUtil.setRequestAttr(request, CURR_STEP_PSN_OPTS, personList);
+        List<SelectOption> personnelTypeSel = IaisCommonUtils.genNewArrayList();
+        //Radiation Safety Officer
+        SelectOption personnelTypeOp1 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER,
+                MasterCodeUtil.getCodeDesc(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER));
+        //Diagnostic Radiographer
+        SelectOption personnelTypeOp2 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR,
+                ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_DIAGNOSTIC_RADIOGRAPHER);
+        //Medical Physicist
+        SelectOption personnelTypeOp3 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST,
+                ApplicationConsts.SERVICE_PERSONNEL_TYPE_STR_MEDICAL_PHYSICIST);
+        //Radiation Physicist
+        SelectOption personnelTypeOp4 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL,
+                MasterCodeUtil.getCodeDesc(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL));
+        //NM Technologist
+        SelectOption personnelTypeOp5 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM,
+                ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_NUCLEAR_MEDICINE_TECHNOLOGIST);
+        personnelTypeSel.add(personnelTypeOp1);
+        personnelTypeSel.add(personnelTypeOp2);
+        personnelTypeSel.add(personnelTypeOp3);
+        personnelTypeSel.add(personnelTypeOp4);
+        personnelTypeSel.add(personnelTypeOp5);
+        ParamUtil.setRequestAttr(request,"rsoSel", personnelTypeSel.stream()
+                .filter(s->ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER.equals(s.getValue()))
+                .collect(Collectors.toList()));
+        ParamUtil.setRequestAttr(request,"drSel", personnelTypeSel.stream()
+                .filter(s->ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR.equals(s.getValue()))
+                .collect(Collectors.toList()));
+        ParamUtil.setRequestAttr(request,"mpSel", personnelTypeSel.stream()
+                .filter(s->ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(s.getValue()))
+                .collect(Collectors.toList()));
+        ParamUtil.setRequestAttr(request,"rpSel", personnelTypeSel.stream()
+                .filter(s->ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(s.getValue()))
+                .collect(Collectors.toList()));
+        ParamUtil.setRequestAttr(request,"nmSel", personnelTypeSel.stream()
+                .filter(s->ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM.equals(s.getValue()))
+                .collect(Collectors.toList()));
         ParamUtil.setRequestAttr(request, "isRfi", isRfi);
         ParamUtil.setRequestAttr(request, "appSvcSpecialServiceInfoList", appSvcSpecialServiceInfoList);
-        log.debug(StringUtil.changeForLog("prepare SpecialServicesForm end ..."));
+        log.debug(StringUtil.changeForLog("prepare SpecialServicesInformation end ..."));
     }
 
     private void doSpecialServicesForm(HttpServletRequest request) {
-        log.debug(StringUtil.changeForLog("do SpecialServicesForm start ..."));
+        log.debug(StringUtil.changeForLog("do SpecialServicesInformation start ..."));
         String currSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request, currSvcId);
@@ -395,10 +434,12 @@ public class ServiceInfoDelegator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String crud_action_type = ParamUtil.getRequestString(request, "nextStep");
         if ("next".equals(crud_action_type)) {
-            AppValidatorHelper.doValidateSpecialServicesForm(appSvcSpecialServiceInfoList, appSubmissionDto.getAppType(),errorMap);
+            Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(
+                    request, LICPERSONSELECTMAP);
+            AppValidatorHelper.doValidateSpecialServicesForm(appSvcSpecialServiceInfoList,errorMap,licPersonMap);
         }
         checkAction(errorMap, HcsaConsts.STEP_SPECIAL_SERVICES_FORM, appSubmissionDto, request);
-        log.debug(StringUtil.changeForLog("do SpecialServicesForm end ..."));
+        log.debug(StringUtil.changeForLog("do SpecialServicesInformation end ..."));
     }
 
     private void prepareSupplementaryForm(HttpServletRequest request) {

@@ -56,17 +56,16 @@
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
                         <c:set var="index" value="${vs.index}" />
                         <c:set var="person" value="${personList[index]}"/>
-                        <c:set var="prepsn" value="${psnType}${status.index}"/>
-                        <c:set var="singleName" value="${HcsaConsts.CLINICAL_GOVERNANCE_OFFICER}"/>
-                        <c:set var="psnContent" value="${psnType}-person-content"/>
-                        <%@include file="../keyPersonnel/personnelDetail.jsp" %>
+                        <c:set var="prepsn" value="${status.index}${subSvcRelStatus.index}cgo"/>
+                        <c:set var="title" value="${HcsaConsts.CLINICAL_GOVERNANCE_OFFICER}"/>
+                        <%@include file="personnelDetail.jsp" %>
                     </c:forEach>
-                    <%@include file="/WEB-INF/jsp/iais/application/common/personFun.jsp" %>
                 </c:when>
                 <c:when test="${psnType == ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER}">
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
                         <c:set var="index" value="${vs.index}" />
                         <c:set var="sectionLeader" value="${personList[index]}"/>
+                        <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}sl"/>
                         <c:set var="title" value="${HcsaConsts.SECTION_LEADER}"/>
                         <%@include file="sectionLeaderDetail.jsp" %>
                     </c:forEach>
@@ -84,40 +83,55 @@
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
                         <c:set var="index" value="${vs.index}" />
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
+                        <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}rso"/>
+                        <c:set var="personTypeToShow" value="0"/>
+                        <c:set var="personSelect" value="rsoSel"/>
                         <c:set var="title" value="${ApplicationConsts.SERVICE_PERSONNEL_TYPE_STR_RADIATION_SAFETY_OFFICER}"/>
-                        <%@include file="../svcPersonnel/servicePersonnelDetail.jsp" %>
+                        <%@include file="servicePersonnelDetail.jsp" %>
                     </c:forEach>
                 </c:when>
                 <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR}">
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
                         <c:set var="index" value="${vs.index}" />
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
+                        <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}dr"/>
+                        <c:set var="personTypeToShow" value="0"/>
+                        <c:set var="personSelect" value="drSel"/>
                         <c:set var="title" value="${ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_DIAGNOSTIC_RADIOGRAPHER}"/>
-                        <%@include file="../svcPersonnel/servicePersonnelDetail.jsp" %>
+                        <%@include file="servicePersonnelDetail.jsp" %>
                     </c:forEach>
                 </c:when>
                 <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST}">
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
                         <c:set var="index" value="${vs.index}" />
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
+                        <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}mp"/>
+                        <c:set var="personTypeToShow" value="1"/>
+                        <c:set var="personSelect" value="mpSel"/>
                         <c:set var="title" value="${ApplicationConsts.SERVICE_PERSONNEL_TYPE_STR_MEDICAL_PHYSICIST}"/>
-                        <%@include file="../svcPersonnel/servicePersonnelDetail.jsp" %>
+                        <%@include file="servicePersonnelDetail.jsp" %>
                     </c:forEach>
                 </c:when>
                 <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL}">
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
                         <c:set var="index" value="${vs.index}" />
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
+                        <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}rp"/>
+                        <c:set var="personTypeToShow" value="1"/>
+                        <c:set var="personSelect" value="rpSel"/>
                         <c:set var="title" value="${ApplicationConsts.SERVICE_PERSONNEL_TYPE_STR_RADIOLOGY_PROFESSIONAL}"/>
-                        <%@include file="../svcPersonnel/servicePersonnelDetail.jsp" %>
+                        <%@include file="servicePersonnelDetail.jsp" %>
                     </c:forEach>
                 </c:when>
                 <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM}">
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
                         <c:set var="index" value="${vs.index}" />
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
+                        <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}nm"/>
+                        <c:set var="personTypeToShow" value="1"/>
+                        <c:set var="personSelect" value="nmSel"/>
                         <c:set var="title" value="${ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_NUCLEAR_MEDICINE_TECHNOLOGIST}"/>
-                        <%@include file="../svcPersonnel/servicePersonnelDetail.jsp" %>
+                        <%@include file="servicePersonnelDetail.jsp" %>
                     </c:forEach>
                 </c:when>
                 <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR}">
@@ -153,14 +167,6 @@
     </c:if>
 </c:forEach>
 <script type="text/javascript">
-    //chceck add more button via CGO Max count
-    function refreshPersonOthers($target, k) {
-        let cntClass = $target.attr('class');
-        if ('CGO-person-content' == cntClass) {
-            const maxDpoCount = eval('${dpoHcsaSvcPersonnelDto.maximumCount}');
-            toggleTag('.addDpoDiv', $('div.CGO-person-content').length < maxDpoCount);
-        }
-    }
     $(function() {
         $('.addBtn').on('click', function () {
             var type=$(this).closest('div.addDiv').find('input.psnType').val();

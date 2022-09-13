@@ -498,7 +498,7 @@ public final class AppValidatorHelper {
                 }
                 case HcsaConsts.STEP_SPECIAL_SERVICES_FORM: {
                     List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = dto.getAppSvcSpecialServiceInfoList();
-                    doValidateSpecialServicesForm(appSvcSpecialServiceInfoList,"", errorMap);
+                    doValidateSpecialServicesForm(appSvcSpecialServiceInfoList, errorMap,licPersonMap);
                     addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
                     break;
                 }
@@ -2733,30 +2733,30 @@ public final class AppValidatorHelper {
 
     }
 
-    public static void specialValidate(Map<String, String> errorMap, AppSvcPersonnelDto appSvcPersonnelDto, int i, List<String> errorName,boolean flag) {
+    public static void specialValidate(Map<String, String> errorMap, AppSvcPersonnelDto appSvcPersonnelDto, String prefix,int i, List<String> errorName,boolean flag) {
         String signal = "GENERAL_ERR0006";
         String personnelSel = appSvcPersonnelDto.getPersonnelType();
         String name = appSvcPersonnelDto.getName();
         String salutation = appSvcPersonnelDto.getSalutation();
         if (StringUtils.isEmpty(personnelSel)) {
-            errorMap.put("personnelType" + i, signal);
+            errorMap.put(prefix+"personnelType" + i, signal);
         }
         if (flag){
             if (StringUtil.isEmpty(salutation)){
-                errorMap.put("salutation" + i, signal);
+                errorMap.put(prefix+"salutation" + i, signal);
             }
         }else {
             salutation = "";
         }
         if (StringUtil.isEmpty(name)) {
-            errorMap.put("name" + i, signal);
+            errorMap.put(prefix+"name" + i, signal);
         } else if (name.length() > 110) {
-            errorMap.put("name" + i, signal);
+            errorMap.put(prefix+"name" + i, signal);
         }
         String target = personnelSel + name + salutation;
         boolean flags = errorName.stream().anyMatch(target::equalsIgnoreCase);
         if (flags) {
-            errorMap.put("name" + i, "SC_ERR011");
+            errorMap.put(prefix+"name" + i, "SC_ERR011");
         } else {
             errorName.add(target);
         }
@@ -2764,40 +2764,40 @@ public final class AppValidatorHelper {
         if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE.equals(personnelSel)) {
             String profRegNo = appSvcPersonnelDto.getProfRegNo();
             if (StringUtil.isEmpty(profRegNo)) {
-                errorMap.put("profRegNo" + i, signal);
+                errorMap.put(prefix+"profRegNo" + i, signal);
             } else if (profRegNo.length() > 20) {
-                errorMap.put("profRegNo" + i, signal);
+                errorMap.put(prefix+"profRegNo" + i, signal);
             }//SPPT001
         }
-        if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(personnelSel) || ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(personnelSel) ) {
+        if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(personnelSel) || ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(personnelSel) || ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER.equals(personnelSel)) {
             String wrkExpYear = appSvcPersonnelDto.getWrkExpYear();
             String qualification = appSvcPersonnelDto.getQualification();
             if (StringUtil.isEmpty(wrkExpYear)) {
-                errorMap.put("wrkExpYear" + i, signal);
+                errorMap.put(prefix+"wrkExpYear" + i, signal);
             } else {
                 if (wrkExpYear.length() > 2) {
-                    errorMap.put("wrkExpYear" + i, signal);
+                    errorMap.put(prefix+"wrkExpYear" + i, signal);
                 }
                 if (!wrkExpYear.matches("^[0-9]*$")) {
-                    errorMap.put("wrkExpYear" + i, "GENERAL_ERR0002");
+                    errorMap.put(prefix+"wrkExpYear" + i, "GENERAL_ERR0002");
                 }
             }
             if (StringUtil.isEmpty(qualification)) {
-                errorMap.put("qualification" + i, signal);
+                errorMap.put(prefix+"qualification" + i, signal);
             } else if (qualification.length() > 100) {
-                errorMap.put("qualification" + i, signal);
+                errorMap.put(prefix+"qualification" + i, signal);
             }
         }
         if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(personnelSel)){
             String designation = appSvcPersonnelDto.getDesignation();
             if (StringUtil.isEmpty(designation)) {
-                errorMap.put("designation" + i, signal);
+                errorMap.put(prefix+"designation" + i, signal);
             } else if ("Others".equals(designation)) {
                 String otherDesignation = appSvcPersonnelDto.getOtherDesignation();
                 if (StringUtil.isEmpty(otherDesignation)) {
-                    errorMap.put("otherDesignation" + i, signal);
+                    errorMap.put(prefix+"otherDesignation" + i, signal);
                 } else if (otherDesignation.length() > 100) {
-                    errorMap.put("otherDesignation" + i, signal);
+                    errorMap.put(prefix+"otherDesignation" + i, signal);
                 }
             }
         }
@@ -2841,7 +2841,7 @@ public final class AppValidatorHelper {
         if (!StringUtil.isEmpty(specialList) && specialList.size() > 0) {
             int count = specialList.size();
             for (int i = 0; i < count; i++) {
-                specialValidate(errorMap, specialList.get(i), i, personnelNames,false);
+                specialValidate(errorMap, specialList.get(i), "",i, personnelNames,false);
             }
         }
 
@@ -3220,31 +3220,74 @@ public final class AppValidatorHelper {
         }
     }
 
-    public static void doValidateSpecialServicesForm(List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList, String appType, Map<String, String> errorMap) {
+    public static void doValidateSpecialServicesForm(List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList,
+                                                     Map<String, String> errorMap,Map<String, AppSvcPersonAndExtDto> licPersonMap){
         if (appSvcSpecialServiceInfoList == null || appSvcSpecialServiceInfoList.isEmpty()) {
             return;
         }
         String prefix = "";
         for (int i = 0; i < appSvcSpecialServiceInfoList.size(); i++) {
             List<SpecialServiceSectionDto> specialServiceSectionDtoList=appSvcSpecialServiceInfoList.get(i).getSpecialServiceSectionDtoList();
+            List<String> sectionLeaderNames=IaisCommonUtils.genNewArrayList();
+            List<String> nurseNames=IaisCommonUtils.genNewArrayList();
+            List<String> rsoNames=IaisCommonUtils.genNewArrayList();
+            List<String> droNames=IaisCommonUtils.genNewArrayList();
+            List<String> mpoNames=IaisCommonUtils.genNewArrayList();
+            List<String> rpNames=IaisCommonUtils.genNewArrayList();
+            List<String> nmoNames=IaisCommonUtils.genNewArrayList();
             List<String> dirNames=IaisCommonUtils.genNewArrayList();
             List<String> nurNames=IaisCommonUtils.genNewArrayList();
-            List<String> nurseNames=IaisCommonUtils.genNewArrayList();
             for (int j=0;j<specialServiceSectionDtoList.size();j++){
                 SpecialServiceSectionDto specialServiceSectionDto=specialServiceSectionDtoList.get(j);
-                if (specialServiceSectionDto.getAppSvcDirectorDtoList()!=null){
-                    for (int x=0;x<specialServiceSectionDto.getAppSvcDirectorDtoList().size();x++){
-                        validateSpecialServicePerson(specialServiceSectionDto.getAppSvcDirectorDtoList().get(x),prefix+i+j+"dir",""+x,appType,errorMap,dirNames);
+                if (specialServiceSectionDto.getAppSvcCgoDtoList()!=null){
+                    Map<String, String> map = validateKeyPersonnel(specialServiceSectionDto.getAppSvcCgoDtoList(), prefix+i+j+"cgo", licPersonMap, null, null, null, true);
+                    if (IaisCommonUtils.isNotEmpty(map)){
+                        errorMap.putAll(map);
                     }
                 }
-                if (specialServiceSectionDto.getAppSvcNurseDirectorDtoList()!=null){
-                    for (int x=0;x<specialServiceSectionDto.getAppSvcNurseDirectorDtoList().size();x++){
-                        validateSpecialServicePerson(specialServiceSectionDto.getAppSvcNurseDirectorDtoList().get(x),prefix+i+j+"nur",""+x,appType,errorMap,nurNames);
+                if (specialServiceSectionDto.getAppSvcSectionLeaderList()!=null){
+                    for (int x=0;x<specialServiceSectionDto.getAppSvcSectionLeaderList().size();x++){
+                        specialValidate(errorMap,specialServiceSectionDto.getAppSvcSectionLeaderList().get(x), prefix+i+j+"sl",x, sectionLeaderNames,true);
                     }
                 }
                 if (specialServiceSectionDto.getAppSvcNurseDtoList()!=null){
                     for (int x=0;x<specialServiceSectionDto.getAppSvcNurseDtoList().size();x++){
-                        validateSpecialServicePerson(specialServiceSectionDto.getAppSvcNurseDtoList().get(x),prefix+i+j+"nic",""+x,appType,errorMap,nurseNames);
+                        validateSpecialServicePerson(specialServiceSectionDto.getAppSvcNurseDtoList().get(x),prefix+i+j+"nic",""+x,errorMap,nurseNames);
+                    }
+                }
+                if (specialServiceSectionDto.getAppSvcRadiationSafetyOfficerDtoList()!=null){
+                    for (int x=0;x<specialServiceSectionDto.getAppSvcRadiationSafetyOfficerDtoList().size();x++){
+                        validateSpecialServiceOtherPerson(specialServiceSectionDto.getAppSvcRadiationSafetyOfficerDtoList().get(x),prefix+i+j+"rso",""+x,errorMap,rsoNames,false);
+                    }
+                }
+                if (specialServiceSectionDto.getAppSvcDiagnosticRadiographerDtoList()!=null){
+                    for (int x=0;x<specialServiceSectionDto.getAppSvcDiagnosticRadiographerDtoList().size();x++){
+                        validateSpecialServiceOtherPerson(specialServiceSectionDto.getAppSvcDiagnosticRadiographerDtoList().get(x),prefix+i+j+"dr",""+x,errorMap,droNames,false);
+                    }
+                }
+                if (specialServiceSectionDto.getAppSvcMedicalPhysicistDtoList()!=null){
+                    for (int x=0;x<specialServiceSectionDto.getAppSvcMedicalPhysicistDtoList().size();x++){
+                        validateSpecialServiceOtherPerson(specialServiceSectionDto.getAppSvcMedicalPhysicistDtoList().get(x),prefix+i+j+"mp",""+x,errorMap,mpoNames,true);
+                    }
+                }
+                if (specialServiceSectionDto.getAppSvcRadiationPhysicistDtoList()!=null){
+                    for (int x=0;x<specialServiceSectionDto.getAppSvcRadiationPhysicistDtoList().size();x++){
+                        validateSpecialServiceOtherPerson(specialServiceSectionDto.getAppSvcRadiationPhysicistDtoList().get(x),prefix+i+j+"rp",""+x,errorMap,rpNames,true);
+                    }
+                }
+                if (specialServiceSectionDto.getAppSvcNMTechnologistDtoList()!=null){
+                    for (int x=0;x<specialServiceSectionDto.getAppSvcNMTechnologistDtoList().size();x++){
+                        validateSpecialServiceOtherPerson(specialServiceSectionDto.getAppSvcNMTechnologistDtoList().get(x),prefix+i+j+"nm",""+x,errorMap,nmoNames,true);
+                    }
+                }
+                if (specialServiceSectionDto.getAppSvcDirectorDtoList()!=null){
+                    for (int x=0;x<specialServiceSectionDto.getAppSvcDirectorDtoList().size();x++){
+                        validateSpecialServicePerson(specialServiceSectionDto.getAppSvcDirectorDtoList().get(x),prefix+i+j+"dir",""+x,errorMap,dirNames);
+                    }
+                }
+                if (specialServiceSectionDto.getAppSvcNurseDirectorDtoList()!=null){
+                    for (int x=0;x<specialServiceSectionDto.getAppSvcNurseDirectorDtoList().size();x++){
+                        validateSpecialServicePerson(specialServiceSectionDto.getAppSvcNurseDirectorDtoList().get(x),prefix+i+j+"nur",""+x,errorMap,nurNames);
                     }
                 }
                 if(!IaisCommonUtils.isEmpty(specialServiceSectionDto.getAppSvcSuplmFormDto().getAppSvcSuplmGroupDtoList())){
@@ -3254,7 +3297,55 @@ public final class AppValidatorHelper {
         }
     }
 
-    private static void validateSpecialServicePerson(AppSvcPersonnelDto appSvcPersonnelDto, String prefix, String subfix, String appType, Map<String, String> errorMap,List<String> names) {
+    private static void validateSpecialServiceOtherPerson(AppSvcPersonnelDto appSvcPersonnelDto, String prefix, String subfix, Map<String, String> errorMap,
+                                                          List<String> names,boolean checkOthers) {
+        String signal = "GENERAL_ERR0006";
+
+        String personnelSel = appSvcPersonnelDto.getPersonnelType();
+        if (StringUtils.isEmpty(personnelSel)) {
+            errorMap.put(prefix+"personnelType" + subfix, signal);
+        }else {
+            String salutation = appSvcPersonnelDto.getSalutation();
+            if (StringUtil.isEmpty(salutation)) {
+                errorMap.put(prefix + "salutation" + subfix, signal);
+            }
+
+            String name = appSvcPersonnelDto.getName();
+            if (StringUtil.isEmpty(name)) {
+                errorMap.put(prefix+"name" + subfix, signal);
+            } else if (name.length() > 110) {
+                String general_err0041 = repLength("Name", "110");
+                errorMap.put(prefix+"name" + subfix, general_err0041);
+            }else{
+                String target = StringUtil.toUpperCase(salutation + name);
+                if (names.contains(target)) {
+                    errorMap.put(prefix+"name" + subfix, "Cannot use duplicate names");
+                }else {
+                    names.add(target);
+                }
+            }
+
+            if (checkOthers){
+                String qualification = appSvcPersonnelDto.getQualification();
+                if (StringUtil.isEmpty(qualification)) {
+                    errorMap.put(prefix + "qualification" + subfix, signal);
+                }
+                String wrkExpYear = appSvcPersonnelDto.getWrkExpYear();
+                if (StringUtil.isEmpty(wrkExpYear)) {
+                    errorMap.put(prefix + "wrkExpYear" + subfix, signal);
+                } else {
+                    if (wrkExpYear.length() > 2) {
+                        errorMap.put(prefix + "wrkExpYear" + subfix, signal);
+                    }
+                    if (!wrkExpYear.matches("^[0-9]*$")) {
+                        errorMap.put(prefix + "wrkExpYear" + subfix, "GENERAL_ERR0002");
+                    }
+                }
+            }
+        }
+    }
+
+    private static void validateSpecialServicePerson(AppSvcPersonnelDto appSvcPersonnelDto, String prefix, String subfix, Map<String, String> errorMap,List<String> names) {
         String signal = "GENERAL_ERR0006";
         String personnelType = appSvcPersonnelDto.getPersonnelType();
 
@@ -3356,7 +3447,7 @@ public final class AppValidatorHelper {
             }
         }
 
-        /*if (ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_NURSE_IN_CHARGE.equals(personnelType)){
+        if (ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_NURSE_IN_CHARGE.equals(personnelType)){
             String bclsExpiryDateStr = appSvcPersonnelDto.getBclsExpiryDate();
             if (StringUtil.isEmpty(bclsExpiryDateStr)) {
                 errorMap.put(prefix + "bclsExpiryDate" + subfix, signal);
@@ -3365,6 +3456,6 @@ public final class AppValidatorHelper {
                     errorMap.put(prefix + "bclsExpiryDate" + subfix, "SC_ERR009");
                 }
             }
-        }*/
+        }
     }
 }

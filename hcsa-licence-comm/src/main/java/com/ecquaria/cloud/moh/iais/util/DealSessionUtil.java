@@ -897,15 +897,14 @@ public class DealSessionUtil {
 
     private static Map<String, Integer> getSpecialServicePersonnelMap() {
         Map<String, Integer> map = IaisCommonUtils.genNewHashMap();
-//        map.put(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, 0);
-//        map.put(ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER, 0);
+        map.put(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, 0);
+        map.put(ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER, 0);
         map.put(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE, 0);
-
-//        map.put(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER, 0);
-//        map.put(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR, 0);// Diagnostic Radiographer
-//        map.put(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST, 0);// Medical Physicist
-//        map.put(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL, 0);// Radiation Physicist
-//        map.put(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM, 0);// NM Technologist
+        map.put(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER, 0);
+        map.put(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR, 0);// Diagnostic Radiographer
+        map.put(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST, 0);// Medical Physicist
+        map.put(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL, 0);// Radiation Physicist
+        map.put(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM, 0);// NM Technologist
         map.put(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR, 0);
         map.put(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR, 0);
         return map;

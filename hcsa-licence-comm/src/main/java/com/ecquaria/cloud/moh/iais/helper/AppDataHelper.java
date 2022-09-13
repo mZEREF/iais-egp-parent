@@ -1831,9 +1831,30 @@ public final class AppDataHelper {
                 int j = 0;
                 for (SpecialServiceSectionDto specialServiceSectionDto : appSvcSpecialServiceInfoDto.getSpecialServiceSectionDtoList()) {
                     Map<String, Integer> maxCount = specialServiceSectionDto.getMaxCount();
+                    int cgomaxCount=maxCount.get(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
                     int nicMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE);
+                    int slMaxCount = maxCount.get(ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER);
+                    int rsoMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER);
+                    int drMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR);
+                    int mpMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR);
+                    int rpMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL);
+                    int nmMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM);
                     int diMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR);
                     int nuMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR);
+                    if (cgomaxCount!=0){
+                        List<AppSvcPrincipalOfficersDto> dtos = genKeyPersonnels(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, prefix + i + j + "cgo", request);
+                        specialServiceSectionDto.setAppSvcCgoDtoList(dtos);
+                    }
+                    if (slMaxCount != 0) {
+                        List<AppSvcPersonnelDto> personnelDtoList = IaisCommonUtils.genNewArrayList();
+                        int Length = ParamUtil.getInt(request, prefix + i + j + ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER+"Length");
+                        for (int x = 0; x < Length; x++) {
+                            AppSvcPersonnelDto appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix + i + j+"sl",
+                                    prefix + x, ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER);
+                            personnelDtoList.add(appSvcPersonnelDto);
+                        }
+                        specialServiceSectionDto.setAppSvcSectionLeaderList(personnelDtoList);
+                    }
                     if (nicMaxCount != 0) {
                         List<AppSvcPersonnelDto> appSvcNurseDtoList = IaisCommonUtils.genNewArrayList();
                         int nicLength = ParamUtil.getInt(request, prefix + i + j + ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE+"Length");
@@ -1843,6 +1864,56 @@ public final class AppDataHelper {
                             appSvcNurseDtoList.add(appSvcPersonnelDto);
                         }
                         specialServiceSectionDto.setAppSvcNurseDtoList(appSvcNurseDtoList);
+                    }
+                    if (rsoMaxCount != 0) {
+                        List<AppSvcPersonnelDto> appSvcPersonnelDtoList = IaisCommonUtils.genNewArrayList();
+                        int length = ParamUtil.getInt(request, prefix + i + j + ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER+"Length");
+                        for (int x = 0; x < length; x++) {
+                            AppSvcPersonnelDto appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix + i + j + "rso",
+                                    prefix + x, ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER);
+                            appSvcPersonnelDtoList.add(appSvcPersonnelDto);
+                        }
+                        specialServiceSectionDto.setAppSvcRadiationSafetyOfficerDtoList(appSvcPersonnelDtoList);
+                    }
+                    if (drMaxCount != 0) {
+                        List<AppSvcPersonnelDto> appSvcPersonnelDtoList = IaisCommonUtils.genNewArrayList();
+                        int length = ParamUtil.getInt(request, prefix + i + j + ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR+"Length");
+                        for (int x = 0; x < length; x++) {
+                            AppSvcPersonnelDto appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix + i + j + "dr",
+                                    prefix + x, ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR);
+                            appSvcPersonnelDtoList.add(appSvcPersonnelDto);
+                        }
+                        specialServiceSectionDto.setAppSvcDiagnosticRadiographerDtoList(appSvcPersonnelDtoList);
+                    }
+                    if (mpMaxCount != 0) {
+                        List<AppSvcPersonnelDto> appSvcPersonnelDtoList = IaisCommonUtils.genNewArrayList();
+                        int length = ParamUtil.getInt(request, prefix + i + j + ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST+"Length");
+                        for (int x = 0; x < length; x++) {
+                            AppSvcPersonnelDto appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix + i + j + "mp",
+                                    prefix + x, ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST);
+                            appSvcPersonnelDtoList.add(appSvcPersonnelDto);
+                        }
+                        specialServiceSectionDto.setAppSvcMedicalPhysicistDtoList(appSvcPersonnelDtoList);
+                    }
+                    if (rpMaxCount != 0) {
+                        List<AppSvcPersonnelDto> appSvcPersonnelDtoList = IaisCommonUtils.genNewArrayList();
+                        int length = ParamUtil.getInt(request, prefix + i + j + ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL+"Length");
+                        for (int x = 0; x < length; x++) {
+                            AppSvcPersonnelDto appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix + i + j + "rp",
+                                    prefix + x, ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL);
+                            appSvcPersonnelDtoList.add(appSvcPersonnelDto);
+                        }
+                        specialServiceSectionDto.setAppSvcRadiationPhysicistDtoList(appSvcPersonnelDtoList);
+                    }
+                    if (nmMaxCount != 0) {
+                        List<AppSvcPersonnelDto> appSvcPersonnelDtoList = IaisCommonUtils.genNewArrayList();
+                        int length = ParamUtil.getInt(request, prefix + i + j + ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM+"Length");
+                        for (int x = 0; x < length; x++) {
+                            AppSvcPersonnelDto appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix + i + j + "nm",
+                                    prefix + x, ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM);
+                            appSvcPersonnelDtoList.add(appSvcPersonnelDto);
+                        }
+                        specialServiceSectionDto.setAppSvcNMTechnologistDtoList(appSvcPersonnelDtoList);
                     }
                     if (diMaxCount != 0) {
                         List<AppSvcPersonnelDto> appSvcDirectorDtoList = IaisCommonUtils.genNewArrayList();
