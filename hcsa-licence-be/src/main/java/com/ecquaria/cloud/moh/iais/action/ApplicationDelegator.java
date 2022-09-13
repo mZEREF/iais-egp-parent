@@ -351,6 +351,7 @@ public class ApplicationDelegator extends AppCommDelegator {
                 TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
                 if (taskDto != null) {
                     url.append(taskDto.getProcessUrl()).append("?taskId=").append(MaskUtil.maskValue("taskId",taskDto.getId()));
+                    url.append("&backFromEdit=Y");
                 } else {
                     url.append("/hcsa-licence-web/eservice/INTRANET/MohInspectionPreInspector/InspectionPreInspectorPre");
                 }
