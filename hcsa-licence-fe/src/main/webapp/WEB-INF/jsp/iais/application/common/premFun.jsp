@@ -105,28 +105,30 @@
 
     function addPremEvent() {
         $('#addPremBtn').unbind('click');
-        $('#addPremBtn').on('click', function () {
-            showWaiting();
-            var $target = $('div.premContent:last');
-            var premType = $target.find('input.premTypeRadio:checked').val();
-            var locateWtihHcsa = $target.find('input[name^="locateWtihHcsa"]:checked').val();
-            var locateWtihNonHcsa = $target.find('input.locateWtihNonHcsa:checked').val();
-            var src = $target.clone();
-            $('div.premises-content').append(src);
-            // for preventing the radio auto cleared
-            fillValue($target.find('input.premTypeRadio'), premType);
-            fillValue($target.find('input[name^="locateWtihHcsa"]'), locateWtihHcsa);
-            fillValue($target.find('input.locateWtihNonHcsa'), locateWtihNonHcsa);
-            // init new section
-            var $premContent = $('div.premContent').last();
-            clearFields($premContent);
-            removeAdditional($premContent);
-            refreshPremise($premContent, $('div.premContent').length - 1);
-            $('div.premContent:first').find('.premHeader').html('1');
-            $premContent.find('.chooseExistData').val('0');
-            initPremiseEvent();
-            dismissWaiting();
-        });
+        $('#addPremBtn').on('click', addPremEventFun);
+    }
+
+    function addPremEventFun () {
+        showWaiting();
+        var $target = $('div.premContent:last');
+        var premType = $target.find('input.premTypeRadio:checked').val();
+        var locateWtihHcsa = $target.find('input[name^="locateWtihHcsa"]:checked').val();
+        var locateWtihNonHcsa = $target.find('input.locateWtihNonHcsa:checked').val();
+        var src = $target.clone();
+        $('div.premises-content').append(src);
+        // for preventing the radio auto cleared
+        fillValue($target.find('input.premTypeRadio'), premType);
+        fillValue($target.find('input[name^="locateWtihHcsa"]'), locateWtihHcsa);
+        fillValue($target.find('input.locateWtihNonHcsa'), locateWtihNonHcsa);
+        // init new section
+        var $premContent = $('div.premContent').last();
+        clearFields($premContent);
+        removeAdditional($premContent);
+        refreshPremise($premContent, $('div.premContent').length - 1);
+        $('div.premContent:first').find('.premHeader').html('1');
+        $premContent.find('.chooseExistData').val('0');
+        initPremiseEvent();
+        dismissWaiting();
     }
 
     var removeBtnEvent = function () {
@@ -182,18 +184,27 @@
 
     var premTypeEvent = function () {
         $('.premTypeRadio').on('click', function () {
-            clearErrorMsg();
-            var $premContent = $(this).closest('div.premContent');
-            var premType = $premContent.find('.premTypeRadio:checked').val();
-            if (isEmpty(premType)) {
-                premType = "";
+            premTypeEventFun($(this));
+            let premType = getValue($(this));
+            if ((premType == 'PERMANENT' || premType == 'CONVEYANCE') && $('#autoCheckRandM').val() == '1') {
+                autoCheckPremiseType('MOBILE');
+                autoCheckPremiseType('REMOTE');
             }
-            $premContent.find('.premTypeValue').val(premType);
-            $premContent.find('.premTypeValue').trigger('change');
-            $premContent.find('.premSelValue').val('-1');
-            $premContent.find('.chooseExistData').val('0');
-            checkPremiseContent($premContent);
         });
+    }
+
+    function premTypeEventFun ($target) {
+        clearErrorMsg();
+        var $premContent = $target.closest('div.premContent');
+        var premType = $premContent.find('.premTypeRadio:checked').val();
+        if (isEmpty(premType)) {
+            premType = "";
+        }
+        $premContent.find('.premTypeValue').val(premType);
+        //$premContent.find('.premTypeValue').trigger('change');
+        $premContent.find('.premSelValue').val('-1');
+        $premContent.find('.chooseExistData').val('0');
+        checkPremiseContent($premContent);
     }
 
     var premSelectEvent = function () {
@@ -287,6 +298,34 @@
         checkDisabled($premContent.find('.addrType'), disabled);
         checkDisabled($premContent.find('.operationDiv'), disabled);
         toggleTag($premContent.find('.opDel:first'), !disabled);
+    }
+
+    function autoCheckPremiseType(premType) {
+        //const premType = 'REMOTE';
+        let $premType = $('input[value="' + premType + '"');
+        if (isEmptyNode($premType) || isChecked($premType)) {
+            return;
+        }
+        let nodeChecked = false;
+        let $target = null;
+        $premType.each(function() {
+            if ($(this).is(':checked')) {
+                nodeChecked = true;
+            } else if (isEmptyNode($target)) {
+                let name = $(this).attr('name');
+                if (!isChecked($('input[name="' + name + '"'))) {
+                    $target = $(this);
+                }
+            }
+        });
+        if (!nodeChecked && isEmptyNode($premType) && !isEmptyNode($('#addPremBtn'))) {
+            addPremEventFun();
+            $target = $('input[value="' + premType + '"').last();
+        }
+        if (!isEmptyNode($target)) {
+            $target.prop('checked', true);
+            premTypeEventFun($target);
+        }
     }
 
     var checkSelectedLicenceEvent = function () {

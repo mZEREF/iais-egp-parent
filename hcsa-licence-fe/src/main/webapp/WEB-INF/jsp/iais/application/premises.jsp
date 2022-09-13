@@ -1,4 +1,3 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ taglib prefix="webui" uri="http://www.ecquaria.com/webui" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
@@ -9,9 +8,11 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 
+<input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
+<input type="hidden" id="autoCheckRandM" value="${autoCheckRandM}"/>
+
 <webui:setLayout name="iais-internet"/>
 <%@ include file="/WEB-INF/jsp/iais/application/common/dashboard.jsp" %>
-<%--<div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">--%>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <%--Validation fields Start--%>
     <input type="hidden" name="crud_action_type_continue" value="">
@@ -65,13 +66,7 @@
     </div>
     <%--Validation Field--%>
     <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
-    <%-- <%@include file="common/premFun.jsp"%>--%>
     <input type="hidden" name="pageCon" value="valPremiseList">
-
-    <%--<c:if test="${!isRFC && !isRenew}">
-      <iais:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></iais:confirm>
-    </c:if>--%>
-
     <input type="text" style="display: none" value="${AckMessage}" id="ackMessage" name="ackMessage">
     <iais:confirm msg="There is a pending application for a licence associated to this mode of service delivery" callBack=""
                   popupOrder="ackMessageConfim"></iais:confirm>
