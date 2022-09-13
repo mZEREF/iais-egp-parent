@@ -207,4 +207,7 @@ public interface InspectionTaskClient {
     @DeleteMapping(value = "/insp-appt-draft/insp-appt-draft/sh-an/{id}",produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> deleteInspDateDraftById(@PathVariable(name = "id") String id);
+
+    @PostMapping(value = "/application-be/deleteAndCreate")
+    FeignResponseEntity<AppPremisesRecommendationDto> deleteAndCreate(@RequestBody AppPremisesRecommendationDto appPremisesRecommendationDto);
 }

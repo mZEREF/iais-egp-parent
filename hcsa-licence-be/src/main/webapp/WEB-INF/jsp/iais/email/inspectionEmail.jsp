@@ -32,8 +32,8 @@
                                     <div class="tab-gp dashboard-tab">
                                         <br><br><br>
                                         <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-                                            <li class="complete" role="presentation"><a href="#tabInfo"
-                                                                                        aria-controls="tabInfo"
+                                            <li class="complete" role="presentation" id="infoTab"><a href="#tabInfo"
+                                                                                        aria-controls="tabInfo" id="doInfoTab"
                                                                                         role="tab" data-toggle="tab">Info</a>
                                             </li>
                                             <li class="complete" role="presentation"><a href="#tabDocuments"
@@ -41,7 +41,7 @@
                                                                                         role="tab"
                                                                                         data-toggle="tab">Documents</a>
                                             </li>
-                                            <li class="active" role="presentation"><a href="#tabLetter"
+                                            <li class="active" role="presentation" id="letterTab"><a href="#tabLetter"
                                                                                       aria-controls="tabLetter"
                                                                                       role="tab"
                                                                                       data-toggle="tab">Email</a></li>
@@ -156,6 +156,13 @@
 <%@include file="/WEB-INF/jsp/iais/inspectionncList/uploadFile.jsp" %>
 
 <script type="text/javascript">
+    <c:if test="${'Y' eq backFromEdit}">
+    $(document).ready(function () {
+        $('#letterTab').removeClass("active");
+        $('#doInfoTab').click();
+        $('#infoTab').addClass("active");
+    });
+    </c:if>
     $(document).ready(function () {
         $("#ao1SelectRow").hide();
         $("#decision_email").change(function () {

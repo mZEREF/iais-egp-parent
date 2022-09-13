@@ -34,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
@@ -301,8 +302,15 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
 
         //get AppPremisesRecommendationDto
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appCorId,InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
-        if( appPremisesRecommendationDto != null)
+        if( appPremisesRecommendationDto != null) {
             applicationViewDto.setRecomLiceStartDate(appPremisesRecommendationDto.getRecomInDate());
+        }
+        if (IaisCommonUtils.isNotEmpty(applicationViewDto.getAppSvcVehicleDtos())) {
+            AppPremisesRecommendationDto vehRecom = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appCorId,InspectionConstants.RECOM_TYPE_INSP_CHECKLIST_VEHICLE).getEntity();
+            if (vehRecom != null) {
+                applicationViewDto.setInspVehicleNames(JsonUtil.parseToList(vehRecom.getRemarks(), String.class));
+            }
+        }
 
         // get Aduit dto
         if(applicationViewDto.getApplicationDto() != null && ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equalsIgnoreCase( applicationViewDto.getApplicationDto().getApplicationType())){

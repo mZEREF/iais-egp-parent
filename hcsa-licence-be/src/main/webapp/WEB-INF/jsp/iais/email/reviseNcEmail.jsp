@@ -84,6 +84,13 @@
 <%@include file="/WEB-INF/jsp/iais/inspectionncList/uploadFile.jsp" %>
 
 <script type="text/javascript">
+    <c:if test="${'Y' eq backFromEdit}">
+    $(document).ready(function () {
+        $('#letterTab').removeClass("active");
+        $('#doInfoTab').click();
+        $('#infoTab').addClass("active");
+    });
+    </c:if>
     function doReload() {
         var r = confirm("Are you sure you want to regenerate the Inspection NC/BP Outcome email?");
         if (r == true) {

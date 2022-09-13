@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessmentConfig;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionHistoryShowDto;
@@ -429,6 +430,17 @@ public class InspectionPreDelegator {
         if(taskDto != null) {
             inspectionPreTaskService.selfAssMtPdfReport(taskDto.getRefNo());
         }
+        //save Vehicle List
+        ApplicationViewDto appViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request,
+                ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO);
+        if (IaisCommonUtils.isNotEmpty(appViewDto.getAppSvcVehicleDtos())) {
+            List<String> veNameList = IaisCommonUtils.genNewArrayList();
+            for (AppSvcVehicleDto asvDto : appViewDto.getAppSvcVehicleDtos()) {
+                veNameList.add(asvDto.getVehicleName());
+            }
+            inspectionPreTaskService.saveVehicleNames(veNameList, appViewDto.getAppPremisesCorrelationId());
+        }
+
         inspectionPreTaskService.routingTask(taskDto, inspectionPreTaskDto.getReMarks(), inspectionChecklist);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
         ParamUtil.setSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, adhocCheckListConifgDto);

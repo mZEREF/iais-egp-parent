@@ -42,11 +42,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -256,6 +258,18 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         saveInspectionChecklist(inspectionChecklist, taskDto.getRefNo());
         //update insp status
         updateInspectionStatus(taskDto.getRefNo(), InspectionConstants.INSPECTION_STATUS_PENDING_INSPECTION);
+    }
+
+    @Override
+    public void saveVehicleNames(List<String> vehicleNames, String appPremCorrId) {
+        AppPremisesRecommendationDto dto = new AppPremisesRecommendationDto();
+        dto.setAppPremCorreId(appPremCorrId);
+        dto.setAuditTrailDto(AuditTrailHelper.getCurrentAuditTrailDto());
+        dto.setRecomType(InspectionConstants.RECOM_TYPE_INSP_CHECKLIST_VEHICLE);
+        dto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        dto.setVersion(1);
+        dto.setRemarks(JsonUtil.parseToJson(vehicleNames));
+        inspectionTaskClient.deleteAndCreate(dto);
     }
 
     private void saveInspectionChecklist(List<ChecklistConfigDto> inspectionChecklist, String appCorrId) {

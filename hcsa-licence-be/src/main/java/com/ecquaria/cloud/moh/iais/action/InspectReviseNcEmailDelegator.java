@@ -154,6 +154,8 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
         if( taskDto == null) {
             return;
         }
+        String backFromEdit = ParamUtil.getString(request, "backFromEdit");
+        ParamUtil.setRequestAttr(request, "backFromEdit", backFromEdit);
         AuditTrailHelper.auditFunctionWithAppNo(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_MAIL,taskDto.getApplicationNo());
         setCheckDataHaveFinished(request,taskDto);
         ParamUtil.setSessionAttr(request,MSG_CON, null);

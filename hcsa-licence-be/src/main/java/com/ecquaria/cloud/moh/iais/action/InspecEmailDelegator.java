@@ -150,6 +150,8 @@ public class InspecEmailDelegator {
             }
 
         }
+        String backFromEdit = ParamUtil.getString(request, "backFromEdit");
+        ParamUtil.setRequestAttr(request, "backFromEdit", backFromEdit);
         TaskDto taskDto = taskService.getTaskById(taskId);
         if( taskDto == null) {
             return;

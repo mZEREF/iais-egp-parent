@@ -24,9 +24,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQue
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.SystemAssignSearchQueryDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.http.HttpHeaders;
-
 import java.util.List;
+import org.springframework.http.HttpHeaders;
 
 /**
  * @author Shicheng
@@ -380,6 +379,14 @@ public class InspectionTaskClientFallback implements InspectionTaskClient {
 
     @Override
     public FeignResponseEntity<List<AppPremisesInspecApptDto>> getAllSystemDtosByAppPremCorrId(String appPremCorrId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<AppPremisesRecommendationDto> deleteAndCreate(AppPremisesRecommendationDto appPremisesRecommendationDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

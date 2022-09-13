@@ -49,6 +49,7 @@ public interface InspectionPreTaskService {
       * @Descripation: routing Task
       */
     void routingTask(TaskDto taskDto, String preInspecRemarks, List<ChecklistConfigDto> inspectionChecklist);
+    void saveVehicleNames(List<String> vehicleNames, String appPremCorrId);
 
     /**
       * @author: shicheng
