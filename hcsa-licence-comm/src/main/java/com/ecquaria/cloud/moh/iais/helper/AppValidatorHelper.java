@@ -2987,6 +2987,7 @@ public final class AppValidatorHelper {
                 List<AppPremScopeDto> appPremScopeDtoList = specialisedDto.getAppPremScopeDtoList();
                 List<AppPremScopeDto> checkedAppPremScopeDtoList = specialisedDto.getCheckedAppPremScopeDtoList();
                 if (appPremScopeDtoList == null || appPremScopeDtoList.isEmpty()) {
+                    //TODO add this to message table
                     errorMap.put(premisesVal + "_mandatory",
                             "The system must configure one item at least for " + specialisedDto.getCategorySectionName());
                 } else if (checkedAppPremScopeDtoList == null || checkedAppPremScopeDtoList.isEmpty()) {

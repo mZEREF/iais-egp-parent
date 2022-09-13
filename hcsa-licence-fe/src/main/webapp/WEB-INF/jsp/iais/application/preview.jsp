@@ -14,6 +14,8 @@
 %>
 <webui:setLayout name="iais-internet"/>
 
+<%@ include file="/WEB-INF/jsp/iais/application/common/dashboard.jsp" %>
+
 <c:set var="isRfi" value="${not empty requestInformationConfig}"/>
 <c:set var="isHciNameChange" value="${RFC_eqHciNameChange == 'RFC_eqHciNameChange'}"/>
 

@@ -10,16 +10,16 @@
 %>
 
 <webui:setLayout name="iais-internet"/>
-<%@ include file="/WEB-INF/jsp/iais/common/dashboard.jsp" %>
+<%@ include file="/WEB-INF/jsp/iais/application/common/dashboard.jsp" %>
 <%--<div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">--%>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <%--Validation fields Start--%>
     <input type="hidden" name="crud_action_type_continue" value="">
     <%--Validation fields End--%>
     <div class="main-content">
-        <div class="row">
-            <div class="center-content">
-                <div class="col-xs-12 intranet-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
                     <div class="tab-gp steps-tab tab-be">
                         <%@ include file="/WEB-INF/jsp/iais/application/common/navTabs.jsp" %>
                         <div class="tab-content  ">

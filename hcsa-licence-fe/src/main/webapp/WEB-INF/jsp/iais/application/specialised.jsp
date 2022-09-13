@@ -5,7 +5,8 @@
 
 <webui:setLayout name="iais-internet"/>
 
-<%@ include file="/WEB-INF/jsp/iais/common/dashboard.jsp" %>
+<%@ include file="/WEB-INF/jsp/iais/application/common/dashboard.jsp" %>
+
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =

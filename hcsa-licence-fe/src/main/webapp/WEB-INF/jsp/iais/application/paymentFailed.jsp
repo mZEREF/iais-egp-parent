@@ -6,7 +6,7 @@
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
-<%@ include file="/WEB-INF/jsp/iais/common/dashboard.jsp" %>
+<%@ include file="/WEB-INF/jsp/iais/application/common/dashboard.jsp" %>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <div class="main-content">
         <div class="container">

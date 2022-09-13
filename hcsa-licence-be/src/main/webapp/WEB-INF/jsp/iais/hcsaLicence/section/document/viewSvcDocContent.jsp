@@ -13,6 +13,7 @@
         <iais:value width="12" display="true" cssClass="col-md-10" style="font-size: 14px">
             <div class="col-xs-6">
                 <div class="newVal" attr="${svcDoc.md5Code}<c:out value="${svcDoc.docName}"/>">
+                    <c:if test="${svcDoc.docSize != null}">
                     <c:choose>
                         <c:when test="${empty svcDoc.fileRepoId}">
                             <c:out value="${svcDoc.docName}"/>
@@ -21,10 +22,12 @@
                             <iais:downloadLink fileRepoIdName="fileRo${status.index}" fileRepoId="${svcDoc.fileRepoId}" docName="${svcDoc.docName}"/>
                         </c:otherwise>
                     </c:choose> (${svcDoc.docSize} KB)
+                    </c:if>
                 </div>
             </div>
             <div class="col-xs-6">
                 <div class="oldVal" attr="${oldSvcDoc.md5Code}<c:out value="${oldSvcDoc.docName}"/>">
+                    <c:if test="${oldSvcDoc.docSize != null}">
                     <c:choose>
                         <c:when test="${empty oldSvcDoc.fileRepoId}">
                             <c:out value="${oldSvcDoc.docName}"/>
@@ -33,6 +36,7 @@
                             <iais:downloadLink fileRepoIdName="fileRo${status.index}" fileRepoId="${oldSvcDoc.fileRepoId}" docName="${oldSvcDoc.docName}"/>
                         </c:otherwise>
                     </c:choose> (${oldSvcDoc.docSize} KB)
+                    </c:if>
                 </div>
             </div>
         </iais:value>

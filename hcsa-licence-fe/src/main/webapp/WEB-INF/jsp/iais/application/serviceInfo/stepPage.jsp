@@ -8,7 +8,9 @@
 
 %>
 <webui:setLayout name="iais-internet"/>
-<%@ include file="/WEB-INF/jsp/iais/common/dashboard.jsp" %>
+
+<%@ include file="/WEB-INF/jsp/iais/application/common/dashboard.jsp" %>
+
 <form method="post" id="mainForm" class="__egovform" ${currentStep == 'SVST005' ? 'enctype="multipart/form-data"' : '' } action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator"/>
     <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto"/>

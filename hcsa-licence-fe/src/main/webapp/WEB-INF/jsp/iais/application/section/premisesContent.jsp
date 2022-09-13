@@ -172,16 +172,16 @@
                             </label>
                             <c:choose>
                                 <c:when test="${premType == permanent}">
-                                    <a class="btn-tooltip styleguide-tooltip" style="z-index: 99;position: absolute;" href="javascript:void(0);" data-placement="top"  data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK019"></iais:message>&lt;/p&gt;">i</a>
+                                    <a class="btn-tooltip styleguide-tooltip" style="z-index: 99;position: absolute; right: 30px;" href="javascript:void(0);" data-placement="top"  data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK019"></iais:message>&lt;/p&gt;">i</a>
                                 </c:when>
                                 <c:when test="${premType == conv || premType == easMts}">
-                                    <a class="btn-tooltip styleguide-tooltip" style="z-index: 99;position: absolute;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK021"></iais:message>&lt;/p&gt;">i</a>
+                                    <a class="btn-tooltip styleguide-tooltip" style="z-index: 99;position: absolute; right: 20px;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK021"></iais:message>&lt;/p&gt;">i</a>
                                 </c:when>
                                 <c:when test="${premType == mobile}">
-                                    <a class="btn-tooltip styleguide-tooltip"  style="z-index: 99;position: absolute;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK032"></iais:message>&lt;/p&gt;">i</a>
+                                    <a class="btn-tooltip styleguide-tooltip"  style="z-index: 99;position: absolute; right: 0;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK032"></iais:message>&lt;/p&gt;">i</a>
                                 </c:when>
                                 <c:when test="${premType == remote}">
-                                    <a class="btn-tooltip styleguide-tooltip"  style="z-index: 99;position: absolute;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK033"></iais:message>&lt;/p&gt;">i</a>
+                                    <a class="btn-tooltip styleguide-tooltip"  style="z-index: 99;position: absolute; right: -8px;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK033"></iais:message>&lt;/p&gt;">i</a>
                                 </c:when>
                             </c:choose>
                         </div>
