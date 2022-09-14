@@ -54,6 +54,8 @@ public final class HcsaAppConst {
     public static final String CURR_SINGLE_NAME                             = "singleName";
     public static final String CURR_STEP_PSN_OPTS                           = "personSelectOpts";
 
+    public static final String OUTSOURCED_SERVICE_OPTS                      = "outsourcedServiceSelectOpts";
+
     public static final String CURRENT_SVC_CODE                             = "CURRENT_SVC_CODE";
 
     public static final String SPECIALISED_SVC_CODE                         = "specialised_svc_code";
@@ -82,6 +84,8 @@ public final class HcsaAppConst {
     public static final String APP_PREMISES_MAP                             = "AppGrpPremisesDtoMap";
     public static final String PERSONSELECTMAP                              = "PersonSelectMap";
     public static final String LICPERSONSELECTMAP                           = "LicPersonSelectMap";
+    public static final String CLINICALLABORATOYY                           = "Clinical Laboratory";
+    public static final String RADIOLOGICALSERVICE                          = "Radiological Service";
 
     public static final String DRAFTCONFIG                                  = "DraftConfig";
     public static final String LOADING_DRAFT                                = "loadingDraft";

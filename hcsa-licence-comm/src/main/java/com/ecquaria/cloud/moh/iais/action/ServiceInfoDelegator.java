@@ -75,6 +75,7 @@ import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURR_STEP_CONFIG
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURR_STEP_PSN_OPTS;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.IS_EDIT;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.LICPERSONSELECTMAP;
+import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.OUTSOURCED_SERVICE_OPTS;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.PERSONSELECTMAP;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.PRS_SERVICE_DOWN;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.SECTION_LEADER_LIST;
@@ -541,9 +542,37 @@ public class ServiceInfoDelegator {
     }
 
     private void prepareOutsourcedProviders(HttpServletRequest request) {
+        List<SelectOption> optionList = ApplicationHelper.genOutsourcedServiceSel(request, true);
+        ParamUtil.setRequestAttr(request, OUTSOURCED_SERVICE_OPTS, optionList);
     }
 
     private void doOutsourcedProviders(HttpServletRequest request) {
+        log.debug(StringUtil.changeForLog("doOtherInformation start ..."));
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+        String actionType = ParamUtil.getRequestString(request, "nextStep");
+        String appType = appSubmissionDto.getAppType();
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)
+                || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
+            if (RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(actionType)
+                    || RfcConst.RFC_BTN_OPTION_SKIP.equals(actionType)) {
+                return;
+            }
+        }
+        String currSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
+        String currSvcCode = (String) ParamUtil.getSessionAttr(request,CURRENTSVCCODE);
+        AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request, currSvcId,null);
+        String isEdit = ParamUtil.getString(request, IS_EDIT);
+        boolean isRfi = ApplicationHelper.checkIsRfi(request);
+        boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto,
+                RfcConst.EDIT_SERVICE, isEdit, isRfi);
+        if (isGetDataFromPage) {
+            //get data from page
+
+        }
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        if ("next".equals(actionType)) {
+        }
+        checkAction(errorMap, HcsaConsts.STEP_OUTSOURCED_PROVIDERS, appSubmissionDto, request);
     }
 
     private boolean checkAction(Map<String, String> errorMap, String step, AppSubmissionDto appSubmissionDto,
@@ -1801,7 +1830,16 @@ public class ServiceInfoDelegator {
 
     private boolean skipStep(String stepCode, AppSubmissionDto appSubmissionDto) {
         String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,
-                HcsaConsts.STEP_DISCIPLINE_ALLOCATION};
+                HcsaConsts.STEP_DISCIPLINE_ALLOCATION,
+                HcsaConsts.STEP_PRINCIPAL_OFFICERS,
+                HcsaConsts.STEP_SERVICE_PERSONNEL,
+                HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER,
+                HcsaConsts.STEP_MEDALERT_PERSON,
+                HcsaConsts.STEP_SUPPLEMENTARY_FORM,
+                HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS,
+                HcsaConsts.STEP_SPECIAL_SERVICES_FORM,
+                HcsaConsts.STEP_OTHER_INFORMATION
+        };
         if (StringUtil.isIn(stepCode, skipList)) {
             return true;
         }

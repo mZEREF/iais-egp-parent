@@ -1241,6 +1241,15 @@ public final class ApplicationHelper {
         return appSubmissionDto;
     }
 
+    public static List<SelectOption> genOutsourcedServiceSel(HttpServletRequest request, boolean needFirstOpt){
+        List<SelectOption> options = IaisCommonUtils.genNewArrayList();
+        if (needFirstOpt){
+            options.add(new SelectOption("-1", HcsaAppConst.FIRESTOPTION));
+        }
+        options.add(new SelectOption("0", HcsaAppConst.CLINICALLABORATOYY));
+        options.add(new SelectOption("1", HcsaAppConst.RADIOLOGICALSERVICE));
+        return options;
+    }
 
     public static List<SelectOption> genAssignPersonSel(HttpServletRequest request, boolean needFirstOpt) {
         Map<String, AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request,
