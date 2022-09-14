@@ -58,7 +58,7 @@
 </iais:row>
 
 <iais:row>
-    <c:set var="toolMsg"><iais:message  key="NEW_FYV025"/></c:set>
+    <c:set var="toolMsg"><iais:message  key="NEW_ACK40"/></c:set>
     <iais:field width="5" cssClass="col-md-5" value="Contact number" info="${toolMsg}"/>
     <iais:value width="7" cssClass="col-md-7" display="true">
         <c:out value="${orgUse.mobileNo}"/>
