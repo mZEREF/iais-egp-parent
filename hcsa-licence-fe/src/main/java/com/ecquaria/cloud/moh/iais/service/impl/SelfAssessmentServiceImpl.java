@@ -181,7 +181,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         );
         List<ChecklistConfigDto> specSvcChecklistConfig = IaisCommonUtils.genNewArrayList();
         for (AppPremSpecialisedDto appPremSpecialisedDto : appPremSpecialisedDtos){
-            for (AppPremSubSvcRelDto appPremSubSvcRelDto : appPremSpecialisedDto.getAppPremSubSvcRelDtoList()){
+            for (AppPremSubSvcRelDto appPremSubSvcRelDto : appPremSpecialisedDto.getCheckedAppPremSubSvcRelDtoList()){
                 ChecklistConfigDto specSvceConfig = configCommClient.getMaxVersionConfigByParams(appPremSubSvcRelDto.getSvcCode(), type, module).getEntity();
                 if (!Objects.isNull(specSvceConfig)){
                     specSvcChecklistConfig.add(specSvceConfig);
