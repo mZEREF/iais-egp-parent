@@ -1711,6 +1711,8 @@ public class InterInboxDelegator {
     }
 
     private boolean getCanInspFlow(InboxAppQueryDto inboxAppQueryDto,Map<String,Boolean> mapCanInsps){
-        return mapCanInsps.get(StringUtil.getNonNull(inboxAppQueryDto.getApplicationType())+"_"+StringUtil.getNonNull(inboxAppQueryDto.getCode())) != null && (inboxAppQueryDto.getHasSubmitPrefDate() == null || 0==inboxAppQueryDto.getHasSubmitPrefDate());
+        return mapCanInsps.get(StringUtil.getNonNull(inboxAppQueryDto.getApplicationType())+"_"+StringUtil.getNonNull(inboxAppQueryDto.getCode())) != null
+                && ((inboxAppQueryDto.getHasSubmitPrefDate() == null || 0 == inboxAppQueryDto.getHasSubmitPrefDate())
+                || (inboxAppQueryDto.getSelfAssmtFlag() == 0 || inboxAppQueryDto.getSelfAssmtFlag() == 2));
     }
 }

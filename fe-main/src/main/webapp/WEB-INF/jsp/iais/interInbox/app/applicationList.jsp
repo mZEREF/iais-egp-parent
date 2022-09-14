@@ -213,7 +213,9 @@
                                                             <c:if test="${app.selfAssmtFlag == 0 || app.selfAssmtFlag == 2}">
                                                                 <option value="Assessment">Assessment</option>
                                                             </c:if>
+                                                            <c:if test="${app.hasSubmitPrefDate == 0 || app.hasSubmitPrefDate == null}">
                                                             <option value="Inspection">Indicate Preferred Inspection Date</option>
+                                                            </c:if>c:if>
                                                         </c:if>
                                                         <c:if test="${app.pmtStatus == 'PMT06'}">
                                                             <option value="Make Payment">Make Payment</option>
