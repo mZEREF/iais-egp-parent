@@ -2181,7 +2181,7 @@ public class LicenceViewServiceDelegator {
         for (T obj : oldList) {
             T newDto = createFun.apply(obj);
             newList.add(newDto);
-            newOldList.add(newDto);
+            newOldList.add(obj);
         }
         if (comparator != null) {
             newList.sort(comparator);
@@ -2210,7 +2210,7 @@ public class LicenceViewServiceDelegator {
         for (T obj : oldList) {
             T newDto = createFun.apply(obj);
             newList.add(newDto);
-            newOldList.add(newDto);
+            newOldList.add(obj);
         }
         oldList.clear();
         oldList.addAll(newOldList);
