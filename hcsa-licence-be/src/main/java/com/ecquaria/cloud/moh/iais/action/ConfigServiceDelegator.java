@@ -906,13 +906,18 @@ public class ConfigServiceDelegator {
         HcsaSvcPersonnelDto radiationPhysicist = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL, request);
         HcsaSvcPersonnelDto nMTechnologist = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM, request);
 
-        hcsaSvcPersonnelDtos.add(cgoDto);//Clinical Governance Officer (CGO)
+
+        if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(serviceCode) || AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(serviceCode)){
+            hcsaSvcPersonnelDtos.add(director);//Clinical Director
+        }else{
+            hcsaSvcPersonnelDtos.add(cgoDto);//Clinical Governance Officer (CGO)
+        }
         hcsaSvcPersonnelDtos.add(slPersonnelDto);//Section Leader
         if(HcsaConsts.SERVICE_TYPE_BASE.equals(serviceType)){
             hcsaSvcPersonnelDtos.add(poDto);//Principal Officer (PO)
             hcsaSvcPersonnelDtos.add(dpoDto);//Nominee
             hcsaSvcPersonnelDtos.add(kahPersonnelDto);//Key Appointment Holder (KAH)
-            hcsaSvcPersonnelDtos.add(director);//Clinical Director
+           // hcsaSvcPersonnelDtos.add(director);//Clinical Director
             hcsaSvcPersonnelDtos.add(svcPersonnelDto);//Service Personnel
             hcsaSvcPersonnelDtos.add(vehicles);//Vehicles
             hcsaSvcPersonnelDtos.add(charges);//General Conveyance Charges
