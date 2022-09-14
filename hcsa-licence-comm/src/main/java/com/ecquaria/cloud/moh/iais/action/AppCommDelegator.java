@@ -765,10 +765,11 @@ public abstract class AppCommDelegator {
         ApplicationHelper.setTimeList(bpc.request);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String appType = appSubmissionDto.getAppType();
+        boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
         //rfc/renew
         boolean isRfcRenewal = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)
                 || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType);
-        if (isRfcRenewal && !ApplicationHelper.checkIsRfi(bpc.request)) {
+        if (isRfcRenewal && !isRfi) {
             setSelectLicence(appSubmissionDto);
         }
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
@@ -802,12 +803,15 @@ public abstract class AppCommDelegator {
         }
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
 
-
         int baseSvcCount = 0;
+        boolean hasMs = false;
         if (hcsaServiceDtoList != null) {
             for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtoList) {
                 if (HcsaConsts.SERVICE_TYPE_BASE.equalsIgnoreCase(hcsaServiceDto.getSvcType())) {
                     baseSvcCount++;
+                }
+                if (AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(hcsaServiceDto.getSvcCode())) {
+                    hasMs = true;
                 }
             }
         }
@@ -817,6 +821,15 @@ public abstract class AppCommDelegator {
             ParamUtil.setRequestAttr(bpc.request, "multiBase", AppConsts.FALSE);
         }
         ParamUtil.setRequestAttr(bpc.request, "isMultiPremService", ApplicationHelper.isMultiPremService(hcsaServiceDtoList));
+        /**
+         * 14. For Medical Service, “Remote Delivery” and “Mobile Delivery” sections will be displayed if Applicant selects either
+         * “Permanent Premises” or “Conveyance”
+         */
+        boolean isNew = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
+        if (isNew && !isRfi && baseSvcCount == 1 && hasMs) {
+            ParamUtil.setRequestAttr(bpc.request, "autoCheckRandM", AppConsts.YES);
+        }
+
         ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
         log.info(StringUtil.changeForLog("the do preparePremises end ...."));
     }

@@ -760,6 +760,21 @@ function getValue(target) {
     }
 }
 
+function isChecked(target) {
+    var $target = getJqueryNode(target);
+    if (isEmptyNode($target)) {
+        return false;
+    }
+    if (!$target.is(":input")) {
+        return false;
+    }
+    let type = $target[0].type;
+    if (type == 'radio' || type == 'checkbox') {
+        return $target.filter(':checked').length > 0;
+    }
+    return false;
+}
+
 function checkDisabled(targetSelector, disabled) {
     var $selector = getJqueryNode(targetSelector);
     if (isEmptyNode($selector)) {
