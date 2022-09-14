@@ -160,6 +160,7 @@ public class ConfigServiceDelegator {
             ValidationResult validationResult = WebValidationHelper.validateProperty(hcsaServiceConfigDto, "save");
             if(validationResult.isHasErrors()){
                 Map<String, String> errorMap = validationResult.retrieveAll();
+                printErrorMap(errorMap);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMAP, errorMap);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request,"crud_action_type_create","dovalidate");
@@ -171,6 +172,16 @@ public class ConfigServiceDelegator {
         }
 
         log.info(StringUtil.changeForLog("confige doCreate end"));
+    }
+
+    private  void printErrorMap(Map<String, String> errorMap){
+        log.info(StringUtil.changeForLog("The printErrorMap start ..."));
+        if(errorMap != null && errorMap.size() >0){
+         for(String key :errorMap.keySet()){
+             log.info(StringUtil.changeForLog(key + "" + errorMap.get(key)));
+         }
+        }
+        log.info(StringUtil.changeForLog("The printErrorMap end ..."));
     }
 
     // 		prepareList->OnStepProcess
@@ -863,7 +874,7 @@ public class ConfigServiceDelegator {
         HcsaSvcPersonnelDto vehicles = getHcsaSvcPersonnelDto(ApplicationConsts.PERSONNEL_VEHICLES, request);
         HcsaSvcPersonnelDto charges = getHcsaSvcPersonnelDto(ApplicationConsts.PERSONNEL_CHARGES, request);
         HcsaSvcPersonnelDto otherCharges = getHcsaSvcPersonnelDto(ApplicationConsts.PERSONNEL_CHARGES_OTHER, request);
-        HcsaSvcPersonnelDto mapPersonnelDto = getHcsaSvcPersonnelDto(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, request);
+       // HcsaSvcPersonnelDto mapPersonnelDto = getHcsaSvcPersonnelDto(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, request);
 
         HcsaSvcPersonnelDto SP001 = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST, request);
         HcsaSvcPersonnelDto SP002 = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER, request);
@@ -906,7 +917,7 @@ public class ConfigServiceDelegator {
             hcsaSvcPersonnelDtos.add(vehicles);//Vehicles
             hcsaSvcPersonnelDtos.add(charges);//General Conveyance Charges
             hcsaSvcPersonnelDtos.add(otherCharges);//Medical Equipment and Other Charges
-            hcsaSvcPersonnelDtos.add(mapPersonnelDto);//MedAlert Person
+            //hcsaSvcPersonnelDtos.add(mapPersonnelDto);//MedAlert Person
             hcsaSvcPersonnelDtos.add(SP001);//Embryologist
             hcsaSvcPersonnelDtos.add(SP002);//AR Practitioner
             hcsaSvcPersonnelDtos.add(SP003);//Nurses
@@ -956,7 +967,7 @@ public class ConfigServiceDelegator {
            // addStepSchemeDto(!hcsaSvcSubtypeOrSubsumedDtos.isEmpty() && isNeed(cgoDto), HcsaConsts.STEP_DISCIPLINE_ALLOCATION, pageName + " Allocation", hcsaServiceStepSchemeDtos);
             addStepSchemeDto(isNeed(svcPersonnelDto), HcsaConsts.STEP_SERVICE_PERSONNEL, HcsaConsts.SERVICE_PERSONNEL, hcsaServiceStepSchemeDtos);
             addStepSchemeDto(isNeed(poDto), HcsaConsts.STEP_PRINCIPAL_OFFICERS, HcsaConsts.PRINCIPAL_OFFICERS, hcsaServiceStepSchemeDtos);
-            addStepSchemeDto(isNeed(mapPersonnelDto), HcsaConsts.STEP_MEDALERT_PERSON, HcsaConsts.MEDALERT_PERSON, hcsaServiceStepSchemeDtos);
+            //addStepSchemeDto(isNeed(mapPersonnelDto), HcsaConsts.STEP_MEDALERT_PERSON, HcsaConsts.MEDALERT_PERSON, hcsaServiceStepSchemeDtos);
             addStepSchemeDto(isNeed(slPersonnelDto), HcsaConsts.STEP_SECTION_LEADER, HcsaConsts.SECTION_LEADER, hcsaServiceStepSchemeDtos);
             addStepSchemeDto(isNeed(kahPersonnelDto), HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER, HcsaConsts.KEY_APPOINTMENT_HOLDER, hcsaServiceStepSchemeDtos);
             //
