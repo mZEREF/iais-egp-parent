@@ -282,7 +282,9 @@ public class NotificationHelper {
 				mesContext = emailTemplate;
 			}
 			//replace num
-			mesContext = MessageTemplateUtil.replaceNum(mesContext);
+			if (templateContent.get("msgContent") == null) {
+				mesContext = MessageTemplateUtil.replaceNum(mesContext);
+			}
 			// send message
 			if(StringUtil.isEmpty(subject)){
 				subject = msgTemplateDto.getTemplateName();
@@ -368,7 +370,9 @@ public class NotificationHelper {
 						templateContent.put("officer_name",StringUtil.getNonNull(emailParam.getRecipientName()));
 						mesContext = MsgUtil.getTemplateMessageByContent(emailTemplate, templateContent);
 						//replace num
-						mesContext = MessageTemplateUtil.replaceNum(mesContext);
+						if (templateContent.get("msgContent") == null) {
+							mesContext = MessageTemplateUtil.replaceNum(mesContext);
+						}
 						emailDto.setContent(mesContext);
 					}
 					if (msgTemplateDto.getCcrecipient() != null && msgTemplateDto.getCcrecipient().size() > 0) {
@@ -386,7 +390,9 @@ public class NotificationHelper {
 						}
 					}
 					//replace num
-					mesContext = MessageTemplateUtil.replaceNum(mesContext);
+					if (templateContent.get("msgContent") == null) {
+						mesContext = MessageTemplateUtil.replaceNum(mesContext);
+					}
 					emailDto.setContent(mesContext);
 					emailDto.setSubject(subject);
 					emailDto.setSender(this.mailSender);
@@ -441,7 +447,9 @@ public class NotificationHelper {
 									templateContent.put("officer_name", officerValue);
 									mesContext = MsgUtil.getTemplateMessageByContent(emailTemplate, templateContent);
 									//replace num
-									mesContext = MessageTemplateUtil.replaceNum(mesContext);
+									if (templateContent.get("msgContent") == null) {
+										mesContext = MessageTemplateUtil.replaceNum(mesContext);
+									}
 									emailDto.setContent(mesContext);
 								}
 
@@ -450,7 +458,9 @@ public class NotificationHelper {
 									templateContent.put("ApplicantName", officerValue);
 									mesContext = MsgUtil.getTemplateMessageByContent(emailTemplate, templateContent);
 									//replace num
-									mesContext = MessageTemplateUtil.replaceNum(mesContext);
+									if (templateContent.get("msgContent") == null) {
+										mesContext = MessageTemplateUtil.replaceNum(mesContext);
+									}
 									emailDto.setContent(mesContext);
 								}
 							}

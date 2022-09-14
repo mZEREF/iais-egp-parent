@@ -638,7 +638,7 @@
             appFlowotherSubSvcShowRadio(selectValue);
             if(${isAppealType || isWithDrawal || isCessation}){
                 $('#appealRecommendation').addClass('hidden');
-                if("decisionApproval" == selectValue){
+                if("decisionApproval" == selectValue || "PROCEMAIL"== selectValue){
                     var isChangePeriodAppealType = $('#isChangePeriodAppealType').val();
                     var isLateFeeAppealType = $('#isLateFeeAppealType').val();
                     if(isLateFeeAppealType == 'true'){
@@ -653,7 +653,7 @@
                     $('#appealReturnFee').addClass('hidden');
                 }
             }
-            if("decisionApproval" == selectValue){
+            if("decisionApproval" == selectValue || "PROCEMAIL"== selectValue){
                 if(${!(isAppealType || isWithDrawal || isCessation)}){
                     $('#recommendationDropdown').removeClass('hidden');
                     checkRecommendationOtherDropdown();

@@ -394,6 +394,7 @@ public class HcsaApplicationDelegator {
     public void doStart(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do cleanSession start ...."));
         ParamUtil.setSessionAttr(bpc.request, "taskDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "appealTaskDto", null);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", null);
         ParamUtil.setSessionAttr(bpc.request, "isSaveRfiSelect", null);
         ParamUtil.setSessionAttr(bpc.request, "rfiAppEditSelectDto", null);
@@ -1331,9 +1332,7 @@ public class HcsaApplicationDelegator {
         emailDto.setMailContent(mailContent);
 
         appPremisesCorrClient.saveEmailDraft(emailDto);
-        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
 
-        inspEmailService.completedTask(taskDto);
         applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
         applicationService.updateBEApplicaiton(applicationDto);
         boolean allAsoSendEmail=true;
@@ -1372,6 +1371,18 @@ public class HcsaApplicationDelegator {
                 ApplicationDto appDto = applicationService.getApplicationBytaskId(misc.getAppPremCorreId());
                 sendAsoApproveEmail(appDto,sendEmailDto,misc.getAppPremCorreId());
             }
+
+        }
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
+        TaskDto appealTaskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "appealTaskDto");
+        if(appealTaskDto!=null){
+            inspEmailService.completedTask(appealTaskDto);
+            ApplicationDto appealDto=applicationClient.getAppByNo(appealTaskDto.getApplicationNo()).getEntity();
+            appealDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
+            applicationService.updateBEApplicaiton(appealDto);
+
+        }else {
+            inspEmailService.completedTask(taskDto);
 
         }
 
@@ -2546,6 +2557,7 @@ public class HcsaApplicationDelegator {
         if(applicationType.equals(ApplicationConsts.APPLICATION_TYPE_APPEAL)&&processDecision.equals(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL)){
             AppPremiseMiscDto appPremiseMiscDto=applicationViewDto.getPremiseMiscDto();
             if(appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO)
+                    ||appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_REJECTION)
                     ||appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME)){
 
                 ApplicationDto entity = applicationClient.getApplicationById(appPremiseMiscDto.getRelateRecId()).getEntity();
@@ -3694,6 +3706,34 @@ public class HcsaApplicationDelegator {
                 applicationService.getSubSvcFlagToShowOrEdit(taskDto,applicationViewDto));
         initApplicationViewDtoSubSvc(applicationViewDto);
         applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
+
+        if(applicationViewDto.getApplicationDto().getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_APPEAL)
+                &&applicationViewDto.getApplicationDto().getStatus().equals(ApplicationConsts.APPLICATION_STATUS_ASO_EMAIL_PENDING)){
+            //to do aso email
+            AppPremiseMiscDto appPremiseMiscDto=applicationViewDto.getPremiseMiscDto();
+            if(appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_LICENCE_CHANGE_PERIOD)){
+                List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenceClient.getLicCorrBylicId(appPremiseMiscDto.getRelateRecId()).getEntity();
+                AppPremisesCorrelationDto oldAppCprrDto = applicationClient.getAppPremisesCorrelationDtosByAppId(licAppCorrelationDtos.get(0).getApplicationId()).getEntity();
+                applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(oldAppCprrDto.getId(),taskDto.getRoleId());
+                applicationViewDto.setNewAppPremisesCorrelationDto(oldAppCprrDto);
+                ParamUtil.setSessionAttr(bpc.request, "appealTaskDto", taskDto);
+                taskDto.setRefNo(oldAppCprrDto.getId());
+                taskDto.setApplicationNo(applicationViewDto.getApplicationDto().getApplicationNo());
+                ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
+            }
+            if(appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO)
+                    ||appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_REJECTION)
+                    ||appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME)){
+                AppPremisesCorrelationDto oldAppCprrDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appPremiseMiscDto.getRelateRecId()).getEntity();
+                applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(oldAppCprrDto.getId(),taskDto.getRoleId());
+                applicationViewDto.setNewAppPremisesCorrelationDto(oldAppCprrDto);
+                ParamUtil.setSessionAttr(bpc.request, "appealTaskDto", taskDto);
+                taskDto.setRefNo(oldAppCprrDto.getId());
+                taskDto.setApplicationNo(applicationViewDto.getApplicationDto().getApplicationNo());
+                ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
+
+            }
+        }
         //set can tcu date
         setShowAndEditTcuDate(bpc.request,applicationViewDto,taskDto);
         //filter vehicle
@@ -4449,6 +4489,7 @@ public class HcsaApplicationDelegator {
                 }else if(applicationType.equals(ApplicationConsts.APPLICATION_TYPE_APPEAL)){
                     AppPremiseMiscDto appPremiseMiscDto=applicationViewDto.getPremiseMiscDto();
                     if(appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO)
+                            ||appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_REJECTION)
                             ||appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME)
                             ||appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_LICENCE_CHANGE_PERIOD)){
                         nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL, "Approve (ASO Email)"));
@@ -4733,6 +4774,7 @@ public class HcsaApplicationDelegator {
                 }else if(applicationType.equals(ApplicationConsts.APPLICATION_TYPE_APPEAL)){
                     AppPremiseMiscDto appPremiseMiscDto=applicationViewDto.getPremiseMiscDto();
                     if(appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO)
+                            ||appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_REJECTION)
                             ||appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME)
                             ||appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_LICENCE_CHANGE_PERIOD)){
                         routingStage.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL, "Approve (ASO Email)"));
