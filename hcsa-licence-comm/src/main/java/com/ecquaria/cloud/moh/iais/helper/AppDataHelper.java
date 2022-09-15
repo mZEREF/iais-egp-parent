@@ -623,15 +623,15 @@ public final class AppDataHelper {
                 for (AppSvcOtherInfoDto svcOtherInfoDto : appSvcOtherInfoDto) {
                     AppSvcOtherInfoTopDto appSvcOtherInfoTopDto = svcOtherInfoDto.getAppSvcOtherInfoTopDto();
                     if (AppConsts.OTHER_INFO_ABORT_ONE.equals(c)) {
-                        List<AppSvcOtherInfoAbortDto> appSvcOtherInfoAboutDtos = svcOtherInfoDto.getAppSvcOtherInfoAbortDtoList();
+                        List<AppSvcOtherInfoAbortDto> appSvcOtherInfoAboutDtos = svcOtherInfoDto.getOtherInfoAbortDrugList();
                         result = getOtherInfoByTopType(appSvcOtherInfoAboutDtos, appSvcOtherInfoTopDto, topType);
                     }
                     if (AppConsts.OTHER_INFO_ABORT_TWO.equals(c)) {
-                        List<AppSvcOtherInfoAbortDto> appSvcOtherInfoAboutDtos = svcOtherInfoDto.getAppSvcOtherInfoAbortDtoList1();
+                        List<AppSvcOtherInfoAbortDto> appSvcOtherInfoAboutDtos = svcOtherInfoDto.getOtherInfoAbortSurgicalProcedureList();
                         result = getOtherInfoByTopType(appSvcOtherInfoAboutDtos, appSvcOtherInfoTopDto, topType);
                     }
                     if (AppConsts.OTHER_INFO_ABORT_THREE.equals(c)) {
-                        List<AppSvcOtherInfoAbortDto> appSvcOtherInfoAboutDtos = svcOtherInfoDto.getAppSvcOtherInfoAbortDtoList2();
+                        List<AppSvcOtherInfoAbortDto> appSvcOtherInfoAboutDtos = svcOtherInfoDto.getOtherInfoAbortDrugAndSurgicalList();
                         result = getOtherInfoByTopType(appSvcOtherInfoAboutDtos, appSvcOtherInfoTopDto, topType);
                     }
                 }
@@ -648,19 +648,19 @@ public final class AppDataHelper {
             if (appSvcOtherInfoDto != null) {
                 for (AppSvcOtherInfoDto svcOtherInfoDto : appSvcOtherInfoDto) {
                     if (AppConsts.OTHER_INFO_P.equals(psnType)) {
-                        List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos = svcOtherInfoDto.getAppSvcOtherInfoTopPersonDtoList();
+                        List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos = svcOtherInfoDto.getOtherInfoTopPersonPractitionersList();
                         result = getOtherInfoByIdNo(appSvcOtherInfoTopPersonDtos, idNo);
                     }
                     if (AppConsts.OTHER_INFO_A.equals(psnType)) {
-                        List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos1 = svcOtherInfoDto.getAppSvcOtherInfoTopPersonDtoList1();
+                        List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos1 = svcOtherInfoDto.getOtherInfoTopPersonAnaesthetistsList();
                         result = getOtherInfoByIdNo(appSvcOtherInfoTopPersonDtos1, idNo);
                     }
                     if (AppConsts.OTHER_INFO_N.equals(psnType)) {
-                        List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos2 = svcOtherInfoDto.getAppSvcOtherInfoTopPersonDtoList2();
+                        List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos2 = svcOtherInfoDto.getOtherInfoTopPersonNursesList();
                         result = getOtherInfoByIdNo(appSvcOtherInfoTopPersonDtos2, idNo);
                     }
                     if (AppConsts.OTHER_INFO_C.equals(psnType)) {
-                        List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos3 = svcOtherInfoDto.getAppSvcOtherInfoTopPersonDtoList3();
+                        List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos3 = svcOtherInfoDto.getOtherInfoTopPersonCounsellorsList();
                         result = getOtherInfoByIdNo(appSvcOtherInfoTopPersonDtos3, idNo);
                     }
                 }
@@ -768,23 +768,23 @@ public final class AppDataHelper {
         appSvcOtherInfoDto.setAscsDeclaration(ascsDeclaration);
         appSvcOtherInfoDto.setDeclaration(declaration);
         appSvcOtherInfoDto.setProvideYfVs(provideYfVs);
-        appSvcOtherInfoDto.setAppSvcOtherInfoTopPersonDtoList(
+        appSvcOtherInfoDto.setOtherInfoTopPersonPractitionersList(
                 getAppSvcOtherInfoTopPersonDtoPractitioners(request, appType, isRfi, appSvcRelatedInfoDto));
-        appSvcOtherInfoDto.setAppSvcOtherInfoTopPersonDtoList1(
+        appSvcOtherInfoDto.setOtherInfoTopPersonAnaesthetistsList(
                 getAppSvcOtherInfoTopPersonDtoAnaesthetists(request, appType, isRfi, appSvcRelatedInfoDto));
-        appSvcOtherInfoDto.setAppSvcOtherInfoTopPersonDtoList2(
+        appSvcOtherInfoDto.setOtherInfoTopPersonNursesList(
                 getAppSvcOtherInfoTopPersonDtoNurses(request, appType, isRfi, appSvcRelatedInfoDto));
-        appSvcOtherInfoDto.setAppSvcOtherInfoTopPersonDtoList3(
+        appSvcOtherInfoDto.setOtherInfoTopPersonCounsellorsList(
                 getAppSvcOtherInfoTopPersonDtoCounsellors(request, appType, isRfi, appSvcRelatedInfoDto));
-        appSvcOtherInfoDto.setAppSvcOtherInfoAbortDtoList(
+        appSvcOtherInfoDto.setOtherInfoAbortDrugList(
                 getAppSvcOtherInfoAbortDto1(request, appType, topType, isRfi, appSvcRelatedInfoDto));
-        appSvcOtherInfoDto.setAppSvcOtherInfoAbortDtoList1(
+        appSvcOtherInfoDto.setOtherInfoAbortSurgicalProcedureList(
                 getAppSvcOtherInfoAbortDto2(request, appType, topType, isRfi, appSvcRelatedInfoDto));
-        appSvcOtherInfoDto.setAppSvcOtherInfoAbortDtoList2(
+        appSvcOtherInfoDto.setOtherInfoAbortDrugAndSurgicalList(
                 getAppSvcOtherInfoAbortDto3(request, appType, topType, isRfi, appSvcRelatedInfoDto));
         appSvcOtherInfoDto.setAppSvcOtherInfoTopDto(getAppSvcOtherInfoTopDto(request));
         appSvcOtherInfoDto.setAppSvcOtherInfoMedDto(appSvcOtherInfoMedDto);
-        appSvcOtherInfoDto.setAppSvcOtherInfoMedDto1(appSvcOtherInfoMedDto1);
+        appSvcOtherInfoDto.setOtherInfoMedAmbulatorySurgicalCentre(appSvcOtherInfoMedDto1);
         appSvcOtherInfoDto.setAppSvcOtherInfoNurseDto(appSvcOtherInfoNurseDto);
         appSvcOtherInfoDto.setOrgUserDto(getOtherInfoYfVs(request));
         List<AppSvcOtherInfoDto> appSvcOtherInfoList = appSvcRelatedInfoDto.getAppSvcOtherInfoList();

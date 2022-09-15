@@ -21,7 +21,7 @@
                     <c:if test="${'-1' == appSvcOtherInfoDto.appSvcOtherInfoTopDto.topType}">Termination of Pregnancy(Drug and Surgical Procedure)</c:if>
                 </iais:value>
             </iais:row>
-            <c:forEach var="person" items="${cappSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList}" varStatus="status">
+            <c:forEach var="person" items="${cappSvcOtherInfoDto.otherInfoTopPersonPractitionersList}" varStatus="status">
                 <c:if test="${person.psnType == 'practitioners'}">
                     <iais:row>
                         <div class="col-xs-12">
@@ -32,7 +32,7 @@
                 </c:if>
             </c:forEach>
 
-            <c:forEach var="person" items="${appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList1}" varStatus="astatus">
+            <c:forEach var="person" items="${appSvcOtherInfoDto.otherInfoTopPersonAnaesthetistsList}" varStatus="astatus">
                 <c:if test="${person.psnType == 'anaesthetists'}">
                     <iais:row>
                         <div class="col-xs-12">
@@ -43,7 +43,7 @@
                 </c:if>
             </c:forEach>
 
-            <c:forEach var="person" items="${appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList2}" varStatus="nstatus">
+            <c:forEach var="person" items="${appSvcOtherInfoDto.otherInfoTopPersonNursesList}" varStatus="nstatus">
                 <c:if test="${person.psnType == 'nurses'}">
                     <iais:row>
                         <div class="col-xs-12">
@@ -54,7 +54,7 @@
                 </c:if>
             </c:forEach>
 
-            <c:forEach var="person" items="${appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList3}" varStatus="cstatus">
+            <c:forEach var="person" items="${appSvcOtherInfoDto.otherInfoTopPersonCounsellorsList}" varStatus="cstatus">
                 <c:if test="${person.psnType == 'counsellors'}">
                     <iais:row>
                         <div class="col-xs-12">

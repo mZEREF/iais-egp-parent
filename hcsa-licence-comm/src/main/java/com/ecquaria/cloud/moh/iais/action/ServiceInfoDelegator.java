@@ -542,12 +542,13 @@ public class ServiceInfoDelegator {
     }
 
     private void prepareOutsourcedProviders(HttpServletRequest request) {
+        //OutsourcedProviders services dropdown options
         List<SelectOption> optionList = ApplicationHelper.genOutsourcedServiceSel(request, true);
         ParamUtil.setRequestAttr(request, OUTSOURCED_SERVICE_OPTS, optionList);
     }
 
     private void doOutsourcedProviders(HttpServletRequest request) {
-        log.debug(StringUtil.changeForLog("doOtherInformation start ..."));
+        log.debug(StringUtil.changeForLog("doOutsourcedProviders start ..."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         String actionType = ParamUtil.getRequestString(request, "nextStep");
         String appType = appSubmissionDto.getAppType();

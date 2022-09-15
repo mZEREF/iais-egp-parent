@@ -1839,7 +1839,7 @@ public final class AppValidatorHelper {
         for (AppSvcOtherInfoDto svcOtherInfoDto : appSvcOtherInfoDto) {
             AppSvcOtherInfoMedDto appSvcOtherInfoMedDto = svcOtherInfoDto.getAppSvcOtherInfoMedDto();
             AppSvcOtherInfoNurseDto appSvcOtherInfoNurseDto = svcOtherInfoDto.getAppSvcOtherInfoNurseDto();
-            AppSvcOtherInfoMedDto appSvcOtherInfoMedDto1 = svcOtherInfoDto.getAppSvcOtherInfoMedDto1();
+            AppSvcOtherInfoMedDto ambulatorySurgicalCentre = svcOtherInfoDto.getOtherInfoMedAmbulatorySurgicalCentre();
             AppSvcOtherInfoTopDto appSvcOtherInfoTopDto = svcOtherInfoDto.getAppSvcOtherInfoTopDto();
             if (StringUtil.isEmpty(appSvcOtherInfoMedDto.getIsMedicalTypeIt()) && StringUtil.isEmpty(appSvcOtherInfoMedDto.getIsMedicalTypePaper())){
                 errMap.put("isMedicalTypeIt", MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of medical records", "field"));
@@ -1876,8 +1876,8 @@ public final class AppValidatorHelper {
                     errMap.put("nisOpenToPublic",MessageUtil.replaceMessage("GENERAL_ERR0006","Is the clinic open to general public?","field"));
                 }
             }
-            if (!StringUtil.isEmpty(appSvcOtherInfoMedDto1)){
-                String agfaValue = String.valueOf(appSvcOtherInfoMedDto1.getGfaValue());
+            if (!StringUtil.isEmpty(ambulatorySurgicalCentre)){
+                String agfaValue = String.valueOf(ambulatorySurgicalCentre.getGfaValue());
                 if (!StringUtil.isDigit(agfaValue)){
                     errMap.put("agfaValue", MessageUtil.replaceMessage("GENERAL_ERR0006", "GFA Value (in sqm)", "field"));
                 }
@@ -1940,10 +1940,10 @@ public final class AppValidatorHelper {
 
     public static Map<String, String> getValidateAppSvcOtherInfoTopPerson(AppSvcOtherInfoDto appSvcOtherInfoDto){
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
-        List<AppSvcOtherInfoTopPersonDto> practitioners = appSvcOtherInfoDto.getAppSvcOtherInfoTopPersonDtoList();
-        List<AppSvcOtherInfoTopPersonDto> anaesthetists = appSvcOtherInfoDto.getAppSvcOtherInfoTopPersonDtoList1();
-        List<AppSvcOtherInfoTopPersonDto> nurses = appSvcOtherInfoDto.getAppSvcOtherInfoTopPersonDtoList2();
-        List<AppSvcOtherInfoTopPersonDto> counsellors = appSvcOtherInfoDto.getAppSvcOtherInfoTopPersonDtoList3();
+        List<AppSvcOtherInfoTopPersonDto> practitioners = appSvcOtherInfoDto.getOtherInfoTopPersonPractitionersList();
+        List<AppSvcOtherInfoTopPersonDto> anaesthetists = appSvcOtherInfoDto.getOtherInfoTopPersonAnaesthetistsList();
+        List<AppSvcOtherInfoTopPersonDto> nurses = appSvcOtherInfoDto.getOtherInfoTopPersonNursesList();
+        List<AppSvcOtherInfoTopPersonDto> counsellors = appSvcOtherInfoDto.getOtherInfoTopPersonCounsellorsList();
 
         for (int i = 0; i < practitioners.size(); i++) {
             String name = practitioners.get(i).getName();
@@ -2047,9 +2047,9 @@ public final class AppValidatorHelper {
 
     public static Map<String, String> getValidateAppSvcOtherInfoTopAbort(AppSvcOtherInfoDto appSvcOtherInfoDto,String topType){
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
-        List<AppSvcOtherInfoAbortDto> topByDrug = appSvcOtherInfoDto.getAppSvcOtherInfoAbortDtoList();
-        List<AppSvcOtherInfoAbortDto> topBySurgicalProcedure = appSvcOtherInfoDto.getAppSvcOtherInfoAbortDtoList1();
-        List<AppSvcOtherInfoAbortDto> topByAll = appSvcOtherInfoDto.getAppSvcOtherInfoAbortDtoList2();
+        List<AppSvcOtherInfoAbortDto> topByDrug = appSvcOtherInfoDto.getOtherInfoAbortDrugList();
+        List<AppSvcOtherInfoAbortDto> topBySurgicalProcedure = appSvcOtherInfoDto.getOtherInfoAbortSurgicalProcedureList();
+        List<AppSvcOtherInfoAbortDto> topByAll = appSvcOtherInfoDto.getOtherInfoAbortDrugAndSurgicalList();
         if ((ApplicationConsts.OTHER_INFO_SD.equals(topType)) || (ApplicationConsts.OTHER_INFO_DSP.equals(topType))){
             for (int i = 0; i < topByDrug.size(); i++) {
                 String year = String.valueOf(topByDrug.get(i).getYear());
@@ -2998,7 +2998,7 @@ public final class AppValidatorHelper {
             if (appPremSubSvcRelDtoList != null && !appPremSubSvcRelDtoList.isEmpty()) {
                 List<AppPremSubSvcRelDto> checkedAppPremSubSvcRelDtoList = specialisedDto.getCheckedAppPremSubSvcRelDtoList();
                 if (checkedAppPremSubSvcRelDtoList == null || checkedAppPremSubSvcRelDtoList.isEmpty()) {
-                    errorMap.put(premisesVal + "_service", "GENERAL_ERR0006");
+               errorMap.put(premisesVal + "_service", "GENERAL_ERR0006");
                 }
             }
         }
