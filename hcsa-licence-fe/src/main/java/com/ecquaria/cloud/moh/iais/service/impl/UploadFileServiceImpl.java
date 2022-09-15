@@ -18,7 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpSecondAddrD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOpenPeriodDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOtherInfoItemAnswerDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoItemAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
@@ -378,7 +378,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         List<AppPremScopeDto> appPremScopeDtos=applicationListDto.getAppPremScopes();
         List<AppPremSubSvcRelDto> appPremSubSvcRelDtos=applicationListDto.getAppPremSubSvcRels();
          List<AppSvcSuplmItemDto> appSvcSuplmItemDtos=applicationListDto.getAppSvcSuplmItems();
-         List<AppPremOtherInfoItemAnswerDto> appPremOtherInfoItemAnswerDtos=applicationListDto.getAppPremOtherInfoItemAnswers();
+         List<AppSvcOtherInfoItemAnswerDto> appPremOtherInfoItemAnswerDtos=applicationListDto.getAppPremOtherInfoItemAnswers();
          List<AppSvcBusinessDto> appSvcBusinessDtos=applicationListDto.getAppSvcBusinesses();
          List<AppGrpSecondAddrDto> appGrpSecondAddrDtos=applicationListDto.getAppGrpSecondAddrs();
          List<AppSvcOtherInfoMedDto> appSvcOtherInfoMedDtos=applicationListDto.getAppSvcOtherInfoMeds();
@@ -452,8 +452,8 @@ public class UploadFileServiceImpl implements UploadFileService {
 
                 List<AppSvcSuplmItemDto> appSvcSuplmItemDtoList=IaisCommonUtils.genNewArrayList();
                 Set<AppSvcSuplmItemDto> appSvcSuplmItemDtoSet=new HashSet<>();
-                List<AppPremOtherInfoItemAnswerDto> appPremOtherInfoItemAnswerDtoList=IaisCommonUtils.genNewArrayList();
-                Set<AppPremOtherInfoItemAnswerDto> appPremOtherInfoItemAnswerDtoSet=new HashSet<>();
+                List<AppSvcOtherInfoItemAnswerDto> appPremOtherInfoItemAnswerDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppSvcOtherInfoItemAnswerDto> appPremOtherInfoItemAnswerDtoSet=new HashSet<>();
                 List<AppSvcBusinessDto> appSvcBusinessDtoList=IaisCommonUtils.genNewArrayList();
                 Set<AppSvcBusinessDto> appSvcBusinessDtoSet=new HashSet<>();
                 List<AppGrpSecondAddrDto> appGrpSecondAddrDtoList=IaisCommonUtils.genNewArrayList();
@@ -639,13 +639,13 @@ public class UploadFileServiceImpl implements UploadFileService {
                                 if(appSvcSuplmItemDtos!=null){
                                     for (AppSvcSuplmItemDto appSvcSuplmItemDto:appSvcSuplmItemDtos
                                     ) {
-                                        if(appSvcSuplmItemDto.getAppPremCorreId().equals(premisesCorrelationDtoId)){
+                                        if(appSvcSuplmItemDto.getPremCorreId().equals(premisesCorrelationDtoId)){
                                             appSvcSuplmItemDtoSet.add(appSvcSuplmItemDto);
                                         }
                                     }
                                 }
                                 if(appPremOtherInfoItemAnswerDtos!=null){
-                                    for (AppPremOtherInfoItemAnswerDto appPremOtherInfoItemAnswerDto:appPremOtherInfoItemAnswerDtos
+                                    for (AppSvcOtherInfoItemAnswerDto appPremOtherInfoItemAnswerDto:appPremOtherInfoItemAnswerDtos
                                     ) {
                                         if(appPremOtherInfoItemAnswerDto.getAppPremCorrId().equals(premisesCorrelationDtoId)){
                                             appPremOtherInfoItemAnswerDtoSet.add(appPremOtherInfoItemAnswerDto);

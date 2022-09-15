@@ -804,7 +804,7 @@ public abstract class AppCommDelegator {
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
 
         int baseSvcCount = 0;
-        boolean hasMs = false;
+        boolean hasMs = true;//TODO test
         if (hcsaServiceDtoList != null) {
             for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtoList) {
                 if (HcsaConsts.SERVICE_TYPE_BASE.equalsIgnoreCase(hcsaServiceDto.getSvcType())) {

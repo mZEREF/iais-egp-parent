@@ -275,8 +275,9 @@ public final class ApplicationHelper {
         if (appSubmissionDto == null || appSubmissionDto.getAppGrpPremisesDtoList() == null) {
             return;
         }
-        int selfAssMtFlag = isAutoRfc ? ApplicationConsts.PROHIBIT_SUBMIT_RFI_SELF_ASSESSMENT :
-                ApplicationConsts.PENDING_SUBMIT_SELF_ASSESSMENT;
+        int selfAssMtFlag = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) ?
+                ApplicationConsts.PENDING_SUBMIT_SELF_ASSESSMENT : (isAutoRfc ?
+                ApplicationConsts.PROHIBIT_SUBMIT_RFI_SELF_ASSESSMENT : ApplicationConsts.PENDING_SUBMIT_SELF_ASSESSMENT);
         appSubmissionDto.setAutoRfc(isAutoRfc);
         appSubmissionDto.setIsNeedNewLicNo(isNeedNewLicNo ? AppConsts.YES : AppConsts.NO);
         appSubmissionDto.getAppGrpPremisesDtoList().forEach(appGrpPremisesDto -> {
@@ -3400,7 +3401,6 @@ public final class ApplicationHelper {
         if (StringUtil.isEmpty(psnType) || appSvcRelatedInfoDto == null) {
             return;
         }
-        List<AppSvcPrincipalOfficersDto> result = null;
         switch (psnType) {
             case ApplicationConsts.PERSONNEL_PSN_TYPE_CGO:
                 appSvcRelatedInfoDto.setAppSvcCgoDtoList(sourceList);
