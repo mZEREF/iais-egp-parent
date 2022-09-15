@@ -54,10 +54,10 @@
                     </c:if>
                     <%@ include file="item.jsp" %>
                 </c:forEach>
-                <iais:value cssClass="col-xs-12 error_${groupId}">
-                    <span class="error-msg " name="iaisErrorMsg" id="error_${groupId}"></span>
-                </iais:value>
                 <c:if test="${not empty groupId}">
+                    <iais:value cssClass="col-xs-12 error_${groupId}">
+                        <span class="error-msg " name="iaisErrorMsg" id="error_${groupId}"></span>
+                    </iais:value>
                     <div class="form-group col-md-12 col-xs-12 addMoreDiv" data-group="${groupId}" data-prefix="${itemPrefix}">
                         <input class="not-clear" type="hidden" value="${count}" name="${itemPrefix}${groupId}"/>
                         <input class="not-clear" type="hidden" value="${appSvcSuplmGroupDto.maxCount}" name="${itemPrefix}${groupId}-max"/>
