@@ -24,17 +24,17 @@
     <c:set var="appSvcOtherInfoList" value="${currSvcInfoDto.appSvcOtherInfoList}"/>
     <c:forEach var="appSvcOtherInfoDto" items="${appSvcOtherInfoList}">
         <c:set var="provideTop" value="${appSvcOtherInfoDto.provideTop}"/>
-        <c:set var="practitioners" value="${appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList}"/>
-        <c:set var="anaesthetists" value="${appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList1}"/>
-        <c:set var="nurses" value="${appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList2}"/>
-        <c:set var="counsellors" value="${appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList3}"/>
+        <c:set var="practitioners" value="${appSvcOtherInfoDto.otherInfoTopPersonPractitionersList}"/>
+        <c:set var="anaesthetists" value="${appSvcOtherInfoDto.otherInfoTopPersonAnaesthetistsList}"/>
+        <c:set var="nurses" value="${appSvcOtherInfoDto.otherInfoTopPersonNursesList}"/>
+        <c:set var="counsellors" value="${appSvcOtherInfoDto.otherInfoTopPersonCounsellorsList}"/>
         <c:set var="appSvcSuplmFormDto" value="${appSvcOtherInfoDto.appSvcSuplmFormDto}"/>
         <c:set var="appSvcOtherInfoTop" value="${appSvcOtherInfoDto.appSvcOtherInfoTopDto}" />
-        <c:set var="topByDrug" value="${appSvcOtherInfoDto.appSvcOtherInfoAbortDtoList}"/>
-        <c:set var="topBySurgicalProcedure" value="${appSvcOtherInfoDto.appSvcOtherInfoAbortDtoList1}"/>
-        <c:set var="topByAll" value="${appSvcOtherInfoDto.appSvcOtherInfoAbortDtoList2}"/>
+        <c:set var="topByDrug" value="${appSvcOtherInfoDto.otherInfoAbortDrugList}"/>
+        <c:set var="topBySurgicalProcedure" value="${appSvcOtherInfoDto.otherInfoAbortSurgicalProcedureList}"/>
+        <c:set var="topByAll" value="${appSvcOtherInfoDto.otherInfoAbortDrugAndSurgicalList}"/>
         <c:set var="med" value="${appSvcOtherInfoDto.appSvcOtherInfoMedDto}"/>
-        <c:set var="m" value="${appSvcOtherInfoDto.appSvcOtherInfoMedDto1}"/>
+        <c:set var="m" value="${appSvcOtherInfoDto.otherInfoMedAmbulatorySurgicalCentre}"/>
         <c:set var="n" value="${appSvcOtherInfoDto.appSvcOtherInfoNurseDto}"/>
         <c:set var="dsDeclaration" value="${appSvcOtherInfoDto.dsDeclaration}"/>
         <c:set var="ascsDeclaration" value="${appSvcOtherInfoDto.ascsDeclaration}"/>

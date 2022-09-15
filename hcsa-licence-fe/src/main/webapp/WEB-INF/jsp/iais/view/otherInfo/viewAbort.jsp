@@ -1,11 +1,11 @@
 <div class="amend-preview-info form-horizontal min-row <c:if test="${'0' == appSvcOtherInfoDto.provideTop}">hidden</c:if>">
-    <c:forEach var="person" items="${appSvcOtherInfoDto.appSvcOtherInfoAbortDtoList}" varStatus="status">
+    <c:forEach var="person" items="${appSvcOtherInfoDto.otherInfoAbortDrugList}" varStatus="status">
         <c:if test="${'0' != appSvcOtherInfoDto.appSvcOtherInfoTopDto.topType}">
             <c:if test="${'1' == person.topType}">
                 <div class="topByDrug <c:if test="${'0' == appSvcOtherInfoDto.appSvcOtherInfoTopDto.topType}">hidden</c:if>">
                     <iais:row>
                         <div class="col-xs-12 col-md-10">
-                            <p class="bold">TOP (BY Drug)&nbsp;<c:if test="${appSvcOtherInfoDto.appSvcOtherInfoAbortDtoList.size() > 1}">${status.index+1}</c:if></p>
+                            <p class="bold">TOP (BY Drug)&nbsp;<c:if test="${appSvcOtherInfoDto.otherInfoAbortDrugList.size() > 1}">${status.index+1}</c:if></p>
                         </div>
                     </iais:row>
                     <iais:row>
@@ -26,13 +26,13 @@
         </c:if>
     </c:forEach>
 
-    <c:forEach var="person" items="${appSvcOtherInfoDto.appSvcOtherInfoAbortDtoList1}" varStatus="pstatus">
+    <c:forEach var="person" items="${appSvcOtherInfoDto.otherInfoAbortSurgicalProcedureList}" varStatus="pstatus">
         <c:if test="${'1' != appSvcOtherInfoDto.appSvcOtherInfoTopDto.topType}">
             <c:if test="${'0' == person.topType}">
                 <div class="topBySurgicalProcedure <c:if test="${'1' == appSvcOtherInfoDto.appSvcOtherInfoTopDto.topType}">hidden</c:if>">
                     <iais:row>
                         <div class="col-xs-12 col-md-10">
-                            <p class="bold">TOP (By Surgical Procedure)&nbsp;<c:if test="${appSvcOtherInfoDto.appSvcOtherInfoAbortDtoList1.size() > 1}">${pstatus.index+1}</c:if></p>
+                            <p class="bold">TOP (By Surgical Procedure)&nbsp;<c:if test="${appSvcOtherInfoDto.otherInfoAbortSurgicalProcedureList.size() > 1}">${pstatus.index+1}</c:if></p>
                         </div>
                     </iais:row>
                     <iais:row>
@@ -53,13 +53,13 @@
         </c:if>
     </c:forEach>
 
-    <c:forEach var="person" items="${appSvcOtherInfoDto.appSvcOtherInfoAbortDtoList2}" varStatus="astatus">
+    <c:forEach var="person" items="${appSvcOtherInfoDto.otherInfoAbortDrugAndSurgicalList}" varStatus="astatus">
         <c:if test="${'-1' == appSvcOtherInfoDto.appSvcOtherInfoTopDto.topType}">
             <c:if test="${'-1' == person.topType}">
                 <div class="topByDrugandSurgicalProcedure">
                     <iais:row>
                         <div class="col-xs-12 col-md-10">
-                            <p class="bold">TOP (By Drug and Surgical Procedure)&nbsp;<c:if test="${appSvcOtherInfoDto.appSvcOtherInfoAbortDtoList2.size() > 1 }">${astatus.index+1}</c:if></p>
+                            <p class="bold">TOP (By Drug and Surgical Procedure)&nbsp;<c:if test="${appSvcOtherInfoDto.otherInfoAbortDrugAndSurgicalList.size() > 1 }">${astatus.index+1}</c:if></p>
                         </div>
                     </iais:row>
                     <iais:row>

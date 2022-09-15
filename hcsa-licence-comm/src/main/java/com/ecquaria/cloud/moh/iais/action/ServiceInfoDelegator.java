@@ -542,12 +542,13 @@ public class ServiceInfoDelegator {
     }
 
     private void prepareOutsourcedProviders(HttpServletRequest request) {
+        //OutsourcedProviders services dropdown options
         List<SelectOption> optionList = ApplicationHelper.genOutsourcedServiceSel(request, true);
         ParamUtil.setRequestAttr(request, OUTSOURCED_SERVICE_OPTS, optionList);
     }
 
     private void doOutsourcedProviders(HttpServletRequest request) {
-        log.debug(StringUtil.changeForLog("doOtherInformation start ..."));
+        log.debug(StringUtil.changeForLog("doOutsourcedProviders start ..."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         String actionType = ParamUtil.getRequestString(request, "nextStep");
         String appType = appSubmissionDto.getAppType();
@@ -1831,15 +1832,15 @@ public class ServiceInfoDelegator {
 
     private boolean skipStep(String stepCode, AppSubmissionDto appSubmissionDto) {
         String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,
-                HcsaConsts.STEP_DISCIPLINE_ALLOCATION,
-                HcsaConsts.STEP_PRINCIPAL_OFFICERS,
-                HcsaConsts.STEP_SERVICE_PERSONNEL,
-                HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER,
-                HcsaConsts.STEP_MEDALERT_PERSON,
-                HcsaConsts.STEP_SUPPLEMENTARY_FORM,
-                HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS,
-                HcsaConsts.STEP_SPECIAL_SERVICES_FORM,
-                HcsaConsts.STEP_OTHER_INFORMATION
+                HcsaConsts.STEP_DISCIPLINE_ALLOCATION
+//                HcsaConsts.STEP_PRINCIPAL_OFFICERS,
+//                HcsaConsts.STEP_SERVICE_PERSONNEL,
+//                HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER,
+//                HcsaConsts.STEP_MEDALERT_PERSON,
+//                HcsaConsts.STEP_SUPPLEMENTARY_FORM,
+//                HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS,
+//                HcsaConsts.STEP_SPECIAL_SERVICES_FORM
+//                HcsaConsts.STEP_OTHER_INFORMATION
         };
         if (StringUtil.isIn(stepCode, skipList)) {
             return true;
