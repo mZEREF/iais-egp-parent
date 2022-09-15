@@ -699,17 +699,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 licenceFeeDto.setServiceName(appSvcRelatedInfoDto.getServiceName());
                 licenceFeeDto.setPremises(premisesTypes);
 //                licenceFeeDto.setOnlyNewSpecified(onlySpecifiedSvc);
-                if(!StringUtil.isEmpty(appSvcRelatedInfoDto.getRelLicenceNo())){
-                    licenceFeeDto.setOnlyNewSpecified(true);
-                }else if(HcsaConsts.SERVICE_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
-                    licenceFeeDto.setIncludeBase(true);
-                }
+
                 licenceFeeDto.setCharity(isCharity);
                 //exiting offSite licence
                 log.info(StringUtil.changeForLog("svcName:"+appSvcRelatedInfoDto.getServiceName()));
-                Boolean existingOnSiteLic = licenceClient.existingOnSiteOrConveLic(appSvcRelatedInfoDto.getServiceName(),appSubmissionDto.getLicenseeId()).getEntity();
-                log.info(StringUtil.changeForLog("existing onSite licncence:"+existingOnSiteLic));
-                licenceFeeDto.setExistOnsite(existingOnSiteLic);
+
                 //set bundle
                 if(!IaisCommonUtils.isEmpty(hcsaFeeBundleItemDtos)){
                     int matchingTh = configCommClient.getFeeMaxMatchingThByServiceCode(serviceCode).getEntity();
@@ -769,19 +763,13 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
        if(onlySpecifiedSvc && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                 LicenceFeeDto licenceFeeDto = new LicenceFeeDto(); licenceFeeDto.setBundle(0);
-                if(HcsaConsts.SERVICE_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
-                    licenceFeeDto.setIncludeBase(true);
-                }
+
                 HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceById(appSvcRelatedInfoDto.getBaseServiceId());
                 licenceFeeDto.setBaseService(baseServiceDto.getSvcCode());
                 licenceFeeDto.setServiceCode(appSvcRelatedInfoDto.getServiceCode());
                 licenceFeeDto.setServiceName(appSvcRelatedInfoDto.getServiceName());
                 licenceFeeDto.setPremises(premisessTypes);
-                if(!StringUtil.isEmpty(appSvcRelatedInfoDto.getRelLicenceNo())){
-                    licenceFeeDto.setOnlyNewSpecified(true);
-                }else{
-                    licenceFeeDto.setIncludeBase(true);
-                }
+
                 licenceFeeDto.setCharity(isCharity);
                 linenceFeeQuaryDtos.add(licenceFeeDto);
             }
@@ -809,7 +797,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 }
                 if (HcsaConsts.SERVICE_TYPE_BASE.equals(hcsaServiceDto.getSvcType())) {
                     licenceFeeDto.setBaseService(hcsaServiceDto.getSvcCode());
-                    licenceFeeDto.setIncludeBase(true);
                 } else if (HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(hcsaServiceDto.getSvcType())) {
                     for (HcsaServiceCorrelationDto hcsaServiceCorrelationDto : hcsaServiceCorrelationDtos) {
                         if (hcsaServiceDto.getId().equals(hcsaServiceCorrelationDto.getSpecifiedSvcId())) {
@@ -906,20 +893,14 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             if(onlySpecifiedSvc && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
                 for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                     LicenceFeeDto licenceFeeDto = new LicenceFeeDto(); licenceFeeDto.setBundle(0);
-                    if(HcsaConsts.SERVICE_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
-                        licenceFeeDto.setIncludeBase(true);
-                    }
+
                     licenceFeeDto.setHciCode(appGrpPremisesDtos.get(0).getOldHciCode());
                     HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceById(appSvcRelatedInfoDto.getBaseServiceId());
                     licenceFeeDto.setBaseService(baseServiceDto.getSvcCode());
                     licenceFeeDto.setServiceCode(appSvcRelatedInfoDto.getServiceCode());
                     licenceFeeDto.setServiceName(appSvcRelatedInfoDto.getServiceName());
                     licenceFeeDto.setPremises(premisessTypes);
-                    if(!StringUtil.isEmpty(appSvcRelatedInfoDto.getRelLicenceNo())){
-                        licenceFeeDto.setOnlyNewSpecified(true);
-                    }else{
-                        licenceFeeDto.setIncludeBase(true);
-                    }
+
                     licenceFeeDto.setCharity(isCharity);
                     //set bundle
                     if(!IaisCommonUtils.isEmpty(hcsaFeeBundleItemDtos)){
@@ -993,7 +974,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     }
                     if (HcsaConsts.SERVICE_TYPE_BASE.equals(hcsaServiceDto.getSvcType())) {
                         licenceFeeDto.setBaseService(hcsaServiceDto.getSvcCode());
-                        licenceFeeDto.setIncludeBase(true);
                     } else if (HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(hcsaServiceDto.getSvcType())) {
                         for (HcsaServiceCorrelationDto hcsaServiceCorrelationDto : hcsaServiceCorrelationDtos) {
                             if (hcsaServiceDto.getId().equals(hcsaServiceCorrelationDto.getSpecifiedSvcId())) {
@@ -1010,8 +990,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     licenceFeeDto.setServiceName(hcsaServiceDto.getSvcName());
                     licenceFeeDto.setPremises(premisessTypes);
                     licenceFeeDto.setCharity(isCharity);
-                    Boolean existingOnSiteLic = licenceClient.existingOnSiteOrConveLic(appSvcRelatedInfoDto.getServiceName(),appSubmissionDto.getLicenseeId()).getEntity();
-                    licenceFeeDto.setExistOnsite(existingOnSiteLic);
+
                     if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
                         String licenceId = appSubmissionDto.getLicenceId();
                         LicenceDto licenceDto = requestForChangeService.getLicenceById(licenceId);
@@ -1123,20 +1102,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             if(onlySpecifiedSvc && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
                 for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                     LicenceFeeDto licenceFeeDto = new LicenceFeeDto(); licenceFeeDto.setBundle(0);
-                    if(HcsaConsts.SERVICE_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
-                        licenceFeeDto.setIncludeBase(true);
-                    }
                     licenceFeeDto.setHciCode(appSubmissionDto.getAppGrpPremisesDtoList().get(0).getOldHciCode());
                     HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceById(appSvcRelatedInfoDto.getBaseServiceId());
                     licenceFeeDto.setBaseService(baseServiceDto.getSvcCode());
                     licenceFeeDto.setServiceCode(appSvcRelatedInfoDto.getServiceCode());
                     licenceFeeDto.setServiceName(appSvcRelatedInfoDto.getServiceName());
                     licenceFeeDto.setPremises(premisessTypes);
-                    if(!StringUtil.isEmpty(appSvcRelatedInfoDto.getRelLicenceNo())){
-                        licenceFeeDto.setOnlyNewSpecified(true);
-                    }else{
-                        licenceFeeDto.setIncludeBase(true);
-                    }
                     licenceFeeDto.setCharity(isCharity);
                     linenceFeeQuaryDtos.add(licenceFeeDto);
                 }
@@ -1165,7 +1136,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     }
                     if (HcsaConsts.SERVICE_TYPE_BASE.equals(hcsaServiceDto.getSvcType())) {
                         licenceFeeDto.setBaseService(hcsaServiceDto.getSvcCode());
-                        licenceFeeDto.setIncludeBase(true);
                     } else if (HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(hcsaServiceDto.getSvcType())) {
                         for (HcsaServiceCorrelationDto hcsaServiceCorrelationDto : hcsaServiceCorrelationDtos) {
                             if (hcsaServiceDto.getId().equals(hcsaServiceCorrelationDto.getSpecifiedSvcId())) {
@@ -1182,10 +1152,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     licenceFeeDto.setServiceName(hcsaServiceDto.getSvcName());
                     licenceFeeDto.setPremises(premisessTypes);
                     licenceFeeDto.setCharity(isCharity);
-                    /*Boolean existingOnSiteLic = licenceClient.existingOnSiteOrConveLic(appSvcRelatedInfoDto.getServiceName(),appSubmissionDto.getLicenseeId()).getEntity();
-                    if(premisessTypes.contains(ApplicationConsts.PREMISES_TYPE_OFF_SITE)){
-                        licenceFeeDto.setExistOnsite(existingOnSiteLic);
-                    }*/
+
                     if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
                         String licenceId = appSubmissionDto.getLicenceId();
                         LicenceDto licenceDto = requestForChangeService.getLicenceById(licenceId);
