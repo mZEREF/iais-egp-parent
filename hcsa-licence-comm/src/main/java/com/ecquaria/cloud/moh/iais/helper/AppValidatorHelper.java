@@ -70,7 +70,6 @@ import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.validation.ValidateCharges;
-import com.ecquaria.cloud.moh.iais.validation.ValidateClincalDirector;
 import com.ecquaria.cloud.moh.iais.validation.ValidateVehicle;
 import com.ecquaria.egp.core.common.constants.AppConstants;
 import lombok.extern.slf4j.Slf4j;
@@ -399,10 +398,8 @@ public final class AppValidatorHelper {
                         currSvcCode = Optional.of(hcsaServiceDto).map(HcsaServiceDto::getSvcCode).orElse("");
                     }
                     List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos = dto.getAppSvcClinicalDirectorDtoList();
-                    new ValidateClincalDirector().doValidateClincalDirector(errorMap, dto.getAppSvcClinicalDirectorDtoList(),
-                            licPersonMap,
-                            currSvcCode);
-                    if (appSvcClinicalDirectorDtos != null && "Y".equals(prsFlag)) {
+                    Map<String,String> cdMap = doValidateClincalDirector(appSvcClinicalDirectorDtos,licPersonMap,false, currSvcCode);
+                    if (appSvcClinicalDirectorDtos != null && cdMap.isEmpty() && "Y".equals(prsFlag)) {
                         int i = 0;
                         for (AppSvcPrincipalOfficersDto person : appSvcClinicalDirectorDtos) {
                             if (!checkProfRegNo(person.getProfRegNo())) {
@@ -411,6 +408,9 @@ public final class AppValidatorHelper {
                             }
                             i++;
                         }
+                    }
+                    if (!cdMap.isEmpty()){
+                        errorMap.putAll(cdMap);
                     }
                     addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
                     break;
@@ -1174,11 +1174,11 @@ public final class AppValidatorHelper {
     }
 
     public static Map<String, String> doValidateClincalDirector(List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorList,
-            Map<String, AppSvcPersonAndExtDto> licPersonMap, boolean checkPRS) {
+            Map<String, AppSvcPersonAndExtDto> licPersonMap, boolean checkPRS ,String svcCode) {
         if (appSvcClinicalDirectorList == null) {
             return new HashMap<>(1);
         }
-        return validateKeyPersonnel(appSvcClinicalDirectorList, "", licPersonMap, checkPRS);
+        return validateKeyPersonnel(appSvcClinicalDirectorList, "", licPersonMap,null,null, svcCode,checkPRS);
     }
 
     public static Map<String, String> doValidateMedAlertPsn(List<AppSvcPrincipalOfficersDto> medAlertPsnDtos,
@@ -1372,10 +1372,16 @@ public final class AppValidatorHelper {
                 String praCerEndDate = person.getPraCerEndDateStr();
                 String typeOfRegister = person.getTypeOfRegister();
                 String otherQualification = person.getOtherQualification();
+                String aclsExpiryDate = person.getAclsExpiryDateStr();
+                String specialityOther = person.getSpecialityOther();
+                String specialtyGetDate = person.getSpecialtyGetDateStr();
+                String relevantExperience = person.getRelevantExperience();
+                String bclsExpiryDate = person.getBclsExpiryDateStr();
+                String professionBoard = person.getProfessionBoard();
                 if (StringUtil.isIn(psnType, new String[]{ApplicationConsts.PERSONNEL_PSN_TYPE_CGO})) {
                     if (StringUtil.isEmpty(professionType)) {
                         errMap.put(prefix + "professionType" + i,
-                                MessageUtil.replaceMessage("GENERAL_ERR0006", "Professional Type ", "field"));
+                                MessageUtil.replaceMessage("GENERAL_ERR0006", "Professional Type", "field"));
                     }
                     if (StringUtil.isEmpty(professionalRegoNo)) {
                         errMap.put(prefix + "profRegNo" + i, "GENERAL_ERR0006");
@@ -1395,12 +1401,24 @@ public final class AppValidatorHelper {
                         errMap.put(prefix + "typeOfRegister" + i,
                                 MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of Register", "field"));
                     }
+
                     if (StringUtil.isEmpty(otherQualification)) {
                         errMap.put(prefix + "otherQualification" + i, "GENERAL_ERR0006");
                     }
                 }
 
                 if (StringUtil.isIn(psnType, new String[]{ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR})) {
+                    if (StringUtil.isEmpty(professionBoard)) {
+                        errMap.put(prefix + "professionBoard" + i,
+                                MessageUtil.replaceMessage("GENERAL_ERR0006", "Professional Board", "field"));
+                    }
+                    if (StringUtil.isEmpty(aclsExpiryDate)) {
+                        errMap.put(prefix + "aclsExpiryDate" + i,
+                                MessageUtil.replaceMessage("GENERAL_ERR0006", "Expiry Date (ACLS)", "field"));
+                    }
+                    if (StringUtil.isEmpty(professionalRegoNo)) {
+                        errMap.put(prefix + "profRegNo" + i, "GENERAL_ERR0006");
+                    }
                     if (StringUtil.isEmpty(typeOfCurrRegi)) {
                         errMap.put(prefix + "typeOfCurrRegi" + i,
                                 MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of Registration Date", "field"));
@@ -1419,7 +1437,17 @@ public final class AppValidatorHelper {
                     if (StringUtil.isEmpty(designation)) {
                         errMap.put(prefix + "designation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation", "field"));
                     }
+                    if (StringUtil.isEmpty(specialtyGetDate)){
+                        errMap.put(prefix+"specialtyGetDate"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Date when specialty was obtained","filed"));
+                    }
+                    if ("MTS".equals(svcCode)){
+                        if (StringUtil.isEmpty(bclsExpiryDate)){
+                            errMap.put(prefix+"bclsExpiryDate"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Expiry Date (BCLS and AED)","filed"));
+                        }
+                    }
                 }
+
+
 
                 if (!StringUtil.isEmpty(professionalRegoNo)) {
                     if (professionalRegoNo.length() > 20) {
@@ -1441,11 +1469,11 @@ public final class AppValidatorHelper {
                 if (StringUtil.isNotEmpty(typeOfRegister) && typeOfRegister.length() > 50) {
                     errMap.put(prefix + "typeOfRegister" + i, AppValidatorHelper.repLength("Type of Register", "50"));
                 }
-                String specialityOther = person.getSpecialityOther();
+
                 if (StringUtil.isNotEmpty(specialityOther) && specialityOther.length() > 100) {
                     errMap.put(prefix + "otherQualification" + i, repLength("Other Specialities", "100"));
                 }
-                String specialtyGetDate = person.getSpecialtyGetDateStr();
+
                 if (StringUtil.isNotEmpty(specialtyGetDate) && !CommonValidator.isDate(praCerEndDate)) {
                     errMap.put(prefix + "specialtyGetDate" + i, "GENERAL_ERR0006");
                 } else if (!CommonValidator.isDate(praCerEndDate)) {
@@ -1455,17 +1483,22 @@ public final class AppValidatorHelper {
                     errMap.put(prefix + "otherQualification" + i, repLength("Other Qualification", "100"));
                 }
 
-                String aclsExpiryDate = person.getAclsExpiryDateStr();
                 if (StringUtil.isNotEmpty(aclsExpiryDate) && aclsExpiryDate.length() > 100) {
                     errMap.put(prefix + "aclsExpiryDate" + i, repLength("Expiry Date (ACLS)", "100"));
                 }
-                String relevantExperience = person.getRelevantExperience();
+
                 if (StringUtil.isNotEmpty(relevantExperience) && relevantExperience.length() > 100) {
                     errMap.put(prefix + "relevantExperience" + i, repLength("Relevant Experience", "100"));
                 }
-                String bclsExpiryDate = person.getBclsExpiryDateStr();
+
                 if (StringUtil.isNotEmpty(bclsExpiryDate) && bclsExpiryDate.length() > 100) {
                     errMap.put(prefix + "bclsExpiryDate" + i, repLength("Expiry Date (BCLS and AED)", "100"));
+                }
+                String holdCerByEMS = person.getHoldCerByEMS();
+                if (StringUtil.isEmpty(holdCerByEMS)) {
+                    errMap.put(prefix +"holdCerByEMS" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Clinical Governance Officer (CGO) holds a valid certification issued by an Emergency Medical Services (\\\"EMS\\\") Medical Directors workshop", "field"));
+                } else if (AppConsts.NO.equals(holdCerByEMS)) {
+                    errMap.put(prefix +"holdCerByEMS" + i, MessageUtil.getMessageDesc("NEW_ERR0031"));
                 }
                 String mobileNo = person.getMobileNo();
                 if (StringUtil.isEmpty(mobileNo)) {

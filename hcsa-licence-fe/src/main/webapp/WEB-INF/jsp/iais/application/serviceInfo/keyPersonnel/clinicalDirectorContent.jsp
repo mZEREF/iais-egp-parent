@@ -4,7 +4,9 @@
 
 <c:set var="pcdType" value="${ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR}"/>
 <c:set var="personList" value="${currSvcInfoDto.appSvcClinicalDirectorDtoList}"/>
-
+<style>
+    label{font-weight: normal;!important;}
+</style>
 <iais:row cssClass="row col-xs-12 col-md-12 text-right">
     <c:if test="${AppSubmissionDto.needEditController }">
         <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>

@@ -1727,7 +1727,9 @@ public final class AppDataHelper {
                 person.setOtherDesignation(null);
             }
         }
-
+        setPsnValue(person, appPsnEditDto, "noRegWithProfBoard", prefix, suffix, request);
+        String registered = ParamUtil.getString(request,prefix + "noRegWithProfBoard" + suffix);
+        person.setNoRegWithProfBoard(registered);
 
         setPsnValue(person, appPsnEditDto, "professionBoard", prefix, suffix, request);
         setPsnValue(person, appPsnEditDto, "professionType", prefix, suffix, request);
@@ -1752,6 +1754,10 @@ public final class AppDataHelper {
             }
             person.setPsnEditDto(appPsnEditDto);
         }
+        String bclsExpiryDateStr = ParamUtil.getString(request,prefix + "bclsExpiryDate" + suffix);
+        person.setBclsExpiryDateStr(bclsExpiryDateStr);
+        String aclsExpiryDateStr = ParamUtil.getString(request,prefix + "aclsExpiryDate" + suffix);
+        person.setAclsExpiryDateStr(aclsExpiryDateStr);
 
         String profRegNo = person.getProfRegNo();
         if (!StringUtil.isEmpty(profRegNo)) {
@@ -1970,8 +1976,6 @@ public final class AppDataHelper {
                     log.info(StringUtil.changeForLog(e.getMessage()), e);
                 }
             }
-            String bclsExpiryDateStr = ParamUtil.getString(request,prefix + fieldName + suffix);
-            person.setBclsExpiryDateStr(bclsExpiryDateStr);
             ReflectionUtil.setPropertyObj(fieldName + "Str", value, person);
             ReflectionUtil.setPropertyObj(fieldName, value, person);
         } else {

@@ -1571,7 +1571,7 @@ public class ServiceInfoDelegator {
                     bpc.request,
                     LICPERSONSELECTMAP);
             errorMap = AppValidatorHelper.doValidateClincalDirector(appSvcClinicalDirectorList,
-                    licPersonMap, true);
+                    licPersonMap, true, currSvcCode);
             int psnLength = 0;
             if (!IaisCommonUtils.isEmpty(appSvcClinicalDirectorList)) {
                 psnLength = appSvcClinicalDirectorList.size();
@@ -1839,7 +1839,7 @@ public class ServiceInfoDelegator {
 //                HcsaConsts.STEP_MEDALERT_PERSON,
 //                HcsaConsts.STEP_SUPPLEMENTARY_FORM,
 //                HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS,
-//                HcsaConsts.STEP_SPECIAL_SERVICES_FORM
+//                ,HcsaConsts.STEP_SPECIAL_SERVICES_FORM
 //                HcsaConsts.STEP_OTHER_INFORMATION
         };
         if (StringUtil.isIn(stepCode, skipList)) {

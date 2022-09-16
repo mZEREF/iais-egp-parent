@@ -1,3 +1,5 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
+<c:set var="isCd" value="${pcdType == ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR}"/>
 <div class="person-content">
     <input type="hidden" class="not-refresh prepsn" name="${psnContent}" value="${prepsn}"/>
     <input type="hidden" class="not-refresh assignSelVal" name="${prepsn}assignSelVal" value="${person.assignSelect}"/>
@@ -61,6 +63,20 @@
             </iais:value>
         </iais:row>
 
+        <c:if test="${'MTS' == currentSvcCode}">
+            <iais:row>
+                <iais:field width="5" cssClass="col-md-5" mandatory="false" value="Not registered with a Professional Board"/>
+                <div class="form-check col-md-3">
+                    <input class="form-check-input" name="${prepsn}noRegWithProfBoard${index}" value="1"
+                           type="checkbox" aria-invalid="false"
+                           <c:if test="${'1' == person.noRegWithProfBoard}">checked="checked"</c:if> />
+                    <label class="form-check-label">
+                        <span class="check-square"></span><c:out value=""/>
+                    </label>
+                </div>
+            </iais:row>
+        </c:if>
+
         <iais:row>
             <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Name"/>
             <iais:value width="3" cssClass="col-md-3">
@@ -108,7 +124,7 @@
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Type of Current Registration"/>
+            <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Type of Registration Date"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="50" type="text" cssClass="typeOfCurrRegi" name="${prepsn}typeOfCurrRegi${index}"
                             value="${person.typeOfCurrRegi}"/>
@@ -145,7 +161,7 @@
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" cssClass="col-md-5" mandatory="false" value="Clinical Governance Officer (CGO) holds a valid certification issued by an Emergency Medical Services ('EMS') Medical Directors workshop"/>
+            <iais:field width="5" cssClass="col-md-5" mandatory="${isCd ? 'true' : 'false'}" value="Clinical Governance Officer (CGO) holds a valid certification issued by an Emergency Medical Services (\"EMS\") Medical Directors workshop"/>
             <input type="hidden" class="holdCerByEMSVal" name="holdCerByEMSVal${index}" value="${person.holdCerByEMS}"/>
             <iais:value width="3" cssClass="form-check col-md-3">
                 <input class="form-check-input holdCerByEMS" <c:if test="${'1' == person.holdCerByEMS}">checked="checked"</c:if>  type="radio" name="${perfix}holdCerByEMS${index}" value = "1" aria-invalid="false">
@@ -158,10 +174,10 @@
             </iais:value>
         </iais:row>
 
-        <iais:row>
-            <iais:field width="5" cssClass="col-md-5" />
+        <iais:row cssClass="row control control-caption-horizontal">
+            <iais:field width="5" cssClass="col-md-5" mandatory="" value=""/>
             <iais:value width="7" cssClass="col-md-7 col-xs-12">
-                <span class="error-msg" name="iaisErrorMSg" id="${prepsn}holdCerByEMS${index}"></span>
+                <span class="error-msg" name="iaisErrorMSg" id="${prepsn}error_holdCerByEMS${index}"></span>
             </iais:value>
         </iais:row>
 
