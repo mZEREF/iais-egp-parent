@@ -35,10 +35,10 @@
                                 <c:choose>
                                     <c:when test="${totalStr=='$0'}">
                                         <input type="hidden" value="${totalStr}" id="renewNoNeedPay" name="renewNoNeedPay">
-                                        <%@include file="../newApplication/noNeedPayment.jsp.jsp"%>
+                                        <%@include file="../application/section/noNeedPayment.jsp"%>
                                     </c:when>
                                     <c:otherwise>
-                                        <%@include file="../newApplication/paymentMethod.jsp"%>
+                                        <%@include file="../application/section/paymentMethod.jsp"%>
                                     </c:otherwise>
                                 </c:choose>
                             </div>
