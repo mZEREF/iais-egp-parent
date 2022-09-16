@@ -101,6 +101,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -653,6 +654,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
         List<LicenceFeeDto> licenceFeeQuaryDtos = IaisCommonUtils.genNewArrayList();
+        List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos = configCommClient.getActiveBundleDtoList().getEntity();
+        Set<String> bundleSvcCodes = IaisCommonUtils.genNewHashSet();
+        if(IaisCommonUtils.isNotEmpty(hcsaFeeBundleItemDtos)){
+            hcsaFeeBundleItemDtos.forEach(o-> bundleSvcCodes.add(o.getSvcCode()));
+        }
+
         if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
             log.debug("appGrpPremisesDtos size {}",appGrpPremisesDtos.size());
             for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
@@ -675,7 +682,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 int mtsVehicleCount = getMtsVehicleCount(appSvcRelatedInfoDtos);
                 log.debug("eas vehicle count is {}",easVehicleCount);
                 log.debug("mts vehicle count is {}",mtsVehicleCount);
-                List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos = configCommClient.getActiveBundleDtoList().getEntity();
                 for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                     LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
                     licenceFeeDto.setBundle(0);
@@ -704,12 +710,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     log.info(StringUtil.changeForLog("svcName:"+appSvcRelatedInfoDto.getServiceName()));
 
                     //set bundle
-                    if(!IaisCommonUtils.isEmpty(hcsaFeeBundleItemDtos)){
-                        int matchingTh = configCommClient.getFeeMaxMatchingThByServiceCode(serviceCode).getEntity();
+                    if(!IaisCommonUtils.isEmpty(hcsaFeeBundleItemDtos)&&bundleSvcCodes.contains(serviceCode)){
                         log.debug(StringUtil.changeForLog("set bundle info ..."));
                         if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(serviceCode)){
                             if(hadEas && hadMts){
                                 //judge vehicle count
+                                int matchingTh = configCommClient.getFeeMaxMatchingThByServiceCode(serviceCode).getEntity();
                                 if(easVehicleCount+mtsVehicleCount <= matchingTh ){
                                     licenceFeeDto.setBundle(1);
                                 }else {
@@ -725,11 +731,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             }else{
                                 setEasMtsBundleInfo(licenceFeeDto, appGrpPremisesDtos.get(0), hcsaFeeBundleItemDtos, serviceCode, appSubmissionDto.getLicenseeId(), mtsVehicleCount,appSubmissionDto.getAppType());
                             }
-                        } else{
-                            licenceFeeDto.setBundle(0);
                         }
-                    }else{
-                        licenceFeeDto.setBundle(0);
+
+
+
                     }
                     licenceFeeQuaryDtos.add(licenceFeeDto);
                 }
@@ -817,6 +822,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         List<LicenceFeeDto> linenceFeeQuaryDtos = IaisCommonUtils.genNewArrayList();
         log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl getRenewalAmount start ...."));
         log.info(StringUtil.changeForLog("current account is charity:"+isCharity));
+        List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos = configCommClient.getActiveBundleDtoList().getEntity();
+        Set<String> bundleSvcCodes = IaisCommonUtils.genNewHashSet();
+        if(IaisCommonUtils.isNotEmpty(hcsaFeeBundleItemDtos)){
+            hcsaFeeBundleItemDtos.forEach(o-> bundleSvcCodes.add(o.getSvcCode()));
+        }
         String hciCodeEas = null;
         String hciCodeMts = null;
         boolean hadEas = false;
@@ -849,7 +859,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
             log.debug("eas vehicle count is {}",easVehicleCount);
             log.debug("mts vehicle count is {}",mtsVehicleCount);
-            List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos = configCommClient.getActiveBundleDtoList().getEntity();
 
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                 if(HcsaConsts.SERVICE_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
@@ -868,7 +877,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 List<String> premisessTypes =  IaisCommonUtils.genNewArrayList();
                 premisessTypes.add(appGrpPremisesDto.getPremisesType());
                 for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-                    LicenceFeeDto licenceFeeDto = new LicenceFeeDto(); licenceFeeDto.setBundle(0);
+                    LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
+                    licenceFeeDto.setBundle(0);
                     licenceFeeDto.setHciCode(appGrpPremisesDtos.get(0).getOldHciCode());
                     HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(appSvcRelatedInfoDto.getServiceCode());
                     if (hcsaServiceDto == null) {
@@ -893,6 +903,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     licenceFeeDto.setServiceName(hcsaServiceDto.getSvcName());
                     licenceFeeDto.setPremises(premisessTypes);
                     licenceFeeDto.setCharity(isCharity);
+                    String serviceCode=hcsaServiceDto.getSvcCode();
 
                     if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
                         String licenceId = appSubmissionDto.getLicenceId();
@@ -909,11 +920,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         licenceFeeDto.setLicenceId(licenceId);
                     }
                     //set bundle
-                    if(!IaisCommonUtils.isEmpty(hcsaFeeBundleItemDtos)){
-                        String serviceCode=hcsaServiceDto.getSvcCode();
+                    if(!IaisCommonUtils.isEmpty(hcsaFeeBundleItemDtos)&&bundleSvcCodes.contains(serviceCode)){
                         log.debug(StringUtil.changeForLog("set bundle info ..."));
-                        int matchingTh = configCommClient.getFeeMaxMatchingThByServiceCode(serviceCode).getEntity();
                         if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(serviceCode)){
+                            int matchingTh = configCommClient.getFeeMaxMatchingThByServiceCode(serviceCode).getEntity();
                             if(easVehicleCount <= matchingTh ){
                                 licenceFeeDto.setBundle(1);
                             }else {
@@ -933,6 +943,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 setEasMtsBundleInfo(licenceFeeDto, appGrpPremisesDtos.get(0), hcsaFeeBundleItemDtos, serviceCode, appSubmissionDto.getLicenseeId(), easVehicleCount,appSubmissionDto.getAppType());
                             }
                         } else if(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(serviceCode)){
+                            int matchingTh = configCommClient.getFeeMaxMatchingThByServiceCode(serviceCode).getEntity();
                             if(mtsVehicleCount <= matchingTh ){
                                 licenceFeeDto.setBundle(1);
                             }else {
@@ -947,11 +958,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             }else{
                                 setEasMtsBundleInfo(licenceFeeDto, appGrpPremisesDtos.get(0), hcsaFeeBundleItemDtos, serviceCode, appSubmissionDto.getLicenseeId(), mtsVehicleCount,appSubmissionDto.getAppType());
                             }
-                        } else{
-                            licenceFeeDto.setBundle(0);
                         }
-                    }else{
-                        licenceFeeDto.setBundle(0);
+
+
                     }
                     linenceFeeQuaryDtos.add(licenceFeeDto);
                 }
