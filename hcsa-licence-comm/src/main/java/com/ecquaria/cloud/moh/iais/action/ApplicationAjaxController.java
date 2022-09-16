@@ -12,9 +12,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JarFileUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -30,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.PDFGenerator;
+import com.ecquaria.cloud.moh.iais.helper.excel.IrregularExcelWriterUtil;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.OrganizationService;
@@ -51,6 +54,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -189,7 +193,7 @@ public class ApplicationAjaxController {
         return appSvcCgoDto;
     }
 
-    @PostMapping(value = "/nuclear-medicine-imaging-html")
+    /*@PostMapping(value = "/nuclear-medicine-imaging-html")
     public Map<String, String> addNuclearMedicineImagingHtml(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the add NuclearMedicineImaging html start ...."));
         int spMaxNumber = 0;
@@ -237,7 +241,7 @@ public class ApplicationAjaxController {
             resp.put("errInfo", errMsg);
         }
         return resp;
-    }
+    }*/
 
     @RequestMapping(value = "/lic-premises", method = RequestMethod.GET)
     public AppGrpPremisesDto getLicPremisesInfo(HttpServletRequest request) {
@@ -511,7 +515,7 @@ public class ApplicationAjaxController {
                     HcsaAppConst.FIRESTOPTION, null, false);
             map.put("resCode", "200");
             map.put("resultJson", chargeTypeSelHtml);
-        }else {
+        } else {
             Map<String, String> chargesTypeAttr = IaisCommonUtils.genNewHashMap();
             chargesTypeAttr.put("class", "otherChargesType");
             chargesTypeAttr.put("name", "otherChargesType" + chargesSuffix);
@@ -524,7 +528,7 @@ public class ApplicationAjaxController {
         return map;
     }
 
-    @PostMapping(value = "/general-charges-html")
+    /*@PostMapping(value = "/general-charges-html")
     public Map<String, Object> generateGeneralChargesHtml(HttpServletRequest request) throws IOException, TemplateException {
         int generalChargeLength = ParamUtil.getInt(request, "generalChargeLength");
         //charges type
@@ -582,7 +586,7 @@ public class ApplicationAjaxController {
         map.put("resultJson", chargesHtml);
         return map;
     }
-
+*/
     //=============================================================================
     //private method
     //=============================================================================
@@ -788,6 +792,52 @@ public class ApplicationAjaxController {
                 log.error("No File Template Found!");
                 return;
             }
+            // salutation
+            List<MasterCodeView> masterCodes = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_SALUTATION);
+            if (IaisCommonUtils.isNotEmpty(masterCodes)) {
+                int size = masterCodes.size();
+                List<String> values = IaisCommonUtils.genNewArrayList(size);
+                Map<Integer, List<Integer>> excelConfigIndex = IaisCommonUtils.genNewLinkedHashMap(size);
+                int i = 1;
+                for (MasterCodeView view : masterCodes) {
+                    values.add(view.getCodeValue());
+                    excelConfigIndex.put(i++, Collections.singletonList(1));
+                }
+                inputFile = IrregularExcelWriterUtil.writerToExcelByIndex(inputFile, 2, values.toArray(new String[size]),
+                        excelConfigIndex);
+            }
+
+            // Professional Board
+            masterCodes = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_PROFESSION_BOARD);
+            if (IaisCommonUtils.isNotEmpty(masterCodes)) {
+                int size = masterCodes.size();
+                List<String> values = IaisCommonUtils.genNewArrayList(size);
+                Map<Integer, List<Integer>> excelConfigIndex = IaisCommonUtils.genNewLinkedHashMap(size);
+                int i = 1;
+                for (MasterCodeView view : masterCodes) {
+                    values.add(view.getCodeValue());
+                    excelConfigIndex.put(i++, Collections.singletonList(3));
+                }
+                inputFile = IrregularExcelWriterUtil.writerToExcelByIndex(inputFile, 2, values.toArray(new String[size]),
+                        excelConfigIndex);
+            }
+            // Professional Type
+            masterCodes = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_PROFESSIONAL_TYPE);
+            if (IaisCommonUtils.isNotEmpty(masterCodes)) {
+                int size = masterCodes.size();
+                List<String> values = IaisCommonUtils.genNewArrayList(size);
+                Map<Integer, List<Integer>> excelConfigIndex = IaisCommonUtils.genNewLinkedHashMap(size);
+                int i = 1;
+                for (MasterCodeView view : masterCodes) {
+                    values.add(view.getCodeValue());
+                    excelConfigIndex.put(i++, Collections.singletonList(5));
+                }
+                inputFile = IrregularExcelWriterUtil.writerToExcelByIndex(inputFile, 2, values.toArray(new String[size]),
+                        excelConfigIndex);
+            }
+            inputFile = IrregularExcelWriterUtil.lockSheetWorkspace(inputFile, 2,
+                    Formatter.formatDateTime(new Date(), "yyyyMMdd"));
+
             FileUtils.writeFileResponseContent(response, inputFile);
         } catch (Exception e) {
             log.error(StringUtil.changeForLog("Export Template has error - " + e.getMessage()), e);

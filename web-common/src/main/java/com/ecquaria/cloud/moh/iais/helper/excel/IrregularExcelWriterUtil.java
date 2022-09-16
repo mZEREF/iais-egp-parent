@@ -3,17 +3,19 @@ package com.ecquaria.cloud.moh.iais.helper.excel;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbookFactory;
+
+import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.List;
+import java.util.Map;
 
 import static com.ecquaria.cloud.moh.iais.helper.FileUtils.EXCEL_TYPE_XSSF;
 import static java.nio.file.Files.newInputStream;
@@ -77,6 +79,36 @@ public class IrregularExcelWriterUtil {
             throw new Exception("has error when when export excel, may be is resource corrupted", e);
         }finally {
             if (workbook != null){
+                workbook.close();
+            }
+        }
+
+        return out;
+    }
+
+    public static File lockSheetWorkspace(final File file, int sheetAt, String pwd) throws Exception {
+        if (file == null) {
+            throw new IaisRuntimeException("can not find file when writerToExcelByIndex");
+        }
+        XSSFWorkbook workbook = null;
+        String path = FileUtils.generationFileName("temp" + System.currentTimeMillis(), EXCEL_TYPE_XSSF);
+        File out = MiscUtil.generateFile(path);
+        try (InputStream fileInputStream = newInputStream(file.toPath()); OutputStream outputStream = newOutputStream(out.toPath())) {
+            workbook = XSSFWorkbookFactory.createWorkbook(fileInputStream);
+
+            Sheet sheet = workbook.getSheetAt(sheetAt);
+
+            if (StringUtils.isEmpty(pwd)) {
+                sheet.protectSheet("password$1");
+            } else {
+                sheet.protectSheet(pwd);
+            }
+
+            workbook.write(outputStream);
+        } catch (Exception e) {
+            throw new Exception("has error when when export excel, may be is resource corrupted", e);
+        } finally {
+            if (workbook != null) {
                 workbook.close();
             }
         }

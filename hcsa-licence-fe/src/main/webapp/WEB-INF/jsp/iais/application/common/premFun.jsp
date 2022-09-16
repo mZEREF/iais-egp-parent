@@ -426,7 +426,7 @@
     function fillNonHcsa($premContent, data) {
         $premContent.find('div.nonHcsaRowDiv .nonHcsaRow:not(:first)').remove();
         if (isEmpty(data) || !$.isArray(data)) {
-            clearFields($premContent.find('div.nonHcsaRowDiv'));
+            clearFields($premContent.find('div.nonHcsaRowDiv'), true);
             return;
         }
         var $parent = $premContent.find('div.nonHcsaRowDiv');

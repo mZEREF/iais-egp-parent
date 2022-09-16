@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -13,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelReader;
@@ -149,12 +151,12 @@ public class FileAjaxController {
         if (isUpload) {
             parsFile(result, toFile, "appSvcPersonnelDto", 19, (data) -> {
                 AppSvcPersonnelDto dto = new AppSvcPersonnelDto();
-                dto.setSalutation(data.get(0));
+                dto.setSalutation(getCode(data.get(0), MasterCodeUtil.CATE_ID_SALUTATION));
                 dto.setName(data.get(1));
                 dto.setDesignation(data.get(2));
                 dto.setOtherDesignation(data.get(3));
-                dto.setProfessionBoard(data.get(4));
-                dto.setProfessionType(data.get(5));
+                dto.setProfessionBoard(getCode(data.get(4), MasterCodeUtil.CATE_ID_PROFESSION_BOARD));
+                dto.setProfessionType(getCode(data.get(5), MasterCodeUtil.CATE_ID_PROFESSIONAL_TYPE));
                 dto.setProfRegNo(data.get(6));
                 dto.setSpeciality(data.get(7));
                 dto.setSubSpeciality(data.get(8));
@@ -172,6 +174,21 @@ public class FileAjaxController {
             });
             // others
         }
+    }
+
+    public static String getCode(String codeValue, String cateId) {
+        if (StringUtil.isEmpty(cateId) || StringUtil.isEmpty(codeValue)) {
+            return null;
+        }
+        List<MasterCodeView> masterCodes = MasterCodeUtil.retrieveByCategory(cateId);
+        if (IaisCommonUtils.isEmpty(masterCodes)) {
+            return null;
+        }
+        return masterCodes.stream()
+                .filter(dto -> codeValue.equals(dto.getCodeValue()))
+                .map(MasterCodeView::getCode)
+                .findAny()
+                .orElse("");
     }
 
     private <T> void parsFile(Map<String, Object> result, File toFile, String name, int fieldCount, Function<List<String>, T> func) {
