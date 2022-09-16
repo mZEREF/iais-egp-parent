@@ -112,8 +112,12 @@
                                             <%@include file="cycleStage/previewIuiCycleSection.jsp" %>
                                         </c:if>
                                         <c:if test="${cycleStage == 'AR_CL003'}">
-                                            <%-- AR_CYCLE_EFO--%>
+                                            <%-- AR_CYCLE_OFO--%>
                                             <%@include file="cycleStage/previewEfoDetail.jsp" %>
+                                        </c:if>
+                                        <c:if test="${cycleStage == 'AR_CL005'}">
+                                            <%-- AR_CYCLE_SFO--%>
+                                            <%@include file="cycleStage/previewSfoDetail.jsp" %>
                                         </c:if>
                                         <c:if test="${cycleStage == 'AR_STG001'}">
                                             <%-- AR_STAGE_OOCYTE_RETRIEVAL--%>

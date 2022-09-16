@@ -22,7 +22,7 @@
                                                  value="Cycle Start Date"/>
                             <iais:sortableHeader needSort="false" style="width: 15%;"
                                                  field="CYCLE_TYPE"
-                                                 value="AR/IUI/EFO"/>
+                                                 value="AR/IUI/OFO/SFO"/>
                             <iais:sortableHeader needSort="false" style="width: 25%;"
                                                  field="CYCLE_STAGE"
                                                  value="Last Stage Submitted"/>
@@ -60,7 +60,7 @@
                                                     pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
                                         </td>
                                         <td style="vertical-align:middle;">
-                                            <p class="visible-xs visible-sm table-row-title">AR/IUI/EFO</p>
+                                            <p class="visible-xs visible-sm table-row-title">AR/IUI/OFO/SFO</p>
                                             <c:out value="${cycleStage.cycleType}"/>
                                         </td>
                                         <td style="vertical-align:middle;">
@@ -99,7 +99,7 @@
                                                  value="Cycle Start Date"/>
                             <iais:sortableHeader needSort="false" style="width: 15%;"
                                                  field="CYCLE_TYPE"
-                                                 value="AR/IUI/EFO"/>
+                                                 value="AR/IUI/OFO/SFO"/>
                             <iais:sortableHeader needSort="false" style="width: 25%;"
                                                  field="CYCLE_STAGE"
                                                  value="Last Stage Submitted"/>
@@ -141,7 +141,7 @@
                                             <c:out value="${cycleStage.cycleType}"/>
                                         </td>
                                         <td style="vertical-align:middle;">
-                                            <p class="visible-xs visible-sm table-row-title">AR/IUI/EFO</p>
+                                            <p class="visible-xs visible-sm table-row-title">AR/IUI/OFO/SFO</p>
                                             <iais:code code="${cycleStage.cycleStage}"/>
                                         </td>
                                         <td style="vertical-align:middle;">

@@ -801,12 +801,13 @@
             (case dc.CYCLE_TYPE
             when 'DSCL_008' then 'AR'
             when 'DSCL_009' then 'IUI'
-            when 'DSCL_010' then 'EFO'
+            when 'DSCL_010' then 'OFO'
+            when 'DSCL_016' then 'SFO'
              else  '-' end) as CYCLE_TYPE
             , dds.CYCLE_STAGE ,dc.STATUS
             from ds_cycle dc
             join ds_data_submission dds on  dds.SUBMISSION_NO = (select MAX(dds1.SUBMISSION_NO) from ds_data_submission dds1 where dds1.CYCLE_ID =dc.ID and dds1.STATUS not in ('DS002'))
-             where dc.CYCLE_TYPE in ('DSCL_008','DSCL_009','DSCL_010') and dds.STATUS not in ('DS002')
+             where dc.CYCLE_TYPE in ('DSCL_008','DSCL_009','DSCL_010'.'DSCL_016') and dds.STATUS not in ('DS002')
             <#if patientCode??> AND  dc.PATIENT_CODE = :patientCode </#if>
 
          ]]>
