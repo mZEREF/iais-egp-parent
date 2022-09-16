@@ -1727,6 +1727,10 @@ public class HcsaApplicationDelegator {
                 rollBack(bpc, stageId, nextStatus, roleId, wrkGrpId, userId);
             }
         }
+        String submissionId = generateIdClient.getSeqId().getEntity();
+        BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
+        broadcastApplicationDto = broadcastService.setAppPremSubSvcDtoByAppView(broadcastApplicationDto, applicationViewDto, "", "");
+        broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto, bpc.process, submissionId);
         log.debug(StringUtil.changeForLog("the do replay end ...."));
     }
 

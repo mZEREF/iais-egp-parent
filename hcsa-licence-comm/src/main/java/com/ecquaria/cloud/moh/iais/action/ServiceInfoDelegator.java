@@ -609,6 +609,7 @@ public class ServiceInfoDelegator {
     }
 
     public void doSectionLeader(BaseProcessClass bpc) {
+        String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
         String currSvcId = ApplicationHelper.getCurrentServiceId(bpc.request);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currSvcId, null);
@@ -627,7 +628,7 @@ public class ServiceInfoDelegator {
         String action = ParamUtil.getRequestString(bpc.request, "nextStep");
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if ("next".equals(action)) {
-            AppValidatorHelper.doValidateSectionLeader(errorMap, currSvcInfoDto.getAppSvcSectionLeaderList());
+            AppValidatorHelper.doValidateSectionLeader(errorMap, currSvcInfoDto.getAppSvcSectionLeaderList(),svcCode);
             if (!isRfi) {
                 List<HcsaSvcPersonnelDto> psnConfig = configCommService.getHcsaSvcPersonnel(currSvcId,
                         ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER);

@@ -434,7 +434,12 @@ public final class AppValidatorHelper {
                     break;
                 case HcsaConsts.STEP_SECTION_LEADER: {
                     // Section Leader
-                    doValidateSectionLeader(errorMap,dto.getAppSvcSectionLeaderList());
+                    String currSvcCodes = dto.getServiceCode();
+                    if (StringUtil.isEmpty(currSvcCodes)) {
+                        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+                        currSvcCodes = Optional.of(hcsaServiceDto).map(HcsaServiceDto::getSvcCode).orElse("");
+                    }
+                    doValidateSectionLeader(errorMap,dto.getAppSvcSectionLeaderList(),currSvcCodes);
                     addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
                     break;
                 }
@@ -2439,8 +2444,35 @@ public final class AppValidatorHelper {
         return isValid;
     }
 
+    public static void doValidateYears(String year,Map<String,String> errorMap,String svcCode,int index){
+        if (StringUtil.isDigit(year)) {
+            int workExpYear = Integer.parseInt(year);
+            SystemParamConfig systemParamConfig = SystemParamUtil.getSystemParamConfig();
+            if (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(svcCode)) {
+                int minWrkExprerience = systemParamConfig.getClbSlMinWrkExprerience();
+                if (workExpYear < minWrkExprerience) {
+                    errorMap.put("wrkExpYear"+index, MessageUtil.replaceMessage("GENERAL_ERR0055",
+                            Integer.toString(minWrkExprerience), "x"));
+                }
+            } else if (AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(svcCode)) {
+                int minWrkExprerience = systemParamConfig.getRdsSlMinWrkExprerience();
+                if (workExpYear < minWrkExprerience) {
+                    errorMap.put("wrkExpYear"+index, MessageUtil.replaceMessage("GENERAL_ERR0055",
+                            Integer.toString(minWrkExprerience), "x"));
+                }
+            } else if (AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(svcCode)) {
+            } else if (AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(svcCode)) {
+                int minWrkExprerience = systemParamConfig.getNmiSlMinWrkExprerience();
+                if (workExpYear < minWrkExprerience) {
+                    errorMap.put("wrkExpYear"+index, MessageUtil.replaceMessage("GENERAL_ERR0055",
+                            Integer.toString(minWrkExprerience), "x"));
+                }
+            }
+        }
+    }
 
-    public static void doValidateSectionLeader(Map<String, String> errorMap, List<AppSvcPersonnelDto> appSvcSectionLeaderList) {
+
+    public static void doValidateSectionLeader(Map<String, String> errorMap, List<AppSvcPersonnelDto> appSvcSectionLeaderList,String svcCode) {
         if (appSvcSectionLeaderList == null || appSvcSectionLeaderList.isEmpty()) {
             return;
         }
@@ -2483,6 +2515,7 @@ public final class AppValidatorHelper {
                     errorMap.put("wrkExpYear" + i, "GENERAL_ERR0002");
                 }
             }
+            doValidateYears(wrkExpYear,errorMap,svcCode,i);
         }
     }
 
@@ -2731,7 +2764,6 @@ public final class AppValidatorHelper {
                 errorMap.put(prefix + "numberSupervision" + i, "GENERAL_ERR0002");
             }
         }
-
     }
 
     public static void specialValidate(Map<String, String> errorMap, AppSvcPersonnelDto appSvcPersonnelDto, String prefix,int i, List<String> errorName,boolean flag) {
