@@ -718,7 +718,7 @@ public final class DataSubmissionHelper {
     }
 
     public static List<String> getAllOFOCycleStages(){
-        List<String> stages = new ArrayList<>(4);
+        List<String> stages = new ArrayList<>(3);
         stages.add(DataSubmissionConsts.AR_CYCLE_EFO);
         stages.add(DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL);
         stages.add(DataSubmissionConsts.AR_STAGE_DONATION);
@@ -726,7 +726,7 @@ public final class DataSubmissionHelper {
     }
 
     public static List<String> getAllSFOCycleStages(){
-        List<String> stages = new ArrayList<>(3);
+        List<String> stages = new ArrayList<>(2);
         stages.add(DataSubmissionConsts.AR_CYCLE_SFO);
         stages.add(DataSubmissionConsts.AR_STAGE_DONATION);
         return stages;
