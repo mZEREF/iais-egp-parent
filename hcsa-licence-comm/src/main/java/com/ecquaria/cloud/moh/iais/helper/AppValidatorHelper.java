@@ -1841,10 +1841,11 @@ public final class AppValidatorHelper {
             AppSvcOtherInfoNurseDto appSvcOtherInfoNurseDto = svcOtherInfoDto.getAppSvcOtherInfoNurseDto();
             AppSvcOtherInfoMedDto ambulatorySurgicalCentre = svcOtherInfoDto.getOtherInfoMedAmbulatorySurgicalCentre();
             AppSvcOtherInfoTopDto appSvcOtherInfoTopDto = svcOtherInfoDto.getAppSvcOtherInfoTopDto();
-            if (StringUtil.isEmpty(appSvcOtherInfoMedDto.getIsMedicalTypeIt()) && StringUtil.isEmpty(appSvcOtherInfoMedDto.getIsMedicalTypePaper())){
-                errMap.put("isMedicalTypeIt", MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of medical records", "field"));
+            if (!StringUtil.isEmpty(appSvcOtherInfoMedDto)){
+                if (StringUtil.isEmpty(appSvcOtherInfoMedDto.getIsMedicalTypeIt()) && StringUtil.isEmpty(appSvcOtherInfoMedDto.getIsMedicalTypePaper())){
+                    errMap.put("isMedicalTypeIt", MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of medical records", "field"));
+                }
             }
-
             if (!StringUtil.isEmpty(appSvcOtherInfoMedDto)){
                 String systemOption = appSvcOtherInfoMedDto.getSystemOption();
                 if (StringUtil.isEmpty(systemOption)){
