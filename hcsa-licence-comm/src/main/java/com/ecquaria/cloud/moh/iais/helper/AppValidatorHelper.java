@@ -1850,8 +1850,6 @@ public final class AppValidatorHelper {
                 if (StringUtil.isEmpty(appSvcOtherInfoMedDto.getIsMedicalTypeIt()) && StringUtil.isEmpty(appSvcOtherInfoMedDto.getIsMedicalTypePaper())){
                     errMap.put("isMedicalTypeIt", MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of medical records", "field"));
                 }
-            }
-            if (!StringUtil.isEmpty(appSvcOtherInfoMedDto)){
                 String systemOption = appSvcOtherInfoMedDto.getSystemOption();
                 if (StringUtil.isEmpty(systemOption)){
                     errMap.put("systemOption", MessageUtil.replaceMessage("GENERAL_ERR0006", "List of options for IT system and paper cards / IT system only", "field"));
