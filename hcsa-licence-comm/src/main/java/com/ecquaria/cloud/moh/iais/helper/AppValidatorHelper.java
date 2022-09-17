@@ -1451,9 +1451,13 @@ public final class AppValidatorHelper {
                     } else if (AppConsts.NO.equals(holdCerByEMS)) {
                         errMap.put(prefix +"holdCerByEMS" + i, MessageUtil.getMessageDesc("NEW_ERR0031"));
                     }
+                    if (StringUtil.isNotEmpty(aclsExpiryDate) && aclsExpiryDate.length() > 100) {
+                        errMap.put(prefix + "aclsExpiryDate" + i, repLength("Expiry Date (ACLS)", "100"));
+                    }
+                    if (StringUtil.isNotEmpty(bclsExpiryDate) && bclsExpiryDate.length() > 100) {
+                        errMap.put(prefix + "bclsExpiryDate" + i, repLength("Expiry Date (BCLS and AED)", "100"));
+                    }
                 }
-
-
 
                 if (!StringUtil.isEmpty(professionalRegoNo)) {
                     if (professionalRegoNo.length() > 20) {
@@ -1488,18 +1492,10 @@ public final class AppValidatorHelper {
                 if (StringUtil.isNotEmpty(otherQualification) && otherQualification.length() > 100) {
                     errMap.put(prefix + "otherQualification" + i, repLength("Other Qualification", "100"));
                 }
-
-                if (StringUtil.isNotEmpty(aclsExpiryDate) && aclsExpiryDate.length() > 100) {
-                    errMap.put(prefix + "aclsExpiryDate" + i, repLength("Expiry Date (ACLS)", "100"));
-                }
-
                 if (StringUtil.isNotEmpty(relevantExperience) && relevantExperience.length() > 100) {
                     errMap.put(prefix + "relevantExperience" + i, repLength("Relevant Experience", "100"));
                 }
 
-                if (StringUtil.isNotEmpty(bclsExpiryDate) && bclsExpiryDate.length() > 100) {
-                    errMap.put(prefix + "bclsExpiryDate" + i, repLength("Expiry Date (BCLS and AED)", "100"));
-                }
                 String mobileNo = person.getMobileNo();
                 if (StringUtil.isEmpty(mobileNo)) {
                     errMap.put(prefix + "mobileNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Mobile No. ", "field"));
