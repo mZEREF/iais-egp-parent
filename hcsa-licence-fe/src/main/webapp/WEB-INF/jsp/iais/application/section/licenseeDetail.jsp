@@ -46,8 +46,6 @@
         <iais:message key="NEW_ACK43" escape="false"/>
     </iais:row>
 
-
-
     <%--<c:if test="${canEdit}">
         <label>If your licensee remains the same, please confirm the licensee information below and update any changes if necessary</label>
         <br><br>
