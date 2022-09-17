@@ -57,6 +57,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ReflectionUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
@@ -3318,7 +3319,7 @@ public final class AppValidatorHelper {
 
     public static void doValidateSpecialServicesForm(List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList,
             Map<String, String> errorMap, Map<String, AppSvcPersonAndExtDto> licPersonMap) {
-        if (appSvcSpecialServiceInfoList == null || appSvcSpecialServiceInfoList.isEmpty()) {
+        if (IaisCommonUtils.isEmpty(appSvcSpecialServiceInfoList)) {
             return;
         }
         String prefix = "";
@@ -3328,75 +3329,77 @@ public final class AppValidatorHelper {
             List<String> sectionLeaderNames = IaisCommonUtils.genNewArrayList();
             List<String> nurseNames = IaisCommonUtils.genNewArrayList();
             List<String> rsoNames = IaisCommonUtils.genNewArrayList();
-            List<String> droNames = IaisCommonUtils.genNewArrayList();
-            List<String> mpoNames = IaisCommonUtils.genNewArrayList();
+            List<String> drNames = IaisCommonUtils.genNewArrayList();
+            List<String> mpNames = IaisCommonUtils.genNewArrayList();
             List<String> rpNames = IaisCommonUtils.genNewArrayList();
-            List<String> nmoNames = IaisCommonUtils.genNewArrayList();
+            List<String> nmNames = IaisCommonUtils.genNewArrayList();
             List<String> dirNames = IaisCommonUtils.genNewArrayList();
             List<String> nurNames = IaisCommonUtils.genNewArrayList();
             for (int j = 0; j < specialServiceSectionDtoList.size(); j++) {
                 SpecialServiceSectionDto specialServiceSectionDto = specialServiceSectionDtoList.get(j);
-                if (specialServiceSectionDto.getAppSvcCgoDtoList() != null) {
-                    Map<String, String> map = validateKeyPersonnel(specialServiceSectionDto.getAppSvcCgoDtoList(),
-                            prefix + i + j + "cgo", licPersonMap, null, null, null, true);
-                    if (IaisCommonUtils.isNotEmpty(map)) {
-                        errorMap.putAll(map);
+                Map<String, Integer> minCount = specialServiceSectionDto.getMinCount();
+                boolean cgoIsMandatory= minCount.get(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO)!=0;
+                boolean slIsMandatory = minCount.get(ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER)!=0;
+                boolean nicIsMandatory = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE)!=0;
+                boolean rsoIsMandatory = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER)!=0;
+                boolean drIsMandatory = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR)!=0;
+                boolean mpIsMandatory = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST)!=0;
+                boolean rpIsMandatory = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL)!=0;
+                boolean nmIsMandatory = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM)!=0;
+                boolean diIsMandatory = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR)!=0;
+                boolean nuIsMandatory = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR)!=0;
+                List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = specialServiceSectionDto.getAppSvcCgoDtoList();
+                if (appSvcCgoDtoList != null) {
+                    boolean isAllEmpty=appSvcCgoDtoList.stream().allMatch(ReflectionUtil::isEmpty);
+                    if (cgoIsMandatory) {
+                        Map<String, String> map = validateKeyPersonnel(appSvcCgoDtoList,
+                                prefix + i + j + "cgo", licPersonMap, null, null, null, true);
+                        if (IaisCommonUtils.isNotEmpty(map)) {
+                            errorMap.putAll(map);
+                        }
+                    } else {
+                        if (!isAllEmpty) {
+                            Map<String, String> map = validateKeyPersonnel(appSvcCgoDtoList,
+                                    prefix + i + j + "cgo", licPersonMap, null, null, null, true);
+                            if (IaisCommonUtils.isNotEmpty(map)) {
+                                errorMap.putAll(map);
+                            }
+                        }
                     }
                 }
-                if (specialServiceSectionDto.getAppSvcSectionLeaderList() != null) {
-                    for (int x = 0; x < specialServiceSectionDto.getAppSvcSectionLeaderList().size(); x++) {
-                        specialValidate(errorMap, specialServiceSectionDto.getAppSvcSectionLeaderList().get(x), prefix + i + j + "sl",
-                                x, sectionLeaderNames, true);
+                List<AppSvcPersonnelDto> appSvcSectionLeaderList = specialServiceSectionDto.getAppSvcSectionLeaderList();
+                if (appSvcSectionLeaderList != null) {
+                    boolean isAllEmpty = appSvcSectionLeaderList.stream().allMatch(ReflectionUtil::isEmpty);
+                    if (slIsMandatory) {
+                        for (int x = 0; x < appSvcSectionLeaderList.size(); x++) {
+                            specialValidate(errorMap, appSvcSectionLeaderList.get(x), prefix + i + j + "sl",
+                                    x, sectionLeaderNames, true);
+                        }
+                    } else {
+                        if (!isAllEmpty) {
+                            for (int x = 0; x < appSvcSectionLeaderList.size(); x++) {
+                                specialValidate(errorMap, appSvcSectionLeaderList.get(x), prefix + i + j + "sl",
+                                        x, sectionLeaderNames, true);
+                            }
+                        }
                     }
                 }
-                if (specialServiceSectionDto.getAppSvcNurseDtoList() != null) {
-                    for (int x = 0; x < specialServiceSectionDto.getAppSvcNurseDtoList().size(); x++) {
-                        validateSpecialServicePerson(specialServiceSectionDto.getAppSvcNurseDtoList().get(x), prefix + i + j + "nic",
-                                "" + x, errorMap, nurseNames);
-                    }
-                }
-                if (specialServiceSectionDto.getAppSvcRadiationSafetyOfficerDtoList() != null) {
-                    for (int x = 0; x < specialServiceSectionDto.getAppSvcRadiationSafetyOfficerDtoList().size(); x++) {
-                        validateSpecialServiceOtherPerson(specialServiceSectionDto.getAppSvcRadiationSafetyOfficerDtoList().get(x),
-                                prefix + i + j + "rso", "" + x, errorMap, rsoNames, false);
-                    }
-                }
-                if (specialServiceSectionDto.getAppSvcDiagnosticRadiographerDtoList() != null) {
-                    for (int x = 0; x < specialServiceSectionDto.getAppSvcDiagnosticRadiographerDtoList().size(); x++) {
-                        validateSpecialServiceOtherPerson(specialServiceSectionDto.getAppSvcDiagnosticRadiographerDtoList().get(x),
-                                prefix + i + j + "dr", "" + x, errorMap, droNames, false);
-                    }
-                }
-                if (specialServiceSectionDto.getAppSvcMedicalPhysicistDtoList() != null) {
-                    for (int x = 0; x < specialServiceSectionDto.getAppSvcMedicalPhysicistDtoList().size(); x++) {
-                        validateSpecialServiceOtherPerson(specialServiceSectionDto.getAppSvcMedicalPhysicistDtoList().get(x),
-                                prefix + i + j + "mp", "" + x, errorMap, mpoNames, true);
-                    }
-                }
-                if (specialServiceSectionDto.getAppSvcRadiationPhysicistDtoList() != null) {
-                    for (int x = 0; x < specialServiceSectionDto.getAppSvcRadiationPhysicistDtoList().size(); x++) {
-                        validateSpecialServiceOtherPerson(specialServiceSectionDto.getAppSvcRadiationPhysicistDtoList().get(x),
-                                prefix + i + j + "rp", "" + x, errorMap, rpNames, true);
-                    }
-                }
-                if (specialServiceSectionDto.getAppSvcNMTechnologistDtoList() != null) {
-                    for (int x = 0; x < specialServiceSectionDto.getAppSvcNMTechnologistDtoList().size(); x++) {
-                        validateSpecialServiceOtherPerson(specialServiceSectionDto.getAppSvcNMTechnologistDtoList().get(x),
-                                prefix + i + j + "nm", "" + x, errorMap, nmoNames, true);
-                    }
-                }
-                if (specialServiceSectionDto.getAppSvcDirectorDtoList() != null) {
-                    for (int x = 0; x < specialServiceSectionDto.getAppSvcDirectorDtoList().size(); x++) {
-                        validateSpecialServicePerson(specialServiceSectionDto.getAppSvcDirectorDtoList().get(x),
-                                prefix + i + j + "dir", "" + x, errorMap, dirNames);
-                    }
-                }
-                if (specialServiceSectionDto.getAppSvcNurseDirectorDtoList() != null) {
-                    for (int x = 0; x < specialServiceSectionDto.getAppSvcNurseDirectorDtoList().size(); x++) {
-                        validateSpecialServicePerson(specialServiceSectionDto.getAppSvcNurseDirectorDtoList().get(x),
-                                prefix + i + j + "nur", "" + x, errorMap, nurNames);
-                    }
-                }
+                validateSpecialServicePersonMandatory(specialServiceSectionDto.getAppSvcNurseDtoList(),
+                        nicIsMandatory,prefix + i + j + "nic", errorMap, nurseNames);
+                validateSpecialServiceOtherPersonMandatory(specialServiceSectionDto.getAppSvcRadiationSafetyOfficerDtoList(),
+                        rsoIsMandatory,prefix + i + j + "rso",errorMap,rsoNames,false);
+                validateSpecialServiceOtherPersonMandatory(specialServiceSectionDto.getAppSvcDiagnosticRadiographerDtoList(),
+                        drIsMandatory,prefix + i + j + "dr",errorMap,drNames,false);
+                validateSpecialServiceOtherPersonMandatory(specialServiceSectionDto.getAppSvcMedicalPhysicistDtoList(),
+                        mpIsMandatory,prefix + i + j + "mp",errorMap,mpNames,true);
+                validateSpecialServiceOtherPersonMandatory(specialServiceSectionDto.getAppSvcRadiationPhysicistDtoList(),
+                        rpIsMandatory,prefix + i + j + "rp",errorMap,rpNames,true);
+                validateSpecialServiceOtherPersonMandatory(specialServiceSectionDto.getAppSvcNMTechnologistDtoList(),
+                        nmIsMandatory,prefix + i + j + "nm",errorMap,nmNames,true);
+                validateSpecialServicePersonMandatory(specialServiceSectionDto.getAppSvcDirectorDtoList(),
+                        diIsMandatory,prefix + i + j + "dir", errorMap, dirNames);
+                validateSpecialServicePersonMandatory(specialServiceSectionDto.getAppSvcNurseDirectorDtoList(),
+                        nuIsMandatory,prefix + i + j + "nur", errorMap, nurNames);
                 if (!IaisCommonUtils.isEmpty(specialServiceSectionDto.getAppSvcSuplmFormDto().getAppSvcSuplmGroupDtoList())) {
                     errorMap.putAll(doValidateSupplementaryForm(specialServiceSectionDto.getAppSvcSuplmFormDto(), prefix + i + j));
                 }
@@ -3404,9 +3407,49 @@ public final class AppValidatorHelper {
         }
     }
 
-    private static void validateSpecialServiceOtherPerson(AppSvcPersonnelDto appSvcPersonnelDto, String prefix, String subfix,
-            Map<String, String> errorMap,
-            List<String> names, boolean checkOthers) {
+    private static void validateSpecialServiceOtherPersonMandatory(List<AppSvcPersonnelDto> appSvcPersonnelDto, boolean isMandatory,
+            String prefix, Map<String, String> errorMap, List<String> usedNames, boolean checkOthers) {
+        if (appSvcPersonnelDto != null) {
+            boolean isAllEmpty = appSvcPersonnelDto.stream().allMatch(ReflectionUtil::isEmpty);
+            if (isMandatory) {
+                for (int x = 0; x < appSvcPersonnelDto.size(); x++) {
+                    validateSpecialServiceOtherPersonDetail(appSvcPersonnelDto.get(x),
+                            prefix, "" + x, errorMap, usedNames, checkOthers);
+                }
+            } else {
+                if (!isAllEmpty) {
+                    for (int x = 0; x < appSvcPersonnelDto.size(); x++) {
+                        validateSpecialServiceOtherPersonDetail(appSvcPersonnelDto.get(x),
+                                prefix, "" + x, errorMap, usedNames, checkOthers);
+                    }
+                }
+            }
+        }
+    }
+
+    private static void validateSpecialServicePersonMandatory(List<AppSvcPersonnelDto> appSvcPersonnelDto, boolean isMandatory,
+            String prefix, Map<String, String> errorMap, List<String> usedNames) {
+        if (appSvcPersonnelDto != null) {
+            boolean isAllEmpty = appSvcPersonnelDto.stream().allMatch(ReflectionUtil::isEmpty);
+            if (isMandatory) {
+                for (int x = 0; x < appSvcPersonnelDto.size(); x++) {
+                    validateSpecialServicePersonDetail(appSvcPersonnelDto.get(x),
+                            prefix, "" + x, errorMap, usedNames);
+                }
+            } else {
+                if (!isAllEmpty) {
+                    for (int x = 0; x < appSvcPersonnelDto.size(); x++) {
+                        validateSpecialServicePersonDetail(appSvcPersonnelDto.get(x),
+                                prefix, "" + x, errorMap, usedNames);
+                    }
+                }
+            }
+        }
+    }
+
+    private static void validateSpecialServiceOtherPersonDetail(AppSvcPersonnelDto appSvcPersonnelDto, String prefix, String subfix,
+                                                                Map<String, String> errorMap,
+                                                                List<String> names, boolean checkOthers) {
         String signal = "GENERAL_ERR0006";
 
         String personnelSel = appSvcPersonnelDto.getPersonnelType();
@@ -3453,8 +3496,8 @@ public final class AppValidatorHelper {
         }
     }
 
-    private static void validateSpecialServicePerson(AppSvcPersonnelDto appSvcPersonnelDto, String prefix, String subfix,
-            Map<String, String> errorMap, List<String> names) {
+    private static void validateSpecialServicePersonDetail(AppSvcPersonnelDto appSvcPersonnelDto, String prefix, String subfix,
+                                                           Map<String, String> errorMap, List<String> names) {
         String signal = "GENERAL_ERR0006";
         String personnelType = appSvcPersonnelDto.getPersonnelType();
 

@@ -243,6 +243,7 @@
 
     var personnelSelFun = function (personnelSel, $personnelContentEle,flag) {
         if ('' == personnelSel) {
+            clearFields($personnelContentEle);
             $personnelContentEle.find('.personnel-name').addClass('hidden');
             $personnelContentEle.find('.personnel-qualification').addClass('hidden');
             $personnelContentEle.find('.personnel-wrkExpYear').addClass('hidden');
