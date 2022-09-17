@@ -386,7 +386,7 @@ public abstract class AppCommDelegator {
             if (!serviceConfigIds.isEmpty()) {
                 hcsaServiceDtoList = configCommService.getHcsaServiceDtosByIds(serviceConfigIds);
             }
-            if (IaisCommonUtils.isEmpty(hcsaServiceDtoList)  && !names.isEmpty()) {
+            if (IaisCommonUtils.isEmpty(hcsaServiceDtoList) && !names.isEmpty()) {
                 hcsaServiceDtoList = HcsaServiceCacheHelper.getHcsaSvcsByNames(names);
             }
         } else {
@@ -790,7 +790,7 @@ public abstract class AppCommDelegator {
             }
             String premisesSelect = appGrpPremisesDto.getPremisesSelect();
             if (!StringUtil.isEmpty(premisesSelect) && !HcsaAppConst.DFT_FIRST_CODE.equals(premisesSelect)
-                    && !HcsaAppConst.NEW_PREMISES.equals(premisesSelect) ) {
+                    && !HcsaAppConst.NEW_PREMISES.equals(premisesSelect)) {
                 // re-set premise select for error record
                 if (premisesMap.get(premisesSelect) == null) {
                     appGrpPremisesDto.setExistingData(AppConsts.NO);
@@ -1271,10 +1271,12 @@ public abstract class AppCommDelegator {
         log.info(StringUtil.changeForLog("the do preInvoke start ...."));
         String action = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         if (!StringUtil.isEmpty(action)) {
+            AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
             switch (action) {
                 case "MohAppPremSelfDecl":
-//                ParamUtil.setSessionAttr(bpc.request, AppCommConst.SESSION_PARAM_APPLICATION_GROUP_ID, appSubmissionDto.getAppGrpId());
-//                ParamUtil.setSessionAttr(bpc.request,AppCommConst.SESSION_SELF_DECL_ACTION,"new");
+                    ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.SESSION_PARAM_APPLICATION_GROUP_ID,
+                            appSubmissionDto.getAppGrpId());
+                    ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.SESSION_SELF_DECL_ACTION, "new");
                     break;
                 case "DashBoard": {
                     String tokenUrl = RedirectUtil.appendCsrfGuardToken(
