@@ -6,6 +6,19 @@
 <c:set var="isNew" value="${'APTY002' == AppSubmissionDto.appType}" />
 <c:set var="isRFC" value="${'APTY005' == AppSubmissionDto.appType}" />
 
+<style>
+    .side-point:before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        background-color: #333333;
+        border-radius: 3px;
+        position: absolute;
+        top: 9px;
+        left: 0;
+    }
+</style>
+
 <div class="form-horizontal licenseeContent">
     <iais:row>
         <iais:value width="6" cssClass="col-md-6">
@@ -20,6 +33,17 @@
             </c:if>
         </iais:value>
     </iais:row>
+
+    <iais:row cssClass="col-md-12 side-point">
+        <iais:message key="NEW_ACK42" escape="false"/>
+    </iais:row>
+
+    <iais:row cssClass="col-md-12 side-point">
+        <iais:message key="NEW_ACK43" escape="false"/>
+    </iais:row>
+
+
+
     <%--<c:if test="${canEdit}">
         <label>If your licensee remains the same, please confirm the licensee information below and update any changes if necessary</label>
         <br><br>
