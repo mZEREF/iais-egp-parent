@@ -7,6 +7,10 @@
 <c:set var="isRFC" value="${'APTY005' == AppSubmissionDto.appType}" />
 
 <style>
+    .side-point {
+        margin-left: 3px !important;
+    }
+
     .side-point:before {
         content: "";
         width: 6px;
