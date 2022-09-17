@@ -1440,10 +1440,16 @@ public final class AppValidatorHelper {
                     if (StringUtil.isEmpty(specialtyGetDate)){
                         errMap.put(prefix+"specialtyGetDate"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Date when specialty was obtained","filed"));
                     }
-                    if ("MTS".equals(svcCode)){
+                    if (AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(svcCode)){
                         if (StringUtil.isEmpty(bclsExpiryDate)){
                             errMap.put(prefix+"bclsExpiryDate"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Expiry Date (BCLS and AED)","filed"));
                         }
+                    }
+                    String holdCerByEMS = person.getHoldCerByEMS();
+                    if (StringUtil.isEmpty(holdCerByEMS)) {
+                        errMap.put(prefix +"holdCerByEMS" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Clinical Governance Officer (CGO) holds a valid certification issued by an Emergency Medical Services (\\\"EMS\\\") Medical Directors workshop", "field"));
+                    } else if (AppConsts.NO.equals(holdCerByEMS)) {
+                        errMap.put(prefix +"holdCerByEMS" + i, MessageUtil.getMessageDesc("NEW_ERR0031"));
                     }
                 }
 
@@ -1493,12 +1499,6 @@ public final class AppValidatorHelper {
 
                 if (StringUtil.isNotEmpty(bclsExpiryDate) && bclsExpiryDate.length() > 100) {
                     errMap.put(prefix + "bclsExpiryDate" + i, repLength("Expiry Date (BCLS and AED)", "100"));
-                }
-                String holdCerByEMS = person.getHoldCerByEMS();
-                if (StringUtil.isEmpty(holdCerByEMS)) {
-                    errMap.put(prefix +"holdCerByEMS" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Clinical Governance Officer (CGO) holds a valid certification issued by an Emergency Medical Services (\\\"EMS\\\") Medical Directors workshop", "field"));
-                } else if (AppConsts.NO.equals(holdCerByEMS)) {
-                    errMap.put(prefix +"holdCerByEMS" + i, MessageUtil.getMessageDesc("NEW_ERR0031"));
                 }
                 String mobileNo = person.getMobileNo();
                 if (StringUtil.isEmpty(mobileNo)) {
