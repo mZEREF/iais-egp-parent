@@ -10,11 +10,11 @@
     String flag = ParamUtil.getRequestString(request,"flag");
 %>
 
-<%--<style>
-    .main-content .tab-gp.steps-tab {
-        margin-top: 7px;
-    }
-</style>--%>
+<c:set var="isRfi" value="${not empty requestInformationConfig}" scope="request"/>
+<c:set var="isNew" value="${'APTY002' == AppSubmissionDto.appType}" scope="request"/>
+<c:set var="isRFC" value="${'APTY005' == AppSubmissionDto.appType}" scope="request"/>
+<c:set var="isRenew" value="${'APTY004' == AppSubmissionDto.appType}" scope="request"/>
+<c:set var="coMap" value="${AppSubmissionDto.coMap}" scope="request"/>
 
 <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
 <input type="hidden" name="crud_action_type_form_page" value="">
@@ -103,24 +103,16 @@
             });
         }
 
-        <c:if test="${requestInformationConfig==null && ('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
-        <c:if test="${'APTY004' ==AppSubmissionDto.appType}">
+        <c:if test="${!isRfi && (isRFC || isRenew)}">
+        <c:if test="${isRenew}">
         $('#preview').unbind();
         $('#preview').removeAttr("data-toggle");
         $('#previewli').unbind();
         </c:if>
         <c:choose>
-        <c:when test="${AppSubmissionDto.appEditSelectDto.premisesEdit}">
-
-        $('#payment').unbind();
-        $('#paymentli').unbind();
-        </c:when>
-        <c:when test="${AppSubmissionDto.appEditSelectDto.docEdit}">
-
-        $('#payment').unbind();
-        $('#paymentli').unbind();
-        </c:when>
-        <c:when test="${AppSubmissionDto.appEditSelectDto.serviceEdit}">
+        <c:when test="${AppSubmissionDto.appEditSelectDto.premisesEdit
+            || AppSubmissionDto.appEditSelectDto.specialisedEdit
+            || AppSubmissionDto.appEditSelectDto.serviceEdit}">
         $('#payment').unbind();
         $('#paymentli').unbind();
         </c:when>
@@ -142,9 +134,7 @@
         $('#payment').removeAttr("data-toggle");
         </c:otherwise>
         </c:choose>
-
         </c:if>
-
     });
 
     function submit(action,value,additional){

@@ -17,7 +17,7 @@
                 </a>
             </h4>
         </div>
-        <div id="previewSpecialised${vs.index}" class="panel-collapse collapse <c:if test="${!empty printFlag}">in</c:if>">
+        <div id="previewSpecialised${vs.index}" class="panel-collapse collapse previewSpecialised <c:if test="${!empty printFlag}">in</c:if>">
             <div class="panel-body">
                 <c:if test="${(empty AppSubmissionDto.appEditSelectDto || AppSubmissionDto.appEditSelectDto.specialisedEdit)
                         && empty printView && (empty isSingle || isSingle == 'Y')}">

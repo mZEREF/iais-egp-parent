@@ -96,8 +96,8 @@
     }
 
     $(document).ready(function () {
-        <c:if test="${pageAppEditSelectDto.docEdit}">
-        $('#primaryCheckbox').closest("div.panel-body").attr("style","");
+        <c:if test="${pageAppEditSelectDto.specialisedEdit}">
+        $('#specialisedCheckbox').closest("div.panel-body").attr("style","");
         </c:if>
         <c:if test="${pageAppEditSelectDto.premisesEdit}">
         $('#premisesCheckbox').closest("div.panel-body").attr("style","");

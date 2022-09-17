@@ -105,24 +105,16 @@
         }*/
         navTabEvent();
 
-        <c:if test="${requestInformationConfig==null && ('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
-        <c:if test="${'APTY004' ==AppSubmissionDto.appType}">
+        <c:if test="${!isRfi && (isRFC || isRenew)}">
+        <c:if test="${isRenew}">
         $('#preview').unbind();
         $('#preview').removeAttr("data-toggle");
         $('#previewli').unbind();
         </c:if>
         <c:choose>
-        <c:when test="${AppSubmissionDto.appEditSelectDto.premisesEdit}">
-
-        $('#payment').unbind();
-        $('#paymentli').unbind();
-        </c:when>
-        <c:when test="${AppSubmissionDto.appEditSelectDto.docEdit}">
-
-        $('#payment').unbind();
-        $('#paymentli').unbind();
-        </c:when>
-        <c:when test="${AppSubmissionDto.appEditSelectDto.serviceEdit}">
+        <c:when test="${AppSubmissionDto.appEditSelectDto.premisesEdit
+            || AppSubmissionDto.appEditSelectDto.specialisedEdit
+            || AppSubmissionDto.appEditSelectDto.serviceEdit}">
         $('#payment').unbind();
         $('#paymentli').unbind();
         </c:when>
@@ -144,9 +136,7 @@
         $('#payment').removeAttr("data-toggle");
         </c:otherwise>
         </c:choose>
-
         </c:if>
-
     });
 
     var navTabEvent = function (nextTab) {

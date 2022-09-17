@@ -432,10 +432,10 @@ function initFormNodes(elem) {
         }
     });
     $target.find('.date_picker').datepicker({
-        format:"dd/mm/yyyy",
-        autoclose:true,
-        todayHighlight:true,
-        orientation:'bottom'
+        format: "dd/mm/yyyy",
+        autoclose: true,
+        todayHighlight: true,
+        orientation: 'bottom'
     });
     $target.find('input[type="text"]').attr('autocomplete', 'off');
     clearFields($target);

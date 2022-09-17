@@ -280,9 +280,9 @@
         $('[name="switch_value"]').val('doEdit');
         $('#mainForm').submit();
     });
-    $('#docEdit').click(function () {
+    $('.specialisedEdit').click(function () {
         showWaiting();
-        $('#EditValue').val('doc');
+        $('#EditValue').val('specialised');
         $('[name="switch_value"]').val('doEdit');
         $('#mainForm').submit();
     });

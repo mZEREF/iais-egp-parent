@@ -912,11 +912,12 @@ public class LicenceViewServiceDelegator {
             parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">Mode of Service Delivery</li>";
             rfiUpWindowsCheck.add("Premises");
         }
-        /*if (selectsList.contains("primary")) {
-            appEditSelectDto.setDocEdit(true);
-            parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">Primary Documents</li>";
-            rfiUpWindowsCheck.add("Primary Documents");
-        }*/
+        if (selectsList.contains("specialised")) {
+            appEditSelectDto.setSpecialisedEdit(true);
+            String title = MessageUtil.getMessageDesc("GENERAL_TITLE01");
+            parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">" + title + "</li>";
+            rfiUpWindowsCheck.add(title);
+        }
         if (selectsList.contains("service")) {
             appEditSelectDto.setServiceEdit(true);
             parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">Service Related Information - " + serviceName + "</li>";

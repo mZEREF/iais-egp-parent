@@ -42,9 +42,9 @@
                                         <div class="row">
                                             <div class="col-xs-12">
                                                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                                                    <%@include file="../view/licensee/previewLicensee.jsp"%>
-                                                    <%@include file="../common/previewPremises.jsp"%>
-                                                    <%@include file="../common/previewPrimary.jsp"%>
+                                                    <%@include file="../view/viewLicensee.jsp"%>
+                                                    <%@include file="../view/viewPremises.jsp"%>
+                                                    <%@include file="../view/viewSpecialised.jsp"%>
                                                     <div class="panel panel-default svc-content">
                                                         <div class="panel-heading"  id="headingServiceInfo" role="tab">
                                                             <h4 class="panel-title"><a class="svc-pannel-collapse collapsed"  role="button" data-toggle="collapse" href="#collapseServiceInfo${status.index}" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information </a></h4>
@@ -58,7 +58,7 @@
                                                                     </div>
                                                                 </p>
                                                                 <div class="panel-main-content">
-                                                                    <%@include file="../common/previewSvcInfo.jsp"%>
+                                                                    <%@include file="../view/viewSvcInfo.jsp"%>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -111,9 +111,9 @@
             $('#menuListForm').submit();
         });
 
-        $('#docEdit').click(function () {
+        $('.specialisedEdit').click(function () {
             showWaiting();
-            $('#EditValue').val('doc');
+            $('#EditValue').val('specialised');
             $('#menuListForm').submit();
         });
 
