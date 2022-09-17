@@ -466,7 +466,7 @@
         var $target = $premContent.find('div.nonHcsaRow:last');
         initFormNodes($target);
         refreshNonHcsa($premContent.find('div.nonHcsaRowDiv'), $('div.premContent').index($premContent));
-        delOperationEvent($premContent);
+        delNonHcsaEvent($premContent);
         dismissWaiting();
     }
 
