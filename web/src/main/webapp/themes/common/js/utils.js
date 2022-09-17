@@ -418,6 +418,29 @@ function fileChanged(event) {
     //What ever else you want to do when File Chooser Changed
 }
 
+function initFormNodes(elem) {
+    let $target = getJqueryNode(elem);
+    if (isEmptyNode($target)) {
+        $target = $(document);
+    }
+    $target.find('[data-toggle="tooltip"]').tooltip();
+    $target.find('select').each(function () {
+        if ($(this).prop('multiple')) {
+            $(this).multiSelect();
+        } else {
+            $(this).niceSelect();
+        }
+    });
+    $target.find('.date_picker').datepicker({
+        format:"dd/mm/yyyy",
+        autoclose:true,
+        todayHighlight:true,
+        orientation:'bottom'
+    });
+    $target.find('input[type="text"]').attr('autocomplete', 'off');
+    clearFields($target);
+}
+
 function getJqueryNode(elem) {
     if (!isEmptyNode(elem)) {
         return elem;

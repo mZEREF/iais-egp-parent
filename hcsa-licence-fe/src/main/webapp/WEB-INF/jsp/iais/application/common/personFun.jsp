@@ -66,7 +66,7 @@
         var src = $tgt.clone();
         $tgt.after(src);
         var $currContent = $(target).last();
-        clearFields($currContent);
+        initFormNodes($currContent);
         refreshPerson($currContent, $(target).length - 1);
         $(target + ':first').find('.psnHeader').html('1');
         $currContent.find('input.assignSelVal').val('-1');

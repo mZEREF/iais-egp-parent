@@ -106,7 +106,7 @@ public class SelfAssessmentDelegator {
         if (StringUtil.isNotEmpty(messageId)){
             log.info("SelfAssessmentDelegator [startStep] message id  {}", messageId);
             interMessageDto = appSubmissionService.getInterMessageById(messageId);
-        } else {
+        } else if (StringUtil.isNotEmpty(appNo)) {
             ApplicationDto applicationDto = appSubmissionService.getMaxVersionApp(appNo);
             if (applicationDto != null){
                 String selfRfiMsgNo = getSelfRfiMsgNo(appNo);

@@ -122,7 +122,7 @@
         fillValue($target.find('input.locateWtihNonHcsa'), locateWtihNonHcsa);
         // init new section
         var $premContent = $('div.premContent').last();
-        clearFields($premContent);
+        initFormNodes($premContent);
         removeAdditional($premContent);
         refreshPremise($premContent, $('div.premContent').length - 1);
         $('div.premContent:first').find('.premHeader').html('1');
@@ -201,7 +201,8 @@
             premType = "";
         }
         $premContent.find('.premTypeValue').val(premType);
-        //$premContent.find('.premTypeValue').trigger('change');
+        // refer to premTypeChangeEvent method
+        $premContent.find('.premTypeValue').trigger('change');
         $premContent.find('.premSelValue').val('-1');
         $premContent.find('.chooseExistData').val('0');
         checkPremiseContent($premContent);
@@ -278,6 +279,8 @@
         $premContent.find('.chooseExistData').val(data.existingData);
         $premContent.find('.premSelValue').val(data.premisesSelect);
         $premContent.find('.premTypeValue').val(data.premisesType);
+        // refer to premTypeChangeEvent method
+        $premContent.find('.premTypeValue').trigger('change');
         $premContent.find('.premisesIndexNo').val(data.premisesIndexNo);
         //$premContent.find('.isPartEdit').val('0');
 
@@ -461,7 +464,7 @@
         var src = $premContent.find('div.nonHcsaRow:first').clone();
         $premContent.find('div.addNonHcsaSvcRow').before(src);
         var $target = $premContent.find('div.nonHcsaRow:last');
-        clearFields($target);
+        initFormNodes($target);
         refreshNonHcsa($premContent.find('div.nonHcsaRowDiv'), $('div.premContent').index($premContent));
         delOperationEvent($premContent);
         dismissWaiting();
@@ -537,7 +540,7 @@
     function addFloorUnit(ele) {
         var $premContent = $(ele).closest('div.premContent');
         var src = $premContent.find('div.operationDiv:first').clone();
-        clearFields(src);
+        initFormNodes(src);
         $premContent.find('div.addOpDiv').before(src);
         refreshFloorUnit($premContent, $('div.premContent').index($premContent));
         delOperationEvent($premContent);
