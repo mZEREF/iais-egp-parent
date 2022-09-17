@@ -1444,6 +1444,9 @@ public final class AppValidatorHelper {
                         if (StringUtil.isEmpty(bclsExpiryDate)){
                             errMap.put(prefix+"bclsExpiryDate"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Expiry Date (BCLS and AED)","filed"));
                         }
+                        if (StringUtil.isNotEmpty(bclsExpiryDate) && bclsExpiryDate.length() > 100) {
+                            errMap.put(prefix + "bclsExpiryDate" + i, repLength("Expiry Date (BCLS and AED)", "100"));
+                        }
                     }
                     String holdCerByEMS = person.getHoldCerByEMS();
                     if (StringUtil.isEmpty(holdCerByEMS)) {
@@ -1453,9 +1456,6 @@ public final class AppValidatorHelper {
                     }
                     if (StringUtil.isNotEmpty(aclsExpiryDate) && aclsExpiryDate.length() > 100) {
                         errMap.put(prefix + "aclsExpiryDate" + i, repLength("Expiry Date (ACLS)", "100"));
-                    }
-                    if (StringUtil.isNotEmpty(bclsExpiryDate) && bclsExpiryDate.length() > 100) {
-                        errMap.put(prefix + "bclsExpiryDate" + i, repLength("Expiry Date (BCLS and AED)", "100"));
                     }
                 }
 
