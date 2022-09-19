@@ -1,9 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <div class="amended-service-info-gp">
-    <iais:row>
-        <label class="app-title">${currStepName}</label>
-    </iais:row>
     <c:choose>
         <c:when test="${currentPreviewSvcInfo.svcPersonnelDto != null && currentPreviewSvcInfo.svcPersonnelDto.arPractitionerList.size()>0}">
             <c:set var="arPractitionerCount"
@@ -46,7 +43,9 @@
             <c:set var="normalCount" value="0"/>
         </c:otherwise>
     </c:choose>
-
+    <iais:row>
+        <label class="app-title">${currStepName}</label>
+    </iais:row>
     <div class="amend-preview-info form-horizontal min-row">
         <c:if test="${arPractitionerCount != 0}">
             <c:forEach begin="0" end="${arPractitionerCount - 1}" step="1" varStatus="status">
