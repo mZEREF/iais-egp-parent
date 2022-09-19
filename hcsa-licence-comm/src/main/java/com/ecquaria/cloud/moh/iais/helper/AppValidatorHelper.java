@@ -344,6 +344,8 @@ public final class AppValidatorHelper {
         ConfigCommService configCommService = getConfigCommService();
         List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = configCommService.getHcsaServiceStepSchemesByServiceId(serviceId);
         List<HcsaSvcPersonnelDto> currentSvcAllPsnConfig = configCommService.getSvcAllPsnConfig(hcsaServiceStepSchemeDtos, serviceId);
+        List<HcsaSvcPersonnelDto> psnConfig = configCommService.getHcsaSvcPersonnel(serviceId,
+                ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL);
 
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto : currentSvcAllPsnConfig) {
@@ -452,6 +454,9 @@ public final class AppValidatorHelper {
                 case HcsaConsts.STEP_SERVICE_PERSONNEL:
                     SvcPersonnelDto svcPersonnelDto = dto.getSvcPersonnelDto();
                     doValidateSvcPersonnel(errorMap, svcPersonnelDto);
+                    int psnLength = valiatePersonnelCount(svcPersonnelDto);
+                    AppValidatorHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL, errorMap,
+                            psnLength, "psnSvcPersonnel", HcsaConsts.SERVICE_PERSONNEL);
                     addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
                     break;
                 case HcsaConsts.STEP_PRINCIPAL_OFFICERS: {
@@ -536,6 +541,36 @@ public final class AppValidatorHelper {
             return;
         }
         errorList.add(currentStep + ":" + stepName);
+    }
+
+    private static int valiatePersonnelCount(SvcPersonnelDto svcPersonnelDto) {
+        int psnLength = 0;
+        if (!IaisCommonUtils.isEmpty(svcPersonnelDto.getArPractitionerList()) || !IaisCommonUtils.isEmpty(svcPersonnelDto.getEmbryologistList()) || !IaisCommonUtils.isEmpty(svcPersonnelDto.getNurseList())) {
+            int arCount = Optional.ofNullable(svcPersonnelDto.getArPractitionerList())
+                    .map(List::size)
+                    .orElse(0);
+            int nurCount = Optional.ofNullable(svcPersonnelDto.getNurseList())
+                    .map(List::size)
+                    .orElse(0);
+            int EmCount = Optional.ofNullable(svcPersonnelDto.getEmbryologistList())
+                    .map(List::size)
+                    .orElse(0);
+            psnLength = (arCount > nurCount && arCount > EmCount) ? arCount : ((nurCount > EmCount) ? nurCount : EmCount);
+        }
+
+        if (!IaisCommonUtils.isEmpty(svcPersonnelDto.getSpecialList())) {
+            psnLength = Optional.ofNullable(svcPersonnelDto.getSpecialList())
+                    .map(List::size)
+                    .orElse(0);
+        }
+
+        if (!IaisCommonUtils.isEmpty(svcPersonnelDto.getNormalList())) {
+            psnLength = Optional.ofNullable(svcPersonnelDto.getNormalList())
+                    .map(List::size)
+                    .orElse(0);
+        }
+        return psnLength;
+
     }
 
     /**
