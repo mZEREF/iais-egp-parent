@@ -44,7 +44,6 @@
                 </div>
                 <div class="col-xs-12 col-md-4">
                     <div class="self-assessment-checkbox-gp gradient-light-grey">
-                    <c:if test="${not empty baseService}">
                         <p class="assessment-title"><iais:code code="CDN002"/></p>
                         <div class="form-check-gp">
                             <c:forEach var="base" items="${baseService}">
@@ -52,17 +51,16 @@
                                     <input
                                     <c:if test="${baseServiceChecked != null}">
                                     <c:forEach var="checked" items="${baseServiceChecked}">
-                                           <c:if test="${base.getId().equals(checked)}">checked="checked"</c:if>
+                                            <c:if test="${base.getId().equals(checked)}">checked="checked"</c:if>
                                     </c:forEach>
                                     </c:if>
-                                           name="basechk"  type="radio" aria-invalid="false"
-                                           value="${base.getId()}">
+                                            name="basechk"  type="radio" aria-invalid="false"
+                                            value="${base.getId()}">
 
                                     <label class="form-check-label" style="padding-left: 0px;">${base.getSvcName()}</label>
                                 </div>
                             </c:forEach>
                         </div>
-                    </c:if>
                     </div>
                 </div>
             </div>
@@ -72,7 +70,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="text-left text-center-mobile col-md-6">
-                        <a class="back" href="#" id="back" ><em class="fa fa-angle-left"></em> Back</a>
+                        <a class="back" href="javascript:void(0);" id="back" ><em class="fa fa-angle-left"></em> Back</a>
                     </div>
                     <div class="text-right text-center-mobile col-md-6">
                         <a class="btn btn-primary next" id="submitService" href="javascript:void(0);">NEXT</a>

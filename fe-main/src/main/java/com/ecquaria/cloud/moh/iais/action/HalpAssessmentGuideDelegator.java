@@ -29,7 +29,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnlAssessQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.SelfPremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -164,7 +163,10 @@ public class HalpAssessmentGuideDelegator {
         ParamUtil.setSessionAttr(bpc.request, GuideConsts.CEASE_LICENCE_SEARCH_PARAM, null);
         ParamUtil.setSessionAttr(bpc.request, GuideConsts.WITHDRAW_APPLICATION_SEARCH_PARAM, null);
         ParamUtil.setSessionAttr(bpc.request, GuideConsts.DRAFT_APPLICATION_SEARCH_PARAM, null);
-
+        ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR_CHECKED, null);
+        ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED, null);
+        ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR, null);
+        ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR, null);
         String inbox_ack016 = MessageUtil.getMessageDesc("INBOX_ACK016");
         String inbox_ack017 = MessageUtil.getMessageDesc("INBOX_ACK017");
         String inbox_ack018 = MessageUtil.getMessageDesc("INBOX_ACK018");
@@ -844,15 +846,15 @@ public class HalpAssessmentGuideDelegator {
                 .filter(hcsaServiceDto -> BASE_SERVICE.equals(hcsaServiceDto.getSvcType()))
                 .filter(hcsaServiceDto -> accessSvcCodes.contains(hcsaServiceDto.getSvcCode()))
                 .collect(Collectors.toList());
-        List<HcsaServiceDto> allspecifiedService = hcsaServiceDtoList.stream()
+        /*List<HcsaServiceDto> allspecifiedService = hcsaServiceDtoList.stream()
                 .filter(hcsaServiceDto -> SPECIFIED_SERVICE.equals(hcsaServiceDto.getSvcType()))
                 .filter(hcsaServiceDto -> accessSvcCodes.contains(hcsaServiceDto.getSvcCode()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
         //sort
-        allbaseService.sort((h1,h2)->h1.getSvcName().compareTo(h2.getSvcName()));
-        allspecifiedService.sort((h1,h2)->h1.getSvcName().compareTo(h2.getSvcName()));
+        allbaseService.sort(Comparator.comparing(HcsaServiceDto::getSvcName));
+        //allspecifiedService.sort(Comparator.comparing(HcsaServiceDto::getSvcName));
         ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR, (Serializable) allbaseService);
-        ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR, (Serializable) allspecifiedService);
+        //ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR, (Serializable) allspecifiedService);
         AppSelectSvcDto appSelectSvcDto = getAppSelectSvcDto(bpc);
         appSelectSvcDto.setChooseBaseSvc(false);
         ParamUtil.setSessionAttr(bpc.request,APP_SELECT_SERVICE,appSelectSvcDto);
