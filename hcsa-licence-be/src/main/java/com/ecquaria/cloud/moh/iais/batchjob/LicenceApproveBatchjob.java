@@ -12,7 +12,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpSecondAddrDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoItemAnswerDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOpenPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -23,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoAbortDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoItemAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoMedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoNurseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoTopDto;
@@ -47,12 +50,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicDocumentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicDocumentRelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremBusinessDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremNonLicRelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremOtherInfoAbortDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremOtherInfoItemAnswerDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremOtherInfoMedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremOtherInfoNurseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremOtherInfoTopDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremOtherInfoTopPersonDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremSuplmItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
@@ -60,7 +67,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSecondAddrDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSubLicenseeInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSvcChargesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremOtherInfoMedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSvcSpecificPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -1472,6 +1478,13 @@ public class LicenceApproveBatchjob {
         licPremisesDto.setLicPremScopeDtos(MiscUtil.transferEntityDtos(appPremScopeDtos,LicPremisesScopeDto.class));
         List<AppSvcOtherInfoItemAnswerDto> appPremOtherInfoItemAnswerDtos = appPremisesCorrelationDto.getAppSvcOtherInfoItemAnswerDtos();
         licPremisesDto.setLicPremOtherInfoItemAnswerDtos(MiscUtil.transferEntityDtos(appPremOtherInfoItemAnswerDtos,LicPremOtherInfoItemAnswerDto.class));
+
+        List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appPremisesCorrelationDto.getAppPremPhOpenPeriodList();
+        licPremisesDto.setLicPremPhOpenPeriodDtos(MiscUtil.transferEntityDtos(appPremPhOpenPeriodList,LicPremPhOpenPeriodDto.class));
+        List<AppPremOpenPeriodDto> weeklyDtoList = appPremisesCorrelationDto.getWeeklyDtoList();
+        licPremisesDto.setWeeklyDtos(MiscUtil.transferEntityDtos(weeklyDtoList,LicPremOpenPeriodDto.class));
+        List<AppPremEventPeriodDto> eventDtoList = appPremisesCorrelationDto.getEventDtoList();
+        licPremisesDto.setEventDtos(MiscUtil.transferEntityDtos(eventDtoList,LicPremEventPeriodDto.class));
     }
 
     private Integer isPostInspNeeded(ApplicationGroupDto applicationGroupDto) {

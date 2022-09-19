@@ -1395,9 +1395,9 @@ public final class ApplicationHelper {
             return "";
         }
         String additional = premisesListQueryDto.getPremisesType() + ApplicationConsts.DELIMITER + premisesListQueryDto.getHciName();
-        if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesListQueryDto.getPremisesType())) {
+        /*if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesListQueryDto.getPremisesType())) {
             additional += ApplicationConsts.DELIMITER + premisesListQueryDto.getVehicleNo();
-        }
+        }*/
         return IaisCommonUtils.getPremisesKey(additional, premisesListQueryDto.getPostalCode(), premisesListQueryDto.getBlkNo(),
                 premisesListQueryDto.getStreetName(), premisesListQueryDto.getBuildingName(), premisesListQueryDto.getFloorNo(),
                 premisesListQueryDto.getUnitNo(), premisesListQueryDto.getPremisesFloorUnits());

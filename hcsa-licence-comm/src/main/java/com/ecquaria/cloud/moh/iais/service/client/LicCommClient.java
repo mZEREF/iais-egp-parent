@@ -39,7 +39,6 @@ public interface LicCommClient {
     FeignResponseEntity<List<LicenceDto>> getLicenceDtoByHciCode(@RequestParam("hciCode") String hciCode,
             @RequestParam("licenseeId") String licenseeId);
 
-
     @RequestMapping(path = "/licence-submission", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionDto> getAppSubmissionDto(@RequestParam(value = "licenceId") String licenceId);
 
@@ -73,11 +72,6 @@ public interface LicCommClient {
     @GetMapping(value = "/lic-premises", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PremisesDto>> getPremisesByLicseeIdAndSvcName(@RequestParam("licenseeId") String licenseeId,
             @RequestParam("svcNames") List<String> svcNames);
-
-//    @GetMapping(value = "/LicBaseSpecifiedCorrelation/{svcType}/{originLicenceId}", produces = MediaType.APPLICATION_JSON_VALUE)
-//    FeignResponseEntity<List<LicBaseSpecifiedCorrelationDto>> getLicBaseSpecifiedCorrelationDtos(
-//            @PathVariable("svcType") String svcType,
-//            @PathVariable("originLicenceId") String originLicenceId);
 
     @GetMapping(path = "/application-licence-premises", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppGrpPremisesDto>> getDistinctPremisesByLicenseeId(@RequestParam(value = "licenseeId") String licenseeId,

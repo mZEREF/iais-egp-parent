@@ -13,7 +13,7 @@
         <div class="panel-heading ${headingSign}">
             <h4 class="panel-title">
                 <a class="collapsed" data-toggle="collapse" href="#previewSpecialised${vs.index}" role="button" aria-expanded="true">
-                    ${specialisedTitle} - ${specialised.baseSvcName}
+                    ${specialisedTitle}<c:if test="${!withoutSvcName}"> - ${specialised.baseSvcName}</c:if>
                 </a>
             </h4>
         </div>

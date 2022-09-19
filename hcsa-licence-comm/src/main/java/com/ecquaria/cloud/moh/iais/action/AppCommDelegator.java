@@ -855,7 +855,7 @@ public abstract class AppCommDelegator {
         log.info(StringUtil.changeForLog("the do doPremises start ...."));
         String crud_action_value = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         log.info(StringUtil.changeForLog("##### Action Value: " + crud_action_value));
-        if ("undo".equals(crud_action_value)) {
+        if (RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(crud_action_value)) {
             // Undo All Changes
             DealSessionUtil.clearPremisesMap(bpc.request);
             return;
@@ -865,7 +865,8 @@ public abstract class AppCommDelegator {
         AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
         String isEdit = ParamUtil.getString(bpc.request, IS_EDIT);
         boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
-        boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto, RfcConst.EDIT_PREMISES, isEdit, isRfi);
+        boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto, RfcConst.EDIT_PREMISES, isEdit, isRfi)
+                && !appSubmissionDto.isReadonlyPrem();
         log.info(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
         if (isGetDataFromPage) {
             List<AppGrpPremisesDto> oldAppGrpPremisesDtoList;
@@ -884,14 +885,6 @@ public abstract class AppCommDelegator {
                 appEditSelectDto.setPremisesEdit(true);
                 appSubmissionDto.setChangeSelectDto(appEditSelectDto);
             }
-            //if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
-            //65718
-            //ApplicationHelper.removePremiseEmptyAlignInfo(appSubmissionDto);
-            //ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-            //}
-            //update address
-            //ApplicationHelper.updatePremisesAddress(appSubmissionDto);
-            //ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
             // check app premises change
             checkAppPremisesChanged(appSubmissionDto, oldAppGrpPremisesDtoList);
         }
@@ -902,7 +895,6 @@ public abstract class AppCommDelegator {
             bpc.request.setAttribute("continueStep", actionType);
             bpc.request.setAttribute("crudActionTypeContinue", crud_action_additional);
             // validation
-            //AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
             List<String> premisesHciList = getPremisesHciList(appSubmissionDto.getLicenseeId(), isRfi, oldAppSubmissionDto,
                     bpc.request);
             errorMap = AppValidatorHelper.doValidatePremises(appSubmissionDto, premisesHciList, isRfi, true);
