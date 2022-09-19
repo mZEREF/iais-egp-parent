@@ -54,6 +54,7 @@
         <%@include file="documentation.jsp" %>
         <%@include file="aboutTop.jsp" %>
         <%@include file="yFV.jsp"%>
+        <%@include file="otherService.jsp"%>
     </c:forEach>
 </div>
 <script>
