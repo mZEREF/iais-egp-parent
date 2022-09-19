@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -152,7 +153,11 @@ public class GiroDeductionBeDelegator {
         for (GiroDeductionDto giroDeductionDto:giroDeductionDtos
              ) {
             ApplicationGroupDto groupDto=applicationClient.getAppGrpByNo(giroDeductionDto.getAppGroupNo()).getEntity();
-            giroDeductionDto.setAppGroupStatus(groupDto.getStatus());
+            if(groupDto!=null){
+                giroDeductionDto.setAppGroupStatus(groupDto.getStatus());
+            }else {
+                giroDeductionDto.setAppGroupStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_PEND_TO_FE);
+            }
         }
         ParamUtil.setSessionAttr(bpc.request, "giroDedSearchResult", body);
         ParamUtil.setSessionAttr(bpc.request, "giroDedSearchParam", searchParam);
