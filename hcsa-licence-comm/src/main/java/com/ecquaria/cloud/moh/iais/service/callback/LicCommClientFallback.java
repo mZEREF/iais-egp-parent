@@ -77,12 +77,6 @@ public class LicCommClientFallback implements LicCommClient {
         return IaisEGPHelper.getFeignResponseEntity(licenceId);
     }
 
-//    @Override
-//    public FeignResponseEntity<List<LicBaseSpecifiedCorrelationDto>> getLicBaseSpecifiedCorrelationDtos(String svcType,
-//            String originLicenceId) {
-//        return IaisEGPHelper.getFeignResponseEntity(svcType, originLicenceId);
-//    }
-
     @Override
     public FeignResponseEntity<List<AppGrpPremisesDto>> getDistinctPremisesByLicenseeId(String licenseeId, String serviceName) {
         return IaisEGPHelper.getFeignResponseEntity(licenseeId, serviceName);

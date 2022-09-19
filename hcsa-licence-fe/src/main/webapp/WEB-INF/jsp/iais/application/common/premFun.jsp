@@ -1,10 +1,7 @@
 <script type="text/javascript">
-    //TODO edit
-    function doEditPremise(premContent, isEdit) {
-
-    }
-
     function initPremiseEvent() {
+        editPremEvent();
+
         addOperationalEvnet();
         delOperationEvent();
 
@@ -30,13 +27,14 @@
         $("[data-toggle='tooltip']").tooltip();
     }
 
-    function checkPremiseContent($premContent) {
+    function checkPremiseContent($premContent, index) {
         checkEasMtsUseOnly($premContent);
         checkAddressMandatory($premContent);
         checkLocateWtihNonHcsa($premContent);
+        checkRemoveBtn($premContent, index);
 
-        var premType = $premContent.find('.premTypeValue').val();
-        var premSelectVal = $premContent.find('.premSelValue').val();
+        let premType = $premContent.find('.premTypeValue').val();
+        let premSelectVal = $premContent.find('.premSelValue').val();
         checkPremSelect($premContent, premSelectVal, true);
         if ('PERMANENT' === premType) {
             showTag($premContent.find('.permanentSelect'));
@@ -103,6 +101,45 @@
         }
     }
 
+    function editPremEvent() {
+        let $target = $('.premisesEdit');
+        if (isEmptyNode($target)) {
+            return;
+        }
+        $target.unbind('click');
+        $target.on('click', function () {
+            let $premContent = $(this).closest('div.premContent');
+            doEditPremise($premContent);
+        });
+    }
+
+    function doEditPremise($premContent, isEdit) {
+        unDisableContent($premContent);
+        showTag($premContent.find('.retrieveAddr'));
+        $('#isEditHiddenVal').val('1');
+        let existData = $premContent.find('.chooseExistData').val();
+        if('1' == existData) {
+            if (isEmpty(isEdit) || !isEdit) {
+                checkPremDisabled($premContent, true);
+            } else {
+                $premContent.find('.isParyEdit').val('1');
+            }
+        }
+        checkEditBtn($premContent, false);
+    }
+
+    function disablePremiseContent($premContent) {
+        disableContent($premContent);
+        hideTag($premContent.find('.retrieveAddr'));
+        hideTag($premContent.find('.operationAdlDiv:first'));
+        let existData = $premContent.find('.chooseExistData').val();
+        if('1' == existData) {
+            checkPremDisabled($premContent, true);
+        } else {
+            showTag($premContent.find('.opDel:not(:first)'));
+        }
+    }
+
     function addPremEvent() {
         $('#addPremBtn').unbind('click');
         $('#addPremBtn').on('click', addPremEventFun);
@@ -140,7 +177,7 @@
             $('div.premContent').each(function (k, v) {
                 refreshPremise($(v), k);
             });
-            if ($('div.premContent').length == 1) {
+            if ($('div.premContent').length === 1) {
                 $('div.premContent').find('.premHeader').html('');
             }
             /*premTypeEvent();
@@ -157,12 +194,11 @@
         }
         //premIndex
         $target.find('.premIndex').val(k);
-        toggleTag($target.find('.removeEditDiv'), k != 0);
         $target.find('.premHeader').html(k + 1);
         resetIndex($target, k);
         refreshFloorUnit($target, k);
         refreshNonHcsa($target, k);
-        checkPremiseContent($target);
+        checkPremiseContent($target, k);
         // file
         $target.find('div.uploadFileShowDiv').attr('id', "uploadFile" + k + "ShowId");
         var filePart = $target.find('div.uploadFileShowDiv div');
@@ -180,6 +216,38 @@
         $premContent.find('div.operationDivGroup .operationDiv').remove();
         $premContent.find('div.nonHcsaRowDiv .nonHcsaRow:not(:first)').remove();
         $premContent.find('div.uploadFileShowDiv').empty();
+    }
+
+    function checkRemoveBtn ($premContent, index) {
+        if (isEmpty(index)) {
+            return;
+        }
+        let $target= $premContent.find('.removeEditDiv');
+        if (isEmptyNode($target)) {
+            return;
+        }
+        if ($target.is(':hidden') && index !== 0) {
+            showTag($target);
+        }
+        if (!isEmptyNode($target.find('.removeBtn'))) {
+            toggleTag($target.find('.removeBtn'), index !== 0);
+        }
+    }
+
+    function checkEditBtn ($premContent, show) {
+        if (isEmpty(show)) {
+            return;
+        }
+        let $target= $premContent.find('.removeEditDiv');
+        if (isEmptyNode($target)) {
+            return;
+        }
+        if ($target.is(':hidden') && show) {
+            showTag($target);
+        }
+        if (!isEmptyNode($target.find('.premisesEdit'))) {
+            toggleTag($target.find('.premisesEdit'), show);
+        }
     }
 
     var premTypeEvent = function () {
@@ -293,14 +361,14 @@
 
     function checkPremDisabled($premContent, disabled) {
         //checkDisabled($premContent.find('.vehicleNo'), disabled);
-        disableContent();
         checkDisabled($premContent.find('.hciName'), disabled);
         checkDisabled($premContent.find('.postalCode'), disabled);
         toggleTag($premContent.find('.retrieveAddr'), !disabled);
         checkDisabled($premContent.find('.address'), disabled);
         checkDisabled($premContent.find('.addrType'), disabled);
         checkDisabled($premContent.find('.operationDiv'), disabled);
-        toggleTag($premContent.find('.opDel:first'), !disabled);
+        hideTag($premContent.find('.operationAdlDiv:first'));
+        toggleTag($premContent.find('.opDel:not(:first)'), !disabled);
     }
 
     function autoCheckPremiseType(premType) {
@@ -340,11 +408,11 @@
 
     function checkSelectedLicence($tag) {
         let isSingle = true;
-        if (isEmpty($tag) || $tag.length == 0) {
+        if (isEmpty($tag) || $tag.length === 0) {
             $tag = $('input[name="selectedLicence"]');
             isSingle = false;
         }
-        if ($tag.length == 0) {
+        if ($tag.length === 0) {
             return;
         }
         let nonChecked = false;
@@ -451,7 +519,7 @@
             return;
         }
         $target.find('.nonHcsaRow').each(function (k, v) {
-            toggleTag($(v).find('.delNonHcsaSvcRow'), k != 0);
+            toggleTag($(v).find('.delNonHcsaSvcRow'), k !== 0);
             resetField(v, k, prefix);
         });
         var length = $target.find('div.nonHcsaRow').length;
@@ -510,7 +578,7 @@
         var len = floorUnits.length;
         for (var i = 0; i < len; i++) {
             var $target = $parent.find('.operationDiv').eq(i);
-            if ($target.length == 0) {
+            if ($target.length === 0) {
                 addFloorUnit($parent);
                 $target = $parent.find('.operationDiv').eq(i);
             }
@@ -525,7 +593,7 @@
             return;
         }
         $target.find('.operationDiv').each(function (i, ele) {
-            if (i == 0) {
+            if (i === 0) {
                 hideTag($(ele).find('.operationAdlDiv'));
             } else {
                 showTag($(ele).find('.operationAdlDiv'));

@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
@@ -32,7 +31,7 @@ import java.util.List;
 @Slf4j
 public class LicenceViewDelegator {
 
-    private static final  String LICENCE_ID = "licenceId";
+    private static final String LICENCE_ID = "licenceId";
 
     @Autowired
     private AppSubmissionService appSubmissionService;
@@ -51,11 +50,10 @@ public class LicenceViewDelegator {
         log.info(StringUtil.changeForLog("The LicenceViewDelegator doStart start ..."));
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, null);
         String appeal = bpc.request.getParameter("appeal");
-        bpc.request.setAttribute("appeal",appeal);
-        ParamUtil.setSessionAttr(bpc.request,HcsaAppConst.DASHBOARDTITLE,null);
+        bpc.request.setAttribute("appeal", appeal);
+        ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE, null);
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.PRIMARY_DOC_CONFIG, null);
         log.info(StringUtil.changeForLog("The LicenceViewDelegator doStart end ..."));
-
     }
 
     /**
@@ -66,32 +64,32 @@ public class LicenceViewDelegator {
      */
     public void prepareData(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.info(StringUtil.changeForLog("The LicenceViewDelegator prepareData start ..."));
-        ParamUtil.setRequestAttr(bpc.request,HcsaAppConst.DASHBOARDTITLE,"Licence Details");
-        String licencId= ParamUtil.getRequestString(bpc.request,LICENCE_ID);
-        if(StringUtil.isEmpty(licencId)){
-            licencId = (String)ParamUtil.getSessionAttr(bpc.request,LICENCE_ID);
+        ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.DASHBOARDTITLE, "Licence Details");
+        String licencId = ParamUtil.getRequestString(bpc.request, LICENCE_ID);
+        if (StringUtil.isEmpty(licencId)) {
+            licencId = (String) ParamUtil.getSessionAttr(bpc.request, LICENCE_ID);
         }
-        if(!StringUtil.isEmpty(licencId)){
+        if (!StringUtil.isEmpty(licencId)) {
             AppSubmissionDto appSubmissionDto = appSubmissionService.viewAppSubmissionDto(licencId);
-            if(appSubmissionDto != null){
+            if (appSubmissionDto != null) {
                 DealSessionUtil.initView(appSubmissionDto);
                 //set audit trail licNo
                 AuditTrailHelper.setAuditLicNo(appSubmissionDto.getLicenceNo());
-                appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+                // appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
                 //remove edit btn from page
                 appSubmissionDto.setAppEditSelectDto(new AppEditSelectDto());
                 List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
                 AppSvcRelatedInfoDto appSvcRelatedInfoDto = null;
-                if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+                if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
                     appSvcRelatedInfoDto = appSvcRelatedInfoDtos.get(0);
                 }
-                if(appSvcRelatedInfoDto != null){
+                if (appSvcRelatedInfoDto != null) {
                     appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
                     appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
                     ParamUtil.setRequestAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
                 }
                 ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, appSubmissionDto);
-                ParamUtil.setRequestAttr(bpc.request,RfcConst.FIRSTVIEW,AppConsts.TRUE);
+                ParamUtil.setRequestAttr(bpc.request, RfcConst.FIRSTVIEW, AppConsts.TRUE);
                 ParamUtil.setRequestAttr(bpc.request, "cessationForm", "Licence Details");
             }
         }
@@ -100,4 +98,5 @@ public class LicenceViewDelegator {
         log.info(StringUtil.changeForLog("The LicenceViewDelegator prepareData end ..."));
 
     }
+
 }

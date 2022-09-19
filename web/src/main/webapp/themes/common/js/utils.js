@@ -471,7 +471,7 @@ function isEmptyNode(ele) {
 }
 
 function isEmpty(str) {
-    return typeof str === 'undefined' || str == null || (typeof str !== 'number' && str == '') || str == 'undefined';
+    return typeof str === 'undefined' || str == null || (typeof str == 'string' && str == '') || str == 'undefined';
 }
 
 function capitalize(str) {

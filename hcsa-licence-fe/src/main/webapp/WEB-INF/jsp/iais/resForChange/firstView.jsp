@@ -19,6 +19,7 @@
 <c:set var="isRfi" value="${requestInformationConfig != null}" scope="request"/>
 <c:set var="isRFC" value="${'APTY005' == AppSubmissionDto.appType}" scope="request"/>
 <c:set var="subLicenseeDto" value="${AppSubmissionDto.subLicenseeDto}"/>
+<c:set var="withoutSvcName" value="true" scope="request"/>
 <div class="tab-pane" id="tabApp" role="tabpanel">
     <form method="post" id="menuListForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">

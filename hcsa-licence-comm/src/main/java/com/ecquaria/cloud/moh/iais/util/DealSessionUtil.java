@@ -227,6 +227,7 @@ public class DealSessionUtil {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, HcsaAppConst.APPSUBMISSIONDTO);
         List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,
                 AppServicesConsts.HCSASERVICEDTOLIST);
+        boolean isRfi = ApplicationHelper.checkIsRfi(request);
         if (appSubmissionDto == null) {
             appSubmissionDto = new AppSubmissionDto();
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
@@ -246,7 +247,6 @@ public class DealSessionUtil {
             }
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
         } else {
-            boolean isRfi = ApplicationHelper.checkIsRfi(request);
             //set svc info,this fun will set oldAppSubmission
             appSubmissionDto = ApplicationHelper.setSubmissionDtoSvcData(request, appSubmissionDto);
             //Object rfi = ParamUtil.getSessionAttr(bpc.request, REQUESTINFORMATIONCONFIG);
@@ -263,37 +263,8 @@ public class DealSessionUtil {
                 hcsaServiceDtos = oneHcsaServiceDto;
                 setHcsaServiceDtoList(oneHcsaServiceDto, request);
             }
-            //set licseeId and psn drop down
-            //setLicseeAndPsnDropDown(appSubmissionDto.getLicenseeId(), appSvcRelatedInfoDtos, bpc.request);
-            /*if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) || isRfi) {
-                //set oldAppSubmission when rfi,rfc,rene
-                if (isRfi) {
-                    //groupLicencePremiseRelationDis(appSubmissionDto);
-                } else {
-//                    AppDeclarationMessageDto appDeclarationMessageDto = AppDataHelper.getAppDeclarationMessageDto(bpc.request,
-//                            ApplicationConsts.APPLICATION_TYPE_RENEWAL);
-//                    List<AppDeclarationDocDto> declarationFiles = AppDataHelper.getDeclarationFiles(
-//                            ApplicationConsts.APPLICATION_TYPE_RENEWAL, bpc.request);
-//                    appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
-//                    appSubmissionDto.setAppDeclarationDocDtos(declarationFiles);
-                }
-                AppSubmissionDto oldAppSubmissionDto = null;
-                if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
-                    oldAppSubmissionDto = appSubmissionDto.getOldRenewAppSubmissionDto();
-                    if (oldAppSubmissionDto == null) {
-                        oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
-                    }
-                }
-                if (oldAppSubmissionDto == null) {
-                    oldAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
-                }
-                ApplicationHelper.setOldAppSubmissionDto(oldAppSubmissionDto, bpc.request);
-            } else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
-                AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
-                ApplicationHelper.setOldAppSubmissionDto(oldAppSubmissionDto, bpc.request);
-            }*/
         }
-        //String appType = appSubmissionDto.getAppType();
+        String appType = appSubmissionDto.getAppType();
         //initPremiseTypes(hcsaServiceDtos, true, request);
         init(appSubmissionDto, hcsaServiceDtos, forceInit, request);
 
@@ -303,6 +274,34 @@ public class DealSessionUtil {
 
         AppEditSelectDto changeSelectDto = appSubmissionDto.getChangeSelectDto() == null ? new AppEditSelectDto() : appSubmissionDto.getChangeSelectDto();
         appSubmissionDto.setChangeSelectDto(changeSelectDto);
+
+        if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) || isRfi) {
+            //set oldAppSubmission when rfi,rfc,rene
+/*            if (isRfi) {
+                //groupLicencePremiseRelationDis(appSubmissionDto);
+            } else {
+//                    AppDeclarationMessageDto appDeclarationMessageDto = AppDataHelper.getAppDeclarationMessageDto(bpc.request,
+//                            ApplicationConsts.APPLICATION_TYPE_RENEWAL);
+//                    List<AppDeclarationDocDto> declarationFiles = AppDataHelper.getDeclarationFiles(
+//                            ApplicationConsts.APPLICATION_TYPE_RENEWAL, bpc.request);
+//                    appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
+//                    appSubmissionDto.setAppDeclarationDocDtos(declarationFiles);
+            }*/
+            AppSubmissionDto oldAppSubmissionDto = null;
+            if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
+                oldAppSubmissionDto = appSubmissionDto.getOldRenewAppSubmissionDto();
+                if (oldAppSubmissionDto == null) {
+                    oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
+                }
+            }
+            if (oldAppSubmissionDto == null) {
+                oldAppSubmissionDto = CopyUtil.copyMutableObject(appSubmissionDto);
+            }
+            ApplicationHelper.setOldAppSubmissionDto(oldAppSubmissionDto, request);
+        } else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
+            AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
+            ApplicationHelper.setOldAppSubmissionDto(oldAppSubmissionDto, request);
+        }
 
         ApplicationHelper.setAppSubmissionDto(appSubmissionDto, request);
         ParamUtil.setSessionAttr(request, "IndexNoCount", 0);
@@ -1076,7 +1075,7 @@ public class DealSessionUtil {
                 if (!docConfigId.equals(appSvcDocDto.getSvcDocId())
                         || !premIndex.equals(currPremIndex)
                         || !psnIndex.equals(currPsnIndex)
-                        || !baseSvcId.equals(appSvcDocDto.getBaseSvcId())) {
+                        || StringUtil.isNotEmpty(appSvcDocDto.getBaseSvcId()) && !baseSvcId.equals(appSvcDocDto.getBaseSvcId())) {
                     continue;
                 }
                 if (appSvcDocDto.getPersonTypeNum() == null) {
@@ -1086,7 +1085,7 @@ public class DealSessionUtil {
                         || currSvcId.equals(appSvcDocDto.getBaseSvcId()))) {
                     appSvcDocDto.setSvcId(baseSvcId);
                     appSvcDocDtoList.add(appSvcDocDto);
-                } else if (!isBaseDoc && Objects.equals(currSvcId, specialSvcId)){
+                } else if (!isBaseDoc && Objects.equals(currSvcId, specialSvcId)) {
                     appSvcDocDtoList.add(appSvcDocDto);
                 }
             }
@@ -1207,7 +1206,7 @@ public class DealSessionUtil {
      * reset AppSubmissionDto init field
      *
      * @param appSubmissionDto target object
-     * @param type section type
+     * @param type             section type
      */
     public static void reSetInit(AppSubmissionDto appSubmissionDto, String type) {
         if (HcsaAppConst.SECTION_PREMISES.equals(type)) {
