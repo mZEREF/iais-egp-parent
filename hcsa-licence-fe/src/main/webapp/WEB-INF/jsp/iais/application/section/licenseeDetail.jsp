@@ -7,6 +7,10 @@
 <c:set var="isRFC" value="${'APTY005' == AppSubmissionDto.appType}" />
 
 <style>
+    .side-point {
+        margin-left: 3px !important;
+    }
+
     .side-point:before {
         content: "";
         width: 6px;
@@ -41,8 +45,6 @@
     <iais:row cssClass="col-md-12 side-point">
         <iais:message key="NEW_ACK43" escape="false"/>
     </iais:row>
-
-
 
     <%--<c:if test="${canEdit}">
         <label>If your licensee remains the same, please confirm the licensee information below and update any changes if necessary</label>

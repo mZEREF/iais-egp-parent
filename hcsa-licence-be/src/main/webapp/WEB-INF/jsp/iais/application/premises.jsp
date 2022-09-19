@@ -180,7 +180,7 @@
         $('#Next').click(function(){
             showWaiting();
             $('input[type="radio"]').prop('disabled',false);
-            submit('documents',null,null);
+            submit('specialised',null,null);
         });
         $('#SaveDraft').click(function(){
             showWaiting();

@@ -67,19 +67,18 @@
     <%--Validation Field--%>
     <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
     <input type="hidden" name="pageCon" value="valPremiseList">
-    <input type="text" style="display: none" value="${AckMessage}" id="ackMessage" name="ackMessage">
+    <input type="hidden" value="${AckMessage}" id="ackMessage" name="ackMessage">
     <iais:confirm msg="There is a pending application for a licence associated to this mode of service delivery" callBack=""
                   popupOrder="ackMessageConfim"></iais:confirm>
-    <input type="text" style="display:none;" value="${hciNameUsed}" name="hciNameUsedInput" id="hciNameUsedInput">
+    <input type="hidden" value="${hciNameUsed}" name="hciNameUsedInput" id="hciNameUsedInput">
 
     <iais:confirm msg="${newAppPopUpMsg}" needCancel="false" callBack="Continue()" popupOrder="hciNameUsed" yesBtnDesc="Continue"
                   needEscapHtml="false"></iais:confirm>
     <iais:confirm msg="NEW_ACK016" needCancel="false" callBack="$('#postalCodePop').modal('hide');" popupOrder="postalCodePop"
                   yesBtnDesc="" needEscapHtml="false" needFungDuoJi="false"/>
-    <input type="text" style="display:none;" name="continueStep" id="continueStep" value="${continueStep}">
-    <input type="text" style="display: none" name="crudActionTypeContinue" id="crudActionTypeContinue"
-           value="${crudActionTypeContinue}">
-    <input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
+    <input type="hidden" name="continueStep" id="continueStep" value="${continueStep}">
+    <input type="hidden" name="crudActionTypeContinue" id="crudActionTypeContinue" value="${crudActionTypeContinue}">
+    <input type="hidden" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
     <%--<input type="hidden" id="rfc_eqHciNameChange" value="${rfc_eqHciCode}">--%>
 </form>
 </div>
@@ -122,14 +121,11 @@
 
         premTypeChangeEvent();
 
-        premTypeChangeEvent2();
-
-        premTypeChangeEvent3();
     });
 
+    // check premises type for clicking teh navigate tab eveent
     var premTypeChangeEvent = function () {
-        //premContent oldPremTypeValue
-        $('.premContent .premTypeValue').on('input change', function () {
+        $('.premContent .premTypeValue').on('change', function () {
             let val = $(this).val();
             let $premContent = $(this).closest('.premContent');
             let oldVal = $premContent.find('.oldPremTypeValue').val();
@@ -138,30 +134,11 @@
             }
         });
     }
-    var premTypeChangeEvent2 = function () {
-        //premContent oldPremTypeValue
-        $('.premContent .premTypeValue').on('DOMAttrModified', function () {
-            let val = $(this).val();
-            let $premContent = $(this).closest('.premContent');
-            let oldVal = $premContent.find('.oldPremTypeValue').val();
-            if (oldVal != val) {
-                console.info('----2----' + oldVal + '--------' + val + '-----------------');
-            }
-        });
-    }
 
-    var premTypeChangeEvent3 = function () {
-        //premContent oldPremTypeValue
-        $('.premContent .premTypeValue').each(function(k, v){
-            v.addEventListener('DOMAttrModified', function () {
-                let val = $(this).val();
-                let $premContent = $(this).closest('.premContent');
-                let oldVal = $premContent.find('.oldPremTypeValue').val();
-                if (oldVal != val) {
-                    console.info('----3----' + oldVal + '--------' + val + '-----------------');
-                }
-            });
-        });
+    function Continue() {
+        $('#hciNameUsed').modal('hide');
+        $("[name='crud_action_type_continue']").val("continue");
+        submit($('#continueStep').val(),null,$('#crudActionTypeContinue').val());
     }
 
     /*function saveDraft() {

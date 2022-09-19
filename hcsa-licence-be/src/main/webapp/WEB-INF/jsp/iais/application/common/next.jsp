@@ -37,7 +37,7 @@
                     submit('jump',null,null);
                     </c:when>
                     <c:otherwise>
-                    submit('documents',null,null);
+                    submit('specialised',null,null);
                     </c:otherwise>
                     </c:choose>
                 }else{

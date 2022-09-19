@@ -80,8 +80,8 @@
             <c:when test="${AppSubmissionDto.appEditSelectDto.premisesEdit}">
             submit('premises','saveDraft',null);
             </c:when>
-            <c:when test="${AppSubmissionDto.appEditSelectDto.docEdit}">
-            submit('documents','saveDraft',null);
+            <c:when test="${AppSubmissionDto.appEditSelectDto.specialisedEdit}">
+            submit('specialised','saveDraft',null);
             </c:when>
             </c:choose>
 

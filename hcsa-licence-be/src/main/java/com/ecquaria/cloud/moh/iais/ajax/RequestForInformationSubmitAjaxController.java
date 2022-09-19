@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
@@ -136,11 +137,12 @@ public class RequestForInformationSubmitAjaxController {
             parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">Mode of Service Delivery</li>";
             rfiUpWindowsCheck.add("Premises");
         }
-        /*if (selectsList.contains("primary")) {
+        if (selectsList.contains("specialised")) {
             appEditSelectDto.setSpecialisedEdit(true);
-            parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">Primary Documents</li>";
-            rfiUpWindowsCheck.add("Primary Documents");
-        }*/
+            String title = MessageUtil.getMessageDesc("GENERAL_TITLE01");
+            parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">" + title + "</li>";
+            rfiUpWindowsCheck.add(title);
+        }
         if (selectsList.contains("service")) {
             appEditSelectDto.setServiceEdit(true);
             parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">Service Related Information - " + serviceName+ "</li>";

@@ -7,6 +7,7 @@
           (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
+<div class="main-content">
   <div class="container">
     <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
       <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
@@ -33,8 +34,8 @@
             <li><span><iais:service value="${specifiedItem}"></iais:service></span> (<iais:code code="CDN004"/>)</li>
           </c:forEach>
         </ul>
-       <%--
-       <div class="gray-content-box">
+        <%--
+        <div class="gray-content-box">
           <div class="h3-with-desc">
             <h3>Licensee and Key Personnel</h3>
             <p>The following details are common to all services in your healthcare organisation. To make any changes, please contact your company administrator.</p>
@@ -91,36 +92,33 @@
           </div>
         </div>
       </div>
+      <%--  <c:if test="${ not empty selectDraftNo }">
+            <iais:confirm msg="There is an existing draft for the chosen service, if you choose to continue, the draft application will be discarded." callBack="cancelSaveDraft()" popupOrder="saveDraft"  yesBtnDesc="Resume from draft" cancelBtnDesc="Continue" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="saveDraft()"></iais:confirm>
+        </c:if>--%>
     </form>
+  </div>
 </div>
+
 <script>
   function doNext() {
-      $("input[name='switch_action_type']").val("startApplication");
-      $("#mainForm").submit();
+    showWaiting();
+    $("input[name='switch_action_type']").val("startApplication");
+    $("#mainForm").submit();
   }
 
   function doBack() {
-      $("input[name='switch_action_type']").val("doBack");
-      $("#mainForm").submit();
+    showWaiting();
+    $("input[name='switch_action_type']").val("doBack");
+    $("#mainForm").submit();
   }
 
-  // $(".license-view").click(function () {
-  //     $("input[name='switch_action_type']").val("showlicense");
-  //     $("input[name='crud_action_additional']").val("Licensee");
-  //     $("#mainForm").submit();
-  // });
-  //
-  // $(".authorise-view").click(function () {
-  //     $("input[name='switch_action_type']").val("showlicense");
-  //     $("input[name='crud_action_additional']").val("Authorised");
-  //     $("#mainForm").submit();
-  // });
-  //
-  // $(".medAlert-view").click(function () {
-  //     $("input[name='switch_action_type']").val("showlicense");
-  //     $("input[name='crud_action_additional']").val("MedAlert");
-  //     $("#mainForm").submit();
-  // });
+  function saveDraft() {
+
+  }
+
+  function cancelSaveDraft() {
+
+  }
 
   function popUplicensee(url,id,name){
     if(id != 0){

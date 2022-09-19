@@ -278,7 +278,8 @@
 
         <c:if test="${'APTY005' ==AppSubmissionDto.appType && requestInformationConfig == null}">
         <c:if test="${AppSubmissionDto.appEditSelectDto.premisesEdit}">
-        $('#docEdit').unbind();
+        $('#subLicenseeEdit').unbind();
+        $('.specialisedEdit').unbind();
         $('.doSvcEdit').unbind();
         $('#Back').unbind();
         $('#Back').click(function(){
@@ -286,24 +287,26 @@
         });
         </c:if>
         <c:if test="${AppSubmissionDto.appEditSelectDto.licenseeEdit}">
-        $('#docEdit').unbind();
+        $('.specialisedEdit').unbind();
         $('.doSvcEdit').unbind();
         $('#Back').unbind();
         $('#Back').click(function(){
             submit('licensee',null,null);
         });
         </c:if>
-        <c:if test="${AppSubmissionDto.appEditSelectDto.docEdit}">
+        <c:if test="${AppSubmissionDto.appEditSelectDto.specialisedEdit}">
+        $('#subLicenseeEdit').unbind();
         $('#premisesEdit').unbind();
         $('.doSvcEdit').unbind();
         $('#Back').unbind();
         $('#Back').click(function(){
-            submit('documents',null,null);
+            submit('specialised',null,null);
         });
         </c:if>
         <c:if test="${AppSubmissionDto.appEditSelectDto.serviceEdit}">
+        $('#subLicenseeEdit').unbind();
         $('#premisesEdit').unbind();
-        $('#docEdit').unbind();
+        $('.specialisedEdit').unbind();
         </c:if>
         </c:if>
 

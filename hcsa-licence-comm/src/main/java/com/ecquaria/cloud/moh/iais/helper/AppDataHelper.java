@@ -1876,7 +1876,7 @@ public final class AppDataHelper {
                         int length = ParamUtil.getInt(request, prefix + i + j + ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER+"Length");
                         for (int x = 0; x < length; x++) {
                             AppSvcPersonnelDto appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix + i + j + "rso",
-                                    prefix + x, ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER);
+                                    prefix + x,"");
                             appSvcPersonnelDtoList.add(appSvcPersonnelDto);
                         }
                         specialServiceSectionDto.setAppSvcRadiationSafetyOfficerDtoList(appSvcPersonnelDtoList);
@@ -1886,7 +1886,7 @@ public final class AppDataHelper {
                         int length = ParamUtil.getInt(request, prefix + i + j + ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR+"Length");
                         for (int x = 0; x < length; x++) {
                             AppSvcPersonnelDto appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix + i + j + "dr",
-                                    prefix + x, ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR);
+                                    prefix + x,"");
                             appSvcPersonnelDtoList.add(appSvcPersonnelDto);
                         }
                         specialServiceSectionDto.setAppSvcDiagnosticRadiographerDtoList(appSvcPersonnelDtoList);
@@ -1896,7 +1896,7 @@ public final class AppDataHelper {
                         int length = ParamUtil.getInt(request, prefix + i + j + ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST+"Length");
                         for (int x = 0; x < length; x++) {
                             AppSvcPersonnelDto appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix + i + j + "mp",
-                                    prefix + x, ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST);
+                                    prefix + x,"");
                             appSvcPersonnelDtoList.add(appSvcPersonnelDto);
                         }
                         specialServiceSectionDto.setAppSvcMedicalPhysicistDtoList(appSvcPersonnelDtoList);
@@ -1906,7 +1906,7 @@ public final class AppDataHelper {
                         int length = ParamUtil.getInt(request, prefix + i + j + ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL+"Length");
                         for (int x = 0; x < length; x++) {
                             AppSvcPersonnelDto appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix + i + j + "rp",
-                                    prefix + x, ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL);
+                                    prefix + x,"");
                             appSvcPersonnelDtoList.add(appSvcPersonnelDto);
                         }
                         specialServiceSectionDto.setAppSvcRadiationPhysicistDtoList(appSvcPersonnelDtoList);
@@ -1916,7 +1916,7 @@ public final class AppDataHelper {
                         int length = ParamUtil.getInt(request, prefix + i + j + ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM+"Length");
                         for (int x = 0; x < length; x++) {
                             AppSvcPersonnelDto appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix + i + j + "nm",
-                                    prefix + x, ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM);
+                                    prefix + x,"");
                             appSvcPersonnelDtoList.add(appSvcPersonnelDto);
                         }
                         specialServiceSectionDto.setAppSvcNMTechnologistDtoList(appSvcPersonnelDtoList);
@@ -2018,8 +2018,8 @@ public final class AppDataHelper {
             svcPersonnelDto.setPersonnelType(ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS);
         } else if (StringUtil.isNotEmpty(personnelType)) {
             svcPersonnelDto.setPersonnelType(personnelType);
-        } else if ("".equals(prefix)) {
-        } else {
+        } else if ("".equals(prefix)||"".equals(personnelType)) {
+        }  else {
             svcPersonnelDto.setPersonnelType(prefix);
         }
         String profRegNos = svcPersonnelDto.getProfRegNo();

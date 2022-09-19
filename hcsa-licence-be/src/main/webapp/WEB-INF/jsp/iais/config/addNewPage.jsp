@@ -184,49 +184,65 @@
         </div>
       </div>
       <div id ="baseAndSpeci">
-      <div id ="msd">
-        <div class="form-group">
-          <div class="col-xs-12 col-md-12">
-            <label class="col-xs-12 col-md-12 control-label" style="margin-bottom: 20px;">Mode of Service Delivery&nbsp;<span class="mandatory">*</span></label>
-            <span class="error-msg" name="iaisErrorMsg" id="error_premisesTypes"></span>
+        <div id ="msd">
+          <div class="form-group">
+            <div class="col-xs-12 col-md-12">
+              <label class="col-xs-12 col-md-12 control-label" style="margin-bottom: 20px;">Mode of Service Delivery&nbsp;<span class="mandatory">*</span></label>
+              <span class="error-msg" name="iaisErrorMsg" id="error_premisesTypes"></span>
+            </div>
           </div>
-        </div>
 
-        <div class="form-group">
-          <div class="form-check-gp">
-            <div class="row">
-              <div class="col-xs-12 col-md-3">
-                <div class="form-check " style="left: 10%">
-                  <c:set var="type" value="${hcsaServiceConfigDto.getPremisesTypesForPage()}"></c:set>
-                  <input class="form-check-input" name="premisesTypes" id="icon3checkboxSample" onclick="premisesSelect();"
-                         <c:if test="${fn:contains(type,'PERMANENT')}">checked="checked"</c:if> type="checkbox" value="PERMANENT"  aria-invalid="false">
-                  <label class="form-check-label" for="icon3checkboxSample"><span class="check-square"></span>Permanent Premises</label>
-                </div>
-              </div>
-              <div class="col-xs-12 col-md-3">
-                <div class="form-check ">
-                  <input class="form-check-input"  name="premisesTypes" id="icon5checkboxSample" onclick="premisesSelect();"
-                         <c:if test="${fn:contains(type,'CONVEYANCE')}">checked="checked"</c:if> type="checkbox" value="CONVEYANCE" aria-invalid="false">
-                  <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>Conveyance</label>
-                </div>
-              </div>
-              <div class="col-xs-12 col-md-3">
-                <div class="form-check ">
-                  <input class="form-check-input"  name="premisesTypes" id="icon4checkboxSample" onclick="premisesSelect();"
-                         <c:if test="${fn:contains(type,'MOBILE')}">checked="checked"</c:if> type="checkbox" value="MOBILE"  aria-invalid="false">
-                  <label class="form-check-label" for="icon4checkboxSample"><span class="check-square"></span>Mobile Delivery</label>
-                </div>
-              </div>
-              <div class="col-xs-12 col-md-3">
-                <div class="form-check ">
-                  <input class="form-check-input"  name="premisesTypes" id="icon6checkboxSample" onclick="premisesSelect();"
-                         <c:if test="${fn:contains(type,'REMOTE')}">checked="checked"</c:if> type="checkbox" value="REMOTE"  aria-invalid="false">
-                  <label class="form-check-label" for="icon4checkboxSample"><span class="check-square"></span>Remote Delivery</label>
+          <div class="form-group" id ="easMts" style="display: none">
+            <div class="form-check-gp">
+              <div class="row">
+                <div class="col-xs-12 col-md-3">
+                  <div class="form-check " style="left: 10%">
+                    <c:set var="type" value="${hcsaServiceConfigDto.getPremisesTypesForPage()}"></c:set>
+                    <input class="form-check-input" name="premisesTypes" id="icon2checkboxSample" onclick="premisesSelect();"
+                           <c:if test="${fn:contains(type,'EASMTS')}">checked="checked"</c:if> type="checkbox" value="EASMTS"  aria-invalid="false">
+                    <label class="form-check-label" for="icon2checkboxSample"><span class="check-square"></span>Conveyance (in a mobile clinic / ambulance)</label>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
+        <div class="form-group" id ="noEasMts">
+            <div class="form-check-gp">
+              <div class="row">
+                <div class="col-xs-12 col-md-3">
+                  <div class="form-check " style="left: 10%">
+                    <c:set var="type" value="${hcsaServiceConfigDto.getPremisesTypesForPage()}"></c:set>
+                    <input class="form-check-input" name="premisesTypes" id="icon3checkboxSample" onclick="premisesSelect();"
+                           <c:if test="${fn:contains(type,'PERMANENT')}">checked="checked"</c:if> type="checkbox" value="PERMANENT"  aria-invalid="false">
+                    <label class="form-check-label" for="icon3checkboxSample"><span class="check-square"></span>Permanent Premises</label>
+                  </div>
+                </div>
+                <div class="col-xs-12 col-md-3">
+                  <div class="form-check ">
+                    <input class="form-check-input"  name="premisesTypes" id="icon5checkboxSample" onclick="premisesSelect();"
+                           <c:if test="${fn:contains(type,'CONVEYANCE')}">checked="checked"</c:if> type="checkbox" value="CONVEYANCE" aria-invalid="false">
+                    <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>Conveyance</label>
+                  </div>
+                </div>
+                <div class="col-xs-12 col-md-3">
+                  <div class="form-check ">
+                    <input class="form-check-input"  name="premisesTypes" id="icon4checkboxSample" onclick="premisesSelect();"
+                           <c:if test="${fn:contains(type,'MOBILE')}">checked="checked"</c:if> type="checkbox" value="MOBILE"  aria-invalid="false">
+                    <label class="form-check-label" for="icon4checkboxSample"><span class="check-square"></span>Mobile Delivery</label>
+                  </div>
+                </div>
+                <div class="col-xs-12 col-md-3">
+                  <div class="form-check ">
+                    <input class="form-check-input"  name="premisesTypes" id="icon6checkboxSample" onclick="premisesSelect();"
+                           <c:if test="${fn:contains(type,'REMOTE')}">checked="checked"</c:if> type="checkbox" value="REMOTE"  aria-invalid="false">
+                    <label class="form-check-label" for="icon6checkboxSample"><span class="check-square"></span>Remote Delivery</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
       </div>
 
         <div class="form-group" id ="businessInformation">
@@ -1803,9 +1819,13 @@
         if("EAS"==serviceCode || "MTS" == serviceCode){
             $('#cdDiv').show();
             $('#cgoDiv').hide();
+            $('#easMts').show();
+            $('#noEasMts').hide();
         }else{
             $('#cdDiv').hide();
             $('#cgoDiv').show();
+            $('#easMts').hide();
+            $('#noEasMts').show();
         }
     }
 </script>

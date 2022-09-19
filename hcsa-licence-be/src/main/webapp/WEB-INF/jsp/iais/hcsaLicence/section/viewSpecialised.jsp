@@ -13,9 +13,9 @@
             <div class="panel-body">
                 <p class="text-right">
                     <c:if test="${rfi == 'rfi'}">
-                        <c:if test="${(appEdit.premisesEdit || appEdit.premisesListEdit)&& canEidtPremise }">
-                            <input class="form-check-input" id="premisesCheckbox" type="checkbox"
-                                   name="editCheckbox" <c:if test="${pageEdit.premisesEdit}">checked</c:if> aria-invalid="false" value="premises">
+                        <c:if test="${appEdit.specialisedEdit}">
+                            <input class="form-check-input" id="specialisedCheckbox" type="checkbox" name="editCheckbox"
+                                   <c:if test="${pageEdit.specialisedEdit}">checked</c:if> aria-invalid="false" value="specialised">
                         </c:if>
                     </c:if>
                 </p>

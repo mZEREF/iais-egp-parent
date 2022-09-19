@@ -25,7 +25,7 @@
                 p.ID as PREMISES_ID,
                 p.HCI_CODE ,
                 p.HCI_NAME,
-                p.HCI_CONTACT_NO,
+                lpb.CONTACT_NO HCI_CONTACT_NO,
                 p.SCDF_REF_NO,
                 p.CERT_ISSUED_DT,
                 p.VEHICLE_NO,
@@ -47,6 +47,7 @@
                 li.ID = lp.LICENCE_ID
             join premises p on
                 lp.PREMISES_ID = p.ID
+                left join lic_prem_business_info lpb on lpb.LIC_PREM_ID= lp.ID
             WHERE
                 1 = 1
                 <#if licenseeId ??>

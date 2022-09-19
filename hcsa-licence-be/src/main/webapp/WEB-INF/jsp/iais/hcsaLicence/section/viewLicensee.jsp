@@ -21,7 +21,7 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4 class="panel-title">
-            <a  data-toggle="collapse" href="#previewLicensee">
+            <a class="collapsed" role="button" data-toggle="collapse" href="#previewLicensee">
                 Licensee Details
             </a>
         </h4>

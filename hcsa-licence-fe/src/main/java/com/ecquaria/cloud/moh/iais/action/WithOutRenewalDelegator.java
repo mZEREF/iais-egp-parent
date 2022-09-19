@@ -36,6 +36,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.HcsaFeeBundleItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -100,7 +101,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -600,16 +600,9 @@ public class WithOutRenewalDelegator {
         }
         setSubmissionAmount(appSubmissionDtos,renewalAmount,appFeeDetailsDto,bpc);
 
-        List<FeeExtDto> gradualFeeList = IaisCommonUtils.genNewArrayList();
-        List<FeeExtDto> normalFeeList = IaisCommonUtils.genNewArrayList();
-        HashMap<String, List<FeeExtDto>> laterFeeDetailsMap = getLaterFeeDetailsMap(renewalAmount.getDetailFeeDto(),gradualFeeList,normalFeeList);
+        HashMap<String, List<FeeExtDto>> laterFeeDetailsMap = getLaterFeeDetailsMap(renewalAmount);
         ParamUtil.setRequestAttr(bpc.request, "laterFeeDetailsMap", laterFeeDetailsMap);
-        if(!IaisCommonUtils.isEmpty(gradualFeeList)){
-            ParamUtil.setRequestAttr(bpc.request, "gradualFeeList", gradualFeeList);
-        }
-        if(!IaisCommonUtils.isEmpty(normalFeeList)){
-            ParamUtil.setRequestAttr(bpc.request, "normalFeeList", normalFeeList);
-        }
+        ParamUtil.setRequestAttr(bpc.request, "feeInfoDtoList", renewalAmount);
         AppSubmissionListDto appSubmissionListDto = new AppSubmissionListDto();
         String submissionId = generateIdClient.getSeqId().getEntity();
         long l = System.currentTimeMillis();
@@ -969,7 +962,7 @@ public class WithOutRenewalDelegator {
         }
     }
     public static void setSubmissionAmount(List<AppSubmissionDto> appSubmissionDtoList, FeeDto feeDto, List<AppFeeDetailsDto> appFeeDetailsDto, BaseProcessClass bpc){
-        List<FeeExtDto> detailFeeDtoList = feeDto.getDetailFeeDto();
+        List<FeeInfoDto> detailFeeDtoList = feeDto.getFeeInfoDtos();
         Double total = feeDto.getTotal();
         String totalString = Formatter.formatterMoney(total);
         ParamUtil.setSessionAttr(bpc.request, "totalStr", totalString);
@@ -978,96 +971,101 @@ public class WithOutRenewalDelegator {
             return;
         }
         int index = 0;
-        int mix_g = 0;
-        int mix_n = 0;
-        boolean isBundledFee=false;
+
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtoList){
             AppFeeDetailsDto appFeeDetailsDto1=new AppFeeDetailsDto();
-            FeeExtDto feeExtDto = detailFeeDtoList.get(index);
-            feeExtDto.setAppGroupNo(appSubmissionDtoList.get(0).getAppGrpNo());
-            String lateFeeType = feeExtDto.getLateFeeType();
-            if("gradualFee".equals(lateFeeType)){
-                mix_g ++;
-            }else{
-                mix_n ++;
+            FeeInfoDto feeInfoDto = detailFeeDtoList.get(index);
+            Double lateFeeAmount = 0.0;
+            Double amount = 0.0;
+            String lateFeeType = null;
+            String appGrpNo = appSubmissionDtoList.get(0).getAppGrpNo();
+
+            if(feeInfoDto.getBaseSvcFeeExt()!=null){
+                setAppFeeDetails(feeInfoDto.getBaseSvcFeeExt(),lateFeeAmount,amount,lateFeeType,appGrpNo);
             }
-            if(mix_g > 0 && mix_n >0){
-                ParamUtil.setRequestAttr(bpc.request,"mix","mix");
+            if(feeInfoDto.getThbSpecifiedFeeExt()!=null){
+                setAppFeeDetails(feeInfoDto.getThbSpecifiedFeeExt(),lateFeeAmount,amount,lateFeeType,appGrpNo);
             }
-            try {
-                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(feeExtDto.getSvcNames().get(0));
-                feeExtDto.setSvcCode(hcsaServiceDto.getSvcCode());
-                if(MiscUtil.doubleEquals(feeExtDto.getAmount(), 0.0)&&(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(feeExtDto.getSvcCode())||feeExtDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE))){
-                    appSubmissionDto.setIsBundledFee(1);
-                    isBundledFee=true;
-                }
-                if(hcsaServiceDto.getSvcType().equals(HcsaConsts.SERVICE_TYPE_SPECIFIED)){
-                    appSubmissionDto.setIsSpecifiedFee(1);
-                }
-            }catch (Exception e){
-                log.error(e.getMessage(),e);
+            if(feeInfoDto.getSimpleSpecifiedFeeExt()!=null){
+                setAppFeeDetails(feeInfoDto.getSimpleSpecifiedFeeExt(),lateFeeAmount,amount,lateFeeType,appGrpNo);
+            }
+            if(feeInfoDto.getComplexSpecifiedFeeExt()!=null){
+                setAppFeeDetails(feeInfoDto.getComplexSpecifiedFeeExt(),lateFeeAmount,amount,lateFeeType,appGrpNo);
+            }
+            if(feeInfoDto.getBundleSvcFeeExt()!=null){
+                setAppFeeDetails(feeInfoDto.getBundleSvcFeeExt(),lateFeeAmount,amount,lateFeeType,appGrpNo);
+            }
+            if(feeInfoDto.getGradualFeeExt()!=null){
+                setAppFeeDetails(feeInfoDto.getGradualFeeExt(),lateFeeAmount,amount,lateFeeType,appGrpNo);
             }
 
             appSubmissionDto.setRenewalFeeType(lateFeeType);
-            Double lateFeeAmount = feeExtDto.getLateFeeAmoumt();
-            Double amount = feeExtDto.getAmount();
             appSubmissionDto.setLateFee(lateFeeAmount);
             appSubmissionDto.setLateFeeStr(Formatter.formatterMoney(lateFeeAmount));
             appSubmissionDto.setAmount(amount);
             appSubmissionDto.setAmountStr(Formatter.formatterMoney(amount));
             appFeeDetailsDto1.setBaseFee(amount);
-            if(StringUtil.isEmpty(lateFeeAmount)){
-                appFeeDetailsDto1.setLaterFee(0.0);
-            }else {
-                appFeeDetailsDto1.setLaterFee(lateFeeAmount);
-            }
-            appFeeDetailsDto.add(appFeeDetailsDto1);
+            appFeeDetailsDto1.setLaterFee(lateFeeAmount);
             appFeeDetailsDto1.setAdmentFee(total);
+            appFeeDetailsDto.add(appFeeDetailsDto1);
             index ++;
         }
-        if(isBundledFee){
-            index = 0;
-            for(AppSubmissionDto appSubmissionDto : appSubmissionDtoList){
-                FeeExtDto feeExtDto = detailFeeDtoList.get(index);
-                if(!MiscUtil.doubleEquals(feeExtDto.getAmount(), 0.0)&&(feeExtDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE)||feeExtDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE))){
-                    appSubmissionDto.setIsBundledFee(1);
-                }
-                index ++;
-            }
-        }
-
     }
 
-    public static HashMap<String, List<FeeExtDto>> getLaterFeeDetailsMap(List<FeeExtDto> laterFeeDetails,List<FeeExtDto> gradualFeeList,List<FeeExtDto> normalFeeList){
+    private static void setAppFeeDetails(FeeExtDto feeExtDto,Double lateFeeAmount,Double amount,String lateFeeType,String appGrpNo){
+        feeExtDto.setAppGroupNo(appGrpNo);
+        if(feeExtDto.getLateFeeType()!=null){
+            lateFeeType=feeExtDto.getLateFeeType();
+            lateFeeAmount+=feeExtDto.getLateFeeAmoumt();
+        }
+        amount+=feeExtDto.getAmount();
+    }
+
+    public static HashMap<String, List<FeeExtDto>> getLaterFeeDetailsMap(FeeDto feeDto){
         HashMap<String, List<FeeExtDto>> laterFeeDetailsMap = IaisCommonUtils.genNewHashMap();
-        if(laterFeeDetails == null || laterFeeDetails.size() == 0){
+        if(feeDto == null || feeDto.getFeeInfoDtos().size() == 0){
             return null;
         }
-
-        for(FeeExtDto laterFeeDetail : laterFeeDetails){
-            String targetLaterFeeType = laterFeeDetail.getLateFeeType();
-            if(StringUtil.isEmpty(targetLaterFeeType)){
-                normalFeeList.add(laterFeeDetail);
-                continue;
-            }else if("gradualFee".equals(targetLaterFeeType)){
-                Double amount = laterFeeDetail.getAmount();
-                if(amount != null && !MiscUtil.doubleEquals(amount, 0d)){
-                    gradualFeeList.add(laterFeeDetail);
-                }
-                continue;
+        for(FeeInfoDto info : feeDto.getFeeInfoDtos()){
+            if(info.getBaseSvcFeeExt()!=null&&info.getBaseSvcFeeExt().getLateFeeType()!=null){
+                FeeExtDto laterFeeDetail=info.getBaseSvcFeeExt();
+                laterFeeDetailSet(laterFeeDetail,laterFeeDetailsMap);
             }
-            normalFeeList.add(laterFeeDetail);
-            if(laterFeeDetailsMap.get(targetLaterFeeType) == null){
-                List<FeeExtDto> list = IaisCommonUtils.genNewArrayList();
-                list.add(laterFeeDetail);
-                laterFeeDetailsMap.put(laterFeeDetail.getLateFeeType(),list);
-            }else {
-                List<FeeExtDto> list = laterFeeDetailsMap.get(laterFeeDetail.getLateFeeType());
-                list.add(laterFeeDetail);
-                laterFeeDetailsMap.put(laterFeeDetail.getLateFeeType(),list);
+            if(info.getBundleSvcFeeExt()!=null&&info.getBundleSvcFeeExt().getLateFeeType()!=null){
+                FeeExtDto laterFeeDetail=info.getBundleSvcFeeExt();
+                laterFeeDetailSet(laterFeeDetail,laterFeeDetailsMap);
+            }
+            if(info.getComplexSpecifiedFeeExt()!=null&&info.getComplexSpecifiedFeeExt().getLateFeeType()!=null){
+                FeeExtDto laterFeeDetail=info.getComplexSpecifiedFeeExt();
+                laterFeeDetailSet(laterFeeDetail,laterFeeDetailsMap);
+            }
+            if(info.getSimpleSpecifiedFeeExt()!=null&&info.getSimpleSpecifiedFeeExt().getLateFeeType()!=null){
+                FeeExtDto laterFeeDetail=info.getSimpleSpecifiedFeeExt();
+                laterFeeDetailSet(laterFeeDetail,laterFeeDetailsMap);
+            }
+            if(info.getThbSpecifiedFeeExt()!=null&&info.getThbSpecifiedFeeExt().getLateFeeType()!=null){
+                FeeExtDto laterFeeDetail=info.getThbSpecifiedFeeExt();
+                laterFeeDetailSet(laterFeeDetail,laterFeeDetailsMap);
+            }
+            if(info.getGradualFeeExt()!=null&&info.getGradualFeeExt().getLateFeeType()!=null){
+                FeeExtDto laterFeeDetail=info.getGradualFeeExt();
+                laterFeeDetailSet(laterFeeDetail,laterFeeDetailsMap);
             }
         }
         return laterFeeDetailsMap;
+    }
+
+    private static void laterFeeDetailSet(FeeExtDto laterFeeDetail, HashMap<String, List<FeeExtDto>> laterFeeDetailsMap){
+        String targetLaterFeeType = laterFeeDetail.getLateFeeType();
+        if(laterFeeDetailsMap.get(targetLaterFeeType) == null){
+            List<FeeExtDto> list = IaisCommonUtils.genNewArrayList();
+            list.add(laterFeeDetail);
+            laterFeeDetailsMap.put(laterFeeDetail.getLateFeeType(),list);
+        }else {
+            List<FeeExtDto> list = laterFeeDetailsMap.get(laterFeeDetail.getLateFeeType());
+            list.add(laterFeeDetail);
+            laterFeeDetailsMap.put(laterFeeDetail.getLateFeeType(),list);
+        }
     }
 
 

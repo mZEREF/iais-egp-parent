@@ -275,9 +275,8 @@ public final class ApplicationHelper {
         if (appSubmissionDto == null || appSubmissionDto.getAppGrpPremisesDtoList() == null) {
             return;
         }
-        int selfAssMtFlag = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) ?
-                ApplicationConsts.PENDING_SUBMIT_SELF_ASSESSMENT : (isAutoRfc ?
-                ApplicationConsts.PROHIBIT_SUBMIT_RFI_SELF_ASSESSMENT : ApplicationConsts.PENDING_SUBMIT_SELF_ASSESSMENT);
+        int selfAssMtFlag = isAutoRfc ? ApplicationConsts.PROHIBIT_SUBMIT_RFI_SELF_ASSESSMENT :
+                ApplicationConsts.PENDING_SUBMIT_SELF_ASSESSMENT;
         appSubmissionDto.setAutoRfc(isAutoRfc);
         appSubmissionDto.setIsNeedNewLicNo(isNeedNewLicNo ? AppConsts.YES : AppConsts.NO);
         appSubmissionDto.getAppGrpPremisesDtoList().forEach(appGrpPremisesDto -> {

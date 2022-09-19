@@ -1274,10 +1274,10 @@ public abstract class AppCommDelegator {
             AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
             switch (action) {
                 case "MohAppPremSelfDecl":
-                    ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.SESSION_PARAM_APPLICATION_GROUP_ID,
-                            appSubmissionDto.getAppGrpId());
-                    ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.SESSION_SELF_DECL_ACTION, "new");
-                    break;
+//                    ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.SESSION_PARAM_APPLICATION_GROUP_ID,
+//                            appSubmissionDto.getAppGrpId());
+//                    ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.SESSION_SELF_DECL_ACTION, "new");
+//                    break;
                 case "DashBoard": {
                     String tokenUrl = RedirectUtil.appendCsrfGuardToken(
                             "https://" + bpc.request.getServerName() + "/main-web/eservice/INTERNET/MohInternetInbox", bpc.request);
@@ -2112,15 +2112,15 @@ public abstract class AppCommDelegator {
             appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
         }*/
         appSubmissionDto.setAmount(amount);
+        //judge is giro acc
+        boolean isGiroAcc = organizationService.isGiroAccount(appSubmissionDto.getLicenseeId());
+        appSubmissionDto.setGiroAccount(isGiroAcc);
 
         AppEditSelectDto appEditSelectDto = ApplicationHelper.createAppEditSelectDto(true);
         appEditSelectDto.setLicenseeEdit(ApplicationHelper.canLicenseeEdit(appSubmissionDto.getSubLicenseeDto(),
                 appSubmissionDto.getAppType(), true, true));
         appSubmissionDto.setChangeSelectDto(appEditSelectDto);
-        //judge is giro acc
-        boolean isGiroAcc = organizationService.isGiroAccount(appSubmissionDto.getLicenseeId());
-        appSubmissionDto.setGiroAccount(isGiroAcc);
-
+        appEditSelectDto.setNeedNewLicNo(true);
         RfcHelper.beforeSubmit(appSubmissionDto, null, appEditSelectDto, appGroupNo, appType, bpc.request);
 
         appSubmissionDto = submit(appSubmissionDto);
