@@ -1330,19 +1330,8 @@ public class LicenceApproveBatchjob {
             premisesDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             premisesDto.setOrganizationId(organizationId);
             List<AppGrpSecondAddrDto> appGrpSecondAddrDtos = appGrpPremisesDto.getAppGrpSecondAddrDtos();
-            premisesDto.setLicSecondAddrDtos(MiscUtil.transferEntityDtos(appGrpSecondAddrDtos,LicSecondAddrDto.class));
+            premisesDto.setLicSecondAddrDtos(transferSecordAddres(appGrpSecondAddrDtos));
             premisesDto.setLicPremNonLicRelationDtos(MiscUtil.transferEntityDtos(appGrpPremisesDto.getAppPremNonLicRelationDtos(),LicPremNonLicRelationDto.class));
-            /*List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodDtoList();
-            List<LicPremPhOpenPeriodDto> licPremPhOpenPeriodDtos = IaisCommonUtils.genNewArrayList();
-            if (!IaisCommonUtils.isEmpty(appPremPhOpenPeriodDtos)) {
-                log.info(StringUtil.changeForLog("The licence Generate appPremPhOpenPeriodDtos.size() is -->:"+appPremPhOpenPeriodDtos.size()));
-                for (AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodDtos) {
-                    LicPremPhOpenPeriodDto licPremPhOpenPeriodDto = MiscUtil.transferEntityDto(appPremPhOpenPeriodDto, LicPremPhOpenPeriodDto.class);
-                    licPremPhOpenPeriodDto.setId(null);
-                    licPremPhOpenPeriodDto.setPremId(null);
-                    licPremPhOpenPeriodDtos.add(licPremPhOpenPeriodDto);
-                }
-            }*/
             List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
             List<PremisesOperationalUnitDto> premisesOperationalUnitDtos = IaisCommonUtils.genNewArrayList();
             if (!IaisCommonUtils.isEmpty(appPremisesOperationalUnitDtos)) {
@@ -1354,35 +1343,7 @@ public class LicenceApproveBatchjob {
                     premisesOperationalUnitDtos.add(premisesOperationalUnitDto);
                 }
             }
-            /*//weekly
-            List<AppPremOpenPeriodDto> appWeeklyDtos = appGrpPremisesDto.getWeeklyDtos();
-            List<LicPremOpenPeriodDto> licWeeklyDtos = IaisCommonUtils.genNewArrayList();
-            if(!IaisCommonUtils.isEmpty(appWeeklyDtos)){
-                log.info(StringUtil.changeForLog("The licence Generate appWeeklyDtos.size() is -->:"+appWeeklyDtos.size()));
-                for(AppPremOpenPeriodDto appWeeklyDto:appWeeklyDtos){
-                    LicPremOpenPeriodDto licWeeklyDto= MiscUtil.transferEntityDto(appWeeklyDto, LicPremOpenPeriodDto.class);
-                    licWeeklyDto.setId(null);
-                    licWeeklyDto.setPremId(null);
-                    licWeeklyDtos.add(licWeeklyDto);
-                }
-            }
 
-            //event
-            List<AppPremEventPeriodDto> appEventDtos = appGrpPremisesDto.getEventDtos();
-            List<LicPremEventPeriodDto> licEventDtos = IaisCommonUtils.genNewArrayList();
-            if(!IaisCommonUtils.isEmpty(appEventDtos)){
-                log.info(StringUtil.changeForLog("The licence Generate appEventDtos.size() is -->:"+appEventDtos.size()));
-                for(AppPremEventPeriodDto appEventDto:appEventDtos){
-                    LicPremEventPeriodDto licEventDto = MiscUtil.transferEntityDto(appEventDto,LicPremEventPeriodDto.class);
-                    licEventDto.setId(null);
-                    licEventDto.setPremId(null);
-                    licEventDtos.add(licEventDto);
-                }
-            }
-
-            premisesDto.setWeeklyDtos(licWeeklyDtos);
-            premisesDto.setEventDtos(licEventDtos);
-            premisesDto.setLicPremPhOpenPeriodDtos(licPremPhOpenPeriodDtos);*/
             premisesDto.setPremisesOperationalUnitDtos(premisesOperationalUnitDtos);
             premisesGroupDto.setPremisesDto(premisesDto);
             //create lic_premises
@@ -1456,6 +1417,22 @@ public class LicenceApproveBatchjob {
         log.info(StringUtil.changeForLog("The licence Generate getPremisesGroupDto end ..."));
         return reuslt;
     }
+
+    private List<LicSecondAddrDto> transferSecordAddres(List<AppGrpSecondAddrDto> appGrpSecondAddrDtos){
+        List<LicSecondAddrDto> result = IaisCommonUtils.genNewArrayList();
+        if(IaisCommonUtils.isNotEmpty(appGrpSecondAddrDtos)){
+            for(AppGrpSecondAddrDto appGrpSecondAddrDto : appGrpSecondAddrDtos){
+                List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = appGrpSecondAddrDto.getAppPremisesOperationalUnitDtos();
+                LicSecondAddrDto licSecondAddrDto = MiscUtil.transferEntityDto(appGrpSecondAddrDto,LicSecondAddrDto.class);
+                licSecondAddrDto.setId(null);
+                licSecondAddrDto.setPremisesId(null);
+                licSecondAddrDto.setPremisesOperationalUnitDtos(MiscUtil.transferEntityDtos(appPremisesOperationalUnitDtos,PremisesOperationalUnitDto.class));
+                result.add(licSecondAddrDto);
+            }
+        }
+        return result;
+    }
+
 
     private void addLicPremisesDtoReleation(LicPremisesDto licPremisesDto,AppPremisesCorrelationDto appPremisesCorrelationDto){
         List<AppPremSubSvcRelDto> appPremSubSvcRelDtos = appPremisesCorrelationDto.getAppPremSubSvcRelDtos();
