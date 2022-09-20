@@ -191,7 +191,6 @@
               <span class="error-msg" name="iaisErrorMsg" id="error_premisesTypes"></span>
             </div>
           </div>
-
           <div class="form-group" id ="easMts" style="display: none">
             <div class="form-check-gp">
               <div class="row">
@@ -206,9 +205,7 @@
               </div>
             </div>
           </div>
-        </div>
-
-        <div class="form-group" id ="noEasMts">
+          <div class="form-group" id ="noEasMts">
             <div class="form-check-gp">
               <div class="row">
                 <div class="col-xs-12 col-md-3">
@@ -243,7 +240,7 @@
               </div>
             </div>
           </div>
-      </div>
+        </div>
 
         <div class="form-group" id ="businessInformation">
           <div class="col-xs-12 col-md-9">
@@ -1817,13 +1814,13 @@
     function controlEAS() {
         var serviceCode = $('#serviceCode').val();
         if("EAS"==serviceCode || "MTS" == serviceCode){
-            $('#cdDiv').show();
-            $('#cgoDiv').hide();
+            // $('#cdDiv').show();
+            // $('#cgoDiv').hide();
             $('#easMts').show();
             $('#noEasMts').hide();
         }else{
-            $('#cdDiv').hide();
-            $('#cgoDiv').show();
+            // $('#cdDiv').hide();
+            // $('#cgoDiv').show();
             $('#easMts').hide();
             $('#noEasMts').show();
         }
