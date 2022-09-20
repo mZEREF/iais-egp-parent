@@ -125,6 +125,8 @@ public class MohDsActionDelegator {
     public void doStart(BaseProcessClass bpc) {
         log.info("------- MohDsActionDelegator Start ------------");
         DataSubmissionHelper.clearSession(bpc.request);
+        ParamUtil.setSessionAttr(bpc.request, TopDataSubmissionDelegator.SUBMIT_FLAG, null);
+        ParamUtil.setSessionAttr(bpc.request, LdtDataSubmissionDelegator.SUBMIT_FLAG, null);
     }
 
     /**
