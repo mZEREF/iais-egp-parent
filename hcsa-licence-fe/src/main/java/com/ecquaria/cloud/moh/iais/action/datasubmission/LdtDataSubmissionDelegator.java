@@ -449,6 +449,7 @@ public class LdtDataSubmissionDelegator {
         ParamUtil.setRequestAttr(bpc.request, "title", DataSubmissionHelper.getMainTitle(ldtSuperDataSubmissionDto.getAppType()));
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", DataSubmissionHelper.getSmallTitle(DataSubmissionConsts.DS_LDT,
                 ldtSuperDataSubmissionDto.getAppType(), ldtSuperDataSubmissionDto.getSubmissionType()));
+        ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, null);
     }
 
     private boolean isRfc(HttpServletRequest request) {

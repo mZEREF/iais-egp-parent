@@ -235,6 +235,7 @@ public class TopDataSubmissionDelegator {
         ParamUtil.setRequestAttr(bpc.request, "title", DataSubmissionHelper.getMainTitle(superDto.getAppType()));
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", DataSubmissionHelper.getSmallTitle(DataSubmissionConsts.DS_TOP,
                 superDto.getAppType(), superDto.getSubmissionType()));
+        ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, null);
 
 
     }
