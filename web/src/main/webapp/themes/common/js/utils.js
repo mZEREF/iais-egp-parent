@@ -1037,15 +1037,20 @@ function callCommonAjax(options, callback, others) {
     if (!isEmpty(options.async)) {
         async = options.async;
     }
-    var data = options.data;
-    if (isEmpty(data)) {
-        data = options;
+    var formData = options.data;
+    if (isEmpty(formData)) {
+        formData = options;
+    }
+    var contentType = options.contentType;
+    if (isEmpty(contentType)) {
+        contentType = 'application/json;charset=utf-8';
     }
     console.log(url);
     $.ajax({
         url: url,
         dataType: 'json',
-        data: data,
+        contentType: contentType,
+        data: formData,
         async: async,
         type: type,
         success: function (data) {
