@@ -25,9 +25,6 @@
                 $(v).find('.assign-psn-item').html('');
             }
             $(v).find('div.personnel-content').each(function (i, x) {
-                /*var flag=isEmpty($(x).find('input.profRegNo').val())?false:true;
-                disablePrsInfo($(x),flag,true);
-                checkPersonContent($(x), true);*/
                 checkPersonDisabled($(x), true);
                 var personnelSel = $(x).find('.personnelType').val();
                 var flag = $(x).find('input.personTypeToShow').val();

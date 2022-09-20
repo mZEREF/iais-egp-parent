@@ -1,5 +1,5 @@
 <div class="personnel-content">
-    <input type="hidden"  class="personTypeToShow" name="${prefix}personTypeToShow${index}" value="${personTypeToShow}"/>
+    <input type="hidden"  class="personTypeToShow not-clear" name="${prefix}personTypeToShow${index}" value="${personTypeToShow}"/>
     <iais:row cssClass="personnel-header">
         <div class="col-xs-12 col-md-6">
             <p class="bold">${title} <label class="assign-psn-item">${index+1}</label></p>
