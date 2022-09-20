@@ -1,13 +1,13 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <input type="hidden" name="specialised_svc_code" value="${specialised_svc_code}">
 
 <c:set var="specialisedTitle"><iais:message key="GENERAL_TITLE01" escape="false"/></c:set>
 <c:forEach var="specialised" items="${AppSubmissionDto.appPremSpecialisedDtoList}" varStatus="vs">
     <c:if test="${empty printView && (!FirstView || needShowErr)}">
-        <c:set var="headingSign" value="${fn:contains(coMap.multiSpecialised, specialised.baseSvcCode) ? 'incompleted' : 'completed'}" />
+        <c:set var="headingSign" value="${StringUtil.isIn(specialised.baseSvcCode, coMap.multiSpecialised) ? 'incompleted' : 'completed'}" />
     </c:if>
     <div class="panel panel-default">
         <div class="panel-heading ${headingSign}">

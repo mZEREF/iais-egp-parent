@@ -251,6 +251,24 @@ public final class ApplicationHelper {
         return appSvcRelatedInfoDto;
     }
 
+    public static AppSvcRelatedInfoDto getAppSvcRelatedInfoBySvcCode(AppSubmissionDto appSubmissionDto, String svcCode, String appNo) {
+        log.info(StringUtil.changeForLog("Service Code: " + svcCode + " - App No: " + appNo));
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
+        if (appSubmissionDto != null) {
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            if (appSvcRelatedInfoDtos != null && !appSvcRelatedInfoDtos.isEmpty()) {
+                for (AppSvcRelatedInfoDto dto : appSvcRelatedInfoDtos) {
+                    if (Objects.equals(svcCode, dto.getServiceCode())
+                            && (StringUtil.isEmpty(appNo) || appNo.equals(dto.getAppNo()))) {
+                        appSvcRelatedInfoDto = dto;
+                        break;
+                    }
+                }
+            }
+        }
+        return appSvcRelatedInfoDto;
+    }
+
     public static void reSetAdditionalFields(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto,
             AppEditSelectDto appEditSelectDto) {
         reSetAdditionalFields(appSubmissionDto, appEditSelectDto);

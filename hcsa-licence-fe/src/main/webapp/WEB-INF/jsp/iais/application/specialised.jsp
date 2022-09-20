@@ -16,6 +16,7 @@
 <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
     <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
     <input type="hidden" name="specialised_svc_code" value="${specialised_svc_code}">
+    <input type="hidden" name="specialised_next_code" value="">
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -27,7 +28,7 @@
                                 <c:if test="${hcsaServiceDtoList.size()>1}" var="multiSvcs">
                                     <div class="multiservice">
                                         <div class="tab-gp side-tab clearfix">
-                                            <%@ include file="common/formTabs.jsp" %>
+                                            <%@ include file="common/specialisedTabs.jsp" %>
                                             <div class="tab-content">
                                                 <div class="tab-pane in active">
                                                     <%@ include file="section/specialisedContent.jsp" %>
@@ -62,7 +63,7 @@
             submit('serviceForms', null, null);
             </c:if>
             <c:if test="${not empty specialised_next_code}">
-            submitFormTabs('${specialised_next_code}');
+            submitSpecialisedTabs('${specialised_next_code}');
             </c:if>
         });
         $('#SaveDraft').click(function () {
@@ -71,9 +72,9 @@
         });
     });
 
-    function submitFormTabs(action) {
+    function submitSpecialisedTabs(action) {
         $("[name='crud_action_type']").val('specialised');
-        $("[name='specialised_svc_code']").val(action);
+        $("[name='specialised_next_code']").val(action);
         var mainForm = document.getElementById("mainForm");
         mainForm.submit();
     }

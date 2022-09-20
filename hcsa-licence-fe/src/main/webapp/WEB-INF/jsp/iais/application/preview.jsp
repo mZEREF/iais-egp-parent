@@ -1,8 +1,8 @@
 <%@ page import="com.ecquaria.cloud.RedirectUtil" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
 
 <%@ taglib prefix="webui" uri="http://www.ecquaria.com/webui" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 
@@ -56,7 +56,7 @@
                                                         <input type="hidden" name="maskId" value="<iais:mask name="svc${status.index}" value="${hcsaServiceDto.id}"/>"/>
                                                         <input type="hidden" name="maskName" value="svc${status.index}"/>
                                                         <c:if test="${empty printView && doRenewViewYes ne '1' && (!FirstView || needShowErr)}">
-                                                            <c:set var="headingSign" value="${fn:contains(serviceConfig, hcsaServiceDto.id) ? 'incompleted' : 'completed'}" />
+                                                            <c:set var="headingSign" value="${StringUtil.isIn(hcsaServiceDto.id, coMap.multiSvc) ? 'incompleted' : 'completed'}" />
                                                         </c:if>
                                                         <div class="panel-heading  ${headingSign}" id="headingServiceInfo${status.index}" role="tab">
                                                             <h4 class="panel-title svcTitle">

@@ -389,7 +389,7 @@
                 }
             }
         });
-        if (!nodeChecked && isEmptyNode($premType) && !isEmptyNode($('#addPremBtn'))) {
+        if (!nodeChecked && isEmptyNode($target) && !isEmptyNode($('#addPremBtn'))) {
             addPremEventFun();
             $target = $('input[value="' + premType + '"').last();
         }

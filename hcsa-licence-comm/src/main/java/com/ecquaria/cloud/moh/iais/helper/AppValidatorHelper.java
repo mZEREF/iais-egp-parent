@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.DocSecDetailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SpecialServiceSectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
@@ -128,9 +129,9 @@ public final class AppValidatorHelper {
 
     public static String repLength(String... ars) {
         int length = ars.length;
-        String general_err0041 = MessageUtil.getMessageDesc("GENERAL_ERR0041");
+        String errorMsg = MessageUtil.getMessageDesc("GENERAL_ERR0041");
         if (length == 0) {
-            repLength(general_err0041);
+            repLength(errorMsg);
         } else if (length == 1) {
             String field = ars[0].replace("{field}", "field");
             field = field.replace("{maxlength}", "100");
@@ -138,13 +139,13 @@ public final class AppValidatorHelper {
         } else if (length == 2) {
             Iterator<String> iterator = Arrays.stream(ars).iterator();
             if (iterator.hasNext()) {
-                general_err0041 = general_err0041.replace("{field}", iterator.next());
+                errorMsg = errorMsg.replace("{field}", iterator.next());
             }
             if (iterator.hasNext()) {
-                general_err0041 = general_err0041.replace("{maxlength}", iterator.next());
+                errorMsg = errorMsg.replace("{maxlength}", iterator.next());
             }
 
-            return general_err0041;
+            return errorMsg;
         } else if (length == 3) {
             Iterator<String> iterator = Arrays.stream(ars).iterator();
             String ars0 = iterator.hasNext() ? iterator.next() : "";
@@ -159,9 +160,9 @@ public final class AppValidatorHelper {
             String ars1 = iterator.hasNext() ? iterator.next() : "";
             String ars2 = iterator.hasNext() ? iterator.next() : "";
             String ars3 = iterator.hasNext() ? iterator.next() : "";
-            general_err0041 = general_err0041.replace(ars0, ars1);
-            general_err0041 = general_err0041.replace(ars2, ars3);
-            return general_err0041;
+            errorMsg = errorMsg.replace(ars0, ars1);
+            errorMsg = errorMsg.replace(ars2, ars3);
+            return errorMsg;
         } else if (length == 5) {
             Iterator<String> iterator = Arrays.stream(ars).iterator();
             String ars0 = iterator.hasNext() ? iterator.next() : "";
@@ -175,11 +176,43 @@ public final class AppValidatorHelper {
                 messageDesc = messageDesc.replace(ars3, ars4);
             }
             return messageDesc;
-        } else {
-            return general_err0041;
         }
+        return errorMsg;
+    }
 
-        return general_err0041;
+    public static Map<String, String> doComChange(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto) {
+        Map<String, String> result = IaisCommonUtils.genNewHashMap();
+        AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
+
+        if (appEditSelectDto != null) {
+            if (!appEditSelectDto.isPremisesEdit()) {
+                List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+                for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
+                    appGrpPremisesDto.setLicenceDtos(null);
+                }
+                boolean eqGrpPremises = RfcHelper.isChangeGrpPremises(appSubmissionDto.getAppGrpPremisesDtoList(),
+                        oldAppSubmissionDto.getAppGrpPremisesDtoList());
+                if (eqGrpPremises) {
+                    log.info(StringUtil.changeForLog(
+                            "appGrpPremisesDto" + JsonUtil.parseToJson(appSubmissionDto.getAppGrpPremisesDtoList())));
+                    log.info(StringUtil.changeForLog(
+                            "oldappGrpPremisesDto" + JsonUtil.parseToJson(oldAppSubmissionDto.getAppGrpPremisesDtoList())));
+                    result.put("premiss", MessageUtil.replaceMessage("GENERAL_ERR0006", "premiss", "field"));
+                }
+            }
+            if (!appEditSelectDto.isServiceEdit()) {
+                boolean b = RfcHelper.eqServiceChange(appSubmissionDto.getAppSvcRelatedInfoDtoList(),
+                        oldAppSubmissionDto.getAppSvcRelatedInfoDtoList());
+                if (b) {
+                    log.info(StringUtil.changeForLog(
+                            "AppSvcRelatedInfoDtoList" + JsonUtil.parseToJson(appSubmissionDto.getAppSvcRelatedInfoDtoList())));
+                    log.info(StringUtil.changeForLog(
+                            "oldAppSvcRelatedInfoDtoList" + JsonUtil.parseToJson(oldAppSubmissionDto.getAppSvcRelatedInfoDtoList())));
+                    result.put("serviceId", MessageUtil.replaceMessage("GENERAL_ERR0006", "serviceId", "field"));
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -452,9 +485,7 @@ public final class AppValidatorHelper {
                     SvcPersonnelDto svcPersonnelDto = dto.getSvcPersonnelDto();
                     doValidateSvcPersonnel(errorMap, svcPersonnelDto);
                     Map<String, Integer> maps = valiatePersonnelCount(svcPersonnelDto);
-                    maps.forEach((k,v)->{
-                        doVolidataCount(k,v,configCommService,errorMap,serviceId);
-                    });
+                    maps.forEach((k,v)-> doVolidataCount(k,v,configCommService,errorMap,serviceId));
                     addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
                     break;
                 case HcsaConsts.STEP_PRINCIPAL_OFFICERS: {
@@ -1014,8 +1045,8 @@ public final class AppValidatorHelper {
             errorMap.put("vehicleNo" + index, MessageUtil.replaceMessage("GENERAL_ERR0006", "Vehicle No.", "field"));
         } else {
             if (vehicleNo.length() > 10) {
-                String general_err0041 = repLength("Vehicle No.", "10");
-                errorMap.put("vehicleNo" + index, general_err0041);
+                String errorMsg = repLength("Vehicle No.", "10");
+                errorMap.put("vehicleNo" + index, errorMsg);
             }
             boolean b = VehNoValidator.validateNumber(vehicleNo);
             if (!b) {
@@ -1045,8 +1076,8 @@ public final class AppValidatorHelper {
         String blkNoKey = "blkNo" + i;
 
         if (!StringUtil.isEmpty(buildingName) && buildingName.length() > 66) {
-            String general_err0041 = repLength("Building Name", "66");
-            errorMap.put("buildingName" + i, general_err0041);
+            String errorMsg = repLength("Building Name", "66");
+            errorMap.put("buildingName" + i, errorMsg);
         }
 
         if (StringUtil.isEmpty(streetName)) {
@@ -1062,8 +1093,8 @@ public final class AppValidatorHelper {
         if (empty1 && ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType)) {
             errorMap.put(blkNoKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Block / House No.", "field"));
         } else if (!empty1 && blkNo.length() > 10) {
-            String general_err0041 = repLength("Block / House No.", "10");
-            errorMap.put(blkNoKey, general_err0041);
+            String errorMsg = repLength("Block / House No.", "10");
+            errorMap.put(blkNoKey, errorMsg);
         }
         // validate floor and units
         List<String> floorUnitList = IaisCommonUtils.genNewArrayList();
@@ -1071,8 +1102,8 @@ public final class AppValidatorHelper {
         String postalCodeKey = "postalCode" + i;
         if (!StringUtil.isEmpty(postalCode)) {
             if (postalCode.length() > 6) {
-                String general_err0041 = repLength("Postal Code", "6");
-                errorMap.put(postalCodeKey, general_err0041);
+                String errorMsg = repLength("Postal Code", "6");
+                errorMap.put(postalCodeKey, errorMsg);
             } else if (postalCode.length() < 6) {
                 errorMap.put(postalCodeKey, "NEW_ERR0004");
             } else if (!postalCode.matches("^[0-9]{6}$")) {
@@ -1298,8 +1329,8 @@ public final class AppValidatorHelper {
                     errMap.put("name" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name", "field"));
                 } else {
                     if (name.length() > 110) {
-                        String general_err0041 = repLength("Name", "110");
-                        errMap.put("name" + i, general_err0041);
+                        String errorMsg = repLength("Name", "110");
+                        errMap.put("name" + i, errorMsg);
                     }
                 }
 
@@ -1308,8 +1339,8 @@ public final class AppValidatorHelper {
                     errMap.put("mobileNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Mobile No. ", "field"));
                 } else if (!StringUtil.isEmpty(mobileNo)) {
                     if (mobileNo.length() > 8) {
-                        String general_err0041 = repLength("Mobile No.", "8");
-                        errMap.put("mobileNo" + i, general_err0041);
+                        String errorMsg = repLength("Mobile No.", "8");
+                        errMap.put("mobileNo" + i, errorMsg);
                     }
                     if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
                         errMap.put("mobileNo" + i, "GENERAL_ERR0007");
@@ -1321,8 +1352,8 @@ public final class AppValidatorHelper {
                     errMap.put("emailAddr" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Email Address", "field"));
                 } else if (!StringUtil.isEmpty(emailAddr)) {
                     if (emailAddr.length() > 320) {
-                        String general_err0041 = repLength("Email Address", "320");
-                        errMap.put("emailAddr" + i, general_err0041);
+                        String errorMsg = repLength("Email Address", "320");
+                        errMap.put("emailAddr" + i, errorMsg);
                     }
                     if (!ValidationUtils.isEmail(emailAddr)) {
                         errMap.put("emailAddr" + i, "GENERAL_ERR0014");
@@ -1416,8 +1447,8 @@ public final class AppValidatorHelper {
                     errMap.put(prefix + "name" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name", "field"));
                 } else {
                     if (name.length() > 110) {
-                        String general_err0041 = repLength("Name", "110");
-                        errMap.put(prefix + "name" + i, general_err0041);
+                        String errorMsg = repLength("Name", "110");
+                        errMap.put(prefix + "name" + i, errorMsg);
                     }
                 }
 
@@ -1430,8 +1461,8 @@ public final class AppValidatorHelper {
                         errMap.put(prefix + "otherDesignation" + i,
                                 MessageUtil.replaceMessage("GENERAL_ERR0006", "Others Designation", "field"));
                     } else if (otherDesignation.length() > 100) {
-                        String general_err0041 = repLength("Others Designation", "100");
-                        errMap.put(prefix + "otherDesignation" + i, general_err0041);
+                        String errorMsg = repLength("Others Designation", "100");
+                        errMap.put(prefix + "otherDesignation" + i, errorMsg);
                     }
 
                 }
@@ -1772,8 +1803,8 @@ public final class AppValidatorHelper {
                 errorMap.put("contactNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Contact No. ", "field"));
             } else if (!StringUtil.isEmpty(ContactNo)) {
                 if (ContactNo.length() > 8) {
-                    String general_err0041 = repLength("Contact No.", "8");
-                    errorMap.put("contactNo" + i, general_err0041);
+                    String errorMsg = repLength("Contact No.", "8");
+                    errorMap.put("contactNo" + i, errorMsg);
                 }
                 if (!ContactNo.matches("^[3|689][0-9]{7}$")) {
                     errorMap.put("contactNo" + i, "GENERAL_ERR0007");
@@ -1785,8 +1816,8 @@ public final class AppValidatorHelper {
                 errorMap.put("emailAddr" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Email Address", "field"));
             } else if (!StringUtil.isEmpty(emailAddr)) {
                 if (emailAddr.length() > 320) {
-                    String general_err0041 = repLength("Email Address", "320");
-                    errorMap.put("emailAddr" + i, general_err0041);
+                    String errorMsg = repLength("Email Address", "320");
+                    errorMap.put("emailAddr" + i, errorMsg);
                 }
                 if (!ValidationUtils.isEmail(emailAddr)) {
                     errorMap.put("emailAddr" + i, "GENERAL_ERR0014");
@@ -3181,7 +3212,7 @@ public final class AppValidatorHelper {
             int count = appSvcSuplmGroupDto.getCount();
             int minCount = appSvcSuplmGroupDto.getMinCount();
             List<AppSvcSuplmItemDto> appSvcSuplmItemDtoList = appSvcSuplmGroupDto.getAppSvcSuplmItemDtoList();
-            /**
+            /*
              * check whether the group mandatory is zero or not
              */
             if (minCount == 0) {
@@ -3532,8 +3563,8 @@ public final class AppValidatorHelper {
             if (StringUtil.isEmpty(name)) {
                 errorMap.put(prefix + "name" + subfix, signal);
             } else if (name.length() > 110) {
-                String general_err0041 = repLength("Name", "110");
-                errorMap.put(prefix + "name" + subfix, general_err0041);
+                String errorMsg = repLength("Name", "110");
+                errorMap.put(prefix + "name" + subfix, errorMsg);
             } else {
                 String target = StringUtil.toUpperCase(salutation + name);
                 if (names.contains(target)) {
@@ -3577,8 +3608,8 @@ public final class AppValidatorHelper {
         if (StringUtil.isEmpty(name)) {
             errorMap.put(prefix + "name" + subfix, signal);
         } else if (name.length() > 110) {
-            String general_err0041 = repLength("Name", "110");
-            errorMap.put(prefix + "name" + subfix, general_err0041);
+            String errorMsg = repLength("Name", "110");
+            errorMap.put(prefix + "name" + subfix, errorMsg);
         } else {
             String target = StringUtil.toUpperCase(salutation + name);
             if (names.contains(target)) {
@@ -3597,8 +3628,8 @@ public final class AppValidatorHelper {
                 errorMap.put(prefix + "otherDesignation" + subfix,
                         MessageUtil.replaceMessage("GENERAL_ERR0006", "Others Designation", "field"));
             } else if (otherDesignation.length() > 100) {
-                String general_err0041 = repLength("Others Designation", "100");
-                errorMap.put(prefix + "otherDesignation" + subfix, general_err0041);
+                String errorMsg = repLength("Others Designation", "100");
+                errorMap.put(prefix + "otherDesignation" + subfix, errorMsg);
             }
         }
 

@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
@@ -40,6 +41,7 @@ import com.ecquaria.cloud.moh.iais.helper.AppDataHelper;
 import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.RfcHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
@@ -66,6 +68,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.APPSUBMISSIONDTO;
@@ -538,7 +541,38 @@ public class ServiceInfoDelegator {
         if ("next".equals(actionType)) {
             errorMap = AppValidatorHelper.doValidateOtherInformation(appSvcOtherInfoDtos,currSvcCode);
         }
-        checkAction(errorMap, HcsaConsts.STEP_OTHER_INFORMATION, appSubmissionDto, bpc.request);
+        boolean isValid = checkAction(errorMap, HcsaConsts.STEP_OTHER_INFORMATION, appSubmissionDto, bpc.request);
+        if (isValid && isGetDataFromPage) {
+            AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
+            AppSvcRelatedInfoDto oldSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfoBySvcCode(oldAppSubmissionDto,
+                    currSvcInfoDto.getServiceCode(), appSubmissionDto.getRfiAppNo());
+            resolveActionCode(currSvcInfoDto, oldSvcInfoDto, appType);
+            setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
+        }
+    }
+
+    private void resolveActionCode(AppSvcRelatedInfoDto currSvcInfoDto, AppSvcRelatedInfoDto oldSvcInfoDto, String appType) {
+        List<AppSvcOtherInfoDto> appSvcOtherInfoDtos = currSvcInfoDto.getAppSvcOtherInfoList();
+        if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+            for (AppSvcOtherInfoDto appSvcOtherInfoDto : appSvcOtherInfoDtos) {
+                RfcHelper.resolveSvcActionCode(appSvcOtherInfoDto.getAppPremSubSvcRelDtoList(),
+                        IaisCommonUtils.genNewHashMap());
+                appSvcOtherInfoDto.initAllAppPremSubSvcRelDtoList();
+            }
+            return;
+        }
+        Map<String, AppPremSubSvcRelDto> oldRelMap = Optional.ofNullable(oldSvcInfoDto)
+                .map(AppSvcRelatedInfoDto::getAppSvcOtherInfoList)
+                .filter(IaisCommonUtils::isNotEmpty)
+                .map(list -> list.get(0))
+                .map(AppSvcOtherInfoDto::getAllAppPremSubSvcRelDtoList)
+                .filter(IaisCommonUtils::isNotEmpty)
+                .map(list -> list.stream()
+                        .collect(Collectors.toMap(AppPremSubSvcRelDto::getSvcCode, Function.identity(), (v1, v2) -> v2)))
+                .orElseGet(IaisCommonUtils::genNewHashMap);
+        AppSvcOtherInfoDto appSvcOtherInfoDto = appSvcOtherInfoDtos.get(0);
+        RfcHelper.resolveSvcActionCode(appSvcOtherInfoDto.getAppPremSubSvcRelDtoList(), oldRelMap);
+        appSvcOtherInfoDto.initAllAppPremSubSvcRelDtoList();
     }
 
     private void prepareOutsourcedProviders(HttpServletRequest request) {

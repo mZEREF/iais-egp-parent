@@ -180,5 +180,9 @@ public final class HcsaAppConst {
     public static final String ACTION_PAYMENT                               = "payment";
     public static final String ACTION_BACK                                  = "back";
     public static final String ACTION_NEXT                                  = "next";
+    public static final String ACTION_DRAFT                                 = "saveDraft";
 
+    public static final int ACTION_RESULT_SUCCEED                           = 1;
+    public static final int ACTION_RESULT_ERROR_BLOCK                       = 2;
+    public static final int ACTION_RESULT_ERROR_NON_BLOCK                   = 3;
 }

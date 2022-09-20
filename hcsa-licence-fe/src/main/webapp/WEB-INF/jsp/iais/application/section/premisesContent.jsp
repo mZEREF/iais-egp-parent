@@ -9,6 +9,8 @@
 <c:set var="mobile" value="MOBILE" />
 <c:set var="remote" value="REMOTE" />
 
+<c:set var="premTypeLen" value="${premisesType.size()}"/>
+
 <input class="not-refresh" type="hidden" name="isPartEdit" value="0"/>
 <input class="not-refresh" type="hidden" id="isEditHiddenVal" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
 
@@ -57,7 +59,7 @@
                     <p class="app-title">Mode of Service Delivery <span class="premHeader">${status.index+1}</span></p>
                     <span  id="error_premisesHci${status.index}" class="error-msg" name="iaisErrorMsg"></span>
                 </div>
-                <div class="col-xs-12 col-md-4 text-right removeEditDiv <c:if test="${status.first}">hidden</c:if>">
+                <div class="col-xs-12 col-md-5 text-right removeEditDiv <c:if test="${status.first}">hidden</c:if>">
                     <c:choose>
                         <c:when test="${!isRFI && !isRFC && !isRenew}">
                             <h4 class="text-danger removeBtn"><em class="fa fa-times-circle del-size-36"></em></h4>
@@ -134,8 +136,6 @@
             <div class="form-group premisesTypeDiv"<c:if test="${isRenew || isRFC}">hidden</c:if> >
                     <%--<label class="col-xs-12 col-md-4 control-label error-msg-type">What is your mode of service delivery ? <span class="mandatory">*</span></label>--%>
                 <iais:field value="What is your mode of service delivery ?" width="5" mandatory="true"/>
-
-                <c:set var="premTypeLen" value="${premisesType.size()}"/>
                 <c:set var="premTypeCss" value="${premTypeLen > 2 ? 'col-md-2' : 'col-md-3'}"/>
                 <c:forEach var="premType" items="${premisesType}">
                     <div class="col-xs-12 ${premTypeCss} form-check">
@@ -234,7 +234,7 @@
                 </div>
             </iais:row>
 
-            <div class="form-horizontal">
+            <div class="new-premise-form">
                 <iais:row cssClass="scdfRefNoRow">
                     <c:set var="scdfRefNoInfo"><iais:message key="NEW_ACK006"></iais:message></c:set>
                     <iais:field value="Fire Safety & Shelter Bureau Ref. No." width="5" info="${scdfRefNoInfo}"/>
