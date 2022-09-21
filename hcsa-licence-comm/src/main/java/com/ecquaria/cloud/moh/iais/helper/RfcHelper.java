@@ -27,7 +27,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStep
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.ReflectionUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
@@ -35,11 +37,19 @@ import com.ecquaria.cloud.moh.iais.util.PageDataCopyUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.function.Function;
 
 /**
  * @Auther chenlei on 5/3/2022.
@@ -73,7 +83,8 @@ public final class RfcHelper {
 
         boolean changeInLocation = !compareLocation(appSubmissionDto.getAppGrpPremisesDtoList(),
                 oldAppSubmissionDto.getAppGrpPremisesDtoList());
-        boolean eqAddFloorNo = isChangeFloorUnit(appSubmissionDto, oldAppSubmissionDto);
+        boolean changeFloorUnits = isChangeFloorUnit(appGrpPremisesDtoList, oldAppGrpPremisesDtoList);
+        boolean changeCoLocation = isChangeCoLocation(appGrpPremisesDtoList, oldAppGrpPremisesDtoList);
         boolean changePremiseAutoFields = isChangeGrpPremisesAutoFields(appGrpPremisesDtoList, oldAppGrpPremisesDtoList);
         boolean notChangePersonnel = compareNotChangePersonnel(appSubmissionDto, oldAppSubmissionDto);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -98,7 +109,7 @@ public final class RfcHelper {
         appSubmissionDto.setAppEditSelectDto(showDto);
         // change edit select dto
         appEditSelectDto.setChangeInLocation(changeInLocation);
-        appEditSelectDto.setChangeAddFloorUnit(eqAddFloorNo);
+        appEditSelectDto.setChangeFloorUnits(changeFloorUnits);
         appEditSelectDto.setChangePremiseAutoFields(changePremiseAutoFields);
         appEditSelectDto.setChangeVehicle(changeVehicles);
         appEditSelectDto.setChangeBusinessName(changeBusiness);
@@ -108,7 +119,7 @@ public final class RfcHelper {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
         boolean licenseeChange = isChangeSubLicensee(appSubmissionDto.getSubLicenseeDto(), oldAppSubmissionDto.getSubLicenseeDto());
-        boolean grpPremiseIsChange = changeInLocation || eqAddFloorNo || hciNameChange || changePremiseAutoFields;
+        boolean grpPremiseIsChange = changeInLocation || changeFloorUnits || hciNameChange || changeCoLocation || changePremiseAutoFields;
         boolean serviceIsChange = eqServiceChange(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList, appEditSelectDto);
         appEditSelectDto.setLicenseeEdit(licenseeChange);
         appEditSelectDto.setPremisesEdit(grpPremiseIsChange);
@@ -217,72 +228,43 @@ public final class RfcHelper {
                 PageDataCopyUtil.copyAppGrpPremisesDtoForAutoField(oldAppGrpPremisesDto));
     }
 
-    /*public static List<AppGrpPremisesDto> generateDtosForAutoFields(List<AppGrpPremisesDto> appGrpPremisesDtoList,
-            List<AppGrpPremisesDto> oldAppGrpPremisesDtoList, AppEditSelectDto appEditSelectDto) {
-        if (appGrpPremisesDtoList == null || appGrpPremisesDtoList.isEmpty() || oldAppGrpPremisesDtoList == null || oldAppGrpPremisesDtoList.isEmpty()) {
-            return null;
+    public static boolean isChangeCoLocation(List<AppGrpPremisesDto> appGrpPremisesDtoList,
+            List<AppGrpPremisesDto> oldAppGrpPremisesDtoList) {
+        if (appGrpPremisesDtoList == null || oldAppGrpPremisesDtoList == null) {
+            return false;
         }
-        int len = appGrpPremisesDtoList.size();
-        if (len != oldAppGrpPremisesDtoList.size()) {
-            return oldAppGrpPremisesDtoList;
+        if (IaisCommonUtils.listChange(appGrpPremisesDtoList, oldAppGrpPremisesDtoList)) {
+            return true;
         }
-        List<AppGrpPremisesDto> result = IaisCommonUtils.genNewArrayList(len);
-        for (int i = 0; i < len; i++) {
-            AppGrpPremisesDto copy = (AppGrpPremisesDto) CopyUtil.copyMutableObject(appGrpPremisesDtoList.get(i));
-            AppGrpPremisesDto appGrpPremisesDto = oldAppGrpPremisesDtoList.get(i);
-            // re-set not auto fields
-            if (appEditSelectDto.isChangeHciName() || appEditSelectDto.isChangeInLocation() || appEditSelectDto.isChangeAddFloorUnit()) {
-                copy.setPremisesType(appGrpPremisesDto.getPremisesType());
-                // on site or all
-                copy.setPostalCode(appGrpPremisesDto.getPostalCode());
-                copy.setAddrType(appGrpPremisesDto.getAddrType());
-                copy.setBlkNo(appGrpPremisesDto.getBlkNo());
-                copy.setFloorNo(appGrpPremisesDto.getFloorNo());
-                copy.setUnitNo(appGrpPremisesDto.getUnitNo());
-                copy.setStreetName(appGrpPremisesDto.getStreetName());
-                copy.setBuildingName(appGrpPremisesDto.getBuildingName());
-                copy.setHciName(appGrpPremisesDto.getHciName());
-                // off site
-                copy.setOffSitePostalCode(appGrpPremisesDto.getOffSitePostalCode());
-                copy.setOffSiteAddressType(appGrpPremisesDto.getOffSiteAddressType());
-                copy.setOffSiteBlockNo(appGrpPremisesDto.getOffSiteBlockNo());
-                copy.setOffSiteFloorNo(appGrpPremisesDto.getOffSiteFloorNo());
-                copy.setOffSiteUnitNo(appGrpPremisesDto.getOffSiteUnitNo());
-                copy.setOffSiteStreetName(appGrpPremisesDto.getOffSiteStreetName());
-                copy.setOffSiteBuildingName(appGrpPremisesDto.getOffSiteBuildingName());
-                copy.setOffSiteHciName(appGrpPremisesDto.getOffSiteHciName());
-                //EASMTS
-                copy.setEasMtsHciName(appGrpPremisesDto.getEasMtsHciName());
-                copy.setEasMtsPostalCode(appGrpPremisesDto.getEasMtsPostalCode());
-                copy.setEasMtsAddressType(appGrpPremisesDto.getEasMtsAddressType());
-                copy.setEasMtsBlockNo(appGrpPremisesDto.getEasMtsBlockNo());
-                copy.setEasMtsFloorNo(appGrpPremisesDto.getEasMtsFloorNo());
-                copy.setEasMtsUnitNo(appGrpPremisesDto.getEasMtsUnitNo());
-                copy.setEasMtsStreetName(appGrpPremisesDto.getEasMtsStreetName());
-                copy.setEasMtsBuildingName(appGrpPremisesDto.getEasMtsBuildingName());
-                // conveyance
-                copy.setConveyancePostalCode(appGrpPremisesDto.getConveyancePostalCode());
-                copy.setConveyanceAddressType(appGrpPremisesDto.getConveyanceAddressType());
-                copy.setConveyanceBlockNo(appGrpPremisesDto.getConveyanceBlockNo());
-                copy.setConveyanceFloorNo(appGrpPremisesDto.getConveyanceFloorNo());
-                copy.setConveyanceUnitNo(appGrpPremisesDto.getConveyanceUnitNo());
-                copy.setConveyanceStreetName(appGrpPremisesDto.getConveyanceStreetName());
-                copy.setConveyanceBuildingName(appGrpPremisesDto.getConveyanceBuildingName());
-                copy.setConveyanceHciName(appGrpPremisesDto.getConveyanceHciName());
+        for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
+            AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(i);
+            AppGrpPremisesDto oldAppGrpPremisesDto = oldAppGrpPremisesDtoList.get(i);
+            if (isChangeCoLocation(appGrpPremisesDto, oldAppGrpPremisesDto)) {
+                return true;
             }
-            if (appEditSelectDto.isChangeAddFloorUnit()) {
-                List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtoList =
-                        PageDataCopyUtil.copyAppPremisesOperationalUnitDto(appGrpPremisesDto.getAppPremisesOperationalUnitDtos());
-                copy.setAppPremisesOperationalUnitDtos(appPremisesOperationalUnitDtoList);
-            }
-            // re-set other day
-            copy.setLicenceDtos(appGrpPremisesDto.getLicenceDtos());
-            if (StringUtil.isEmpty(copy.getCertIssuedDtStr()) && StringUtil.isEmpty(appGrpPremisesDto.getCertIssuedDtStr())) {
-                copy.setCertIssuedDtStr(appGrpPremisesDto.getCertIssuedDtStr());
-            }
-            result.add(copy);
         }
-        return result;
+        return false;
+    }
+
+    public static boolean isChangeCoLocation(AppGrpPremisesDto appGrpPremisesDto, AppGrpPremisesDto oldAppGrpPremisesDto) {
+        return !PageDataCopyUtil.copyCoLocationFields(appGrpPremisesDto).equals(PageDataCopyUtil.copyCoLocationFields(oldAppGrpPremisesDto));
+    }
+
+   /* public static int isChangeNonAutoFields (AppPremSpecialisedDto specialisedDto, AppPremSpecialisedDto oldSpecialisedDto) {
+        if (specialisedDto == null || oldSpecialisedDto == null) {
+            return RfcConst.RFC_AMENDMENT & RfcConst.RFC_NOTIFICATION;
+        }
+
+
+        oldSpecialisedDto.get
+        List<AppPremSubSvcRelDto> checkedAppPremSubSvcRelDtoList = specialisedDto.getCheckedAppPremSubSvcRelDtoList();
+
+    }
+
+    public static boolean isChangeAutoFields (AppPremSpecialisedDto specialisedDto, AppPremSpecialisedDto oldSpecialisedDto) {
+        if (specialisedDto == null || oldSpecialisedDto == null) {
+            return true;
+        }
     }*/
 
     public static boolean eqServiceChange(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList,
@@ -1179,6 +1161,7 @@ public final class RfcHelper {
         if (appSubmissionDto == null) {
             return;
         }
+        DealSessionUtil.initView(appSubmissionDto);
         appSubmissionDto.setAppGrpId(null);
         appSubmissionDto.setFromBe(ApplicationHelper.isBackend());
         appSubmissionDto.setAppType(appType);
@@ -1234,4 +1217,144 @@ public final class RfcHelper {
         }
     }
 
+    public static <T, R> boolean isChanged(T o1, T o2, Function<T, T> preprocessor, String... excludeFieldNames) {
+        if (o1 == null && o2 == null) {
+            return false;
+        } else if (o1 == null ^ o2 == null) {
+            return true;
+        }
+        T source = preprocessor != null ? preprocessor.apply(o1) : o1;
+        T target = preprocessor != null ? preprocessor.apply(o2) : o2;
+        boolean isChanged;
+        Class<?> type = target.getClass();
+        if (String.class.isAssignableFrom(type)) {
+            isChanged = !Objects.equals(source, target);
+        } else if (int.class.isAssignableFrom(type)) {
+            isChanged = (int) source != (int) target;
+        } else if (long.class.isAssignableFrom(type)) {
+            isChanged = (long) source == (int) target;
+        } else if (double.class.isAssignableFrom(type)
+                || Double.class.isAssignableFrom(type)) {
+            BigDecimal s = BigDecimal.valueOf((double) source);
+            BigDecimal t = BigDecimal.valueOf((double) target);
+            isChanged = s.compareTo(t) != 0;
+        } else if (Integer.class.isAssignableFrom(type)) {
+            isChanged = !Objects.equals(source, target);
+        } else if (Long.class.isAssignableFrom(type)) {
+            isChanged = !Objects.equals(source, target);
+        } else if (boolean.class.isAssignableFrom(type) || Boolean.class.isAssignableFrom(type)) {
+            isChanged = (boolean) source != (boolean) target;
+        } else if (Date.class.isAssignableFrom(type)) {
+            isChanged = !Objects.equals(source, target);
+        } else if (String[].class.isAssignableFrom(type)) {
+            isChanged = isChangedArray((String[]) source, (String[]) target, Comparator.naturalOrder());
+        } else if (Integer[].class.isAssignableFrom(type) || int[].class.isAssignableFrom(type)) {
+            isChanged = isChangedArray((String[]) source, (String[]) target, Comparator.naturalOrder());
+        } else if (Long[].class.isAssignableFrom(type) || long[].class.isAssignableFrom(type)) {
+            isChanged = isChangedArray((String[]) source, (String[]) target, Comparator.naturalOrder());
+        } else if (Double[].class.isAssignableFrom(type) || double[].class.isAssignableFrom(type)) {
+            isChanged = isChangedArray((String[]) source, (String[]) target, Comparator.naturalOrder());
+        } else if (List.class.isAssignableFrom(type)) {
+            Function<List<R>, List<R>> processor = (Function<List<R>, List<R>>) preprocessor;
+            isChanged = isChangedList((List<R>) source, (List<R>) target, processor);
+        } else if (Set.class.isAssignableFrom(type)) {
+            Function<Set<R>, Set<R>> processor = (Function<Set<R>, Set<R>>) preprocessor;
+            isChanged = isChangedSet((Set<R>) source, (Set<R>) target, processor);
+        } else if (Map.class.isAssignableFrom(type)) {
+            isChanged = false;// can't
+        } else {
+            Field[] fields = target.getClass().getDeclaredFields();
+            if (fields.length == 0) {
+                isChanged = false;
+            } else {
+                isChanged = !Arrays.stream(fields)
+                        .filter(field -> !ReflectionUtil.isIn(field.getName(), excludeFieldNames))
+                        .filter(field -> !Modifier.isStatic(field.getModifiers()) && Modifier.isFinal(field.getModifiers()))
+                        .allMatch(field -> {
+                            Object srcObj = ReflectionUtil.getPropertyObj(field, source);
+                            Object tarObj = ReflectionUtil.getPropertyObj(field, target);
+                            return !isChanged(srcObj, tarObj, null, excludeFieldNames);
+                        });
+            }
+        }
+        return isChanged;
+    }
+
+    public static <T> boolean isChangedArray(T[] source, T[] target, Comparator<T> comparator, String... excludeFieldNames) {
+        if (source == null && target == null) {
+            return false;
+        } else if (source == null ^ target == null) {
+            return true;
+        }
+        if (source.length != target.length) {
+            return true;
+        }
+        if (comparator != null) {
+            Arrays.sort(source, comparator);
+            Arrays.sort(target, comparator);
+        }
+        int len = target.length;
+        for (int i = 0; i < len; i++) {
+            if (isChanged(source[i], target[i], null, excludeFieldNames)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static <T> boolean isChangedList(List<T> source, List<T> target, Function<List<T>, List<T>> preprocessor,
+            String... excludeFieldNames) {
+        if (source == null && target == null) {
+            return false;
+        } else if (source == null ^ target == null) {
+            return true;
+        }
+        if (source.size() != target.size()) {
+            return true;
+        }
+        List<T> newSrc = source;
+        List<T> netTar = target;
+        if (preprocessor != null) {
+            newSrc = preprocessor.apply(source);
+            netTar = preprocessor.apply(target);
+        }
+        int len = target.size();
+        for (int i = 0; i < len; i++) {
+            if (isChanged(newSrc.get(i), netTar.get(i), null, excludeFieldNames)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static <T> boolean isChangedSet(Set<T> source, Set<T> target, Function<Set<T>, Set<T>> preprocessor,
+            String... excludeFieldNames) {
+        if (source == null && target == null) {
+            return false;
+        } else if (source == null ^ target == null) {
+            return true;
+        }
+        if (source.size() != target.size()) {
+            return true;
+        }
+        Set<T> newSrc = source;
+        Set<T> newTar = target;
+        if (preprocessor != null) {
+            newSrc = preprocessor.apply(source);
+            newTar = preprocessor.apply(target);
+        }
+        for (T t : newSrc) {
+            boolean anyMatch = newTar.stream().anyMatch(newT -> !isChanged(newT, t, null, excludeFieldNames));
+            if (!anyMatch) {
+                return true;
+            }
+        }
+        for (T t : newTar) {
+            boolean anyMatch = newSrc.stream().anyMatch(newT -> !isChanged(newT, t, null, excludeFieldNames));
+            if (!anyMatch) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
