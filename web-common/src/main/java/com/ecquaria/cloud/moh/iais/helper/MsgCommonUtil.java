@@ -5,18 +5,15 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
-import com.google.common.collect.Maps;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * @author yichen
@@ -38,26 +35,12 @@ public class MsgCommonUtil {
     public void setRecriptByLicenseeId(List<String> roles ,String refId, InspectionEmailTemplateDto inspectionEmailTemplateDto){
         Set<String> emailSet = new HashSet<>();
         List<String> allDataSubmissionRoleIds = getAllRoleIdsInUserRole(roles);
-        if(roles != null && roles.contains(NotificationHelper.RECEIPT_ROLE_LICENSEE_ALL)){
+        if(roles != null && (roles.contains(NotificationHelper.RECEIPT_ROLE_LICENSEE_ALL)
+                || IaisCommonUtils.isNotEmpty(allDataSubmissionRoleIds))){
             //this refId is licensee id
             List<String> emailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(refId);
             emailSet.addAll(emailAddrs);
-        } else if(roles != null && !allDataSubmissionRoleIds.isEmpty()){
-            List<OrgUserDto> orgUserDtoList = IaisEGPHelper.getLicenseeAccountByRolesAndLicenseeId(refId,allDataSubmissionRoleIds);
-            if(orgUserDtoList != null && !orgUserDtoList.isEmpty()){
-                //officerNameMap is used to store each user display name;key is id,value is displayName
-                Map<String, String> officerNameMap = Maps.newHashMapWithExpectedSize(orgUserDtoList.size());
-                //emailAddressMap is used to store each user email;key is id ,value is email address
-                Map<String, String> emailAddressMap =  Maps.newHashMapWithExpectedSize(orgUserDtoList.size());
-                //each user own different name
-                for (OrgUserDto userDto : orgUserDtoList) {
-                    officerNameMap.put(userDto.getId(),userDto.getDisplayName());
-                    emailAddressMap.put(userDto.getId(),userDto.getEmail());
-                }
-                inspectionEmailTemplateDto.setOfficerNameMap(officerNameMap);
-                inspectionEmailTemplateDto.setEmailAddressMap(emailAddressMap);
-            }
-        }else{
+        } else{
             //this refId is license id
             LicenseeDto licensee = getLicenseeById(refId);
             if (licensee != null && AppConsts.COMMON_STATUS_ACTIVE.equals(licensee.getStatus())){

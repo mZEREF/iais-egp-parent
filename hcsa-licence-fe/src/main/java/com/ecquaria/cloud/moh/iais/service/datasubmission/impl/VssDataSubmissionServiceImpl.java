@@ -176,7 +176,7 @@ public class VssDataSubmissionServiceImpl implements VssDataSubmissionService {
             SexualSterilizationDto sexualSterilizationDto = vssTreatmentDto.getSexualSterilizationDto();
             if (sexualSterilizationDto != null){
                 ProfessionalResponseDto professionalResponseDto = appSubmissionService.retrievePrsInfo(sexualSterilizationDto.getDoctorReignNo());
-                DoctorInformationDto doctorInformationDto = docInfoService.getDoctorInformationDtoByConds(sexualSterilizationDto.getDoctorReignNo(), DataSubmissionConsts.DOCTOR_SOURCE_ELIS_VSS, currentVssDataSubmission.getHciCode());
+                DoctorInformationDto doctorInformationDto = docInfoService.getDoctorInformationDtoByConds(sexualSterilizationDto.getDoctorReignNo(), DataSubmissionConsts.DOCTOR_SOURCE_ELIS_VSS, currentVssDataSubmission.getCycleDto().getHciCode());
                 if (professionalResponseDto != null && doctorInformationDto != null
                         && ("-1".equals(professionalResponseDto.getStatusCode()) || "-2".equals(professionalResponseDto.getStatusCode()))) {
                     //PRN number doesn't exist in PRS but exist in eLis

@@ -67,7 +67,7 @@
                                               id="error_noArLicences"></span>
                                     </iais:row>
 
-                                    <div id="allContentDiv">
+                                    <div id="allContentDiv" style="display: none">
                                         <iais:row cssClass="form-check-gp">
                                             <p class="form-check-title">Please select the mode of submission</p>
 

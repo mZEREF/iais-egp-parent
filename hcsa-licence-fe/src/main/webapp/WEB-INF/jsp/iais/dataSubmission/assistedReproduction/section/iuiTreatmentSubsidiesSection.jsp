@@ -16,7 +16,7 @@
                     </span>
                 </h3>
                 <iais:row>
-                    <iais:field width="6" cssClass="col-md-6 value="Please indicate IUI Co-funding?" mandatory="true"/>
+                    <iais:field width="6" cssClass="col-md-6" value="Please indicate IUI Co-funding?" mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-3">
                         <c:forEach items="${pleaseIndicateIuiCoFunding}" var="pleaseIndicateIui">
                             <c:set var="pleaseIndicateIuiValue" value="${pleaseIndicateIui.value}"/>

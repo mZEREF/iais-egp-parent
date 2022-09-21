@@ -56,6 +56,7 @@ public class DpPatientInfoDelegator extends DpCommonDelegator {
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Drug Practices</strong>");
+        ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, null);
     }
 
     @Override

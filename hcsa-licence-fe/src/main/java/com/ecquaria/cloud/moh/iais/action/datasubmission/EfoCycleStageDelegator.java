@@ -44,9 +44,14 @@ public class EfoCycleStageDelegator extends CommonDelegator{
 
     @Override
     public void start(BaseProcessClass bpc) {
-        AuditTrailHelper.auditFunction("Assisted Reproduction", "EFO Cycle Stage");
+
 
         ArSuperDataSubmissionDto arSuperDataSubmissionDto=DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        if (arSuperDataSubmissionDto.getSelectionDto().getCycle() == DataSubmissionConsts.DS_CYCLE_SFO){
+            AuditTrailHelper.auditFunction("Assisted Reproduction", "SFO Cycle Stage");
+        } else {
+            AuditTrailHelper.auditFunction("Assisted Reproduction", "OFO Cycle Stage");
+        }
         if(arSuperDataSubmissionDto==null){
             arSuperDataSubmissionDto=new ArSuperDataSubmissionDto();
         }

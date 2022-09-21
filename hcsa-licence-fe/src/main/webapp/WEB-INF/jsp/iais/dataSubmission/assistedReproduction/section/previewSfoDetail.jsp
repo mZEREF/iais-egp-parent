@@ -4,7 +4,7 @@
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
             <a class="collapsed" href="#efoDetails" data-toggle="collapse">
-                Oocyte Freezing Only Cycle
+                Sperm Freezing Only Cycle
             </a>
         </h4>
     </div>
