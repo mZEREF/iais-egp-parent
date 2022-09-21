@@ -13,7 +13,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
@@ -43,11 +42,8 @@ import com.ecquaria.cloud.moh.iais.service.CessationBeService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -80,19 +76,13 @@ public class OfficerOnlineEnquiriesDelegator {
     @Autowired
     ConfigCommService configCommService;
     @Autowired
-    OrganizationClient organizationClient;
-    @Autowired
     HcsaLicenceClient hcsaLicenceClient;
     @Autowired
     OnlineEnquiriesService onlineEnquiriesService;
     @Autowired
-    FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
-    @Autowired
     CessationBeService cessationBeService;
     @Autowired
     HcsaChklClient hcsaChklClient;
-    @Autowired
-    ApplicationClient applicationClient;
     @Autowired
     SystemParamConfig systemParamConfig;
 
@@ -254,16 +244,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 rfi.setIsCessation(2);// not can
             }
         }
-        String uenNo = ParamUtil.getString(request, "uen_no");
-        if(!StringUtil.isEmpty(uenNo)){
-            if( "3".equals(ParamUtil.getSessionAttr(request,"count"))||"2".equals(ParamUtil.getSessionAttr(request,"count"))
-            ) {
-                List<LicenseeDto> licenseeDtos= organizationClient.getLicenseeDtoByUen(uenNo).getEntity();
-                if(licenseeDtos==null) {
-                    reqForInfoSearchListDtos=IaisCommonUtils.genNewArrayList();
-                }
-            }
-        }
+
         searchListDtoSearchResult.setRows(reqForInfoSearchListDtos);
         if(reqForInfoSearchListDtos.size()<1 &&searchListDtoSearchResult.getRowCount()<=10){
             searchListDtoSearchResult.setRowCount(reqForInfoSearchListDtos.size());
