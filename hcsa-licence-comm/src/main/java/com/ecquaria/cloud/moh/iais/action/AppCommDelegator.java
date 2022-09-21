@@ -501,7 +501,7 @@ public abstract class AppCommDelegator {
         ParamUtil.setRequestAttr(request, HcsaAppConst.SPECIALISED_SVC_CODE, svcCode);
         ParamUtil.setRequestAttr(request, HcsaAppConst.SPECIALISED_NEXT_CODE, getNextSvcCode(hcsaServiceDtoList, svcCode));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
-        DealSessionUtil.initAppPremSpecialisedDtoList(appSubmissionDto, hcsaServiceDtoList, false);
+        DealSessionUtil.initAppPremSpecialisedList(appSubmissionDto, hcsaServiceDtoList, false);
         ApplicationHelper.setAppSubmissionDto(appSubmissionDto, request);
     }
 
@@ -1721,7 +1721,7 @@ public abstract class AppCommDelegator {
             changeSelectDto.setPremisesListEdit(true);
             changeSelectDto.setChangeHciName(appEditSelectDto.isChangeHciName());
             changeSelectDto.setChangeInLocation(appEditSelectDto.isChangeInLocation());
-            changeSelectDto.setChangeAddFloorUnit(appEditSelectDto.isChangeAddFloorUnit());
+            changeSelectDto.setChangeFloorUnits(appEditSelectDto.isChangeFloorUnits());
             String groupNo;
             if (changeSelectDto.isAutoRfc()) {
                 autoGroupNo = getRfcGroupNo(autoGroupNo);
@@ -2241,7 +2241,7 @@ public abstract class AppCommDelegator {
 
     private AmendmentFeeDto getAmendmentFeeDto(AppEditSelectDto appEditSelectDto, boolean isCharity) {
         return getAmendmentFeeDto(appEditSelectDto.isChangeHciName(),
-                appEditSelectDto.isChangeInLocation() || appEditSelectDto.isChangeAddFloorUnit(),
+                appEditSelectDto.isChangeInLocation() || appEditSelectDto.isChangeFloorUnits(),
                 appEditSelectDto.isChangeVehicle(), isCharity, appEditSelectDto.isChangeBusinessName());
     }
 

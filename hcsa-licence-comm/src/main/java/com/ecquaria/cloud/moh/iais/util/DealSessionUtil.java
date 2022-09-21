@@ -473,7 +473,7 @@ public class DealSessionUtil {
             }
         }
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
-        initAppPremSpecialisedDtoList(appSubmissionDto, hcsaServiceDtos, forceInit);
+        initAppPremSpecialisedList(appSubmissionDto, hcsaServiceDtos, forceInit);
         //set max file index into session
         initMaxFileIndex(appSubmissionDto.getMaxFileIndex(), request);
 
@@ -585,7 +585,7 @@ public class DealSessionUtil {
         return currSvcInfoDto;
     }
 
-    public static List<AppPremSpecialisedDto> initAppPremSpecialisedDtoList(AppSubmissionDto appSubmissionDto,
+    public static List<AppPremSpecialisedDto> initAppPremSpecialisedList(AppSubmissionDto appSubmissionDto,
             List<HcsaServiceDto> hcsaServiceDtoList, boolean forceInit) {
         if (appSubmissionDto == null) {
             return null;

@@ -310,7 +310,7 @@ public class LicenceViewServiceDelegator {
         if (appDeclarationDocDtos != null) {
             appDeclarationDocDtos.sort(Comparator.comparingInt(AppDeclarationDocDto::getSeqNum));
         }
-        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+        ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
         prepareViewServiceForm(bpc);
         if ("Y".equals(prsFlag)) {
             disciplinaryRecord(appSubmissionDto, bpc.request);

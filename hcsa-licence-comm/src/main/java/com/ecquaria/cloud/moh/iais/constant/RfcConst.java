@@ -51,4 +51,10 @@ public class RfcConst {
 
     public static final String CHECKBOX_NOT_APPLICABLE                  = "NON";
     public static final String CHECKBOX_ALL                             = "ALL";
+
+    public static final int RFC_BASE                                    = 0xFFFF;
+    public static final int RFC_UNCHANGED                               = 0;
+    public static final int RFC_AMENDMENT                               = 1;
+    public static final int RFC_NOTIFICATION                            = 2;
+
 }

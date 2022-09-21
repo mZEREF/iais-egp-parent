@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
@@ -80,12 +81,29 @@ public final class RfcHelper {
                 }
             }
         }
+        boolean licenseeChange = isChangeSubLicensee(appSubmissionDto.getSubLicenseeDto(), oldAppSubmissionDto.getSubLicenseeDto());
 
         boolean changeInLocation = !compareLocation(appSubmissionDto.getAppGrpPremisesDtoList(),
                 oldAppSubmissionDto.getAppGrpPremisesDtoList());
         boolean changeFloorUnits = isChangeFloorUnit(appGrpPremisesDtoList, oldAppGrpPremisesDtoList);
         boolean changeCoLocation = isChangeCoLocation(appGrpPremisesDtoList, oldAppGrpPremisesDtoList);
         boolean changePremiseAutoFields = isChangeGrpPremisesAutoFields(appGrpPremisesDtoList, oldAppGrpPremisesDtoList);
+        boolean grpPremiseIsChange = changeInLocation || changeFloorUnits || hciNameChange || changeCoLocation || changePremiseAutoFields;
+        appEditSelectDto.setChangeInLocation(changeInLocation);
+        appEditSelectDto.setChangeFloorUnits(changeFloorUnits);
+        appEditSelectDto.setChangePremiseAutoFields(changePremiseAutoFields);
+        appEditSelectDto.setChangeCoLocation(changeCoLocation);
+        appEditSelectDto.setPremisesEdit(grpPremiseIsChange);
+
+        int changeSpecialisedFields = isChangeSpecialisedFields(appSubmissionDto.getAppPremSpecialisedDtoList(),
+                appSubmissionDto.getAppPremSpecialisedDtoList());
+        boolean changeSpecialised = changeSpecialisedFields != RfcConst.RFC_BASE;
+        boolean changeSpecialisedNonAutoFields = (changeSpecialisedFields & RfcConst.RFC_AMENDMENT) != 0;
+        boolean changeSpecialisedAutoFields  = (changeSpecialisedFields & RfcConst.RFC_NOTIFICATION) != 0;
+        appEditSelectDto.setChangeSpecialisedAutoFields(changeSpecialisedAutoFields);
+        appEditSelectDto.setChangeSpecialisedNonAutoFields(changeSpecialisedNonAutoFields);
+        appEditSelectDto.setSpecialisedEdit(changeSpecialised);
+
         boolean notChangePersonnel = compareNotChangePersonnel(appSubmissionDto, oldAppSubmissionDto);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtos = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -107,22 +125,20 @@ public final class RfcHelper {
         }
         showDto.setPersonnelEditList(stepList);
         appSubmissionDto.setAppEditSelectDto(showDto);
-        // change edit select dto
-        appEditSelectDto.setChangeInLocation(changeInLocation);
-        appEditSelectDto.setChangeFloorUnits(changeFloorUnits);
-        appEditSelectDto.setChangePremiseAutoFields(changePremiseAutoFields);
+
+
         appEditSelectDto.setChangeVehicle(changeVehicles);
         appEditSelectDto.setChangeBusinessName(changeBusiness);
         appEditSelectDto.setChangePersonnel(!notChangePersonnel);
         appEditSelectDto.setChangeSectionLeader(changeSectionLeader);
 
+
+
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
-        boolean licenseeChange = isChangeSubLicensee(appSubmissionDto.getSubLicenseeDto(), oldAppSubmissionDto.getSubLicenseeDto());
-        boolean grpPremiseIsChange = changeInLocation || changeFloorUnits || hciNameChange || changeCoLocation || changePremiseAutoFields;
         boolean serviceIsChange = eqServiceChange(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList, appEditSelectDto);
         appEditSelectDto.setLicenseeEdit(licenseeChange);
-        appEditSelectDto.setPremisesEdit(grpPremiseIsChange);
+
         appEditSelectDto.setServiceEdit(serviceIsChange);
         appSubmissionDto.setChangeSelectDto(appEditSelectDto);
         return appEditSelectDto;
@@ -247,25 +263,86 @@ public final class RfcHelper {
     }
 
     public static boolean isChangeCoLocation(AppGrpPremisesDto appGrpPremisesDto, AppGrpPremisesDto oldAppGrpPremisesDto) {
-        return !PageDataCopyUtil.copyCoLocationFields(appGrpPremisesDto).equals(PageDataCopyUtil.copyCoLocationFields(oldAppGrpPremisesDto));
+        return !PageDataCopyUtil.copyCoLocationFields(appGrpPremisesDto).equals(
+                PageDataCopyUtil.copyCoLocationFields(oldAppGrpPremisesDto));
     }
 
-   /* public static int isChangeNonAutoFields (AppPremSpecialisedDto specialisedDto, AppPremSpecialisedDto oldSpecialisedDto) {
-        if (specialisedDto == null || oldSpecialisedDto == null) {
-            return RfcConst.RFC_AMENDMENT & RfcConst.RFC_NOTIFICATION;
+    public static int isChangeSpecialisedFields(List<AppPremSpecialisedDto> specialisedList,
+            List<AppPremSpecialisedDto> oldSpecialisedList) {
+        if (IaisCommonUtils.isEmpty(specialisedList)) {
+            return RfcConst.RFC_NOTIFICATION;
         }
-
-
-        oldSpecialisedDto.get
-        List<AppPremSubSvcRelDto> checkedAppPremSubSvcRelDtoList = specialisedDto.getCheckedAppPremSubSvcRelDtoList();
-
+        if (IaisCommonUtils.isEmpty(oldSpecialisedList)) {
+            return RfcConst.RFC_AMENDMENT;
+        }
+        int size = specialisedList.size();
+        if (size != oldSpecialisedList.size()) {
+            return RfcConst.RFC_AMENDMENT;
+        }
+        int result = RfcConst.RFC_BASE;
+        for (int i = 0; i < size; i++) {
+            result &= isChangeSpecialisedFields(specialisedList.get(i), oldSpecialisedList.get(i));
+        }
+        return result;
     }
 
-    public static boolean isChangeAutoFields (AppPremSpecialisedDto specialisedDto, AppPremSpecialisedDto oldSpecialisedDto) {
+    public static int isChangeSpecialisedFields(AppPremSpecialisedDto specialisedDto, AppPremSpecialisedDto oldSpecialisedDto) {
         if (specialisedDto == null || oldSpecialisedDto == null) {
-            return true;
+            return RfcConst.RFC_AMENDMENT;
         }
-    }*/
+        int result = isChangeAppPremScopeList(specialisedDto.getCheckedAppPremScopeDtoList(),
+                oldSpecialisedDto.getCheckedAppPremScopeDtoList());
+        List<AppPremSubSvcRelDto> appPremSubSvcRelList = specialisedDto.getFlatAppPremSubSvcRelList(dto ->
+                StringUtil.isNotEmpty(dto.getActCode()));
+        if (StringUtil.isEmpty(appPremSubSvcRelList)) {
+            result &= RfcConst.RFC_AMENDMENT;
+        } else {
+            for (AppPremSubSvcRelDto relDto : appPremSubSvcRelList) {
+                if (ApplicationConsts.RECORD_ACTION_CODE_ADD.equals(relDto)) {
+                    result &= relDto.isAdditionFlow() ? RfcConst.RFC_AMENDMENT : RfcConst.RFC_NOTIFICATION;
+                } else if (ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(relDto)) {
+                    result &= relDto.isRemovalFlow() ? RfcConst.RFC_AMENDMENT : RfcConst.RFC_NOTIFICATION;
+                }
+            }
+        }
+        return result;
+    }
+
+    public static int isChangeAppPremScopeList(List<AppPremScopeDto> appPremScopeDtoList,
+            List<AppPremScopeDto> oldAppPremScopeDtoList) {
+        if (IaisCommonUtils.isEmpty(appPremScopeDtoList)) {
+            return RfcConst.RFC_NOTIFICATION;
+        }
+        if (IaisCommonUtils.isEmpty(oldAppPremScopeDtoList)) {
+            return RfcConst.RFC_AMENDMENT;
+        }
+        int result = RfcConst.RFC_BASE;
+        // add
+        boolean noneMatch = appPremScopeDtoList.stream()
+                .noneMatch(dto -> oldAppPremScopeDtoList.stream()
+                        .anyMatch(oldDto -> Objects.equals(dto.getScopeName(), oldDto.getScopeName())));
+        if (noneMatch) {
+            result &= RfcConst.RFC_AMENDMENT;
+        }
+        // removal
+        noneMatch = oldAppPremScopeDtoList.stream()
+                .noneMatch(dto -> appPremScopeDtoList.stream()
+                        .anyMatch(oldDto -> Objects.equals(dto.getScopeName(), oldDto.getScopeName())));
+        if (noneMatch) {
+            result &= RfcConst.RFC_NOTIFICATION;
+        }
+        return result;
+    }
+/*
+    public static int isChangeAppPremScopeList(List<AppPremScopeDto> appPremScopeDtoList,
+            List<AppPremScopeDto> oldAppPremScopeDtoList) {
+        if (appPremScopeDtoList == null || appPremScopeDtoList == null) {
+            return RfcConst.RFC_AMENDMENT;
+        }
+        return isChangedList(appPremScopeDtoList, appPremScopeDtoList, PageDataCopyUtil::copyMutableObjectList,
+                "id", "appPremCorreId", "subTypeId", "parentId", "level", "appPremScopeDtos");
+    }
+*/
 
     public static boolean eqServiceChange(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList,
             List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) {
@@ -1357,4 +1434,5 @@ public final class RfcHelper {
         }
         return false;
     }
+
 }
