@@ -73,7 +73,7 @@
                    data-id="${itemPrefix}${itemConfigDto.id}" id="${itemPrefix}${itemConfigDto.id}${item.seqNum}"
                    <c:if test="${item.inputValue == itemConfigDto.id}">checked="checked"</c:if> />
             <label class="form-check-label" for="${itemPrefix}${itemConfigDto.id}${item.seqNum}">
-                <span class="check-square"></span><c:out value="${itemConfigDto.displayInfo}"/>
+                <span class="check-square"></span>${itemConfigDto.displayInfo}
             </label>
             <c:if test="${item.lastChild}">
             <div class="special-error">

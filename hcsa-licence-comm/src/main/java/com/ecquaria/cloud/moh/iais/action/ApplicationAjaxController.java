@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpSecondAddrDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
@@ -32,10 +33,12 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.PDFGenerator;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.IrregularExcelWriterUtil;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.OrganizationService;
+import com.ecquaria.cloud.moh.iais.service.client.AppCommClient;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +46,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -78,6 +82,10 @@ public class ApplicationAjaxController {
     @Autowired
     private OrganizationService organizationService;
 
+    @Autowired
+    private AppCommClient commClient;
+    @Autowired
+    private ServiceInfoDelegator serviceInfoDelegator;
     /**
      * @param
      * @description: ajax
@@ -844,4 +852,21 @@ public class ApplicationAjaxController {
         }
     }
 
+    @PostMapping(value = "/save-second-address")
+    public Map<String,Object> saveAppGrpSecondAddrDtoList(@RequestBody List<AppGrpSecondAddrDto> appGrpSecondAddrDtoList,HttpServletRequest request) {
+        Map<String,Object> map = IaisCommonUtils.genNewHashMap();
+        Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+        if (IaisCommonUtils.isNotEmpty(appGrpSecondAddrDtoList)){
+            serviceInfoDelegator.doVolidataPremises(appGrpSecondAddrDtoList,errorMap,request);
+        }
+        if (errorMap.size() > 0){
+            map.put("code","error");
+            map.put("data", WebValidationHelper.generateJsonStr(errorMap));
+        }else {
+            map.put("code","ok");
+            map.put("data",appGrpSecondAddrDtoList);
+            commClient.saveSecondAddress(appGrpSecondAddrDtoList);
+        }
+       return map;
+    }
 }
