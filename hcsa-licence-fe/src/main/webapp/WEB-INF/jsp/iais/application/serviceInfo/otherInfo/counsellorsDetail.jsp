@@ -19,21 +19,21 @@
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Name of certified TOP counsellors(Only Doctor/Nurse)"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="20" type="text" cssClass="cname" name="cname${index}" value="${person.name}"/>
+            <iais:input maxLength="66" type="text" cssClass="cname" name="cname${index}" value="${person.name}"/>
         </iais:value>
     </iais:row>
 
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="NRIC/FIN No."/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="20" type="text" cssClass="cidNo" name="cidNo${index}" value="${person.idNo}"/>
+            <iais:input maxLength="9" type="text" cssClass="cidNo" name="cidNo${index}" value="${person.idNo}"/>
         </iais:value>
     </iais:row>
 
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Qualifications"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="20" type="text" cssClass="cqualification" name="cqualification${index}" value="${person.qualification}"/>
+            <iais:input maxLength="100" type="text" cssClass="cqualification" name="cqualification${index}" value="${person.qualification}"/>
         </iais:value>
     </iais:row>
 </div>

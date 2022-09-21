@@ -25,35 +25,35 @@
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="NRIC/FIN No."/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="20" type="text" cssClass="idNo" name="idNo${index}" value="${person.idNo}"/>
+            <iais:input maxLength="9" type="text" cssClass="idNo" name="idNo${index}" value="${person.idNo}"/>
         </iais:value>
     </iais:row>
 
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Type of Registration"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="20" type="text" cssClass="regType" name="regType${index}" value="${person.regType}"/>
+            <iais:input maxLength="66" type="text" cssClass="regType" name="regType${index}" value="${person.regType}"/>
         </iais:value>
     </iais:row>
 
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Name of medical practitioner"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="20" type="text" cssClass="name" name="name${index}" value="${person.name}"/>
+            <iais:input maxLength="66" type="text" cssClass="name" name="name${index}" value="${person.name}"/>
         </iais:value>
     </iais:row>
 
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Specialties"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="20" type="text" cssClass="speciality" name="speciality${index}" value="${person.speciality}"/>
+            <iais:input maxLength="100" type="text" cssClass="speciality" name="speciality${index}" value="${person.speciality}"/>
         </iais:value>
     </iais:row>
 
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Qualifications"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="20" type="text" cssClass="qualification" name="qualification${index}" value="${person.qualification}"/>
+            <iais:input maxLength="100" type="text" cssClass="qualification" name="qualification${index}" value="${person.qualification}"/>
         </iais:value>
     </iais:row>
 
