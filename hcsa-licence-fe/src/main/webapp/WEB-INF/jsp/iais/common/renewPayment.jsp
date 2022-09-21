@@ -79,20 +79,12 @@
             <c:if test="${not empty baseSvcFeeExt }">
                 <tr>
                     <td>
-                        <c:choose>
-                            <c:when test="${baseSvcFeeExt.svcNames.size()>1}">
-                                <c:set var="multiplePrem" value="true"/>
-                            </c:when>
-                            <c:otherwise>
-                                <c:set var="multiplePrem" value="false"/>
-                            </c:otherwise>
-                        </c:choose>
                         <c:forEach var="svcName" items="${baseSvcFeeExt.svcNames}">
                             <p>
                                 <c:out value="${svcName}"/>
-                                <c:if test="${multiplePrem}">
-                                    &nbsp;(Mode of Service Delivery #${stat.index+1})
-                                </c:if>
+                            </p>
+                            <p>
+                                (${baseSvcFeeExt.address})
                             </p>
                         </c:forEach>
                     </td>
@@ -125,20 +117,12 @@
                 <c:forEach items="${includedSvcFeeExtList}" var="includedSvcFeeExt" >
                     <tr>
                         <td>
-                            <c:choose>
-                                <c:when test="${includedSvcFeeExt.svcNames.size()>1}">
-                                    <c:set var="multiplePrem" value="true"/>
-                                </c:when>
-                                <c:otherwise>
-                                    <c:set var="multiplePrem" value="false"/>
-                                </c:otherwise>
-                            </c:choose>
                             <c:forEach var="svcName" items="${includedSvcFeeExt.svcNames}">
                                 <p>
                                     <c:out value="${svcName}"/>
-                                    <c:if test="${multiplePrem}">
-                                        &nbsp;(Mode of Service Delivery #${stat.index+1})
-                                    </c:if>
+                                </p>
+                                <p>
+                                    (${includedSvcFeeExt.address})
                                 </p>
                             </c:forEach>
                         </td>
