@@ -45,27 +45,46 @@
                         </iais:value>
                     </iais:row>
                     <div id="directedDonationYes" style="${!donorSampleDto.directedDonation ? 'display: none;' : ''}">
-                        <iais:row id="idNoRow" >
-                            <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="donor" escape="false"/></c:set>
-                            <iais:field width="5" value="Donor's ID Type" mandatory="true" info="${toolMsg}"/>
-                            <iais:value width="7" cssClass="col-md-7">
-                                <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${donorSampleDto.idType}"
-                                             cssClass="idTypeSel"/>
-                            </iais:value>
-                        </iais:row>
-                        <iais:row  >
-                            <iais:field width="5" value="Donor's ID No." mandatory="true"/>
-                            <iais:value width="7" cssClass="col-md-7">
-                                <iais:input maxLength="20" type="text" name="idNumber" value="${donorSampleDto.idNumber}" />
-                            </iais:value>
-                            <span id="error_directedDonationYesDonorLive" name="iaisErrorMsg" class="error-msg"></span>
-                        </iais:row>
-                        <iais:row  >
-                            <iais:field width="5" value="Donor's Name" mandatory="true"/>
-                            <iais:value width="7" cssClass="col-md-7">
-                                <iais:input maxLength="66" type="text" name="donorName" value="${donorSampleDto.donorName}" />
-                            </iais:value>
-                        </iais:row>
+                        <c:if test="${donorSampleDto.donorSampleCode eq 'female'}">
+                            <iais:row id="idNoRow" >
+                                <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="donor" escape="false"/></c:set>
+                                <iais:field width="5" value="Donor's ID Type" mandatory="true" info="${toolMsg}"/>
+                                <iais:value width="7" cssClass="col-md-7">
+                                    <iais:select name="idType" codeCategory="CATE_ID_DS_ID_TYPE" value="${donorSampleDto.idType}"
+                                                 cssClass="idTypeSel"/>
+                                </iais:value>
+                            </iais:row>
+                            <iais:row>
+                                <iais:field width="5" value="Donor's ID No." mandatory="true"/>
+                                <iais:value width="7" cssClass="col-md-7">
+                                    <iais:input maxLength="20" type="text" name="idNumber" value="${donorSampleDto.idNumber}" />
+                                </iais:value>
+                                <span id="error_directedDonationYesDonorLive" name="iaisErrorMsg" class="error-msg"></span>
+                            </iais:row>
+                        </c:if>
+                        <c:if test="${donorSampleDto.maleDonorSampleCode eq 'male'}">
+                            <iais:row id="idNoRow" >
+                                <c:set var="toolMsg"><iais:message key="DS_MSG014" paramKeys="1" paramValues="donor" escape="false"/></c:set>
+                                <iais:field width="5" value="Donor's ID Type" mandatory="true" info="${toolMsg}"/>
+                                <iais:value width="7" cssClass="col-md-7">
+                                    <iais:select name="idType" codeCategory="CATE_ID_DS_ID_TYPE" value="${donorSampleDto.idTypeMale}"
+                                                 cssClass="idTypeSel"/>
+                                </iais:value>
+                            </iais:row>
+                            <iais:row  >
+                                <iais:field width="5" value="Donor's ID No." mandatory="true"/>
+                                <iais:value width="7" cssClass="col-md-7">
+                                    <iais:input maxLength="20" type="text" name="idNumber" value="${donorSampleDto.idNumberMale}" />
+                                </iais:value>
+                                <span id="error_directedDonationYesDonorLive" name="iaisErrorMsg" class="error-msg"></span>
+                            </iais:row>
+                        </c:if>
+<%--                        <iais:row  >--%>
+<%--                            <iais:field width="5" value="Donor's Name" mandatory="true"/>--%>
+<%--                            <iais:value width="7" cssClass="col-md-7">--%>
+<%--                                <iais:input maxLength="66" type="text" name="donorName" value="${donorSampleDto.donorName}" />--%>
+<%--                            </iais:value>--%>
+<%--                        </iais:row>--%>
 
                     </div>
                     <div id="directedDonationNo" style="${donorSampleDto.directedDonation ? 'display: none;' : ''}">
@@ -110,12 +129,12 @@
                                 </iais:value>
                                 <span id="error_donorDetailDonorLive" name="iaisErrorMsg" class="error-msg"></span>
                             </iais:row>
-                            <iais:row  >
-                                <iais:field width="5" value="Donor's Name" mandatory="true"/>
-                                <iais:value width="7" cssClass="col-md-7">
-                                    <iais:input maxLength="66" type="text" name="knownDonorName" value="${donorSampleDto.knownDonorName}" />
-                                </iais:value>
-                            </iais:row>
+<%--                            <iais:row  >--%>
+<%--                                <iais:field width="5" value="Donor's Name" mandatory="true"/>--%>
+<%--                                <iais:value width="7" cssClass="col-md-7">--%>
+<%--                                    <iais:input maxLength="66" type="text" name="knownDonorName" value="${donorSampleDto.knownDonorName}" />--%>
+<%--                                </iais:value>--%>
+<%--                            </iais:row>--%>
                         </div>
                         <iais:row>
                             <iais:field width="5" value="Name of Bank / AR Centre where Sample is from" mandatory="true"/>

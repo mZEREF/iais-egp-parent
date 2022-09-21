@@ -90,7 +90,7 @@
 
                                     <p style="border-bottom: 1px solid;font-weight: 600;font-size: 2rem">Patient's identification details used for previous AR/IUI treatment: </p>
                                     <iais:row>
-                                        <iais:field cssClass="col-md-6" value="ID No." mandatory="true"/>
+                                        <iais:field cssClass="col-md-6" value="ID No."/>
                                         <iais:value width="12">
                                             <iais:input maxLength="20" type="text" name="preIdNumber"
                                                         value="${previous.idNumber}"/>
@@ -98,7 +98,7 @@
                                     </iais:row>
 
                                     <iais:row>
-                                        <iais:field cssClass="col-md-6" value="Nationality" mandatory="true"/>
+                                        <iais:field cssClass="col-md-6" value="Nationality"/>
                                         <iais:value width="12">
                                             <iais:select name="preNationality" firstOption="Please Select" codeCategory="CATE_ID_NATIONALITY"
                                                          value="${previous.nationality}"
@@ -107,7 +107,7 @@
                                     </iais:row>
 
                                     <iais:row>
-                                        <iais:field cssClass="col-md-6" value="Name" mandatory="true"/>
+                                        <iais:field cssClass="col-md-6" value="Name"/>
                                         <iais:value width="12">
                                             <iais:input maxLength="20" type="text" name="preName" value="${previous.name}"/>
                                         </iais:value>
