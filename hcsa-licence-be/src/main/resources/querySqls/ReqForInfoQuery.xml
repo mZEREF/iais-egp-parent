@@ -49,8 +49,7 @@
             <#if svc_name??> AND oev.svc_name = :svc_name</#if>
             <#if licenseeRegnNo??> AND (charindex( :licenseeRegnNo,oev.LIC_PROF_REG_NO )>0 OR charindex( :licenseeRegnNo,oev.APP_PROF_REG_NO )>0 )</#if>
             <#if licenseeId??> AND ${licenseeId}</#if>
-            <#if serviceSubTypeName??>AND :serviceSubTypeName = :serviceSubTypeName</#if>
-            <#if appSubStatus_HIV??>AND ${appSubStatus_HIV}</#if>
+            <#if serviceSubTypeName??>AND oev.SS_SERVICE_CODE = :serviceSubTypeName</#if>
             <#if appType??> AND oev.app_type = :appType</#if>
             <#if appNo??> AND charindex(:appNo, oev.application_no)>0</#if>
             <#if appStatusAll??>AND ${appStatusAll}</#if>
@@ -60,7 +59,7 @@
             <#if toDate??> AND oev.submit_dt <= convert(datetime,:toDate)</#if>
             <#if personnelName??> AND (charindex(:personnelName, oev.appSvcPerName )>0 OR charindex(:personnelName, oev.appGrpPerName )>0)</#if>
             <#if personnelId??> AND charindex(:personnelId, oev.ID_NO )>0</#if>
-            <#if personnelRegnNo??> AND (charindex( :personnelRegnNo, oev.LIC_PROF_REG_NO )>0 OR charindex( :personnelRegnNo, oev.APP_PROF_REG_NO )>0 OR charindex( :personnelRegnNo, oev.APP_SVC_PROF_REG_NO )>0)</#if>
+            <#if personnelRegnNo??> AND (charindex( :personnelRegnNo, oev.LIC_PROF_REG_NO )>0 OR charindex( :personnelRegnNo, oev.APP_PROF_REG_NO )>0 )</#if>
             <#if personnelRole??> AND  oev.PSN_TYPE = :personnelRole</#if>
             <#if svc_ids??> AND oev.service_id in( :svc_ids)</#if>
             <#if uen_no??>AND  (charindex(:uen_no, oev.app_uen_no )>0 OR charindex(:uen_no, oev.lic_uen_no )>0)</#if>
@@ -116,8 +115,7 @@
             <#if svc_name??> AND oev.svc_name = :svc_name</#if>
             <#if licenseeRegnNo??> AND (charindex( :licenseeRegnNo,oev.LIC_PROF_REG_NO )>0 OR charindex( :licenseeRegnNo,oev.APP_PROF_REG_NO )>0 )</#if>
             <#if licenseeId??> AND ${licenseeId}</#if>
-            <#if serviceSubTypeName??>AND :serviceSubTypeName = :serviceSubTypeName</#if>
-            <#if appSubStatus_HIV??>AND ${appSubStatus_HIV}</#if>
+            <#if serviceSubTypeName??>AND oev.SS_SERVICE_CODE = :serviceSubTypeName</#if>
             <#if appType??> AND oev.app_type = :appType</#if>
             <#if appNo??> AND charindex(:appNo, oev.application_no)>0</#if>
             <#if appStatusAll??>AND ${appStatusAll}</#if>
@@ -127,7 +125,7 @@
             <#if toDate??> AND oev.submit_dt <= convert(datetime,:toDate)</#if>
             <#if personnelName??> AND (charindex(:personnelName, oev.appSvcPerName )>0 OR charindex(:personnelName, oev.appGrpPerName )>0)</#if>
             <#if personnelId??> AND charindex(:personnelId, oev.ID_NO )>0</#if>
-            <#if personnelRegnNo??> AND (charindex( :personnelRegnNo, oev.LIC_PROF_REG_NO )>0 OR charindex( :personnelRegnNo, oev.APP_PROF_REG_NO )>0 OR charindex( :personnelRegnNo, oev.APP_SVC_PROF_REG_NO )>0)</#if>
+            <#if personnelRegnNo??> AND (charindex( :personnelRegnNo, oev.LIC_PROF_REG_NO )>0 OR charindex( :personnelRegnNo, oev.APP_PROF_REG_NO )>0 )</#if>
             <#if personnelRole??> AND  oev.PSN_TYPE = :personnelRole</#if>
             <#if svc_ids??> AND oev.service_id in( :svc_ids)</#if>
             <#if uen_no??>AND  (charindex(:uen_no, oev.app_uen_no )>0 OR charindex(:uen_no, oev.lic_uen_no )>0)</#if>

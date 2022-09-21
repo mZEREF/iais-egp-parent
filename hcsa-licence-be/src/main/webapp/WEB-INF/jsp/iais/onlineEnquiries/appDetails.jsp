@@ -258,53 +258,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="panel-heading"><strong>Allocation</strong></div>
-                                                <div class="row">
-                                                    <div class="col-xs-12">
-                                                        <table aria-describedby="" class="table">
-                                                            <thead >
-                                                            <tr >
-                                                                <th scope="col" style="text-align: center">Mode of Service Delivery</th>
-                                                                <th scope="col" style="text-align: center">Service / Granular Service</th>
-                                                                <th scope="col" style="text-align: center">Clinical Governance Officers</th>
-                                                                <th scope="col" style="text-align: center">Section Leader</th>
-                                                            </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                            <c:choose>
-                                                                <c:when test="${empty appSvcRelatedInfoDto.appSvcDisciplineAllocationDtoList}">
-                                                                    <tr>
-                                                                        <td colspan="7">
-                                                                            <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
-                                                                        </td>
-                                                                    </tr>
-                                                                </c:when>
-                                                                <c:otherwise>
-                                                                    <c:forEach var="disciplineAllocation" items="${appSvcRelatedInfoDto.appSvcDisciplineAllocationDtoList}" varStatus="stat">
-                                                                        <tr>
-                                                                            <td style="text-align: center" >
-                                                                                <p style="padding-left: 15px;">${disciplineAllocation.premiseVal}<c:if test="${empty disciplineAllocation.premiseVal}">-</c:if></p>
-                                                                            </td>
 
-                                                                            <td style="text-align: center">
-                                                                                <p style="padding-left: 15px;">${disciplineAllocation.chkLstName}<c:if test="${empty disciplineAllocation.chkLstName}">-</c:if></p>
-
-                                                                            </td>
-                                                                            <td style="text-align: center">
-                                                                                <p style="padding-left: 15px;">${disciplineAllocation.cgoSelName}<c:if test="${empty disciplineAllocation.cgoSelName}">-</c:if></p>
-                                                                            </td>
-                                                                            <td style="text-align: center">
-                                                                                <p style="padding-left: 15px;">${disciplineAllocation.sectionLeaderName}<c:if test="${empty disciplineAllocation.sectionLeaderName}">-</c:if></p>
-                                                                            </td>
-                                                                        </tr>
-                                                                    </c:forEach>
-                                                                </c:otherwise>
-                                                            </c:choose>
-                                                            </tbody>
-                                                        </table>
-
-                                                    </div>
-                                                </div>
                                                 <c:if test="${not empty appSvcRelatedInfoDto.appSvcKeyAppointmentHolderDtoList}">
                                                     <c:forEach items="${appSvcRelatedInfoDto.appSvcKeyAppointmentHolderDtoList}" var="personnel">
                                                         <div class="panel-heading"><strong>Key Appointment Holder </strong></div>

@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
@@ -42,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.service.ConfigService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -136,7 +138,8 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     private     String sharedPath;
     @Autowired
     private GenerateIdClient generateIdClient;
-
+    @Autowired
+    private ConfigService configService;
 
     private static final String[] appType=new String[]{
             ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,
@@ -210,13 +213,13 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
     @Override
     public List<SelectOption> getLicSvcTypeOption() {
-        List<String> svcNames=getSvcNamesByType();
+        List<HcsaServiceDto>  specHcsaServiceDtos = configService.getActiveServicesBySvcType(HcsaConsts.SERVICE_TYPE_BASE);
         List<SelectOption> selectOptions= IaisCommonUtils.genNewArrayList();
-        for (String svcName:svcNames
+        for (HcsaServiceDto svc:specHcsaServiceDtos
         ) {
             SelectOption selectOption=new SelectOption();
-            selectOption.setText(svcName);
-            selectOption.setValue(svcName);
+            selectOption.setText(svc.getSvcName());
+            selectOption.setValue(svc.getSvcName());
             selectOptions.add(selectOption);
         }
         HashSet<SelectOption> set = new HashSet<>(selectOptions);
@@ -228,21 +231,18 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
     @Override
     public List<SelectOption> getLicSvcSubTypeOption() {
-        List<SelectOption> selectOptions= IaisCommonUtils.genNewArrayList();
-        SelectOption selectOption1=new SelectOption();
-        selectOption1.setText("Pre-implantation Genetic Screening");
-        selectOption1.setValue("PIG_Screening");
-        selectOptions.add(selectOption1);
-        SelectOption selectOption2=new SelectOption();
-        selectOption2.setText("Pre-implantation Genetic Diagnosis");
-        selectOption2.setValue("PIG_Diagnosis");
-        selectOptions.add(selectOption2);
-        SelectOption selectOption=new SelectOption();
-        selectOption.setText("Human Immunodeficiency Virus");
-        selectOption.setValue("HIV");
-        selectOptions.add(selectOption);
-        selectOptions.sort(Comparator.comparing(SelectOption::getText));
-        return selectOptions;
+        List<HcsaServiceDto>  specHcsaServiceDtos = configService.getActiveServicesBySvcType(HcsaConsts.SERVICE_TYPE_SPECIFIED);
+        return getSelectOptionForHcsaServiceDtos(specHcsaServiceDtos);
+    }
+
+    private List<SelectOption> getSelectOptionForHcsaServiceDtos(List<HcsaServiceDto> hcsaServiceDtos){
+        List<SelectOption> result = IaisCommonUtils.genNewArrayList();
+        if(IaisCommonUtils.isNotEmpty(hcsaServiceDtos)){
+            for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtos ){
+                result.add(new SelectOption(hcsaServiceDto.getSvcCode(),hcsaServiceDto.getSvcDisplayDesc()));
+            }
+        }
+        return result;
     }
 
     @Override
