@@ -30,9 +30,10 @@
                 </div>
             </c:forEach>
             <c:if test="${empty retriggerGiro && FirstView && !('APTY004' == AppSubmissionDto.appType || 'APTY005' == AppSubmissionDto.appType)}">
-                <br/>
-                <p class="font-size-14">Please note that you will not be able to add  or remove any mode of service delivery here.</p>
-                <p class="font-size-14">If you wish to do so, please click <a href="#">here</a>.</p>
+                <iais:row>
+                    <p class="font-size-14">Please note that you will not be able to add  or remove any mode of service delivery here.</p>
+                    <p class="font-size-14">If you wish to do so, please click <a href="#">here</a>.</p>
+                </iais:row>
             </c:if>
         </div>
     </div>

@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
@@ -40,6 +41,7 @@ import com.ecquaria.cloud.moh.iais.helper.AppDataHelper;
 import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.RfcHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
@@ -66,6 +68,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.APPSUBMISSIONDTO;
@@ -538,7 +541,38 @@ public class ServiceInfoDelegator {
         if ("next".equals(actionType)) {
             errorMap = AppValidatorHelper.doValidateOtherInformation(appSvcOtherInfoDtos,currSvcCode);
         }
-        checkAction(errorMap, HcsaConsts.STEP_OTHER_INFORMATION, appSubmissionDto, bpc.request);
+        boolean isValid = checkAction(errorMap, HcsaConsts.STEP_OTHER_INFORMATION, appSubmissionDto, bpc.request);
+        if (isValid && isGetDataFromPage) {
+            AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
+            AppSvcRelatedInfoDto oldSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfoBySvcCode(oldAppSubmissionDto,
+                    currSvcInfoDto.getServiceCode(), appSubmissionDto.getRfiAppNo());
+            resolveActionCode(currSvcInfoDto, oldSvcInfoDto, appType);
+            setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
+        }
+    }
+
+    private void resolveActionCode(AppSvcRelatedInfoDto currSvcInfoDto, AppSvcRelatedInfoDto oldSvcInfoDto, String appType) {
+        List<AppSvcOtherInfoDto> appSvcOtherInfoDtos = currSvcInfoDto.getAppSvcOtherInfoList();
+        if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+            for (AppSvcOtherInfoDto appSvcOtherInfoDto : appSvcOtherInfoDtos) {
+                RfcHelper.resolveSvcActionCode(appSvcOtherInfoDto.getAppPremSubSvcRelDtoList(),
+                        IaisCommonUtils.genNewHashMap());
+                appSvcOtherInfoDto.initAllAppPremSubSvcRelDtoList();
+            }
+            return;
+        }
+        Map<String, AppPremSubSvcRelDto> oldRelMap = Optional.ofNullable(oldSvcInfoDto)
+                .map(AppSvcRelatedInfoDto::getAppSvcOtherInfoList)
+                .filter(IaisCommonUtils::isNotEmpty)
+                .map(list -> list.get(0))
+                .map(AppSvcOtherInfoDto::getAllAppPremSubSvcRelDtoList)
+                .filter(IaisCommonUtils::isNotEmpty)
+                .map(list -> list.stream()
+                        .collect(Collectors.toMap(AppPremSubSvcRelDto::getSvcCode, Function.identity(), (v1, v2) -> v2)))
+                .orElseGet(IaisCommonUtils::genNewHashMap);
+        AppSvcOtherInfoDto appSvcOtherInfoDto = appSvcOtherInfoDtos.get(0);
+        RfcHelper.resolveSvcActionCode(appSvcOtherInfoDto.getAppPremSubSvcRelDtoList(), oldRelMap);
+        appSvcOtherInfoDto.initAllAppPremSubSvcRelDtoList();
     }
 
     private void prepareOutsourcedProviders(HttpServletRequest request) {
@@ -1230,11 +1264,33 @@ public class ServiceInfoDelegator {
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         String currentSvcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currentSvcId);
-        List<HcsaSvcPersonnelDto> psnConfig = configCommService.getHcsaSvcPersonnel(currentSvcId,
-                ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL);
-        int minCount = Optional.ofNullable(psnConfig.get(0))
+        List<HcsaSvcPersonnelDto> emConfig = configCommService.getHcsaSvcPersonnel(currentSvcId,
+                ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST);
+        List<HcsaSvcPersonnelDto> arConfig = configCommService.getHcsaSvcPersonnel(currentSvcId,
+                ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER);
+        List<HcsaSvcPersonnelDto> nuConfig = configCommService.getHcsaSvcPersonnel(currentSvcId,
+                ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES);
+        List<HcsaSvcPersonnelDto> speConfig = configCommService.getHcsaSvcPersonnel(currentSvcId,
+                ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS);
+        List<HcsaSvcPersonnelDto> otherConfig = configCommService.getHcsaSvcPersonnel(currentSvcId,
+                ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS);
+        int emMin = Optional.ofNullable(emConfig.size()!=0 ? emConfig.get(0) : null)
                 .map(HcsaSvcPersonnelDto::getMandatoryCount)
                 .orElse(0);
+        int arMin = Optional.ofNullable(arConfig.size()!=0 ? arConfig.get(0) : null)
+                .map(HcsaSvcPersonnelDto::getMandatoryCount)
+                .orElse(0);
+        int nuMin = Optional.ofNullable(nuConfig.size()!=0 ? nuConfig.get(0) : null)
+                .map(HcsaSvcPersonnelDto::getMandatoryCount)
+                .orElse(0);
+
+        int speMin = Optional.ofNullable(speConfig.size()!=0 ? speConfig.get(0) : null)
+                .map(HcsaSvcPersonnelDto::getMandatoryCount)
+                .orElse(0);
+        int otherMin = Optional.ofNullable(otherConfig.size()!=0 ? otherConfig.get(0) : null)
+                .map(HcsaSvcPersonnelDto::getMandatoryCount)
+                .orElse(0);
+
         SvcPersonnelDto svcPersonnelDto = appSvcRelatedInfoDto.getSvcPersonnelDto();
         if (StringUtil.isEmpty(svcPersonnelDto)){
             svcPersonnelDto = new SvcPersonnelDto();
@@ -1245,41 +1301,54 @@ public class ServiceInfoDelegator {
         int speCount = 0;
         int norCount = 0;
         if (currentSvcCode != null) {
-//            AppServicesConsts.SERVICE_CODE_ASSISTED_REPRODUCTION.equals(currentSvcCode)
-          if (AppServicesConsts.SERVICE_CODE_ASSISTED_REPRODUCTION.equals(currentSvcCode)) {
-                emCount = Optional.ofNullable(svcPersonnelDto.getEmbryologistList())
-                        .map(List::size)
-                        .orElse(minCount);
-                nuCount = Optional.ofNullable(svcPersonnelDto.getNurseList())
-                        .map(List::size)
-                        .orElse(minCount);
-                arCount = Optional.ofNullable(svcPersonnelDto.getArPractitionerList())
-                        .map(List::size)
-                        .orElse(minCount);
-                svcPersonnelDto.setEmbryologistMinCount(emCount);
-                svcPersonnelDto.setNurseCount(nuCount);
-                svcPersonnelDto.setArPractitionerCount(arCount);
-            }
-            else if (AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(currentSvcCode)) {
+            emCount = Optional.ofNullable(svcPersonnelDto.getEmbryologistList())
+                    .map(List::size)
+                    .orElse(emMin);
+            nuCount = Optional.ofNullable(svcPersonnelDto.getNurseList())
+                    .map(List::size)
+                    .orElse(nuMin);
+            arCount = Optional.ofNullable(svcPersonnelDto.getArPractitionerList())
+                    .map(List::size)
+                    .orElse(arMin);
+            svcPersonnelDto.setEmbryologistMinCount(emCount);
+            svcPersonnelDto.setNurseCount(nuCount);
+            svcPersonnelDto.setArPractitionerCount(arCount);
+            if (AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(currentSvcCode)) {
                 speCount = Optional.ofNullable(svcPersonnelDto.getSpecialList())
                         .map(List::size)
-                        .orElse(minCount);
+                        .orElse(speMin);
                 svcPersonnelDto.setSpecialCount(speCount);
             }
            else {
                 norCount = Optional.ofNullable(svcPersonnelDto.getNormalList())
                         .map(List::size)
-                        .orElse(minCount);
+                        .orElse(otherMin);
                 svcPersonnelDto.setNormalCount(norCount);
             }
         }
 //      fang
-
-        int svcPersonnelMax = Optional.ofNullable(psnConfig.get(0))
+        int emPersonnelMax = Optional.ofNullable(emConfig.size()!=0 ? emConfig.get(0) : null)
+                .map(HcsaSvcPersonnelDto::getMaximumCount)
+                .orElse(0);
+        int arPersonnelMax = Optional.ofNullable(arConfig.size()!=0 ? arConfig.get(0) : null)
+                .map(HcsaSvcPersonnelDto::getMaximumCount)
+                .orElse(0);
+        int nuPersonnelMax = Optional.ofNullable(nuConfig.size()!=0 ? nuConfig.get(0) : null)
+                .map(HcsaSvcPersonnelDto::getMaximumCount)
+                .orElse(0);
+        int spePersonnelMax = Optional.ofNullable(speConfig.size()!=0 ? speConfig.get(0) : null)
+                .map(HcsaSvcPersonnelDto::getMaximumCount)
+                .orElse(0);
+        int othersPersonnelMax = Optional.ofNullable(otherConfig.size()!=0 ? otherConfig.get(0) : null)
                 .map(HcsaSvcPersonnelDto::getMaximumCount)
                 .orElse(0);
         ParamUtil.setRequestAttr(bpc.request, "svcPersonnelDto",svcPersonnelDto);
-        ParamUtil.setRequestAttr(bpc.request, "svcPersonnelMax", svcPersonnelMax);
+        ParamUtil.setRequestAttr(bpc.request, "emPersonnelMax", emPersonnelMax);
+        ParamUtil.setRequestAttr(bpc.request, "arPersonnelMax", arPersonnelMax);
+        ParamUtil.setRequestAttr(bpc.request, "nuPersonnelMax", nuPersonnelMax);
+        ParamUtil.setRequestAttr(bpc.request, "spePersonnelMax", spePersonnelMax);
+        ParamUtil.setRequestAttr(bpc.request, "othersPersonnelMax", othersPersonnelMax);
+
         List<SelectOption> personnelTypeSel = ApplicationHelper.genPersonnelTypeSel(currentSvcCode);
         ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.SERVICEPERSONNELTYPE, personnelTypeSel);
         List<SelectOption> designation = genPersonnelDesignSel(currentSvcCode);
@@ -1331,42 +1400,11 @@ public class ServiceInfoDelegator {
                 Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                 appSubmissionDto.setClickEditPage(clickEditPages);
             }
-
-//            validate mandatory count
-            int psnLength = 0;
-            if (!IaisCommonUtils.isEmpty(svcPersonnelDto.getArPractitionerList()) || !IaisCommonUtils.isEmpty(svcPersonnelDto.getEmbryologistList()) || !IaisCommonUtils.isEmpty(svcPersonnelDto.getNurseList())) {
-               int arCount = Optional.ofNullable(svcPersonnelDto.getArPractitionerList())
-                        .map(List::size)
-                        .orElse(0);
-               int nurCount = Optional.ofNullable(svcPersonnelDto.getNurseList())
-                       .map(List::size)
-                       .orElse(0);
-               int EmCount = Optional.ofNullable(svcPersonnelDto.getEmbryologistList())
-                        .map(List::size)
-                        .orElse(0);
-                psnLength = (arCount > nurCount && arCount > EmCount) ? arCount : ((nurCount > EmCount) ? nurCount : EmCount);
-            }
-            if (!IaisCommonUtils.isEmpty(svcPersonnelDto.getSpecialList())){
-                psnLength = Optional.ofNullable(svcPersonnelDto.getSpecialList())
-                        .map(List::size)
-                        .orElse(0);
-            }
-            if (!IaisCommonUtils.isEmpty(svcPersonnelDto.getNormalList())){
-                psnLength = Optional.ofNullable(svcPersonnelDto.getNormalList())
-                        .map(List::size)
-                        .orElse(0);
-            }
-            List<HcsaSvcPersonnelDto> psnConfig = configCommService.getHcsaSvcPersonnel(currentSvcId,
-                    ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL);
             AppValidatorHelper.doValidateSvcPersonnel(errorMap, svcPersonnelDto);
-            AppValidatorHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL, errorMap,
-                    psnLength, "psnSvcPersonnel", HcsaConsts.SERVICE_PERSONNEL);
         }
         boolean isValid = checkAction(errorMap, HcsaConsts.STEP_SERVICE_PERSONNEL, appSubmissionDto, bpc.request);
         if (isValid && isGetDataFromPage) {
             DealSessionUtil.reSetInit(appSubmissionDto, HcsaAppConst.SECTION_SVCINFO);
-            //remove dirty psn doc info
-            //removeDirtyPsnDoc(ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL, bpc.request);
         }
         ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
         log.info(StringUtil.changeForLog("the do doServicePersonnel end ...."));

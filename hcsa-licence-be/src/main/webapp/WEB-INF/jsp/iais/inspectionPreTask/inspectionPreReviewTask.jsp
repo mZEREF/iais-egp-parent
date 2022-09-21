@@ -411,7 +411,7 @@
         inspectionPreTaskSubmit('rollBack');
       })
     } else {
-      var errMsg = 'This field is mandatory';
+      var errMsg = '<iais:message key="GENERAL_ERR0006"/>';
       $("#error_selectValue").text(errMsg);
       dismissWaiting();
     }

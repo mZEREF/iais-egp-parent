@@ -119,7 +119,6 @@
                 $personnelContentEle.find('.personnel-wrkExpYear .wrkExpYear').val('');
                 $personnelContentEle.find('.personnel-qualification .qualification').val('');
                 $personnelContentEle.find('.otherDesignationDiv .otherDesignation').val('');
-                $personnelContentEle.find('.personnel-name .salutation').val('');
                 if ('Y' == prsFlag) {
                     inputCancelReadonly($personnelContentEle.find('.name'));
                 }
@@ -177,9 +176,8 @@
             }
         }
     //    hidden otherDesignationDiv  clear designation
-        console.log('init------->',init,0);
+        clearErrorMsg($personnelContentEle)
         if (init != 0) {
-            clearFields($personnelContentEle.find('.salutation'))
             clearFields($personnelContentEle.find('.designation'))
             $personnelContentEle.find('.otherDesignationDiv').addClass('hidden');
         }
@@ -221,7 +219,7 @@
 
     function controlCountEvent($target, flag) {
         var psnLength = $target.find('div.personnel-content').length;
-        let count = '${svcPersonnelMax}'
+        let count = $target.find('.maxCount').val();
         if (flag) {
             if (psnLength >= count) {
                 $target.find('.addDpoDiv').addClass('hidden');
@@ -291,6 +289,7 @@
     var pageController = function ($Ele) {
         let flag = $("#curr").val();
         if (flag == 'NMI' || flag == 'NMA') {
+            console.log("begin---->",init)
             personnelSel();
             if ($Ele == '') {
                 //triggering event

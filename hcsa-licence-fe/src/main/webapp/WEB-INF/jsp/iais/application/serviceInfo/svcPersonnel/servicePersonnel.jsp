@@ -76,6 +76,7 @@
                     <p class="app-title" ><c:out value="Service Personnel"/></p>
                 </div>
             </iais:row>
+            <input type="hidden" class="maxCount" value="${arPersonnelMax}"/>
             <c:forEach begin="0" end="${arPractitionerCount - 1}" step="1" varStatus="status">
                 <c:set value="SP002" var="logo"/>
                 <c:set var="index" value="${status.index}"/>
@@ -102,6 +103,7 @@
 
     <c:if test="${nurseCount != 0}">
         <div class="panel-main-content">
+            <input type="hidden" class="maxCount" value="${nuPersonnelMax}"/>
             <c:forEach begin="0" end="${nurseCount - 1}" step="1" varStatus="status">
                 <c:set value="SP003" var="logo"/>
                 <c:set var="index" value="${status.index}"/>
@@ -133,6 +135,7 @@
     </c:if>
     <c:if test="${embryologistMinCount != 0}">
         <div class="panel-main-content">
+            <input type="hidden" class="maxCount" value="${emPersonnelMax}"/>
             <c:forEach begin="0" end="${embryologistMinCount - 1}" step="1" varStatus="status">
                 <c:set value="SP001" var="logo"/>
                 <c:set var="index" value="${status.index}"/>
@@ -147,8 +150,8 @@
         </div>
     </c:if>
 
-
     <c:if test="${specialCount != 0}">
+        <input type="hidden" class="maxCount" value="${spePersonnelMax}"/>
         <c:forEach begin="0" end="${specialCount - 1}" step="1" varStatus="status">
             <c:set var="index" value="${status.index}"/>
             <c:set value="SP000" var="logo"/>
@@ -164,6 +167,7 @@
     </c:if>
     <c:if test="${normalCount != 0}">
         <div class="panel-main-content">
+            <input type="hidden" class="maxCount" value="${othersPersonnelMax}"/>
             <c:forEach begin="0" end="${normalCount - 1}" step="1" varStatus="status">
                 <c:set value="SP999" var="logo"/>
                 <c:set var="index" value="${status.index}"/>

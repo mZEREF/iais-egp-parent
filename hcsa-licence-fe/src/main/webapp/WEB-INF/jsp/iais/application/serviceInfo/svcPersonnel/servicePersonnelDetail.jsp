@@ -2,21 +2,8 @@
     <input type="hidden" class="not-refresh " name="${logo}speCount" value="size"/>
     <input type="hidden" name="indexNo" value="${appSvcPersonnelDto.indexNo}"/>
     <iais:row cssClass="personnel-header">
-        <%--<iais:value width="5" cssClass="col-xs-12 col-md-6">
-            <strong>
-                <c:out value="${title} "/>
-                <label class="assign-psn-item">${index+1}</label>
-            </strong>
-        </iais:value>
-        <iais:value width="7" cssClass="col-xs-12 col-md-4 text-right">
-            <div class="removeEditDiv <c:if test="${index == 0}">hidden</c:if>">
-                <h4 class="text-danger">
-                    <em class="fa fa-times-circle del-size-36 removeBtns cursorPointer"></em>
-                </h4>
-            </div>
-        </iais:value>--%>
         <div class="col-xs-12 col-md-6">
-            <p class="bold">${title} <label class="assign-psn-item">${index+1}</label></p>
+            <p class="bold">${title}<label class="assign-psn-item">${index+1}</label></p>
             <p><span class="error-msg" name="iaisErrorMSg" id="error_${prepsn}personError${index}"></span></p>
         </div>
         <div class="col-xs-12 col-md-6 text-right removeEditDiv <c:if test="${index == 0}">hidden</c:if>">
@@ -46,31 +33,14 @@
     </iais:row>
     <div class="new-svc-personnel-form">
         <%--        name--%>
+        <iais:row cssClass="personnel-name hidden ">
+            <iais:field width="5" mandatory="true" value="Name" cssClass="col-sm-5 col-md-5"/>
+            <iais:value width="7" cssClass="col-sm-5 col-md-7">
+                <iais:input maxLength="66" cssClass="name" type="text" name="name${index}"
+                            value="${appSvcPersonnelDto.name}"></iais:input>
+            </iais:value>
+        </iais:row>
 
-        <c:choose>
-            <c:when test="${'SP000' == logo}">
-                <iais:row cssClass="personnel-name hidden ">
-                    <iais:field width="5" mandatory="true" value="Name" cssClass="col-sm-5 col-md-5"/>
-                    <iais:value width="7" cssClass="col-sm-5 col-md-7">
-                        <iais:input maxLength="66" cssClass="name" type="text" name="name${index}"
-                                    value="${appSvcPersonnelDto.name}"></iais:input>
-                    </iais:value>
-                </iais:row>
-            </c:when>
-            <c:when test="${'111' == logo}">
-                <iais:row cssClass="personnel-name hidden ">
-                    <iais:field width="5" cssClass="col-sm-5 col-md-5" mandatory="true" value="Name"/>
-                    <iais:value width="3" cssClass="col-md-3">
-                        <iais:select cssClass="salutation" name="salutation${index}" firstOption="Please Select"
-                                     codeCategory="CATE_ID_SALUTATION" value="${appSvcPersonnelDto.salutation}"/>
-                    </iais:value>
-                    <iais:value width="4" cssClass="col-md-4">
-                        <iais:input cssClass="name" maxLength="66" type="text" name="name${index}"
-                                    value="${appSvcPersonnelDto.name}"/>
-                    </iais:value>
-                </iais:row>
-            </c:when>
-        </c:choose>
 
         <iais:row cssClass="personnel-designation hidden ">
             <iais:field width="5" mandatory="true" value="Designation" cssClass="col-sm-5 col-md-5"/>
@@ -108,7 +78,8 @@
         </iais:row>
         <%--    years--%>
         <iais:row cssClass="personnel-wrkExpYear hidden ">
-            <iais:field width="5" mandatory="true" value="Relevant working experience (Years)" cssClass="col-sm-5 col-md-5"/>
+            <iais:field width="5" mandatory="true" value="Relevant working experience (Years)"
+                        cssClass="col-sm-5 col-md-5"/>
             <iais:value width="7" cssClass="col-sm-5 col-md-7">
                 <iais:input maxLength="2" cssClass="wrkExpYear" type="text" name="wrkExpYear${index}"
                             value="${appSvcPersonnelDto.wrkExpYear}"></iais:input>

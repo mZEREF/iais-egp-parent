@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,7 @@ public class HalpInterTimeOutAjaxController {
     public @ResponseBody
     Map<String, Object> interTimeOutExtend(HttpServletRequest request) {
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        AccessUtil.getLoginUser(request);
         log.info("internet.extend ok!!!!!!!");
         return map;
     }
@@ -31,6 +33,7 @@ public class HalpInterTimeOutAjaxController {
     public @ResponseBody
     Map<String, Object> intraTimeOutExtend(HttpServletRequest request) {
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        AccessUtil.getLoginUser(request);
         log.info("intranet.extend ok!!!!!!!");
         return map;
     }

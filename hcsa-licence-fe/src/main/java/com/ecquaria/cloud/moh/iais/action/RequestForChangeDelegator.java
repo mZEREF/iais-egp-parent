@@ -14,12 +14,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
@@ -28,8 +26,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -40,7 +38,6 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.AjaxResDto;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
-import com.ecquaria.cloud.moh.iais.helper.AppDataHelper;
 import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -65,7 +62,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sop.servlet.webflow.HttpHandler;
-import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -228,8 +224,8 @@ public class RequestForChangeDelegator {
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.PRIMARY_DOC_CONFIG, null);
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.SVC_DOC_CONFIG, null);
         ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR, 0);
-        init(bpc, licenceId);
         removeSession(bpc.request);
+        init(bpc, licenceId);
         log.debug(StringUtil.changeForLog("the do doStart start ...."));
     }
 
@@ -248,6 +244,40 @@ public class RequestForChangeDelegator {
         request.getSession().removeAttribute("viewPrint");
         DealSessionUtil.clearSession(request);
     }
+
+    private void init(BaseProcessClass bpc, String licenceId) {
+        ParamUtil.setSessionAttr(bpc.request, RfcConst.LICENCEID, licenceId);
+        //load data
+        if (!StringUtil.isEmpty(licenceId)) {
+            AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByLicenceId(licenceId);
+            if (appSubmissionDto == null || IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList()) ||
+                    IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())) {
+                log.info(StringUtil.changeForLog("appSubmissionDto incomplete , licenceId:" + licenceId));
+            } else {
+                log.debug(StringUtil.changeForLog("do request for change ------ licence no:" + appSubmissionDto.getLicenceNo()));
+                AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_REQUEST_FOR_CHANGE,
+                        AuditTrailConsts.FUNCTION_REQUEST_FOR_CHANGE);
+                // HCSA Service Configuration
+                String svcName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
+                HcsaServiceDto hcsaServiceDto = serviceConfigService.getActiveHcsaServiceDtoByName(svcName);
+                List<HcsaServiceDto> hcsaServiceDtoList = IaisCommonUtils.genNewArrayList();
+                if (hcsaServiceDto != null) {
+                    String currSvcId = hcsaServiceDto.getId();
+                    log.debug(StringUtil.changeForLog("current svc id:" + currSvcId));
+                    hcsaServiceDtoList.add(hcsaServiceDto);
+                    ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
+                    ParamUtil.setSessionAttr(bpc.request, "SvcId", currSvcId);
+                }
+                DealSessionUtil.init(appSubmissionDto, hcsaServiceDtoList, false, bpc.request);
+
+                AppSubmissionDto oldAppSubmissionDto = CopyUtil.copyMutableObject(appSubmissionDto);
+                appSubmissionDto.setOldAppSubmissionDto(oldAppSubmissionDto);
+                ParamUtil.setSessionAttr(bpc.request, "SvcName", svcName);
+                ParamUtil.setSessionAttr(bpc.request, RfcConst.RFCAPPSUBMISSIONDTO, appSubmissionDto);
+            }
+        }
+    }
+
     /**
      *
      * @param bpc
@@ -888,74 +918,6 @@ public class RequestForChangeDelegator {
         log.info(StringUtil.changeForLog("The prepareCond  isValidate is -->"+
                 ParamUtil.getRequestAttr(bpc.request,"isValidate")));
         log.info(StringUtil.changeForLog("The prepareCond  end..."));
-    }
-    private void init(BaseProcessClass bpc, String licenceId) throws Exception {
-        HcsaServiceCacheHelper.flushServiceMapping();
-        ParamUtil.setSessionAttr(bpc.request, RfcConst.LICENCEID, licenceId);
-        //load data
-        if(!StringUtil.isEmpty(licenceId)){
-            AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByLicenceId(licenceId);
-            if(appSubmissionDto == null || IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList()) ||
-                    IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())){
-                log.info(StringUtil.changeForLog("appSubmissionDto incomplete , licenceId:"+licenceId));
-            }else{
-                log.debug(StringUtil.changeForLog("do request for change ------ licence no:"+appSubmissionDto.getLicenceNo()));
-                AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_REQUEST_FOR_CHANGE, AuditTrailConsts.FUNCTION_REQUEST_FOR_CHANGE);
-                //set file max seq num
-                ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR,
-                        appSubmissionDto.getMaxFileIndex()+1);
-                //set audit trail licNo
-                String appType = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE;
-                AuditTrailHelper.setAuditLicNo(appSubmissionDto.getLicenceNo());
-
-                appCommService.transform(appSubmissionDto, ApplicationHelper.getLicenseeId(bpc.request), appType, false);
-
-                // set premises
-                for (AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()) {
-                    appGrpPremisesDto.setOldHciCode(appGrpPremisesDto.getHciCode());
-                    appGrpPremisesDto.setExistingData(AppConsts.NO);
-                }
-                //set svcInfo
-                ApplicationHelper.setSubmissionDtoSvcData(bpc.request,appSubmissionDto);
-                //set laboratory disciplines info
-                String svcName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
-                HcsaServiceDto hcsaServiceDto = serviceConfigService.getActiveHcsaServiceDtoByName(svcName);
-                if(hcsaServiceDto != null){
-                    String currSvcId = hcsaServiceDto.getId();
-                    log.debug(StringUtil.changeForLog("current svc id:"+ currSvcId));
-                    List<HcsaServiceDto> hcsaServiceDtoList = IaisCommonUtils.genNewArrayList();
-                    hcsaServiceDtoList.add(hcsaServiceDto);
-                    ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
-                    ParamUtil.setSessionAttr(bpc.request, "SvcId",currSvcId);
-                }
-
-                //svc doc set align
-                List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-                if(appGrpPremisesDtos != null && appGrpPremisesDtos.size() > 0){
-                    String premTye = appGrpPremisesDtos.get(0).getPremisesType();
-                    String premVal = appGrpPremisesDtos.get(0).getPremisesIndexNo();
-                    List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-                    if(appSvcRelatedInfoDtos !=null && appSvcRelatedInfoDtos.size() > 0){
-                        AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSvcRelatedInfoDtos.get(0);
-                        List<AppSvcDocDto> appSvcDocDtoList = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
-                        if(!IaisCommonUtils.isEmpty(appSvcDocDtoList) && hcsaServiceDto != null){
-                            List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(hcsaServiceDto.getId());
-                            for(AppSvcDocDto appSvcDocDto:appSvcDocDtoList){
-                                HcsaSvcDocConfigDto docConfig = ApplicationHelper.getHcsaSvcDocConfigDtoById(svcDocConfig,appSvcDocDto.getSvcDocId());
-                                if(docConfig != null && "1".equals(docConfig.getDupForPrem())){
-                                    appSvcDocDto.setPremisesVal(premVal);
-                                    appSvcDocDto.setPremisesType(premTye);
-                                }
-                            }
-                        }
-                    }
-                }
-                AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
-                appSubmissionDto.setOldAppSubmissionDto(oldAppSubmissionDto);
-                ParamUtil.setSessionAttr(bpc.request,"SvcName",svcName);
-                ParamUtil.setSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO,appSubmissionDto);
-            }
-        }
     }
 
     private void loadingDraft(BaseProcessClass bpc,String draftNo){

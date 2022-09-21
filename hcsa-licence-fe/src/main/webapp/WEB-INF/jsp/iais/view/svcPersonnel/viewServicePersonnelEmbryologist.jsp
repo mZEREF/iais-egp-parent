@@ -26,7 +26,7 @@
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="7" cssClass="col-md-5" value="Number of AR procedures done under supervision"/>
+        <iais:field width="7" value="Number of AR procedures done under supervision"/>
         <iais:value width="5" cssClass="col-md-7" display="true">
             <c:out value="${appSvcPersonnelDto.numberSupervision}"/>
         </iais:value>

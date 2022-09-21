@@ -103,7 +103,7 @@
                                                         <iais:field value="Processing Decision" required="true"/>
                                                         <iais:value width="7">
                                                             <iais:select id="decision_email" name="decision" cssClass="nice-select nextStage" options="appTypeOption" firstOption="Please select"  />
-                                                            <span style="font-size: 1.6rem; color: #D22727; display: none" id="selectDecisionMsg" >This field is mandatory</span>
+                                                            <span style="font-size: 1.6rem; color: #D22727; display: none" id="selectDecisionMsg" ><iais:message key="GENERAL_ERR0006"/></span>
                                                         </iais:value>
                                                     </iais:row>
                                                     <jsp:include page="/WEB-INF/jsp/iais/inspectionPreTask/rollBackPart.jsp"/>

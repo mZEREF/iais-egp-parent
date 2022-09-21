@@ -11,6 +11,8 @@
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
 <input type="hidden" id="autoCheckRandM" value="${autoCheckRandM}"/>
 
+<c:set var="readonly" value="${AppSubmissionDto.readonlyPrem}" />
+
 <webui:setLayout name="iais-internet"/>
 <%@ include file="/WEB-INF/jsp/iais/application/common/dashboard.jsp" %>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
@@ -50,7 +52,7 @@
                                 <div class="row">
                                     <div class="col-xs-12" id="addPremBody">
                                         <%--<c:if test="${requestInformationConfig == null && 'APTY005' != AppSubmissionDto.appType && !multiBase && 'APTY004' != AppSubmissionDto.appType && !AppSubmissionDto.onlySpecifiedSvc}">--%>
-                                        <c:if test="${!isRfi && !isRFC && !isRenew && !multiBase && !readOnly && isMultiPremService}">
+                                        <c:if test="${!isRfi && !isRFC && !isRenew && !multiBase && !readonly && isMultiPremService}">
                                             <button id="addPremBtn" class="btn btn-primary" type="button">Add Mode of Service Delivery</button>
                                         </c:if>
                                     </div>
@@ -107,20 +109,36 @@
             $('input[type="radio"]').prop('disabled', false);
             submit('premises', 'saveDraft', $('#selectDraftNo').val());
         });
-        <c:if test="${(!AppSubmissionDto.needEditController && readOnly) || AppSubmissionDto.needEditController}">
-        readonlyPartPage($('div.premises-content'));
-        $('div.premises-content').each(function () {
-            handlePage($(this));
+        // init page
+        initPremiseEvent();
+        premTypeChangeEvent();
+        checkSelectedLicence();
+        $('div.premContent').each(function (k, v) {
+            checkPremiseContent($(v), k);
+        });
+        if ($('div.premContent').length == 1) {
+            $('div.premContent').find('.premHeader').html('');
+        }
+        <c:if test="${AppSubmissionDto.needEditController}">
+        $('div.premContent').each(function () {
+            let $premContent = $(this);
+            disablePremiseContent($premContent);
+            checkEditBtn($premContent, true);
         });
         </c:if>
-        <c:if test="${isNew && !isRfi && !readOnly}">
+        <c:if test="${readonly}">
+        $('div.premContent').each(function () {
+            let $premContent = $(this);
+            disablePremiseContent($premContent);
+            hideTag($premContent.find('.delNonHcsaSvcRow'));
+            hideTag($premContent.find('.opDel:not(:first)'));
+        });
+        </c:if>
+        <c:if test="${isNew && !isRfi && !readonly}">
         $('div.premContent').each(function () {
             doEditPremise($(this));
         });
         </c:if>
-
-        premTypeChangeEvent();
-
     });
 
     // check premises type for clicking teh navigate tab eveent

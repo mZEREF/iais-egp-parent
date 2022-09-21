@@ -50,6 +50,7 @@ public class DpPatientInfoDelegator extends DpCommonDelegator {
     @Override
     public void start(BaseProcessClass bpc) {
         bpc.request.removeAttribute(IaisEGPConstant.CRUD_ACTION_TYPE);
+        ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, null);
     }
 
     @Override

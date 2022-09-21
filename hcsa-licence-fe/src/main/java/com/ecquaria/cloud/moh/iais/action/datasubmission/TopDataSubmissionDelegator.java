@@ -85,7 +85,7 @@ import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.TOP_PL
 @Slf4j
 @Delegator("topDataSubmissionDelegator")
 public class TopDataSubmissionDelegator {
-    private static final String SUBMIT_FLAG = "TopSubbbmitF__lag";
+    public static final String SUBMIT_FLAG = "TopSubbbmitF__lag";
 
     @Autowired
     private AppCommService appSubmissionService;

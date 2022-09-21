@@ -271,7 +271,7 @@ public class TopDataSubmissionServiceImpl implements TopDataSubmissionService {
         for (PremisesDto v:premisesDtos
         ) {
             if(v!=null){
-                stringStringMap.put(v.getHciCode(),v.getBusinessName());
+                stringStringMap.put(v.getHciCode(),v.getPremiseLabel());
             }
         }
         List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
@@ -285,7 +285,7 @@ public class TopDataSubmissionServiceImpl implements TopDataSubmissionService {
         for (PremisesDto v:premisesDtos
         ) {
             if(v!=null){
-                stringStringMap.put(v.getHciCode(),v.getBusinessName());
+                stringStringMap.put(v.getHciCode(),v.getPremiseLabel());
             }
         }
         List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
@@ -300,7 +300,7 @@ public class TopDataSubmissionServiceImpl implements TopDataSubmissionService {
         for (PremisesDto v:premisesDtos
         ) {
             if(v!=null){
-                stringStringMap.put(v.getHciCode(),v.getBusinessName());
+                stringStringMap.put(v.getHciCode(),v.getPremiseLabel());
             }
         }
         List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);
@@ -315,7 +315,7 @@ public class TopDataSubmissionServiceImpl implements TopDataSubmissionService {
         for (PremisesDto v:premisesDtos
         ) {
             if(v!=null){
-                stringStringMap.put(v.getHciCode(),v.getBusinessName());
+                stringStringMap.put(v.getHciCode(),v.getPremiseLabel());
             }
         }
         List<SelectOption> selectOptions = DataSubmissionHelper.genOptions(stringStringMap);

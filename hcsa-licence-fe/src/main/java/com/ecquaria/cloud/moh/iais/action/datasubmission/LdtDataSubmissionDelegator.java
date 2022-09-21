@@ -64,7 +64,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Slf4j
 @Delegator("ldtDataSubmissionDelegator")
 public class LdtDataSubmissionDelegator {
-    private static final String SUBMIT_FLAG = "ldtSSSuuuubmitFLag";
+    public static final String SUBMIT_FLAG = "ldtSSSuuuubmitFLag";
 
     @Autowired
     private LicCommClient licCommClient;

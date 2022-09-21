@@ -2,7 +2,7 @@
 
 <style>
     .table td.non-hcsa-1 {
-        width: 33%;
+        width: 32%;
         padding-left: 0;
         padding-right: 15px;
     }
@@ -159,30 +159,32 @@
         </iais:row>
 
         <c:if test="${appGrpPremDto.locateWtihNonHcsa == '1'}" var="hasNonHcsa">
-            <iais:row cssClass="col-xs-12">
-                <table class="table" aria-describedby="" border="0" style="margin:10px 0">
-                    <thead>
-                        <tr>
-                            <td scope="col" class="non-hcsa-1">
-                                Are you co-locating with a service that is not licensed under HCSA?
-                            </td>
-                            <td scope="col" class="non-hcsa-2">Business Name</td>
-                            <td scope="col" class="non-hcsa-3">Services Provided</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <c:set var="nonLicSize" value="${appGrpPremDto.appPremNonLicRelationDtos.size()}" />
-                    <c:forEach var="relatedDto" items="${appGrpPremDto.appPremNonLicRelationDtos}" varStatus="nonLicVs">
-                        <tr style="border-top: ${nonLicVs.first? 'solid silver' : '2px solid black'}">
-                            <c:if test="${nonLicVs.first}">
-                            <td rowspan="${nonLicSize}" class="non-hcsa-1">Yes</td>
-                            </c:if>
-                            <td class="non-hcsa-2"><c:out value="${relatedDto.businessName}"/></td>
-                            <td class="non-hcsa-3"><c:out value="${relatedDto.providedService}"/></td>
-                        </tr>
-                    </c:forEach>
-                    </tbody>
-                </table>
+            <iais:row>
+                <div class="col-xs-12">
+                    <table class="table" aria-describedby="" border="0" style="margin:10px 0">
+                        <thead>
+                            <tr>
+                                <td scope="col" class="non-hcsa-1">
+                                    Are you co-locating with a service that is not licensed under HCSA?
+                                </td>
+                                <td scope="col" class="non-hcsa-2">Business Name</td>
+                                <td scope="col" class="non-hcsa-3">Services Provided</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <c:set var="nonLicSize" value="${appGrpPremDto.appPremNonLicRelationDtos.size()}" />
+                        <c:forEach var="relatedDto" items="${appGrpPremDto.appPremNonLicRelationDtos}" varStatus="nonLicVs">
+                            <tr style="border-top: ${nonLicVs.first? 'solid silver' : '2px solid black'}">
+                                <c:if test="${nonLicVs.first}">
+                                <td rowspan="${nonLicSize}" class="non-hcsa-1">Yes</td>
+                                </c:if>
+                                <td class="non-hcsa-2"><c:out value="${relatedDto.businessName}"/></td>
+                                <td class="non-hcsa-3"><c:out value="${relatedDto.providedService}"/></td>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
             </iais:row>
         </c:if>
         <c:if test="${not hasNonHcsa}">
