@@ -10,6 +10,14 @@
                     </div>
                 </iais:row>
 
+                <c:if test="${(isRFI || isRFC || isRenew) && AppSubmissionDto.appEditSelectDto.specialisedEdit}">
+                    <iais:row>
+                        <div class="col-xs-12 col-md-11 text-right editDiv">
+                            <a class="premises-summary-preview specialisedEdit app-font-size-16"><em class="fa fa-pencil-square-o"></em><span style="display: inline-block;">&nbsp;</span>Edit</a>
+                        </div>
+                    </iais:row>
+                </c:if>
+
                 <c:if test="${not empty specialised.allAppPremScopeDtoList}">
                     <div class="">
                         <div class="app-title">${specialised.categorySectionName}</div>
@@ -81,9 +89,10 @@
         $('input[type="checkbox"]').each(function (k, v) {
             checkspecialisedCheckbox($(v));
         });
+        editSpecialisedEvent();
     });
 
-    var specialisedCheckboxEvent = function () {
+    function specialisedCheckboxEvent() {
         $('input[type="checkbox"]').on('click', function () {
             checkspecialisedCheckbox($(this));
         });
@@ -97,4 +106,34 @@
             hideTag($('div[data-parent="' + data + '"]'));
         }
     }
+
+    function editSpecialisedEvent() {
+        let $target = $('.specialisedEdit');
+        if (isEmptyNode($target)) {
+            return;
+        }
+        $target.unbind('click');
+        $target.on('click', function () {
+            let $content = $(this).closest('div.specialised-content');
+            doEditSpecialised($content);
+        });
+    }
+
+    function disableSpecialisedContent() {
+        disableContent('div.specialised-content');
+        let $target = $('.editDiv');
+        if (!isEmptyNode($target)) {
+            showTag($target);
+        }
+    }
+
+    function doEditSpecialised($content) {
+        $('#isEditHiddenVal').val('1');
+        unDisableContent($content);
+        let $target = $('.editDiv');
+        if (!isEmptyNode($target)) {
+            hideTag($target);
+        }
+    }
+
 </script>
