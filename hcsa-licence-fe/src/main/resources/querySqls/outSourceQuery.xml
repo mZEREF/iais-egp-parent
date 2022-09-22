@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="outSourceQuery">
+    <sql key = "searchOutSource" remarks="search OutSource by svcName businessName licNo and postalcode">
+        <![CDATA[
+          SELECT l.ID ,l.SVC_NAME , b.BUSINESS_NAME ,l.LICENCE_NO ,
+            CONCAT(CASE p.BLK_NO WHEN NULL THEN NULL ELSE ' '+p.BLK_NO END,
+            CASE p.ADDR_TYPE WHEN NULL THEN NULL ELSE ' '+p.PREMISES_TYPE END,
+            CASE p.PREMISES_TYPE WHEN NULL THEN NULL ELSE ' '+p.PREMISES_TYPE END,
+            CASE p.STREET_NAME WHEN NULL THEN NULL ELSE ' '+p.STREET_NAME END,
+            CASE p.BUILDING_NAME WHEN NULL THEN NULL ELSE ' '+p.BUILDING_NAME  END,
+            CASE p.POSTAL_CODE WHEN NULL THEN NULL ELSE ','+p.POSTAL_CODE  END,
+            CASE p.FLOOR_NO WHEN NULL THEN NULL ELSE '#'+p.FLOOR_NO END,
+            CASE p.UNIT_NO WHEN NULL THEN NULL ELSE '-'+p.UNIT_NO END,
+            SUBSTRING ((SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
+                FROM premises_operational_unit pou
+                WHERE pou.PREMISES_ID =p.ID
+                ORDER BY SEQ_NUM ASC
+                FOR XML path('')
+                ), 1, 1000)
+            ) ADDRESS,l.EXPIRY_DATE
+            FROM lic_premises AS lp
+            JOIN licence AS l ON l.ID = lp.LICENCE_ID
+            JOIN premises AS p ON p.ID = lp.PREMISES_ID
+            JOIN lic_prem_business_info b ON b.LIC_PREM_ID = lp.ID
+            WHERE 1=1
+            <#if svcName??>AND l.SVC_NAME = :svcName </#if>
+            <#if businessName??> AND b.BUSINESS_NAME = :businessName</#if>
+            <#if licenceNo??> AND l.LICENCE_NO = :licNo</#if>
+        ]]>
+    </sql>
+</sqls>
