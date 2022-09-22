@@ -739,7 +739,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 licenceFeeDto.setBaseService(split[4]);
                 licenceFeeDto.setServiceCode(split[4]);
                 licenceFeeDto.setServiceName(svcName);
-                licenceFeeDto.setPremises(premises);
+                //licenceFeeDto.setPremises(premises);
                 licenceFeeDto.setExpiryDate(expiryDate1);
                 licenceFeeDtos.add(licenceFeeDto);
             }
