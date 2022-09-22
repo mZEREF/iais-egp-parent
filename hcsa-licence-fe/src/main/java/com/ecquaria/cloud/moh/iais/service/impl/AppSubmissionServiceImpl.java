@@ -741,6 +741,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                         if(subSvc.isChecked()){
                                             LicenceFeeDto specFeeDto = new LicenceFeeDto();
                                             specFeeDto.setBundle(0);
+                                            specFeeDto.setBaseService(licenceFeeDto.getBaseService());
                                             specFeeDto.setServiceCode(subSvc.getSvcCode());
                                             specFeeDto.setServiceName(subSvc.getSvcName());
                                             specFeeDto.setPremises(appGrpPremisesDto.getAddress());
@@ -960,6 +961,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                         if(subSvc.isChecked()){
                                             LicenceFeeDto specFeeDto = new LicenceFeeDto();
                                             specFeeDto.setBundle(0);
+                                            specFeeDto.setBaseService(licenceFeeDto.getBaseService());
                                             specFeeDto.setServiceCode(subSvc.getSvcCode());
                                             specFeeDto.setServiceName(subSvc.getSvcName());
                                             specFeeDto.setPremises(appGrpPremisesDto.getAddress());
