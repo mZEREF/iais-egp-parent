@@ -36,6 +36,7 @@ import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import com.ecquaria.cloud.moh.iais.util.PageDataCopyUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
@@ -1294,14 +1295,17 @@ public final class RfcHelper {
         }
     }
 
-    public static <T, R> boolean isChanged(T o1, T o2, Function<T, T> preprocessor, String... excludeFieldNames) {
+    public static <R> boolean isChanged(Object o1, Object o2, Function<Object, Object> preprocessor, String... excludeFieldNames) {
         if (o1 == null && o2 == null) {
             return false;
         } else if (o1 == null ^ o2 == null) {
             return true;
         }
-        T source = preprocessor != null ? preprocessor.apply(o1) : o1;
-        T target = preprocessor != null ? preprocessor.apply(o2) : o2;
+        if (!Objects.equals(o1.getClass(), o2.getClass())) {
+            return false;
+        }
+        Object source = preprocessor != null ? preprocessor.apply(o1) : o1;
+        Object target = preprocessor != null ? preprocessor.apply(o2) : o2;
         boolean isChanged;
         Class<?> type = target.getClass();
         if (String.class.isAssignableFrom(type)) {
@@ -1332,10 +1336,16 @@ public final class RfcHelper {
         } else if (Double[].class.isAssignableFrom(type) || double[].class.isAssignableFrom(type)) {
             isChanged = isChangedArray((String[]) source, (String[]) target, Comparator.naturalOrder());
         } else if (List.class.isAssignableFrom(type)) {
-            Function<List<R>, List<R>> processor = (Function<List<R>, List<R>>) preprocessor;
+            Function<List<R>, List<R>> processor = null;
+            if (preprocessor != null) {
+                processor = (obj) -> (List<R>)preprocessor.apply(obj);
+            }
             isChanged = isChangedList((List<R>) source, (List<R>) target, processor);
         } else if (Set.class.isAssignableFrom(type)) {
-            Function<Set<R>, Set<R>> processor = (Function<Set<R>, Set<R>>) preprocessor;
+            Function<Set<R>, Set<R>> processor = null;
+            if (preprocessor != null) {
+                processor = (obj) -> (Set<R>)preprocessor.apply(obj);
+            }
             isChanged = isChangedSet((Set<R>) source, (Set<R>) target, processor);
         } else if (Map.class.isAssignableFrom(type)) {
             isChanged = false;// can't
