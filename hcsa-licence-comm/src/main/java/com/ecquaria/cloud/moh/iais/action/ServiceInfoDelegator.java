@@ -551,7 +551,7 @@ public class ServiceInfoDelegator {
         if (isGetDataFromPage) {
             //get data from page
            appSvcOtherInfoDtos  = AppDataHelper.genAppSvcOtherInfoList(bpc.request,
-                    appSubmissionDto.getAppType());
+                    appSubmissionDto.getAppType(),appSvcOtherInfoDtos);
             currSvcInfoDto.setAppSvcOtherInfoList(appSvcOtherInfoDtos);
             reSetChangesForApp(appSubmissionDto);
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
@@ -629,12 +629,12 @@ public class ServiceInfoDelegator {
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
         boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto,
                 RfcConst.EDIT_SERVICE, isEdit, isRfi);
-        List<AppPremOutSourceProvidersDto> appPremOutSourceLicenceDtos = currSvcInfoDto.getAppPremOutSourceProvidersList();
+//        List<AppPremOutSourceProvidersDto> appPremOutSourceLicenceDtos = currSvcInfoDto.getAppPremOutSourceProvidersList();
         String curAct = ParamUtil.getString(request, "btnStep");
         if (isGetDataFromPage) {
             //get data from page
             doOutSourceProvidersStep(curAct,request,appSubmissionDto);
-            currSvcInfoDto.setAppPremOutSourceProvidersList(appPremOutSourceLicenceDtos);
+//            currSvcInfoDto.setAppPremOutSourceProvidersList(appPremOutSourceLicenceDtos);
             reSetChangesForApp(appSubmissionDto);
             setAppSvcRelatedInfoMap(request, currSvcId, currSvcInfoDto, appSubmissionDto);
         }
@@ -655,8 +655,34 @@ public class ServiceInfoDelegator {
             doOutSourceProvidersPaging(request);
         }
         if ("add".equals(curAct)){
+            doAddOutSourceProviders(request,appSubmissionDto);
             //appPremOutSourceLicenceDtos = AppDataHelper.genAppPremOutSourceLicenceList(request);
         }
+    }
+
+    private void doAddOutSourceProviders(HttpServletRequest request,AppSubmissionDto appSubmissionDto){
+        AppPremOutSourceProvidersDto appPremOutSourceProvidersDto = new AppPremOutSourceProvidersDto();
+
+        String svcName = ParamUtil.getString(request, "serviceCode");
+        String bName = ParamUtil.getString(request, "name");
+        String licNo = ParamUtil.getString(request, "licNo");
+        String postCode = ParamUtil.getString(request,"postalCode");
+
+        appPremOutSourceProvidersDto.setBName(bName);
+        appPremOutSourceProvidersDto.setPostCode(postCode);
+        AppPremOutSourceLicenceDto appPremOutSourceLicenceDto = new AppPremOutSourceLicenceDto();
+        appPremOutSourceLicenceDto.setServiceCode(svcName);
+        appPremOutSourceLicenceDto.setLicenceNo(licNo);
+        appPremOutSourceProvidersDto.setAppPremOutSourceLicenceDto(appPremOutSourceLicenceDto);
+
+        ValidationResult vResult = WebValidationHelper.validateProperty(appPremOutSourceLicenceDto,"add");
+
+        if (vResult != null && vResult.isHasErrors()){
+            Map<String ,String> errorMap = vResult.retrieveAll();
+            checkAction(errorMap,HcsaConsts.STEP_OUTSOURCED_PROVIDERS,appSubmissionDto,request);
+        }else {
+        }
+
     }
 
     private void doSearchOutSourceProviders(HttpServletRequest request,AppSubmissionDto appSubmissionDto){
@@ -1977,7 +2003,7 @@ public class ServiceInfoDelegator {
     private boolean skipStep(String stepCode, AppSubmissionDto appSubmissionDto) {
         String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,
                 HcsaConsts.STEP_DISCIPLINE_ALLOCATION,
-                HcsaConsts.STEP_OUTSOURCED_PROVIDERS
+//                HcsaConsts.STEP_OUTSOURCED_PROVIDERS
 //                HcsaConsts.STEP_PRINCIPAL_OFFICERS,
 //                HcsaConsts.STEP_SERVICE_PERSONNEL,
 //                HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER,

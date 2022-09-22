@@ -2001,7 +2001,7 @@ public final class AppValidatorHelper {
                                 MessageUtil.replaceMessage("GENERAL_ERR0006", "Is clinic open to general public?", "field"));
                     }
                     String gfaValue = String.valueOf(appSvcOtherInfoMedDto.getGfaValue());
-                    if (!StringUtil.isDigit(gfaValue)) {
+                    if (!StringUtil.isEmpty(gfaValue)) {
                         errMap.put("gfaValue", MessageUtil.replaceMessage("GENERAL_ERR0006", "GFA Value (in sqm)", "field"));
                     }
                 }
@@ -2064,7 +2064,7 @@ public final class AppValidatorHelper {
                                     "field"));
                         }
                         String compCaseNum = svcOtherInfoDto.getAppSvcOtherInfoTopDto().getCompCaseNum();
-                        if (!StringUtil.isDigit(compCaseNum)) {
+                        if (StringUtil.isEmpty(compCaseNum)) {
                             errMap.put("compCaseNum", MessageUtil.replaceMessage("GENERAL_ERR0006",
                                     "Number of cases with complications, if any",
                                     "field"));
@@ -2122,7 +2122,7 @@ public final class AppValidatorHelper {
             String specialties = practitioners.get(i).getSpeciality();
             String medAuthByMoh = practitioners.get(i).getIsMedAuthByMoh();
 
-            if (StringUtil.isEmpty(medAuthByMoh)) {
+            if (!StringUtil.isEmpty(medAuthByMoh)) {
                 errMap.put("medAuthByMoh" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
                         "Is the medical practitioners authorised by MOH to perform Abortion\n" +
                                 "                (if No, please upload a copy of the Obstetrics & Gynaecology certificate and From 2 at the Document page)",

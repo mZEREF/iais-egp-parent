@@ -731,9 +731,8 @@ public final class AppDataHelper {
         return isPartEdit || canEdit || isNewOfficer;
     }
 
-    public static List<AppSvcOtherInfoDto> genAppSvcOtherInfoList(HttpServletRequest request, String appType) {
+    public static List<AppSvcOtherInfoDto> genAppSvcOtherInfoList(HttpServletRequest request, String appType,List<AppSvcOtherInfoDto> appSvcOtherInfoDtos) {
         AppSvcOtherInfoDto appSvcOtherInfoDto = new AppSvcOtherInfoDto();
-        List<AppSvcOtherInfoDto> result = IaisCommonUtils.genNewArrayList();
         String currentSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request, currentSvcId);
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
@@ -787,16 +786,15 @@ public final class AppDataHelper {
         appSvcOtherInfoDto.setOtherInfoMedAmbulatorySurgicalCentre(appSvcOtherInfoMedDto1);
         appSvcOtherInfoDto.setAppSvcOtherInfoNurseDto(appSvcOtherInfoNurseDto);
         appSvcOtherInfoDto.setOrgUserDto(getOtherInfoYfVs(request));
-        List<AppSvcOtherInfoDto> appSvcOtherInfoList = appSvcRelatedInfoDto.getAppSvcOtherInfoList();
-        setAppSvcOtherFormList(appSvcOtherInfoList,request);
-        for (AppSvcOtherInfoDto svcOtherInfoDto : appSvcOtherInfoList) {
+        setAppSvcOtherFormList(appSvcOtherInfoDtos,request);
+        for (AppSvcOtherInfoDto svcOtherInfoDto : appSvcOtherInfoDtos) {
             appSvcOtherInfoDto.setAppSvcSuplmFormDto(svcOtherInfoDto.getAppSvcSuplmFormDto());
+            appSvcOtherInfoDto.setAppPremSubSvcRelDtoList(genAppPremSubSvcRelDtoList(svcOtherInfoDto.getAppPremSubSvcRelDtoList(),
+                    svcOtherInfoDto.getPremisesVal(),"",request));
         }
-        appSvcOtherInfoDto.setAppPremSubSvcRelDtoList(genAppPremSubSvcRelDtoList(appSvcOtherInfoDto.getAppPremSubSvcRelDtoList(),
-                appSvcOtherInfoDto.getPremisesVal(),"",request));
         appSvcOtherInfoDto.initAllAppPremSubSvcRelDtoList();
-        result.add(appSvcOtherInfoDto);
-        return result;
+        appSvcOtherInfoDtos.add(appSvcOtherInfoDto);
+        return appSvcOtherInfoDtos;
     }
     //YfVs
     public static OrgUserDto getOtherInfoYfVs(HttpServletRequest request){
