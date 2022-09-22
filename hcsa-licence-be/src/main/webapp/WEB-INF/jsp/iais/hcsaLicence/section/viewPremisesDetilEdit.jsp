@@ -12,7 +12,6 @@
         </div>
     </iais:row>
 
-
     <iais:row cssClass="postalCodeDiv">
         <iais:field value="Postal Code" mandatory="true" width="5"/>
         <iais:value cssClass="col-xs-10 col-md-5">
