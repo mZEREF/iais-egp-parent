@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts" %>
 <div class="row form-horizontal normal-label">
     <c:if test="${AppSubmissionDto.needEditController }">
         <c:if test="${(isRfc || isRenew) && !isRfi}">
@@ -46,14 +46,41 @@
             </div>
         </iais:row>
 
-        <%@include file="dentalService.jsp" %>
-        <%@include file="renalDialysisCentreService.jsp"%>
-        <%@include file="ambulatorySurgicalCentreService.jsp"%>
-        <%@include file="otherInformationTopPerson.jsp" %>
-        <%@include file="otherInfoItemForm.jsp"%>
-        <%@include file="documentation.jsp" %>
-        <%@include file="aboutTop.jsp" %>
-        <%@include file="yFV.jsp"%>
+        <c:choose>
+            <c:when test="${(currSvcInfoDto.serviceName == AppServicesConsts.SERVICE_NAME_DENTAL_SERVICE) || (currSvcInfoDto.serviceName == AppServicesConsts.SERVICE_NAME_MEDICAL_SERVICE)}">
+                <%@include file="dentalService.jsp" %>
+                <c:if test="${currSvcInfoDto.serviceName == AppServicesConsts.SERVICE_NAME_MEDICAL_SERVICE}">
+                    <%@include file="otherInformationTopPerson.jsp" %>
+                    <%@include file="otherInfoItemForm.jsp"%>
+                    <%@include file="documentation.jsp" %>
+                    <%@include file="aboutTop.jsp" %>
+                    <%@include file="yFV.jsp"%>
+                </c:if>
+            </c:when>
+            <c:when test="${currSvcInfoDto.serviceName == AppServicesConsts.SERVICE_NAME_RENAL_DIALYSIS_CENTRE}">
+                <%@include file="renalDialysisCentreService.jsp"%>
+            </c:when>
+            <c:when test="${currSvcInfoDto.serviceName == AppServicesConsts.SERVICE_NAME_AMBULATORY_SURGICAL_CENTRE}">
+                <%@include file="ambulatorySurgicalCentreService.jsp"%>
+                <%@include file="otherInformationTopPerson.jsp" %>
+                <%@include file="otherInfoItemForm.jsp"%>
+                <%@include file="documentation.jsp" %>
+                <%@include file="aboutTop.jsp" %>
+            </c:when>
+            <c:when test="${currSvcInfoDto.serviceName == AppServicesConsts.SERVICE_NAME_ACUTE_HOSPITAL}">
+                <%@include file="otherInformationTopPerson.jsp" %>
+                <%@include file="otherInfoItemForm.jsp"%>
+                <%@include file="documentation.jsp" %>
+                <%@include file="aboutTop.jsp" %>
+                <%@include file="yFV.jsp"%>
+            </c:when>
+            <c:when test="${currSvcInfoDto.serviceName == AppServicesConsts.SERVICE_NAME_COMMUNITY_HOSPITAL}">
+                <%@include file="yFV.jsp"%>
+            </c:when>
+            <c:otherwise>
+
+            </c:otherwise>
+        </c:choose>
         <%@include file="otherService.jsp"%>
     </c:forEach>
 </div>
@@ -81,6 +108,7 @@
                 $('div.counsellors').removeClass("hidden");
                 $('div.addCounsellorsDiv').removeClass("hidden");
                 $('div.lowt').removeClass("hidden");
+                $('div.docTop').removeClass("hidden");
                 $('div.de').removeClass("hidden");
                 $('div.oitem').removeClass("hidden");
                 topAboutHAS();
@@ -99,6 +127,7 @@
                 $('div.lowt').addClass("hidden");
                 $('div.de').addClass("hidden");
                 $('div.oitem').addClass("hidden");
+                $('div.docTop').addClass("hidden");
                 topAboutHAS();
             }
         });
@@ -150,12 +179,7 @@
             $('div.addTopBySurgicalProcedureDiv').addClass("hidden");
             $('div.addTopAllDiv').addClass("hidden");
         }else {
-            $('div.topByDrug').removeClass("hidden");
-            $('div.topBySurgicalProcedure').removeClass("hidden");
-            $('div.topByDrugandSurgicalProcedure').removeClass("hidden");
-            $('div.addTopByDrugDiv').removeClass("hidden");
-            $('div.addTopBySurgicalProcedureDiv').removeClass("hidden");
-            $('div.addTopAllDiv').removeClass("hidden");
+            topRadio();
         }
     }
 

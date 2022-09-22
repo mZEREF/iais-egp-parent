@@ -131,12 +131,7 @@ public class ValidateClincalDirector {
                     map.put("typeOfRegister" + i, AppValidatorHelper.repLength("Type of Register", "50"));
                 }
                 // Clinical Governance Officer (CGO) holds a valid certification issued by an Emergency Medical Services ("EMS") Medical Directors workshop
-                String holdCerByEMS = appSvcClinicalDirectorDto.getHoldCerByEMS();
-                if (StringUtil.isEmpty(holdCerByEMS)) {
-                    map.put("holdCerByEMS" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "holdCerByEMS", "field"));
-                } else if (AppConsts.NO.equals(holdCerByEMS)) {
-                    map.put("holdCerByEMS" + i, MessageUtil.getMessageDesc("NEW_ERR0031"));
-                }
+
                 String mobileNo = appSvcClinicalDirectorDto.getMobileNo();
                 if (StringUtil.isEmpty(mobileNo)) {
                     map.put("mobileNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Mobile No.", "field"));

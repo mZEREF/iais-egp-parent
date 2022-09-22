@@ -23,10 +23,22 @@
         </label>
     </div>
 </iais:row>
+<iais:row cssClass="row control control-caption-horizontal">
+    <iais:field width="5" cssClass="col-md-5" mandatory="" value=""/>
+    <iais:value width="7" cssClass="col-md-7 col-xs-12">
+        <span class="error-msg col-md-7" name="iaisErrorMsg" id="error_isMedicalTypeIt"></span>
+    </iais:value>
+</iais:row>
 <iais:row>
     <iais:field width="5" cssClass="col-md-5" mandatory="true" value="List of options for IT system and paper cards / IT system only"/>
     <iais:value width="7" cssClass="col-md-7">
         <iais:select cssClass="systemOption" name="systemOption" codeCategory="CATE_ID_OTHER_OPTION" value="${med.systemOption}" firstOption="Please Select" onchange="toggleOnSelect(this, 'MED06', 'otherInfo')"/>
+    </iais:value>
+</iais:row>
+<iais:row cssClass="row control control-caption-horizontal">
+    <iais:field width="5" cssClass="col-md-5" mandatory="" value=""/>
+    <iais:value width="7" cssClass="col-md-7 col-xs-12">
+        <span class="error-msg" name="iaisErrorMsg" id="error_systemOption"></span>
     </iais:value>
 </iais:row>
 
@@ -67,6 +79,12 @@
             <span class="check-square"></span><c:out value=""/>
         </label>
     </div>
+</iais:row>
+<iais:row cssClass="row control control-caption-horizontal">
+    <iais:field width="5" cssClass="col-md-5" mandatory="" value=""/>
+    <iais:value width="7" cssClass="col-md-7 col-xs-12">
+        <span class="error-msg" name="iaisErrorMsg" id="error_dsDeclaration"></span>
+    </iais:value>
 </iais:row>
 
 

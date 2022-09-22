@@ -1261,11 +1261,8 @@ public final class ApplicationHelper {
 
     public static List<SelectOption> genOutsourcedServiceSel(HttpServletRequest request, boolean needFirstOpt){
         List<SelectOption> options = IaisCommonUtils.genNewArrayList();
-        if (needFirstOpt){
-            options.add(new SelectOption("-1", HcsaAppConst.FIRESTOPTION));
-        }
-        options.add(new SelectOption("0", HcsaAppConst.CLINICALLABORATOYY));
-        options.add(new SelectOption("1", HcsaAppConst.RADIOLOGICALSERVICE));
+        options.add(new SelectOption(HcsaAppConst.CLINICALLABORATOYY, HcsaAppConst.CLINICALLABORATOYY));
+        options.add(new SelectOption(HcsaAppConst.RADIOLOGICALSERVICE, HcsaAppConst.RADIOLOGICALSERVICE));
         return options;
     }
 
