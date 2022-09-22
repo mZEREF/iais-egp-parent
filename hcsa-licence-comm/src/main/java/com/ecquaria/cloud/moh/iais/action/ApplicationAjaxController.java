@@ -287,7 +287,7 @@ public class ApplicationAjaxController {
         String nationality = ParamUtil.getString(request, "nationality");
         String idType = ParamUtil.getString(request, "idType");
         String idNo = ParamUtil.getString(request, "idNo");
-        String psnType = ParamUtil.getString(request, "psnType");
+        //String psnType = ParamUtil.getString(request, "psnType");
         if (StringUtil.isEmpty(idNo) || StringUtil.isEmpty(idType)) {
             return null;
         }
@@ -300,7 +300,7 @@ public class ApplicationAjaxController {
             log.info(StringUtil.changeForLog("can not get data from PersonSelectMap ..."));
             return new AppSvcPrincipalOfficersDto();
         }
-        String currentSvcCode = (String) ParamUtil.getSessionAttr(request, HcsaAppConst.CURRENTSVCCODE);
+        /*String currentSvcCode = (String) ParamUtil.getSessionAttr(request, HcsaAppConst.CURRENTSVCCODE);
         if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)) {
             List<SelectOption> specialityOpts = ApplicationHelper.genSpecialtySelectList(currentSvcCode, false);
             List<SelectOption> selectOptionList = psn.getSpcOptList();
@@ -320,7 +320,7 @@ public class ApplicationAjaxController {
             specialtyAttr.put("style", "display: none;");
             String specialityHtml = ApplicationHelper.generateDropDownHtml(specialtyAttr, specialityOpts, null, psn.getSpeciality());
             psn.setSpecialityHtml(specialityHtml);
-        }
+        }*/
         log.debug(StringUtil.changeForLog("the getNewPsnInfo end ...."));
         return psn;
     }

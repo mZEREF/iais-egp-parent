@@ -1781,7 +1781,7 @@ public class WithOutRenewalDelegator {
         if (oldAppSubmissionDto != null && appSubmissionDto != null) {
             boolean eqGrpPremises = RfcHelper.isChangeGrpPremises(appSubmissionDto.getAppGrpPremisesDtoList(),
                     oldAppSubmissionDto.getAppGrpPremisesDtoList());
-            boolean eqServiceChange = RfcHelper.eqServiceChange(appSubmissionDto.getAppSvcRelatedInfoDtoList(), oldAppSubmissionDto.getAppSvcRelatedInfoDtoList());
+            boolean eqServiceChange = RfcHelper.isChangeServiceInfo(appSubmissionDto.getAppSvcRelatedInfoDtoList(), oldAppSubmissionDto.getAppSvcRelatedInfoDtoList());
             if(eqGrpPremises || eqServiceChange /*|| eqDocChange*/){
                 bpc.request.getSession().setAttribute(PREFIXTITLE,"amending");
             }else {

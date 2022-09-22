@@ -2,8 +2,8 @@
     function initPremiseEvent() {
         editPremEvent();
 
-        addOperationalEvnet();
-        delOperationEvent();
+        addFloorUnitEvent();
+        delFloorUnitEvent();
 
         easMtsUseOnlyEvent();
 
@@ -114,9 +114,15 @@
     }
 
     function doEditPremise($premContent, isEdit) {
+        console.info("------------doEditPremise----------------");
+        // check whether the edit button is hidden or not,
+        // if not, return false, or return true
+        if (hideEditBtn($premContent)) {
+            return;
+        }
+        $('#isEditHiddenVal').val('1');
         unDisableContent($premContent);
         showTag($premContent.find('.retrieveAddr'));
-        $('#isEditHiddenVal').val('1');
         let existData = $premContent.find('.chooseExistData').val();
         if('1' == existData) {
             if (isEmpty(isEdit) || !isEdit) {
@@ -125,7 +131,6 @@
                 $premContent.find('.isParyEdit').val('1');
             }
         }
-        checkEditBtn($premContent, false);
     }
 
     function disablePremiseContent($premContent) {
@@ -234,13 +239,18 @@
         }
     }
 
-    function checkEditBtn ($premContent, show) {
-        if (isEmpty(show)) {
-            return;
-        }
+    function hideEditBtn ($premContent) {
         let $target= $premContent.find('.removeEditDiv');
         if (isEmptyNode($target)) {
-            return;
+            return true;
+        }
+        return $target.is(':hidden');
+    }
+
+    function checkEditBtn ($premContent, show) {
+        let $target= $premContent.find('.removeEditDiv');
+        if (isEmptyNode($target)) {
+            return false;
         }
         if ($target.is(':hidden') && show) {
             showTag($target);
@@ -560,6 +570,7 @@
             var $nonHcsaRowDiv = $(this).closest('div.nonHcsaRowDiv');
             $(this).closest('div.nonHcsaRow').remove();
             refreshNonHcsa($nonHcsaRowDiv, $('div.premContent').index($premContent));
+            doEditPremise($premContent);
         });
     }
 
@@ -611,10 +622,10 @@
         initFormNodes(src);
         $premContent.find('div.addOpDiv').before(src);
         refreshFloorUnit($premContent, $('div.premContent').index($premContent));
-        delOperationEvent($premContent);
+        delFloorUnitEvent($premContent);
     }
 
-    var addOperationalEvnet = function (target) {
+    var addFloorUnitEvent = function (target) {
         var $target = getJqueryNode(target);
         if (isEmptyNode($target)) {
             $target = $(document);
@@ -625,7 +636,7 @@
         });
     }
 
-    var delOperationEvent = function (target) {
+    var delFloorUnitEvent = function (target) {
         var $target = getJqueryNode(target);
         if (isEmptyNode($target)) {
             $target = $(document);
@@ -635,6 +646,7 @@
             var $premContent = $(this).closest('div.premContent');
             $(this).closest('div.operationDiv').remove();
             refreshFloorUnit($premContent, $('div.premContent').index($premContent));
+            doEditPremise($premContent);
         });
     }
 

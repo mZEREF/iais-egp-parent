@@ -201,7 +201,7 @@ public final class AppValidatorHelper {
                 }
             }
             if (!appEditSelectDto.isServiceEdit()) {
-                boolean b = RfcHelper.eqServiceChange(appSubmissionDto.getAppSvcRelatedInfoDtoList(),
+                boolean b = RfcHelper.isChangeServiceInfo(appSubmissionDto.getAppSvcRelatedInfoDtoList(),
                         oldAppSubmissionDto.getAppSvcRelatedInfoDtoList());
                 if (b) {
                     log.info(StringUtil.changeForLog(
