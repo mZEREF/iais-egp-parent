@@ -1329,7 +1329,7 @@ public class WithOutRenewalDelegator {
                 changeSelectDto.setPremisesListEdit(true);
                 changeSelectDto.setChangeHciName(appEditSelectDto.isChangeHciName());
                 changeSelectDto.setChangeInLocation(appEditSelectDto.isChangeInLocation());
-                changeSelectDto.setChangeAddFloorUnit(appEditSelectDto.isChangeAddFloorUnit());
+                changeSelectDto.setChangeFloorUnits(appEditSelectDto.isChangeFloorUnits());
                 for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
                     AppGrpPremisesDto premisesDto = appGrpPremisesDtoList.get(i);
                     String[] selectedLicences = premisesDto.getSelectedLicences();
@@ -1781,7 +1781,7 @@ public class WithOutRenewalDelegator {
         if (oldAppSubmissionDto != null && appSubmissionDto != null) {
             boolean eqGrpPremises = RfcHelper.isChangeGrpPremises(appSubmissionDto.getAppGrpPremisesDtoList(),
                     oldAppSubmissionDto.getAppGrpPremisesDtoList());
-            boolean eqServiceChange = RfcHelper.eqServiceChange(appSubmissionDto.getAppSvcRelatedInfoDtoList(), oldAppSubmissionDto.getAppSvcRelatedInfoDtoList());
+            boolean eqServiceChange = RfcHelper.isChangeServiceInfo(appSubmissionDto.getAppSvcRelatedInfoDtoList(), oldAppSubmissionDto.getAppSvcRelatedInfoDtoList());
             if(eqGrpPremises || eqServiceChange /*|| eqDocChange*/){
                 bpc.request.getSession().setAttribute(PREFIXTITLE,"amending");
             }else {

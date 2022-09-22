@@ -959,18 +959,10 @@ public class LicenceViewServiceDelegator {
         AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         log.info(StringUtil.changeForLog("The multipleSvcDoc  show change"));
-        // CGO
-        dealKeyPersonnel(appSvcRelatedInfoDto, oldAppSvcRelatedInfoDto, ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
-        // CD
-        dealKeyPersonnel(appSvcRelatedInfoDto, oldAppSvcRelatedInfoDto, ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR);
-        // Med Alert Person
-        dealKeyPersonnel(appSvcRelatedInfoDto, oldAppSvcRelatedInfoDto, ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
-        // PO
-        dealKeyPersonnel(appSvcRelatedInfoDto, oldAppSvcRelatedInfoDto, ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
-        // Nominee
-        dealKeyPersonnel(appSvcRelatedInfoDto, oldAppSvcRelatedInfoDto, ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
-        // KAH
-        dealKeyPersonnel(appSvcRelatedInfoDto, oldAppSvcRelatedInfoDto, ApplicationConsts.PERSONNEL_PSN_KAH);
+        // key personnel
+        for (String psnType : IaisCommonUtils.getKeyPersonnel()) {
+            dealKeyPersonnel(appSvcRelatedInfoDto, oldAppSvcRelatedInfoDto, psnType);
+        }
         // Svc Personnel
         /*List<AppSvcPersonnelDto> appSvcPersonnelDtoList = IaisCommonUtils.getList(appSvcRelatedInfoDto.getAppSvcPersonnelDtoList());
         List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList = IaisCommonUtils.getList(oldAppSvcRelatedInfoDto.getAppSvcPersonnelDtoList());

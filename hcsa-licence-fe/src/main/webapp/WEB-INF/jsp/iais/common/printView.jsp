@@ -55,13 +55,13 @@
                                             <div class="col-xs-12">
                                                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                                                     <c:set var="documentIndex" value="${submisonStat.index}"/>
-                                                    <%@include file="../view/licensee/previewLicensee.jsp"%>
-                                                    <%@include file="../common/previewPremises.jsp"%>
-                                                    <%@include file="../common/previewPrimary.jsp"%>
+                                                    <jsp:include page="/WEB-INF/jsp/iais/view/viewLicensee.jsp"/>
+                                                    <jsp:include page="/WEB-INF/jsp/iais/view/viewPremises.jsp"/>
+                                                    <jsp:include page="/WEB-INF/jsp/iais/view/viewSpecialised.jsp"/>
 
                                                     <c:set var="appGrpPremisesDtoList" value="${AppSubmissionDto.appGrpPremisesDtoList}" scope="request"/>
                                                     <c:forEach var="currentPreviewSvcInfo" items="${AppSubmissionDto.appSvcRelatedInfoDtoList}" varStatus="svcStat">
-                                                        <c:set var="currentPreviewSvcInfo" value="${currentPreviewSvcInfo}" scope="request"/>
+                                                        <%--<c:set var="currentPreviewSvcInfo" value="${currentPreviewSvcInfo}" scope="request"/>
                                                         <c:set var="reloadDisciplineAllocationMap" value="${currentPreviewSvcInfo.reloadDisciplineAllocationMap}" scope="request"/>
                                                         <c:set var="ReloadPrincipalOfficers" value="${currentPreviewSvcInfo.reloadPoDtoList}"  scope="request" />
                                                         <c:set var="ReloadDeputyPrincipalOfficers" value="${currentPreviewSvcInfo.reloadDpoList}" scope="request"/>
@@ -70,7 +70,7 @@
                                                         <c:set var="AppSvcMedAlertPsn" value="${currentPreviewSvcInfo.appSvcMedAlertPersonList}" scope="request"/>
                                                         <c:set var="AppSvcPersonnelDtoList" value="${currentPreviewSvcInfo.appSvcPersonnelDtoList}" scope="request"/>
                                                         <c:set var="clinicalDirectorDtoList" value="${currentPreviewSvcInfo.appSvcClinicalDirectorDtoList}" scope="request"/>
-                                                        <c:set var="sectionLeaderList" value="${currentPreviewSvcInfo.appSvcSectionLeaderList}" scope="request"/>
+                                                        <c:set var="sectionLeaderList" value="${currentPreviewSvcInfo.appSvcSectionLeaderList}" scope="request"/>--%>
 
                                                         <div class="panel panel-default svc-content">
                                                             <div class="panel-heading"  id="headingServiceInfo" role="tab">
@@ -80,15 +80,14 @@
                                                             <div class=" panel-collapse collapse in" id="collapseServiceInfo${submisonStat.index}${svcStat.index}" role="tabpanel" aria-labelledby="headingServiceInfo">
                                                                 <div class="panel-body">
                                                                     <div class="panel-main-content">
-
-                                                                        <%@include file="../common/previewSvcInfo.jsp"%>
+                                                                        <jsp:include page="/WEB-INF/jsp/iais/view/viewSvcInfo.jsp"/>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </c:forEach>
                                                     <c:if test="${appTypeForPrintDec != 'APTY009'}">
-                                                        <%@include file="../common/declarations.jsp"%>
+                                                        <%@include file="../application/declarations/declarations.jsp"%>
                                                     </c:if>
                                                     <c:if test="${AppSubmissionDto.appType == 'APTY005'}">
                                                         <c:set var="rfc_from_renew" value="${(not empty AppSubmissionDto.appDeclarationMessageDto && AppSubmissionDto.appDeclarationMessageDto.appType == 'APTY004') ? 'Y' : 'N'}"/>

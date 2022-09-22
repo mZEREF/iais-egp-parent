@@ -268,7 +268,8 @@ public class RequestForChangeDelegator {
                     ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
                     ParamUtil.setSessionAttr(bpc.request, "SvcId", currSvcId);
                 }
-                DealSessionUtil.init(appSubmissionDto, hcsaServiceDtoList, false, bpc.request);
+                appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+                DealSessionUtil.init(appSubmissionDto, hcsaServiceDtoList, true, bpc.request);
 
                 AppSubmissionDto oldAppSubmissionDto = CopyUtil.copyMutableObject(appSubmissionDto);
                 appSubmissionDto.setOldAppSubmissionDto(oldAppSubmissionDto);
@@ -448,7 +449,7 @@ public class RequestForChangeDelegator {
                 appEditSelectDto.setServiceEdit(true);
                 ParamUtil.setRequestAttr(bpc.request,RfcConst.RFC_CURRENT_EDIT,RfcConst.EDIT_SERVICE);
             }
-            appEditSelectDto.setDoEdit(switchVal);
+            //appEditSelectDto.setDoEdit(switchVal);
             appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
             appSubmissionDto.setClickEditPage(null);
             ParamUtil.setRequestAttr(bpc.request,RfcConst.APPSUBMISSIONDTORFCATTR,appSubmissionDto);

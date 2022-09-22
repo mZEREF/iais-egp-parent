@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
@@ -27,7 +28,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStep
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.ReflectionUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
@@ -35,11 +38,20 @@ import com.ecquaria.cloud.moh.iais.util.PageDataCopyUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 
 /**
  * @Auther chenlei on 5/3/2022.
@@ -70,17 +82,47 @@ public final class RfcHelper {
                 }
             }
         }
-
+        boolean licenseeChange = isChangeSubLicensee(appSubmissionDto.getSubLicenseeDto(), oldAppSubmissionDto.getSubLicenseeDto());
+        appEditSelectDto.setLicenseeEdit(licenseeChange);
+        // MOSD
         boolean changeInLocation = !compareLocation(appSubmissionDto.getAppGrpPremisesDtoList(),
                 oldAppSubmissionDto.getAppGrpPremisesDtoList());
-        boolean eqAddFloorNo = isChangeFloorUnit(appSubmissionDto, oldAppSubmissionDto);
+        boolean changeFloorUnits = isChangeFloorUnit(appGrpPremisesDtoList, oldAppGrpPremisesDtoList);
+        boolean changeCoLocation = isChangeCoLocation(appGrpPremisesDtoList, oldAppGrpPremisesDtoList);
         boolean changePremiseAutoFields = isChangeGrpPremisesAutoFields(appGrpPremisesDtoList, oldAppGrpPremisesDtoList);
-        boolean notChangePersonnel = compareNotChangePersonnel(appSubmissionDto, oldAppSubmissionDto);
+        boolean grpPremiseIsChange = changeInLocation || changeFloorUnits || hciNameChange || changeCoLocation || changePremiseAutoFields;
+        appEditSelectDto.setChangeInLocation(changeInLocation);
+        appEditSelectDto.setChangeFloorUnits(changeFloorUnits);
+        appEditSelectDto.setChangePremiseAutoFields(changePremiseAutoFields);
+        appEditSelectDto.setChangeCoLocation(changeCoLocation);
+        appEditSelectDto.setPremisesEdit(grpPremiseIsChange);
+        // specialised
+        int changeSpecialisedFields = isChangeSpecialisedFields(appSubmissionDto.getAppPremSpecialisedDtoList(),
+                appSubmissionDto.getAppPremSpecialisedDtoList());
+        boolean changeSpecialised = changeSpecialisedFields != RfcConst.RFC_BASE;
+        boolean changeSpecialisedNonAutoFields = (changeSpecialisedFields & RfcConst.RFC_AMENDMENT) != 0;
+        boolean changeSpecialisedAutoFields = (changeSpecialisedFields & RfcConst.RFC_NOTIFICATION) != 0;
+        appEditSelectDto.setChangeSpecialisedAutoFields(changeSpecialisedAutoFields);
+        appEditSelectDto.setChangeSpecialisedNonAutoFields(changeSpecialisedNonAutoFields);
+        appEditSelectDto.setSpecialisedEdit(changeSpecialised);
+        // service related info
+        boolean changePersonnel = isChangeKeyPersonnel(appSubmissionDto, oldAppSubmissionDto);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtos = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
         boolean changeVehicles = isChangeAppSvcVehicleDtos(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos);
         boolean changeBusiness = isChangeAppSvcBusinessDtos(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos);
         boolean changeSectionLeader = isChangeAppSvcSectionLeadersViaSvcInfo(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos);
+        appEditSelectDto.setChangeVehicle(changeVehicles);
+        appEditSelectDto.setChangeBusinessName(changeBusiness);
+        appEditSelectDto.setChangePersonnel(changePersonnel);
+        appEditSelectDto.setChangeSectionLeader(changeSectionLeader);
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
+        boolean serviceIsChange = isChangeServiceInfo(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList, appEditSelectDto);
+
+
+        appEditSelectDto.setServiceEdit(serviceIsChange);
+        appSubmissionDto.setChangeSelectDto(appEditSelectDto);
         // for splitting the submission
         AppEditSelectDto showDto = appSubmissionDto.getAppEditSelectDto();
         List<String> stepList = IaisCommonUtils.getList(showDto.getPersonnelEditList());
@@ -96,24 +138,6 @@ public final class RfcHelper {
         }
         showDto.setPersonnelEditList(stepList);
         appSubmissionDto.setAppEditSelectDto(showDto);
-        // change edit select dto
-        appEditSelectDto.setChangeInLocation(changeInLocation);
-        appEditSelectDto.setChangeAddFloorUnit(eqAddFloorNo);
-        appEditSelectDto.setChangePremiseAutoFields(changePremiseAutoFields);
-        appEditSelectDto.setChangeVehicle(changeVehicles);
-        appEditSelectDto.setChangeBusinessName(changeBusiness);
-        appEditSelectDto.setChangePersonnel(!notChangePersonnel);
-        appEditSelectDto.setChangeSectionLeader(changeSectionLeader);
-
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
-        boolean licenseeChange = isChangeSubLicensee(appSubmissionDto.getSubLicenseeDto(), oldAppSubmissionDto.getSubLicenseeDto());
-        boolean grpPremiseIsChange = changeInLocation || eqAddFloorNo || hciNameChange || changePremiseAutoFields;
-        boolean serviceIsChange = eqServiceChange(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList, appEditSelectDto);
-        appEditSelectDto.setLicenseeEdit(licenseeChange);
-        appEditSelectDto.setPremisesEdit(grpPremiseIsChange);
-        appEditSelectDto.setServiceEdit(serviceIsChange);
-        appSubmissionDto.setChangeSelectDto(appEditSelectDto);
         return appEditSelectDto;
     }
 
@@ -217,80 +241,112 @@ public final class RfcHelper {
                 PageDataCopyUtil.copyAppGrpPremisesDtoForAutoField(oldAppGrpPremisesDto));
     }
 
-    /*public static List<AppGrpPremisesDto> generateDtosForAutoFields(List<AppGrpPremisesDto> appGrpPremisesDtoList,
-            List<AppGrpPremisesDto> oldAppGrpPremisesDtoList, AppEditSelectDto appEditSelectDto) {
-        if (appGrpPremisesDtoList == null || appGrpPremisesDtoList.isEmpty() || oldAppGrpPremisesDtoList == null || oldAppGrpPremisesDtoList.isEmpty()) {
-            return null;
+    public static boolean isChangeCoLocation(List<AppGrpPremisesDto> appGrpPremisesDtoList,
+            List<AppGrpPremisesDto> oldAppGrpPremisesDtoList) {
+        if (appGrpPremisesDtoList == null || oldAppGrpPremisesDtoList == null) {
+            return false;
         }
-        int len = appGrpPremisesDtoList.size();
-        if (len != oldAppGrpPremisesDtoList.size()) {
-            return oldAppGrpPremisesDtoList;
+        if (IaisCommonUtils.listChange(appGrpPremisesDtoList, oldAppGrpPremisesDtoList)) {
+            return true;
         }
-        List<AppGrpPremisesDto> result = IaisCommonUtils.genNewArrayList(len);
-        for (int i = 0; i < len; i++) {
-            AppGrpPremisesDto copy = (AppGrpPremisesDto) CopyUtil.copyMutableObject(appGrpPremisesDtoList.get(i));
-            AppGrpPremisesDto appGrpPremisesDto = oldAppGrpPremisesDtoList.get(i);
-            // re-set not auto fields
-            if (appEditSelectDto.isChangeHciName() || appEditSelectDto.isChangeInLocation() || appEditSelectDto.isChangeAddFloorUnit()) {
-                copy.setPremisesType(appGrpPremisesDto.getPremisesType());
-                // on site or all
-                copy.setPostalCode(appGrpPremisesDto.getPostalCode());
-                copy.setAddrType(appGrpPremisesDto.getAddrType());
-                copy.setBlkNo(appGrpPremisesDto.getBlkNo());
-                copy.setFloorNo(appGrpPremisesDto.getFloorNo());
-                copy.setUnitNo(appGrpPremisesDto.getUnitNo());
-                copy.setStreetName(appGrpPremisesDto.getStreetName());
-                copy.setBuildingName(appGrpPremisesDto.getBuildingName());
-                copy.setHciName(appGrpPremisesDto.getHciName());
-                // off site
-                copy.setOffSitePostalCode(appGrpPremisesDto.getOffSitePostalCode());
-                copy.setOffSiteAddressType(appGrpPremisesDto.getOffSiteAddressType());
-                copy.setOffSiteBlockNo(appGrpPremisesDto.getOffSiteBlockNo());
-                copy.setOffSiteFloorNo(appGrpPremisesDto.getOffSiteFloorNo());
-                copy.setOffSiteUnitNo(appGrpPremisesDto.getOffSiteUnitNo());
-                copy.setOffSiteStreetName(appGrpPremisesDto.getOffSiteStreetName());
-                copy.setOffSiteBuildingName(appGrpPremisesDto.getOffSiteBuildingName());
-                copy.setOffSiteHciName(appGrpPremisesDto.getOffSiteHciName());
-                //EASMTS
-                copy.setEasMtsHciName(appGrpPremisesDto.getEasMtsHciName());
-                copy.setEasMtsPostalCode(appGrpPremisesDto.getEasMtsPostalCode());
-                copy.setEasMtsAddressType(appGrpPremisesDto.getEasMtsAddressType());
-                copy.setEasMtsBlockNo(appGrpPremisesDto.getEasMtsBlockNo());
-                copy.setEasMtsFloorNo(appGrpPremisesDto.getEasMtsFloorNo());
-                copy.setEasMtsUnitNo(appGrpPremisesDto.getEasMtsUnitNo());
-                copy.setEasMtsStreetName(appGrpPremisesDto.getEasMtsStreetName());
-                copy.setEasMtsBuildingName(appGrpPremisesDto.getEasMtsBuildingName());
-                // conveyance
-                copy.setConveyancePostalCode(appGrpPremisesDto.getConveyancePostalCode());
-                copy.setConveyanceAddressType(appGrpPremisesDto.getConveyanceAddressType());
-                copy.setConveyanceBlockNo(appGrpPremisesDto.getConveyanceBlockNo());
-                copy.setConveyanceFloorNo(appGrpPremisesDto.getConveyanceFloorNo());
-                copy.setConveyanceUnitNo(appGrpPremisesDto.getConveyanceUnitNo());
-                copy.setConveyanceStreetName(appGrpPremisesDto.getConveyanceStreetName());
-                copy.setConveyanceBuildingName(appGrpPremisesDto.getConveyanceBuildingName());
-                copy.setConveyanceHciName(appGrpPremisesDto.getConveyanceHciName());
+        for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
+            AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(i);
+            AppGrpPremisesDto oldAppGrpPremisesDto = oldAppGrpPremisesDtoList.get(i);
+            if (isChangeCoLocation(appGrpPremisesDto, oldAppGrpPremisesDto)) {
+                return true;
             }
-            if (appEditSelectDto.isChangeAddFloorUnit()) {
-                List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtoList =
-                        PageDataCopyUtil.copyAppPremisesOperationalUnitDto(appGrpPremisesDto.getAppPremisesOperationalUnitDtos());
-                copy.setAppPremisesOperationalUnitDtos(appPremisesOperationalUnitDtoList);
-            }
-            // re-set other day
-            copy.setLicenceDtos(appGrpPremisesDto.getLicenceDtos());
-            if (StringUtil.isEmpty(copy.getCertIssuedDtStr()) && StringUtil.isEmpty(appGrpPremisesDto.getCertIssuedDtStr())) {
-                copy.setCertIssuedDtStr(appGrpPremisesDto.getCertIssuedDtStr());
-            }
-            result.add(copy);
         }
-        return result;
-    }*/
-
-    public static boolean eqServiceChange(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList,
-            List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) {
-        return eqServiceChange(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList, null);
+        return false;
     }
 
-    public static boolean eqServiceChange(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList,
+    public static boolean isChangeCoLocation(AppGrpPremisesDto appGrpPremisesDto, AppGrpPremisesDto oldAppGrpPremisesDto) {
+        return !PageDataCopyUtil.copyCoLocationFields(appGrpPremisesDto).equals(
+                PageDataCopyUtil.copyCoLocationFields(oldAppGrpPremisesDto));
+    }
+
+    public static int isChangeSpecialisedFields(List<AppPremSpecialisedDto> specialisedList,
+            List<AppPremSpecialisedDto> oldSpecialisedList) {
+        if (IaisCommonUtils.isEmpty(specialisedList)) {
+            return RfcConst.RFC_NOTIFICATION;
+        }
+        if (IaisCommonUtils.isEmpty(oldSpecialisedList)) {
+            return RfcConst.RFC_AMENDMENT;
+        }
+        int size = specialisedList.size();
+        if (size != oldSpecialisedList.size()) {
+            return RfcConst.RFC_AMENDMENT;
+        }
+        int result = RfcConst.RFC_BASE;
+        for (int i = 0; i < size; i++) {
+            result &= isChangeSpecialisedFields(specialisedList.get(i), oldSpecialisedList.get(i));
+        }
+        return result;
+    }
+
+    public static int isChangeSpecialisedFields(AppPremSpecialisedDto specialisedDto, AppPremSpecialisedDto oldSpecialisedDto) {
+        if (specialisedDto == null || oldSpecialisedDto == null) {
+            return RfcConst.RFC_AMENDMENT;
+        }
+        int result = isChangeAppPremScopeList(specialisedDto.getCheckedAppPremScopeDtoList(),
+                oldSpecialisedDto.getCheckedAppPremScopeDtoList());
+        List<AppPremSubSvcRelDto> appPremSubSvcRelList = specialisedDto.getFlatAppPremSubSvcRelList(dto ->
+                StringUtil.isNotEmpty(dto.getActCode()));
+        if (StringUtil.isEmpty(appPremSubSvcRelList)) {
+            result &= RfcConst.RFC_AMENDMENT;
+        } else {
+            for (AppPremSubSvcRelDto relDto : appPremSubSvcRelList) {
+                if (ApplicationConsts.RECORD_ACTION_CODE_ADD.equals(relDto)) {
+                    result &= relDto.isAdditionFlow() ? RfcConst.RFC_AMENDMENT : RfcConst.RFC_NOTIFICATION;
+                } else if (ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(relDto)) {
+                    result &= relDto.isRemovalFlow() ? RfcConst.RFC_AMENDMENT : RfcConst.RFC_NOTIFICATION;
+                }
+            }
+        }
+        return result;
+    }
+
+    public static int isChangeAppPremScopeList(List<AppPremScopeDto> appPremScopeDtoList,
+            List<AppPremScopeDto> oldAppPremScopeDtoList) {
+        if (IaisCommonUtils.isEmpty(appPremScopeDtoList)) {
+            return RfcConst.RFC_NOTIFICATION;
+        }
+        if (IaisCommonUtils.isEmpty(oldAppPremScopeDtoList)) {
+            return RfcConst.RFC_AMENDMENT;
+        }
+        int result = RfcConst.RFC_BASE;
+        // add
+        boolean noneMatch = appPremScopeDtoList.stream()
+                .noneMatch(dto -> oldAppPremScopeDtoList.stream()
+                        .anyMatch(oldDto -> Objects.equals(dto.getScopeName(), oldDto.getScopeName())));
+        if (noneMatch) {
+            result &= RfcConst.RFC_AMENDMENT;
+        }
+        // removal
+        noneMatch = oldAppPremScopeDtoList.stream()
+                .noneMatch(dto -> appPremScopeDtoList.stream()
+                        .anyMatch(oldDto -> Objects.equals(dto.getScopeName(), oldDto.getScopeName())));
+        if (noneMatch) {
+            result &= RfcConst.RFC_NOTIFICATION;
+        }
+        return result;
+    }
+/*
+    public static int isChangeAppPremScopeList(List<AppPremScopeDto> appPremScopeDtoList,
+            List<AppPremScopeDto> oldAppPremScopeDtoList) {
+        if (appPremScopeDtoList == null || appPremScopeDtoList == null) {
+            return RfcConst.RFC_AMENDMENT;
+        }
+        return isChangedList(appPremScopeDtoList, appPremScopeDtoList, PageDataCopyUtil::copyMutableObjectList,
+                "id", "appPremCorreId", "subTypeId", "parentId", "level", "appPremScopeDtos");
+    }
+*/
+
+    public static boolean isChangeServiceInfo(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList,
+            List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) {
+        return isChangeServiceInfo(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList, null);
+    }
+
+    public static boolean isChangeServiceInfo(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList,
             List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList, AppEditSelectDto appEditSelectDto) {
         List<String> changeList = IaisCommonUtils.genNewArrayList();
         List<AppSvcRelatedInfoDto> n = (List<AppSvcRelatedInfoDto>) CopyUtil.copyMutableObjectList(appSvcRelatedInfoDtoList);
@@ -309,7 +365,7 @@ public final class RfcHelper {
                 oldAppSvcRelatedInfoDto.getAppSvcVehicleDtoList());
         boolean eqAppSvcChargesPageDto = eqAppSvcChargesPageDto(appSvcRelatedInfoDto.getAppSvcChargesPageDto(),
                 oldAppSvcRelatedInfoDto.getAppSvcChargesPageDto());
-        boolean changePersonnel = changePersonnel(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList, changeList);
+        boolean changePersonnel = changePersonnel(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
         boolean eqAppSvcBusiness = isChangeAppSvcBusinessDto(appSvcRelatedInfoDto.getAppSvcBusinessDtoList(),
                 oldAppSvcRelatedInfoDto.getAppSvcBusinessDtoList());
 
@@ -328,7 +384,7 @@ public final class RfcHelper {
     }
 
     private static boolean changePersonnel(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList,
-            List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList, List<String> changeList) {
+            List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) {
         if (appSvcRelatedInfoDtoList == null && oldAppSvcRelatedInfoDtoList == null) {
             return false;
         } else if (appSvcRelatedInfoDtoList == null ^ oldAppSvcRelatedInfoDtoList == null) {
@@ -339,58 +395,20 @@ public final class RfcHelper {
         }
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSvcRelatedInfoDtoList.get(0);
         AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSvcRelatedInfoDtoList.get(0);
-        boolean changePersonnel = false;
-        boolean eqAppSvcClinicalDirector = eqAppSvcClinicalDirector(appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList(),
-                oldAppSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList());
-        if (eqAppSvcClinicalDirector) {
-            //changeList.add(HcsaConsts.STEP_CLINICAL_DIRECTOR);
-            changePersonnel = true;
-        }
-//        List<AppSvcPersonnelDto> appSvcPersonnelDtoList = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
-//        List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList = oldAppSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
-//        boolean eqServicePseronnel = isChangeServicePersonnels(appSvcPersonnelDtoList, oldAppSvcPersonnelDtoList);
-//        if (eqServicePseronnel) {
-//            changeList.add(HcsaConsts.STEP_SERVICE_PERSONNEL);
-//            changePersonnel = true;
-//        }
-        if (changePersonnel) {
-            return true;
+
+        for (String psnType : IaisCommonUtils.getKeyPersonnel()) {
+            if (isChangeKeyPersonnel(appSvcRelatedInfoDto, oldAppSvcRelatedInfoDto, psnType, false)) {
+                return true;
+            }
         }
         // section leader
         List<AppSvcPersonnelDto> appSvcSectionLeaderList = appSvcRelatedInfoDto.getAppSvcSectionLeaderList();
         List<AppSvcPersonnelDto> oldAppSvcSectionLeaderList = oldAppSvcRelatedInfoDto.getAppSvcSectionLeaderList();
         boolean eqSectionLeader = isChangeServicePersonnels(appSvcSectionLeaderList, oldAppSvcSectionLeaderList);
         if (eqSectionLeader) {
-            //changeList.add(HcsaConsts.STEP_SECTION_LEADER);
             return true;
         }
-        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
-        List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDtoList = oldAppSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
-        boolean eqSvcPrincipalOfficers = eqSvcPrincipalOfficers(appSvcPrincipalOfficersDtoList, oldAppSvcPrincipalOfficersDtoList);
-        if (eqSvcPrincipalOfficers) {
-            //changeList.add(HcsaConsts.STEP_PRINCIPAL_OFFICERS);
-            return true;
-        }
-        List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
-        List<AppSvcPrincipalOfficersDto> oldAppSvcCgoDtoList = oldAppSvcRelatedInfoDto.getAppSvcCgoDtoList();
-        boolean eqCgo = eqCgo(appSvcCgoDtoList, oldAppSvcCgoDtoList);
-        if (eqCgo) {
-            //changeList.add(HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS);
-            return true;
-        }
-        List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
-        List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonList = oldAppSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
-        boolean eqMeadrter = eqMeadrter(appSvcMedAlertPersonList, oldAppSvcMedAlertPersonList);
-        if (eqMeadrter) {
-            //changeList.add(HcsaConsts.STEP_MEDALERT_PERSON);
-            return true;
-        }
-        // kah
-        List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderDtoList = appSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList();
-        List<AppSvcPrincipalOfficersDto> oldAppSvcKeyAppointmentHolderDtoList = oldAppSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList();
-        //changeList.add(HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER);
-        return eqKeyAppointmentHolder(appSvcKeyAppointmentHolderDtoList,
-                oldAppSvcKeyAppointmentHolderDtoList);
+        return false;
     }
 
     private static boolean eqSvcPrincipalOfficers(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList,
@@ -664,138 +682,57 @@ public final class RfcHelper {
         return !Objects.equals(subLicenseeDto, oldSbLicenseeDto);
     }
 
-    public static boolean compareNotChangePersonnel(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto) {
-        boolean isAuto = true;
+    public static boolean isChangeKeyPersonnel(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto) {
         AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
         if (appEditSelectDto == null || !appEditSelectDto.isServiceEdit()) {
-            return isAuto;
+            return false;
         }
-        AppSvcRelatedInfoDto appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
-        AppSvcRelatedInfoDto oldAppSvcRelatedInfoDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
+        if (appSvcRelatedInfoDtoList == null && oldAppSvcRelatedInfoDtoList == null) {
+            return false;
+        } else if (appSvcRelatedInfoDtoList == null ^ oldAppSvcRelatedInfoDtoList == null) {
+            return true;
+        }
+        if (appSvcRelatedInfoDtoList.size() != oldAppSvcRelatedInfoDtoList.size()) {
+            return true;
+        }
+        boolean isChanged = false;
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSvcRelatedInfoDtoList.get(0);
+        AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSvcRelatedInfoDtoList.get(0);
         List<String> personnelEditList = IaisCommonUtils.genNewArrayList();
-        // PO & DPO
-        List<AppSvcPrincipalOfficersDto> newAppSvcPrincipalOfficersDto =
-                IaisCommonUtils.getList(appSvcRelatedInfoDtoList.getAppSvcPrincipalOfficersDtoList());
-        List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDto =
-                IaisCommonUtils.getList(oldAppSvcRelatedInfoDtoList.getAppSvcPrincipalOfficersDtoList());
-        if (newAppSvcPrincipalOfficersDto.size() > oldAppSvcPrincipalOfficersDto.size()) {
-            isAuto = false;
-        }
-        //change
-        List<String> newPoIdNos = IaisCommonUtils.genNewArrayList();
-        List<String> oldPoIdNos = IaisCommonUtils.genNewArrayList();
-        List<String> newDpoIdNos = IaisCommonUtils.genNewArrayList();
-        List<String> olddDpoIdNos = IaisCommonUtils.genNewArrayList();
-
-        for (AppSvcPrincipalOfficersDto item : newAppSvcPrincipalOfficersDto) {
-            if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(item.getPsnType())) {
-                newPoIdNos.add(ApplicationHelper.getPersonKey(item));
-            } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(item.getPsnType())) {
-                newDpoIdNos.add(ApplicationHelper.getPersonKey(item));
+        for (String psnType : IaisCommonUtils.getKeyPersonnel()) {
+            if (isChangeKeyPersonnel(appSvcRelatedInfoDto, oldAppSvcRelatedInfoDto, psnType, true)) {
+                isChanged = true;
+                personnelEditList.add(psnType);
             }
-        }
-        for (AppSvcPrincipalOfficersDto item : oldAppSvcPrincipalOfficersDto) {
-            if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(item.getPsnType())) {
-                oldPoIdNos.add(ApplicationHelper.getPersonKey(item));
-            } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(item.getPsnType())) {
-                olddDpoIdNos.add(ApplicationHelper.getPersonKey(item));
-            }
-        }
-        if (!newPoIdNos.equals(oldPoIdNos)) {
-            isAuto = false;
-            personnelEditList.add(HcsaConsts.STEP_PRINCIPAL_OFFICERS);
-        }
-        if (!newDpoIdNos.equals(olddDpoIdNos)) {
-            isAuto = false;
-            IaisCommonUtils.addToList(HcsaConsts.STEP_PRINCIPAL_OFFICERS, personnelEditList);
-            personnelEditList.add(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
-        }
-        // CGO
-        List<AppSvcPrincipalOfficersDto> newAppSvcCgoDto = IaisCommonUtils.getList(appSvcRelatedInfoDtoList.getAppSvcCgoDtoList());
-        List<AppSvcPrincipalOfficersDto> oldAppSvcCgoDto = IaisCommonUtils.getList(oldAppSvcRelatedInfoDtoList.getAppSvcCgoDtoList());
-        List<String> newIdNos = IaisCommonUtils.genNewArrayList();
-        List<String> oldIdNos = IaisCommonUtils.genNewArrayList();
-        for (AppSvcPrincipalOfficersDto item : newAppSvcCgoDto) {
-            newIdNos.add(ApplicationHelper.getPersonKey(item));
-        }
-        for (AppSvcPrincipalOfficersDto item : oldAppSvcCgoDto) {
-            oldIdNos.add(ApplicationHelper.getPersonKey(item));
-        }
-        if (!newIdNos.equals(oldIdNos)) {
-            isAuto = false;
-            personnelEditList.add(HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS);
-        }
-        // CD
-        List<AppSvcPrincipalOfficersDto> newAppSvcCdDto = IaisCommonUtils.getList(
-                appSvcRelatedInfoDtoList.getAppSvcClinicalDirectorDtoList());
-        List<AppSvcPrincipalOfficersDto> oldAppSvcCdDto = IaisCommonUtils.getList(
-                oldAppSvcRelatedInfoDtoList.getAppSvcClinicalDirectorDtoList());
-        newIdNos = IaisCommonUtils.genNewArrayList();
-        oldIdNos = IaisCommonUtils.genNewArrayList();
-        for (AppSvcPrincipalOfficersDto item : newAppSvcCdDto) {
-            newIdNos.add(ApplicationHelper.getPersonKey(item));
-        }
-        for (AppSvcPrincipalOfficersDto item : oldAppSvcCdDto) {
-            oldIdNos.add(ApplicationHelper.getPersonKey(item));
-        }
-        if (!newIdNos.equals(oldIdNos)) {
-            isAuto = false;
-            personnelEditList.add(HcsaConsts.STEP_CLINICAL_DIRECTOR);
-        }
-        // MAP
-        List<AppSvcPrincipalOfficersDto> newAppSvcMapDto = IaisCommonUtils.getList(
-                appSvcRelatedInfoDtoList.getAppSvcMedAlertPersonList());
-        List<AppSvcPrincipalOfficersDto> oldAppSvcMapDto = IaisCommonUtils.getList(
-                oldAppSvcRelatedInfoDtoList.getAppSvcMedAlertPersonList());
-        newIdNos = IaisCommonUtils.genNewArrayList();
-        oldIdNos = IaisCommonUtils.genNewArrayList();
-        for (AppSvcPrincipalOfficersDto item : newAppSvcMapDto) {
-            newIdNos.add(ApplicationHelper.getPersonKey(item));
-        }
-        for (AppSvcPrincipalOfficersDto item : oldAppSvcMapDto) {
-            oldIdNos.add(ApplicationHelper.getPersonKey(item));
-        }
-        if (!newIdNos.equals(oldIdNos)) {
-            isAuto = false;
-            personnelEditList.add(HcsaConsts.STEP_MEDALERT_PERSON);
-        }
-        // KAH
-        List<AppSvcPrincipalOfficersDto> kahList = IaisCommonUtils.getList(
-                appSvcRelatedInfoDtoList.getAppSvcKeyAppointmentHolderDtoList());
-        List<AppSvcPrincipalOfficersDto> oldKahList = IaisCommonUtils.getList(
-                oldAppSvcRelatedInfoDtoList.getAppSvcKeyAppointmentHolderDtoList());
-        List<String> newKahIdNos = IaisCommonUtils.genNewArrayList();
-        List<String> oldKahIdNos = IaisCommonUtils.genNewArrayList();
-        for (AppSvcPrincipalOfficersDto item : kahList) {
-            newKahIdNos.add(ApplicationHelper.getPersonKey(item));
-        }
-        for (AppSvcPrincipalOfficersDto item : oldKahList) {
-            oldKahIdNos.add(ApplicationHelper.getPersonKey(item));
-        }
-        if (!newKahIdNos.equals(oldKahIdNos)) {
-            isAuto = false;
-            personnelEditList.add(HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER);
         }
         appEditSelectDto.setPersonnelEditList(personnelEditList);
         appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
-        return isAuto;
+        return !isChanged;
     }
 
-    /*public static AppSubmissionDto generateDtosForAutoPremesis(AppSubmissionDto srcDto, List<AppGrpPremisesDto> autoPremisesDtos,
-            String autoGroupNo) {
-        AppSubmissionDto autoDto = (AppSubmissionDto) CopyUtil.copyMutableObject(srcDto);
-        AppEditSelectDto newChangeSelectDto = new AppEditSelectDto();
-        newChangeSelectDto.setPremisesEdit(true);
-        newChangeSelectDto.setPremisesListEdit(true);
-        autoDto.setAppGrpPremisesDtoList(ApplicationHelper.updatePremisesIndex(
-                (List<AppGrpPremisesDto>) CopyUtil.copyMutableObjectList(autoPremisesDtos),
-                autoDto.getAppGrpPremisesDtoList()));
-        autoDto.setChangeSelectDto(newChangeSelectDto);
-        autoDto.setAppGrpStatus(null);
-        autoDto.setAmount(0.0);
-        ApplicationHelper.reSetAdditionalFields(autoDto, newChangeSelectDto, autoGroupNo);
-        return autoDto;
-    }*/
+    private static boolean isChangeKeyPersonnel(AppSvcRelatedInfoDto appSvcRelatedInfoDto,
+            AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto, String psnType, boolean onlyCheckAddRemoval) {
+        List<AppSvcPrincipalOfficersDto> newList = ApplicationHelper.getKeyPersonnel(psnType, appSvcRelatedInfoDto);
+        List<AppSvcPrincipalOfficersDto> oldList = ApplicationHelper.getKeyPersonnel(psnType, oldAppSvcRelatedInfoDto);
+        return isChangeKeyPersonnel(newList, oldList, onlyCheckAddRemoval);
+    }
+
+    private static boolean isChangeKeyPersonnel(List<AppSvcPrincipalOfficersDto> newList, List<AppSvcPrincipalOfficersDto> oldList,
+            boolean onlyCheckAddRemoval) {
+        return isChangedList(newList, oldList, (dto, list) -> list.stream()
+                .filter(obj -> Objects.equals(IaisCommonUtils.getPersonKey(obj), IaisCommonUtils.getPersonKey(dto)))
+                .findAny()
+                .orElse(null), (clazz, fieldName) -> {
+            if (onlyCheckAddRemoval) {
+                return StringUtil.isIn(fieldName, new String[]{"nationality", "idType", "idNo"});
+            } else {
+                return !StringUtil.isIn(fieldName, new String[]{"psnEditDto", "licPerson", "backend", "singleName", "needSpcOptList",
+                        "spcOptList", "specialityHtml", "id", "indexNo", "curPersonelId"});
+            }
+        });
+    }
 
     public static boolean isChangeAppSvcSectionLeadersViaSvcInfo(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos,
             List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtos) {
@@ -934,6 +871,8 @@ public final class RfcHelper {
     }
 
     /**
+     * Bundle / align
+     *
      * TODO need to be changed
      *
      * @param appSubmissionDto
@@ -1179,6 +1118,7 @@ public final class RfcHelper {
         if (appSubmissionDto == null) {
             return;
         }
+        DealSessionUtil.initView(appSubmissionDto);
         appSubmissionDto.setAppGrpId(null);
         appSubmissionDto.setFromBe(ApplicationHelper.isBackend());
         appSubmissionDto.setAppType(appType);
@@ -1232,6 +1172,167 @@ public final class RfcHelper {
             }
             resolveSvcActionCode(relDto.getAppPremSubSvcRelDtos(), oldDtaMap);
         }
+    }
+
+    public static <R> boolean isChanged(Object source, Object target, BiFunction<Object, Object, Object> checkTarget,
+            BiPredicate<Class, String> filter) {
+//        if (o1 == null && o2 == null) {
+//            return false;
+//        } else if (o1 == null ^ o2 == null) {
+//            return true;
+//        }
+//        if (!Objects.equals(o1.getClass(), o2.getClass())) {
+//            return true;
+//        }
+//        Object source = preprocessor != null ? preprocessor.apply(o1) : o1;
+//        Object target = preprocessor != null ? preprocessor.apply(o2) : o2;
+        if (source == null && target == null) {
+            return false;
+        } else if (source == null ^ target == null) {
+            return true;
+        }
+        if (!Objects.equals(source.getClass(), target.getClass())) {
+            return true;
+        }
+        boolean isChanged;
+        Class<?> type = target.getClass();
+        if (String.class.isAssignableFrom(type)) {
+            isChanged = !Objects.equals(source, target);
+        } else if (int.class.isAssignableFrom(type)) {
+            isChanged = (int) source != (int) target;
+        } else if (long.class.isAssignableFrom(type)) {
+            isChanged = (long) source == (int) target;
+        } else if (double.class.isAssignableFrom(type)
+                || Double.class.isAssignableFrom(type)) {
+            BigDecimal s = BigDecimal.valueOf((double) source);
+            BigDecimal t = BigDecimal.valueOf((double) target);
+            isChanged = s.compareTo(t) != 0;
+        } else if (Integer.class.isAssignableFrom(type)) {
+            isChanged = !Objects.equals(source, target);
+        } else if (Long.class.isAssignableFrom(type)) {
+            isChanged = !Objects.equals(source, target);
+        } else if (boolean.class.isAssignableFrom(type) || Boolean.class.isAssignableFrom(type)) {
+            isChanged = (boolean) source != (boolean) target;
+        } else if (Date.class.isAssignableFrom(type)) {
+            isChanged = !Objects.equals(source, target);
+        } else if (String[].class.isAssignableFrom(type)) {
+            isChanged = isChangedArray((String[]) source, (String[]) target, Comparator.naturalOrder(), null);
+        } else if (Integer[].class.isAssignableFrom(type) || int[].class.isAssignableFrom(type)) {
+            isChanged = isChangedArray((Integer[]) source, (Integer[]) target, Comparator.naturalOrder(), null);
+        } else if (Long[].class.isAssignableFrom(type) || long[].class.isAssignableFrom(type)) {
+            isChanged = isChangedArray((Long[]) source, (Long[]) target, Comparator.naturalOrder(), null);
+        } else if (Double[].class.isAssignableFrom(type) || double[].class.isAssignableFrom(type)) {
+            isChanged = isChangedArray((Double[]) source, (Double[]) target, Comparator.naturalOrder(), null);
+        } else if (List.class.isAssignableFrom(type)) {
+            BiFunction<R, List<R>, R> check = null;
+            if (checkTarget != null) {
+                check = (r, list) -> (R) checkTarget.apply(r, list);
+            }
+            isChanged = isChangedList((List<R>) source, (List<R>) target, check, filter);
+        } else if (Set.class.isAssignableFrom(type)) {
+            BiFunction<R, Set<R>, R> check = null;
+            if (checkTarget != null) {
+                check = (r, list) -> (R) checkTarget.apply(r, list);
+            }
+            isChanged = isChangedSet((Set<R>) source, (Set<R>) target, check, filter);
+        } else if (Map.class.isAssignableFrom(type)) {
+            isChanged = false;// can't
+        } else {
+            Field[] fields = type.getDeclaredFields();
+            if (fields.length == 0) {
+                isChanged = false;
+            } else {
+                isChanged = !Arrays.stream(fields)
+                        .filter(field -> filter == null || filter.test(type, field.getName()))
+                        .filter(field -> !Modifier.isStatic(field.getModifiers()) && Modifier.isNative(field.getModifiers()))
+                        .allMatch(field -> {
+                            Object srcObj = ReflectionUtil.getPropertyObj(field, source);
+                            Object tarObj = ReflectionUtil.getPropertyObj(field, target);
+                            return !isChanged(srcObj, tarObj, checkTarget, filter);
+                        });
+            }
+        }
+        return isChanged;
+    }
+
+    public static <T> boolean isChangedArray(T[] src, T[] oldSrc, Comparator<T> comparator,
+            BiPredicate<Class, String> filter) {
+        if (src == null && oldSrc == null) {
+            return false;
+        } else if (src == null ^ oldSrc == null) {
+            return true;
+        }
+        if (src.length != oldSrc.length) {
+            return true;
+        }
+        if (comparator != null) {
+            Arrays.sort(src, comparator);
+            Arrays.sort(oldSrc, comparator);
+        }
+        int len = src.length;
+        for (int i = 0; i < len; i++) {
+            if (isChanged(src[i], oldSrc[i], null, filter)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static <T> boolean isChangedArray(T[] src, T[] oldSrc, BiFunction<T, T[], T> target,
+            BiPredicate<Class, String> filter) {
+        if (src == null && oldSrc == null) {
+            return false;
+        } else if (src == null ^ oldSrc == null) {
+            return true;
+        }
+        if (src.length != oldSrc.length) {
+            return true;
+        }
+        boolean anyMatch = Arrays.stream(src)
+                .anyMatch(t -> isChanged(t, target.apply(t, oldSrc), null, filter));
+        if (anyMatch) {
+            return true;
+        }
+        return Arrays.stream(oldSrc)
+                .anyMatch(t -> isChanged(t, target.apply(t, src), null, filter));
+    }
+
+    public static <T> boolean isChangedList(List<T> src, List<T> oldSrc, BiFunction<T, List<T>, T> target,
+            BiPredicate<Class, String> filter) {
+        if (src == null && oldSrc == null) {
+            return false;
+        } else if (src == null ^ oldSrc == null) {
+            return true;
+        }
+        if (src.size() != oldSrc.size()) {
+            return true;
+        }
+        boolean anyMatch = src.stream()
+                .anyMatch(t -> isChanged(t, target.apply(t, oldSrc), null, filter));
+        if (anyMatch) {
+            return true;
+        }
+        return oldSrc.stream()
+                .anyMatch(t -> isChanged(t, target.apply(t, src), null, filter));
+    }
+
+    public static <T> boolean isChangedSet(Set<T> src, Set<T> oldSrc, BiFunction<T, Set<T>, T> target,
+            BiPredicate<Class, String> filter) {
+        if (src == null && oldSrc == null) {
+            return false;
+        } else if (src == null ^ oldSrc == null) {
+            return true;
+        }
+        if (src.size() != oldSrc.size()) {
+            return true;
+        }
+        boolean anyMatch = src.stream()
+                .anyMatch(t -> isChanged(t, target.apply(t, oldSrc), null, filter));
+        if (anyMatch) {
+            return true;
+        }
+        return oldSrc.stream()
+                .anyMatch(t -> isChanged(t, target.apply(t, src), null, filter));
     }
 
 }

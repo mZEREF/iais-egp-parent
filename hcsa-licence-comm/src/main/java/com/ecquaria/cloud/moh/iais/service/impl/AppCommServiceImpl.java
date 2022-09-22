@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpSecondAddrDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
@@ -717,5 +718,10 @@ public class AppCommServiceImpl implements AppCommService {
     @Override
     public List<AppPremSpecialisedDto> getAppPremSpecialisedDtoList(List<String> appPremCorreIds){
         return appCommClient.getAppPremSpecialisedDtoList(appPremCorreIds).getEntity();
+    }
+
+    @Override
+    public void saveSecondaryAddresses(List<AppGrpSecondAddrDto> addrDtos) {
+        appCommClient.saveSecondAddress(addrDtos);
     }
 }

@@ -12,12 +12,12 @@
     <div class="panel panel-default">
         <div class="panel-heading ${headingSign}">
             <h4 class="panel-title">
-                <a class="collapsed" data-toggle="collapse" href="#previewSpecialised${vs.index}" role="button" aria-expanded="true">
+                <a class="collapsed" data-toggle="collapse" href="#previewSpecialised${documentIndex}-${vs.index}" role="button" aria-expanded="true">
                     ${specialisedTitle}<c:if test="${!withoutSvcName}"> - ${specialised.baseSvcName}</c:if>
                 </a>
             </h4>
         </div>
-        <div id="previewSpecialised${vs.index}" class="panel-collapse collapse previewSpecialised <c:if test="${!empty printFlag}">in</c:if>">
+        <div id="previewSpecialised${documentIndex}-${vs.index}" class="panel-collapse collapse previewSpecialised <c:if test="${!empty printFlag}">in</c:if>">
             <div class="panel-body">
                 <c:if test="${(empty AppSubmissionDto.appEditSelectDto || AppSubmissionDto.appEditSelectDto.specialisedEdit)
                         && empty printView && (empty isSingle || isSingle == 'Y')}">

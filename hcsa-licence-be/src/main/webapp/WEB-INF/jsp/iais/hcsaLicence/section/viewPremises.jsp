@@ -789,21 +789,18 @@
 
             <c:forEach var="appGrpSecondAddrList" items="${appSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
                 <div class="panel-main-content postion-relative">
-                        <%--                为空--%>
                     <c:if test="${empty appGrpSecondAddrList.appGrpSecondAddrDtos}">
                         <div class="contents">
                             <%@include file="viewPremisesDetils.jsp" %>
                         </div>
                     </c:if>
-                        <%--                不为空--%>
                     <c:forEach var="appGrpSecondAddr" items="${appGrpSecondAddrList.appGrpSecondAddrDtos}"
                                varStatus="statuss">
                         <div class="contents">
-                                <%--点击edit--%>
                             <%@include file="viewPremisesDetils.jsp" %>
                         </div>
                     </c:forEach>
-                        <%--                            点击edit显示--%>
+                            <c:set var="MMM" value="logo"></c:set>
                     <%@include file="viewPremisesDetilEdit.jsp" %>
                     <div class="adds"></div>
 
@@ -825,8 +822,7 @@
         </div>
     </div>
 </div>
-
-
+<%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 <script type="text/javascript">
     $(function () {
         init()
@@ -834,13 +830,13 @@
 
     function init() {
         addrTypeEvent()
-        //房间
         addOperationalEvnet();
-        //删除
         delOperationEvent();
         addPremEvent();
         removeBtnEvent();
         retrieveAddrEvent();
+        editEvent()
+        changeCount()
     }
 
 
@@ -853,8 +849,10 @@
     }
 
     let saveEvent = function ($target){
+        $('#Save').unbind('click')
         $('#Save').click(function () {
         let list = new Array();
+        clearFields($target);
         $('.viewPrem').each(function (k, v) {
             let appPremisesOperationalUnitDtos = new Array();
             let postalCode = $(v).find('.postalCode').val()
@@ -863,8 +861,6 @@
             let blkNo = $(v).find('.blkNo').val()
             let floorNo = $(v).find('.operationDiv:first').find('.floorNo').val()
             let unitNo = $(v).find('.operationDiv:first').find('.unitNo').val()
-            console.log("floorNo--->", floorNo)
-            console.log("unitNo--->", unitNo)
             $(v).find('.operationDivGroup .operationDiv').each(function (index, item) {
                 let floorNo = $(item).find('.floorNo').val()
                 let unitNo = $(item).find('.unitNo').val()
@@ -873,13 +869,9 @@
                     'unitNo' : unitNo
                 }
                 appPremisesOperationalUnitDtos.push(others)
-                console.log(appPremisesOperationalUnitDtos)
-                console.log("floorNos--->", floorNo)
-                console.log("unitNos--->", unitNo)
             })
             let streetName = $(v).find('.streetName').val()
             let buildingName = $(v).find('.buildingName').val()
-
             let appGrpSecondAddrDto = {
                 'postalCode': postalCode,
                 'addrType': addrType,
@@ -890,27 +882,35 @@
                 'streetName': streetName,
                 'buildingName': buildingName
             }
-            console.log("appGrpSecondAddrDto--->", appGrpSecondAddrDto)
             list.push(appGrpSecondAddrDto)
-            console.log('list----->',list)
         })
-        var opt = {
-            url: '${pageContext.request.contextPath}/save-second-address',
-            type: 'POST',
-            data: JSON.stringify(list)
-        };
+
+        <%--    var opt = {--%>
+        <%--        url: '${pageContext.request.contextPath}/save-second-address',--%>
+        <%--        type: 'post',--%>
+        <%--        data: JSON.stringify(list),--%>
+        <%--    };--%>
+        <%--console.log(JSON.stringify(list),"=====d>")--%>
+        <%--    console.log(list,"=====v>")--%>
+        <%--    callCommonAjax(opt, "premSelectCallback", $target);--%>
+
             $.ajax({
                 url: '${pageContext.request.contextPath}/save-second-address',
                 data: JSON.stringify(list),
                 dataType:"json",
                 contentType: "application/json;charset=utf-8",
                 type: 'post',
-                success: function(data) {
-                    premSelectCallback(data,$target)
+                success: function(result) {
+                    if (result.code == "ok"){
+                        premSelectCallback(result.data,$target)
+                    }
+                    if (result.code == "error"){
+                        clearErrorMsg($('.viewPrem'))
+                        doValidationParse(result.data)
+                    }
                 }
             });
     })
-
     }
 
     function premSelectCallback(data, $target) {
@@ -920,26 +920,30 @@
         }
         fillInfoMation(data[0],$target)
         let length = data.length;
+        // TODO
         if (length > 1){
-
+            $.each(data.splice(1,1),function (index,items){
+                console.log(data,'data=====>')
+                let $targets = $target.clone();
+                clearFields($targets)
+                $('.premisesContent').last().after($targets)
+                editEvent()
+                fillInfoMation(items,$('.premisesContent').last())
+            })
         }
     }
 
-    function fillInfoMation(data,$target){
-        console.log('enter lou=======>')
-        //回填到原来那个表格里面
+    function fillInfoMation(data,$target,flag){
         $('.contents').removeClass('hidden')
-        //all viewPrem hide
         $('.viewPrem').addClass('hidden')
         $('.btns').addClass('hidden')
-        $target.find('.postalCode').text(data[0].postalCode)
-        $target.find('.addrType').text(data[0].addrType)
-        $target.find('.blkNo').text(data[0].blkNo)
-        let mm = data[0].floorNo + "-" + data[0].unitNo
+        $target.find('.postalCode').text(data.postalCode)
+        $target.find('.addrType').text(data.addrType)
+        $target.find('.blkNo').text(data.blkNo)
+        let mm = data.floorNo + "-" + data.unitNo
         $target.find('.floorNo-unitNo').text(mm)
-        $target.find('.streetName').text(data[0].streetName)
-        $target.find('.buildingName').text(data[0].buildingName)
-
+        $target.find('.streetName').text(data.streetName)
+        $target.find('.buildingName').text(data.buildingName)
         let content  = `<div class="row addmore">
             <div class="col-md-6">
             </div>
@@ -950,18 +954,17 @@
             </div>
         </div>
     </div>`
-
         $('.addmore').remove()
-        $.each(data[0].appPremisesOperationalUnitDtos,function (index,value){
+        $.each(data.appPremisesOperationalUnitDtos,function (index,value){
             if (index == 0){
                 $target.find('.appendContent').after(content)
             }else {
                 $('.addmore').last().after(content)
             }
             let numbere = value.floorNo + "-" + value.unitNo
-            console.log(index,'iiiiiiiiindex')
             $('.addmore').eq(index).find('.addmorecontent').text(numbere)
         })
+        changeCount()
         dismissWaiting();
     }
 
@@ -998,7 +1001,6 @@
         });
     }
 
-
     let addrTypeEvent = function (target) {
         var $target = getJqueryNode(target);
         if (isEmptyNode($target)) {
@@ -1021,8 +1023,6 @@
         }
     }
 
-
-    //add 多余的号
     let addOperationalEvnet = function (target) {
         let $target = getJqueryNode(target);
         if (isEmptyNode($target)) {
@@ -1034,20 +1034,23 @@
         });
     }
 
-    function addFloorUnit(ele) {
-        var $premContent = $(ele).closest('div.viewPrem');
-        var src = $premContent.find('div.operationDiv:first').clone();
-
+    function addFloorUnit(ele,flag,value) {
+        let $premContent
+        if (flag){
+            $premContent = $(ele)
+        }else {
+            $premContent =  $(ele).closest('div.viewPrem');
+        }
+        var src = $premContent.find('div.operationDiv').first().clone();
         clearFields(src);
-
         $premContent.find('div.addOpDiv').before(src);
-
-        console.log($('div.viewPrem').index(), '------->')
-
         refreshFloorUnit($premContent, $('div.viewPrem').index($premContent));
-
-
         delOperationEvent($premContent);
+        if (flag){
+            fillValue($premContent.find('.operationDivGroup .operationDiv').last().find('.floorNo'),value.floorNo)
+            fillValue($premContent.find('.operationDivGroup .operationDiv').last().find('.unitNo'),value.unitNo)
+            console.log("enter====>")
+        }
     }
 
     let delOperationEvent = function (target) {
@@ -1121,14 +1124,12 @@
             $('div.viewPrem').each(function (k, v) {
                 refreshPremise($(v), k);
             });
-
             if ($('div.viewPrem').length == 1) {
                 $('div.viewPrem').find('.premHeader').html('');
             }
             dismissWaiting();
         });
     }
-
 
     $('#addressClick').click(function () {
         var jQuery = $('#addressShowOrHidden').attr('style');
@@ -1147,8 +1148,9 @@
         }
     });
 
-
     //edit
+    let editEvent = function () {
+        $('.viewPremisesEdit').unbind('click')
     $('.viewPremisesEdit').click(function () {
         let target = $(this).closest('div.premisesContent');
         $('.viewPrem').removeClass('hidden');
@@ -1156,9 +1158,69 @@
         $('.save').removeClass('hidden')
         //all hide
         $('.contents').addClass('hidden');
+        $('.viewPrem:not(:first)').remove()
+        clearFields($('.viewPrem'))
+        $('.viewPrem').find('.premHeader').html('')
+        getEditInformationAndFill(target)
         saveEvent(target)
     })
+    }
 
+    let changeCount = function (){
+        let length  =  $('.premisesContent').length
+        $('.premisesContent').each(function (k,v){
+            if (length == 1){
+                $(v).find('.assign-psn-item').html('')
+            }else {
+                $(v).find('.assign-psn-item').html(k+1)
+            }
+        })
+    }
+    let getEditInformationAndFill = function (target) {
+        let postalCode = target.find('.postalCode').text()
+        let addrType = target.find('.addrType').text()
+        let blkNo = target.find('.blkNo').text()
+        let others = target.find('.floorNo-unitNo').text().split("-")
+        let floorNo = others[0]
+        let unitNo = others[1]
+        let streetName = target.find('.streetName').text()
+        let buildingName = target.find('.buildingName').text()
+        let appPremisesOperationalUnitDtos = new Array()
+        $('.addmore').each(function (index, item) {
+            let others =  $(item).find('.addmorecontent').text().split("-")
+            let floorNo = others[0]
+            let unitNo = others[1]
+            appPremisesOperationalUnitDtos.push({"floorNo":floorNo,"unitNo":unitNo})
+        })
+        let data = {
+            'postalCode': postalCode,
+            'addrType': addrType,
+            'blkNo': blkNo,
+            'floorNo': floorNo,
+            'unitNo': unitNo,
+            'appPremisesOperationalUnitDtos': appPremisesOperationalUnitDtos,
+            'streetName': streetName,
+            'buildingName': buildingName
+        }
+        let $premContent = $('.viewPrem')
+        fillValue($premContent.find('.postalCode'), data.postalCode.trim());
+        fillValue($premContent.find('.blkNo'), data.blkNo.trim());
+        fillValue($premContent.find('.operationDiv:first').find('.floorNo'), data.floorNo.trim());
+        fillValue($premContent.find('.operationDiv:first').find('.unitNo'), data.unitNo.trim());
+        fillValue($premContent.find('.streetName'), data.streetName.trim());
+        fillValue($premContent.find('.buildingName'), data.buildingName.trim());
+        let code = data.addrType.trim() == 'Without Apt Blk' ? 'ADDTY002' : (data.addrType == 'Apt Blk' ? 'ADDTY001' : '')
+        fillValue($premContent.find('.addrType'), code);
+        $premContent.find('.addrType').trigger('change')
+        let ele = $('.viewPrem')
+        let flag = true
+
+        console.log(appPremisesOperationalUnitDtos.length,"length=====>")
+        ele.find('div.operationDivGroup .operationDiv').remove();
+        $.each(appPremisesOperationalUnitDtos,function (index, value) {
+            addFloorUnit(ele,flag,value)
+        })
+    }
     $('#hciNameClick').click(function () {
         var jQuery = $('#hciNameShowOrHidden').attr('style');
         if (jQuery.match("display: none")) {

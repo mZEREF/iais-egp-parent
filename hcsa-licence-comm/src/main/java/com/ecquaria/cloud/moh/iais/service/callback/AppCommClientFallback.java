@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesDoQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpSecondAddrDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
@@ -13,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.client.AppCommClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -125,6 +127,11 @@ public class AppCommClientFallback implements AppCommClient {
     @Override
     public FeignResponseEntity<List<AppPremSpecialisedDto>> getAppPremSpecialisedDtoList(List<String> appPremCorreIds) {
         return IaisEGPHelper.getFeignResponseEntity(appPremCorreIds);
+    }
+
+    @Override
+    public ResponseEntity<Void> saveSecondAddress(List<AppGrpSecondAddrDto> addrDtos) {
+        return null;
     }
 
 }

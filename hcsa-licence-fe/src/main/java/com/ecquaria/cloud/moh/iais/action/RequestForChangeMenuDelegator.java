@@ -1569,7 +1569,7 @@ public class RequestForChangeMenuDelegator {
         // check app edit select dto
         appEditSelectDto.setChangeHciName(eqHciNameChange);
         appEditSelectDto.setChangeInLocation(changeInLocation);
-        appEditSelectDto.setChangeAddFloorUnit(eqAddFloorNo);
+        appEditSelectDto.setChangeFloorUnits(eqAddFloorNo);
         log.info(StringUtil.changeForLog("The App Edit Select Dto - " + JsonUtil.parseToJson(appEditSelectDto)));
         ApplicationHelper.reSetAdditionalFields(appSubmissionDto, appEditSelectDto);
 

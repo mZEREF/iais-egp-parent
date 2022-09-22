@@ -14,12 +14,15 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
+import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
+import org.apache.poi.ss.formula.functions.T;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -44,34 +47,16 @@ public class PageDataCopyUtil {
         copy.setEasMtsUseOnly(appGrpPremisesDto.getEasMtsUseOnly());
         copy.setEasMtsPubEmail(appGrpPremisesDto.getEasMtsPubEmail());
         copy.setEasMtsPubHotline(appGrpPremisesDto.getEasMtsPubHotline());
+
+        return copy;
+    }
+
+    public static AppGrpPremisesDto copyCoLocationFields(AppGrpPremisesDto appGrpPremisesDto) {
+        AppGrpPremisesDto copy = new AppGrpPremisesDto();
         copy.setLocateWtihHcsa(appGrpPremisesDto.getLocateWtihHcsa());
         copy.setLocateWtihNonHcsa(appGrpPremisesDto.getLocateWtihNonHcsa());
         copy.setAppPremNonLicRelationDtos(MiscUtil.transferEntityDtos(appGrpPremisesDto.getAppPremNonLicRelationDtos(),
                 AppPremNonLicRelationDto.class));
-        /*List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDto.getAppPremPhOpenPeriodList();
-        List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = new ArrayList<>();
-        if (appPremPhOpenPeriodList != null) {
-            for (AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodList) {
-                AppPremPhOpenPeriodDto premPhOpenPeriodDto = new AppPremPhOpenPeriodDto();
-                premPhOpenPeriodDto.setConvEndToMM(appPremPhOpenPeriodDto.getConvEndToMM());
-                premPhOpenPeriodDto.setConvEndToHH(appPremPhOpenPeriodDto.getConvEndToHH());
-                premPhOpenPeriodDto.setConvStartFromHH(appPremPhOpenPeriodDto.getConvStartFromHH());
-                premPhOpenPeriodDto.setConvStartFromMM(appPremPhOpenPeriodDto.getConvStartFromMM());
-                premPhOpenPeriodDto.setOnsiteStartFromMM(appPremPhOpenPeriodDto.getOnsiteStartFromMM());
-                premPhOpenPeriodDto.setOnsiteStartFromHH(appPremPhOpenPeriodDto.getOnsiteStartFromHH());
-                premPhOpenPeriodDto.setOnsiteEndToHH(appPremPhOpenPeriodDto.getOnsiteEndToHH());
-                premPhOpenPeriodDto.setOnsiteEndToMM(appPremPhOpenPeriodDto.getOnsiteEndToMM());
-                premPhOpenPeriodDto.setPhDate(appPremPhOpenPeriodDto.getPhDate());
-                premPhOpenPeriodDto.setPhDateStr(appPremPhOpenPeriodDto.getPhDateStr());
-                premPhOpenPeriodDto.setStartFrom(appPremPhOpenPeriodDto.getStartFrom());
-                premPhOpenPeriodDto.setEndTo(appPremPhOpenPeriodDto.getEndTo());
-                appPremPhOpenPeriodDtos.add(premPhOpenPeriodDto);
-            }
-        }
-        copy.setEventDtoList(copyEvent(appGrpPremisesDto.getEventDtoList()));
-        copy.setWeeklyDtoList(copyOperationHoursReloadDto(appGrpPremisesDto.getWeeklyDtoList()));
-        copy.setPhDtoList(copyOperationHoursReloadDto(appGrpPremisesDto.getPhDtoList()));
-        copy.setAppPremPhOpenPeriodList(appPremPhOpenPeriodDtos);*/
         return copy;
     }
 
@@ -347,5 +332,14 @@ public class PageDataCopyUtil {
         }
         newPerson.setAssignSelect(ApplicationHelper.getPersonKey(newPerson));
         return newPerson;
+    }
+
+    public static <T extends Serializable> List<T> copyMutableObjectList(List<T> sourceList) {
+        if (IaisCommonUtils.isEmpty(sourceList)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        return sourceList.stream()
+                .map(t -> CopyUtil.copyMutableObject(t))
+                .collect(Collectors.toList());
     }
 }

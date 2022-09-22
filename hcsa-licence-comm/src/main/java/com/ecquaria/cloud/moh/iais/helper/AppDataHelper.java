@@ -1720,7 +1720,11 @@ public final class AppDataHelper {
                 person = ApplicationHelper.getKeyPersonnel(psnType, currSvcInfoDto).stream()
                         .filter(dto -> Objects.equals(indexNo, dto.getIndexNo()))
                         .findAny()
-                        .orElseGet(AppSvcPrincipalOfficersDto::new);
+                        .orElseGet(() -> {
+                            AppSvcPrincipalOfficersDto dto = new AppSvcPrincipalOfficersDto();
+                            dto.setIndexNo(indexNo);
+                            return dto;
+                        });
             } else if (pageData) {
                 AppPsnEditDto appPsnEditDto = null;
                 if (isExistingPsn(assign, licPsn)) {

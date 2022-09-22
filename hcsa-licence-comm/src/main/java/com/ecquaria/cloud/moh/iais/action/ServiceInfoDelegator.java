@@ -5,17 +5,15 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
-import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOutSourceLicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOutSourceProvidersDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOutSourceProvidersQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpSecondAddrDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
@@ -38,7 +36,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
@@ -46,16 +43,12 @@ import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
 import com.ecquaria.cloud.moh.iais.helper.AppDataHelper;
 import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
-import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
-import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.RfcHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
-import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import com.ecquaria.cloud.moh.iais.validation.ValidateCharges;
 import com.ecquaria.cloud.moh.iais.validation.ValidateVehicle;
@@ -93,6 +86,7 @@ import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.OUTSOURCED_SERVI
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.PERSONSELECTMAP;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.PRS_SERVICE_DOWN;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.SECTION_LEADER_LIST;
+import static com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper.repLength;
 
 /**
  * @Auther chenlei on 5/5/2022.
@@ -106,9 +100,6 @@ public class ServiceInfoDelegator {
 
     @Autowired
     protected AppCommService appCommService;
-
-    @Autowired
-    protected LicCommService licCommService;
 
     @Value("${moh.halp.prs.enable}")
     protected String prsFlag;
@@ -138,8 +129,7 @@ public class ServiceInfoDelegator {
 
         List<SelectOption> designationOpList = ApplicationHelper.genDesignationOpList();
         ParamUtil.setSessionAttr(bpc.request, "designationOpList", (Serializable) designationOpList);
-        ParamUtil.setSessionAttr(bpc.request, ApplicationConsts.OUT_SOURCE_PARAM,null);
-        ParamUtil.setSessionAttr(bpc.request,ApplicationConsts.OUT_SOURCE_RESULT,null);
+
         log.debug(StringUtil.changeForLog("the do doStart end ...."));
     }
 
@@ -590,18 +580,7 @@ public class ServiceInfoDelegator {
         appSvcOtherInfoDto.initAllAppPremSubSvcRelDtoList();
     }
 
-    private final FilterParameter filterParameter = new FilterParameter.Builder()
-            .clz(AppPremOutSourceProvidersQueryDto.class)
-            .searchAttr(ApplicationConsts.OUT_SOURCE_PARAM)
-            .resultAttr(ApplicationConsts.OUT_SOURCE_RESULT)
-            .sortFieldToMap("SVC_NAME", SearchParam.ASCENDING).build();
-
     private void prepareOutsourcedProviders(HttpServletRequest request) {
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request,filterParameter);
-        QueryHelp.setMainSql("outSourceQuery","searchOutSource",searchParam);
-        SearchResult searchResult = licCommService.doQuery(searchParam);
-        ParamUtil.setSessionAttr(request,ApplicationConsts.OUT_SOURCE_PARAM,searchParam);
-        ParamUtil.setSessionAttr(request,ApplicationConsts.OUT_SOURCE_RESULT,searchResult);
         //OutsourcedProviders services dropdown options
         List<SelectOption> optionList = ApplicationHelper.genOutsourcedServiceSel(request, true);
         ParamUtil.setRequestAttr(request, OUTSOURCED_SERVICE_OPTS, optionList);
@@ -620,91 +599,20 @@ public class ServiceInfoDelegator {
             }
         }
         String currSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
+        String currSvcCode = (String) ParamUtil.getSessionAttr(request,CURRENTSVCCODE);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request, currSvcId,null);
         String isEdit = ParamUtil.getString(request, IS_EDIT);
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
         boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto,
                 RfcConst.EDIT_SERVICE, isEdit, isRfi);
-        List<AppPremOutSourceProvidersDto> appPremOutSourceLicenceDtos = currSvcInfoDto.getAppPremOutSourceProvidersList();
-        String curAct = ParamUtil.getString(request, "btnStep");
         if (isGetDataFromPage) {
             //get data from page
-            doOutSourceProvidersStep(curAct,request,appSubmissionDto);
-            currSvcInfoDto.setAppPremOutSourceProvidersList(appPremOutSourceLicenceDtos);
-            reSetChangesForApp(appSubmissionDto);
-            setAppSvcRelatedInfoMap(request, currSvcId, currSvcInfoDto, appSubmissionDto);
+
         }
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if ("next".equals(actionType)) {
         }
         checkAction(errorMap, HcsaConsts.STEP_OUTSOURCED_PROVIDERS, appSubmissionDto, request);
-    }
-
-    private void doOutSourceProvidersStep(String curAct,HttpServletRequest request,AppSubmissionDto appSubmissionDto){
-        if ("search".equals(curAct)){
-            doSearchOutSourceProviders(request,appSubmissionDto);
-        }
-        if ("sort".equals(curAct)){
-            sortOutSourceProviders(request);
-        }
-        if ("changePage".equals(curAct)){
-            doOutSourceProvidersPaging(request);
-        }
-        if ("add".equals(curAct)){
-            //appPremOutSourceLicenceDtos = AppDataHelper.genAppPremOutSourceLicenceList(request);
-        }
-    }
-
-    private void doSearchOutSourceProviders(HttpServletRequest request,AppSubmissionDto appSubmissionDto){
-        AppPremOutSourceProvidersDto appPremOutSourceProvidersDto = new AppPremOutSourceProvidersDto();
-
-        String svcName = ParamUtil.getString(request, "serviceCode");
-        String bName = ParamUtil.getString(request, "name");
-        String licNo = ParamUtil.getString(request, "licNo");
-        String postCode = ParamUtil.getString(request,"postalCode");
-
-        appPremOutSourceProvidersDto.setBName(bName);
-        appPremOutSourceProvidersDto.setPostCode(postCode);
-        AppPremOutSourceLicenceDto appPremOutSourceLicenceDto = new AppPremOutSourceLicenceDto();
-        appPremOutSourceLicenceDto.setServiceCode(svcName);
-        appPremOutSourceLicenceDto.setLicenceNo(licNo);
-        appPremOutSourceProvidersDto.setAppPremOutSourceLicenceDto(appPremOutSourceLicenceDto);
-
-        ValidationResult vResult = WebValidationHelper.validateProperty(appPremOutSourceLicenceDto,"search");
-
-        if (vResult != null && vResult.isHasErrors()){
-            Map<String ,String> errorMap = vResult.retrieveAll();
-            checkAction(errorMap,HcsaConsts.STEP_OUTSOURCED_PROVIDERS,appSubmissionDto,request);
-        }else {
-            SearchParam searchParam = IaisEGPHelper.getSearchParam(request,true,filterParameter);
-            if (StringUtil.isNotEmpty(svcName)){
-                searchParam.addFilter("svcName",svcName,true);
-            }
-
-            if (StringUtil.isNotEmpty(bName)){
-                searchParam.addFilter("businessName",bName,true);
-            }
-
-            if (StringUtil.isNotEmpty(licNo)){
-                searchParam.addFilter("licenceNo",licNo,true);
-            }
-
-//            if (StringUtil.isNotEmpty(postCode)){
-//                searchParam.addFilter("postalCode",postCode,true);
-//            }
-        }
-
-    }
-
-    private void sortOutSourceProviders(HttpServletRequest request){
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-        String s = ParamUtil.getString(request,"crud_action_value");
-        CrudHelper.doSorting(searchParam,  request);
-    }
-
-    private void doOutSourceProvidersPaging(HttpServletRequest request){
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-        CrudHelper.doPaging(searchParam,request);
     }
 
     private boolean checkAction(Map<String, String> errorMap, String step, AppSubmissionDto appSubmissionDto,
@@ -2407,4 +2315,108 @@ public class ServiceInfoDelegator {
         }
     }
 
+    public void doVolidataPremises(List<AppGrpSecondAddrDto> appGrpSecondAddrDtoList,Map<String,String> errorMap,HttpServletRequest request){
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, "appSubmissionDto");
+        String id = "";
+        if (!StringUtil.isEmpty(appSubmissionDto)){
+            List<AppGrpPremisesDto> dtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+            if (IaisCommonUtils.isNotEmpty(dtoList)){
+                id = dtoList.get(0).getId();
+            }
+        }
+        for (int i = 0; i < appGrpSecondAddrDtoList.size(); i++) {
+            AppGrpSecondAddrDto appGrpSecondAddrDto = appGrpSecondAddrDtoList.get(i);
+            appGrpSecondAddrDto.setAppGrpPremisesId(id);
+            validateContactInfo(appGrpSecondAddrDto,errorMap,Integer.valueOf(i));
+        }
+    }
+
+    private static Map<String, String> validateContactInfo(AppGrpSecondAddrDto appGrpSecondAddrDto,Map<String, String> errorMap, int i) {
+        String postalCode = appGrpSecondAddrDto.getPostalCode();
+        String buildingName = appGrpSecondAddrDto.getBuildingName();
+        String streetName = appGrpSecondAddrDto.getStreetName();
+        String addrType = appGrpSecondAddrDto.getAddrType();
+        String blkNo = appGrpSecondAddrDto.getBlkNo();
+        String floorNo = appGrpSecondAddrDto.getFloorNo();
+        String unitNo = appGrpSecondAddrDto.getUnitNo();
+        String blkNoKey = "blkNo" + i;
+
+        if (!StringUtil.isEmpty(buildingName) && buildingName.length() > 66) {
+            String errorMsg = repLength("Building Name", "66");
+            errorMap.put("buildingName" + i, errorMsg);
+        }
+
+        if (StringUtil.isEmpty(streetName)) {
+            errorMap.put("streetName" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Street Name", "field"));
+        } else if (streetName.length() > 32) {
+            errorMap.put("streetName" + i, repLength("Street Name", "32"));
+        }
+
+        if (StringUtil.isEmpty(addrType)) {
+            errorMap.put("addrType" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Address Type", "field"));
+        }
+        boolean empty1 = StringUtil.isEmpty(blkNo);
+        if (empty1 && "Apt Blk".equals(addrType)) {
+            errorMap.put(blkNoKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Block / House No.", "field"));
+        } else if (!empty1 && blkNo.length() > 10) {
+            String errorMsg = repLength("Block / House No.", "10");
+            errorMap.put(blkNoKey, errorMsg);
+        }
+        if ("Apt Blk".equals(addrType)){
+            if (StringUtil.isEmpty(floorNo)){
+                errorMap.put(i+"FloorNo" + 0, MessageUtil.replaceMessage("GENERAL_ERR0006", "Floor No.", "field"));
+            }else if (floorNo.length() > 3){
+                errorMap.put(i+"FloorNo" + 0, repLength("Floor No.", "3"));
+            }
+            if (StringUtil.isEmpty(unitNo)){
+                errorMap.put(i+"UnitNo" + 0, MessageUtil.replaceMessage("GENERAL_ERR0006", "Unit No.", "field"));
+            }else if (unitNo.length() > 5){
+                errorMap.put(i+"UnitNo" + 0, repLength("Unit No.", "5"));
+            }
+        }
+
+        // validate floor and units
+        validateOperaionUnits(appGrpSecondAddrDto,errorMap,i);
+        String postalCodeKey = "postalCode" + i;
+        if (!StringUtil.isEmpty(postalCode)) {
+            if (postalCode.length() > 6) {
+                String errorMsg = repLength("Postal Code", "6");
+                errorMap.put(postalCodeKey, errorMsg);
+            } else if (postalCode.length() < 6) {
+                errorMap.put(postalCodeKey, "NEW_ERR0004");
+            } else if (!postalCode.matches("^[0-9]{6}$")) {
+                errorMap.put(postalCodeKey, "NEW_ERR0004");
+            }
+        } else {
+            errorMap.put(postalCodeKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Postal Code ", "field"));
+        }
+        return errorMap;
+    }
+
+    private static void validateOperaionUnits(AppGrpSecondAddrDto appGrpSecondAddrDto,Map<String,String> errorMap,int index) {
+        String premisesId = appGrpSecondAddrDto.getAppGrpPremisesId();
+        if (IaisCommonUtils.isNotEmpty(appGrpSecondAddrDto.getAppPremisesOperationalUnitDtos())){
+            List<AppPremisesOperationalUnitDto> dtos = appGrpSecondAddrDto.getAppPremisesOperationalUnitDtos();
+            dtos.forEach(e->e.setPremisesId(premisesId));
+            if ( "Apt Blk".equals(appGrpSecondAddrDto.getAddrType())){
+            for (int i = 0; i < dtos.size(); i++) {
+                AppPremisesOperationalUnitDto unitDto = dtos.get(i);
+                String floorNo = unitDto.getFloorNo();
+                String unitNo = unitDto.getUnitNo();
+                boolean floorNoFlag = StringUtil.isEmpty(floorNo);
+                boolean unitNoFlag = StringUtil.isEmpty(unitNo);
+                if (floorNoFlag) {
+                    errorMap.put(index+"FloorNo"+(i+1), MessageUtil.replaceMessage("GENERAL_ERR0006", "Floor No.", "field"));
+                } else if (floorNo.length() > 3){
+                    errorMap.put(index+"FloorNo"+(i+1), repLength("Floor No.", "3"));
+                }
+                if (unitNoFlag) {
+                    errorMap.put(index+"UnitNo"+(i+1), MessageUtil.replaceMessage("GENERAL_ERR0006", "Unit No.", "field"));
+                }else if (unitNo.length() > 5){
+                    errorMap.put(index+"UnitNo"+(i+1), repLength("Unit No.", "5"));
+                }
+            }
+            }
+        }
+    }
 }

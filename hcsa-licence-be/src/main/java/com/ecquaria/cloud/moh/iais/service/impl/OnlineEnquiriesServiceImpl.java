@@ -527,16 +527,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
 //            inspectionReportDto.setRiskLevel("High");
 //        }
 
-        List<HcsaSvcSubtypeOrSubsumedDto> subsumedDtos = hcsaConfigClient.listSubCorrelationFooReport(serviceId).getEntity();
-        List<String> subsumedServices = IaisCommonUtils.genNewArrayList();
-        if (subsumedDtos != null && !subsumedDtos.isEmpty()) {
-            for (HcsaSvcSubtypeOrSubsumedDto subsumedDto : subsumedDtos) {
-                subsumedServices.add(subsumedDto.getName());
-            }
-        } else {
-            subsumedServices.add("-");
-        }
-        inspectionReportDto.setSubsumedServices(subsumedServices);
+       
         //Nc
         List<ReportNcRegulationDto> listReportNcRegulationDto = IaisCommonUtils.genNewArrayList();
         List<ReportNcRectifiedDto> listReportNcRectifiedDto = IaisCommonUtils.genNewArrayList();
@@ -823,11 +814,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         }
 
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSvcRelatedInfoDtos.get(0);
-        List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = null;
-        if(appSvcRelatedInfoDto != null){
-            String serviceId = appSvcRelatedInfoDto.getServiceId();
-            hcsaSvcSubtypeOrSubsumedDtos = applicationViewService.getHcsaSvcSubtypeOrSubsumedByServiceId(serviceId);
-        }
+
 
 
         String appType= MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationType());
