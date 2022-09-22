@@ -722,26 +722,25 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         List<HcsaLicenceGroupFeeDto> entity = hcsaLicenClient.retrieveHcsaLicenceGroupFee(list).getEntity();
 
         List<PremisesDto> premisesDtoList = hcsaLicenClient.getPremisess(id).getEntity();
-        List<String> premises=IaisCommonUtils.genNewArrayList();
-        for(PremisesDto premisesDto:premisesDtoList){
-            premises.add(premisesDto.getPremisesType());
-        }
 
         if(!entity.isEmpty()){
-            for(HcsaLicenceGroupFeeDto every:entity){
-                LicenceFeeDto licenceFeeDto=new LicenceFeeDto();
-                licenceFeeDto.setLicenceId(id);
-                double amount = every.getAmount();
-                int count = every.getCount();
-                Date expiryDate1 = every.getExpiryDate();
-                String groupId = every.getGroupId();
-                licenceFeeDto.setOldLicenceId(groupId);
-                licenceFeeDto.setBaseService(split[4]);
-                licenceFeeDto.setServiceCode(split[4]);
-                licenceFeeDto.setServiceName(svcName);
-                //licenceFeeDto.setPremises(premises);
-                licenceFeeDto.setExpiryDate(expiryDate1);
-                licenceFeeDtos.add(licenceFeeDto);
+            for(PremisesDto premisesDto:premisesDtoList){
+                for(HcsaLicenceGroupFeeDto every:entity){
+                    LicenceFeeDto licenceFeeDto=new LicenceFeeDto();
+                    licenceFeeDto.setLicenceId(id);
+                    double amount = every.getAmount();
+                    int count = every.getCount();
+                    Date expiryDate1 = every.getExpiryDate();
+                    String groupId = every.getGroupId();
+                    licenceFeeDto.setOldLicenceId(groupId);
+                    licenceFeeDto.setBaseService(split[4]);
+                    licenceFeeDto.setServiceCode(split[4]);
+                    licenceFeeDto.setServiceName(svcName);
+                    licenceFeeDto.setBundle(0);
+                    licenceFeeDto.setPremises(premisesDto.getAddress());
+                    licenceFeeDto.setExpiryDate(expiryDate1);
+                    licenceFeeDtos.add(licenceFeeDto);
+                }
             }
 
             FeeDto feeDto = hcsaConfigClient.renewFee(licenceFeeDtos).getEntity();
