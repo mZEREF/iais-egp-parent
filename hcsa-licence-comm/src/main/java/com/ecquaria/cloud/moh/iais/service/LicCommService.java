@@ -1,6 +1,9 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOutSourceProvidersQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
@@ -90,4 +93,6 @@ public interface LicCommService {
     List<AppSvcVehicleDto> getActiveVehicles();
 
     List<PremisesDto> getPremisesDtosByPremType(String premType);
+
+    SearchResult<AppPremOutSourceProvidersQueryDto> doQuery(SearchParam param);
 }

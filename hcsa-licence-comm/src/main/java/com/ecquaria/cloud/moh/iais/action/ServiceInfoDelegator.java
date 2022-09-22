@@ -5,12 +5,17 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpSecondAddrDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOutSourceLicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOutSourceProvidersDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOutSourceProvidersQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
@@ -36,6 +41,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
@@ -43,12 +49,17 @@ import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
 import com.ecquaria.cloud.moh.iais.helper.AppDataHelper;
 import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.RfcHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
+import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import com.ecquaria.cloud.moh.iais.validation.ValidateCharges;
 import com.ecquaria.cloud.moh.iais.validation.ValidateVehicle;
@@ -100,6 +111,9 @@ public class ServiceInfoDelegator {
 
     @Autowired
     protected AppCommService appCommService;
+
+    @Autowired
+    protected LicCommService licCommService;
 
     @Value("${moh.halp.prs.enable}")
     protected String prsFlag;
@@ -580,7 +594,18 @@ public class ServiceInfoDelegator {
         appSvcOtherInfoDto.initAllAppPremSubSvcRelDtoList();
     }
 
+    private final FilterParameter filterParameter = new FilterParameter.Builder()
+            .clz(AppPremOutSourceProvidersQueryDto.class)
+            .searchAttr(ApplicationConsts.OUT_SOURCE_PARAM)
+            .resultAttr(ApplicationConsts.OUT_SOURCE_RESULT)
+            .sortFieldToMap("SVC_NAME", SearchParam.ASCENDING).build();
+
     private void prepareOutsourcedProviders(HttpServletRequest request) {
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request,filterParameter);
+        QueryHelp.setMainSql("outSourceQuery","searchOutSource",searchParam);
+        SearchResult searchResult = licCommService.doQuery(searchParam);
+        ParamUtil.setSessionAttr(request,ApplicationConsts.OUT_SOURCE_PARAM,searchParam);
+        ParamUtil.setSessionAttr(request,ApplicationConsts.OUT_SOURCE_RESULT,searchResult);
         //OutsourcedProviders services dropdown options
         List<SelectOption> optionList = ApplicationHelper.genOutsourcedServiceSel(request, true);
         ParamUtil.setRequestAttr(request, OUTSOURCED_SERVICE_OPTS, optionList);
@@ -599,21 +624,93 @@ public class ServiceInfoDelegator {
             }
         }
         String currSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
-        String currSvcCode = (String) ParamUtil.getSessionAttr(request,CURRENTSVCCODE);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request, currSvcId,null);
         String isEdit = ParamUtil.getString(request, IS_EDIT);
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
         boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto,
                 RfcConst.EDIT_SERVICE, isEdit, isRfi);
+        List<AppPremOutSourceProvidersDto> appPremOutSourceLicenceDtos = currSvcInfoDto.getAppPremOutSourceProvidersList();
+        String curAct = ParamUtil.getString(request, "btnStep");
         if (isGetDataFromPage) {
             //get data from page
-
+            doOutSourceProvidersStep(curAct,request,appSubmissionDto);
+            currSvcInfoDto.setAppPremOutSourceProvidersList(appPremOutSourceLicenceDtos);
+            reSetChangesForApp(appSubmissionDto);
+            setAppSvcRelatedInfoMap(request, currSvcId, currSvcInfoDto, appSubmissionDto);
         }
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if ("next".equals(actionType)) {
         }
         checkAction(errorMap, HcsaConsts.STEP_OUTSOURCED_PROVIDERS, appSubmissionDto, request);
     }
+
+    private void doOutSourceProvidersStep(String curAct,HttpServletRequest request,AppSubmissionDto appSubmissionDto){
+        if ("search".equals(curAct)){
+            doSearchOutSourceProviders(request,appSubmissionDto);
+        }
+        if ("sort".equals(curAct)){
+            sortOutSourceProviders(request);
+        }
+        if ("changePage".equals(curAct)){
+            doOutSourceProvidersPaging(request);
+        }
+        if ("add".equals(curAct)){
+            //appPremOutSourceLicenceDtos = AppDataHelper.genAppPremOutSourceLicenceList(request);
+        }
+    }
+
+    private void doSearchOutSourceProviders(HttpServletRequest request,AppSubmissionDto appSubmissionDto){
+        AppPremOutSourceProvidersDto appPremOutSourceProvidersDto = new AppPremOutSourceProvidersDto();
+
+        String svcName = ParamUtil.getString(request, "serviceCode");
+        String bName = ParamUtil.getString(request, "name");
+        String licNo = ParamUtil.getString(request, "licNo");
+        String postCode = ParamUtil.getString(request,"postalCode");
+
+        appPremOutSourceProvidersDto.setBName(bName);
+        appPremOutSourceProvidersDto.setPostCode(postCode);
+        AppPremOutSourceLicenceDto appPremOutSourceLicenceDto = new AppPremOutSourceLicenceDto();
+        appPremOutSourceLicenceDto.setServiceCode(svcName);
+        appPremOutSourceLicenceDto.setLicenceNo(licNo);
+        appPremOutSourceProvidersDto.setAppPremOutSourceLicenceDto(appPremOutSourceLicenceDto);
+
+        ValidationResult vResult = WebValidationHelper.validateProperty(appPremOutSourceLicenceDto,"search");
+
+        if (vResult != null && vResult.isHasErrors()){
+            Map<String ,String> errorMap = vResult.retrieveAll();
+            checkAction(errorMap,HcsaConsts.STEP_OUTSOURCED_PROVIDERS,appSubmissionDto,request);
+        }else {
+            SearchParam searchParam = IaisEGPHelper.getSearchParam(request,true,filterParameter);
+            if (StringUtil.isNotEmpty(svcName)){
+                searchParam.addFilter("svcName",svcName,true);
+            }
+
+            if (StringUtil.isNotEmpty(bName)){
+                searchParam.addFilter("businessName",bName,true);
+            }
+
+            if (StringUtil.isNotEmpty(licNo)){
+                searchParam.addFilter("licenceNo",licNo,true);
+            }
+
+//            if (StringUtil.isNotEmpty(postCode)){
+//                searchParam.addFilter("postalCode",postCode,true);
+//            }
+        }
+
+    }
+
+    private void sortOutSourceProviders(HttpServletRequest request){
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
+        String s = ParamUtil.getString(request,"crud_action_value");
+        CrudHelper.doSorting(searchParam,  request);
+    }
+
+    private void doOutSourceProvidersPaging(HttpServletRequest request){
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
+        CrudHelper.doPaging(searchParam,request);
+    }
+
 
     private boolean checkAction(Map<String, String> errorMap, String step, AppSubmissionDto appSubmissionDto,
             HttpServletRequest request) {
@@ -1879,7 +1976,8 @@ public class ServiceInfoDelegator {
 
     private boolean skipStep(String stepCode, AppSubmissionDto appSubmissionDto) {
         String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,
-                HcsaConsts.STEP_DISCIPLINE_ALLOCATION
+                HcsaConsts.STEP_DISCIPLINE_ALLOCATION,
+                HcsaConsts.STEP_OUTSOURCED_PROVIDERS
 //                HcsaConsts.STEP_PRINCIPAL_OFFICERS,
 //                HcsaConsts.STEP_SERVICE_PERSONNEL,
 //                HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER,
@@ -1888,6 +1986,7 @@ public class ServiceInfoDelegator {
 //                HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS,
 //                ,HcsaConsts.STEP_SPECIAL_SERVICES_FORM
 //                HcsaConsts.STEP_OTHER_INFORMATION
+
         };
         if (StringUtil.isIn(stepCode, skipList)) {
             return true;

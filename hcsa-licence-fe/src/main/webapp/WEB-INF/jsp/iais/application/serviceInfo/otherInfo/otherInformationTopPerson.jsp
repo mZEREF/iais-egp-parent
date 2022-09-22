@@ -19,9 +19,9 @@
 </iais:row>
 
 <iais:row cssClass="row control control-caption-horizontal">
-    <iais:field width="5" mandatory="" value=""/>
+    <iais:field width="5" cssClass="col-md-5" mandatory="" value=""/>
     <iais:value width="7" cssClass="col-md-7 col-xs-12">
-        <span class="error-msg col-md-7" name="iaisErrorMsg" id="error_holdCerByEMS${index}"></span>
+        <span class="error-msg" name="iaisErrorMsg" id="error_provideTop"></span>
     </iais:value>
 </iais:row>
 
@@ -32,7 +32,7 @@
             <iais:field width="12" cssClass="col-md-12 " mandatory="true" value="Please indicate&nbsp;"/>
         </iais:row>
 
-        <iais:row cssClass="row control control-caption-horizontal">
+        <iais:row cssClass="row">
             <input type="hidden" class="topTypeVal" name="topTypeVal" value="${appSvcOtherInfoTop.topType}"/>
             <iais:value width="4" cssClass="form-check col-md-4">
                 <input class="form-check-input topType " <c:if test="${'1' == appSvcOtherInfoTop.topType}">checked="checked"</c:if>  type="radio" name="topType" value = "1" aria-invalid="false" onclick="getTopTypeValue(this)">
@@ -49,7 +49,15 @@
                 <label class="form-check-label" ><span class="check-circle"></span>Termination of Pregnancy(Drug and Surgical Procedure)</label>
             </iais:value>
         </iais:row>
+
+        <iais:row cssClass="row control control-caption-horizontal">
+            <iais:field width="5" mandatory="" value=""/>
+            <iais:value width="7" cssClass="col-md-7 col-xs-12">
+                <span class="error-msg col-md-7" name="iaisErrorMsg" id="error_topType"></span>
+            </iais:value>
+        </iais:row>
     </div>
+
 
 
     <%--TODO...practitioners--%>
@@ -138,7 +146,7 @@
     </div>
 
     <div class="lowt <c:if test="${'1' != provideTop}">hidden</c:if>">
-        <iais:row cssClass="row control control-caption-horizontal">
+        <iais:row cssClass="row">
             <iais:value width="5" cssClass="col-md-5">
                 <label class="form-check-label" style="padding-top: 25px;">My counsellor(s) has attended the TOP counselling refresher course (Please upload the certificates in the document page)
                     <span class="mandatory">*</span>
@@ -157,6 +165,13 @@
         </iais:row>
 
         <iais:row cssClass="row control control-caption-horizontal">
+            <iais:field width="5" cssClass="col-md-5" mandatory="" value=""/>
+            <iais:value width="7" cssClass="col-md-7 col-xs-12">
+                <span class="error-msg" name="iaisErrorMsg" id="error_hasConsuAttendCourse"></span>
+            </iais:value>
+        </iais:row>
+
+        <iais:row cssClass="row">
             <iais:value width="5" cssClass="col-md-5">
                 <label class="form-check-label" style="padding-top: 25px;">The service provider has the necessary counselling facilities e.g. TV set, video player, video on abortion produced by HPB in different languages and the pamphlets produced by HPB
                     <span class="mandatory">*</span>
@@ -171,6 +186,12 @@
             <iais:value width="3" cssClass="form-check col-md-3">
                 <input class="form-check-input isProvideHpb" <c:if test="${'0' == appSvcOtherInfoTop.isProvideHpb}">checked="checked"</c:if>  type="radio" name="isProvideHpb" value = "0" aria-invalid="false">
                 <label class="form-check-label" ><span class="check-circle"></span>No</label>
+            </iais:value>
+        </iais:row>
+        <iais:row cssClass="row control control-caption-horizontal">
+            <iais:field width="5" cssClass="col-md-5" mandatory="" value=""/>
+            <iais:value width="7" cssClass="col-md-7 col-xs-12">
+                <span class="error-msg" name="iaisErrorMsg" id="error_isProvideHpb"></span>
             </iais:value>
         </iais:row>
     </div>
@@ -232,8 +253,8 @@
                 $(this).find('input.idNo').prop('name','idNo'+k);
                 $(this).find('input.regType').prop('name','regType'+k);
                 $(this).find('input.qualification').prop('name','qualification'+k);
-                $(this).find('input.medAuthByMoh').prop('name','medAuthByMoh'+k);
-                $(this).find('input.specialties').prop('name','specialties'+k);
+                $(this).find('input.isMedAuthByMoh').prop('name','isMedAuthByMoh'+k);
+                $(this).find('input.speciality').prop('name','speciality'+k);
             });
             $('#isEditHiddenVal').val('1');
             dismissWaiting();
@@ -268,8 +289,8 @@
                 $(this).find('input.idNo').prop('name','idNo'+k);
                 $(this).find('input.regType').prop('name','regType'+k);
                 $(this).find('input.qualification').prop('name','qualification'+k);
-                $(this).find('input.specialties').prop('name','specialties'+k);
-                $(this).find('input.holdMPA').prop('name','holdMPA'+k);
+                $(this).find('input.speciality').prop('name','speciality'+k);
+                $(this).find('input.isMedAuthByMoh').prop('name','isMedAuthByMoh'+k);
             });
             //display add more
             if(cdLength <= 1){

@@ -2220,6 +2220,7 @@ public abstract class AppCommDelegator {
             action = ParamUtil.getRequestString(bpc.request, "nextStep");
         }
         if (RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)) {
+            boolean reInit = false;
             AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
             AppSubmissionDto oldDto = CopyUtil.copyMutableObject(oldAppSubmissionDto);
             AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
@@ -2229,9 +2230,16 @@ public abstract class AppCommDelegator {
             }
             if (appEditSelectDto.isPremisesEdit()) {
                 appSubmissionDto.setAppGrpPremisesDtoList(oldDto.getAppGrpPremisesDtoList());
+                reInit = true;
             }
             if (appEditSelectDto.isServiceEdit()) {
                 appSubmissionDto.setAppSvcRelatedInfoDtoList(oldDto.getAppSvcRelatedInfoDtoList());
+                reInit = true;
+            }
+            if (reInit) {
+                List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,
+                        AppServicesConsts.HCSASERVICEDTOLIST);
+                DealSessionUtil.init(appSubmissionDto, hcsaServiceDtos, false, null);
             }
             ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, appSubmissionDto);
         }

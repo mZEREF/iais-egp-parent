@@ -7,21 +7,21 @@
 <iais:row>
     <iais:field width="5" cssClass="col-md-5" value="Nurses per Shift"/>
     <iais:value width="7" cssClass="col-md-7">
-        <iais:input maxLength="20" type="text" cssClass="perShiftNum" name="perShiftNum" value="${n.perShiftNum}"/>
+        <iais:input maxLength="2" type="number" cssClass="perShiftNum" name="perShiftNum" value="${n.perShiftNum}"/>
     </iais:value>
 </iais:row>
 
 <iais:row>
     <iais:field width="5" cssClass="col-md-5" value="Total number of dialysis stations"/>
     <iais:value width="7" cssClass="col-md-7">
-        <iais:input maxLength="20" type="text" cssClass="dialysisStationsNum" name="dialysisStationsNum" value="${n.dialysisStationsNum}"/>
+        <iais:input maxLength="2" type="number" cssClass="dialysisStationsNum" name="dialysisStationsNum" value="${n.dialysisStationsNum}"/>
     </iais:value>
 </iais:row>
 
 <iais:row>
     <iais:field width="5" cssClass="col-md-5" value="Number of Hep B stations"/>
     <iais:value width="7" cssClass="col-md-7">
-        <iais:input maxLength="20" type="text" cssClass="helpBStationNum" name="helpBStationNum" value="${n.helpBStationNum}"/>
+        <iais:input maxLength="2" type="number" cssClass="helpBStationNum" name="helpBStationNum" value="${n.helpBStationNum}"/>
     </iais:value>
 </iais:row>
 

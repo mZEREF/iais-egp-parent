@@ -268,7 +268,8 @@ public class RequestForChangeDelegator {
                     ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
                     ParamUtil.setSessionAttr(bpc.request, "SvcId", currSvcId);
                 }
-                DealSessionUtil.init(appSubmissionDto, hcsaServiceDtoList, false, bpc.request);
+                appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+                DealSessionUtil.init(appSubmissionDto, hcsaServiceDtoList, true, bpc.request);
 
                 AppSubmissionDto oldAppSubmissionDto = CopyUtil.copyMutableObject(appSubmissionDto);
                 appSubmissionDto.setOldAppSubmissionDto(oldAppSubmissionDto);

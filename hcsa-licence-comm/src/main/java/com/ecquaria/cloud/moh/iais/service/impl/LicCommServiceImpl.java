@@ -1,10 +1,14 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOutSourceProvidersQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
@@ -29,13 +33,14 @@ import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.client.LicCommClient;
 import com.ecquaria.cloud.moh.iais.util.PageDataCopyUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * @author chenlei on 5/3/2022.
@@ -475,4 +480,9 @@ public class LicCommServiceImpl implements LicCommService {
         return licCommClient.getPremisesDtosByPremType(premType).getEntity();
     }
 
+    @SearchTrack(catalog = "outSourceQuery", key = "searchOutSource")
+    @Override
+    public SearchResult<AppPremOutSourceProvidersQueryDto> doQuery(SearchParam param) {
+        return licCommClient.doQuery(param).getEntity();
+    }
 }

@@ -1,6 +1,9 @@
 package com.ecquaria.cloud.moh.iais.service.callback;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOutSourceProvidersQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
@@ -138,4 +141,8 @@ public class LicCommClientFallback implements LicCommClient {
         return IaisEGPHelper.getFeignResponseEntity(id);
     }
 
+    @Override
+    public FeignResponseEntity<SearchResult<AppPremOutSourceProvidersQueryDto>> doQuery(SearchParam searchParam) {
+        return IaisEGPHelper.getFeignResponseEntity(searchParam);
+    }
 }

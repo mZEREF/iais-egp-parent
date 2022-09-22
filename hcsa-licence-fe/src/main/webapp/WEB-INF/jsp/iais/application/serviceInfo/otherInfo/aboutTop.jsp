@@ -61,7 +61,9 @@
     </div>
     <div class="de <c:if test="${('0' == provideTop) || (empty appSvcOtherInfoTop.topType)}">hidden</c:if>">
         <iais:row>
-            <iais:field width="12" cssClass="col-md-12" mandatory="true" value="Declaration"/>
+            <div class="col-xs-12 col-md-10">
+                <p class="bold">Declaration</p>
+            </div>
         </iais:row>
         <iais:row>
             <div class="form-check">
@@ -71,8 +73,15 @@
                     <span class="check-square"></span><c:out value="I declare the information in my application to be true, to the best of my knowledge.
                         I also understand that approval of the licence is dependent on satisfactory compliance with the relevant requirements under
                         the Healthcare Services Act, Regulations and Guidelines and the TOP Act, Regulations and Guidelines."/>
+                    <span class="mandatory">*</span>
                 </label>
             </div>
+        </iais:row>
+        <iais:row cssClass="row control control-caption-horizontal">
+            <iais:field width="5" cssClass="col-md-5" mandatory="" value=""/>
+            <iais:value width="7" cssClass="col-md-7 col-xs-12">
+                <span class="error-msg" name="iaisErrorMsg" id="error_declaration"></span>
+            </iais:value>
         </iais:row>
     </div>
 </div>

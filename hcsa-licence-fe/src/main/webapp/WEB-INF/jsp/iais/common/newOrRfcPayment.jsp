@@ -137,7 +137,7 @@
                                 <c:out value="${bundleSvcFeeExt.amountStr}"/>
                             </p>
                             <c:forEach var="svcName" items="${bundleSvcFeeExt.svcNames}">
-                                <p>&nbsp;&nbsp;Include</p>
+                                <p>Include</p>
                             </c:forEach>
                         </td>
                     </tr>
@@ -163,7 +163,7 @@
                                 <c:out value="${simpleSpecifiedFeeExt.amountStr}"/>
                             </p>
                             <c:forEach var="svcName" items="${simpleSpecifiedFeeExt.svcNames}">
-                                <p>&nbsp;&nbsp;Include</p>
+                                <p>Include</p>
                             </c:forEach>
                         </td>
                     </tr>
@@ -189,7 +189,7 @@
                                 <c:out value="${complexSpecifiedFeeExt.amountStr}"/>
                             </p>
                             <c:forEach var="svcName" items="${complexSpecifiedFeeExt.svcNames}">
-                                <p>&nbsp;&nbsp;Include</p>
+                                <p>Include</p>
                             </c:forEach>
                         </td>
                     </tr>
@@ -216,7 +216,7 @@
                                 <c:out value="${thbSpecifiedFeeExt.amountStr}"/>
                             </p>
                             <c:forEach var="svcName" items="${thbSpecifiedFeeExt.svcNames}">
-                                <p>&nbsp;&nbsp;Include</p>
+                                <p>Include</p>
                             </c:forEach>
                         </td>
                     </tr>

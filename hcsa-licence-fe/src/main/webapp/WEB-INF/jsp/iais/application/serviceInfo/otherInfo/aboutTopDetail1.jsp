@@ -13,14 +13,14 @@
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Year."/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="20" type="text" cssClass="year" name="year${index}" value="${person.year}"/>
+            <iais:input maxLength="4" type="number" cssClass="year" name="year${index}" value="${person.year}"/>
         </iais:value>
     </iais:row>
 
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="No. of abortions"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="20" type="text" cssClass="abortNum" name="abortNum${index}" value="${person.abortNum}"/>
+            <iais:input maxLength="7" type="number" cssClass="abortNum" name="abortNum${index}" value="${person.abortNum}"/>
         </iais:value>
     </iais:row>
 </div>

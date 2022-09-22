@@ -1037,7 +1037,7 @@ public final class ApplicationHelper {
         }
 
         if (!IaisCommonUtils.isEmpty(licPsnDtos)) {
-            Map<String, String> specialtyAttr = getSpecialtyAttr();
+            //Map<String, String> specialtyAttr = getSpecialtyAttr();
             for (PersonnelListQueryDto psnDto : licPsnDtos) {
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(psnDto.getSvcName());
                 if (hcsaServiceDto == null) {
@@ -1047,17 +1047,17 @@ public final class ApplicationHelper {
                 String svcCode = hcsaServiceDto.getSvcCode();
                 String personMapKey = getPersonKey(psnDto.getNationality(), psnDto.getIdType(), psnDto.getIdNo());
                 AppSvcPersonAndExtDto appSvcPersonAndExtDto = personMap.get(personMapKey);
-                String speciality = psnDto.getSpeciality();
+                //String speciality = psnDto.getSpeciality();
                 if (appSvcPersonAndExtDto == null) {
                     //cgo speciality
-                    if (!StringUtil.isEmpty(speciality)) {
+                    /*if (!StringUtil.isEmpty(speciality)) {
                         psnDto.setNeedSpcOptList(true);
                         List<SelectOption> specialityOpts = genSpecialtySelectList(svcCode, true);
                         psnDto.setSpcOptList(specialityOpts);
                         String specialtySelectStr = generateDropDownHtml(specialtyAttr, specialityOpts, null,
                                 psnDto.getSpeciality());
                         psnDto.setSpecialityHtml(specialtySelectStr);
-                    }
+                    }*/
                     appSvcPersonAndExtDto = new AppSvcPersonAndExtDto();
                     AppSvcPersonDto appSvcPersonDto = MiscUtil.transferEntityDto(psnDto, AppSvcPersonDto.class);
                     List<AppSvcPersonExtDto> appSvcPersonExtDtos = IaisCommonUtils.genNewArrayList();
@@ -1066,6 +1066,7 @@ public final class ApplicationHelper {
                     AppPsnEditDto appPsnEditDto = setNeedEditField(person);
                     appSvcPersonExtDto.setPsnEditDto(appPsnEditDto);
                     appSvcPersonExtDto.setServiceCode(svcCode);
+                    appSvcPersonExtDto.setServiceName(psnDto.getSvcName());
                     appSvcPersonExtDtos.add(appSvcPersonExtDto);
                     appSvcPersonAndExtDto.setPersonDto(appSvcPersonDto);
                     appSvcPersonAndExtDto.setPersonExtDtoList(appSvcPersonExtDtos);
@@ -1088,7 +1089,7 @@ public final class ApplicationHelper {
                     //person.setSpecialityOther(psnDto.getSpecialityOther());
                     person.setSubSpeciality(psnDto.getSubSpeciality());
                     //cgo speciality
-                    if (!StringUtil.isEmpty(speciality)) {
+                    /*if (!StringUtil.isEmpty(speciality)) {
                         person.setNeedSpcOptList(true);
                         List<SelectOption> spcOpts = psnDto.getSpcOptList();
                         if (IaisCommonUtils.isEmpty(spcOpts)) {
@@ -1110,11 +1111,12 @@ public final class ApplicationHelper {
                         String specialtySelectStr = generateDropDownHtml(specialtyAttr, specialityOpts, null,
                                 person.getSpeciality());
                         person.setSpecialityHtml(specialtySelectStr);
-                    }
+                    }*/
                     AppSvcPersonExtDto currSvcPsnExtDto = MiscUtil.transferEntityDto(person, AppSvcPersonExtDto.class);
                     AppPsnEditDto appPsnEditDto = setNeedEditField(person);
                     currSvcPsnExtDto.setPsnEditDto(appPsnEditDto);
                     currSvcPsnExtDto.setServiceCode(svcCode);
+                    currSvcPsnExtDto.setServiceName(psnDto.getSvcName());
                     appSvcPersonExtDtos.add(currSvcPsnExtDto);
                     AppSvcPersonDto appSvcPersonDto = MiscUtil.transferEntityDto(psnDto, AppSvcPersonDto.class);
                     appSvcPersonAndExtDto.setPersonDto(appSvcPersonDto);
@@ -1261,11 +1263,8 @@ public final class ApplicationHelper {
 
     public static List<SelectOption> genOutsourcedServiceSel(HttpServletRequest request, boolean needFirstOpt){
         List<SelectOption> options = IaisCommonUtils.genNewArrayList();
-        if (needFirstOpt){
-            options.add(new SelectOption("-1", HcsaAppConst.FIRESTOPTION));
-        }
-        options.add(new SelectOption("0", HcsaAppConst.CLINICALLABORATOYY));
-        options.add(new SelectOption("1", HcsaAppConst.RADIOLOGICALSERVICE));
+        options.add(new SelectOption(HcsaAppConst.CLINICALLABORATOYY, HcsaAppConst.CLINICALLABORATOYY));
+        options.add(new SelectOption(HcsaAppConst.RADIOLOGICALSERVICE, HcsaAppConst.RADIOLOGICALSERVICE));
         return options;
     }
 
@@ -2534,7 +2533,7 @@ public final class ApplicationHelper {
         if (!StringUtil.isEmpty(officeTelNo)) {
             person.setOfficeTelNo(officeTelNo);
         }
-        person.setNeedSpcOptList(source.isNeedSpcOptList());
+        /*person.setNeedSpcOptList(source.isNeedSpcOptList());
         List<SelectOption> spcOptList = source.getSpcOptList();
         if (!IaisCommonUtils.isEmpty(spcOptList)) {
             person.setSpcOptList(source.getSpcOptList());
@@ -2542,7 +2541,7 @@ public final class ApplicationHelper {
         String specHtml = source.getSpecialityHtml();
         if (!StringUtil.isEmpty(specHtml)) {
             person.setSpecialityHtml(specHtml);
-        }
+        }*/
         String professionBoard = source.getProfessionBoard();
         if (!StringUtil.isEmpty(professionBoard)) {
             person.setProfessionBoard(professionBoard);

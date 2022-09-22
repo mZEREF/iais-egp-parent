@@ -23,10 +23,22 @@
         </label>
     </div>
 </iais:row>
+<iais:row cssClass="row control control-caption-horizontal">
+    <iais:field width="5" cssClass="col-md-5" mandatory="" value=""/>
+    <iais:value width="7" cssClass="col-md-7 col-xs-12">
+        <span class="error-msg col-md-7" name="iaisErrorMsg" id="error_isMedicalTypeIt"></span>
+    </iais:value>
+</iais:row>
 <iais:row>
     <iais:field width="5" cssClass="col-md-5" mandatory="true" value="List of options for IT system and paper cards / IT system only"/>
     <iais:value width="7" cssClass="col-md-7">
         <iais:select cssClass="systemOption" name="systemOption" codeCategory="CATE_ID_OTHER_OPTION" value="${med.systemOption}" firstOption="Please Select" onchange="toggleOnSelect(this, 'MED06', 'otherInfo')"/>
+    </iais:value>
+</iais:row>
+<iais:row cssClass="row control control-caption-horizontal">
+    <iais:field width="5" cssClass="col-md-5" mandatory="" value=""/>
+    <iais:value width="7" cssClass="col-md-7 col-xs-12">
+        <span class="error-msg" name="iaisErrorMsg" id="error_systemOption"></span>
     </iais:value>
 </iais:row>
 
@@ -53,7 +65,7 @@
 <iais:row>
     <iais:field width="5" cssClass="col-md-5" mandatory="true" value="GFA Value (in sqm)"/>
     <iais:value width="7" cssClass="col-md-7">
-        <iais:input maxLength="20" type="text" cssClass="gfaValue" name="gfaValue" value="${med.gfaValue}"/>
+        <iais:input maxLength="7" type="number" cssClass="gfaValue" name="gfaValue" value="${med.gfaValue}"/>
     </iais:value>
 </iais:row>
 
@@ -68,33 +80,12 @@
         </label>
     </div>
 </iais:row>
+<iais:row cssClass="row control control-caption-horizontal">
+    <iais:field width="5" cssClass="col-md-5" mandatory="" value=""/>
+    <iais:value width="7" cssClass="col-md-7 col-xs-12">
+        <span class="error-msg" name="iaisErrorMsg" id="error_dsDeclaration"></span>
+    </iais:value>
+</iais:row>
 
-<c:if test="${not empty appSvcOtherInfoDto.allAppPremSubSvcRelDtoList}">
-   <%-- <div class="">
-        <div class="app-title">${appSvcOtherInfoDto.specialSvcSecName}</div>
-        <div><iais:message key="NEW_ACK037"/></div>
-    </div>--%>
-    <iais:row>
-        <fieldset class="fieldset-content col-xs-12">
-            <legend></legend>
-            <div class="form-check-gp">
-                <c:forEach var="item" items="${appSvcOtherInfoDto.allAppPremSubSvcRelDtoList}" varStatus="status">
-                    <div class="form-check form-check-${item.level}" data-parent="${appSvcOtherInfoDto.premisesVal}-${item.parentId}">
-                        <input class="form-check-input" id="${appSvcOtherInfoDto.premisesVal}-${item.svcId}"
-                               name="${appSvcOtherInfoDto.premisesVal}_${item.parentId}_service" value="${item.svcId}"
-                               type="checkbox" aria-invalid="false" data-prem="${appSvcOtherInfoDto.premisesVal}"
-                               <c:if test="${item.checked}">checked="checked"</c:if> />
-                        <label class="form-check-label" for="${appSvcOtherInfoDto.premisesVal}-${item.svcId}">
-                            <span class="check-square"></span><c:out value="${item.svcName}"/>
-                        </label>
-                    </div>
-                </c:forEach>
-                <div class="form-check">
-                    <span class="error-msg" name="iaisErrorMSg" id="error_${appSvcOtherInfoDto.premisesVal}_service"></span>
-                </div>
-            </div>
-        </fieldset>
-    </iais:row>
-</c:if>
 
 

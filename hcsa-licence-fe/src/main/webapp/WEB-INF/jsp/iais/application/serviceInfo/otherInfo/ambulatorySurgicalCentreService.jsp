@@ -7,7 +7,7 @@
 <iais:row>
     <iais:field width="5" cssClass="col-md-5" mandatory="true" value="GFA Value (in sqm)"/>
     <iais:value width="7" cssClass="col-md-7">
-        <iais:input maxLength="20" type="text" cssClass="agfaValue" name="agfaValue" value="${m.gfaValue}"/>
+        <iais:input maxLength="7" type="number" cssClass="agfaValue" name="agfaValue" value="${m.gfaValue}"/>
     </iais:value>
 </iais:row>
 
@@ -21,4 +21,10 @@
             <span class="check-square"></span><c:out value=""/>
         </label>
     </div>
+</iais:row>
+<iais:row cssClass="row control control-caption-horizontal">
+    <iais:field width="5" cssClass="col-md-5" mandatory="" value=""/>
+    <iais:value width="7" cssClass="col-md-7 col-xs-12">
+        <span class="error-msg" name="iaisErrorMsg" id="error_ascsDeclaration"></span>
+    </iais:value>
 </iais:row>

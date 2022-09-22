@@ -201,7 +201,7 @@ public final class AppValidatorHelper {
                 }
             }
             if (!appEditSelectDto.isServiceEdit()) {
-                boolean b = RfcHelper.eqServiceChange(appSubmissionDto.getAppSvcRelatedInfoDtoList(),
+                boolean b = RfcHelper.isChangeServiceInfo(appSubmissionDto.getAppSvcRelatedInfoDtoList(),
                         oldAppSubmissionDto.getAppSvcRelatedInfoDtoList());
                 if (b) {
                     log.info(StringUtil.changeForLog(
@@ -1963,121 +1963,144 @@ public final class AppValidatorHelper {
         }
     }
 
-    public static Map<String, String> doValidateOtherInformation(List<AppSvcOtherInfoDto> appSvcOtherInfoDto, String code) {
+    public static Map<String, String> doValidateOtherInformation(List<AppSvcOtherInfoDto> appSvcOtherInfoDto, String currCode) {
         if (appSvcOtherInfoDto == null) {
             return new HashMap<>(1);
         }
-        return doValidateAppSvcOtherInfoTop(appSvcOtherInfoDto);
+        return doValidateAppSvcOtherInfoTop(appSvcOtherInfoDto,currCode);
     }
 
 
-    public static Map<String, String> doValidateAppSvcOtherInfoTop(List<AppSvcOtherInfoDto> appSvcOtherInfoDto) {
+    public static Map<String, String> doValidateAppSvcOtherInfoTop(List<AppSvcOtherInfoDto> appSvcOtherInfoDto, String currCode) {
         if (appSvcOtherInfoDto == null) {
             return IaisCommonUtils.genNewHashMap();
         }
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         for (AppSvcOtherInfoDto svcOtherInfoDto : appSvcOtherInfoDto) {
-            AppSvcOtherInfoMedDto appSvcOtherInfoMedDto = svcOtherInfoDto.getAppSvcOtherInfoMedDto();
-            AppSvcOtherInfoNurseDto appSvcOtherInfoNurseDto = svcOtherInfoDto.getAppSvcOtherInfoNurseDto();
-            AppSvcOtherInfoMedDto ambulatorySurgicalCentre = svcOtherInfoDto.getOtherInfoMedAmbulatorySurgicalCentre();
-            AppSvcOtherInfoTopDto appSvcOtherInfoTopDto = svcOtherInfoDto.getAppSvcOtherInfoTopDto();
-            if (!StringUtil.isEmpty(appSvcOtherInfoMedDto)) {
-                if (StringUtil.isEmpty(appSvcOtherInfoMedDto.getIsMedicalTypeIt()) && StringUtil.isEmpty(
-                        appSvcOtherInfoMedDto.getIsMedicalTypePaper())) {
-                    errMap.put("isMedicalTypeIt", MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of medical records", "field"));
-                }
-                String systemOption = appSvcOtherInfoMedDto.getSystemOption();
-                if (StringUtil.isEmpty(systemOption)) {
-                    errMap.put("systemOption", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                            "List of options for IT system and paper cards / IT system only", "field"));
-                }
-                if ("MED06".equals(systemOption)) {
-                    String otherSystemOption = appSvcOtherInfoMedDto.getOtherSystemOption();
-                    if (StringUtil.isEmpty(otherSystemOption)) {
-                        errMap.put("otherSystemOption", MessageUtil.replaceMessage("GENERAL_ERR0006", "Please specify", "field"));
+            if (StringUtil.isIn(currCode, new String[]{AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE,
+                    AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE})) {
+                AppSvcOtherInfoMedDto appSvcOtherInfoMedDto = svcOtherInfoDto.getAppSvcOtherInfoMedDto();
+                if (!StringUtil.isEmpty(appSvcOtherInfoMedDto)) {
+                    if (StringUtil.isEmpty(appSvcOtherInfoMedDto.getIsMedicalTypeIt()) && StringUtil.isEmpty(
+                            appSvcOtherInfoMedDto.getIsMedicalTypePaper())) {
+                        errMap.put("isMedicalTypeIt", MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of medical records", "field"));
+                    }
+                    String systemOption = appSvcOtherInfoMedDto.getSystemOption();
+                    if (StringUtil.isEmpty(systemOption)) {
+                        errMap.put("systemOption", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                "List of options for IT system and paper cards / IT system only", "field"));
+                    }
+                    if ("MED06".equals(systemOption)) {
+                        String otherSystemOption = appSvcOtherInfoMedDto.getOtherSystemOption();
+                        if (StringUtil.isEmpty(otherSystemOption)) {
+                            errMap.put("otherSystemOption", MessageUtil.replaceMessage("GENERAL_ERR0006", "Please specify", "field"));
+                        }
+                    }
+                    if (StringUtil.isEmpty(appSvcOtherInfoMedDto.getIsOpenToPublic())) {
+                        errMap.put("isOpenToPublic",
+                                MessageUtil.replaceMessage("GENERAL_ERR0006", "Is clinic open to general public?", "field"));
+                    }
+                    String gfaValue = String.valueOf(appSvcOtherInfoMedDto.getGfaValue());
+                    if (!StringUtil.isDigit(gfaValue)) {
+                        errMap.put("gfaValue", MessageUtil.replaceMessage("GENERAL_ERR0006", "GFA Value (in sqm)", "field"));
                     }
                 }
-                if (StringUtil.isEmpty(appSvcOtherInfoMedDto.getIsOpenToPublic())) {
-                    errMap.put("isOpenToPublic",
-                            MessageUtil.replaceMessage("GENERAL_ERR0006", "Is clinic open to general public?", "field"));
-                }
-                String gfaValue = String.valueOf(appSvcOtherInfoMedDto.getGfaValue());
-                if (!StringUtil.isDigit(gfaValue)) {
-                    errMap.put("gfaValue", MessageUtil.replaceMessage("GENERAL_ERR0006", "GFA Value (in sqm)", "field"));
+                if (StringUtil.isEmpty(svcOtherInfoDto.getDsDeclaration())) {
+                    errMap.put("dsDeclaration", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                            "I declare that I have met URA's requirements for gross floor area", "field"));
                 }
             }
-            if (StringUtil.isEmpty(svcOtherInfoDto.getDsDeclaration())) {
-                errMap.put("dsDeclaration", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                        "I declare that I have met URA's requirements for gross floor area", "field"));
-            }
-            if (StringUtil.isEmpty(svcOtherInfoDto.getAscsDeclaration())) {
-                errMap.put("ascsDeclaration", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                        "I declare that I have met URA's requirements for gross floor area", "field"));
-            }
-            if (!StringUtil.isEmpty(appSvcOtherInfoNurseDto)) {
-                String nisOpenToPublic = String.valueOf(appSvcOtherInfoNurseDto.getIsOpenToPublic());
-                if (StringUtil.isEmpty(nisOpenToPublic)) {
-                    errMap.put("nisOpenToPublic",
-                            MessageUtil.replaceMessage("GENERAL_ERR0006", "Is the clinic open to general public?", "field"));
+            if (AppServicesConsts.SERVICE_CODE_RENAL_DIALYSIS_CENTRE.equals(currCode)){
+                AppSvcOtherInfoNurseDto appSvcOtherInfoNurseDto = svcOtherInfoDto.getAppSvcOtherInfoNurseDto();
+                if (!StringUtil.isEmpty(appSvcOtherInfoNurseDto)) {
+                    String nisOpenToPublic = String.valueOf(appSvcOtherInfoNurseDto.getIsOpenToPublic());
+                    if (StringUtil.isEmpty(nisOpenToPublic)) {
+                        errMap.put("nisOpenToPublic",
+                                MessageUtil.replaceMessage("GENERAL_ERR0006", "Is the clinic open to general public?", "field"));
+                    }
                 }
             }
-            if (!StringUtil.isEmpty(ambulatorySurgicalCentre)) {
-                String agfaValue = String.valueOf(ambulatorySurgicalCentre.getGfaValue());
-                if (!StringUtil.isDigit(agfaValue)) {
-                    errMap.put("agfaValue", MessageUtil.replaceMessage("GENERAL_ERR0006", "GFA Value (in sqm)", "field"));
+            if (AppServicesConsts.SERVICE_CODE_AMBULATORY_SURGICAL_CENTRE.equals(currCode)){
+                AppSvcOtherInfoMedDto ambulatorySurgicalCentre = svcOtherInfoDto.getOtherInfoMedAmbulatorySurgicalCentre();
+                if (!StringUtil.isEmpty(ambulatorySurgicalCentre)) {
+                    String agfaValue = String.valueOf(ambulatorySurgicalCentre.getGfaValue());
+                    if (!StringUtil.isDigit(agfaValue)) {
+                        errMap.put("agfaValue", MessageUtil.replaceMessage("GENERAL_ERR0006", "GFA Value (in sqm)", "field"));
+                    }
+                }
+                if (StringUtil.isEmpty(svcOtherInfoDto.getAscsDeclaration())) {
+                    errMap.put("ascsDeclaration", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                            "I declare that I have met URA's requirements for gross floor area", "field"));
                 }
             }
-            if (!StringUtil.isEmpty(appSvcOtherInfoTopDto)) {
-                String isOutcomeProcRecord = String.valueOf(svcOtherInfoDto.getAppSvcOtherInfoTopDto().getIsOutcomeProcRecord());
-                if (StringUtil.isEmpty(isOutcomeProcRecord)) {
-                    errMap.put("isOutcomeProcRecord", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                            "Outcome of procedures are recorded",
+            if (StringUtil.isIn(currCode, new String[]{AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL,
+                    AppServicesConsts.SERVICE_CODE_AMBULATORY_SURGICAL_CENTRE,
+                    AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE})) {
+                AppSvcOtherInfoTopDto appSvcOtherInfoTopDto = svcOtherInfoDto.getAppSvcOtherInfoTopDto();
+                if (StringUtil.isEmpty(svcOtherInfoDto.getProvideTop())) {
+                    errMap.put("provideTop", MessageUtil.replaceMessage("GENERAL_ERR0006", "Please indicate&nbsp;", "field"));
+                } else if (AppConsts.YES.equals(svcOtherInfoDto.getProvideTop())) {
+                    if (!StringUtil.isEmpty(appSvcOtherInfoTopDto)) {
+                        String topType = svcOtherInfoDto.getAppSvcOtherInfoTopDto().getTopType();
+                        if (StringUtil.isEmpty(topType)) {
+                            errMap.put("topType", MessageUtil.replaceMessage("GENERAL_ERR0006", "Please indicate&nbsp;", "field"));
+                        }
+                        String hasConsuAttendCourse = svcOtherInfoDto.getAppSvcOtherInfoTopDto().getHasConsuAttendCourse();
+                        if (StringUtil.isEmpty(hasConsuAttendCourse)) {
+                            errMap.put("hasConsuAttendCourse", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                    "My counsellor(s) has attended the TOP counselling refresher course (Please upload the certificates in the document page)",
+                                    "field"));
+                        }
+                        String isProvideHpb = svcOtherInfoDto.getAppSvcOtherInfoTopDto().getIsProvideHpb();
+                        if (StringUtil.isEmpty(isProvideHpb)) {
+                            errMap.put("isProvideHpb", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                    "The service provider has the necessary counselling facilities e.g. TV set, video player, video on abortion produced by HPB in different languages and the pamphlets produced by HPB",
+                                    "field"));
+                        }
+                        String isOutcomeProcRecord = svcOtherInfoDto.getAppSvcOtherInfoTopDto().getIsOutcomeProcRecord();
+                        if (StringUtil.isEmpty(isOutcomeProcRecord)) {
+                            errMap.put("isOutcomeProcRecord", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                    "Outcome of procedures are recorded",
+                                    "field"));
+                        }
+                        String compCaseNum = svcOtherInfoDto.getAppSvcOtherInfoTopDto().getCompCaseNum();
+                        if (!StringUtil.isDigit(compCaseNum)) {
+                            errMap.put("compCaseNum", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                    "Number of cases with complications, if any",
+                                    "field"));
+                        }
+                        errMap.putAll(getValidateAppSvcOtherInfoTopAbort(svcOtherInfoDto, topType));
+                    }
+                    errMap.putAll(getValidateAppSvcOtherInfoTopPerson(svcOtherInfoDto));
+                    errMap.putAll(doValidateSupplementaryForm(svcOtherInfoDto.getAppSvcSuplmFormDto(), svcOtherInfoDto.getPremisesVal()));
+                }
+            }
+            if (StringUtil.isIn(currCode, new String[]{AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL,
+                    AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL,
+                    AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE})) {
+                if (StringUtil.isEmpty(svcOtherInfoDto.getProvideYfVs())) {
+                    errMap.put("provideYfVs", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                            "Do you provide Yellow Fever Vaccination Service",
                             "field"));
                 }
 
-                String compCaseNum = String.valueOf(svcOtherInfoDto.getAppSvcOtherInfoTopDto().getCompCaseNum());
-                if (!StringUtil.isDigit(compCaseNum)) {
-                    errMap.put("compCaseNum", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                            "Number of cases with complications, if any",
+                if (StringUtil.isEmpty(svcOtherInfoDto.getYfCommencementDateStr())) {
+                    errMap.put("yfCommencementDate", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                            "Date of Commencement",
                             "field"));
                 }
             }
-
-            if (StringUtil.isEmpty(svcOtherInfoDto.getProvideYfVs())) {
-                errMap.put("provideYfVs", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                        "Do you provide Yellow Fever Vaccination Service",
-                        "field"));
-            }
-
-            if (StringUtil.isEmpty(svcOtherInfoDto.getYfCommencementDateStr())) {
-                errMap.put("yfCommencementDate", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                        "Date of Commencement",
-                        "field"));
-            }
-            if (StringUtil.isEmpty(svcOtherInfoDto.getProvideTop())) {
-                errMap.put("provideTop", MessageUtil.replaceMessage("GENERAL_ERR0006", "Please indicate&nbsp;", "field"));
-            } else if (AppConsts.YES.equals(svcOtherInfoDto.getProvideTop())) {
-                if (!StringUtil.isEmpty(appSvcOtherInfoTopDto)) {
-                    String topType = svcOtherInfoDto.getAppSvcOtherInfoTopDto().getTopType();
-                    if (StringUtil.isEmpty(topType)) {
-                        errMap.put("topType", MessageUtil.replaceMessage("GENERAL_ERR0006", "Please indicate&nbsp;", "field"));
+            if (StringUtil.isIn(currCode, new String[]{AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE,
+                    AppServicesConsts.SERVICE_CODE_RENAL_DIALYSIS_CENTRE,
+                    AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE,
+                    AppServicesConsts.SERVICE_CODE_AMBULATORY_SURGICAL_CENTRE})) {
+                List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList = svcOtherInfoDto.getAppPremSubSvcRelDtoList();
+                if (appPremSubSvcRelDtoList != null && !appPremSubSvcRelDtoList.isEmpty()){
+                    List<AppPremSubSvcRelDto> checkAppPremSubSvcRelDtoList = svcOtherInfoDto.getCheckedAppPremSubSvcRelDtoList();
+                    if (checkAppPremSubSvcRelDtoList == null || checkAppPremSubSvcRelDtoList.isEmpty()){
+                        errMap.put(svcOtherInfoDto.getPremisesVal() + "_service","GENERAL_ERR0006");
                     }
-                    String hasConsuAttendCourse = svcOtherInfoDto.getAppSvcOtherInfoTopDto().getHasConsuAttendCourse();
-                    if (StringUtil.isEmpty(hasConsuAttendCourse)) {
-                        errMap.put("hasConsuAttendCourse", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                                "My counsellor(s) has attended the TOP counselling refresher course (Please upload the certificates in the document page)",
-                                "field"));
-                    }
-                    String isProvideHpb = svcOtherInfoDto.getAppSvcOtherInfoTopDto().getIsProvideHpb();
-                    if (StringUtil.isEmpty(isProvideHpb)) {
-                        errMap.put("isProvideHpb", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                                "The service provider has the necessary counselling facilities e.g. TV set, video player, video on abortion produced by HPB in different languages and the pamphlets produced by HPB",
-                                "field"));
-                    }
-                    errMap.putAll(getValidateAppSvcOtherInfoTopAbort(svcOtherInfoDto, topType));
                 }
-                errMap.putAll(getValidateAppSvcOtherInfoTopPerson(svcOtherInfoDto));
-                errMap.putAll(doValidateSupplementaryForm(svcOtherInfoDto.getAppSvcSuplmFormDto(), svcOtherInfoDto.getPremisesVal()));
             }
         }
         return errMap;
@@ -2097,7 +2120,7 @@ public final class AppValidatorHelper {
             String regType = practitioners.get(i).getRegType();
             String qualification = practitioners.get(i).getQualification();
             String specialties = practitioners.get(i).getSpeciality();
-            Boolean medAuthByMoh = practitioners.get(i).isMedAuthByMoh();
+            String medAuthByMoh = practitioners.get(i).getIsMedAuthByMoh();
 
             if (StringUtil.isEmpty(medAuthByMoh)) {
                 errMap.put("medAuthByMoh" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
@@ -2126,7 +2149,7 @@ public final class AppValidatorHelper {
             }
 
             if (StringUtil.isEmpty(specialties)) {
-                errMap.put("specialties" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Specialties", "field"));
+                errMap.put("speciality" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Specialties", "field"));
             }
         }
 
