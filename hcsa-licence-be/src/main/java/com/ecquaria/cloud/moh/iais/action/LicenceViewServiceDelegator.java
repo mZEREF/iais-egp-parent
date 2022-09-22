@@ -54,6 +54,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -318,6 +319,19 @@ public class LicenceViewServiceDelegator {
         if ("Y".equals(herimsFlag)) {
             herimsRecod(appSubmissionDto, bpc.request);
         }
+
+//        volidata role
+        LoginContext loginContext = ApplicationHelper.getLoginContext(bpc.request);
+        String isEdit = "N";
+        if (!StringUtil.isEmpty(loginContext)){
+            ArrayList<String> myRole = loginContext.getRoleIds();
+            if (IaisCommonUtils.isNotEmpty(myRole)){
+                if (myRole.contains("ASO") || myRole.contains("PSO")){
+                    isEdit = "Y";
+                }
+            }
+        }
+        ParamUtil.setRequestAttr(bpc.request,"isEdit",isEdit);
     }
 
     private AppSubmissionDto getAppSubmissionAndHandLicence(AppPremisesCorrelationDto appPremisesCorrelationDto,
@@ -861,7 +875,6 @@ public class LicenceViewServiceDelegator {
             }
         }
         ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
-
         log.debug(StringUtil.changeForLog("the do prepareView end ...."));
     }
 

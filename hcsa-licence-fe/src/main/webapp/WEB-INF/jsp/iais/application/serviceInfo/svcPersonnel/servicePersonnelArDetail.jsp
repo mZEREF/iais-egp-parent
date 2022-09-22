@@ -1,6 +1,5 @@
-<%--    大标题,不动--%>
 <div class="personnel-content">
-    <input type="hidden" class="not-refresh " name="${logo}arCount" value="size"/>
+    <input type="hidden" class="not-refresh not-clear" name="${logo}arCount" value="size"/>
     <iais:row cssClass="personnel-header">
         <iais:value width="5" cssClass="col-xs-12 col-md-6">
             <strong>

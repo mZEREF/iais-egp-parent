@@ -17,7 +17,7 @@
         }
         pageController('');
         let flag = $("#curr").val();
-        if (flag == 'NMI' || 'NMA' == flag) {
+        if (flag == 'BLB' || 'NMA' == flag) {
             let length = $('.personnel-content').length;
             if (length == 1) {
                 $('.personnel-content').find('.assign-psn-item').html('')
@@ -28,7 +28,7 @@
                 personnelSelFun(personnelSel, $personnelContentEle);
             });
         }
-        spRemove();
+        // spRemove();
         initPage($('div.panel-main-content'))
         $('input[name="prsLoading"]').each(function () {
             if ($(this).val() == 'true') {
@@ -45,8 +45,6 @@
         //no
         profRegNoEvent($('.personnel-content'));
         removePersonEvent();
-        let target = $('.special-person')
-        controlCountEvent($(target))
     });
 
     function initPage(target) {
@@ -192,16 +190,18 @@
         var $tgt = $(target).find('div.personnel-content').last();
         var locateWtihNonHcsa = $tgt.find('input.locateWtihNonHcsa:checked').val();
         var src = $tgt.clone();
+        clearFields(src)
         $tgt.after(src);
         fillValue($tgt.find('input.locateWtihNonHcsa'), locateWtihNonHcsa);
         var $currContent = $(target).find('div.personnel-content').last();
+        pageController($currContent)
         $currContent.find('.date_picker').datepicker({
             format: "dd/mm/yyyy",
             autoclose: true,
             todayHighlight: true,
             orientation: 'bottom'
         });
-        clearFields($currContent);
+        // clearFields($currContent);
         $currContent.find('.speciality').html('');
         $currContent.find('.subSpeciality').html('');
         $currContent.find('.othersubSpeciality').html('');
@@ -210,28 +210,25 @@
         refreshIndex($currContent, $(target).find('div.personnel-content').length - 1);
         $(target).find('div.personnel-content').first().find('.assign-psn-item').html('1');
         disablePersonnel($currContent, false, true);
-        controlCountEvent($target, true);
+        //  TODO
+        controlCountEvent($target);
+
         removePersonEvent();
         profRegNoEvent($currContent);
         designationChange()
         dismissWaiting();
     }
 
-    function controlCountEvent($target, flag) {
+    //  TODO
+    function controlCountEvent($target) {
         var psnLength = $target.find('div.personnel-content').length;
         let count = $target.find('.maxCount').val();
-        if (flag) {
+        console.log(count,"count======>>>>")
             if (psnLength >= count) {
+                console.log(psnLength,"ENTER======>>>>")
                 $target.find('.addDpoDiv').addClass('hidden');
             } else
                 $target.find('.addDpoDiv').removeClass('hidden');
-        } else {
-            if (psnLength >= count) {
-                $target.find('.addSpecialListBtn').addClass('hidden');
-            } else
-                $target.find('.addSpecialListBtn').removeClass('hidden');
-        }
-
     }
 
     function refreshIndex($target, k) {
@@ -245,7 +242,7 @@
         $('.removeBtn').on('click', function () {
             var $Content = $(this).closest('div.panel-main-content');
             $(this).closest('div.personnel-content').remove();
-            controlCountEvent($Content, true)
+            controlCountEvent($Content)
             let $currContent = $Content.find('div.personnel-content');
             $currContent.each(function (k, v) {
                 refreshIndex($(v), k);
@@ -261,25 +258,25 @@
     });
 
     //special
-    $('.addSpecialListBtn').click(function () {
-        showWaiting();
-        let target = $('div.personnel-content:last')
-        let src = target.clone();
-        clearFields(src);
-        target.after(src);
-        spRemove();
-        pageController($('.personnel-content:last'));
-        $('.personnel-content').first().find('.assign-psn-item').html('1');
-        $('.personnel-content').last().find('.otherDesignationDiv').addClass('hidden')
-        var psnLength = $('.personnel-content').length;
-        let $target = $('div.personnel-content:last')
-        let targets = $('.special-person');
-        controlCountEvent($(targets))
-        refreshIndex($target, psnLength - 1);
-        profRegNoEvent($('.personnel-content:last'));
-        designationChange()
-        dismissWaiting();
-    });
+    // $('.addSpecialListBtn').click(function () {
+    //     showWaiting();
+    //     let target = $('div.personnel-content:last')
+    //     let src = target.clone();
+    //     clearFields(src);
+    //     target.after(src);
+    //     spRemove();
+    //     pageController($('.personnel-content:last'));
+    //     $('.personnel-content').first().find('.assign-psn-item').html('1');
+    //     $('.personnel-content').last().find('.otherDesignationDiv').addClass('hidden')
+    //     var psnLength = $('.personnel-content').length;
+    //     let $target = $('div.personnel-content:last')
+    //     let targets = $('.special-person');
+    //     controlCountEvent($(targets))
+    //     refreshIndex($target, psnLength - 1);
+    //     profRegNoEvent($('.personnel-content:last'));
+    //     designationChange()
+    //     dismissWaiting();
+    // });
 
     function removeSp() {
         console.log("SP --->");
@@ -288,7 +285,8 @@
 
     var pageController = function ($Ele) {
         let flag = $("#curr").val();
-        if (flag == 'NMI' || flag == 'NMA') {
+        // NMI
+        if (flag == 'BLB' || flag == 'NMA') {
             console.log("begin---->",init)
             personnelSel();
             if ($Ele == '') {
@@ -300,22 +298,22 @@
         }
     }
 
-    var spRemove = function () {
-        $('.removeBtns').click(function () {
-            var $psnContentEle = $(this).closest('.personnel-content');
-            $psnContentEle.remove();
-            $('.personnel-content').each(function (k, v) {
-                refreshIndex($(v), k)
-            });
-            let targets = $('.special-person')
-            controlCountEvent($(targets))
-            var psnLength = $('.personnel-content').length;
-            if (psnLength <= 1) {
-                $('.assign-psn-item:eq(0)').html('');
-            }
-            $('#isEditHiddenVal').val('1');
-        });
-    }
+    // var spRemove = function () {
+    //     $('.removeBtns').click(function () {
+    //         var $psnContentEle = $(this).closest('.personnel-content');
+    //         $psnContentEle.remove();
+    //         $('.personnel-content').each(function (k, v) {
+    //             refreshIndex($(v), k)
+    //         });
+    //         let targets = $('.special-person')
+    //         controlCountEvent($(targets))
+    //         var psnLength = $('.personnel-content').length;
+    //         if (psnLength <= 1) {
+    //             $('.assign-psn-item:eq(0)').html('');
+    //         }
+    //         $('#isEditHiddenVal').val('1');
+    //     });
+    // }
 
     function inputReadonly($content) {
         $content.prop('readonly', true);

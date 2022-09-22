@@ -2465,12 +2465,10 @@ public class ServiceInfoDelegator {
         String floorNo = appGrpSecondAddrDto.getFloorNo();
         String unitNo = appGrpSecondAddrDto.getUnitNo();
         String blkNoKey = "blkNo" + i;
-
         if (!StringUtil.isEmpty(buildingName) && buildingName.length() > 66) {
             String errorMsg = repLength("Building Name", "66");
             errorMap.put("buildingName" + i, errorMsg);
         }
-
         if (StringUtil.isEmpty(streetName)) {
             errorMap.put("streetName" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Street Name", "field"));
         } else if (streetName.length() > 32) {
@@ -2499,7 +2497,6 @@ public class ServiceInfoDelegator {
                 errorMap.put(i+"UnitNo" + 0, repLength("Unit No.", "5"));
             }
         }
-
         // validate floor and units
         validateOperaionUnits(appGrpSecondAddrDto,errorMap,i);
         String postalCodeKey = "postalCode" + i;

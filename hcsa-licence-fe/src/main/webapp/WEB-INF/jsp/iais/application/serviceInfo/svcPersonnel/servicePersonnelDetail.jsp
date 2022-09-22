@@ -1,16 +1,21 @@
 <div class="personnel-content">
-    <input type="hidden" class="not-refresh " name="${logo}speCount" value="size"/>
+    <input type="hidden" class="not-refresh not-clear" name="${logo}speCount" value="size"/>
     <input type="hidden" name="indexNo" value="${appSvcPersonnelDto.indexNo}"/>
     <iais:row cssClass="personnel-header">
-        <div class="col-xs-12 col-md-6">
-            <p class="bold">${title}<label class="assign-psn-item">${index+1}</label></p>
-            <p><span class="error-msg" name="iaisErrorMSg" id="error_${prepsn}personError${index}"></span></p>
-        </div>
-        <div class="col-xs-12 col-md-6 text-right removeEditDiv <c:if test="${index == 0}">hidden</c:if>">
-            <h4 class="text-danger">
-                <em class="fa fa-times-circle del-size-36 removeBtns cursorPointer"></em>
-            </h4>
-        </div>
+        <iais:value width="5" cssClass="col-xs-12 col-md-6">
+            <strong>
+                <c:out value="ServicePersonnel "/>
+                <label class="assign-psn-item">${index+1}</label>
+            </strong>
+        </iais:value>
+        <iais:value width="7" cssClass="col-xs-12 col-md-4 text-right">
+            <span class="error-msg" name="iaisErrorMSg" id="error_personError${index}"></span>
+            <div class="removeEditDiv <c:if test="${index == 0}">hidden</c:if>">
+                <h4 class="text-danger">
+                    <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
+                </h4>
+            </div>
+        </iais:value>
     </iais:row>
     <iais:row>
         <c:if test="${'true' == canEdit}">

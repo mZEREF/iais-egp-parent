@@ -150,21 +150,6 @@
         </div>
     </c:if>
 
-    <c:if test="${specialCount != 0}">
-        <input type="hidden" class="maxCount" value="${spePersonnelMax}"/>
-        <c:forEach begin="0" end="${specialCount - 1}" step="1" varStatus="status">
-            <c:set var="index" value="${status.index}"/>
-            <c:set value="SP000" var="logo"/>
-            <c:set var="appSvcPersonnelDto" value="${svcPersonnelDto.specialList[index]}"/>
-            <c:set var="title" value="ServicePersonnel "/>
-            <%@include file="servicePersonnelDetail.jsp" %>
-        </c:forEach>
-        <div class="form-group col-md-12 col-xs-12" id="addPsnDiv">
-         <span class="addSpecialListBtn" style="color:deepskyblue;cursor:pointer;">
-         <span style="">+ Add Another Service Personnel</span>
-         </span>
-        </div>
-    </c:if>
     <c:if test="${normalCount != 0}">
         <div class="panel-main-content">
             <input type="hidden" class="maxCount" value="${othersPersonnelMax}"/>
@@ -181,6 +166,25 @@
             </div>
         </div>
     </c:if>
+
+    <c:if test="${specialCount != 0}">
+        <div class="panel-main-content">
+            <input type="" class="maxCount" value="3"/>
+            <c:forEach begin="0" end="${specialCount - 1}" step="1" varStatus="status">
+                <c:set var="index" value="${status.index}"/>
+                <c:set value="SP000" var="logo"/>
+                <c:set var="appSvcPersonnelDto" value="${svcPersonnelDto.specialList[index]}"/>
+                <%@include file="servicePersonnelDetail.jsp" %>
+            </c:forEach>
+            <div class="form-group col-md-12 col-xs-12 addDpoDiv">
+         <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">
+         <span style="">+ Add Another Service Personnel</span>
+         </span>
+            </div>
+        </div>
+    </c:if>
+
+
 </div>
 <%@include file="servicePersonnelOthers.jsp" %>
 <%@include file="/WEB-INF/jsp/iais/application/common/personFun.jsp" %>
