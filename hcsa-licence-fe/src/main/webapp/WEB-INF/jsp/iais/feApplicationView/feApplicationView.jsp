@@ -34,7 +34,7 @@
     <jsp:include page="/WEB-INF/jsp/iais/newApplication/cessationViewApp.jsp" />
 </c:if>
 <c:if test="${applicationDto.applicationType != 'APTY008'}">
-    <%@ include file="../newApplication/inboxView/dashboard.jsp" %>
+    <%@ include file="../common/dashboard.jsp" %>
 </c:if>
 
 <c:if test="${applicationDto.applicationType != 'APTY008'}">
@@ -54,12 +54,12 @@
                                                 <div class="panel-group" id="accordion" role="tablist"
                                                      aria-multiselectable="true" style="margin-top: 40px" >
                                                     <c:if test="${applicationDto.applicationType != 'APTY008'}">
-                                                        <jsp:include page="/WEB-INF/jsp/iais/newApplication/inboxView/inboxLicensee.jsp"/>
-                                                        <jsp:include page="/WEB-INF/jsp/iais/newApplication/inboxView/inboxPremise.jsp" />
-                                                        <jsp:include page="/WEB-INF/jsp/iais/newApplication/inboxView/inboxPrimary.jsp" />
-                                                        <jsp:include page="/WEB-INF/jsp/iais/newApplication/inboxView/viewForm.jsp" />
+                                                        <jsp:include page="/WEB-INF/jsp/iais/application/inboxView/inboxLicensee.jsp"/>
+                                                        <jsp:include page="/WEB-INF/jsp/iais/application/inboxView/inboxPremise.jsp" />
+                                                        <jsp:include page="/WEB-INF/jsp/iais/application/inboxView/inboxSpecialised.jsp" />
+                                                        <jsp:include page="/WEB-INF/jsp/iais/application/inboxView/viewForm.jsp" />
                                                         <c:if test="${AppSubmissionDto.appType != 'APTY009'}">
-                                                            <%@include file="../common/declarations.jsp"%>
+                                                            <%@include file="../application/declarations/declarations.jsp"%>
                                                         </c:if>
                                                     </c:if>
                                                 </div>
