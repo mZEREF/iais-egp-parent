@@ -448,7 +448,7 @@ public class RequestForChangeDelegator {
                 appEditSelectDto.setServiceEdit(true);
                 ParamUtil.setRequestAttr(bpc.request,RfcConst.RFC_CURRENT_EDIT,RfcConst.EDIT_SERVICE);
             }
-            appEditSelectDto.setDoEdit(switchVal);
+            //appEditSelectDto.setDoEdit(switchVal);
             appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
             appSubmissionDto.setClickEditPage(null);
             ParamUtil.setRequestAttr(bpc.request,RfcConst.APPSUBMISSIONDTORFCATTR,appSubmissionDto);
