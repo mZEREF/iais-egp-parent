@@ -98,6 +98,11 @@ public class HcsaChklServiceImpl implements HcsaChklService {
 
     @Override
     public List<String> listServiceName(String type) {
+        return chklClient.listServiceName(type).getEntity();
+    }
+
+    @Override
+    public List<String> listServiceName() {
         return chklClient.listServiceName(AppServicesConsts.SVC_TYPE_ALL).getEntity();
     }
 
