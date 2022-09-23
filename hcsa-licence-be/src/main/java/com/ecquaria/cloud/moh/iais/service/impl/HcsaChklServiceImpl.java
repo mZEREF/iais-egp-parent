@@ -16,19 +16,17 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigExcel;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemExcel;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemExcel;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
+import java.util.List;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -96,6 +94,16 @@ public class HcsaChklServiceImpl implements HcsaChklService {
     @Override
     public List<String> listSubTypeName() {
         return chklClient.listSubTypeName().getEntity();
+    }
+
+    @Override
+    public List<String> listSpecName() {
+        return chklClient.listSpecName().getEntity();
+    }
+
+    @Override
+    public List<String> listServiceName(String type) {
+        return chklClient.listServiceName(type).getEntity();
     }
 
     @Override

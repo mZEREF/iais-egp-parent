@@ -114,12 +114,12 @@
     }
 
     function doEditPremise($premContent, isEdit) {
-        console.info("------------doEditPremise----------------");
         // check whether the edit button is hidden or not,
         // if not, return false, or return true
         if (hideEditBtn($premContent)) {
             return;
         }
+        console.info("------------doEditPremise----------------");
         $('#isEditHiddenVal').val('1');
         unDisableContent($premContent);
         showTag($premContent.find('.retrieveAddr'));
@@ -130,6 +130,28 @@
             } else {
                 $premContent.find('.isParyEdit').val('1');
             }
+        }
+        checkEditBtn($premContent, false);
+    }
+
+    function hideEditBtn ($premContent) {
+        let $target= $premContent.find('.removeEditDiv');
+        if (isEmptyNode($target)) {
+            return true;
+        }
+        return $target.is(':hidden');
+    }
+
+    function checkEditBtn ($premContent, show) {
+        let $target= $premContent.find('.removeEditDiv');
+        if (isEmptyNode($target)) {
+            return;
+        }
+        if ($target.is(':hidden') && show) {
+            showTag($target);
+        }
+        if (!isEmptyNode($target.find('.premisesEdit'))) {
+            toggleTag($target.find('.premisesEdit'), show);
         }
     }
 
@@ -239,27 +261,6 @@
         }
     }
 
-    function hideEditBtn ($premContent) {
-        let $target= $premContent.find('.removeEditDiv');
-        if (isEmptyNode($target)) {
-            return true;
-        }
-        return $target.is(':hidden');
-    }
-
-    function checkEditBtn ($premContent, show) {
-        let $target= $premContent.find('.removeEditDiv');
-        if (isEmptyNode($target)) {
-            return false;
-        }
-        if ($target.is(':hidden') && show) {
-            showTag($target);
-        }
-        if (!isEmptyNode($target.find('.premisesEdit'))) {
-            toggleTag($target.find('.premisesEdit'), show);
-        }
-    }
-
     var premTypeEvent = function () {
         $('.premTypeRadio').on('click', function () {
             premTypeEventFun($(this));
@@ -303,6 +304,8 @@
             hideTag($premMainContent);
             if (onlyInit) {
                 checkPremDisabled($premContent, false);
+            } else {
+                $premContent.find('.chooseExistData').val("0");
             }
             dismissWaiting();
         } else if ("newPremise" == premSelectVal) {
@@ -313,6 +316,7 @@
                 checkAddressMandatory($premContent);
                 checkLocateWtihNonHcsa($premContent);
                 checkPremDisabled($premContent, false);
+                $premContent.find('.chooseExistData').val("0");
             }
             showTag($premMainContent);
             //showTag($premContent.find('.retrieveAddr'));
@@ -320,6 +324,8 @@
         } else {
             showTag($premMainContent);
             if (onlyInit) {
+                let existData = $premContent.find('.chooseExistData').val();
+                checkPremDisabled($premContent, '1' == existData);
                 dismissWaiting();
                 return;
             }
@@ -379,6 +385,7 @@
         checkDisabled($premContent.find('.operationDiv'), disabled);
         hideTag($premContent.find('.operationAdlDiv:first'));
         toggleTag($premContent.find('.opDel:not(:first)'), !disabled);
+        toggleTag($premContent.find('.addOpDiv'), !disabled);
     }
 
     function autoCheckPremiseType(premType) {

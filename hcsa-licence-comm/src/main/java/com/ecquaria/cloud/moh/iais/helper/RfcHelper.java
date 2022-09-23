@@ -41,7 +41,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
@@ -52,6 +51,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
+import java.util.function.Function;
 
 /**
  * @Auther chenlei on 5/3/2022.
@@ -118,10 +118,10 @@ public final class RfcHelper {
         appEditSelectDto.setChangeSectionLeader(changeSectionLeader);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
-        boolean serviceIsChange = isChangeServiceInfo(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList, appEditSelectDto);
-
-
+        boolean serviceIsChange = changeVehicles || isChangeServiceInfo(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList,
+                appEditSelectDto);
         appEditSelectDto.setServiceEdit(serviceIsChange);
+        // set to appSubmissionDto
         appSubmissionDto.setChangeSelectDto(appEditSelectDto);
         // for splitting the submission
         AppEditSelectDto showDto = appSubmissionDto.getAppEditSelectDto();
@@ -237,8 +237,7 @@ public final class RfcHelper {
     }
 
     public static boolean isChangeGrpPremisesAutoFields(AppGrpPremisesDto appGrpPremisesDto, AppGrpPremisesDto oldAppGrpPremisesDto) {
-        return !PageDataCopyUtil.copyAppGrpPremisesDtoForAutoField(appGrpPremisesDto).equals(
-                PageDataCopyUtil.copyAppGrpPremisesDtoForAutoField(oldAppGrpPremisesDto));
+        return !isSame(appGrpPremisesDto, oldAppGrpPremisesDto, PageDataCopyUtil::copyAppGrpPremisesDtoForAutoField);
     }
 
     public static boolean isChangeCoLocation(List<AppGrpPremisesDto> appGrpPremisesDtoList,
@@ -252,16 +251,11 @@ public final class RfcHelper {
         for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
             AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(i);
             AppGrpPremisesDto oldAppGrpPremisesDto = oldAppGrpPremisesDtoList.get(i);
-            if (isChangeCoLocation(appGrpPremisesDto, oldAppGrpPremisesDto)) {
+            if (!isSame(appGrpPremisesDto, oldAppGrpPremisesDto, PageDataCopyUtil::copyCoLocationFields)) {
                 return true;
             }
         }
         return false;
-    }
-
-    public static boolean isChangeCoLocation(AppGrpPremisesDto appGrpPremisesDto, AppGrpPremisesDto oldAppGrpPremisesDto) {
-        return !PageDataCopyUtil.copyCoLocationFields(appGrpPremisesDto).equals(
-                PageDataCopyUtil.copyCoLocationFields(oldAppGrpPremisesDto));
     }
 
     public static int isChangeSpecialisedFields(List<AppPremSpecialisedDto> specialisedList,
@@ -295,9 +289,9 @@ public final class RfcHelper {
             result &= RfcConst.RFC_AMENDMENT;
         } else {
             for (AppPremSubSvcRelDto relDto : appPremSubSvcRelList) {
-                if (ApplicationConsts.RECORD_ACTION_CODE_ADD.equals(relDto)) {
+                if (ApplicationConsts.RECORD_ACTION_CODE_ADD.equals(relDto.getActCode())) {
                     result &= relDto.isAdditionFlow() ? RfcConst.RFC_AMENDMENT : RfcConst.RFC_NOTIFICATION;
-                } else if (ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(relDto)) {
+                } else if (ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(relDto.getActCode())) {
                     result &= relDto.isRemovalFlow() ? RfcConst.RFC_AMENDMENT : RfcConst.RFC_NOTIFICATION;
                 }
             }
@@ -346,6 +340,41 @@ public final class RfcHelper {
         return isChangeServiceInfo(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList, null);
     }
 
+    public static boolean isChangeSvcInfoAutoFields(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList,
+            List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList, AppEditSelectDto appEditSelectDto) {
+        List<String> changeList = IaisCommonUtils.genNewArrayList();
+        List<AppSvcRelatedInfoDto> n = (List<AppSvcRelatedInfoDto>) CopyUtil.copyMutableObjectList(appSvcRelatedInfoDtoList);
+        List<AppSvcRelatedInfoDto> o = (List<AppSvcRelatedInfoDto>) CopyUtil.copyMutableObjectList(oldAppSvcRelatedInfoDtoList);
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = n.get(0);
+        AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = o.get(0);
+        List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = appSvcRelatedInfoDto.getHcsaServiceStepSchemeDtos();
+        String deputyPoFlag = appSvcRelatedInfoDto.getDeputyPoFlag();
+        oldAppSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
+        oldAppSvcRelatedInfoDto.setDeputyPoFlag(deputyPoFlag);
+
+        List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+        List<AppSvcDocDto> oldAppSvcDocDtoLit = oldAppSvcRelatedInfoDto.getAppSvcDocDtoLit();
+        boolean changeSvcDocs = isChangeSvcDocs(appSvcDocDtoLit, oldAppSvcDocDtoLit);
+        if (changeSvcDocs) {
+            IaisCommonUtils.addToList(HcsaConsts.STEP_DOCUMENTS, changeList);
+        }
+        boolean eqAppSvcChargesPageDto = eqAppSvcChargesPageDto(appSvcRelatedInfoDto.getAppSvcChargesPageDto(),
+                oldAppSvcRelatedInfoDto.getAppSvcChargesPageDto());
+        if (eqAppSvcChargesPageDto) {
+            IaisCommonUtils.addToList(HcsaConsts.STEP_CHARGES, changeList);
+        }
+        boolean eqAppSvcBusiness = isChangeAppSvcBusinessDto(appSvcRelatedInfoDto.getAppSvcBusinessDtoList(),
+                oldAppSvcRelatedInfoDto.getAppSvcBusinessDtoList());
+
+        if (appEditSelectDto != null) {
+            List<String> personnelEditList = IaisCommonUtils.getList(appEditSelectDto.getPersonnelEditList());
+            personnelEditList.addAll(changeList);
+            appEditSelectDto.setPersonnelEditList(personnelEditList);
+        }
+        return changeSvcDocs || eqAppSvcChargesPageDto || isChangePersonnel(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList)
+                || eqAppSvcBusiness;
+    }
+
     public static boolean isChangeServiceInfo(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList,
             List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList, AppEditSelectDto appEditSelectDto) {
         List<String> changeList = IaisCommonUtils.genNewArrayList();
@@ -360,30 +389,26 @@ public final class RfcHelper {
 
         List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
         List<AppSvcDocDto> oldAppSvcDocDtoLit = oldAppSvcRelatedInfoDto.getAppSvcDocDtoLit();
-        boolean eqSvcDoc = eqSvcDoc(appSvcDocDtoLit, oldAppSvcDocDtoLit);
-        boolean eqAppSvcVehicle = isChangeAppSvcVehicleDto(appSvcRelatedInfoDto.getAppSvcVehicleDtoList(),
-                oldAppSvcRelatedInfoDto.getAppSvcVehicleDtoList());
+        boolean changeSvcDocs = isChangeSvcDocs(appSvcDocDtoLit, oldAppSvcDocDtoLit);
+        if (changeSvcDocs) {
+            IaisCommonUtils.addToList(HcsaConsts.STEP_DOCUMENTS, changeList);
+        }
         boolean eqAppSvcChargesPageDto = eqAppSvcChargesPageDto(appSvcRelatedInfoDto.getAppSvcChargesPageDto(),
                 oldAppSvcRelatedInfoDto.getAppSvcChargesPageDto());
-        boolean changePersonnel = changePersonnel(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
-        boolean eqAppSvcBusiness = isChangeAppSvcBusinessDto(appSvcRelatedInfoDto.getAppSvcBusinessDtoList(),
-                oldAppSvcRelatedInfoDto.getAppSvcBusinessDtoList());
-
-        if (eqSvcDoc) {
-            changeList.add(HcsaConsts.STEP_DOCUMENTS);
-        }
         if (eqAppSvcChargesPageDto) {
-            changeList.add(HcsaConsts.STEP_CHARGES);
+            IaisCommonUtils.addToList(HcsaConsts.STEP_CHARGES, changeList);
         }
         if (appEditSelectDto != null) {
             List<String> personnelEditList = IaisCommonUtils.getList(appEditSelectDto.getPersonnelEditList());
             personnelEditList.addAll(changeList);
             appEditSelectDto.setPersonnelEditList(personnelEditList);
         }
-        return eqSvcDoc || eqAppSvcVehicle || eqAppSvcChargesPageDto || changePersonnel || eqAppSvcBusiness;
+        return changeSvcDocs || eqAppSvcChargesPageDto || isChangePersonnel(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList)
+                || isChangeAppSvcBusinessDto(appSvcRelatedInfoDto.getAppSvcBusinessDtoList(),
+                oldAppSvcRelatedInfoDto.getAppSvcBusinessDtoList());
     }
 
-    private static boolean changePersonnel(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList,
+    private static boolean isChangePersonnel(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList,
             List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) {
         if (appSvcRelatedInfoDtoList == null && oldAppSvcRelatedInfoDtoList == null) {
             return false;
@@ -402,65 +427,11 @@ public final class RfcHelper {
             }
         }
         // section leader
-        List<AppSvcPersonnelDto> appSvcSectionLeaderList = appSvcRelatedInfoDto.getAppSvcSectionLeaderList();
-        List<AppSvcPersonnelDto> oldAppSvcSectionLeaderList = oldAppSvcRelatedInfoDto.getAppSvcSectionLeaderList();
-        boolean eqSectionLeader = isChangeServicePersonnels(appSvcSectionLeaderList, oldAppSvcSectionLeaderList);
-        if (eqSectionLeader) {
-            return true;
-        }
-        return false;
+        return isChangeServicePersonnels(appSvcRelatedInfoDto.getAppSvcSectionLeaderList(), oldAppSvcRelatedInfoDto.getAppSvcSectionLeaderList());
     }
 
-    private static boolean eqSvcPrincipalOfficers(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList,
-            List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDtoList) {
-        if (appSvcPrincipalOfficersDtoList != null && oldAppSvcPrincipalOfficersDtoList != null) {
-            List<AppSvcPrincipalOfficersDto> n = PageDataCopyUtil.copyAppSvcPo(appSvcPrincipalOfficersDtoList);
-            List<AppSvcPrincipalOfficersDto> o = PageDataCopyUtil.copyAppSvcPo(oldAppSvcPrincipalOfficersDtoList);
-            return !n.equals(o);
-        }
-        return appSvcPrincipalOfficersDtoList != null || oldAppSvcPrincipalOfficersDtoList != null;
-    }
-
-    private static boolean eqMeadrter(List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList,
-            List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonList1) {
-        if (appSvcMedAlertPersonList != null && oldAppSvcMedAlertPersonList1 != null) {
-            List<AppSvcPrincipalOfficersDto> n = PageDataCopyUtil.copyMedaler(appSvcMedAlertPersonList);
-            List<AppSvcPrincipalOfficersDto> o = PageDataCopyUtil.copyMedaler(oldAppSvcMedAlertPersonList1);
-            return !n.equals(o);
-        }
-        return appSvcMedAlertPersonList != null || oldAppSvcMedAlertPersonList1 != null;
-    }
-
-    private static boolean eqKeyAppointmentHolder(List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderDtoList,
-            List<AppSvcPrincipalOfficersDto> oldAppSvcKeyAppointmentHolderDtoList) {
-        if (appSvcKeyAppointmentHolderDtoList != null && oldAppSvcKeyAppointmentHolderDtoList != null) {
-            List<AppSvcPrincipalOfficersDto> n = PageDataCopyUtil.copyAppSvcKah(appSvcKeyAppointmentHolderDtoList);
-            List<AppSvcPrincipalOfficersDto> o = PageDataCopyUtil.copyAppSvcKah(oldAppSvcKeyAppointmentHolderDtoList);
-            return !n.equals(o);
-        }
-        return appSvcKeyAppointmentHolderDtoList != null || oldAppSvcKeyAppointmentHolderDtoList != null;
-    }
-
-    private static boolean eqSvcDoc(List<AppSvcDocDto> appSvcDocDtoLit, List<AppSvcDocDto> oldAppSvcDocDtoLit) {
-        if (appSvcDocDtoLit == null) {
-            appSvcDocDtoLit = new ArrayList<>();
-        }
-        if (oldAppSvcDocDtoLit == null) {
-            oldAppSvcDocDtoLit = new ArrayList<>();
-        }
-        List<AppSvcDocDto> n = PageDataCopyUtil.copySvcDoc(appSvcDocDtoLit);
-        List<AppSvcDocDto> o = PageDataCopyUtil.copySvcDoc(oldAppSvcDocDtoLit);
-        return !o.equals(n);
-    }
-
-    private static boolean eqCgo(List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList,
-            List<AppSvcPrincipalOfficersDto> oldAppSvcCgoDtoList) {
-        if (appSvcCgoDtoList != null && oldAppSvcCgoDtoList != null) {
-            List<AppSvcPrincipalOfficersDto> n = PageDataCopyUtil.copyAppSvcCgo(appSvcCgoDtoList);
-            List<AppSvcPrincipalOfficersDto> o = PageDataCopyUtil.copyAppSvcCgo(oldAppSvcCgoDtoList);
-            return !n.equals(o);
-        }
-        return appSvcCgoDtoList != null || oldAppSvcCgoDtoList != null;
+    private static boolean isChangeSvcDocs(List<AppSvcDocDto> appSvcDocDtoLit, List<AppSvcDocDto> oldAppSvcDocDtoLit) {
+        return !isSame(appSvcDocDtoLit, oldAppSvcDocDtoLit, PageDataCopyUtil::copySvcDocs);
     }
 
     public static boolean eqHciCode(AppGrpPremisesDto appGrpPremisesDto, AppGrpPremisesDto oldAppGrpPremisesDto) {
@@ -470,28 +441,6 @@ public final class RfcHelper {
             return hciCode.equals(oldHciCode);
         }
         return true;
-    }
-
-    private static boolean isChangeFloorUnitList(List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtoList,
-            List<AppPremisesOperationalUnitDto> oldAppSubmissionDtoAppGrpPremisesDtoList) {
-        if (appPremisesOperationalUnitDtoList == null || oldAppSubmissionDtoAppGrpPremisesDtoList == null) {
-            return true;
-        }
-        int n1 = appPremisesOperationalUnitDtoList.size();
-        int n2 = oldAppSubmissionDtoAppGrpPremisesDtoList.size();
-        if (n1 != n2) {
-            return true;
-        }
-        for (AppPremisesOperationalUnitDto originalDto : appPremisesOperationalUnitDtoList) {
-            String floorNo = StringUtil.getNonNull(originalDto.getFloorNo());
-            String unitNo = StringUtil.getNonNull(originalDto.getUnitNo());
-            if (oldAppSubmissionDtoAppGrpPremisesDtoList.parallelStream()
-                    .noneMatch(dto -> Objects.equals(dto.getUnitNo(), unitNo)
-                            && Objects.equals(dto.getFloorNo(), floorNo))) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public static boolean isChangeFloorUnit(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto) {
@@ -511,6 +460,17 @@ public final class RfcHelper {
         return isChangeFloorUnitList(appPremisesOperationalUnitDtos, oldAppPremisesOperationalUnitDtos);
     }
 
+    public static boolean isChangeFloorUnit(List<AppGrpPremisesDto> appGrpPremisesDtoList,
+            List<AppGrpPremisesDto> oldAppGrpPremisesDtoList) {
+        List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = IaisCommonUtils.genNewArrayList();
+        appGrpPremisesDtoList.forEach((v) -> appPremisesOperationalUnitDtos.addAll(resolveFloorUnitList(v.getFloorNo(),
+                v.getUnitNo(), v.getAppPremisesOperationalUnitDtos())));
+        List<AppPremisesOperationalUnitDto> oldAppPremisesOperationalUnitDtos = IaisCommonUtils.genNewArrayList();
+        oldAppGrpPremisesDtoList.forEach((v) -> oldAppPremisesOperationalUnitDtos.addAll(resolveFloorUnitList(v.getFloorNo(),
+                v.getUnitNo(), v.getAppPremisesOperationalUnitDtos())));
+        return isChangeFloorUnitList(appPremisesOperationalUnitDtos, oldAppPremisesOperationalUnitDtos);
+    }
+
     private static List<AppPremisesOperationalUnitDto> resolveFloorUnitList(String floorNo, String unitNo,
             List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos) {
         List<AppPremisesOperationalUnitDto> result = IaisCommonUtils.genNewArrayList();
@@ -526,40 +486,11 @@ public final class RfcHelper {
         return result;
     }
 
-    public static boolean isChangeFloorUnit(List<AppGrpPremisesDto> appGrpPremisesDtoList,
-            List<AppGrpPremisesDto> oldAppGrpPremisesDtoList) {
-        List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = IaisCommonUtils.genNewArrayList();
-        appGrpPremisesDtoList.forEach((v) -> appPremisesOperationalUnitDtos.addAll(resolveFloorUnitList(v.getFloorNo(),
-                v.getUnitNo(), v.getAppPremisesOperationalUnitDtos())));
-        List<AppPremisesOperationalUnitDto> oldAppPremisesOperationalUnitDtos = IaisCommonUtils.genNewArrayList();
-        oldAppGrpPremisesDtoList.forEach((v) -> oldAppPremisesOperationalUnitDtos.addAll(resolveFloorUnitList(v.getFloorNo(),
-                v.getUnitNo(), v.getAppPremisesOperationalUnitDtos())));
-        return isChangeFloorUnitList(appPremisesOperationalUnitDtos, oldAppPremisesOperationalUnitDtos);
-    }
-
-    public static boolean isFloorUnitAllIn(AppGrpPremisesDto appGrpPremisesDto, AppGrpPremisesDto oldAppGrpPremisesDto) {
-        if (appGrpPremisesDto == null || oldAppGrpPremisesDto == null) {
-            return true;
-        }
-        List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = resolveFloorUnitList(appGrpPremisesDto.getFloorNo(),
-                appGrpPremisesDto.getUnitNo(), appGrpPremisesDto.getAppPremisesOperationalUnitDtos());
-
-        List<AppPremisesOperationalUnitDto> oldAppPremisesOperationalUnitDtos = resolveFloorUnitList(oldAppGrpPremisesDto.getFloorNo(),
-                oldAppGrpPremisesDto.getUnitNo(), oldAppGrpPremisesDto.getAppPremisesOperationalUnitDtos());
-
-        int n1 = appPremisesOperationalUnitDtos.size();
-        int n2 = oldAppPremisesOperationalUnitDtos.size();
-        if (n1 > n2) {
-            return false;
-        }
-        for (AppPremisesOperationalUnitDto originalDto : appPremisesOperationalUnitDtos) {
-            if (oldAppPremisesOperationalUnitDtos.parallelStream()
-                    .noneMatch(dto -> Objects.equals(dto.getUnitNo(), originalDto.getUnitNo())
-                            && Objects.equals(dto.getFloorNo(), originalDto.getFloorNo()))) {
-                return false;
-            }
-        }
-        return true;
+    private static boolean isChangeFloorUnitList(List<AppPremisesOperationalUnitDto> source,
+            List<AppPremisesOperationalUnitDto> oldSource) {
+        return isChangedList(source, oldSource, (dto, list) -> list.stream().
+                noneMatch(tar -> Objects.equals(dto.getUnitNo(), tar.getUnitNo())
+                        && Objects.equals(dto.getFloorNo(), tar.getFloorNo())));
     }
 
     public static boolean compareHciName(AppGrpPremisesDto premisesListQueryDto, AppGrpPremisesDto appGrpPremisesDto) {
@@ -756,17 +687,7 @@ public final class RfcHelper {
 
     public static boolean isChangeServicePersonnels(List<AppSvcPersonnelDto> servicePersonnelList,
             List<AppSvcPersonnelDto> oldServicePersonnelListList) {
-        if (servicePersonnelList == null && oldServicePersonnelListList == null) {
-            return false;
-        } else if (servicePersonnelList == null ^ oldServicePersonnelListList == null) {
-            return true;
-        }
-        if (servicePersonnelList.size() != oldServicePersonnelListList.size()) {
-            return true;
-        }
-        List<AppSvcPersonnelDto> o1 = PageDataCopyUtil.copySvcPersonnels(servicePersonnelList);
-        List<AppSvcPersonnelDto> o2 = PageDataCopyUtil.copySvcPersonnels(oldServicePersonnelListList);
-        return !o1.equals(o2);
+        return isSame(servicePersonnelList, oldServicePersonnelListList, PageDataCopyUtil::copySvcPersonnels);
     }
 
     public static boolean isChanged(List<AppSvcPrincipalOfficersDto> psnList, List<AppSvcPrincipalOfficersDto> oldPsnList) {
@@ -872,7 +793,7 @@ public final class RfcHelper {
 
     /**
      * Bundle / align
-     *
+     * <p>
      * TODO need to be changed
      *
      * @param appSubmissionDto
@@ -1174,18 +1095,28 @@ public final class RfcHelper {
         }
     }
 
+    public static <T, R> boolean isSame(T source, T target, Function<T, R> newObject) {
+        R newSrc = newObject.apply(source);
+        R newTar = newObject.apply(target);
+        return Objects.equals(newSrc, newTar);
+    }
+
+    public static <T, R> boolean isSame(List<T> source, List<T> target, Function<List<T>, List<R>> newList) {
+        if (source == null && target == null) {
+            return false;
+        } else if (source == null ^ target == null) {
+            return true;
+        }
+        if (source.size() != target.size()) {
+            return true;
+        }
+        List<R> newSrc = newList.apply(source);
+        List<R> newTar = newList.apply(target);
+        return newSrc.equals(newTar);
+    }
+
     public static <R> boolean isChanged(Object source, Object target, BiFunction<Object, Object, Object> checkTarget,
             BiPredicate<Class, String> filter) {
-//        if (o1 == null && o2 == null) {
-//            return false;
-//        } else if (o1 == null ^ o2 == null) {
-//            return true;
-//        }
-//        if (!Objects.equals(o1.getClass(), o2.getClass())) {
-//            return true;
-//        }
-//        Object source = preprocessor != null ? preprocessor.apply(o1) : o1;
-//        Object target = preprocessor != null ? preprocessor.apply(o2) : o2;
         if (source == null && target == null) {
             return false;
         } else if (source == null ^ target == null) {
@@ -1314,6 +1245,24 @@ public final class RfcHelper {
         }
         return oldSrc.stream()
                 .anyMatch(t -> isChanged(t, target.apply(t, src), null, filter));
+    }
+
+    public static <T> boolean isChangedList(List<T> src, List<T> oldSrc, BiPredicate<T, List<T>> check) {
+        if (src == null && oldSrc == null) {
+            return false;
+        } else if (src == null ^ oldSrc == null) {
+            return true;
+        }
+        if (src.size() != oldSrc.size()) {
+            return true;
+        }
+        boolean noneMatch = src.stream()
+                .noneMatch(t -> check.test(t, oldSrc));
+        if (noneMatch) {
+            return true;
+        }
+        return oldSrc.stream()
+                .noneMatch(t -> check.test(t, src));
     }
 
     public static <T> boolean isChangedSet(Set<T> src, Set<T> oldSrc, BiFunction<T, Set<T>, T> target,

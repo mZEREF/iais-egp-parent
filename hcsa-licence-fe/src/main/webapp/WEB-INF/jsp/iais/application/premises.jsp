@@ -12,6 +12,7 @@
 <input type="hidden" id="autoCheckRandM" value="${autoCheckRandM}"/>
 
 <c:set var="readonly" value="${AppSubmissionDto.readonlyPrem}" />
+<c:set var="singlePrem" value="${AppSubmissionDto.singlePrem}" />
 
 <webui:setLayout name="iais-internet"/>
 <%@ include file="/WEB-INF/jsp/iais/application/common/dashboard.jsp" %>
@@ -51,8 +52,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-12" id="addPremBody">
-                                        <%--<c:if test="${requestInformationConfig == null && 'APTY005' != AppSubmissionDto.appType && !multiBase && 'APTY004' != AppSubmissionDto.appType && !AppSubmissionDto.onlySpecifiedSvc}">--%>
-                                        <c:if test="${!isRfi && !isRFC && !isRenew && !multiBase && !readonly && isMultiPremService}">
+                                        <c:if test="${!isRfi && !isRFC && !isRenew && !readonly && !singlePrem}">
                                             <button id="addPremBtn" class="btn btn-primary" type="button">Add Mode of Service Delivery</button>
                                         </c:if>
                                     </div>
@@ -80,7 +80,7 @@
                   yesBtnDesc="" needEscapHtml="false" needFungDuoJi="false"/>
     <input type="hidden" name="continueStep" id="continueStep" value="${continueStep}">
     <input type="hidden" name="crudActionTypeContinue" id="crudActionTypeContinue" value="${crudActionTypeContinue}">
-    <input type="hidden" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
+    <%--<input type="hidden" name="errorMapIs" id="errorMapIs" value="${errormapIs}">--%>
     <%--<input type="hidden" id="rfc_eqHciNameChange" value="${rfc_eqHciCode}">--%>
 </form>
 </div>
@@ -129,12 +129,12 @@
         <c:if test="${readonly}">
         $('div.premContent').each(function () {
             let $premContent = $(this);
-            disablePremiseContent($premContent);
-            hideTag($premContent.find('.delNonHcsaSvcRow'));
-            hideTag($premContent.find('.opDel:not(:first)'));
+            disableContent($premContent.find('.premisesTypeDiv'));
+            disableContent($premContent.find('.permanentSel'));
+            checkPremDisabled($premContent, true);
         });
         </c:if>
-        <c:if test="${isNew && !isRfi && !readonly}">
+        <c:if test="${not empty errormapIs}">
         $('div.premContent').each(function () {
             doEditPremise($(this));
         });

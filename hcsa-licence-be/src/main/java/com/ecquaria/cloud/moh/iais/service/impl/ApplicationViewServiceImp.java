@@ -55,15 +55,16 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
@@ -198,27 +199,29 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
             AppSubmissionDto appSubmissionByAppId = licenceViewService.getAppSubmissionByAppId(applicationDto.getId());
             AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionByAppId.getAppSvcRelatedInfoDtoList().get(0);
             List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
-            if(appSvcDocDtoLit!=null){
-                appSvcDocDtoLit.forEach((v)->{
+            if (appSvcDocDtoLit != null) {
+                appSvcDocDtoLit.forEach((v) -> {
                     Integer seqNum = v.getPersonTypeNum();
                     String personType = v.getPersonType();
                     String svcDocId = v.getSvcDocId();
                     HcsaSvcDocConfigDto entity = hcsaConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
-                    Integer integer = map1.get(entity.getDocTitle() + personType + seqNum);
-                    if(integer==null){
-                        if (map1.isEmpty()) {
-                            map1.put(entity.getDocTitle() + personType + seqNum,1);
-                        }else {
-                            Integer max=1;
-                            for (Map.Entry<String, Integer> ent : map1.entrySet()) {
-                                if(ent.getKey().contains(entity.getDocTitle() + personType)){
-                                    Integer integer1 = ent.getValue();
-                                    if(integer1>=max){
-                                        max=integer1+1;
+                    if (entity != null) {
+                        Integer integer = map1.get(entity.getDocTitle() + personType + seqNum);
+                        if (integer == null) {
+                            if (map1.isEmpty()) {
+                                map1.put(entity.getDocTitle() + personType + seqNum, 1);
+                            } else {
+                                Integer max = 1;
+                                for (Map.Entry<String, Integer> ent : map1.entrySet()) {
+                                    if (ent.getKey().contains(entity.getDocTitle() + personType)) {
+                                        Integer integer1 = ent.getValue();
+                                        if (integer1 >= max) {
+                                            max = integer1 + 1;
+                                        }
                                     }
                                 }
+                                map1.put(entity.getDocTitle() + personType + seqNum, max);
                             }
-                            map1.put(entity.getDocTitle() + personType + seqNum,max);
                         }
                     }
                 });

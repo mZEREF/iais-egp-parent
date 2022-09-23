@@ -104,6 +104,9 @@ public interface HcsaChklClient {
     @GetMapping(path = "/iais-hcsa-service/subtype-name-results")
     FeignResponseEntity<List<String>> listSubTypeName();
 
+    @GetMapping(path = "/iais-hcsa-service/specific-name-results")
+    FeignResponseEntity<List<String>> listSpecName();
+
     @GetMapping(path = "/iais-hcsa-service/subtype-phase1-results")
     FeignResponseEntity<List<HcsaServiceSubTypeDto>> listSubTypePhase1();
 

@@ -1249,6 +1249,11 @@ public final class ApplicationHelper {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
             for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
+                getKeyPsnTypes(appSvcRelatedInfoDto)
+                        .parallelStream()
+                        .forEach(psnType -> syncPsnDto(getKeyPersonnel(psnType, true, appSvcRelatedInfoDto),
+                                personMap, appSvcRelatedInfoDto.getServiceCode()));
+                /*
                 String svcCode = appSvcRelatedInfoDto.getServiceCode();
                 syncPsnDto(appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList(), personMap, svcCode);
                 syncPsnDto(appSvcRelatedInfoDto.getAppSvcCgoDtoList(), personMap, svcCode);
@@ -1256,6 +1261,7 @@ public final class ApplicationHelper {
                 syncPsnDto(appSvcRelatedInfoDto.getAppSvcNomineeDtoList(), personMap, svcCode);
                 syncPsnDto(appSvcRelatedInfoDto.getAppSvcMedAlertPersonList(), personMap, svcCode);
                 syncPsnDto(appSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList(), personMap, svcCode);
+                */
             }
         }
         return appSubmissionDto;
@@ -3378,11 +3384,24 @@ public final class ApplicationHelper {
         return s.toString();
     }
 
-    public static List<AppSvcPrincipalOfficersDto> getKeyPersonnel(String psnType, HttpServletRequest request) {
-        return getKeyPersonnel(psnType, getAppSvcRelatedInfo(request));
+    public static List<String> getKeyPsnTypes(AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
+        List<String> psnTypes = IaisCommonUtils.genNewArrayListWithData(IaisCommonUtils.getKeyPersonnel());
+        List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = appSvcRelatedInfoDto.getAppSvcSpecialServiceInfoList();
+        if (!IaisCommonUtils.isEmpty(appSvcSpecialServiceInfoList)) {
+            for (AppSvcSpecialServiceInfoDto specialServiceInfoDto : appSvcSpecialServiceInfoList) {
+                psnTypes.addAll(specialServiceInfoDto.getKeyPsnTypes());
+            }
+        }
+        return psnTypes;
     }
 
-    public static List<AppSvcPrincipalOfficersDto> getKeyPersonnel(String psnType, AppSvcRelatedInfoDto appSvcRelatedInfoDto){
+
+    public static List<AppSvcPrincipalOfficersDto> getKeyPersonnel(String psnType, AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
+        return getKeyPersonnel(psnType, false, appSvcRelatedInfoDto);
+    }
+
+    public static List<AppSvcPrincipalOfficersDto> getKeyPersonnel(String psnType, boolean withSpecial,
+            AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
         if (StringUtil.isEmpty(psnType) || appSvcRelatedInfoDto == null) {
             return IaisCommonUtils.genNewArrayList();
         }
@@ -3407,9 +3426,26 @@ public final class ApplicationHelper {
                 result = appSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList();
                 break;
             default:
+                if (withSpecial) {
+                    result = getSpecialCgoList(psnType, appSvcRelatedInfoDto);
+                }
                 break;
         }
         return IaisCommonUtils.getList(result);
+    }
+
+    public static List<AppSvcPrincipalOfficersDto> getSpecialCgoList(String cgoKey, AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
+        List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = appSvcRelatedInfoDto.getAppSvcSpecialServiceInfoList();
+        if (IaisCommonUtils.isNotEmpty(appSvcSpecialServiceInfoList)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        for (AppSvcSpecialServiceInfoDto appSvcSpecialServiceInfoDto : appSvcSpecialServiceInfoList) {
+            List<AppSvcPrincipalOfficersDto> keyPersonnelList = appSvcSpecialServiceInfoDto.getKeyPersonnelList(cgoKey);
+            if (!IaisCommonUtils.isEmpty(keyPersonnelList)) {
+                return keyPersonnelList;
+            }
+        }
+        return IaisCommonUtils.genNewArrayList();
     }
 
     public static void setKeyPersonnel(List<AppSvcPrincipalOfficersDto> sourceList, String psnType,

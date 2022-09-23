@@ -17,11 +17,7 @@
         }
         pageController('');
         let flag = $("#curr").val();
-        if (flag == 'BLB' || 'NMA' == flag) {
-            let length = $('.personnel-content').length;
-            if (length == 1) {
-                $('.personnel-content').find('.assign-psn-item').html('')
-            }
+        if (flag == 'NMI' || 'NMA' == flag) {
             $('.personnel-content').each(function (k, v) {
                 var personnelSel = $(this).find('.personnelType').val();
                 var $personnelContentEle = $(this);
@@ -286,7 +282,7 @@
     var pageController = function ($Ele) {
         let flag = $("#curr").val();
         // NMI
-        if (flag == 'BLB' || flag == 'NMA') {
+        if (flag == 'NMI' || flag == 'NMA') {
             console.log("begin---->",init)
             personnelSel();
             if ($Ele == '') {

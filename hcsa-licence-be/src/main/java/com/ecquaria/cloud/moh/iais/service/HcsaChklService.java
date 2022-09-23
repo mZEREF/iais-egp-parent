@@ -89,10 +89,14 @@ public interface HcsaChklService {
      */
     List<String> listSubTypeName();
 
+    List<String> listSpecName();
+
     /**
      *
      * backend method: listServiceName
      */
+    List<String> listServiceName(String type);
+
     List<String> listServiceName();
 
     ChecklistConfigDto getChecklistConfigById(String id);

@@ -151,28 +151,34 @@ public final class AppDataHelper {
      * @description: get data from page
      * @author: zixian
      * @date: 11/6/2019 5:05 PM
+     * @param: singlePrem
      * @param: request
      * @return: AppGrpPremisesDto
      */
-    public static List<AppGrpPremisesDto> genAppGrpPremisesDtoList(HttpServletRequest request) {
+    public static List<AppGrpPremisesDto> genAppGrpPremisesDtoList(boolean singlePrem, HttpServletRequest request) {
         //AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
         /*boolean readonly = ApplicationHelper.readonlyPremises(appSubmissionDto);
         if (readonly) {
             return appSubmissionDto.getAppGrpPremisesDtoList();
         }*/
         List<AppGrpPremisesDto> appGrpPremisesDtoList = IaisCommonUtils.genNewArrayList();
-        List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,
+        /*List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,
                 AppServicesConsts.HCSASERVICEDTOLIST);
-        boolean isMultiPremService = ApplicationHelper.isMultiPremService(hcsaServiceDtoList);
+        boolean isMultiPremService = ApplicationHelper.isMultiPremService(hcsaServiceDtoList);*/
         String[] premisesIndexNos = ParamUtil.getStrings(request, "premisesIndexNo");
         String[] chooseExistData = ParamUtil.getStrings(request, "chooseExistData");
+        String[] premTypeValue = ParamUtil.getStrings(request, "premType");
+        String[] premSelValue = ParamUtil.getStrings(request, "premSelValue");
         String[] isParyEdit = ParamUtil.getStrings(request, "isParyEdit");
         int count = premisesIndexNos.length;
-        if (!isMultiPremService) {
+        if (singlePrem) {
             count = 1;
         }
         for (int i = 0; i < count; i++) {
             String premType = ParamUtil.getString(request, "premType" + i);
+            if (StringUtil.isEmpty(premType)) {
+                premType = getVal(premTypeValue, i);
+            }
             String premisesSel = "";
             if (ApplicationConsts.PREMISES_TYPE_PERMANENT.equals(premType)) {
                 premisesSel = ParamUtil.getString(request, "permanentSel" + i);
@@ -184,6 +190,9 @@ public final class AppDataHelper {
                 premisesSel = ParamUtil.getString(request, "mobileSel" + i);
             } else if (ApplicationConsts.PREMISES_TYPE_REMOTE.equals(premType)) {
                 premisesSel = ParamUtil.getString(request, "remoteSel" + i);
+            }
+            if (StringUtil.isEmpty(premisesSel)) {
+                premisesSel = getVal(premSelValue, i);
             }
             String premIndexNo = getVal(premisesIndexNos, i);
             if (StringUtil.isEmpty(premIndexNo)) {

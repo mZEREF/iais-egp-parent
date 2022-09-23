@@ -524,7 +524,7 @@ public class RequestForChangeMenuDelegator {
             return;
         }
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
-        List<AppGrpPremisesDto> appGrpPremisesDtoList = AppDataHelper.genAppGrpPremisesDtoList(bpc.request);
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = AppDataHelper.genAppGrpPremisesDtoList(true, bpc.request);
         ParamUtil.setRequestAttr(bpc.request, RfcConst.RELOADPREMISES, appGrpPremisesDtoList);
         List<LicenceDto> licenceDtoList = (List<LicenceDto>)bpc.getSession().getAttribute("licenceDtoList");
         if(appGrpPremisesDtoList!=null&&!appGrpPremisesDtoList.isEmpty()){

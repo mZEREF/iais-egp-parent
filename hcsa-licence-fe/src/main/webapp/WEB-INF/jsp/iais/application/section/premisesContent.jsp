@@ -23,7 +23,7 @@
         <input class="not-refresh premisesIndexNo" type="hidden" name="premisesIndexNo" value="${appGrpPremisesDto.premisesIndexNo}"/>
         <input class="not-refresh oldPremTypeValue" type="hidden" name="oldPremType" value="${appGrpPremisesDto.premisesType}"/>
         <input class="not-refresh premTypeValue" type="hidden" name="premType" value="${appGrpPremisesDto.premisesType}"/>
-        <input class="not-refresh premSelValue" type="hidden" value="${appGrpPremisesDto.premisesSelect}"/>
+        <input class="not-refresh premSelValue" type="hidden" name="premSelValue" value="${appGrpPremisesDto.premisesSelect}"/>
 
         <c:set var="premValue" value="${status.index}"/>
         <%--<input hidden class="premiseIndex" value="${premValue}">--%>
@@ -133,7 +133,7 @@
                 </div>
             </c:if>
 
-            <div class="form-group premisesTypeDiv"<c:if test="${isRenew || isRFC}">hidden</c:if> >
+            <div class="form-group premisesTypeDiv" <c:if test="${isRenew || isRFC}">hidden</c:if> >
                     <%--<label class="col-xs-12 col-md-4 control-label error-msg-type">What is your mode of service delivery ? <span class="mandatory">*</span></label>--%>
                 <iais:field value="What is your mode of service delivery ?" width="5" mandatory="true"/>
                 <c:set var="premTypeCss" value="${premTypeLen > 2 ? 'col-md-2' : 'col-md-3'}"/>
