@@ -116,6 +116,7 @@ public class DealSessionUtil {
         session.removeAttribute(HcsaAppConst.ACTION);
         session.removeAttribute(HcsaAppConst.ALL_SVC_NAMES);
         session.removeAttribute(HcsaAppConst.APPSUBMISSIONDTO);
+        session.removeAttribute(HcsaAppConst.OLDAPPSUBMISSIONDTO);
         session.removeAttribute(HcsaAppConst.HCSASERVICEDTO);
         session.removeAttribute(RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
         //Primary Documents

@@ -91,6 +91,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.ACKMESSAGE;
@@ -298,6 +299,8 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 List<AppGrpPremisesDto> appGrpPremisesDtos = licCommService.getLicPremisesInfo(premisesId);
                 if (IaisCommonUtils.isNotEmpty(appGrpPremisesDtos)) {
                     appGrpPremisesDtos.get(0).setExistingData(AppConsts.YES);
+                    appGrpPremisesDtos.get(0).setPremisesIndexNo(UUID.randomUUID().toString());
+                    appSubmissionDto.setReadonlyPrem(true);
                 }
                 appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
             } else {
