@@ -169,7 +169,7 @@
 
     <c:if test="${specialCount != 0}">
         <div class="panel-main-content">
-            <input type="" class="maxCount" value="3"/>
+            <input type="hidden" class="maxCount" value="3"/>
             <c:forEach begin="0" end="${specialCount - 1}" step="1" varStatus="status">
                 <c:set var="index" value="${status.index}"/>
                 <c:set value="SP000" var="logo"/>
