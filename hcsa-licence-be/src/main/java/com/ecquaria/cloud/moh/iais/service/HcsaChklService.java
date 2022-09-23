@@ -89,6 +89,8 @@ public interface HcsaChklService {
      */
     List<String> listSubTypeName();
 
+    List<String> listSpecName();
+
     /**
      *
      * backend method: listServiceName
