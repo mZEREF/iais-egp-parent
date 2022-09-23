@@ -731,70 +731,78 @@ public final class AppDataHelper {
         return isPartEdit || canEdit || isNewOfficer;
     }
 
-    public static List<AppSvcOtherInfoDto> genAppSvcOtherInfoList(HttpServletRequest request, String appType,List<AppSvcOtherInfoDto> appSvcOtherInfoDtos) {
-        AppSvcOtherInfoDto appSvcOtherInfoDto = new AppSvcOtherInfoDto();
+    public static List<AppSvcOtherInfoDto> genAppSvcOtherInfoList(HttpServletRequest request, String appType,
+                                                                  List<AppSvcOtherInfoDto> appSvcOtherInfoDtos,
+                                                                  List<AppGrpPremisesDto> appGrpPremisesDtos) {
         String currentSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request, currentSvcId);
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
-        String topType = ParamUtil.getString(request, "topType");
-        String provideTop = ParamUtil.getString(request, "provideTop");
-        String dsDeclaration = ParamUtil.getString(request, "dsDeclaration");
-        String ascsDeclaration = ParamUtil.getString(request, "ascsDeclaration");
-        String declaration = ParamUtil.getString(request, "declaration");
-        AppSvcOtherInfoMedDto appSvcOtherInfoMedDto = new AppSvcOtherInfoMedDto();
-        ControllerHelper.get(request, appSvcOtherInfoMedDto);
-        String systemOption = ParamUtil.getString(request, "systemOption");
-        if ("MED06".equals(systemOption)) {
-            String otherSystemOption = ParamUtil.getString(request, "otherSystemOption");
-            appSvcOtherInfoMedDto.setOtherSystemOption(otherSystemOption);
+        List<AppSvcOtherInfoDto> result = IaisCommonUtils.genNewArrayList();
+        if (IaisCommonUtils.isNotEmpty(appGrpPremisesDtos)){
+            for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
+                AppSvcOtherInfoDto appSvcOtherInfoDto = new AppSvcOtherInfoDto();
+                String premName = appGrpPremisesDto.getPremTypeName();
+                String prefix = appGrpPremisesDto.getPremisesIndexNo();
+                appSvcOtherInfoDto.setPremName(premName);
+                appSvcOtherInfoDto.setPremisesVal(prefix);
+                String topType = ParamUtil.getString(request, prefix+"topType");
+                String provideTop = ParamUtil.getString(request, prefix+"provideTop");
+                String dsDeclaration = ParamUtil.getString(request, prefix+"dsDeclaration");
+                String ascsDeclaration = ParamUtil.getString(request, prefix+"ascsDeclaration");
+                String declaration = ParamUtil.getString(request, prefix+"declaration");
+                AppSvcOtherInfoMedDto appSvcOtherInfoMedDto1 = new AppSvcOtherInfoMedDto();
+                String gfValue = ParamUtil.getString(request, prefix+"agfaValue");
+                appSvcOtherInfoMedDto1.setGfaValue(gfValue);
+                AppSvcOtherInfoNurseDto appSvcOtherInfoNurseDto = new AppSvcOtherInfoNurseDto();
+                ControllerHelper.get(request, appSvcOtherInfoNurseDto);
+                String provideYfVs = ParamUtil.getString(request,prefix+"provideYfVs");
+                String yfCommencementDateStr = ParamUtil.getString(request,prefix+"yfCommencementDate");
+                appSvcOtherInfoDto.setYfCommencementDateStr(yfCommencementDateStr);
+                if (StringUtil.isEmpty(yfCommencementDateStr)){
+                    appSvcOtherInfoDto.setYfCommencementDate(null);
+                }else {
+                    Date date = DateUtil.parseDate(yfCommencementDateStr,Formatter.DATE);
+                    appSvcOtherInfoDto.setYfCommencementDate(date);
+                }
+                appSvcOtherInfoDto.setProvideTop(provideTop);
+                appSvcOtherInfoDto.setDsDeclaration(dsDeclaration);
+                appSvcOtherInfoDto.setAscsDeclaration(ascsDeclaration);
+                appSvcOtherInfoDto.setDeclaration(declaration);
+                appSvcOtherInfoDto.setProvideYfVs(provideYfVs);
+                appSvcOtherInfoDto.setOtherInfoTopPersonPractitionersList(
+                        getAppSvcOtherInfoTopPersonDtoPractitioners(request, appType, isRfi, appSvcRelatedInfoDto,prefix));
+                appSvcOtherInfoDto.setOtherInfoTopPersonAnaesthetistsList(
+                        getAppSvcOtherInfoTopPersonDtoAnaesthetists(request, appType, isRfi, appSvcRelatedInfoDto,prefix));
+                appSvcOtherInfoDto.setOtherInfoTopPersonNursesList(
+                        getAppSvcOtherInfoTopPersonDtoNurses(request, appType, isRfi, appSvcRelatedInfoDto,prefix));
+                appSvcOtherInfoDto.setOtherInfoTopPersonCounsellorsList(
+                        getAppSvcOtherInfoTopPersonDtoCounsellors(request, appType, isRfi, appSvcRelatedInfoDto,prefix));
+                appSvcOtherInfoDto.setOtherInfoAbortDrugList(
+                        getAppSvcOtherInfoAbortDto1(request, appType, topType, isRfi, appSvcRelatedInfoDto,prefix));
+                appSvcOtherInfoDto.setOtherInfoAbortSurgicalProcedureList(
+                        getAppSvcOtherInfoAbortDto2(request, appType, topType, isRfi, appSvcRelatedInfoDto,prefix));
+                appSvcOtherInfoDto.setOtherInfoAbortDrugAndSurgicalList(
+                        getAppSvcOtherInfoAbortDto3(request, appType, topType, isRfi, appSvcRelatedInfoDto,prefix));
+                appSvcOtherInfoDto.setAppSvcOtherInfoTopDto(getAppSvcOtherInfoTopDto(request,prefix));
+                appSvcOtherInfoDto.setAppSvcOtherInfoMedDto(getAppSvcOtherDental(request,prefix));
+                appSvcOtherInfoDto.setOtherInfoMedAmbulatorySurgicalCentre(appSvcOtherInfoMedDto1);
+                appSvcOtherInfoDto.setAppSvcOtherInfoNurseDto(getAppSvcOtherInfoNurseDto(request,prefix));
+                appSvcOtherInfoDto.setOrgUserDto(getOtherInfoYfVs(request));
+                setAppSvcOtherFormList(appSvcOtherInfoDtos,request);
+                if (IaisCommonUtils.isNotEmpty(appSvcOtherInfoDtos)){
+                    for (AppSvcOtherInfoDto svcOtherInfoDto : appSvcOtherInfoDtos) {
+                        if (prefix.equals(svcOtherInfoDto.getPremisesVal())){
+                            appSvcOtherInfoDto.setAppSvcSuplmFormDto(svcOtherInfoDto.getAppSvcSuplmFormDto());
+                            appSvcOtherInfoDto.setAppPremSubSvcRelDtoList(genAppPremSubSvcRelDtoList(svcOtherInfoDto.getAppPremSubSvcRelDtoList(),
+                                    prefix,"",request));
+                            appSvcOtherInfoDto.initAllAppPremSubSvcRelDtoList();
+                        }
+                    }
+                }
+                result.add(appSvcOtherInfoDto);
+            }
         }
-        AppSvcOtherInfoMedDto appSvcOtherInfoMedDto1 = new AppSvcOtherInfoMedDto();
-        String gfValue = ParamUtil.getString(request, "agfaValue");
-        appSvcOtherInfoMedDto1.setGfaValue(gfValue);
-        AppSvcOtherInfoNurseDto appSvcOtherInfoNurseDto = new AppSvcOtherInfoNurseDto();
-        ControllerHelper.get(request, appSvcOtherInfoNurseDto);
-        String provideYfVs = ParamUtil.getString(request,"provideYfVs");
-        String yfCommencementDateStr = ParamUtil.getString(request,"yfCommencementDate");
-        appSvcOtherInfoDto.setYfCommencementDateStr(yfCommencementDateStr);
-        if (StringUtil.isEmpty(yfCommencementDateStr)){
-            appSvcOtherInfoDto.setYfCommencementDate(null);
-        }else {
-            Date date = DateUtil.parseDate(yfCommencementDateStr,Formatter.DATE);
-            appSvcOtherInfoDto.setYfCommencementDate(date);
-        }
-        appSvcOtherInfoDto.setProvideTop(provideTop);
-        appSvcOtherInfoDto.setDsDeclaration(dsDeclaration);
-        appSvcOtherInfoDto.setAscsDeclaration(ascsDeclaration);
-        appSvcOtherInfoDto.setDeclaration(declaration);
-        appSvcOtherInfoDto.setProvideYfVs(provideYfVs);
-        appSvcOtherInfoDto.setOtherInfoTopPersonPractitionersList(
-                getAppSvcOtherInfoTopPersonDtoPractitioners(request, appType, isRfi, appSvcRelatedInfoDto));
-        appSvcOtherInfoDto.setOtherInfoTopPersonAnaesthetistsList(
-                getAppSvcOtherInfoTopPersonDtoAnaesthetists(request, appType, isRfi, appSvcRelatedInfoDto));
-        appSvcOtherInfoDto.setOtherInfoTopPersonNursesList(
-                getAppSvcOtherInfoTopPersonDtoNurses(request, appType, isRfi, appSvcRelatedInfoDto));
-        appSvcOtherInfoDto.setOtherInfoTopPersonCounsellorsList(
-                getAppSvcOtherInfoTopPersonDtoCounsellors(request, appType, isRfi, appSvcRelatedInfoDto));
-        appSvcOtherInfoDto.setOtherInfoAbortDrugList(
-                getAppSvcOtherInfoAbortDto1(request, appType, topType, isRfi, appSvcRelatedInfoDto));
-        appSvcOtherInfoDto.setOtherInfoAbortSurgicalProcedureList(
-                getAppSvcOtherInfoAbortDto2(request, appType, topType, isRfi, appSvcRelatedInfoDto));
-        appSvcOtherInfoDto.setOtherInfoAbortDrugAndSurgicalList(
-                getAppSvcOtherInfoAbortDto3(request, appType, topType, isRfi, appSvcRelatedInfoDto));
-        appSvcOtherInfoDto.setAppSvcOtherInfoTopDto(getAppSvcOtherInfoTopDto(request));
-        appSvcOtherInfoDto.setAppSvcOtherInfoMedDto(appSvcOtherInfoMedDto);
-        appSvcOtherInfoDto.setOtherInfoMedAmbulatorySurgicalCentre(appSvcOtherInfoMedDto1);
-        appSvcOtherInfoDto.setAppSvcOtherInfoNurseDto(appSvcOtherInfoNurseDto);
-        appSvcOtherInfoDto.setOrgUserDto(getOtherInfoYfVs(request));
-        setAppSvcOtherFormList(appSvcOtherInfoDtos,request);
-        for (AppSvcOtherInfoDto svcOtherInfoDto : appSvcOtherInfoDtos) {
-            appSvcOtherInfoDto.setAppSvcSuplmFormDto(svcOtherInfoDto.getAppSvcSuplmFormDto());
-            appSvcOtherInfoDto.setAppPremSubSvcRelDtoList(genAppPremSubSvcRelDtoList(svcOtherInfoDto.getAppPremSubSvcRelDtoList(),
-                    svcOtherInfoDto.getPremisesVal(),"",request));
-        }
-        appSvcOtherInfoDto.initAllAppPremSubSvcRelDtoList();
-        appSvcOtherInfoDtos.add(appSvcOtherInfoDto);
-        return appSvcOtherInfoDtos;
+        return result;
     }
     //YfVs
     public static OrgUserDto getOtherInfoYfVs(HttpServletRequest request){
@@ -804,14 +812,48 @@ public final class AppDataHelper {
         return orgUserDto;
     }
 
+    //other nurse
+    public static AppSvcOtherInfoNurseDto getAppSvcOtherInfoNurseDto(HttpServletRequest request,String prefix){
+        AppSvcOtherInfoNurseDto appSvcOtherInfoNurseDto = new AppSvcOtherInfoNurseDto();
+        String perShiftNum = ParamUtil.getString(request, prefix+"perShiftNum");
+        String dialysisStationsNum = ParamUtil.getString(request, prefix+"dialysisStationsNum");
+        String helpBStationNum = ParamUtil.getString(request, prefix+"helpBStationNum");
+        String nisOpenToPublic = ParamUtil.getString(request, prefix+"nisOpenToPublic");
+        appSvcOtherInfoNurseDto.setHelpBStationNum(helpBStationNum);
+        appSvcOtherInfoNurseDto.setIsOpenToPublic(nisOpenToPublic);
+        appSvcOtherInfoNurseDto.setPerShiftNum(perShiftNum);
+        appSvcOtherInfoNurseDto.setDialysisStationsNum(dialysisStationsNum);
+        return appSvcOtherInfoNurseDto;
+    }
+
+    //other med
+    public static AppSvcOtherInfoMedDto getAppSvcOtherDental(HttpServletRequest request,String prefix){
+        AppSvcOtherInfoMedDto result = new AppSvcOtherInfoMedDto();
+        String isMedicalTypeIt = ParamUtil.getString(request, prefix+"isMedicalTypeIt");
+        String isMedicalTypePaper = ParamUtil.getString(request, prefix+"isMedicalTypePaper");
+        String systemOption = ParamUtil.getString(request, prefix+"systemOption");
+        String isOpenToPublic = ParamUtil.getString(request, prefix+"isOpenToPublic");
+        String gfaValue = ParamUtil.getString(request, prefix+"gfaValue");
+        result.setGfaValue(gfaValue);
+        result.setIsOpenToPublic(isOpenToPublic);
+        result.setSystemOption(systemOption);
+        result.setIsMedicalTypeIt(isMedicalTypeIt);
+        result.setIsMedicalTypePaper(isMedicalTypePaper);
+        if ("MED06".equals(systemOption)) {
+            String otherSystemOption = ParamUtil.getString(request, prefix+"otherSystemOption");
+            result.setOtherSystemOption(otherSystemOption);
+        }
+        return result;
+    }
+
     //other top
-    public static AppSvcOtherInfoTopDto getAppSvcOtherInfoTopDto(HttpServletRequest request) {
+    public static AppSvcOtherInfoTopDto getAppSvcOtherInfoTopDto(HttpServletRequest request,String prefix) {
         AppSvcOtherInfoTopDto result = new AppSvcOtherInfoTopDto();
-        String topType = ParamUtil.getString(request, "topType");
-        String hasConsuAttendCourse = ParamUtil.getString(request, "hasConsuAttendCourse");
-        String isProvideHpb = ParamUtil.getString(request, "isProvideHpb");
-        String isOutcomeProcRecord = ParamUtil.getString(request, "isOutcomeProcRecord");
-        String compCaseNum = ParamUtil.getString(request, "compCaseNum");
+        String topType = ParamUtil.getString(request, prefix+"topType");
+        String hasConsuAttendCourse = ParamUtil.getString(request, prefix+"hasConsuAttendCourse");
+        String isProvideHpb = ParamUtil.getString(request, prefix+"isProvideHpb");
+        String isOutcomeProcRecord = ParamUtil.getString(request, prefix+"isOutcomeProcRecord");
+        String compCaseNum = ParamUtil.getString(request, prefix+"compCaseNum");
         result.setTopType(topType);
         result.setHasConsuAttendCourse(hasConsuAttendCourse);
         result.setIsProvideHpb(isProvideHpb);
@@ -822,17 +864,17 @@ public final class AppDataHelper {
 
     //other top person practitioners
     public static List<AppSvcOtherInfoTopPersonDto> getAppSvcOtherInfoTopPersonDtoPractitioners(HttpServletRequest request,
-            String appType, boolean isRfi, AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
+            String appType, boolean isRfi, AppSvcRelatedInfoDto appSvcRelatedInfoDto,String prefix) {
         List<AppSvcOtherInfoTopPersonDto> result = IaisCommonUtils.genNewArrayList();
-        String c = ParamUtil.getString(request,"cdLength");
+        String c = ParamUtil.getString(request,prefix+"cdLength");
         if (StringUtil.isNotEmpty(c)){
-            int cdLength = ParamUtil.getInt(request, "cdLength");
+            int cdLength = ParamUtil.getInt(request, prefix+"cdLength");
             for (int i = 0; i < cdLength; i++) {
                 boolean getDataByIndexNo = false;
                 boolean getPageData = false;
                 String isPartEdit = ParamUtil.getString(request, "isPartEdit" + i);
-                String idNo = ParamUtil.getString(request, "idNo" + i);
-                String psnType = ParamUtil.getString(request, "psnType" + i);
+                String idNo = ParamUtil.getString(request, prefix+"idNo" + i);
+                String psnType = ParamUtil.getString(request, prefix+"psnType" + i);
                 if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
                     getPageData = true;
                 } else if (AppConsts.YES.equals(isPartEdit)) {
@@ -848,12 +890,12 @@ public final class AppDataHelper {
                     }
                 } else if (getPageData) {
                     AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto = new AppSvcOtherInfoTopPersonDto();
-                    String profRegNo = ParamUtil.getString(request,"profRegNo"+i);
-                    String regType = ParamUtil.getString(request,"regType"+i);
-                    String isMedAuthByMoh = ParamUtil.getString(request,"isMedAuthByMoh"+i);
-                    String name = ParamUtil.getString(request,"name"+i);
-                    String speciality = ParamUtil.getString(request,"speciality"+i);
-                    String qualification = ParamUtil.getString(request,"qualification"+i);
+                    String profRegNo = ParamUtil.getString(request,prefix+"profRegNo"+i);
+                    String regType = ParamUtil.getString(request,prefix+"regType"+i);
+                    String isMedAuthByMoh = ParamUtil.getString(request,prefix+"isMedAuthByMoh"+i);
+                    String name = ParamUtil.getString(request,prefix+"name"+i);
+                    String speciality = ParamUtil.getString(request,prefix+"speciality"+i);
+                    String qualification = ParamUtil.getString(request,prefix+"qualification"+i);
                     appSvcOtherInfoTopPersonDto.setQualification(qualification);
                     appSvcOtherInfoTopPersonDto.setSpeciality(speciality);
                     appSvcOtherInfoTopPersonDto.setName(name);
@@ -872,17 +914,17 @@ public final class AppDataHelper {
 
     //other top person anaesthetists
     public static List<AppSvcOtherInfoTopPersonDto> getAppSvcOtherInfoTopPersonDtoAnaesthetists(HttpServletRequest request,
-            String appType, boolean isRfi, AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
+            String appType, boolean isRfi, AppSvcRelatedInfoDto appSvcRelatedInfoDto,String prefix) {
         List<AppSvcOtherInfoTopPersonDto> result = IaisCommonUtils.genNewArrayList();
-        String a = ParamUtil.getString(request,"anaLength");
+        String a = ParamUtil.getString(request,prefix+"anaLength");
         if (StringUtil.isNotEmpty(a)){
-            int anaLength = ParamUtil.getInt(request, "anaLength");
+            int anaLength = ParamUtil.getInt(request, prefix+"anaLength");
             for (int i = 0; i < anaLength; i++) {
                 boolean getDataByIndexNo = false;
                 boolean getPageData = false;
                 String isPartEdit = ParamUtil.getString(request, "isPartEdit" + i);
-                String idNo = ParamUtil.getString(request, "idANo" + i);
-                String apsnType = ParamUtil.getString(request, "apsnType" + i);
+                String idNo = ParamUtil.getString(request, prefix+"idANo" + i);
+                String apsnType = ParamUtil.getString(request, prefix+"apsnType" + i);
                 if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
                     getPageData = true;
                 } else if (AppConsts.YES.equals(isPartEdit)) {
@@ -897,10 +939,10 @@ public final class AppDataHelper {
                         result.add(appPremOtherInfoTopPersonDto);
                     }
                 } else if (getPageData) {
-                    String profRegNo = ParamUtil.getString(request, "aprofRegNo" + i);
-                    String name = ParamUtil.getString(request, "aname" + i);
-                    String regType = ParamUtil.getString(request, "aregType" + i);
-                    String qualification = ParamUtil.getString(request, "aqualification" + i);
+                    String profRegNo = ParamUtil.getString(request, prefix+"aprofRegNo" + i);
+                    String name = ParamUtil.getString(request, prefix+"aname" + i);
+                    String regType = ParamUtil.getString(request, prefix+"aregType" + i);
+                    String qualification = ParamUtil.getString(request, prefix+"aqualification" + i);
                     AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto = new AppSvcOtherInfoTopPersonDto();
                     appSvcOtherInfoTopPersonDto.setPsnType(apsnType);
                     appSvcOtherInfoTopPersonDto.setProfRegNo(profRegNo);
@@ -918,18 +960,17 @@ public final class AppDataHelper {
 
     //other top person nurses
     public static List<AppSvcOtherInfoTopPersonDto> getAppSvcOtherInfoTopPersonDtoNurses(HttpServletRequest request, String appType,
-            boolean isRfi, AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
+            boolean isRfi, AppSvcRelatedInfoDto appSvcRelatedInfoDto,String prefix) {
         List<AppSvcOtherInfoTopPersonDto> result = IaisCommonUtils.genNewArrayList();
-
-        String n = ParamUtil.getString(request,"nLength");
+        String n = ParamUtil.getString(request,prefix+"nLength");
         if (StringUtil.isNotEmpty(n)){
-            int nLength = ParamUtil.getInt(request, "nLength");
+            int nLength = ParamUtil.getInt(request, prefix+"nLength");
             for (int i = 0; i < nLength; i++) {
                 boolean getDataByIndexNo = false;
                 boolean getPageData = false;
                 String isPartEdit = ParamUtil.getString(request, "isPartEdit" + i);
-                String nname = ParamUtil.getString(request, "nname" + i);
-                String npsnType = ParamUtil.getString(request, "npsnType" + i);
+                String nname = ParamUtil.getString(request, prefix+"nname" + i);
+                String npsnType = ParamUtil.getString(request, prefix+"npsnType" + i);
                 if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
                     getPageData = true;
                 } else if (AppConsts.YES.equals(isPartEdit)) {
@@ -944,7 +985,7 @@ public final class AppDataHelper {
                         result.add(appPremOtherInfoTopPersonDto);
                     }
                 } else if (getPageData) {
-                    String nqualification = ParamUtil.getString(request, "nqualification" + i);
+                    String nqualification = ParamUtil.getString(request, prefix+"nqualification" + i);
                     AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto = new AppSvcOtherInfoTopPersonDto();
                     appSvcOtherInfoTopPersonDto.setPsnType(npsnType);
                     appSvcOtherInfoTopPersonDto.setName(nname);
@@ -959,17 +1000,17 @@ public final class AppDataHelper {
 
     //other top person counsellors
     public static List<AppSvcOtherInfoTopPersonDto> getAppSvcOtherInfoTopPersonDtoCounsellors(HttpServletRequest request,
-            String appType, boolean isRfi, AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
+            String appType, boolean isRfi, AppSvcRelatedInfoDto appSvcRelatedInfoDto,String prefix) {
         List<AppSvcOtherInfoTopPersonDto> result = IaisCommonUtils.genNewArrayList();
-        String co = ParamUtil.getString(request,"cLength");
+        String co = ParamUtil.getString(request,prefix+"cLength");
         if (StringUtil.isNotEmpty(co)){
-            int cLength = ParamUtil.getInt(request, "cLength");
+            int cLength = ParamUtil.getInt(request, prefix+"cLength");
             for (int i = 0; i < cLength; i++) {
                 boolean getDataByIndexNo = false;
                 boolean getPageData = false;
                 String isPartEdit = ParamUtil.getString(request, "isPartEdit" + i);
-                String cidNo = ParamUtil.getString(request, "cidNo" + i);
-                String cpsnType = ParamUtil.getString(request, "cpsnType" + i);
+                String cidNo = ParamUtil.getString(request, prefix+"cidNo" + i);
+                String cpsnType = ParamUtil.getString(request, prefix+"cpsnType" + i);
                 if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
                     getPageData = true;
                 } else if (AppConsts.YES.equals(isPartEdit)) {
@@ -984,8 +1025,8 @@ public final class AppDataHelper {
                         result.add(appPremOtherInfoTopPersonDto);
                     }
                 } else if (getPageData) {
-                    String cqualification = ParamUtil.getString(request, "cqualification" + i);
-                    String cname = ParamUtil.getString(request, "cname" + i);
+                    String cqualification = ParamUtil.getString(request, prefix+"cqualification" + i);
+                    String cname = ParamUtil.getString(request, prefix+"cname" + i);
                     AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto = new AppSvcOtherInfoTopPersonDto();
                     appSvcOtherInfoTopPersonDto.setPsnType(cpsnType);
                     appSvcOtherInfoTopPersonDto.setName(cname);
@@ -1001,11 +1042,11 @@ public final class AppDataHelper {
 
     //other abort
     public static List<AppSvcOtherInfoAbortDto> getAppSvcOtherInfoAbortDto1(HttpServletRequest request, String appType, String topType,
-            boolean isRfi, AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
+            boolean isRfi, AppSvcRelatedInfoDto appSvcRelatedInfoDto,String prefix) {
         List<AppSvcOtherInfoAbortDto> result = IaisCommonUtils.genNewArrayList();
-        String at = ParamUtil.getString(request,"atdLength");
+        String at = ParamUtil.getString(request,prefix+"atdLength");
         if (StringUtil.isNotEmpty(at)){
-            int atdLength = ParamUtil.getInt(request, "atdLength");
+            int atdLength = ParamUtil.getInt(request, prefix+"atdLength");
             for (int i = 0; i < atdLength; i++) {
                 boolean getDataByIndexNo = false;
                 boolean getPageData = false;
@@ -1024,8 +1065,8 @@ public final class AppDataHelper {
                         result.add(appSvcOtherInfoAboutDto);
                     }
                 } else if (getPageData) {
-                    String year = ParamUtil.getString(request, "year" + i);
-                    String abortNum = ParamUtil.getString(request, "abortNum" + i);
+                    String year = ParamUtil.getString(request, prefix+"year" + i);
+                    String abortNum = ParamUtil.getString(request, prefix+"abortNum" + i);
 
                     AppSvcOtherInfoAbortDto appSvcOtherInfoAboutDto = new AppSvcOtherInfoAbortDto();
                     if (year != null && abortNum != null) {
@@ -1042,11 +1083,11 @@ public final class AppDataHelper {
     }
 
     public static List<AppSvcOtherInfoAbortDto> getAppSvcOtherInfoAbortDto2(HttpServletRequest request, String appType, String topType,
-            boolean isRfi, AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
+            boolean isRfi, AppSvcRelatedInfoDto appSvcRelatedInfoDto,String prefix) {
         List<AppSvcOtherInfoAbortDto> result = IaisCommonUtils.genNewArrayList();
-        String p = ParamUtil.getString(request,"pLength");
+        String p = ParamUtil.getString(request,prefix+"pLength");
         if (StringUtil.isNotEmpty(p)){
-            int pLength = ParamUtil.getInt(request, "pLength");
+            int pLength = ParamUtil.getInt(request, prefix+"pLength");
             for (int i = 0; i < pLength; i++) {
                 boolean getDataByIndexNo = false;
                 boolean getPageData = false;
@@ -1065,8 +1106,8 @@ public final class AppDataHelper {
                         result.add(appSvcOtherInfoAboutDto);
                     }
                 } else if (getPageData) {
-                    String year = ParamUtil.getString(request, "pyear" + i);
-                    String abortNum = ParamUtil.getString(request, "pabortNum" + i);
+                    String year = ParamUtil.getString(request, prefix+"pyear" + i);
+                    String abortNum = ParamUtil.getString(request, prefix+"pabortNum" + i);
 
                     AppSvcOtherInfoAbortDto appSvcOtherInfoAboutDto = new AppSvcOtherInfoAbortDto();
                     if (year != null && abortNum != null) {
@@ -1084,11 +1125,11 @@ public final class AppDataHelper {
     }
 
     public static List<AppSvcOtherInfoAbortDto> getAppSvcOtherInfoAbortDto3(HttpServletRequest request, String appType, String topType,
-            boolean isRfi, AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
+            boolean isRfi, AppSvcRelatedInfoDto appSvcRelatedInfoDto,String prefix) {
         List<AppSvcOtherInfoAbortDto> result = IaisCommonUtils.genNewArrayList();
-        String a =ParamUtil.getString(request,"aLength");
+        String a =ParamUtil.getString(request,prefix+"aLength");
         if (StringUtil.isNotEmpty(a)){
-            int aLength = ParamUtil.getInt(request, "aLength");
+            int aLength = ParamUtil.getInt(request, prefix+"aLength");
             for (int i = 0; i < aLength; i++) {
                 boolean getDataByIndexNo = false;
                 boolean getPageData = false;
@@ -1107,8 +1148,8 @@ public final class AppDataHelper {
                         result.add(appSvcOtherInfoAboutDto);
                     }
                 } else if (getPageData) {
-                    String year = ParamUtil.getString(request, "ayear" + i);
-                    String abortNum = ParamUtil.getString(request, "aabortNum" + i);
+                    String year = ParamUtil.getString(request, prefix+"ayear" + i);
+                    String abortNum = ParamUtil.getString(request, prefix+"aabortNum" + i);
 
                     AppSvcOtherInfoAbortDto appSvcOtherInfoAboutDto = new AppSvcOtherInfoAbortDto();
 

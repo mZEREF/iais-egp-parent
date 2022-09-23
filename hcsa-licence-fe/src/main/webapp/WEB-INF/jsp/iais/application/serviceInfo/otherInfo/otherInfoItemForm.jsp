@@ -4,10 +4,8 @@
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
 <input type="hidden" id="isEditHiddenVal" class="person-content-edit" name="isEdit"
        value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
-
-<div class="oitem <c:if test="${'1' != provideTop}">hidden</c:if> ">
-    <c:set var="itemPrefix" value="${appSvcOtherInfoDto.premisesVal}"/>
-
+<c:set var="itemPrefix" value="${appSvcOtherInfoDto.premisesVal}"/>
+<div class="oitem <c:if test="${'1' != provideTop}">hidden</c:if> ${itemPrefix}" data-prefix="${itemPrefix}">
     <c:forEach var="appSvcSuplmGroupDto" items="${appSvcSuplmFormDto.appSvcSuplmGroupDtoList}">
         <c:set var="count" value="${appSvcSuplmGroupDto.count}"/>
         <c:set var="baseSize" value="${appSvcSuplmGroupDto.baseSize}"/>

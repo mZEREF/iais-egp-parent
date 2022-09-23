@@ -511,7 +511,6 @@ public class ServiceInfoDelegator {
         log.debug(StringUtil.changeForLog("prePareOtherInformationDirector start ..."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
-        String currSvcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId,null);
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
         // Other Information Director config
@@ -551,7 +550,7 @@ public class ServiceInfoDelegator {
         if (isGetDataFromPage) {
             //get data from page
            appSvcOtherInfoDtos  = AppDataHelper.genAppSvcOtherInfoList(bpc.request,
-                    appSubmissionDto.getAppType(),appSvcOtherInfoDtos);
+                    appSubmissionDto.getAppType(),appSvcOtherInfoDtos,appSubmissionDto.getAppGrpPremisesDtoList());
             currSvcInfoDto.setAppSvcOtherInfoList(appSvcOtherInfoDtos);
             reSetChangesForApp(appSubmissionDto);
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
