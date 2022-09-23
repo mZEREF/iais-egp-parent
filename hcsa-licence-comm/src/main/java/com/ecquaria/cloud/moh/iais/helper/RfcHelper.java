@@ -1102,12 +1102,12 @@ public final class RfcHelper {
     }
 
     public static <T, R> boolean isSame(List<T> source, List<T> target, Function<List<T>, List<R>> newList) {
-        if (source == null && source == null) {
+        if (source == null && target == null) {
             return false;
-        } else if (source == null ^ source == null) {
+        } else if (source == null ^ target == null) {
             return true;
         }
-        if (source.size() != source.size()) {
+        if (source.size() != target.size()) {
             return true;
         }
         List<R> newSrc = newList.apply(source);
