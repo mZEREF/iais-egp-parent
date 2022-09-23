@@ -114,12 +114,12 @@
     }
 
     function doEditPremise($premContent, isEdit) {
-        console.info("------------doEditPremise----------------");
         // check whether the edit button is hidden or not,
         // if not, return false, or return true
         if (hideEditBtn($premContent)) {
             return;
         }
+        console.info("------------doEditPremise----------------");
         $('#isEditHiddenVal').val('1');
         unDisableContent($premContent);
         showTag($premContent.find('.retrieveAddr'));
@@ -303,6 +303,8 @@
             hideTag($premMainContent);
             if (onlyInit) {
                 checkPremDisabled($premContent, false);
+            } else {
+                $premContent.find('.chooseExistData').val("0");
             }
             dismissWaiting();
         } else if ("newPremise" == premSelectVal) {
@@ -313,6 +315,7 @@
                 checkAddressMandatory($premContent);
                 checkLocateWtihNonHcsa($premContent);
                 checkPremDisabled($premContent, false);
+                $premContent.find('.chooseExistData').val("0");
             }
             showTag($premMainContent);
             //showTag($premContent.find('.retrieveAddr'));
@@ -320,6 +323,8 @@
         } else {
             showTag($premMainContent);
             if (onlyInit) {
+                let existData = $premContent.find('.chooseExistData').val();
+                checkPremDisabled($premContent, '1' == existData);
                 dismissWaiting();
                 return;
             }

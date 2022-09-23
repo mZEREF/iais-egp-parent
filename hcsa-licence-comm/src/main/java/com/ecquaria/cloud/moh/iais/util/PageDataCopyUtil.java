@@ -20,7 +20,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
-import org.apache.poi.ss.formula.functions.T;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -60,13 +59,13 @@ public class PageDataCopyUtil {
         return copy;
     }
 
-    public static List<OperationHoursReloadDto> copyOperationHoursReloadDto(List<OperationHoursReloadDto> list){
-        if(list==null){
+    public static List<OperationHoursReloadDto> copyOperationHoursReloadDto(List<OperationHoursReloadDto> list) {
+        if (list == null) {
             return new ArrayList<>();
         }
-        List<OperationHoursReloadDto> operationHoursReloadDtoList=new ArrayList<>(list.size());
-        for(OperationHoursReloadDto operationHoursReloadDto : list){
-            OperationHoursReloadDto o=new OperationHoursReloadDto();
+        List<OperationHoursReloadDto> operationHoursReloadDtoList = new ArrayList<>(list.size());
+        for (OperationHoursReloadDto operationHoursReloadDto : list) {
+            OperationHoursReloadDto o = new OperationHoursReloadDto();
             o.setSelectValList(operationHoursReloadDto.getSelectValList());
             o.setSelectAllDay(operationHoursReloadDto.isSelectAllDay());
             o.setStartFrom(operationHoursReloadDto.getStartFrom());
@@ -75,13 +74,14 @@ public class PageDataCopyUtil {
         }
         return operationHoursReloadDtoList;
     }
-    public static List<AppPremEventPeriodDto> copyEvent(List<AppPremEventPeriodDto> list){
-        if(list==null){
+
+    public static List<AppPremEventPeriodDto> copyEvent(List<AppPremEventPeriodDto> list) {
+        if (list == null) {
             return new ArrayList<>();
         }
-        List<AppPremEventPeriodDto> appPremEventPeriodDtoList=new ArrayList<>(list.size());
-        for(AppPremEventPeriodDto appPremEventPeriodDto : list){
-            AppPremEventPeriodDto o=new AppPremEventPeriodDto();
+        List<AppPremEventPeriodDto> appPremEventPeriodDtoList = new ArrayList<>(list.size());
+        for (AppPremEventPeriodDto appPremEventPeriodDto : list) {
+            AppPremEventPeriodDto o = new AppPremEventPeriodDto();
             o.setEventName(appPremEventPeriodDto.getEventName());
             o.setEndDate(appPremEventPeriodDto.getEndDate());
             //o.setStartDate(o.getStartDate());
@@ -89,11 +89,13 @@ public class PageDataCopyUtil {
         }
         return appPremEventPeriodDtoList;
     }
-    public static List<AppPremisesOperationalUnitDto> copyAppPremisesOperationalUnitDto(List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos){
 
-        List<AppPremisesOperationalUnitDto> list= IaisCommonUtils.genNewArrayList();
-        for(AppPremisesOperationalUnitDto appPremisesOperationalUnitDto : appPremisesOperationalUnitDtos){
-            AppPremisesOperationalUnitDto operationalUnitDto=new AppPremisesOperationalUnitDto();
+    public static List<AppPremisesOperationalUnitDto> copyAppPremisesOperationalUnitDto(
+            List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos) {
+
+        List<AppPremisesOperationalUnitDto> list = IaisCommonUtils.genNewArrayList();
+        for (AppPremisesOperationalUnitDto appPremisesOperationalUnitDto : appPremisesOperationalUnitDtos) {
+            AppPremisesOperationalUnitDto operationalUnitDto = new AppPremisesOperationalUnitDto();
             operationalUnitDto.setFloorNo(appPremisesOperationalUnitDto.getFloorNo());
             operationalUnitDto.setUnitNo(appPremisesOperationalUnitDto.getUnitNo());
             list.add(operationalUnitDto);
@@ -130,17 +132,18 @@ public class PageDataCopyUtil {
                 .collect(Collectors.toList());
     }
 
-    public static List<AppSvcDocDto> copySvcDoc(List<AppSvcDocDto> appSvcDocDtoLit){
-        List<AppSvcDocDto> appSvcDocDtos=new ArrayList<>(appSvcDocDtoLit.size());
-        for(AppSvcDocDto appSvcDocDto : appSvcDocDtoLit){
-            if(StringUtil.isEmpty(appSvcDocDto.getMd5Code())){
+    public static List<AppSvcDocDto> copySvcDocs(List<AppSvcDocDto> appSvcDocDtoLit) {
+        List<AppSvcDocDto> appSvcDocDtos = new ArrayList<>(appSvcDocDtoLit.size());
+        for (AppSvcDocDto appSvcDocDto : appSvcDocDtoLit) {
+            if (StringUtil.isEmpty(appSvcDocDto.getMd5Code())) {
                 continue;
             }
-            AppSvcDocDto svcDocDto=new AppSvcDocDto();
+            AppSvcDocDto svcDocDto = new AppSvcDocDto();
             svcDocDto.setSvcDocId(appSvcDocDto.getSvcDocId());
             svcDocDto.setDocName(appSvcDocDto.getDocName());
             svcDocDto.setDocSize(appSvcDocDto.getDocSize());
             svcDocDto.setFileRepoId(appSvcDocDto.getFileRepoId());
+            svcDocDto.setSvcId(appSvcDocDto.getSvcId());
             //premiseVal May be ""
             svcDocDto.setMd5Code(appSvcDocDto.getMd5Code());
             appSvcDocDtos.add(svcDocDto);
@@ -148,22 +151,25 @@ public class PageDataCopyUtil {
         appSvcDocDtos.sort(Comparator.comparing(AppSvcDocDto::getMd5Code));
         return appSvcDocDtos;
     }
+
     public static List<AppSvcPrincipalOfficersDto> copyMedaler(List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList) {
-        List<AppSvcPrincipalOfficersDto> list=IaisCommonUtils.genNewArrayList();
+        List<AppSvcPrincipalOfficersDto> list = IaisCommonUtils.genNewArrayList();
         for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcMedAlertPersonList) {
             list.add(copyKeyPersonnel(appSvcPrincipalOfficersDto));
         }
         list.sort(Comparator.comparing(AppSvcPrincipalOfficersDto::getAssignSelect));
         return list;
     }
-    public static List<AppSvcPrincipalOfficersDto> copyAppSvcPo(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList)  {
-        List<AppSvcPrincipalOfficersDto> list=IaisCommonUtils.genNewArrayList();
+
+    public static List<AppSvcPrincipalOfficersDto> copyAppSvcPo(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList) {
+        List<AppSvcPrincipalOfficersDto> list = IaisCommonUtils.genNewArrayList();
         for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtoList) {
             list.add(copyKeyPersonnel(appSvcPrincipalOfficersDto));
         }
         list.sort(Comparator.comparing(AppSvcPrincipalOfficersDto::getAssignSelect));
         return list;
     }
+
     public static List<AppSvcPrincipalOfficersDto> copyAppSvcCgo(List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList) {
         List<AppSvcPrincipalOfficersDto> list = IaisCommonUtils.genNewArrayList();
         if (appSvcCgoDtoList == null || appSvcCgoDtoList.isEmpty()) {
@@ -188,14 +194,14 @@ public class PageDataCopyUtil {
         return list;
     }
 
-    public static List<AppSvcChckListDto> copyAppSvcChckListDto(List<AppSvcChckListDto> appSvcChckListDtos){
-        List<AppSvcChckListDto> list=IaisCommonUtils.genNewArrayList();
-        if(appSvcChckListDtos!=null){
-            for(AppSvcChckListDto appSvcChckListDto : appSvcChckListDtos){
-                AppSvcChckListDto svcChckListDto=new AppSvcChckListDto();
+    public static List<AppSvcChckListDto> copyAppSvcChckListDto(List<AppSvcChckListDto> appSvcChckListDtos) {
+        List<AppSvcChckListDto> list = IaisCommonUtils.genNewArrayList();
+        if (appSvcChckListDtos != null) {
+            for (AppSvcChckListDto appSvcChckListDto : appSvcChckListDtos) {
+                AppSvcChckListDto svcChckListDto = new AppSvcChckListDto();
                 svcChckListDto.setChkLstConfId(appSvcChckListDto.getChkLstConfId());
                 svcChckListDto.setChkName(appSvcChckListDto.getChkName());
-                list.add(svcChckListDto) ;
+                list.add(svcChckListDto);
             }
         }
         return list;
@@ -230,19 +236,19 @@ public class PageDataCopyUtil {
         return list;
     }
 
-    public static AppSvcChargesPageDto copyAppSvcClinicalDirector(AppSvcChargesPageDto appSvcChargesPageDto){
-        if(appSvcChargesPageDto==null){
+    public static AppSvcChargesPageDto copyAppSvcClinicalDirector(AppSvcChargesPageDto appSvcChargesPageDto) {
+        if (appSvcChargesPageDto == null) {
             return new AppSvcChargesPageDto();
         }
-        AppSvcChargesPageDto o=new AppSvcChargesPageDto();
+        AppSvcChargesPageDto o = new AppSvcChargesPageDto();
         List<AppSvcChargesDto> generalChargesDtos = appSvcChargesPageDto.getGeneralChargesDtos();
         List<AppSvcChargesDto> otherChargesDtos = appSvcChargesPageDto.getOtherChargesDtos();
-        if(generalChargesDtos==null||generalChargesDtos.isEmpty()){
+        if (generalChargesDtos == null || generalChargesDtos.isEmpty()) {
             o.setGeneralChargesDtos(new ArrayList<>(1));
-        }else {
-            List<AppSvcChargesDto> list=new ArrayList<>(generalChargesDtos.size());
-            generalChargesDtos.forEach((v)->{
-                AppSvcChargesDto appSvcChargesDto=new AppSvcChargesDto();
+        } else {
+            List<AppSvcChargesDto> list = new ArrayList<>(generalChargesDtos.size());
+            generalChargesDtos.forEach((v) -> {
+                AppSvcChargesDto appSvcChargesDto = new AppSvcChargesDto();
                 appSvcChargesDto.setChargesType(v.getChargesType());
                 appSvcChargesDto.setMaxAmount(v.getMaxAmount());
                 appSvcChargesDto.setMinAmount(v.getMinAmount());
@@ -251,12 +257,12 @@ public class PageDataCopyUtil {
             });
             o.setGeneralChargesDtos(list);
         }
-        if(otherChargesDtos==null||otherChargesDtos.isEmpty()){
+        if (otherChargesDtos == null || otherChargesDtos.isEmpty()) {
             o.setOtherChargesDtos(new ArrayList<>(1));
-        }else {
-            List<AppSvcChargesDto> list=new ArrayList<>(otherChargesDtos.size());
-            otherChargesDtos.forEach((v)->{
-                AppSvcChargesDto appSvcChargesDto=new AppSvcChargesDto();
+        } else {
+            List<AppSvcChargesDto> list = new ArrayList<>(otherChargesDtos.size());
+            otherChargesDtos.forEach((v) -> {
+                AppSvcChargesDto appSvcChargesDto = new AppSvcChargesDto();
                 appSvcChargesDto.setChargesType(v.getChargesType());
                 appSvcChargesDto.setRemarks(v.getRemarks());
                 appSvcChargesDto.setMinAmount(v.getMinAmount());
@@ -268,11 +274,12 @@ public class PageDataCopyUtil {
         return o;
     }
 
-    public static List<AppSvcPrincipalOfficersDto> copyAppSvcClinicalDirector(List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos){
-        if(appSvcClinicalDirectorDtos==null || appSvcClinicalDirectorDtos.isEmpty()){
+    public static List<AppSvcPrincipalOfficersDto> copyAppSvcClinicalDirector(
+            List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos) {
+        if (appSvcClinicalDirectorDtos == null || appSvcClinicalDirectorDtos.isEmpty()) {
             return new ArrayList<>(1);
         }
-        List<AppSvcPrincipalOfficersDto> list=new ArrayList<>(appSvcClinicalDirectorDtos.size());
+        List<AppSvcPrincipalOfficersDto> list = new ArrayList<>(appSvcClinicalDirectorDtos.size());
         appSvcClinicalDirectorDtos.forEach((v) -> list.add(copyKeyPersonnel(v)));
         list.sort(Comparator.comparing(AppSvcPrincipalOfficersDto::getAssignSelect));
         return list;
@@ -342,4 +349,5 @@ public class PageDataCopyUtil {
                 .map(t -> CopyUtil.copyMutableObject(t))
                 .collect(Collectors.toList());
     }
+
 }
