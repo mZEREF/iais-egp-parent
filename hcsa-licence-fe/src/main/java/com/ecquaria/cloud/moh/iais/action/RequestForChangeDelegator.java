@@ -254,7 +254,7 @@ public class RequestForChangeDelegator {
                     IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())) {
                 log.info(StringUtil.changeForLog("appSubmissionDto incomplete , licenceId:" + licenceId));
             } else {
-                log.debug(StringUtil.changeForLog("do request for change ------ licence no:" + appSubmissionDto.getLicenceNo()));
+                log.info(StringUtil.changeForLog("do request for change ------ licence no:" + appSubmissionDto.getLicenceNo()));
                 AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_REQUEST_FOR_CHANGE,
                         AuditTrailConsts.FUNCTION_REQUEST_FOR_CHANGE);
                 // HCSA Service Configuration
@@ -263,7 +263,7 @@ public class RequestForChangeDelegator {
                 List<HcsaServiceDto> hcsaServiceDtoList = IaisCommonUtils.genNewArrayList();
                 if (hcsaServiceDto != null) {
                     String currSvcId = hcsaServiceDto.getId();
-                    log.debug(StringUtil.changeForLog("current svc id:" + currSvcId));
+                    log.info(StringUtil.changeForLog("current svc id:" + currSvcId));
                     hcsaServiceDtoList.add(hcsaServiceDto);
                     ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
                     ParamUtil.setSessionAttr(bpc.request, "SvcId", currSvcId);
@@ -401,61 +401,64 @@ public class RequestForChangeDelegator {
     }
 
     /**
-     *
      * @param bpc
      * @Decription prepareFirstView
      */
     public void prepareFirstView(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do prepareFirstView start ...."));
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO);
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.RFCAPPSUBMISSIONDTO);
         // prepare AppEditSelectDto and some service info
-        appSubmissionService.setPreviewDta(appSubmissionDto,bpc);
+        appSubmissionService.setPreviewDta(appSubmissionDto, bpc);
         // init
         DealSessionUtil.initView(appSubmissionDto);
-        ParamUtil.setSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO,appSubmissionDto);
+        ParamUtil.setSessionAttr(bpc.request, RfcConst.RFCAPPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, appSubmissionDto);
-        ParamUtil.setRequestAttr(bpc.request,RfcConst.FIRSTVIEW,AppConsts.TRUE);
+        ParamUtil.setRequestAttr(bpc.request, RfcConst.FIRSTVIEW, AppConsts.TRUE);
         log.debug(StringUtil.changeForLog("the do prepareFirstView end ...."));
     }
 
     /**
-     *
      * @param bpc
      * @Decription doFirstView
      */
-    public void doFirstView(BaseProcessClass bpc){
+    public void doFirstView(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doFirstView start ...."));
-        String switchValue = ParamUtil.getString(bpc.request,RfcConst.SWITCH_VALUE);
-        if("back".equals(switchValue)){
-            ParamUtil.setRequestAttr(bpc.request,RfcConst.SWITCH,"prepare");
+        String switchValue = ParamUtil.getString(bpc.request, RfcConst.SWITCH_VALUE);
+        if ("back".equals(switchValue)) {
+            ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH, "prepare");
             return;
         }
-        String editValue = ParamUtil.getString(bpc.request,"EditValue");
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO);
-        AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto()==null? new AppEditSelectDto():appSubmissionDto.getAppEditSelectDto();
+        String editValue = ParamUtil.getString(bpc.request, "EditValue");
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.RFCAPPSUBMISSIONDTO);
+        AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto() == null ? new AppEditSelectDto() : appSubmissionDto.getAppEditSelectDto();
         String switchVal = "prepareFirstView";
-        if(!StringUtil.isEmpty(editValue)){
+        if (!StringUtil.isEmpty(editValue)) {
             switchVal = "doEdit";
-            if(RfcConst.EDIT_LICENSEE.equals(editValue)) {
-                appEditSelectDto.setLicenseeEdit(true);
-                ParamUtil.setRequestAttr(bpc.request, RfcConst.RFC_CURRENT_EDIT, RfcConst.EDIT_LICENSEE);
-            }else if(RfcConst.EDIT_PREMISES.equals(editValue)){
-                appEditSelectDto.setPremisesEdit(true);
-                ParamUtil.setRequestAttr(bpc.request,RfcConst.RFC_CURRENT_EDIT,RfcConst.EDIT_PREMISES);
-            }else if(RfcConst.EDIT_SPECIALISED.equals(editValue)){
-                appEditSelectDto.setSpecialisedEdit(true);
-                ParamUtil.setRequestAttr(bpc.request,RfcConst.RFC_CURRENT_EDIT,RfcConst.EDIT_SPECIALISED);
-            }else if(RfcConst.EDIT_SERVICE.equals(editValue)){
-                appEditSelectDto.setServiceEdit(true);
-                ParamUtil.setRequestAttr(bpc.request,RfcConst.RFC_CURRENT_EDIT,RfcConst.EDIT_SERVICE);
+            switch (editValue) {
+                case RfcConst.EDIT_LICENSEE:
+                    appEditSelectDto.setLicenseeEdit(true);
+                    ParamUtil.setRequestAttr(bpc.request, RfcConst.RFC_CURRENT_EDIT, RfcConst.EDIT_LICENSEE);
+                    break;
+                case RfcConst.EDIT_PREMISES:
+                    appEditSelectDto.setPremisesEdit(true);
+                    ParamUtil.setRequestAttr(bpc.request, RfcConst.RFC_CURRENT_EDIT, RfcConst.EDIT_PREMISES);
+                    break;
+                case RfcConst.EDIT_SPECIALISED:
+                    appEditSelectDto.setSpecialisedEdit(true);
+                    ParamUtil.setRequestAttr(bpc.request, RfcConst.RFC_CURRENT_EDIT, RfcConst.EDIT_SPECIALISED);
+                    break;
+                case RfcConst.EDIT_SERVICE:
+                    appEditSelectDto.setServiceEdit(true);
+                    ParamUtil.setRequestAttr(bpc.request, RfcConst.RFC_CURRENT_EDIT, RfcConst.EDIT_SERVICE);
+                    break;
             }
             //appEditSelectDto.setDoEdit(switchVal);
             appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
             appSubmissionDto.setClickEditPage(null);
-            ParamUtil.setRequestAttr(bpc.request,RfcConst.APPSUBMISSIONDTORFCATTR,appSubmissionDto);
-            ParamUtil.setRequestAttr(bpc.request,"appType",ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+            ParamUtil.setRequestAttr(bpc.request, RfcConst.APPSUBMISSIONDTORFCATTR, appSubmissionDto);
+            ParamUtil.setRequestAttr(bpc.request, "appType", ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         }
-        ParamUtil.setRequestAttr(bpc.request,RfcConst.SWITCH,switchVal);
+        ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH, switchVal);
         log.debug(StringUtil.changeForLog("the do doFirstView end ...."));
     }
 
