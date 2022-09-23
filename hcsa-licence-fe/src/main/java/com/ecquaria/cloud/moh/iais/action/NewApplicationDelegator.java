@@ -296,6 +296,9 @@ public class NewApplicationDelegator extends AppCommDelegator {
             }
             if (!StringUtil.isEmpty(premisesId)) {
                 List<AppGrpPremisesDto> appGrpPremisesDtos = licCommService.getLicPremisesInfo(premisesId);
+                if (IaisCommonUtils.isNotEmpty(appGrpPremisesDtos)) {
+                    appGrpPremisesDtos.get(0).setExistingData(AppConsts.YES);
+                }
                 appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
             } else {
                 List<AppGrpPremisesDto> appGrpPremisesDtos = IaisCommonUtils.genNewArrayList();
