@@ -29,8 +29,8 @@
     <input type="hidden" name="isPartEdit" value="0"/>
     <iais:row cssClass="control  svcPsnSel">
         <div class="personnel-sel">
-            <iais:field width="5" mandatory="true" value="Select Service Personnel" cssClass="col-sm-5 col-md-5"/>
-            <iais:value width="7" cssClass="col-sm-5 col-md-7">
+            <iais:field width="5" mandatory="true" value="Select Service Personnel" cssClass="col-sm-5"/>
+            <iais:value width="7" cssClass="col-md-7">
                 <iais:select cssClass="personnelType" name="personnelType${index}" options="ServicePersonnelType"
                              value="${appSvcPersonnelDto.personnelType}" firstOption="Please Select"></iais:select>
             </iais:value>
@@ -39,7 +39,7 @@
     <div class="new-svc-personnel-form">
         <%--        name--%>
         <iais:row cssClass="personnel-name hidden ">
-            <iais:field width="5" mandatory="true" value="Name" cssClass="col-sm-5 col-md-5"/>
+            <iais:field width="5" mandatory="true" value="Name" cssClass="col-sm-5"/>
             <iais:value width="7" cssClass="col-sm-5 col-md-7">
                 <iais:input maxLength="66" cssClass="name" type="text" name="name${index}"
                             value="${appSvcPersonnelDto.name}"></iais:input>
@@ -48,7 +48,7 @@
 
 
         <iais:row cssClass="personnel-designation hidden ">
-            <iais:field width="5" mandatory="true" value="Designation" cssClass="col-sm-5 col-md-5"/>
+            <iais:field width="5" mandatory="true" value="Designation" cssClass="col-sm-5"/>
             <iais:value width="7" cssClass="col-sm-5 col-md-7">
                 <iais:select cssClass="designation" name="designation${index}"
                              options="NuclearMedicineImagingDesignation"
@@ -57,7 +57,7 @@
         </iais:row>
 
         <iais:row cssClass="${appSvcPersonnelDto.designation=='Others' ? '' : 'hidden'} otherDesignationDiv">
-            <iais:field width="5" cssClass="col-sm-5 col-md-5" value="OtherDesignation" mandatory="true"/>
+            <iais:field width="5" cssClass="col-sm-5" value="OtherDesignation" mandatory="true"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="100" type="text" cssClass="otherDesignation"
                             name="otherDesignation${index}"
@@ -67,7 +67,7 @@
 
         <%--    qualification--%>
         <iais:row cssClass="personnel-qualification hidden ">
-            <iais:field width="5" mandatory="true" value="Qualification" cssClass="col-sm-5 col-md-5"/>
+            <iais:field width="5" mandatory="true" value="Qualification" cssClass="col-sm-5"/>
             <iais:value width="7" cssClass="col-sm-5 col-md-7">
                 <iais:input maxLength="100" cssClass="qualification" type="text" name="qualification${index}"
                             value="${appSvcPersonnelDto.qualification}"></iais:input>
@@ -75,7 +75,7 @@
         </iais:row>
         <%--    regnNo--%>
         <iais:row cssClass="personnel-regnNo hidden ">
-            <iais:field width="5" mandatory="true" value="Professional Regn. No. " cssClass="col-sm-5 col-md-5"/>
+            <iais:field width="5" mandatory="true" value="Professional Regn. No. " cssClass="col-sm-5"/>
             <iais:value width="7" cssClass="col-sm-5 col-md-7">
                 <iais:input maxLength="20" cssClass="profRegNo" type="text" name="profRegNo${index}"
                             value="${appSvcPersonnelDto.profRegNo}"></iais:input>
@@ -84,7 +84,7 @@
         <%--    years--%>
         <iais:row cssClass="personnel-wrkExpYear hidden ">
             <iais:field width="5" mandatory="true" value="Relevant working experience (Years)"
-                        cssClass="col-sm-5 col-md-5"/>
+                        cssClass="col-sm-5"/>
             <iais:value width="7" cssClass="col-sm-5 col-md-7">
                 <iais:input maxLength="2" cssClass="wrkExpYear" type="text" name="wrkExpYear${index}"
                             value="${appSvcPersonnelDto.wrkExpYear}"></iais:input>
