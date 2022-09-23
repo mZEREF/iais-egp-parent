@@ -80,7 +80,7 @@
                   yesBtnDesc="" needEscapHtml="false" needFungDuoJi="false"/>
     <input type="hidden" name="continueStep" id="continueStep" value="${continueStep}">
     <input type="hidden" name="crudActionTypeContinue" id="crudActionTypeContinue" value="${crudActionTypeContinue}">
-    <input type="hidden" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
+    <%--<input type="hidden" name="errorMapIs" id="errorMapIs" value="${errormapIs}">--%>
     <%--<input type="hidden" id="rfc_eqHciNameChange" value="${rfc_eqHciCode}">--%>
 </form>
 </div>
@@ -134,7 +134,7 @@
             hideTag($premContent.find('.opDel:not(:first)'));
         });
         </c:if>
-        <c:if test="${isNew && !isRfi && !readonly}">
+        <c:if test="${not empty errormapIs}">
         $('div.premContent').each(function () {
             doEditPremise($(this));
         });

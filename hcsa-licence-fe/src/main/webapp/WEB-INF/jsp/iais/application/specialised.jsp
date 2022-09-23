@@ -70,11 +70,15 @@
             showWaiting();
             submit('specialised', 'saveDraft', $('#selectDraftNo').val());
         });
-
         <c:if test="${AppSubmissionDto.needEditController}">
         $('div.specialised-content').each(function () {
             let $content = $(this);
             disableSpecialisedContent($content);
+        });
+        </c:if>
+        <c:if test="${not empty errormapIs}">
+        $('div.specialised-content').each(function () {
+            doEditSpecialised($(this));
         });
         </c:if>
     });

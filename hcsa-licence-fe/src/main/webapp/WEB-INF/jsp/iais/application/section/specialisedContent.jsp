@@ -128,12 +128,25 @@
     }
 
     function doEditSpecialised($content) {
+        if (hideEditBtn($content)) {
+            return;
+        }
         $('#isEditHiddenVal').val('1');
         unDisableContent($content);
-        let $target = $('.editDiv');
-        if (!isEmptyNode($target)) {
-            hideTag($target);
+        let $editDiv = $content.find('.editDiv');
+        let $editParent = $editDiv.closest('.form-group');
+        if (!isEmptyNode($editParent)) {
+            hideTag($editParent);
+        } else {
+            hideTag($editDiv);
         }
     }
 
+    function hideEditBtn ($content) {
+        let $target= $content.find('.editDiv');
+        if (isEmptyNode($target)) {
+            return true;
+        }
+        return $target.is(':hidden');
+    }
 </script>
