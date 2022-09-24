@@ -20,7 +20,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Age of 1st Embryo Transferred" />
+                    <iais:field width="5" value="1st Embryo" />
                     <iais:value width="7" display="true" cssClass="col-md-7">
                         <iais:code code="${embryoTransferStageDto.firstEmbryoAge}"/>
                     </iais:value>

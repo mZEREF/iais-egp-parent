@@ -1,21 +1,23 @@
 <script type="text/javascript">
-    $(document).ready(function() {
+    $(document).ready(function () {
         initSectionLeader();
-        <c:if test="${(!AppSubmissionDto.needEditController && readOnly) || AppSubmissionDto.needEditController}" var="isSpecial">
+        <c:if test="${AppSubmissionDto.needEditController}" var="isSpecial">
         disableContent('div.sectionLaderContent');
         <c:if test="${!canEdit}">
         $('.removeBtn').closest('div').remove();
         </c:if>
         </c:if>
-        if("${errormapIs}"=='error'){
-            $('.edit').trigger('click');
+        if ("${errormapIs}" == 'error') {
+            $('div.sectionLaderContent').each(function (k, v) {
+                doEditeSectionLeader($(v));
+            });
         }
     });
 
     function initSectionLeader() {
-        addSectionLeaderBtn();
-        removeSectionLeader();
-        doEditeSectionLeader();
+        addSectionLeaderBtnEvent();
+        removeSectionLeaderEvent();
+        doEditeSectionLeaderEvent();
         refreshSectionLeaderBtn();
     }
 
@@ -25,7 +27,7 @@
         console.info("length: " + slLength)
         var $content = $('div.sectionLaderContent');
         refreshIndex($content);
-        $content.each(function (k,v) {
+        $content.each(function (k, v) {
             if (slLength <= 1 && k == 0) {
                 $(this).find('.assign-psn-item').html('');
             } else {
@@ -38,44 +40,34 @@
         var $content = $('div.sectionLaderContent');
         var slLength = $content.length;
         $('input[name="slLength"]').val(slLength);
-        var isEdit =  $('#isEditHiddenVal').val();
-        $content.each(function (index,v) {
+        var isEdit = $('#isEditHiddenVal').val();
+        $content.each(function (index, v) {
             if (index < '${sectionLeaderConfig.mandatoryCount}') {
                 $(v).find('.removeSectionLeaderDiv').hide();
             } else {
                 $(v).find('.removeSectionLeaderDiv').show();
             }
         });
-        <c:if test="${!isRfi && (AppSubmissionDto.appType == 'APTY002' || canEdit)}" var="canShowAddBtn">
-        // display add more
-        if (slLength < '${sectionLeaderConfig.maximumCount}') {
-            $('.addSectionLeaderDiv').show();
-        } else {//hidden add more
-            $('.addSectionLeaderDiv').hide();
-        }
-        </c:if>
-        <c:if test="${!canShowAddBtn}">
-        $('.addSectionLeaderDiv').remove();
-        </c:if>
+        refreshPersonOthers();
     }
 
-    function addSectionLeaderBtn () {
+    function addSectionLeaderBtnEvent() {
         $('.addSectionLeaderBtn').unbind('click');
         $('.addSectionLeaderBtn').click(function () {
             showWaiting();
-            let target =  $('div.sectionLaderContent:last')
+            let target = $('div.sectionLaderContent:last')
             let src = target.clone();
             clearFields(src);
             $('div.addSectionLeaderDiv').before(src);
             refreshSectionLeaderBtn()
             refreshSectionLeaderIndex()
             $('#isEditHiddenVal').val('1');
-            removeSectionLeader()
+            removeSectionLeaderEvent()
             dismissWaiting();
         });
     };
 
-    function removeSectionLeader () {
+    function removeSectionLeaderEvent() {
         $('.removeBtn').unbind('click');
         $('.removeBtn').click(function () {
             showWaiting();
@@ -93,15 +85,25 @@
         });
     }
 
-    var doEditeSectionLeader = function () {
-        $('.edit-content a').unbind('click');
-        $('.edit-content a').click(function () {
-            var $currContent = $(this).closest('div.sectionLaderContent');
-            unDisableContent($currContent);
-            $('#isEditHiddenVal').val('1');
-            $currContent.find('.isPartEdit').val('1');
-            refreshSectionLeaderBtn();
-            $(this).hide();
+    var doEditeSectionLeaderEvent = function () {
+        let $target = $('.edit-content a');
+        $target.unbind('click');
+        $target.click(function () {
+            let $currContent = $(this).closest('div.sectionLaderContent');
+            doEditeSectionLeader($currContent);
         });
+    }
+
+    function doEditeSectionLeader($currContent) {
+        unDisableContent($currContent);
+        $('#isEditHiddenVal').val('1');
+        $currContent.find('.isPartEdit').val('1');
+        refreshSectionLeaderBtn();
+        hideTag($('.edit-content'));
+    }
+
+    function refreshPersonOthers() {
+        let maxCount = eval('${sectionLeaderConfig.maximumCount}');
+        toggleTag('.addSectionLeaderDiv', $('div.sectionLaderContent').length < maxCount);
     }
 </script>

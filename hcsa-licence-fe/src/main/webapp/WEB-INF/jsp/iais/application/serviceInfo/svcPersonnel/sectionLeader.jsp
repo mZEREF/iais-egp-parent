@@ -59,11 +59,13 @@
         <%@include file="sectionLeaderDetail.jsp" %>
     </c:forEach>
 
-    <div class="col-md-12 col-xs-12 addSectionLeaderDiv" style="${!needAddPsn ? 'display:none;' : ''}">
-        <span class="addSectionLeaderBtn" style="color:deepskyblue;cursor:pointer;">
-            <span style="">+ Add Another ${singleName}</span>
-        </span>
-    </div>
+    <c:if test="${!isRfi}">
+        <div class="col-md-12 col-xs-12 addSectionLeaderDiv">
+            <span class="addSectionLeaderBtn" style="color:deepskyblue;cursor:pointer;">
+                <span style="">+ Add Another ${singleName}</span>
+            </span>
+        </div>
+    </c:if>
 </div>
 <%@include file="sectionLeaderFun.jsp" %>
 

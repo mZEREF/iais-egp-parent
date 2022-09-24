@@ -72,20 +72,7 @@
                         </c:forEach>
 
                         <c:if test="${!isRfi}">
-                            <c:set var="needAddPsn" value="true"/>
-                            <c:choose>
-                                <c:when test="${currStepConfig.status =='CMSTAT003'}">
-                                    <c:set var="needAddPsn" value="false"/>
-                                </c:when>
-                                <c:when test="${personCount >= currStepConfig.maximumCount}">
-                                    <c:set var="needAddPsn" value="false"/>
-                                </c:when>
-                                <c:when test="${AppSubmissionDto.needEditController && !canEdit}">
-                                    <c:set var="needAddPsn" value="false"/>
-                                </c:when>
-                            </c:choose>
-
-                            <div class="form-group col-md-12 col-xs-12 addPoDiv <c:if test="${!needAddPsn}">hidden</c:if>">
+                            <div class="form-group col-md-12 col-xs-12 addPoDiv">
                                 <span class="addPoBtn" style="color:deepskyblue;cursor:pointer;">
                                     <span style="">+ Add Another <c:out value="${singleName}"/></span>
                                 </span>
@@ -183,12 +170,13 @@
                             <%@include file="personnelDetail.jsp" %>
                         </c:forEach>
 
-                        <div class="form-group col-md-12 col-xs-12 addDpoDiv <c:if test="${!needAddPsn}">hidden</c:if>">
-                            <span class="addDpoBtn" style="color:deepskyblue;cursor:pointer;">
-                                <span style="">+ Add Another <c:out value="${singleName}"/></span>
-                            </span>
-                        </div>
-
+                        <c:if test="${!isRfi}">
+                            <div class="form-group col-md-12 col-xs-12 addDpoDiv">
+                                <span class="addDpoBtn" style="color:deepskyblue;cursor:pointer;">
+                                    <span style="">+ Add Another <c:out value="${singleName}"/></span>
+                                </span>
+                            </div>
+                        </c:if>
                     </div>
                 </div>
             </div>
@@ -198,28 +186,32 @@
 
 <script type="text/javascript">
     $(function() {
+        let psnContent = '.person-content';
+        removePersonEvent(psnContent);
+        assignSelectEvent(psnContent);
+        psnEditEvent(psnContent);
+        $('.addPoBtn').on('click', function () {
+            addPersonnel(psnContent);
+        });
+        // init page
+        initPerson(psnContent);
+
         editdpoDropDownEvent();
         deputySelectEvent();
 
-        $('.addPoBtn').on('click', function () {
-            addPersonnel('div.person-content');
-        });
-        $('.addDpoBtn').on('click', function () {
-            addPersonnel('div.dpo-person-content');
-        });
-
-        let psnContent = '.dpo-person-content';
+        psnContent = '.dpo-person-content';
         removePersonEvent(psnContent);
         assignSelectEvent(psnContent);
         profRegNoEvent(psnContent);
         psnEditEvent(psnContent);
-
+        $('.addDpoBtn').on('click', function () {
+            addPersonnel(psnContent);
+        });
         initPerson(psnContent);
     });
 
-    function refreshPersonOthers($target, k) {
-        let cntClass = $target.attr('class');
-        if ('dpo-person-content' == cntClass) {
+    function refreshPersonOthers($target) {
+        if ($target.hasClass('dpo-person-content')) {
             const maxDpoCount = eval('${dpoHcsaSvcPersonnelDto.maximumCount}');
             toggleTag('.addDpoDiv', $('div.dpo-person-content').length < maxDpoCount);
         } else {

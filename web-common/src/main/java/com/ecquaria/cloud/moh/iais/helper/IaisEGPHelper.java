@@ -596,6 +596,12 @@ public final class IaisEGPHelper extends EGPHelper {
         return licenseeService.getLicenseeEmails(licenseeId);
     }
 
+    public static List<String> getLicenseeEmailAddrs(String licenseeId, List<String> roles) {
+        LicenseeService licenseeService = SpringContextHelper.getContext().getBean(LicenseeService.class);
+
+        return licenseeService.getLicenseeEmails(licenseeId, roles);
+    }
+
     public static List<OrgUserDto> getLicenseeAccountByRolesAndLicenseeId(String licenseeId, List<String> roleIds){
         LicenseeService licenseeService = SpringContextHelper.getContext().getBean(LicenseeService.class);
 

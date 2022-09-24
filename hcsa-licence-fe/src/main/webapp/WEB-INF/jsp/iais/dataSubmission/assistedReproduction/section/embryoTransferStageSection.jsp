@@ -33,7 +33,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" value="Age of 1st Embryo Transferred" mandatory="true" cssClass="col-md-6"/>
+                    <iais:field width="6" value="1st Embryo" mandatory="true" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
                         <iais:select name="firstEmbryoAge" firstOption="Please Select"
                                      options="firstEmbryoAgeSelectOption" cssClass="ageSelect"
