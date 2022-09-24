@@ -447,7 +447,7 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-12 Sub-Types" style="margin-top: 20px ;margin-bottom: 20px">
-          <label class="col-xs-12 col-md-12 control-label">Service Sub-Types</label>
+          <label class="col-xs-12 col-md-12 control-label">Specified Service</label>
         </div>
         <div class="col-xs-12 col-md-9 marg-1">
           <label class="col-xs-12 col-md-7 control-label" >Page Name</label>

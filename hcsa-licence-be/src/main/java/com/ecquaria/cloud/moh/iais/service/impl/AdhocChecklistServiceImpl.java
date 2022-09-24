@@ -12,8 +12,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
@@ -33,18 +31,15 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskApplicationClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpStatus;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
@@ -148,22 +143,6 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
 
                 if (svcConfig != null){
                     inspChecklist.add(svcConfig);
-                }
-                // specialised service checklist configs
-                List<AppPremSpecialisedDto> appPremSpecialisedDtos = appCommService.getAppPremSpecialisedDtoList(Collections.singletonList(corrId));
-                if (IaisCommonUtils.isNotEmpty(appPremSpecialisedDtos)){
-                    List<ChecklistConfigDto> specSvcChecklistConfig = IaisCommonUtils.genNewArrayList();
-                    for (AppPremSpecialisedDto appPremSpecialisedDto : appPremSpecialisedDtos){
-                        for (AppPremSubSvcRelDto appPremSubSvcRelDto : appPremSpecialisedDto.getCheckedAppPremSubSvcRelDtoList()){
-                            ChecklistConfigDto specSvceConfig = hcsaChklClient.getMaxVersionServiceConfigByParams(appPremSubSvcRelDto.getSvcCode(), type, chklModule, "", hciCode).getEntity();
-                            if (!Objects.isNull(specSvceConfig)){
-                                specSvcChecklistConfig.add(specSvceConfig);
-                            }
-                        }
-                    }
-                    if (IaisCommonUtils.isNotEmpty(specSvcChecklistConfig)){
-                        inspChecklist.addAll(specSvcChecklistConfig);
-                    }
                 }
 
                 log.info(StringUtil.changeForLog("inspection pick up vehicle service config ====>>>>" + vehicleConfig));

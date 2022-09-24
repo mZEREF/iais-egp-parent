@@ -219,9 +219,7 @@
     function controlCountEvent($target) {
         var psnLength = $target.find('div.personnel-content').length;
         let count = $target.find('.maxCount').val();
-        console.log(count,"count======>>>>")
             if (psnLength >= count) {
-                console.log(psnLength,"ENTER======>>>>")
                 $target.find('.addDpoDiv').addClass('hidden');
             } else
                 $target.find('.addDpoDiv').removeClass('hidden');
@@ -253,26 +251,6 @@
         addPersonnels($(this).closest('div.panel-main-content'));
     });
 
-    //special
-    // $('.addSpecialListBtn').click(function () {
-    //     showWaiting();
-    //     let target = $('div.personnel-content:last')
-    //     let src = target.clone();
-    //     clearFields(src);
-    //     target.after(src);
-    //     spRemove();
-    //     pageController($('.personnel-content:last'));
-    //     $('.personnel-content').first().find('.assign-psn-item').html('1');
-    //     $('.personnel-content').last().find('.otherDesignationDiv').addClass('hidden')
-    //     var psnLength = $('.personnel-content').length;
-    //     let $target = $('div.personnel-content:last')
-    //     let targets = $('.special-person');
-    //     controlCountEvent($(targets))
-    //     refreshIndex($target, psnLength - 1);
-    //     profRegNoEvent($('.personnel-content:last'));
-    //     designationChange()
-    //     dismissWaiting();
-    // });
 
     function removeSp() {
         console.log("SP --->");
@@ -293,24 +271,6 @@
             }
         }
     }
-
-    // var spRemove = function () {
-    //     $('.removeBtns').click(function () {
-    //         var $psnContentEle = $(this).closest('.personnel-content');
-    //         $psnContentEle.remove();
-    //         $('.personnel-content').each(function (k, v) {
-    //             refreshIndex($(v), k)
-    //         });
-    //         let targets = $('.special-person')
-    //         controlCountEvent($(targets))
-    //         var psnLength = $('.personnel-content').length;
-    //         if (psnLength <= 1) {
-    //             $('.assign-psn-item:eq(0)').html('');
-    //         }
-    //         $('#isEditHiddenVal').val('1');
-    //     });
-    // }
-
     function inputReadonly($content) {
         $content.prop('readonly', true);
         $content.css('border-color', '#ededed');
@@ -349,20 +309,23 @@
 
     function fillNurse($premContent, data) {
         $($premContent).find('.personnel-content:not(:first)').remove();
-        // $('div.personnel-content:not(:first)').remove();
         if (isEmpty(data) || !$.isArray(data)) {
             clearFields($('.personnel-content'));
             return;
         }
-        clearFields($('.personnel-content'))
+        clearFields($premContent)
         var len = data.length;
         for (var i = 0; i < len; i++) {
-            if (isEmptyNode($('.personnel-content').eq(i))) {
+            let $target = $premContent.find('.personnel-content').eq(i);
+            if (isEmptyNode($target)) {
                 //   TODO
-                addPersonnels($premContent);
+                console.log("enter====>>>>>",i)
+                addPersonnels($premContent)
+                $target = $premContent.find('.personnel-content').eq(i);
             }
-            console.log(data[i])
-            fillFormData($('.personnel-content').eq(i), data[i], '', i)
+            console.log(data[i],"======>","outer===>")
+            fillFormData($target, data[i], 'SP003', i)
+            // fillValue($target.find('.name'),data[i].name)
         }
     }
 
