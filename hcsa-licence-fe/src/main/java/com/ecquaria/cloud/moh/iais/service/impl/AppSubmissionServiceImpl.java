@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesDoQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppAlignAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
@@ -71,6 +72,7 @@ import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
+import com.ecquaria.cloud.moh.iais.service.client.AppCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
@@ -137,6 +139,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     private ValidateVehicle validateVehicle;
     @Autowired
     private ValidateClincalDirector validateClincalDirector;
+    @Autowired
+    private AppCommClient appCommClient;
     @Override
     public int hashCode() {
         return super.hashCode();
@@ -1231,6 +1235,15 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             String svcNames = JsonUtil.parseToJson(svcNameList);
             String premTypeStr = JsonUtil.parseToJson(premTypeList);
             appAlignLicQueryDtos = licenceClient.getAppAlignLicQueryDto(licenseeId,svcNames,premTypeStr).getEntity();
+        }
+        return appAlignLicQueryDtos;
+    }
+
+    @Override
+    public List<AppAlignAppQueryDto> getAppAlignAppQueryDto(String licenseeId, List<String> svcIdList) {
+        List<AppAlignAppQueryDto> appAlignLicQueryDtos = IaisCommonUtils.genNewArrayList();
+        if(!StringUtil.isEmpty(licenseeId) && !IaisCommonUtils.isEmpty(svcIdList)) {
+            appAlignLicQueryDtos=appCommClient.getActiveApplicationsAddress(licenseeId, svcIdList).getEntity();
         }
         return appAlignLicQueryDtos;
     }

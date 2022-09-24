@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.callback;
 
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesDoQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppAlignAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpSecondAddrDto;
@@ -134,4 +135,8 @@ public class AppCommClientFallback implements AppCommClient {
         return null;
     }
 
+    @Override
+    public FeignResponseEntity<List<AppAlignAppQueryDto>> getActiveApplicationsAddress(String licenseeId, List<String> svcIdList) {
+        return IaisEGPHelper.getFeignResponseEntity(licenseeId);
+    }
 }
