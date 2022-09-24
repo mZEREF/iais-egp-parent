@@ -432,6 +432,9 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                     HcsaServiceDto serviceByServiceName=HcsaServiceCacheHelper.getServiceById(serviceId);
                     AppSvcPrincipalOfficersDto appSvcCgoDto = applicationClient.getApplicationCgoByAppId(appId,ApplicationConsts.PERSONNEL_PSN_TYPE_CGO).getEntity();
                     appSvcCgoDto.setAssignSelect("newOfficer");
+                    appSvcCgoDto.setSpecialtyGetDateStr(ApplicationHelper.handleDateString(appSvcCgoDto.getSpecialtyGetDate(), null));
+                    appSvcCgoDto.setCurrRegiDateStr(ApplicationHelper.handleDateString(appSvcCgoDto.getCurrRegiDate(), null));
+                    appSvcCgoDto.setPraCerEndDateStr(ApplicationHelper.handleDateString(appSvcCgoDto.getPraCerEndDate(), null));
                     List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
                     appSvcCgoDtoList.add(appSvcCgoDto);
                     SelectOption sp0 = new SelectOption("-1", "Please Select");

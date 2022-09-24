@@ -13,7 +13,7 @@
         <tbody>
         <tr height="1">
           <td class="first last" style="width: 100%;">
-            <div id="control--runtime--85" class="control control-caption-horizontal">
+            <div id="control--runtime--85" class="">
             </div>
           </td>
         </tr>
@@ -51,9 +51,9 @@
                     <tbody>
                     <tr height="1">
                       <td class="first last" style="width: 100%;">
-                        <div id="control--runtime--" class="control control-caption-horizontal">
+                        <div id="control--runtime--" class="">
                           <div class=" form-group form-horizontal formgap" <c:if test="${status.first}">style="width:194%;"</c:if> >
-                            <div class="col-sm-4 control-label formtext control">
+                            <div class="col-sm-5 control-label formtext control">
                               <div class="cgo-header">
                                 <strong>Clinical Governance Officer </strong>
                               </div>
@@ -62,7 +62,7 @@
                             </div>
                           </div>
                         </div>
-                        <div id="control--runtime--2" class="control control-caption-horizontal">
+                        <div id="control--runtime--2" class="">
                           <div class=" form-group form-horizontal formgap">
                             <div class="col-sm-5 control-label formtext ">
                               <label id="control--runtime--2--label" class="control-label control-set-font control-font-label" style="display: block;">Add/Assign a Clinical Governance Officer</label>
@@ -87,9 +87,9 @@
                             <tbody>
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
-                                <div  class="control control-caption-horizontal">
+                                <div  class="">
                                   <div class=" form-group form-horizontal formgap">
-                                    <div class="col-sm-4 control-label formtext ">
+                                    <div class="col-sm-5 control-label formtext ">
                                       <label  class="control-label control-set-font control-font-label">
                                         Name
                                       </label>
@@ -117,9 +117,9 @@
                             </tr>
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
-                                <div id="control--runtime--28" class="control control-caption-horizontal">
+                                <div id="control--runtime--28" class="">
                                   <div class=" form-group form-horizontal formgap">
-                                    <div class="col-sm-4 control-label formtext ">
+                                    <div class="col-sm-5 control-label formtext ">
                                       <label id="control--runtime--28--label" class="control-label control-set-font control-font-label">
                                         ID No.
                                       </label>
@@ -146,9 +146,9 @@
                             </tr>
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
-                                <div id="" class="control control-caption-horizontal">
+                                <div id="" class="">
                                   <div class=" form-group form-horizontal formgap">
-                                    <div class="col-sm-4 control-label formtext ">
+                                    <div class="col-sm-5 control-label formtext ">
                                     </div>
                                     <div class="col-md-7 col-xs-9 col-sm-5">
                                       <span class="error-msg" name="iaisErrorMSg" id="error_idTypeNo${status.index}"></span>
@@ -160,9 +160,9 @@
                             <c:if test="${currentCgo.idType=='IDTYPE003'}">
                               <tr height="1" class="nationalityDiv">
                                 <td class="first last" style="width: 100%;">
-                                  <div class="control control-caption-horizontal">
+                                  <div class="">
                                     <div class="form-group form-horizontal formgap">
-                                      <div class="col-sm-4 control-label formtext">
+                                      <div class="col-sm-5 control-label formtext">
                                         <label class="control-label control-set-font control-font-label">Country of issuance</label>
                                         
                                         <span class="upload_controls"></span>
@@ -177,9 +177,9 @@
                             </c:if>
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
-                                <div  class="control control-caption-horizontal">
+                                <div  class="">
                                   <div class="form-group form-horizontal formgap">
-                                    <div class="col-sm-4 control-label formtext">
+                                    <div class="col-sm-5 control-label formtext">
                                       <label class="control-label control-set-font control-font-label">Designation</label>
                                       
                                       <span class="upload_controls"></span>
@@ -194,7 +194,7 @@
                             <c:if test="${currentCgo.designation=='DES999'}">
                               <tr height="1">
                                 <td class="first last" style="width: 100%;">
-                                  <div class="control control-caption-horizontal otherDesignationDiv hidden ">
+                                  <div class=" otherDesignationDiv hidden ">
                                     <div class="form-group form-horizontal formgap">
                                       <div class="control-label formtext col-sm-5">
                                       </div>
@@ -223,9 +223,9 @@
                             </tr>
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
-                                <div  class="control control-caption-horizontal">
+                                <div  class="">
                                   <div class="form-group form-horizontal formgap">
-                                    <div class="col-sm-4 control-label formtext">
+                                    <div class="col-sm-5 control-label formtext">
                                       <label  class="control-label control-set-font control-font-label">Professional Type</label>
                                       
                                       <span class="upload_controls"></span>
@@ -241,9 +241,9 @@
                             </tr>
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
-                                <div id="control--runtime--31" class="control control-caption-horizontal">
+                                <div id="control--runtime--31" class="">
                                   <div class=" form-group form-horizontal formgap">
-                                    <div class="col-sm-4 control-label formtext ">
+                                    <div class="col-sm-5 control-label formtext ">
                                       <label id="control--runtime--31--label" class="control-label control-set-font control-font-label">
                                         Professional Regn. No.
                                       </label>
@@ -331,7 +331,7 @@
                             </tr>
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
-                                <div id="control--runtime--29" class="control control-caption-horizontal">
+                                <div id="control--runtime--29" class="">
                                   <div class="form-group form-horizontal formgap">
                                     <div class="control-label formtext col-sm-5">
                                       <label id="control--runtime--29--label" class="control-label control-set-font control-font-label">Specialty</label>
@@ -346,7 +346,7 @@
 
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
-                                <div class="control control-caption-horizontal">
+                                <div class="">
                                   <div class="form-group form-horizontal formgap">
                                     <div class="control-label formtext col-sm-5">
                                       <label class="control-label control-set-font control-font-label">Sub-specialty</label>
@@ -391,7 +391,7 @@
                             </tr>
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
-                                <div class="control control-caption-horizontal">
+                                <div class="">
                                   <div class="form-group form-horizontal formgap">
                                     <div class="control-label formtext col-sm-5">
                                       <label class="control-label control-set-font control-font-label">Qualification</label>
@@ -405,7 +405,7 @@
                             </tr>
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
-                                <div class="control control-caption-horizontal">
+                                <div class="">
                                   <div class="form-group form-horizontal formgap">
                                     <div class="control-label formtext col-sm-5">
                                       <label class="control-label control-set-font control-font-label">Other Qualification</label>
@@ -421,9 +421,9 @@
                             </tr>
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
-                                <div  class="control control-caption-horizontal">
+                                <div  class="">
                                   <div class=" form-group form-horizontal formgap">
-                                    <div class="col-sm-4 control-label formtext ">
+                                    <div class="col-sm-5 control-label formtext ">
                                       <label  class="control-label control-set-font control-font-label">Mobile No.</label>                                                                                                                                        
                                       <span class="upload_controls"></span>
                                     </div>
@@ -436,9 +436,9 @@
                             </tr>
                             <tr height="1">
                               <td class="first last" style="">
-                                <div id="control--runtime--33" class="control control-caption-horizontal">
+                                <div id="control--runtime--33" class="">
                                   <div class=" form-group form-horizontal formgap">
-                                    <div class="col-sm-4 control-label formtext ">
+                                    <div class="col-sm-5 control-label formtext ">
                                       <label id="control--runtime--33--label" class="control-label control-set-font control-font-label">Email Address</label>
                                       
                                       <span class="upload_controls"></span>
