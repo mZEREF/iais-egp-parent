@@ -131,6 +131,28 @@
                 $premContent.find('.isParyEdit').val('1');
             }
         }
+        checkEditBtn($premContent, false);
+    }
+
+    function hideEditBtn ($premContent) {
+        let $target= $premContent.find('.removeEditDiv');
+        if (isEmptyNode($target)) {
+            return true;
+        }
+        return $target.is(':hidden');
+    }
+
+    function checkEditBtn ($premContent, show) {
+        let $target= $premContent.find('.removeEditDiv');
+        if (isEmptyNode($target)) {
+            return;
+        }
+        if ($target.is(':hidden') && show) {
+            showTag($target);
+        }
+        if (!isEmptyNode($target.find('.premisesEdit'))) {
+            toggleTag($target.find('.premisesEdit'), show);
+        }
     }
 
     function disablePremiseContent($premContent) {
@@ -236,27 +258,6 @@
         }
         if (!isEmptyNode($target.find('.removeBtn'))) {
             toggleTag($target.find('.removeBtn'), index !== 0);
-        }
-    }
-
-    function hideEditBtn ($premContent) {
-        let $target= $premContent.find('.removeEditDiv');
-        if (isEmptyNode($target)) {
-            return true;
-        }
-        return $target.is(':hidden');
-    }
-
-    function checkEditBtn ($premContent, show) {
-        let $target= $premContent.find('.removeEditDiv');
-        if (isEmptyNode($target)) {
-            return false;
-        }
-        if ($target.is(':hidden') && show) {
-            showTag($target);
-        }
-        if (!isEmptyNode($target.find('.premisesEdit'))) {
-            toggleTag($target.find('.premisesEdit'), show);
         }
     }
 
@@ -384,6 +385,7 @@
         checkDisabled($premContent.find('.operationDiv'), disabled);
         hideTag($premContent.find('.operationAdlDiv:first'));
         toggleTag($premContent.find('.opDel:not(:first)'), !disabled);
+        toggleTag($premContent.find('.addOpDiv'), !disabled);
     }
 
     function autoCheckPremiseType(premType) {

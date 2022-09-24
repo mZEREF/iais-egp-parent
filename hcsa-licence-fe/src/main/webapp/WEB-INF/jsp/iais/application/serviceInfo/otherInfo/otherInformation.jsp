@@ -39,6 +39,7 @@
         <c:set var="dsDeclaration" value="${appSvcOtherInfoDto.dsDeclaration}"/>
         <c:set var="ascsDeclaration" value="${appSvcOtherInfoDto.ascsDeclaration}"/>
         <c:set var="orgUse" value="${orgUserDto}"/>
+        <c:set var="prefix" value="${appSvcOtherInfoDto.premisesVal}"/>
         <iais:row>
             <div class="col-xs-12">
                 <div class="app-title">${appSvcOtherInfoDto.premName}</div>
@@ -84,105 +85,6 @@
         <%@include file="otherService.jsp"%>
     </c:forEach>
 </div>
-<script>
-    $(document).ready(function () {
-        firstRadio();
-        topRadio();
-    });
 
-    function firstRadio() {
-        $('input.provideTop').unbind('click');
-        $('input.provideTop').on('click', function () {
-            let holderPregnancyVal = $(this).val();
-            console.log('holderPregnancyVal:'+holderPregnancyVal);
-            if (holderPregnancyVal == 1){
-                $('input[name="t"]').val(1);
-                console.log("input.name.ttt:"+$('input[name="t"]').val());
-                $('div.topt').removeClass("hidden");
-                $('div.practitioners').removeClass("hidden");
-                $('div.addPractitionersDiv').removeClass("hidden");
-                $('div.anaesthetists').removeClass("hidden");
-                $('div.addAnaesthetistsDiv').removeClass("hidden");
-                $('div.nurses').removeClass("hidden");
-                $('div.addNursesDiv').removeClass("hidden");
-                $('div.counsellors').removeClass("hidden");
-                $('div.addCounsellorsDiv').removeClass("hidden");
-                $('div.lowt').removeClass("hidden");
-                $('div.docTop').removeClass("hidden");
-                $('div.de').removeClass("hidden");
-                $('div.oitem').removeClass("hidden");
-                topAboutHAS();
-            }else {
-                $('input[name="t"]').val(0);
-                console.log("input.name.t:"+$('input[name="t"]').val());
-                $('div.topt').addClass("hidden");
-                $('div.practitioners').addClass("hidden");
-                $('div.addPractitionersDiv').addClass("hidden");
-                $('div.anaesthetists').addClass("hidden");
-                $('div.addAnaesthetistsDiv').addClass("hidden");
-                $('div.nurses').addClass("hidden");
-                $('div.addNursesDiv').addClass("hidden");
-                $('div.counsellors').addClass("hidden");
-                $('div.addCounsellorsDiv').addClass("hidden");
-                $('div.lowt').addClass("hidden");
-                $('div.de').addClass("hidden");
-                $('div.oitem').addClass("hidden");
-                $('div.docTop').addClass("hidden");
-                topAboutHAS();
-            }
-        });
-    };
-
-    function topRadio(){
-        $('input.topType').unbind('click');
-        $('input.topType').on('click', function () {
-            let topTypeVal = $(this).val();
-            console.log('topTypeVal:'+topTypeVal);
-            if (topTypeVal == 1){
-                $('div.topByDrug').removeClass("hidden");
-                $('div.topBySurgicalProcedure').addClass("hidden");
-                $('div.topByDrugandSurgicalProcedure').addClass("hidden");
-                $('div.addTopByDrugDiv').removeClass("hidden");
-                $('div.addTopBySurgicalProcedureDiv').addClass("hidden");
-                $('div.addTopAllDiv').addClass("hidden");
-            }else if (topTypeVal == 0){
-                $('div.topByDrug').addClass("hidden");
-                $('div.topBySurgicalProcedure').removeClass("hidden");
-                $('div.topByDrugandSurgicalProcedure').addClass("hidden");
-                $('div.addTopByDrugDiv').addClass("hidden");
-                $('div.addTopBySurgicalProcedureDiv').removeClass("hidden");
-                $('div.addTopAllDiv').addClass("hidden");
-            }else if (topTypeVal == -1){
-                $('div.topByDrug').removeClass("hidden");
-                $('div.topBySurgicalProcedure').removeClass("hidden");
-                $('div.topByDrugandSurgicalProcedure').removeClass("hidden");
-                $('div.addTopByDrugDiv').removeClass("hidden");
-                $('div.addTopBySurgicalProcedureDiv').removeClass("hidden");
-                $('div.addTopAllDiv').removeClass("hidden");
-            }else {
-                $('div.topByDrug').addClass("hidden");
-                $('div.topBySurgicalProcedure').addClass("hidden");
-                $('div.topByDrugandSurgicalProcedure').addClass("hidden");
-                $('div.addTopByDrugDiv').addClass("hidden");
-                $('div.addTopBySurgicalProcedureDiv').addClass("hidden");
-                $('div.addTopAllDiv').addClass("hidden");
-            }
-        });
-    }
-    function topAboutHAS(){
-        let m = $('input[name="t"]').val();
-        if (m==0){
-            $('div.topByDrug').addClass("hidden");
-            $('div.topBySurgicalProcedure').addClass("hidden");
-            $('div.topByDrugandSurgicalProcedure').addClass("hidden");
-            $('div.addTopByDrugDiv').addClass("hidden");
-            $('div.addTopBySurgicalProcedureDiv').addClass("hidden");
-            $('div.addTopAllDiv').addClass("hidden");
-        }else {
-            topRadio();
-        }
-    }
-
-</script>
 
 

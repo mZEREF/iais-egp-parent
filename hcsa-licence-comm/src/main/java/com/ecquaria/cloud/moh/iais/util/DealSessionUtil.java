@@ -116,6 +116,7 @@ public class DealSessionUtil {
         session.removeAttribute(HcsaAppConst.ACTION);
         session.removeAttribute(HcsaAppConst.ALL_SVC_NAMES);
         session.removeAttribute(HcsaAppConst.APPSUBMISSIONDTO);
+        session.removeAttribute(HcsaAppConst.OLDAPPSUBMISSIONDTO);
         session.removeAttribute(HcsaAppConst.HCSASERVICEDTO);
         session.removeAttribute(RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
         //Primary Documents
@@ -750,12 +751,6 @@ public class DealSessionUtil {
                         .filter(dto -> Objects.equals(appGrpPremisesDto.getPremisesIndexNo(), dto.getPremisesVal()))
                         .findAny()
                         .orElseGet(AppSvcOtherInfoDto::new);
-                for (AppSvcOtherInfoDto svcOtherInfoDto : appSvcOtherInfoList) {
-                    if (request != null) {
-                        svcOtherInfoDto.setOrgUserDto(AppDataHelper.getOtherInfoYfVs(request));
-                    }
-                    appSvcOtherInfoDto = svcOtherInfoDto;
-                }
             } else {
                 appSvcOtherInfoDto = new AppSvcOtherInfoDto();
             }
@@ -772,7 +767,11 @@ public class DealSessionUtil {
             appSvcOtherInfoDto.setInit(true);
             newList.add(appSvcOtherInfoDto);
         }
-
+        if (IaisCommonUtils.isNotEmpty(newList)){
+            for (AppSvcOtherInfoDto appSvcOtherInfoDto : newList) {
+                appSvcOtherInfoDto.setOrgUserDto(AppDataHelper.getOtherInfoYfVs(request));
+            }
+        }
         currSvcInfoDto.setAppSvcOtherInfoList(newList);
         return true;
     }

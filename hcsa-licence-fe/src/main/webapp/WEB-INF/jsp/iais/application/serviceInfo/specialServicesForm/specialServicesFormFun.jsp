@@ -25,6 +25,7 @@
                 $(v).find('.assign-psn-item').html('');
             }
             $(v).find('div.personnel-content').each(function (i, x) {
+                checkPersonContent($(x), true);
                 checkPersonDisabled($(x), true);
                 var personnelSel = $(x).find('.personnelType').val();
                 var flag = $(x).find('input.personTypeToShow').val();

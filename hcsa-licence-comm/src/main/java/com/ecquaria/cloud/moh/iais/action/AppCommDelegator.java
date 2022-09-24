@@ -868,12 +868,15 @@ public abstract class AppCommDelegator {
                 }
             }
         }
-        if (baseSvcCount > 1) {
+        /*if (baseSvcCount > 1) {
             ParamUtil.setRequestAttr(bpc.request, "multiBase", AppConsts.TRUE);
         } else {
             ParamUtil.setRequestAttr(bpc.request, "multiBase", AppConsts.FALSE);
         }
         ParamUtil.setRequestAttr(bpc.request, "isMultiPremService", ApplicationHelper.isMultiPremService(hcsaServiceDtoList));
+        */
+        boolean singlePrem = baseSvcCount > 1 || !ApplicationHelper.isMultiPremService(hcsaServiceDtoList);
+        appSubmissionDto.setSinglePrem(singlePrem);
         /*
          * 14. For Medical Service, “Remote Delivery” and “Mobile Delivery” sections will be displayed if Applicant selects either
          * “Permanent Premises” or “Conveyance”
@@ -882,7 +885,6 @@ public abstract class AppCommDelegator {
         if (isNew && !isRfi && baseSvcCount == 1 && hasMs) {
             ParamUtil.setRequestAttr(bpc.request, "autoCheckRandM", AppConsts.YES);
         }
-
         ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
         log.info(StringUtil.changeForLog("the do preparePremises end ...."));
     }
@@ -919,7 +921,7 @@ public abstract class AppCommDelegator {
         String isEdit = ParamUtil.getString(bpc.request, IS_EDIT);
         boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
         boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto, RfcConst.EDIT_PREMISES, isEdit, isRfi)
-                && !appSubmissionDto.isReadonlyPrem();
+                /*&& !appSubmissionDto.isReadonlyPrem()*/;
         log.info(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
         if (isGetDataFromPage) {
             List<AppGrpPremisesDto> oldAppGrpPremisesDtoList;
@@ -928,7 +930,8 @@ public abstract class AppCommDelegator {
             } else {
                 oldAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
             }
-            List<AppGrpPremisesDto> appGrpPremisesDtoList = AppDataHelper.genAppGrpPremisesDtoList(bpc.request);
+            List<AppGrpPremisesDto> appGrpPremisesDtoList = AppDataHelper.genAppGrpPremisesDtoList(appSubmissionDto.isSinglePrem(),
+                    bpc.request);
             appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
             if (appSubmissionDto.isNeedEditController()) {
                 Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();

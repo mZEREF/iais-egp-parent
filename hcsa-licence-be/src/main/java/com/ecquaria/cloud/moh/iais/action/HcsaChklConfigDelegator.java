@@ -221,7 +221,7 @@ public class HcsaChklConfigDelegator {
      * @param request
      */
     private void preSelectOption(HttpServletRequest request){
-        List<String> subtypeNames =  hcsaChklService.listSubTypeName();
+        List<String> subtypeNames =  hcsaChklService.listSpecName();
         List<String> svcNames = hcsaChklService.listServiceName(AppServicesConsts.SVC_TYPE_CHECKLIST);
         List<SelectOption> subTypeOptList = IaisCommonUtils.genNewArrayList();
         List<SelectOption> svcNameOptList = IaisCommonUtils.genNewArrayList();
