@@ -80,7 +80,7 @@
         </c:if>
     </c:forEach>
 </div>
-<div class="amend-preview-info form-horizontal min-row">
+<div class="amend-preview-info form-horizontal min-row <c:if test="${'0' == appSvcOtherInfoDto.provideTop}">hidden</c:if>">
     <iais:row>
         <div class="col-xs-12 col-md-12">
             <p class="bold">Declaration</p>

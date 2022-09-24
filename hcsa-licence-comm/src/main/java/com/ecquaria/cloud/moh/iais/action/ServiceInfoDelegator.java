@@ -632,7 +632,7 @@ public class ServiceInfoDelegator {
         String curAct = ParamUtil.getString(request, "btnStep");
         if (isGetDataFromPage) {
             //get data from page
-            doOutSourceProvidersStep(curAct,request,appSubmissionDto);
+            doOutSourceProvidersStep(curAct,request,appSubmissionDto,currSvcInfoDto,currSvcId);
 //            currSvcInfoDto.setAppPremOutSourceProvidersList(appPremOutSourceLicenceDtos);
             reSetChangesForApp(appSubmissionDto);
             setAppSvcRelatedInfoMap(request, currSvcId, currSvcInfoDto, appSubmissionDto);
@@ -643,7 +643,7 @@ public class ServiceInfoDelegator {
         checkAction(errorMap, HcsaConsts.STEP_OUTSOURCED_PROVIDERS, appSubmissionDto, request);
     }
 
-    private void doOutSourceProvidersStep(String curAct,HttpServletRequest request,AppSubmissionDto appSubmissionDto){
+    private void doOutSourceProvidersStep(String curAct,HttpServletRequest request,AppSubmissionDto appSubmissionDto,AppSvcRelatedInfoDto currSvcInfoDto,String currSvcId){
         if ("search".equals(curAct)){
             doSearchOutSourceProviders(request,appSubmissionDto);
         }
@@ -656,6 +656,9 @@ public class ServiceInfoDelegator {
         if ("add".equals(curAct)){
             doAddOutSourceProviders(request,appSubmissionDto);
             //appPremOutSourceLicenceDtos = AppDataHelper.genAppPremOutSourceLicenceList(request);
+//            currSvcInfoDto.setAppPremOutSourceProvidersList(appPremOutSourceLicenceDtos);
+//            reSetChangesForApp(appSubmissionDto);
+//            setAppSvcRelatedInfoMap(request, currSvcId, currSvcInfoDto, appSubmissionDto);
         }
     }
 
