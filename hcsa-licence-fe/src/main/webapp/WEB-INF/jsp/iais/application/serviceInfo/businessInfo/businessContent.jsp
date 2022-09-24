@@ -47,7 +47,7 @@
                             <iais:row cssClass="edit-content">
                                 <c:if test="${canEdit}">
                                     <div class="text-right app-font-size-16">
-                                        <a class="edit psnEdit" href="javascript:void(0);">
+                                        <a class="edit businessEdit" href="javascript:void(0);">
                                             <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
                                         </a>
                                     </div>
@@ -116,25 +116,23 @@
     });
 
     $(document).ready(function () {
-        doEdite();
+        doEditBusinessEvent();
 
         var appType = $('input[name="applicationType"]').val();
         var rfiObj = $('input[name="rfiObj"]').val();
         //rfc,renew,rfi
-        if (('APTY005' == appType || 'APTY004' == appType) || '1' == rfiObj) {
-            disabledPage();
-        }
+        <c:if test="${AppSubmissionDto.needEditController}">
+        $('div.businessContent').each(function () {
+            disableContent($(this));
+        });
+        </c:if>
     });
 
-    var doEdite = function () {
+    var doEditBusinessEvent = function () {
         $('a.businessEdit').click(function () {
             var $currContent = $(this).closest('div.businessContent');
             $currContent.find('input.isPartEdit').val('1');
-            $currContent.find('.edit-content').addClass('hidden');
-            $currContent.find('input[type="text"]').prop('disabled', false);
-            $currContent.find('input[type="text"]').css('border-color', '');
-            $currContent.find('input[type="text"]').css('color', '');
-
+            unDisableContent($currContent);
             $('#isEditHiddenVal').val('1');
         });
     }

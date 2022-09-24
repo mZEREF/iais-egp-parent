@@ -123,6 +123,7 @@
         $('#isEditHiddenVal').val('1');
         unDisableContent($premContent);
         showTag($premContent.find('.retrieveAddr'));
+        showTag($premContent.find('.addOpDiv'));
         let existData = $premContent.find('.chooseExistData').val();
         if('1' == existData) {
             if (isEmpty(isEdit) || !isEdit) {
@@ -130,6 +131,13 @@
             } else {
                 $premContent.find('.isParyEdit').val('1');
             }
+        }
+        // Non HCSA
+        let $nonHcsaContent = $premContent.find('.nonHcsaRowDiv');
+        if ($nonHcsaContent.is(':visible')) {
+            showTag($premContent.find('.delNonHcsaSvcRow:not(:first)'));
+            showTag($premContent.find('.addNonHcsaSvcRow'));
+            showTag($premContent.find('.file-upload-gp'));
         }
         checkEditBtn($premContent, false);
     }
@@ -158,13 +166,31 @@
     function disablePremiseContent($premContent) {
         disableContent($premContent);
         hideTag($premContent.find('.retrieveAddr'));
-        hideTag($premContent.find('.operationAdlDiv:first'));
-        let existData = $premContent.find('.chooseExistData').val();
-        if('1' == existData) {
-            checkPremDisabled($premContent, true);
+        hideTag($premContent.find('.opDelDiv'));
+        hideTag($premContent.find('.addOpDiv'));
+        let $target= $premContent.find('.premisesEdit');
+        if (isEmptyNode($target)) {
+            hideTag($premContent.find('.opDelDiv'));
         } else {
-            showTag($premContent.find('.opDel:not(:first)'));
+            let existData = $premContent.find('.chooseExistData').val();
+            if('1' == existData) {
+                checkPremDisabled($premContent, true);
+            } else {
+                showTag($premContent.find('.opDelDiv:not(:first)'));
+            }
         }
+        // Non HCSA
+        let $nonHcsaContent = $premContent.find('.nonHcsaRowDiv');
+        if ($nonHcsaContent.is(':visible')) {
+            if (isEmptyNode($target)) {
+                hideTag($premContent.find('.delNonHcsaSvcRow'));
+            } else {
+                showTag($premContent.find('.delNonHcsaSvcRow:not(:first)'));
+            }
+            hideTag($premContent.find('.addNonHcsaSvcRow'));
+            hideTag($premContent.find('.file-upload-gp'));
+        }
+        checkEditBtn($premContent, true);
     }
 
     function addPremEvent() {
@@ -384,7 +410,7 @@
         checkDisabled($premContent.find('.addrType'), disabled);
         checkDisabled($premContent.find('.operationDiv'), disabled);
         hideTag($premContent.find('.operationAdlDiv:first'));
-        toggleTag($premContent.find('.opDel:not(:first)'), !disabled);
+        toggleTag($premContent.find('.opDelDiv:not(:first)'), !disabled);
         toggleTag($premContent.find('.addOpDiv'), !disabled);
     }
 
@@ -494,9 +520,9 @@
             showTag($row.next('.nonHcsaRowDiv'));
             hideTag($premContent.find('.delNonHcsaSvcRow:first'));
         } else {
-            var $nonHcsaRowDiv = $row.next('.nonHcsaRowDiv');
-            hideTag($nonHcsaRowDiv);
-            $nonHcsaRowDiv.find('.nonHcsaRow:not(:first)').remove();
+            var $nonHcsaContent = $row.next('.nonHcsaRowDiv');
+            hideTag($nonHcsaContent);
+            $nonHcsaContent.find('.nonHcsaRow:not(:first)').remove();
         }
     }
 
@@ -574,9 +600,9 @@
         $target.find('.nonHcsaSvcDel').unbind('click');
         $target.find('.nonHcsaSvcDel').not(':first').on('click', function () {
             var $premContent = $(this).closest('div.premContent');
-            var $nonHcsaRowDiv = $(this).closest('div.nonHcsaRowDiv');
+            var $nonHcsaContent = $(this).closest('div.nonHcsaRowDiv');
             $(this).closest('div.nonHcsaRow').remove();
-            refreshNonHcsa($nonHcsaRowDiv, $('div.premContent').index($premContent));
+            refreshNonHcsa($nonHcsaContent, $('div.premContent').index($premContent));
             doEditPremise($premContent);
         });
     }

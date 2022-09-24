@@ -72,8 +72,12 @@
         });
     });
 
-    function refreshPersonOthers($target) {
-        var maxCount = eval('${currStepConfig.maximumCount}');
-        toggleTag('.addMedAlertPersonDiv', $('div.person-content').length < maxCount);
+    function refreshPersonOthers($target, hide) {
+        if (hide) {
+            hideTag('.addMedAlertPersonDiv');
+        } else {
+            const maxCount = eval('${currStepConfig.maximumCount}');
+            toggleTag('.addMedAlertPersonDiv', $('div.person-content').length < maxCount);
+        }
     }
 </script>

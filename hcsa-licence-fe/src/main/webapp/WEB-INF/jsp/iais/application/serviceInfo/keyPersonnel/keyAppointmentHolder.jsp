@@ -67,11 +67,20 @@
         $('.addKeyAppointmentHolderBtn').on('click', function () {
             addPersonnel(psnContent);
         });
+        <c:if test="${AppSubmissionDto.needEditController}">
+        $(psnContent).each(function () {
+            disablePsnContent($(this), psnContent);
+        });
+        </c:if>
     });
 
-    function refreshPersonOthers($target) {
-        var maxCount = eval('${currStepConfig.maximumCount}');
-        toggleTag('.addKeyAppointmentHolderDiv', $('div.person-content').length < maxCount);
+    function refreshPersonOthers($target, hide) {
+        if (hide) {
+            hideTag('.addKeyAppointmentHolderDiv');
+        } else {
+            const maxCount = eval('${currStepConfig.maximumCount}');
+            toggleTag('.addKeyAppointmentHolderDiv', $('div.person-content').length < maxCount);
+        }
     }
 </script>
 <%--

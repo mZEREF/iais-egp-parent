@@ -1768,6 +1768,10 @@ public final class AppValidatorHelper {
         if (appSvcBusinessDtos == null || appSvcBusinessDtos.isEmpty()) {
             return;
         }
+        //TODO Test
+        if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+            return;
+        }
         for (int i = 0; i < appSvcBusinessDtos.size(); i++) {
 
             String subfix = "" + i;

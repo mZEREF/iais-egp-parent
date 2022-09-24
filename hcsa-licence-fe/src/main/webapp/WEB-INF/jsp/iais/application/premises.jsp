@@ -121,9 +121,7 @@
         }
         <c:if test="${AppSubmissionDto.needEditController}">
         $('div.premContent').each(function () {
-            let $premContent = $(this);
-            disablePremiseContent($premContent);
-            checkEditBtn($premContent, true);
+            disablePremiseContent($(this));
         });
         </c:if>
         <c:if test="${readonly}">
