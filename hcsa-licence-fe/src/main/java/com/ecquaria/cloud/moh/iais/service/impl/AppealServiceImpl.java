@@ -84,11 +84,11 @@ import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
+import sop.util.DateUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
@@ -857,6 +857,13 @@ public class AppealServiceImpl implements AppealService {
         String[] otherQualifications = ParamUtil.getStrings(request, "otherQualification");
         String[] mobileNo = ParamUtil.getStrings(request, "mobileNo");
         String[] emailAddress = ParamUtil.getStrings(request, "emailAddress");
+        String[] professionBoard = ParamUtil.getStrings(request, "professionBoard");
+        String[] typeOfCurrRegi = ParamUtil.getStrings(request, "typeOfCurrRegi");
+        String[] praCerEndDate = ParamUtil.getStrings(request, "praCerEndDate");
+        String[] currRegiDate = ParamUtil.getStrings(request, "currRegiDate");
+        String[] typeOfRegister = ParamUtil.getStrings(request, "typeOfRegister");
+        String[] specialityOther = ParamUtil.getStrings(request, "specialityOther");
+        String[] specialtyGetDate = ParamUtil.getStrings(request, "specialtyGetDate");
         for (int i = 0; i < size; i++) {
             appSvcCgoDto = new AppSvcPrincipalOfficersDto();
             //indexNo
@@ -877,6 +884,31 @@ public class AppealServiceImpl implements AppealService {
             appSvcCgoDto.setEmailAddr(emailAddress[i]);
             appSvcCgoDto.setIndexNo(indexNo);
             appSvcCgoDto.setOtherQualification(otherQualifications[i]);
+            appSvcCgoDto.setProfessionBoard(professionBoard[i]);
+            appSvcCgoDto.setTypeOfCurrRegi(typeOfCurrRegi[i]);
+            appSvcCgoDto.setPraCerEndDateStr(praCerEndDate[i]);
+            if (StringUtil.isEmpty(praCerEndDate[i])) {
+                appSvcCgoDto.setPraCerEndDate(null);
+            } else {
+                Date date = DateUtil.parseDate(praCerEndDate[i], Formatter.DATE);
+                appSvcCgoDto.setPraCerEndDate(date);
+            }
+            appSvcCgoDto.setCurrRegiDateStr(currRegiDate[i]);
+            if (StringUtil.isEmpty(currRegiDate[i])) {
+                appSvcCgoDto.setCurrRegiDate(null);
+            } else {
+                Date date = DateUtil.parseDate(currRegiDate[i], Formatter.DATE);
+                appSvcCgoDto.setCurrRegiDate(date);
+            }
+            appSvcCgoDto.setTypeOfRegister(typeOfRegister[i]);
+            appSvcCgoDto.setSpecialityOther(specialityOther[i]);
+            appSvcCgoDto.setSpecialtyGetDateStr(specialtyGetDate[i]);
+            if (StringUtil.isEmpty(specialtyGetDate[i])) {
+                appSvcCgoDto.setSpecialtyGetDate(null);
+            } else {
+                Date date = DateUtil.parseDate(specialtyGetDate[i], Formatter.DATE);
+                appSvcCgoDto.setSpecialtyGetDate(date);
+            }
             ProfessionalResponseDto professionalResponseDto = prsFlag(professionRegoNo[i]);
             if(professionalResponseDto != null){
                 List<String> qualification = professionalResponseDto.getQualification();
@@ -1038,6 +1070,27 @@ public class AppealServiceImpl implements AppealService {
                         String professionType = appSvcCgoList.get(i).getProfessionType();
                         if (StringUtil.isEmpty(professionType)) {
                             map.put("professionType" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Type ","field"));
+                        }
+                        String typeOfCurrRegi = appSvcCgoList.get(i).getTypeOfCurrRegi();
+                        if (StringUtil.isEmpty(typeOfCurrRegi)) {
+                            map.put("typeOfCurrRegi" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Type of Current Registration ","field"));
+                        }
+                        String currRegiDate = appSvcCgoList.get(i).getCurrRegiDateStr();
+                        if (StringUtil.isEmpty(currRegiDate)) {
+                            map.put("currRegiDate" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Current Registration Date","field"));
+                        }
+                        String praCerEndDate = appSvcCgoList.get(i).getPraCerEndDateStr();
+                        if (StringUtil.isEmpty(praCerEndDate)) {
+                            map.put("praCerEndDate" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Practicing Certificate End Date","field"));
+                        }
+                        String typeOfRegister = appSvcCgoList.get(i).getTypeOfRegister();
+                        if (StringUtil.isEmpty(typeOfRegister)) {
+                            map.put("typeOfRegister" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Type of Register","field"));
+                        }
+
+                        String specialtyGetDate = appSvcCgoList.get(i).getSpecialtyGetDateStr();
+                        if (StringUtil.isEmpty(specialtyGetDate)) {
+                            map.put("specialtyGetDate" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Date when specialty was obtained","field"));
                         }
                         String designation = appSvcCgoList.get(i).getDesignation();
                         if (StringUtil.isEmpty(designation)) {
