@@ -69,7 +69,7 @@
           <label class="col-md-2" style="padding-top: 15px">Specified Service &nbsp;</label>
           <div class="col-md-5">
             <iais:select name="svcSubType" id="svcSubType" options = "checklist_config_subtype_select" firstOption="Please Select"
-                         value="${param.svcSubType}"></iais:select>
+                         value="${param.svcSubType}" needSort="true"></iais:select>
           </div>
         </div>
 

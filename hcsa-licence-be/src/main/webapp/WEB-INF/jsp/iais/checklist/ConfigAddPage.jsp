@@ -59,7 +59,7 @@
                     <iais:field value="Service Sub-Type" id="subTypeField"></iais:field>
                     <div class="col-md-5">
                         <iais:select name="svcSubType" id="svcSubType" options="checklist_config_subtype_select"
-                                     firstOption="Please Select" value="${svcSubType}"></iais:select>
+                                     firstOption="Please Select" value="${svcSubType}" needSort="true"></iais:select>
                     </div>
                 </div>
 
