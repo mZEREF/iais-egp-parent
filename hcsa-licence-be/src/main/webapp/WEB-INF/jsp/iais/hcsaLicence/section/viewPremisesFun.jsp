@@ -156,11 +156,7 @@
         changeCount()
         dismissWaiting();
     }
-
-
-    //   TODO  处理二级ID
-    //从选中的元素中挨个拿取,  addmore==>othersId  然后 把数据回填到表单中时,再把id放到指定的位置上
-
+    //   TODO ID
     function retrieveAddr(postalCode, target) {
         var $addressSelectors = $(target);
         var data = {
