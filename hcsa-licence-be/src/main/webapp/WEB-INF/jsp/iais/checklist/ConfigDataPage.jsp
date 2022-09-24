@@ -66,7 +66,7 @@
         </div>
 
         <div class="form-group">
-          <label class="col-md-2" style="padding-top: 15px">Service Sub-Type &nbsp;</label>
+          <label class="col-md-2" style="padding-top: 15px">Specified Service &nbsp;</label>
           <div class="col-md-5">
             <iais:select name="svcSubType" id="svcSubType" options = "checklist_config_subtype_select" firstOption="Please Select"
                          value="${param.svcSubType}"></iais:select>
@@ -102,7 +102,7 @@
               <iais:sortableHeader needSort="true"   field="type" value="Type"></iais:sortableHeader>
               <iais:sortableHeader  needSort="true"   field="module" value="Module"></iais:sortableHeader>
               <iais:sortableHeader  needSort="true"   field="service" value="Service"></iais:sortableHeader>
-              <iais:sortableHeader  style="width:13%" needSort="true"   field="subtype_name" value="Service Sub-Type"></iais:sortableHeader>
+              <iais:sortableHeader  style="width:13%" needSort="true"   field="subtype_name" value="Specified Service"></iais:sortableHeader>
               <iais:sortableHeader  style="width:8%" needSort="true"   field="INS_ENT" value="Inspection Entity"></iais:sortableHeader>
               <iais:sortableHeader  style="width:8%" needSort="true"   field="HCI_CODE" value="HCI Code"></iais:sortableHeader>
               <iais:sortableHeader  needSort="true"   field="START_DATE" value="Effective Start Date"></iais:sortableHeader>

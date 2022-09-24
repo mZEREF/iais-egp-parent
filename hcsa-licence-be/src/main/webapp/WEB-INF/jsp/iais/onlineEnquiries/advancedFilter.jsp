@@ -75,7 +75,7 @@
                         </div >
                     </iais:row>
                     <iais:row>
-                        <iais:field value="Service Sub-Type"/>
+                        <iais:field value="Specified Service"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
                             <div id="service_sub_type">
                                 <iais:select name="service_sub_type" cssClass="service_sub_type" options="licSvcSubTypeOption" firstOption="Please Select" value="${SearchParam.filters['serviceSubTypeName']}" ></iais:select>
