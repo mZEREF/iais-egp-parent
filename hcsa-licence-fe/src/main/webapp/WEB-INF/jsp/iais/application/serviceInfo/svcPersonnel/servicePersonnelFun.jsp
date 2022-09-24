@@ -319,14 +319,15 @@
             let $target = $premContent.find('.personnel-content').eq(i);
             if (isEmptyNode($target)) {
                 //   TODO
-                console.log("enter====>>>>>",i)
                 addPersonnels($premContent)
                 $target = $premContent.find('.personnel-content').eq(i);
             }
-            console.log(data[i],"======>","outer===>")
             fillFormData($target, data[i], 'SP003', i)
-            // fillValue($target.find('.name'),data[i].name)
+            let profRegNo = $target.find('.profRegNo').val()
+            console.log(profRegNo,"============>NO")
+            if (!isEmpty(profRegNo)){
+                $target.find('.profRegNo').trigger('blur')
+            }
         }
     }
-
 </script>
