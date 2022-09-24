@@ -12,11 +12,11 @@
 <iais:row>
     <iais:field cssClass="col-md-6" value="Date of Birth" mandatory="true"/>
     <iais:value width="12">
-        <iais:datePicker name="birthDate" value="${patient.birthDate}"/>
+        <iais:datePicker id ="birthDate" name="birthDate" value="${patient.birthDate}"/>
     </iais:value>
 </iais:row>
 
-<iais:row>
+<iais:row id="currentPatientNationality">
     <iais:field cssClass="col-md-6" value="Nationality" mandatory="true"/>
     <iais:value width="12">
         <iais:select name="nationality" firstOption="Please Select" codeCategory="CATE_ID_NATIONALITY"
@@ -153,7 +153,7 @@
         <iais:row>
             <iais:field cssClass="col-md-6" value="Date of Birth" mandatory="true"/>
             <iais:value width="12">
-                <iais:datePicker name="birthDateHbd" value="${husband.birthDate}"/>
+                <iais:datePicker name="birthDateHbd" id="birthDateHbd" value="${husband.birthDate}"/>
             </iais:value>
         </iais:row>
 
