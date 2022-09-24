@@ -30,7 +30,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <label class="col-xs-6 col-md-6 control-label">Age of 1st Embryo Transferred
+                    <label class="col-xs-6 col-md-6 control-label">1st Embryo
                         <c:if test="${flagTwo && (embryoTransferStageDto.firstEmbryoAge == 'AOFET005' || embryoTransferStageDto.firstEmbryoAge == 'AOFET006')}">
                             <a class="btn-tooltip styleguide-tooltip flag2" href="javascript:void(0);"
                                data-toggle="tooltip"
