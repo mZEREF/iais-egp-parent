@@ -2005,7 +2005,7 @@ public class ServiceInfoDelegator {
     private boolean skipStep(String stepCode, AppSubmissionDto appSubmissionDto) {
         String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,
                 HcsaConsts.STEP_DISCIPLINE_ALLOCATION,
-//                HcsaConsts.STEP_OUTSOURCED_PROVIDERS
+                HcsaConsts.STEP_OUTSOURCED_PROVIDERS
 //                HcsaConsts.STEP_PRINCIPAL_OFFICERS,
 //                HcsaConsts.STEP_SERVICE_PERSONNEL,
 //                HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER,
