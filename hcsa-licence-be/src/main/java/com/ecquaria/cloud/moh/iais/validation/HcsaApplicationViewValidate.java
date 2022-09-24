@@ -458,7 +458,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                     errMap.put("otherSubSvcApproveOne", "Must approve at least one Other Service.");
                 }
             }
-            applicationViewDto.setAppPremSpecialSubSvcRelDtoList(subSvcRelDtoList);
+            applicationViewDto.setAppPremOthersSubSvcRelDtoList(subSvcRelDtoList);
         }
     }
     /**
