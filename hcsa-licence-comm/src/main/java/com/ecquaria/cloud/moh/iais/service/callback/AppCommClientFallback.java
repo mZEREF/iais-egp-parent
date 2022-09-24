@@ -130,8 +130,7 @@ public class AppCommClientFallback implements AppCommClient {
     }
 
     @Override
-    public ResponseEntity<Void> saveSecondAddress(List<AppGrpSecondAddrDto> addrDtos) {
+    public FeignResponseEntity<List<AppGrpSecondAddrDto>> saveSecondAddress(List<AppGrpSecondAddrDto> addrDtos) {
         return null;
     }
-
 }

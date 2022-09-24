@@ -1,9 +1,9 @@
 <div class="premisesContent">
-<%--    <p>--%>
-<%--    <div class="text-right app-font-size-16"><a href="javascript:void(0);"--%>
-<%--                                                class="viewPremisesEdit"><em--%>
-<%--            class="fa fa-pencil-square-o"></em>Edit</a></div>--%>
-<%--    </p>--%>
+    <p class="${isEdit == 'Y' ? '' : 'hidden'}">
+    <div class="text-right app-font-size-16"><a href="javascript:void(0);"
+                                                class="viewPremisesEdit"><em
+            class="fa fa-pencil-square-o"></em>Edit</a></div>
+    </p>
     <iais:row>
         <strong>
             <c:out value="Secondary Address "/>
@@ -11,7 +11,7 @@
         </strong>
         <%--        <div class="app-title">Secondary Address${statuss.index+1}:</div>--%>
     </iais:row>
-
+    <input type="hidden" class="id" value="${appGrpSecondAddr.id}">
     <div class="row">
         <div class="col-md-6">
             Postal Code
@@ -23,7 +23,7 @@
             </div>
             <div class="col-md-6">
                 <span class="oldVal " attr="${appGrpSecondAddr.postalCode}" style="display: none"><c:out
-                        value="${appGrpSecondAddr.postalCode}"/></span>
+                        value="${oldAppGrpPremDto.postalCode}"/></span>
             </div>
         </div>
     </div>
@@ -82,12 +82,13 @@
     </div>
 
     <c:forEach var="othersUnitNo" items="${appGrpSecondAddr.appPremisesOperationalUnitDtos}" varStatus="status">
-        <div class="row">
+        <div class="row addmore">
+            <input type="hidden" class="othersId" value="${othersUnitNo.id}">
             <div class="col-md-6">
             </div>
             <div class="col-md-6">
                 <div class="col-md-6">
-                   <span class="newVal" attr="${othersUnitNo.floorNo}${othersUnitNo.unitNo}">
+                   <span class="newVal addmorecontent" attr="${othersUnitNo.floorNo}${othersUnitNo.unitNo}">
                      <c:out value="${othersUnitNo.floorNo}-${othersUnitNo.unitNo}"/>
                    </span>
                 </div>

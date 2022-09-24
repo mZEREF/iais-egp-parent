@@ -1,6 +1,4 @@
 <div class="viewPrem hidden form-horizontal">
-    <input type="hidden" class="not-refresh not-clear" name="${MMM}countSize" value="size"/>
-    <input type="hidden" class="not-refresh not-clear" name="othersSize" value="0"/>
     <iais:row>
         <div class="col-xs-12 col-md-6">
             <label class="app-title">Secondary Address &nbsp;&nbsp;<span class="premHeader"></span></label>
@@ -11,7 +9,7 @@
             </h4>
         </div>
     </iais:row>
-
+    <input type="hidden" class="id" value="">
     <iais:row cssClass="postalCodeDiv">
         <iais:field value="Postal Code" mandatory="true" width="5"/>
         <iais:value cssClass="col-xs-10 col-md-5">
@@ -42,6 +40,7 @@
 
 
     <iais:row cssClass="operationDiv">
+        <input type="hidden" class="othersId" value="">
         <iais:field value="Floor / Unit No." width="5" cssClass="floorUnitLabel"/>
         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
             <div class="row">
