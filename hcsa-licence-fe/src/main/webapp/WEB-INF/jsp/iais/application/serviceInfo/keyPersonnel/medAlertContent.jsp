@@ -70,6 +70,7 @@
         $('.addMedAlertPersonBtn').on('click', function () {
             addPersonnel(psnContent);
         });
+        initPerson(psnContent);
     });
 
     function refreshPersonOthers($target, hide) {
