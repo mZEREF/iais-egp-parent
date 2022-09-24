@@ -1,16 +1,16 @@
-<c:if test="${empty psnContent}">
+<%--<c:if test="${empty psnContent}">
     <c:set var="psnContent" value="person-content"/>
-</c:if>
+</c:if>--%>
 <%@include file="prsLoad.jsp" %>
 <script type="text/javascript">
-    $(function () {
+    /*$(function () {
         let psnContent = '.${psnContent}';
         removePersonEvent(psnContent);
         assignSelectEvent(psnContent);
         psnEditEvent(psnContent);
         // init page
         initPerson(psnContent);
-    });
+    });*/
 
     function initPerson(target) {
         var $target = $(target);
@@ -25,6 +25,10 @@
             }
             checkPersonContent($(v), true);
         });
+        // init add more button
+        if (typeof refreshPersonOthers === 'function') {
+            refreshPersonOthers($target);
+        }
         if ($target.length == 1) {
             $target.find('.psnHeader').html('');
         }
@@ -52,7 +56,7 @@
         $target.find('.psnHeader').html(k + 1);
         resetIndex($target, k);
         if (typeof refreshPersonOthers === 'function') {
-            refreshPersonOthers($target, k);
+            refreshPersonOthers($target);
         }
     }
 

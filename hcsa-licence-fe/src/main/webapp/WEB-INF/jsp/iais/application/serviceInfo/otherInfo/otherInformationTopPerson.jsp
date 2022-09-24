@@ -543,10 +543,6 @@
         //reset number
         $('.nurses').each(function (k,v) {
             toggleTag($(this).find('div.removeNursesBtn'), k != 0);
-            $(this).find('input.npsnType').prop('name','npsnType'+k);
-            $('input[name="npsnType"]').val("nurses");
-            $(this).find('input.nname').prop('name','nname'+k);
-            $(this).find('input.nqualification').prop('name','nqualification'+k);
         });
     }
 

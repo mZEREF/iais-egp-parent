@@ -53,19 +53,7 @@
     </c:forEach>
 
     <c:if test="${!isRfi}">
-        <c:set var="needAddPsn" value="true"/>
-        <c:choose>
-            <c:when test="${currStepConfig.status =='CMSTAT003'}">
-                <c:set var="needAddPsn" value="false"/>
-            </c:when>
-            <c:when test="${personCount >= currStepConfig.maximumCount}">
-                <c:set var="needAddPsn" value="false"/>
-            </c:when>
-            <c:when test="${AppSubmissionDto.needEditController && !canEdit}">
-                <c:set var="needAddPsn" value="false"/>
-            </c:when>
-        </c:choose>
-        <div class="col-md-12 col-xs-12 addClinicalDirectorDiv <c:if test="${!needAddPsn}">hidden</c:if>">
+        <div class="col-md-12 col-xs-12 addClinicalDirectorDiv">
             <span class="addClinicalDirectorBtn" style="color:deepskyblue;cursor:pointer;">
                 <span style="">+ Add Another <c:out value="${singleName}"/></span>
             </span>
@@ -75,17 +63,16 @@
 <%@include file="/WEB-INF/jsp/iais/application/common/personFun.jsp" %>
 <script type="text/javascript">
     $(document).ready(function () {
-        //refresh();
-    });
-
-
-    $(function() {
+        let psnContent = '.person-content';
+        removePersonEvent(psnContent);
+        assignSelectEvent(psnContent);
+        psnEditEvent(psnContent);
         $('.addClinicalDirectorBtn').on('click', function () {
-            addPersonnel('div.person-content');
+            addPersonnel(psnContent);
         });
     });
 
-    function refreshPersonOthers($target, k) {
+    function refreshPersonOthers($target) {
         var maxCount = eval('${currStepConfig.maximumCount}');
         toggleTag('.addKeyAppointmentHolderDiv', $('div.person-content').length < maxCount);
     }
