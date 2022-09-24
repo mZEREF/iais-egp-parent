@@ -2123,8 +2123,8 @@ public final class AppValidatorHelper {
             String specialties = practitioners.get(i).getSpeciality();
             String medAuthByMoh = practitioners.get(i).getIsMedAuthByMoh();
 
-            if (!StringUtil.isEmpty(medAuthByMoh)) {
-                errMap.put(prefix+"medAuthByMoh" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
+            if (StringUtil.isEmpty(medAuthByMoh)) {
+                errMap.put(prefix+"isMedAuthByMoh" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
                         "Is the medical practitioners authorised by MOH to perform Abortion\n" +
                                 "                (if No, please upload a copy of the Obstetrics & Gynaecology certificate and From 2 at the Document page)",
                         "field"));

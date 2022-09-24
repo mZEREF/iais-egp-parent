@@ -29,7 +29,7 @@
             <c:set var="pCount" value="${topBySurgicalProcedure.size()}"/>
         </c:otherwise>
     </c:choose>
-    <input type="hidden" class="pLength" name="${prefix}pLength" value="${pCount}" />
+    <input type="hidden" class="pLength" name="${prefix}pLength" value="${pCount}" data-prefix="${prefix}"/>
     <c:forEach begin="0" end="${pCount-1}" step="1" varStatus="cdStat">
         <c:set var="index" value="${cdStat.index}" />
         <c:set var="person" value="${topBySurgicalProcedure[index]}"/>
@@ -50,7 +50,7 @@
             <c:set var="aCount" value="${topByAll.size()}"/>
         </c:otherwise>
     </c:choose>
-    <input type="hidden" class="aLength" name="${prefix}aLength" value="${aCount}" />
+    <input type="hidden" class="aLength" name="${prefix}aLength" value="${aCount}" data-prefix="${prefix}"/>
     <c:forEach begin="0" end="${aCount-1}" step="1" varStatus="cdStat">
         <c:set var="index" value="${cdStat.index}" />
         <c:set var="person" value="${topByAll[index]}"/>
