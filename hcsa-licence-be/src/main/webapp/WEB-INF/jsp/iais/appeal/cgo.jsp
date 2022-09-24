@@ -206,7 +206,21 @@
                                 </td>
                               </tr>
                             </c:if>
-
+                            <tr height="1">
+                              <td class="first last" style="width: 100%;">
+                                <iais:row>
+                                  <div class="col-sm-5 control-label formtext ">
+                                    <label  class="control-label control-set-font control-font-label">Professional Board</label>
+                                    <span class="upload_controls"></span>
+                                  </div>
+                                  <iais:value width="7" cssClass="col-md-7">
+                                    <iais:select cssClass="professionBoard" name="professionBoard" codeCategory="CATE_ID_PROFESSION_BOARD"
+                                                 value="${currentCgo.professionBoard}" firstOption="Please Select"/>
+                                    <span class="error-msg" name="iaisErrorMsg" id="error_professionBoard${status.index}"></span>
+                                  </iais:value>
+                                </iais:row>
+                              </td>
+                            </tr>
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
                                 <div  class="control control-caption-horizontal">
@@ -253,6 +267,70 @@
                             </tr>
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
+                                <iais:row>
+                                  <div class="col-sm-5 control-label formtext ">
+                                    <label  class="control-label control-set-font control-font-label">Type of Current Registration</label>
+
+                                    <span class="upload_controls"></span>
+                                  </div>
+                                  <iais:value width="7" cssClass="col-md-7">
+                                    <iais:input maxLength="50" type="text" cssClass="typeOfCurrRegi" name="typeOfCurrRegi"
+                                                value="${currentCgo.typeOfCurrRegi}"/>
+                                    <span class="error-msg" name="iaisErrorMsg" id="error_typeOfCurrRegi${status.index}"></span>
+                                  </iais:value>
+                                </iais:row>
+
+                              </td>
+                            </tr>
+                            <tr height="1">
+                              <td class="first last" style="width: 100%;">
+                                <iais:row>
+                                  <div class="col-sm-5 control-label formtext ">
+                                    <label  class="control-label control-set-font control-font-label">Current Registration Date</label>
+
+                                    <span class="upload_controls"></span>
+                                  </div>
+                                  <iais:value width="7" cssClass="col-md-7">
+                                    <iais:datePicker cssClass="currRegiDate field-date" name="currRegiDate" value="${currentCgo.currRegiDateStr}"/>
+                                    <span class="error-msg" name="iaisErrorMsg" id="error_currRegiDate${status.index}"></span>
+                                  </iais:value>
+                                </iais:row>
+                              </td>
+                            </tr>
+                            <tr height="1">
+                              <td class="first last" style="width: 100%;">
+                                <iais:row>
+                                  <div class="col-sm-5 control-label formtext ">
+                                    <label  class="control-label control-set-font control-font-label">Practicing Certificate End Date</label>
+
+                                    <span class="upload_controls"></span>
+                                  </div>
+                                  <iais:value width="7" cssClass="col-md-7">
+                                    <iais:datePicker cssClass="praCerEndDate field-date" name="praCerEndDate" value="${currentCgo.praCerEndDateStr}"/>
+                                    <span class="error-msg" name="iaisErrorMsg" id="error_praCerEndDate${status.index}"></span>
+                                  </iais:value>
+                                </iais:row>
+                              </td>
+                            </tr>
+
+                            <tr height="1">
+                              <td class="first last" style="width: 100%;">
+                                <iais:row>
+                                  <div class="col-sm-5 control-label formtext ">
+                                    <label  class="control-label control-set-font control-font-label">Type of Register</label>
+
+                                    <span class="upload_controls"></span>
+                                  </div>
+                                  <iais:value width="7" cssClass="col-md-7">
+                                    <iais:input maxLength="50" type="text" cssClass="typeOfRegister" name="typeOfRegister"
+                                                value="${currentCgo.typeOfRegister}"/>
+                                    <span class="error-msg" name="iaisErrorMsg" id="error_typeOfRegister${status.index}"></span>
+                                  </iais:value>
+                                </iais:row>
+                              </td>
+                            </tr>
+                            <tr height="1">
+                              <td class="first last" style="width: 100%;">
                                 <div id="control--runtime--29" class="control control-caption-horizontal">
                                   <div class="form-group form-horizontal formgap">
                                     <div class="control-label formtext col-sm-5">
@@ -278,6 +356,37 @@
                                     </div>
                                   </div>
                                 </div>
+                              </td>
+                            </tr>
+                            <tr height="1">
+                              <td class="first last" style="width: 100%;">
+                                <iais:row>
+                                  <div class="col-sm-5 control-label formtext ">
+                                    <label  class="control-label control-set-font control-font-label">Other Specialties</label>
+                                    <span class="upload_controls"></span>
+                                  </div>
+                                  <iais:value width="7" cssClass="col-md-7">
+                                    <iais:input maxLength="100" type="text" cssClass="specialityOther" name="specialityOther"
+                                                value="${currentCgo.specialityOther}"/>
+                                    <span class="error-msg" name="iaisErrorMsg" id="error_specialityOther${status.index}"></span>
+                                  </iais:value>
+                                </iais:row>
+                              </td>
+                            </tr>
+                            <tr height="1">
+                              <td class="first last" style="width: 100%;">
+                                <iais:row>
+                                  <div class="col-sm-5 control-label formtext ">
+                                    <label  class="control-label control-set-font control-font-label">Date when specialty was obtained</label>
+
+                                    <span class="upload_controls"></span>
+                                  </div>
+                                  <iais:value width="7" cssClass="col-md-7">
+                                    <iais:datePicker cssClass="specialtyGetDate field-date" name="specialtyGetDate"
+                                                     value="${currentCgo.specialtyGetDateStr}"/>
+                                    <span class="error-msg" name="iaisErrorMsg" id="error_specialtyGetDate${status.index}"></span>
+                                  </iais:value>
+                                </iais:row>
                               </td>
                             </tr>
                             <tr height="1">

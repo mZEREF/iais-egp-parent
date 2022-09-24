@@ -28,13 +28,6 @@
                   <c:set value="${GovernanceOfficersList}" var="cgoList"/>
                   <c:set value="cgo-${status.index}-" var="cgoIndeNo"/>
                   <c:set value="${cgoList[status.index]}" var="currentCgo"/>
-                  <input type="hidden" id="hiddendesignation" value="${currentCgo.designation}">
-                  <input type="hidden" id="hiddenprofessionType" value="${currentCgo.professionType}">
-                  <input type="hidden" id="hiddenprofRegNo" value="${currentCgo.profRegNo}">
-                  <input type="hidden" id="hiddenspeciality" value="${currentCgo.speciality}">
-                  <input type="hidden" id="hiddensubSpeciality" value="${currentCgo.subSpeciality}">
-                  <input type="hidden" id="hiddenqualification" value="${currentCgo.qualification}">
-                  <input type="hidden" id="hiddenotherQualification" value="${currentCgo.otherQualification}">
                   <c:set value="${errorMap_governanceOfficers[status.index]}" var="errorMap"/>
                   <c:set value="${status.index}" var="suffix" />
                   <div class="cgo-content">
@@ -58,7 +51,7 @@
                       <td class="first last" style="width: 100%;">
                             <div id="control--runtime--" class="control control-caption-horizontal">
                               <div class=" form-group form-horizontal formgap" style="width:194%;" >
-                                <div class="col-sm-4 control-label formtext control">
+                                <div class="col-sm-5 control-label formtext control">
                                   <div class="cgo-header">
                                     <strong>Clinical Governance Officer </strong>
                                   </div>
@@ -75,7 +68,7 @@
                             <div id="control--runtime--2" class="control control-caption-horizontal">
                               <div class=" form-group form-horizontal formgap">
                                 <div class="col-sm-5 control-label formtext ">
-                                  <label id="control--runtime--2--label" class="control-label control-set-font control-font-label" >Add/Assign a Clinical Governance Officer</label>
+                                  <label  class="control-label control-set-font control-font-label" >Add/Assign a Clinical Governance Officer</label>
                                   <span class="upload_controls"></span>
                                 </div>
                                 <div class="col-sm-5 col-md-7" id="assignSelect${suffix}">
@@ -97,7 +90,7 @@
                               <td class="first last" style="width: 100%;">
                                 <div  class="control control-caption-horizontal">
                                   <div class=" form-group form-horizontal formgap">
-                                    <div class="col-sm-4 control-label formtext ">
+                                    <div class="col-sm-5 control-label formtext ">
                                       <label  class="control-label control-set-font control-font-label">
                                         Name
                                       </label>
@@ -122,8 +115,8 @@
                               <td class="first last" style="width: 100%;">
                                 <div id="control--runtime--28" class="control control-caption-horizontal">
                                   <div class=" form-group form-horizontal formgap">
-                                    <div class="col-sm-4 control-label formtext ">
-                                      <label id="control--runtime--28--label" class="control-label control-set-font control-font-label">
+                                    <div class="col-sm-5 control-label formtext ">
+                                      <label  class="control-label control-set-font control-font-label">
                                         ID No.
                                       </label>
                                       <span class="mandatory">*</span>
@@ -150,7 +143,7 @@
                               <td class="first last" style="width: 100%;">
                                 <div id="" class="control control-caption-horizontal">
                                   <div class=" form-group form-horizontal formgap">
-                                    <div class="col-sm-4 control-label formtext ">
+                                    <div class="col-sm-5 control-label formtext ">
                                     </div>
                                     <div class="col-sm-5 col-md-7">
                                       <span class="error-msg" name="iaisErrorMSg" id="error_idTypeNo${status.index}"></span>
@@ -217,6 +210,21 @@
                             </tr>
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
+                                <iais:row>
+                                  <div class="col-sm-5 control-label formtext ">
+                                    <label  class="control-label control-set-font control-font-label">Professional Board</label>
+                                    <span class="upload_controls"></span>
+                                  </div>
+                                  <iais:value width="7" cssClass="col-md-7">
+                                    <iais:select cssClass="professionBoard" name="professionBoard" codeCategory="CATE_ID_PROFESSION_BOARD"
+                                                 value="${currentCgo.professionBoard}" firstOption="Please Select"/>
+                                    <span class="error-msg" name="iaisErrorMsg" id="error_professionBoard${status.index}"></span>
+                                  </iais:value>
+                                </iais:row>
+                              </td>
+                            </tr>
+                            <tr height="1">
+                              <td class="first last" style="width: 100%;">
                                 <div  class="control control-caption-horizontal">
                                   <div class="form-group form-horizontal formgap">
                                     <div class="col-sm-4 control-label formtext">
@@ -238,8 +246,8 @@
                               <td class="first last" style="width: 100%;">
                                 <div id="control--runtime--31" class="control control-caption-horizontal">
                                   <div class=" form-group form-horizontal formgap">
-                                    <div class="col-sm-4 control-label formtext ">
-                                      <label id="control--runtime--31--label" class="control-label control-set-font control-font-label">
+                                    <div class="col-sm-5 control-label formtext ">
+                                      <label  class="control-label control-set-font control-font-label">
                                         Professional Regn. No.
                                       </label>
                                       <span class="upload_controls"></span>
@@ -257,10 +265,76 @@
 
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
+                                <iais:row>
+                                  <div class="col-sm-5 control-label formtext ">
+                                    <label  class="control-label control-set-font control-font-label">Type of Current Registration</label>
+                                    <span class="mandatory">*</span>
+                                    <span class="upload_controls"></span>
+                                  </div>
+                                  <iais:value width="7" cssClass="col-md-7">
+                                    <iais:input maxLength="50" type="text" cssClass="typeOfCurrRegi" name="typeOfCurrRegi"
+                                                value="${currentCgo.typeOfCurrRegi}"/>
+                                    <span class="error-msg" name="iaisErrorMsg" id="error_typeOfCurrRegi${status.index}"></span>
+                                  </iais:value>
+                                </iais:row>
+
+                              </td>
+                            </tr>
+                            <tr height="1">
+                              <td class="first last" style="width: 100%;">
+                                <iais:row>
+                                  <div class="col-sm-5 control-label formtext ">
+                                    <label  class="control-label control-set-font control-font-label">Current Registration Date</label>
+                                    <span class="mandatory">*</span>
+                                    <span class="upload_controls"></span>
+                                  </div>
+                                  <iais:value width="7" cssClass="col-md-7">
+                                    <iais:datePicker cssClass="currRegiDate field-date" name="currRegiDate" value="${currentCgo.currRegiDateStr}"/>
+                                    <span class="error-msg" name="iaisErrorMsg" id="error_currRegiDate${status.index}"></span>
+                                  </iais:value>
+                                </iais:row>
+                              </td>
+                            </tr>
+                            <tr height="1">
+                              <td class="first last" style="width: 100%;">
+                                <iais:row>
+                                  <div class="col-sm-5 control-label formtext ">
+                                    <label  class="control-label control-set-font control-font-label">Practicing Certificate End Date</label>
+                                    <span class="mandatory">*</span>
+                                    <span class="upload_controls"></span>
+                                  </div>
+                                  <iais:value width="7" cssClass="col-md-7">
+                                    <iais:datePicker cssClass="praCerEndDate field-date" name="praCerEndDate" value="${currentCgo.praCerEndDateStr}"/>
+                                    <span class="error-msg" name="iaisErrorMsg" id="error_praCerEndDate${status.index}"></span>
+                                  </iais:value>
+                                </iais:row>
+                              </td>
+                            </tr>
+
+                            <tr height="1">
+                              <td class="first last" style="width: 100%;">
+                                <iais:row>
+                                  <div class="col-sm-5 control-label formtext ">
+                                    <label  class="control-label control-set-font control-font-label">Type of Register</label>
+                                    <span class="mandatory">*</span>
+                                    <span class="upload_controls"></span>
+                                  </div>
+                                  <iais:value width="7" cssClass="col-md-7">
+                                    <iais:input maxLength="50" type="text" cssClass="typeOfRegister" name="typeOfRegister"
+                                                value="${currentCgo.typeOfRegister}"/>
+                                    <span class="error-msg" name="iaisErrorMsg" id="error_typeOfRegister${status.index}"></span>
+                                  </iais:value>
+                                </iais:row>
+                              </td>
+                            </tr>
+
+
+                            <tr height="1">
+                              <td class="first last" style="width: 100%;">
                                 <div id="control--runtime--29" class="control control-caption-horizontal">
                                   <div class="form-group form-horizontal formgap">
                                     <div class="control-label formtext col-sm-5">
-                                      <label id="control--runtime--29--label" class="control-label control-set-font control-font-label">Specialty</label>
+                                      <label  class="control-label control-set-font control-font-label">Specialty</label>
                                     </div>
                                     <div class="col-xs-8 col-sm-4 col-md-7">
                                       <label class="control-label control-set-font control-font-label specialty-label">${currentCgo.speciality}</label>
@@ -282,6 +356,37 @@
                                     </div>
                                   </div>
                                 </div>
+                              </td>
+                            </tr>
+                            <tr height="1">
+                              <td class="first last" style="width: 100%;">
+                                <iais:row>
+                                  <div class="col-sm-5 control-label formtext ">
+                                    <label  class="control-label control-set-font control-font-label">Other Specialties</label>
+                                    <span class="upload_controls"></span>
+                                  </div>
+                                  <iais:value width="7" cssClass="col-md-7">
+                                    <iais:input maxLength="100" type="text" cssClass="specialityOther" name="specialityOther"
+                                                value="${currentCgo.specialityOther}"/>
+                                    <span class="error-msg" name="iaisErrorMsg" id="error_specialityOther${status.index}"></span>
+                                  </iais:value>
+                                </iais:row>
+                              </td>
+                            </tr>
+                            <tr height="1">
+                              <td class="first last" style="width: 100%;">
+                                <iais:row>
+                                  <div class="col-sm-5 control-label formtext ">
+                                    <label  class="control-label control-set-font control-font-label">Date when specialty was obtained</label>
+                                    <span class="mandatory">*</span>
+                                    <span class="upload_controls"></span>
+                                  </div>
+                                  <iais:value width="7" cssClass="col-md-7">
+                                    <iais:datePicker cssClass="specialtyGetDate field-date" name="specialtyGetDate"
+                                                     value="${currentCgo.specialtyGetDateStr}"/>
+                                    <span class="error-msg" name="iaisErrorMsg" id="error_specialtyGetDate${status.index}"></span>
+                                  </iais:value>
+                                </iais:row>
                               </td>
                             </tr>
                             <tr height="1">
@@ -322,7 +427,7 @@
                               <td class="first last" style="width: 100%;">
                                 <div  class="control control-caption-horizontal">
                                   <div class=" form-group form-horizontal formgap">
-                                    <div class="col-sm-4 control-label formtext ">
+                                    <div class="col-sm-5 control-label formtext ">
                                       <label  class="control-label control-set-font control-font-label">Mobile No.</label>                                                                                                                                        <span class="mandatory">*</span>
                                       <span class="upload_controls"></span>
                                     </div>
@@ -340,8 +445,8 @@
                               <td class="first last" style="">
                                 <div id="control--runtime--33" class="control control-caption-horizontal">
                                   <div class=" form-group form-horizontal formgap">
-                                    <div class="col-sm-4 control-label formtext ">
-                                      <label id="control--runtime--33--label" class="control-label control-set-font control-font-label">Email Address</label>
+                                    <div class="col-sm-5 control-label formtext ">
+                                      <label class="control-label control-set-font control-font-label">Email Address</label>
                                       <span class="mandatory">*</span>
                                       <span class="upload_controls"></span>
                                     </div>
@@ -696,9 +801,6 @@
       $CurrentPsnEle.find('input[name="mobileNo"]').val(data.mobileNo);
       $CurrentPsnEle.find('input[name="emailAddress"]').val(data.emailAddr);
 
-      <!--     ====================    -->
-      <!--       diff page column      -->
-      <!--     ====================    -->
 
       <!-- officeTelNo-->
       var officeTelNo = data.officeTelNo;
@@ -740,16 +842,7 @@
       }else{
         $CurrentPsnEle.find('input[name="professionRegoNo"]').val('');
       }
-      /*<!-- speciality-->
-      var speciality = data.speciality;
-      console.log('speciality'+speciality);
-      $CurrentPsnEle.find('.specialty-label').html(speciality);
-      <!--Subspeciality -->
-      var subSpeciality = data.subSpeciality;
-      $CurrentPsnEle.find('.sub-specialty-label').html(subSpeciality);
-      <!--qualification -->
-      var qualification = data.qualification;
-      $CurrentPsnEle.find('.qualification-label').html(qualification);*/
+
       var otherQualification = data.otherQualification;
       if(otherQualification != null && otherQualification !='undefined' && otherQualification != ''){
         $CurrentPsnEle.find('input[name="otherQualification"]').val(otherQualification);
@@ -760,9 +853,55 @@
       <!--preferredMode -->
       var description = data.description;
       if(description != null && description !='undefined' && description != ''){
-        $CurrentPsnEle.find('input[name="description"]').val(data.description);
+        $CurrentPsnEle.find('input[name="description"]').val(description);
       }else{
         $CurrentPsnEle.find('input[name="description"]').val('');
+      }
+
+      var professionBoard = data.professionBoard;
+      if(professionBoard == null || professionBoard =='undefined' || professionBoard == ''){
+        professionBoard = '';
+      }
+      $CurrentPsnEle.find('select[name="professionBoard"]').val(professionBoard);
+      var professionBoardVal = $CurrentPsnEle.find('option[value="' + professionBoard + '"]').html();
+
+      $CurrentPsnEle.find('select[name="professionBoard"]').next().find('.current').html(professionBoardVal);
+
+      var typeOfCurrRegi = data.typeOfCurrRegi;
+      if(typeOfCurrRegi != null && typeOfCurrRegi !='undefined' && typeOfCurrRegi != ''){
+        $CurrentPsnEle.find('input[name="typeOfCurrRegi"]').val(typeOfCurrRegi);
+      }else{
+        $CurrentPsnEle.find('input[name="typeOfCurrRegi"]').val('');
+      }
+      var praCerEndDateStr = data.praCerEndDateStr;
+      if(isEmpty(praCerEndDateStr)){
+        $CurrentPsnEle.find('.praCerEndDate').val('');
+      }else{
+        $CurrentPsnEle.find('.praCerEndDate').val(praCerEndDateStr);
+      }
+      var currRegiDateStr = data.currRegiDateStr;
+      if(isEmpty(currRegiDateStr)){
+        $CurrentPsnEle.find('.currRegiDate').val('');
+      }else{
+        $CurrentPsnEle.find('.currRegiDate').val(currRegiDateStr);
+      }
+      var typeOfRegister = data.typeOfRegister;
+      if(typeOfRegister != null && typeOfRegister !='undefined' && typeOfRegister != ''){
+        $CurrentPsnEle.find('input[name="typeOfRegister"]').val(typeOfRegister);
+      }else{
+        $CurrentPsnEle.find('input[name="typeOfRegister"]').val('');
+      }
+      var specialityOther = data.specialityOther;
+      if(specialityOther != null && specialityOther !='undefined' && specialityOther != ''){
+        $CurrentPsnEle.find('input[name="specialityOther"]').val(specialityOther);
+      }else{
+        $CurrentPsnEle.find('input[name="specialityOther"]').val('');
+      }
+      var specialtyGetDateStr = data.specialtyGetDateStr;
+      if(isEmpty(specialtyGetDateStr)){
+        $CurrentPsnEle.find('.specialtyGetDate').val('');
+      }else{
+        $CurrentPsnEle.find('.specialtyGetDate').val(specialtyGetDateStr);
       }
 
       var isLicPerson = data.licPerson;
@@ -796,10 +935,10 @@
         'nationality':nationality,
         'idType':idType,
         'idNo':idNo,
-        'psnType':psnType
+        'indexNo': 1
       };
       $.ajax({
-        'url':'${pageContext.request.contextPath}/person-info/svc-code',
+        'url':'${pageContext.request.contextPath}/person-info',
         'dataType':'json',
         'data':jsonData,
         'type':'GET',
@@ -812,6 +951,12 @@
           } else {
             fillPsnForm($CurrentPsnEle, data, psnType);
           }
+          $('.date_picker').datepicker({
+            format:"dd/mm/yyyy",
+            autoclose:true,
+            todayHighlight:true,
+            orientation:'bottom'
+          });
           dismissWaiting();
         },
         'error':function () {
@@ -855,6 +1000,9 @@
       if(psnEditDto.speciality){
         $cgoPsnEle.find('div.specialty').removeClass('disabled');
       }
+      if(psnEditDto.professionBoard){
+        $cgoPsnEle.find('div.professionBoard').removeClass('disabled');
+      }
       //input text
       if(psnEditDto.name){
         $cgoPsnEle.find('input[name="name"]').prop('disabled',false);
@@ -884,7 +1032,24 @@
       if(psnEditDto.description){
         $cgoPsnEle.find('input[name="description"]').prop('disabled',false);
       }
-
+      if(psnEditDto.typeOfCurrRegi){
+        $cgoPsnEle.find('input[name="typeOfCurrRegi"]').prop('disabled',false);
+      }
+      if(psnEditDto.typeOfRegister){
+        $cgoPsnEle.find('input[name="typeOfRegister"]').prop('disabled',false);
+      }
+      if(psnEditDto.specialityOther){
+        $cgoPsnEle.find('input[name="specialityOther"]').prop('disabled',false);
+      }
+      if(psnEditDto.currRegiDate){
+        $cgoPsnEle.find('input[name="currRegiDate"]').prop('disabled',false);
+      }
+      if(psnEditDto.praCerEndDate){
+        $cgoPsnEle.find('input[name="praCerEndDate"]').prop('disabled',false);
+      }
+      if(psnEditDto.specialtyGetDate){
+        $cgoPsnEle.find('input[name="specialtyGetDate"]').prop('disabled',false);
+      }
       //for disabled add style
       $cgoPsnEle.find('input[type="text"]').each(function () {
         if($(this).prop('disabled')){
@@ -903,4 +1068,16 @@
       $Ele.find('input[type="file"]').prop('disabled',true);
       $Ele.find('input[type="checkbox"]').prop('disabled',true);
     }
+    function isEmpty(str) {
+      return typeof str === 'undefined' || str == null || (typeof str == 'string' && str == '') || str == 'undefined';
+    }
+    $(document).ready(function(){
+      $('.date_picker').datepicker({
+        format:"dd/mm/yyyy",
+        autoclose:true,
+        todayHighlight:true,
+        orientation:'bottom'
+      });
+      $('input[type="text"]').attr('autocomplete', 'off');
+    });
 </script>

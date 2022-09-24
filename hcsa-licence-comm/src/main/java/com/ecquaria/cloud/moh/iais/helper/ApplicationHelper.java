@@ -1721,6 +1721,9 @@ public final class ApplicationHelper {
         Map<String, String> fieldMap = IaisCommonUtils.genNewHashMap();
         person = MiscUtil.transferEntityDto(appSvcPersonExtDto, AppSvcPrincipalOfficersDto.class, fieldMap, person);
         //transfer
+        person.setSpecialtyGetDateStr(handleDateString(appSvcPersonExtDto.getSpecialtyGetDate(), null));
+        person.setCurrRegiDateStr(handleDateString(appSvcPersonExtDto.getCurrRegiDate(), null));
+        person.setPraCerEndDateStr(handleDateString(appSvcPersonExtDto.getPraCerEndDate(), null));
         person.setLicPerson(appSvcPersonAndExtDto.isLicPerson());
         AppPsnEditDto appPsnEditDto = setNeedEditField(person);
         person.setPsnEditDto(appPsnEditDto);

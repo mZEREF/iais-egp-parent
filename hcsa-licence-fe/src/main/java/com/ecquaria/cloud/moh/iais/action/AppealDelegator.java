@@ -318,7 +318,8 @@ public class AppealDelegator {
         // Nationality
         sql = sql.replace("(7)", generateDropDownHtml(MasterCodeUtil.CATE_ID_NATIONALITY, "nationality"));
 
-
+        sql = sql.replace("(8)", generateDropDownHtml(MasterCodeUtil.CATE_ID_PROFESSION_BOARD, "professionBoard" ,
+                "professionBoard"));
         log.debug(StringUtil.changeForLog("gen governance officer html end ...."));
         return sql;
     }

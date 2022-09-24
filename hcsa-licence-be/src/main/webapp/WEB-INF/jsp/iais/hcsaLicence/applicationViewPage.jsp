@@ -376,9 +376,9 @@
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
-                                                                        <%@include file="/WEB-INF/jsp/iais/hcsaLicence/appFlowSvcVehicleShow.jsp"%>
                                                                         <%@include file="/WEB-INF/jsp/iais/hcsaLicence/appFlowSvcSpecialShow.jsp"%>
                                                                         <%@include file="/WEB-INF/jsp/iais/hcsaLicence/appFlowSvcOtherShow.jsp"%>
+                                                                        <%@include file="/WEB-INF/jsp/iais/hcsaLicence/appFlowSvcVehicleShow.jsp"%>
                                                                         <%--application type != appeal --%>
                                                                         <c:if test="${!isAppealType && !isCessation && !isWithDrawal}">
                                                                             <div class="fastTrack">

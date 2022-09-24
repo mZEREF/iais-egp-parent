@@ -37,8 +37,15 @@ public class MsgCommonUtil {
         List<String> allDataSubmissionRoleIds = getAllRoleIdsInUserRole(roles);
         if(roles != null && (roles.contains(NotificationHelper.RECEIPT_ROLE_LICENSEE_ALL)
                 || IaisCommonUtils.isNotEmpty(allDataSubmissionRoleIds))){
+            List<String> roleIds = null;
+            if (IaisCommonUtils.isNotEmpty(allDataSubmissionRoleIds)) {
+                roleIds = allDataSubmissionRoleIds;
+            } else {
+                roleIds = IaisCommonUtils.genNewArrayList(1);
+                roleIds.add(RoleConsts.USER_ROLE_ORG_USER);
+            }
             //this refId is licensee id
-            List<String> emailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(refId);
+            List<String> emailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(refId, roleIds);
             emailSet.addAll(emailAddrs);
         } else{
             //this refId is license id

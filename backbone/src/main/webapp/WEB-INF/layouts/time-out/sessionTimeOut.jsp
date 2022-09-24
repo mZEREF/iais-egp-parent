@@ -39,12 +39,14 @@
 
     var warningDlgIntHook;
     var countdownIntHook;
+    var logoutHook;
     function initSessionTimeout() {
         window.clearTimeout(warningDlgIntHook);
+        window.clearTimeout(logoutHook);
         var min = parseInt('<%=warning%>');
         var logout = parseInt('<%=timeout%>');
         warningDlgIntHook = window.setTimeout('showTimeoutWarning();', min * 60 * 1000, 'JavaScript');
-        window.setTimeout('doLogout();', logout * 60 * 1000, 'JavaScript');
+        logoutHook = window.setTimeout('doLogout();', logout * 60 * 1000, 'JavaScript');
     }
 
     function startCountdown(min) {
@@ -64,7 +66,7 @@
                 window.clearInterval(countdownIntHook);
 
                 // logout automatically if no action taken.
-                doLogout();
+                //doLogout();
             }
         }, 1000, 'JavaScript');
     }

@@ -61,6 +61,8 @@
             <c:if test="${ not empty selectDraftNo }">
                 <iais:confirm msg="${new_ack001}" callBack="cancelSaveDraft()" popupOrder="saveDraft"  yesBtnDesc="Resume from draft" cancelBtnDesc="Continue" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="saveDraft()"></iais:confirm>
             </c:if>
+
+            <iais:confirm msg="NEW_ACK44" popupOrder="saveApplicationAddress" cancelBtnDesc="cancel" yesBtnDesc="continue" cancelBtnCls="btn btn-secondary" yesBtnCls="btn btn-primary" callBack="baseContinue()" cancelFunc="cancel()"></iais:confirm>
             <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
         </div>
     </div>
@@ -81,9 +83,19 @@
             submit('chooseSvc',null,'back');
         });
         $('#baseContinue').click(function () {
-            showWaiting();
-            submit('chooseAlign',null,'next');
-
+            var allNew=true;
+            $('input.isNewOrBase').each(function (k, v) {
+                var isNewOrBase = $(v).val();
+                if (isNewOrBase=='base'){
+                    allNew=false;
+                }
+            });
+            if (allNew){
+                $('#saveApplicationAddress').modal('show');
+            }else {
+                showWaiting();
+                submit('chooseAlign',null,'next');
+            }
         });
 
         if( $('#draftsave').val()!=null|| $('#draftsave').val()!=''){
@@ -109,80 +121,22 @@
             });
         }
 
-
         $('.firstStep').change(function () {
             var $currSpecContent = $(this).closest('div.speSvcContent');
-            var $baseSvcCount = $(this).closest('div.base-svc-content');
             var $baseLicContent = $(this).closest('div.exist-base-lic-content');
-            $currSpecContent.removeClass('remark-point');
             //clear select when click other base
             if($(this).hasClass('existing-base')){
-                console.log('first step');
+                $currSpecContent.find('input.isNewOrBase').val('base');
                 $currSpecContent.find('div.exist-base-lic-content div.existing-base-content input[type="radio"]').prop('checked',false);
                 $currSpecContent.find('div.exist-base-lic-content div.existing-base-content input[type="radio"]').prop('disabled',true);
                 $baseLicContent.find('div.existing-base-content input[type="radio"]').prop('disabled',false);
                 $baseLicContent.find('div.existing-base-content input[type="radio"]:eq(0)').prop('checked',true);
-                //var currSvcName = $baseSvcCount.find('input[name="svcName"]').val();
-                $('.remark-point').each(function () {
-                    console.log('remark-point start...');
-                    $(this).find('div.base-svc-content:eq(0) div.exist-base-lic-content input[type="radio"]:eq(0)').prop('checked',true);
-                    $(this).find('div.base-svc-content:eq(0) div.exist-base-lic-content div.existing-base-content input[type="radio"]:eq(0)').prop('checked',true);
-                    if($(this).find('.firstStep:eq(0)').is('.existing-base')){
-                        $(this).find('.base-svc-content:eq(0) .exist-base-lic-content .existing-base-content input[type="radio"]').prop('disabled',false);
-                    }else{
-
-                    }
-                });
             }else if($(this).hasClass('diff-base')){
-                console.log('diff-base');
+                $currSpecContent.find('input.isNewOrBase').val('new');
                 $currSpecContent.find('div.exist-base-lic-content input[type="radio"]').prop('checked',false);
                 $currSpecContent.find('div.exist-base-lic-content div.existing-base-content input[type="radio"]').prop('disabled',true);
-
-                //var currSvcName = $baseSvcCount.find('input[name="svcName"]').val();
-                $('.remark-point').each(function () {
-                    console.log('remark-point start...');
-                    $(this).find('div.base-svc-content:eq(0) div.new-base input[type="radio"]:eq(0)').prop('checked',true);
-                    $(this).find('div.existing-base-content input[type="radio"]').prop('checked',false);
-                    $(this).find('div.exist-base-lic-content div.existing-base-content input[type="radio"]').prop('disabled',true);
-                });
             }
-
-
-            $currSpecContent.addClass('remark-point');
         });
-
-        $('.secondStep').change(function () {
-            var currHci = $(this).closest('div.form-check').find('input[name="premHci"]').val();
-            var $currSpecContent = $(this).closest('div.speSvcContent');
-
-            $currSpecContent.removeClass('remark-point');
-            $('.remark-point').each(function () {
-                var hadSameHci = false;
-                $(this).find('.base-svc-content:eq(0) .exist-base-lic-content .existing-base-content div').each(function () {
-                    var hci = $(this).find('input[name="premHci"]').val();
-                    //can found the same hci
-                    if(currHci == hci){
-                        hadSameHci = true;
-                        $(this).find('input[type="radio"]').prop('checked',true);
-                        $(this).closest('div.exist-base-lic-content').find('.firstStep:eq(0)').prop('checked',true);
-                        //let diff disabled
-                        $(this).closest('div.base-svc-content').find('div.new-base input[type="radio"]').prop('checked',false);
-                        // $(this).closest('div.exist-base-lic-content').prop('disabled',false);
-                        return false;//break
-                    }
-                });
-                if(!hadSameHci){
-                    $(this).find('.base-svc-content:eq(0) div.new-base input[type="radio"]').prop('checked',true);
-                    //let existing disable and uncheck
-                    $(this).find('.base-svc-content:eq(0) div.exist-base-lic-content input[type="radio"]').prop('checked',false);
-                    $(this).find('.base-svc-content:eq(0) div.exist-base-lic-content div.existing-base-content input[type="radio"]').prop('disabled',true);
-                }
-            });
-            $currSpecContent.addClass('remark-point');
-        });
-
-
-
     });
 
     function saveDraft() {
@@ -199,6 +153,12 @@
         $('#mainForm').submit();
     }
 
+    function cancel() {
+        $('#saveApplicationAddress').modal('hide');
+    }
 
-
+    function baseContinue() {
+        showWaiting();
+        submit('chooseAlign',null,'next');
+    }
 </script>

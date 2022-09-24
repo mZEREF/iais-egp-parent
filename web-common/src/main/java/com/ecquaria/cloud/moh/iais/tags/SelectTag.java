@@ -172,7 +172,7 @@ public class SelectTag extends DivTagSupport {
 
             for (SelectOption option : sos) {
                 String val = StringUtil.viewNonNullHtml(option.getValue());
-                String txt = StringUtil.escapeHtml(option.getText());
+                String txt = StringUtil.escapeHtml(StringUtil.unescapeHtml(option.getText()));
                 boolean multiChoose = false;
                 if (!IaisCommonUtils.isEmpty(multiValues)) {
                     multiChoose = multiValues.contains(option.getValue());

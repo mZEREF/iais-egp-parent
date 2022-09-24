@@ -3,7 +3,7 @@
         background: transparent;
     }
     .dashboard-gp .dashboard-tile-item {
-        width: calc((100% - 120px) / 5);
+        width: calc((100% - 120px) / ${appTab + msgTab + dssTab + licTab + 1});
     }
     .dashboard-gp .dashboard-tile-item .dashboard-tile .dashboard-txt {
         width: calc(100%);
@@ -62,6 +62,7 @@
                             <p class="dashboard-txt">Active Licences</p>
                         </a></div>
                     </div>
+                  </c:if>
                     <div class="dashboard-tile-item">
                         <div class="dashboard-tile txt-only">
                             <a href="/main-web/eservice/INTERNET/MohAccessmentGuide">
@@ -72,7 +73,6 @@
                             </a>
                         </div>
                     </div>
-                    </c:if>
                 </div>
             </div>
         </div>

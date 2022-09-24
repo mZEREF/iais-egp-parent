@@ -80,16 +80,26 @@
     </div>
 </div>
 <script>
-    window.onload = function () {
-        console.log("ssssssssssssssss")
+    $(document).ready(function () {
+       addAllBtn();
+    });
+
+    function addAllBtn(){
+        console.log("add....")
         let allBtn = document.getElementsByClassName("btn-add");
         for (let i = 0; i < allBtn.length; i++) {
             allBtn[i].onclick = function (){
                 showWaiting();
+                console.log("btn Name:"+allBtn[i]);
                 $('input[name="crud_action_type"]').val("add");
+                let controlFormLi = $('#controlFormLi').val();
+                submitForms('${serviceStepDto.currentStep.stepCode}','add',null,controlFormLi);
                 let tr =this.parentNode.parentNode;
                 tr.parentNode.removeChild(tr);
             };
         }
+    }
+    window.onload = function () {
+
     };
 </script>

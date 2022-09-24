@@ -632,7 +632,7 @@ public class ServiceInfoDelegator {
         String curAct = ParamUtil.getString(request, "btnStep");
         if (isGetDataFromPage) {
             //get data from page
-            doOutSourceProvidersStep(curAct,request,appSubmissionDto);
+            doOutSourceProvidersStep(curAct,request,appSubmissionDto,currSvcInfoDto,currSvcId);
 //            currSvcInfoDto.setAppPremOutSourceProvidersList(appPremOutSourceLicenceDtos);
             reSetChangesForApp(appSubmissionDto);
             setAppSvcRelatedInfoMap(request, currSvcId, currSvcInfoDto, appSubmissionDto);
@@ -643,7 +643,7 @@ public class ServiceInfoDelegator {
         checkAction(errorMap, HcsaConsts.STEP_OUTSOURCED_PROVIDERS, appSubmissionDto, request);
     }
 
-    private void doOutSourceProvidersStep(String curAct,HttpServletRequest request,AppSubmissionDto appSubmissionDto){
+    private void doOutSourceProvidersStep(String curAct,HttpServletRequest request,AppSubmissionDto appSubmissionDto,AppSvcRelatedInfoDto currSvcInfoDto,String currSvcId){
         if ("search".equals(curAct)){
             doSearchOutSourceProviders(request,appSubmissionDto);
         }
@@ -656,6 +656,9 @@ public class ServiceInfoDelegator {
         if ("add".equals(curAct)){
             doAddOutSourceProviders(request,appSubmissionDto);
             //appPremOutSourceLicenceDtos = AppDataHelper.genAppPremOutSourceLicenceList(request);
+//            currSvcInfoDto.setAppPremOutSourceProvidersList(appPremOutSourceLicenceDtos);
+//            reSetChangesForApp(appSubmissionDto);
+//            setAppSvcRelatedInfoMap(request, currSvcId, currSvcInfoDto, appSubmissionDto);
         }
     }
 
@@ -2002,7 +2005,7 @@ public class ServiceInfoDelegator {
     private boolean skipStep(String stepCode, AppSubmissionDto appSubmissionDto) {
         String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,
                 HcsaConsts.STEP_DISCIPLINE_ALLOCATION,
-//                HcsaConsts.STEP_OUTSOURCED_PROVIDERS
+                HcsaConsts.STEP_OUTSOURCED_PROVIDERS
 //                HcsaConsts.STEP_PRINCIPAL_OFFICERS,
 //                HcsaConsts.STEP_SERVICE_PERSONNEL,
 //                HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER,

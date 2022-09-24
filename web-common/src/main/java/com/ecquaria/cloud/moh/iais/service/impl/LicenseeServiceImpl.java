@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,16 @@ public class LicenseeServiceImpl implements LicenseeService {
     @Override
     public List<String> getLicenseeEmails(String licenseeId) {
         return licenseeClient.getLicenseeEmails(licenseeId).getBody();
+    }
+
+    @Override
+    public List<String> getLicenseeEmails(String licenseeId, List<String> roles) {
+        List<OrgUserDto> userDtos = licenseeClient.getLicenseeAccountByRolesAndLicenseeId(licenseeId, roles).getBody();
+        List<String> emailList = IaisCommonUtils.genNewArrayList(userDtos.size());
+        for (OrgUserDto ou : userDtos) {
+            emailList.add(ou.getEmail());
+        }
+        return emailList;
     }
 
     @Override
