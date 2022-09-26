@@ -131,9 +131,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             }
             List<AppPremisesCorrelationDto> correlationList = applicationFeClient.listAppPremisesCorrelation(appId).getEntity();
             List<ChecklistConfigDto> specSvcChecklistConfig = getSpecSvcChecklistConfigDtos(type, module, correlationList);
-            if (IaisCommonUtils.isNotEmpty(specSvcChecklistConfig)){
-                serviceConfigs.addAll(specSvcChecklistConfig);
-            }
+
             for (AppPremisesCorrelationDto correlation : correlationList) {
                 String corrId = correlation.getId();
                 String appGrpPremId = correlation.getAppGrpPremId();
@@ -165,6 +163,22 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                         configList.add(svcConfig);
                     }
                 }
+                // spec check list
+                if (IaisCommonUtils.isNotEmpty(specSvcChecklistConfig)){
+                    for (ChecklistConfigDto serviceConfig : specSvcChecklistConfig){
+                        SelfAssessmentConfig svcConfig = new SelfAssessmentConfig();
+                        svcConfig.setSvcId(svcId);
+                        svcConfig.setSvcName(svcName);
+                        svcConfig.setConfigId(serviceConfig.getId());
+                        svcConfig.setCommon(false);
+                        svcConfig.setSvcCode(serviceConfig.getSvcCode());
+                        svcConfig.setSvcName(serviceConfig.getSvcName());
+                        svcConfig.setHasSubtype(true);
+                        LinkedHashMap<String, List<PremCheckItem>> serviceQuestion = FeSelfChecklistHelper.loadPremisesQuestion(serviceConfig, false);
+                        svcConfig.setSqMap(serviceQuestion);
+                        configList.add(svcConfig);
+                    }
+                }
                 selfAssessment.setSelfAssessmentConfig(configList);
                 selfAssessmentList.add(selfAssessment);
             }
@@ -187,6 +201,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                 ChecklistConfigDto specSvceConfig = configCommClient.getMaxVersionConfigByParams(
                         appPremSpecialisedDto.getBaseSvcCode(), type, module, appPremSubSvcRelDto.getSvcName()).getEntity();
                 if (!Objects.isNull(specSvceConfig)){
+                    specSvceConfig.setSvcName(HcsaServiceCacheHelper.getServiceByCode(appPremSubSvcRelDto.getSvcCode()).getSvcName());
                     specSvcChecklistConfig.add(specSvceConfig);
                 }
             }
