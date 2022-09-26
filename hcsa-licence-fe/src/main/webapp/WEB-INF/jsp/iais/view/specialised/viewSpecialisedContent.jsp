@@ -10,6 +10,7 @@
         <c:if test="${specialised.existCheckedScopes}">
             <div class="">
                 <div class="app-title">${specialised.categorySectionName}</div>
+                <%--<div><iais:message key="NEW_ACK036"/></div>--%>
             </div>
             <iais:row>
                 <fieldset class="fieldset-content col-xs-12">
@@ -32,7 +33,7 @@
         <c:if test="${specialised.existCheckedRels}">
             <div class="">
                 <div class="app-title">${specialised.specialSvcSecName}</div>
-                <div><iais:message key="NEW_ACK037"/></div>
+                <%--<div><iais:message key="NEW_ACK037"/></div>--%>
             </div>
             <iais:row>
                 <fieldset class="fieldset-content col-xs-12">

@@ -519,7 +519,7 @@ public class LicenceViewServiceDelegator {
                 .map(psnType -> ApplicationHelper.getKeyPersonnel(psnType, true, appSvcRelatedInfoDto))
                 .filter(IaisCommonUtils::isNotEmpty)
                 .flatMap(psnList -> psnList.stream()
-                        .filter(psn -> StringUtil.isEmpty(psn.getProfRegNo()))
+                        .filter(psn -> !StringUtil.isEmpty(psn.getProfRegNo()))
                         .map(AppSvcPrincipalOfficersDto::getProfRegNo))
                 .collect(Collectors.toSet());
         // service personnel
@@ -528,7 +528,7 @@ public class LicenceViewServiceDelegator {
                 .map(psnType -> ApplicationHelper.getSvcPersonnel(psnType, true, appSvcRelatedInfoDto))
                 .filter(IaisCommonUtils::isNotEmpty)
                 .flatMap(psnList -> psnList.stream()
-                        .filter(psn -> StringUtil.isEmpty(psn.getProfRegNo()))
+                        .filter(psn -> !StringUtil.isEmpty(psn.getProfRegNo()))
                         .map(AppSvcPersonnelDto::getProfRegNo))
                 .forEach(profRegNo -> set.add(profRegNo));
         return set;
@@ -538,7 +538,6 @@ public class LicenceViewServiceDelegator {
         if (appSubmissionDto == null) {
             return;
         }
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
         Set<String> idNoSet = new HashSet<>();
         Object newLicenceDto = request.getAttribute("newLicenceDto");
