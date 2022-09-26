@@ -436,17 +436,13 @@ public class ServiceMenuDelegator {
             return;
         }
         List<HcsaServiceDto> allbaseService = getAllBaseService(bpc);
-        // List<HcsaServiceDto> allspecifiedService = getAllSpeService(bpc);
         AppSelectSvcDto appSelectSvcDto = getAppSelectSvcDto(bpc);
         String currentPage = "chooseSvc";
         String[] basechks = ParamUtil.getStrings(bpc.request, BASE_SERVICE_CHECK_BOX_ATTR);
-        String[] sepcifiedchk = ParamUtil.getStrings(bpc.request, SPECIFIED_SERVICE_CHECK_BOX_ATTR);
         String err = "";
         String nextstep = "";
         List<String> basecheckedlist = IaisCommonUtils.genNewArrayList();
-        List<String> sepcifiedcheckedlist = IaisCommonUtils.genNewArrayList();
         List<HcsaServiceDto> baseSvcSort = IaisCommonUtils.genNewArrayList();
-        List<HcsaServiceDto> speSvcSort = IaisCommonUtils.genNewArrayList();
         List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList =  serviceConfigService.getActiveSvcCorrelation();
         log.info(StringUtil.changeForLog("hcsaServiceCorrelationDtoList size:"+hcsaServiceCorrelationDtoList.size()));
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -457,123 +453,31 @@ public class ServiceMenuDelegator {
         if(basechks == null){
             log.info(StringUtil.changeForLog("basechks is null ..."));
             //no base service
-            if(sepcifiedchk != null){
-//                //spe choose base
-                for (String item:sepcifiedchk) {
-                    sepcifiedcheckedlist.add(item);
-                    speSvcSort.add(HcsaServiceCacheHelper.getServiceById(item));
-                }
-
-                //judge matching base svc
-                List<String> allBaseSvcId = IaisCommonUtils.genNewArrayList();
-                for(HcsaServiceDto hcsaServiceDto:allbaseService){
-                    allBaseSvcId.add(hcsaServiceDto.getId());
-                }
-                Map<String,List<String>> baseRelSpe = baseRelSpe(allBaseSvcId,sepcifiedcheckedlist,hcsaServiceCorrelationDtoList);
-                if (baseRelSpe.size() == 0){
-                    nextstep = currentPage;
-                    err = MessageUtil.getMessageDesc("NEW_ERR0002");
-                    ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
-                    //set audit
-                    Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
-                    errorMap.put(ERROR_ATTR,err);
-                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-                }else{
-                    //to step2
-                    nextstep = CHOOSE_BASE_SVC;
-                }
-            }else{
-                //no spe err
-                nextstep = currentPage;
-                err = MessageUtil.getMessageDesc("NEW_ERR0001");
-                ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
-                //set audit
-                Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
-                errorMap.put(ERROR_ATTR,err);
-                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-            }
+            nextstep = currentPage;
+            err = MessageUtil.getMessageDesc("NEW_ERR0001");
+            ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
+            //set audit
+            Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+            errorMap.put(ERROR_ATTR,err);
+            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
         }else{
             log.info(StringUtil.changeForLog("basechks is not null ..."));
             for (String item:basechks) {
                 basecheckedlist.add(item);
                 baseSvcSort.add(HcsaServiceCacheHelper.getServiceById(item));
             }
-            if(sepcifiedchk != null){
-                log.info(StringUtil.changeForLog("sepcifiedchk is not null ..."));
-                for (String item:sepcifiedchk) {
-                    sepcifiedcheckedlist.add(item);
-                    speSvcSort.add(HcsaServiceCacheHelper.getServiceById(item));
-                }
-                List<String> svcNameList = IaisCommonUtils.genNewArrayList();
-                //specified id,base name List
-                Map<String,List<String>> baseAlignSpec = IaisCommonUtils.genNewHashMap();
-                for(HcsaServiceCorrelationDto hcsaServiceCorrelationDto:hcsaServiceCorrelationDtoList){
-                    String specSvcId = hcsaServiceCorrelationDto.getSpecifiedSvcId();
-                    String baseSvcId = hcsaServiceCorrelationDto.getBaseSvcId();
-                    if(sepcifiedcheckedlist.contains(specSvcId)){
-                        List<String> baseSvcNameList = baseAlignSpec.get(specSvcId);
-                        if(IaisCommonUtils.isEmpty(baseSvcNameList)){
-                            baseSvcNameList = IaisCommonUtils.genNewArrayList();
-                        }
-                        String baseSvcName = HcsaServiceCacheHelper.getServiceById(baseSvcId).getSvcName();
-                        baseSvcNameList.add(baseSvcName);
-                        baseAlignSpec.put(specSvcId,baseSvcNameList);
-                        svcNameList.add(baseSvcName);
-                    }
-                }
-                //check align whether correct
-                List<String> errMsgList = IaisCommonUtils.genNewArrayList();
-//                    String specSvcName = "";
-                boolean flag = true;
-                for(Map.Entry<String,List<String>> entry:baseAlignSpec.entrySet()){
-                    String specSvcId = entry.getKey();
-                    List<String> baseSvcNameList = entry.getValue();
-                    if(!IaisCommonUtils.isEmpty(baseSvcNameList)){
-                        int i = 0;
-                        for(String baseSvcId:basechks){
-                            String baseSvcName = HcsaServiceCacheHelper.getServiceById(baseSvcId).getSvcName();
-                            if(baseSvcNameList.contains(baseSvcName)){
-                                break;
-                            }
-                            if(i == basechks.length-1){
-                                flag = false;
-                                String specSvcName = HcsaServiceCacheHelper.getServiceById(specSvcId).getSvcName();
-//                                    String errMsg = "You are not allowed to apply for <service name> as you do not have the required base service licence, please apply for <base service name>";
-                                String errMsg = MessageUtil.getMessageDesc("NEW_ERR0008");
-                                errMsg =  errMsg.replace("{service name}",specSvcName);
-                                String baseNameStr = baseSvcNameList.stream().collect(Collectors.joining(","));
-                                errMsg = errMsg.replace("{base service name}",baseNameStr);
-                                errMsgList.add(errMsg);
-                            }
-                            i++;
-                        }
-                    }
-                }
-                if(flag){
-                    nextstep = CHOOSE_BASE_SVC;
-                }else{
-                    nextstep = currentPage;
-                    ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR_LIST, errMsgList);
-                    //set audit
-                    Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
-                    errorMap.put(ERROR_ATTR_LIST,JsonUtil.parseToJson(errMsgList));
-                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-                }
-            }else{
-                List<String> baseSvcNames = baseSvcSort.stream().map(HcsaServiceDto::getSvcCode).collect(Collectors.toList());
-                boolean isAllContain=baseSvcNames.contains(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY)&&baseSvcNames.contains(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES);
-                if (baseSvcNames.contains(AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL)&&!isAllContain){
-                    nextstep = CHOOSE_BASE_SVC;
-                }else {
-                    nextstep = CHOOSE_ALIGN;
-                }
-                onlyBaseSvc = true;
-                ParamUtil.setSessionAttr(bpc.request,ONLY_BASE_SVC,onlyBaseSvc);
+            List<String> baseSvcNames = baseSvcSort.stream().map(HcsaServiceDto::getSvcCode).collect(Collectors.toList());
+            boolean isAllContain=baseSvcNames.contains(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY)&&baseSvcNames.contains(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES);
+            if (baseSvcNames.contains(AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL)&&!isAllContain){
+                nextstep = CHOOSE_BASE_SVC;
+            }else {
+                nextstep = CHOOSE_ALIGN;
             }
+            onlyBaseSvc = true;
+            ParamUtil.setSessionAttr(bpc.request,ONLY_BASE_SVC,onlyBaseSvc);
             if(!currentPage.equals(nextstep)){
                 List<String> chkSvcIdList = IaisCommonUtils.genNewArrayList();
                 chkSvcIdList.addAll(basecheckedlist);
-                chkSvcIdList.addAll(sepcifiedcheckedlist);
                 //validate premises type intersection
                 Set<String> premisesTypeList = serviceConfigService.getAppGrpPremisesTypeBySvcId(chkSvcIdList);
                 if(IaisCommonUtils.isEmpty(premisesTypeList)){
@@ -608,13 +512,9 @@ public class ServiceMenuDelegator {
                 }
             }
         }
-        //
         if(!currentPage.equals(nextstep)){
             List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
             for(HcsaServiceDto hcsaServiceDto:baseSvcSort){
-                svcCodeList.add(hcsaServiceDto.getSvcCode());
-            }
-            for(HcsaServiceDto hcsaServiceDto:speSvcSort){
                 svcCodeList.add(hcsaServiceDto.getSvcCode());
             }
             List<ApplicationSubDraftDto> applicationSubDraftDtos = appSubmissionService.getDraftListBySvcCodeAndStatus(svcCodeList,ApplicationConsts.DRAFT_STATUS_PENDING_PAYMENT,licenseeId,ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
@@ -628,12 +528,9 @@ public class ServiceMenuDelegator {
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             }
         }
-
 //        appSelectSvcDto.setBaseSvcIds(basecheckedlist);
 //        appSelectSvcDto.setSpecifiedSvcIds(sepcifiedcheckedlist);
         appSelectSvcDto.setBaseSvcDtoList(baseSvcSort);
-        appSelectSvcDto.setSpeSvcDtoList(speSvcSort);
-        ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR_CHECKED, (Serializable) sepcifiedcheckedlist);
         ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED, (Serializable) basecheckedlist);
 
         //control switch
@@ -646,20 +543,10 @@ public class ServiceMenuDelegator {
             if(newLicensee){
                 if(nextstep.equals(CHOOSE_BASE_SVC)){
                     //64570 (1base+1spec)
-                    boolean jumpToNext = (basechks != null && basechks.length == 1) /*&& (sepcifiedchk != null && sepcifiedchk.length ==1)*/;
+                    boolean jumpToNext = (basechks != null && basechks.length == 1);
                     if(jumpToNext){
                         appSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
                         Set<String> svcIds = IaisCommonUtils.genNewHashSet();
-                        /*for(String svcId:sepcifiedchk){
-                            svcIds.add(svcId);
-                            List<HcsaServiceDto> baseServiceDtos = getBaseBySpc(hcsaServiceCorrelationDtoList,svcId);
-                            //default first
-                            if(IaisCommonUtils.isEmpty(baseServiceDtos)){
-                                log.info(StringUtil.changeForLog("can not found base svc by spec svc id ..."));
-                            }else{
-                                svcIds.add(baseServiceDtos.get(0).getId());
-                            }
-                        }*/
                         if(basechks != null){
                             for(String svcId:basechks){
                                 svcIds.add(svcId);
@@ -689,12 +576,6 @@ public class ServiceMenuDelegator {
                         nextstep = CHOOSE_BASE_SVC;
                     }
                 }else if(nextstep.equals(CHOOSE_ALIGN)){
-                    //107348
-                    /*if(basechks.length == 1){
-                        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
-                    }else{
-                        nextstep = CHOOSE_ALIGN;
-                    }*/
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
                 }
             }else{
@@ -727,16 +608,8 @@ public class ServiceMenuDelegator {
 
                     //only not align option
                     if(IaisCommonUtils.isEmpty(newAppLicDtos) || (!IaisCommonUtils.isEmpty(newAppLicDtos) && newAppLicDtos.size() <= 1)){
-                        //107348
-                        /*if(basechks.length > 1){
-                            //0066206
-                            nextstep = CHOOSE_ALIGN;
-                        }else{
-                            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
-                        }*/
                         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
                     }
-
                 }
                 appSelectSvcDto.setInitPagHandler(true);
             }
@@ -790,10 +663,9 @@ public class ServiceMenuDelegator {
                             AppAlignLicQueryDto appAlignLicQueryDto = getAppAlignLicQueryDto(baseLicMap,baseServiceDto.getSvcName(),hciCode);
                             if(appAlignLicQueryDto != null){
                                 AppLicBundleDto appLicBundleDto=new AppLicBundleDto();
-                                appLicBundleDto.setBaseOrNew("base");
                                 appLicBundleDto.setSvcCode(hcsaServiceDto.getSvcCode());
+                                appLicBundleDto.setLicenceNo(appAlignLicQueryDto.getLicenceNo());
                                 appLicBundleDto.setPremisesId(appAlignLicQueryDto.getPremisesId());
-                                appLicBundleDto.setAppAlignLicQueryDto(appAlignLicQueryDto);
                                 appLicBundleDtoList.add(appLicBundleDto);
                                 addressList.add(appAlignLicQueryDto.getAddress());
                                 //for reload
@@ -808,10 +680,9 @@ public class ServiceMenuDelegator {
                                     .filter(s -> postCode.equals(s.getPostalCode())).findAny().get();
                             if (appAlignAppQueryDto!=null){
                                 AppLicBundleDto appLicBundleDto=new AppLicBundleDto();
-                                appLicBundleDto.setBaseOrNew("base");
                                 appLicBundleDto.setSvcCode(hcsaServiceDto.getSvcCode());
+                                appLicBundleDto.setApplicationNo(appAlignAppQueryDto.getApplicationId());
                                 appLicBundleDto.setPremisesId(appAlignAppQueryDto.getPremisesId());
-                                appLicBundleDto.setAppAlignAppQueryDto(appAlignAppQueryDto);
                                 appLicBundleDtoList.add(appLicBundleDto);
                                 addressList.add(appAlignAppQueryDto.getAddress());
                                 //for reload
@@ -935,6 +806,7 @@ public class ServiceMenuDelegator {
             licPremiseId = "";
         }
         appSelectSvcDto.setInitPagHandler(false);
+        List<AppLicBundleDto> appLicBundleDtoList=IaisCommonUtils.genNewArrayList();
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
         if(appSelectSvcDto.isChooseBaseSvc()){
             appSvcRelatedInfoDtos = (List<AppSvcRelatedInfoDto>) ParamUtil.getSessionAttr(bpc.request,APP_SVC_RELATED_INFO_LIST);
@@ -957,9 +829,17 @@ public class ServiceMenuDelegator {
                 appSvcRelatedInfoDto.setAlignLicenceNo(alignLicenceNo);
                 appSvcRelatedInfoDto.setLicPremisesId(licPremiseId);
                 appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
+                if (AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(hcsaServiceDto.getSvcCode())
+                        ||AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(hcsaServiceDto.getSvcCode())){
+                    AppLicBundleDto appLicBundleDto=new AppLicBundleDto();
+                    appLicBundleDto.setLicenceNo(alignLicenceNo);
+                    appLicBundleDto.setPremisesId(licPremiseId);
+                    appLicBundleDtoList.add(appLicBundleDto);
+                }
             }
         }
         ParamUtil.setSessionAttr(bpc.request,APP_SELECT_SERVICE,appSelectSvcDto);
+        ParamUtil.setSessionAttr(bpc.request, APP_LIC_BUNDLE_LIST, (Serializable) appLicBundleDtoList);
         ParamUtil.setSessionAttr(bpc.request,ServiceMenuDelegator.APP_SVC_RELATED_INFO_LIST, (Serializable) appSvcRelatedInfoDtos);
         if(BACK_ATTR.equals(additional)){
             if(appSelectSvcDto.isChooseBaseSvc()){

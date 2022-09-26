@@ -10,7 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
@@ -96,7 +95,7 @@ public final class BeSelfChecklistHelper {
                             selfAssessment.setSvcName(svcName);
                             selfAssessment.setSvcId(serviceInfo.getId());
                             SelfAssessmentConfig selfAssessmentConfig = selfAssessmentConfigMap.get(svcCode);
-                            if ( selfAssessmentConfig != null) {
+                            if ( selfAssessmentConfig != null&&StringUtils.isEmpty(checklistConfigDto.getSvcSubType())) {
                                 selfAssessmentConfig.getQuestion().addAll(answerData);
                             } else {
                                 selfAssessmentConfig = new SelfAssessmentConfig();
@@ -105,6 +104,7 @@ public final class BeSelfChecklistHelper {
 
                                 if (!StringUtils.isEmpty(checklistConfigDto.getSvcSubType())) {
                                     selfAssessmentConfig.setHasSubtype(true);
+                                    selfAssessmentConfig.setSvcName(checklistConfigDto.getSvcSubType());
                                 }
 
                                 selfAssessmentConfig.setVersion(ent.getVersion());

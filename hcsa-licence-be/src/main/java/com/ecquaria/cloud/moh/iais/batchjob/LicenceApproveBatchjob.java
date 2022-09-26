@@ -1435,6 +1435,8 @@ public class LicenceApproveBatchjob {
 
 
     private void addLicPremisesDtoReleation(LicPremisesDto licPremisesDto,AppPremisesCorrelationDto appPremisesCorrelationDto){
+        List<AppPremSubSvcRelDto> rejectAppPremSubSvcRelDtos = appPremisesCorrelationDto.getRejectAppPremSubSvcRelDtos();
+        licPremisesDto.setRejectLicPremSubSvcRelDtos(MiscUtil.transferEntityDtos(rejectAppPremSubSvcRelDtos,LicPremSubSvcRelDto.class));
         List<AppPremSubSvcRelDto> appPremSubSvcRelDtos = appPremisesCorrelationDto.getAppPremSubSvcRelDtos();
         licPremisesDto.setLicPremSubSvcRelDtos(MiscUtil.transferEntityDtos(appPremSubSvcRelDtos,LicPremSubSvcRelDto.class));
         List<AppSvcOtherInfoMedDto> appSvcOtherInfoMedDtos = appPremisesCorrelationDto.getAppSvcOtherInfoMedDtos();
