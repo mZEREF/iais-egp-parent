@@ -1,9 +1,9 @@
 <div class="premisesContent">
-    <p class="${isEdit == 'Y' ? '' : 'hidden'}">
+    <div class="${isEdit == 'Y' ? '' : 'hidden'}">
     <div class="text-right app-font-size-16"><a href="javascript:void(0);"
                                                 class="viewPremisesEdit"><em
             class="fa fa-pencil-square-o"></em>Edit</a></div>
-    </p>
+    </div>
     <iais:row>
         <strong>
             <c:out value="Secondary Address "/>
