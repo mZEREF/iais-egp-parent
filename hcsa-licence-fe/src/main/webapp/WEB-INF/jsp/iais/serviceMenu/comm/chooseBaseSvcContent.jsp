@@ -168,10 +168,7 @@
             <div class="self-assessment-checkbox-gp gradient-light-grey">
                 <div class="row">
                     <div class="col-xs-12 col-md-12">
-                        <iais:message key="NEW_ACK008"></iais:message>
-                    </div>
-                    <div class="col-xs-12 col-md-12">
-                        <a target="_blank" href="<iais:code code="URL001"/>">Learn More</a>: <iais:message key="NEW_ACK009"></iais:message>
+                        <iais:message key="NEW_ACK44"></iais:message>
                     </div>
                 </div>
             </div>
