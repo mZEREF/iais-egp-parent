@@ -865,8 +865,8 @@ public class DealSessionUtil {
                     .filter(dto -> Objects.equals(dto.getSvcCode(), appPremSubSvcRelDto.getSvcCode()))
                     .findAny()
                     .orElseGet(SpecialServiceSectionDto::new);
-            Map<String, Integer> minCount = getSpecialServicePersonnelMap();
-            Map<String, Integer> maxCount = getSpecialServicePersonnelMap();
+            Map<String, Integer> minCount = AppSvcSpecialServiceInfoDto.getInitPersonnelMap(null);
+            Map<String, Integer> maxCount = AppSvcSpecialServiceInfoDto.getInitPersonnelMap(null);
             specialServiceSectionDto.setAppPremSubSvcRelDto(appPremSubSvcRelDto);
             AppSvcSuplmFormDto appSvcSuplmFormDto = specialServiceSectionDto.getAppSvcSuplmFormDto();
             appSvcSuplmFormDto = initAppSvcSuplmFormDto(specialServiceSectionDto.getSvcCode(), forceInit,
@@ -893,7 +893,7 @@ public class DealSessionUtil {
         return specialServiceSectionDtoList;
     }
 
-    private static Map<String, Integer> getSpecialServicePersonnelMap() {
+    /*private static Map<String, Integer> getSpecialServicePersonnelMap() {
         Map<String, Integer> map = IaisCommonUtils.genNewHashMap();
         map.put(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, 0);
         map.put(ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER, 0);
@@ -906,7 +906,7 @@ public class DealSessionUtil {
         map.put(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR, 0);
         map.put(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR, 0);
         return map;
-    }
+    }*/
 
     private static void initDocumentSession(List<DocumentShowDto> documentShowDtos, HttpServletRequest request) {
         if (documentShowDtos == null || request == null) {
@@ -1025,7 +1025,7 @@ public class DealSessionUtil {
                 String specialSvcId = null;
                 if (!isBaseSvc) {
                     psnList = ApplicationHelper.getSpecialPersonnel(currSvcInfoDto.getAppSvcSpecialServiceInfoList(), dupForPerson,
-                            premisesVal, appPremSubSvcRelDto);
+                            premisesVal, appPremSubSvcRelDto.getSvcCode());
                     specialSvcId = appPremSubSvcRelDto.getSvcId();
                 } else {
                     psnList = ApplicationHelper.getBasePersonnel(currSvcInfoDto, dupForPerson);

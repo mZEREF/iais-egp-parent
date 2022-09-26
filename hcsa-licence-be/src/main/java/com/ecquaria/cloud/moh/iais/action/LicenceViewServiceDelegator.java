@@ -323,15 +323,15 @@ public class LicenceViewServiceDelegator {
 //        volidata role
         LoginContext loginContext = ApplicationHelper.getLoginContext(bpc.request);
         String isEdit = "N";
-        if (!StringUtil.isEmpty(loginContext)){
+        if (!StringUtil.isEmpty(loginContext)) {
             ArrayList<String> myRole = loginContext.getRoleIds();
-            if (IaisCommonUtils.isNotEmpty(myRole)){
-                if (myRole.contains("ASO") || myRole.contains("PSO")){
+            if (IaisCommonUtils.isNotEmpty(myRole)) {
+                if (myRole.contains("ASO") || myRole.contains("PSO")) {
                     isEdit = "Y";
                 }
             }
         }
-        ParamUtil.setRequestAttr(bpc.request,"isEdit",isEdit);
+        ParamUtil.setRequestAttr(bpc.request, "isEdit", isEdit);
     }
 
     private AppSubmissionDto getAppSubmissionAndHandLicence(AppPremisesCorrelationDto appPremisesCorrelationDto,
@@ -450,55 +450,10 @@ public class LicenceViewServiceDelegator {
         }
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
-        List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
-        List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtoList = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
-        //List<AppSvcPersonnelDto> appSvcPersonnelDtoList = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
-        Set<String> redNo = new HashSet<>();
-        if (appSvcCgoDtoList != null) {
-            for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtoList) {
-                String profRegNo = appSvcCgoDto.getProfRegNo();
-                redNo.add(profRegNo);
-            }
-        }
-        /*if (appSvcPersonnelDtoList != null) {
-            for (AppSvcPersonnelDto appSvcPersonnelDto : appSvcPersonnelDtoList) {
-                if (!StringUtil.isEmpty(appSvcPersonnelDto.getProfRegNo())) {
-                    redNo.add(appSvcPersonnelDto.getProfRegNo());
-                }
-            }
-        }*/
-        if (appSvcClinicalDirectorDtoList != null) {
-            for (AppSvcPrincipalOfficersDto v : appSvcClinicalDirectorDtoList) {
-                if (!StringUtil.isEmpty(v.getProfRegNo())) {
-                    String regNo = v.getProfRegNo();
-                    redNo.add(regNo);
-                }
-            }
-        }
+        Set<String> redNo = getProfRegNos(appSvcRelatedInfoDto);
         if (oldAppSubmissionDto != null) {
             AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
-            List<AppSvcPrincipalOfficersDto> oldAppSvcCgoDtoList = oldAppSvcRelatedInfoDto.getAppSvcCgoDtoList();
-            if (oldAppSvcCgoDtoList != null) {
-                for (AppSvcPrincipalOfficersDto appSvcCgoDto : oldAppSvcCgoDtoList) {
-                    redNo.add(appSvcCgoDto.getProfRegNo());
-                }
-            }
-            /*List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList = oldAppSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
-            if (oldAppSvcPersonnelDtoList != null) {
-                for (AppSvcPersonnelDto appSvcPersonnelDto : oldAppSvcPersonnelDtoList) {
-                    if (!StringUtil.isEmpty(appSvcPersonnelDto.getProfRegNo())) {
-                        redNo.add(appSvcPersonnelDto.getProfRegNo());
-                    }
-                }
-            }*/
-            List<AppSvcPrincipalOfficersDto> oldAppSvcClinicalDirectorDtoList = oldAppSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
-            if (oldAppSvcClinicalDirectorDtoList != null) {
-                for (AppSvcPrincipalOfficersDto v : oldAppSvcClinicalDirectorDtoList) {
-                    if (!StringUtil.isEmpty(v.getProfRegNo())) {
-                        redNo.add(v.getProfRegNo());
-                    }
-                }
-            }
+            redNo.addAll(getProfRegNos(oldAppSvcRelatedInfoDto));
         }
         List<String> list = new ArrayList<>(redNo);
         ProfessionalParameterDto professionalParameterDto = new ProfessionalParameterDto();
@@ -557,16 +512,34 @@ public class LicenceViewServiceDelegator {
         request.getSession().setAttribute("listHashMap", listHashMap);
     }
 
+    private Set<String> getProfRegNos(AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
+        // key personnel
+        List<String> keyPsnTypes = ApplicationHelper.getKeyPsnTypes(appSvcRelatedInfoDto);
+        Set<String> set = keyPsnTypes.stream()
+                .map(psnType -> ApplicationHelper.getKeyPersonnel(psnType, true, appSvcRelatedInfoDto))
+                .filter(IaisCommonUtils::isNotEmpty)
+                .flatMap(psnList -> psnList.stream()
+                        .filter(psn -> StringUtil.isEmpty(psn.getProfRegNo()))
+                        .map(AppSvcPrincipalOfficersDto::getProfRegNo))
+                .collect(Collectors.toSet());
+        // service personnel
+        List<String> svcPsnTypes = ApplicationHelper.getSvcPsnTypes(appSvcRelatedInfoDto);
+        svcPsnTypes.stream()
+                .map(psnType -> ApplicationHelper.getSvcPersonnel(psnType, true, appSvcRelatedInfoDto))
+                .filter(IaisCommonUtils::isNotEmpty)
+                .flatMap(psnList -> psnList.stream()
+                        .filter(psn -> StringUtil.isEmpty(psn.getProfRegNo()))
+                        .map(AppSvcPersonnelDto::getProfRegNo))
+                .forEach(profRegNo -> set.add(profRegNo));
+        return set;
+    }
+
     private void herimsRecod(AppSubmissionDto appSubmissionDto, HttpServletRequest request) {
         if (appSubmissionDto == null) {
             return;
         }
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
-        List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
-        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
-        List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
-        List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtoList = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
         Set<String> idNoSet = new HashSet<>();
         Object newLicenceDto = request.getAttribute("newLicenceDto");
         if (newLicenceDto != null) {
@@ -578,84 +551,10 @@ public class LicenceViewServiceDelegator {
             LicenseeDto oldL = (LicenseeDto) oldLicenceDto;
             idNoSet.add(oldL.getUenNo());
         }
-        // licensee
-        SubLicenseeDto subLicenseeDto = appSubmissionDto.getSubLicenseeDto();
-        if (subLicenseeDto != null) {
-            if (!StringUtil.isEmpty(subLicenseeDto.getUenNo())) {
-                idNoSet.add(subLicenseeDto.getUenNo());
-            }
-            if (!StringUtil.isEmpty(subLicenseeDto.getIdNumber())) {
-                idNoSet.add(subLicenseeDto.getIdNumber());
-            }
-        }
-        if (appSvcCgoDtoList != null) {
-            for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtoList) {
-                String idNo = appSvcCgoDto.getIdNo();
-                idNoSet.add(idNo);
-            }
-        }
-        if (appSvcPrincipalOfficersDtoList != null) {
-            for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtoList) {
-                String idNo = appSvcPrincipalOfficersDto.getIdNo();
-                idNoSet.add(idNo);
-            }
-        }
-        if (appSvcMedAlertPersonList != null) {
-            for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcMedAlertPersonList) {
-                String idNo = appSvcPrincipalOfficersDto.getIdNo();
-                idNoSet.add(idNo);
-            }
-        }
-        if (appSvcClinicalDirectorDtoList != null) {
-            for (AppSvcPrincipalOfficersDto v : appSvcClinicalDirectorDtoList) {
-                idNoSet.add(v.getIdNo());
-            }
-        }
-        // board member and authorised person
-        List<LicenseeKeyApptPersonDto> boardMember = appSubmissionDto.getBoardMember();
-        if (boardMember != null) {
-            for (LicenseeKeyApptPersonDto v : boardMember) {
-                idNoSet.add(v.getIdNo());
-            }
-        }
-        List<OrgUserDto> authorisedPerson = appSubmissionDto.getAuthorisedPerson();
-        if (authorisedPerson != null) {
-            for (OrgUserDto orgUserDto : authorisedPerson) {
-                idNoSet.add(orgUserDto.getIdNumber());
-            }
-        }
+        idNoSet.addAll(getIdNoSet(appSubmissionDto));
+
         if (oldAppSubmissionDto != null) {
-            // licensee
-            subLicenseeDto = oldAppSubmissionDto.getSubLicenseeDto();
-            if (subLicenseeDto != null) {
-                idNoSet.add(subLicenseeDto.getUenNo());
-                idNoSet.add(subLicenseeDto.getIdNumber());
-            }
-            AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
-            List<AppSvcPrincipalOfficersDto> oldAppSvcCgoDtoList = oldAppSvcRelatedInfoDto.getAppSvcCgoDtoList();
-            if (oldAppSvcCgoDtoList != null) {
-                for (AppSvcPrincipalOfficersDto appSvcCgoDto : oldAppSvcCgoDtoList) {
-                    idNoSet.add(appSvcCgoDto.getIdNo());
-                }
-            }
-            List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDtoList = oldAppSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
-            if (oldAppSvcPrincipalOfficersDtoList != null) {
-                for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : oldAppSvcPrincipalOfficersDtoList) {
-                    idNoSet.add(appSvcPrincipalOfficersDto.getIdNo());
-                }
-            }
-            List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonList = oldAppSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
-            if (oldAppSvcMedAlertPersonList != null) {
-                for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : oldAppSvcMedAlertPersonList) {
-                    idNoSet.add(appSvcPrincipalOfficersDto.getIdNo());
-                }
-            }
-            List<AppSvcPrincipalOfficersDto> oldAppSvcClinicalDirectorDtoList = oldAppSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
-            if (oldAppSvcClinicalDirectorDtoList != null) {
-                for (AppSvcPrincipalOfficersDto v : oldAppSvcClinicalDirectorDtoList) {
-                    idNoSet.add(v.getIdNo());
-                }
-            }
+            idNoSet.addAll(getIdNoSet(oldAppSubmissionDto));
         }
         List<String> idList = new ArrayList<>(idNoSet);
         List<HfsmsDto> hfsmsDtos = IaisCommonUtils.genNewArrayList();
@@ -683,6 +582,47 @@ public class LicenceViewServiceDelegator {
             }
         }
         request.getSession().setAttribute("hashMap", hashMap);
+    }
+
+    private Set<String> getIdNoSet(AppSubmissionDto appSubmissionDto) {
+        if (appSubmissionDto == null) {
+            return IaisCommonUtils.genNewHashSet();
+        }
+        Set<String> idNoSet = IaisCommonUtils.genNewHashSet();
+        // licensee
+        SubLicenseeDto subLicenseeDto = appSubmissionDto.getSubLicenseeDto();
+        if (subLicenseeDto != null) {
+            if (!StringUtil.isEmpty(subLicenseeDto.getUenNo())) {
+                idNoSet.add(subLicenseeDto.getUenNo());
+            }
+            if (!StringUtil.isEmpty(subLicenseeDto.getIdNumber())) {
+                idNoSet.add(subLicenseeDto.getIdNumber());
+            }
+        }
+        // board member and authorised person
+        List<LicenseeKeyApptPersonDto> boardMember = appSubmissionDto.getBoardMember();
+        if (boardMember != null) {
+            for (LicenseeKeyApptPersonDto v : boardMember) {
+                idNoSet.add(v.getIdNo());
+            }
+        }
+        List<OrgUserDto> authorisedPerson = appSubmissionDto.getAuthorisedPerson();
+        if (authorisedPerson != null) {
+            for (OrgUserDto orgUserDto : authorisedPerson) {
+                idNoSet.add(orgUserDto.getIdNumber());
+            }
+        }
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+        // key personnel
+        List<String> keyPsnTypes = ApplicationHelper.getKeyPsnTypes(appSvcRelatedInfoDto);
+        keyPsnTypes.stream()
+                .map(psnType -> ApplicationHelper.getKeyPersonnel(psnType, true, appSvcRelatedInfoDto))
+                .filter(IaisCommonUtils::isNotEmpty)
+                .flatMap(psnList -> psnList.stream()
+                        .filter(psn -> StringUtil.isEmpty(psn.getIdNo()))
+                        .map(AppSvcPrincipalOfficersDto::getIdNo))
+                .forEach(idNo -> idNoSet.add(idNo));
+        return idNoSet;
     }
 
     private List<ComplaintDto> addMoneySymbol(List<ComplaintDto> complaints) {
