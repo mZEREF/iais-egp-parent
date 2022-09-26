@@ -12,6 +12,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessmentConfig;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
@@ -37,6 +39,12 @@ import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -45,11 +53,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpStatus;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 /**
  * @Author: yichen
@@ -127,6 +130,10 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                 serviceConfigs.add(appServiceConfig);
             }
             List<AppPremisesCorrelationDto> correlationList = applicationFeClient.listAppPremisesCorrelation(appId).getEntity();
+            List<ChecklistConfigDto> specSvcChecklistConfig = getSpecSvcChecklistConfigDtos(type, module, correlationList);
+            if (IaisCommonUtils.isNotEmpty(specSvcChecklistConfig)){
+                serviceConfigs.addAll(specSvcChecklistConfig);
+            }
             for (AppPremisesCorrelationDto correlation : correlationList) {
                 String corrId = correlation.getId();
                 String appGrpPremId = correlation.getAppGrpPremId();
@@ -164,6 +171,27 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         }
 
         return selfAssessmentList;
+    }
+
+    private List<ChecklistConfigDto> getSpecSvcChecklistConfigDtos(String type, String module, List<AppPremisesCorrelationDto> correlationList) {
+        List<AppPremSpecialisedDto> appPremSpecialisedDtos = appCommService.getAppPremSpecialisedDtoList(
+                correlationList.stream()
+                        .map(AppPremisesCorrelationDto::getId)
+                        .collect(Collectors.toList())
+        );
+        List<ChecklistConfigDto> specSvcChecklistConfig = IaisCommonUtils.genNewArrayList();
+        for (AppPremSpecialisedDto appPremSpecialisedDto : appPremSpecialisedDtos){
+            appPremSpecialisedDto.setBaseSvcConfigDto(HcsaServiceCacheHelper.getServiceById(appPremSpecialisedDto.getBaseSvcId()));
+            for (AppPremSubSvcRelDto appPremSubSvcRelDto : appPremSpecialisedDto.getCheckedAppPremSubSvcRelDtoList()){
+                appPremSubSvcRelDto.setSvcName(HcsaServiceCacheHelper.getServiceNameById(appPremSubSvcRelDto.getSvcId()));
+                ChecklistConfigDto specSvceConfig = configCommClient.getMaxVersionConfigByParams(
+                        appPremSpecialisedDto.getBaseSvcCode(), type, module, appPremSubSvcRelDto.getSvcName()).getEntity();
+                if (!Objects.isNull(specSvceConfig)){
+                    specSvcChecklistConfig.add(specSvceConfig);
+                }
+            }
+        }
+        return specSvcChecklistConfig;
     }
 
     @Override
