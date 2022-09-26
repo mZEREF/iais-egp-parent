@@ -201,6 +201,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                 ChecklistConfigDto specSvceConfig = configCommClient.getMaxVersionConfigByParams(
                         appPremSpecialisedDto.getBaseSvcCode(), type, module, appPremSubSvcRelDto.getSvcName()).getEntity();
                 if (!Objects.isNull(specSvceConfig)){
+                    specSvceConfig.setSvcName(HcsaServiceCacheHelper.getServiceByCode(appPremSubSvcRelDto.getSvcCode()).getSvcName());
                     specSvcChecklistConfig.add(specSvceConfig);
                 }
             }
