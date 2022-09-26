@@ -145,6 +145,7 @@ public final class HcsaAppConst {
     public static final String PRS_SERVICE_DOWN                             = "PRS_SERVICE_DOWN";
 
     public static final String APP_SVC_RELATED_INFO_LIST                    = "appSvcRelatedInfoList";
+    public static final String APP_LIC_BUNDLE_LIST                          = "appLicBundleDtoList";
     public static final String APP_SELECT_SERVICE                           = "appSelectSvc";
 
     public static final String ACK_STATUS_ERROR                             = "error";

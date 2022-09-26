@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDoc
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -274,6 +275,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
     protected void loadingNewAppInfo(HttpServletRequest request) {
         log.info(StringUtil.changeForLog("the do loadingSpecifiedInfo start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
+        List<AppLicBundleDto> appLicBundleDtoList = (List<AppLicBundleDto>) ParamUtil.getSessionAttr(request, HcsaAppConst.APP_LIC_BUNDLE_LIST);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = (List<AppSvcRelatedInfoDto>) ParamUtil.getSessionAttr(request,
                 HcsaAppConst.APP_SVC_RELATED_INFO_LIST);
         AppSelectSvcDto appSelectSvcDto = (AppSelectSvcDto) ParamUtil.getSessionAttr(request, HcsaAppConst.APP_SELECT_SERVICE);
@@ -285,6 +287,9 @@ public class NewApplicationDelegator extends AppCommDelegator {
             appSubmissionDto = new AppSubmissionDto();
             appSubmissionDto.setLicenseeId(ApplicationHelper.getLicenseeId(request));
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+            if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
+                appSubmissionDto.setAppLicBundleDtoList(appLicBundleDtoList);
+            }
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
             appSubmissionDto.setCoMap(ApplicationHelper.createCoMap(false));
             String premisesId = "";
