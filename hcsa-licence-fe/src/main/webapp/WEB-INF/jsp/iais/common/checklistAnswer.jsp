@@ -97,7 +97,7 @@
 
 <c:forEach var="selfAssessmentConfig" items="${selfAssessmentDetail.selfAssessmentConfig}" varStatus="status">
     <c:if test="${selfAssessmentConfig.configId != tagIndex && tagSvc ==selfAssessmentConfig.svcCode && selfAssessmentConfig.hasSubtype}">
-        <p class="dashboard-txt">${selfAssessmentConfig.svcName}</p>
+        <h2>${selfAssessmentConfig.svcName} | ${selfAssessmentConfig.svcSubType}</h2>
         <c:forEach var="sqMap" items="${selfAssessmentConfig.sqMap}">
             <div class="panel panel-default">
                 <div class="panel-heading" id="headingPremise" role="tab">

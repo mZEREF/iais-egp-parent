@@ -12,6 +12,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
@@ -20,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
@@ -27,19 +30,22 @@ import com.ecquaria.cloud.moh.iais.service.AdhocChecklistService;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskApplicationClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -62,6 +68,9 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
 
     @Autowired
     private AppCommService appCommService;
+
+    @Autowired
+    private ConfigCommClient configCommClient;
 
     private String acquireParameter(String appType, Function<String, String> t){
         return t.apply(appType);
@@ -112,6 +121,8 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
 
         ChecklistConfigDto baseSvcConfig = hcsaChklClient.getMaxVersionServiceConfigByParams(svcCode, type, chklModule,
                 "", "").getEntity();
+
+        List<ChecklistConfigDto> specSvcChecklistConfig = getSpecSvcChecklistConfigDtos(type, chklModule, correlation);
         ChecklistConfigDto vehicleConfig = null;
         if (needVehicle) {
             vehicleConfig = hcsaChklClient.getMaxVersionInspectionEntityConfig(svcCode, type, chklModule,
@@ -144,6 +155,10 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
                 if (svcConfig != null){
                     inspChecklist.add(svcConfig);
                 }
+// spec check list
+                if (IaisCommonUtils.isNotEmpty(specSvcChecklistConfig)){
+                    inspChecklist.addAll(specSvcChecklistConfig);
+                }
 
                 log.info(StringUtil.changeForLog("inspection pick up vehicle service config ====>>>>" + vehicleConfig));
                 if (vehicleConfig != null) {
@@ -156,6 +171,27 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
         }
 
         return inspChecklist;
+    }
+
+    private List<ChecklistConfigDto> getSpecSvcChecklistConfigDtos(String type, String module, List<AppPremisesCorrelationDto> correlationList) {
+        List<AppPremSpecialisedDto> appPremSpecialisedDtos = appCommService.getAppPremSpecialisedDtoList(
+                correlationList.stream()
+                        .map(AppPremisesCorrelationDto::getId)
+                        .collect(Collectors.toList())
+        );
+        List<ChecklistConfigDto> specSvcChecklistConfig = IaisCommonUtils.genNewArrayList();
+        for (AppPremSpecialisedDto appPremSpecialisedDto : appPremSpecialisedDtos){
+            appPremSpecialisedDto.setBaseSvcConfigDto(HcsaServiceCacheHelper.getServiceById(appPremSpecialisedDto.getBaseSvcId()));
+            for (AppPremSubSvcRelDto appPremSubSvcRelDto : appPremSpecialisedDto.getCheckedAppPremSubSvcRelDtoList()){
+                appPremSubSvcRelDto.setSvcName(HcsaServiceCacheHelper.getServiceNameById(appPremSubSvcRelDto.getSvcId()));
+                ChecklistConfigDto specSvceConfig = configCommClient.getMaxVersionConfigByParams(
+                        appPremSpecialisedDto.getBaseSvcCode(), type, module, appPremSubSvcRelDto.getSvcName()).getEntity();
+                if (!Objects.isNull(specSvceConfig)){
+                    specSvcChecklistConfig.add(specSvceConfig);
+                }
+            }
+        }
+        return specSvcChecklistConfig;
     }
 
     private ChecklistConfigDto getChecklistConfigDtoWithHciCode(String svcCode, String chklModule, String type, ChecklistConfigDto baseSvcConfig, String hciCode) {
