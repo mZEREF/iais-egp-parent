@@ -21,8 +21,6 @@
 <input type="hidden" value="${PRS_SERVICE_DOWN}" id="PRS_SERVICE_DOWN_INPUT">
 <script type="text/javascript">
     $(function () {
-        let psnContent = '.${psnContent}';
-        profRegNoEvent(psnContent);
         if ($('#PRS_SERVICE_DOWN_INPUT').val() == 'PRS_SERVICE_DOWN') {
             $('#PRS_SERVICE_DOWN').modal('show');
         }
@@ -183,7 +181,7 @@
         return /*'newOfficer' == assignSelectVal &&*/ '1' != licPerson && 'APTY002' == appType;
     }
 
-    function getPrsCallback(){
+    function getPrsCallback() {
         return null;
     }
 </script>
