@@ -1,3 +1,6 @@
+<c:if test="${empty psnContent}">
+    <c:set var="psnContent" value="person-content"/>
+</c:if>
 <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -183,7 +186,7 @@
         return /*'newOfficer' == assignSelectVal &&*/ '1' != licPerson && 'APTY002' == appType;
     }
 
-    function getPrsCallback(){
+    function getPrsCallback() {
         return null;
     }
 </script>
