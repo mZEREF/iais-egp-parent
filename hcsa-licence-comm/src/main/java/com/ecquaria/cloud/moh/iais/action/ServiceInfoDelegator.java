@@ -549,8 +549,8 @@ public class ServiceInfoDelegator {
                 RfcConst.EDIT_SERVICE, isEdit, isRfi);
         if (isGetDataFromPage) {
             //get data from page
-           appSvcOtherInfoDtos  = AppDataHelper.genAppSvcOtherInfoList(bpc.request,
-                    appSubmissionDto.getAppType(),appSvcOtherInfoDtos,appSubmissionDto.getAppGrpPremisesDtoList());
+            appSvcOtherInfoDtos = AppDataHelper.genAppSvcOtherInfoList(bpc.request, appSubmissionDto.getAppType(),
+                    appSvcOtherInfoDtos);
             currSvcInfoDto.setAppSvcOtherInfoList(appSvcOtherInfoDtos);
             reSetChangesForApp(appSubmissionDto);
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
