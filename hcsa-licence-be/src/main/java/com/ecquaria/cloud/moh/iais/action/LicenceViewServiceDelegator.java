@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewHciNameDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocSecDetailDto;
@@ -25,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
@@ -91,6 +93,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.BiFunction;
@@ -531,6 +534,41 @@ public class LicenceViewServiceDelegator {
                         .filter(psn -> !StringUtil.isEmpty(psn.getProfRegNo()))
                         .map(AppSvcPersonnelDto::getProfRegNo))
                 .forEach(profRegNo -> set.add(profRegNo));
+        // other information
+        AppSvcOtherInfoDto appSvcOtherInfoDto = Optional.ofNullable(appSvcRelatedInfoDto.getAppSvcOtherInfoList())
+                .filter(IaisCommonUtils::isNotEmpty)
+                .map(list -> list.get(0))
+                .orElse(null);
+        if (appSvcOtherInfoDto != null) {
+            Optional.ofNullable(appSvcOtherInfoDto.getOtherInfoTopPersonPractitionersList())
+                    .filter(IaisCommonUtils::isNotEmpty)
+                    .ifPresent(list -> list.forEach(dto -> set.add(dto.getProfRegNo())));
+            Optional.ofNullable(appSvcOtherInfoDto.getOtherInfoTopPersonAnaesthetistsList())
+                    .filter(IaisCommonUtils::isNotEmpty)
+                    .ifPresent(list -> list.forEach(dto -> set.add(dto.getProfRegNo())));
+            Optional.ofNullable(appSvcOtherInfoDto.getOtherInfoTopPersonNursesList())
+                    .filter(IaisCommonUtils::isNotEmpty)
+                    .ifPresent(list -> list.forEach(dto -> set.add(dto.getProfRegNo())));
+            Optional.ofNullable(appSvcOtherInfoDto.getOtherInfoTopPersonCounsellorsList())
+                    .filter(IaisCommonUtils::isNotEmpty)
+                    .ifPresent(list -> list.forEach(dto -> set.add(dto.getProfRegNo())));
+            Optional.ofNullable(appSvcOtherInfoDto.getAppSvcSuplmFormDto())
+                    .map(dto -> dto.getActiveAppSvcSuplmItemDtoList())
+                    .filter(IaisCommonUtils::isNotEmpty)
+                    .ifPresent(list -> list.stream()
+                            .filter(dto -> HcsaConsts.SUPFORM_SPEC_COND_PRS.equals(dto.getSpecialCondition()))
+                            .forEach(dto -> set.add(dto.getInputValue()))
+                    );
+        }
+        // supplementory form
+        List<AppSvcSuplmFormDto> appSvcSuplmFormList = appSvcRelatedInfoDto.getAppSvcSuplmFormList();
+        if (IaisCommonUtils.isNotEmpty(appSvcSuplmFormList)) {
+            for (AppSvcSuplmFormDto appSvcSuplmFormDto : appSvcSuplmFormList) {
+                appSvcSuplmFormDto.getActiveAppSvcSuplmItemDtoList().stream()
+                        .filter(dto -> HcsaConsts.SUPFORM_SPEC_COND_PRS.equals(dto.getSpecialCondition()))
+                        .forEach(dto -> set.add(dto.getInputValue()));
+            }
+        }
         return set;
     }
 
@@ -621,6 +659,22 @@ public class LicenceViewServiceDelegator {
                         .filter(psn -> StringUtil.isEmpty(psn.getIdNo()))
                         .map(AppSvcPrincipalOfficersDto::getIdNo))
                 .forEach(idNo -> idNoSet.add(idNo));
+        // other information
+        AppSvcOtherInfoDto appSvcOtherInfoDto = Optional.ofNullable(appSvcRelatedInfoDto.getAppSvcOtherInfoList())
+                .filter(IaisCommonUtils::isNotEmpty)
+                .map(list -> list.get(0))
+                .orElse(null);
+        if (appSvcOtherInfoDto != null) {
+            Optional.ofNullable(appSvcOtherInfoDto.getOtherInfoTopPersonPractitionersList())
+                    .filter(IaisCommonUtils::isNotEmpty)
+                    .ifPresent(list -> list.forEach(dto -> idNoSet.add(dto.getIdNo())));
+            Optional.ofNullable(appSvcOtherInfoDto.getOtherInfoTopPersonAnaesthetistsList())
+                    .filter(IaisCommonUtils::isNotEmpty)
+                    .ifPresent(list -> list.forEach(dto -> idNoSet.add(dto.getIdNo())));
+            Optional.ofNullable(appSvcOtherInfoDto.getOtherInfoTopPersonCounsellorsList())
+                    .filter(IaisCommonUtils::isNotEmpty)
+                    .ifPresent(list -> list.forEach(dto -> idNoSet.add(dto.getIdNo())));
+        }
         return idNoSet;
     }
 
