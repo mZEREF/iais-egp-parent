@@ -48,44 +48,66 @@
             </tr>
             </thead>
             <tbody>
-            <%--                                    <c:forEach var="msgTemplateResult" items="${MsgTemplateSearchResult.rows}"--%>
-            <%--                                               varStatus="status">--%>
-            <tr>
-                <td>
-                    <p class="visible-xs visible-sm table-row-title">Licence No.</p>
-                    <%--                                <p>${msgTemplateResult.messageType}</p>--%>
-                </td>
-                <td>
-                    <p class="visible-xs visible-sm table-row-title">Business Name</p>
-                    <%--                                <p>${msgTemplateResult.templateName}</p>--%>
-                </td>
-                <td>
-                    <p class="visible-xs visible-sm table-row-title">Address</p>
-                    <%--                                <p>${msgTemplateResult.deliveryMode}</p>--%>
-                </td>
-                <td>
-                    <p class="visible-xs visible-sm table-row-title">Licence Tenure</p>
-                    <%--                                <p>${msgTemplateResult.process}</p>--%>
-                </td>
-                <td>
-                    <p class="visible-xs visible-sm table-row-title">Date of Agreement</p>
-                    <%--                                <p>${msgTemplateResult.rec}</p>--%>
-                </td>
-                <td>
-                    <p class="visible-xs visible-sm table-row-title">End Date of Agreement</p>
-                    <%--                                <p><fmt:formatDate value="${msgTemplateResult.effectiveTo}"--%>
-                    <%--                                                   pattern="dd/MM/yyyy"/></p>--%>
-                </td>
-                <td>
-                    <p class="visible-xs visible-sm table-row-title">Scope of Outsourcing</p>
-                    <%--                                <p>${(MsgTemplateSearchParam.pageNo - 1) * MsgTemplateSearchParam.pageSize + status.index + 1}</p>--%>
-                </td>
-                <td>
-                    <button type="button" class="btn btn-default btn-sm" onclick="">DELETE</button>
-                </td>
-            </tr>
-            <%--                                    </c:forEach>--%>
+            <c:set var="cL" value="${currSvcInfoDto.appPremOutSourceProvidersList}"/>
+            <c:if test="${empty cL.radiologicalServiceList}">
+                <tr>
+                    <td>
+                        <p class="visible-xs visible-sm table-row-title">Licence No.</p>
+                    </td>
+                    <td>
+                        <p class="visible-xs visible-sm table-row-title">Business Name</p>
+                    </td>
+                    <td>
+                        <p class="visible-xs visible-sm table-row-title">Address</p>
+                    </td>
+                    <td>
+                        <p class="visible-xs visible-sm table-row-title">Licence Tenure</p>
+                    </td>
+                    <td>
+                        <p class="visible-xs visible-sm table-row-title">Date of Agreement</p>
+                    </td>
+                    <td>
+                        <p class="visible-xs visible-sm table-row-title">End Date of Agreement</p>
+                    </td>
+                    <td>
+                        <p class="visible-xs visible-sm table-row-title">Scope of Outsourcing</p>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+            </c:if>
+
+            <c:if test="${!empty cL.radiologicalServiceList}">
+                <c:set var="rlen" value="${cL.radiologicalServiceList.size()}"/>
+                <input name="rlenght" value="${rlen}" type="hidden">
+                <%@include file="radiologicalServiceTableDentail.jsp"%>
+            </c:if>
             </tbody>
         </table>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        delRSBtn();
+    });
+    function delRSBtn(){
+        console.log("del....")
+        let allBtn = document.getElementsByClassName("btn-rSBtn");
+        for (let i = 0; i < allBtn.length; i++) {
+            allBtn[i].onclick = function (){
+                showWaiting();
+                let $tag = $(this);
+                let prefix = $tag.data('prefix');
+                console.log("prefix:"+prefix);
+                $('input[name="btnStep"]').val("delete");
+                $('input[name="pIds"]').val(prefix);
+                $('input[name="prefixVal"]').val(prefix);
+                let controlFormLi = $('#controlFormLi').val();
+                submitForms('${serviceStepDto.currentStep.stepCode}',prefix,null,controlFormLi);
+                let tr =this.parentNode.parentNode;
+                tr.parentNode.removeChild(tr);
+            };
+        }
+    }
+</script>

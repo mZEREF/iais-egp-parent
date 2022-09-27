@@ -50,6 +50,7 @@
 
 <div class="searchService clearTep">
     <input type="hidden" name="btnStep" value="">
+    <input type="hidden" name="pIds" value="">
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <div class="col-md-12 col-xs-12">

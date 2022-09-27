@@ -1,3 +1,4 @@
+<%@include file="outSourceContent.jsp"%>
 <br><br>
 <iais:pagination  param="outSourceParam" result="outSourceResult"/>
 <div class="main-content" style="width: 100%;!important;overflow-x: scroll;">
@@ -31,46 +32,50 @@
                 </thead>
                 <tbody>
                 <c:forEach var="outSourceResult" items="${outSourceResult.rows}" varStatus="status">
+                    <c:set var="prefix" value="${outSourceResult.id}"/>
                 <tr>
                     <td>
                         <p class="visible-xs visible-sm table-row-title" style="width: 30px;!important;">Service</p>
+                        <input name="${prefix}svcName" value="${outSourceResult.svcName}" type="hidden">
                         <p style="width: 200px;">${outSourceResult.svcName}</p>
                     </td>
                     <td>
                         <p class="visible-xs visible-sm table-row-title">Licence No.</p>
+                        <input name="${prefix}licNo" value="${outSourceResult.licenceNo}" type="hidden">
                         <p>${outSourceResult.licenceNo}</p>
                     </td>
                     <td>
                         <p class="visible-xs visible-sm table-row-title">Business Name</p>
+                        <input name="${prefix}bName" value="${outSourceResult.businessName}" type="hidden">
                         <p style="width: 220px;">${outSourceResult.businessName}</p>
                     </td>
                     <td>
                         <p class="visible-xs visible-sm table-row-title">Address</p>
+                        <input name="${prefix}address" value="${outSourceResult.address}" type="hidden">
                         <p style="width: 260px">${outSourceResult.address}</p>
                     </td>
                     <td>
                         <p class="visible-xs visible-sm table-row-title">Licence Tenure</p>
+                        <input name="${prefix}expiryDate" value="${outSourceResult.expiryDate}" type="hidden">
                         <p>${outSourceResult.expiryDate}</p>
                     </td>
                     <td>
                         <p class="visible-xs visible-sm table-row-title">Date of Agreement</p>
-                        <p>
-                            <%String dateStart = request.getParameter("dateStart");%>
-                            <iais:datePicker id="dateStart" name="dateStart" value="<%=dateStart%>"/>
-                        </p>
+                        <iais:datePicker id="agreementStartDate" name="${prefix}agreementStartDate" value=""/>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}AgreementStartDate"></span>
                     </td>
                     <td>
                         <p class="visible-xs visible-sm table-row-title">End Date of Agreement</p>
-                        <%String dateEnd = request.getParameter("dateEnd");%>
-                        <iais:datePicker id="dateEnd" name="dateEnd" value="<%=dateEnd%>"/>
+                        <iais:datePicker id="agreementEndDate" name="${prefix}agreementEndDate" value=""/>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}AgreementEndDate"></span>
                     </td>
                     <td>
-                        <p class="visible-xs visible-sm table-row-title">End Date of Agreement</p>
-                        <%String scopeOfOutsourcing = request.getParameter("scopeOfOutsourcing");%>
-                        <iais:input maxLength="300" type="text" cssClass="scopeOfOutsourcing" name="scopeOfOutsourcing" value="<%=scopeOfOutsourcing%>"/>
+                        <p class="visible-xs visible-sm table-row-title">Scope of Outsourcing</p>
+                        <iais:input maxLength="300" type="text" cssClass="scopeOfOutsourcing" name="${prefix}scopeOfOutsourcing" value=""/>
                     </td>
                     <td>
-                        <button type="button" class="btn btn-default btn-sm btn-add">Add</button>
+                        <input type="hidden" name="prefixVal" value="">
+                        <button type="button" class="btn btn-default btn-sm btn-add" data-prefix="${prefix}">Add</button>
                     </td>
                 </tr>
                 </c:forEach>
@@ -89,17 +94,19 @@
         let allBtn = document.getElementsByClassName("btn-add");
         for (let i = 0; i < allBtn.length; i++) {
             allBtn[i].onclick = function (){
-                showWaiting();
-                console.log("btn Name:"+allBtn[i]);
-                $('input[name="crud_action_type"]').val("add");
+
+                let $tag = $(this);
+                let prefix = $tag.data('prefix');
+                console.log("prefix:"+prefix);
+                $('input[name="btnStep"]').val("add");
+                $('input[name="pIds"]').val(prefix);
+                $('input[name="prefixVal"]').val(prefix);
                 let controlFormLi = $('#controlFormLi').val();
-                submitForms('${serviceStepDto.currentStep.stepCode}','add',null,controlFormLi);
+                submitForms('${serviceStepDto.currentStep.stepCode}',prefix,null,controlFormLi);
                 let tr =this.parentNode.parentNode;
                 tr.parentNode.removeChild(tr);
             };
         }
     }
-    window.onload = function () {
 
-    };
 </script>
