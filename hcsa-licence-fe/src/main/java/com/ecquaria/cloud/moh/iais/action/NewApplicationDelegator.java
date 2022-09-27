@@ -281,6 +281,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
         AppSelectSvcDto appSelectSvcDto = (AppSelectSvcDto) ParamUtil.getSessionAttr(request, HcsaAppConst.APP_SELECT_SERVICE);
         if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos) && appSubmissionDto == null && appSelectSvcDto != null) {
             String entryType = ParamUtil.getString(request, "entryType");
+            String premType="lic";
             if (!StringUtil.isEmpty(entryType) && "assessment".equals(entryType)) {
                 ParamUtil.setSessionAttr(request, HcsaAppConst.ASSESSMENTCONFIG, "test");
             }
@@ -288,6 +289,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
             appSubmissionDto.setLicenseeId(ApplicationHelper.getLicenseeId(request));
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
             if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
+                premType=appLicBundleDtoList.get(0).getLicOrApp();
                 appSubmissionDto.setAppLicBundleDtoList(appLicBundleDtoList);
             }
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
@@ -301,7 +303,12 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 }
             }
             if (!StringUtil.isEmpty(premisesId)) {
-                List<AppGrpPremisesDto> appGrpPremisesDtos = licCommService.getLicPremisesInfo(premisesId);
+                List<AppGrpPremisesDto> appGrpPremisesDtos=IaisCommonUtils.genNewArrayList();
+                if ("lic".equals(premType)){
+                    appGrpPremisesDtos = licCommService.getLicPremisesInfo(premisesId);
+                }else{
+                    appGrpPremisesDtos = Collections.singletonList(appCommService.getAppGrpPremisesById(premisesId));
+                }
                 if (IaisCommonUtils.isNotEmpty(appGrpPremisesDtos)) {
                     appGrpPremisesDtos.get(0).setExistingData(AppConsts.YES);
                     appGrpPremisesDtos.get(0).setPremisesIndexNo(UUID.randomUUID().toString());
