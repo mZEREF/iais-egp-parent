@@ -468,7 +468,8 @@ public class ServiceInfoDelegator {
     private void prepareSupplementaryForm(HttpServletRequest request) {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         String currentSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
-        AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
+        AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currentSvcId,
+                appSubmissionDto.getRfiAppNo());
         if (DealSessionUtil.initSupplementoryForm(currSvcInfoDto, appSubmissionDto.getAppGrpPremisesDtoList(), false)) {
             setAppSvcRelatedInfoMap(request, currentSvcId, currSvcInfoDto, appSubmissionDto);
         }
@@ -511,13 +512,12 @@ public class ServiceInfoDelegator {
         log.debug(StringUtil.changeForLog("prePareOtherInformationDirector start ..."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
-        AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId,null);
-        List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
-        // Other Information Director config
-        if (DealSessionUtil.initOtherInfoForm(currSvcInfoDto,appSubmissionDto.getAppGrpPremisesDtoList(), false,bpc.request)) {
+        AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId,
+                appSubmissionDto.getRfiAppNo());
+        // init Other Information
+        if (DealSessionUtil.initAppSvcOtherInfoList(currSvcInfoDto,appSubmissionDto.getAppGrpPremisesDtoList(), false,bpc.request)) {
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
         }
-        DealSessionUtil.initAppSvcOtherInfoList(currSvcInfoDto,hcsaServiceDtoList,appSubmissionDto.getAppGrpPremisesDtoList(),false);
         ParamUtil.setRequestAttr(bpc.request, "orgUserDto",AppDataHelper.getOtherInfoYfVs(bpc.request));
     }
 
