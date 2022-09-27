@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewHciNameDto;
@@ -85,6 +86,7 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -325,16 +327,16 @@ public class LicenceViewServiceDelegator {
 
 //        volidata role
         LoginContext loginContext = ApplicationHelper.getLoginContext(bpc.request);
+        String curRoleId = loginContext.getCurRoleId();
         String isEdit = "N";
-        if (!StringUtil.isEmpty(loginContext)) {
-            ArrayList<String> myRole = loginContext.getRoleIds();
-            if (IaisCommonUtils.isNotEmpty(myRole)) {
-                if (myRole.contains("ASO") || myRole.contains("PSO")) {
+        List<String> myRole = IaisCommonUtils.genNewArrayList();
+        Collections.addAll(myRole,RoleConsts.USER_ROLE_PSO,RoleConsts.USER_ROLE_ASO);
+        if (!StringUtil.isEmpty(loginContext) && IaisCommonUtils.isNotEmpty(myRole)){
+                if (myRole.contains(curRoleId)){
                     isEdit = "Y";
                 }
-            }
         }
-        ParamUtil.setRequestAttr(bpc.request, "isEdit", isEdit);
+        ParamUtil.setRequestAttr(bpc.request,"isEdit",isEdit);
     }
 
     private AppSubmissionDto getAppSubmissionAndHandLicence(AppPremisesCorrelationDto appPremisesCorrelationDto,
