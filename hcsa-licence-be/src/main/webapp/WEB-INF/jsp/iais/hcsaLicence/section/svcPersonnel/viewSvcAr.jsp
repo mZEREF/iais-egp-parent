@@ -2,7 +2,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <div class="row">
-    <div class="col-xs-12">
+    <div>
         <c:forEach items="${currentPreviewSvcInfo.svcPersonnelDto.arPractitionerList}" var="arPractitionerList" varStatus="status">
             <c:set var="oldArPractitionerList" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.svcPersonnelDto.arPractitionerList[status.index]}"/>
             <p>
@@ -25,7 +25,7 @@
                     </td>
                     <td>
                         <div class="col-xs-6 img-show">
-                                                <span class="newVal " attr="${arPractitionerList.name}">
+                                                <div class="newVal " attr="${arPractitionerList.name}">
                                                   <c:out value="${arPractitionerList.name}"/>
                                                   <jsp:include
                                                           page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
@@ -33,10 +33,10 @@
                                                       <jsp:param name="personName" value="${arPractitionerList.name}"/>
                                                       <jsp:param name="methodName" value="showThisNameTableNewService"/>
                                                   </jsp:include>
-                                                </span>
+                                                </div>
                         </div>
                         <div class="col-xs-6 img-show">
-                                                <span class="oldVal "
+                                                <div class="oldVal "
                                                       attr="${oldArPractitionerList.name}"
                                                       style="display: none">${oldArPractitionerList.name}
                                                   <jsp:include
@@ -45,7 +45,7 @@
                                                       <jsp:param name="personName" value="${oldArPractitionerList.name}"/>
                                                       <jsp:param name="methodName" value="showThisNameTableOldService"/>
                                                   </jsp:include>
-                                                </span>
+                                                </div>
                         </div>
                         <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecords.jsp">
                             <jsp:param name="profRegNo" value="${arPractitionerList.profRegNo}"/>
@@ -67,15 +67,15 @@
                     </td>
                     <td>
                         <div class="col-xs-6">
-                                                <span class="newVal " attr="${arPractitionerList.designation}">
+                                                <div class="newVal " attr="${arPractitionerList.designation}">
                                                        <iais:code code="${arPractitionerList.designation}"/>
-                                                </span>
+                                                </div>
                         </div>
                         <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldArPractitionerList.designation}"
+                                                <div class="oldVal " attr="${oldArPractitionerList.designation}"
                                                       style="display: none">
                                                      <iais:code code="${oldArPractitionerList.designation}"/>
-                                                </span>
+                                                </div>
                         </div>
                     </td>
                 </tr>
@@ -86,9 +86,9 @@
                         </td>
                         <td>
                             <div class="col-xs-12">
-                                                    <span class="newVal " attr="${arPractitionerList.otherDesignation}">
+                                                    <div class="newVal " attr="${arPractitionerList.otherDesignation}">
                                                             ${arPractitionerList.otherDesignation}
-                                                    </span>
+                                                    </div>
                                 <br>
                                 <span class="oldVal " attr="${oldArPractitionerList.otherDesignation}"
                                       style="display: none">
@@ -108,17 +108,17 @@
         </td>
         <td>
             <div class="col-xs-6 img-show">
-                                                <span class="newVal " attr="${arPractitionerList.profRegNo}">
+                                                <div class="newVal " attr="${arPractitionerList.profRegNo}">
                                                   <c:out value="${arPractitionerList.profRegNo}"/>
                                                   <jsp:include
                                                           page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
                                                       <jsp:param name="profRegNo" value="${arPractitionerList.profRegNo}"/>
                                                       <jsp:param name="methodName" value="showThisTableNewService"/>
                                                   </jsp:include>
-                                                </span>
+                                                </div>
             </div>
             <div class="col-xs-6 img-show">
-                                                <span class="oldVal" attr="${oldArPractitionerList.profRegNo}"
+                                                <div class="oldVal" attr="${oldArPractitionerList.profRegNo}"
                                                       style="display: none">
                                                     ${oldArPractitionerList.profRegNo}
                                                     <jsp:include
@@ -127,7 +127,7 @@
                                                                    value="${oldArPractitionerList.profRegNo}"/>
                                                         <jsp:param name="methodName" value="showThisTableOldService"/>
                                                     </jsp:include>
-                                                </span>
+                                                </div>
             </div>
             <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecords.jsp">
                 <jsp:param name="profRegNo" value="${arPractitionerList.profRegNo}"/>
@@ -149,15 +149,15 @@
                     </td>
                     <td>
                         <div class="col-xs-6">
-                                                <span class="newVal " attr="${arPractitionerList.typeOfCurrRegi}">
+                                                <div class="newVal " attr="${arPractitionerList.typeOfCurrRegi}">
                                                     <c:out value="${arPractitionerList.typeOfCurrRegi}"/>
-                                                </span>
+                                                </div>
                         </div>
                         <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldArPractitionerList.typeOfCurrRegi}"
+                                                <div class="oldVal " attr="${oldArPractitionerList.typeOfCurrRegi}"
                                                       style="display: none">
                                                         ${oldArPractitionerList.typeOfCurrRegi}
-                                                </span>
+                                                </div>
                         </div>
                     </td>
                 </tr>
@@ -171,15 +171,15 @@
         </td>
         <td>
             <div class="col-xs-6">
-                                                <span class="newVal " attr="${arPractitionerList.currRegiDate}">
+                                                <div class="newVal " attr="${arPractitionerList.currRegiDate}">
                                                     <c:out value="${arPractitionerList.currRegiDate}"/>
-                                                </span>
+                                                </div>
             </div>
             <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldArPractitionerList.currRegiDate}"
+                                                <div class="oldVal " attr="${oldArPractitionerList.currRegiDate}"
                                                       style="display: none">
                                                         ${oldArPractitionerList.currRegiDate}
-                                                </span>
+                                                </div>
             </div>
         </td>
     </tr>
@@ -193,15 +193,15 @@
         </td>
         <td>
             <div class="col-xs-6">
-                                                <span class="newVal " attr="${arPractitionerList.praCerEndDate}">
+                                                <div class="newVal " attr="${arPractitionerList.praCerEndDate}">
                                                     <c:out value="${arPractitionerList.praCerEndDate}"/>
-                                                </span>
+                                                </div>
             </div>
             <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldArPractitionerList.praCerEndDate}"
+                                                <div class="oldVal " attr="${oldArPractitionerList.praCerEndDate}"
                                                       style="display: none">
                                                         ${oldArPractitionerList.praCerEndDate}
-                                                </span>
+                                                </div>
             </div>
         </td>
     </tr>
@@ -215,15 +215,15 @@
         </td>
         <td>
             <div class="col-xs-6">
-                                                <span class="newVal " attr="${arPractitionerList.typeOfRegister}">
+                                                <div class="newVal " attr="${arPractitionerList.typeOfRegister}">
                                                     <c:out value="${arPractitionerList.typeOfRegister}"/>
-                                                </span>
+                                                </div>
             </div>
             <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldArPractitionerList.typeOfRegister}"
+                                                <div class="oldVal " attr="${oldArPractitionerList.typeOfRegister}"
                                                       style="display: none">
                                                         ${oldArPractitionerList.typeOfRegister}
-                                                </span>
+                                                </div>
             </div>
         </td>
     </tr>
@@ -238,15 +238,15 @@
         </td>
         <td>
             <div class="col-xs-6">
-                                                <span class="newVal " attr="${arPractitionerList.speciality}">
+                                                <div class="newVal " attr="${arPractitionerList.speciality}">
                                                     <c:out value="${arPractitionerList.speciality}"/>
-                                                </span>
+                                                </div>
             </div>
             <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldArPractitionerList.speciality}"
+                                                <div class="oldVal " attr="${oldArPractitionerList.speciality}"
                                                       style="display: none">
                                                         ${oldArPractitionerList.speciality}
-                                                </span>
+                                                </div>
             </div>
         </td>
     </tr>
@@ -261,15 +261,15 @@
         </td>
         <td>
             <div class="col-xs-6">
-                                                <span class="newVal " attr="${arPractitionerList.specialtyGetDate}">
+                                                <div class="newVal " attr="${arPractitionerList.specialtyGetDate}">
                                                     <c:out value="${arPractitionerList.specialtyGetDate}"/>
-                                                </span>
+                                                </div>
             </div>
             <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldArPractitionerList.specialtyGetDate}"
+                                                <div class="oldVal " attr="${oldArPractitionerList.specialtyGetDate}"
                                                       style="display: none">
                                                         ${oldArPractitionerList.specialtyGetDate}
-                                                </span>
+                                                </div>
             </div>
         </td>
     </tr>
@@ -284,15 +284,15 @@
         </td>
         <td>
             <div class="col-xs-6">
-                                                <span class="newVal " attr="${arPractitionerList.qualification}">
+                                                <div class="newVal " attr="${arPractitionerList.qualification}">
                                                     <c:out value="${arPractitionerList.qualification}"/>
-                                                </span>
+                                                </div>
             </div>
             <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldArPractitionerList.qualification}"
+                                                <div class="oldVal " attr="${oldArPractitionerList.qualification}"
                                                       style="display: none">
                                                         ${oldArPractitionerList.qualification}
-                                                </span>
+                                                </div>
             </div>
         </td>
     </tr>
@@ -307,15 +307,15 @@
         </td>
         <td>
             <div class="col-xs-6">
-                                                <span class="newVal " attr="${arPractitionerList.wrkExpYear}">
+                                                <div class="newVal " attr="${arPractitionerList.wrkExpYear}">
                                                     <c:out value="${arPractitionerList.wrkExpYear}"/>
-                                                </span>
+                                                </div>
             </div>
             <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldArPractitionerList.wrkExpYear}"
+                                                <div class="oldVal " attr="${oldArPractitionerList.wrkExpYear}"
                                                       style="display: none">
                                                         ${oldArPractitionerList.wrkExpYear}
-                                                </span>
+                                                </div>
             </div>
         </td>
     </tr>
@@ -329,15 +329,15 @@
         </td>
         <td>
             <div class="col-xs-6">
-                                                <span class="newVal " attr="${arPractitionerList.bclsExpiryDate}">
+                                                <div class="newVal " attr="${arPractitionerList.bclsExpiryDate}">
                                                     <c:out value="${arPractitionerList.bclsExpiryDate}"/>
-                                                </span>
+                                                </div>
             </div>
             <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldArPractitionerList.bclsExpiryDate}"
+                                                <div class="oldVal " attr="${oldArPractitionerList.bclsExpiryDate}"
                                                       style="display: none">
                                                         ${oldArPractitionerList.bclsExpiryDate}
-                                                </span>
+                                                </div>
             </div>
         </td>
     </tr>
@@ -377,4 +377,4 @@
             </table>
         </c:forEach>
     </div>
-</div>
+    </div>

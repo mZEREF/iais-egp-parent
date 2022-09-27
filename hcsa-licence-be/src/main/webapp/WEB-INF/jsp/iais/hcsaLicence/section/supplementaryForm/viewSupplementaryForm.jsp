@@ -4,12 +4,10 @@
     <label class="title-font-size">${currStepName}</label>
     <div class="amend-preview-info">
         <div class="form-check-gp">
-
                 <c:set var="appSvcSuplmFormList" value="${currentPreviewSvcInfo.appSvcSuplmFormList}"/>
                  <c:set var="oldAppSvcSuplmFormList" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcSuplmFormList}"/>
                 <c:forEach var="appSvcSuplmFormDto" items="${appSvcSuplmFormList}" varStatus="statute">
                 <c:set var="oldAppSvcSuplmFormDto" value="${oldAppSvcSuplmFormList[statute.index]}"/>
-
                 <iais:row>
                     <div class="col-xs-12">
                         <div class="app-title">${appSvcSuplmFormDto.premName}</div>
@@ -37,9 +35,12 @@
             </div>
                     </table>
             </c:forEach>
-
-
-
         </div>
     </div>
 </div>
+
+<script>
+    $(function () {
+        $('.mandatory').hide()
+    })
+</script>

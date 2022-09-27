@@ -103,10 +103,10 @@
         fillInfoMation(data[0],$target)
         let length = data.length;
         // TODO
-        console.log(data.splice(1,1),"splice=======>")
         if (length > 1){
             $.each(data.splice(1,1),function (index,items){
                 let $targets = $target.clone();
+                console.log("enter==================>",items)
                 clearFields($targets)
                 $('.premisesContent').last().after($targets)
                 fillInfoMation(items,$('.premisesContent').last())

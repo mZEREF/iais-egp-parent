@@ -1,7 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <div class="row">
-    <div class="col-xs-12">
+    <div>
         <c:forEach items="${currentPreviewSvcInfo.svcPersonnelDto.specialList}" var="specialList"
                    varStatus="status">
             <c:set var="oldSpecialList"
@@ -26,14 +27,13 @@
                             </td>
                             <td>
                                 <div class="col-xs-12">
-                                                <span class="newVal " attr="${specialList.designation}">
+                                                <div class="newVal " attr="${specialList.designation}">
                                                   <c:out value="${specialList.designation}"/>
-                                                </span>
-                                    <br>
-                                    <span class="oldVal " attr="${oldSpecialList.designation}"
+                                                </div>
+                                    <div class="oldVal " attr="${oldSpecialList.designation}"
                                           style="display: none">
                                                     <c:out value="${oldSpecialList.designation}"/>
-                                                </span>
+                                                </div>
                                 </div>
                             </td>
                         </tr>
@@ -43,14 +43,13 @@
                                 </td>
                                 <td>
                                     <div class="col-xs-12">
-                                                    <span class="newVal " attr="${specialList.otherDesignation}">
+                                                    <div class="newVal " attr="${specialList.otherDesignation}">
                                                             ${specialList.otherDesignation}
-                                                    </span>
-                                        <br>
-                                        <span class="oldVal " attr="${oldSpecialList.otherDesignation}"
+                                                    </div>
+                                        <div class="oldVal " attr="${oldSpecialList.otherDesignation}"
                                               style="display: none">
                                                 ${oldSpecialList.otherDesignation}
-                                        </span>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -65,17 +64,17 @@
                             </td>
                             <td>
                                 <div class="col-xs-6 img-show">
-                                                <span class="newVal " attr="${specialList.name}">
+                                                <div class="newVal " attr="${specialList.name}">
                                                   <c:out value="${specialList.name}"/>
                                                   <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
                                                       <jsp:param name="profRegNo" value="${specialList.profRegNo}"/>
                                                       <jsp:param name="personName" value="${specialList.name}"/>
                                                       <jsp:param name="methodName" value="showThisNameTableNewService"/>
                                                   </jsp:include>
-                                                </span>
+                                                </div>
                                 </div>
                                 <div class="col-xs-6 img-show">
-                                                <span class="oldVal "
+                                                <div class="oldVal "
                                                       attr="${oldSpecialList.name}"
                                                       style="display: none">${oldSpecialList.name}
                                                   <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
@@ -83,7 +82,7 @@
                                                       <jsp:param name="personName" value="${oldSpecialList.name}"/>
                                                       <jsp:param name="methodName" value="showThisNameTableOldService"/>
                                                   </jsp:include>
-                                                </span>
+                                                </div>
                                 </div>
                                 <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecords.jsp">
                                     <jsp:param name="profRegNo" value="${specialList.profRegNo}"/>
@@ -96,11 +95,6 @@
                             </td>
                         </tr>
 
-
-
-
-
-
                         <tr>
                             <td class="col-xs-6">
                                 <p class="form-check-label" aria-label="premise-1-cytology">
@@ -109,22 +103,22 @@
                             </td>
                             <td>
                                 <div class="col-xs-6 img-show">
-                                                <span class="newVal " attr="${specialList.profRegNo}">
+                                                <div class="newVal " attr="${specialList.profRegNo}">
                                                   <c:out value="${specialList.profRegNo}"/>
                                                   <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
                                                       <jsp:param name="profRegNo" value="${specialList.profRegNo}"/>
                                                       <jsp:param name="methodName" value="showThisTableNewService"/>
                                                   </jsp:include>
-                                                </span>
+                                                </div>
                                 </div>
                                 <div class="col-xs-6 img-show">
-                                                <span class="oldVal" attr="${oldSpecialList.profRegNo}" style="display: none">
+                                                <div class="oldVal" attr="${oldSpecialList.profRegNo}" style="display: none">
                                                     ${oldSpecialList.profRegNo}
                                                     <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
                                                         <jsp:param name="profRegNo" value="${oldSpecialList.profRegNo}"/>
                                                         <jsp:param name="methodName" value="showThisTableOldService"/>
                                                     </jsp:include>
-                                                </span>
+                                                </div>
                                 </div>
                                 <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecords.jsp">
                                     <jsp:param name="profRegNo" value="${specialList.profRegNo}"/>
@@ -144,15 +138,15 @@
                             </td>
                             <td>
                                 <div class="col-xs-6">
-                                                <span class="newVal " attr="${specialList.wrkExpYear}">
+                                                <div class="newVal " attr="${specialList.wrkExpYear}">
                                                     <c:out value="${specialList.wrkExpYear}"/>
-                                                </span>
+                                                </div>
                                 </div>
                                 <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldSpecialList.wrkExpYear}"
+                                                <div class="oldVal " attr="${oldSpecialList.wrkExpYear}"
                                                       style="display: none">
                                                         ${oldSpecialList.wrkExpYear}
-                                                </span>
+                                                </div>
                                 </div>
                             </td>
                         </tr>
@@ -166,14 +160,14 @@
                             </td>
                             <td>
                                 <div class="col-xs-6 col-md-6">
-                                                <span class="newVal " attr="${specialList.name}">
+                                                <div class="newVal " attr="${specialList.name}">
                                                   <c:out value="${specialList.name}"/>
-                                                </span>
+                                                </div>
                                 </div>
                                 <div class="col-xs-6">
-                                                <span class="oldVal" attr="${oldSpecialList.name}" style="display:none">
+                                                <div class="oldVal" attr="${oldSpecialList.name}" style="display:none">
                                                   <c:out value="${oldSpecialList.name}"/>
-                                                </span>
+                                                </div>
                                 </div>
                             </td>
                         </tr>
@@ -185,14 +179,13 @@
                             </td>
                             <td>
                                 <div class="col-xs-12">
-                                                <span class="newVal " attr="${specialList.qualification}">
+                                                <div class="newVal " attr="${specialList.qualification}">
                                                     <c:out value="${specialList.qualification}"/>
-                                                </span>
-                                    <br>
-                                    <span class="oldVal " attr="${oldSpecialList.qualification}"
+                                                </div>
+                                    <div class="oldVal " attr="${oldSpecialList.qualification}"
                                           style="display: none">
                                             ${oldSpecialList.qualification}
-                                    </span>
+                                    </div>
                                 </div>
                             </td>
                         </tr>
@@ -204,14 +197,14 @@
                             </td>
                             <td>
                                 <div class="col-xs-6">
-                                                <span class="newVal " attr="${specialList.wrkExpYear}">
+                                                <div class="newVal " attr="${specialList.wrkExpYear}">
                                                   <c:out value="${specialList.wrkExpYear}"/>
-                                                </span>
+                                                </div>
                                 </div>
                                 <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldSpecialList.wrkExpYear}"
+                                                <div class="oldVal " attr="${oldSpecialList.wrkExpYear}"
                                                       style="display: none">${oldSpecialList.wrkExpYear}
-                                                </span>
+                                                </div>
                                 </div>
                             </td>
                         </tr>
@@ -226,14 +219,14 @@
                             </td>
                             <td>
                                 <div class="col-xs-6">
-                                                <span class="newVal " attr="${specialList.personnelType}">
+                                                <div class="newVal " attr="${specialList.personnelType}">
                                                   <iais:code code="${specialList.personnelType}"/>
-                                                </span>
+                                                </div>
                                 </div>
                                 <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldSpecialList.personnelType}" style="display: none">
+                                                <div class="oldVal " attr="${oldSpecialList.personnelType}" style="display: none">
                                                   <iais:code code="${oldSpecialList.personnelType}"/>
-                                                </span>
+                                                </div>
                                 </div>
                             </td>
                         </tr>
@@ -245,14 +238,14 @@
                             </td>
                             <td>
                                 <div class="col-xs-6">
-                                                <span class="newVal " attr="${specialList.name}">
+                                                <div class="newVal " attr="${specialList.name}">
                                                   <c:out value="${specialList.name}"/>
-                                                </span>
+                                                </div>
                                 </div>
                                 <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldSpecialList.name}" style="display: none">
+                                                <div class="oldVal " attr="${oldSpecialList.name}" style="display: none">
                                                   <c:out value="${oldSpecialList.name}"/>
-                                                </span>
+                                                </div>
                                 </div>
                             </td>
                         </tr>
@@ -265,14 +258,14 @@
                                 </td>
                                 <td>
                                     <div class="col-xs-12">
-                                                    <span class="newVal " attr="${specialList.qualification}">
+                                                    <div class="newVal " attr="${specialList.qualification}">
                                                       <c:out value="${specialList.qualification}"/>
-                                                    </span>
+                                                    </div>
                                         <br>
-                                        <span class="oldVal " attr="${oldSpecialList.qualification}"
+                                        <div class="oldVal " attr="${oldSpecialList.qualification}"
                                               style="display: none">
                                                           <c:out value="${oldSpecialList.qualification}"/>
-                                                    </span>
+                                                    </div>
                                     </div>
                                 </td>
                             </tr>
@@ -284,14 +277,14 @@
                                 </td>
                                 <td>
                                     <div class="col-xs-6">
-                                                    <span class="newVal " attr="${specialList.wrkExpYear}">
+                                                    <div class="newVal " attr="${specialList.wrkExpYear}">
                                                       <c:out value="${specialList.wrkExpYear}"/>
-                                                    </span>
+                                                    </div>
                                     </div>
                                     <div class="col-xs-6">
-                                                    <span class="oldVal " attr="${oldSpecialList.wrkExpYear}"
+                                                    <div class="oldVal " attr="${oldSpecialList.wrkExpYear}"
                                                           style="display: none">${oldSpecialList.wrkExpYear}
-                                                    </span>
+                                                    </div>
                                     </div>
                                 </td>
                             </tr>
@@ -307,14 +300,14 @@
                             </td>
                             <td>
                                 <div class="col-xs-6">
-                                                <span class="newVal " attr="${specialList.personnelType}">
+                                                <div class="newVal " attr="${specialList.personnelType}">
                                                   <iais:code code="${specialList.personnelType}"/>
-                                                </span>
+                                                </div>
                                 </div>
                                 <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldSpecialList.personnelType}" style="display: none">
+                                                <div class="oldVal " attr="${oldSpecialList.personnelType}" style="display: none">
                                                   <iais:code code="${oldSpecialList.personnelType}"/>
-                                                </span>
+                                                </div>
                                 </div>
                             </td>
                         </tr>
@@ -328,17 +321,17 @@
                                 </td>
                                 <td>
                                     <div class="col-xs-6 img-show">
-                                                    <span class="newVal " attr="${specialList.name}">
+                                                    <div class="newVal " attr="${specialList.name}">
                                                       <c:out value="${specialList.name}"/>
                                                       <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
                                                           <jsp:param name="profRegNo" value="${specialList.profRegNo}"/>
                                                           <jsp:param name="personName" value="${specialList.name}"/>
                                                           <jsp:param name="methodName" value="showThisNameTableNewService"/>
                                                       </jsp:include>
-                                                    </span>
+                                                    </div>
                                     </div>
                                     <div class="col-xs-6 img-show">
-                                                    <span class="oldVal "
+                                                    <div class="oldVal "
                                                           attr="${oldSpecialList.name}"
                                                           style="display: none">${oldSpecialList.name}
                                                       <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
@@ -346,7 +339,7 @@
                                                           <jsp:param name="personName" value="${oldSpecialList.name}"/>
                                                           <jsp:param name="methodName" value="showThisNameTableOldService"/>
                                                       </jsp:include>
-                                                    </span>
+                                                    </div>
                                     </div>
                                     <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecords.jsp">
                                         <jsp:param name="profRegNo" value="${specialList.profRegNo}"/>
@@ -368,14 +361,14 @@
                                 </td>
                                 <td>
                                     <div class="col-xs-6">
-                                                    <span class="newVal " attr="${specialList.name}">
+                                                    <div class="newVal " attr="${specialList.name}">
                                                       <c:out value="${specialList.name}"/>
-                                                    </span>
+                                                    </div>
                                     </div>
                                     <div class="col-xs-6">
-                                                    <span class="oldVal " attr="${oldSpecialList.name}" style="display: none">
+                                                    <div class="oldVal " attr="${oldSpecialList.name}" style="display: none">
                                                       <c:out value="${oldSpecialList.name}"/>
-                                                    </span>
+                                                    </div>
                                     </div>
                                 </td>
                             </tr>
@@ -389,14 +382,14 @@
                                 </td>
                                 <td>
                                     <div class="col-xs-12">
-                                                  <span class="newVal " attr="${specialList.designation}">
+                                                  <div class="newVal " attr="${specialList.designation}">
                                                           ${specialList.designation}
-                                                  </span>
+                                                  </div>
                                         <br>
-                                        <span class="oldVal " attr="${oldSpecialList.designation}"
+                                        <div class="oldVal " attr="${oldSpecialList.designation}"
                                               style="display: none">
                                                 ${oldSpecialList.designation}
-                                        </span>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -407,14 +400,14 @@
                                 </td>
                                 <td>
                                     <div class="col-xs-12">
-                                                    <span class="newVal " attr="${specialList.otherDesignation}">
+                                                    <div class="newVal " attr="${specialList.otherDesignation}">
                                                             ${specialList.otherDesignation}
-                                                    </span>
+                                                    </div>
                                         <br>
-                                        <span class="oldVal " attr="${oldSpecialList.otherDesignation}"
+                                        <div class="oldVal " attr="${oldSpecialList.otherDesignation}"
                                               style="display: none">
                                                 ${oldSpecialList.otherDesignation}
-                                        </span>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -429,14 +422,14 @@
                                 </td>
                                 <td>
                                     <div class="col-xs-12">
-                                                    <span class="newVal " attr="${specialList.qualification}">
+                                                    <div class="newVal " attr="${specialList.qualification}">
                                                             ${specialList.qualification}
-                                                    </span>
+                                                    </div>
                                         <br>
-                                        <span class="oldVal " attr="${oldSpecialList.qualification}"
+                                        <div class="oldVal " attr="${oldSpecialList.qualification}"
                                               style="display: none">
                                                 ${oldSpecialList.qualification}
-                                        </span>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -448,14 +441,14 @@
                                 </td>
                                 <td>
                                     <div class="col-xs-6">
-                                                    <span class="newVal " attr="${specialList.wrkExpYear}">
+                                                    <div class="newVal " attr="${specialList.wrkExpYear}">
                                                         <c:out value="${specialList.wrkExpYear}"/>
-                                                    </span>
+                                                    </div>
                                     </div>
                                     <div class="col-xs-6">
-                                                    <span class="oldVal " attr="${oldSpecialList.wrkExpYear}" style="display: none">
+                                                    <div class="oldVal " attr="${oldSpecialList.wrkExpYear}" style="display: none">
                                                         <c:out value="${oldSpecialList.wrkExpYear}"/>
-                                                    </span>
+                                                    </div>
                                     </div>
                                 </td>
                             </tr>
@@ -469,22 +462,22 @@
                                 </td>
                                 <td>
                                     <div class="col-xs-6 img-show">
-                                                    <span class="newVal" attr="${specialList.profRegNo}">
+                                                    <div class="newVal" attr="${specialList.profRegNo}">
                                                       <c:out value="${specialList.profRegNo}"/>
                                                       <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
                                                           <jsp:param name="profRegNo" value="${specialList.profRegNo}"/>
                                                           <jsp:param name="methodName" value="showThisTableNewService"/>
                                                       </jsp:include>
-                                                    </span>
+                                                    </div>
                                     </div>
                                     <div class="col-xs-6 img-show">
-                                                    <span class="oldVal" attr="${oldSpecialList.profRegNo}" style="display: none">
+                                                    <div class="oldVal" attr="${oldSpecialList.profRegNo}" style="display: none">
                                                         ${oldSpecialList.profRegNo}
                                                         <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
                                                             <jsp:param name="profRegNo" value="${oldSpecialList.profRegNo}"/>
                                                             <jsp:param name="methodName" value="showThisTableOldService"/>
                                                         </jsp:include>
-                                                    </span>
+                                                    </div>
                                     </div>
                                     <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecords.jsp">
                                         <jsp:param name="profRegNo" value="${specialList.profRegNo}"/>
@@ -508,14 +501,14 @@
                             </td>
                             <td>
                                 <div class="col-xs-6 img-show">
-                                                <span class="newVal " attr="${specialList.name}">
+                                                <div class="newVal " attr="${specialList.name}">
                                                     <c:out value="${specialList.name}"/>
-                                                </span>
+                                                </div>
                                 </div>
                                 <div class="col-xs-6 img-show">
-                                                <span class="oldVal " attr="${oldSpecialList.name}" style="display: none">
+                                                <div class="oldVal " attr="${oldSpecialList.name}" style="display: none">
                                                         ${oldSpecialList.name}
-                                                </span>
+                                                </div>
                                 </div>
                             </td>
                         </tr>
@@ -527,14 +520,14 @@
                             </td>
                             <td>
                                 <div class="col-xs-12">
-                                                <span class="newVal " attr="${specialList.qualification}">
+                                                <div class="newVal " attr="${specialList.qualification}">
                                                         ${specialList.qualification}
-                                                </span>
+                                                </div>
                                     <br>
-                                    <span class="oldVal " attr="${oldSpecialList.qualification}"
+                                    <div class="oldVal " attr="${oldSpecialList.qualification}"
                                           style="display: none">
                                             ${oldSpecialList.qualification}
-                                    </span>
+                                    </div>
                                 </div>
                             </td>
                         </tr>
@@ -546,14 +539,14 @@
                             </td>
                             <td>
                                 <div class="col-xs-6">
-                                                <span class="newVal " attr="${specialList.wrkExpYear}">
+                                                <div class="newVal " attr="${specialList.wrkExpYear}">
                                                     <c:out value="${specialList.wrkExpYear}"/>
-                                                </span>
+                                                </div>
                                 </div>
                                 <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldSpecialList.wrkExpYear}" style="display: none">
+                                                <div class="oldVal " attr="${oldSpecialList.wrkExpYear}" style="display: none">
                                                         ${oldSpecialList.wrkExpYear}
-                                                </span>
+                                                </div>
                                 </div>
                             </td>
                         </tr>

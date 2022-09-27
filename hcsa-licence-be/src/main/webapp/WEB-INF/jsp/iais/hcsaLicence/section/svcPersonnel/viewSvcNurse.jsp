@@ -2,7 +2,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <div class="row">
-    <div class="col-xs-12">
+    <div>
         <c:forEach items="${currentPreviewSvcInfo.svcPersonnelDto.nurseList}" var="nurseList" varStatus="status">
             <c:set var="oldNurseList"
                    value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.svcPersonnelDto.nurseList[status.index]}"/>
@@ -16,8 +16,6 @@
             </p>
             <span class="col-xs-6"></span>
             <table aria-describedby="" class="col-xs-12">
-
-
                     <%--                Salutation--%>
                 <tr>
                     <td class="col-xs-6">
@@ -26,15 +24,15 @@
                     </td>
                     <td>
                         <div class="col-xs-6">
-                                        <span class="newVal " attr="${nurseList.salutation}">
-                                            <iais:code code="${nurseList.salutation}"/>
-                                        </span>
+                            <div class="newVal " attr="${nurseList.salutation}">
+                                <iais:code code="${nurseList.salutation}"/>
+                            </div>
                         </div>
                         <div class="col-xs-6">
-                                        <span class="oldVal " attr="${oldNurseList.salutation}"
-                                              style="display: none">
-                                            <iais:code code="${oldNurseList.salutation}"/>
-                                        </span>
+                            <div class="oldVal " attr="${oldNurseList.salutation}"
+                                 style="display: none">
+                                <iais:code code="${oldNurseList.salutation}"/>
+                            </div>
                         </div>
                     </td>
                 </tr>
@@ -48,27 +46,27 @@
                     </td>
                     <td>
                         <div class="col-xs-6 img-show">
-                                                <span class="newVal " attr="${nurseList.name}">
-                                                  <c:out value="${nurseList.name}"/>
-                                                  <jsp:include
-                                                          page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
-                                                      <jsp:param name="profRegNo" value="${nurseList.profRegNo}"/>
-                                                      <jsp:param name="personName" value="${nurseList.name}"/>
-                                                      <jsp:param name="methodName" value="showThisNameTableNewService"/>
-                                                  </jsp:include>
-                                                </span>
+                            <div class="newVal " attr="${nurseList.name}">
+                                <c:out value="${nurseList.name}"/>
+                                <jsp:include
+                                        page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
+                                    <jsp:param name="profRegNo" value="${nurseList.profRegNo}"/>
+                                    <jsp:param name="personName" value="${nurseList.name}"/>
+                                    <jsp:param name="methodName" value="showThisNameTableNewService"/>
+                                </jsp:include>
+                            </div>
                         </div>
                         <div class="col-xs-6 img-show">
-                                                <span class="oldVal "
-                                                      attr="${oldNurseList.name}"
-                                                      style="display: none">${oldNurseList.name}
-                                                  <jsp:include
-                                                          page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
-                                                      <jsp:param name="profRegNo" value="${oldNurseList.profRegNo}"/>
-                                                      <jsp:param name="personName" value="${oldNurseList.name}"/>
-                                                      <jsp:param name="methodName" value="showThisNameTableOldService"/>
-                                                  </jsp:include>
-                                                </span>
+                            <div class="oldVal "
+                                 attr="${oldNurseList.name}"
+                                 style="display: none">${oldNurseList.name}
+                                <jsp:include
+                                        page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
+                                    <jsp:param name="profRegNo" value="${oldNurseList.profRegNo}"/>
+                                    <jsp:param name="personName" value="${oldNurseList.name}"/>
+                                    <jsp:param name="methodName" value="showThisNameTableOldService"/>
+                                </jsp:include>
+                            </div>
                         </div>
                         <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecords.jsp">
                             <jsp:param name="profRegNo" value="${nurseList.profRegNo}"/>
@@ -90,15 +88,15 @@
                     </td>
                     <td>
                         <div class="col-xs-6">
-                                                <span class="newVal " attr="${nurseList.designation}">
-                                                       <iais:code code="${nurseList.designation}"/>
-                                                </span>
+                            <div class="newVal " attr="${nurseList.designation}">
+                                <iais:code code="${nurseList.designation}"/>
+                            </div>
                         </div>
                         <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldNurseList.designation}"
-                                                      style="display: none">
-                                                        <iais:code code="${oldNurseList.designation}"/>
-                                                </span>
+                            <div class="oldVal " attr="${oldNurseList.designation}"
+                                 style="display: none">
+                                <iais:code code="${oldNurseList.designation}"/>
+                            </div>
                         </div>
                     </td>
                 </tr>
@@ -109,14 +107,13 @@
                         </td>
                         <td>
                             <div class="col-xs-12">
-                                                    <span class="newVal " attr="${nurseList.otherDesignation}">
-                                                            ${nurseList.otherDesignation}
-                                                    </span>
-                                <br>
-                                <span class="oldVal " attr="${oldNurseList.otherDesignation}"
-                                      style="display: none">
+                                <div class="newVal " attr="${nurseList.otherDesignation}">
+                                        ${nurseList.otherDesignation}
+                                </div>
+                                <div class="oldVal " attr="${oldNurseList.otherDesignation}"
+                                     style="display: none">
                                         ${oldNurseList.otherDesignation}
-                                </span>
+                                </div>
                             </div>
                         </td>
                     </tr>
@@ -132,15 +129,15 @@
                     </td>
                     <td>
                         <div class="col-xs-6">
-                                                <span class="newVal " attr="${nurseList.professionBoard}">
-                                                     <iais:code code="${nurseList.professionBoard}"/>
-                                                </span>
+                            <div class="newVal " attr="${nurseList.professionBoard}">
+                                <iais:code code="${nurseList.professionBoard}"/>
+                            </div>
                         </div>
                         <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldNurseList.professionBoard}"
-                                                      style="display: none">
-                                                       <iais:code code="${oldNurseList.professionBoard}"/>
-                                                </span>
+                            <div class="oldVal " attr="${oldNurseList.professionBoard}"
+                                 style="display: none">
+                                <iais:code code="${oldNurseList.professionBoard}"/>
+                            </div>
                         </div>
                     </td>
                 </tr>
@@ -154,15 +151,15 @@
                     </td>
                     <td>
                         <div class="col-xs-6">
-                                                <span class="newVal " attr="${nurseList.professionType}">
-                                                     <iais:code code="${nurseList.professionType}"/>
-                                                </span>
+                            <div class="newVal " attr="${nurseList.professionType}">
+                                <iais:code code="${nurseList.professionType}"/>
+                            </div>
                         </div>
                         <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldNurseList.professionType}"
-                                                      style="display: none">
-                                                       <iais:code code="${oldNurseList.professionType}"/>
-                                                </span>
+                            <div class="oldVal " attr="${oldNurseList.professionType}"
+                                 style="display: none">
+                                <iais:code code="${oldNurseList.professionType}"/>
+                            </div>
                         </div>
                     </td>
                 </tr>
@@ -176,26 +173,26 @@
                     </td>
                     <td>
                         <div class="col-xs-6 img-show">
-                                                <span class="newVal " attr="${nurseList.profRegNo}">
-                                                  <c:out value="${nurseList.profRegNo}"/>
-                                                  <jsp:include
-                                                          page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
-                                                      <jsp:param name="profRegNo" value="${nurseList.profRegNo}"/>
-                                                      <jsp:param name="methodName" value="showThisTableNewService"/>
-                                                  </jsp:include>
-                                                </span>
+                            <div class="newVal " attr="${nurseList.profRegNo}">
+                                <c:out value="${nurseList.profRegNo}"/>
+                                <jsp:include
+                                        page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
+                                    <jsp:param name="profRegNo" value="${nurseList.profRegNo}"/>
+                                    <jsp:param name="methodName" value="showThisTableNewService"/>
+                                </jsp:include>
+                            </div>
                         </div>
                         <div class="col-xs-6 img-show">
-                                                <span class="oldVal" attr="${oldNurseList.profRegNo}"
-                                                      style="display: none">
-                                                    ${oldNurseList.profRegNo}
-                                                    <jsp:include
-                                                            page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
-                                                        <jsp:param name="profRegNo"
-                                                                   value="${oldNurseList.profRegNo}"/>
-                                                        <jsp:param name="methodName" value="showThisTableOldService"/>
-                                                    </jsp:include>
-                                                </span>
+                            <div class="oldVal" attr="${oldNurseList.profRegNo}"
+                                 style="display: none">
+                                    ${oldNurseList.profRegNo}
+                                <jsp:include
+                                        page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
+                                    <jsp:param name="profRegNo"
+                                               value="${oldNurseList.profRegNo}"/>
+                                    <jsp:param name="methodName" value="showThisTableOldService"/>
+                                </jsp:include>
+                            </div>
                         </div>
                         <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecords.jsp">
                             <jsp:param name="profRegNo" value="${nurseList.profRegNo}"/>
@@ -218,15 +215,15 @@
                     </td>
                     <td>
                         <div class="col-xs-6">
-                                                <span class="newVal " attr="${nurseList.typeOfCurrRegi}">
-                                                    <c:out value="${nurseList.typeOfCurrRegi}"/>
-                                                </span>
+                            <div class="newVal " attr="${nurseList.typeOfCurrRegi}">
+                                <c:out value="${nurseList.typeOfCurrRegi}"/>
+                            </div>
                         </div>
                         <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldNurseList.typeOfCurrRegi}"
-                                                      style="display: none">
-                                                        ${oldNurseList.typeOfCurrRegi}
-                                                </span>
+                            <div class="oldVal " attr="${oldNurseList.typeOfCurrRegi}"
+                                 style="display: none">
+                                    ${oldNurseList.typeOfCurrRegi}
+                            </div>
                         </div>
                     </td>
                 </tr>
@@ -240,15 +237,15 @@
                     </td>
                     <td>
                         <div class="col-xs-6">
-                                                <span class="newVal " attr="${nurseList.currRegiDate}">
-                                                    <c:out value="${nurseList.currRegiDate}"/>
-                                                </span>
+                            <div class="newVal " attr="${nurseList.currRegiDate}">
+                                <c:out value="${nurseList.currRegiDate}"/>
+                            </div>
                         </div>
                         <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldNurseList.currRegiDate}"
-                                                      style="display: none">
-                                                        ${oldNurseList.currRegiDate}
-                                                </span>
+                            <div class="oldVal " attr="${oldNurseList.currRegiDate}"
+                                 style="display: none">
+                                    ${oldNurseList.currRegiDate}
+                            </div>
                         </div>
                     </td>
                 </tr>
@@ -262,15 +259,15 @@
                     </td>
                     <td>
                         <div class="col-xs-6">
-                                                <span class="newVal " attr="${nurseList.praCerEndDate}">
-                                                    <c:out value="${nurseList.praCerEndDate}"/>
-                                                </span>
+                            <div class="newVal " attr="${nurseList.praCerEndDate}">
+                                <c:out value="${nurseList.praCerEndDate}"/>
+                            </div>
                         </div>
                         <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldNurseList.praCerEndDate}"
-                                                      style="display: none">
-                                                        ${oldNurseList.praCerEndDate}
-                                                </span>
+                            <div class="oldVal " attr="${oldNurseList.praCerEndDate}"
+                                 style="display: none">
+                                    ${oldNurseList.praCerEndDate}
+                            </div>
                         </div>
                     </td>
                 </tr>
@@ -284,15 +281,15 @@
                     </td>
                     <td>
                         <div class="col-xs-6">
-                                                <span class="newVal " attr="${nurseList.typeOfRegister}">
-                                                    <c:out value="${nurseList.typeOfRegister}"/>
-                                                </span>
+                            <div class="newVal " attr="${nurseList.typeOfRegister}">
+                                <c:out value="${nurseList.typeOfRegister}"/>
+                            </div>
                         </div>
                         <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldNurseList.typeOfRegister}"
-                                                      style="display: none">
-                                                        ${oldNurseList.typeOfRegister}
-                                                </span>
+                            <div class="oldVal " attr="${oldNurseList.typeOfRegister}"
+                                 style="display: none">
+                                    ${oldNurseList.typeOfRegister}
+                            </div>
                         </div>
                     </td>
                 </tr>
@@ -307,15 +304,15 @@
                     </td>
                     <td>
                         <div class="col-xs-6">
-                                                <span class="newVal " attr="${nurseList.speciality}">
-                                                    <c:out value="${nurseList.speciality}"/>
-                                                </span>
+                            <div class="newVal " attr="${nurseList.speciality}">
+                                <c:out value="${nurseList.speciality}"/>
+                            </div>
                         </div>
                         <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldNurseList.speciality}"
-                                                      style="display: none">
-                                                        ${oldNurseList.speciality}
-                                                </span>
+                            <div class="oldVal " attr="${oldNurseList.speciality}"
+                                 style="display: none">
+                                    ${oldNurseList.speciality}
+                            </div>
                         </div>
                     </td>
                 </tr>
@@ -329,15 +326,15 @@
                     </td>
                     <td>
                         <div class="col-xs-6">
-                                                <span class="newVal " attr="${nurseList.subSpeciality}">
-                                                    <c:out value="${nurseList.subSpeciality}"/>
-                                                </span>
+                            <div class="newVal " attr="${nurseList.subSpeciality}">
+                                <c:out value="${nurseList.subSpeciality}"/>
+                            </div>
                         </div>
                         <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldNurseList.subSpeciality}"
-                                                      style="display: none">
-                                                        ${oldNurseList.subSpeciality}
-                                                </span>
+                            <div class="oldVal " attr="${oldNurseList.subSpeciality}"
+                                 style="display: none">
+                                    ${oldNurseList.subSpeciality}
+                            </div>
                         </div>
                     </td>
                 </tr>
@@ -352,15 +349,15 @@
                     </td>
                     <td>
                         <div class="col-xs-6">
-                                                <span class="newVal " attr="${nurseList.specialityOther}">
-                                                    <c:out value="${nurseList.specialityOther}"/>
-                                                </span>
+                            <div class="newVal " attr="${nurseList.specialityOther}">
+                                <c:out value="${nurseList.specialityOther}"/>
+                            </div>
                         </div>
                         <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldNurseList.specialityOther}"
-                                                      style="display: none">
-                                                        ${oldNurseList.specialityOther}
-                                                </span>
+                            <div class="oldVal " attr="${oldNurseList.specialityOther}"
+                                 style="display: none">
+                                    ${oldNurseList.specialityOther}
+                            </div>
                         </div>
                     </td>
                 </tr>
@@ -375,15 +372,15 @@
                     </td>
                     <td>
                         <div class="col-xs-6">
-                                                <span class="newVal " attr="${nurseList.specialtyGetDate}">
-                                                    <c:out value="${nurseList.specialtyGetDate}"/>
-                                                </span>
+                            <div class="newVal " attr="${nurseList.specialtyGetDate}">
+                                <c:out value="${nurseList.specialtyGetDate}"/>
+                            </div>
                         </div>
                         <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldNurseList.specialtyGetDate}"
-                                                      style="display: none">
-                                                        ${oldNurseList.specialtyGetDate}
-                                                </span>
+                            <div class="oldVal " attr="${oldNurseList.specialtyGetDate}"
+                                 style="display: none">
+                                    ${oldNurseList.specialtyGetDate}
+                            </div>
                         </div>
                     </td>
                 </tr>
@@ -398,15 +395,15 @@
                     </td>
                     <td>
                         <div class="col-xs-6">
-                                                <span class="newVal " attr="${nurseList.qualification}">
-                                                    <c:out value="${nurseList.qualification}"/>
-                                                </span>
+                            <div class="newVal " attr="${nurseList.qualification}">
+                                <c:out value="${nurseList.qualification}"/>
+                            </div>
                         </div>
                         <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldNurseList.qualification}"
-                                                      style="display: none">
-                                                        ${oldNurseList.qualification}
-                                                </span>
+                            <div class="oldVal " attr="${oldNurseList.qualification}"
+                                 style="display: none">
+                                    ${oldNurseList.qualification}
+                            </div>
                         </div>
                     </td>
                 </tr>
@@ -421,15 +418,15 @@
                     </td>
                     <td>
                         <div class="col-xs-6">
-                                                <span class="newVal " attr="${nurseList.wrkExpYear}">
-                                                    <c:out value="${nurseList.wrkExpYear}"/>
-                                                </span>
+                            <div class="newVal " attr="${nurseList.wrkExpYear}">
+                                <c:out value="${nurseList.wrkExpYear}"/>
+                            </div>
                         </div>
                         <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldNurseList.wrkExpYear}"
-                                                      style="display: none">
-                                                        ${oldNurseList.wrkExpYear}
-                                                </span>
+                            <div class="oldVal " attr="${oldNurseList.wrkExpYear}"
+                                 style="display: none">
+                                    ${oldNurseList.wrkExpYear}
+                            </div>
                         </div>
                     </td>
                 </tr>
@@ -443,15 +440,15 @@
                     </td>
                     <td>
                         <div class="col-xs-6">
-                                                <span class="newVal " attr="${nurseList.bclsExpiryDate}">
-                                                    <c:out value="${nurseList.bclsExpiryDate}"/>
-                                                </span>
+                            <div class="newVal " attr="${nurseList.bclsExpiryDate}">
+                                <c:out value="${nurseList.bclsExpiryDate}"/>
+                            </div>
                         </div>
                         <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldNurseList.bclsExpiryDate}"
-                                                      style="display: none">
-                                                        ${oldNurseList.bclsExpiryDate}
-                                                </span>
+                            <div class="oldVal " attr="${oldNurseList.bclsExpiryDate}"
+                                 style="display: none">
+                                    ${oldNurseList.bclsExpiryDate}
+                            </div>
                         </div>
                     </td>
                 </tr>
@@ -466,17 +463,17 @@
                     </td>
                     <td>
                         <div class="col-xs-6">
-                                                                    <span class="newVal "
-                                                                          attr="${nurseList.cprExpiryDate}">
-                                                                        <c:out value="${nurseList.cprExpiryDate}"/>
-                                                                    </span>
+                            <div class="newVal "
+                                 attr="${nurseList.cprExpiryDate}">
+                                <c:out value="${nurseList.cprExpiryDate}"/>
+                            </div>
                         </div>
                         <div class="col-xs-6">
-                                                                    <span class="oldVal "
-                                                                          attr="${oldNurseList.cprExpiryDate}"
-                                                                          style="display: none">
-                                                                            ${oldNurseList.cprExpiryDate}
-                                                                    </span>
+                            <div class="oldVal "
+                                 attr="${oldNurseList.cprExpiryDate}"
+                                 style="display: none">
+                                    ${oldNurseList.cprExpiryDate}
+                            </div>
                         </div>
                     </td>
                 </tr>
