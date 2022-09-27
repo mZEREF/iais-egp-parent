@@ -48,7 +48,7 @@
             </tr>
             </thead>
             <tbody>
-            <c:set var="cL" value="${currSvcInfoDto.appPremOutSourceProvidersList}"/>
+            <c:set var="cL" value="${currSvcInfoDto.appPremOutSourceLicenceDto}"/>
             <c:if test="${empty cL.radiologicalServiceList}">
                 <tr>
                     <td>

@@ -24,7 +24,7 @@
                     </th>
                     <th style="width: 10%;">
                         <p style="margin-left: 12px;">
-                            Scope of Outsourcing
+                            Scope of Outsourcing<span class="mandatory">*</span>
                         </p>
                     </th>
                     <th></th>

@@ -1,13 +1,4 @@
-<%--<c:set var="cL" value="${currSvcInfoDto.appPremOutSourceProvidersList}"/>--%>
-<%--<c:if test="${!empty ids}">--%>
-<%--    <c:set var="len" value="${ids.size()}"/>--%>
-<%--    <input name="idLenght" value="${len}" type="hidden">--%>
-<%--    <c:forEach end="${len-1}" begin="0" step="1" varStatus="s">--%>
-<%--        <c:set var="index" value="${s.index}" />--%>
-<%--        <c:set var="ids" value="${ids[index]}"/>--%>
-<%--        <input value="${ids}" name="ids${index}" type="hidden">--%>
-<%--    </c:forEach>--%>
-<%--</c:if>--%>
+<c:set var="cL" value="${currSvcInfoDto.appPremOutSourceLicenceDto}"/>
 <c:if test="${!empty cL.clinicalLaboratoryList}">
     <c:set var="clen" value="${cL.clinicalLaboratoryList.size()}"/>
     <input name="clenght" value="${clen}" type="hidden">
