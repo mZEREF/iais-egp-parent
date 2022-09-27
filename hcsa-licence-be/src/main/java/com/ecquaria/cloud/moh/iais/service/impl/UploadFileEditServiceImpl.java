@@ -651,7 +651,7 @@ public class UploadFileEditServiceImpl implements UploadFileEditService {
                                 if(appPremOtherInfoItemAnswerDtos!=null){
                                     for (AppSvcOtherInfoItemAnswerDto appPremOtherInfoItemAnswerDto:appPremOtherInfoItemAnswerDtos
                                     ) {
-                                        if(appPremOtherInfoItemAnswerDto.getAppPremCorrId().equals(premisesCorrelationDtoId)){
+                                        if(appPremOtherInfoItemAnswerDto.getPremCorreId().equals(premisesCorrelationDtoId)){
                                             appPremOtherInfoItemAnswerDtoSet.add(appPremOtherInfoItemAnswerDto);
                                         }
                                     }

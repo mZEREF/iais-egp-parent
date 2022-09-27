@@ -647,7 +647,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                                 if(appPremOtherInfoItemAnswerDtos!=null){
                                     for (AppSvcOtherInfoItemAnswerDto appPremOtherInfoItemAnswerDto:appPremOtherInfoItemAnswerDtos
                                     ) {
-                                        if(appPremOtherInfoItemAnswerDto.getAppPremCorrId().equals(premisesCorrelationDtoId)){
+                                        if(appPremOtherInfoItemAnswerDto.getPremCorreId().equals(premisesCorrelationDtoId)){
                                             appPremOtherInfoItemAnswerDtoSet.add(appPremOtherInfoItemAnswerDto);
                                         }
                                     }
