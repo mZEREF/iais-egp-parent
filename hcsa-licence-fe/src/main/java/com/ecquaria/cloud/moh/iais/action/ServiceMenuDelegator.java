@@ -665,7 +665,7 @@ public class ServiceMenuDelegator {
                                 AppLicBundleDto appLicBundleDto=new AppLicBundleDto();
                                 appLicBundleDto.setLicenceNo(appAlignLicQueryDto.getLicenceNo());
                                 appLicBundleDto.setPremisesId(appAlignLicQueryDto.getPremisesId());
-                                appLicBundleDto.setLicOrApp("lic");
+                                appLicBundleDto.setLicOrApp(true);
                                 appLicBundleDtoList.add(appLicBundleDto);
                                 addressList.add(appAlignLicQueryDto.getAddress());
                                 //for reload
@@ -682,7 +682,7 @@ public class ServiceMenuDelegator {
                                 AppLicBundleDto appLicBundleDto=new AppLicBundleDto();
                                 appLicBundleDto.setApplicationNo(appAlignAppQueryDto.getApplicationNo());
                                 appLicBundleDto.setPremisesId(appAlignAppQueryDto.getPremisesId());
-                                appLicBundleDto.setLicOrApp("app");
+                                appLicBundleDto.setLicOrApp(false);
                                 appLicBundleDtoList.add(appLicBundleDto);
                                 addressList.add(appAlignAppQueryDto.getAddress());
                                 //for reload

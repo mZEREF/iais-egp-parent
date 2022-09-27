@@ -2,21 +2,21 @@
     <c:set var="oldphDto" value="${oldBusiness.phDtoList[stat.index]}"/>
     <c:if test="${stat.first}">
         <tr>
-            <div class="col-md-12">
+            <div class="col-xs-12">
                 <p class="form-check-label" aria-label="premise-1-cytology"><span>Public Holiday</span></p>
             </div>
         </tr>
     </c:if>
     <tr>
-        <td class="col-md-6 col-xs-6">
-            <div class="col-md-6 col-sm-6 col-xs-6">
+        <td class="col-xs-6">
+            <div class="col-xs-6">
                 <div class="newVal" attr="${phDto.selectValList}">
                     <c:forEach var="phName" items="${phDto.selectValList}" varStatus="phStat">
                         <iais:code code="${phName}"/><c:if test="${!phStat.last}">,</c:if>
                     </c:forEach>
                 </div>
             </div>
-            <div class="col-md-6 col-sm-6 col-xs-6">
+            <div class="col-xs-6">
                 <div class="oldVal" style="display: none" attr="${oldphDto.selectValList}">
                     <c:forEach var="phName" items="${oldphDto.selectValList}" varStatus="phStat">
                         <iais:code code="${phName}"/><c:if test="${!phStat.last}">,</c:if>
@@ -25,9 +25,9 @@
             </div>
         </td>
         <td>
-            <div class="col-md-6 col-sm-6 col-xs-6">
-                <div class="col-md-4 col-sm-4 col-xs-4">
-                    <div class="col-md-6 col-sm-6 col-xs-6">
+            <div class="col-xs-6">
+                <div class="col-xs-4">
+                    <div class="col-xs-6">
                         <div class="newVal" attr="${phDto.startFromHH}:${phDto.startFromMM}">
                             <c:if test="${!phDto.selectAllDay}">
                                 <c:if test="${phDto.startFromHH != null}">
@@ -56,7 +56,7 @@
                             </c:if>
                         </div>
                     </div>
-                    <div class="col-md-6 col-sm-6 col-xs-6">
+                    <div class="col-xs-6">
                         <div class="oldVal" style="display: none" attr="${oldphDto.startFromHH}:${oldphDto.startFromMM}">
                             <c:if test="${!oldphDto.selectAllDay}">
                                 <c:if test="${oldphDto.startFromHH != null}">
@@ -86,8 +86,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 col-sm-4 col-xs-4">
-                    <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="col-xs-4">
+                    <div class="col-xs-6">
                         <div class="newVal" attr="${phDto.endToHH}:${phDto.endToMM}">
                             <c:if test="${!phDto.selectAllDay}">
                                 <c:if test="${phDto.endToHH != null}">
@@ -116,7 +116,7 @@
                             </c:if>
                         </div>
                     </div>
-                    <div class="col-md-6 col-sm-6 col-xs-6">
+                    <div class="col-xs-6">
                         <div class="oldVal" style="display: none" attr="${oldphDto.endToHH}:${oldphDto.endToMM}">
                             <c:if test="${!oldphDto.selectAllDay}">
                                 <c:if test="${oldphDto.endToHH != null}">
@@ -146,8 +146,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 col-sm-4 col-xs-4">
-                    <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="col-xs-4">
+                    <div class="col-xs-6">
                         <c:if test="${phDto.selectAllDay}">
                             <div class="newVal" attr="${phDto.selectAllDay}">
                                 <div class="form-check active">
@@ -156,7 +156,7 @@
                             </div>
                         </c:if>
                     </div>
-                    <div class="col-md-6 col-sm-6 col-xs-6">
+                    <div class="col-xs-6">
                         <c:if test="${oldphDto.selectAllDay}">
                             <div class="oldVal" style="display: none" attr="${oldphDto.selectAllDay}">
                                 <div class="form-check active">

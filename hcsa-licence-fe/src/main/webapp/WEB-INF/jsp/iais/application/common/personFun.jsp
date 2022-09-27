@@ -1,7 +1,6 @@
 <%--<c:if test="${empty psnContent}">
     <c:set var="psnContent" value="person-content"/>
 </c:if>--%>
-<%@include file="prsLoad.jsp" %>
 <script type="text/javascript">
     /*$(function () {
         let psnContent = '.${psnContent}';

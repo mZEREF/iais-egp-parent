@@ -49,7 +49,7 @@
               </div>
               <div class="col-md-6">
                 <div class="col-md-6">
-                  <span class="newVal " attr="${appGrpPremDto.premisesType}">
+                  <span class="newVal" attr="${appGrpPremDto.premisesType}">
                     <c:if test="${appGrpPremDto.premisesType == permanent}">
                         ${permanentShow}
                     </c:if>
@@ -67,7 +67,7 @@
                     </c:if>
                 </div>
                 <div class="col-md-6">
-                  <span class="oldVal " attr="${oldAppGrpPremDto.premisesType}" style="display: none">
+                  <span class="oldVal" attr="${oldAppGrpPremDto.premisesType}" style="display: none">
                      <c:if test="${oldAppGrpPremDto.premisesType == permanent}">
                        ${permanentShow}
                      </c:if>
@@ -94,9 +94,9 @@
                 </div>
                 <div class="col-md-6">
                   <div class="col-md-12">
-                    <span class="newVal " attr="${appGrpPremDto.scdfRefNo}"><c:out value="${appGrpPremDto.scdfRefNo}"/></span>
+                    <span class="newVal" attr="${appGrpPremDto.scdfRefNo}"><c:out value="${appGrpPremDto.scdfRefNo}"/></span>
                     <br>
-                    <span class="oldVal " attr="${oldAppGrpPremDto.scdfRefNo}" style="display: none">
+                    <span class="oldVal" attr="${oldAppGrpPremDto.scdfRefNo}" style="display: none">
                       <c:out value="${oldAppGrpPremDto.scdfRefNo}"/>
                     </span>
                   </div>
@@ -109,12 +109,12 @@
                 </div>
                 <div class="col-md-6">
                   <div class="col-md-6">
-                    <span class="newVal " attr="${appGrpPremDto.certIssuedDtStr}">
+                    <span class="newVal" attr="${appGrpPremDto.certIssuedDtStr}">
                       <c:out value="${appGrpPremDto.certIssuedDtStr}"/>
                     </span>
                   </div>
                   <div class="col-md-6">
-                    <span class="oldVal " attr="${oldAppGrpPremDto.certIssuedDtStr}" style="display: none">
+                    <span class="oldVal" attr="${oldAppGrpPremDto.certIssuedDtStr}" style="display: none">
                       <c:out value="${oldAppGrpPremDto.certIssuedDtStr}"/>
                       </span>
                   </div>
@@ -126,12 +126,12 @@
                 <div class="col-md-6"> Vehicle No.</div>
                 <div class="col-md-6">
                   <div  class="col-md-6">
-                    <span class="newVal " attr="<c:out value="${appGrpPremDto.vehicleNo}"/>">
+                    <span class="newVal" attr="<c:out value="${appGrpPremDto.vehicleNo}"/>">
                       <c:out value="${appGrpPremDto.vehicleNo}"/>
                     </span>
                   </div>
                   <div  class="col-md-6">
-                    <span class="oldVal " attr="<c:out value="${oldAppGrpPremDto.vehicleNo}"/>" style="display: none">
+                    <span class="oldVal" attr="<c:out value="${oldAppGrpPremDto.vehicleNo}"/>" style="display: none">
                       <c:out value="${appGrpPremDto.vehicleNo}"/>
                     </span>
                   </div>
@@ -164,9 +164,9 @@
 
               <div class="col-md-6">
                 <div class="col-md-12">
-                  <span class="newVal " attr="${appGrpPremDto.hciName}"><c:out value="${appGrpPremDto.hciName}"/></span>
+                  <span class="newVal" attr="${appGrpPremDto.hciName}"><c:out value="${appGrpPremDto.hciName}"/></span>
                   <br>
-                  <span class="oldVal " attr="${oldAppGrpPremDto.hciName}" style="display: none">
+                  <span class="oldVal" attr="${oldAppGrpPremDto.hciName}" style="display: none">
                     <c:out value="${oldAppGrpPremDto.hciName}"/>
                   </span>
                 </div>
@@ -196,10 +196,10 @@
                 </div>
               <div class="col-md-6">
                 <div  class="col-md-6">
-                  <span class="newVal " attr="${appGrpPremDto.postalCode}"><c:out value="${appGrpPremDto.postalCode}"/></span>
+                  <span class="newVal" attr="${appGrpPremDto.postalCode}"><c:out value="${appGrpPremDto.postalCode}"/></span>
                 </div>
                 <div  class="col-md-6">
-                  <span class="oldVal " attr="${oldAppGrpPremDto.postalCode}" style="display: none"><c:out value="${oldAppGrpPremDto.postalCode}"/></span>
+                  <span class="oldVal" attr="${oldAppGrpPremDto.postalCode}" style="display: none"><c:out value="${oldAppGrpPremDto.postalCode}"/></span>
                 </div>
               </div>
             </div>
@@ -210,12 +210,12 @@
               </div>
               <div class="col-md-6">
                 <div class="col-md-6">
-                  <span class="newVal " attr="${appGrpPremDto.addrType}">
+                  <span class="newVal" attr="${appGrpPremDto.addrType}">
                     <iais:code code="${appGrpPremDto.addrType}"/>
                   </span>
                 </div>
                 <div class="col-md-6">
-                  <span class="oldVal " attr="${oldAppGrpPremDto.addrType}" style="display: none">
+                  <span class="oldVal" attr="${oldAppGrpPremDto.addrType}" style="display: none">
                     <iais:code code="${oldAppGrpPremDto.addrType}"/>
                   </span>
                 </div>
@@ -227,10 +227,10 @@
               </div>
               <div class="col-md-6">
                 <div class="col-md-6">
-                  <span class="newVal " attr="${appGrpPremDto.blkNo}"><c:out value="${appGrpPremDto.blkNo}"/></span>
+                  <span class="newVal" attr="${appGrpPremDto.blkNo}"><c:out value="${appGrpPremDto.blkNo}"/></span>
                 </div>
                 <div class="col-md-6">
-                  <span class="oldVal " attr="${oldAppGrpPremDto.blkNo}" style="display: none"><c:out value="${oldAppGrpPremDto.blkNo}"/></span>
+                  <span class="oldVal" attr="${oldAppGrpPremDto.blkNo}" style="display: none"><c:out value="${oldAppGrpPremDto.blkNo}"/></span>
                 </div>
               </div>
             </div>
@@ -241,12 +241,12 @@
               </div>
               <div class="col-md-6">
                 <div class="col-md-6">
-                   <span class="newVal " attr="${appGrpPremDto.floorNo}${appGrpPremDto.unitNo}">
+                   <span class="newVal" attr="${appGrpPremDto.floorNo}${appGrpPremDto.unitNo}">
                      <c:out value="${appGrpPremDto.floorNo}-${appGrpPremDto.unitNo}"/>
                    </span>
                 </div>
                 <div class="col-md-6">
-                   <span class="oldVal " attr="${oldAppGrpPremDto.floorNo}${oldAppGrpPremDto.unitNo}" style="display: none">
+                   <span class="oldVal" attr="${oldAppGrpPremDto.floorNo}${oldAppGrpPremDto.unitNo}" style="display: none">
                      <c:out value="${oldAppGrpPremDto.floorNo}-${oldAppGrpPremDto.unitNo}"/>
                    </span>
                 </div>
@@ -259,7 +259,7 @@
                 </div>
                 <div class="col-md-6">
                   <div class="col-md-6">
-                    <span class="newVal " attr="${appPremisesOperationalUnitDto.floorNo}${appPremisesOperationalUnitDto.unitNo}">
+                    <span class="newVal" attr="${appPremisesOperationalUnitDto.floorNo}${appPremisesOperationalUnitDto.unitNo}">
                       <c:choose>
                         <c:when test="${appPremisesOperationalUnitDto.floorNo!=null &&  appPremisesOperationalUnitDto.unitNo!=null}">
                           <c:out value="${appPremisesOperationalUnitDto.floorNo}-${appPremisesOperationalUnitDto.unitNo}"/>
@@ -271,7 +271,7 @@
                     </span>
                   </div>
                   <div class="col-md-6">
-                    <span class="oldVal " attr="${oldAppGrpPremDto.appPremisesOperationalUnitDtos[unitIndex.index].floorNo}${oldAppGrpPremDto.appPremisesOperationalUnitDtos[unitIndex.index].unitNo}" style="display: none">
+                    <span class="oldVal" attr="${oldAppGrpPremDto.appPremisesOperationalUnitDtos[unitIndex.index].floorNo}${oldAppGrpPremDto.appPremisesOperationalUnitDtos[unitIndex.index].unitNo}" style="display: none">
                       <c:choose>
                         <c:when test="${oldAppGrpPremDto.appPremisesOperationalUnitDtos[unitIndex.index].floorNo!=null && oldAppGrpPremDto.appPremisesOperationalUnitDtos[unitIndex.index].unitNo!=null}">
                           <c:out value="${oldAppGrpPremDto.appPremisesOperationalUnitDtos[unitIndex.index].floorNo}-${oldAppGrpPremDto.appPremisesOperationalUnitDtos[unitIndex.index].unitNo}"/>
@@ -293,11 +293,11 @@
               </div>
               <div class="col-md-6">
                 <div class="col-md-12">
-                   <span class="newVal " attr="<c:out value="${appGrpPremDto.streetName}"/>">
+                   <span class="newVal" attr="<c:out value="${appGrpPremDto.streetName}"/>">
                        <c:out value="${appGrpPremDto.streetName}"/>
                    </span>
                    <br>
-                   <span class="oldVal " attr="<c:out value="${oldAppGrpPremDto.streetName}"/>" style="display: none">
+                   <span class="oldVal" attr="<c:out value="${oldAppGrpPremDto.streetName}"/>" style="display: none">
                        <c:out value="${oldAppGrpPremDto.streetName}"/>
                    </span>
                 </div>
@@ -310,11 +310,11 @@
               </div>
               <div class="col-md-6">
                 <div class="col-md-12">
-                  <span class="newVal " attr="<c:out value="${appGrpPremDto.buildingName}"/>">
+                  <span class="newVal" attr="<c:out value="${appGrpPremDto.buildingName}"/>">
                     <c:out value="${appGrpPremDto.buildingName}"/>
                   </span>
                   <br>
-                  <span class="oldVal " attr="<c:out value="${oldAppGrpPremDto.buildingName}"/>" style="display: none">
+                  <span class="oldVal" attr="<c:out value="${oldAppGrpPremDto.buildingName}"/>" style="display: none">
                     <c:out value="${oldAppGrpPremDto.buildingName}"/>
                   </span>
                 </div>
@@ -374,7 +374,7 @@
                         <c:if test="${nonLicVs.first}">
                           <td rowspan="${nonLicSize}" style="padding-left: 0; padding-right: 15px;">
                             <div class="">
-                              <span class="newVal " attr="${appGrpPremDto.locateWtihNonHcsa}">
+                              <span class="newVal" attr="${appGrpPremDto.locateWtihNonHcsa}">
                                 <c:choose>
                                   <c:when test="${appGrpPremDto.locateWtihNonHcsa == '1'}">Yes</c:when>
                                   <c:when test="${appGrpPremDto.locateWtihNonHcsa == '0'}">No</c:when>
@@ -391,22 +391,20 @@
                           </td>
                         </c:if>
                         <td style="padding: 5px 20px">
-                          <span class="newVal " attr="<c:out value="${relatedDto.businessName}"/>">
+                          <div class="newVal" attr="<c:out value="${relatedDto.businessName}"/>">
                             <c:out value="${relatedDto.businessName}"/>
-                          </span>
-                          <br>
-                          <span class="oldVal" attr="<c:out value="${oldRelatedDto.businessName}"/>" style="display: none">
+                          </div>
+                          <div class="oldVal" attr="<c:out value="${oldRelatedDto.businessName}"/>" style="display: none">
                             <c:out value="${oldRelatedDto.businessName}"/>
-                          </span>
+                          </div>
                         </td>
                         <td style="padding: 5px 20px">
-                          <span class="newVal " attr="<c:out value="${relatedDto.providedService}"/>">
+                          <div class="newVal" attr="<c:out value="${relatedDto.providedService}"/>">
                             <c:out value="${relatedDto.providedService}"/>
-                          </span>
-                          <br>
-                          <span class="oldVal" attr="<c:out value="${oldRelatedDto.providedService}"/>" style="display: none">
+                          </div>
+                          <div class="oldVal" attr="<c:out value="${oldRelatedDto.providedService}"/>" style="display: none">
                             <c:out value="${oldRelatedDto.providedService}"/>
-                          </span>
+                          </div>
                         </td>
                       </tr>
                     </c:forEach>
@@ -448,12 +446,12 @@
                 </div>
                 <div class="col-md-6">
                     <div class="col-md-6">
-                      <span class="newVal " attr="${appGrpPremDto.easMtsUseOnly}">
+                      <span class="newVal" attr="${appGrpPremDto.easMtsUseOnly}">
                         <iais:code code="${appGrpPremDto.easMtsUseOnly}"/>
                       </span>
                     </div>
                     <div class="col-md-6">
-                      <span class="oldVal " style="display: none" attr="${oldAppGrpPremDto.easMtsUseOnly}">
+                      <span class="oldVal" style="display: none" attr="${oldAppGrpPremDto.easMtsUseOnly}">
                          <iais:code code="${oldAppGrpPremDto.easMtsUseOnly}"/>
                       </span>
                     </div>
@@ -465,11 +463,11 @@
                 </div>
                 <div class="col-md-6">
                     <div class="col-md-12">
-                      <span class="newVal " attr="${appGrpPremDto.easMtsPubEmail}">
+                      <span class="newVal" attr="${appGrpPremDto.easMtsPubEmail}">
                         <c:out value="${appGrpPremDto.easMtsPubEmail}"/>
                       </span>
                       <br>
-                      <span class="oldVal " style="display: none" attr="${oldAppGrpPremDto.easMtsPubEmail}">
+                      <span class="oldVal" style="display: none" attr="${oldAppGrpPremDto.easMtsPubEmail}">
                            <c:out value="${oldAppGrpPremDto.easMtsPubEmail}"/>
                       </span>
                     </div>
@@ -481,12 +479,12 @@
                 </div>
                 <div class="col-md-6">
                   <div class="col-md-6">
-                    <span class="newVal " attr="${appGrpPremDto.easMtsPubHotline}">
+                    <span class="newVal" attr="${appGrpPremDto.easMtsPubHotline}">
                       <c:out value="${appGrpPremDto.easMtsPubHotline}"/>
                     </span>
                   </div>
                   <div class="col-md-6">
-                    <span class="oldVal " style="display: none" attr="${oldAppGrpPremDto.easMtsPubHotline}">
+                    <span class="oldVal" style="display: none" attr="${oldAppGrpPremDto.easMtsPubHotline}">
                       <c:out value="${oldAppGrpPremDto.easMtsPubHotline}"/>
                     </span>
                   </div>

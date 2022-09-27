@@ -19,7 +19,7 @@
                 <tr>
                     <th style="width: 15%;">
                         <p style="margin-left: 12px;">
-                            Licence No.
+                            <a class=""></a>Licence No.
                         </p>
                     </th>
                     <th style="width: 15%;">
@@ -56,49 +56,68 @@
                 </tr>
                 </thead>
                 <tbody>
-                <%--                                    <c:forEach var="msgTemplateResult" items="${MsgTemplateSearchResult.rows}"--%>
-                <%--                                               varStatus="status">--%>
-                <tr>
-                    <td>
-                        <p class="visible-xs visible-sm table-row-title">Licence No.</p>
-                        <%--                                <p>${msgTemplateResult.messageType}</p>--%>
-                    </td>
-                    <td>
-                        <p class="visible-xs visible-sm table-row-title">Business Name</p>
-                        <%--                                <p>${msgTemplateResult.templateName}</p>--%>
-                    </td>
-                    <td>
-                        <p class="visible-xs visible-sm table-row-title">Address</p>
-                        <%--                                <p>${msgTemplateResult.deliveryMode}</p>--%>
-                    </td>
-                    <td>
-                        <p class="visible-xs visible-sm table-row-title">Licence Tenure</p>
-                        <%--                                <p>${msgTemplateResult.process}</p>--%>
-                    </td>
-                    <td>
-                        <p class="visible-xs visible-sm table-row-title">Date of Agreement</p>
-                        <%--                                <p>${msgTemplateResult.rec}</p>--%>
-                    </td>
-                    <td>
-                        <p class="visible-xs visible-sm table-row-title">End Date of Agreement</p>
-                        <%--                                <p><fmt:formatDate value="${msgTemplateResult.effectiveTo}"--%>
-                        <%--                                                   pattern="dd/MM/yyyy"/></p>--%>
-                    </td>
-                    <td>
-                        <p class="visible-xs visible-sm table-row-title">Scope of Outsourcing</p>
-                        <%--                                <p>${(MsgTemplateSearchParam.pageNo - 1) * MsgTemplateSearchParam.pageSize + status.index + 1}</p>--%>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-default btn-sm" onclick="">DELETE</button>
-                    </td>
-                </tr>
-                <%--                                    </c:forEach>--%>
+                <c:set var="cL" value="${currSvcInfoDto.appPremOutSourceLicenceDto}"/>
+                <c:if test="${empty cL.clinicalLaboratoryList}">
+                    <tr>
+                        <td>
+                            <p class="visible-xs visible-sm table-row-title">Licence No.</p>
+                        </td>
+                        <td>
+                            <p class="visible-xs visible-sm table-row-title">Business Name</p>
+                        </td>
+                        <td>
+                            <p class="visible-xs visible-sm table-row-title">Address</p>
+                        </td>
+                        <td>
+                            <p class="visible-xs visible-sm table-row-title">Licence Tenure</p>
+                        </td>
+                        <td>
+                            <p class="visible-xs visible-sm table-row-title">Date of Agreement</p>
+                        </td>
+                        <td>
+                            <p class="visible-xs visible-sm table-row-title">End Date of Agreement</p>
+                        </td>
+                        <td>
+                            <p class="visible-xs visible-sm table-row-title">Scope of Outsourcing</p>
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                </c:if>
+
+                <c:if test="${!empty cL.clinicalLaboratoryList}">
+                    <c:set var="clen" value="${cL.clinicalLaboratoryList.size()}"/>
+                    <input name="clenght" value="${clen}" type="hidden">
+                    <%@include file="cLDTableDentail.jsp"%>
+                </c:if>
                 </tbody>
             </table>
         </div>
     </div>
-
-    <%@include file="radiologicalService.jsp"%>
 </div>
+<script>
+    $(document).ready(function () {
+        delCLDBtn();
+    });
+    function delCLDBtn(){
+        console.log("del....")
+        let allBtn = document.getElementsByClassName("btn-cldBtn");
+        for (let i = 0; i < allBtn.length; i++) {
+            allBtn[i].onclick = function (){
+                showWaiting();
+                let $tag = $(this);
+                let prefix = $tag.data('prefix');
+                console.log("prefix:"+prefix);
+                $('input[name="btnStep"]').val("delete");
+                $('input[name="pIds"]').val(prefix);
+                $('input[name="prefixVal"]').val(prefix);
+                let controlFormLi = $('#controlFormLi').val();
+                submitForms('${serviceStepDto.currentStep.stepCode}',prefix,null,controlFormLi);
+                let tr =this.parentNode.parentNode;
+                tr.parentNode.removeChild(tr);
+            };
+        }
+    }
+</script>
 
 

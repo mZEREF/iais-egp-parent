@@ -1,9 +1,9 @@
 <iais:row>
     <div class="col-xs-12">
-        <p>Clinical Laboratory</p>
+        <p><strong>Clinical Laboratory</strong></p>
     </div>
 </iais:row>
-
+<c:set var="clen" value="${cL.clinicalLaboratoryList.size()}"/>
 <div class="col-lg-12 col-xs-12 col-md-12">
     <div class="intranet-content">
         <table aria-describedby="" class="table">
@@ -47,40 +47,42 @@
             </tr>
             </thead>
             <tbody>
-<%--                                                <c:forEach var="msgTemplateResult" items="${MsgTemplateSearchResult.rows}"--%>
-<%--                                                           varStatus="status">--%>
-            <tr>
-                <td>
-                    <p class="visible-xs visible-sm table-row-title">Licence No.</p>
-                    <%--                                <p>${msgTemplateResult.messageType}</p>--%>
-                </td>
-                <td>
-                    <p class="visible-xs visible-sm table-row-title">Business Name</p>
-                    <%--                                <p>${msgTemplateResult.templateName}</p>--%>
-                </td>
-                <td>
-                    <p class="visible-xs visible-sm table-row-title">Address</p>
-                    <%--                                <p>${msgTemplateResult.deliveryMode}</p>--%>
-                </td>
-                <td>
-                    <p class="visible-xs visible-sm table-row-title">Licence Tenure</p>
-                    <%--                                <p>${msgTemplateResult.process}</p>--%>
-                </td>
-                <td>
-                    <p class="visible-xs visible-sm table-row-title">Date of Agreement</p>
-                    <%--                                <p>${msgTemplateResult.rec}</p>--%>
-                </td>
-                <td>
-                    <p class="visible-xs visible-sm table-row-title">End Date of Agreement</p>
-                    <%--                                <p><fmt:formatDate value="${msgTemplateResult.effectiveTo}"--%>
-                    <%--                                                   pattern="dd/MM/yyyy"/></p>--%>
-                </td>
-                <td>
-                    <p class="visible-xs visible-sm table-row-title">Scope of Outsourcing</p>
-                    <%--                                <p>${(MsgTemplateSearchParam.pageNo - 1) * MsgTemplateSearchParam.pageSize + status.index + 1}</p>--%>
-                </td>
-            </tr>
-            <%--                                    </c:forEach>--%>
+            <c:forEach end="${clen-1}" begin="0" step="1" varStatus="c">
+                <c:set var="index" value="${c.index}" />
+                <c:set var="msgTemplateResult" value="${cL.clinicalLaboratoryList[index]}"/>
+                <c:if test="${msgTemplateResult.status eq 0}">
+                    <tr>
+                        <td>
+                            <p class="visible-xs visible-sm table-row-title">Licence No.</p>
+                            <p>${msgTemplateResult.licenceNo}</p>
+                        </td>
+                        <td>
+                            <p class="visible-xs visible-sm table-row-title">Business Name</p>
+                            <p>${msgTemplateResult.businessName}</p>
+                        </td>
+                        <td>
+                            <p class="visible-xs visible-sm table-row-title">Address</p>
+                            <p>${msgTemplateResult.address}</p>
+                        </td>
+                        <td>
+                            <p class="visible-xs visible-sm table-row-title">Licence Tenure</p>
+                            <p>${msgTemplateResult.expiryDate}</p>
+                        </td>
+                        <td>
+                            <p class="visible-xs visible-sm table-row-title">Date of Agreement</p>
+                            <p>${msgTemplateResult.agreementStartDate}</p>
+                        </td>
+                        <td>
+                            <p class="visible-xs visible-sm table-row-title">End Date of Agreement</p>
+                            <p>${msgTemplateResult.agreementEndDate}</p>
+                        </td>
+                        <td>
+                            <p class="visible-xs visible-sm table-row-title">Scope of Outsourcing</p>
+                            <p>${msgTemplateResult.outstandingScope}</p>
+                        </td>
+                    </tr>
+                </c:if>
+            </c:forEach>
             </tbody>
         </table>
     </div>

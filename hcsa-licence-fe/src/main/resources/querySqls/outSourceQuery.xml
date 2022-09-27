@@ -26,6 +26,7 @@
             <#if svcName??>AND l.SVC_NAME = :svcName </#if>
             <#if businessName??> AND b.BUSINESS_NAME = :businessName</#if>
             <#if licenceNo??> AND l.LICENCE_NO = :licNo</#if>
+            <#if id??> AND l.ID NOT IN (:id)</#if>
         ]]>
     </sql>
 </sqls>

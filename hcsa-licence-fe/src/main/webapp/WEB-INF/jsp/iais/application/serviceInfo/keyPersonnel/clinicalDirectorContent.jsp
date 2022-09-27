@@ -2,6 +2,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 
+<%@include file="/WEB-INF/jsp/iais/application/common/personFun.jsp" %>
+<%@include file="/WEB-INF/jsp/iais/application/common/prsLoad.jsp" %>
+
 <c:set var="pcdType" value="${ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR}"/>
 <c:set var="personList" value="${currSvcInfoDto.appSvcClinicalDirectorDtoList}"/>
 <style>
@@ -60,13 +63,13 @@
         </div>
     </c:if>
 </div>
-<%@include file="/WEB-INF/jsp/iais/application/common/personFun.jsp" %>
 <script type="text/javascript">
     $(document).ready(function () {
         let psnContent = '.person-content';
         removePersonEvent(psnContent);
         assignSelectEvent(psnContent);
         psnEditEvent(psnContent);
+        profRegNoEvent(psnContent);
         $('.addClinicalDirectorBtn').on('click', function () {
             addPersonnel(psnContent);
         });

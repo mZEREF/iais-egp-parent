@@ -2,6 +2,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 
+<%@include file="/WEB-INF/jsp/iais/application/common/personFun.jsp" %>
+<%@include file="/WEB-INF/jsp/iais/application/common/prsLoad.jsp" %>
+
 <c:set var="psnType" value="${ApplicationConsts.PERSONNEL_PSN_TYPE_CGO}"/>
 <c:set var="personList" value="${currSvcInfoDto.appSvcCgoDtoList}"/>
 
@@ -58,13 +61,13 @@
         </div>
     </c:if>
 </div>
-<%@include file="/WEB-INF/jsp/iais/application/common/personFun.jsp" %>
 <script type="text/javascript">
     $(function() {
         let psnContent = '.person-content';
         removePersonEvent(psnContent);
         assignSelectEvent(psnContent);
         psnEditEvent(psnContent);
+        profRegNoEvent(psnContent);
         $('.addPersonnelBtn').on('click', function () {
             addPersonnel(psnContent);
         });

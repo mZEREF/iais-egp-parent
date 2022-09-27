@@ -2,6 +2,7 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 
 <%@include file="/WEB-INF/jsp/iais/application/common/personFun.jsp" %>
+<%@include file="/WEB-INF/jsp/iais/application/common/prsLoad.jsp" %>
 
 <%--appSvcDeputyPrincipalOfficersDtoList--%>
 <c:set var="personList" value="${currSvcInfoDto.appSvcPrincipalOfficersDtoList}"/>
@@ -190,6 +191,7 @@
         removePersonEvent(psnContent);
         assignSelectEvent(psnContent);
         psnEditEvent(psnContent);
+        profRegNoEvent(psnContent);
         $('.addPoBtn').on('click', function () {
             addPersonnel(psnContent);
         });
@@ -209,6 +211,7 @@
         assignSelectEvent(psnContent);
         profRegNoEvent(psnContent);
         psnEditEvent(psnContent);
+        profRegNoEvent(psnContent);
         $('.addDpoBtn').on('click', function () {
             addPersonnel(psnContent);
         });

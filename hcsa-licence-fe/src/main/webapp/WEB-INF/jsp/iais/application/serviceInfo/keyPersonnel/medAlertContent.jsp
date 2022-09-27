@@ -1,6 +1,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 
+<%@include file="/WEB-INF/jsp/iais/application/common/personFun.jsp" %>
+<%@include file="/WEB-INF/jsp/iais/application/common/prsLoad.jsp" %>
+
 <c:set var="psnType" value="${ApplicationConsts.PERSONNEL_PSN_TYPE_MAP}"/>
 <c:set var="personList" value="${currSvcInfoDto.appSvcMedAlertPersonList}"/>
 
@@ -60,13 +63,13 @@
     </c:if>
 </div>
 
-<%@include file="/WEB-INF/jsp/iais/application/common/personFun.jsp" %>
 <script>
     $(function() {
         let psnContent = '.person-content';
         removePersonEvent(psnContent);
         assignSelectEvent(psnContent);
         psnEditEvent(psnContent);
+        profRegNoEvent(psnContent);
         $('.addMedAlertPersonBtn').on('click', function () {
             addPersonnel(psnContent);
         });
