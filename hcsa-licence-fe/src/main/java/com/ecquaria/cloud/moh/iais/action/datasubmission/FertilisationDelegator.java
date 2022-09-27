@@ -21,6 +21,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,6 +37,8 @@ public class FertilisationDelegator extends CommonDelegator{
 
     public static final String SOURCE_OF_SEMENS = "sourceOfSemens";
     public static final String AR_TECHNIQUES_USEDS = "arTechniquesUseds";
+    public static final String SOURCE_OF_OOCYTES = "oocyteSourceOption";
+    public static final String FRESH_OR_FROZEN = "freshOrFrozen";
 
     @Override
     public void start(BaseProcessClass bpc) {
@@ -43,6 +46,10 @@ public class FertilisationDelegator extends CommonDelegator{
         ParamUtil.setSessionAttr(request,SOURCE_OF_SEMENS, (Serializable) MasterCodeUtil.retrieveByCategory(MasterCodeUtil.SOURCE_OF_SEMEN));
 
         ParamUtil.setSessionAttr(request,AR_TECHNIQUES_USEDS, (Serializable) MasterCodeUtil.retrieveByCategory(MasterCodeUtil.AR_TECHNIQUES_USED));
+
+        ParamUtil.setSessionAttr(request,SOURCE_OF_OOCYTES, (Serializable) MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_SOURCE_OF_OOCYTE));
+
+        ParamUtil.setSessionAttr(request,FRESH_OR_FROZEN, (Serializable) MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_FRESH_OR_FROZEN));
     }
 
     @Override
@@ -118,6 +125,10 @@ public class FertilisationDelegator extends CommonDelegator{
         }
     }
     private void setFertilisationDto(HttpServletRequest request, FertilisationDto fertilisationDto){
+        String sourceOfOocyte = ParamUtil.getString(request,"sourceOfOocyteOp");
+        String oocyteUsed = ParamUtil.getString(request,"oocyteUsedOp");
+        String spermUsed = ParamUtil.getString(request,"spermUsedOp");
+        String usedOocytesNum = ParamUtil.getString(request, "usedOocytesNum");
         String[] sourceOfSemens = ParamUtil.getStrings(request,"sourceOfSemen");
         String[] arTechniquesUseds = ParamUtil.getStrings(request,"arTechniquesUsed");
         String extractedSpermVialsNum = ParamUtil.getRequestString(request,"extractedSpermVialsNum");
@@ -130,8 +141,12 @@ public class FertilisationDelegator extends CommonDelegator{
         String thawedOocytesMicroinjectedNum = ParamUtil.getRequestString(request,"thawedOocytesMicroinjectedNum");
         String thawedOocytesGiftNum = ParamUtil.getRequestString(request,"thawedOocytesGiftNum");
         String thawedOocytesZiftNum = ParamUtil.getRequestString(request,"thawedOocytesZiftNum");
+        fertilisationDto.setUsedOocytesNum(usedOocytesNum);
         fertilisationDto.setExtractedSpermVialsNum(extractedSpermVialsNum);
         fertilisationDto.setUsedSpermVialsNum(usedSpermVialsNum);
+        fertilisationDto.setSourceOfOocyte(sourceOfOocyte);
+        fertilisationDto.setOocyteUsed(oocyteUsed);
+        fertilisationDto.setSpermUsed(spermUsed);
         if( !IaisCommonUtils.isEmpty(sourceOfSemens)){
             fertilisationDto.setSosList(Arrays.asList(sourceOfSemens));
             fertilisationDto.setFromDonorTissue(false);

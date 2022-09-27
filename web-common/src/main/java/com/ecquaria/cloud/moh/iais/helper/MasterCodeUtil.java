@@ -116,6 +116,8 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_EAS_MTS_SPECIALTY                = "6DC1ED79-08A4-EB11-8B7F-000C29FD17F9";
     public static final String CATE_ID_BANK_NAME                        = "137A214B-8611-EA11-BE78-874C29D29DB0";
     public static final String CATE_ID_CESSION_REASION                  = "20941117-A009-4E45-AD2F-22F233EAA28D";
+    public static final String CATE_ID_SOURCE_OF_OOCYTE                 = "5C0D33C2-D350-4F7E-A51F-96F918F1A1D2";
+    public static final String CATE_ID_FRESH_OR_FROZEN                  = "3D7D3721-7CDB-4099-93A1-93067159E2C6";
 
     //charges
     public static final String CATE_ID_GENERAL_CONVEYANCE_CHARGES_TYPE                  = "D4F72703-47A3-EB11-8B7F-000C29FD17F9";

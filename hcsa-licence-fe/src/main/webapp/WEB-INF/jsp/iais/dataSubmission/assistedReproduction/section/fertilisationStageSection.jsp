@@ -24,6 +24,47 @@
                     </span>
                 </h3>
                 <iais:row>
+                    <iais:field width="6" value="Source of Oocyte" mandatory="true" cssClass="col-md-6"/>
+                    <iais:value width="6" cssClass="col-md-6">
+                        <c:forEach var="oocyteSourceOption" items="${oocyteSourceOption}" varStatus="index">
+                            <div class="form-check col-xs-12">
+                                <c:set var="value" value="${oocyteSourceOption.codeValue}"></c:set>
+                                <input class="form-check-input" value = "<c:out value="${value}"/>" aria-invalid="false"
+                                       type="radio" name="sourceOfOocyteOp" id="sourceOfOocyteOp${value}"
+                                       <c:if test="${fertilisationDto.sourceOfOocyte eq value}">checked</c:if>>
+                                <label class="form-check-label" for="sourceOfOocyteOp${value}">
+                                    <span class="check-square"></span><c:out value="${oocyteSourceOption.codeValue}"/>
+                                </label>
+                            </div>
+                        </c:forEach>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_sourceOfOocyteOp"></span>
+                    </iais:value>
+                </iais:row>
+                <iais:row>
+                    <iais:field width="6" value="Was fresh or frozen oocyte(s) used?" mandatory="true" cssClass="col-md-6"/>
+                    <iais:value width="6" cssClass="col-md-6">
+                        <c:forEach var="freshOrFrozen" items="${freshOrFrozen}" varStatus="index">
+                            <div class="form-check col-xs-12">
+                                <c:set var="value" value="${freshOrFrozen.codeValue}"></c:set>
+                                <input class="form-check-input" value = "<c:out value="${value}"/>" aria-invalid="false"
+                                       type="radio" name="oocyteUsedOp" id="oocyteUsedOp${value}"
+                                       <c:if test="${fertilisationDto.oocyteUsed eq value}">checked</c:if>>
+                                <label class="form-check-label" for="oocyteUsedOp${value}">
+                                    <span class="check-square"></span><c:out value="${freshOrFrozen.codeValue}"/>
+                                </label>
+                            </div>
+                        </c:forEach>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_oocyteUsedOp"></span>
+                    </iais:value>
+                </iais:row>
+                <iais:row>
+                    <iais:field width="6" value="How many oocytes were used in this cycle?" mandatory="true" cssClass="col-md-6"/>
+                    <iais:value width="6" cssClass="col-md-6">
+                        <iais:input maxLength="2" type="text" name="usedOocytesNum" id="usedOocytesNum" value="${fertilisationDto.usedOocytesNum}"/>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_usedOocytesNum"></span>
+                    </iais:value>
+                </iais:row>
+                <iais:row>
                     <iais:field width="6" value="Source of Semen" mandatory="true" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
                         <c:forEach items="${sourceOfSemens}" var="sourceOfSemen">
@@ -44,6 +85,23 @@
 
                         </c:forEach>
                         <span class="error-msg" name="iaisErrorMsg" id="error_sourceOfSemen"></span>
+                    </iais:value>
+                </iais:row>
+                <iais:row>
+                    <iais:field width="6" value="Was fresh or frozen sperm used?" mandatory="true" cssClass="col-md-6"/>
+                    <iais:value width="6" cssClass="col-md-6">
+                        <c:forEach var="freshOrFrozen" items="${freshOrFrozen}" varStatus="index">
+                            <div class="form-check col-xs-12">
+                                <c:set var="value" value="${freshOrFrozen.codeValue}"></c:set>
+                                <input class="form-check-input" value = "<c:out value="${value}"/>" aria-invalid="false"
+                                       type="radio" name="spermUsedOp" id="spermUsedOp${value}"
+                                       <c:if test="${fertilisationDto.spermUsed eq value}">checked</c:if>>
+                                <label class="form-check-label" for="spermUsedOp${value}">
+                                    <span class="check-square"></span><c:out value="${freshOrFrozen.codeValue}"/>
+                                </label>
+                            </div>
+                        </c:forEach>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_spermUsedOp"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
