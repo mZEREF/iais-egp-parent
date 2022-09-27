@@ -2198,7 +2198,7 @@ public final class AppDataHelper {
                     log.info(StringUtil.changeForLog(e.getMessage()), e);
                 }
             }
-            ReflectionUtil.setPropertyObj(fieldName + "Str", value, person);
+            ReflectionUtil.setPropertyObj(fieldName + "Str", data, person);
             ReflectionUtil.setPropertyObj(fieldName, value, person);
         } else {
             String data = ParamUtil.getString(request, prefix + fieldName + suffix);
