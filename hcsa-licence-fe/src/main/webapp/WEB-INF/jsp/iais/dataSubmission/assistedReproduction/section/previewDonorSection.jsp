@@ -12,16 +12,6 @@
          <c:forEach items="${donorDtos}" var="donorDto">
              <c:set var="arDonorIndex" value="${donorDto.arDonorIndex}"/>
              <div class="panel-main-content form-horizontal">
-                 <c:if test="${donorFrom == 'ar'}">
-                <iais:row cssClass="usedDonorOocyteControlClass yesUsedDonorOocyteControl">
-                    <iais:field width="5" value="Please Indicate" />
-                    <iais:value width="7" cssClass="col-md-7" display="true">
-                        <c:forEach items="${donorDto.pleaseIndicateValues}" var="pleaseIndicateValue" varStatus="status">
-                            <c:if test="${status.index != 0}"><br></c:if> <iais:code code="${pleaseIndicateValue}"/>
-                        </c:forEach>
-                    </iais:value>
-                </iais:row>
-                 </c:if>
 
                  <iais:row>
                      <iais:field width="5" value="Donor ${donorDto.arDonorIndex+1}" />
@@ -95,6 +85,16 @@
                  </iais:row>
                  </c:if>
 
+                 <c:if test="${not empty donorDto.donorSampleAgeDtos}">
+                     <iais:row cssClass="usedDonorOocyteControlClass">
+                         <iais:field width="5" value="Donor Sample Used" />
+                         <iais:value width="7" cssClass="col-md-7" display="true">
+                             <c:forEach items="${donorDto.donorSampleAgeDtos}" var="donorSampleAgedonorDto">
+                                 <c:if test="${donorSampleAgedonorDto.sampleType eq 'DONTY004'}">Donor's Sperm(s) used</c:if>
+                             </c:forEach>
+                         </iais:value>
+                     </iais:row>
+                 </c:if>
 
                  <c:if test="${donorDto.directedDonation}">
                      <iais:row id="relation${arDonorIndex}Row">

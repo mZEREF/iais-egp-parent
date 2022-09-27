@@ -67,6 +67,7 @@ function removeAges(index){
     $("#resetDonor"+index).val("1");
     $("#relation"+index+"Row").hide();
     $("#source"+index+"Row").hide();
+    $("#type"+index+"Row").hide();
     $("#otherSource"+index+"Row").hide();
     $("#source"+index).val("");
     $("#otherSource"+index).val("");

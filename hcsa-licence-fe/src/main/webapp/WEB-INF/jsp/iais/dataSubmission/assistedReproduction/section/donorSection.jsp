@@ -15,29 +15,6 @@
          <c:forEach items="${donorDtos}" var="donorDto">
              <c:set var="arDonorIndex" value="${donorDto.arDonorIndex}"/>
              <div class="panel-main-content form-horizontal">
-                <c:if test="${donorFrom == 'ar'}">
-                <iais:row >
-                    <iais:field width="6" cssClass="col-md-6" value="Please Indicate" mandatory="false"/>
-                    <iais:value width="6" cssClass="col-md-6">
-                        <c:forEach items="${donorUsedTypes}" var="donorUsedType">
-                            <c:set var="donorUsedTypeCode" value="${donorUsedType.code}"/>
-                            <div class="form-check col-xs-7"  style="padding-left: 0px;">
-                                <input class="form-check-input" type="checkbox"
-                                       name="pleaseIndicate${arDonorIndex}"
-                                       value="${donorUsedTypeCode}"
-                                       id="pleaseIndicateCheck${arDonorIndex}${donorUsedTypeCode}"
-                                       <c:if test="${StringUtil.stringContain(donorDto.pleaseIndicate,donorUsedTypeCode)}">checked</c:if>
-                                       aria-invalid="false">
-                                <label class="form-check-label"
-                                       for="pleaseIndicateCheck${arDonorIndex}${donorUsedTypeCode}"><span
-                                        class="check-square"></span>
-                                    <c:out value="${donorUsedType.codeValue}"/></label>
-                            </div>
-                        </c:forEach>
-                    </iais:value>
-                    <span id="error_pleaseIndicate${donorDto.arDonorIndex}" name="iaisErrorMsg" class="error-msg"></span>
-                </iais:row >
-                </c:if>
 
                  <iais:row >
                      <iais:field width="6" cssClass="col-md-6" value="Donor ${donorDto.arDonorIndex+1}" />
@@ -144,6 +121,30 @@
                                       cssClass="donorAgeDonation${arDonorIndex}"/>
                      </iais:value>
                  </iais:row>
+                 </c:if>
+
+                 <c:if test="${donorFrom == 'ar' && not empty donorDto.donorSampleKey}">
+                     <iais:row id="type${arDonorIndex}Row">
+                         <iais:field width="6" cssClass="col-md-6" value="Please Indicate" mandatory="false"/>
+                         <iais:value width="6" cssClass="col-md-6">
+                             <c:forEach items="${donorUsedTypes}" var="donorUsedType">
+                                 <c:set var="donorUsedTypeCode" value="${donorUsedType.code}"/>
+                                 <div class="form-check col-xs-7"  style="padding-left: 0px;">
+                                     <input class="form-check-input" type="checkbox"
+                                            name="pleaseIndicate${arDonorIndex}"
+                                            value="${donorUsedTypeCode}"
+                                            id="pleaseIndicateCheck${arDonorIndex}${donorUsedTypeCode}"
+                                            <c:if test="${StringUtil.stringContain(donorDto.pleaseIndicate,donorUsedTypeCode)}">checked</c:if>
+                                            aria-invalid="false">
+                                     <label class="form-check-label"
+                                            for="pleaseIndicateCheck${arDonorIndex}${donorUsedTypeCode}"><span
+                                             class="check-square"></span>
+                                         <c:out value="${donorUsedType.codeValue}"/></label>
+                                 </div>
+                             </c:forEach>
+                         </iais:value>
+                         <span id="error_pleaseIndicate${donorDto.arDonorIndex}" name="iaisErrorMsg" class="error-msg"></span>
+                     </iais:row >
                  </c:if>
 
                      <iais:row id="relation${arDonorIndex}Row" style="${donorDto.directedDonation && !empty donorDto.donorSampleKey ? '' : 'display: none;'}">
