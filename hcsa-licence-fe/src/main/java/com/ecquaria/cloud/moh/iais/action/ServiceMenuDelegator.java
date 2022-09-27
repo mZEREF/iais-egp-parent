@@ -543,7 +543,7 @@ public class ServiceMenuDelegator {
             if(newLicensee){
                 if(nextstep.equals(CHOOSE_BASE_SVC)){
                     //64570 (1base+1spec)
-                    boolean jumpToNext = (basechks != null && basechks.length == 1);
+                    /*boolean jumpToNext = (basechks != null && basechks.length == 1);
                     if(jumpToNext){
                         appSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
                         Set<String> svcIds = IaisCommonUtils.genNewHashSet();
@@ -574,7 +574,7 @@ public class ServiceMenuDelegator {
                         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
                     }else{
                         nextstep = CHOOSE_BASE_SVC;
-                    }
+                    }*/
                 }else if(nextstep.equals(CHOOSE_ALIGN)){
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
                 }
@@ -663,9 +663,9 @@ public class ServiceMenuDelegator {
                             AppAlignLicQueryDto appAlignLicQueryDto = getAppAlignLicQueryDto(baseLicMap,baseServiceDto.getSvcName(),hciCode);
                             if(appAlignLicQueryDto != null){
                                 AppLicBundleDto appLicBundleDto=new AppLicBundleDto();
-                                appLicBundleDto.setSvcCode(hcsaServiceDto.getSvcCode());
                                 appLicBundleDto.setLicenceNo(appAlignLicQueryDto.getLicenceNo());
                                 appLicBundleDto.setPremisesId(appAlignLicQueryDto.getPremisesId());
+                                appLicBundleDto.setLicOrApp("lic");
                                 appLicBundleDtoList.add(appLicBundleDto);
                                 addressList.add(appAlignLicQueryDto.getAddress());
                                 //for reload
@@ -680,9 +680,9 @@ public class ServiceMenuDelegator {
                                     .filter(s -> postCode.equals(s.getPostalCode())).findAny().get();
                             if (appAlignAppQueryDto!=null){
                                 AppLicBundleDto appLicBundleDto=new AppLicBundleDto();
-                                appLicBundleDto.setSvcCode(hcsaServiceDto.getSvcCode());
-                                appLicBundleDto.setApplicationNo(appAlignAppQueryDto.getApplicationId());
+                                appLicBundleDto.setApplicationNo(appAlignAppQueryDto.getApplicationNo());
                                 appLicBundleDto.setPremisesId(appAlignAppQueryDto.getPremisesId());
+                                appLicBundleDto.setLicOrApp("app");
                                 appLicBundleDtoList.add(appLicBundleDto);
                                 addressList.add(appAlignAppQueryDto.getAddress());
                                 //for reload
