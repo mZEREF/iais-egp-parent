@@ -53,7 +53,7 @@
       <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/keyPersonnel/viewSvcMedAlert.jsp"/>
     </c:when>
     <c:when test="${currentStep == 'SVST012'}">
-      <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/viewSvcBusiness.jsp" />
+      <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/businessInfo/viewSvcBusiness.jsp" />
     </c:when>
     <c:when test="${currentStep == 'SVST008'}">
       <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/viewSvcVehicle.jsp" />

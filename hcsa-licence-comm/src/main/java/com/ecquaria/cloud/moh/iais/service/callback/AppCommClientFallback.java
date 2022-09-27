@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.callback;
 
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesDoQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppAlignAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpSecondAddrDto;
@@ -14,7 +15,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.client.AppCommClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -130,8 +130,12 @@ public class AppCommClientFallback implements AppCommClient {
     }
 
     @Override
-    public ResponseEntity<Void> saveSecondAddress(List<AppGrpSecondAddrDto> addrDtos) {
+    public FeignResponseEntity<List<AppGrpSecondAddrDto>> saveSecondAddress(List<AppGrpSecondAddrDto> addrDtos) {
         return null;
     }
 
+    @Override
+    public FeignResponseEntity<List<AppAlignAppQueryDto>> getActiveApplicationsAddress(String licenseeId, List<String> svcIdList) {
+        return IaisEGPHelper.getFeignResponseEntity(licenseeId);
+    }
 }

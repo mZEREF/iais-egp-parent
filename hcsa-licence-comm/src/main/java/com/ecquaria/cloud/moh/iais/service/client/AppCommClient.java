@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesDoQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppAlignAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpSecondAddrDto;
@@ -15,7 +16,6 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -101,6 +101,9 @@ public interface AppCommClient {
     @PostMapping(value = "/find-all-app-prem-specialised-dto", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremSpecialisedDto>> getAppPremSpecialisedDtoList(List<String> appPremCorreIds);
 
+    @GetMapping(value = "/active-applicationsAddress", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppAlignAppQueryDto>> getActiveApplicationsAddress(@RequestParam("licenseeId") String licenseeId, @RequestParam(value = "svcIdList", required = false)  List<String> svcIdList);
+
     @PostMapping(value = "/save-secondAddress",produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Void> saveSecondAddress(@RequestBody List<AppGrpSecondAddrDto> addrDtos);
+    FeignResponseEntity<List<AppGrpSecondAddrDto>> saveSecondAddress(@RequestBody List<AppGrpSecondAddrDto> addrDtos);
 }

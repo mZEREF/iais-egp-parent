@@ -70,10 +70,19 @@
         });
         // init page
         initPerson(psnContent);
+        <c:if test="${AppSubmissionDto.needEditController}">
+        $(psnContent).each(function () {
+            disablePsnContent($(this), psnContent);
+        });
+        </c:if>
     });
 
-    function refreshPersonOthers($target) {
-        var maxCount = eval('${currStepConfig.maximumCount}');
-        toggleTag('.addPersonnelDiv', $('div.person-content').length < maxCount);
+    function refreshPersonOthers($target, hide) {
+        if (hide) {
+            hideTag('.addPersonnelDiv');
+        } else {
+            const maxCount = eval('${currStepConfig.maximumCount}');
+            toggleTag('.addPersonnelDiv', $('div.person-content').length < maxCount);
+        }
     }
 </script>

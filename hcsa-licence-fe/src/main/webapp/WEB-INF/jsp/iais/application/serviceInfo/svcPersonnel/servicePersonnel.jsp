@@ -184,10 +184,13 @@
         </div>
     </c:if>
 
+    <c:if test="${empty psnContent}">
+        <c:set var="psnContent" value="personnel-content"/>
+    </c:if>
 
 </div>
 <%@include file="servicePersonnelOthers.jsp" %>
-<%@include file="/WEB-INF/jsp/iais/application/common/personFun.jsp" %>
+<%@include file="/WEB-INF/jsp/iais/application/common/prsLoad.jsp" %>
 <%@include file="servicePersonnelFun.jsp" %>
 
 

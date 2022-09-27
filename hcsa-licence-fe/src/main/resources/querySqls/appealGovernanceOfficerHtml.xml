@@ -22,7 +22,7 @@
 
                                     </div>
                                     <div class="col-sm-5 control-label formtext ">
-                                        <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Add/Assign a Clinical Governance Officer</label>
+                                        <label class="control-label control-set-font control-font-label">Add/Assign a Clinical Governance Officer</label>
                                         <span class="mandatory">*</span>
                                         <span class="upload_controls"></span>
                                     </div>
@@ -69,7 +69,7 @@
                                             <div id="control--runtime--28" class="control control-caption-horizontal">
                                                 <div class=" form-group form-horizontal formgap">
                                                     <div class="control-label formtext col-sm-5 col-md-5">
-                                                        <label id="control--runtime--28--label" class="control-label control-set-font control-font-label">
+                                                        <label  class="control-label control-set-font control-font-label">
                                                             ID No.
                                                         </label>
                                                         <span class="mandatory">*</span>
@@ -142,6 +142,24 @@
                                         </td>
                                     </tr>
                                     <tr height="1">
+                                      <td class="first last" style="width: 100%;">
+                                         <div class="control control-caption-horizontal">
+                                            <div class="form-group form-horizontal formgap">
+                                                <div class="control-label formtext col-sm-5">
+                                                            <label class="control-label control-set-font control-font-label">Professional Board</label>
+                                                            <span class="mandatory">*</span>
+                                                            <span class="upload_controls"></span>
+                                                        </div>
+                                                <div class="col-md-7 col-xs-5 col-sm-3">
+                                                    <div class="professionBoard">
+                                                        (8)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                    <tr height="1">
                                         <td class="first last" style="width: 100%;">
                                             <div class="control control-caption-horizontal">
                                                 <div class="form-group form-horizontal formgap">
@@ -164,7 +182,7 @@
                                             <div id="control--runtime--31" class="control control-caption-horizontal">
                                                 <div class=" form-group form-horizontal formgap">
                                                     <div class="control-label formtext col-sm-5">
-                                                        <label id="control--runtime--31--label" class="control-label control-set-font control-font-label">
+                                                        <label  class="control-label control-set-font control-font-label">
                                                             Professional Regn. No.
                                                         </label>
                                                         <span class="upload_controls"></span>
@@ -180,10 +198,76 @@
                                     </tr>
                                     <tr height="1">
                                         <td class="first last" style="width: 100%;">
+                                            <div  class="control control-caption-horizontal">
+                                                <div class=" form-group form-horizontal formgap">
+                                                    <div class="control-label formtext col-sm-5">
+                                                        <label class="control-label control-set-font control-font-label">
+                                                            Type of Current Registration
+                                                        </label>
+                                                        <span class="upload_controls"></span>
+                                                    </div>
+                                                    <div class="col-xs-5 col-sm-3 col-md-7">
+                                                        <div class="">
+                                                            <input type="text" name="typeOfCurrRegi" value="" maxlength="20" autocomplete="off">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr height="1">
+                                        <td class="first last" style="width: 100%;">
+                                            <div class="control control-caption-horizontal">
+                                                <div class=" form-group form-horizontal formgap">
+                                                    <div class="control-label formtext col-sm-5">
+                                                        <label class="control-label control-set-font control-font-label">Current Registration Date</label>
+                                                        <span class="mandatory">*</span>
+                                                    </div>
+                                                    <div class="col-xs-5 col-sm-3 col-md-7">
+                                                        <input type="text" autocomplete="off" class="date_picker form-control currRegiDate" name="currRegiDate" id="-602217100012100" data-date-start-date="01/01/1900" value="" placeholder="dd/mm/yyyy" maxlength="10">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr height="1">
+                                        <td class="first last" style="width: 100%;">
+                                           <div class="control control-caption-horizontal">
+                                                <div class=" form-group form-horizontal formgap">
+                                                    <div class="control-label formtext col-sm-5">
+                                                        <label class="control-label control-set-font control-font-label">Practicing Certificate End Date</label>
+                                                        <span class="mandatory">*</span>
+                                                    </div>
+                                                    <div class="col-xs-5 col-sm-3 col-md-7">
+                                                        <input type="text" autocomplete="off" class="date_picker form-control praCerEndDate" name="praCerEndDate"  data-date-start-date="01/01/1900" value="" placeholder="dd/mm/yyyy" maxlength="10">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <tr height="1">
+                                        <td class="first last" style="width: 100%;">
+                                            <div class="control control-caption-horizontal">
+                                                <div class=" form-group form-horizontal formgap">
+                                                    <div class="control-label formtext col-sm-5">
+                                                        <label class="control-label control-set-font control-font-label">Type of Register</label>
+                                                        <span class="mandatory">*</span>
+                                                    </div>
+                                                    <div class="col-xs-5 col-sm-3 col-md-7">
+                                                        <input type="text" class="typeOfRegister" name="typeOfRegister" maxlength="50" autocomplete="off">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <tr height="1">
+                                        <td class="first last" style="width: 100%;">
                                             <div id="control--runtime--29" class="control control-caption-horizontal">
                                                 <div class="form-group form-horizontal formgap">
                                                     <div class="control-label formtext col-sm-5">
-                                                        <label id="control--runtime--29--label" class="control-label control-set-font control-font-label">Specialty</label>
+                                                        <label  class="control-label control-set-font control-font-label">Specialty</label>
                                                     </div>
                                                     <div class="col-xs-8 col-sm-4 col-md-7">
                                                         <label class="control-label control-set-font control-font-label specialty-label"></label>
@@ -201,6 +285,36 @@
                                                     </div>
                                                     <div class="col-md-7 col-xs-8 col-sm-4">
                                                         <label class="control-label control-set-font control-font-label sub-specialty-label"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr height="1">
+                                        <td class="first last" style="width: 100%;">
+                                            <div class="control control-caption-horizontal">
+                                                <div class="form-group form-horizontal formgap">
+                                                    <div class="control-label formtext col-sm-5">
+                                                        <label class="control-label control-set-font control-font-label">Other Specialties</label>
+                                                    </div>
+                                                    <div class="col-md-7 col-xs-8 col-sm-4">
+                                                        <input type="text" class="specialityOther" name="specialityOther" maxlength="50" autocomplete="off">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr height="1">
+                                        <td class="first last" style="width: 100%;">
+                                           <div class="control control-caption-horizontal">
+                                                <div class=" form-group form-horizontal formgap">
+                                                    <div class="control-label formtext col-sm-5 specialtyGetDateLabel">
+                                                        <label class="control-label control-set-font control-font-label">
+                                                            Date when specialty was obtained
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-md-7 col-xs-5 col-sm-3">
+                                                        <input type="text" autocomplete="off" class="date_picker form-control specialtyGetDate" name="specialtyGetDate"  data-date-start-date="01/01/1900" value="" placeholder="dd/mm/yyyy" maxlength="10">
                                                     </div>
                                                 </div>
                                             </div>
@@ -262,7 +376,7 @@
                                             <div id="control--runtime--33" class="control control-caption-horizontal">
                                                 <div class=" form-group form-horizontal formgap">
                                                     <div class="control-label formtext col-sm-5">
-                                                        <label id="control--runtime--33--label"
+                                                        <label
                                                                class="control-label control-set-font control-font-label">Email
                                                             Address
                                                         </label> <span class="mandatory">*</span>

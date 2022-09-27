@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDoc
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -274,17 +275,23 @@ public class NewApplicationDelegator extends AppCommDelegator {
     protected void loadingNewAppInfo(HttpServletRequest request) {
         log.info(StringUtil.changeForLog("the do loadingSpecifiedInfo start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
+        List<AppLicBundleDto> appLicBundleDtoList = (List<AppLicBundleDto>) ParamUtil.getSessionAttr(request, HcsaAppConst.APP_LIC_BUNDLE_LIST);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = (List<AppSvcRelatedInfoDto>) ParamUtil.getSessionAttr(request,
                 HcsaAppConst.APP_SVC_RELATED_INFO_LIST);
         AppSelectSvcDto appSelectSvcDto = (AppSelectSvcDto) ParamUtil.getSessionAttr(request, HcsaAppConst.APP_SELECT_SERVICE);
         if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos) && appSubmissionDto == null && appSelectSvcDto != null) {
             String entryType = ParamUtil.getString(request, "entryType");
+            boolean premType=true;
             if (!StringUtil.isEmpty(entryType) && "assessment".equals(entryType)) {
                 ParamUtil.setSessionAttr(request, HcsaAppConst.ASSESSMENTCONFIG, "test");
             }
             appSubmissionDto = new AppSubmissionDto();
             appSubmissionDto.setLicenseeId(ApplicationHelper.getLicenseeId(request));
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+            if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
+                premType=appLicBundleDtoList.get(0).isLicOrApp();
+                appSubmissionDto.setAppLicBundleDtoList(appLicBundleDtoList);
+            }
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
             appSubmissionDto.setCoMap(ApplicationHelper.createCoMap(false));
             String premisesId = "";
@@ -296,7 +303,12 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 }
             }
             if (!StringUtil.isEmpty(premisesId)) {
-                List<AppGrpPremisesDto> appGrpPremisesDtos = licCommService.getLicPremisesInfo(premisesId);
+                List<AppGrpPremisesDto> appGrpPremisesDtos=IaisCommonUtils.genNewArrayList();
+                if (premType){
+                    appGrpPremisesDtos = licCommService.getLicPremisesInfo(premisesId);
+                }else{
+                    appGrpPremisesDtos = Collections.singletonList(appCommService.getAppGrpPremisesById(premisesId));
+                }
                 if (IaisCommonUtils.isNotEmpty(appGrpPremisesDtos)) {
                     appGrpPremisesDtos.get(0).setExistingData(AppConsts.YES);
                     appGrpPremisesDtos.get(0).setPremisesIndexNo(UUID.randomUUID().toString());

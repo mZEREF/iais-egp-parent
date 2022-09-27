@@ -33,13 +33,15 @@
                                 </div>
                             </c:when>
                             <c:otherwise>
-                                <div class="dashboard-tile-item">
-                                    <div class="dashboard-tile">
-                                        <a data-tab="#tabInbox" onclick="javascript:switchNextStep('<iais:mask name="tagIndex" value="${declItem.configId}"/>');">
-                                            <p class="dashboard-txt">${declItem.svcName}</p>
-                                        </a>
+                                <c:if test="${!declItem.hasSubtype}">
+                                    <div class="dashboard-tile-item">
+                                        <div class="dashboard-tile">
+                                            <a data-tab="#tabInbox" onclick="javascript:switchNextStep('<iais:mask name="tagIndex" value="${declItem.configId}"/>');">
+                                                <p class="dashboard-txt">${declItem.svcName}</p>
+                                            </a>
+                                        </div>
                                     </div>
-                                </div>
+                                </c:if>
                             </c:otherwise>
                         </c:choose>
                     </c:forEach>

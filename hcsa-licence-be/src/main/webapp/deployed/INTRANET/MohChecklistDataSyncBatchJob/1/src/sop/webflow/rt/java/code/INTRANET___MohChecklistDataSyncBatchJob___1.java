@@ -15,7 +15,7 @@ import com.ecquaria.cloud.helper.EngineHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTRANET___MohChecklistDataSyncBatchJob___1 extends BaseProcessClass {
-	public static final String DELEGATOR ="checklistDataSyncBatchJob";
+	public static final String DELEGATOR ="checklistDataSyncHandler";
 	
 	public void run_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "run", this);

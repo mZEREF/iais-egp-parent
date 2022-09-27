@@ -15,7 +15,7 @@
 <input class="not-refresh" type="hidden" id="isEditHiddenVal" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
 
 <c:forEach var="appGrpPremisesDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
-    <c:set var="canEdit" value="true"/>
+    <%--<c:set var="canEdit" value="true"/>--%>
     <div class="row form-horizontal premContent <c:if test="${!status.first}">underLine</c:if>">
         <input class="not-refresh chooseExistData" type="hidden" name="chooseExistData" value="${appGrpPremisesDto.existingData}"/>
         <input class="not-refresh isParyEdit" type="hidden" name="isParyEdit" value="0"/>
@@ -65,7 +65,7 @@
                             <h4 class="text-danger removeBtn"><em class="fa fa-times-circle del-size-36"></em></h4>
                         </c:when>
                         <c:when test="${(isRFI || isRFC || isRenew)}">
-                            <c:set var="canEdit" value="false"/>
+                            <%--<c:set var="canEdit" value="false"/>--%>
                             <c:if test="${AppSubmissionDto.appEditSelectDto.premisesEdit}">
                                 <a class="premises-summary-preview premisesEdit app-font-size-16"><em class="fa fa-pencil-square-o"></em><span style="display: inline-block;">&nbsp;</span>Edit</a>
                             </c:if>
@@ -269,7 +269,7 @@
                         <iais:input cssClass="postalCode" maxLength="6" type="text" name="postalCode${status.index}" value="${appGrpPremisesDto.postalCode}"/>
                     </iais:value>
                     <div class="col-xs-7 col-sm-6 col-md-3">
-                        <p><a class="retrieveAddr <c:if test="${!canEdit || readOnly}">hidden</c:if>">Retrieve your address</a></p>
+                        <p><a class="retrieveAddr">Retrieve your address</a></p>
                     </div>
                 </iais:row>
                 <iais:row>
@@ -304,7 +304,7 @@
                         <div class=" col-xs-7 col-sm-4 col-md-2 ">
                             <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>
                         </div>
-                        <div class=" col-xs-7 col-sm-4 col-md-1 text-center">
+                        <div class=" col-xs-7 col-sm-4 col-md-1 text-center opDelDiv">
                             <p class="text-danger opDel"><em class="fa fa-times-circle del-size-36"></em></p>
                         </div>
                     </div>
@@ -334,7 +334,7 @@
                                     <div class=" col-xs-7 col-sm-4 col-md-2 ">
                                         <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>
                                     </div>
-                                    <div class=" col-xs-7 col-sm-4 col-md-1 text-center">
+                                    <div class=" col-xs-7 col-sm-4 col-md-1 text-center opDelDiv">
                                         <p class="text-danger opDel"><em class="fa fa-times-circle del-size-36"></em></p>
                                     </div>
                                 </div>

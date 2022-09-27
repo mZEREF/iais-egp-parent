@@ -79,7 +79,7 @@ public interface AppCommService {
     List<AppPremSpecialisedDto> getAppPremSpecialisedDtoList(List<String> appPremCorreIds);
 
 //    save address
-    void saveSecondaryAddresses(List<AppGrpSecondAddrDto> addrDtos);
+    List<AppGrpSecondAddrDto> saveSecondaryAddresses(List<AppGrpSecondAddrDto> addrDtos);
 
 
 }

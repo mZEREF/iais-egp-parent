@@ -15,7 +15,7 @@
                         <h2>${item.svcName}</h2>
                     </c:when>
                     <c:otherwise>
-                        <h2>${item.svcName} | ${item.svcSubType}</h2>
+                        <h2>${item.svcName}</h2>
                     </c:otherwise>
                 </c:choose>
             </c:if>

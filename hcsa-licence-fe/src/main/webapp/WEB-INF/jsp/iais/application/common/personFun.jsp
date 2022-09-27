@@ -41,14 +41,49 @@
         }
         $target.find('.psnEdit').unbind('click');
         $target.find('.psnEdit').on('click', function () {
-            showWaiting();
-            var $currContent = $(this).closest(target);
-            $currContent.find('input.isPartEdit').val('1');
-            $(target + '-edit').val('1');
-            hideTag($(this).closest('.edit-content'));
-            unDisableContent($currContent);
-            dismissWaiting();
+            doEditPsn($(this).closest(target), target);
         });
+    }
+
+    function doEditPsn($currContent, target) {
+        if (isEmptyNode($currContent) || isEmpty(target)) {
+            return;
+        }
+        if (hideEditBtn($currContent)) {
+            return;
+        }
+        $currContent.find('.isPartEdit').val('1');
+        $(target + '-edit').val('1');
+        hideTag($currContent.find('.edit-content'));
+        unDisableContent($currContent);
+        if (typeof refreshPersonOthers === 'function') {
+            refreshPersonOthers($currContent);
+        }
+    }
+
+    function hideEditBtn ($currContent) {
+        let $target= $currContent.find('.psnEdit');
+        if (isEmptyNode($target)) {
+            return true;
+        }
+        return $target.is(':hidden');
+    }
+
+    function disablePsnContent($currContent, target) {
+        if (isEmptyNode($currContent) || isEmpty(target)) {
+            return;
+        }
+        // edit btn
+        let $target= $currContent.find('.psnEdit');
+        if (isEmptyNode($target)) {
+            hideTag($currContent.find('.removeEditDiv'));
+        } else {
+            showTag($currContent.find('.removeEditDiv'));
+        }
+        unDisableContent($currContent);
+        if (typeof refreshPersonOthers === 'function') {
+            refreshPersonOthers($currContent, true);
+        }
     }
 
     function refreshPerson($target, k) {
@@ -93,6 +128,7 @@
             let $currContent = $(target);
             $currContent.each(function (k, v) {
                 refreshPerson($(v), k);
+                //doEditPsn($currContent, target);
             });
             if ($currContent.length == 1) {
                 $currContent.find('.psnHeader').html('');

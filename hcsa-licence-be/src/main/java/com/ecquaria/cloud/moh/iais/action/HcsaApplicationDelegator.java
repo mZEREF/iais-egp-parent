@@ -88,6 +88,7 @@ import com.ecquaria.cloud.moh.iais.dto.AjaxResDto;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
+import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -4254,6 +4255,9 @@ public class HcsaApplicationDelegator {
                         return;
                     }
                     appSvcCgoDto.setAssignSelect("newOfficer");
+                    appSvcCgoDto.setSpecialtyGetDateStr(ApplicationHelper.handleDateString(appSvcCgoDto.getSpecialtyGetDate(), null));
+                    appSvcCgoDto.setCurrRegiDateStr(ApplicationHelper.handleDateString(appSvcCgoDto.getCurrRegiDate(), null));
+                    appSvcCgoDto.setPraCerEndDateStr(ApplicationHelper.handleDateString(appSvcCgoDto.getPraCerEndDate(), null));
                     List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
                     appSvcCgoDtoList.add(appSvcCgoDto);
                     SelectOption sp0 = new SelectOption("-1", "Please Select");

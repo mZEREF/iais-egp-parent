@@ -78,7 +78,7 @@
 
       </div>
       </div>
-    <div style="display: none;margin-top: 10px;margin-left: 1%" id="cgo" class="col-xs-12 col-md-9" >
+    <div style="display: none;margin-top: 10px;margin-left: 1%" id="cgo" class="col-xs-12 col-md-10" >
       <%@include file="cgo.jsp"%>
     </div>
       <div class="col-xs-12 col-md-10" style="margin-left: 1%">

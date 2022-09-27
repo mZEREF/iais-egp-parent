@@ -6,13 +6,13 @@ import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpSecondAddrDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
@@ -38,8 +38,6 @@ import com.ecquaria.cloud.moh.iais.helper.excel.IrregularExcelWriterUtil;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.OrganizationService;
-import com.ecquaria.cloud.moh.iais.service.client.AppCommClient;
-import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,8 +80,6 @@ public class ApplicationAjaxController {
     @Autowired
     private OrganizationService organizationService;
 
-    @Autowired
-    private AppCommClient commClient;
     @Autowired
     private ServiceInfoDelegator serviceInfoDelegator;
     /**
@@ -855,17 +851,30 @@ public class ApplicationAjaxController {
     @PostMapping(value = "/save-second-address")
     public Map<String,Object> saveAppGrpSecondAddrDtoList(@RequestBody List<AppGrpSecondAddrDto> appGrpSecondAddrDtoList,HttpServletRequest request) {
         Map<String,Object> map = IaisCommonUtils.genNewHashMap();
-        Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
         if (IaisCommonUtils.isNotEmpty(appGrpSecondAddrDtoList)){
-            serviceInfoDelegator.doVolidataPremises(appGrpSecondAddrDtoList,errorMap,request);
-        }
-        if (errorMap.size() > 0){
-            map.put("code","error");
-            map.put("data", WebValidationHelper.generateJsonStr(errorMap));
-        }else {
-            map.put("code","ok");
-            map.put("data",appGrpSecondAddrDtoList);
-            commClient.saveSecondAddress(appGrpSecondAddrDtoList);
+            Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+            if (IaisCommonUtils.isNotEmpty(appGrpSecondAddrDtoList)){
+                serviceInfoDelegator.doVolidataPremises(appGrpSecondAddrDtoList,errorMap,request);
+            }
+            appGrpSecondAddrDtoList.forEach(e->{
+                    if("".equals(e.getId())){
+                        e.setId(null);
+                    }
+                List<AppPremisesOperationalUnitDto> unitDtoList = e.getAppPremisesOperationalUnitDtos();
+                unitDtoList.forEach(m->{
+                    if ("".equals(m.getId())){
+                        m.setId(null);
+                    }
+                });
+            });
+            if (errorMap.size() > 0){
+                map.put("code","error");
+                map.put("data", WebValidationHelper.generateJsonStr(errorMap));
+            }else {
+                List<AppGrpSecondAddrDto> secondAddrDtos = appCommService.saveSecondaryAddresses(appGrpSecondAddrDtoList);
+                map.put("code","ok");
+                map.put("data",secondAddrDtos);
+            }
         }
        return map;
     }

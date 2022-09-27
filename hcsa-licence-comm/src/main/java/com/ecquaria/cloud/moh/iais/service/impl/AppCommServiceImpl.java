@@ -721,7 +721,7 @@ public class AppCommServiceImpl implements AppCommService {
     }
 
     @Override
-    public void saveSecondaryAddresses(List<AppGrpSecondAddrDto> addrDtos) {
-        appCommClient.saveSecondAddress(addrDtos);
+    public List<AppGrpSecondAddrDto> saveSecondaryAddresses(List<AppGrpSecondAddrDto> addrDtos) {
+        return appCommClient.saveSecondAddress(addrDtos).getEntity();
     }
 }

@@ -195,10 +195,15 @@
         });
         // init page
         initPerson(psnContent);
-
+        <c:if test="${AppSubmissionDto.needEditController}">
+        $(psnContent).each(function () {
+            disablePsnContent($(this), psnContent);
+        });
+        </c:if>
+        // check dpo
         editdpoDropDownEvent();
         deputySelectEvent();
-
+        // dpo
         psnContent = '.dpo-person-content';
         removePersonEvent(psnContent);
         assignSelectEvent(psnContent);
@@ -208,15 +213,28 @@
             addPersonnel(psnContent);
         });
         initPerson(psnContent);
+        <c:if test="${AppSubmissionDto.needEditController}">
+        $(psnContent).each(function () {
+            disablePsnContent($(this), psnContent);
+        });
+        </c:if>
     });
 
-    function refreshPersonOthers($target) {
+    function refreshPersonOthers($target, hide) {
         if ($target.hasClass('dpo-person-content')) {
-            const maxDpoCount = eval('${dpoHcsaSvcPersonnelDto.maximumCount}');
-            toggleTag('.addDpoDiv', $('div.dpo-person-content').length < maxDpoCount);
+            if (hide) {
+                hideTag('.addDpoDiv');
+            } else {
+                const maxDpoCount = eval('${dpoHcsaSvcPersonnelDto.maximumCount}');
+                toggleTag('.addDpoDiv', $('div.dpo-person-content').length < maxDpoCount);
+            }
         } else {
-            const maxPoCount = eval('${currStepConfig.maximumCount}');
-            toggleTag('.addPoDiv', $('div.person-content').length < maxPoCount);
+            if (hide) {
+                hideTag('.addPoDiv');
+            } else {
+                const maxPoCount = eval('${currStepConfig.maximumCount}');
+                toggleTag('.addPoDiv', $('div.person-content').length < maxPoCount);
+            }
         }
     }
 
