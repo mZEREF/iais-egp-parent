@@ -16,10 +16,8 @@
 
 <%@ include file="/WEB-INF/jsp/iais/application/common/dashboard.jsp" %>
 
-<c:set var="isRfi" value="${not empty requestInformationConfig}"/>
 <c:set var="isHciNameChange" value="${RFC_eqHciNameChange == 'RFC_eqHciNameChange'}"/>
 
-<c:set var="isRFC" value="${'APTY005' == AppSubmissionDto.appType}" />
 <c:set var="specialSubLic" value="${subLicenseeDto.licenseeType eq 'LICT002' || subLicenseeDto.licenseeType eq 'LICTSUB002'}" />
 
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">

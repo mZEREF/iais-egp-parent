@@ -1,6 +1,6 @@
 <div class="application-tab-footer">
     <c:choose>
-        <c:when test="${(isRFC || isRenew) && not isRfi}">
+        <c:when test="${(isRfc || isRenew) && not isRfi}">
             <%@include file="rfcFooter.jsp"%>
         </c:when>
         <c:otherwise>
@@ -31,7 +31,7 @@
         </c:otherwise>
     </c:choose>
 </div>
-<c:if test="${!isRfi && !(isRFC || isRenew)}">
+<c:if test="${!isRfi && !(isRfc || isRenew)}">
     <iais:confirm msg="This application has been saved successfully" callBack="$('#saveDraft').modal('hide');" popupOrder="saveDraft"
                   yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
                   cancelFunc="jumpPage()" needFungDuoJi="false"/>

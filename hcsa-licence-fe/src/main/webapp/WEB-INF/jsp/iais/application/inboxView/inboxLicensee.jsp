@@ -3,7 +3,7 @@
 <c:set var="soloType" value="LICT002" />
 <c:set var="subLicenseeDto" value="${AppSubmissionDto.subLicenseeDto}"/>
 
-<c:set var="isRFC" value="${'APTY005' == AppSubmissionDto.appType}" />
+<c:set var="isRfc" value="${'APTY005' == AppSubmissionDto.appType}" />
 <c:set var="specialSubLic" value="${subLicenseeDto.licenseeType eq 'LICT002' || subLicenseeDto.licenseeType eq 'LICTSUB002'}" />
 
 <div class="panel panel-default">

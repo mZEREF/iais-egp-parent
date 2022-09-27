@@ -15,7 +15,7 @@
                 <a class="btn btn-primary next premiseId" id="RenewSave" href="javascript:void(0);">Preview</a>
             </div>
         </c:when>
-        <c:when test="${isRFC}">
+        <c:when test="${isRfc}">
             <div class="col-xs-12 col-sm-3  text-right">
                 <a class="btn btn-primary next premiseId" id="RfcSave" href="javascript:void(0);">Preview</a>
             </div>

@@ -35,7 +35,7 @@
     </iais:row>
 
     <c:if test="${isRfc || isRenew || isRfi}">
-        <iais:row>
+        <iais:row cssClass="rfc-psn-detail">
             <div class="col-sm-10">
                 <label class="control-font-label">
                     <c:if test="${!empty person.name && !empty person.idNo && !empty person.idType}">

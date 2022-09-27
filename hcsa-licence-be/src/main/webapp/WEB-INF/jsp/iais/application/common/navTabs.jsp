@@ -12,7 +12,7 @@
 
 <c:set var="isRfi" value="${not empty requestInformationConfig}" scope="request"/>
 <c:set var="isNew" value="${'APTY002' == AppSubmissionDto.appType}" scope="request"/>
-<c:set var="isRFC" value="${'APTY005' == AppSubmissionDto.appType}" scope="request"/>
+<c:set var="isRfc" value="${'APTY005' == AppSubmissionDto.appType}" scope="request"/>
 <c:set var="isRenew" value="${'APTY004' == AppSubmissionDto.appType}" scope="request"/>
 <c:set var="coMap" value="${AppSubmissionDto.coMap}" scope="request"/>
 
@@ -103,7 +103,7 @@
             });
         }
 
-        <c:if test="${!isRfi && (isRFC || isRenew)}">
+        <c:if test="${!isRfi && (isRfc || isRenew)}">
         <c:if test="${isRenew}">
         $('#preview').unbind();
         $('#preview').removeAttr("data-toggle");

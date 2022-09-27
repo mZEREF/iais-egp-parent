@@ -115,7 +115,7 @@
                                 <div class="<c:if test="${'true' != showPreview}">hidden</c:if>">
                                     <c:choose>
                                         <c:when test="${canEditDpoEdit}">
-                                            <div class="text-right app-font-size-16">
+                                            <div class="text-right app-font-size-16" style="padding-bottom:10px;">
                                                 <a id="edit-dpo" class="dpoSelectEdit" href="javascript:void(0);">
                                                     <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
                                                 </a>
@@ -201,6 +201,7 @@
         $(psnContent).each(function () {
             disablePsnContent($(this), psnContent);
         });
+        disableContent('.dpoDropDownDiv');
         </c:if>
         // check dpo
         editdpoDropDownEvent();
@@ -223,17 +224,17 @@
         </c:if>
     });
 
-    function refreshPersonOthers($target, hide) {
+    function refreshPersonOthers($target, action) {
         if ($target.hasClass('dpo-person-content')) {
-            if (hide) {
-                hideTag('.addDpoDiv');
+            if (action == 1) {
+                removeTag('.addDpoDiv');
             } else {
                 const maxDpoCount = eval('${dpoHcsaSvcPersonnelDto.maximumCount}');
                 toggleTag('.addDpoDiv', $('div.dpo-person-content').length < maxDpoCount);
             }
         } else {
-            if (hide) {
-                hideTag('.addPoDiv');
+            if (action == 1) {
+                removeTag('.addPoDiv');
             } else {
                 const maxPoCount = eval('${currStepConfig.maximumCount}');
                 toggleTag('.addPoDiv', $('div.person-content').length < maxPoCount);

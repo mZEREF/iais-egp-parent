@@ -74,11 +74,16 @@
             addPersonnel(psnContent);
         });
         initPerson(psnContent);
+        <c:if test="${AppSubmissionDto.needEditController}">
+        $(psnContent).each(function () {
+            disablePsnContent($(this), psnContent);
+        });
+        </c:if>
     });
 
-    function refreshPersonOthers($target, hide) {
-        if (hide) {
-            hideTag('.addMedAlertPersonDiv');
+    function refreshPersonOthers($target, action) {
+        if (action == 1) {
+            removeTag('.addMedAlertPersonDiv');
         } else {
             const maxCount = eval('${currStepConfig.maximumCount}');
             toggleTag('.addMedAlertPersonDiv', $('div.person-content').length < maxCount);

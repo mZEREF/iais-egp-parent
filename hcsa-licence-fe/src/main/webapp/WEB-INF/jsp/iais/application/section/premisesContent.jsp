@@ -61,10 +61,10 @@
                 </div>
                 <div class="col-xs-12 col-md-5 text-right removeEditDiv <c:if test="${status.first}">hidden</c:if>">
                     <c:choose>
-                        <c:when test="${!isRFI && !isRFC && !isRenew}">
+                        <c:when test="${!isRfi && !isRfc && !isRenew}">
                             <h4 class="text-danger removeBtn"><em class="fa fa-times-circle del-size-36"></em></h4>
                         </c:when>
-                        <c:when test="${(isRFI || isRFC || isRenew)}">
+                        <c:when test="${(isRfi || isRfc || isRenew)}">
                             <%--<c:set var="canEdit" value="false"/>--%>
                             <c:if test="${AppSubmissionDto.appEditSelectDto.premisesEdit}">
                                 <a class="premises-summary-preview premisesEdit app-font-size-16"><em class="fa fa-pencil-square-o"></em><span style="display: inline-block;">&nbsp;</span>Edit</a>
@@ -76,7 +76,7 @@
             <%--<div class="form-group col-xs-12">
                 <span  id="error_premisesHci${status.index}" class="error-msg" name="iaisErrorMsg"></span>
             </div>--%>
-            <c:if test="${isRFI || isRenew || isRFC}">
+            <c:if test="${isRfi || isRenew || isRfc}">
                 <div class="form-group">
                     <div class="col-xs-12">
                         <span class="premise-type ack-font-16">
@@ -133,7 +133,7 @@
                 </div>
             </c:if>
 
-            <div class="form-group premisesTypeDiv" <c:if test="${isRenew || isRFC}">hidden</c:if> >
+            <div class="form-group premisesTypeDiv" <c:if test="${isRenew || isRfc}">hidden</c:if> >
                     <%--<label class="col-xs-12 col-md-4 control-label error-msg-type">What is your mode of service delivery ? <span class="mandatory">*</span></label>--%>
                 <iais:field value="What is your mode of service delivery ?" width="5" mandatory="true"/>
                 <c:set var="premTypeCss" value="${premTypeLen > 2 ? 'col-md-2' : 'col-md-3'}"/>

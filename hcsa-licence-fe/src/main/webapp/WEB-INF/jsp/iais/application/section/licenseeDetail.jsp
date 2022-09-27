@@ -2,10 +2,6 @@
 <c:set var="individualType" value="LICTSUB002" />
 <c:set var="soloType" value="LICT002" />
 
-<c:set var="isRfi" value="${requestInformationConfig != null}" />
-<c:set var="isNew" value="${'APTY002' == AppSubmissionDto.appType}" />
-<c:set var="isRFC" value="${'APTY005' == AppSubmissionDto.appType}" />
-
 <style>
     .side-point {
         margin-left: 3px !important;

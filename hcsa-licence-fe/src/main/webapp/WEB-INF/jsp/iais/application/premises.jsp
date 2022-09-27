@@ -52,7 +52,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-12" id="addPremBody">
-                                        <c:if test="${!isRfi && !isRFC && !isRenew && !readonly && !singlePrem}">
+                                        <c:if test="${!isRfi && !isRfc && !isRenew && !readonly && !singlePrem}">
                                             <button id="addPremBtn" class="btn btn-primary" type="button">Add Mode of Service Delivery</button>
                                         </c:if>
                                     </div>

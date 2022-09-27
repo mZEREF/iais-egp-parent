@@ -10,7 +10,7 @@
                     </div>
                 </iais:row>
 
-                <c:if test="${(isRFI || isRFC || isRenew) && AppSubmissionDto.appEditSelectDto.specialisedEdit}">
+                <c:if test="${(isRfi || isRfc || isRenew) && AppSubmissionDto.appEditSelectDto.specialisedEdit}">
                     <iais:row>
                         <div class="col-xs-12 col-md-11 text-right editDiv">
                             <a class="premises-summary-preview specialisedEdit app-font-size-16"><em class="fa fa-pencil-square-o"></em><span style="display: inline-block;">&nbsp;</span>Edit</a>

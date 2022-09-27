@@ -74,14 +74,15 @@
         }
         // edit btn
         let $target= $currContent.find('.psnEdit');
-        if (isEmptyNode($target)) {
-            hideTag($currContent.find('.removeEditDiv'));
+        let canEdit = !isEmptyNode($target);
+        if (canEdit) {
+            showTag($currContent.find('.removeEditDiv:not(:first)'));
         } else {
-            showTag($currContent.find('.removeEditDiv'));
+            hideTag($currContent.find('.removeEditDiv'));
         }
-        unDisableContent($currContent);
+        disableContent($currContent);
         if (typeof refreshPersonOthers === 'function') {
-            refreshPersonOthers($currContent, true);
+            refreshPersonOthers($currContent, canEdit ? 1 : 0);
         }
     }
 
@@ -105,6 +106,8 @@
         $tgt.after(src);
         var $currContent = $(target).last();
         initFormNodes($currContent);
+        hideTag($currContent.find('.rfc-psn-detail'));
+        showTag($currContent.find('.assignSelDiv'));
         refreshPerson($currContent, $(target).length - 1);
         $(target + ':first').find('.psnHeader').html('1');
         $currContent.find('input.assignSelVal').val('-1');
@@ -112,6 +115,7 @@
         assignSelectEvent(target);
         profRegNoEvent(target);
         checkPersonContent($currContent, true);
+        $currContent.find('.isPartEdit').val('1');
         $(target + '-edit').val('1');
     }
 

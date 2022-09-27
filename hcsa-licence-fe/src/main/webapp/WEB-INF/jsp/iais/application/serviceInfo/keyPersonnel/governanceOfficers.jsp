@@ -12,7 +12,7 @@
 <input type="hidden" id="isEditHiddenVal" class="person-content-edit" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
 
 <div class="row form-horizontal">
-    <c:if test="${AppSubmissionDto.needEditController }">
+    <c:if test="${AppSubmissionDto.needEditController}">
         <c:if test="${(isRfc || isRenew) && !isRfi}">
             <iais:row>
                 <div class="text-right app-font-size-16">
@@ -54,7 +54,7 @@
     </c:forEach>
 
     <c:if test="${!isRfi}">
-        <div class="col-md-12 col-xs-12 addPersonnelDiv <c:if test="${!needAddPsn}">hidden</c:if>">
+        <div class="col-md-12 col-xs-12 addPersonnelDiv">
             <span class="addPersonnelBtn" style="color:deepskyblue;cursor:pointer;">
                 <span style="">+ Add Another <c:out value="${singleName}"/></span>
             </span>
@@ -80,9 +80,9 @@
         </c:if>
     });
 
-    function refreshPersonOthers($target, hide) {
-        if (hide) {
-            hideTag('.addPersonnelDiv');
+    function refreshPersonOthers($target, action) {
+        if (action == 1) {
+            removeTag('.addPersonnelDiv');
         } else {
             const maxCount = eval('${currStepConfig.maximumCount}');
             toggleTag('.addPersonnelDiv', $('div.person-content').length < maxCount);

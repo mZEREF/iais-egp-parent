@@ -531,6 +531,14 @@ function hideTag(ele) {
     clearFields($ele);
 }
 
+function removeTag(ele) {
+    var $ele = getJqueryNode(ele);
+    if (isEmptyNode($ele)) {
+        return;
+    }
+    $ele.removeTag();
+}
+
 function toggleOnSelect(sel, val, elem) {
     var $selector = getJqueryNode(sel);
     var $target = getJqueryNode(elem);

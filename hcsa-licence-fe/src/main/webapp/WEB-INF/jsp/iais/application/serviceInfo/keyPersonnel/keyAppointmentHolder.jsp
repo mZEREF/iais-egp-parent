@@ -78,9 +78,9 @@
         </c:if>
     });
 
-    function refreshPersonOthers($target, hide) {
-        if (hide) {
-            hideTag('.addKeyAppointmentHolderDiv');
+    function refreshPersonOthers($target, action) {
+        if (action == 1) {
+            removeTag('.addKeyAppointmentHolderDiv');
         } else {
             const maxCount = eval('${currStepConfig.maximumCount}');
             toggleTag('.addKeyAppointmentHolderDiv', $('div.person-content').length < maxCount);
