@@ -1,6 +1,3 @@
-<c:if test="${empty psnContent}">
-    <c:set var="psnContent" value="person-content"/>
-</c:if>
 <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -24,8 +21,6 @@
 <input type="hidden" value="${PRS_SERVICE_DOWN}" id="PRS_SERVICE_DOWN_INPUT">
 <script type="text/javascript">
     $(function () {
-        let psnContent = '.${psnContent}';
-        profRegNoEvent(psnContent);
         if ($('#PRS_SERVICE_DOWN_INPUT').val() == 'PRS_SERVICE_DOWN') {
             $('#PRS_SERVICE_DOWN').modal('show');
         }

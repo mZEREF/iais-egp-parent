@@ -1,6 +1,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 
+<%@include file="/WEB-INF/jsp/iais/application/common/personFun.jsp" %>
+<%@include file="/WEB-INF/jsp/iais/application/common/prsLoad.jsp" %>
+
 <c:set var="personList" value="${currSvcInfoDto.appSvcKeyAppointmentHolderDtoList}"/>
 
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
@@ -57,13 +60,13 @@
         </div>
     </c:if>
 </div>
-<%@include file="/WEB-INF/jsp/iais/application/common/personFun.jsp" %>
 <script type="text/javascript">
     $(function() {
         let psnContent = '.person-content';
         removePersonEvent(psnContent);
         assignSelectEvent(psnContent);
         psnEditEvent(psnContent);
+        profRegNoEvent(psnContent);
         $('.addKeyAppointmentHolderBtn').on('click', function () {
             addPersonnel(psnContent);
         });
