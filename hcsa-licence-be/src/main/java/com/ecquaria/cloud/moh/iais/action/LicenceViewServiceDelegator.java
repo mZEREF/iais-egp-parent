@@ -1053,7 +1053,8 @@ public class LicenceViewServiceDelegator {
         List<AppSvcSuplmItemDto> oldAppSvcSuplmItemList = oldAppSvcSuplmForm.getAppSvcSuplmItemListByCon(
                 AppSvcSuplmItemDto::isDisplay);
         oldAppSvcSuplmItemList = dealList(appSvcSuplmItemList, oldAppSvcSuplmItemList,
-                (newDto, oldDto) -> Objects.equals(newDto.getItemConfigId(), oldDto.getItemConfigId()),
+                (newDto, oldDto) -> Objects.equals(newDto.getItemConfigId(), oldDto.getItemConfigId())
+                        && Objects.equals(newDto.getSeqNum(), oldDto.getSeqNum()),
                 dto -> {
                     AppSvcSuplmItemDto newDto = new AppSvcSuplmItemDto();
                     newDto.setItemConfigDto(newDto.getItemConfigDto());
