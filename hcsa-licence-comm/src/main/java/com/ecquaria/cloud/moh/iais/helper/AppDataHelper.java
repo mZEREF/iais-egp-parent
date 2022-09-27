@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
-import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.job.executor.util.SpringHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -42,7 +41,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursRel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.RegistrationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
@@ -60,10 +58,7 @@ import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
-import com.ecquaria.cloud.moh.iais.service.client.ComSystemAdminClient;
 import lombok.extern.slf4j.Slf4j;
-import sop.iwe.SessionManager;
-import sop.rbac.user.User;
 import sop.util.DateUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -815,7 +810,6 @@ public final class AppDataHelper {
             appSvcOtherInfoDto.setAppSvcOtherInfoMedDto(getAppSvcOtherDental(request, prefix));
             appSvcOtherInfoDto.setOtherInfoMedAmbulatorySurgicalCentre(appSvcOtherInfoMedDto1);
             appSvcOtherInfoDto.setAppSvcOtherInfoNurseDto(getAppSvcOtherInfoNurseDto(request, prefix));
-            appSvcOtherInfoDto.setOrgUserDto(getOtherInfoYfVs(request));
             appSvcOtherInfoDto.setAppSvcSuplmFormDto(appSvcOtherInfoDto.getAppSvcSuplmFormDto());
             appSvcOtherInfoDto.setAppPremSubSvcRelDtoList(genAppPremSubSvcRelDtoList(appSvcOtherInfoDto.getAppPremSubSvcRelDtoList(),
                     prefix, "", request));
@@ -823,14 +817,6 @@ public final class AppDataHelper {
         }
         setAppSvcOtherFormList(appSvcOtherInfoDtos, request);
         return appSvcOtherInfoDtos;
-    }
-
-    //YfVs
-    public static OrgUserDto getOtherInfoYfVs(HttpServletRequest request) {
-        User user = SessionManager.getInstance(request).getCurrentUser();
-        ComSystemAdminClient client = SpringContextHelper.getContext().getBean(ComSystemAdminClient.class);
-        OrgUserDto orgUserDto = client.retrieveOrgUserAccount(user.getId()).getEntity();
-        return orgUserDto;
     }
 
     //other nurse

@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.util;
 
+import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.job.executor.util.SpringHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -32,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecifie
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.SuppleFormItemConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -41,13 +43,15 @@ import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.AppDeclarationDocShowPageDto;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
-import com.ecquaria.cloud.moh.iais.helper.AppDataHelper;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.OrganizationService;
+import com.ecquaria.cloud.moh.iais.service.client.ComSystemAdminClient;
 import lombok.extern.slf4j.Slf4j;
+import sop.iwe.SessionManager;
+import sop.rbac.user.User;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -711,16 +715,28 @@ public class DealSessionUtil {
             appSvcOtherInfoDto.setAppGrpPremisesDto(appGrpPremisesDto);
             appSvcOtherInfoDto.setSvcSpecifiedCorrelationList(svcSpecifiedCorrelationDtoList);
             appSvcOtherInfoDto.setAppSvcSuplmFormDto(appSvcSuplmFormDto);
+            if (appSvcOtherInfoDto.getOrgUserDto() == null) {
+                appSvcOtherInfoDto.setOrgUserDto(getOtherInfoYfVs(request));
+            }
             appSvcOtherInfoDto.setInit(true);
             newList.add(appSvcOtherInfoDto);
         }
-        if (IaisCommonUtils.isNotEmpty(newList)){
-            for (AppSvcOtherInfoDto appSvcOtherInfoDto : newList) {
-                appSvcOtherInfoDto.setOrgUserDto(AppDataHelper.getOtherInfoYfVs(request));
-            }
-        }
         currSvcInfoDto.setAppSvcOtherInfoList(newList);
         return true;
+    }
+
+    //YfVs
+    public static OrgUserDto getOtherInfoYfVs(HttpServletRequest request) {
+        if (request == null) {
+            request = MiscUtil.getCurrentRequest();
+        }
+        if (request == null) {
+            return null;
+        }
+        User user = SessionManager.getInstance(request).getCurrentUser();
+        ComSystemAdminClient client = SpringContextHelper.getContext().getBean(ComSystemAdminClient.class);
+        OrgUserDto orgUserDto = client.retrieveOrgUserAccount(user.getId()).getEntity();
+        return orgUserDto;
     }
 
     private static AppSvcSuplmFormDto initAppSvcSuplmFormDto(String code, boolean forceInit, String type,
