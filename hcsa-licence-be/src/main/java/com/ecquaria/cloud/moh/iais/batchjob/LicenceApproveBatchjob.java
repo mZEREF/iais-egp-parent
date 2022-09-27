@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpSecondAddrDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOpenPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOutSourceLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
@@ -59,6 +60,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremOtherInfoMedDt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremOtherInfoNurseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremOtherInfoTopDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremOtherInfoTopPersonDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremOutsourceLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremSuplmItemDto;
@@ -1464,6 +1466,9 @@ public class LicenceApproveBatchjob {
         licPremisesDto.setWeeklyDtos(MiscUtil.transferEntityDtos(weeklyDtoList,LicPremOpenPeriodDto.class));
         List<AppPremEventPeriodDto> eventDtoList = appPremisesCorrelationDto.getEventDtoList();
         licPremisesDto.setEventDtos(MiscUtil.transferEntityDtos(eventDtoList,LicPremEventPeriodDto.class));
+
+        List<AppPremOutSourceLicenceDto> appPremOutSourceLicenceDtos = appPremisesCorrelationDto.getAppPremOutSourceLicenceDtos();
+        licPremisesDto.setLicPremOutsourceLicenceDtos(MiscUtil.transferEntityDtos(appPremOutSourceLicenceDtos,LicPremOutsourceLicenceDto.class));
     }
 
     private Integer isPostInspNeeded(ApplicationGroupDto applicationGroupDto) {
