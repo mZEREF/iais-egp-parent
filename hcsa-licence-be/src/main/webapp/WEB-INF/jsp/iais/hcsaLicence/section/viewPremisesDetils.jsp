@@ -9,7 +9,6 @@
             <c:out value="Secondary Address "/>
             <label class="assign-psn-item"></label>
         </strong>
-        <%--        <div class="app-title">Secondary Address${statuss.index+1}:</div>--%>
     </iais:row>
     <input type="hidden" class="id" value="${appGrpSecondAddr.id}">
     <div class="row">

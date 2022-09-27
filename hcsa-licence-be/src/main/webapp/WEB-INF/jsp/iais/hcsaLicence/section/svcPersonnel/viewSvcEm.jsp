@@ -2,7 +2,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <div class="row">
-    <div class="col-xs-12">
+    <div>
         <c:forEach items="${currentPreviewSvcInfo.svcPersonnelDto.embryologistList}" var="embryologistList"
                    varStatus="status">
             <c:set var="oldEmbryologistList"
@@ -26,15 +26,15 @@
                     </td>
                     <td>
                         <div class="col-xs-6">
-                                        <span class="newVal " attr="${embryologistList.salutation}">
-                                            <iais:code code="${embryologistList.salutation}"/>
-                                        </span>
+                            <div class="newVal " attr="${embryologistList.salutation}">
+                                <iais:code code="${embryologistList.salutation}"/>
+                            </div>
                         </div>
                         <div class="col-xs-6">
-                                        <span class="oldVal " attr="${oldEmbryologistList.salutation}"
-                                              style="display: none">
-                                            <iais:code code="${oldEmbryologistList.salutation}"/>
-                                        </span>
+                            <div class="oldVal " attr="${oldEmbryologistList.salutation}"
+                                 style="display: none">
+                                <iais:code code="${oldEmbryologistList.salutation}"/>
+                            </div>
                         </div>
                     </td>
                 </tr>
@@ -47,30 +47,30 @@
                     </td>
                     <td>
                         <div class="col-xs-6 img-show">
-                                                <span class="newVal " attr="${embryologistList.name}">
-                                                  <c:out value="${embryologistList.name}"/>
-                                                  <jsp:include
-                                                          page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
-                                                      <jsp:param name="profRegNo"
-                                                                 value="${embryologistList.profRegNo}"/>
-                                                      <jsp:param name="personName" value="${embryologistList.name}"/>
-                                                      <jsp:param name="methodName" value="showThisNameTableNewService"/>
-                                                  </jsp:include>
-                                                </span>
+                            <div class="newVal " attr="${embryologistList.name}">
+                                <c:out value="${embryologistList.name}"/>
+                                <jsp:include
+                                        page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
+                                    <jsp:param name="profRegNo"
+                                               value="${embryologistList.profRegNo}"/>
+                                    <jsp:param name="personName" value="${embryologistList.name}"/>
+                                    <jsp:param name="methodName" value="showThisNameTableNewService"/>
+                                </jsp:include>
+                            </div>
                         </div>
                         <div class="col-xs-6 img-show">
-                                                <span class="oldVal "
-                                                      attr="${oldEmbryologistList.name}"
-                                                      style="display: none">${oldEmbryologistList.name}
-                                                  <jsp:include
-                                                          page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
-                                                      <jsp:param name="profRegNo"
-                                                                 value="${oldEmbryologistList.profRegNo}"/>
-                                                      <jsp:param name="personName"
-                                                                 value="${oldEmbryologistList.name}"/>
-                                                      <jsp:param name="methodName" value="showThisNameTableOldService"/>
-                                                  </jsp:include>
-                                                </span>
+                            <div class="oldVal "
+                                 attr="${oldEmbryologistList.name}"
+                                 style="display: none">${oldEmbryologistList.name}
+                                <jsp:include
+                                        page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
+                                    <jsp:param name="profRegNo"
+                                               value="${oldEmbryologistList.profRegNo}"/>
+                                    <jsp:param name="personName"
+                                               value="${oldEmbryologistList.name}"/>
+                                    <jsp:param name="methodName" value="showThisNameTableOldService"/>
+                                </jsp:include>
+                            </div>
                         </div>
                         <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecords.jsp">
                             <jsp:param name="profRegNo" value="${embryologistList.profRegNo}"/>
@@ -93,15 +93,15 @@
                     </td>
                     <td>
                         <div class="col-xs-6">
-                                                <span class="newVal " attr="${embryologistList.qualification}">
-                                                    <c:out value="${embryologistList.qualification}"/>
-                                                </span>
+                            <div class="newVal " attr="${embryologistList.qualification}">
+                                <c:out value="${embryologistList.qualification}"/>
+                            </div>
                         </div>
                         <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldEmbryologistList.qualification}"
-                                                      style="display: none">
-                                                        ${oldEmbryologistList.qualification}
-                                                </span>
+                            <div class="oldVal " attr="${oldEmbryologistList.qualification}"
+                                 style="display: none">
+                                    ${oldEmbryologistList.qualification}
+                            </div>
                         </div>
                     </td>
                 </tr>
@@ -116,15 +116,15 @@
                     </td>
                     <td>
                         <div class="col-xs-6">
-                                                <span class="newVal " attr="${embryologistList.wrkExpYear}">
-                                                    <c:out value="${embryologistList.wrkExpYear}"/>
-                                                </span>
+                            <div class="newVal " attr="${embryologistList.wrkExpYear}">
+                                <c:out value="${embryologistList.wrkExpYear}"/>
+                            </div>
                         </div>
                         <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldEmbryologistList.wrkExpYear}"
-                                                      style="display: none">
-                                                        ${oldEmbryologistList.wrkExpYear}
-                                                </span>
+                            <div class="oldVal " attr="${oldEmbryologistList.wrkExpYear}"
+                                 style="display: none">
+                                    ${oldEmbryologistList.wrkExpYear}
+                            </div>
                         </div>
                     </td>
                 </tr>
@@ -139,15 +139,15 @@
                     </td>
                     <td>
                         <div class="col-xs-6">
-                                                <span class="newVal " attr="${embryologistList.numberSupervision}">
-                                                    <c:out value="${embryologistList.numberSupervision}"/>
-                                                </span>
+                            <div class="newVal " attr="${embryologistList.numberSupervision}">
+                                <c:out value="${embryologistList.numberSupervision}"/>
+                            </div>
                         </div>
                         <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldEmbryologistList.numberSupervision}"
-                                                      style="display: none">
-                                                        ${oldEmbryologistList.numberSupervision}
-                                                </span>
+                            <div class="oldVal " attr="${oldEmbryologistList.numberSupervision}"
+                                 style="display: none">
+                                    ${oldEmbryologistList.numberSupervision}
+                            </div>
                         </div>
                     </td>
                 </tr>
@@ -163,35 +163,32 @@
                     <td>
                         <div class="col-xs-2">
                             <c:if test="${embryologistList.embryologistAuthorized == '1' || oldEmbryologistList.embryologistAuthorized == '1'}">
-                            <span class="newVal " attr="${embryologistList.embryologistAuthorized}">
-                                                    <c:out value="Yes"/>
-                                                </span>
+                                <div class="newVal " attr="${embryologistList.embryologistAuthorized}">
+                                    <c:out value="Yes"/>
+                                </div>
                                 <div class="col-xs-2">
-                                                <span class="oldVal "
-                                                      attr="${oldEmbryologistList.embryologistAuthorized}"
-                                                      style="display: none">
-                                                         <c:out value="Yes"/>
-                                                </span>
+                                    <div class="oldVal "
+                                         attr="${oldEmbryologistList.embryologistAuthorized}"
+                                         style="display: none">
+                                        <c:out value="Yes"/>
+                                    </div>
                                 </div>
                             </c:if>
                             <c:if test="${embryologistList.embryologistAuthorized == '0' || oldEmbryologistList.embryologistAuthorized == '0'}">
-                            <span class="newVal" attr="${embryologistList.embryologistAuthorized}">
-                                                    <c:out value="No"/>
-                                                </span>
+                                <div class="newVal" attr="${embryologistList.embryologistAuthorized}">
+                                    <c:out value="No"/>
+                                </div>
                                 <div class="col-xs-2">
-                                                <span class="oldVal "
-                                                      attr="${oldEmbryologistList.embryologistAuthorized}"
-                                                      style="display: none">
-                                                        <c:out value="No"/>
-                                                </span>
+                                    <div class="oldVal "
+                                         attr="${oldEmbryologistList.embryologistAuthorized}"
+                                         style="display: none">
+                                        <c:out value="No"/>
+                                    </div>
                                 </div>
                             </c:if>
                         </div>
                     </td>
-
                 </tr>
-
-
             </table>
         </c:forEach>
     </div>

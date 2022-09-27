@@ -851,10 +851,11 @@ public class ApplicationAjaxController {
     @PostMapping(value = "/save-second-address")
     public Map<String,Object> saveAppGrpSecondAddrDtoList(@RequestBody List<AppGrpSecondAddrDto> appGrpSecondAddrDtoList,HttpServletRequest request) {
         Map<String,Object> map = IaisCommonUtils.genNewHashMap();
+        List<String> codeList = IaisCommonUtils.genNewArrayList();
         if (IaisCommonUtils.isNotEmpty(appGrpSecondAddrDtoList)){
             Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
             if (IaisCommonUtils.isNotEmpty(appGrpSecondAddrDtoList)){
-                serviceInfoDelegator.doVolidataPremises(appGrpSecondAddrDtoList,errorMap,request);
+                serviceInfoDelegator.doVolidataPremises(appGrpSecondAddrDtoList,errorMap,request,codeList);
             }
             appGrpSecondAddrDtoList.forEach(e->{
                     if("".equals(e.getId())){

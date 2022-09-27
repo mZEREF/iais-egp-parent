@@ -18,6 +18,7 @@
                                     test="${fn:length(currentPreviewSvcInfo.appSvcKeyAppointmentHolderDtoList)>1}">${status.index+1}</c:if>:
                             </strong>
                         </p>
+                        <c:set var="isMap" value="${person.psnType == ApplicationConsts.PERSONNEL_PSN_TYPE_MAP}"/>
                         <%@include file="viewPersonnelDetail.jsp" %>
                     </c:forEach>
                 </div>
