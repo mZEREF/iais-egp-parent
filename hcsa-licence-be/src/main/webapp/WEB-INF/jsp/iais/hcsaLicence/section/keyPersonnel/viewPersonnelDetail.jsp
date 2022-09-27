@@ -1,4 +1,3 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <table aria-describedby="" class="col-xs-12">
     <tr>
         <th scope="col" style="display: none"></th>

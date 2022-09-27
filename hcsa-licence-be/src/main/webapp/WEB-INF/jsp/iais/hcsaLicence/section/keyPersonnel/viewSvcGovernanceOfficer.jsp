@@ -10,14 +10,15 @@
             <div class="row">
                 <div class="">
                     <c:forEach var="person" items="${currentPreviewSvcInfo.appSvcCgoDtoList}" varStatus="status">
-                        <c:set var="oldPerson" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index]}" />
+                        <c:set var="oldPerson"
+                               value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index]}"/>
                         <p>
-                            <strong class="col-xs-11">
-                                Clinical Governance Officer
-                                <c:if test="${fn:length(currentPreviewSvcInfo.appSvcCgoDtoList)>1}">${status.index+1}</c:if>:
+                            <strong class="col-xs-12">
+                                Clinical Governance Officer<c:if
+                                    test="${fn:length(currentPreviewSvcInfo.appSvcCgoDtoList)>1}">${status.index+1}</c:if>:
                             </strong>
                         </p>
-                        <%@include file="viewPersonnelDetail.jsp"%>
+                        <%@include file="viewPersonnelDetail.jsp" %>
                     </c:forEach>
                 </div>
             </div>
