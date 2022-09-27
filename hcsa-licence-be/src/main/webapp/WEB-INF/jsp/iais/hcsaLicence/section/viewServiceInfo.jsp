@@ -64,9 +64,12 @@
     <c:when test="${currentStep == 'SVST013'}">
       <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/svcPersonnel/viewSvcSectionLeader.jsp" />
     </c:when>
-   <%-- <c:when test="${currentStep == 'SVST006'}">
-      <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/svcPersonnel/viewSvcPersonnel.jsp" />
-    </c:when>--%>
+    <c:when test="${currentStep == 'SVST006'}">
+      <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/svcPersonnel/viewSvcPersonnel.jsp"/>
+    </c:when>
+    <c:when test="${currentStep == 'SVST016'}">
+      <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/supplementaryForm/viewSupplementaryForm.jsp"/>
+    </c:when>
     <c:when test="${currentStep == 'SVST005'}">
       <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/document/viewSvcDocument.jsp" />
     </c:when>
