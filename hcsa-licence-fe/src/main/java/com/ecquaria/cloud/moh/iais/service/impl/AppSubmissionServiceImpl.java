@@ -644,6 +644,25 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
+    public void deleteDraftAsync(String draftNo, String appGrpId) {
+        if (StringUtil.isEmpty(draftNo)) {
+            return;
+        }
+        CompletableFuture.runAsync(() -> {
+            boolean canDelete = true;
+            if (!StringUtil.isEmpty(appGrpId)) {
+                canDelete = IaisCommonUtils.isNotEmpty(appCommService.getAppGrpPremisesByGroupId(appGrpId));
+            }
+            log.info(StringUtil.changeForLog("Delete Draft: " + canDelete));
+            if (canDelete) {
+                applicationFeClient.deleteDraftByNo(draftNo);
+            } else {
+                updateDraftStatus(draftNo, AppConsts.COMMON_STATUS_IACTIVE);
+            }
+        });
+    }
+
+    @Override
     public String getDraftNo(String appType) {
         return systemAdminClient.draftNumber(appType).getEntity();
     }

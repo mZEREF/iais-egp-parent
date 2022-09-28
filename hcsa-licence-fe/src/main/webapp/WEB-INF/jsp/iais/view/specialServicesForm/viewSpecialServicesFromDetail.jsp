@@ -117,4 +117,12 @@
             <c:out value="${appSvcPersonnelDto.wrkExpYear}" />
         </iais:value>
     </iais:row>
+    <c:if test="${isShowMore==1}">
+        <iais:row>
+            <iais:field width="5" value="Expiry Date (BCLS and AED)"/>
+            <iais:value width="7" cssClass="col-md-7" display="true">
+                <c:out value="${appSvcPersonnelDto.bclsExpiryDate}"/>
+            </iais:value>
+        </iais:row>
+    </c:if>
 </div>

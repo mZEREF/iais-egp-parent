@@ -63,6 +63,9 @@ public interface AppCommClient {
     @GetMapping(path = "/active-application-premises/{appNo}")
     FeignResponseEntity<AppGrpPremisesDto> getActivePremisesByAppNo(@PathVariable("appNo") String appNo);
 
+    @GetMapping(value = "/group-premises/{appGroupId}")
+    FeignResponseEntity<List<AppGrpPremisesDto>> getAppGrpPremisesByGroupId(@PathVariable(name = "appGroupId") String appGroupId);
+
     @GetMapping(value = "/active-vehicles", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppSvcVehicleDto>> getActiveVehicles();
 
