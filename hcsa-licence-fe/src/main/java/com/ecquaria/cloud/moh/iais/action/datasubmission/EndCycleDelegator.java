@@ -64,20 +64,23 @@ public class EndCycleDelegator extends CommonDelegator{
             endCycleStageDto.setAbandonReason(abandonReasonSelect);
             endCycleStageDto.setOtherAbandonReason(otherAbandonReason);
             arSuperDataSubmissionDto.setEndCycleStageDto(endCycleStageDto);
-            ValidationResult validationResult = WebValidationHelper.validateProperty(endCycleStageDto, "save");
-            Map<String, String> errorMap = validationResult.retrieveAll();
 
-            String crud_action_type = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE);
-
-            if ("confirm".equals(crud_action_type)) {
+            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+            String actionType = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
+            if (CommonDelegator.ACTION_TYPE_CONFIRM.equals(actionType)) {
+                ValidationResult validationResult = WebValidationHelper.validateProperty(endCycleStageDto, "save");
                 errorMap = validationResult.retrieveAll();
-                verifyCommon(bpc.request, errorMap);
-                if(errorMap.isEmpty()){
-                    valRFC(bpc.request, endCycleStageDto);
+
+                String crud_action_type = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE);
+                if ("confirm".equals(crud_action_type)) {
+                    errorMap = validationResult.retrieveAll();
+                    verifyCommon(bpc.request, errorMap);
+                    if(errorMap.isEmpty()){
+                        valRFC(bpc.request, endCycleStageDto);
+                    }
                 }
             }
-
-            if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
+            if (!errorMap.isEmpty()) {
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
