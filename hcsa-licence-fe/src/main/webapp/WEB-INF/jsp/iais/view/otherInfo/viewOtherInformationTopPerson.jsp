@@ -47,7 +47,7 @@
                 <c:if test="${person.psnType == 'nurses'}">
                     <iais:row>
                         <div class="col-xs-12">
-                            <p><strong>Name, Professional Regn. No. and Qualification of trained nurses&nbsp;<c:if test="${appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList2.size()>1}">${nstatus.index+1}:</c:if></strong></p>
+                            <p><strong>Name and Qualification of trained nurses&nbsp;<c:if test="${appSvcOtherInfoDto.appSvcOtherInfoTopPersonDtoList2.size()>1}">${nstatus.index+1}:</c:if></strong></p>
                         </div>
                     </iais:row>
                     <%@include file="viewNursesDetail.jsp"%>

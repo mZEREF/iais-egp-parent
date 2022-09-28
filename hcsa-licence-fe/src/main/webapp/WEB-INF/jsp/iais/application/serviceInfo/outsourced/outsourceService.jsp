@@ -69,8 +69,8 @@
                 <iais:row>
                     <iais:field width="5"  value="Business Name"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <%String name = request.getParameter("name");%>
-                        <iais:input maxLength="100" type="text" cssClass="name" name="name" value="<%=name%>"/>
+                        <%String businessName = request.getParameter("businessName");%>
+                        <iais:input maxLength="100" type="text" cssClass="businessName" name="businessName" value="<%=businessName%>"/>
                     </iais:value>
                 </iais:row>
             </div>
@@ -82,7 +82,7 @@
                     <iais:field width="5"  value="Licence No. "/>
                     <iais:value width="7" cssClass="col-md-7">
                         <%String licNo = request.getParameter("licNo");%>
-                        <iais:input maxLength="20" type="text" cssClass="licNo" name="licNo" value="<%=licNo%>"/>
+                        <iais:input maxLength="100" type="text" cssClass="licNo" name="licNo" value="<%=licNo%>"/>
                     </iais:value>
                 </iais:row>
             </div>
@@ -115,7 +115,7 @@
 <script>
 
     $("#ANT_Clearn").click(function () {
-        $("[name='name']").val("");
+        $("[name='businessName']").val("");
         $("[name='licNo']").val("");
         $("[name='postalCode']").val("");
         $("#outsourcedServiceSelect option:first").prop("selected", 'selected').val("");

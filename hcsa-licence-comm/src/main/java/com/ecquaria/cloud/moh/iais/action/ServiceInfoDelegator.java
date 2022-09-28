@@ -13,7 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpSecondAddrDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOutSourceLicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremGroupOutsourcedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOutSourceProvidersQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOutsouredDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
@@ -548,8 +549,8 @@ public class ServiceInfoDelegator {
                 RfcConst.EDIT_SERVICE, isEdit, isRfi);
         if (isGetDataFromPage) {
             //get data from page
-           appSvcOtherInfoDtos  = AppDataHelper.genAppSvcOtherInfoList(bpc.request,
-                    appSubmissionDto.getAppType(),appSvcOtherInfoDtos,appSubmissionDto.getAppGrpPremisesDtoList());
+            appSvcOtherInfoDtos = AppDataHelper.genAppSvcOtherInfoList(bpc.request, appSubmissionDto.getAppType(),
+                    appSvcOtherInfoDtos);
             currSvcInfoDto.setAppSvcOtherInfoList(appSvcOtherInfoDtos);
             reSetChangesForApp(appSubmissionDto);
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
@@ -627,14 +628,14 @@ public class ServiceInfoDelegator {
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
         boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto,
                 RfcConst.EDIT_SERVICE, isEdit, isRfi);
-        AppPremOutSourceLicenceDto appPremOutSourceProvidersDto = currSvcInfoDto.getAppPremOutSourceLicenceDto();
+        AppSvcOutsouredDto appPremOutSourceProvidersDto = currSvcInfoDto.getAppPremOutSourceLicenceDto();
         String curAct = ParamUtil.getString(request, "btnStep");
         String ids = ParamUtil.getString(request,"pIds");
         List<String> appPremOutSourceProvidersIds = currSvcInfoDto.getAppPremOutSourceProvidersIds();
-        appPremOutSourceProvidersIds = AppDataHelper.addIds(curAct,ids,appPremOutSourceProvidersIds);
-        currSvcInfoDto.setAppPremOutSourceProvidersIds(appPremOutSourceProvidersIds);
         if (isGetDataFromPage) {
             //get data from page
+            appPremOutSourceProvidersIds = AppDataHelper.addIds(curAct,ids,appPremOutSourceProvidersIds);
+            currSvcInfoDto.setAppPremOutSourceProvidersIds(appPremOutSourceProvidersIds);
             appPremOutSourceProvidersDto = doOutSourceProvidersStep(appPremOutSourceProvidersIds,curAct,request,appSubmissionDto,appPremOutSourceProvidersDto);
             currSvcInfoDto.setAppPremOutSourceLicenceDto(appPremOutSourceProvidersDto);
             reSetChangesForApp(appSubmissionDto);
@@ -642,9 +643,8 @@ public class ServiceInfoDelegator {
         }
     }
 
-    private AppPremOutSourceLicenceDto doOutSourceProvidersStep(List<String> appPremOutSourceProvidersIds,String curAct,HttpServletRequest request,
-                                                                AppSubmissionDto appSubmissionDto, AppPremOutSourceLicenceDto appPremOutSourceProvidersDto){
-
+    private AppSvcOutsouredDto doOutSourceProvidersStep(List<String> appPremOutSourceProvidersIds,String curAct,HttpServletRequest request,
+                                                                AppSubmissionDto appSubmissionDto, AppSvcOutsouredDto appPremOutSourceProvidersDto){
         if ("search".equals(curAct)){
             appPremOutSourceProvidersDto = doSearchOutSourceProviders(appPremOutSourceProvidersIds,curAct,request,appSubmissionDto,appPremOutSourceProvidersDto);
         }
@@ -658,79 +658,89 @@ public class ServiceInfoDelegator {
             appPremOutSourceProvidersDto = doAddOutSourceProviders(appPremOutSourceProvidersIds,curAct,request,appSubmissionDto,appPremOutSourceProvidersDto);
         }
         if ("delete".equals(curAct)){
-            appPremOutSourceProvidersDto = doDelOutSourceProviders(appPremOutSourceProvidersIds,curAct,request,appSubmissionDto,appPremOutSourceProvidersDto);
+            appPremOutSourceProvidersDto = doDelOutSourceProviders(appPremOutSourceProvidersIds,curAct,request,appPremOutSourceProvidersDto);
         }
         return appPremOutSourceProvidersDto;
     }
 
-    private AppPremOutSourceLicenceDto doDelOutSourceProviders(List<String> appPremOutSourceProvidersIds,String curAct,HttpServletRequest request,AppSubmissionDto appSubmissionDto,
-                                                               AppPremOutSourceLicenceDto appPremOutSourceLicenceDto){
-        appPremOutSourceLicenceDto = AppDataHelper.genAppPremOutSourceProvidersDto(appPremOutSourceProvidersIds,curAct,appPremOutSourceLicenceDto,request);
+    private AppSvcOutsouredDto doDelOutSourceProviders(List<String> appPremOutSourceProvidersIds,String curAct,HttpServletRequest request,
+                                                               AppSvcOutsouredDto appPremOutSourceLicenceDto){
+        AppSvcOutsouredDto premOutSourceLicenceDto = new AppSvcOutsouredDto();
+        appPremOutSourceLicenceDto = AppDataHelper.genAppPremOutSourceProvidersDto(curAct,appPremOutSourceLicenceDto,request);
+        if (IaisCommonUtils.isNotEmpty(appPremOutSourceLicenceDto.getClinicalLaboratoryList())){
+            premOutSourceLicenceDto.setClinicalLaboratoryList(appPremOutSourceLicenceDto.getClinicalLaboratoryList());
+        }
+        if (IaisCommonUtils.isNotEmpty(appPremOutSourceLicenceDto.getRadiologicalServiceList())){
+            premOutSourceLicenceDto.setRadiologicalServiceList(appPremOutSourceLicenceDto.getRadiologicalServiceList());
+        }
+        return premOutSourceLicenceDto;
+    }
+
+    private AppSvcOutsouredDto doAddOutSourceProviders(List<String> appPremOutSourceProvidersIds,String curAct,HttpServletRequest request,AppSubmissionDto appSubmissionDto,
+                                                               AppSvcOutsouredDto appPremOutSourceLicenceDto){
+        appPremOutSourceLicenceDto = AppDataHelper.genAppPremOutSourceProvidersDto(curAct,appPremOutSourceLicenceDto,request);
+        AppPremGroupOutsourcedDto appPremGroupOutsourcedDto = appPremOutSourceLicenceDto.getSearchOutsourced();
+        if (appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto() != null){
+            ValidationResult vResult = WebValidationHelper.validateProperty(appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto(),"add");
+            if (vResult != null && vResult.isHasErrors()){
+                Map<String ,String> errorMap = vResult.retrieveAll(appPremOutSourceLicenceDto.getPrefixVal(),"");
+                checkAction(errorMap,HcsaConsts.STEP_OUTSOURCED_PROVIDERS,appSubmissionDto,request);
+            }else {
+                SearchParam searchParam = IaisEGPHelper.getSearchParam(request,true,filterParameter);
+                if(IaisCommonUtils.isNotEmpty(appPremOutSourceProvidersIds)){
+                    searchParam.addFilter("id",appPremOutSourceProvidersIds,true);
+                }
+                if (appPremOutSourceLicenceDto.getSearchOutsourced() != null){
+                    if (appPremOutSourceLicenceDto.getSearchOutsourced().getAppPremOutSourceLicenceDto() != null
+                            && StringUtil.isNotEmpty(appPremOutSourceLicenceDto.getSearchOutsourced().getAppPremOutSourceLicenceDto().getServiceCode())){
+                        searchParam.addFilter("svcName",appPremOutSourceLicenceDto.getSearchOutsourced().getAppPremOutSourceLicenceDto().getServiceCode(),true);
+                    }
+                }
+            }
+        }
         return appPremOutSourceLicenceDto;
     }
 
-    private AppPremOutSourceLicenceDto doAddOutSourceProviders(List<String> appPremOutSourceProvidersIds,String curAct,HttpServletRequest request,AppSubmissionDto appSubmissionDto,
-                                                               AppPremOutSourceLicenceDto appPremOutSourceLicenceDto){
-        appPremOutSourceLicenceDto = AppDataHelper.genAppPremOutSourceProvidersDto(appPremOutSourceProvidersIds,curAct,appPremOutSourceLicenceDto,request);
-        if (StringUtil.isEmpty(appPremOutSourceLicenceDto)){
-            new AppPremOutSourceLicenceDto();
-        }
-        ValidationResult vResult = WebValidationHelper.validateProperty(appPremOutSourceLicenceDto,"add");
-        if (vResult != null && vResult.isHasErrors()){
-            Map<String ,String> errorMap = vResult.retrieveAll(appPremOutSourceLicenceDto.getId(),"");
-            checkAction(errorMap,HcsaConsts.STEP_OUTSOURCED_PROVIDERS,appSubmissionDto,request);
-        }else {
-            SearchParam searchParam = IaisEGPHelper.getSearchParam(request,true,filterParameter);
-            if(IaisCommonUtils.isNotEmpty(appPremOutSourceProvidersIds)){
-                searchParam.addFilter("id",appPremOutSourceProvidersIds,true);
-            }
-            if (StringUtil.isNotEmpty(appPremOutSourceLicenceDto.getServiceCode())){
-                searchParam.addFilter("svcName",appPremOutSourceLicenceDto.getServiceCode(),true);
-            }
-        }
-        return appPremOutSourceLicenceDto;
-    }
-
-    private AppPremOutSourceLicenceDto doSearchOutSourceProviders(List<String> appPremOutSourceProvidersIds,String curAct,HttpServletRequest request,
-                                                                  AppSubmissionDto appSubmissionDto, AppPremOutSourceLicenceDto appPremOutSourceLicenceDto){
-        appPremOutSourceLicenceDto = AppDataHelper.genAppPremOutSourceProvidersDto(appPremOutSourceProvidersIds,curAct,appPremOutSourceLicenceDto,request);
-
-        ValidationResult vResult = WebValidationHelper.validateProperty(appPremOutSourceLicenceDto,"search");
-        if (vResult != null && vResult.isHasErrors()){
-            Map<String ,String> errorMap = vResult.retrieveAll();
-            checkAction(errorMap,HcsaConsts.STEP_OUTSOURCED_PROVIDERS,appSubmissionDto,request);
-        }else {
-            SearchParam searchParam = IaisEGPHelper.getSearchParam(request,true,filterParameter);
-            if (StringUtil.isNotEmpty(appPremOutSourceLicenceDto.getServiceCode())){
-                searchParam.addFilter("svcName",appPremOutSourceLicenceDto.getServiceCode(),true);
-            }
-
-            if (StringUtil.isNotEmpty(appPremOutSourceLicenceDto.getBusinessName())){
-                searchParam.addFilter("businessName",appPremOutSourceLicenceDto.getBusinessName(),true);
-            }
-
-            if (StringUtil.isNotEmpty(appPremOutSourceLicenceDto.getLicenceNo())){
-                searchParam.addFilter("licenceNo",appPremOutSourceLicenceDto.getLicenceNo(),true);
-            }
-
-            if (IaisCommonUtils.isNotEmpty(appPremOutSourceProvidersIds)){
-                searchParam.addFilter("id",appPremOutSourceProvidersIds,true);
-            }
+    private AppSvcOutsouredDto doSearchOutSourceProviders(List<String> appPremOutSourceProvidersIds,String curAct,HttpServletRequest request,
+                                                                  AppSubmissionDto appSubmissionDto, AppSvcOutsouredDto appPremOutSourceLicenceDto){
+        appPremOutSourceLicenceDto = AppDataHelper.genAppPremOutSourceProvidersDto(curAct,appPremOutSourceLicenceDto,request);
+        AppPremGroupOutsourcedDto appPremGroupOutsourcedDto = appPremOutSourceLicenceDto.getSearchOutsourced();
+        if (appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto() != null){
+            ValidationResult vResult = WebValidationHelper.validateProperty(appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto(),"search");
+            if (vResult != null && vResult.isHasErrors()){
+                Map<String ,String> errorMap = vResult.retrieveAll();
+                checkAction(errorMap,HcsaConsts.STEP_OUTSOURCED_PROVIDERS,appSubmissionDto,request);
+            }else {
+                SearchParam searchParam = IaisEGPHelper.getSearchParam(request,true,filterParameter);
+                if (appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto() != null){
+                    if (StringUtil.isNotEmpty(appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getServiceCode())){
+                        searchParam.addFilter("svcName",appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getServiceCode(),true);
+                    }
+                    if (StringUtil.isNotEmpty(appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getLicenceNo())){
+                        searchParam.addFilter("licenceNo",appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getLicenceNo(),true);
+                    }
+                }
+                if (StringUtil.isNotEmpty(appPremGroupOutsourcedDto.getBusinessName())){
+                    searchParam.addFilter("businessName",appPremGroupOutsourcedDto.getBusinessName(),true);
+                }
+                if (IaisCommonUtils.isNotEmpty(appPremOutSourceProvidersIds)){
+                    searchParam.addFilter("id",appPremOutSourceProvidersIds,true);
+                }
 //            if (StringUtil.isNotEmpty(postCode)){
 //                searchParam.addFilter("postalCode",postCode,true);
 //            }
+            }
         }
-//        appSvcRelatedInfoDto.setAppPremOutSourceProvidersList(appPremOutSourceProvidersDto);
         return appPremOutSourceLicenceDto;
     }
 
-    private AppPremOutSourceLicenceDto sortOutSourceProviders(HttpServletRequest request,AppPremOutSourceLicenceDto appPremOutSourceProvidersDto){
+    private AppSvcOutsouredDto sortOutSourceProviders(HttpServletRequest request,AppSvcOutsouredDto appPremOutSourceProvidersDto){
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         CrudHelper.doSorting(searchParam,  request);
         return appPremOutSourceProvidersDto;
     }
 
-    private AppPremOutSourceLicenceDto doOutSourceProvidersPaging(HttpServletRequest request,AppPremOutSourceLicenceDto appPremOutSourceProvidersDto){
+    private AppSvcOutsouredDto doOutSourceProvidersPaging(HttpServletRequest request,AppSvcOutsouredDto appPremOutSourceProvidersDto){
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         CrudHelper.doPaging(searchParam,request);
         return appPremOutSourceProvidersDto;
