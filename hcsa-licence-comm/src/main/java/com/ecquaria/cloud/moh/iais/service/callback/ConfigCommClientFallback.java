@@ -196,13 +196,7 @@ public class ConfigCommClientFallback implements ConfigCommClient {
         return IaisEGPHelper.getFeignResponseEntity(serviceId);
     }
 
-    @Override
-    public FeignResponseEntity<List<HcsaSvcSubtypeOrSubsumedDto>> listSubCorrelation(String serviceId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
+
 
     @Override
     public FeignResponseEntity<List<HcsaSvcPersonnelDto>> getServiceType(String serviceId, String...psnType) {

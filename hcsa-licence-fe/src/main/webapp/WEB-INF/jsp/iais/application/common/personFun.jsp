@@ -82,7 +82,7 @@
         }
         disableContent($currContent);
         if (typeof refreshPersonOthers === 'function') {
-            refreshPersonOthers($currContent, canEdit ? 1 : 0);
+            refreshPersonOthers($currContent, canEdit ? 0 : 1);
         }
     }
 
