@@ -41,7 +41,7 @@
                                                     <jsp:include page="/WEB-INF/jsp/iais/application/inboxView/inboxSpecialised.jsp" />
                                                     <jsp:include page="/WEB-INF/jsp/iais/application/inboxView/viewForm.jsp" />
                                                     <c:if test="${AppSubmissionDto.appType != 'APTY009'}">
-                                                        <%@include file="declarations/declarations.jsp"%>
+                                                        <%@include file="/WEB-INF/jsp/iais/common/declarations/declarations.jsp"%>
                                                     </c:if>
                                                 </div>
                                             </div>

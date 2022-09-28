@@ -85,7 +85,7 @@
                                                         <%-- RFC hci Name change --%>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <%@include file="declarations/declarations.jsp"%>
+                                                        <%@include file="/WEB-INF/jsp/iais/common/declarations/declarations.jsp"%>
                                                     </c:otherwise>
                                                 </c:choose>
 
