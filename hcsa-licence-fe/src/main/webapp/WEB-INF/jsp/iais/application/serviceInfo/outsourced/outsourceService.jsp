@@ -48,12 +48,12 @@
     </div>
 </iais:row>
 
-<div class="searchService clearTep">
+<div class="searchService clearTep" >
     <input type="hidden" name="btnStep" value="">
     <input type="hidden" name="pIds" value="">
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-        <div class="col-md-12 col-xs-12">
+        <div class="col-md-12 col-xs-12" style="margin-top: 30px;!important;">
             <div class="col-xs-6 col-md-6 svcNameSel">
                 <iais:row>
                     <iais:field width="5" value="Service" required="true"/>
