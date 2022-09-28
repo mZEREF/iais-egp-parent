@@ -536,7 +536,7 @@ function removeTag(ele) {
     if (isEmptyNode($ele)) {
         return;
     }
-    $ele.removeTag();
+    $ele.remove();
 }
 
 function toggleOnSelect(sel, val, elem) {
