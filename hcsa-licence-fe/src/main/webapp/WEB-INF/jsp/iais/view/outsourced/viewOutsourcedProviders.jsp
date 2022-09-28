@@ -8,18 +8,16 @@
         </div>
 
         <div class="amend-preview-info form-horizontal min-row">
-            <c:set />
-                <c:choose>
-                    <c:when test="${(currentPreviewSvcInfo.serviceName == AppServicesConsts.SERVICE_NAME_DENTAL_SERVICE) || (currentPreviewSvcInfo.serviceName == AppServicesConsts.SERVICE_NAME_MEDICAL_SERVICE)}">
-                    <c:when test="${currentPreviewSvcInfo.serviceName == AppServicesConsts.SERVICE_NAME_ACUTE_HOSPITAL}">
-                        <%@include file="viewClinicalBoratoryContent.jsp"%>
-                        <%@include file="viewRadiologicalServiceContent.jsp"%>
-                    </c:when>
-                    <c:otherwise>
-
-                    </c:otherwise>
-                </c:choose>
+            <c:set var="cL" value="${currentPreviewSvcInfo.appPremOutSourceLicenceDto}"/>
+            <c:choose>
+                <c:when test="${(currentPreviewSvcInfo.serviceName == AppServicesConsts.SERVICE_NAME_ACUTE_HOSPITAL)
+                || (currentPreviewSvcInfo.serviceName == AppServicesConsts.SERVICE_NAME_BLOOD_BANKING)}">
+                    <%@include file="viewClinicalBoratoryContent.jsp"%>
+                    <%@include file="viewRadiologicalServiceContent.jsp"%>
+                </c:when>
+                <c:otherwise>
+                </c:otherwise>
+            </c:choose>
         </div>
-
     </iais:row>
 </div>

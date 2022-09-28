@@ -4,6 +4,8 @@
 <%@include file="/WEB-INF/jsp/iais/application/common/prsLoad.jsp" %>
 <script type="text/javascript">
     $(function () {
+        let psnContent = '.${psnContent}';
+        profRegNoEvent(psnContent);
         assignSelectEvent();
         removePersonnelEvent();
         personnelSel();

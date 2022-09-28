@@ -7,17 +7,12 @@
     <div class="amend-preview-info">
         <div class="form-check-gp">
             <div class="row">
-                <div class="col-xs-12">
                 <c:forEach var="appSvcVehicleDto" items="${currentPreviewSvcInfo.appSvcVehicleDtoList}" varStatus="status">
-                    <p>
-                        <strong class="col-xs-6">
-                            Vehicle
-                            <c:if test="${fn:length(currentPreviewSvcInfo.appSvcVehicleDtoList)>1}">
-                                ${status.index+1}
-                            </c:if>:
-                        </strong>
-                        <span class="col-xs-4 col-md-4"></span>
-                    </p>
+                    <div class="col-xs-12">
+                        <span>
+                            <strong >Vehicle<c:if test="${fn:length(currentPreviewSvcInfo.appSvcVehicleDtoList)>1}">${status.index+1}</c:if>:</strong>
+                        </span>
+                    </div>
                     <span class="col-xs-6"></span>
                     <table aria-describedby="" class="col-xs-12">
                         <thead style="display: none">
@@ -80,7 +75,6 @@
                         </tr>
                     </table>
                 </c:forEach>
-                </div>
             </div>
         </div>
     </div>

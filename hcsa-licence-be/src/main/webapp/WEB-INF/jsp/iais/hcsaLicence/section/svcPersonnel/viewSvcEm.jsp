@@ -3,10 +3,8 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <div class="row">
     <div>
-        <c:forEach items="${currentPreviewSvcInfo.svcPersonnelDto.embryologistList}" var="embryologistList"
-                   varStatus="status">
-            <c:set var="oldEmbryologistList"
-                   value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.svcPersonnelDto.embryologistList[status.index]}"/>
+        <c:forEach items="${currentPreviewSvcInfo.svcPersonnelDto.embryologistList}" var="embryologistList"  varStatus="status">
+            <c:set var="oldEmbryologistList" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.svcPersonnelDto.embryologistList[status.index]}"/>
             <p>
                 <strong class="col-xs-6">
                     Embryologist
@@ -15,9 +13,9 @@
                     </c:if>:
                 </strong>
             </p>
+
             <span class="col-xs-6"></span>
             <table aria-describedby="" class="col-xs-12">
-
                     <%--                Salutation--%>
                 <tr>
                     <td class="col-xs-6">
@@ -98,9 +96,8 @@
                             </div>
                         </div>
                         <div class="col-xs-6">
-                            <div class="oldVal " attr="${oldEmbryologistList.qualification}"
-                                 style="display: none">
-                                    ${oldEmbryologistList.qualification}
+                            <div class="oldVal " attr="${oldEmbryologistList.qualification}" style="display: none">
+                                  ${oldEmbryologistList.qualification}
                             </div>
                         </div>
                     </td>
@@ -121,9 +118,8 @@
                             </div>
                         </div>
                         <div class="col-xs-6">
-                            <div class="oldVal " attr="${oldEmbryologistList.wrkExpYear}"
-                                 style="display: none">
-                                    ${oldEmbryologistList.wrkExpYear}
+                            <div class="oldVal " attr="${oldEmbryologistList.wrkExpYear}" style="display: none">
+                                 ${oldEmbryologistList.wrkExpYear}
                             </div>
                         </div>
                     </td>
@@ -144,9 +140,8 @@
                             </div>
                         </div>
                         <div class="col-xs-6">
-                            <div class="oldVal " attr="${oldEmbryologistList.numberSupervision}"
-                                 style="display: none">
-                                    ${oldEmbryologistList.numberSupervision}
+                            <div class="oldVal " attr="${oldEmbryologistList.numberSupervision}" style="display: none">
+                                  ${oldEmbryologistList.numberSupervision}
                             </div>
                         </div>
                     </td>

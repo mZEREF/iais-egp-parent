@@ -38,15 +38,14 @@
 
                 <td>
                     <div class="col-xs-6">
-                                                <span class="newVal " attr="${item.inputValue}">
-                                                      <c:out value="${item.inputValue}"/>
-                                                </span>
+                        <div class="newVal " attr="${item.inputValue}">
+                              <c:out value="${item.inputValue}"/>
+                        </div>
                     </div>
                     <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldItem.inputValue}"
-                                                      style="display: none">
-                                                     <iais:code code="${oldItem.inputValue}"/>
-                                                </span>
+                        <div class="oldVal " attr="${oldItem.inputValue}" style="display: none">
+                             <iais:code code="${oldItem.inputValue}"/>
+                        </div>
                     </div>
                 </td>
             </tr>
@@ -56,27 +55,27 @@
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_RADIO || oldItemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_RADIO}">
             <tr>
             <td class="col-xs-6">
-                    <p class="form-check-label" aria-label="premise-1-cytology">
-                            ${itemConfigDto.displayInfo}
-                    </p>
+                <p class="form-check-label" aria-label="premise-1-cytology">
+                        ${itemConfigDto.displayInfo}
+                </p>
             </td>
 
             <td>
-                        <div class="col-xs-6">
-                                                <span class="newVal " attr="${item.inputValue}">
-                                                      <c:out value="${item.inputValue}"/>
-                                                </span>
-                            <c:if test="${item.codes[idx] == item.inputValue || oldItem.codes[idx] == oldItem.inputValue}">
-                                  <span class="newVal" attr="${item.labels[idx]}"><c:out value="${item.labels[idx]}"/></span>
-                            </c:if>
-                        </div>
-                        <div class="col-xs-6">
-                            <c:if test="${item.codes[idx] == item.inputValue || oldItem.codes[idx] == oldItem.inputValue}">
-                                <span class="oldVal" attr="${oldItem.labels[idx]}" style="display: none">
-                                    <c:out value="${oldItem.labels[idx]}"/>
-                                </span>
-                            </c:if>
-                        </div>
+                <div class="col-xs-6">
+                    <div class="newVal " attr="${item.inputValue}">
+                          <c:out value="${item.inputValue}"/>
+                    </div>
+                    <c:if test="${item.codes[idx] == item.inputValue || oldItem.codes[idx] == oldItem.inputValue}">
+                          <span class="newVal" attr="${item.labels[idx]}"><c:out value="${item.labels[idx]}"/></span>
+                    </c:if>
+                </div>
+                <div class="col-xs-6">
+                    <c:if test="${item.codes[idx] == item.inputValue || oldItem.codes[idx] == oldItem.inputValue}">
+                        <span class="oldVal" attr="${oldItem.labels[idx]}" style="display: none">
+                            <c:out value="${oldItem.labels[idx]}"/>
+                        </span>
+                    </c:if>
+                </div>
             </td>
             </tr>
         </c:when>
@@ -91,7 +90,6 @@
                     </p>
                 </div>
                 </td>
-
                 <td>
                     <div class="col-xs-6 form-check active">
                         <p class="form-check-label" aria-label="premise-1-cytology" style="display: none">
@@ -99,7 +97,6 @@
                         </p>
                     </div>
                 </td>
-
             </tr>
         </c:when>
 
@@ -114,20 +111,17 @@
 
                 <td>
                     <div class="col-xs-6">
-                                                <span class="newVal " attr="${item.inputValue}">
-                                                      <c:out value="${item.inputValue}"/>
-                                                </span>
+                        <span class="newVal " attr="${item.inputValue}">
+                              <c:out value="${item.inputValue}"/>
+                        </span>
                     </div>
                     <div class="col-xs-6">
-                                                <span class="oldVal " attr="${oldItem.inputValue}"
-                                                      style="display: none">
-                                                     <iais:code code="${oldItem.inputValue}"/>
-                                                </span>
+                        <span class="oldVal " attr="${oldItem.inputValue}" style="display: none">
+                             <iais:code code="${oldItem.inputValue}"/>
+                        </span>
                     </div>
                 </td>
             </tr>
         </c:when>
-
     </c:choose>
-
 </iais:row>

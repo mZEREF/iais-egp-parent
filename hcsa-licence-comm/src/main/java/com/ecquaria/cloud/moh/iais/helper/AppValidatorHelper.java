@@ -608,6 +608,9 @@ public final class AppValidatorHelper {
 
     private static Map<String,Integer> valiatePersonnelCount(SvcPersonnelDto svcPersonnelDto) {
         HashMap<String, Integer> map = IaisCommonUtils.genNewHashMap();
+        if (StringUtil.isEmpty(svcPersonnelDto)){
+            return map;
+        }
         int arCount = -1;
         if (!IaisCommonUtils.isEmpty(svcPersonnelDto.getArPractitionerList()) ){
             arCount = svcPersonnelDto.getArPractitionerList().size();

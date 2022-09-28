@@ -84,13 +84,14 @@
         });
         $('#baseContinue').click(function () {
             var allNew=true;
+            var length = $('input.isNewOrBase').length;
             $('input.isNewOrBase').each(function (k, v) {
                 var isNewOrBase = $(v).val();
                 if (isNewOrBase=='base'){
                     allNew=false;
                 }
             });
-            if (allNew){
+            if (allNew&&length>=1){
                 $('#saveApplicationAddress').modal('show');
             }else {
                 showWaiting();

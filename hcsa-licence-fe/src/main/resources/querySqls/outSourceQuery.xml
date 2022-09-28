@@ -25,8 +25,9 @@
             WHERE 1=1
             <#if svcName??>AND l.SVC_NAME = :svcName </#if>
             <#if businessName??> AND b.BUSINESS_NAME = :businessName</#if>
-            <#if licenceNo??> AND l.LICENCE_NO = :licNo</#if>
+            <#if licenceNo??> AND l.LICENCE_NO = :licenceNo</#if>
             <#if id??> AND l.ID NOT IN (:id)</#if>
+            <#if licenceId??> AND l.LICENSEE_ID NOT IN (:licenceId)</#if>
         ]]>
     </sql>
 </sqls>
