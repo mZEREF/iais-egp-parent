@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpSecondAddrD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOpenPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOutSourceLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoItemAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremScopeDto;
@@ -377,6 +378,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         List<AppPremNonLicRelationDto> appPremNonLicRelationDtos=applicationListDto.getAppPremNonLicRelations();
         List<AppPremScopeDto> appPremScopeDtos=applicationListDto.getAppPremScopes();
         List<AppPremSubSvcRelDto> appPremSubSvcRelDtos=applicationListDto.getAppPremSubSvcRels();
+        List<AppPremOutSourceLicenceDto> appPremOutSourceLicenceDtos=applicationListDto.getAppPremOutSourceLicences();
          List<AppSvcSuplmItemDto> appSvcSuplmItemDtos=applicationListDto.getAppSvcSuplmItems();
          List<AppSvcOtherInfoItemAnswerDto> appPremOtherInfoItemAnswerDtos=applicationListDto.getAppPremOtherInfoItemAnswers();
          List<AppSvcBusinessDto> appSvcBusinessDtos=applicationListDto.getAppSvcBusinesses();
@@ -447,6 +449,8 @@ public class UploadFileServiceImpl implements UploadFileService {
                 Set<AppPremScopeDto> appPremScopeDtoSet=new HashSet<>(16);
                 List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList=IaisCommonUtils.genNewArrayList();
                 Set<AppPremSubSvcRelDto> appPremSubSvcRelDtoSet=new HashSet<>(16);
+                List<AppPremOutSourceLicenceDto> appPremOutSourceLicenceDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppPremOutSourceLicenceDto> appPremOutSourceLicenceDtoSet=new HashSet<>(16);
                 List<AppPremNonLicRelationDto> appPremNonLicRelationDtoList=IaisCommonUtils.genNewArrayList();
                 Set<AppPremNonLicRelationDto> appPremNonLicRelationDtoSet=new HashSet<>(16);
 
@@ -636,6 +640,12 @@ public class UploadFileServiceImpl implements UploadFileService {
                                         appPremSubSvcRelDtoSet.add(appPremSubSvcRelDto);
                                     }
                                 }
+                                for(AppPremOutSourceLicenceDto dto : appPremOutSourceLicenceDtos){
+                                    String appPremCorreId = dto.getAppPremCorrId();
+                                    if(premisesCorrelationDtoId.equals(appPremCorreId)){
+                                        appPremOutSourceLicenceDtoSet.add(dto);
+                                    }
+                                }
                                 if(appSvcSuplmItemDtos!=null){
                                     for (AppSvcSuplmItemDto appSvcSuplmItemDto:appSvcSuplmItemDtos
                                     ) {
@@ -773,6 +783,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                 appPremNonLicRelationDtoList.addAll(appPremNonLicRelationDtoSet);
                 appPremScopeDtoList.addAll(appPremScopeDtoSet);
                 appPremSubSvcRelDtoList.addAll(appPremSubSvcRelDtoSet);
+                appPremOutSourceLicenceDtoList.addAll(appPremOutSourceLicenceDtoSet);
                 applicationListFileDto.setAppPremPhOpenPeriods(appPremPhOpenPeriodDtoList);
                 appPremisesCorrelationDtoList.addAll(appPremisesCorrelationDtos);
                 applicationListFileDto.setAppPremisesCorrelation (appPremisesCorrelationDtoList);
@@ -812,6 +823,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                 applicationListFileDto.setAppSubLicenseeCorrelations(appSubLicenseeCorrelationDtoList);
                 applicationListFileDto.setAppPremScopes(appPremScopeDtoList);
                 applicationListFileDto.setAppPremSubSvcRels(appPremSubSvcRelDtoList);
+                applicationListFileDto.setAppPremOutSourceLicences(appPremOutSourceLicenceDtoList);
                 applicationListFileDto.setAppPremNonLicRelations(appPremNonLicRelationDtoList);
                 appSvcBusinessDtoList.addAll(appSvcBusinessDtoSet);
                 applicationListFileDto.setAppSvcBusinesses(appSvcBusinessDtoList);
