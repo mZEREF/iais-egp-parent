@@ -21,7 +21,7 @@
         </iais:row>
         <c:if test="${!iuiCycleStageDto.ownPremises}">
         <iais:row>
-          <iais:field width="5" value="IUI Treatment performed in Other Premises" mandatory="false"/>
+          <iais:field width="5" value="Name of Premise Where IUI Treatment Is Performed" mandatory="false"/>
           <iais:value width="7" cssClass="col-md-7" display="true" >
             <c:out value="${iuiCycleStageDto.otherPremises}"/>
           </iais:value>
