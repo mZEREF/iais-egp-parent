@@ -29,8 +29,7 @@
                             </div>
                         </div>
                         <div class="col-xs-6">
-                            <div class="oldVal " attr="${oldNurseList.salutation}"
-                                 style="display: none">
+                            <div class="oldVal " attr="${oldNurseList.salutation}" style="display: none">
                                 <iais:code code="${oldNurseList.salutation}"/>
                             </div>
                         </div>
@@ -93,8 +92,7 @@
                             </div>
                         </div>
                         <div class="col-xs-6">
-                            <div class="oldVal " attr="${oldNurseList.designation}"
-                                 style="display: none">
+                            <div class="oldVal " attr="${oldNurseList.designation}" style="display: none">
                                 <iais:code code="${oldNurseList.designation}"/>
                             </div>
                         </div>
@@ -116,8 +114,7 @@
                             </div>
 
                             <div class="col-xs-6">
-                                <div class="oldVal " attr="${oldNurseList.otherDesignation}"
-                                     style="display: none">
+                                <div class="oldVal " attr="${oldNurseList.otherDesignation}" style="display: none">
                                         ${oldNurseList.otherDesignation}
                                 </div>
                             </div>
@@ -141,8 +138,7 @@
                             </div>
                         </div>
                         <div class="col-xs-6">
-                            <div class="oldVal " attr="${oldNurseList.professionBoard}"
-                                 style="display: none">
+                            <div class="oldVal " attr="${oldNurseList.professionBoard}" style="display: none">
                                 <iais:code code="${oldNurseList.professionBoard}"/>
                             </div>
                         </div>
@@ -163,8 +159,7 @@
                             </div>
                         </div>
                         <div class="col-xs-6">
-                            <div class="oldVal " attr="${oldNurseList.professionType}"
-                                 style="display: none">
+                            <div class="oldVal " attr="${oldNurseList.professionType}" style="display: none">
                                 <iais:code code="${oldNurseList.professionType}"/>
                             </div>
                         </div>
@@ -190,8 +185,7 @@
                             </div>
                         </div>
                         <div class="col-xs-6 img-show">
-                            <div class="oldVal" attr="${oldNurseList.profRegNo}"
-                                 style="display: none">
+                            <div class="oldVal" attr="${oldNurseList.profRegNo}" style="display: none">
                                     ${oldNurseList.profRegNo}
                                 <jsp:include
                                         page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
@@ -227,8 +221,7 @@
                             </div>
                         </div>
                         <div class="col-xs-6">
-                            <div class="oldVal " attr="${oldNurseList.typeOfCurrRegi}"
-                                 style="display: none">
+                            <div class="oldVal " attr="${oldNurseList.typeOfCurrRegi}" style="display: none">
                                     ${oldNurseList.typeOfCurrRegi}
                             </div>
                         </div>
@@ -249,8 +242,7 @@
                             </div>
                         </div>
                         <div class="col-xs-6">
-                            <div class="oldVal " attr="${oldNurseList.currRegiDate}"
-                                 style="display: none">
+                            <div class="oldVal " attr="${oldNurseList.currRegiDate}" style="display: none">
                                     ${oldNurseList.currRegiDate}
                             </div>
                         </div>
@@ -271,8 +263,7 @@
                             </div>
                         </div>
                         <div class="col-xs-6">
-                            <div class="oldVal " attr="${oldNurseList.praCerEndDate}"
-                                 style="display: none">
+                            <div class="oldVal " attr="${oldNurseList.praCerEndDate}" style="display: none">
                                     ${oldNurseList.praCerEndDate}
                             </div>
                         </div>
@@ -293,8 +284,7 @@
                             </div>
                         </div>
                         <div class="col-xs-6">
-                            <div class="oldVal " attr="${oldNurseList.typeOfRegister}"
-                                 style="display: none">
+                            <div class="oldVal " attr="${oldNurseList.typeOfRegister}" style="display: none">
                                     ${oldNurseList.typeOfRegister}
                             </div>
                         </div>
@@ -316,8 +306,7 @@
                             </div>
                         </div>
                         <div class="col-xs-6">
-                            <div class="oldVal " attr="${oldNurseList.speciality}"
-                                 style="display: none">
+                            <div class="oldVal " attr="${oldNurseList.speciality}"  style="display: none">
                                     ${oldNurseList.speciality}
                             </div>
                         </div>
@@ -338,8 +327,7 @@
                             </div>
                         </div>
                         <div class="col-xs-6">
-                            <div class="oldVal " attr="${oldNurseList.subSpeciality}"
-                                 style="display: none">
+                            <div class="oldVal " attr="${oldNurseList.subSpeciality}" style="display: none">
                                     ${oldNurseList.subSpeciality}
                             </div>
                         </div>
@@ -361,8 +349,7 @@
                             </div>
                         </div>
                         <div class="col-xs-6">
-                            <div class="oldVal " attr="${oldNurseList.specialityOther}"
-                                 style="display: none">
+                            <div class="oldVal " attr="${oldNurseList.specialityOther}" style="display: none">
                                     ${oldNurseList.specialityOther}
                             </div>
                         </div>
@@ -384,8 +371,7 @@
                             </div>
                         </div>
                         <div class="col-xs-6">
-                            <div class="oldVal " attr="${oldNurseList.specialtyGetDate}"
-                                 style="display: none">
+                            <div class="oldVal " attr="${oldNurseList.specialtyGetDate}" style="display: none">
                                     ${oldNurseList.specialtyGetDate}
                             </div>
                         </div>
@@ -407,8 +393,7 @@
                             </div>
                         </div>
                         <div class="col-xs-6">
-                            <div class="oldVal " attr="${oldNurseList.qualification}"
-                                 style="display: none">
+                            <div class="oldVal " attr="${oldNurseList.qualification}" style="display: none">
                                     ${oldNurseList.qualification}
                             </div>
                         </div>
@@ -430,8 +415,7 @@
                             </div>
                         </div>
                         <div class="col-xs-6">
-                            <div class="oldVal " attr="${oldNurseList.wrkExpYear}"
-                                 style="display: none">
+                            <div class="oldVal " attr="${oldNurseList.wrkExpYear}" style="display: none">
                                     ${oldNurseList.wrkExpYear}
                             </div>
                         </div>
@@ -452,8 +436,7 @@
                             </div>
                         </div>
                         <div class="col-xs-6">
-                            <div class="oldVal " attr="${oldNurseList.bclsExpiryDate}"
-                                 style="display: none">
+                            <div class="oldVal " attr="${oldNurseList.bclsExpiryDate}" style="display: none">
                                     ${oldNurseList.bclsExpiryDate}
                             </div>
                         </div>
@@ -476,16 +459,12 @@
                             </div>
                         </div>
                         <div class="col-xs-6">
-                            <div class="oldVal "
-                                 attr="${oldNurseList.cprExpiryDate}"
-                                 style="display: none">
+                            <div class="oldVal " attr="${oldNurseList.cprExpiryDate}" style="display: none">
                                     ${oldNurseList.cprExpiryDate}
                             </div>
                         </div>
                     </td>
                 </tr>
-
-
             </table>
         </c:forEach>
     </div>

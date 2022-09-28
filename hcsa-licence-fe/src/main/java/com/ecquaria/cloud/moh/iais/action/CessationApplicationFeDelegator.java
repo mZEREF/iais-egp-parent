@@ -14,7 +14,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppSpecifiedLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
@@ -32,6 +31,13 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationFeService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,14 +45,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import sop.util.CopyUtil;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author weilu
@@ -135,15 +133,16 @@ public class CessationApplicationFeDelegator {
     }
 
     public void init(BaseProcessClass bpc) {
+        log.info(StringUtil.changeForLog("The init start ..."));
         List<String> licIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "licIds");
-        List<AppCessLicDto> appCessDtosByLicIds = IaisCommonUtils.genNewArrayList();
-        String rfiAppId = (String) ParamUtil.getSessionAttr(bpc.request, "rfiAppId");
+
+       /* String rfiAppId = (String) ParamUtil.getSessionAttr(bpc.request, "rfiAppId");
         String rfiPremiseId = (String) ParamUtil.getSessionAttr(bpc.request, "rfiPremiseId");
         if (!StringUtil.isEmpty(rfiAppId) && !StringUtil.isEmpty(rfiPremiseId)) {
             List<AppCessLicDto> appCessLicDtos = cessationFeService.initRfiData(rfiAppId, rfiPremiseId);
             appCessDtosByLicIds = appCessLicDtos;
-        }
-        if (!IaisCommonUtils.isEmpty(licIds)) {
+        }*/
+       /* if (!IaisCommonUtils.isEmpty(licIds)) {
             boolean isGrpLicence = cessationFeService.isGrpLicence(licIds);
             //specLid in licIds
             List<String> specLicIds = cessationFeService.filtrateSpecLicIds(licIds);
@@ -169,7 +168,9 @@ public class CessationApplicationFeDelegator {
             }
             appCessDtosByLicIds = cessationFeService.getAppCessDtosByLicIds(licIds);
             ParamUtil.setSessionAttr(bpc.request, "isGrpLic", isGrpLicence);
-        }
+        }*/
+
+        List<AppCessLicDto> appCessDtosByLicIds = cessationFeService.getAppCessDtosByLicIds(licIds);
 
         int size = appCessDtosByLicIds.size();
         List<SelectOption> reasonOption = getReasonOption();
@@ -180,6 +181,7 @@ public class CessationApplicationFeDelegator {
         ParamUtil.setSessionAttr(bpc.request, "size", size);
         ParamUtil.setSessionAttr(bpc.request, READINFO, null);
         ParamUtil.setSessionAttr(bpc.request, "licIds", (Serializable) licIds);
+        log.info(StringUtil.changeForLog("The init end ..."));
     }
 
     public void prepareData(BaseProcessClass bpc) {

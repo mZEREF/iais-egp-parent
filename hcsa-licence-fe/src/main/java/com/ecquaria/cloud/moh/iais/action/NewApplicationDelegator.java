@@ -528,7 +528,6 @@ public class NewApplicationDelegator extends AppCommDelegator {
                             appSubmissionDto.getRfiAppNo(), appSubmissionDto.getLicenceNo());
                     ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                 }
-                //appSubmissionService.updateDraftStatus(appSubmissionDto.getDraftNo(),AppConsts.COMMON_STATUS_ACTIVE);
                 switch2 = "loading";
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "payment");
             }
@@ -626,7 +625,6 @@ public class NewApplicationDelegator extends AppCommDelegator {
             } else {
                 appSubmissionService.updateDraftStatus(appSubmissionDto.getDraftNo(), AppConsts.COMMON_STATUS_ACTIVE);
                 log.debug(StringUtil.changeForLog("result is empty"));
-                //appSubmissionService.updateDraftStatus(appSubmissionDto.getDraftNo(),AppConsts.COMMON_STATUS_ACTIVE);
                 switch2 = "loading";
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "payment");
             }
@@ -1222,8 +1220,10 @@ public class NewApplicationDelegator extends AppCommDelegator {
         List<AppSubmissionDto> ackPageAppSubmissionDto = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request,
                 ACK_APP_SUBMISSIONS);
         String draftNo = "";
+        String appGrpId = null;
         if (appSubmissionDto != null) {
             draftNo = appSubmissionDto.getDraftNo();
+            appGrpId = appSubmissionDto.getAppGrpId();
             if (ackPageAppSubmissionDto == null) {
                 List<AppSubmissionDto> ackPageAppSubmission = new ArrayList<>(1);
                 ackPageAppSubmission.add(appSubmissionDto);
@@ -1231,7 +1231,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
             }
         }
         if (draftNo != null) {
-            applicationFeClient.deleteDraftByNo(draftNo);
+            appSubmissionService.deleteDraftAsync(draftNo, appGrpId);
         }
         if (!StringUtil.isEmpty(appSubmissionDto) && !StringUtil.isEmpty(appSubmissionDto.getLicenceId())) {
             List<ApplicationSubDraftDto> entity = applicationFeClient.getDraftByLicAppId(appSubmissionDto.getLicenceId()).getEntity();

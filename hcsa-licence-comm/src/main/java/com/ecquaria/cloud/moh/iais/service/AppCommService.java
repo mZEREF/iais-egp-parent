@@ -76,6 +76,8 @@ public interface AppCommService {
 
     AppGrpPremisesDto getActivePremisesByAppNo(String appNo);
 
+    List<AppGrpPremisesDto> getAppGrpPremisesByGroupId(String appGroupId);
+
     List<AppPremSpecialisedDto> getAppPremSpecialisedDtoList(List<String> appPremCorreIds);
 
 //    save address

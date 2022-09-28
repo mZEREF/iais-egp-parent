@@ -49,6 +49,8 @@ public interface AppSubmissionService {
 
     void updateDrafts(String licenseeId, List<String> licenceIds, String draftNo);
 
+    void deleteDraftAsync(String draftNo, String appGrpId);
+
     String getDraftNo(String appType);
 
     String getGroupNo(String appType);

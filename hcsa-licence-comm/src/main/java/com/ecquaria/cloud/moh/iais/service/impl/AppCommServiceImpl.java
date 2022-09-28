@@ -716,6 +716,15 @@ public class AppCommServiceImpl implements AppCommService {
     }
 
     @Override
+    public List<AppGrpPremisesDto> getAppGrpPremisesByGroupId(String appGroupId) {
+        log.info(StringUtil.changeForLog("App Group Id: " + appGroupId));
+        if (StringUtil.isEmpty(appGroupId)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        return appCommClient.getAppGrpPremisesByGroupId(appGroupId).getEntity();
+    }
+
+    @Override
     public List<AppPremSpecialisedDto> getAppPremSpecialisedDtoList(List<String> appPremCorreIds){
         return appCommClient.getAppPremSpecialisedDtoList(appPremCorreIds).getEntity();
     }

@@ -112,20 +112,25 @@ public final class RfcHelper {
         boolean changeVehicles = isChangeAppSvcVehicleDtos(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos);
         boolean changeBusiness = isChangeAppSvcBusinessDtos(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos);
         boolean changeSectionLeader = isChangeAppSvcSectionLeadersViaSvcInfo(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos);
+        boolean changeCharges = isChangeAppSvcChargesPageDto(appSvcRelatedInfoDtos.get(0).getAppSvcChargesPageDto(),
+                oldAppSvcRelatedInfoDtos.get(0).getAppSvcChargesPageDto());
         appEditSelectDto.setChangeVehicle(changeVehicles);
         appEditSelectDto.setChangeBusinessName(changeBusiness);
         appEditSelectDto.setChangePersonnel(changePersonnel);
         appEditSelectDto.setChangeSectionLeader(changeSectionLeader);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
-        boolean serviceIsChange = changeVehicles || isChangeServiceInfo(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList,
-                appEditSelectDto);
+        boolean serviceIsChange = changeVehicles || changeBusiness || changeSectionLeader || changeCharges
+                        || isChangeSvcInfoAutoFields(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList, appEditSelectDto);
         appEditSelectDto.setServiceEdit(serviceIsChange);
         // set to appSubmissionDto
         appSubmissionDto.setChangeSelectDto(appEditSelectDto);
         // for splitting the submission
         AppEditSelectDto showDto = appSubmissionDto.getAppEditSelectDto();
         List<String> stepList = IaisCommonUtils.getList(showDto.getPersonnelEditList());
+        if (changeCharges) {
+            IaisCommonUtils.addToList(HcsaConsts.STEP_CHARGES, stepList);
+        }
         if (changeVehicles) {
             stepList.add(HcsaConsts.STEP_VEHICLES);
         }
@@ -347,21 +352,16 @@ public final class RfcHelper {
         List<AppSvcRelatedInfoDto> o = (List<AppSvcRelatedInfoDto>) CopyUtil.copyMutableObjectList(oldAppSvcRelatedInfoDtoList);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = n.get(0);
         AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = o.get(0);
-        List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = appSvcRelatedInfoDto.getHcsaServiceStepSchemeDtos();
+        /*List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = appSvcRelatedInfoDto.getHcsaServiceStepSchemeDtos();
         String deputyPoFlag = appSvcRelatedInfoDto.getDeputyPoFlag();
         oldAppSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
-        oldAppSvcRelatedInfoDto.setDeputyPoFlag(deputyPoFlag);
+        oldAppSvcRelatedInfoDto.setDeputyPoFlag(deputyPoFlag);*/
 
         List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
         List<AppSvcDocDto> oldAppSvcDocDtoLit = oldAppSvcRelatedInfoDto.getAppSvcDocDtoLit();
         boolean changeSvcDocs = isChangeSvcDocs(appSvcDocDtoLit, oldAppSvcDocDtoLit);
         if (changeSvcDocs) {
             IaisCommonUtils.addToList(HcsaConsts.STEP_DOCUMENTS, changeList);
-        }
-        boolean eqAppSvcChargesPageDto = eqAppSvcChargesPageDto(appSvcRelatedInfoDto.getAppSvcChargesPageDto(),
-                oldAppSvcRelatedInfoDto.getAppSvcChargesPageDto());
-        if (eqAppSvcChargesPageDto) {
-            IaisCommonUtils.addToList(HcsaConsts.STEP_CHARGES, changeList);
         }
         boolean eqAppSvcBusiness = isChangeAppSvcBusinessDto(appSvcRelatedInfoDto.getAppSvcBusinessDtoList(),
                 oldAppSvcRelatedInfoDto.getAppSvcBusinessDtoList());
@@ -371,7 +371,7 @@ public final class RfcHelper {
             personnelEditList.addAll(changeList);
             appEditSelectDto.setPersonnelEditList(personnelEditList);
         }
-        return changeSvcDocs || eqAppSvcChargesPageDto || isChangePersonnel(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList)
+        return changeSvcDocs || isChangePersonnel(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList)
                 || eqAppSvcBusiness;
     }
 
@@ -393,7 +393,7 @@ public final class RfcHelper {
         if (changeSvcDocs) {
             IaisCommonUtils.addToList(HcsaConsts.STEP_DOCUMENTS, changeList);
         }
-        boolean eqAppSvcChargesPageDto = eqAppSvcChargesPageDto(appSvcRelatedInfoDto.getAppSvcChargesPageDto(),
+        boolean eqAppSvcChargesPageDto = isChangeAppSvcChargesPageDto(appSvcRelatedInfoDto.getAppSvcChargesPageDto(),
                 oldAppSvcRelatedInfoDto.getAppSvcChargesPageDto());
         if (eqAppSvcChargesPageDto) {
             IaisCommonUtils.addToList(HcsaConsts.STEP_CHARGES, changeList);
@@ -595,7 +595,7 @@ public final class RfcHelper {
         return !appSvcBusinessNameList.equals(oldAppSvcBusinessNameList);
     }
 
-    public static boolean eqAppSvcChargesPageDto(AppSvcChargesPageDto appSvcChargesPageDto,
+    public static boolean isChangeAppSvcChargesPageDto(AppSvcChargesPageDto appSvcChargesPageDto,
             AppSvcChargesPageDto oldAppSvcChargesPageDto) {
         AppSvcChargesPageDto n = PageDataCopyUtil.copyAppSvcClinicalDirector(appSvcChargesPageDto);
         AppSvcChargesPageDto o = PageDataCopyUtil.copyAppSvcClinicalDirector(oldAppSvcChargesPageDto);
