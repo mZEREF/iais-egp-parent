@@ -76,6 +76,7 @@ import java.text.ParseException;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -656,28 +657,27 @@ public final class AppDataHelper {
                                                                      List<AppPremGroupOutsourcedDto> radiologicalServiceList){
         String prefix = ParamUtil.getString(request,"prefixVal");
         if (IaisCommonUtils.isNotEmpty(clinicalLaboratoryList)){
-            for (AppPremGroupOutsourcedDto outSourceLicenceDto : clinicalLaboratoryList) {
-                AppPremOutSourceLicenceDto appPremGroupOutsourcedDto = outSourceLicenceDto.getAppPremOutSourceLicenceDto();
-                if(appPremGroupOutsourcedDto != null){
-                    if (prefix.equals(appPremGroupOutsourcedDto.getId())){
-                        outSourceLicenceDto.setStatus(1);
-                    }
-                }
-            }
+            removeAppPremOutsourced(clinicalLaboratoryList,prefix);
         }
 
         if (IaisCommonUtils.isNotEmpty(radiologicalServiceList)){
-            for (AppPremGroupOutsourcedDto outSourceLicenceDto : radiologicalServiceList) {
-                AppPremOutSourceLicenceDto appPremGroupOutsourcedDto = outSourceLicenceDto.getAppPremOutSourceLicenceDto();
-                if(appPremGroupOutsourcedDto != null){
-                    if (prefix.equals(appPremGroupOutsourcedDto.getId())){
-                        outSourceLicenceDto.setStatus(1);
-                    }
-                }
-            }
+            removeAppPremOutsourced(radiologicalServiceList,prefix);
         }
         return appPremOutSourceLicenceDto;
 
+    }
+
+    private static void removeAppPremOutsourced(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtoList,String prefixVal){
+        Iterator<AppPremGroupOutsourcedDto> outsourcedDtoIterator = appPremGroupOutsourcedDtoList.iterator();
+        while (outsourcedDtoIterator.hasNext()){
+            AppPremGroupOutsourcedDto appPremGroupOutsourcedDto = outsourcedDtoIterator.next();
+            if (appPremGroupOutsourcedDto != null && appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto() != null){
+               String id = appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getId();
+               if (StringUtil.isNotEmpty(prefixVal) && prefixVal.equals(id)){
+                   outsourcedDtoIterator.remove();
+               }
+            }
+        }
     }
 
     private static AppSvcOutsouredDto getSerchAppPremOutSourceLicenceDto(HttpServletRequest request,AppSvcOutsouredDto appPremOutSourceLicenceDto){

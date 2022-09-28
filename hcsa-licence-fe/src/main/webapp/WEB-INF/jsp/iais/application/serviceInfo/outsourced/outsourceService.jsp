@@ -16,6 +16,7 @@
     }
     .table-count {
         float: left;
+        margin-top: 10px;
     }
     .nice-select.table-select {
         padding: 4px 10px;

@@ -690,6 +690,9 @@ public class ServiceInfoDelegator {
                 if(IaisCommonUtils.isNotEmpty(appPremOutSourceProvidersIds)){
                     searchParam.addFilter("id",appPremOutSourceProvidersIds,true);
                 }
+                if (StringUtil.isNotEmpty(appSubmissionDto.getLicenseeId())){
+                    searchParam.addFilter("licenceId",appSubmissionDto.getLicenseeId(),true);
+                }
                 if (appPremOutSourceLicenceDto.getSearchOutsourced() != null){
                     if (appPremOutSourceLicenceDto.getSearchOutsourced().getAppPremOutSourceLicenceDto() != null
                             && StringUtil.isNotEmpty(appPremOutSourceLicenceDto.getSearchOutsourced().getAppPremOutSourceLicenceDto().getServiceCode())){
@@ -725,6 +728,9 @@ public class ServiceInfoDelegator {
                 }
                 if (IaisCommonUtils.isNotEmpty(appPremOutSourceProvidersIds)){
                     searchParam.addFilter("id",appPremOutSourceProvidersIds,true);
+                }
+                if (StringUtil.isNotEmpty(appSubmissionDto.getLicenseeId())){
+                    searchParam.addFilter("licenceId",appSubmissionDto.getLicenseeId(),true);
                 }
 //            if (StringUtil.isNotEmpty(postCode)){
 //                searchParam.addFilter("postalCode",postCode,true);
