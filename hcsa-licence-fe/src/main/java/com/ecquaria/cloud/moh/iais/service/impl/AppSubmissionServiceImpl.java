@@ -84,9 +84,6 @@ import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
-import com.ecquaria.cloud.moh.iais.validation.ValidateCharges;
-import com.ecquaria.cloud.moh.iais.validation.ValidateClincalDirector;
-import com.ecquaria.cloud.moh.iais.validation.ValidateVehicle;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -134,22 +131,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Autowired
     private ComFileRepoClient comFileRepoClient;
     @Autowired
-    private ValidateCharges validateCharges;
-    @Autowired
-    private ValidateVehicle validateVehicle;
-    @Autowired
-    private ValidateClincalDirector validateClincalDirector;
-    @Autowired
     private AppCommClient appCommClient;
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
-    }
 
     @Autowired
     private SystemAdminClient systemAdminClient;
@@ -375,16 +357,16 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     String e = k.substring(k.lastIndexOf('e') + 1);
                     pageShowFileDto.setIndex(e);
                     pageShowFileDto.setFileMapId("selectedFileDiv"+e);
-                    Long l = v.length() / 1024;
-                    pageShowFileDto.setSize(Integer.valueOf(l.toString()));
+                    long l = v.length() / 1024;
+                    pageShowFileDto.setSize(Integer.valueOf(Long.toString(l)));
                     pageShowFileDto.setMd5Code(fileMd5);
                     pageShowFileDtos.add(pageShowFileDto);
                     AppDeclarationDocDto appDeclarationDocDto=new AppDeclarationDocDto();
                     appDeclarationDocDto.setDocName(v.getName());
-                    appDeclarationDocDto.setDocSize(Integer.valueOf(l.toString()));
+                    appDeclarationDocDto.setDocSize(Integer.valueOf(Long.toString(l)));
                     appDeclarationDocDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                     appDeclarationDocDto.setMd5Code(fileMd5);
-                    appDeclarationDocDto.setVersion(Integer.valueOf(1));
+                    appDeclarationDocDto.setVersion(1);
                     appDeclarationDocDto.setSeqNum(Integer.valueOf(e));
                     appDeclarationDocDtoList.add(appDeclarationDocDto);
                 }else {
