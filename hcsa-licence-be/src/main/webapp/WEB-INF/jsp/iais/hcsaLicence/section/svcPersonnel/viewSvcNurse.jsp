@@ -101,20 +101,27 @@
                     </td>
                 </tr>
                     <%--    otherdesignation--%>
-                <c:if test="${'Others' == nurseList.designation || 'Others' == oldNurseList.designation}">
+                <c:if test="${'DES999' == nurseList.designation || 'DES999' == oldNurseList.designation}">
                     <tr>
                         <td class="col-xs-6">
+                            <p class="form-check-label" aria-label="premise-1-cytology">
+                                OtherDesignation
+                            </p>
                         </td>
                         <td>
-                            <div class="col-xs-12">
+                            <div class="col-xs-6">
                                 <div class="newVal " attr="${nurseList.otherDesignation}">
                                         ${nurseList.otherDesignation}
                                 </div>
+                            </div>
+
+                            <div class="col-xs-6">
                                 <div class="oldVal " attr="${oldNurseList.otherDesignation}"
                                      style="display: none">
                                         ${oldNurseList.otherDesignation}
                                 </div>
                             </div>
+
                         </td>
                     </tr>
                 </c:if>

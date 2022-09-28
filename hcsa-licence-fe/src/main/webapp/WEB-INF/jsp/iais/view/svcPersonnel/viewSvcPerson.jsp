@@ -60,6 +60,16 @@
                 </iais:row>
                 <%@include file="viewServicePersonnelArDetail.jsp" %>
             </c:forEach>
+
+            <%--    TODO --%>
+<%--            <iais:row>--%>
+<%--                <iais:field width="5" value="Total Number of AR Practitioner"/>--%>
+<%--                <iais:value width="7" cssClass="col-md-7" display="true">--%>
+<%--                    <c:out value="0"/>--%>
+<%--                    &lt;%&ndash;                    <span id="arNumber">0<span>&ndash;%&gt;--%>
+<%--                </iais:value>--%>
+<%--            </iais:row>--%>
+
         </c:if>
 
         <c:if test="${nurseCount != 0}">
@@ -90,6 +100,18 @@
             </c:forEach>
         </c:if>
 
+        <c:if test="${normalCount != 0}">
+            <c:forEach begin="0" end="${normalCount - 1}" step="1" varStatus="status">
+                <c:set var="index" value="${status.index}"/>
+                <c:set var="appSvcPersonnelDto" value="${currentPreviewSvcInfo.svcPersonnelDto.normalList[index]}"/>
+                <iais:row>
+                    <div class="col-xs-12">
+                        <p><strong>Service Personnel<c:if test="${normalCount > 1}"> ${index+1}</c:if>:</strong></p>
+                    </div>
+                </iais:row>
+                <%@include file="viewServicePersonnelBlood.jsp" %>
+            </c:forEach>
+        </c:if>
 
         <c:if test="${specialCount != 0}">
             <c:forEach begin="0" end="${specialCount - 1}" step="1" varStatus="status">
@@ -103,20 +125,6 @@
                     </div>
                 </iais:row>
                 <%@include file="viewServicePersonnelDetail.jsp" %>
-            </c:forEach>
-        </c:if>
-
-
-        <c:if test="${normalCount != 0}">
-            <c:forEach begin="0" end="${normalCount - 1}" step="1" varStatus="status">
-                <c:set var="index" value="${status.index}"/>
-                <c:set var="appSvcPersonnelDto" value="${currentPreviewSvcInfo.svcPersonnelDto.normalList[index]}"/>
-                <iais:row>
-                    <div class="col-xs-12">
-                        <p><strong>Service Personnel<c:if test="${normalCount > 1}"> ${index+1}</c:if>:</strong></p>
-                    </div>
-                </iais:row>
-                <%@include file="viewServicePersonnelBlood.jsp" %>
             </c:forEach>
         </c:if>
     </div>

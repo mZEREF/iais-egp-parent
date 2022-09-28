@@ -91,10 +91,13 @@
 <%--                <span style="">Total Number of AR Practitioner</span>--%>
 <%--            </div>--%>
 
+
+<%--             TODO --%>
             <iais:row>
                 <iais:field width="5" value="Total Number of AR Practitioner"/>
                 <iais:value width="7" cssClass="col-md-7" display="true">
-                    <span id="arNumber">0<span>
+                <c:out value="0"/>
+<%--                    <span id="arNumber">0<span>--%>
                 </iais:value>
             </iais:row>
 
