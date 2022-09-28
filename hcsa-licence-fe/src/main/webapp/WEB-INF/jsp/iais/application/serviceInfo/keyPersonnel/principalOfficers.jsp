@@ -207,19 +207,19 @@
         editdpoDropDownEvent();
         deputySelectEvent();
         // dpo
-        psnContent = '.dpo-person-content';
-        removePersonEvent(psnContent);
-        assignSelectEvent(psnContent);
-        profRegNoEvent(psnContent);
-        psnEditEvent(psnContent);
-        profRegNoEvent(psnContent);
+        let dpoContent = '.dpo-person-content';
+        removePersonEvent(dpoContent);
+        assignSelectEvent(dpoContent);
+        profRegNoEvent(dpoContent);
+        psnEditEvent(dpoContent);
+        profRegNoEvent(dpoContent);
         $('.addDpoBtn').on('click', function () {
-            addPersonnel(psnContent);
+            addPersonnel(dpoContent);
         });
-        initPerson(psnContent);
+        initPerson(dpoContent);
         <c:if test="${AppSubmissionDto.needEditController}">
-        $(psnContent).each(function () {
-            disablePsnContent($(this), psnContent);
+        $(dpoContent).each(function () {
+            disablePsnContent($(this), dpoContent);
         });
         </c:if>
     });

@@ -27,7 +27,7 @@
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
 <input type="hidden"  name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
 
-<div class="panel-group premContent" id="accordion" role="tablist" aria-multiselectable="true">
+<div class="panel-group chargesContent" id="accordion" role="tablist" aria-multiselectable="true">
     <div class="panel panel-default">
         <div class="panel-heading " id="generate-charges-heading"  role="tab">
             <h4 class="panel-title">
@@ -108,7 +108,7 @@
                                         <div class="control-label formtext col-md-2 col-xs-2">
                                             <iais:input maxLength="150" type="text" cssClass="remarks" name="remarks${gcStat.index}" value="${generalChargesDto.remarks}"></iais:input>
                                         </div>
-                                        <div class="control-label formtext col-md-1 col-xs-1 removeBtn <c:if test="${status.first}">hidden</c:if>">
+                                        <div class="control-label formtext col-md-1 col-xs-1 general-remove removeBtn <c:if test="${status.first}">hidden</c:if>">
                                             <c:if test="${!isRfi && !isRfc && !isRenew}">
                                                 <h4 class="text-danger">
                                                     <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
@@ -260,7 +260,7 @@
                                             <div class="control-label formtext col-md-2 col-xs-2">
                                                 <iais:input maxLength="150" type="text" cssClass="otherRemarks" name="otherRemarks${ocStat.index}" value="${otherChargesDto.remarks}"></iais:input>
                                             </div>
-                                            <div class="control-label formtext col-md-1 col-xs-1 removeBtn">
+                                            <div class="control-label formtext col-md-1 col-xs-1 other-remove removeBtn">
                                                 <c:if test="${!isRfi && !isRfc && !isRenew}">
                                                     <h4 class="text-danger">
                                                         <em class="fa fa-times-circle del-size-36 ocRemoveBtn cursorPointer"></em>
@@ -315,22 +315,18 @@
 
 <script>
     $(document).ready(function () {
-
         searchChargesTypeByCategory();
-        removeGeneralChargesHtml();
+        removeGeneralChargesEvent();
         removeOtherChargesHtml();
-        addGeneralChargesHtml();
-        addOtherChargesHtml();
+        addGeneralChargesEvent();
+        addOtherChargesEvent();
 
-        doEdite();
-        doOhterChargesEdite();
-        var appType = $('input[name="applicationType"]').val();
-        var rfiObj = $('input[name="rfiObj"]').val();
+        doEditChargesEvent();
+        doEditOtherChargesEvent();
         //rfc,renew,rfi
-        if (('APTY005' == appType || 'APTY004' == appType) || '1' == rfiObj) {
-            disabledPage();
-        }
-
+        <c:if test="${AppSubmissionDto.needEditController}">
+        disableChargesContent();
+        </c:if>
     });
 
     let searchChargesTypeByCategory = function () {
@@ -363,48 +359,39 @@
         });
     };
 
-    function addGeneralChargesHtml(){
-        let generalChargeLength = $('.general-charges-content').length;
-        refresh();
+    function addGeneralChargesEvent() {
         $('.addGeneralChargesBtn').unbind('click');
         $('.addGeneralChargesBtn').on('click', function () {
             showWaiting();
-            let target = $('div.charges-content:first');
+            let target = $('div.general-charges-content:first');
             let src = target.clone();
             $('div.addGeneralChargesDiv').before(src);
-            generalChargeLength = generalChargeLength+1;
-            $(".generalChargeLength").attr("value",generalChargeLength);
-            clearFields($('div.charges-content:last'));
-            removeGeneralChargesHtml();
-            refreshPremise();
+            $(".generalChargeLength").attr("value", $('.general-charges-content').length + 1);
+            clearFields($('div.general-charges-content:last'));
+            removeGeneralChargesEvent();
+            refreshGeneralCharges();
             dismissWaiting();
         })
     }
 
-    function refreshPremise() {
-        refresh();
-    }
-
-    function refresh(){
+    function refreshGeneralCharges() {
         let generalChargeLength = $('.general-charges-content').length;
         $('input[name="generalChargeLength"]').val(generalChargeLength);
-        $('.general-charges-content').each(function (k,v) {
+        $('.general-charges-content').each(function (k, v) {
             toggleTag($(this).find('div.removeBtn'), k != 0);
-            $(this).find('select.chargesType').prop('name','chargesType'+ k);
-            $(this).find('select.chargesType').prop('id','chargesType'+ k);
-            $(this).find('input.minAmount').prop('name','minAmount'+ k);
-            $(this).find('input.maxAmount').prop('name','maxAmount'+ k);
-            $(this).find('input.remarks').prop('name','remarks'+ k);
-            $(this).find('.isPartEdit').prop('name','isPartEdit'+k);
-            $(this).find('.chargesIndexNo').prop('name','chargesIndexNo'+k);
+            $(this).find('select.chargesType').prop('name', 'chargesType' + k);
+            $(this).find('select.chargesType').prop('id', 'chargesType' + k);
+            $(this).find('input.minAmount').prop('name', 'minAmount' + k);
+            $(this).find('input.maxAmount').prop('name', 'maxAmount' + k);
+            $(this).find('input.remarks').prop('name', 'remarks' + k);
+            $(this).find('.isPartEdit').prop('name', 'isPartEdit' + k);
+            $(this).find('.chargesIndexNo').prop('name', 'chargesIndexNo' + k);
         });
-        if (generalChargeLength < '${generalChargesConfig.maximumCount}') {
-            $('.addGeneralChargesDiv').removeClass('hidden');
-        }
+        refreshGeneralAddBtn();
         $('#isEditHiddenVal').val('1');
     }
 
-    function addOtherChargesHtml(){
+    function addOtherChargesEvent(){
         let otherChargeLength = $('.other-charges-content').length;
         refreshOther();
         $('.addOtherChargesBtn').unbind('click');
@@ -418,14 +405,10 @@
             clearFields($('div.other-charges-content:last'));
             removeOtherChargesHtml();
             searchChargesTypeByCategory();
-            refreshOtherPremise();
+            refreshOther();
             dismissWaiting();
         })
 
-    }
-
-    function refreshOtherPremise(){
-        refreshOther();
     }
 
     function refreshOther(){
@@ -442,50 +425,11 @@
             $(this).find('.chargesIndexNo').prop('name','otherChargesIndexNo'+k);
         });
         //display add btn
-        if (otherChargeLength < '${otherChargesConfig.maximumCount}') {
-            $('.addOtherChargesDiv').removeClass('hidden');
-        }
+        refreshOtherAddBtn();
         $('#isEditHiddenVal').val('1');
     }
-    <%--var addOtherChargesHtml = function () {--%>
-    <%--    $('.addOtherChargesBtn').click(function () {--%>
-    <%--        showWaiting();--%>
-    <%--        var otherChargeLength = $('.other-charges-content').length;--%>
-    <%--        $.ajax({--%>
-    <%--            url: '${pageContext.request.contextPath}/other-charges-html',--%>
-    <%--            dataType: 'json',--%>
-    <%--            data: {--%>
-    <%--                "otherChargeLength": otherChargeLength--%>
-    <%--            },--%>
-    <%--            type: 'POST',--%>
-    <%--            success: function (data) {--%>
-    <%--                if ('200' == data.resCode) {--%>
-    <%--                    $('.addOtherChargesDiv').before(data.resultJson+'');--%>
-    <%--                    //--%>
-    <%--                    removeOtherChargesHtml();--%>
-    <%--                    searchChargesTypeByCategory();--%>
 
-    <%--                    var otherChargeLength = $('.other-charges-content').length;--%>
-    <%--                    $('input[name="otherChargeLength"]').val(otherChargeLength);--%>
-    <%--                    //hidden add more--%>
-    <%--                    if (otherChargeLength >= '${generalChargesConfig.maximumCount}') {--%>
-    <%--                        $('.addOtherChargesDiv').addClass('hidden');--%>
-    <%--                    }--%>
-    <%--                    $('#isEditHiddenVal').val('1');--%>
-    <%--                }--%>
-    <%--                dismissWaiting();--%>
-    <%--            },--%>
-    <%--            error: function (data) {--%>
-    <%--                console.log("err");--%>
-    <%--                dismissWaiting();--%>
-    <%--            }--%>
-
-    <%--        });--%>
-    <%--    });--%>
-
-    <%--};--%>
-
-    let removeGeneralChargesHtml = function () {
+    let removeGeneralChargesEvent = function () {
         $('.removeBtn').unbind('click');
         $('.removeBtn').click(function () {
             let $currContent = $(this).closest('div.general-charges-content');
@@ -502,9 +446,7 @@
                 $(this).find('.chargesIndexNo').prop('name','chargesIndexNo'+k);
             });
             //display add btn
-            if (generalChargeLength < '${generalChargesConfig.maximumCount}') {
-                $('.addGeneralChargesDiv').removeClass('hidden');
-            }
+            refreshGeneralAddBtn();
             $('#isEditHiddenVal').val('1');
         });
     };
@@ -528,40 +470,58 @@
                 $(this).find('.chargesIndexNo').prop('name','otherChargesIndexNo'+k);
             });
             //display add btn
-            if (otherChargeLength < '${otherChargesConfig.maximumCount}') {
-                $('.addOtherChargesDiv').removeClass('hidden');
-            }
+            refreshOtherAddBtn();
             $('#isEditHiddenVal').val('1');
         });
     };
 
-    let doEdite = function () {
+    function refreshGeneralAddBtn() {
+        toggleTag('.addGeneralChargesDiv', $('.general-charges-content').length < '${generalChargesConfig.maximumCount}');
+    }
+
+    function refreshOtherAddBtn() {
+        toggleTag('.addOtherChargesDiv', $('.other-charges-content').length < '${otherChargesConfig.maximumCount}');
+    }
+
+    let doEditChargesEvent = function () {
         $('a.chargesEdit').click(function () {
             var $currContent = $(this).closest('div.general-charges-content');
             $currContent.find('input.isPartEdit').val('1');
-            $currContent.find('.edit-content').addClass('hidden');
-            $currContent.find('input[type="text"]').prop('disabled', false);
-            $currContent.find('div.nice-select').removeClass('disabled');
-            $currContent.find('input[type="text"]').css('border-color', '');
-            $currContent.find('input[type="text"]').css('color', '');
-
+            hideTag($currContent.find('.edit-content'));
+            unDisableContent($currContent);
             $('#isEditHiddenVal').val('1');
         });
     };
 
-    var doOhterChargesEdite = function () {
+    var doEditOtherChargesEvent = function () {
         $('a.otherChargesEdit').click(function () {
             var $currContent = $(this).closest('div.other-charges-content');
             $currContent.find('input.isPartEdit').val('1');
-            $currContent.find('.edit-content').addClass('hidden');
-            $currContent.find('input[type="text"]').prop('disabled', false);
-            $currContent.find('div.nice-select').removeClass('disabled');
-            $currContent.find('input[type="text"]').css('border-color', '');
-            $currContent.find('input[type="text"]').css('color', '');
-
+            hideTag($currContent.find('.edit-content'));
+            unDisableContent($currContent);
             $('#isEditHiddenVal').val('1');
         });
     };
 
-
+    function disableChargesContent() {
+        // edit btn
+        let $currContent = $('.chargesContent');
+        let $target= $currContent.find('.chargesEdit');
+        if (!isEmptyNode($target)) {
+            showTag($currContent.find('.general-remove:not(:first)'));
+            refreshGeneralAddBtn()
+        } else {
+            hideTag($currContent.find('.general-remove'));
+            hideTag($currContent.find('.addGeneralChargesDiv'));
+        }
+        $target= $currContent.find('.otherChargesEdit');
+        if (!isEmptyNode($target)) {
+            showTag($currContent.find('.other-remove:not(:first)'));
+            refreshOthersAddBtn();
+        } else {
+            hideTag($currContent.find('.other-remove'));
+            hideTag($currContent.find('.addOtherChargesDiv'));
+        }
+        disableContent($currContent);
+    }
 </script>
