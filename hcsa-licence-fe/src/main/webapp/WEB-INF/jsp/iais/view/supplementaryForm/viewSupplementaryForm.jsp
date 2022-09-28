@@ -29,3 +29,9 @@
         </c:forEach>
     </c:forEach>
 </div>
+
+<script>
+    $(function () {
+        $('.mandatory').hide()
+    })
+</script>
