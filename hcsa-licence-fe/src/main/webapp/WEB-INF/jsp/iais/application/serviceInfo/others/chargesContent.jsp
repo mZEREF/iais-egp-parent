@@ -108,7 +108,7 @@
                                         <div class="control-label formtext col-md-2 col-xs-2">
                                             <iais:input maxLength="150" type="text" cssClass="remarks" name="remarks${gcStat.index}" value="${generalChargesDto.remarks}"></iais:input>
                                         </div>
-                                        <div class="control-label formtext col-md-1 col-xs-1 general-remove removeBtn <c:if test="${status.first}">hidden</c:if>">
+                                        <div class="control-label formtext col-md-1 col-xs-1 general-remove removeBtn <c:if test="${gcStat.first}">hidden</c:if>">
                                             <c:if test="${!isRfi && !isRfc && !isRenew}">
                                                 <h4 class="text-danger">
                                                     <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
