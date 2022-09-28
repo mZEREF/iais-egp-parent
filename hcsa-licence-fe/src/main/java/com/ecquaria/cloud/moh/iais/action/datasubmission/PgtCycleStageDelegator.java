@@ -69,7 +69,7 @@ public class PgtCycleStageDelegator extends CommonDelegator{
                 if(pgt.getIsPgtSr()>0 && pgt.getCreatedAt().before(new Date())){
                     countNo+=pgt.getIsPgtCoFunding();
                 }
-                if(pgt.getIsPgtMEbt()+pgt.getIsPgtMCom()+pgt.getIsPgtMRare()>0 && pgt.getCreatedAt().before(new Date())){
+                if(pgt.getIsPgtMCom()+pgt.getIsPgtMRare()>0 && pgt.getCreatedAt().before(new Date())){
                     countNo+=pgt.getIsPgtCoFunding();
                 }
 
@@ -98,7 +98,6 @@ public class PgtCycleStageDelegator extends CommonDelegator{
         PgtStageDto pgtStageDto=arSuperDataSubmissionDto.getPgtStageDto();
         pgtStageDto.setIsPgtMCom(0);
         pgtStageDto.setIsPgtMRare(0);
-        pgtStageDto.setIsPgtMEbt(0);
         pgtStageDto.setIsPgtSr(0);
         pgtStageDto.setIsPgtA(0);
         pgtStageDto.setIsPtt(0);
@@ -113,7 +112,6 @@ public class PgtCycleStageDelegator extends CommonDelegator{
         HttpServletRequest request=bpc.request;
         String isPgtMCom =  ParamUtil.getString(request, "isPgtMCom");
         String isPgtMRare =  ParamUtil.getString(request, "isPgtMRare");
-        String isPgtMEbt =  ParamUtil.getString(request, "isPgtMEbt");
         String isPgtSr =  ParamUtil.getString(request, "isPgtSr");
         String isPgtA =  ParamUtil.getString(request, "isPgtA");
         String isPtt =  ParamUtil.getString(request, "isPtt");
@@ -124,11 +122,9 @@ public class PgtCycleStageDelegator extends CommonDelegator{
         if("on".equals(isPgtMRare)){
             pgtStageDto.setIsPgtMRare(1);
         }
-        if("on".equals(isPgtMEbt)){
-            pgtStageDto.setIsPgtMEbt(1);
-        }
 
-        if( "on".equals(isPgtMCom)||"on".equals(isPgtMRare)||"on".equals(isPgtMEbt)){
+
+        if( "on".equals(isPgtMCom)||"on".equals(isPgtMRare)){
 
             String isPgtMDsld =  ParamUtil.getString(request, "isPgtMDsld");
             if("on".equals(isPgtMDsld)){
@@ -215,7 +211,7 @@ public class PgtCycleStageDelegator extends CommonDelegator{
             pgtStageDto.setOtherBiopsyAddr(otherBiopsyAddr);
         }
         int count = (int) ParamUtil.getSessionAttr(request,"count");
-        if(count>=6&&(pgtStageDto.getIsPgtMEbt()+pgtStageDto.getIsPgtMCom()+pgtStageDto.getIsPgtMRare()+pgtStageDto.getIsPgtSr()>0)&&pgtStageDto.getIsPgtCoFunding()!=null&&pgtStageDto.getIsPgtCoFunding()==1){
+        if(count>=6&&(pgtStageDto.getIsPgtMCom()+pgtStageDto.getIsPgtMRare()+pgtStageDto.getIsPgtSr()>0)&&pgtStageDto.getIsPgtCoFunding()!=null&&pgtStageDto.getIsPgtCoFunding()==1){
             String isThereAppeal = ParamUtil.getString(request, "isThereAppeal");
             if("0".equals(isThereAppeal)){
                 pgtStageDto.setIsThereAppeal(0);

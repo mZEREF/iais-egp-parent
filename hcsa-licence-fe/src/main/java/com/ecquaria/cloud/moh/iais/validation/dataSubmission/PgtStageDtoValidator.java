@@ -33,14 +33,14 @@ public class PgtStageDtoValidator implements CustomizeValidator {
         String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
         int countNo = (int) ParamUtil.getSessionAttr(request,"count");
 
-        if(countNo>=6&&(pgtStageDto.getIsPgtMEbt()+pgtStageDto.getIsPgtMCom()+pgtStageDto.getIsPgtMRare()+pgtStageDto.getIsPgtSr()>0)&&pgtStageDto.getIsPgtCoFunding()!=null&&pgtStageDto.getIsPgtCoFunding()==1&&pgtStageDto.getIsThereAppeal()==0){
+        if(countNo>=6&&(pgtStageDto.getIsPgtMCom()+pgtStageDto.getIsPgtMRare()+pgtStageDto.getIsPgtSr()>0)&&pgtStageDto.getIsPgtCoFunding()!=null&&pgtStageDto.getIsPgtCoFunding()==1&&pgtStageDto.getIsThereAppeal()==0){
             errorMap.put("isThereAppeal", MessageUtil.getMessageDesc("DS_ERR024"));
         }
-        if(pgtStageDto.getIsPgtA()+pgtStageDto.getIsOtherPgt()+pgtStageDto.getIsPgtMRare()+pgtStageDto.getIsPgtMCom()+pgtStageDto.getIsPgtMEbt()+pgtStageDto.getIsPtt()+pgtStageDto.getIsPgtSr()==0){
+        if(pgtStageDto.getIsPgtA()+pgtStageDto.getIsOtherPgt()+pgtStageDto.getIsPgtMRare()+pgtStageDto.getIsPgtMCom()+pgtStageDto.getIsPtt()+pgtStageDto.getIsPgtSr()==0){
             errorMap.put("pgt_type", errMsgErr006);
         }
 
-        if( pgtStageDto.getIsPgtMCom()+pgtStageDto.getIsPgtMRare()+pgtStageDto.getIsPgtMEbt()>0){
+        if( pgtStageDto.getIsPgtMCom()+pgtStageDto.getIsPgtMRare()>0){
             if(pgtStageDto.getIsPgtMWithHla()+pgtStageDto.getIsPgtMDsld()+pgtStageDto.getIsPgtMNon()==0){
                 errorMap.put("pgt_m_performed", errMsgErr006);
             }

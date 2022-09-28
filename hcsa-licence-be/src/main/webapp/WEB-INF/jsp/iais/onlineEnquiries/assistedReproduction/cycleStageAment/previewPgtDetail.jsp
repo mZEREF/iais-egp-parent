@@ -16,7 +16,6 @@
                     <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMCom ==1 }"><iais:code code="PGTTP001"/><br></c:if>
                         <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMRare ==1 }"><iais:code code="PGTTP002"/><br></c:if>
-                        <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMEbt ==1 }"><iais:code code="PGTTP003"/><br></c:if>
                         <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtSr ==1 }"><iais:code code="PGTTP004"/><br></c:if>
                         <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtA ==1 }"><iais:code code="PGTTP005"/><br></c:if>
                         <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPtt ==1 }"><iais:code code="PGTTP006"/><br></c:if>
@@ -25,7 +24,6 @@
                     <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtMCom ==1 }"><iais:code code="PGTTP001"/><br></c:if>
                         <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtMRare ==1 }"><iais:code code="PGTTP002"/><br></c:if>
-                        <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtMEbt ==1 }"><iais:code code="PGTTP003"/><br></c:if>
                         <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtSr ==1 }"><iais:code code="PGTTP004"/><br></c:if>
                         <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtA ==1 }"><iais:code code="PGTTP005"/><br></c:if>
                         <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPtt ==1 }"><iais:code code="PGTTP006"/><br></c:if>
@@ -48,8 +46,8 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div id="pgtMDisplay" <c:if test="${  (arSuperDataSubmissionDto.pgtStageDto.isPgtMCom !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtMRare !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtMEbt !=1 )
-                 or (arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtMCom !=1 && arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtMRare !=1 && arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtMEbt !=1 )
+                <div id="pgtMDisplay" <c:if test="${  (arSuperDataSubmissionDto.pgtStageDto.isPgtMCom !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtMRare !=1 )
+                 or (arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtMCom !=1 && arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtMRare !=1 )
                  }">style="display: none"</c:if> >
                     <iais:row>
                         <iais:field width="4" value="PGT-M" style="font-size: 2.0rem;" />
