@@ -13,6 +13,14 @@
             <iais:code code="${appSvcPersonnelDto.designation}"/>
         </iais:value>
     </iais:row>
+
+    <iais:row cssClass="${appSvcPersonnelDto.designation=='DES999' ? '' : 'hidden'}">
+        <iais:field width="5" value="OtherDesignation"/>
+        <iais:value width="7" cssClass="col-md-7" display="true">
+            <c:out value="${appSvcPersonnelDto.otherDesignation}"/>
+        </iais:value>
+    </iais:row>
+
     <iais:row>
         <iais:field width="5" value="Professional Regn. No."/>
         <iais:value width="7" cssClass="col-md-7" display="true">
@@ -73,6 +81,7 @@
             <c:out value="${appSvcPersonnelDto.bclsExpiryDate}"/>
         </iais:value>
     </iais:row>
+
 </div>
 
 
