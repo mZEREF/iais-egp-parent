@@ -140,99 +140,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <%--<div class="form-group" id="${num.count}patYes${uid.count}" hidden>
-                                                    <label class="col-xs-12 col-md-6 control-label">Who will take
-                                                        over your patients' case records?<span
-                                                                style="color: red">*</span></label>
-                                                    <div class="col-xs-6 col-sm-4 col-md-3">
-                                                        <iais:select
-                                                                name="${num.count}patientSelect${uid.count}"
-                                                                options="patientsOption"
-                                                                firstOption="Please Select"
-                                                                id="${num.count}patientSelectId${uid.count}"
-                                                                onchange="javascirpt:changePatientCessFe(this.value);"
-                                                                value="${appCessHci.patientSelect}"
-                                                                cssClass="nice-select cessationTransfer"
-                                                                needSort="false"/>
-                                                    </div>
-                                                </div>--%>
-                                                <%--<div class="form-group" id="${num.count}patHciName${uid.count}"
-                                                     hidden>
-                                                    <label class="col-xs-12 col-md-6 control-label">HCI
-                                                        Name / Code <span style="color: red">*</span></label>
-                                                    <div class="col-xs-6 col-sm-4 col-md-3">
-                                                        <input type="text" maxLength="100"
-                                                               name="${num.count}patHciName${uid.count}"
-                                                               onblur="javascript:getHci(this);"
-                                                               id="${num.count}hciName${uid.count}"
-                                                               value="${appCessHci.patHciName}">
-                                                        <span id="error_${num.count}patHciName${uid.count}"
-                                                              name="iaisErrorMsg" class="error-msg"></span>
-                                                    </div>
-                                                </div>--%>
-                                                <%--<div class="form-group" id="${num.count}hciNamePat${uid.count}" hidden>
-                                                    <label class="col-xs-12 col-md-6 control-label">HCI
-                                                        Name </label>
-                                                    <div class="col-xs-6 col-sm-4 col-md-3">
-                                                        <span class="nameLoad"></span>
-                                                    </div>
-                                                </div>--%>
-                                                <%--<div class="form-group" id="${num.count}hciCodePat${uid.count}" hidden>
-                                                    <label class="col-xs-12 col-md-6 control-label">HCI Code </label>
-                                                    <div class="col-xs-6 col-sm-4 col-md-3">
-                                                        <span class="codeLoad"></span>
-                                                    </div>
-                                                </div>--%>
-                                               <%-- <div class="form-group" id="${num.count}hciAddressPat${uid.count}" hidden>
-                                                    <label class="col-xs-12 col-md-6 control-label">HCI
-                                                        Address </label>
-                                                    <div class="col-xs-6 col-sm-4 col-md-3">
-                                                        <span class="addressLoad"></span>
-                                                    </div>
-                                                </div>--%>
-                                                <%--<div class="form-group" id="${num.count}patRegNo${uid.count}"
-                                                     hidden>
-                                                    <label class="col-xs-12 col-md-6 control-label">Professional
-                                                        Regn. No. <span style="color: red">*</span></label>
-                                                    <div class="col-xs-6 col-sm-4 col-md-3">
-                                                        <iais:input type="text" maxLength="20"
-                                                                    name="${num.count}patRegNo${uid.count}"
-                                                                    value="${appCessHci.patRegNo}"/>
-                                                    </div>
-                                                    <span id="error_${num.count}patRegNo${uid.count}" name="iaisErrorMsg" class="error-msg"></span>
-                                                </div>--%>
-                                               <%-- <div class="form-group" id="${num.count}patOthersTakeOver${uid.count}"
-                                                     hidden>
-                                                    <label class="col-xs-12 col-md-6 control-label">Others <span
-                                                            style="color: red">*</span></label>
-                                                    <div class="col-xs-6 col-sm-4 col-md-3">
-                                                        <iais:input type="text"
-                                                                    value="${appCessHci.patOthers}"
-                                                                    maxLength="100"
-                                                                    name="${num.count}patOthersTakeOver${uid.count}"></iais:input>
-                                                    </div>
-                                                </div>--%>
-                                               <%-- <div class="form-group"
-                                                     id="${num.count}patOthersMobileNo${uid.count}" hidden>
-                                                    <label class="col-xs-12 col-md-6 control-label">Mobile
-                                                        No. <span style="color: red">*</span></label>
-                                                    <div class="col-xs-6 col-sm-4 col-md-3">
-                                                        <iais:input type="text"
-                                                                    value="${appCessHci.mobileNo}"
-                                                                    maxLength="8"
-                                                                    name="${num.count}patOthersMobileNo${uid.count}"/>
-                                                    </div>
-                                                </div>--%>
-                                                <%--<div class="form-group"
-                                                     id="${num.count}patOthersEmailAddress${uid.count}" hidden>
-                                                    <label class="col-xs-12 col-md-6 control-label">Email Address <span style="color: red">*</span></label>
-                                                    <div class="col-xs-6 col-sm-4 col-md-3">
-                                                        <iais:input type="text"
-                                                                    value="${appCessHci.emailAddress}"
-                                                                    maxLength="66"
-                                                                    name="${num.count}patOthersEmailAddress${uid.count}"/>
-                                                    </div>
-                                                </div>--%>
+
                                                 <div class="form-group" id="${num.count}transferDetail${uid.count}" style="display: none;">
                                                     <label class="col-xs-12 col-md-6">Please provide details of why the transfer could not be done and the reasonable measures that the licensee has taken to ensure continuity of care for the affected patients. </label>
                                                     <div class="col-xs-6 col-sm-4 col-md-3">
@@ -245,20 +153,7 @@
                                                         <textarea name="${num.count}transferredWhere${uid.count}"  cols="30" rows="2" maxLength="1000">${appCessHci.transferredWhere}</textarea>
                                                     </div>
                                                 </div>
-                                                <%--<div class="form-group" id="${num.count}patNoConfirmID${uid.count}"
-                                                     hidden>
-                                                    <div class="col-xs-6 col-sm-4 col-md-6">
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" id="patNoConfirm"
-                                                                   type="checkbox"
-                                                                   name="${num.count}patNoConfirm${uid.count}"
-                                                                   <c:if test="${appCessHci.patNoConfirm != null}">checked</c:if>>
-                                                            <label class="form-check-label" for="patNoConfirm"><span
-                                                                    class="check-square"></span><iais:message key="CESS_DEC001"/><span style="color: red">*</span></label>
-                                                        </div>
-                                                        <span id="error_${num.count}patNoConfirm${uid.count}" name="iaisErrorMsg" class="error-msg"></span>
-                                                    </div>
-                                                </div>--%>
+
                                                 <c:if test="${isGrpLic}">
                                                     <div class="form-group">
                                                         <label class="col-xs-12 col-md-6 control-label">To
