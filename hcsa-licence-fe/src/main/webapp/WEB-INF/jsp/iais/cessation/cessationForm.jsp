@@ -21,7 +21,8 @@
                            enctype="multipart/form-data"
                            action=<%=process.runtime.continueURL()%>>
                     <div class="row form-horizontal">
-                            <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
+                            <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage"
+                                   value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
                             <c:forEach items="${appCessationDtos}" var="appCess" varStatus="num">
                             <div class="col-lg-12 col-xs-12 cesform-box">
                                 <div class="row">
@@ -154,7 +155,7 @@
                                                     </div>
                                                 </div>
 
-                                                <c:if test="${isGrpLic}">
+                                               <%-- <c:if test="${isGrpLic}">
                                                     <div class="form-group">
                                                         <label class="col-xs-12 col-md-6 control-label">To
                                                             Cease <span style="color: red">*</span></label>
@@ -173,7 +174,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </c:if>
+                                                </c:if>--%>
                                                 <c:if test="${!isGrpLic}">
                                                     <div style="display: none;">
                                                         <input class="form-check-input" type="text"
@@ -186,7 +187,7 @@
                                         </div>
                                     </c:forEach>
                                 </div>
-                                <c:if test="${specLicInfo !=null}">
+                                <%--<c:if test="${specLicInfo !=null}">
                                 <div class="table-responsive">
                                     <c:forEach items="${specLicInfo}" var="map">
                                         <c:set var="licNo" value="${map.key}"></c:set>
@@ -231,14 +232,14 @@
                                         </c:if>
                                     </c:forEach>
                                 </div>
-                                </c:if>
+                                </c:if>--%>
                             </div>
                             </c:forEach>
                     </div>
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                                <%@include file="../common/declarations.jsp"%>
+                                <%@include file="../common/declarations/declarations.jsp"%>
                             </div>
                         </div>
                     </div>
