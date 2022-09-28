@@ -26,6 +26,14 @@
             <iais:code code="${appSvcPersonnelDto.designation}" />
         </iais:value>
     </iais:row>
+    <c:if test="${'DES999' == appSvcPersonnelDto.designation}">
+        <iais:row>
+            <iais:field width="5" value=""/>
+            <iais:value width="3" cssClass="col-md-7" display="true">
+                <c:out value="${appSvcPersonnelDto.otherDesignation}" />
+            </iais:value>
+        </iais:row>
+    </c:if>
 
     <iais:row>
         <iais:field width="5" value="Professional Board"/>
