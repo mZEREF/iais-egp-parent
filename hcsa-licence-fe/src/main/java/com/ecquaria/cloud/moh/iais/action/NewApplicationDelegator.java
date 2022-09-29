@@ -162,6 +162,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
 
                 //DealSessionUtil.loadCoMap(appSubmissionDto, request);
                 if (appSubmissionDto.getAppGrpPremisesDtoList() != null && appSubmissionDto.getAppGrpPremisesDtoList().size() > 0) {
+                    resolveReadonly(appSubmissionDto.getAppType(), false, appSubmissionDto);
                     ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, appSubmissionDto);
                 } else {
                     ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, null);
@@ -275,21 +276,23 @@ public class NewApplicationDelegator extends AppCommDelegator {
     protected void loadingNewAppInfo(HttpServletRequest request) {
         log.info(StringUtil.changeForLog("the do loadingSpecifiedInfo start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
-        List<AppLicBundleDto> appLicBundleDtoList = (List<AppLicBundleDto>) ParamUtil.getSessionAttr(request, HcsaAppConst.APP_LIC_BUNDLE_LIST);
+        List<AppLicBundleDto> appLicBundleDtoList = (List<AppLicBundleDto>) ParamUtil.getSessionAttr(request,
+                HcsaAppConst.APP_LIC_BUNDLE_LIST);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = (List<AppSvcRelatedInfoDto>) ParamUtil.getSessionAttr(request,
                 HcsaAppConst.APP_SVC_RELATED_INFO_LIST);
         AppSelectSvcDto appSelectSvcDto = (AppSelectSvcDto) ParamUtil.getSessionAttr(request, HcsaAppConst.APP_SELECT_SERVICE);
         if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos) && appSubmissionDto == null && appSelectSvcDto != null) {
             String entryType = ParamUtil.getString(request, "entryType");
-            boolean premType=true;
+            boolean fromLic = true;
             if (!StringUtil.isEmpty(entryType) && "assessment".equals(entryType)) {
                 ParamUtil.setSessionAttr(request, HcsaAppConst.ASSESSMENTCONFIG, "test");
             }
+            String appType = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION;
             appSubmissionDto = new AppSubmissionDto();
             appSubmissionDto.setLicenseeId(ApplicationHelper.getLicenseeId(request));
-            appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+            appSubmissionDto.setAppType(appType);
             if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
-                premType=appLicBundleDtoList.get(0).isLicOrApp();
+                fromLic = appLicBundleDtoList.get(0).isLicOrApp();
                 appSubmissionDto.setAppLicBundleDtoList(appLicBundleDtoList);
             }
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
@@ -303,18 +306,14 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 }
             }
             if (!StringUtil.isEmpty(premisesId)) {
-                List<AppGrpPremisesDto> appGrpPremisesDtos=IaisCommonUtils.genNewArrayList();
-                if (premType){
+                List<AppGrpPremisesDto> appGrpPremisesDtos;
+                if (fromLic) {
                     appGrpPremisesDtos = licCommService.getLicPremisesInfo(premisesId);
-                }else{
+                } else {
                     appGrpPremisesDtos = Collections.singletonList(appCommService.getAppGrpPremisesById(premisesId));
                 }
-                if (IaisCommonUtils.isNotEmpty(appGrpPremisesDtos)) {
-                    appGrpPremisesDtos.get(0).setExistingData(AppConsts.YES);
-                    appGrpPremisesDtos.get(0).setPremisesIndexNo(UUID.randomUUID().toString());
-                    appSubmissionDto.setReadonlyPrem(true);
-                }
                 appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
+                resolveReadonly(appType, false, appSubmissionDto);
             } else {
                 List<AppGrpPremisesDto> appGrpPremisesDtos = IaisCommonUtils.genNewArrayList();
                 AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
@@ -325,6 +324,27 @@ public class NewApplicationDelegator extends AppCommDelegator {
             ParamUtil.setSessionAttr(request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR, 0);
         }
         log.info(StringUtil.changeForLog("the do loadingSpecifiedInfo start ...."));
+    }
+
+    private void resolveReadonly(String appType, boolean isRfi, AppSubmissionDto appSubmissionDto) {
+        if (isRfi || !ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType) || appSubmissionDto == null) {
+            return;
+        }
+        String licPremisesId = Optional.ofNullable(appSubmissionDto.getAppSvcRelatedInfoDtoList())
+                .filter(IaisCommonUtils::isNotEmpty)
+                .map(appSvcRelatedInfoDtoList -> appSvcRelatedInfoDtoList.get(0).getLicPremisesId())
+                .orElse(null);
+        if (StringUtil.isEmpty(licPremisesId)){
+            return;
+        }
+        List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+        if (IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
+            return;
+        }
+        appGrpPremisesDtos.get(0).setExistingData(AppConsts.YES);
+        appGrpPremisesDtos.get(0).setPremisesIndexNo(UUID.randomUUID().toString());
+        appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
+        appSubmissionDto.setReadonlyPrem(true);
     }
 
     /**

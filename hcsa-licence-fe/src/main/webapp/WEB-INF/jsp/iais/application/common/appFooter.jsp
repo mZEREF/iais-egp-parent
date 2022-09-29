@@ -43,6 +43,7 @@
         }
     });
     function jumpPage() {
+        showWaiting();
         submit('premises','saveDraft','jumpPage');
     }
 </script>
