@@ -89,7 +89,7 @@
         select ID,LICENCE_NO,SVC_NAME,START_DATE,POSTAL_CODE,BLK_NO,FLOOR_NO,UNIT_NO,STREET_NAME,BUILDING_NAME,EXPIRY_DATE,HCI_NAME,VEHICLE_NO,PREMISES_TYPE,ORDER_INDEX from (
             SELECT  top(1) ID,
                     '' as LICENCE_NO,
-                    '' as LICENCE_ID,
+                    null as LICENCE_ID,
                     'first' as SVC_NAME,
                     '' as START_DATE,
                     '' as POSTAL_CODE,
@@ -107,7 +107,7 @@
             UNION
             SELECT  T3.ID,
                     T1.LICENCE_NO,
-                    T1.ID,
+                    T1.ID LICENCE_ID,
                     T1.SVC_NAME,
                     T1.START_DATE,
                     T3.POSTAL_CODE,
