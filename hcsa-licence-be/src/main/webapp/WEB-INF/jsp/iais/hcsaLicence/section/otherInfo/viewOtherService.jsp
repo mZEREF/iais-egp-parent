@@ -1,6 +1,6 @@
 <c:if test="${otherInfo.existCheckedRels || oldOtherInfo.existCheckedRels}">
-    <div class="">
-        <div class="app-title">${otherInfo.specialSvcSecName}</div>
+    <div class="col-xs-12">
+        <div class="app-title">Other Service</div>
     </div>
     <iais:row>
         <fieldset class="fieldset-content">

@@ -10,10 +10,8 @@
             <c:forEach var="otherInfo" items="${currentPreviewSvcInfo.appSvcOtherInfoList}" varStatus="status">
             <c:set var="oldOtherInfo"  value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcOtherInfoList[status.index]}" />
             <iais:row>
-                <div class="col-xs-12">
-                    <div class="app-title">${otherInfo.premName}</div>
-                    <p class="font-18 bold">${otherInfo.premAddress}</p>
-                </div>
+                <div class="app-title">${otherInfo.premName}</div>
+                <p class="font-18 bold">${otherInfo.premAddress}</p>
             </iais:row>
             <div class="row">
                 <div class="">
@@ -212,9 +210,6 @@
                         <c:when test="${currentPreviewSvcInfo.serviceCode == AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL}">
                             <%@include file="viewYfVs.jsp"%>
                         </c:when>
-                        <c:otherwise>
-
-                        </c:otherwise>
                     </c:choose>
                     <%@include file="viewOtherService.jsp"%>
                 </div>
