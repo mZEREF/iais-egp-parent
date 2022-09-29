@@ -21,6 +21,7 @@
                         <p class="assessment-title"><iais:code code="CDN002"/> for ${lackSvc.svcName}</p>
                         <div class="base-svc-content">
                             <input type="hidden" name="svcName" value="${lackSvc.svcName}"/>
+                            <input type="hidden" class="isNewOrBase" name="isNewOrBase${lackSvc.svcName}" value="base"/>
                             <c:set var="baseLics" value="${baseSvcPremisesMap.get(lackSvc.svcName)}"/>
                             <c:if test="${!empty baseLics}">
                                 <div class="exist-base-lic-content">
@@ -29,7 +30,7 @@
                                         </div>
                                         <div class="col-xs-12 col-md-11">
                                             <div class="form-check">
-                                                <input type="hidden" name="base${status.index}" value="${lackSvc.svcCode}"/>
+                                                <input type="hidden" name="base${indexNo}" value="${lackSvc.svcCode}"/>
                                                 <input class="form-check-input firstStep existing-base" type="radio" name="${lackSvc.svcCode}-base" value="base${indexNo}" aria-invalid="false"
                                                        <c:if test="${!newLic && baseSvcSel.serviceCode == lackSvc.svcCode}">checked="checked"</c:if> >
                                                 <label class="form-check-label"><span class="check-circle"></span>Existing ${lackSvc.svcName} licences</label>
@@ -48,7 +49,7 @@
                                                         <input type="hidden" name="${premIndexNo}-hciCode" value="<iais:mask name="${premIndexNo}-hciCode" value="${baseLic.hciCode}"/>"/>
                                                         <input type="hidden" name="${premIndexNo}-postCode" value="<iais:mask name="${premIndexNo}-postCode" value="${baseLic.postalCode}"/>"/>
                                                         <input class="form-check-input secondStep" type="radio" name="${lackSvc.svcCode}" value="${premIndexNo}" aria-invalid="false"
-                                                               <c:if test="${!newLic && baseSvcSel.serviceCode == lackSvc.svcCode && baseLic.premisesId == baseSvcSel.premisesId}">checked="checked"</c:if> >
+                                                               <c:if test="${!newLic && baseSvcSel.serviceCode == lackSvc.svcCode && baseLic.premisesId == baseSvcSel.licPremisesId}">checked="checked"</c:if> >
                                                         <label class="form-check-label"><span class="check-circle"></span>${baseLic.address}</label>
                                                     </div>
                                                 </div>
@@ -63,7 +64,8 @@
                                 <div class="col-xs-12 col-md-11">
                                     <div class="form-check">
                                         <input type="hidden" name="${indexNo}-new" value="${baseSvc.svcCode}"/>
-                                        <input class="form-check-input firstStep diff-base" type="radio" name="${lackSvc.svcCode}-base" value="${indexNo}-new" aria-invalid="false" <c:if test="${newLic && baseSvcSel.serviceCode == baseSvc.svcCode}">checked="checked"</c:if> >
+                                        <input class="form-check-input firstStep diff-base" type="radio" name="${lackSvc.svcCode}-base" value="${indexNo}-new" aria-invalid="false"
+                                               <c:if test="${newLic && baseSvcSel.serviceCode == lackSvc.svcCode}">checked="checked"</c:if> >
                                         <label class="form-check-label"><span class="check-circle"></span>${baseSvc.svcName} at a different mode of service delivery</label>
                                     </div>
                                 </div>
@@ -82,7 +84,7 @@
         </div>
         <div class="col-xs-12 col-md-6">
             <c:forEach var="lackSvc" items="${notContainedSvcList}" varStatus="status">
-                <c:set var="indexNo" value="${stat.index}"/>
+                <c:set var="indexNo" value="${status.index}"/>
                 <div class="self-assessment-checkbox-gp gradient-light-grey">
                     <c:if test="${appSvcRelatedInfoList.size()>0}">
                         <c:set var="reloadSvcInfo" value="${appSvcRelatedInfoList.get(0)}"/>
