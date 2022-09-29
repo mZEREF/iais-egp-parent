@@ -58,6 +58,14 @@
         if (typeof refreshPersonOthers === 'function') {
             refreshPersonOthers($currContent);
         }
+        //Professional Regn. No.
+        let $regNoNode = $currContent.find('.profRegNo');
+        if (!isEmptyNode($regNoNode)) {
+            let profRegNo = $regNoNode.val();
+            if (!isEmpty(profRegNo)) {
+                $regNoNode.trigger('blur');
+            }
+        }
     }
 
     function hideEditBtn ($currContent) {
@@ -107,6 +115,7 @@
         var $currContent = $(target).last();
         initFormNodes($currContent);
         hideTag($currContent.find('.rfc-psn-detail'));
+        unDisableContent($currContent.find('.assignSelDiv'));
         showTag($currContent.find('.assignSelDiv'));
         refreshPerson($currContent, $(target).length - 1);
         $(target + ':first').find('.psnHeader').html('1');
