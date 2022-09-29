@@ -665,7 +665,7 @@ public class ServiceMenuDelegator {
                             if(appAlignLicQueryDto != null){
                                 AppLicBundleDto appLicBundleDto=new AppLicBundleDto();
                                 appLicBundleDto.setSvcCode(baseServiceDto.getSvcCode());
-                                appLicBundleDto.setLicenceNo(appAlignLicQueryDto.getLicenceNo());
+                                appLicBundleDto.setLicenceId(appAlignLicQueryDto.getLicenceId());
                                 appLicBundleDto.setPremisesId(appAlignLicQueryDto.getPremisesId());
                                 appLicBundleDto.setLicOrApp(true);
                                 appLicBundleDtoList.add(appLicBundleDto);
@@ -803,6 +803,7 @@ public class ServiceMenuDelegator {
             menuLicenceDto = menuLicenceDtos.get(0);
         }
         String alignLicenceNo = menuLicenceDto.getLicenceNo();
+        String licenceId=menuLicenceDto.getLicenceId();
         String licPremiseId = menuLicenceDto.getPremisesId();
         if("first".equals(menuLicenceDto.getSvcName())){
             alignLicenceNo = "";
@@ -835,7 +836,7 @@ public class ServiceMenuDelegator {
                 if (AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(hcsaServiceDto.getSvcCode())
                         ||AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(hcsaServiceDto.getSvcCode())){
                     AppLicBundleDto appLicBundleDto=new AppLicBundleDto();
-                    appLicBundleDto.setLicenceNo(alignLicenceNo);
+                    appLicBundleDto.setLicenceId(licenceId);
                     appLicBundleDto.setPremisesId(licPremiseId);
                     appLicBundleDtoList.add(appLicBundleDto);
                 }
