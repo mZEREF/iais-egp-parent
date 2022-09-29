@@ -9,11 +9,12 @@
         <div class="form-check-gp">
             <div class="row">
                 <div class="">
-                    <c:when test="${(currentPreviewSvcInfo.serviceCode == AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL) ||
-                        (currentPreviewSvcInfo.serviceCode == AppServicesConsts.SERVICE_CODE_BLOOD_BANKING)}">
+                    <c:choose>
+                    <c:when test="${currentPreviewSvcInfo.serviceCode == AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL || currentPreviewSvcInfo.serviceCode == AppServicesConsts.SERVICE_CODE_BLOOD_BANKING}">
                         <%@include file="viewClinicalBoratoryContent.jsp"%>
                         <%@include file="viewRadiologicalServiceContent.jsp"%>
                     </c:when>
+                    </c:choose>
                 </div>
             </div>
         </div>
