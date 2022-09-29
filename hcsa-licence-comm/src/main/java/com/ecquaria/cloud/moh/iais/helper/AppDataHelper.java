@@ -728,7 +728,6 @@ public final class AppDataHelper {
         String addr = ParamUtil.getString(request,prefix+"address");
         String licNo = ParamUtil.getString(request,prefix+"licNo");
         String expiryDate = ParamUtil.getString(request,prefix+"expiryDate");
-
         premOutSourceLicenceDto.setId(prefix);
         if (StringUtil.isNotEmpty(svcName) && HcsaServiceCacheHelper.getServiceByServiceName(svcName) != null){
             String serviceCode = HcsaServiceCacheHelper.getServiceByServiceName(svcName).getSvcCode();
@@ -736,6 +735,8 @@ public final class AppDataHelper {
         }
         premOutSourceLicenceDto.setLicenceNo(licNo);
         premOutSourceLicenceDto.setOutstandingScope(scpoing);
+        appPremGroupOutsourcedDto.setStartDateStr(startDate);
+        appPremGroupOutsourcedDto.setEndDateStr(endDate);
         appPremGroupOutsourcedDto.setBusinessName(bName);
         appPremGroupOutsourcedDto.setAddress(addr);
         appPremGroupOutsourcedDto.setExpiryDate(expiryDate);

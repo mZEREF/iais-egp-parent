@@ -141,7 +141,6 @@ public class ServiceInfoDelegator {
 
         List<SelectOption> designationOpList = ApplicationHelper.genDesignationOpList();
         ParamUtil.setSessionAttr(bpc.request, "designationOpList", (Serializable) designationOpList);
-
         log.debug(StringUtil.changeForLog("the do doStart end ...."));
     }
 
@@ -599,10 +598,15 @@ public class ServiceInfoDelegator {
 
     private void prepareOutsourcedProviders(HttpServletRequest request) {
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request,filterParameter);
-        QueryHelp.setMainSql("outSourceQuery","searchOutSource",searchParam);
-        SearchResult searchResult = licCommService.doQuery(searchParam);
-        ParamUtil.setSessionAttr(request,ApplicationConsts.OUT_SOURCE_PARAM,searchParam);
-        ParamUtil.setSessionAttr(request,ApplicationConsts.OUT_SOURCE_RESULT,searchResult);
+        if (searchParam.getParams().size() != 0){
+            QueryHelp.setMainSql("outSourceQuery","searchOutSource",searchParam);
+            SearchResult searchResult = licCommService.doQuery(searchParam);
+            ParamUtil.setSessionAttr(request,ApplicationConsts.OUT_SOURCE_PARAM,searchParam);
+            ParamUtil.setSessionAttr(request,ApplicationConsts.OUT_SOURCE_RESULT,searchResult);
+        }else {
+            ParamUtil.setSessionAttr(request,ApplicationConsts.OUT_SOURCE_PARAM,null);
+            ParamUtil.setSessionAttr(request,ApplicationConsts.OUT_SOURCE_RESULT,null);
+        }
         //OutsourcedProviders services dropdown options
         List<SelectOption> optionList = ApplicationHelper.genOutsourcedServiceSel(request, true);
         ParamUtil.setRequestAttr(request, OUTSOURCED_SERVICE_OPTS, optionList);

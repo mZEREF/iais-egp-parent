@@ -158,6 +158,10 @@ public class DealSessionUtil {
         session.removeAttribute(HcsaAppConst.LICENSEE_MAP);
         session.removeAttribute(HcsaAppConst.RFC_APP_GRP_PREMISES_DTO_LIST);
         session.removeAttribute(HcsaAppConst.PREMISESTYPE);
+
+        session.removeAttribute("outSourceParam");
+        session.removeAttribute("outSourceResult");
+
         // CR: Split RFC Logic
         clearPremisesMap(request);
     }
