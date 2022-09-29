@@ -195,14 +195,14 @@
         $('.addPoBtn').on('click', function () {
             addPersonnel(psnContent);
         });
-        // init page
-        initPerson(psnContent);
         <c:if test="${AppSubmissionDto.needEditController}">
         $(psnContent).each(function () {
             disablePsnContent($(this), psnContent);
         });
         disableContent('.dpoDropDownDiv');
         </c:if>
+        // init page
+        initPerson(psnContent);
         // check dpo
         editdpoDropDownEvent();
         deputySelectEvent();
@@ -216,12 +216,12 @@
         $('.addDpoBtn').on('click', function () {
             addPersonnel(dpoContent);
         });
-        initPerson(dpoContent);
         <c:if test="${AppSubmissionDto.needEditController}">
         $(dpoContent).each(function () {
             disablePsnContent($(this), dpoContent);
         });
         </c:if>
+        initPerson(dpoContent);
     });
 
     function refreshPersonOthers($target, action) {

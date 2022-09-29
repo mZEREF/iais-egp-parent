@@ -71,13 +71,13 @@
         $('.addPersonnelBtn').on('click', function () {
             addPersonnel(psnContent);
         });
-        // init page
-        initPerson(psnContent);
         <c:if test="${AppSubmissionDto.needEditController}">
         $(psnContent).each(function () {
             disablePsnContent($(this), psnContent);
         });
         </c:if>
+        // init page
+        initPerson(psnContent);
     });
 
     function refreshPersonOthers($target, action) {

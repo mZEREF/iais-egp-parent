@@ -73,12 +73,12 @@
         $('.addClinicalDirectorBtn').on('click', function () {
             addPersonnel(psnContent);
         });
-        initPerson(psnContent);
         <c:if test="${AppSubmissionDto.needEditController}">
         $(psnContent).each(function () {
             disablePsnContent($(this), psnContent);
         });
         </c:if>
+        initPerson(psnContent);
     });
 
     function refreshPersonOthers($target, action) {
