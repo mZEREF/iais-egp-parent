@@ -6,7 +6,6 @@
         <div class="col-xs-12">
             <p class="app-title"><c:out value="${currStepName}"/></p>
         </div>
-
         <div class="amend-preview-info form-horizontal min-row">
             <c:set var="cL" value="${currentPreviewSvcInfo.appPremOutSourceLicenceDto}"/>
             <c:choose>
