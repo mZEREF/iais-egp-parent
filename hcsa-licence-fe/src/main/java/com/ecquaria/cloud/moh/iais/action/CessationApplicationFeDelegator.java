@@ -34,7 +34,6 @@ import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -42,7 +41,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import sop.util.CopyUtil;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -172,13 +170,13 @@ public class CessationApplicationFeDelegator {
 
         List<AppCessLicDto> appCessDtosByLicIds = cessationFeService.getAppCessDtosByLicIds(licIds);
 
-        int size = appCessDtosByLicIds.size();
+       // int size = appCessDtosByLicIds.size();
         List<SelectOption> reasonOption = getReasonOption();
         List<SelectOption> patientsOption = getPatientsOption();
         ParamUtil.setSessionAttr(bpc.request, APPCESSATIONDTOS, (Serializable) appCessDtosByLicIds);
         ParamUtil.setSessionAttr(bpc.request, "reasonOption", (Serializable) reasonOption);
         ParamUtil.setSessionAttr(bpc.request, "patientsOption", (Serializable) patientsOption);
-        ParamUtil.setSessionAttr(bpc.request, "size", size);
+        //ParamUtil.setSessionAttr(bpc.request, "size", size);
         ParamUtil.setSessionAttr(bpc.request, READINFO, null);
         ParamUtil.setSessionAttr(bpc.request, "licIds", (Serializable) licIds);
         log.info(StringUtil.changeForLog("The init end ..."));
@@ -198,16 +196,19 @@ public class CessationApplicationFeDelegator {
         }
         List<String> licIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "licIds");
         List<AppCessLicDto> appCessDtosByLicIds = (List<AppCessLicDto>) ParamUtil.getSessionAttr(bpc.request, APPCESSATIONDTOS);
-        int size = (int) ParamUtil.getSessionAttr(bpc.request, "size");
-        List<AppCessLicDto> appCessHciDtos = prepareDataForValiant(bpc, size, appCessDtosByLicIds);
-        List<AppCessLicDto> cloneAppCessHciDtos = IaisCommonUtils.genNewArrayList();
+        //int size = (int) ParamUtil.getSessionAttr(bpc.request, "size");
+
+        List<AppCessLicDto> appCessLicDtos = prepareDataForValiant(bpc, appCessDtosByLicIds);
+
+        /*List<AppCessLicDto> cloneAppCessHciDtos = IaisCommonUtils.genNewArrayList();
         CopyUtil.copyMutableObjectList(appCessHciDtos, cloneAppCessHciDtos);
-        List<AppCessLicDto> confirmDtos = getConfirmDtos(cloneAppCessHciDtos);
-        ParamUtil.setSessionAttr(bpc.request, APPCESSATIONDTOS, (Serializable) appCessHciDtos);
-        String readInfo = ParamUtil.getRequestString(bpc.request, READINFO);
-        ParamUtil.setSessionAttr(bpc.request, READINFO, readInfo);
-        Map<String, String> errorMap = new HashMap<>(34);
-        Boolean choose = Boolean.FALSE;
+        List<AppCessLicDto> confirmDtos = getConfirmDtos(cloneAppCessHciDtos);*/
+        ParamUtil.setSessionAttr(bpc.request, APPCESSATIONDTOS, (Serializable) appCessLicDtos);
+
+        /*String readInfo = ParamUtil.getRequestString(bpc.request, READINFO);
+        ParamUtil.setSessionAttr(bpc.request, READINFO, readInfo);*/
+        Map<String, String> errorMap = doValidate(appCessLicDtos);
+       /* Boolean choose = Boolean.FALSE;
         for (int i = 1; i <= size; i++) {
             int size1 = appCessDtosByLicIds.get(i - 1).getAppCessHciDtos().size();
             for (int j = 1; j <= size1; j++) {
@@ -220,13 +221,13 @@ public class CessationApplicationFeDelegator {
         }
         if (!choose) {
             errorMap.put("choose", MessageUtil.getMessageDesc("CESS_ERR003"));
-        }
-        if (confirmDtos.isEmpty()) {
+        }*/
+        /*if (confirmDtos.isEmpty()) {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
             return;
-        }
-        for (int i = 1; i <= size; i++) {
+        }*/
+        /*for (int i = 1; i <= size; i++) {
             int size1 = appCessHciDtos.get(i - 1).getAppCessHciDtos().size();
             for (int j = 1; j <= size1; j++) {
                 String whichTodo = ParamUtil.getRequestString(bpc.request, i + WHICHTODO + j);
@@ -235,7 +236,7 @@ public class CessationApplicationFeDelegator {
                     errorMap.putAll(validate);
                 }
             }
-        }
+        }*/
         if (!errorMap.isEmpty()) {
             if (!IaisCommonUtils.isEmpty(licIds)) {
                 if (licIds.size() == 1) {
@@ -250,8 +251,8 @@ public class CessationApplicationFeDelegator {
             return;
         }
 
-        List<AppCessationDto> appCessationDtos = transformDto(cloneAppCessHciDtos);
-        ParamUtil.setSessionAttr(bpc.request, "confirmDtos", (Serializable) confirmDtos);
+        List<AppCessationDto> appCessationDtos = transformDto(appCessLicDtos);
+        //ParamUtil.setSessionAttr(bpc.request, "confirmDtos", (Serializable) confirmDtos);
         ParamUtil.setRequestAttr(bpc.request, "printFlag","Y");
         ParamUtil.setRequestAttr(bpc.request, "viewPrint","Y");
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
@@ -298,11 +299,9 @@ public class CessationApplicationFeDelegator {
         IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }
 
-    /*
-     * utils
-     */
 
-    private List<AppCessLicDto> prepareDataForValiant(BaseProcessClass bpc, int size, List<AppCessLicDto> appCessDtosByLicIds) {
+
+    private  AppDeclarationMessageDto getAppDeclarationMessageDto(BaseProcessClass bpc){
         AppDeclarationMessageDto appDeclarationMessageDto = new AppDeclarationMessageDto();
         String preliminaryquestionkindly = ParamUtil.getRequestString(bpc.request, PRELIMINARYQUESTIONKINDLY);
         String isbefore = ParamUtil.getRequestString(bpc.request, ISBEFORE);
@@ -312,18 +311,25 @@ public class CessationApplicationFeDelegator {
         appDeclarationMessageDto.setPreliminaryQuestionKindly(preliminaryquestionkindly);
         appDeclarationMessageDto.setPreliminaryQuestionItem1(isbefore);
         appDeclarationMessageDto.setPreliminaryQuestiontem2(issurrendering);
+        return appDeclarationMessageDto;
+    }
+
+    /*
+     * utils
+     */
+
+    private List<AppCessLicDto> prepareDataForValiant(BaseProcessClass bpc, List<AppCessLicDto> appCessDtosByLicIds) {
+        //for Declaration Message
+        AppDeclarationMessageDto appDeclarationMessageDto = getAppDeclarationMessageDto(bpc);
         List<AppDeclarationDocDto> cessationDocData = AppDataHelper.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_CESSATION,
                 bpc.request);
         DealSessionUtil.initDeclarationFiles(cessationDocData,ApplicationConsts.APPLICATION_TYPE_CESSATION,bpc.request);
-        List<AppCessLicDto> appCessLicDtos = IaisCommonUtils.genNewArrayList();
-        for (int i = 1; i <= size; i++) {
+        for (int i = 1; i <= appCessDtosByLicIds.size(); i++) {
             AppCessLicDto appCessLicDto = appCessDtosByLicIds.get(i - 1);
             List<AppCessHciDto> appCessHciDtoso = appCessLicDto.getAppCessHciDtos();
-            int size1 = appCessHciDtoso.size();
-            List<AppCessHciDto> appCessHciDtos = IaisCommonUtils.genNewArrayList();
-            for (int j = 1; j <= size1; j++) {
+            for (int j = 1; j <= appCessHciDtoso.size(); j++) {
                 AppCessHciDto appCessHciDto = appCessHciDtoso.get(j - 1);
-                String whichTodo = ParamUtil.getRequestString(bpc.request, i + WHICHTODO + j);
+               // String whichTodo = ParamUtil.getRequestString(bpc.request, i + WHICHTODO + j);
                 String effectiveDateStr = ParamUtil.getRequestString(bpc.request, i + EFFECTIVEDATE + j);
                 Date effectiveDate = DateUtil.parseDate(effectiveDateStr, AppConsts.DEFAULT_DATE_FORMAT);
                 String reason = ParamUtil.getRequestString(bpc.request, i + REASON + j);
@@ -335,7 +341,7 @@ public class CessationApplicationFeDelegator {
                 } else if ("no".equals(patRadio)) {
                     patNeedTrans = Boolean.FALSE;
                 }
-                String patientSelect = ParamUtil.getRequestString(bpc.request, i + PATIENTSELECT + j);
+                /*String patientSelect = ParamUtil.getRequestString(bpc.request, i + PATIENTSELECT + j);
                 String patNoRemarks = ParamUtil.getRequestString(bpc.request, i + PATNOREMARKS + j);
                 String patNoConfirm = ParamUtil.getRequestString(bpc.request, i + PATNOCONFIRM + j);
                 String patHciName = ParamUtil.getRequestString(bpc.request, i + PATHCINAME + j);
@@ -345,11 +351,11 @@ public class CessationApplicationFeDelegator {
                 String patEmailAddress = ParamUtil.getRequestString(bpc.request, i + PATOTHERSEMAILADDRESS + j);
                 String readInfo = ParamUtil.getRequestString(bpc.request, READINFO);
                 String hciName = appCessHciDto.getHciName();
-                String hciAddress = appCessHciDto.getHciAddress();
+                String hciAddress = appCessHciDto.getHciAddress();*/
                 String transferredWhere = ParamUtil.getRequestString(bpc.request, i + TRANSFERREDWHERE + j);
                 String transferDetail = ParamUtil.getRequestString(bpc.request, i + TRANSFERDETAIL + j);
 
-                appCessHciDto.setHciAddress(hciAddress);
+              /*  appCessHciDto.setHciAddress(hciAddress);
                 if (!StringUtil.isEmpty(patHciName)) {
                     PremisesDto premisesDto = cessationFeService.getPremiseByHciCodeName(patHciName);
                     if (premisesDto != null) {
@@ -361,12 +367,12 @@ public class CessationApplicationFeDelegator {
                         appCessHciDto.setHciAddressPat(hciAddressPat);
                     }
                 }
-                appCessHciDto.setHciName(hciName);
+                appCessHciDto.setHciName(hciName);*/
                 appCessHciDto.setEffectiveDate(effectiveDate);
                 appCessHciDto.setReason(reason);
                 appCessHciDto.setOtherReason(otherReason);
                 appCessHciDto.setPatNeedTrans(patNeedTrans);
-                appCessHciDto.setPatientSelect(patientSelect);
+                /*appCessHciDto.setPatientSelect(patientSelect);
                 appCessHciDto.setPatNoRemarks(patNoRemarks);
                 appCessHciDto.setPatNoConfirm(patNoConfirm);
                 appCessHciDto.setPatHciName(patHciName);
@@ -375,17 +381,15 @@ public class CessationApplicationFeDelegator {
                 appCessHciDto.setMobileNo(patMobile);
                 appCessHciDto.setEmailAddress(patEmailAddress);
                 appCessHciDto.setPremiseIdChecked(whichTodo);
-                appCessHciDto.setReadInfo(readInfo);
+                appCessHciDto.setReadInfo(readInfo);*/
                 appCessHciDto.setTransferredWhere(transferredWhere);
                 appCessHciDto.setTransferDetail(transferDetail);
-                appCessHciDtos.add(appCessHciDto);
             }
-            appCessLicDto.setAppCessHciDtos(appCessHciDtos);
+            appCessLicDto.setAppCessHciDtos(appCessHciDtoso);
             appCessLicDto.setAppDeclarationDocDtos(cessationDocData);
             appCessLicDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
-            appCessLicDtos.add(appCessLicDto);
         }
-        return appCessLicDtos;
+        return appCessDtosByLicIds;
     }
 
     private List<AppCessationDto> transformDto(List<AppCessLicDto> appCessLicDtos) {
@@ -446,7 +450,7 @@ public class CessationApplicationFeDelegator {
         return appCessationDtos;
     }
 
-    private List<AppCessLicDto> getConfirmDtos(List<AppCessLicDto> appCessLicDtos) {
+    /*private List<AppCessLicDto> getConfirmDtos(List<AppCessLicDto> appCessLicDtos) {
         for (AppCessLicDto appCessLicDto : appCessLicDtos) {
             List<AppCessHciDto> appCessHciDtos = appCessLicDto.getAppCessHciDtos();
             if (appCessHciDtos != null && !appCessHciDtos.isEmpty()) {
@@ -468,68 +472,74 @@ public class CessationApplicationFeDelegator {
             }
         }
         return appCessLicDtos;
-    }
+    }*/
 
-    private Map<String, String> validate(BaseProcessClass bpc, int i, int j) {
-        HttpServletRequest httpServletRequest = bpc.request;
-        Map<String, String> errorMap = new HashMap<>(34);
-        String effectiveDateStr = ParamUtil.getRequestString(httpServletRequest, i + EFFECTIVEDATE + j);
-        if (StringUtil.isEmpty(effectiveDateStr)) {
-            errorMap.put(i + EFFECTIVEDATE + j, MessageUtil.replaceMessage(ERROR, "Effective Date", "field"));
-        }
-        String reason = ParamUtil.getRequestString(httpServletRequest, i + "reason" + j);
-        if (StringUtil.isEmpty(reason)) {
-            errorMap.put(i + REASON + j, MessageUtil.replaceMessage(ERROR, "Cessation Reasons", "field"));
-        }
-        String patRadio = ParamUtil.getRequestString(httpServletRequest, i + PATRADIO + j);
-        if (StringUtil.isEmpty(patRadio)) {
-            errorMap.put(i + PATRADIO + j, MessageUtil.replaceMessage(ERROR, "Patients' Record will be transferred", "field"));
-        }
-
-        String cessationReason = ParamUtil.getRequestString(httpServletRequest, i + REASON + j);
-        String otherReason = ParamUtil.getRequestString(httpServletRequest, i + OTHERREASON + j);
-
-        String transferredWhere = ParamUtil.getRequestString(bpc.request, i + TRANSFERREDWHERE + j);
-        String transferDetail = ParamUtil.getRequestString(bpc.request, i + TRANSFERDETAIL + j);
-
-        String preliminaryquestionkindly = ParamUtil.getRequestString(bpc.request, PRELIMINARYQUESTIONKINDLY);
-        String isbefore = ParamUtil.getRequestString(bpc.request, ISBEFORE);
-        String issurrendering = ParamUtil.getRequestString(bpc.request, ISSURRENDERING);
+    private Map<String, String> doValidate(List<AppCessLicDto> appCessLicDtos) {
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String otherError = MessageUtil.replaceMessage(ERROR, "Others", "field");
-        if (StringUtil.isEmpty(preliminaryquestionkindly)){
-            errorMap.put(PRELIMINARYQUESTIONKINDLY, otherError);
-        }else{
-            if (AppConsts.NO.equals(preliminaryquestionkindly)){
-                List<AppDeclarationDocDto> cessationDocData = AppDataHelper.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_CESSATION,
-                        bpc.request);
-                if (cessationDocData == null){
-                    errorMap.put(SELECTEDFILEERROR, otherError);
+        if(IaisCommonUtils.isNotEmpty(appCessLicDtos)){
+            for (int i = 1; i <= appCessLicDtos.size(); i++) {
+                AppCessLicDto appCessLicDto = appCessLicDtos.get(i - 1);
+                List<AppCessHciDto> appCessHciDtos = appCessLicDto.getAppCessHciDtos();
+                for (int j = 1; j <= appCessHciDtos.size(); j++) {
+                    AppCessHciDto appCessHciDto = appCessHciDtos.get(j - 1);
+                    Date effectiveDate = appCessHciDto.getEffectiveDate();
+                    if (effectiveDate == null) {
+                        errorMap.put(i + EFFECTIVEDATE + j, MessageUtil.replaceMessage(ERROR, "Effective Date", "field"));
+                    }
+                    String reason = appCessHciDto.getReason();
+                    if (StringUtil.isEmpty(reason)) {
+                        errorMap.put(i + REASON + j, MessageUtil.replaceMessage(ERROR, "Cessation Reasons", "field"));
+                    }
+                    String otherReason = appCessHciDto.getOtherReason();
+                    if (ApplicationConsts.CESSATION_REASON_OTHER.equals(reason)) {
+                        if (StringUtil.isEmpty(otherReason)) {
+                            errorMap.put(i + OTHERREASON + j, otherError);
+                        }
+                    }
+                    Boolean patRadio = appCessHciDto.getPatNeedTrans();
+                    if (patRadio == null) {
+                        errorMap.put(i + PATRADIO + j, MessageUtil.replaceMessage(ERROR, "Patients' Record will be transferred", "field"));
+                    }
+
+                    String transferredWhere = appCessHciDto.getTransferredWhere();
+                    String transferDetail = appCessHciDto.getTransferDetail(); String general_err0041= AppValidatorHelper.repLength("this","1000");
+                    if ("yes".equals(patRadio)) {
+                        if (!StringUtil.isEmpty(transferredWhere) && transferredWhere.length()>1000) {
+                            errorMap.put(i + TRANSFERREDWHERE + j, general_err0041);
+                        }
+                    }
+                    if ("no".equals(patRadio)) {
+                        //String errMsg=MessageUtil.replaceMessage(ERROR, "Reason for no patients' records transfer", "field");
+                        if (!StringUtil.isEmpty(transferDetail) && transferDetail.length()>1000) {
+                            errorMap.put(i + TRANSFERDETAIL + j, general_err0041);
+                        }
+                    }
                 }
-            }
-        }
-        if (StringUtil.isEmpty(isbefore)){
-            errorMap.put(ISBEFORE, otherError);
-        }
-        if (StringUtil.isEmpty(issurrendering)){
-            errorMap.put(ISSURRENDERING, otherError);
-        }
-        if (ApplicationConsts.CESSATION_REASON_OTHER.equals(cessationReason)) {
-            if (StringUtil.isEmpty(otherReason)) {
-                errorMap.put(i + OTHERREASON + j, otherError);
-            }
-        }
+                //for Declaration Message
+                if(1 == i){
+                    AppDeclarationMessageDto appDeclarationMessageDto = appCessLicDto.getAppDeclarationMessageDto();
+                    String preliminaryquestionkindly = appDeclarationMessageDto.getPreliminaryQuestionKindly();
+                    String isbefore = appDeclarationMessageDto.getPreliminaryQuestionItem1();
+                    String issurrendering = appDeclarationMessageDto.getPreliminaryQuestiontem2();
 
-        String general_err0041= AppValidatorHelper.repLength("this","1000");
-        if ("yes".equals(patRadio)) {
-            if (!StringUtil.isEmpty(transferredWhere) && transferredWhere.length()>1000) {
-                errorMap.put(i + TRANSFERREDWHERE + j, general_err0041);
-            }
-
-        }
-        if ("no".equals(patRadio)) {
-            //String errMsg=MessageUtil.replaceMessage(ERROR, "Reason for no patients' records transfer", "field");
-            if (!StringUtil.isEmpty(transferDetail) && transferDetail.length()>1000) {
-                errorMap.put(i + TRANSFERDETAIL + j, general_err0041);
+                    if (StringUtil.isEmpty(preliminaryquestionkindly)){
+                        errorMap.put(PRELIMINARYQUESTIONKINDLY, otherError);
+                    }else{
+                        if (AppConsts.NO.equals(preliminaryquestionkindly)){
+                            List<AppDeclarationDocDto> cessationDocData = appCessLicDto.getAppDeclarationDocDtos();
+                            if (cessationDocData == null){
+                                errorMap.put(SELECTEDFILEERROR, otherError);
+                            }
+                        }
+                    }
+                    if (StringUtil.isEmpty(isbefore)){
+                        errorMap.put(ISBEFORE, otherError);
+                    }
+                    if (StringUtil.isEmpty(issurrendering)){
+                        errorMap.put(ISSURRENDERING, otherError);
+                    }
+                }
             }
         }
         return errorMap;

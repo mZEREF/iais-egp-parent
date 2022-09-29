@@ -329,11 +329,11 @@
         submit(action);
     }
 
-    function back(action) {
+    /*function back(action) {
         submit(action);
-    }
+    }*/
 
-    function getHci(obj) {
+    /*function getHci(obj) {
         var value = $(obj).val();
         loadHci(value, obj);
     }
@@ -375,7 +375,7 @@
         var hciAddress = hciCode.next();
         hciCode.hide();
         hciAddress.hide();
-    }
+    }*/
 
     function changeReasonCessFe() {
         for (var i = 1; i < 8; i++) {
