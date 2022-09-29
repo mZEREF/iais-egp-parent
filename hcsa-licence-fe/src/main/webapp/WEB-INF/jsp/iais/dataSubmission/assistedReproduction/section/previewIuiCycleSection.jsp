@@ -14,11 +14,19 @@
         <c:set var="donorDtos" value="${iuiCycleStageDto.donorDtos}"/>
         <%@include file="patientCommon.jsp"%>
         <iais:row>
-          <iais:field width="5" value="Premises where IUI is Performed" mandatory="false"/>
+          <iais:field width="5" value="Is the IUI Performed in the current Institution" mandatory="false"/>
           <iais:value width="7" cssClass="col-md-7" display="true" >
-         <c:out value="${iuiCycleStageDto.ownPremises ? 'Own premises' : 'Others'}"></c:out>
+         <c:out value="${iuiCycleStageDto.ownPremises ? 'Yes' : 'No'}"></c:out>
           </iais:value>
         </iais:row>
+        <c:if test="${iuiCycleStageDto.ownPremises}">
+          <iais:row>
+            <iais:field width="5" value="IUI Treatment Performed in Own Premise" mandatory="false"/>
+            <iais:value width="7" cssClass="col-md-7" display="true" >
+              <iais:optionText value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"/>
+            </iais:value>
+          </iais:row>
+        </c:if>
         <c:if test="${!iuiCycleStageDto.ownPremises}">
         <iais:row>
           <iais:field width="5" value="Name of Premise Where IUI Treatment Is Performed" mandatory="false"/>
