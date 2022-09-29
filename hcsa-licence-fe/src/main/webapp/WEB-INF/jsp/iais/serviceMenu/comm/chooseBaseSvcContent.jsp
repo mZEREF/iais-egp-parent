@@ -5,7 +5,6 @@
         <div class="col-xs-12 col-md-6">
             <c:forEach var="lackSvc" items="${notContainedSvcList}" varStatus="statu">
                 <c:set var="indexNo" value="${statu.index}"/>
-                ${indexNo}
                 <div class="self-assessment-checkbox-gp gradient-light-grey">
                     <c:if test="${appSvcRelatedInfoList.size()>0}">
                         <c:set var="reloadSvcInfo" value="${appSvcRelatedInfoList.get(0)}"/>
