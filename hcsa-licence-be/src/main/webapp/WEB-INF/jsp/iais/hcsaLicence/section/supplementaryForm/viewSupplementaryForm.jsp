@@ -9,7 +9,7 @@
                 <c:forEach var="appSvcSuplmFormDto" items="${appSvcSuplmFormList}" varStatus="statute">
                 <c:set var="oldAppSvcSuplmFormDto" value="${oldAppSvcSuplmFormList[statute.index]}"/>
                 <iais:row>
-                    <div class="col-xs-12">
+                    <div class="">
                         <div class="app-title">${appSvcSuplmFormDto.premName}</div>
                         <p class="font-18 bold">${appSvcSuplmFormDto.premAddress}</p>
                     </div>

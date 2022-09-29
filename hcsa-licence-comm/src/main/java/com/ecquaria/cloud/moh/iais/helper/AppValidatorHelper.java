@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SpecialServiceSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpSecondAddrDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremScopeDto;
@@ -3736,6 +3737,121 @@ public final class AppValidatorHelper {
             } else {
                 if (!isEarly(bclsExpiryDateStr, currRegiDate)) {
                     errorMap.put(prefix + "bclsExpiryDate" + subfix, "SC_ERR009");
+                }
+            }
+        }
+    }
+
+
+    public static void doVolidataPremises(List<AppGrpSecondAddrDto> appGrpSecondAddrDtoList, Map<String,String> errorMap, HttpServletRequest request, List<String> codeList){
+        if (IaisCommonUtils.isEmpty(appGrpSecondAddrDtoList)){
+            return;
+        }
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, "appSubmissionDto");
+        String id = null;
+        if (!StringUtil.isEmpty(appSubmissionDto)){
+            List<AppGrpPremisesDto> dtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+            if (IaisCommonUtils.isNotEmpty(dtoList)){
+                id = dtoList.get(0).getId();
+            }
+        }
+        for (int i = 0; i < appGrpSecondAddrDtoList.size(); i++) {
+            AppGrpSecondAddrDto appGrpSecondAddrDto = appGrpSecondAddrDtoList.get(i);
+            appGrpSecondAddrDto.setAppGrpPremisesId(id);
+            List<AppPremisesOperationalUnitDto> unitDtos = appGrpSecondAddrDto.getAppPremisesOperationalUnitDtos();
+//            set uniid
+            if (IaisCommonUtils.isNotEmpty(unitDtos)){
+                for (AppPremisesOperationalUnitDto unitDto : unitDtos) {
+                    unitDto.setPremisesId(id);
+                    unitDto.setSecondAddrId(appGrpSecondAddrDto.getId());
+                }
+            }
+            validateContactInfo(appGrpSecondAddrDto,errorMap,Integer.valueOf(i),codeList);
+        }
+    }
+    private static Map<String, String> validateContactInfo(AppGrpSecondAddrDto appGrpSecondAddrDto,Map<String, String> errorMap, int i,List<String> codeList) {
+        String postalCode = appGrpSecondAddrDto.getPostalCode();
+        String buildingName = appGrpSecondAddrDto.getBuildingName();
+        String streetName = appGrpSecondAddrDto.getStreetName();
+        String addrType = appGrpSecondAddrDto.getAddrType();
+        String blkNo = appGrpSecondAddrDto.getBlkNo();
+        String floorNo = appGrpSecondAddrDto.getFloorNo();
+        String unitNo = appGrpSecondAddrDto.getUnitNo();
+        String blkNoKey = "blkNo" + i;
+        if (!StringUtil.isEmpty(buildingName) && buildingName.length() > 66) {
+            String errorMsg = repLength("Building Name", "66");
+            errorMap.put("buildingName" + i, errorMsg);
+        }
+        if (StringUtil.isEmpty(streetName)) {
+            errorMap.put("streetName" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Street Name", "field"));
+        } else if (streetName.length() > 32) {
+            errorMap.put("streetName" + i, repLength("Street Name", "32"));
+        }
+
+        if (StringUtil.isEmpty(addrType)) {
+            errorMap.put("addrType" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Address Type", "field"));
+        }
+        boolean empty1 = StringUtil.isEmpty(blkNo);
+        if (empty1 && "Apt Blk".equals(addrType)) {
+            errorMap.put(blkNoKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Block / House No.", "field"));
+        } else if (!empty1 && blkNo.length() > 10) {
+            String errorMsg = repLength("Block / House No.", "10");
+            errorMap.put(blkNoKey, errorMsg);
+        }
+        if ("Apt Blk".equals(addrType)){
+            if (StringUtil.isEmpty(floorNo)){
+                errorMap.put(i+"FloorNo" + 0, MessageUtil.replaceMessage("GENERAL_ERR0006", "Floor No.", "field"));
+            }else if (floorNo.length() > 3){
+                errorMap.put(i+"FloorNo" + 0, repLength("Floor No.", "3"));
+            }
+            if (StringUtil.isEmpty(unitNo)){
+                errorMap.put(i+"UnitNo" + 0, MessageUtil.replaceMessage("GENERAL_ERR0006", "Unit No.", "field"));
+            }else if (unitNo.length() > 5){
+                errorMap.put(i+"UnitNo" + 0, repLength("Unit No.", "5"));
+            }
+        }
+        String postalCodeKey = "postalCode" + i;
+        if (!StringUtil.isEmpty(postalCode)) {
+            if (postalCode.length() > 6) {
+                String errorMsg = repLength("Postal Code", "6");
+                errorMap.put(postalCodeKey, errorMsg);
+            } else if (postalCode.length() < 6) {
+                errorMap.put(postalCodeKey, "NEW_ERR0004");
+            } else if (!postalCode.matches("^[0-9]{6}$")) {
+                errorMap.put(postalCodeKey, "NEW_ERR0004");
+            }else if(codeList.contains(postalCode)){
+                errorMap.put(postalCodeKey, "NEW_ACK010");
+            }else {
+                codeList.add(postalCode);
+            }
+        } else {
+            errorMap.put(postalCodeKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Postal Code ", "field"));
+        }
+        // validate floor and units
+        validateOperaionUnits(appGrpSecondAddrDto,errorMap,i);
+        return errorMap;
+    }
+
+    private static void validateOperaionUnits(AppGrpSecondAddrDto appGrpSecondAddrDto,Map<String,String> errorMap,int index) {
+        if (IaisCommonUtils.isNotEmpty(appGrpSecondAddrDto.getAppPremisesOperationalUnitDtos())){
+            List<AppPremisesOperationalUnitDto> dtos = appGrpSecondAddrDto.getAppPremisesOperationalUnitDtos();
+            if ( "Apt Blk".equals(appGrpSecondAddrDto.getAddrType())){
+                for (int i = 0; i < dtos.size(); i++) {
+                    AppPremisesOperationalUnitDto unitDto = dtos.get(i);
+                    String floorNo = unitDto.getFloorNo();
+                    String unitNo = unitDto.getUnitNo();
+                    boolean floorNoFlag = StringUtil.isEmpty(floorNo);
+                    boolean unitNoFlag = StringUtil.isEmpty(unitNo);
+                    if (floorNoFlag) {
+                        errorMap.put(index+"FloorNo"+(i+1), MessageUtil.replaceMessage("GENERAL_ERR0006", "Floor No.", "field"));
+                    } else if (floorNo.length() > 3){
+                        errorMap.put(index+"FloorNo"+(i+1), repLength("Floor No.", "3"));
+                    }
+                    if (unitNoFlag) {
+                        errorMap.put(index+"UnitNo"+(i+1), MessageUtil.replaceMessage("GENERAL_ERR0006", "Unit No.", "field"));
+                    }else if (unitNo.length() > 5){
+                        errorMap.put(index+"UnitNo"+(i+1), repLength("Unit No.", "5"));
+                    }
                 }
             }
         }

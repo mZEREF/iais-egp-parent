@@ -45,8 +45,9 @@
     </tr>
     </thead>
     <tbody>
-    <c:forEach var="msgTemplateResult" items="${currentPreviewSvcInfo.AppSvcOutsouredDto.clinicalLaboratoryList}" varStatus="status">
-    <c:set var="oldMsgTemplateResult"  value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.AppSvcOutsouredDto.clinicalLaboratoryList[status.index]}" />
+    ${currentPreviewSvcInfo.appPremOutSourceLicenceDto.clinicalLaboratoryList}
+    <c:forEach var="msgTemplateResult" items="${currentPreviewSvcInfo.appPremOutSourceLicenceDto.clinicalLaboratoryList}" varStatus="status">
+    <c:set var="oldMsgTemplateResult"  value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appPremOutSourceLicenceDto.clinicalLaboratoryList[status.index]}" />
         <c:set var="appPremOutSourceLicenceDto" value="${msgTemplateResult.appPremOutSourceLicenceDto}"/>
         <c:set var="oldAppPremOutSourceLicenceDto" value="${oldMsgTemplateResult.appPremOutSourceLicenceDto}"/>
         <tr>

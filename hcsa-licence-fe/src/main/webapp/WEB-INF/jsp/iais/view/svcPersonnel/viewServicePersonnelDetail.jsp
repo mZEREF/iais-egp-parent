@@ -13,17 +13,6 @@
         </iais:value>
     </iais:row>
 
-    <c:if test="${empty appSvcPersonnelDto.salutation}">
-        <c:set value="hidden" var="isShow"/>
-    </c:if>
-
-    <iais:row cssClass="${isShow}">
-        <iais:field width="5" value="Salutation"/>
-        <iais:value width="7" cssClass="col-md-7" display="true">
-            <iais:code code="${appSvcPersonnelDto.salutation}"/>
-        </iais:value>
-    </iais:row>
-
     <c:if test="${appSvcPersonnelDto.personnelType == 'SPPT001'}">
         <iais:row>
             <iais:field width="5" value="Designation" cssClass="col-sm-5"/>

@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
@@ -855,7 +856,7 @@ public class ApplicationAjaxController {
         if (IaisCommonUtils.isNotEmpty(appGrpSecondAddrDtoList)){
             Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
             if (IaisCommonUtils.isNotEmpty(appGrpSecondAddrDtoList)){
-                serviceInfoDelegator.doVolidataPremises(appGrpSecondAddrDtoList,errorMap,request,codeList);
+                AppValidatorHelper.doVolidataPremises(appGrpSecondAddrDtoList,errorMap,request,codeList);
             }
             appGrpSecondAddrDtoList.forEach(e->{
                     if("".equals(e.getId())){
