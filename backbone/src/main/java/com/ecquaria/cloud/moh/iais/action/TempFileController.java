@@ -1,4 +1,4 @@
-package com.ecquaria.cloud.moh.iais.rest;
+package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.moh.iais.common.annotation.LogInfo;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
