@@ -61,17 +61,33 @@
                     </td>
                     <td>
                         <p class="visible-xs visible-sm table-row-title">Date of Agreement</p>
-                        <iais:datePicker id="agreementStartDate" name="${prefix}agreementStartDate" value=""/>
+                        <c:if test="${currSvcInfoDto.appPremOutSourceLicenceDto.prefixVal eq prefix}">
+                            <iais:datePicker id="agreementStartDate" name="${prefix}agreementStartDate" value="${currSvcInfoDto.appPremOutSourceLicenceDto.searchOutsourced.startDateStr}"/>
+                        </c:if>
+                        <c:if test="${currSvcInfoDto.appPremOutSourceLicenceDto.prefixVal != prefix}">
+                            <iais:datePicker id="agreementStartDate" name="${prefix}agreementStartDate" value=""/>
+                        </c:if>
                         <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}AgreementStartDate"></span>
                     </td>
                     <td>
                         <p class="visible-xs visible-sm table-row-title">End Date of Agreement</p>
-                        <iais:datePicker id="agreementEndDate" name="${prefix}agreementEndDate" value=""/>
+                        <c:if test="${currSvcInfoDto.appPremOutSourceLicenceDto.prefixVal eq prefix}">
+                            <iais:datePicker id="agreementEndDate" name="${prefix}agreementEndDate" value="${currSvcInfoDto.appPremOutSourceLicenceDto.searchOutsourced.endDateStr}"/>
+                        </c:if>
+                        <c:if test="${currSvcInfoDto.appPremOutSourceLicenceDto.prefixVal != prefix}">
+                            <iais:datePicker id="agreementEndDate" name="${prefix}agreementEndDate" value=""/>
+                        </c:if>
                         <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}AgreementEndDate"></span>
                     </td>
                     <td>
                         <p class="visible-xs visible-sm table-row-title">Scope of Outsourcing</p>
-                        <iais:input maxLength="300" type="text" cssClass="outstandingScope" name="${prefix}outstandingScope" value=""/>
+                        <c:if test="${currSvcInfoDto.appPremOutSourceLicenceDto.prefixVal eq prefix}">
+                            <iais:input maxLength="300" type="text" cssClass="outstandingScope" name="${prefix}outstandingScope" value="${currSvcInfoDto.appPremOutSourceLicenceDto.searchOutsourced.endDateStr.searchOutsourced.outstandingScope}"/>
+                            <iais:datePicker id="agreementEndDate" name="${prefix}agreementEndDate" value=""/>
+                        </c:if>
+                        <c:if test="${currSvcInfoDto.appPremOutSourceLicenceDto.prefixVal != prefix}">
+                            <iais:input maxLength="300" type="text" cssClass="outstandingScope" name="${prefix}outstandingScope" value=""/>
+                        </c:if>
                         <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}OutstandingScope"></span>
                     </td>
                     <td>
@@ -95,7 +111,7 @@
         let allBtn = document.getElementsByClassName("btn-add");
         for (let i = 0; i < allBtn.length; i++) {
             allBtn[i].onclick = function (){
-
+                showWaiting();
                 let $tag = $(this);
                 let prefix = $tag.data('prefix');
                 console.log("prefix:"+prefix);

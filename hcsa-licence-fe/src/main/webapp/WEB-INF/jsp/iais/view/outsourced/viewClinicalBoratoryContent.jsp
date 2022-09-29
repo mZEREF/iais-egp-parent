@@ -11,39 +11,39 @@
                     <thead>
                     <tr>
                         <th style="width: 15%;">
-                            <p style="margin-left: 12px;">
+                            <div style="margin-left: 12px;">
                                 Licence No.
-                            </p>
+                            </div>
                         </th>
                         <th style="width: 15%;">
-                            <p style="margin-left: 12px;">
+                            <div style="margin-left: 12px;">
                                 Business Name
-                            </p>
+                            </div>
                         </th>
                         <th style="width: 10%;">
-                            <p style="margin-left: 12px;">
+                            <div style="margin-left: 12px;">
                                 Address
-                            </p>
+                            </div>
                         </th>
                         <th style="width: 15%;">
-                            <p style="margin-left: 12px;">
+                            <div style="margin-left: 12px;">
                                 Licence Tenure
-                            </p>
+                            </div>
                         </th>
                         <th style="width: 15%;">
-                            <p style="margin-left: 12px;">
+                            <div style="margin-left: 12px;">
                                 Date of Agreement
-                            </p>
+                            </div>
                         </th>
                         <th style="width: 15%;">
-                            <p style="margin-left: 12px;">
+                            <div style="margin-left: 12px;">
                                 End Date of Agreement
-                            </p>
+                            </div>
                         </th>
                         <th style="width: 15%;">
-                            <p style="margin-left: 12px;">
+                            <div style="margin-left: 12px;">
                                 Scope of Outsourcing
-                            </p>
+                            </div>
                         </th>
                     </tr>
                     </thead>

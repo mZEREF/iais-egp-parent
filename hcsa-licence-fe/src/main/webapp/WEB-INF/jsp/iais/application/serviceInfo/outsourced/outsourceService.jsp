@@ -106,8 +106,9 @@
                 <a class="btn btn-primary" id="ANT_Search">Search</a>
             </div>
         </div>
-
-        <%@include file="outsourceProvidesTable.jsp"%>
+        <c:if test="${!empty outSourceParam}">
+            <%@include file="outsourceProvidesTable.jsp"%>
+        </c:if>
     </form>
 
 </div>
