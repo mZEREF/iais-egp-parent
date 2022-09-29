@@ -932,6 +932,10 @@ public class DealSessionUtil {
         }
         List<DocumentShowDto> documentShowDtos = genDocumentShowDtoList(addBaseSvc(appPremSpecialisedDtoList), currSvcInfoDto);
         currSvcInfoDto.setDocumentShowDtoList(documentShowDtos);
+        List<AppSvcDocDto> appSvcDocDtos = documentShowDtos.stream()
+                .map(DocumentShowDto::allDocuments)
+                .collect(ArrayList::new, ArrayList::addAll, ArrayList::addAll);
+        currSvcInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
         return documentShowDtos;
     }
 
@@ -1046,8 +1050,10 @@ public class DealSessionUtil {
                 if (isBaseDoc && (StringUtil.isEmpty(currSvcId) || currSvcId.equals(baseSvcId)
                         || currSvcId.equals(appSvcDocDto.getBaseSvcId()))) {
                     appSvcDocDto.setSvcId(baseSvcId);
+                    appSvcDocDto.setBaseSvcId(baseSvcId);
                     appSvcDocDtoList.add(appSvcDocDto);
                 } else if (!isBaseDoc && Objects.equals(currSvcId, specialSvcId)) {
+                    appSvcDocDto.setBaseSvcId(baseSvcId);
                     appSvcDocDtoList.add(appSvcDocDto);
                 }
             }

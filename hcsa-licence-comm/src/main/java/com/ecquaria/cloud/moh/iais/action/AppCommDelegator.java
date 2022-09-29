@@ -56,6 +56,7 @@ import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.OrganizationService;
 import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
+import com.ecquaria.cloud.moh.iais.util.PageDataCopyUtil;
 import com.ecquaria.cloud.moh.iais.validation.DeclarationsUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1672,17 +1673,6 @@ public abstract class AppCommDelegator {
         }
         appSubmissionDto.setDraftNo(draftNo);
 
-        /*//judge is the preInspection
-        PreOrPostInspectionResultDto preOrPostInspectionResultDto = configCommService.judgeIsPreInspection(appSubmissionDto);
-        if (preOrPostInspectionResultDto == null) {
-            appSubmissionDto.setPreInspection(true);
-            appSubmissionDto.setRequirement(true);
-        } else {
-            appSubmissionDto.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
-            appSubmissionDto.setRequirement(preOrPostInspectionResultDto.isRequirement());
-        }
-        //set Risk Score
-        RfcHelper.setRiskToDto(appSubmissionDto);*/
         RfcHelper.beforeSubmit(appSubmissionDto, oldAppSubmissionDto, appEditSelectDto, null, appType, bpc.request);
         // set status
         appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
@@ -1707,13 +1697,14 @@ public abstract class AppCommDelegator {
             }
         }
         // init auto app submission
-        if (!isAutoRfc && (appEditSelectDto.isLicenseeEdit() || appEditSelectDto.isSpecialisedEdit())) {
+        if (!isAutoRfc && (appEditSelectDto.isLicenseeEdit() || appEditSelectDto.isChangeSpecialisedAutoFields()
+                || appEditSelectDto.isChangePremiseAutoFields())) {
             autoAppSubmissionDto = CopyUtil.copyMutableObject(appSubmissionDto);
             autoAppSubmissionDto.setAmount(0.0);
             autoChangeSelectDto = new AppEditSelectDto();
         }
 
-        boolean rfcSplitFlag = ConfigHelper.getBoolean("halp.rfc.split.flag", false);
+        boolean rfcSplitFlag = ConfigHelper.getBoolean("halp.rfc.split.flag", true);
         log.info(StringUtil.changeForLog("##### halp rfc split flag: " + rfcSplitFlag));
         // check the premises step is auto or not
         int isAutoPremises = -1;
@@ -1815,7 +1806,13 @@ public abstract class AppCommDelegator {
                     || StringUtil.isNotEmpty(subLicenseeDto.getClaimCompanyName());
         }
         log.info(StringUtil.changeForLog("##### Only Add claimed: " + addClaimed));
-        // Primary Doc
+        // Category/Discipline & Specialised Service/Specified Test
+        if (appEditSelectDto.isSpecialisedEdit()) {
+            if (appEditSelectDto.isChangeSpecialisedNonAutoFields()) {
+                //RfcHelper.resolveSpecialisedNonAutoData(autoAppSubmissionDto, oldAppSubmissionDto);
+
+            }
+        }
         // re-set change edit select dto
         if (appEditSelectDto.isSpecialisedEdit() && autoAppSubmissionDto != null) {
             appEditSelectDto.setSpecialisedEdit(false);
