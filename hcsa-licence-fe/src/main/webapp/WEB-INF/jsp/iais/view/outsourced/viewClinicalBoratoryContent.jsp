@@ -48,7 +48,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <c:if test="${clen-1 > 0}">
+                    <c:if test="${clen-1 >= 0}">
                         <c:forEach end="${clen-1}" begin="0" step="1" varStatus="c">
                             <c:set var="index" value="${c.index}" />
                             <c:set var="msgTemplateResult" value="${cL.clinicalLaboratoryList[index]}"/>

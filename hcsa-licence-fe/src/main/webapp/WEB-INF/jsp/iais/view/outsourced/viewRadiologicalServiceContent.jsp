@@ -48,7 +48,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <c:if test="${rlen-1 > 0}">
+                    <c:if test="${rlen-1 >= 0}">
                         <c:forEach end="${rlen-1}" begin="0" step="1" varStatus="r">
                             <c:set var="index" value="${r.index}" />
                             <c:set var="msgTemplateResult" value="${cL.radiologicalServiceList[index]}"/>
