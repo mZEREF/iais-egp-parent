@@ -17,7 +17,7 @@
     </iais:value>
 </iais:row>
 
-<div class="yft <c:if test="${'0' == appSvcOtherInfoDto.provideYfVs}">hidden</c:if> " data-prefix="${prefix}">
+<div class="yft <c:if test="${'1' != appSvcOtherInfoDto.provideYfVs}">hidden</c:if> " data-prefix="${prefix}">
     <iais:row cssClass="row control control-caption-horizontal">
         <iais:field width="5" cssClass="col-md-5" mandatory="" value=""/>
         <iais:value width="7" cssClass="col-md-7 col-xs-12">
@@ -54,7 +54,7 @@
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" value="Designation"/>
         <iais:value width="7" cssClass="col-md-7" display="true">
-            <c:out value="${orgUse.designation}"/>
+            <iais:code code="${orgUse.designation}"/>
         </iais:value>
     </iais:row>
 

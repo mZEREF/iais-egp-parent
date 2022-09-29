@@ -74,6 +74,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -1914,7 +1915,7 @@ public class ServiceInfoDelegator {
                     if (action.equals(hcsaServiceStepSchemeDtos.get(i).getStepCode())) {
                         number = i;
                         boolean toNext = currentNumber < i;
-                        while (skipStep(hcsaServiceStepSchemeDtos.get(i++).getStepCode(), appSubmissionDto)) {
+                        while (skipStep(hcsaServiceStepSchemeDtos,i++, appSubmissionDto)) {
                             if (toNext) {
                                 number++;
                             } else {
@@ -1986,9 +1987,23 @@ public class ServiceInfoDelegator {
         return serviceStepDto;
     }
 
-    private boolean skipStep(String stepCode, AppSubmissionDto appSubmissionDto) {
+    private boolean skipStep(List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos, int i, AppSubmissionDto appSubmissionDto) {
+        if (i>hcsaServiceStepSchemeDtos.size()){
+            return false;
+        }
+        String stepCode=hcsaServiceStepSchemeDtos.get(i).getStepCode();
         String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,
                 HcsaConsts.STEP_DISCIPLINE_ALLOCATION};
+        boolean match = appSubmissionDto.getAppSvcRelatedInfoDtoList()
+                .stream().anyMatch(s -> AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL.equals(s.getServiceCode()));
+        if (match){
+            int size = appSubmissionDto.getAppLicBundleDtoList().size();
+            if (size>1){
+                List<String> list = Arrays.asList(skipList);
+                list.add(HcsaConsts.STEP_OUTSOURCED_PROVIDERS);
+                skipList = (String[]) list.toArray();
+            }
+        }
         if (StringUtil.isIn(stepCode, skipList)) {
             return true;
         }
