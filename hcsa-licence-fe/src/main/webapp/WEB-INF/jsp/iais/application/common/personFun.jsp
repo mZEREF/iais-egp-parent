@@ -43,16 +43,9 @@
         $(target + '-edit').val('1');
         hideTag($currContent.find('.edit-content'));
         unDisableContent($currContent);
+        checkPersonDisabled($currContent);
         if (typeof refreshPersonOthers === 'function') {
             refreshPersonOthers($currContent);
-        }
-        //Professional Regn. No.
-        let $regNoNode = $currContent.find('.profRegNo');
-        if (!isEmptyNode($regNoNode)) {
-            let profRegNo = $regNoNode.val();
-            if (!isEmpty(profRegNo)) {
-                $regNoNode.trigger('blur');
-            }
         }
     }
 
@@ -103,6 +96,7 @@
         var $currContent = $(target).last();
         initFormNodes($currContent);
         hideTag($currContent.find('.rfc-psn-detail'));
+        hideTag($currContent.find('.edit-content'));
         unDisableContent($currContent.find('.assignSelDiv'));
         showTag($currContent.find('.assignSelDiv'));
         refreshPerson($currContent, $(target).length - 1);
