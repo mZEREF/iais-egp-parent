@@ -1,16 +1,4 @@
-<%--<c:if test="${empty psnContent}">
-    <c:set var="psnContent" value="person-content"/>
-</c:if>--%>
 <script type="text/javascript">
-    /*$(function () {
-        let psnContent = '.${psnContent}';
-        removePersonEvent(psnContent);
-        assignSelectEvent(psnContent);
-        psnEditEvent(psnContent);
-        // init page
-        initPerson(psnContent);
-    });*/
-
     function initPerson(target) {
         var $target = $(target);
         if (isEmptyNode($target)) {
@@ -68,8 +56,8 @@
         }
     }
 
-    function hideEditBtn ($currContent) {
-        let $target= $currContent.find('.psnEdit');
+    function hideEditBtn($currContent) {
+        let $target = $currContent.find('.psnEdit');
         if (isEmptyNode($target)) {
             return true;
         }
@@ -81,7 +69,7 @@
             return;
         }
         // edit btn
-        let $target= $currContent.find('.psnEdit');
+        let $target = $currContent.find('.psnEdit');
         let canEdit = !isEmptyNode($target);
         if (canEdit) {
             showTag($currContent.find('.removeEditDiv:not(:first)'));
