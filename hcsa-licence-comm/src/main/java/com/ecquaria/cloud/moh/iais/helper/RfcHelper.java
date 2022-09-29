@@ -665,7 +665,7 @@ public final class RfcHelper {
                 return StringUtil.isIn(fieldName, new String[]{"nationality", "idType", "idNo"});
             } else {
                 return !StringUtil.isIn(fieldName, new String[]{"psnEditDto", "licPerson", "backend", "singleName", "needSpcOptList",
-                        "spcOptList", "specialityHtml", "id", "indexNo", "curPersonelId"});
+                        "spcOptList", "specialityHtml", "id", "indexNo", "curPersonelId", "nationality", "idType", "idNo"});
             }
         });
     }
