@@ -1101,7 +1101,21 @@ public final class RfcHelper {
     }
 
     public static void resolveSpecialisedNonAutoData(AppSubmissionDto autoAppSubmissionDto, AppSubmissionDto oldAppSubmissionDto){
-
+        if (autoAppSubmissionDto == null || oldAppSubmissionDto == null) {
+            return;
+        }
+        List<AppPremSpecialisedDto> appPremSpecialisedDtoList = autoAppSubmissionDto.getAppPremSpecialisedDtoList();
+        List<AppPremSpecialisedDto> oldAppPremSpecialisedDtoList = oldAppSubmissionDto.getAppPremSpecialisedDtoList();
+        if (IaisCommonUtils.isEmpty(appPremSpecialisedDtoList) || IaisCommonUtils.isEmpty(oldAppPremSpecialisedDtoList)) {
+            return;
+        }
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = autoAppSubmissionDto.getAppSvcRelatedInfoDtoList();
+        List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
+        if (IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList) || IaisCommonUtils.isEmpty(oldAppSvcRelatedInfoDtoList)) {
+            return;
+        }
+        resolveSpecialisedNonAutoData(appPremSpecialisedDtoList.get(0), oldAppPremSpecialisedDtoList.get(0),
+                appSvcRelatedInfoDtoList.get(0), oldAppSvcRelatedInfoDtoList.get(0));
     }
 
     public static void resolveSpecialisedNonAutoData(AppPremSpecialisedDto appPremSpecialisedDto,

@@ -637,7 +637,7 @@ public class ServiceMenuDelegator {
         boolean noExistBaseLic = (boolean) ParamUtil.getSessionAttr(bpc.request, NO_EXIST_BASE_LIC);
         boolean noExistBaseApp = (boolean) ParamUtil.getSessionAttr(bpc.request, NO_EXIST_BASE_APP);
         Map<String,List<AppAlignAppQueryDto>> appPremises= (Map<String, List<AppAlignAppQueryDto>>) ParamUtil.getSessionAttr(bpc.request, BASE_APP_PREMISES_MAP);
-        Map<String,List<AppAlignLicQueryDto>> baseLicMap = (Map<String, List<AppAlignLicQueryDto>>) ParamUtil.getSessionAttr(bpc.request,BASE_LIC_PREMISES_MAP);
+        Map<String,List<AppAlignLicQueryDto>> baseLicMap = (Map<String, List<AppAlignLicQueryDto>>) ParamUtil.getSessionAttr(bpc.request,BASE_SVC_PREMISES_MAP);
         List<HcsaServiceDto> notContainedSvcList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, NOTCONTAINEDSVCMAP);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
         List<AppLicBundleDto> appLicBundleDtoList=IaisCommonUtils.genNewArrayList();
@@ -660,9 +660,11 @@ public class ServiceMenuDelegator {
                         String hciCode = ParamUtil.getMaskedString(bpc.request,premIndexNo+"-hciCode");
                         String postCode = ParamUtil.getMaskedString(bpc.request, premIndexNo + "-postCode");
                         if (!noExistBaseLic){
-                            AppAlignLicQueryDto appAlignLicQueryDto = getAppAlignLicQueryDto(baseLicMap,baseServiceDto.getSvcName(),hciCode);
+                            AppAlignLicQueryDto appAlignLicQueryDto = baseLicMap.get(hcsaServiceDto.getSvcName()).stream()
+                                    .filter(s -> hciCode.equals(s.getHciCode())).findAny().get();
                             if(appAlignLicQueryDto != null){
                                 AppLicBundleDto appLicBundleDto=new AppLicBundleDto();
+                                appLicBundleDto.setSvcCode(baseServiceDto.getSvcCode());
                                 appLicBundleDto.setLicenceNo(appAlignLicQueryDto.getLicenceNo());
                                 appLicBundleDto.setPremisesId(appAlignLicQueryDto.getPremisesId());
                                 appLicBundleDto.setLicOrApp(true);
@@ -680,6 +682,7 @@ public class ServiceMenuDelegator {
                                     .filter(s -> postCode.equals(s.getPostalCode())).findAny().get();
                             if (appAlignAppQueryDto!=null){
                                 AppLicBundleDto appLicBundleDto=new AppLicBundleDto();
+                                appLicBundleDto.setSvcCode(baseServiceDto.getSvcCode());
                                 appLicBundleDto.setApplicationNo(appAlignAppQueryDto.getApplicationNo());
                                 appLicBundleDto.setPremisesId(appAlignAppQueryDto.getPremisesId());
                                 appLicBundleDto.setLicOrApp(false);
