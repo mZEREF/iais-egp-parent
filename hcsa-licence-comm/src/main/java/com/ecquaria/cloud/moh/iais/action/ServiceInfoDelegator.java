@@ -597,15 +597,20 @@ public class ServiceInfoDelegator {
             .sortFieldToMap("SVC_NAME", SearchParam.ASCENDING).build();
 
     private void prepareOutsourcedProviders(HttpServletRequest request) {
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request,filterParameter);
-        if (searchParam.getParams().size() != 0){
-            QueryHelp.setMainSql("outSourceQuery","searchOutSource",searchParam);
-            SearchResult searchResult = licCommService.doQuery(searchParam);
-            ParamUtil.setSessionAttr(request,ApplicationConsts.OUT_SOURCE_PARAM,searchParam);
-            ParamUtil.setSessionAttr(request,ApplicationConsts.OUT_SOURCE_RESULT,searchResult);
-        }else {
-            ParamUtil.setSessionAttr(request,ApplicationConsts.OUT_SOURCE_PARAM,null);
-            ParamUtil.setSessionAttr(request,ApplicationConsts.OUT_SOURCE_RESULT,null);
+        String currSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
+        AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request, currSvcId,null);
+        AppSvcOutsouredDto appSvcOutsouredDto = currSvcInfoDto.getAppPremOutSourceLicenceDto();
+        if (appSvcOutsouredDto != null){
+            SearchParam searchParam = appSvcOutsouredDto.getSearchParam();
+            if (searchParam != null){
+                QueryHelp.setMainSql("outSourceQuery","searchOutSource",searchParam);
+                SearchResult searchResult = licCommService.doQuery(searchParam);
+                ParamUtil.setSessionAttr(request,ApplicationConsts.OUT_SOURCE_PARAM,searchParam);
+                ParamUtil.setSessionAttr(request,ApplicationConsts.OUT_SOURCE_RESULT,searchResult);
+            }else {
+                ParamUtil.setSessionAttr(request,ApplicationConsts.OUT_SOURCE_PARAM,null);
+                ParamUtil.setSessionAttr(request,ApplicationConsts.OUT_SOURCE_RESULT,null);
+            }
         }
         //OutsourcedProviders services dropdown options
         List<SelectOption> optionList = ApplicationHelper.genOutsourcedServiceSel(request, true);
@@ -703,6 +708,7 @@ public class ServiceInfoDelegator {
                         searchParam.addFilter("svcName",HcsaServiceCacheHelper.getServiceByCode(appPremOutSourceLicenceDto.getSearchOutsourced().getAppPremOutSourceLicenceDto().getServiceCode()).getSvcName(),true);
                     }
                 }
+                appPremOutSourceLicenceDto.setSearchParam(searchParam);
             }
         }
         return appPremOutSourceLicenceDto;
@@ -739,6 +745,7 @@ public class ServiceInfoDelegator {
 //            if (StringUtil.isNotEmpty(postCode)){
 //                searchParam.addFilter("postalCode",postCode,true);
 //            }
+                appPremOutSourceLicenceDto.setSearchParam(searchParam);
             }
         }
         return appPremOutSourceLicenceDto;
@@ -747,12 +754,14 @@ public class ServiceInfoDelegator {
     private AppSvcOutsouredDto sortOutSourceProviders(HttpServletRequest request,AppSvcOutsouredDto appPremOutSourceProvidersDto){
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         CrudHelper.doSorting(searchParam,  request);
+        appPremOutSourceProvidersDto.setSearchParam(searchParam);
         return appPremOutSourceProvidersDto;
     }
 
     private AppSvcOutsouredDto doOutSourceProvidersPaging(HttpServletRequest request,AppSvcOutsouredDto appPremOutSourceProvidersDto){
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         CrudHelper.doPaging(searchParam,request);
+        appPremOutSourceProvidersDto.setSearchParam(searchParam);
         return appPremOutSourceProvidersDto;
     }
 
