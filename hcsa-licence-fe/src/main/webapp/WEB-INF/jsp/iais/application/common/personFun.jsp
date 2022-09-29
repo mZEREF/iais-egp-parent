@@ -233,27 +233,32 @@
     }
 
     function checkPersonDisabled($currContent, onlyInit) {
-        let data;
-        try {
-            data = $.parseJSON($currContent.find('.psnEditField').val());
-        } catch (e) {
-            data = {};
-        }
+        let psnEditFieldData = $currContent.find('.psnEditField').val();
+        if (isEmpty(psnEditFieldData)) {
+            $currContent.find('.licPerson').val(0);
+        } else {
+            let data;
+            try {
+                data = $.parseJSON(psnEditFieldData);
+            } catch (e) {
+                data = {};
+            }
 
-        if ('1' == $currContent.find('.licPerson').val()) {
-            $.each(data, function (i, val) {
-                let $input = $currContent.find('.' + i + ':input');
-                if ($input.length > 0 && !val) {
-                    disableContent($input);
-                }
-            });
-        } else if (!onlyInit) {
-            $.each(data, function (i, val) {
-                let $input = $currContent.find('.' + i + ':input');
-                if ($input.length > 0) {
-                    unDisableContent($input);
-                }
-            });
+            if ('1' == $currContent.find('.licPerson').val()) {
+                $.each(data, function (i, val) {
+                    let $input = $currContent.find('.' + i + ':input');
+                    if ($input.length > 0 && !val) {
+                        disableContent($input);
+                    }
+                });
+            } else if (!onlyInit) {
+                $.each(data, function (i, val) {
+                    let $input = $currContent.find('.' + i + ':input');
+                    if ($input.length > 0) {
+                        unDisableContent($input);
+                    }
+                });
+            }
         }
 
         if (!isEmpty($currContent.find('input.profRegNo').val())) {
