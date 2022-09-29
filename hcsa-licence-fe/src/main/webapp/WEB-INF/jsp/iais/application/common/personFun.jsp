@@ -6,9 +6,11 @@
         }
         $target.each(function (k, v) {
             if ($("#errorMapIs").val() == 'error') {
-                if ($(v).find('.error-msg:not(:empty)').length > 0) {
-                    $(v).find('.psnEdit').trigger("click");
-                }
+                $(v).find('.error-msg').on('DOMNodeInserted', function () {
+                    if ($(this).not(':empty')) {
+                        doEditPsn($(v), target);
+                    }
+                });
             }
             checkPersonContent($(v), true);
         });
