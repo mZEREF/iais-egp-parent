@@ -259,7 +259,7 @@ public class RequestForChangeDelegator {
                         AuditTrailConsts.FUNCTION_REQUEST_FOR_CHANGE);
                 // HCSA Service Configuration
                 String svcName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
-                HcsaServiceDto hcsaServiceDto = serviceConfigService.getActiveHcsaServiceDtoByName(svcName);
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
                 List<HcsaServiceDto> hcsaServiceDtoList = IaisCommonUtils.genNewArrayList();
                 if (hcsaServiceDto != null) {
                     String currSvcId = hcsaServiceDto.getId();

@@ -507,36 +507,33 @@ public class DealSessionUtil {
     public static AppSvcRelatedInfoDto init(AppSvcRelatedInfoDto currSvcInfoDto, List<AppGrpPremisesDto> appGrpPremisesDtos,
             List<AppPremSpecialisedDto> appPremSpecialisedDtoList, List<HcsaServiceDto> hcsaServiceDtos,
             boolean forceInit, HttpServletRequest request) {
-        if (currSvcInfoDto == null) {
+        if (currSvcInfoDto == null || IaisCommonUtils.isEmpty(hcsaServiceDtos)) {
             return null;
         }
         String svcId = currSvcInfoDto.getServiceId();
         String name = currSvcInfoDto.getServiceName();
         String finalSvcId = svcId;
-        if (hcsaServiceDtos.stream().noneMatch(dto -> Objects.equals(finalSvcId, dto.getId()))) {
-            if (StringUtil.isEmpty(name)) {
-                HcsaServiceDto serviceById = HcsaServiceCacheHelper.getServiceById(svcId);
-                name = serviceById.getSvcName();
-            } else {
-                svcId = null;
-            }
-        }
-        HcsaServiceDto hcsaServiceDto = null;
-        if (!StringUtil.isEmpty(svcId)) {
+        HcsaServiceDto hcsaServiceDto = hcsaServiceDtos.stream()
+                .filter(hcsaSvcDto -> !StringUtil.isEmpty(finalSvcId) && finalSvcId.equals(hcsaSvcDto.getId()))
+                .findAny()
+                .orElseGet(() -> hcsaServiceDtos.stream()
+                        .filter(dto -> !StringUtil.isEmpty(name) && name.equals(dto.getSvcName()))
+                        .findAny()
+                        .orElse(null));
+        if (hcsaServiceDto == null && !StringUtil.isEmpty(svcId)) {
             hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(svcId);
-        } else if (!StringUtil.isEmpty(name)) {
-            hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(name);
         }
-        if (hcsaServiceDto != null) {
-            svcId = hcsaServiceDto.getId();
-            currSvcInfoDto.setServiceId(svcId);
-            currSvcInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
-            currSvcInfoDto.setServiceType(hcsaServiceDto.getSvcType());
-            currSvcInfoDto.setServiceName(hcsaServiceDto.getSvcName());
+        if (hcsaServiceDto == null) {
+            log.info(StringUtil.changeForLog("No service config found - " + name + " - " + svcId));
+            return currSvcInfoDto;
         }
+        svcId = hcsaServiceDto.getId();
+        currSvcInfoDto.setServiceId(svcId);
+        currSvcInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
+        currSvcInfoDto.setServiceType(hcsaServiceDto.getSvcType());
+        currSvcInfoDto.setServiceName(hcsaServiceDto.getSvcName());
         //set service step
-        List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemes =
-                getConfigCommService().getHcsaServiceStepSchemesByServiceId(svcId);
+        List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemes = getConfigCommService().getHcsaServiceStepSchemesByServiceId(svcId);
         currSvcInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemes);
         List<AppSvcPrincipalOfficersDto> dpoList = currSvcInfoDto.getAppSvcNomineeDtoList();
         if (IaisCommonUtils.isEmpty(dpoList)) {
@@ -725,7 +722,9 @@ public class DealSessionUtil {
         return true;
     }
 
-    //YfVs
+    /**
+     * Yellow Fever Vaccination
+     */
     public static OrgUserDto getOtherInfoYfVs(HttpServletRequest request) {
         if (request == null) {
             request = MiscUtil.getCurrentRequest();
@@ -735,8 +734,7 @@ public class DealSessionUtil {
         }
         User user = SessionManager.getInstance(request).getCurrentUser();
         ComSystemAdminClient client = SpringContextHelper.getContext().getBean(ComSystemAdminClient.class);
-        OrgUserDto orgUserDto = client.retrieveOrgUserAccount(user.getId()).getEntity();
-        return orgUserDto;
+        return client.retrieveOrgUserAccount(user.getId()).getEntity();
     }
 
     private static AppSvcSuplmFormDto initAppSvcSuplmFormDto(String code, boolean forceInit, String type,
@@ -834,12 +832,10 @@ public class DealSessionUtil {
             AppSvcSuplmFormDto appSvcSuplmFormDto = specialServiceSectionDto.getAppSvcSuplmFormDto();
             appSvcSuplmFormDto = initAppSvcSuplmFormDto(specialServiceSectionDto.getSvcCode(), forceInit,
                     HcsaConsts.ITME_TYPE_SUPLFORM, appSvcSuplmFormDto);
-            if (appSvcSuplmFormDto != null) {
-                appSvcSuplmFormDto.setAppGrpPremisesDto(appPremSpecialisedDto);
-                appSvcSuplmFormDto.setAppPremSubSvcRelDto(appPremSubSvcRelDto);
-            }
+            appSvcSuplmFormDto.setAppGrpPremisesDto(appPremSpecialisedDto);
+            appSvcSuplmFormDto.setAppPremSubSvcRelDto(appPremSubSvcRelDto);
             Set<String> set = maxCount.keySet();
-            String[] psnTypes = set.toArray(new String[set.size()]);
+            String[] psnTypes = set.toArray(new String[0]);
             specialServiceSectionDto.setAppSvcSuplmFormDto(appSvcSuplmFormDto);
             List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = configCommService.getHcsaSvcPersonnel(
                     specialServiceSectionDto.getSvcId(), psnTypes);
