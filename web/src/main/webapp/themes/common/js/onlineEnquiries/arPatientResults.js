@@ -129,7 +129,7 @@ var groupAjax = function (patientCode, divid) {
                     '<tr>';
 
 
-                html += '<th width="10%">AR/IUI/EFO</th>' +
+                html += '<th width="10%">AR/IUI/OFO/SFO</th>' +
                     '<th width="20%">AR Treatment Cycle Type</th>' +
                     '<th width="25%">AR Centre</th>' +
                     '<th width="15%">Cycle Start Date</th>' +
@@ -143,7 +143,7 @@ var groupAjax = function (patientCode, divid) {
 
                     html += '<tr style = "color : ' + color + ';">';
 
-                    html += '<td style="vertical-align:middle;"><p class="visible-xs visible-sm table-row-title">AR/IUI/EFO</p><p>' + res.rows[i].dsType + '<p></td>' +
+                    html += '<td style="vertical-align:middle;"><p class="visible-xs visible-sm table-row-title">AR/IUI/OFO/SFO</p><p>' + res.rows[i].dsType + '<p></td>' +
                         '<td style="vertical-align:middle;"><p class="visible-xs visible-sm table-row-title">AR Treatment Cycle Type</p><p>' + res.rows[i].arTreatment + '<p></td>' +
                         '<td style="vertical-align:middle;"><p class="visible-xs visible-sm table-row-title">AR Centre</p><p>' + res.rows[i].arCentre + '<p></td>';
                     html += '<td style="vertical-align:middle;"><p class="visible-xs visible-sm table-row-title">Cycle Start Date</p><p><a href="#" onclick="javascript:fullStagesView(' + "'" + res.rows[i].cycleId + "'" + ');">' + res.rows[i].cycleStartDateStr + '</a></p></td>';

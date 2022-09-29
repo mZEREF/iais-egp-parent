@@ -13,17 +13,17 @@
                 <iais:row>
                     <iais:field width="5" value="Premises where Sperm Freezing Only Cycle is Performed" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                        <c:out value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"/>
+                        <iais:optionText value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Date Started" mandatory="false"/>
+                    <iais:field width="5" value="Date of Freezing" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">
                         <fmt:formatDate value="${arSuperDataSubmissionDto.efoCycleStageDto.startDate}" pattern="dd/MM/yyyy"></fmt:formatDate>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Patient's Age as of This Treatment" mandatory="false"/>
+                    <iais:field width="5" value="Patient's Age at Date of Freezing" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">
                         <%ArSuperDataSubmissionDto arSuperDsDto = (ArSuperDataSubmissionDto) ParamUtil.getRequestAttr(request,"arSuperDataSubmissionDto");%>
                         <%=IaisCommonUtils.getYearsAndMonths(arSuperDsDto.getEfoCycleStageDto().getYearNum(), arSuperDsDto.getEfoCycleStageDto().getMonthNum())%>

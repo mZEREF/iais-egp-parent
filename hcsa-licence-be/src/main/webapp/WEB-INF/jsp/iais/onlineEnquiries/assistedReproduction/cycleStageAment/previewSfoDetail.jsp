@@ -2,7 +2,7 @@
     <div class="panel-heading  ">
         <h4 class="panel-title">
             <a  data-toggle="collapse" href="#efoDetails">
-                Oocyte Freezing Only Cycle
+                Sperm Freezing Only Cycle
             </a>
         </h4>
     </div>
@@ -12,7 +12,7 @@
                 <%@include file="comPart.jsp" %>
 
                 <iais:row>
-                    <iais:field width="4" value="Premises where Oocyte Freezing Only Cycle is Performed" mandatory="false"/>
+                    <iais:field width="4" value="Premises where Sperm Freezing Only Cycle is Performed" mandatory="false"/>
                     <iais:value width="4" cssClass="col-md-4" display="true">
                         <iais:optionText value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"/>
                     </iais:value>
@@ -87,3 +87,4 @@
         </div>
     </div>
 </div>
+

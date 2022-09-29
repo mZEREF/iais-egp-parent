@@ -300,7 +300,7 @@
                                                             <tr>
                                                                 <td style="vertical-align:middle;">
                                                                     <p class="visible-xs visible-sm table-row-title">AR Centre</p>
-                                                                    <c:out value="${submission.arCentre}"/>
+                                                                    <iais:optionText value="${submission.arCentre}"/>
                                                                 </td>
                                                                 <td style="vertical-align:middle;">
                                                                     <p class="visible-xs visible-sm table-row-title">Submission ID</p>

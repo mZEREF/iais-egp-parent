@@ -2,7 +2,7 @@
     <div class="panel-heading  ">
         <h4 class="panel-title">
             <a  data-toggle="collapse" href="#efoDetails">
-                Egg Freezing Only Cycle
+                Oocyte Freezing Only Cycle
             </a>
         </h4>
     </div>
@@ -12,16 +12,16 @@
                 <%@include file="comPart.jsp" %>
 
                 <iais:row>
-                    <iais:field width="4" value="Premises where egg freezing only cycle is performed" mandatory="false"/>
+                    <iais:field width="4" value="Premises where Oocyte Freezing Only Cycle is Performed" mandatory="false"/>
                     <iais:value width="4" cssClass="col-md-4" display="true">
-                        <c:out value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"/>
+                        <iais:optionText value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"/>
                     </iais:value>
                     <iais:value width="4" cssClass="col-md-4" display="true">
-                        <c:out value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"/>
+                        <iais:optionText value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="4" value="Date Started" mandatory="false"/>
+                    <iais:field width="4" value="Date of Freezing" mandatory="false"/>
                     <iais:value width="4" cssClass="col-md-4" display="true">
                         <fmt:formatDate value="${arSuperDataSubmissionDto.efoCycleStageDto.startDate}" pattern="dd/MM/yyyy"></fmt:formatDate>
                     </iais:value>
@@ -30,7 +30,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="4" value="Patient's Age as of This Treatment" mandatory="false"/>
+                    <iais:field width="4" value="Patient's Age at Date of Freezing" mandatory="false"/>
                     <iais:value width="4" cssClass="col-md-4" display="true">
                         <%ArSuperDataSubmissionDto arSuperDsDto = (ArSuperDataSubmissionDto) ParamUtil.getRequestAttr(request,"arSuperDataSubmissionDto");%>
                         <%=IaisCommonUtils.getYearsAndMonths(arSuperDsDto.getEfoCycleStageDto().getYearNum(), arSuperDsDto.getEfoCycleStageDto().getMonthNum())%>
