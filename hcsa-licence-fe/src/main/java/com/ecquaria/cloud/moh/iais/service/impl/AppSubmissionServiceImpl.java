@@ -738,7 +738,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             itemConfigId="416802EF-6427-ED11-BE6D-000C29FAAE4D";
                             beds=1000;
                         }
-                        List<AppSvcSuplmItemDto> svcSuplmItemDtos= getAppSvcSuplmItems(appSvcRelatedInfoDto.getAppSvcSuplmFormList(),appGrpPremisesDto.getPremiseLabel());
+                        List<AppSvcSuplmItemDto> svcSuplmItemDtos= getAppSvcSuplmItems(appSvcRelatedInfoDto.getAppSvcSuplmFormList(),appGrpPremisesDto.getPremisesIndexNo());
                         if(IaisCommonUtils.isNotEmpty(svcSuplmItemDtos)){
                             for (AppSvcSuplmItemDto item:svcSuplmItemDtos
                                  ) {
@@ -989,7 +989,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             itemConfigId="416802EF-6427-ED11-BE6D-000C29FAAE4D";
                             beds=1000;
                         }
-                        List<AppSvcSuplmItemDto> svcSuplmItemDtos= getAppSvcSuplmItems(appSvcRelatedInfoDto.getAppSvcSuplmFormList(),appGrpPremisesDto.getPremiseLabel());
+                        List<AppSvcSuplmItemDto> svcSuplmItemDtos= getAppSvcSuplmItems(appSvcRelatedInfoDto.getAppSvcSuplmFormList(),appGrpPremisesDto.getPremisesIndexNo());
                         if(IaisCommonUtils.isNotEmpty(svcSuplmItemDtos)){
                             for (AppSvcSuplmItemDto item:svcSuplmItemDtos
                             ) {
