@@ -22,6 +22,7 @@ import com.ecquaria.cloud.systeminfo.ServicesSysteminfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -62,6 +63,9 @@ public class FileAjaxController {
 
     @Autowired
     private SystemParamConfig systemParamConfig;
+
+    @Value("${spring.application.name}")
+    private String currentApp;
 
     @PostMapping(value = "ajax-upload-file", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Map<String, Object> ajaxUpload(HttpServletRequest request, /*@RequestParam("selectedFile") */MultipartFile selectedFile,
@@ -361,7 +365,7 @@ public class FileAjaxController {
     }
 
     private void saveFileToOtherNodes(MultipartFile selectedFile, File toFile, String tempFolder) {
-        List<String> ipAddrs = ServicesSysteminfo.getInstance().getAddressesByServiceName("hcsa-licence-web");
+        List<String> ipAddrs = ServicesSysteminfo.getInstance().getAddressesByServiceName(currentApp);
         if (ipAddrs != null && ipAddrs.size() > 1 && toFile != null) {
             String localIp = MiscUtil.getLocalHostExactAddress();
             log.info(StringUtil.changeForLog("Local Ip is ==>" + localIp));
@@ -373,7 +377,7 @@ public class FileAjaxController {
                 try {
                     String port = ConfigHelper.getString("server.port", "8080");
                     StringBuilder apiUrl = new StringBuilder("http://");
-                    apiUrl.append(ip).append(':').append(port).append("/hcsa-licence-web/tempFile-handler");
+                    apiUrl.append(ip).append(':').append(port).append('/').append(currentApp).append("/tempFile-handler");
                     log.info("Request URL ==> {}", apiUrl);
 
                     HttpHeaders headers = new HttpHeaders();
