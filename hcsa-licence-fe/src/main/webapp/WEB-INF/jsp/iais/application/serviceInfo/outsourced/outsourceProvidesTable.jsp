@@ -71,7 +71,8 @@
                     </td>
                     <td>
                         <p class="visible-xs visible-sm table-row-title">Scope of Outsourcing</p>
-                        <iais:input maxLength="300" type="text" cssClass="scopeOfOutsourcing" name="${prefix}scopeOfOutsourcing" value=""/>
+                        <iais:input maxLength="300" type="text" cssClass="outstandingScope" name="${prefix}outstandingScope" value=""/>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}OutstandingScope"></span>
                     </td>
                     <td>
                         <input type="hidden" name="prefixVal" value="">

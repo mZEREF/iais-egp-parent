@@ -17,11 +17,10 @@
             <table aria-describedby="" class="table">
                 <thead>
                 <tr>
-                    <iais:sortableHeader needSort="true" field="LICENCE_NO" value="Licence No." style="width:15%;" customSpacing="12"/>
-<%--                    <th style="width: 15%;">--%>
-
-<%--                        <p style="margin-left: 12px;">Licence No.</p>--%>
-<%--                    </th>--%>
+<%--                    <iais:sortableHeader needSort="true" field="LICENCE_NO" value="Licence No." style="width:15%;" customSpacing="12"/>--%>
+                    <th style="width: 15%;">
+                        <p style="margin-left: 12px;">Licence No.</p>
+                    </th>
                     <th style="width: 15%;">
                         <p style="margin-left: 12px;">
                             Business Name

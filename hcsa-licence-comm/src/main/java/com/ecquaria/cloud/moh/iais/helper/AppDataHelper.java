@@ -626,8 +626,8 @@ public final class AppDataHelper {
         return result;
     }
 
-    public static AppSvcOutsouredDto genAppPremOutSourceProvidersDto( String curAct,
-                                                                             AppSvcOutsouredDto appPremOutSourceProvidersDto, HttpServletRequest request){
+    public static AppSvcOutsouredDto genAppPremOutSourceProvidersDto( String curAct,List<String> appPremOutSourceProvidersIds,
+                                                                      AppSvcOutsouredDto appPremOutSourceProvidersDto, HttpServletRequest request){
         if (StringUtil.isEmpty(appPremOutSourceProvidersDto)){
             appPremOutSourceProvidersDto = new AppSvcOutsouredDto();
         }
@@ -646,22 +646,23 @@ public final class AppDataHelper {
             appPremOutSourceProvidersDto = getAddAppPremOutSourceLicenceDto(request,appPremOutSourceProvidersDto,clinicalLaboratoryList,radiologicalServiceList);
         }
         if ("delete".equals(curAct)){
-            appPremOutSourceProvidersDto = getDelAppOutSourcedDto(request,appPremOutSourceProvidersDto,clinicalLaboratoryList,radiologicalServiceList);
+            appPremOutSourceProvidersDto = getDelAppOutSourcedDto(request,appPremOutSourceProvidersIds,appPremOutSourceProvidersDto,clinicalLaboratoryList,radiologicalServiceList);
         }
         return appPremOutSourceProvidersDto;
     }
 
-    private static AppSvcOutsouredDto getDelAppOutSourcedDto(HttpServletRequest request,
-                                                                     AppSvcOutsouredDto appPremOutSourceLicenceDto,
-                                                                     List<AppPremGroupOutsourcedDto> clinicalLaboratoryList,
-                                                                     List<AppPremGroupOutsourcedDto> radiologicalServiceList){
+    private static AppSvcOutsouredDto getDelAppOutSourcedDto(HttpServletRequest request,List<String> appPremOutSourceProvidersIds,
+                                                             AppSvcOutsouredDto appPremOutSourceLicenceDto, List<AppPremGroupOutsourcedDto> clinicalLaboratoryList,
+                                                             List<AppPremGroupOutsourcedDto> radiologicalServiceList){
         String prefix = ParamUtil.getString(request,"prefixVal");
         if (IaisCommonUtils.isNotEmpty(clinicalLaboratoryList)){
             removeAppPremOutsourced(clinicalLaboratoryList,prefix);
+            removeOutSourcedIds(appPremOutSourceProvidersIds,prefix);
         }
 
         if (IaisCommonUtils.isNotEmpty(radiologicalServiceList)){
             removeAppPremOutsourced(radiologicalServiceList,prefix);
+            removeOutSourcedIds(appPremOutSourceProvidersIds,prefix);
         }
         return appPremOutSourceLicenceDto;
 
@@ -672,10 +673,20 @@ public final class AppDataHelper {
         while (outsourcedDtoIterator.hasNext()){
             AppPremGroupOutsourcedDto appPremGroupOutsourcedDto = outsourcedDtoIterator.next();
             if (appPremGroupOutsourcedDto != null && appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto() != null){
-               String id = appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getId();
-               if (StringUtil.isNotEmpty(prefixVal) && prefixVal.equals(id)){
-                   outsourcedDtoIterator.remove();
-               }
+                String id = appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getId();
+                if (StringUtil.isNotEmpty(prefixVal) && prefixVal.equals(id)){
+                    outsourcedDtoIterator.remove();
+                }
+            }
+        }
+    }
+
+    private static void removeOutSourcedIds(List<String> outSourcedIds,String prefixVal){
+        Iterator<String> stringIterator = outSourcedIds.iterator();
+        while (stringIterator.hasNext()){
+            String appPremGroupOutsourcedIds= stringIterator.next();
+            if (StringUtil.isNotEmpty(prefixVal) && prefixVal.equals(appPremGroupOutsourcedIds)){
+                stringIterator.remove();
             }
         }
     }
@@ -702,16 +713,16 @@ public final class AppDataHelper {
     }
 
     private static AppSvcOutsouredDto getAddAppPremOutSourceLicenceDto(HttpServletRequest request,
-                                                                               AppSvcOutsouredDto appPremOutSourceLicenceDto,
-                                                                               List<AppPremGroupOutsourcedDto> clinicalLaboratoryList,
-                                                                               List<AppPremGroupOutsourcedDto> radiologicalServiceList){
+                                                                       AppSvcOutsouredDto appPremOutSourceLicenceDto,
+                                                                       List<AppPremGroupOutsourcedDto> clinicalLaboratoryList,
+                                                                       List<AppPremGroupOutsourcedDto> radiologicalServiceList){
         AppSvcOutsouredDto appSvcOutsouredDto = new AppSvcOutsouredDto();
         AppPremGroupOutsourcedDto appPremGroupOutsourcedDto = new AppPremGroupOutsourcedDto();
         AppPremOutSourceLicenceDto premOutSourceLicenceDto = new AppPremOutSourceLicenceDto();
         String prefix = ParamUtil.getString(request,"prefixVal");
         String startDate = ParamUtil.getString(request,prefix+"agreementStartDate");
         String endDate = ParamUtil.getString(request,prefix+"agreementEndDate");
-        String scpoing = ParamUtil.getString(request,prefix+"scopeOfOutsourcing");
+        String scpoing = ParamUtil.getString(request,prefix+"outstandingScope");
         String svcName = ParamUtil.getString(request,prefix+"svcName");
         String bName = ParamUtil.getString(request,prefix+"bName");
         String addr = ParamUtil.getString(request,prefix+"address");
@@ -719,7 +730,10 @@ public final class AppDataHelper {
         String expiryDate = ParamUtil.getString(request,prefix+"expiryDate");
 
         premOutSourceLicenceDto.setId(prefix);
-        premOutSourceLicenceDto.setServiceCode(svcName);
+        if (StringUtil.isNotEmpty(svcName) && HcsaServiceCacheHelper.getServiceByServiceName(svcName) != null){
+            String serviceCode = HcsaServiceCacheHelper.getServiceByServiceName(svcName).getSvcCode();
+            premOutSourceLicenceDto.setServiceCode(serviceCode);
+        }
         premOutSourceLicenceDto.setLicenceNo(licNo);
         premOutSourceLicenceDto.setOutstandingScope(scpoing);
         appPremGroupOutsourcedDto.setBusinessName(bName);
@@ -733,11 +747,14 @@ public final class AppDataHelper {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        if (HcsaAppConst.CLINICALLABORATOYY.equals(premOutSourceLicenceDto.getServiceCode())){
-            clinicalLaboratoryList.add(appPremGroupOutsourcedDto);
-        }
-        if (HcsaAppConst.RADIOLOGICALSERVICE.equals(premOutSourceLicenceDto.getServiceCode())){
-            radiologicalServiceList.add(appPremGroupOutsourcedDto);
+        if (StringUtil.isNotEmpty(startDate) && StringUtil.isNotEmpty(endDate) && StringUtil.isNotEmpty(scpoing)){
+            if (HcsaAppConst.CLINICALLABORATOYY.equals(svcName)){
+                clinicalLaboratoryList.add(appPremGroupOutsourcedDto);
+            }
+            if (HcsaAppConst.RADIOLOGICALSERVICE.equals(svcName)){
+                radiologicalServiceList.add(appPremGroupOutsourcedDto);
+            }
+
         }
         appSvcOutsouredDto.setPrefixVal(prefix);
         appSvcOutsouredDto.setSearchOutsourced(appPremGroupOutsourcedDto);
