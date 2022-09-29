@@ -1998,11 +1998,13 @@ public class ServiceInfoDelegator {
         boolean match = appSubmissionDto.getAppSvcRelatedInfoDtoList()
                 .stream().anyMatch(s -> AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL.equals(s.getServiceCode()));
         if (match){
-            int size = appSubmissionDto.getAppLicBundleDtoList().size();
-            if (size>1){
-                List<String> list = Arrays.asList(skipList);
-                list.add(HcsaConsts.STEP_OUTSOURCED_PROVIDERS);
-                skipList = (String[]) list.toArray();
+            if (IaisCommonUtils.isNotEmpty(appSubmissionDto.getAppLicBundleDtoList())){
+                int size = appSubmissionDto.getAppLicBundleDtoList().size();
+                if (size>1){
+                    List<String> list = Arrays.asList(skipList);
+                    list.add(HcsaConsts.STEP_OUTSOURCED_PROVIDERS);
+                    skipList = (String[]) list.toArray();
+                }
             }
         }
         if (StringUtil.isIn(stepCode, skipList)) {
