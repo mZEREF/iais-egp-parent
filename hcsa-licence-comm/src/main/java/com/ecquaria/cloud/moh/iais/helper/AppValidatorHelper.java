@@ -3196,9 +3196,9 @@ public final class AppValidatorHelper {
                 List<AppPremScopeDto> appPremScopeDtoList = specialisedDto.getAppPremScopeDtoList();
                 List<AppPremScopeDto> checkedAppPremScopeDtoList = specialisedDto.getCheckedAppPremScopeDtoList();
                 if (appPremScopeDtoList == null || appPremScopeDtoList.isEmpty()) {
-                    //TODO add this to message table
-                    errorMap.put(premisesVal + "_mandatory",
-                            "The system must configure one item at least for " + specialisedDto.getCategorySectionName());
+                    //NEW_ERR0035 - The system must configure one item at least for {data}.
+                    errorMap.put(premisesVal + "_mandatory", MessageUtil.replaceMessage("NEW_ERR0035",
+                            specialisedDto.getCategorySectionName(), "data"));
                 } else if (checkedAppPremScopeDtoList == null || checkedAppPremScopeDtoList.isEmpty()) {
                     errorMap.put(premisesVal + "_sub_type", "GENERAL_ERR0006");
                 }
