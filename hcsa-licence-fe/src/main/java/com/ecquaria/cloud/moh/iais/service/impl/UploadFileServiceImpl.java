@@ -503,7 +503,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                         appGrpPremisesDtos.add(appliGrpPremisesDto);
                         appliGrpPremisesIds.add(appliGrpPremisesDto.getId());
                         String appliGrpPremisesDtoId = appliGrpPremisesDto.getId();
-
+                        if(appPremisesOperationalUnitDtos!=null)
                         for(AppPremisesOperationalUnitDto appPremisesOperationalUnitDto : appPremisesOperationalUnitDtos){
                             String premisesId = appPremisesOperationalUnitDto.getPremisesId();
                             if(appliGrpPremisesDtoId.equals(premisesId)){
@@ -563,13 +563,13 @@ public class UploadFileServiceImpl implements UploadFileService {
                                         }
                                     }
                                 }
+                                if(IaisCommonUtils.isNotEmpty(appPremPhOpenPeriodDtos))
                                 for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto :appPremPhOpenPeriodDtos){
                                     String appPremCorreId = appPremPhOpenPeriodDto.getAppPremId();
                                     if(premisesCorrelationDtoId.equals(appPremCorreId)){
                                         appPremPhOpenPeriodDtoSet.add(appPremPhOpenPeriodDto);
                                     }
                                 }
-
                                 if(appPremEventPeriods!=null){
                                     for(AppPremEventPeriodDto appPremEventPeriodDto: appPremEventPeriods){
                                         String appPremCorreId = appPremEventPeriodDto.getAppPremId();
@@ -587,7 +587,8 @@ public class UploadFileServiceImpl implements UploadFileService {
                                     }
                                 }
 
-                                for (AppPremisesSelfDeclChklDto appPremisesSelfDeclChklDto :appPremisesSelfDeclChklEntity){
+                                if(IaisCommonUtils.isNotEmpty(appPremisesSelfDeclChklEntity))
+                                    for (AppPremisesSelfDeclChklDto appPremisesSelfDeclChklDto :appPremisesSelfDeclChklEntity){
                                     String appPremCorreId = appPremisesSelfDeclChklDto.getAppPremCorreId();
                                     if(premisesCorrelationDtoId.equals(appPremCorreId)){
                                         appPremisesSelfDeclChklDtos.add(appPremisesSelfDeclChklDto);
@@ -595,7 +596,8 @@ public class UploadFileServiceImpl implements UploadFileService {
                                     }
                                 }
 
-                                for(AppSvcDocDto appSvcDocDto:appSvcDoc){
+                                if(IaisCommonUtils.isNotEmpty(appSvcDoc))
+                                    for(AppSvcDocDto appSvcDocDto:appSvcDoc){
                                     String appPremCorreId = appSvcDocDto.getAppPremCorreId();
                                     if(premisesCorrelationDtoId.equals(appPremCorreId)){
                                         appSvcDocDtos.add(appSvcDocDto);
@@ -603,44 +605,51 @@ public class UploadFileServiceImpl implements UploadFileService {
 
                                 }
 
-                                for(AppPremiseMiscDto appPremiseMiscDto:appPremiseMiscEntities){
+                                if(IaisCommonUtils.isNotEmpty(appPremiseMiscEntities))
+                                    for(AppPremiseMiscDto appPremiseMiscDto:appPremiseMiscEntities){
                                     String appPremCorreId = appPremiseMiscDto.getAppPremCorreId();
                                     if(premisesCorrelationDtoId.equals(appPremCorreId)){
                                         appPremiseMiscDtoList.add(appPremiseMiscDto);
                                     }
                                 }
 
-                                for(AppPremisesSpecialDocDto appPremisesSpecialDocDto:appPremisesSpecialDocEntities){
+                                if(IaisCommonUtils.isNotEmpty(appPremisesSpecialDocEntities))
+                                    for(AppPremisesSpecialDocDto appPremisesSpecialDocDto:appPremisesSpecialDocEntities){
                                     String appPremCorreId = appPremisesSpecialDocDto.getAppPremCorreId();
                                     if(premisesCorrelationDtoId.equals(appPremCorreId)){
                                         appPremisesSpecialDocDtoList.add(appPremisesSpecialDocDto);
                                     }
                                 }
-                                for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicles){
+                                if(IaisCommonUtils.isNotEmpty(appSvcVehicles))
+                                    for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicles){
                                     String appPremCorreId = appSvcVehicleDto.getAppPremCorreId();
                                     if(premisesCorrelationDtoId.equals(appPremCorreId)){
                                         appSvcVehicleDtoList.add(appSvcVehicleDto);
                                     }
                                 }
-                                for(AppSvcChargesDto appSvcChargesDto : appSvcChargesPages){
+                                if(IaisCommonUtils.isNotEmpty(appSvcChargesPages))
+                                    for(AppSvcChargesDto appSvcChargesDto : appSvcChargesPages){
                                     String appPremCorreId = appSvcChargesDto.getAppPremCorreId();
                                     if(premisesCorrelationDtoId.equals(appPremCorreId)){
                                         appSvcChargesDtoList.add(appSvcChargesDto);
                                     }
                                 }
-                                for(AppPremScopeDto appPremScopeDto : appPremScopeDtos){
+                                if(IaisCommonUtils.isNotEmpty(appPremScopeDtos))
+                                    for(AppPremScopeDto appPremScopeDto : appPremScopeDtos){
                                     String appPremCorreId = appPremScopeDto.getAppPremCorreId();
                                     if(premisesCorrelationDtoId.equals(appPremCorreId)){
                                         appPremScopeDtoSet.add(appPremScopeDto);
                                     }
                                 }
-                                for(AppPremSubSvcRelDto appPremSubSvcRelDto : appPremSubSvcRelDtos){
+                                if(IaisCommonUtils.isNotEmpty(appPremSubSvcRelDtos))
+                                    for(AppPremSubSvcRelDto appPremSubSvcRelDto : appPremSubSvcRelDtos){
                                     String appPremCorreId = appPremSubSvcRelDto.getAppPremCorreId();
                                     if(premisesCorrelationDtoId.equals(appPremCorreId)){
                                         appPremSubSvcRelDtoSet.add(appPremSubSvcRelDto);
                                     }
                                 }
-                                for(AppPremOutSourceLicenceDto dto : appPremOutSourceLicenceDtos){
+                                if(IaisCommonUtils.isNotEmpty(appPremOutSourceLicenceDtos))
+                                    for(AppPremOutSourceLicenceDto dto : appPremOutSourceLicenceDtos){
                                     String appPremCorreId = dto.getAppPremCorrId();
                                     if(premisesCorrelationDtoId.equals(appPremCorreId)){
                                         appPremOutSourceLicenceDtoSet.add(dto);

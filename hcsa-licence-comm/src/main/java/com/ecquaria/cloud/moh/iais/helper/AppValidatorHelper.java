@@ -2091,11 +2091,12 @@ public final class AppValidatorHelper {
                             "Do you provide Yellow Fever Vaccination Service",
                             "field"));
                 }
-
-                if (StringUtil.isEmpty(svcOtherInfoDto.getYfCommencementDateStr())) {
-                    errMap.put(prefix+"yfCommencementDate", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                            "Date of Commencement",
-                            "field"));
+                if (AppConsts.YES.equals(svcOtherInfoDto.getProvideYfVs())){
+                    if (StringUtil.isEmpty(svcOtherInfoDto.getYfCommencementDateStr())) {
+                        errMap.put(prefix+"yfCommencementDate", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                "Date of Commencement",
+                                "field"));
+                    }
                 }
             }
             if (StringUtil.isIn(currCode, new String[]{AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE,
