@@ -1,10 +1,10 @@
+<c:if test="${not empty outsourceDto.radiologicalServiceList}">
 <div class="amended-service-info-gp form-horizontal min-row">
     <div class="col-xs-12">
         <p><strong>Radiological Service</strong></p>
     </div>
 
     <div class="amend-preview-info form-horizontal min-row">
-        <c:set var="rlen" value="${cL.radiologicalServiceList.size()}"/>
         <div class="col-lg-12 col-xs-12 col-md-12">
             <div class="intranet-content">
                 <table aria-describedby="" class="table">
@@ -48,48 +48,43 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <c:if test="${rlen-1 >= 0}">
-                        <c:forEach end="${rlen-1}" begin="0" step="1" varStatus="r">
-                            <c:set var="index" value="${r.index}" />
-                            <c:set var="msgTemplateResult" value="${cL.radiologicalServiceList[index]}"/>
-                            <c:set var="appPremOutSourceLicenceDto" value="${msgTemplateResult.appPremOutSourceLicenceDto}"/>
-                            <c:if test="${msgTemplateResult.status eq 0}">
-                                <tr>
-                                    <td>
-                                        <p class="visible-xs visible-sm table-row-title">Licence No.</p>
-                                        <p>${appPremOutSourceLicenceDto.licenceNo}</p>
-                                    </td>
-                                    <td>
-                                        <p class="visible-xs visible-sm table-row-title">Business Name</p>
-                                        <p>${msgTemplateResult.businessName}</p>
-                                    </td>
-                                    <td>
-                                        <p class="visible-xs visible-sm table-row-title">Address</p>
-                                        <p>${msgTemplateResult.address}</p>
-                                    </td>
-                                    <td>
-                                        <p class="visible-xs visible-sm table-row-title">Licence Tenure</p>
-                                        <p>${msgTemplateResult.expiryDate}</p>
-                                    </td>
-                                    <td>
-                                        <p class="visible-xs visible-sm table-row-title">Date of Agreement</p>
-                                        <p>${appPremOutSourceLicenceDto.agreementStartDate}</p>
-                                    </td>
-                                    <td>
-                                        <p class="visible-xs visible-sm table-row-title">End Date of Agreement</p>
-                                        <p>${appPremOutSourceLicenceDto.agreementEndDate}</p>
-                                    </td>
-                                    <td>
-                                        <p class="visible-xs visible-sm table-row-title">Scope of Outsourcing</p>
-                                        <p>${appPremOutSourceLicenceDto.outstandingScope}</p>
-                                    </td>
-                                </tr>
-                            </c:if>
+                        <c:forEach var="rds" items="${outsourceDto.radiologicalServiceList}">
+                            <c:set var="appPremOutSourceLicenceDto" value="${rds.appPremOutSourceLicenceDto}"/>
+                            <tr>
+                                <td>
+                                    <p class="visible-xs visible-sm table-row-title">Licence No.</p>
+                                    <p>${appPremOutSourceLicenceDto.licenceNo}</p>
+                                </td>
+                                <td>
+                                    <p class="visible-xs visible-sm table-row-title">Business Name</p>
+                                    <p>${rds.businessName}</p>
+                                </td>
+                                <td>
+                                    <p class="visible-xs visible-sm table-row-title">Address</p>
+                                    <p>${rds.address}</p>
+                                </td>
+                                <td>
+                                    <p class="visible-xs visible-sm table-row-title">Licence Tenure</p>
+                                    <p>${rds.expiryDate}</p>
+                                </td>
+                                <td>
+                                    <p class="visible-xs visible-sm table-row-title">Date of Agreement</p>
+                                    <p>${appPremOutSourceLicenceDto.agreementStartDate}</p>
+                                </td>
+                                <td>
+                                    <p class="visible-xs visible-sm table-row-title">End Date of Agreement</p>
+                                    <p>${appPremOutSourceLicenceDto.agreementEndDate}</p>
+                                </td>
+                                <td>
+                                    <p class="visible-xs visible-sm table-row-title">Scope of Outsourcing</p>
+                                    <p>${appPremOutSourceLicenceDto.outstandingScope}</p>
+                                </td>
+                            </tr>
                         </c:forEach>
-                    </c:if>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
+</c:if>

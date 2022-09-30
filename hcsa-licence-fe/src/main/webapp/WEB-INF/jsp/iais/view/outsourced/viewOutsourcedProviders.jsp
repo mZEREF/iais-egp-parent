@@ -7,16 +7,9 @@
             <p class="app-title"><c:out value="${currStepName}"/></p>
         </div>
         <div class="amend-preview-info form-horizontal min-row">
-            <c:set var="cL" value="${currentPreviewSvcInfo.appPremOutSourceLicenceDto}"/>
-            <c:choose>
-                <c:when test="${(currentPreviewSvcInfo.serviceName == AppServicesConsts.SERVICE_NAME_ACUTE_HOSPITAL)
-                || (currentPreviewSvcInfo.serviceName == AppServicesConsts.SERVICE_NAME_BLOOD_BANKING)}">
-                    <%@include file="viewClinicalBoratoryContent.jsp"%>
-                    <%@include file="viewRadiologicalServiceContent.jsp"%>
-                </c:when>
-                <c:otherwise>
-                </c:otherwise>
-            </c:choose>
+            <c:set var="outsourceDto" value="${currentPreviewSvcInfo.appPremOutSourceLicenceDto}"/>
+            <%@include file="viewClinicalBoratoryContent.jsp"%>
+            <%@include file="viewRadiologicalServiceContent.jsp"%>
         </div>
     </iais:row>
 </div>
