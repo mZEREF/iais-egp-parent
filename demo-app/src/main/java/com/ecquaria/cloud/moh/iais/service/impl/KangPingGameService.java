@@ -1,4 +1,4 @@
-package com.ecquaria.cloud.moh.iais.service;
+package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.client.KangPingGameClient;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -15,10 +15,6 @@ public class KangPingGameService {
 
     @Autowired
     private KangPingGameClient kangPingGameClient;
-
-    public List<KPGameCategoryDto> getAllCategories(){
-        return kangPingGameClient.getCategories().getEntity();
-    }
 
     public KPGameCategoryDto getCategoryById(String id){
         return kangPingGameClient.getGameCategoryById(id).getEntity();
@@ -40,13 +36,6 @@ public class KangPingGameService {
         kangPingGameClient.saveCategory(dto);
     }
 
-    public List<KPGameDto> getAllGames(){
-        return kangPingGameClient.getGames().getEntity();
-    }
-
-    public KPGameDto getGameById(String id){
-        return kangPingGameClient.getGameById(id).getEntity();
-    }
 
     public void saveGame(KPGameDto dto){
         kangPingGameClient.saveGame(dto);

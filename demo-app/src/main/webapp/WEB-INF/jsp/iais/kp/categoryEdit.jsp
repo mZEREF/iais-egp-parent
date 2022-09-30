@@ -54,18 +54,24 @@
                         <iais:sortableHeader style="width:20%" needSort="false"  field="GameName" value="GameName"></iais:sortableHeader>
                         <iais:sortableHeader style="width:20%" needSort="false"   field="GameDescription" value="GameDescription"></iais:sortableHeader>
                         <iais:sortableHeader style="width:20%" needSort="false"   field="price" value="Price"></iais:sortableHeader>
-
+                        <iais:sortableHeader style="width:20%" needSort="false"  field="" value="action"></iais:sortableHeader>
                     </tr>
                     </thead>
                     <tbody style="text-align: left">
                     <%-- person entity--%>
                     <c:forEach var = "game" items = "${gameResult.rows}" varStatus="status">
                         <tr>
+                            <input type="hidden" id="gameId" name="gameId" value="${game.id}">
+                            <input type="hidden" id="categoryId" name="categoryId" value="${game.categoryId}">
                             <td align="left" class="row_no" style="width: 5px">${(status.index + 1) + (categorySearchParam.pageNo - 1) * categorySearchParam.pageSize}</td>
                             <td align="left" ><iais:code code="${game.gameName}"></iais:code></td>
                             <td align="left" ><iais:code code="${game.gameDescription}"></iais:code></td>
                             <td align="left" ><iais:code code="${game.price}"></iais:code></td>
-
+                            <td align="left" style="width: 10%">
+                                <button type="button" value="${game.id}"
+                                        onclick="deleteGame('<iais:mask name="gameId" value="${game.id}"/>','${game.categoryId}')"  class="btn btn-default btn-sm" >
+                                    Delete</button>
+                            </td>
                         </tr>
                     </c:forEach>
                     </tbody>
@@ -98,8 +104,9 @@
         SOP.Crud.cfxSubmit("mainForm", "prepareAddGame");
     }
 
-    function deleteGame(id){
+    function deleteGame(id,categoryId){
         $("#gameId").val(id);
-        SOP.Crud.cfxSubmit("mainForm", "deleteGame", id);
+
+        SOP.Crud.cfxSubmit("mainForm", "deleteGame", id,categoryId);
     }
 </script>

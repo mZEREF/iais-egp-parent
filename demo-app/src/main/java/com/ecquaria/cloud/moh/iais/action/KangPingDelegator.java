@@ -12,7 +12,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.KPGameCategoryDto;
 import com.ecquaria.cloud.moh.iais.dto.KPGameDto;
 import com.ecquaria.cloud.moh.iais.helper.*;
-import com.ecquaria.cloud.moh.iais.service.KangPingGameService;
+import com.ecquaria.cloud.moh.iais.service.impl.KangPingGameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -83,7 +83,8 @@ public class KangPingDelegator {
 
     public void prepareEdit(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String categoryId = ParamUtil.getMaskedString(request, "categoryId");
+        String categoryId = ParamUtil.getString(request, "categoryId");
+
         KPGameCategoryDto category = kangPingGameService.getCategoryById(categoryId);
         ParamUtil.setSessionAttr(request,"categoryRequestDto", category);
         SearchResult<KPGameDto> result = kangPingGameService.getGamesByCategoryId(categoryId);
@@ -93,7 +94,7 @@ public class KangPingDelegator {
     public void deleteGame(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String categoryId = ParamUtil.getString(request, "categoryId");
-        String gameId = ParamUtil.getString(request, "gameId");
+        String gameId = ParamUtil.getMaskedString(request, "gameId");
         System.out.println("----------------------");
         System.out.println(categoryId);
         System.out.println(gameId);
@@ -200,6 +201,7 @@ public class KangPingDelegator {
         Date issueDate =  sf.parse(ParamUtil.getDate(request,"issueDate"));
 
         KPGameDto game = new KPGameDto();
+
         game.setGameName(gameName);
         game.setCategoryId(categoryId);
         game.setGameDescription(gameDescription);
