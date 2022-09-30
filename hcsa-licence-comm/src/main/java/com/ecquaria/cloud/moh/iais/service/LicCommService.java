@@ -94,5 +94,5 @@ public interface LicCommService {
 
     List<PremisesDto> getPremisesDtosByPremType(String premType);
 
-    SearchResult<AppPremOutSourceProvidersQueryDto> doQuery(SearchParam param);
+    SearchResult<AppPremOutSourceProvidersQueryDto> queryOutsouceLicences(SearchParam param);
 }

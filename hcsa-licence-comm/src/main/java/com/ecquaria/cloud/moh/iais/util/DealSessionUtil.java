@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocSecDetailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocSectionDto;
@@ -17,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDoc
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremGroupOutsourcedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOutSourceProvidersQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -162,6 +164,7 @@ public class DealSessionUtil {
         session.removeAttribute(HcsaAppConst.RFC_APP_GRP_PREMISES_DTO_LIST);
         session.removeAttribute(HcsaAppConst.PREMISESTYPE);
 
+        // outsource
         session.removeAttribute("outSourceParam");
         session.removeAttribute("outSourceResult");
 
@@ -588,16 +591,8 @@ public class DealSessionUtil {
                 List<DocumentShowDto> documentShowDtos = initDocumentShowList(currSvcInfoDto,
                         appPremSpecialisedDtoList, forceInit);
                 initDocumentSession(documentShowDtos, request);
-            }else if (HcsaConsts.STEP_OUTSOURCED_PROVIDERS.equals(stepCode)){
-                initOutsourced(currSvcInfoDto,forceInit);
-                if (!forceInit){
-                    AppSvcOutsouredDto outsouredDto = currSvcInfoDto.getAppPremOutSourceLicenceDto();
-                    if (outsouredDto != null){
-                        List<AppPremGroupOutsourcedDto> cLDList = outsouredDto.getClinicalLaboratoryList();
-
-                        List<AppPremGroupOutsourcedDto> rDSList = outsouredDto.getRadiologicalServiceList();
-                    }
-                }
+            } else if (HcsaConsts.STEP_OUTSOURCED_PROVIDERS.equals(stepCode)) {
+                initSvcOutsourcedProvider(currSvcInfoDto, forceInit);
             }
         }
         return currSvcInfoDto;
@@ -739,32 +734,64 @@ public class DealSessionUtil {
         return true;
     }
 
-    public static boolean initOutsourced(AppSvcRelatedInfoDto currSvcInfoDto,boolean forceInit){
-        AppSvcOutsouredDto appPremGroupOutsourcedDtos = currSvcInfoDto.getAppPremOutSourceLicenceDto();
-        if (!forceInit && appPremGroupOutsourcedDtos != null){
-            appPremGroupOutsourcedDtos.setInit(false);
+    public static boolean initSvcOutsourcedProvider(AppSvcRelatedInfoDto currSvcInfoDto, boolean forceInit) {
+        AppSvcOutsouredDto appSvcOutsouredDto = currSvcInfoDto.getAppPremOutSourceLicenceDto();
+        if (!forceInit && appSvcOutsouredDto != null) {
+            appSvcOutsouredDto.setInit(false);
             return false;
         }
-        AppSvcOutsouredDto appSvcOutsouredDto = new AppSvcOutsouredDto();
-        AppPremGroupOutsourcedDto appPremGroupOutsourcedDto = new AppPremGroupOutsourcedDto();
-        if (appPremGroupOutsourcedDtos != null){
-            SearchParam searchParam = appSvcOutsouredDto.getSearchParam();
-            List<AppPremGroupOutsourcedDto> cLDList = appPremGroupOutsourcedDtos.getClinicalLaboratoryList();
-            if (cLDList != null && searchParam != null){
-                for (AppPremGroupOutsourcedDto premGroupOutsourcedDto : cLDList) {
-                    if (premGroupOutsourcedDto != null && premGroupOutsourcedDto.getAppPremOutSourceLicenceDto() != null){
-                        searchParam.addFilter("licenceNo",premGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getLicenceNo());
-
-//                        appPremGroupOutsourcedDto.setAddress();
-                    }
-                }
-            }
-
-            List<AppPremGroupOutsourcedDto> rDSList = appPremGroupOutsourcedDtos.getRadiologicalServiceList();
-
-            appSvcOutsouredDto.setInit(true);
+        if (appSvcOutsouredDto == null) {
+            appSvcOutsouredDto = new AppSvcOutsouredDto();
         }
+        // check bundle
+        // licence numbers
+        List<String> licenceNos = IaisCommonUtils.genNewArrayList();
+        List<AppPremGroupOutsourcedDto> outsourcedDtoList = appSvcOutsouredDto.getClinicalLaboratoryList();
+        if (IaisCommonUtils.isNotEmpty(outsourcedDtoList)) {
+            for (AppPremGroupOutsourcedDto appPremGroupOutsourcedDto : outsourcedDtoList) {
+                licenceNos.add(appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getLicenceNo());
+            }
+        }
+        outsourcedDtoList = appSvcOutsouredDto.getRadiologicalServiceList();
+        if (IaisCommonUtils.isNotEmpty(outsourcedDtoList)) {
+            for (AppPremGroupOutsourcedDto appPremGroupOutsourcedDto : outsourcedDtoList) {
+                licenceNos.add(appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getLicenceNo());
+            }
+        }
+        if (licenceNos.isEmpty()) {
+            return false;
+        }
+        // search
+        SearchParam searchParam = new SearchParam(AppPremOutSourceProvidersQueryDto.class.getName());
+        searchParam.setPageNo(1);
+        searchParam.setPageSize(licenceNos.size());
+        searchParam.addFilter("licenceNos", licenceNos);
+        SearchResult<AppPremOutSourceProvidersQueryDto> searchResult = getLicCommService().queryOutsouceLicences(
+                searchParam);
+        if (searchResult != null && IaisCommonUtils.isNotEmpty(searchResult.getRows())) {
+            ArrayList<AppPremOutSourceProvidersQueryDto> rows = searchResult.getRows();
+            for (AppPremOutSourceProvidersQueryDto row : rows) {
+                resolveAppPremGroupOutsourcedList(appSvcOutsouredDto.getClinicalLaboratoryList(), row);
+                resolveAppPremGroupOutsourcedList(appSvcOutsouredDto.getRadiologicalServiceList(), row);
+            }
+        }
+        appSvcOutsouredDto.setInit(true);
+        currSvcInfoDto.setAppPremOutSourceLicenceDto(appSvcOutsouredDto);
         return true;
+    }
+
+    private static void resolveAppPremGroupOutsourcedList(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtoList,
+            AppPremOutSourceProvidersQueryDto row) {
+        if (IaisCommonUtils.isEmpty(appPremGroupOutsourcedDtoList) || row == null) {
+            return;
+        }
+        appPremGroupOutsourcedDtoList.stream()
+                .filter(dto -> Objects.equals(dto.getAppPremOutSourceLicenceDto().getLicenceNo(), row.getLicenceNo()))
+                .forEach(dto -> {
+                    dto.setAddress(row.getAddress());
+                    dto.setBusinessName(row.getBusinessName());
+                    dto.setExpiryDate(row.getExpiryDate());
+                });
     }
 
     /**

@@ -28,6 +28,7 @@
             <#if licenceNo??> AND l.LICENCE_NO = :licenceNo</#if>
             <#if id??> AND l.ID NOT IN (:id)</#if>
             <#if licenceId??> AND l.LICENSEE_ID NOT IN (:licenceId)</#if>
+            <#if licenceNos??> AND l.LICENCE_NO in (:licenceNos)</#if>
         ]]>
     </sql>
 </sqls>

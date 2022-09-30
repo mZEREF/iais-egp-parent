@@ -52,7 +52,6 @@ import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.RfcHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
@@ -600,20 +599,20 @@ public class ServiceInfoDelegator {
     private void prepareOutsourcedProviders(HttpServletRequest request) {
         String currSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request, currSvcId,null);
-        AppSvcOutsouredDto appSvcOutsouredDto = currSvcInfoDto.getAppPremOutSourceLicenceDto();
-        if (appSvcOutsouredDto != null){
-            SearchParam searchParam = appSvcOutsouredDto.getSearchParam();
-            if (searchParam != null){
-                QueryHelp.setMainSql("outSourceQuery","searchOutSource",searchParam);
-                SearchResult searchResult = licCommService.doQuery(searchParam);
-                ParamUtil.setSessionAttr(request,ApplicationConsts.OUT_SOURCE_PARAM,searchParam);
-                ParamUtil.setSessionAttr(request,ApplicationConsts.OUT_SOURCE_RESULT,searchResult);
-            }else {
-                ParamUtil.setSessionAttr(request,ApplicationConsts.OUT_SOURCE_PARAM,null);
-                ParamUtil.setSessionAttr(request,ApplicationConsts.OUT_SOURCE_RESULT,null);
-            }
+        if (DealSessionUtil.initSvcOutsourcedProvider(currSvcInfoDto, false)) {
+            setAppSvcRelatedInfoMap(request, currSvcId, currSvcInfoDto);
         }
-        DealSessionUtil.initOutsourced(currSvcInfoDto,false);
+        AppSvcOutsouredDto appSvcOutsouredDto = currSvcInfoDto.getAppPremOutSourceLicenceDto();
+        SearchParam searchParam = appSvcOutsouredDto.getSearchParam();
+
+        if (searchParam != null){
+            SearchResult searchResult = licCommService.queryOutsouceLicences(searchParam);
+            ParamUtil.setSessionAttr(request,ApplicationConsts.OUT_SOURCE_PARAM,searchParam);
+            ParamUtil.setSessionAttr(request,ApplicationConsts.OUT_SOURCE_RESULT,searchResult);
+        }else {
+            ParamUtil.setSessionAttr(request,ApplicationConsts.OUT_SOURCE_PARAM,null);
+            ParamUtil.setSessionAttr(request,ApplicationConsts.OUT_SOURCE_RESULT,null);
+        }
         //OutsourcedProviders services dropdown options
         List<SelectOption> optionList = ApplicationHelper.genOutsourcedServiceSel(request, true);
         ParamUtil.setRequestAttr(request, OUTSOURCED_SERVICE_OPTS, optionList);

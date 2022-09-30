@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.RfcHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
@@ -482,7 +483,11 @@ public class LicCommServiceImpl implements LicCommService {
 
     @SearchTrack(catalog = "outSourceQuery", key = "searchOutSource")
     @Override
-    public SearchResult<AppPremOutSourceProvidersQueryDto> doQuery(SearchParam param) {
+    public SearchResult<AppPremOutSourceProvidersQueryDto> queryOutsouceLicences(SearchParam param) {
+        if (param == null) {
+            return null;
+        }
+        QueryHelp.setMainSql("outSourceQuery","searchOutSource",param);
         return licCommClient.doQuery(param).getEntity();
     }
 }
