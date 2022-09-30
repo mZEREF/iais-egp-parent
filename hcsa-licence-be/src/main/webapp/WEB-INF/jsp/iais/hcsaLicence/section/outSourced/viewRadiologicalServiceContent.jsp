@@ -1,6 +1,6 @@
 <p class="col-xs-12">
     <strong>
-        Dental Service
+        Radiological Service
     </strong>
 </p>
 

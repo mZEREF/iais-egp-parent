@@ -1,11 +1,5 @@
 <div class="amend-preview-info form-horizontal min-row">
     <iais:row>
-        <div class="col-xs-12 col-md-6">
-            <p class="bold">DentalService Other Information</p>
-        </div>
-    </iais:row>
-
-    <iais:row>
         <iais:field width="5" value="Type of medical records"/>
         <iais:value width="3" cssClass="col-md-7" display="true">
             <c:if test="${appSvcOtherInfoDto.appSvcOtherInfoMedDto.isMedicalTypeIt == 1}">

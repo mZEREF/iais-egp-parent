@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocSecDetailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocSectionDto;
@@ -15,11 +16,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.SpecialServiceSectionD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremGroupOutsourcedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOutsouredDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSpecialServiceInfoDto;
@@ -585,6 +588,16 @@ public class DealSessionUtil {
                 List<DocumentShowDto> documentShowDtos = initDocumentShowList(currSvcInfoDto,
                         appPremSpecialisedDtoList, forceInit);
                 initDocumentSession(documentShowDtos, request);
+            }else if (HcsaConsts.STEP_OUTSOURCED_PROVIDERS.equals(stepCode)){
+                initOutsourced(currSvcInfoDto,forceInit);
+                if (!forceInit){
+                    AppSvcOutsouredDto outsouredDto = currSvcInfoDto.getAppPremOutSourceLicenceDto();
+                    if (outsouredDto != null){
+                        List<AppPremGroupOutsourcedDto> cLDList = outsouredDto.getClinicalLaboratoryList();
+
+                        List<AppPremGroupOutsourcedDto> rDSList = outsouredDto.getRadiologicalServiceList();
+                    }
+                }
             }
         }
         return currSvcInfoDto;
@@ -723,6 +736,34 @@ public class DealSessionUtil {
             newList.add(appSvcOtherInfoDto);
         }
         currSvcInfoDto.setAppSvcOtherInfoList(newList);
+        return true;
+    }
+
+    public static boolean initOutsourced(AppSvcRelatedInfoDto currSvcInfoDto,boolean forceInit){
+        AppSvcOutsouredDto appPremGroupOutsourcedDtos = currSvcInfoDto.getAppPremOutSourceLicenceDto();
+        if (!forceInit && appPremGroupOutsourcedDtos != null){
+            appPremGroupOutsourcedDtos.setInit(false);
+            return false;
+        }
+        AppSvcOutsouredDto appSvcOutsouredDto = new AppSvcOutsouredDto();
+        AppPremGroupOutsourcedDto appPremGroupOutsourcedDto = new AppPremGroupOutsourcedDto();
+        if (appPremGroupOutsourcedDtos != null){
+            SearchParam searchParam = appSvcOutsouredDto.getSearchParam();
+            List<AppPremGroupOutsourcedDto> cLDList = appPremGroupOutsourcedDtos.getClinicalLaboratoryList();
+            if (cLDList != null && searchParam != null){
+                for (AppPremGroupOutsourcedDto premGroupOutsourcedDto : cLDList) {
+                    if (premGroupOutsourcedDto != null && premGroupOutsourcedDto.getAppPremOutSourceLicenceDto() != null){
+                        searchParam.addFilter("licenceNo",premGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getLicenceNo());
+
+//                        appPremGroupOutsourcedDto.setAddress();
+                    }
+                }
+            }
+
+            List<AppPremGroupOutsourcedDto> rDSList = appPremGroupOutsourcedDtos.getRadiologicalServiceList();
+
+            appSvcOutsouredDto.setInit(true);
+        }
         return true;
     }
 

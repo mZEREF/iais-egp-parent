@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremGroupOutsourcedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOutSourceProvidersQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
@@ -612,6 +613,7 @@ public class ServiceInfoDelegator {
                 ParamUtil.setSessionAttr(request,ApplicationConsts.OUT_SOURCE_RESULT,null);
             }
         }
+        DealSessionUtil.initOutsourced(currSvcInfoDto,false);
         //OutsourcedProviders services dropdown options
         List<SelectOption> optionList = ApplicationHelper.genOutsourcedServiceSel(request, true);
         ParamUtil.setRequestAttr(request, OUTSOURCED_SERVICE_OPTS, optionList);
@@ -718,6 +720,12 @@ public class ServiceInfoDelegator {
                                                           AppSubmissionDto appSubmissionDto, AppSvcOutsouredDto appPremOutSourceLicenceDto){
         appPremOutSourceLicenceDto = AppDataHelper.genAppPremOutSourceProvidersDto(curAct,appPremOutSourceProvidersIds,appPremOutSourceLicenceDto,request);
         AppPremGroupOutsourcedDto appPremGroupOutsourcedDto = appPremOutSourceLicenceDto.getSearchOutsourced();
+        List<AppLicBundleDto> appLicBundleDtoList = appSubmissionDto.getAppLicBundleDtoList();
+        if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)){
+            for (AppLicBundleDto appLicBundleDto : appLicBundleDtoList) {
+                String licenceId = appLicBundleDto.getLicenceId();
+            }
+        }
         if (appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto() != null){
             ValidationResult vResult = WebValidationHelper.validateProperty(appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto(),"search");
             if (vResult != null && vResult.isHasErrors()){

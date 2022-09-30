@@ -1,9 +1,4 @@
 <div class="amended-service-info-gp ">
-    <iais:row>
-        <div class="col-xs-12">
-            <p><strong>Termination of Pregnancy (TOP)</strong></p>
-        </div>
-    </iais:row>
     <div class="amend-preview-info form-horizontal min-row ">
         <iais:row>
             <iais:field width="5"  value="Do you provide Termination of Pregnancy"/>
