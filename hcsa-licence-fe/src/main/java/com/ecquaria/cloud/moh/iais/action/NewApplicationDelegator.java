@@ -162,7 +162,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
 
                 //DealSessionUtil.loadCoMap(appSubmissionDto, request);
                 if (appSubmissionDto.getAppGrpPremisesDtoList() != null && appSubmissionDto.getAppGrpPremisesDtoList().size() > 0) {
-                    resolveReadonly(appSubmissionDto.getAppType(), false, false, appSubmissionDto);
+                    resolveReadonly(appSubmissionDto.getAppType(), false, appSubmissionDto);
                     ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, appSubmissionDto);
                 } else {
                     ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, null);
@@ -313,7 +313,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                     appGrpPremisesDtos = Collections.singletonList(appCommService.getAppGrpPremisesById(premisesId));
                 }
                 appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
-                resolveReadonly(appType, false, true, appSubmissionDto);
+                resolveReadonly(appType, false, appSubmissionDto);
             } else {
                 List<AppGrpPremisesDto> appGrpPremisesDtos = IaisCommonUtils.genNewArrayList();
                 AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
@@ -326,7 +326,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
         log.info(StringUtil.changeForLog("the do loadingSpecifiedInfo start ...."));
     }
 
-    private void resolveReadonly(String appType, boolean isRfi, boolean resetIndex, AppSubmissionDto appSubmissionDto) {
+    private void resolveReadonly(String appType, boolean isRfi, AppSubmissionDto appSubmissionDto) {
         if (isRfi || !ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType) || appSubmissionDto == null) {
             return;
         }
@@ -342,7 +342,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
             return;
         }
         appGrpPremisesDtos.get(0).setExistingData(AppConsts.YES);
-        if (resetIndex) {
+        if (StringUtil.isEmpty(appGrpPremisesDtos.get(0).getPremisesIndexNo())) {
             appGrpPremisesDtos.get(0).setPremisesIndexNo(UUID.randomUUID().toString());
         }
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
