@@ -18,27 +18,8 @@
                     <c:choose>
                         <c:when test="${(currentPreviewSvcInfo.serviceCode == AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE) ||
                         (currentPreviewSvcInfo.serviceCode == AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)}">
-                            <c:if test="${currentPreviewSvcInfo.serviceCode == AppServicesConsts.SERVICE_NAME_DENTAL_SERVICE}">
-                                <p class="col-xs-12">
-                                    <strong>
-                                        Dental Service
-                                    </strong>
-                                </p>
-                            </c:if>
-                            <c:if test="${currentPreviewSvcInfo.serviceCode == AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE}">
-                                <p class="col-xs-12">
-                                    <strong>
-                                        Medical Service
-                                    </strong>
-                                </p>
-                            </c:if>
                             <%@include file="viewDentalService.jsp"%>
                             <c:if test="${currentPreviewSvcInfo.serviceCode == AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE}">
-                                <p class="col-xs-12">
-                                    <strong>
-                                        TOP
-                                    </strong>
-                                </p>
                                 <%@include file="viewTop.jsp"%>
                                 <c:if test="${oldOtherInfo.provideTop eq '1'}">
                                     <c:forEach var="practitioners" items="${otherInfo.otherInfoTopPersonPractitionersList}" varStatus="status">
@@ -88,25 +69,10 @@
                             </c:if>
                         </c:when>
                         <c:when test="${currentPreviewSvcInfo.serviceCode == AppServicesConsts.SERVICE_CODE_RENAL_DIALYSIS_CENTRE}">
-                            <p class="col-xs-12">
-                                <strong>
-                                    Renal Dialysis Centre Service
-                                </strong>
-                            </p>
                             <%@include file="viewRenalDialysisCentreService.jsp"%>
                         </c:when>
                         <c:when test="${currentPreviewSvcInfo.serviceCode == AppServicesConsts.SERVICE_CODE_AMBULATORY_SURGICAL_CENTRE}">
-                            <p class="col-xs-12">
-                                <strong>
-                                    Ambulatory Surgical Centre Service
-                                </strong>
-                            </p>
                             <%@include file="viewAmbulatorySurgicalCentreService.jsp"%>
-                            <p class="col-xs-12">
-                                <strong>
-                                    TOP
-                                </strong>
-                            </p>
                             <%@include file="viewTop.jsp"%>
                             <c:if test="${oldOtherInfo.provideTop eq '1'}">
                                 <c:forEach var="practitioners" items="${otherInfo.otherInfoTopPersonPractitionersList}" varStatus="status">
@@ -155,11 +121,6 @@
                             <%@include file="viewYfVs.jsp"%>
                         </c:when>
                         <c:when test="${currentPreviewSvcInfo.serviceCode == AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL}">
-                            <p class="col-xs-12">
-                                <strong>
-                                    TOP
-                                </strong>
-                            </p>
                             <%@include file="viewTop.jsp"%>
                             <c:if test="${oldOtherInfo.provideTop eq '1'}">
                                 <c:forEach var="practitioners" items="${otherInfo.otherInfoTopPersonPractitionersList}" varStatus="status">
