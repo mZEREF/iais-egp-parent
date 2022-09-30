@@ -953,13 +953,13 @@ public final class AppDataHelper {
             appSvcOtherInfoDto.setOtherInfoTopPersonCounsellorsList(getAppSvcOtherInfoTopPersonDtoCounsellors(request,
                     appType, isRfi, appSvcOtherInfoDto.getOtherInfoTopPersonCounsellorsList(), prefix));
 
-            if (ApplicationConsts.OTHER_INFO_SD.equals(topType)) {
+            if (ApplicationConsts.OTHER_INFO_SD.equals(topType) || ApplicationConsts.OTHER_INFO_DSP.equals(topType)) {
                 appSvcOtherInfoDto.setOtherInfoAbortDrugList(getAppSvcOtherInfoAbortDto1(request, appType, topType, isRfi,
                         appSvcOtherInfoDto.getOtherInfoAbortDrugList(), prefix));
             } else {
                 appSvcOtherInfoDto.setOtherInfoAbortDrugList(null);
             }
-            if (ApplicationConsts.OTHER_INFO_SSP.equals(topType)) {
+            if (ApplicationConsts.OTHER_INFO_SSP.equals(topType) || ApplicationConsts.OTHER_INFO_DSP.equals(topType)) {
                 appSvcOtherInfoDto.setOtherInfoAbortSurgicalProcedureList(getAppSvcOtherInfoAbortDto2(request, appType,
                         topType, isRfi, appSvcOtherInfoDto.getOtherInfoAbortSurgicalProcedureList(), prefix));
             } else {
