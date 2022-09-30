@@ -82,8 +82,7 @@
                     <td>
                         <p class="visible-xs visible-sm table-row-title">Scope of Outsourcing</p>
                         <c:if test="${currSvcInfoDto.appPremOutSourceLicenceDto.prefixVal eq prefix}">
-                            <iais:input maxLength="300" type="text" cssClass="outstandingScope" name="${prefix}outstandingScope" value="${currSvcInfoDto.appPremOutSourceLicenceDto.searchOutsourced.endDateStr.searchOutsourced.outstandingScope}"/>
-                            <iais:datePicker id="agreementEndDate" name="${prefix}agreementEndDate" value=""/>
+                            <iais:input maxLength="300" type="text" cssClass="outstandingScope" name="${prefix}outstandingScope" value="${currSvcInfoDto.appPremOutSourceLicenceDto.searchOutsourced.appPremOutSourceLicenceDto.outstandingScope}"/>
                         </c:if>
                         <c:if test="${currSvcInfoDto.appPremOutSourceLicenceDto.prefixVal != prefix}">
                             <iais:input maxLength="300" type="text" cssClass="outstandingScope" name="${prefix}outstandingScope" value=""/>

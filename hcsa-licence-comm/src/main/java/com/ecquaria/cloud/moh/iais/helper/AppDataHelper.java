@@ -762,6 +762,7 @@ public final class AppDataHelper {
         appPremOutSourceLicenceDto = appSvcOutsouredDto;
         appPremOutSourceLicenceDto.setClinicalLaboratoryList(clinicalLaboratoryList);
         appPremOutSourceLicenceDto.setRadiologicalServiceList(radiologicalServiceList);
+        appPremOutSourceLicenceDto.setInit(true);
         return appPremOutSourceLicenceDto;
     }
 
