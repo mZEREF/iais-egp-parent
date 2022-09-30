@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpSecondAddrDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOpenPeriodDto;
@@ -388,6 +389,7 @@ public class UploadFileServiceImpl implements UploadFileService {
          List<AppSvcOtherInfoTopDto> appSvcOtherInfoTopDtos=applicationListDto.getAppSvcOtherInfoTops();
          List<AppSvcOtherInfoAbortDto> appSvcOtherInfoAbortDtos=applicationListDto.getAppSvcOtherInfoAborts();
          List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos=applicationListDto.getAppSvcOtherInfoTopPersons();
+         List<AppLicBundleDto> appLicBundleDtos=applicationListDto.getAppLicBundles();
 
         List<ApplicationListFileDto> applicationListFileDtoList=IaisCommonUtils.genNewArrayList();
         if(IaisCommonUtils.isNotEmpty(applicationGroup)){
@@ -472,6 +474,8 @@ public class UploadFileServiceImpl implements UploadFileService {
                 Set<AppSvcOtherInfoAbortDto> appSvcOtherInfoAbortDtoSet=new HashSet<>();
                 List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtoList=IaisCommonUtils.genNewArrayList();
                 Set<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtoSet=new HashSet<>();
+                List<AppLicBundleDto> appLicBundleDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppLicBundleDto> appLicBundleDtoSet=new HashSet<>();
                 groupDtos.add(every);
                 String groupId = every.getId();
                 if(subLicenseeDtos!=null){
@@ -480,6 +484,10 @@ public class UploadFileServiceImpl implements UploadFileService {
                             subLicenseeDtoList.add(v);
                         }
                     }
+                }
+                if(appLicBundleDtos!=null){
+                    appLicBundleDtoSet.addAll(appLicBundleDtos);
+                    appLicBundleDtoList.addAll(appLicBundleDtoSet);
                 }
                 if(appDeclarationMessages!=null){
                     for (AppDeclarationMessageDto v : appDeclarationMessages) {
@@ -860,7 +868,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 
                 appPremOtherInfoItemAnswerDtoList.addAll(appPremOtherInfoItemAnswerDtoSet);
                 applicationListFileDto.setAppPremOtherInfoItemAnswers(appPremOtherInfoItemAnswerDtoList);
-
+                applicationListFileDto.setAppLicBundles(appLicBundleDtoList);
                 applicationListFileDtoList.add(applicationListFileDto);
             }
 
