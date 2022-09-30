@@ -62,14 +62,7 @@
                         </td>
                         <td>
                             <p>
-                                <c:choose>
-                                    <c:when test="${IsCharity && feeInfoStat.index>0}">
-                                        <c:out value="$0"/>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <c:out value="${baseSvcFeeExt.amountStr}"/>
-                                    </c:otherwise>
-                                </c:choose>
+                                <c:out value="${baseSvcFeeExt.amountStr}"/>
                             </p>
                         </td>
                     </tr>
@@ -79,12 +72,10 @@
                     <c:forEach items="${includedSvcFeeExtList}" var="includedSvcFeeExt" >
                         <tr>
                             <td>
+                                <p>&nbsp;&nbsp;Bundled Fees</p>
                                 <c:forEach var="svcName" items="${includedSvcFeeExt.svcNames}">
                                     <p>
                                         <c:out value="${svcName}"/>
-                                    </p>
-                                    <p>
-                                        (${includedSvcFeeExt.address})
                                     </p>
                                 </c:forEach>
                             </td>
@@ -100,15 +91,11 @@
                             </td>
                             <td>
                                 <p>
-                                    <c:choose>
-                                        <c:when test="${IsCharity && feeInfoStat.index>0}">
-                                            <c:out value="$0"/>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <c:out value="${includedSvcFeeExt.amountStr}"/>
-                                        </c:otherwise>
-                                    </c:choose>
+                                    <c:out value="${includedSvcFeeExt.amountStr}"/>
                                 </p>
+                                <c:forEach var="svcName" items="${bundleSvcFeeExt.svcNames}">
+                                    <p>Include</p>
+                                </c:forEach>
                             </td>
                         </tr>
                     </c:forEach>
