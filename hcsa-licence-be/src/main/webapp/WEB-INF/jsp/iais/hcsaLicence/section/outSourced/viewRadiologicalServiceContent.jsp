@@ -52,12 +52,12 @@
         <tr>
             <td>
                 <p class="visible-xs visible-sm table-row-title">Licence No.</p>
-                <div class="col-xs-6 col-md-6">
+                <div class="col-xs-6 ">
                     <span class="newVal" attr="${appPremOutSourceLicenceDto.licenceNo}">
                         <iais:code code="${appPremOutSourceLicenceDto.licenceNo}}"/>
                     </span>
                 </div>
-                <div class="col-xs-6 col-md-6">
+                <div class="col-xs-6 ">
                     <span class=" oldVal" attr="${oldAppPremOutSourceLicenceDto.licenceNo}" style="display: none">
                         <iais:code code="${oldAppPremOutSourceLicenceDto.licenceNo}}"/>
                     </span>
@@ -65,12 +65,12 @@
             </td>
             <td>
                 <p class="visible-xs visible-sm table-row-title">Business Name</p>
-                <div class="col-xs-6 col-md-6">
+                <div class="col-xs-6 ">
                     <span class="newVal" attr="${msgTemplateResult.businessName}">
                         <iais:code code="${msgTemplateResult.businessName}}"/>
                     </span>
                 </div>
-                <div class="col-xs-6 col-md-6">
+                <div class="col-xs-6 ">
                     <span class=" oldVal" attr="${oldMsgTemplateResult.businessName}" style="display: none">
                         <iais:code code="${oldMsgTemplateResult.businessName}}"/>
                     </span>
@@ -78,12 +78,12 @@
             </td>
             <td>
                 <p class="visible-xs visible-sm table-row-title">Address</p>
-                <div class="col-xs-6 col-md-6">
+                <div class="col-xs-6 ">
                     <span class="newVal" attr="${msgTemplateResult.address}">
                         <iais:code code="${msgTemplateResult.address}}"/>
                     </span>
                 </div>
-                <div class="col-xs-6 col-md-6">
+                <div class="col-xs-6 ">
                     <span class=" oldVal" attr="${oldMsgTemplateResult.address}" style="display: none">
                         <iais:code code="${oldMsgTemplateResult.address}}"/>
                     </span>
@@ -91,12 +91,12 @@
             </td>
             <td>
                 <p class="visible-xs visible-sm table-row-title">Licence Tenure</p>
-                <div class="col-xs-6 col-md-6">
+                <div class="col-xs-6 ">
                     <span class="newVal" attr="${msgTemplateResult.expiryDate}">
                         <iais:code code="${msgTemplateResult.expiryDate}}"/>
                     </span>
                 </div>
-                <div class="col-xs-6 col-md-6">
+                <div class="col-xs-6 ">
                     <span class=" oldVal" attr="${oldMsgTemplateResult.expiryDate}" style="display: none">
                         <iais:code code="${oldMsgTemplateResult.expiryDate}}"/>
                     </span>
@@ -104,12 +104,12 @@
             </td>
             <td>
                 <p class="visible-xs visible-sm table-row-title">Date of Agreement</p>
-                <div class="col-xs-6 col-md-6">
+                <div class="col-xs-6 ">
                     <span class="newVal" attr="${appPremOutSourceLicenceDto.agreementStartDate}">
                         <iais:code code="${appPremOutSourceLicenceDto.agreementStartDate}}"/>
                     </span>
                 </div>
-                <div class="col-xs-6 col-md-6">
+                <div class="col-xs-6 ">
                     <span class=" oldVal" attr="${oldAppPremOutSourceLicenceDto.agreementStartDate}" style="display: none">
                         <iais:code code="${oldAppPremOutSourceLicenceDto.agreementStartDate}}"/>
                     </span>
@@ -117,12 +117,12 @@
             </td>
             <td>
                 <p class="visible-xs visible-sm table-row-title">End Date of Agreement</p>
-                <div class="col-xs-6 col-md-6">
+                <div class="col-xs-6 ">
                     <span class="newVal" attr="${appPremOutSourceLicenceDto.agreementEndDate}">
                         <iais:code code="${appPremOutSourceLicenceDto.agreementEndDate}}"/>
                     </span>
                 </div>
-                <div class="col-xs-6 col-md-6">
+                <div class="col-xs-6 ">
                     <span class=" oldVal" attr="${oldAppPremOutSourceLicenceDto.agreementEndDate}" style="display: none">
                         <iais:code code="${oldAppPremOutSourceLicenceDto.agreementEndDate}}"/>
                     </span>
@@ -130,12 +130,12 @@
             </td>
             <td>
                 <p class="visible-xs visible-sm table-row-title">Scope of Outsourcing</p>
-                <div class="col-xs-6 col-md-6">
+                <div class="col-xs-6 ">
                     <span class="newVal" attr="${appPremOutSourceLicenceDto.outstandingScope}">
                         <iais:code code="${appPremOutSourceLicenceDto.outstandingScope}}"/>
                     </span>
                 </div>
-                <div class="col-xs-6 col-md-6">
+                <div class="col-xs-6 ">
                     <span class=" oldVal" attr="${oldAppPremOutSourceLicenceDto.outstandingScope}" style="display: none">
                         <iais:code code="${oldAppPremOutSourceLicenceDto.outstandingScope}}"/>
                     </span>

@@ -7,13 +7,13 @@
             </p>
         </td>
         <td>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class="newVal" attr="${otherInfo.provideYfVs}">
                    <c:if test="${otherInfo.provideYfVs == 1}">Yes</c:if>
                     <c:if test="${otherInfo.provideYfVs == 0}">No</c:if>
                 </span>
             </div>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldOtherInfo.provideYfVs}" style="display: none">
                     <c:if test="${oldOtherInfo.provideYfVs == 1}">Yes</c:if>
                     <c:if test="${oldOtherInfo.provideYfVs == 0}">No</c:if>
@@ -30,7 +30,7 @@
                 </p>
             </td>
             <td>
-                <div class="col-xs-6 col-md-6">
+                <div class="col-xs-6 ">
                     <c:forEach var="docShowDto" items="${currentPreviewSvcInfo.appSvcBusinessDtoList}" varStatus="stat">
                         <span class="newVal" attr="${docShowDto.businessName}">
                            <c:if test="${stat.index != 0}">
@@ -51,12 +51,12 @@
                 </p>
             </td>
             <td>
-                <div class="col-xs-6 col-md-6">
+                <div class="col-xs-6 ">
                     <span class="newVal" attr="${otherInfo.orgUserDto.email}">
                         <iais:code code="${otherInfo.orgUserDto.email}"/>
                     </span>
                 </div>
-                <div class="col-xs-6 col-md-6">
+                <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldOtherInfo.orgUserDto.email}" style="display: none">
                     <iais:code code="${oldOtherInfo.orgUserDto.email}"/>
                 </span>
@@ -72,12 +72,12 @@
                 </p>
             </td>
             <td>
-                <div class="col-xs-6 col-md-6">
+                <div class="col-xs-6 ">
                     <span class="newVal" attr="${otherInfo.orgUserDto.displayName}">
                         <iais:code code="${otherInfo.orgUserDto.displayName}"/>
                     </span>
                 </div>
-                <div class="col-xs-6 col-md-6">
+                <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldOtherInfo.orgUserDto.displayName}" style="display: none">
                     <iais:code code="${oldOtherInfo.orgUserDto.displayName}"/>
                 </span>
@@ -93,12 +93,12 @@
                 </p>
             </td>
             <td>
-                <div class="col-xs-6 col-md-6">
+                <div class="col-xs-6 ">
                     <span class="newVal" attr="${otherInfo.orgUserDto.designation}">
                         <iais:code code="${otherInfo.orgUserDto.designation}"/>
                     </span>
                 </div>
-                <div class="col-xs-6 col-md-6">
+                <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldOtherInfo.orgUserDto.designation}" style="display: none">
                     <iais:code code="${oldOtherInfo.orgUserDto.designation}"/>
                 </span>
@@ -114,12 +114,12 @@
                 </p>
             </td>
             <td>
-                <div class="col-xs-6 col-md-6">
+                <div class="col-xs-6 ">
                     <span class="newVal" attr="${otherInfo.orgUserDto.mobileNo}">
                         <iais:code code="${otherInfo.orgUserDto.mobileNo}"/>
                     </span>
                 </div>
-                <div class="col-xs-6 col-md-6">
+                <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldOtherInfo.orgUserDto.mobileNo}" style="display: none">
                     <iais:code code="${oldOtherInfo.orgUserDto.mobileNo}"/>
                 </span>
@@ -135,12 +135,12 @@
                 </p>
             </td>
             <td>
-                <div class="col-xs-6 col-md-6">
+                <div class="col-xs-6 ">
                     <span class="newVal" attr="${otherInfo.yfCommencementDateStr}">
                         <iais:code code="${otherInfo.yfCommencementDateStr}"/>
                     </span>
                 </div>
-                <div class="col-xs-6 col-md-6">
+                <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldOtherInfo.yfCommencementDateStr}" style="display: none">
                     <iais:code code="${oldOtherInfo.yfCommencementDateStr}"/>
                 </span>

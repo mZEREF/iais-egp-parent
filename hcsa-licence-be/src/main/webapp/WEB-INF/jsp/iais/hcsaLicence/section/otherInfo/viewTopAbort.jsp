@@ -16,12 +16,12 @@
                         </p>
                     </td>
                     <td>
-                        <div class="col-xs-6 col-md-6">
+                        <div class="col-xs-6 ">
                             <span class="newVal" attr="${person.year}">
                                <iais:code code="${person.year}"/>
                             </span>
                         </div>
-                        <div class="col-xs-6 col-md-6">
+                        <div class="col-xs-6 ">
                             <span class=" oldVal" attr="${oldPerson.year}" style="display: none">
                                  <iais:code code="${oldPerson.year}"/>
                             </span>
@@ -37,12 +37,12 @@
                         </p>
                     </td>
                     <td>
-                        <div class="col-xs-6 col-md-6">
+                        <div class="col-xs-6 ">
                             <span class="newVal" attr="${person.abortNum}">
                                <iais:code code="${person.abortNum}"></iais:code>
                             </span>
                         </div>
-                        <div class="col-xs-6 col-md-6">
+                        <div class="col-xs-6 ">
                             <span class=" oldVal" attr="${oldPerson.abortNum}" style="display: none">
                                  <iais:code code="${oldPerson.abortNum}"></iais:code>
                             </span>
@@ -72,12 +72,12 @@
                         </p>
                     </td>
                     <td>
-                        <div class="col-xs-6 col-md-6">
+                        <div class="col-xs-6 ">
                             <span class="newVal" attr="${person.year}">
                                <iais:code code="${person.year}"/>
                             </span>
                         </div>
-                        <div class="col-xs-6 col-md-6">
+                        <div class="col-xs-6 ">
                             <span class=" oldVal" attr="${oldPerson.year}" style="display: none">
                                 <iais:code code="${oldPerson.year}"/>
                             </span>
@@ -93,12 +93,12 @@
                         </p>
                     </td>
                     <td>
-                        <div class="col-xs-6 col-md-6">
+                        <div class="col-xs-6 ">
                             <span class="newVal" attr="${person.abortNum}">
                                <iais:code code="${person.abortNum}"></iais:code>
                             </span>
                         </div>
-                        <div class="col-xs-6 col-md-6">
+                        <div class="col-xs-6 ">
                             <span class=" oldVal" attr="${oldPerson.abortNum}" style="display: none">
                                  <iais:code code="${oldPerson.abortNum}"></iais:code>
                             </span>
@@ -128,12 +128,12 @@
                         </p>
                     </td>
                     <td>
-                        <div class="col-xs-6 col-md-6">
+                        <div class="col-xs-6 ">
                             <span class="newVal" attr="${person.year}">
                                <iais:code code="${person.year}"/>
                             </span>
                         </div>
-                        <div class="col-xs-6 col-md-6">
+                        <div class="col-xs-6 ">
                             <span class=" oldVal" attr="${oldPerson.year}" style="display: none">
                                 <iais:code code="${oldPerson.year}"/>
                             </span>
@@ -149,12 +149,12 @@
                         </p>
                     </td>
                     <td>
-                        <div class="col-xs-6 col-md-6">
+                        <div class="col-xs-6 ">
                             <span class="newVal" attr="${person.abortNum}">
                                <iais:code code="${person.abortNum}"></iais:code>
                             </span>
                         </div>
-                        <div class="col-xs-6 col-md-6">
+                        <div class="col-xs-6 ">
                             <span class=" oldVal" attr="${oldPerson.abortNum}" style="display: none">
                                  <iais:code code="${oldPerson.abortNum}"></iais:code>
                             </span>
@@ -176,12 +176,12 @@
                 </p>
             </td>
             <td>
-                <div class="col-xs-6 col-md-6">
+                <div class="col-xs-6 ">
                 <span class="newVal" attr="${otherInfo.declaration}">
                      <c:if test="${otherInfo.declaration eq '1'}">Yes</c:if>
                 </span>
                 </div>
-                <div class="col-xs-6 col-md-6">
+                <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldOtherInfo.declaration}" style="display: none">
                      <c:if test="${oldOtherInfo.declaration eq '1'}">Yes</c:if>
                 </span>

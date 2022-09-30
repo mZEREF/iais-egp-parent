@@ -7,12 +7,12 @@
             </p>
         </td>
         <td>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class="newVal" attr="${counsellors.name}">
                    <iais:code code="${counsellors.name}"></iais:code>
                 </span>
             </div>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldCounsellors.name}" style="display: none">
                      <iais:code code="${oldCounsellors.name}"></iais:code>
                 </span>
@@ -65,12 +65,12 @@
             </p>
         </td>
         <td>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class="newVal" attr="${counsellors.qualification}">
                    <iais:code code="${counsellors.qualification}"></iais:code>
                 </span>
             </div>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldCounsellors.qualification}" style="display: none">
                      <iais:code code="${oldCounsellors.qualification}"></iais:code>
                 </span>
@@ -86,13 +86,13 @@
             </p>
         </td>
         <td>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class="newVal" attr="${otherInfo.appSvcOtherInfoTopDto.hasConsuAttendCourse}">
                     <c:if test="${true == otherInfo.appSvcOtherInfoTopDto.hasConsuAttendCourse}">Yes</c:if>
                     <c:if test="${false == otherInfo.appSvcOtherInfoTopDto.hasConsuAttendCourse}">No</c:if>
                 </span>
             </div>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldOtherInfo.appSvcOtherInfoTopDto.hasConsuAttendCourse}" style="display: none">
                     <c:if test="${true == oldOtherInfo.appSvcOtherInfoTopDto.hasConsuAttendCourse}">Yes</c:if>
                     <c:if test="${false == oldOtherInfo.appSvcOtherInfoTopDto.hasConsuAttendCourse}">No</c:if>

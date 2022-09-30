@@ -7,12 +7,12 @@
             </p>
         </td>
         <td>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class="newVal" attr="${otherInfo.appSvcOtherInfoNurseDto.perShiftNum}">
                     <iais:code code="${otherInfo.appSvcOtherInfoNurseDto.perShiftNum}"/>
                 </span>
             </div>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldOtherInfo.appSvcOtherInfoNurseDto.perShiftNum}" style="display: none">
                     <iais:code code="${oldOtherInfo.appSvcOtherInfoNurseDto.perShiftNum}"/>
                 </span>
@@ -28,12 +28,12 @@
             </p>
         </td>
         <td>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class="newVal" attr="${otherInfo.appSvcOtherInfoNurseDto.dialysisStationsNum}">
                     <iais:code code="${otherInfo.appSvcOtherInfoNurseDto.dialysisStationsNum}"/>
                 </span>
             </div>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldOtherInfo.appSvcOtherInfoNurseDto.dialysisStationsNum}" style="display: none">
                     <iais:code code="${oldOtherInfo.appSvcOtherInfoNurseDto.dialysisStationsNum}"/>
                 </span>
@@ -49,12 +49,12 @@
             </p>
         </td>
         <td>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class="newVal" attr="${otherInfo.appSvcOtherInfoNurseDto.helpBStationNum}">
                     <iais:code code="${otherInfo.appSvcOtherInfoNurseDto.helpBStationNum}"/>
                 </span>
             </div>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldOtherInfo.appSvcOtherInfoNurseDto.helpBStationNum}" style="display: none">
                     <iais:code code="${oldOtherInfo.appSvcOtherInfoNurseDto.helpBStationNum}"/>
                 </span>
@@ -70,13 +70,13 @@
             </p>
         </td>
         <td>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class="newVal" attr="${otherInfo.appSvcOtherInfoNurseDto.isOpenToPublic}">
                     <c:if test="${otherInfo.appSvcOtherInfoNurseDto.isOpenToPublic eq '1'}">Yes</c:if>
                     <c:if test="${otherInfo.appSvcOtherInfoNurseDto.isOpenToPublic eq'0'}">No</c:if>
                 </span>
             </div>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldOtherInfo.appSvcOtherInfoNurseDto.isOpenToPublic}" style="display: none">
                     <c:if test="${oldOtherInfo.appSvcOtherInfoNurseDto.isOpenToPublic eq '1'}">Yes</c:if>
                     <c:if test="${oldOtherInfo.appSvcOtherInfoNurseDto.isOpenToPublic eq'0'}">No</c:if>

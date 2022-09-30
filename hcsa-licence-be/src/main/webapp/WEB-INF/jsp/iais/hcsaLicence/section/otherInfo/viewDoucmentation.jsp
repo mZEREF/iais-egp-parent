@@ -8,13 +8,13 @@
             </p>
         </td>
         <td>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class="newVal" attr="${otherInfo.appSvcOtherInfoTopDto.isOutcomeProcRecord}">
                     <c:if test="${true == otherInfo.appSvcOtherInfoTopDto.isOutcomeProcRecord}">Yes</c:if>
                     <c:if test="${false == otherInfo.appSvcOtherInfoTopDto.isOutcomeProcRecord}">No</c:if>
                 </span>
             </div>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldOtherInfo.appSvcOtherInfoTopDto.isOutcomeProcRecord}" style="display: none">
                     <c:if test="${true == oldOtherInfo.appSvcOtherInfoTopDto.isOutcomeProcRecord}">Yes</c:if>
                     <c:if test="${false == oldOtherInfo.appSvcOtherInfoTopDto.isOutcomeProcRecord}">No</c:if>
@@ -31,12 +31,12 @@
             </p>
         </td>
         <td>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class="newVal" attr="${otherInfo.appSvcOtherInfoTopDto.compCaseNum}">
                     <iais:code code="${otherInfo.appSvcOtherInfoTopDto.compCaseNum}"/>
                 </span>
             </div>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldOtherInfo.appSvcOtherInfoTopDto.compCaseNum}" style="display: none">
                     <iais:code code="${oldOtherInfo.appSvcOtherInfoTopDto.compCaseNum}"/>
                 </span>

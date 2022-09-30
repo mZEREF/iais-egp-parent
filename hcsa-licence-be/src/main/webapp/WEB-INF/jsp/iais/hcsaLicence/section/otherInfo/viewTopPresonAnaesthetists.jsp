@@ -81,12 +81,12 @@
             </p>
         </td>
         <td>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class="newVal" attr="${anaesthetists.name}">
                    <iais:code code="${anaesthetists.name}"></iais:code>
                 </span>
             </div>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldAnaesthetists.name}" style="display: none">
                      <iais:code code="${oldAnaesthetists.name}"></iais:code>
                 </span>
@@ -102,12 +102,12 @@
             </p>
         </td>
         <td>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class="newVal" attr="${anaesthetists.qualification}">
                    <iais:code code="${anaesthetists.qualification}"></iais:code>
                 </span>
             </div>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldAnaesthetists.qualification}" style="display: none">
                      <iais:code code="${oldAnaesthetists.qualification}"></iais:code>
                 </span>
@@ -125,13 +125,13 @@
             </p>
         </td>
         <td>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class="newVal" attr="${practitioners.isMedAuthByMoh}">
                     <c:if test="${'1' == practitioners.isMedAuthByMoh}">Yes</c:if>
                     <c:if test="${'0' == practitioners.isMedAuthByMoh}">No</c:if>
                 </span>
             </div>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldPractitioners.isMedAuthByMoh}" style="display: none">
                      <c:if test="${'1' == oldPractitioners.isMedAuthByMoh}">Yes</c:if>
                     <c:if test="${'0' == oldPractitioners.isMedAuthByMoh}">No</c:if>

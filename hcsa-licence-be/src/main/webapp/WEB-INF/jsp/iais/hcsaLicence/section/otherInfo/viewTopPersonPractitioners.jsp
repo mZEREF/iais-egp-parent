@@ -81,12 +81,12 @@
             </p>
         </td>
         <td>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class="newVal" attr="${practitioners.regType}">
                    <iais:code code="${practitioners.regType}"></iais:code>
                 </span>
             </div>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldPractitioners.regType}" style="display: none">
                      <iais:code code="${oldPractitioners.regType}"></iais:code>
                 </span>
@@ -102,12 +102,12 @@
             </p>
         </td>
         <td>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class="newVal" attr="${practitioners.name}">
                    <iais:code code="${practitioners.name}"></iais:code>
                 </span>
             </div>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldPractitioners.name}" style="display: none">
                      <iais:code code="${oldPractitioners.name}"></iais:code>
                 </span>
@@ -123,12 +123,12 @@
             </p>
         </td>
         <td>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class="newVal" attr="${practitioners.speciality}">
                    <iais:code code="${practitioners.speciality}"></iais:code>
                 </span>
             </div>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldPractitioners.speciality}" style="display: none">
                      <iais:code code="${oldPractitioners.speciality}"></iais:code>
                 </span>
@@ -144,12 +144,12 @@
             </p>
         </td>
         <td>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class="newVal" attr="${practitioners.qualification}">
                    <iais:code code="${practitioners.qualification}"></iais:code>
                 </span>
             </div>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldPractitioners.qualification}" style="display: none">
                      <iais:code code="${oldPractitioners.qualification}"></iais:code>
                 </span>
@@ -167,13 +167,13 @@
             </p>
         </td>
         <td>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class="newVal" attr="${practitioners.isMedAuthByMoh}">
                     <c:if test="${'1' == practitioners.isMedAuthByMoh}">Yes</c:if>
                     <c:if test="${'0' == practitioners.isMedAuthByMoh}">No</c:if>
                 </span>
             </div>
-            <div class="col-xs-6 col-md-6">
+            <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldPractitioners.isMedAuthByMoh}" style="display: none">
                      <c:if test="${'1' == oldPractitioners.isMedAuthByMoh}">Yes</c:if>
                     <c:if test="${'0' == oldPractitioners.isMedAuthByMoh}">No</c:if>
