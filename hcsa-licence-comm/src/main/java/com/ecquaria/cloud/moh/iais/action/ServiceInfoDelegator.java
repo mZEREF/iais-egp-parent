@@ -721,7 +721,14 @@ public class ServiceInfoDelegator {
                 searchParam.addFilter("svcName",HcsaServiceCacheHelper.getServiceByCode(appPremOutSourceLicenceDto.getSearchOutsourced().getAppPremOutSourceLicenceDto().getServiceCode()).getSvcName(),true);
             }
         }
-
+        String businessName = ParamUtil.getString(request,"businessName");
+        if (StringUtil.isNotEmpty(businessName)){
+            searchParam.addFilter("businessName",businessName,true);
+        }
+        String licNo = ParamUtil.getString(request, "licNo");
+        if (StringUtil.isNotEmpty(licNo)){
+            searchParam.addFilter("licenceNo",licNo,true);
+        }
         appPremOutSourceLicenceDto.setSearchParam(searchParam);
     }
 

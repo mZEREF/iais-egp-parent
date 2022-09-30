@@ -664,6 +664,7 @@ public final class AppDataHelper {
             removeAppPremOutsourced(radiologicalServiceList,prefix);
             removeOutSourcedIds(appPremOutSourceProvidersIds,prefix);
         }
+        appPremOutSourceLicenceDto.getSearchParam();
         return appPremOutSourceLicenceDto;
 
     }
