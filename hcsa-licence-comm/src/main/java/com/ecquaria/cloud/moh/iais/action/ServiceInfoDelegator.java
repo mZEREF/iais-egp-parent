@@ -721,6 +721,7 @@ public class ServiceInfoDelegator {
                 searchParam.addFilter("svcName",HcsaServiceCacheHelper.getServiceByCode(appPremOutSourceLicenceDto.getSearchOutsourced().getAppPremOutSourceLicenceDto().getServiceCode()).getSvcName(),true);
             }
         }
+
         appPremOutSourceLicenceDto.setSearchParam(searchParam);
     }
 
