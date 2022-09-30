@@ -342,7 +342,9 @@ public class NewApplicationDelegator extends AppCommDelegator {
             return;
         }
         appGrpPremisesDtos.get(0).setExistingData(AppConsts.YES);
-        appGrpPremisesDtos.get(0).setPremisesIndexNo(UUID.randomUUID().toString());
+        if (StringUtil.isEmpty(appGrpPremisesDtos.get(0).getPremisesIndexNo())) {
+            appGrpPremisesDtos.get(0).setPremisesIndexNo(UUID.randomUUID().toString());
+        }
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
         appSubmissionDto.setReadonlyPrem(true);
     }
