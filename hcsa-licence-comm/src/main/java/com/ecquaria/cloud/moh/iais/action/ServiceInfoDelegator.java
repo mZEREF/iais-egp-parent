@@ -682,6 +682,7 @@ public class ServiceInfoDelegator {
         if (IaisCommonUtils.isNotEmpty(appPremOutSourceLicenceDto.getRadiologicalServiceList())){
             premOutSourceLicenceDto.setRadiologicalServiceList(appPremOutSourceLicenceDto.getRadiologicalServiceList());
         }
+        premOutSourceLicenceDto.setSearchParam(appPremOutSourceLicenceDto.getSearchParam());
         return premOutSourceLicenceDto;
     }
 
@@ -2041,7 +2042,8 @@ public class ServiceInfoDelegator {
         }
         String stepCode=hcsaServiceStepSchemeDtos.get(i).getStepCode();
         String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,
-                HcsaConsts.STEP_DISCIPLINE_ALLOCATION};
+                HcsaConsts.STEP_DISCIPLINE_ALLOCATION,
+        HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS,HcsaConsts.STEP_OTHER_INFORMATION,HcsaConsts.STEP_SPECIAL_SERVICES_FORM,HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER,HcsaConsts.STEP_PRINCIPAL_OFFICERS,HcsaConsts.STEP_SUPPLEMENTARY_FORM};
         boolean match = appSubmissionDto.getAppSvcRelatedInfoDtoList()
                 .stream().anyMatch(s -> AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL.equals(s.getServiceCode()));
         if (match){
