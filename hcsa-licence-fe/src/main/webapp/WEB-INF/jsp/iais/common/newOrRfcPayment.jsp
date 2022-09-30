@@ -72,10 +72,10 @@
                     <c:forEach items="${includedSvcFeeExtList}" var="includedSvcFeeExt" >
                         <tr>
                             <td>
-                                <p>&nbsp;&nbsp;Bundled Fees</p>
+                                <p>Bundled Fees</p>
                                 <c:forEach var="svcName" items="${includedSvcFeeExt.svcNames}">
                                     <p>
-                                        <c:out value="${svcName}"/>
+                                        &nbsp;&nbsp;<c:out value="${svcName}"/>
                                     </p>
                                 </c:forEach>
                             </td>
@@ -93,7 +93,7 @@
                                 <p>
                                     <c:out value="${includedSvcFeeExt.amountStr}"/>
                                 </p>
-                                <c:forEach var="svcName" items="${bundleSvcFeeExt.svcNames}">
+                                <c:forEach var="svcName" items="${includedSvcFeeExt.svcNames}">
                                     <p>Include</p>
                                 </c:forEach>
                             </td>
