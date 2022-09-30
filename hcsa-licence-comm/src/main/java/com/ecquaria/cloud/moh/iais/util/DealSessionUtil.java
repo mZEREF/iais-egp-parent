@@ -761,6 +761,7 @@ public class DealSessionUtil {
             // search
             SearchParam searchParam = new SearchParam(AppPremOutSourceProvidersQueryDto.class.getName());
             searchParam.setPageNo(1);
+            searchParam.setSortField("SVC_NAME");
             searchParam.setPageSize(licenceNos.size());
             searchParam.addFilter("licenceNos", licenceNos);
             SearchResult<AppPremOutSourceProvidersQueryDto> searchResult = getLicCommService().queryOutsouceLicences(

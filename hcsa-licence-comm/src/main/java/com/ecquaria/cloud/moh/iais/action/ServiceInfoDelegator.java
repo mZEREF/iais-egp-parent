@@ -694,25 +694,30 @@ public class ServiceInfoDelegator {
             if (vResult != null && vResult.isHasErrors()){
                 Map<String ,String> errorMap = vResult.retrieveAll(appPremOutSourceLicenceDto.getPrefixVal(),"");
                 checkAction(errorMap,HcsaConsts.STEP_OUTSOURCED_PROVIDERS,appSubmissionDto,request);
+                saveAddSearchParam(request,appPremOutSourceProvidersIds,appSubmissionDto,appPremOutSourceLicenceDto);
             }else {
-                SearchParam searchParam = IaisEGPHelper.getSearchParam(request,true,filterParameter);
-                if(IaisCommonUtils.isNotEmpty(appPremOutSourceProvidersIds)){
-                    searchParam.addFilter("id",appPremOutSourceProvidersIds,true);
-                }
-                if (StringUtil.isNotEmpty(appSubmissionDto.getLicenseeId())){
-                    searchParam.addFilter("licenceId",appSubmissionDto.getLicenseeId(),true);
-                }
-                if (appPremOutSourceLicenceDto.getSearchOutsourced() != null){
-                    if (appPremOutSourceLicenceDto.getSearchOutsourced().getAppPremOutSourceLicenceDto() != null
-                            && StringUtil.isNotEmpty(appPremOutSourceLicenceDto.getSearchOutsourced().getAppPremOutSourceLicenceDto().getServiceCode())
-                            && HcsaServiceCacheHelper.getServiceByCode(appPremOutSourceLicenceDto.getSearchOutsourced().getAppPremOutSourceLicenceDto().getServiceCode()) != null){
-                        searchParam.addFilter("svcName",HcsaServiceCacheHelper.getServiceByCode(appPremOutSourceLicenceDto.getSearchOutsourced().getAppPremOutSourceLicenceDto().getServiceCode()).getSvcName(),true);
-                    }
-                }
-                appPremOutSourceLicenceDto.setSearchParam(searchParam);
+                saveAddSearchParam(request,appPremOutSourceProvidersIds,appSubmissionDto,appPremOutSourceLicenceDto);
             }
         }
         return appPremOutSourceLicenceDto;
+    }
+
+    private void saveAddSearchParam(HttpServletRequest request, List<String> appPremOutSourceProvidersIds,AppSubmissionDto appSubmissionDto,AppSvcOutsouredDto appPremOutSourceLicenceDto){
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request,true,filterParameter);
+        if(IaisCommonUtils.isNotEmpty(appPremOutSourceProvidersIds)){
+            searchParam.addFilter("id",appPremOutSourceProvidersIds,true);
+        }
+        if (StringUtil.isNotEmpty(appSubmissionDto.getLicenseeId())){
+            searchParam.addFilter("licenceId",appSubmissionDto.getLicenseeId(),true);
+        }
+        if (appPremOutSourceLicenceDto.getSearchOutsourced() != null){
+            if (appPremOutSourceLicenceDto.getSearchOutsourced().getAppPremOutSourceLicenceDto() != null
+                    && StringUtil.isNotEmpty(appPremOutSourceLicenceDto.getSearchOutsourced().getAppPremOutSourceLicenceDto().getServiceCode())
+                    && HcsaServiceCacheHelper.getServiceByCode(appPremOutSourceLicenceDto.getSearchOutsourced().getAppPremOutSourceLicenceDto().getServiceCode()) != null){
+                searchParam.addFilter("svcName",HcsaServiceCacheHelper.getServiceByCode(appPremOutSourceLicenceDto.getSearchOutsourced().getAppPremOutSourceLicenceDto().getServiceCode()).getSvcName(),true);
+            }
+        }
+        appPremOutSourceLicenceDto.setSearchParam(searchParam);
     }
 
     private AppSvcOutsouredDto doSearchOutSourceProviders(List<String> appPremOutSourceProvidersIds,String curAct,HttpServletRequest request,
@@ -720,42 +725,43 @@ public class ServiceInfoDelegator {
         appPremOutSourceLicenceDto = AppDataHelper.genAppPremOutSourceProvidersDto(curAct,appPremOutSourceProvidersIds,appPremOutSourceLicenceDto,request);
         AppPremGroupOutsourcedDto appPremGroupOutsourcedDto = appPremOutSourceLicenceDto.getSearchOutsourced();
         List<AppLicBundleDto> appLicBundleDtoList = appSubmissionDto.getAppLicBundleDtoList();
-        if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)){
-            for (AppLicBundleDto appLicBundleDto : appLicBundleDtoList) {
-                String licenceId = appLicBundleDto.getLicenceId();
-            }
-        }
         if (appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto() != null){
             ValidationResult vResult = WebValidationHelper.validateProperty(appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto(),"search");
             if (vResult != null && vResult.isHasErrors()){
                 Map<String ,String> errorMap = vResult.retrieveAll();
                 checkAction(errorMap,HcsaConsts.STEP_OUTSOURCED_PROVIDERS,appSubmissionDto,request);
+                saveSearchParam(request,appPremGroupOutsourcedDto,appPremOutSourceProvidersIds,appSubmissionDto,appPremOutSourceLicenceDto);
             }else {
-                SearchParam searchParam = IaisEGPHelper.getSearchParam(request,true,filterParameter);
-                if (appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto() != null){
-                    if (StringUtil.isNotEmpty(appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getServiceCode())){
-                        searchParam.addFilter("svcName",appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getServiceCode(),true);
-                    }
-                    if (StringUtil.isNotEmpty(appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getLicenceNo())){
-                        searchParam.addFilter("licenceNo",appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getLicenceNo(),true);
-                    }
-                }
-                if (StringUtil.isNotEmpty(appPremGroupOutsourcedDto.getBusinessName())){
-                    searchParam.addFilter("businessName",appPremGroupOutsourcedDto.getBusinessName(),true);
-                }
-                if (IaisCommonUtils.isNotEmpty(appPremOutSourceProvidersIds)){
-                    searchParam.addFilter("id",appPremOutSourceProvidersIds,true);
-                }
-                if (StringUtil.isNotEmpty(appSubmissionDto.getLicenseeId())){
-                    searchParam.addFilter("licenceId",appSubmissionDto.getLicenseeId(),true);
-                }
-//            if (StringUtil.isNotEmpty(postCode)){
-//                searchParam.addFilter("postalCode",postCode,true);
-//            }
-                appPremOutSourceLicenceDto.setSearchParam(searchParam);
+                saveSearchParam(request,appPremGroupOutsourcedDto,appPremOutSourceProvidersIds,appSubmissionDto,appPremOutSourceLicenceDto);
             }
         }
         return appPremOutSourceLicenceDto;
+    }
+
+    private void saveSearchParam(HttpServletRequest request,AppPremGroupOutsourcedDto appPremGroupOutsourcedDto,
+                                 List<String> appPremOutSourceProvidersIds,AppSubmissionDto appSubmissionDto,AppSvcOutsouredDto appSvcOutsouredDto){
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request,true,filterParameter);
+        if (appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto() != null){
+            if (StringUtil.isNotEmpty(appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getServiceCode())){
+                searchParam.addFilter("svcName",appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getServiceCode(),true);
+            }
+            if (StringUtil.isNotEmpty(appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getLicenceNo())){
+                searchParam.addFilter("licenceNo",appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getLicenceNo(),true);
+            }
+        }
+        if (StringUtil.isNotEmpty(appPremGroupOutsourcedDto.getBusinessName())){
+            searchParam.addFilter("businessName",appPremGroupOutsourcedDto.getBusinessName(),true);
+        }
+        if (IaisCommonUtils.isNotEmpty(appPremOutSourceProvidersIds)){
+            searchParam.addFilter("id",appPremOutSourceProvidersIds,true);
+        }
+        if (StringUtil.isNotEmpty(appSubmissionDto.getLicenseeId())){
+            searchParam.addFilter("licenceId",appSubmissionDto.getLicenseeId(),true);
+        }
+//            if (StringUtil.isNotEmpty(postCode)){
+//                searchParam.addFilter("postalCode",postCode,true);
+//            }
+        appSvcOutsouredDto.setSearchParam(searchParam);
     }
 
     private AppSvcOutsouredDto sortOutSourceProviders(HttpServletRequest request,AppSvcOutsouredDto appPremOutSourceProvidersDto){
