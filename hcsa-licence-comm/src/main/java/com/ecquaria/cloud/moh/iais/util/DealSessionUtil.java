@@ -736,8 +736,7 @@ public class DealSessionUtil {
 
     public static boolean initSvcOutsourcedProvider(AppSvcRelatedInfoDto currSvcInfoDto, boolean forceInit) {
         AppSvcOutsouredDto appSvcOutsouredDto = currSvcInfoDto.getAppPremOutSourceLicenceDto();
-        if (!forceInit && appSvcOutsouredDto != null) {
-            appSvcOutsouredDto.setInit(false);
+        if (!forceInit && appSvcOutsouredDto != null && appSvcOutsouredDto.isInit()) {
             return false;
         }
         if (appSvcOutsouredDto == null) {
@@ -758,21 +757,20 @@ public class DealSessionUtil {
                 licenceNos.add(appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getLicenceNo());
             }
         }
-        if (licenceNos.isEmpty()) {
-            return false;
-        }
-        // search
-        SearchParam searchParam = new SearchParam(AppPremOutSourceProvidersQueryDto.class.getName());
-        searchParam.setPageNo(1);
-        searchParam.setPageSize(licenceNos.size());
-        searchParam.addFilter("licenceNos", licenceNos);
-        SearchResult<AppPremOutSourceProvidersQueryDto> searchResult = getLicCommService().queryOutsouceLicences(
-                searchParam);
-        if (searchResult != null && IaisCommonUtils.isNotEmpty(searchResult.getRows())) {
-            ArrayList<AppPremOutSourceProvidersQueryDto> rows = searchResult.getRows();
-            for (AppPremOutSourceProvidersQueryDto row : rows) {
-                resolveAppPremGroupOutsourcedList(appSvcOutsouredDto.getClinicalLaboratoryList(), row);
-                resolveAppPremGroupOutsourcedList(appSvcOutsouredDto.getRadiologicalServiceList(), row);
+        if (!licenceNos.isEmpty()) {
+            // search
+            SearchParam searchParam = new SearchParam(AppPremOutSourceProvidersQueryDto.class.getName());
+            searchParam.setPageNo(1);
+            searchParam.setPageSize(licenceNos.size());
+            searchParam.addFilter("licenceNos", licenceNos);
+            SearchResult<AppPremOutSourceProvidersQueryDto> searchResult = getLicCommService().queryOutsouceLicences(
+                    searchParam);
+            if (searchResult != null && IaisCommonUtils.isNotEmpty(searchResult.getRows())) {
+                ArrayList<AppPremOutSourceProvidersQueryDto> rows = searchResult.getRows();
+                for (AppPremOutSourceProvidersQueryDto row : rows) {
+                    resolveAppPremGroupOutsourcedList(appSvcOutsouredDto.getClinicalLaboratoryList(), row);
+                    resolveAppPremGroupOutsourcedList(appSvcOutsouredDto.getRadiologicalServiceList(), row);
+                }
             }
         }
         appSvcOutsouredDto.setInit(true);
