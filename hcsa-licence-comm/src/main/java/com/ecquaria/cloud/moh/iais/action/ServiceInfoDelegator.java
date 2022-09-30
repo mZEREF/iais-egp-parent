@@ -721,6 +721,12 @@ public class ServiceInfoDelegator {
                 searchParam.addFilter("svcName",HcsaServiceCacheHelper.getServiceByCode(appPremOutSourceLicenceDto.getSearchOutsourced().getAppPremOutSourceLicenceDto().getServiceCode()).getSvcName(),true);
             }
         }
+        if (StringUtil.isNotEmpty(appPremOutSourceLicenceDto.getSearchOutsourced().getBusinessName())){
+            searchParam.addFilter("businessName",appPremOutSourceLicenceDto.getSearchOutsourced().getBusinessName(),true);
+        }
+        if (StringUtil.isNotEmpty(appPremOutSourceLicenceDto.getSearchOutsourced().getAppPremOutSourceLicenceDto().getLicenceNo())){
+            searchParam.addFilter("licenceNo",appPremOutSourceLicenceDto.getSearchOutsourced().getAppPremOutSourceLicenceDto().getLicenceNo(),true);
+        }
         appPremOutSourceLicenceDto.setSearchParam(searchParam);
     }
 
