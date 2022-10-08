@@ -531,8 +531,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                     excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
                     excelDto.setResult("Not Match");
                     if(excelDto.getApplicationNoBe().equals(excelDto.getApplicationNoFe())&&
-                            excelDto.getStatusBe().equals(excelDto.getStatusFe())&&
-                            excelDto.getUpdatedDtBe().equals(excelDto.getUpdatedDtFe())){
+                            excelDto.getStatusBe().equals(excelDto.getStatusFe())){
                         excelDto.setResult("Match");
                     }
                 }else {
@@ -551,8 +550,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                     excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
                     excelDto.setResult("Not Match");
                     if(excelDto.getLicenceNoBe().equals(excelDto.getLicenceNoFe())&&
-                            excelDto.getStatusBe().equals(excelDto.getStatusFe())&&
-                            excelDto.getUpdatedDtBe().equals(excelDto.getUpdatedDtFe())){
+                            excelDto.getStatusBe().equals(excelDto.getStatusFe())){
                         excelDto.setResult("Match");
                     }
                 }else {
@@ -571,8 +569,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                     excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
                     excelDto.setResult("Not Match");
                     if(excelDto.getAppGroupNoBe().equals(excelDto.getAppGroupNoFe())&&
-                            excelDto.getStatusBe().equals(excelDto.getStatusFe())&&
-                            excelDto.getUpdatedDtBe().equals(excelDto.getUpdatedDtFe())){
+                            excelDto.getStatusBe().equals(excelDto.getStatusFe())){
                         excelDto.setResult("Match");
                     }
                 }else {
@@ -593,8 +590,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                     excelDto.setResult("Not Match");
                     if(excelDto.getDisplayNameBe().equals(excelDto.getDisplayNameFe())&&
                             excelDto.getStatusBe().equals(excelDto.getStatusFe())&&
-                            excelDto.getUserDomainBe().equals(excelDto.getUserDomainFe())&&
-                            excelDto.getUpdatedDtBe().equals(excelDto.getUpdatedDtFe())){
+                            excelDto.getUserDomainBe().equals(excelDto.getUserDomainFe())){
                         excelDto.setResult("Match");
                     }
                 }else {
