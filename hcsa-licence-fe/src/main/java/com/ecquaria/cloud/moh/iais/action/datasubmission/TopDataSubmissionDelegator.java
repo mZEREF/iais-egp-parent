@@ -6,7 +6,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
-import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
@@ -51,21 +50,19 @@ import com.ecquaria.cloud.moh.iais.service.datasubmission.DocInfoService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.ACTION_TYPE_CONFIRM;
 import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.COUNSE_LLING_PLACE;
@@ -1621,9 +1618,9 @@ public class TopDataSubmissionDelegator {
         }
         String emailAddress;
         if(!isRfc(bpc.request)){
-            emailAddress = DataSubmissionHelper.getEmailAddrsByRoleIdsAndLicenseeId(bpc.request, Collections.singletonList(RoleConsts.USER_ROLE_DS_TOP));
+            emailAddress = DataSubmissionHelper.getEmailAddrsByRoleIdsAndLicenseeId(bpc.request, MsgTemplateConstants.MSG_TEMPLATE_TOP_SUBMITTED_ACK_EMAIL);
         } else {
-            emailAddress = DataSubmissionHelper.getEmailAddrsByRoleIdsAndLicenseeId(bpc.request, Collections.singletonList(RoleConsts.USER_ROLE_DS_TOP_SUPERVISOR));
+            emailAddress = DataSubmissionHelper.getEmailAddrsByRoleIdsAndLicenseeId(bpc.request, MsgTemplateConstants.MSG_TEMPLATE_TOP_SUBMITTED_RFC_ACK_EMAIL);
         }
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.TOP_DATA_SUBMISSION, topSuperDataSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request, "emailAddress", emailAddress);

@@ -112,9 +112,9 @@ function printData() {
         }
     }
     if (url.indexOf('?') < 0) {
-        url += '?role=' + 'DS_VSS';
+        url += '?templateId=' + 'F1D940D1-5097-4A2C-A030-5501BD6D1805';
     } else {
-        url += '&role=' + 'DS_VSS';
+        url += '&templateId=' + 'F1D940D1-5097-4A2C-A030-5501BD6D1805';
     }
     var data = getDataForPrinting();
     if (isEmpty(data)) {
