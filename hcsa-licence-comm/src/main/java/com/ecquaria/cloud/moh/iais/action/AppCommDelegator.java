@@ -578,9 +578,9 @@ public abstract class AppCommDelegator {
         String sign = joiner.toString();
         coMap.put(HcsaAppConst.SECTION_MULTI_SS, sign);
         if (StringUtil.isEmpty(sign)) {
-            coMap.put(HcsaAppConst.ACTION_SPECIALISED, HcsaAppConst.ACTION_SPECIALISED);
+            coMap.put(HcsaAppConst.SECTION_SPECIALISED, HcsaAppConst.SECTION_SPECIALISED);
         } else {
-            coMap.put(HcsaAppConst.ACTION_SPECIALISED, "");
+            coMap.put(HcsaAppConst.SECTION_SPECIALISED, "");
         }
     }
 
@@ -1492,7 +1492,7 @@ public abstract class AppCommDelegator {
             return;
         }
         log.info("doComChange is ok ...");
-        Map<String, String> map = AppValidatorHelper.doPreviewAndSumbit(bpc);
+        Map<String, String> map = AppValidatorHelper.doPreviewAndSumbit(bpc.request);
         if (!map.isEmpty()) {
             initErrorAction(ACTION_PREVIEW, map, appSubmissionDto, bpc.request);
             ParamUtil.setRequestAttr(bpc.request, COND_TYPE_RFI, "N");
@@ -1584,7 +1584,7 @@ public abstract class AppCommDelegator {
         }
         appSubmissionDto.setMaxFileIndex(maxFileIndex);*/
         // validate the submission data
-        Map<String, String> map = AppValidatorHelper.doPreviewAndSumbit(bpc);
+        Map<String, String> map = AppValidatorHelper.doPreviewAndSumbit(bpc.request);
         boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
@@ -2135,7 +2135,7 @@ public abstract class AppCommDelegator {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         Map<String, String> coMap = appSubmissionDto.getCoMap();
         // validate all data
-        Map<String, String> map = AppValidatorHelper.doPreviewAndSumbit(bpc);
+        Map<String, String> map = AppValidatorHelper.doPreviewAndSumbit(bpc.request);
         if (!map.isEmpty()) {
             //set audit
             ParamUtil.setRequestAttr(bpc.request, "Msg", map);

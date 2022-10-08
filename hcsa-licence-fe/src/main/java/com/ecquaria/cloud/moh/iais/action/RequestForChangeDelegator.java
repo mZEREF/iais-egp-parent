@@ -257,23 +257,16 @@ public class RequestForChangeDelegator {
                 log.info(StringUtil.changeForLog("do request for change ------ licence no:" + appSubmissionDto.getLicenceNo()));
                 AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_REQUEST_FOR_CHANGE,
                         AuditTrailConsts.FUNCTION_REQUEST_FOR_CHANGE);
-                // HCSA Service Configuration
-                String svcName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
-                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
-                List<HcsaServiceDto> hcsaServiceDtoList = IaisCommonUtils.genNewArrayList();
-                if (hcsaServiceDto != null) {
-                    String currSvcId = hcsaServiceDto.getId();
-                    log.info(StringUtil.changeForLog("current svc id:" + currSvcId));
-                    hcsaServiceDtoList.add(hcsaServiceDto);
-                    ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
-                    ParamUtil.setSessionAttr(bpc.request, "SvcId", currSvcId);
+                List<HcsaServiceDto> hcsaServiceDtoList = DealSessionUtil.getLatestServiceConfigsFormApp(appSubmissionDto);
+                if (!IaisCommonUtils.isEmpty(hcsaServiceDtoList)) {
+                    ParamUtil.setSessionAttr(bpc.request, "SvcId", hcsaServiceDtoList.get(0).getId());
+                    ParamUtil.setSessionAttr(bpc.request, "SvcName", hcsaServiceDtoList.get(0).getSvcName());
                 }
                 appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
                 DealSessionUtil.init(appSubmissionDto, hcsaServiceDtoList, true, bpc.request);
 
                 AppSubmissionDto oldAppSubmissionDto = CopyUtil.copyMutableObject(appSubmissionDto);
                 appSubmissionDto.setOldAppSubmissionDto(oldAppSubmissionDto);
-                ParamUtil.setSessionAttr(bpc.request, "SvcName", svcName);
                 ParamUtil.setSessionAttr(bpc.request, RfcConst.RFCAPPSUBMISSIONDTO, appSubmissionDto);
             }
         }

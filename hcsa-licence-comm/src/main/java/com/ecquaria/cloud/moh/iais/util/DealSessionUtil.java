@@ -302,13 +302,17 @@ public class DealSessionUtil {
 //                    appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
 //                    appSubmissionDto.setAppDeclarationDocDtos(declarationFiles);
             }*/
-            AppSubmissionDto oldAppSubmissionDto = null;
+            AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldRenewAppSubmissionDto();
+            if (oldAppSubmissionDto == null) {
+                oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
+            }
+            /*AppSubmissionDto oldAppSubmissionDto = null;
             if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
                 oldAppSubmissionDto = appSubmissionDto.getOldRenewAppSubmissionDto();
                 if (oldAppSubmissionDto == null) {
                     oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
                 }
-            }
+            }*/
             if (oldAppSubmissionDto == null) {
                 oldAppSubmissionDto = CopyUtil.copyMutableObject(appSubmissionDto);
             }
@@ -335,14 +339,9 @@ public class DealSessionUtil {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)) {
             for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList) {
-                if (!StringUtil.isEmpty(appSvcRelatedInfoDto.getServiceId())) {
-                    serviceConfigIds.add(appSvcRelatedInfoDto.getServiceId());
-                }
+                IaisCommonUtils.addToList(appSvcRelatedInfoDto.getServiceId(), serviceConfigIds);
                 //if get the data from licence, only have the serviceName
-                if (!StringUtil.isEmpty(appSvcRelatedInfoDto.getServiceName())) {
-                    names.add(appSvcRelatedInfoDto.getServiceName());
-                }
-
+                IaisCommonUtils.addToList(appSvcRelatedInfoDto.getServiceName(), names);
             }
         }
         ConfigCommService configCommService = getConfigCommService();
@@ -351,6 +350,36 @@ public class DealSessionUtil {
             hcsaServiceDtoList = configCommService.getHcsaServiceDtosByIds(serviceConfigIds);
         } else if (!names.isEmpty()) {
             hcsaServiceDtoList = configCommService.getActiveHcsaSvcByNames(names);
+        }
+        return hcsaServiceDtoList;
+    }
+
+    public static List<HcsaServiceDto> getLatestServiceConfigsFormApp(AppSubmissionDto appSubmissionDto) {
+        if (appSubmissionDto == null) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        List<String> serviceConfigIds = IaisCommonUtils.genNewArrayList();
+        List<String> names = IaisCommonUtils.genNewArrayList();
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)) {
+            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList) {
+                IaisCommonUtils.addToList(appSvcRelatedInfoDto.getServiceId(), serviceConfigIds);
+                //if get the data from licence, only have the serviceName
+                IaisCommonUtils.addToList(appSvcRelatedInfoDto.getServiceName(), names);
+            }
+        }
+        ConfigCommService configCommService = getConfigCommService();
+        if (names.isEmpty() && !serviceConfigIds.isEmpty()) {
+            List<HcsaServiceDto> hcsaServiceDtoList = configCommService.getHcsaServiceDtosByIds(serviceConfigIds);
+            if (!IaisCommonUtils.isEmpty(hcsaServiceDtoList)) {
+                hcsaServiceDtoList.forEach(dto -> names.add(dto.getSvcName()));
+            }
+        }
+        List<HcsaServiceDto> hcsaServiceDtoList;
+        if (!names.isEmpty()) {
+            hcsaServiceDtoList = configCommService.getActiveHcsaSvcByNames(names);
+        } else {
+            hcsaServiceDtoList = IaisCommonUtils.genNewArrayList();
         }
         return hcsaServiceDtoList;
     }
@@ -506,6 +535,8 @@ public class DealSessionUtil {
         // preview
         List<AppDeclarationDocDto> appDeclarationDocDtos = appSubmissionDto.getAppDeclarationDocDtos();
         initDeclarationFiles(appDeclarationDocDtos, appType, request);
+
+        appSubmissionDto.setServiceName(appSvcRelatedInfoDtoList.get(0).getServiceName());
 
         appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
         if (appSubmissionDto.getCoMap() == null) {
