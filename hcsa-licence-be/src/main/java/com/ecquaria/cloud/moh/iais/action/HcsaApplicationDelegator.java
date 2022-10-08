@@ -4571,6 +4571,14 @@ public class HcsaApplicationDelegator {
                     applicationType.equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)||
                     applicationType.equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
                 decisionValues.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL, "Approve (ASO Email)"));
+            }else if(applicationType.equals(ApplicationConsts.APPLICATION_TYPE_APPEAL)){
+                AppPremiseMiscDto appPremiseMiscDto=applicationViewDto.getPremiseMiscDto();
+                if(appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO)
+                        ||appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_REJECTION)
+                        ||appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME)
+                        ||appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_LICENCE_CHANGE_PERIOD)){
+                    decisionValues.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL, "Approve (ASO Email)"));
+                }
             }
         }
         decisionValues.add(new SelectOption("decisionReject", "Reject"));
