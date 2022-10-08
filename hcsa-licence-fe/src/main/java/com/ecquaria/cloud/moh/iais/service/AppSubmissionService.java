@@ -57,8 +57,6 @@ public interface AppSubmissionService {
 
     FeeDto getNewAppAmount(AppSubmissionDto appSubmissionDto, boolean isCharity);
 
-    FeeDto getGroupAmount(AppSubmissionDto appSubmissionDto, boolean isCharity);
-
     FeeDto getRenewalAmount(List<AppSubmissionDto> appSubmissionDtoList, boolean isCharity);
 
     FeeDto getCharityRenewalAmount(List<AppSubmissionDto> appSubmissionDtoList, boolean isCharity);

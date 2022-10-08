@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppAlignAppQueryD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -45,7 +46,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionRes
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RecommendInspectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
@@ -670,6 +670,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         if(IaisCommonUtils.isNotEmpty(hcsaFeeBundleItemDtos)){
             hcsaFeeBundleItemDtos.forEach(o-> bundleSvcCodes.add(o.getSvcCode()));
         }
+        List<AppLicBundleDto> appLicBundleDtoList = appSubmissionDto.getAppLicBundleDtoList();
 
         if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
             log.debug("appGrpPremisesDtos size {}",appGrpPremisesDtos.size());
@@ -702,6 +703,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     licenceFeeDto.setServiceName(appSvcRelatedInfoDto.getServiceName());
                     licenceFeeDto.setPremises(appGrpPremisesDto.getAddress());
                     licenceFeeDto.setCharity(isCharity);
+                    if(StringUtil.isNotEmpty(appSvcRelatedInfoDto.getAlignLicenceNo())){
+                        licenceFeeDto.setAlignLicenceNo(appSvcRelatedInfoDto.getAlignLicenceNo());
+                    }
                     log.info(StringUtil.changeForLog("svcName:"+appSvcRelatedInfoDto.getServiceName()));
                     //set EAS/MTS bundle
                     if(!IaisCommonUtils.isEmpty(hcsaFeeBundleItemDtos)&&bundleSvcCodes.contains(serviceCode)){
@@ -754,7 +758,17 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             }
                         }
                     }
-
+                    if(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(serviceCode)||AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(serviceCode)){
+                        if(IaisCommonUtils.isNotEmpty(appLicBundleDtoList)){
+                            for (AppLicBundleDto alb:appLicBundleDtoList
+                                 ) {
+                                if(alb.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL)){
+                                    licenceFeeDto.setBundle(4);
+                                    break;
+                                }
+                            }
+                        }
+                    }
                     if(IaisCommonUtils.isNotEmpty(appPremSpecialisedDtos)){
                         List<LicenceFeeDto> licenceFeeSpecDtos = IaisCommonUtils.genNewArrayList();
 
@@ -805,51 +819,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public FeeDto getGroupAmount(AppSubmissionDto appSubmissionDto,boolean isCharity) {
-        log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl getGroupAmount start ...."));
-        log.info(StringUtil.changeForLog("current account is charity:"+isCharity));
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-        List<LicenceFeeDto> linenceFeeQuaryDtos = IaisCommonUtils.genNewArrayList();
-
-        for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
-
-            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-                LicenceFeeDto licenceFeeDto = new LicenceFeeDto(); licenceFeeDto.setBundle(0);
-                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(appSvcRelatedInfoDto.getServiceCode());
-                if (hcsaServiceDto == null) {
-                    log.info(StringUtil.changeForLog("hcsaServiceDto is empty "));
-                    continue;
-                }
-                if (HcsaConsts.SERVICE_TYPE_BASE.equals(hcsaServiceDto.getSvcType())) {
-                    licenceFeeDto.setBaseService(hcsaServiceDto.getSvcCode());
-                }
-                licenceFeeDto.setServiceCode(hcsaServiceDto.getSvcCode());
-                licenceFeeDto.setServiceName(hcsaServiceDto.getSvcName());
-                licenceFeeDto.setPremises(appGrpPremisesDto.getAddress());
-                licenceFeeDto.setCharity(isCharity);
-                if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
-                    String licenceId = appSubmissionDto.getLicenceId();
-                    LicenceDto licenceDto = requestForChangeService.getLicenceById(licenceId);
-                    Date licExpiryDate = licenceDto.getExpiryDate();
-                    licenceFeeDto.setExpiryDate(licExpiryDate);
-                    licenceFeeDto.setLicenceId(licenceId);
-                }
-                linenceFeeQuaryDtos.add(licenceFeeDto);
-            }
-        }
-        log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl linenceFeeQuaryDtos.size() is -->:" + linenceFeeQuaryDtos.size()));
-        String appTYpe = appSubmissionDto.getAppType();
-        FeeDto entity ;
-        if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appTYpe)){
-            entity = configCommClient.renewFee(linenceFeeQuaryDtos).getEntity();
-        }else{
-            entity = configCommClient.newFee(linenceFeeQuaryDtos).getEntity();
-        }
-        log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl getGroupAmount end ...."));
-        return  entity;
-    }
-    @Override
     public FeeDto getRenewalAmount(List<AppSubmissionDto> appSubmissionDtoList,boolean isCharity){
         List<LicenceFeeDto> linenceFeeQuaryDtos = IaisCommonUtils.genNewArrayList();
         log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl getRenewalAmount start ...."));
@@ -890,8 +859,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
             List<AppPremSpecialisedDto> appPremSpecialisedDtos = appSubmissionDto.getAppPremSpecialisedDtoList();
             List<String> baseServiceIds = IaisCommonUtils.genNewArrayList();
-            List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtos = configCommClient.serviceCorrelation().getEntity();
-
 
             log.debug("eas vehicle count is {}",easVehicleCount);
             log.debug("mts vehicle count is {}",mtsVehicleCount);
@@ -918,6 +885,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     licenceFeeDto.setServiceName(hcsaServiceDto.getSvcName());
                     licenceFeeDto.setPremises(appGrpPremisesDto.getAddress());
                     licenceFeeDto.setCharity(isCharity);
+                    if(StringUtil.isNotEmpty(appSvcRelatedInfoDto.getAlignLicenceNo())){
+                        licenceFeeDto.setAlignLicenceNo(appSvcRelatedInfoDto.getAlignLicenceNo());
+                    }
                     String serviceCode=hcsaServiceDto.getSvcCode();
 
                     if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
