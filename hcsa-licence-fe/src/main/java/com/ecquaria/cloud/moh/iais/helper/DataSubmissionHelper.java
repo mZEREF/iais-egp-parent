@@ -829,6 +829,9 @@ public final class DataSubmissionHelper {
         GenerateIdClient generateIdClient = SpringContextHelper.getContext().getBean(GenerateIdClient.class);
         MsgCommonUtil msgCommonUtil = SpringContextHelper.getContext().getBean(MsgCommonUtil.class);
         MsgTemplateDto msgTemplateDto = generateIdClient.getMsgTemplate(templateId).getEntity();
+        if (msgTemplateDto == null) {
+            return AppConsts.EMPTY_STR;
+        }
         List<String> roleIds = msgCommonUtil.getAllRoleIdsInUserRole(msgTemplateDto.getRecipient());
         if(IaisCommonUtils.isEmpty(roleIds)){
             emailAddresses = IaisEGPHelper.getLicenseeEmailAddrs(loginContext.getLicenseeId());
