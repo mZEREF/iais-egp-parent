@@ -20,7 +20,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSu
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -34,7 +33,7 @@ import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
 import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelValidatorHelper;
-import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
@@ -826,13 +825,10 @@ public final class DataSubmissionHelper {
     public static String getEmailAddrsByRoleIdsAndLicenseeId(HttpServletRequest request, String templateId) {
         LoginContext loginContext = getLoginContext(request);
         List<String> emailAddresses;
-        GenerateIdClient generateIdClient = SpringContextHelper.getContext().getBean(GenerateIdClient.class);
+        SystemAdminClient generateIdClient = SpringContextHelper.getContext().getBean(SystemAdminClient.class);
         MsgCommonUtil msgCommonUtil = SpringContextHelper.getContext().getBean(MsgCommonUtil.class);
-        MsgTemplateDto msgTemplateDto = generateIdClient.getMsgTemplate(templateId).getEntity();
-        if (msgTemplateDto == null) {
-            return AppConsts.EMPTY_STR;
-        }
-        List<String> roleIds = msgCommonUtil.getAllRoleIdsInUserRole(msgTemplateDto.getRecipient());
+        List<String> recptRoles = generateIdClient.getMsgTemplateReceiptToCc(templateId).getEntity();
+        List<String> roleIds = msgCommonUtil.getAllRoleIdsInUserRole(recptRoles);
         if(IaisCommonUtils.isEmpty(roleIds)){
             emailAddresses = IaisEGPHelper.getLicenseeEmailAddrs(loginContext.getLicenseeId());
         } else {
