@@ -31,18 +31,19 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationFeService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author weilu
@@ -329,7 +330,7 @@ public class CessationApplicationFeDelegator {
             List<AppCessHciDto> appCessHciDtoso = appCessLicDto.getAppCessHciDtos();
             for (int j = 1; j <= appCessHciDtoso.size(); j++) {
                 AppCessHciDto appCessHciDto = appCessHciDtoso.get(j - 1);
-               // String whichTodo = ParamUtil.getRequestString(bpc.request, i + WHICHTODO + j);
+                String whichTodo = ParamUtil.getRequestString(bpc.request, i + WHICHTODO + j);
                 String effectiveDateStr = ParamUtil.getRequestString(bpc.request, i + EFFECTIVEDATE + j);
                 Date effectiveDate = DateUtil.parseDate(effectiveDateStr, AppConsts.DEFAULT_DATE_FORMAT);
                 String reason = ParamUtil.getRequestString(bpc.request, i + REASON + j);
@@ -380,8 +381,8 @@ public class CessationApplicationFeDelegator {
                 appCessHciDto.setPatOthers(patOthers);
                 appCessHciDto.setMobileNo(patMobile);
                 appCessHciDto.setEmailAddress(patEmailAddress);
-                appCessHciDto.setPremiseIdChecked(whichTodo);
                 appCessHciDto.setReadInfo(readInfo);*/
+                appCessHciDto.setPremiseIdChecked(whichTodo);
                 appCessHciDto.setTransferredWhere(transferredWhere);
                 appCessHciDto.setTransferDetail(transferDetail);
             }

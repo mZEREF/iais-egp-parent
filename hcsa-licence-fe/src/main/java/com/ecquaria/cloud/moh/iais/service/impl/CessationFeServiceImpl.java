@@ -55,6 +55,7 @@ import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
+import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import com.ecquaria.sz.commons.util.DateUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -661,6 +662,7 @@ public class CessationFeServiceImpl implements CessationFeService {
     utils
      */
     private Map<String, List<String>> transform(AppSubmissionDto appSubmissionDto, String licenseeId, List<String> premiseIds,List<AppCessationDto> appCessationDtos) {
+        DealSessionUtil.initView(appSubmissionDto);
         Map<String, List<String>> map = IaisCommonUtils.genNewHashMap();
         Double amount = 0.0;
         AuditTrailDto internet = AuditTrailHelper.getCurrentAuditTrailDto();
