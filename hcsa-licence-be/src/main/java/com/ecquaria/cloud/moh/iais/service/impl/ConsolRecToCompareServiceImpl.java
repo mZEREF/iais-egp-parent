@@ -4,6 +4,7 @@ import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.monitoringExcel.AppGroupExcelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.monitoringExcel.AppProcessFileTrackExcelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.monitoringExcel.ApplicationExcelDto;
@@ -21,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.ConsolRecToCompareService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.EmailSmsClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.systeminfo.ServicesSysteminfo;
@@ -46,6 +48,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
@@ -71,7 +74,12 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
     private String rsltSharedPath;
     @Autowired
     private ApplicationClient applicationClient;
-
+    @Autowired
+    private EmailSmsClient emailSmsClient;
+    @Value("${iais.email.sender}")
+    private String mailSender;
+    @Value("${iais.datacompair.email}")
+    private String mailRecipient ;
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
 
@@ -502,6 +510,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
 
     private MonitoringSheetsDto fileToDto(String str)
     {
+        boolean hasNotMatch=false;
         MonitoringSheetsDto monitoringSheetsDto = JsonUtil.parseToObject(str, MonitoringSheetsDto.class);
         MonitoringSheetsDto monitoringAppSheetsDto=applicationClient.getMonitoringAppSheetsDto().getEntity();
         MonitoringSheetsDto monitoringLicSheetsDto=hcsaLicenceClient.getMonitoringLicenceSheetsDto().getEntity();
@@ -515,9 +524,10 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
             if(monitoringSheetsDto.getAppProcessFileTrackExcelDtoMap().containsKey(entry.getKey())){
                 AppProcessFileTrackExcelDto excelDto=monitoringSheetsDto.getAppProcessFileTrackExcelDtoMap().get(entry.getKey());
                 if(!excelDto.getStatus().equals("PFT005")){
-                    excelDto.setResult("Match");
-                }else {
                     excelDto.setResult("Not Match");
+                    hasNotMatch=true;
+                }else {
+                    excelDto.setResult("Match");
                 }
             }
         }
@@ -529,13 +539,16 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                     excelDto.setApplicationNoBe(entry.getValue().getApplicationNoBe());
                     excelDto.setStatusBe(entry.getValue().getStatusBe());
                     excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
-                    excelDto.setResult("Not Match");
                     if(excelDto.getApplicationNoBe().equals(excelDto.getApplicationNoFe())&&
                             excelDto.getStatusBe().equals(excelDto.getStatusFe())){
                         excelDto.setResult("Match");
+                    }else {
+                        excelDto.setResult("Not Match");
+                        hasNotMatch=true;
                     }
                 }else {
                     entry.getValue().setResult("Not Match");
+                    hasNotMatch=true;
                     monitoringSheetsDto.getApplicationExcelDtoMap().put(entry.getKey(),entry.getValue());
                 }
             }
@@ -548,13 +561,16 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                     excelDto.setLicenceNoBe(entry.getValue().getLicenceNoBe());
                     excelDto.setStatusBe(entry.getValue().getStatusBe());
                     excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
-                    excelDto.setResult("Not Match");
                     if(excelDto.getLicenceNoBe().equals(excelDto.getLicenceNoFe())&&
                             excelDto.getStatusBe().equals(excelDto.getStatusFe())){
                         excelDto.setResult("Match");
+                    }else {
+                        excelDto.setResult("Not Match");
+                        hasNotMatch=true;
                     }
                 }else {
                     entry.getValue().setResult("Not Match");
+                    hasNotMatch=true;
                     monitoringSheetsDto.getLicenceExcelDtoMap().put(entry.getKey(),entry.getValue());
                 }
             }
@@ -567,13 +583,16 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                     excelDto.setAppGroupNoBe(entry.getValue().getAppGroupNoBe());
                     excelDto.setStatusBe(entry.getValue().getStatusBe());
                     excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
-                    excelDto.setResult("Not Match");
                     if(excelDto.getAppGroupNoBe().equals(excelDto.getAppGroupNoFe())&&
                             excelDto.getStatusBe().equals(excelDto.getStatusFe())){
                         excelDto.setResult("Match");
+                    }else {
+                        excelDto.setResult("Not Match");
+                        hasNotMatch=true;
                     }
                 }else {
                     entry.getValue().setResult("Not Match");
+                    hasNotMatch=true;
                     monitoringSheetsDto.getAppGroupExcelDtoMap().put(entry.getKey(),entry.getValue());
                 }
             }
@@ -587,19 +606,42 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                     excelDto.setStatusBe(entry.getValue().getStatusBe());
                     excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
                     excelDto.setUserDomainBe(entry.getValue().getUserDomainBe());
-                    excelDto.setResult("Not Match");
                     if(excelDto.getDisplayNameBe().equals(excelDto.getDisplayNameFe())&&
                             excelDto.getStatusBe().equals(excelDto.getStatusFe())&&
                             excelDto.getUserDomainBe().equals(excelDto.getUserDomainFe())){
                         excelDto.setResult("Match");
+                    }else {
+                        excelDto.setResult("Not Match");
+                        hasNotMatch=true;
                     }
                 }else {
                     entry.getValue().setResult("Not Match");
+                    hasNotMatch=true;
                     monitoringSheetsDto.getUserAccountExcelDtoMap().put(entry.getKey(),entry.getValue());
                 }
             }
         }
+        if(hasNotMatch){
+            log.info("start send email start");
+            EmailDto emailDto = new EmailDto();
+            List<String> receiptEmail=IaisCommonUtils.genNewArrayList();
+            receiptEmail.add(this.mailRecipient);
 
+            emailDto.setReceipts(receiptEmail);
+            String emailContent = "CompareFEBE Not Match";
+            emailDto.setContent(emailContent);
+            emailDto.setSubject("CompareFEBE Not Match");
+            emailDto.setSender(this.mailSender);
+            emailDto.setReqRefNum(UUID.randomUUID().toString());
+
+            try {
+                emailSmsClient.sendEmail(emailDto, null);
+            } catch (IOException e) {
+                log.error(e.getMessage());
+            }
+
+            log.info("start send email end");
+        }
         return monitoringSheetsDto;
 
     }
