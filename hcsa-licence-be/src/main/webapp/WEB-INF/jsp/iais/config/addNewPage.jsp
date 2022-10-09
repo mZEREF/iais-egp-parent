@@ -114,7 +114,7 @@
         </div>
       </div>
 
-
+      <div id="serviceTypeDefault">
       <div class="form-group" id="selectCategoryId" >
         <div class="col-xs-12 col-md-9" style="margin-bottom: 20px;">
           <label class="col-xs-12 col-md-7 control-label">Service Category&nbsp;<span class="mandatory">*</span></label>
@@ -1389,18 +1389,19 @@
 
         </div>
       </div>
-        <div class="col-xs-12 col-md-9">
-          <div class="form-group">
-            <label class="col-xs-12 col-md-7 control-label">Effective Start Date&nbsp;<span class="mandatory">*</span></label>
-            <div class=" col-xs-7 col-sm-4 col-md-3">
-              <input type="text" value="${hcsaServiceConfigDto.hcsaServiceDto.effectiveDate}" autocomplete="off" class="date_picker form-control form_datetime"
-                     name="effectiveDate" id="-20189532301300" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10">
-              <span id="error_StartDate" name="iaisErrorMsg" class="error-msg" ></span>
-              <span class="error-msg" name="iaisErrorMsg" id="error_effectiveDate"></span>
-            </div>
-            <div class="clear"></div>
+      </div>
+      <div class="col-xs-12 col-md-9">
+        <div class="form-group">
+          <label class="col-xs-12 col-md-7 control-label">Effective Start Date&nbsp;<span class="mandatory">*</span></label>
+          <div class=" col-xs-7 col-sm-4 col-md-3">
+            <input type="text" value="${hcsaServiceConfigDto.hcsaServiceDto.effectiveDate}" autocomplete="off" class="date_picker form-control form_datetime"
+                   name="effectiveDate" id="-20189532301300" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10">
+            <span id="error_StartDate" name="iaisErrorMsg" class="error-msg" ></span>
+            <span class="error-msg" name="iaisErrorMsg" id="error_effectiveDate"></span>
           </div>
+          <div class="clear"></div>
         </div>
+      </div>
 
       <div class="col-xs-12 col-md-9" style="margin-bottom: 50px;">
         <div class="form-group">
@@ -1477,7 +1478,7 @@
     $(document).ready(function () {
         premisesSelect();
         serviceTypeChange();
-        toSupplementaryForm(false);
+        //toSupplementaryForm(false);
         controlEAS();
     });
     function cancel() {
@@ -1553,11 +1554,18 @@
             forSpecifiedService()
         // do not select,default show base
         }else {
+           //forDefault();
             forBaseService();
             //forSpecifiedService()
         }
     }
+
+    function forDefault(){
+        $('#serviceTypeDefault').hide();
+    }
+
     function forBaseService(){
+        $('#serviceTypeDefault').show();
         $('#selectCategoryId').show();
         $('#admndAndNotifactionFlow').hide();
         $('#baseAndSpeci').show();
@@ -1572,10 +1580,10 @@
         $('#specialisedSuppFormOnly').hide();
         $('#specialisedPersionnelOnly').hide();
         $('#basePersonnelAndSupplementary').show();
-
-
+        toSupplementaryForm(false);
     }
     function forSpecifiedService(){
+        $('#serviceTypeDefault').show();
         $('#selectCategoryId').hide();
         $('#admndAndNotifactionFlow').show();
         $('#baseAndSpeci').show();
@@ -1592,6 +1600,7 @@
         $('#basePersonnelAndSupplementary').hide();
     }
     function forOtherService(){
+        $('#serviceTypeDefault').show();
         $('#selectCategoryId').hide();
         $('#admndAndNotifactionFlow').show();
         $('#baseAndSpeci').hide();
@@ -1802,12 +1811,13 @@
         })
     }
     function  toSupplementaryForm(IsClick){
-        var radioValue = $("input[name='supplementaryForm']:checked").val();
+       /* var radioValue = $("input[name='supplementaryForm']:checked").val();
         if('1' == radioValue){
           $('#supplementaryForm').show();
         }else{
             $('#supplementaryForm').hide();
-        }
+        }*/
+        $('#supplementaryForm').show();
         serviceDocpersonnel(IsClick);
     }
 
