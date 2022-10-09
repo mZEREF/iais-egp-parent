@@ -108,6 +108,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 /**
  * AppSubmisionServiceImpl
@@ -611,6 +612,24 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public List<ApplicationDto> listApplicationByGroupId(String groupId) {
         return applicationFeClient.listApplicationByGroupId(groupId).getEntity();
+    }
+
+    @Override
+    public List<AppSubmissionDto> saveAppsForRequestForGoupAndAppChangeByList(List<AppSubmissionDto> appSubmissionDtos) {
+        if (IaisCommonUtils.isEmpty(appSubmissionDtos)) {
+            return appSubmissionDtos;
+        }
+        return applicationFeClient.saveAppsForRequestForGoupAndAppChangeByList(appSubmissionDtos).getEntity();
+    }
+
+    @Override
+    public void handleDraft(String draftNo, String licenseeId, AppSubmissionDto appSubmissionDto,
+            List<AppSubmissionDto> appSubmissionDtoList) {
+        doSaveDraft(appSubmissionDto);
+        List<String> licenceIds = appSubmissionDtoList.parallelStream()
+                .map(AppSubmissionDto::getLicenceId)
+                .collect(Collectors.toList());
+        updateDrafts(licenseeId, licenceIds, draftNo);
     }
 
     @Override

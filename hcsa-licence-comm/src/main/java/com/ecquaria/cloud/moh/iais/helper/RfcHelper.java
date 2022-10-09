@@ -30,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStep
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ReflectionUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
@@ -126,7 +127,7 @@ public final class RfcHelper {
         appEditSelectDto.setChangePersonnel(changePersonnel);
         appEditSelectDto.setChangeSectionLeader(changeSectionLeader);
         boolean serviceIsChange = changeVehicles || changeBusiness || changeSectionLeader
-                        || changeServiceAutoFields;
+                || changeServiceAutoFields;
         appEditSelectDto.setServiceEdit(serviceIsChange);
         // set to appSubmissionDto
         appSubmissionDto.setChangeSelectDto(appEditSelectDto);
@@ -432,7 +433,8 @@ public final class RfcHelper {
             }
         }
         // section leader
-        return isChangeServicePersonnels(appSvcRelatedInfoDto.getAppSvcSectionLeaderList(), oldAppSvcRelatedInfoDto.getAppSvcSectionLeaderList());
+        return isChangeServicePersonnels(appSvcRelatedInfoDto.getAppSvcSectionLeaderList(),
+                oldAppSvcRelatedInfoDto.getAppSvcSectionLeaderList());
     }
 
     private static boolean isChangeSvcDocs(List<AppSvcDocDto> appSvcDocDtoLit, List<AppSvcDocDto> oldAppSvcDocDtoLit) {
@@ -1039,8 +1041,8 @@ public final class RfcHelper {
         return result;
     }
 
-    public static void beforeSubmit(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto,
-            AppEditSelectDto appEditSelectDto, String appGrpNo, String appType, HttpServletRequest request) {
+    public static void beforeSubmit(AppSubmissionDto appSubmissionDto, AppEditSelectDto appEditSelectDto, String appGrpNo,
+            String appType, HttpServletRequest request) {
         if (appSubmissionDto == null) {
             return;
         }
@@ -1063,10 +1065,21 @@ public final class RfcHelper {
         //set Risk Score
         setRiskToDto(appSubmissionDto);
         // reSetAdditionalFields
+        appSubmissionDto.setChangeSelectDto(appEditSelectDto);
         ApplicationHelper.reSetAdditionalFields(appSubmissionDto, appEditSelectDto, appGrpNo);
-        ApplicationHelper.reSetAdditionalFields(appSubmissionDto, oldAppSubmissionDto);
+//        ApplicationHelper.reSetAdditionalFields(appSubmissionDto, oldAppSubmissionDto);
         // bind application
         setRelatedInfoBaseServiceId(appSubmissionDto);
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
+            appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
+            appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
+            Double amount = appSubmissionDto.getAmount();
+            if (amount == null || MiscUtil.doubleEquals(0.0, amount)) {
+                appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
+            }
+        } else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
+            appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_RENEWAL);
+        }
     }
 
     public static void resolveSvcActionCode(List<AppPremSubSvcRelDto> relList, Map<String, AppPremSubSvcRelDto> oldDtaMap) {
@@ -1100,7 +1113,7 @@ public final class RfcHelper {
         }
     }
 
-    public static void resolveSpecialisedNonAutoData(AppSubmissionDto autoAppSubmissionDto, AppSubmissionDto oldAppSubmissionDto){
+    public static void resolveSpecialisedNonAutoData(AppSubmissionDto autoAppSubmissionDto, AppSubmissionDto oldAppSubmissionDto) {
         if (autoAppSubmissionDto == null || oldAppSubmissionDto == null) {
             return;
         }

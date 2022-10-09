@@ -256,11 +256,11 @@ public final class AppValidatorHelper {
         return doPreviewSubmitValidate(errorMap, appSubmissionDto, null, null, isRfi, null);*/
     }
 
-    private static void doPreviewSubmitValidate(Map<String, String> errorMap, AppSubmissionDto appSubmissionDto,
+    private static List<String> doPreviewSubmitValidate(Map<String, String> errorMap, AppSubmissionDto appSubmissionDto,
             List<String> premisesHciList, boolean isRfi) {
         List<String> errorList = IaisCommonUtils.genNewArrayList();
         if (appSubmissionDto == null) {
-            return;
+            return errorList;
         }
         if (errorMap == null) {
             errorMap = IaisCommonUtils.genNewHashMap();
@@ -274,6 +274,7 @@ public final class AppValidatorHelper {
         boolean isValid = validateSubLicenseeDto(errorMap, subLicenseeDto);
         if (!isValid) {
             coMap.put(HcsaAppConst.SECTION_LICENSEE, "");
+            errorList.add(HcsaAppConst.SECTION_LICENSEE);
         } else {
             coMap.put(HcsaAppConst.SECTION_LICENSEE, HcsaAppConst.SECTION_LICENSEE);
         }
@@ -283,6 +284,7 @@ public final class AppValidatorHelper {
         if (!premissMap.isEmpty()) {
             errorMap.putAll(premissMap);
             coMap.put(HcsaAppConst.SECTION_PREMISES, "");
+            errorList.add(HcsaAppConst.SECTION_PREMISES);
         } else {
             coMap.put(HcsaAppConst.SECTION_PREMISES, HcsaAppConst.SECTION_PREMISES);
         }
@@ -308,6 +310,7 @@ public final class AppValidatorHelper {
                 coMap.put(HcsaAppConst.SECTION_SPECIALISED, HcsaAppConst.SECTION_SPECIALISED);
             } else {
                 coMap.put(HcsaAppConst.SECTION_SPECIALISED, "");
+                errorList.add(HcsaAppConst.SECTION_SPECIALISED);
             }
         }
         // service info
@@ -327,12 +330,14 @@ public final class AppValidatorHelper {
             coMap.put(HcsaAppConst.SECTION_SVCINFO, HcsaAppConst.SECTION_SVCINFO);
         } else {
             coMap.put(HcsaAppConst.SECTION_SVCINFO, "");
+            errorList.add(HcsaAppConst.SECTION_SVCINFO);
         }
         appSubmissionDto.setCoMap(coMap);
         setAudiErrMap(isRfi, appSubmissionDto.getAppType(), errorMap, appSubmissionDto.getRfiAppNo(),
                 appSubmissionDto.getLicenceNo());
         log.info(StringUtil.changeForLog("Error Message for App Submission Validation: " + errorMap));
         log.info(StringUtil.changeForLog("Co Map: " + coMap));
+        return errorList;
     }
 
     public static Map<String, String> doCheckBox(AppSvcRelatedInfoDto dto, AppSubmissionDto appSubmissionDto,

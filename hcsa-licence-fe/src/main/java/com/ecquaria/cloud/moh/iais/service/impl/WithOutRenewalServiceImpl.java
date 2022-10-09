@@ -1,13 +1,18 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.WithOutRenewalDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.helper.RfcHelper;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
+import com.ecquaria.cloud.moh.iais.service.AppCommService;
+import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
@@ -15,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sop.webflow.rt.api.BaseProcessClass;
 
 import java.util.List;
 
@@ -30,6 +36,15 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
 
     @Autowired
     private LicCommService commService;
+
+    @Autowired
+    private AppCommService appCommService;
+
+    @Autowired
+    private AppSubmissionService appSubmissionService;
+
+    @Autowired
+    private EventBusHelper eventBusHelper;
 
     @Override
     public WithOutRenewalDto getRenewalViewByLicNo(String licenceNo) {
@@ -58,7 +73,8 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
     }
 
     @Override
-    public boolean isReplace(List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList, List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) {
+    public boolean isReplace(List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList,
+            List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) {
         for (int i = 0; i < newAppSvcRelatedInfoDtoList.size(); i++) {
             List<AppSvcPrincipalOfficersDto> newCgoList = newAppSvcRelatedInfoDtoList.get(i).getAppSvcCgoDtoList();
             List<AppSvcPrincipalOfficersDto> oldCgoList = oldAppSvcRelatedInfoDtoList.get(i).getAppSvcCgoDtoList();
@@ -106,7 +122,8 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
     }
 
     @Override
-    public boolean isUpdate(List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList, List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) {
+    public boolean isUpdate(List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList,
+            List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) {
         AppSvcPrincipalOfficersDto newPoE = new AppSvcPrincipalOfficersDto();
         AppSvcPrincipalOfficersDto oldPoE = new AppSvcPrincipalOfficersDto();
         AppSvcPrincipalOfficersDto newMatE = new AppSvcPrincipalOfficersDto();
@@ -157,7 +174,8 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
                     clearAppSvcPrincipalOfficersDto(oldPoE);
                     String psnTypeNew = newPoDto.getPsnType();
                     String psnTypeOld = oldPoDto.getPsnType();
-                    if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnTypeNew) && ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnTypeOld)) {
+                    if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnTypeNew) && ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(
+                            psnTypeOld)) {
                         newPoE.setName(newPoDto.getName());
                         newPoE.setDesignation(newPoDto.getDesignation());
                         newPoE.setMobileNo(newPoDto.getMobileNo());
@@ -172,7 +190,8 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
                             return true;
                         }
                     }
-                    if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnTypeNew) && ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnTypeOld)) {
+                    if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnTypeNew) && ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(
+                            psnTypeOld)) {
                         clearAppSvcPrincipalOfficersDto(newPoE);
                         clearAppSvcPrincipalOfficersDto(oldDpoE);
                         newDpoE.setName(newPoDto.getName());
@@ -259,7 +278,8 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
     }
 
     @Override
-    public List<String> isUpdateCgo(List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList, List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) {
+    public List<String> isUpdateCgo(List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList,
+            List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) {
         List<String> idNos = IaisCommonUtils.genNewArrayList();
         AppSvcPrincipalOfficersDto newAppSvcCgoDtoE = new AppSvcPrincipalOfficersDto();
         AppSvcPrincipalOfficersDto oldAppSvcCgoDtoE = new AppSvcPrincipalOfficersDto();
@@ -302,7 +322,8 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
     }
 
     @Override
-    public List<String> isUpdatePo(List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList, List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) {
+    public List<String> isUpdatePo(List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList,
+            List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) {
         List<String> idNos = IaisCommonUtils.genNewArrayList();
         AppSvcPrincipalOfficersDto newPoE = new AppSvcPrincipalOfficersDto();
         AppSvcPrincipalOfficersDto oldPoE = new AppSvcPrincipalOfficersDto();
@@ -339,7 +360,8 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
     }
 
     @Override
-    public List<String> isUpdateDpo(List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList, List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) {
+    public List<String> isUpdateDpo(List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList,
+            List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) {
         List<String> idNos = IaisCommonUtils.genNewArrayList();
         AppSvcPrincipalOfficersDto newDpoE = new AppSvcPrincipalOfficersDto();
         AppSvcPrincipalOfficersDto oldDpoE = new AppSvcPrincipalOfficersDto();
@@ -376,7 +398,8 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
     }
 
     @Override
-    public List<String> isUpdateMat(List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList, List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) {
+    public List<String> isUpdateMat(List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList,
+            List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) {
         List<String> idNos = IaisCommonUtils.genNewArrayList();
         AppSvcPrincipalOfficersDto newMatE = new AppSvcPrincipalOfficersDto();
         AppSvcPrincipalOfficersDto oldMatE = new AppSvcPrincipalOfficersDto();
@@ -405,4 +428,39 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
         }
         return idNos;
     }
+
+    @Override
+    public List<AppSubmissionDto> saveAppSubmissionList(List<AppSubmissionDto> appSubmissionDtoList, String eventRefNo,
+            BaseProcessClass bpc) {
+        // save application
+        List<AppSubmissionDto> newAppSubmissionList = appSubmissionService.saveAppsForRequestForGoupAndAppChangeByList(
+                appSubmissionDtoList);
+        setCheckRepeatAppData(appSubmissionDtoList);
+        // save other data via event bus
+        AppSubmissionListDto autoAppSubmissionListDto = new AppSubmissionListDto();
+        autoAppSubmissionListDto.setAuditTrailDto(AuditTrailHelper.getCurrentAuditTrailDto());
+        autoAppSubmissionListDto.setEventRefNo(eventRefNo);
+        autoAppSubmissionListDto.setAppSubmissionDtos(newAppSubmissionList);
+        eventBusHelper.submitAsyncRequest(autoAppSubmissionListDto, appCommService.getSeqId(), EventBusConsts.SERVICE_NAME_APPSUBMIT,
+                EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT, eventRefNo, bpc.process);
+        return newAppSubmissionList;
+    }
+
+    private void setCheckRepeatAppData(List<AppSubmissionDto> saveutoAppSubmissionDto) {
+        if (IaisCommonUtils.isNotEmpty(saveutoAppSubmissionDto)) {
+            boolean checkRepeatAppData = false;
+            for (AppSubmissionDto appSubmissionDto : saveutoAppSubmissionDto) {
+                if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equalsIgnoreCase(appSubmissionDto.getAppType())) {
+                    checkRepeatAppData = true;
+                }
+            }
+
+            if (checkRepeatAppData) {
+                for (AppSubmissionDto appSubmissionDto : saveutoAppSubmissionDto) {
+                    appSubmissionDto.setCheckRepeatAppData(checkRepeatAppData);
+                }
+            }
+        }
+    }
+
 }

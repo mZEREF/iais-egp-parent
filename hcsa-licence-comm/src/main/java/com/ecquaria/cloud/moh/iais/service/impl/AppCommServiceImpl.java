@@ -646,10 +646,9 @@ public class AppCommServiceImpl implements AppCommService {
         if (StringUtil.isEmpty(appType)) {
             appType = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE;
         }
-        transform(appSubmissionDto, licence.getLicenseeId(), appType, false);
-        appSubmissionDto.setAppGrpNo(appGroupNo);
+        //transform(appSubmissionDto, licence.getLicenseeId(), appType, false);
         appSubmissionDto.setDraftNo(draftNo);
-
+        // amount
         double total = 0.0;
         if (amount != null) {
             total = amount.doubleValue();
@@ -666,8 +665,9 @@ public class AppCommServiceImpl implements AppCommService {
             appEditSelectDto = new AppEditSelectDto();
         }
         AppEditSelectDto editDto = MiscUtil.transferEntityDto(appEditSelectDto, AppEditSelectDto.class);
-        appSubmissionDto.setChangeSelectDto(editDto);
-        appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+        RfcHelper.beforeSubmit(appSubmissionDto, editDto, appGroupNo, appType, null);
+
+
         appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
         appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
         if (MiscUtil.doubleEquals(0.0, total)) {

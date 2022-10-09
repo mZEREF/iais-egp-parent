@@ -699,9 +699,9 @@ public class RequestForChangeDelegator {
                     subLicenseeDto.setOrgId(licenseeDto.getOrganizationId());
                     appSubmissionDto.setSubLicenseeDto(subLicenseeDto);
 
-                    String baseServiceId = requestForChangeService.baseSpecLicenceRelation(licenceDto,false);
+                    /*String baseServiceId = requestForChangeService.baseSpecLicenceRelation(licenceDto,false);
                     log.info(StringUtil.changeForLog("The baseServiceId is -->:"+baseServiceId));
-                    appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setBaseServiceId(baseServiceId);
+                    appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setBaseServiceId(baseServiceId);*/
                     boolean isCharity = ApplicationHelper.isCharity(bpc.request);
                     FeeDto feeDto = getTransferFee(isCharity);
                     if(feeDto != null){

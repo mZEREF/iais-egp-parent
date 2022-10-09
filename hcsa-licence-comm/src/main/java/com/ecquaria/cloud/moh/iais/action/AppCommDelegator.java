@@ -1477,14 +1477,14 @@ public abstract class AppCommDelegator {
         appSubmissionDto.setMaxFileIndex(maxFileIndex);
         //oldAppSubmissionDtos
         AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
-        StringBuilder stringBuilder = new StringBuilder(10);
+        /*StringBuilder stringBuilder = new StringBuilder(10);
         stringBuilder.append(appSubmissionDto);
         String str = stringBuilder.toString();
         log.info(StringUtil.changeForLog("appSubmissionDto:" + str));
         stringBuilder.setLength(0);
         stringBuilder.append(oldAppSubmissionDto);
         str = stringBuilder.toString();
-        log.info(StringUtil.changeForLog("oldAppSubmissionDto:" + str));
+        log.info(StringUtil.changeForLog("oldAppSubmissionDto:" + str));*/
         Map<String, String> doComChangeMap = AppValidatorHelper.doComChange(appSubmissionDto, oldAppSubmissionDto);
         if (!doComChangeMap.isEmpty()) {
             initErrorAction(ACTION_PREVIEW, doComChangeMap, appSubmissionDto, bpc.request);
@@ -1508,7 +1508,7 @@ public abstract class AppCommDelegator {
             ParamUtil.setRequestAttr(bpc.request, COND_TYPE_RFI, "N");
             return;
         }
-        ApplicationHelper.reSetAdditionalFields(appSubmissionDto, oldAppSubmissionDto);
+        //ApplicationHelper.reSetAdditionalFields(appSubmissionDto, oldAppSubmissionDto);
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         oldAppSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         String appType = appSubmissionDto.getAppType();
@@ -1673,7 +1673,7 @@ public abstract class AppCommDelegator {
         }
         appSubmissionDto.setDraftNo(draftNo);
 
-        RfcHelper.beforeSubmit(appSubmissionDto, oldAppSubmissionDto, appEditSelectDto, null, appType, bpc.request);
+        RfcHelper.beforeSubmit(appSubmissionDto, appEditSelectDto, null, appType, bpc.request);
         // set status
         appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
         if (MiscUtil.doubleEquals(0.0, currentAmount)) {
@@ -1899,6 +1899,7 @@ public abstract class AppCommDelegator {
         log.info(StringUtil.changeForLog("------ Save Data Start ------"));
         List<AppSubmissionDto> ackPageAppSubmissionDto = new ArrayList<>(2);
         List<String> svcNameSet = new ArrayList<>();
+        String eventRefNo = String.valueOf(System.currentTimeMillis());
         String notAutoGroupId = null;
         String autoGroupId = null;
         if (!notAutoSaveAppsubmission.isEmpty()) {
@@ -1912,7 +1913,7 @@ public abstract class AppCommDelegator {
                 dto.setAppGrpStatus(appGrpStatus);
             });
             // save application, group, declaration
-            List<AppSubmissionDto> appSubmissionDtos1 = submitRequestForChange(notAutoSaveAppsubmission, false);
+            List<AppSubmissionDto> appSubmissionDtos1 = submitRequestForChange(notAutoSaveAppsubmission, eventRefNo, bpc);
             notAutoGroupId = afterSubmitRequestForChange(appSubmissionDtos1, ackPageAppSubmissionDto, svcNameSet);
             appSubmissionDtoList.addAll(appSubmissionDtos1);
             appSubmissionDto.setAppGrpId(notAutoGroupId);
@@ -1928,7 +1929,7 @@ public abstract class AppCommDelegator {
                 dto.setAppGrpStatus(newAutoGrpStatus);
             });
             // save application, group, declaration
-            List<AppSubmissionDto> appSubmissionDtos1 = submitRequestForChange(autoSaveAppsubmission, true);
+            List<AppSubmissionDto> appSubmissionDtos1 = submitRequestForChange(autoSaveAppsubmission, eventRefNo, bpc);
             autoGroupId = afterSubmitRequestForChange(appSubmissionDtos1, ackPageAppSubmissionDto, svcNameSet);
             appSubmissionDtoList.addAll(appSubmissionDtos1);
             if (StringUtil.isEmpty(notAutoGroupId)) {
@@ -1950,7 +1951,8 @@ public abstract class AppCommDelegator {
     protected void handleDraft(String draftNo, String licenseeId, AppSubmissionDto appSubmissionDto,
             List<AppSubmissionDto> appSubmissionDtoList) {}
 
-    protected abstract List<AppSubmissionDto> submitRequestForChange(List<AppSubmissionDto> appSubmissionDtoList, boolean isAutoRfc);
+    protected abstract List<AppSubmissionDto> submitRequestForChange(List<AppSubmissionDto> appSubmissionDtoList, String eventRefNo,
+            BaseProcessClass bpc);
 
     protected String afterSubmitRequestForChange(List<AppSubmissionDto> appSubmissionDtos,
             List<AppSubmissionDto> ackPageAppSubmissionDto, List<String> svcNameSet) {
@@ -2180,9 +2182,8 @@ public abstract class AppCommDelegator {
         AppEditSelectDto appEditSelectDto = ApplicationHelper.createAppEditSelectDto(true);
         appEditSelectDto.setLicenseeEdit(ApplicationHelper.canLicenseeEdit(appSubmissionDto.getSubLicenseeDto(),
                 appSubmissionDto.getAppType(), true, true));
-        appSubmissionDto.setChangeSelectDto(appEditSelectDto);
         appEditSelectDto.setNeedNewLicNo(true);
-        RfcHelper.beforeSubmit(appSubmissionDto, null, appEditSelectDto, appGroupNo, appType, bpc.request);
+        RfcHelper.beforeSubmit(appSubmissionDto, appEditSelectDto, appGroupNo, appType, bpc.request);
 
         appSubmissionDto = submit(appSubmissionDto);
 
