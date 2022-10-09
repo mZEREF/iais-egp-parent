@@ -97,7 +97,7 @@
                 </iais:row>
 
                 <iais:row>
-                    <iais:field width="4" value="Current AR Treatment" />
+                    <iais:field width="4" value="Current AR Cycle" />
                     <iais:value width="4" cssClass="col-md-4"  display="true">
                         <c:forEach items="${arCycleStageDto.currentArTreatmentValues}" var="currentAR" varStatus="status">
                             <c:if test="${status.index != 0}"><br></c:if> <iais:code code="${currentAR}"/>

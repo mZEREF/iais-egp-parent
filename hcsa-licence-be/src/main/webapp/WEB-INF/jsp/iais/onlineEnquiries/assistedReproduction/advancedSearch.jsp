@@ -215,7 +215,7 @@
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
-                                    <iais:field width="4" value="Current AR Treatment" />
+                                    <iais:field width="4" value="Current AR Cycle" />
                                     <div class="col-md-6 row">
                                         <iais:value width="7" cssClass="col-md-12 row">
                                             <div class="form-check">

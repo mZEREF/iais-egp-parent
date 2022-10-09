@@ -46,7 +46,7 @@
 
 <iais:row>
     <iais:field cssClass="col-md-6"
-                value="Has patient registered for AR/IUI Treatment using another Identification Number before?"
+                value="Has patient registered for AR/IUI Treatment using other identification number before (e.g. passport number)?"
                 mandatory="true"/>
     <iais:value width="12">
         <iais:value width="12">

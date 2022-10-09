@@ -96,7 +96,7 @@
                 </iais:row>
 
                 <iais:row>
-                    <iais:field width="6" cssClass="col-md-6" value="Current AR Treatment" mandatory="true"/>
+                    <iais:field width="6" cssClass="col-md-6" value="Current AR Cycle" mandatory="true"/>
                     <iais:value width="6" cssClass="col-md-6">
                             <c:forEach items="${currentArTreatments}" var="currentArTreatment">
                                 <c:set var="currentArTreatmentCode" value="${currentArTreatment.code}"/>

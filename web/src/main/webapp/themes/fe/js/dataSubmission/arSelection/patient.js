@@ -29,6 +29,14 @@ $(function () {
     $(function(){
         $("#identityNo").bind('input porpertychange',function(){
             $("#registerPatientSection").hide();
+            $("#amendPatientSection").hide();
+        });
+    });
+
+    $(document).ready(function () {
+        $('input[type=radio][name=ptHasIdNumber]').change(function() {
+            $("#registerPatientSection").hide();
+            $("#amendPatientSection").hide();
         });
     });
 
