@@ -3105,4 +3105,26 @@ public final class AppDataHelper {
         return inputValue;
     }
 
+    public static void genRenewalData(AppSubmissionDto appSubmissionDto, boolean isSingle, HttpServletRequest request)
+            throws Exception {
+        String renewEffectiveDate = ParamUtil.getDate(request, "renewEffectiveDate");
+        appSubmissionDto.setEffectiveDateStr(renewEffectiveDate);
+        if (CommonValidator.isDate(renewEffectiveDate)) {
+            appSubmissionDto.setEffectiveDate(Formatter.parseDate(renewEffectiveDate));
+        }
+        String userAgreement = ParamUtil.getString(request, "verifyInfoCheckbox");
+        appSubmissionDto.setUserAgreement(AppConsts.YES.equals(userAgreement));
+        /*if (!StringUtil.isEmpty(userAgreement) && AppConsts.YES.equals(userAgreement)) {
+            ParamUtil.setSessionAttr(request, "userAgreement", Boolean.TRUE);
+        } else {
+            ParamUtil.setSessionAttr(request, "userAgreement", Boolean.FALSE);
+        }*/
+        if (isSingle) {
+            AppDeclarationMessageDto appDeclarationMessageDto = AppDataHelper.getAppDeclarationMessageDto(request,
+                    ApplicationConsts.APPLICATION_TYPE_RENEWAL);
+            appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
+            appSubmissionDto.setAppDeclarationDocDtos(AppDataHelper.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_RENEWAL, request));
+        }
+    }
+
 }
