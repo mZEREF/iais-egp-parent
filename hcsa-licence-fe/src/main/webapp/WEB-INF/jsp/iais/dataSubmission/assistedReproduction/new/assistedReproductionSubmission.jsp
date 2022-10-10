@@ -58,7 +58,7 @@
                                                              value="${arSuperDataSubmissionDto.centreSel}"/>
                                             </c:when>
                                             <c:otherwise>
-                                                <c:out value="${premisesOpts[1].text}"/>
+                                                <iais:optionText value="${premisesOpts[1].text}"/>
                                                 <input type="hidden" name="centreSel" id="centreSel" value="${premisesOpts[1].value}">
                                             </c:otherwise>
                                         </c:choose>

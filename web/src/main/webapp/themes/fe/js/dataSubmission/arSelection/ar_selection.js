@@ -20,7 +20,7 @@ $(function () {
 
     // only new patient and amend patient use
     $('input[name="birthDateHbd"]').on('blur, change', function () {
-        checkAge($(this).val(), 'hbdAgeMsgDiv');
+        checkHusbandAge($(this).val(), 'hbdAgeMsgDiv');
     });
 
     $('input[name="birthDate"]').on('blur, change', function () {
@@ -251,14 +251,39 @@ function checkAge(birthDate, modalId) {
         console.log(modalId + " - " + birthDate);
         return;
     }
-    showWaiting();
-    var url = $('#_contextPath').val() + '/ar/patient-age';
-    var options = {
-        modalId: modalId,
-        birthDate: birthDate,
-        url: url
+    var date=$('#birthDate').val();
+    let reg = /^(0?[1-9]|([1-2][0-9])|30|31)\/(1[0-2]|0?[1-9])\/(\d{4})$/;
+    let validA = reg.test(date);
+    if (validA) {
+        showWaiting();
+        var url = $('#_contextPath').val() + '/ar/patient-age';
+        var options = {
+            modalId: modalId,
+            birthDate: birthDate,
+            url: url
+        }
+        callCommonAjax(options, checkBirthDateCallback);
     }
-    callCommonAjax(options, checkBirthDateCallback);
+}
+
+function checkHusbandAge(birthDate, modalId) {
+    if (isEmpty(birthDate) || isEmpty(modalId) ) {
+        console.log(modalId + " - " + birthDate);
+        return;
+    }
+    var date=$('#birthDateHbd').val();
+    let reg = /^(0?[1-9]|([1-2][0-9])|30|31)\/(1[0-2]|0?[1-9])\/(\d{4})$/;
+    let validA = reg.test(date);
+    if (validA) {
+        showWaiting();
+        var url = $('#_contextPath').val() + '/ar/patient-age';
+        var options = {
+            modalId: modalId,
+            birthDate: birthDate,
+            url: url
+        }
+        callCommonAjax(options, checkBirthDateCallback);
+    }
 }
 
 function checkBirthDateCallback(data) {

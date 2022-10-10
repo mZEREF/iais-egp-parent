@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSovenorInven
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsCenterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsDrpSiErrRowsDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -74,6 +75,8 @@ public class DpSiUploadDelegate {
     private static final String FILE_APPEND = "uploadFile";
     private static final String SEESION_FILES_MAP_AJAX = IaisEGPConstant.SEESION_FILES_MAP_AJAX + FILE_APPEND;
 
+    public static final String SUBMIT_FLAG = "dpSiUppp_loaadd_fLAG";
+
 
 
     @Autowired
@@ -95,6 +98,7 @@ public class DpSiUploadDelegate {
     public void doStart(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("-----DpSiUploadDelegate Start -----"));
         clearSession(bpc.request);
+        ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, null);
     }
 
     private void clearSession(HttpServletRequest request) {
@@ -519,6 +523,10 @@ public class DpSiUploadDelegate {
      * @param bpc
      */
     public void doSubmission(BaseProcessClass bpc) {
+        String flag = (String) ParamUtil.getSessionAttr(bpc.request, SUBMIT_FLAG);
+        if (!StringUtil.isEmpty(flag)) {
+            throw new IaisRuntimeException("Double submit");
+        }
         log.info(StringUtil.changeForLog("----- Submission -----"));
         List<DpSovenorInventoryDto> sovenorInventoryDtos = (List<DpSovenorInventoryDto>) bpc.request.getSession().getAttribute(SOVENOR_INVENTORY_LIST);
         if (sovenorInventoryDtos == null || sovenorInventoryDtos.isEmpty()) {
@@ -562,6 +570,7 @@ public class DpSiUploadDelegate {
                 DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_ACK);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_ACKDRP);
+        ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, AppConsts.YES);
     }
 
     private void formalizeNum(DpSovenorInventoryDto dto){

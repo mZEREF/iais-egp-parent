@@ -35,6 +35,10 @@ public class FertilisationDtoValidator implements CustomizeValidator {
         FertilisationDto fertilisationDto = arSuperDataSubmissionDto.getFertilisationDto() == null ? new FertilisationDto() : arSuperDataSubmissionDto.getFertilisationDto();
         List<String> atuList = fertilisationDto.getAtuList();
         List<String> sosList = fertilisationDto.getSosList();
+        String sourceOfOocyte = ParamUtil.getString(request,"sourceOfOocyteOp");
+        String oocyteUsed = ParamUtil.getString(request,"oocyteUsedOp");
+        String spermUsed = ParamUtil.getString(request,"spermUsedOp");
+        String usedOocytes = ParamUtil.getString(request,"usedOocytesNum");
         int patientFrozen = 100;
         int thawedMaxNum = 100;
         int freshMaxNum = 100;
@@ -102,6 +106,15 @@ public class FertilisationDtoValidator implements CustomizeValidator {
                 if(IaisCommonUtils.isEmpty(sosList)){
                     errorMap.put("sourceOfSemen","GENERAL_ERR0006");
                 }
+                if (StringUtil.isEmpty(sourceOfOocyte)) {
+                    errorMap.put("sourceOfOocyteOp","GENERAL_ERR0006");
+                }
+                if (StringUtil.isEmpty(oocyteUsed)) {
+                    errorMap.put("oocyteUsedOp", "GENERAL_ERR0006");
+                }
+                if (StringUtil.isEmpty(spermUsed)) {
+                    errorMap.put("spermUsedOp","GENERAL_ERR0006");
+                }
         if(totalThawedSum>thawedMaxNum){
             Map<String, String> errMsgThawed =IaisCommonUtils.genNewHashMap();
             errMsgThawed.put("item","No. of Thawed Oocytes Inseminated, No. of Thawed Oocytes Microinjected, No. of Thawed Oocytes Used for GIFT and No. of Thawed Oocytes Used for ZIFT");
@@ -133,6 +146,20 @@ public class FertilisationDtoValidator implements CustomizeValidator {
                             errorMap.put("usedSpermVialsNum", errMsg);
                         }
                     }
+                }
+            }
+        }
+
+        // the validation of 'fresh or frozen oocyte(s) used' and 'How many oocytes were used in this cycle' still need to be more clear
+        if(StringUtil.isNotEmpty(usedOocytes) && StringUtil.isNotEmpty(oocyteUsed)){
+            int usedOocytesNum = Integer.parseInt(usedOocytes);
+            if (oocyteUsed.equals("Fresh") && (usedOocytesNum != totalFreshSum)) {
+                errorMap.put("usedOocytesNum","Please check the number of oocytes");
+            } else if (oocyteUsed.equals("Frozen") && (usedOocytesNum != totalThawedSum)) {
+                errorMap.put("usedOocytesNum","Please check the number of oocytes");
+            } else {
+                if (usedOocytesNum != totalFreshSum + totalThawedSum) {
+                    errorMap.put("usedOocytesNum","Please check the number of oocytes");
                 }
             }
         }

@@ -215,11 +215,14 @@ public final class AppDataHelper {
             }
             // edit current or edit existed data
             if (!AppConsts.YES.equals(existingData) || AppConsts.YES.equals(getVal(isParyEdit, i))) {
+                setAppGrpPremiseNonAutoFields(appGrpPremisesDto, premIndexNo, premType, i, request);
                 if (licPremise != null) {
                     appGrpPremisesDto.setRelatedServices(licPremise.getRelatedServices());
                     appGrpPremisesDto.setHciCode(licPremise.getHciCode());
+                } else {
+                    AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(request);
+                    checkHciCode(appGrpPremisesDto, premisesSel, oldAppSubmissionDto);
                 }
-                setAppGrpPremiseNonAutoFields(appGrpPremisesDto, premIndexNo, premType, i, request);
             }
             setAppGrpPremiseFromPage(appGrpPremisesDto, premIndexNo, i, request);
             // rfc and renewal
@@ -234,6 +237,22 @@ public final class AppDataHelper {
             appGrpPremisesDtoList.add(appGrpPremisesDto);
         }
         return appGrpPremisesDtoList;
+    }
+
+    private static void checkHciCode(AppGrpPremisesDto appGrpPremisesDto, String premisesSel, AppSubmissionDto oldAppSubmissionDto) {
+        if (oldAppSubmissionDto == null || HcsaAppConst.DFT_FIRST_CODE.equals(premisesSel)
+                ||  HcsaAppConst.NEW_PREMISES.equals(premisesSel) || StringUtil.isEmpty(premisesSel)) {
+            appGrpPremisesDto.setHciCode(null);
+            return;
+        }
+        String hciCode = null;
+        for (AppGrpPremisesDto grpPremisesDto : oldAppSubmissionDto.getAppGrpPremisesDtoList()) {
+            if (premisesSel.equals(ApplicationHelper.getPremisesKey(grpPremisesDto))) {
+                hciCode = grpPremisesDto.getHciCode();
+                break;
+            }
+        }
+        appGrpPremisesDto.setHciCode(hciCode);
     }
 
     private static void setAppGrpPremiseNonAutoFields(AppGrpPremisesDto appGrpPremisesDto, String premIndexNo,
@@ -3246,6 +3265,28 @@ public final class AppDataHelper {
             }
         }
         return inputValue;
+    }
+
+    public static void genRenewalData(AppSubmissionDto appSubmissionDto, boolean isSingle, HttpServletRequest request)
+            throws Exception {
+        String renewEffectiveDate = ParamUtil.getDate(request, "renewEffectiveDate");
+        appSubmissionDto.setEffectiveDateStr(renewEffectiveDate);
+        if (CommonValidator.isDate(renewEffectiveDate)) {
+            appSubmissionDto.setEffectiveDate(Formatter.parseDate(renewEffectiveDate));
+        }
+        String userAgreement = ParamUtil.getString(request, "verifyInfoCheckbox");
+        appSubmissionDto.setUserAgreement(AppConsts.YES.equals(userAgreement));
+        /*if (!StringUtil.isEmpty(userAgreement) && AppConsts.YES.equals(userAgreement)) {
+            ParamUtil.setSessionAttr(request, "userAgreement", Boolean.TRUE);
+        } else {
+            ParamUtil.setSessionAttr(request, "userAgreement", Boolean.FALSE);
+        }*/
+        if (isSingle) {
+            AppDeclarationMessageDto appDeclarationMessageDto = AppDataHelper.getAppDeclarationMessageDto(request,
+                    ApplicationConsts.APPLICATION_TYPE_RENEWAL);
+            appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
+            appSubmissionDto.setAppDeclarationDocDtos(AppDataHelper.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_RENEWAL, request));
+        }
     }
 
 }

@@ -30,8 +30,10 @@ function showDonorArea(id,id2,load){
 function showOtherPremises(value) {
     if(value == 1){
         $("#otherPremisesRow").hide();
+        $("#chooseYesRow").show();
     }else {
         $("#otherPremisesRow").show();
+        $("#chooseYesRow").hide();
     }
 }
 

@@ -12,7 +12,7 @@
                 <div class="panel-main-content form-horizontal">
                   <%@include file="patientCommon.jsp"%>
                   <iais:row>
-                    <iais:field width="6" cssClass="col-md-6" value="Premises where IUI is Performed" mandatory="true"/>
+                    <iais:field width="6" cssClass="col-md-6" value="Is the IUI Performed in the current Institution" mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-3" >
                       <div class="form-check" style="padding-left: 0px;">
                         <input class="form-check-input"
@@ -24,7 +24,7 @@
                                aria-invalid="false" onchange="showOtherPremises(1)">
                         <label class="form-check-label"
                                for="ownPremisesRadioYes"><span
-                                class="check-circle"></span>Own premises</label>
+                                class="check-circle"></span>Yes</label>
                       </div>
                     </iais:value>
                     <iais:value width="3" cssClass="col-md-3" >
@@ -37,12 +37,18 @@
                                aria-invalid="false" onchange="showOtherPremises(0)">
                         <label class="form-check-label"
                                for="ownPremisesRadioNo"><span
-                                class="check-circle"></span>Others</label>
+                                class="check-circle"></span>No</label>
                       </div>
                     </iais:value>
                   </iais:row>
+                  <iais:row id="chooseYesRow">
+                    <iais:field width="6" cssClass="col-md-6" value="IUI Treatment Performed in Own Premise" mandatory="false"/>
+                    <iais:value width="6" cssClass="col-md-6">
+                      <iais:optionText value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"/>
+                    </iais:value>
+                  </iais:row>
                   <iais:row id="otherPremisesRow">
-                    <iais:field width="6" cssClass="col-md-6" value="IUI Treatment performed in Other Premises" mandatory="true"/>
+                    <iais:field width="6" cssClass="col-md-6" value="Name of Premise Where IUI Treatment Is Performed" mandatory="true"/>
                     <iais:value width="6" cssClass="col-md-6">
                       <iais:input type="text" maxLength="50" value="${iuiCycleStageDto.otherPremises}" name="otherPremises" />
                     </iais:value>

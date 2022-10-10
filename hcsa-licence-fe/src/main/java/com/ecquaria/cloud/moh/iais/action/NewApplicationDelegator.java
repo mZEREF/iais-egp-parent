@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.api.config.GatewayStripeConfig;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
@@ -22,7 +21,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
@@ -56,7 +54,6 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PmtReturnUrlDto;
 import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
-import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -124,8 +121,6 @@ public class NewApplicationDelegator extends AppCommDelegator {
 
     @Autowired
     private ApplicationFeClient applicationFeClient;
-    @Autowired
-    private EventBusHelper eventBusHelper;
 
     @Autowired
     private SystemParamConfig systemParamConfig;
@@ -825,7 +820,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                     String applicationNo = applicationDto.getApplicationNo();
                     List<ApplicationDto> specApps = cessationClient.getAppByBaseAppNo(applicationNo).getEntity();
                     if (!IaisCommonUtils.isEmpty(specApps)) {
-                        List<AppSpecifiedLicDto> appSpecifiedLicDtos = IaisCommonUtils.genNewArrayList();
+                        //List<AppSpecifiedLicDto> appSpecifiedLicDtos = IaisCommonUtils.genNewArrayList();
                         for (ApplicationDto specApp : specApps) {
                             String specId = specApp.getOriginLicenceId();
                             LicenceDto specLicenceDto = licenceClient.getLicDtoById(specId).getEntity();
@@ -840,11 +835,11 @@ public class NewApplicationDelegator extends AppCommDelegator {
                                 appSpecifiedLicDto.setSpecLicNo(specLicenceNo);
                                 appSpecifiedLicDto.setSpecSvcName(specSvcName);
                                 appSpecifiedLicDto.setSpecLicId(licenceDtoId);
-                                appSpecifiedLicDtos.add(appSpecifiedLicDto);
+                                //appSpecifiedLicDtos.add(appSpecifiedLicDto);
                             }
                         }
-                        ParamUtil.setRequestAttr(bpc.request, "specLicInfo", appSpecifiedLicDtos);
-                        ParamUtil.setSessionAttr(bpc.request, "specLicInfoPrint", (Serializable) appSpecifiedLicDtos);
+                        //ParamUtil.setRequestAttr(bpc.request, "specLicInfo", appSpecifiedLicDtos);
+                        //ParamUtil.setSessionAttr(bpc.request, "specLicInfoPrint", (Serializable) appSpecifiedLicDtos);
                     }
                     List<SelectOption> reasonOption = ApplicationHelper.getReasonOption();
                     List<SelectOption> patientsOption = ApplicationHelper.getPatientsOption();
@@ -992,29 +987,15 @@ public class NewApplicationDelegator extends AppCommDelegator {
     }
 
     @Override
-    protected List<AppSubmissionDto> submitRequestForChange(List<AppSubmissionDto> appSubmissionDtoList, boolean isAutoRfc) {
-        AppSubmissionListDto appSubmissionListDto = new AppSubmissionListDto();
-        appSubmissionListDto.setEventRefNo(String.valueOf(System.currentTimeMillis()));
-        appSubmissionListDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        List<AppSubmissionDto> newAppSubmissionDtos =
-                requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(appSubmissionDtoList);
-        // save other data via event bus
-        appSubmissionListDto.setAppSubmissionDtos(newAppSubmissionDtos);
-        String projectName = isAutoRfc ? "RFC Auto Approve Submit" : "RFC Non-Auto Approve Submit";
-        eventBusHelper.submitAsyncRequest(appSubmissionListDto, appCommService.getSeqId(), EventBusConsts.SERVICE_NAME_APPSUBMIT,
-                EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT, appSubmissionListDto.getEventRefNo(),
-                projectName, newAppSubmissionDtos.get(0).getAppGrpId());
-        return newAppSubmissionDtos;
+    protected List<AppSubmissionDto> submitRequestForChange(List<AppSubmissionDto> appSubmissionDtoList, String eventRefNo,
+            BaseProcessClass bpc) {
+        return requestForChangeService.saveAppSubmissionList(appSubmissionDtoList, eventRefNo, bpc);
     }
 
     @Override
     protected void handleDraft(String draftNo, String licenseeId, AppSubmissionDto appSubmissionDto,
             List<AppSubmissionDto> appSubmissionDtoList) {
-        appSubmissionService.doSaveDraft(appSubmissionDto);
-        List<String> licenceIds = appSubmissionDtoList.parallelStream()
-                .map(AppSubmissionDto::getLicenceId)
-                .collect(Collectors.toList());
-        appSubmissionService.updateDrafts(licenseeId, licenceIds, draftNo);
+        appSubmissionService.handleDraft(draftNo, licenseeId, appSubmissionDto, appSubmissionDtoList);
     }
 
     @Override

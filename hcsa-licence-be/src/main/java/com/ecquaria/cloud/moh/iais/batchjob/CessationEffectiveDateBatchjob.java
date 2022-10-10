@@ -218,14 +218,14 @@ public class CessationEffectiveDateBatchjob {
     private void updateLicencesStatusAndSendMails(Set<LicenceDto> licenceDtos, Date date, Map<String, String> licGrpMap,Set<LicenceDto> licNeedNew) {
         List<LicenceDto> updateLicenceDtos = IaisCommonUtils.genNewArrayList();
         AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
-        List<String> specLicIdsAll = IaisCommonUtils.genNewArrayList();
-        for (LicenceDto licenceDto : licenceDtos) {
+        //List<String> specLicIdsAll = IaisCommonUtils.genNewArrayList();
+        /*for (LicenceDto licenceDto : licenceDtos) {
             String licId = licenceDto.getId();
             List<String> specLicIds = hcsaLicenceClient.getActSpecIdByActBaseId(licId).getEntity();
             if (!IaisCommonUtils.isEmpty(specLicIds)) {
                 specLicIdsAll.addAll(specLicIds);
             }
-        }
+        }*/
         for (LicenceDto licenceDto : licenceDtos) {
             if (licenceDto == null) {
                 continue;
@@ -236,9 +236,9 @@ public class CessationEffectiveDateBatchjob {
                 licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
                 licenceDto.setEndDate(date);
                 updateLicenceDtos.add(licenceDto);
-                if (specLicIdsAll.contains(licenceDto.getId())) {
+                /*if (specLicIdsAll.contains(licenceDto.getId())) {
                     continue;
-                }
+                }*/
                 String svcName = licenceDto.getSvcName();
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
                 serviceCodes.add(hcsaServiceDto.getSvcCode());
@@ -247,7 +247,7 @@ public class CessationEffectiveDateBatchjob {
                 Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
                 StringBuilder svcNameLicNo = new StringBuilder();
                 svcNameLicNo.append(svcName).append(" : ").append(licenceNo);
-                List<String> specLicIds = hcsaLicenceClient.getActSpecIdByActBaseId(licId).getEntity();
+                /*List<String> specLicIds = hcsaLicenceClient.getActSpecIdByActBaseId(licId).getEntity();
                 if (!IaisCommonUtils.isEmpty(specLicIds)) {
                     for (String specLicId : specLicIds) {
                         LicenceDto specLicDto = hcsaLicenceClient.getLicDtoById(specLicId).getEntity();
@@ -259,7 +259,7 @@ public class CessationEffectiveDateBatchjob {
                         HcsaServiceDto hcsaServiceDto1 = HcsaServiceCacheHelper.getServiceByServiceName(svcName1);
                         serviceCodes.add(hcsaServiceDto1.getSvcCode());
                     }
-                }
+                }*/
                 String groupId = licGrpMap.get(licId);
                 StringBuilder appNos = new StringBuilder();
                 OrgUserDto orgUserDto = null;

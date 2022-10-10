@@ -13,15 +13,79 @@
         <c:set var="iuiCycleStageDtoVersion" value="${arSuperDataSubmissionDtoVersion.iuiCycleStageDto}" />
         <c:set var="patientDto" value="${arSuperDataSubmissionDto.patientInfoDto.patient}" />
         <%@include file="comPart.jsp" %>
-        <iais:row>
-          <iais:field value="Premises where IUI is Performed" mandatory="false"/>
-          <iais:value width="4" cssClass="col-md-4" display="true" >
-            <c:out value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"></c:out>
-          </iais:value>
-          <iais:value width="4" cssClass="col-md-4" display="true" >
-            <c:out value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"></c:out>
-          </iais:value>
-        </iais:row>
+        <<iais:row>
+        <iais:field value="Is the IUI Performed in the current Institution" mandatory="false"/>
+        <iais:value width="4" cssClass="col-md-4" display="true" >
+          <c:out value="${iuiCycleStageDto.ownPremises ? 'Yes' : 'No'}"></c:out>
+        </iais:value>
+        <iais:value width="4" cssClass="col-md-4" display="true" >
+          <c:out value="${iuiCycleStageDtoVersion.ownPremises ? 'Yes' : 'No'}"></c:out>
+        </iais:value>
+      </iais:row>
+        <c:if test="${iuiCycleStageDto.ownPremises eq iuiCycleStageDtoVersion.ownPremises}">
+          <c:if test="${iuiCycleStageDto.ownPremises}">
+            <iais:row>
+              <iais:field value="IUI Treatment Performed in Own Premise" mandatory="false"/>
+              <iais:value width="4" cssClass="col-md-4" display="true" >
+                <iais:optionText value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"/>
+              </iais:value>
+              <iais:value width="4" cssClass="col-md-4" display="true" >
+                <iais:optionText value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"/>
+              </iais:value>
+            </iais:row>
+          </c:if>
+          <c:if test="${!iuiCycleStageDto.ownPremises}">
+            <iais:row>
+              <iais:field value="Name of Premise Where IUI Treatment Is Performed" mandatory="false"/>
+              <iais:value width="4" cssClass="col-md-4" display="true" >
+                <c:out value="${iuiCycleStageDto.otherPremises}"/>
+              </iais:value>
+              <iais:value width="4" cssClass="col-md-4" display="true" >
+                <c:out value="${iuiCycleStageDtoVersion.otherPremises}"/>
+              </iais:value>
+            </iais:row>
+          </c:if>
+        </c:if>
+        <c:if test="${iuiCycleStageDto.ownPremises ne iuiCycleStageDtoVersion.ownPremises}">
+          <iais:row>
+            <iais:field value="IUI Treatment Performed in Own Premise" mandatory="false"/>
+            <iais:value width="4" cssClass="col-md-4" display="true" >
+              <c:if test="${iuiCycleStageDto.ownPremises}">
+                <iais:optionText value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"/>
+              </c:if>
+              <c:if test="${!iuiCycleStageDto.ownPremises}">
+                <c:out value="-"/>
+              </c:if>
+            </iais:value>
+            <iais:value width="4" cssClass="col-md-4" display="true" >
+              <c:if test="${iuiCycleStageDtoVersion.ownPremises}">
+                <iais:optionText value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"/>
+              </c:if>
+              <c:if test="${!iuiCycleStageDtoVersion.ownPremises}">
+                <c:out value="-"/>
+              </c:if>
+            </iais:value>
+          </iais:row>
+          <iais:row>
+            <iais:field value="Name of Premise Where IUI Treatment Is Performed" mandatory="false"/>
+            <iais:value width="4" cssClass="col-md-4" display="true" >
+              <c:if test="${!iuiCycleStageDto.ownPremises}">
+                <iais:optionText value="${iuiCycleStageDto.otherPremises}"/>
+              </c:if>
+              <c:if test="${iuiCycleStageDto.ownPremises}">
+                <c:out value="-"/>
+              </c:if>
+            </iais:value>
+            <iais:value width="4" cssClass="col-md-4" display="true" >
+              <c:if test="${!iuiCycleStageDtoVersion.ownPremises}">
+                <iais:optionText value="${iuiCycleStageDtoVersion.otherPremises}"/>
+              </c:if>
+              <c:if test="${iuiCycleStageDtoVersion.ownPremises}">
+                <c:out value="-"/>
+              </c:if>
+            </iais:value>
+          </iais:row>
+        </c:if>
         <iais:row>
           <iais:field value="Date Started" mandatory="false"/>
           <iais:value  width="4" cssClass="col-md-4" display="true" >

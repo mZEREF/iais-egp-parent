@@ -286,6 +286,7 @@ public final class ApplicationHelper {
         boolean isNeedNewLicNo = appEditSelectDto.isNeedNewLicNo();
         boolean isAutoRfc = appEditSelectDto.isAutoRfc();
         reSetAdditionalFields(appSubmissionDto, isNeedNewLicNo, isAutoRfc, appGrpNo);
+
     }
 
     public static void reSetAdditionalFields(AppSubmissionDto appSubmissionDto, boolean isNeedNewLicNo, boolean isAutoRfc,
@@ -306,6 +307,7 @@ public final class ApplicationHelper {
         }
     }
 
+    @Deprecated
     public static void reSetAdditionalFields(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto) {
         if (appSubmissionDto == null || oldAppSubmissionDto == null) {
             return;

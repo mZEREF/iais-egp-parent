@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.WithOutRenewalDto;
+import sop.webflow.rt.api.BaseProcessClass;
 
 import java.util.List;
 
@@ -36,6 +37,6 @@ public interface WithOutRenewalService {
 
     List<String> isUpdateMat(List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList, List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) ;
 
-
+    List<AppSubmissionDto> saveAppSubmissionList(List<AppSubmissionDto> appSubmissionDtoList, String eventRefNo, BaseProcessClass bpc);
 
 }

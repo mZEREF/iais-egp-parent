@@ -130,10 +130,6 @@ public class RequestForChangeMenuDelegator {
     @Autowired
     private ServiceConfigService serviceConfigService;
     @Autowired
-    private EventBusHelper eventBusHelper;
-    @Autowired
-    private GenerateIdClient generateIdClient;
-    @Autowired
     private ApplicationFeClient applicationFeClient;
     @Autowired
     private SystemParamConfig systemParamConfig;
@@ -1520,12 +1516,12 @@ public class RequestForChangeMenuDelegator {
                     bpc.request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");
                     return;
                 }
-                boolean b = requestForChangeService.baseSpecLicenceRelation(string);
+                /*boolean b = requestForChangeService.baseSpecLicenceRelation(string);
                 if(!b){
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
                     bpc.request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");
                     return;
-                }
+                }*/
             }
         }
 
@@ -1591,19 +1587,9 @@ public class RequestForChangeMenuDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
             return;
         }
-        String submissionId = generateIdClient.getSeqId().getEntity();
-        AppSubmissionListDto appSubmissionListDto = new AppSubmissionListDto();
-        Long l = System.currentTimeMillis();
-        appSubmissionListDto.setEventRefNo(l.toString());
-        AuditTrailDto currentAuditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
-        for (AppSubmissionDto appSubmissionDto1 : appSubmissionDtos) {
-            appSubmissionDto1.setAuditTrailDto(currentAuditTrailDto);
-        }
-        List<AppSubmissionDto> appSubmissionDtos1 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(appSubmissionDtos);
-        appSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos1);
-        eventBusHelper.submitAsyncRequest(appSubmissionListDto, submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
-                EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT, l.toString(), bpc.process);
-        ParamUtil.setSessionAttr(bpc.request, "appSubmissionDtos", (Serializable) appSubmissionDtos1);
+        List<AppSubmissionDto> newAppSubmissionList = requestForChangeService.saveAppSubmissionList(appSubmissionDtos,
+                String.valueOf(System.currentTimeMillis()), bpc);
+        ParamUtil.setSessionAttr(bpc.request, "appSubmissionDtos", (Serializable) newAppSubmissionList);
         log.debug(StringUtil.changeForLog("the do doSubmit end ...."));
     }
 

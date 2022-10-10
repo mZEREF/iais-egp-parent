@@ -190,6 +190,7 @@ public class DataSubmissionInboxDelegator {
 					rfcType.append(DataSubmissionConsts.DS_CYCLE_AR+",");
 					rfcType.append(DataSubmissionConsts.DS_CYCLE_IUI+",");
 					rfcType.append(DataSubmissionConsts.DS_CYCLE_EFO+",");
+					rfcType.append(DataSubmissionConsts.DS_CYCLE_SFO+",");
 					rfcType.append(DataSubmissionConsts.DS_CYCLE_NON+",");
 					rfcType.append(DataSubmissionConsts.DS_CYCLE_PATIENT_ART+",");
 					rfcType.append(DataSubmissionConsts.DS_CYCLE_STAGE+",");

@@ -26,9 +26,20 @@ $(function () {
         showHubNumberField();
     }).trigger('change');
 
+    $(function(){
+        $("#identityNo").bind('input porpertychange',function(){
+            $("#registerPatientSection").hide();
+        });
+    });
+
     $("#validatePAT").click(function () {
         let isPatHasId = $("input[name='ptHasIdNumber']:checked").val();
         let identityNo = $("#identityNo").val();
+        clearErrorMsg();
+        if (identityNo == "") {
+            $("#error_identityNo").html("This is a mandatory field.")
+            return
+        }
         $('input[name="existedPatient"]').val(null).trigger('change');
         validatePatient(isPatHasId, identityNo);
     });

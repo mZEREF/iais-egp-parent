@@ -13,11 +13,35 @@
             <div class="panel-main-content form-horizontal ">
                 <%@include file="comPart.jsp" %>
                 <iais:row>
+                    <iais:field width="6" value="Source of Oocyte?"/>
+                    <iais:value  width="6" display="true" cssClass="col-md-6">
+                        <c:out value="${fertilisationDto.sourceOfOocyte}" />
+                    </iais:value>
+                </iais:row>
+                <iais:row>
+                    <iais:field width="6" value="Was fresh or frozen oocyte(s) used?"/>
+                    <iais:value  width="6" display="true" cssClass="col-md-6">
+                        <c:out value="${fertilisationDto.oocyteUsed}" />
+                    </iais:value>
+                </iais:row>
+                <iais:row>
+                    <iais:field width="6" value="How many oocytes were used in this cycle?"/>
+                    <iais:value  width="6" display="true" cssClass="col-md-6">
+                        <c:out value="${fertilisationDto.usedOocytesNum}" />
+                    </iais:value>
+                </iais:row>
+                <iais:row>
                     <iais:field width="5" value="Source of Semen"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">
                          <c:forEach items="${fertilisationDto.sosList}" var="sos" varStatus="staus">
                             <c:if test="${staus.index !=0}"> <br></c:if> <iais:code code="${sos}"/>
                          </c:forEach>
+                    </iais:value>
+                </iais:row>
+                <iais:row>
+                    <iais:field width="6" value="Was fresh or frozen sperm used?"/>
+                    <iais:value  width="6" display="true" cssClass="col-md-6">
+                        <c:out value="${fertilisationDto.spermUsed}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>

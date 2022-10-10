@@ -413,7 +413,8 @@ public class ApplicationDelegator extends AppCommDelegator {
     }
 
     @Override
-    protected List<AppSubmissionDto> submitRequestForChange(List<AppSubmissionDto> appSubmissionDtoList, boolean isAutoRfc) {
+    protected List<AppSubmissionDto> submitRequestForChange(List<AppSubmissionDto> appSubmissionDtoList, String eventRefNo,
+            BaseProcessClass bpc) {
         throw new IaisRuntimeException("Illegal method");
     }
 

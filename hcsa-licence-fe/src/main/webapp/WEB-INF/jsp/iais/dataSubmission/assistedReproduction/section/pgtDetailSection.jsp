@@ -43,19 +43,7 @@
                                         class="check-square"></span><iais:code code="PGTTP002"/></label>
                             </div>
                         </iais:value>
-                        <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
-                            <div class="form-check">
-                                <input class="form-check-input"
-                                       type="checkbox"
-                                       name="isPgtMEbt"
-                                       id="isPgtMEbt"
-                                       <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMEbt ==1 }">checked</c:if>
-                                       aria-invalid="false">
-                                <label class="form-check-label"
-                                       for="isPgtMEbt"><span
-                                        class="check-square"></span><iais:code code="PGTTP003"/></label>
-                            </div>
-                        </iais:value>
+
                         <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox"
@@ -120,7 +108,7 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div id="pgtMDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMCom !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtMRare !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtMEbt !=1 }">style="display: none"</c:if> >
+                <div id="pgtMDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMCom !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtMRare !=1}">style="display: none"</c:if> >
                     <iais:row>
                         <iais:field width="5" value="PGT-M" style="font-size: 2.0rem;" />
                     </iais:row>
@@ -326,7 +314,7 @@
                         <span class="error-msg" name="iaisErrorMsg" id="error_isPgtCoFunding" style="padding-right: 15px;padding-left: 15px;"></span>
                     </div>
                 </iais:row>
-                <div id="appealDisplay" <c:if test="${ count<6 || arSuperDataSubmissionDto.pgtStageDto.isPgtMCom !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtMRare !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtMEbt !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtSr !=1 || arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding == 0}">style="display: none"</c:if>>
+                <div id="appealDisplay" <c:if test="${ count<6 || arSuperDataSubmissionDto.pgtStageDto.isPgtMCom !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtMRare !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtSr !=1 || arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding == 0}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Is there an Appeal?" mandatory="true"/>
                         <div class="col-md-6" style="padding-right: 0;padding-left: 0;">

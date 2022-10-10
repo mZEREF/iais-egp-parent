@@ -254,7 +254,7 @@
                                 </div>
                             </c:forEach>
                         </div>
-                        <c:if test="${specLicInfo !=null}">
+                        <%--<c:if test="${specLicInfo !=null}">
                             <div><h4>The following specified healthcare services will also be ceased as their
                                 underlying <iais:code needLowerCase="true" code="CDN001"/>(s) is/are listed above.</h4></div>
                             <table aria-describedby="" class="table-gp tablebox">
@@ -285,7 +285,7 @@
                                     </tr>
                                 </c:forEach>
                             </table>
-                        </c:if>
+                        </c:if>--%>
                     </div>
                 </div>
                 <br/>

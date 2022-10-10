@@ -22,7 +22,7 @@
             <form id="mainForm" class="form-horizontal"
                   enctype="multipart/form-data"
                   action=<%=process.runtime.continueURL()%>>
-              <c:forEach items="${confirmDtos}" var="appCess" varStatus="num">
+              <c:forEach items="${appCessationDtos}" var="appCess" varStatus="num">
               <div class="col-lg-12 col-xs-12 cesform-box">
                 <div class="row">
                   <div class="license-info-box">

@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
@@ -12,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -35,6 +37,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
@@ -56,6 +60,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -98,13 +103,16 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     @Autowired
     private SystemParamConfig systemParamConfig;
     @Autowired
-    AppSubmissionService appSubmissionService;
+    private AppSubmissionService appSubmissionService;
 
     @Autowired
     private LicCommService licCommService;
 
     @Autowired
     private AppCommService appCommService;
+
+    @Autowired
+    private EventBusHelper eventBusHelper;
 
     @Override
     public List<PremisesListQueryDto> getPremisesList(String licenseeId) {
@@ -269,12 +277,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 }
                 break;
             case "RfcAndOnPay":
-                MsgTemplateDto RfcAndOnPayMsgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate("D9DDBC23-122B-47BA-B579-3B5022816BB6").getEntity();
-                if (RfcAndOnPayMsgTemplateDto != null) {
+                MsgTemplateDto rfcAndOnPayMsgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(
+                        "D9DDBC23-122B-47BA-B579-3B5022816BB6").getEntity();
+                if (rfcAndOnPayMsgTemplateDto != null) {
                     Map<String, Object> tempMap = IaisCommonUtils.genNewHashMap();
                     tempMap.put("serviceName", StringUtil.viewHtml(serviceName));
                     tempMap.put("amount", amount);
-                    String mesContext = MsgUtil.getTemplateMessageByContent(RfcAndOnPayMsgTemplateDto.getMessageContent(), tempMap);
+                    String mesContext = MsgUtil.getTemplateMessageByContent(rfcAndOnPayMsgTemplateDto.getMessageContent(), tempMap);
                     EmailDto emailDto = new EmailDto();
                     emailDto.setContent(mesContext);
                     emailDto.setSubject("MOH IAIS – Successful Submission of Request for Change " + appNo);
@@ -386,6 +395,10 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
     @Override
     public LicenceDto getLicenceById(String licenceId) {
+        log.info(StringUtil.changeForLog("Licence Id: " + licenceId));
+        if (StringUtil.isEmpty(licenceId)) {
+            return null;
+        }
         return licenceClient.getLicBylicId(licenceId).getEntity();
     }
 
@@ -397,13 +410,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     @Override
     public List<PersonnelListDto> getPersonnelListDto(PersonnelTypeDto personnelTypeDto) {
         return licenceClient.getPersonnelListDto(personnelTypeDto).getEntity();
-    }
-
-    @Override
-    public List<AppSubmissionDto> saveAppsForRequestForGoupAndAppChangeByList(List<AppSubmissionDto> appSubmissionDtos) {
-        List<AppSubmissionDto> entity = applicationFeClient.saveAppsForRequestForGoupAndAppChangeByList(appSubmissionDtos).getEntity();
-
-        return entity;
     }
 
     @Override
@@ -557,22 +563,29 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
-    public void sendRfcSubmittedEmail(List<AppSubmissionDto> appSubmissionDtos, String pmtMethod) throws IOException, TemplateException {
+    public void sendRfcSubmittedEmail(List<AppSubmissionDto> appSubmissionDtos, String pmtMethod) throws Exception {
         if (appSubmissionDtos == null || appSubmissionDtos.isEmpty()) {
             log.info("No submissions to send email.");
             return;
         }
-        appSubmissionDtos.stream()
-                .collect(Collectors.groupingBy(AppSubmissionDto::getAppGrpNo))
-                .forEach((groupNo, appSubmissionDtoList) -> {
-                    log.info(StringUtil.changeForLog("The Group No for Email: " + groupNo));
-                    String method = appSubmissionDtoList.get(0).isAutoRfc() ? null : pmtMethod;
-                    try {
-                        sendRfcEmail(appSubmissionDtoList, method);
-                    } catch (Exception e) {
-                        log.error(StringUtil.changeForLog(groupNo + " : " + e.getMessage()), e);
-                    }
-                });
+        Exception ex = null;
+        Map<String, List<AppSubmissionDto>> map = appSubmissionDtos.stream()
+                .collect(Collectors.groupingBy(AppSubmissionDto::getAppGrpNo));
+        for (Map.Entry<String, List<AppSubmissionDto>> entry : map.entrySet()) {
+            String groupNo = entry.getKey();
+            List<AppSubmissionDto> appSubmissionDtoList = entry.getValue();
+            log.info(StringUtil.changeForLog("The Group No for Email: " + groupNo));
+            String method = appSubmissionDtoList.get(0).isAutoRfc() ? null : pmtMethod;
+            try {
+                sendRfcEmail(appSubmissionDtoList, method);
+            } catch (Exception e) {
+                log.error(StringUtil.changeForLog(groupNo + " : " + e.getMessage()), e);
+                ex = e;
+            }
+        }
+        if (ex != null) {
+            throw ex;
+        }
     }
 
     private void sendRfcEmail(List<AppSubmissionDto> appSubmissionDtos, String pmtMethod) throws IOException,
@@ -849,4 +862,19 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         return licenceClient.getLicBylicIdIncludeMigrated(licenceId).getEntity();
     }
 
+    @Override
+    public List<AppSubmissionDto> saveAppSubmissionList(List<AppSubmissionDto> appSubmissionDtoList, String eventRefNo,
+            BaseProcessClass bpc) {
+        // save application
+        List<AppSubmissionDto> newAppSubmissionList = appSubmissionService.saveAppsForRequestForGoupAndAppChangeByList(
+                appSubmissionDtoList);
+        // save other data via event bus
+        AppSubmissionListDto autoAppSubmissionListDto = new AppSubmissionListDto();
+        autoAppSubmissionListDto.setAuditTrailDto(AuditTrailHelper.getCurrentAuditTrailDto());
+        autoAppSubmissionListDto.setEventRefNo(eventRefNo);
+        autoAppSubmissionListDto.setAppSubmissionDtos(newAppSubmissionList);
+        eventBusHelper.submitAsyncRequest(autoAppSubmissionListDto, appCommService.getSeqId(), EventBusConsts.SERVICE_NAME_APPSUBMIT,
+                EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT, eventRefNo, bpc.process);
+        return newAppSubmissionList;
+    }
 }

@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import freemarker.template.TemplateException;
+import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -76,13 +77,11 @@ public interface RequestForChangeService {
 
     List<PersonnelListDto> getPersonnelListDto(PersonnelTypeDto personnelTypeDto);
 
-    List<AppSubmissionDto> saveAppsForRequestForGoupAndAppChangeByList(List<AppSubmissionDto> appSubmissionDtos);
-
     void sendNotification(EmailDto email);
 
     List<String> getAdminEmail(String orgId);
 
-    void sendRfcSubmittedEmail(List<AppSubmissionDto> appSubmissionDtos, String pmtMethod) throws IOException, TemplateException;
+    void sendRfcSubmittedEmail(List<AppSubmissionDto> appSubmissionDtos, String pmtMethod) throws IOException, TemplateException, Exception;
     List<FeUserDto> getFeUserDtoByLicenseeId(String licenseeId);
     LicenceDto getLicenceDtoByLicNo(String licenceNo);
     boolean serviceConfigIsChange(List<String> serviceId ,String presmiseType);
@@ -92,4 +91,5 @@ public interface RequestForChangeService {
     boolean baseSpecLicenceRelation(LicenceDto licenceDto);
     LicenceDto getLicenceDtoIncludeMigrated(String licenceId);
 
+    List<AppSubmissionDto> saveAppSubmissionList(List<AppSubmissionDto> appSubmissionDtoList, String eventRefNo, BaseProcessClass bpc);
 }

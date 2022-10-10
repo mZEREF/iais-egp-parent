@@ -252,6 +252,10 @@ public class TopDataSubmissionDelegator {
      * @param bpc
      */
     public void prepareStepData(BaseProcessClass bpc) {
+        String submitFlag = (String) ParamUtil.getSessionAttr(bpc.request, SUBMIT_FLAG);
+        if (!StringUtil.isEmpty(submitFlag)) {
+            throw new IaisRuntimeException("Double Submit");
+        }
         log.info(" -----PrepareStepData ------ ");
         TopSuperDataSubmissionDto topSuperDataSubmissionDto =DataSubmissionHelper.getCurrentTopDataSubmission(bpc.request);
         if (topSuperDataSubmissionDto == null) {

@@ -21,7 +21,7 @@
                 <iais:row>
                     <iais:field width="6" cssClass="col-md-6" value="Premises where Sperm Freezing Only Cycle is Performed" mandatory="true"/>
                     <iais:value width="6" cssClass="col-md-6" display="true">
-                        <c:out value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"/>
+                        <iais:optionText value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>

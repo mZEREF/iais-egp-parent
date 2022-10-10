@@ -8,7 +8,7 @@ $(document).ready(function () {
     });
 
     $('#isPgtMCom').change(function () {
-        if($('#isPgtMEbt').is(':checked')||$('#isPgtMRare').is(':checked')||$('#isPgtMCom').is(':checked')){
+        if($('#isPgtMRare').is(':checked')||$('#isPgtMCom').is(':checked')){
             $('#pgtMDisplay').attr("style","display: block");
         }else {
             $('#pgtMDisplay').attr("style","display: none");
@@ -16,15 +16,7 @@ $(document).ready(function () {
         isThereAppealDisplay();
     });
     $('#isPgtMRare').change(function () {
-        if($('#isPgtMEbt').is(':checked')||$('#isPgtMRare').is(':checked')||$('#isPgtMCom').is(':checked')){
-            $('#pgtMDisplay').attr("style","display: block");
-        }else {
-            $('#pgtMDisplay').attr("style","display: none");
-        }
-        isThereAppealDisplay();
-    });
-    $('#isPgtMEbt').change(function () {
-        if($('#isPgtMEbt').is(':checked')||$('#isPgtMRare').is(':checked')||$('#isPgtMCom').is(':checked')){
+        if($('#isPgtMRare').is(':checked')||$('#isPgtMCom').is(':checked')){
             $('#pgtMDisplay').attr("style","display: block");
         }else {
             $('#pgtMDisplay').attr("style","display: none");
@@ -111,7 +103,6 @@ $(document).ready(function () {
 var isThereAppealDisplay = function () {
     var pgtMCom=$("#isPgtMCom").is(':checked');
     var pgtMRare=$("#isPgtMRare").is(':checked');
-    var pgtMEbt=$("#isPgtMEbt").is(':checked');
     var pgtSr=$("#isPgtSr").is(':checked');
     var radioYes=$("#radioYes").is(':checked');
     var count= $("#pgtCount").val();

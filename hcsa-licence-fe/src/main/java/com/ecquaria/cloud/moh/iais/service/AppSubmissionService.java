@@ -45,6 +45,11 @@ public interface AppSubmissionService {
 
     List<ApplicationDto> listApplicationByGroupId(String groupId);
 
+    List<AppSubmissionDto> saveAppsForRequestForGoupAndAppChangeByList(List<AppSubmissionDto> appSubmissionDtos);
+
+    void handleDraft(String draftNo, String licenseeId, AppSubmissionDto appSubmissionDto,
+            List<AppSubmissionDto> appSubmissionDtoList);
+
     AppSubmissionDto doSaveDraft(AppSubmissionDto appSubmissionDto);
 
     void updateDrafts(String licenseeId, List<String> licenceIds, String draftNo);
@@ -56,8 +61,6 @@ public interface AppSubmissionService {
     String getGroupNo(String appType);
 
     FeeDto getNewAppAmount(AppSubmissionDto appSubmissionDto, boolean isCharity);
-
-    FeeDto getGroupAmount(AppSubmissionDto appSubmissionDto, boolean isCharity);
 
     FeeDto getRenewalAmount(List<AppSubmissionDto> appSubmissionDtoList, boolean isCharity);
 

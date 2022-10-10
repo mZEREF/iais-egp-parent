@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpeRouti
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecificStageWorkloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.SuppleFormItemConfigDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -40,8 +41,8 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigService;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -64,7 +65,7 @@ public class ConfigServiceDelegator {
     @Autowired
     private ConfigService configService;
     @Autowired
-    private OrganizationClient organizationClient;
+    private ConfigCommService configCommService;
 
 
     @PostMapping(value = "/getDropdownSelect")
@@ -757,7 +758,8 @@ public class ConfigServiceDelegator {
         log.info(StringUtil.changeForLog("The addCategoryDisciplineAndSubService end ..."));
     }
 
-    private void addSubServiceData(HttpServletRequest request,String premisesType,String serviceType,Map<String,HcsaServiceSubServicePageDto> hcsaServiceSubServicePageDtoMap,String specSectionHeader){
+    private void addSubServiceData(HttpServletRequest request,String premisesType,String serviceType,
+                                   Map<String,HcsaServiceSubServicePageDto> hcsaServiceSubServicePageDtoMap,String specSectionHeader){
         log.info(StringUtil.changeForLog("The addSubServiceData start ..."));
         log.info(StringUtil.changeForLog("The addSubServiceData premisesType -->:"+premisesType));
         log.info(StringUtil.changeForLog("The addSubServiceData serviceType -->:"+serviceType));
@@ -794,6 +796,8 @@ public class ConfigServiceDelegator {
         if(HcsaConsts.SERVICE_TYPE_OTHERS.equals(hcsaServiceDto.getSvcType())){
           return hcsaServiceConfigDto;
         }
+        //for HcsaServiceCategoryDisciplineDto  and sub service
+        addCategoryDisciplineAndSubService(request,hcsaServiceConfigDto);
         //for minimum and maximum
         addSvcPersionnelAndStepConfigsFromPage(hcsaServiceConfigDto, request);
         //Number of service-related document (for specialised service) to be uploaded
@@ -805,8 +809,6 @@ public class ConfigServiceDelegator {
         //for routingStages
         Map<String, List<HcsaConfigPageDto>> hcsaConfigPageDtoMap = addRoutingStage(request);
         hcsaServiceConfigDto.setHcsaConfigPageDtoMap(hcsaConfigPageDtoMap);
-        //for HcsaServiceCategoryDisciplineDto  and sub service
-        addCategoryDisciplineAndSubService(request,hcsaServiceConfigDto);
 
         log.info(StringUtil.changeForLog("The getDateOfHcsaService end ..."));
         return hcsaServiceConfigDto;
@@ -927,7 +929,7 @@ public class ConfigServiceDelegator {
             hcsaSvcPersonnelDtos.add(SP001);//Embryologist
             hcsaSvcPersonnelDtos.add(SP002);//AR Practitioner
             hcsaSvcPersonnelDtos.add(SP003);//Nurses
-            if(hcsaServiceConfigDto.getSupplementaryForm()){
+            //if(hcsaServiceConfigDto.getSupplementaryForm()){
                 hcsaSvcPersonnelDtos.add(spmsc);//Person managing the Special Care Service
                 hcsaSvcPersonnelDtos.add(smdp);//Medical / Dental Practition
                 hcsaSvcPersonnelDtos.add(srp);//Renal Physician
@@ -943,7 +945,7 @@ public class ConfigServiceDelegator {
                 hcsaSvcPersonnelDtos.add(stnd);//Trained Nurses (Dental Service)
                 hcsaSvcPersonnelDtos.add(spde);//Practising Dentist
                 hcsaSvcPersonnelDtos.add(soht);//Trained Dental Hygienist/ Dental Therapist / Oral Healthcare Therapist
-            }
+            //}
         }else if(HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(serviceType)){
             hcsaSvcPersonnelDtos.add(edd);//Emergency Department Director
             hcsaSvcPersonnelDtos.add(ednd);//Emergency Department Nursing Director
@@ -976,7 +978,9 @@ public class ConfigServiceDelegator {
             //addStepSchemeDto(isNeed(mapPersonnelDto), HcsaConsts.STEP_MEDALERT_PERSON, HcsaConsts.MEDALERT_PERSON, hcsaServiceStepSchemeDtos);
             addStepSchemeDto(isNeed(slPersonnelDto), HcsaConsts.STEP_SECTION_LEADER, HcsaConsts.SECTION_LEADER, hcsaServiceStepSchemeDtos);
             addStepSchemeDto(isNeed(kahPersonnelDto), HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER, HcsaConsts.KEY_APPOINTMENT_HOLDER, hcsaServiceStepSchemeDtos);
-            //
+            //handle the step for Other Information, Supplementary Form,Special Services Information,Outsourced Providers
+            handleStep(hcsaServiceConfigDto);
+
             addStepSchemeDto(hcsaServiceConfigDto.getOtherInformation()
                     , HcsaConsts.STEP_OTHER_INFORMATION, HcsaConsts.OTHER_INFORMATION, hcsaServiceStepSchemeDtos);
             addStepSchemeDto(hcsaServiceConfigDto.getSupplementaryForm()
@@ -997,6 +1001,66 @@ public class ConfigServiceDelegator {
         hcsaServiceConfigDto.setHcsaSvcPersonnelDtos(hcsaSvcPersonnelDtos);
         hcsaServiceConfigDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
         log.info(StringUtil.changeForLog("The addSvcStepConfigsFromPage end ..."));
+    }
+
+
+    private void handleStep(HcsaServiceConfigDto hcsaServiceConfigDto){
+        log.info(StringUtil.changeForLog("The handleStep start ..."));
+        String serviceCode = hcsaServiceConfigDto.getHcsaServiceDto().getSvcCode();
+        log.info(StringUtil.changeForLog("The handleStep serviceCode is -->:"+serviceCode));
+        Map<String, HcsaServiceSubServicePageDto> specHcsaServiceSubServicePageDtoMap = hcsaServiceConfigDto.getSpecHcsaServiceSubServicePageDtoMap();
+        Map<String, HcsaServiceSubServicePageDto> otherHcsaServiceSubServicePageDtoMap = hcsaServiceConfigDto.getOtherHcsaServiceSubServicePageDtoMap();
+        if(StringUtil.isNotEmpty(serviceCode)){
+            if(ServiceConfigConstant.NEEDOTHERINFORMATIONSTEP.contains(serviceCode)
+                    || isNotEmpty(otherHcsaServiceSubServicePageDtoMap)){
+                hcsaServiceConfigDto.setOtherInformation(true);
+            }
+            if(ServiceConfigConstant.NEEDSUPPLEMENTARYFORMSTEP.contains(serviceCode)){
+                hcsaServiceConfigDto.setSupplementaryForm(true);
+            }else{
+                List<SuppleFormItemConfigDto>  suppleFormItemConfigDtos = configCommService.getSuppleFormItemConfigs(serviceCode,HcsaConsts.ITME_TYPE_SUPLFORM);
+                if(IaisCommonUtils.isNotEmpty(suppleFormItemConfigDtos)){
+                    hcsaServiceConfigDto.setSupplementaryForm(true);
+                }else{
+                    log.info(StringUtil.changeForLog("The handleStep suppleFormItemConfigDtos is null"));
+                }
+            }
+            if(ServiceConfigConstant.NEEDSPECIALSERVICESINFORMATIONSTEP.contains(serviceCode)
+                    || isNotEmpty(specHcsaServiceSubServicePageDtoMap)){
+                hcsaServiceConfigDto.setSpecialServicesInformation(true);
+            }
+            if(ServiceConfigConstant.NEEDOUTSOURCEDPROVIDERSSTEP.contains(serviceCode)){
+                hcsaServiceConfigDto.setOutsourcedProviders(true);
+            }
+        }else{
+            log.info(StringUtil.changeForLog("The handleStep serviceCode is null"));
+        }
+        log.info(StringUtil.changeForLog("The handleStep end ..."));
+    }
+
+    private boolean isNotEmpty(Map<String, HcsaServiceSubServicePageDto> hcsaServiceSubServicePageDtoMap){
+        log.info(StringUtil.changeForLog("The isNotEmpty start ..."));
+        boolean result = false;
+        if(IaisCommonUtils.isNotEmpty(hcsaServiceSubServicePageDtoMap)){
+          for(String key : hcsaServiceSubServicePageDtoMap.keySet()){
+              HcsaServiceSubServicePageDto hcsaServiceSubServicePageDto = hcsaServiceSubServicePageDtoMap.get(key);
+              String[] subServiceCodes = hcsaServiceSubServicePageDto.getSubServiceCodes();
+              if(subServiceCodes != null && subServiceCodes.length >0){
+                  for(String subServiceCode : subServiceCodes){
+                    if(StringUtil.isNotEmpty(subServiceCode)){
+                        result = true;
+                        break;
+                    }
+                  }
+                  if(result){
+                      break;
+                  }
+              }
+          }
+        }
+        log.info(StringUtil.changeForLog("The isNotEmpty result is -->:"+result));
+        log.info(StringUtil.changeForLog("The isNotEmpty end ..."));
+        return result;
     }
 
     private HcsaSvcPersonnelDto getHcsaSvcPersonnelDto(String psnType, HttpServletRequest request) {

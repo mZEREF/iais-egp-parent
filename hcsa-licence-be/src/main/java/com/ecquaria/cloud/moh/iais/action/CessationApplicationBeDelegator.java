@@ -11,7 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppSpecifiedLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -86,8 +85,8 @@ public class CessationApplicationBeDelegator {
         log.debug("=======>>>>>startStep>>>>>>>>>>>>>>>>CessationApplicationDelegator");
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_CESSATION, AuditTrailConsts.FUNCTION_CESSATION);
         ParamUtil.setSessionAttr(bpc.request, APPCESSATIONDTOS, null);
-        ParamUtil.setSessionAttr(bpc.request, "specLicInfo", null);
-        ParamUtil.setSessionAttr(bpc.request, "specLicInfoFlag", null);
+       /* ParamUtil.setSessionAttr(bpc.request, "specLicInfo", null);
+        ParamUtil.setSessionAttr(bpc.request, "specLicInfoFlag", null);*/
         ParamUtil.setSessionAttr(bpc.request, "isGrpLic", null);
         String cess_ack002 = MessageUtil.getMessageDesc("CESS_ACK002");
 
@@ -98,7 +97,7 @@ public class CessationApplicationBeDelegator {
         List<String> licIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "licIds");
         log.debug(StringUtil.changeForLog("cessation licenceIds ===>" + JsonUtil.parseToJson(licIds)));
         boolean isGrpLicence = cessationBeService.isGrpLicence(licIds);
-        List<String> specLicIds = cessationBeService.filtrateSpecLicIds(licIds);
+        /*List<String> specLicIds = cessationBeService.filtrateSpecLicIds(licIds);
         List<AppSpecifiedLicDto> specLicInfo = cessationBeService.getSpecLicInfo(licIds);
         if (specLicInfo.size() > 0) {
             Map<String, List<AppSpecifiedLicDto>> map = IaisCommonUtils.genNewHashMap();
@@ -118,7 +117,7 @@ public class CessationApplicationBeDelegator {
                 }
             }
             ParamUtil.setSessionAttr(bpc.request, "specLicInfo", (Serializable) map);
-        }
+        }*/
         List<AppCessLicDto> appCessDtosByLicIds = cessationBeService.getAppCessDtosByLicIds(licIds);
         int size = appCessDtosByLicIds.size();
         List<SelectOption> reasonOption = getReasonOption();

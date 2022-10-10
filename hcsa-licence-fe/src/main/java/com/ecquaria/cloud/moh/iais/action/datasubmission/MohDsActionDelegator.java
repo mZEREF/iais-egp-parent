@@ -336,7 +336,7 @@ public class MohDsActionDelegator {
                 if(oldPgtList!=null){
                     for (PgtStageDto pgt:oldPgtList
                     ) {
-                        if (pgt.getIsPgtMEbt() + pgt.getIsPgtMCom() + pgt.getIsPgtMRare() > 0 && pgt.getCreatedAt().before(arSuper.getDataSubmissionDto().getSubmitDt())) {
+                        if (pgt.getIsPgtMCom() + pgt.getIsPgtMRare() > 0 && pgt.getCreatedAt().before(arSuper.getDataSubmissionDto().getSubmitDt())) {
                             countNo += pgt.getIsPgtCoFunding();
                         }
                         if (pgt.getIsPgtSr() > 0 && pgt.getCreatedAt().before(arSuper.getDataSubmissionDto().getSubmitDt())) {

@@ -496,8 +496,8 @@ public class CessationBeServiceImpl implements CessationBeService {
         appSubmissionDto.setPreInspection(true);
         appSubmissionDto.setRequirement(true);
         appSubmissionDto.setLicenseeId(licenseeId);
-        appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
-        appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+        appSubmissionDto.setAppGrpStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+        appSubmissionDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
         setRiskToDto(appSubmissionDto);
         AppSubmissionDto entity = applicationClient.saveApps(appSubmissionDto).getEntity();
         AppSubmissionDto appSubmissionDtoSave = applicationClient.saveSubmision(entity).getEntity();

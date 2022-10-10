@@ -184,7 +184,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 applicationFeClient.updateApplicationList(applicationDtoList);
             }
             newAppSubmissionDto.setSubLicenseeDto(appSubmissionDto.getSubLicenseeDto());
-            newAppSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+            newAppSubmissionDto.setAppGrpStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
             Map<String,Object> map=IaisCommonUtils.genNewHashMap();
             map.put("AppSubmissionDto",newAppSubmissionDto);
             map.put("WithdrawnDto",h);
@@ -302,8 +302,8 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         appSubmissionDto.setPreInspection(true);
         appSubmissionDto.setRequirement(true);
         appSubmissionDto.setLicenseeId(licenseeId);
-        appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-        appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+        appSubmissionDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+        appSubmissionDto.setAppGrpStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
         setRiskToDto(appSubmissionDto);
         List<AppPremisesRoutingHistoryDto> hisList;
         Map<String, Object> params = IaisCommonUtils.genNewHashMap(1);
@@ -427,8 +427,8 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         appSubmissionDto.setPreInspection(true);
         appSubmissionDto.setRequirement(true);
         appSubmissionDto.setLicenseeId(licenseeId);
-        appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-        appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_WITHDRAWN);
+        appSubmissionDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+        appSubmissionDto.setAppGrpStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_WITHDRAWN);
         setRiskToDto(appSubmissionDto);
     }
 

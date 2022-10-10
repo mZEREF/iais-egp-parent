@@ -475,8 +475,8 @@ public class AppCommServiceImpl implements AppCommService {
         //changeDocToNewVersion(appSubmissionDto, isRfi);
         appSubmissionDto.setAmount(appSubmissionDto.getAmount() == null ? amount : appSubmissionDto.getAmount());
         appSubmissionDto.setAuditTrailDto(AuditTrailHelper.getCurrentAuditTrailDto());
-        appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
-        appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+        //appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
+        appSubmissionDto.setAppGrpStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
         RfcHelper.setRiskToDto(appSubmissionDto);
         RfcHelper.setRelatedInfoBaseServiceId(appSubmissionDto);
     }
@@ -646,10 +646,9 @@ public class AppCommServiceImpl implements AppCommService {
         if (StringUtil.isEmpty(appType)) {
             appType = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE;
         }
-        transform(appSubmissionDto, licence.getLicenseeId(), appType, false);
-        appSubmissionDto.setAppGrpNo(appGroupNo);
+        //transform(appSubmissionDto, licence.getLicenseeId(), appType, false);
         appSubmissionDto.setDraftNo(draftNo);
-
+        // amount
         double total = 0.0;
         if (amount != null) {
             total = amount.doubleValue();
@@ -666,13 +665,14 @@ public class AppCommServiceImpl implements AppCommService {
             appEditSelectDto = new AppEditSelectDto();
         }
         AppEditSelectDto editDto = MiscUtil.transferEntityDto(appEditSelectDto, AppEditSelectDto.class);
-        appSubmissionDto.setChangeSelectDto(editDto);
-        appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-        appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
-        appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
+        RfcHelper.beforeSubmit(appSubmissionDto, editDto, appGroupNo, appType, null);
+
+
+        //appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
+        /*appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
         if (MiscUtil.doubleEquals(0.0, total)) {
             appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
-        }
+        }*/
         appSubmissionDto.setGetAppInfoFromDto(true);
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         // set app GrpPremisess

@@ -20,7 +20,6 @@
                     <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMCom ==1 }"><iais:code code="PGTTP001"/><br></c:if>
                         <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMRare ==1 }"><iais:code code="PGTTP002"/><br></c:if>
-                        <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMEbt ==1 }"><iais:code code="PGTTP003"/><br></c:if>
                         <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtSr ==1 }"><iais:code code="PGTTP004"/><br></c:if>
                         <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtA ==1 }"><iais:code code="PGTTP005"/><br></c:if>
                         <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPtt ==1 }"><iais:code code="PGTTP006"/><br></c:if>
@@ -39,7 +38,7 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div id="pgtMDisplay" <c:if test="${  arSuperDataSubmissionDto.pgtStageDto.isPgtMCom !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtMRare !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtMEbt !=1  }">style="display: none"</c:if> >
+                <div id="pgtMDisplay" <c:if test="${  arSuperDataSubmissionDto.pgtStageDto.isPgtMCom !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtMRare !=1 }">style="display: none"</c:if> >
                     <iais:row>
                         <iais:field width="5" value="PGT-M" style="font-size: 2.0rem;" />
                     </iais:row>
@@ -128,7 +127,7 @@
                         </c:if>
                     </iais:value>
                 </iais:row>
-                <div <c:if test="${ count<6 || arSuperDataSubmissionDto.pgtStageDto.isPgtMCom !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtMRare !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtMEbt !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtSr !=1 || arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding == 0}">style="display: none"</c:if>>
+                <div <c:if test="${ count<6 || arSuperDataSubmissionDto.pgtStageDto.isPgtMCom !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtMRare !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtSr !=1 || arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding == 0}">style="display: none"</c:if>>
                     <iais:row >
                         <iais:field width="5" value="Is there an Appeal?"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
