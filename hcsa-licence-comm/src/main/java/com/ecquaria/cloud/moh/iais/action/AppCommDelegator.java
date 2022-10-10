@@ -1316,6 +1316,7 @@ public abstract class AppCommDelegator {
             appSubmissionDto.setGroupLic(!StringUtil.isEmpty(isGroupLic) && AppConsts.YES.equals(isGroupLic));
             needNewDeclaration = !isRfi;
         } else if (!isRfi && ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
+            // the declaration only for HCI name changed
             AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
             List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
@@ -1344,8 +1345,10 @@ public abstract class AppCommDelegator {
             // validation
             AppValidatorHelper.validateDeclarationDoc(errorMap, ApplicationHelper.getFileAppendId(appSubmissionDto.getAppType()),
                     "0".equals(preQuesKindly), bpc.request);
+        } else {
+            appSubmissionDto.setAppDeclarationMessageDto(null);
+            appSubmissionDto.setAppDeclarationDocDtos(null);
         }
-
         if (!isRfi && ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
             String effectiveDateStr = ParamUtil.getString(bpc.request, "rfcEffectiveDate");
             appSubmissionDto.setEffectiveDateStr(effectiveDateStr);
@@ -1578,14 +1581,19 @@ public abstract class AppCommDelegator {
         AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
         log.info(StringUtil.changeForLog("The original licence No.: " + appSubmissionDto.getLicenceNo()));
 
-        /*Integer maxFileIndex = (Integer) ParamUtil.getSessionAttr(bpc.request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR);
+        LicenceDto licenceDto = AppValidatorHelper.doValidateRfc(bpc.request);
+        if (licenceDto == null) {
+            return;
+        }
+        /*
+        *//*Integer maxFileIndex = (Integer) ParamUtil.getSessionAttr(bpc.request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR);
         if (maxFileIndex == null) {
             maxFileIndex = 0;
         }
-        appSubmissionDto.setMaxFileIndex(maxFileIndex);*/
+        appSubmissionDto.setMaxFileIndex(maxFileIndex);*//*
         // validate the submission data
         Map<String, String> map = AppValidatorHelper.doPreviewAndSumbit(bpc.request);
-        boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
+        *//*boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
         if (map.isEmpty() && !isRfi) {
@@ -1601,7 +1609,7 @@ public abstract class AppCommDelegator {
                 AppValidatorHelper.validateDeclarationDoc(map, ApplicationHelper.getFileAppendId(appSubmissionDto.getAppType()),
                         "0".equals(preQuesKindly), bpc.request);
             }
-        }
+        }*//*
         if (!map.isEmpty()) {
             //set audit
             log.warn(StringUtil.changeForLog("Error Message: " + map));
@@ -1611,16 +1619,18 @@ public abstract class AppCommDelegator {
         }
         String licenceId = appSubmissionDto.getLicenceId();
         LicenceDto licenceById = licCommService.getActiveLicenceById(licenceId);
-        /*
+        *//*
           when use save it as draft in the previous, and the licence has been updated via other licence,
           the licence will not be valid any more, so when use do the it from the old draft,
           the licence will be null.
-         */
+         *//*
         if (licenceById == null) {
             log.warn(StringUtil.changeForLog("Invalid selected Licence - " + licenceId));
             bpc.request.setAttribute(RfcConst.INVALID_LIC, MessageUtil.getMessageDesc("RFC_ERR023"));
             return;
         }
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
         Set<String> premiseTypes = null;
         if (appGrpPremisesDtoList != null) {
             premiseTypes = appGrpPremisesDtoList.stream().map(AppGrpPremisesDto::getPremisesType).collect(Collectors.toSet());
@@ -1630,7 +1640,7 @@ public abstract class AppCommDelegator {
             AppValidatorHelper.setErrorRequest(map, false, bpc.request);
             return;
         }
-        /*String baseServiceId = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getBaseServiceId();
+        *//*String baseServiceId = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getBaseServiceId();
         if (StringUtil.isEmpty(baseServiceId)) {
             bpc.request.setAttribute(RfcConst.SERVICE_CONFIG_CHANGE, MessageUtil.getMessageDesc("RFC_ERR020"));
             return;
@@ -1643,16 +1653,11 @@ public abstract class AppCommDelegator {
         appSubmissionDto.setChangeSelectDto(appEditSelectDto);
         log.info(StringUtil.changeForLog(appSubmissionDto.getLicenceNo() + " - App Edit Select Dto: "
                 + JsonUtil.parseToJson(appEditSelectDto)));
-        // the declaration only for HCI name changed
-        if (!appEditSelectDto.isChangeHciName()) {
-            appSubmissionDto.setAppDeclarationMessageDto(null);
-            appSubmissionDto.setAppDeclarationDocDtos(null);
-        }
         boolean isCharity = ApplicationHelper.isCharity(bpc.request);
         FeeDto feeDto = configCommService.getGroupAmendAmount(getAmendmentFeeDto(appEditSelectDto, isCharity));
         Double amount = feeDto.getTotal();
         double currentAmount = amount == null ? 0.0 : amount;
-        if (licenceById.getMigrated() == 1 && IaisEGPHelper.isActiveMigrated()) {
+        if (licenceDto.getMigrated() == 1 && IaisEGPHelper.isActiveMigrated()) {
             currentAmount = 0.0;
         }
         log.info(StringUtil.changeForLog("the current amount is -->:" + currentAmount));
@@ -1675,10 +1680,10 @@ public abstract class AppCommDelegator {
 
         RfcHelper.beforeSubmit(appSubmissionDto, appEditSelectDto, null, appType, bpc.request);
         // set status
-        appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
+        /* appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
         if (MiscUtil.doubleEquals(0.0, currentAmount)) {
             appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
-        }
+        }*/
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         appSubmissionDto.setGetAppInfoFromDto(true);
         AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
@@ -1731,6 +1736,7 @@ public abstract class AppCommDelegator {
                 otherAmount = premiseFee.getTotal();
             }
             log.info(StringUtil.changeForLog("The premise changed amount: " + otherAmount));
+            List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             List<AppSubmissionDto> appSubmissionDtos = IaisCommonUtils.genNewArrayList();
             boolean isValid = checkAffectedAppSubmissions(appGrpPremisesDtoList, otherAmount, draftNo, groupNo, changeSelectDto,
                     appSubmissionDtos, bpc.request);
@@ -1776,7 +1782,7 @@ public abstract class AppCommDelegator {
                 // remove the current app submission
                 for (Iterator<AppSubmissionDto> it = licenseeAffectedList.iterator(); it.hasNext(); ) {
                     AppSubmissionDto dto = it.next();
-                    if (licenceId.equals(dto.getLicenceId())) {
+                    if (Objects.equals(licenceDto.getId(), dto.getLicenceId())) {
                         it.remove();
                         break;
                     }
@@ -1864,11 +1870,10 @@ public abstract class AppCommDelegator {
                             .ifPresent(submissionDto ->
                                     ApplicationHelper.reSetNonAutoDataByAppEditSelectDto(targetDto, submissionDto)));
         }
-
         // re-set autoAppSubmissionDto
         if (autoAppSubmissionDto != null) {
             if (0 == isAutoPremises) {
-                autoAppSubmissionDto.setAppGrpPremisesDtoList(oldAppGrpPremisesDtoList);
+                autoAppSubmissionDto.setAppGrpPremisesDtoList(oldAppSubmissionDto.getAppGrpPremisesDtoList());
             }
             autoGroupNo = getRfcGroupNo(autoGroupNo);
             ApplicationHelper.reSetAdditionalFields(autoAppSubmissionDto, autoChangeSelectDto, autoGroupNo);
@@ -1878,7 +1883,7 @@ public abstract class AppCommDelegator {
         String autoGroupStatus = ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED;
         if (autoSaveAppsubmission.isEmpty() && notAutoSaveAppsubmission.isEmpty() && addClaimed) {
             autoGroupStatus = ApplicationConsts.APPLICATION_GROUP_STATUS_ADDITIONAL_CLAIM;
-            appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
+            appSubmissionDto.setAppStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
             ApplicationHelper.reSetAdditionalFields(appSubmissionDto, false, true, appSubmissionDto.getAppGrpNo());
             autoSaveAppsubmission.add(appSubmissionDto);
         }

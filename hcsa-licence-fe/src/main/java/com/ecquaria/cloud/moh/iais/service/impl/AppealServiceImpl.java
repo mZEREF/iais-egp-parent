@@ -302,9 +302,9 @@ public class AppealServiceImpl implements AppealService {
                     entity.setDraftStatus(draftStatus);
                 }
                 if (groupId == null) {
-                    entity.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                    entity.setAppGrpStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 } else {
-                    entity.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                    entity.setAppGrpStatus(AppConsts.COMMON_STATUS_IACTIVE);
                 }
                 entity.setLicenseeId(licenseeId);
                 Object errorMsg = req.getAttribute("errorMsg");

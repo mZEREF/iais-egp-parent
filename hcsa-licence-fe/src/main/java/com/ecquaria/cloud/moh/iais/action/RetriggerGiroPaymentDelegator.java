@@ -342,7 +342,7 @@ public class RetriggerGiroPaymentDelegator {
                     renewalAmount = appSubmissionService.getRenewalAmount(renewSubmisonDtos,isCharity);
                 }
                 List<AppFeeDetailsDto> appFeeDetailsDto = IaisCommonUtils.genNewArrayList();
-                WithOutRenewalDelegator.setSubmissionAmount(renewSubmisonDtos,renewalAmount,appFeeDetailsDto,bpc);
+                WithOutRenewalDelegator.setSubmissionAmount(renewSubmisonDtos,renewalAmount,appFeeDetailsDto, 0, bpc);
 
                 HashMap<String, List<FeeExtDto>> laterFeeDetailsMap = WithOutRenewalDelegator.getLaterFeeDetailsMap(renewalAmount.getFeeInfoDtos());
                 ParamUtil.setRequestAttr(bpc.request, "laterFeeDetailsMap", laterFeeDetailsMap);

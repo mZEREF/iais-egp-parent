@@ -475,8 +475,8 @@ public class AppCommServiceImpl implements AppCommService {
         //changeDocToNewVersion(appSubmissionDto, isRfi);
         appSubmissionDto.setAmount(appSubmissionDto.getAmount() == null ? amount : appSubmissionDto.getAmount());
         appSubmissionDto.setAuditTrailDto(AuditTrailHelper.getCurrentAuditTrailDto());
-        appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
-        appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+        //appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
+        appSubmissionDto.setAppGrpStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
         RfcHelper.setRiskToDto(appSubmissionDto);
         RfcHelper.setRelatedInfoBaseServiceId(appSubmissionDto);
     }
@@ -668,11 +668,11 @@ public class AppCommServiceImpl implements AppCommService {
         RfcHelper.beforeSubmit(appSubmissionDto, editDto, appGroupNo, appType, null);
 
 
-        appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
-        appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
+        //appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
+        /*appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
         if (MiscUtil.doubleEquals(0.0, total)) {
             appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
-        }
+        }*/
         appSubmissionDto.setGetAppInfoFromDto(true);
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         // set app GrpPremisess

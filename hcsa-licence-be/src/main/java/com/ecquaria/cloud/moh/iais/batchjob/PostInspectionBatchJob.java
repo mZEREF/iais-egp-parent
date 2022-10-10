@@ -78,7 +78,7 @@ public class PostInspectionBatchJob {
                     entity.setAuditTrailDto(auditTrailDto);
                     entity.setPreInspection(false);
                     entity.setRequirement(true);
-                    entity.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT);
+                    entity.setAppStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT);
                     entity.setEventRefNo(grpNo);
                     List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = entity.getAppSvcRelatedInfoDtoList();
                     String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();

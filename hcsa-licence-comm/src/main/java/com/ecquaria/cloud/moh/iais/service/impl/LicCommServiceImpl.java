@@ -446,7 +446,7 @@ public class LicCommServiceImpl implements LicCommService {
                 appCommService.transform(appSubmissionDtoByLicenceId, appSubmissionDto.getLicenseeId(),
                         ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE, false);
                 appSubmissionDtoByLicenceId.setAutoRfc(true);
-                appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
+                appSubmissionDtoByLicenceId.setAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
                 ApplicationHelper.reSetAdditionalFields(appSubmissionDtoByLicenceId, appEditSelectDto);
             }
             appSubmissionDtoList.add(appSubmissionDtoByLicenceId);

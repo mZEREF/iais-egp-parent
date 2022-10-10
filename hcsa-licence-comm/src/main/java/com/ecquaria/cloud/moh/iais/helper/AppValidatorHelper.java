@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocSecDetailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocSectionDto;
@@ -80,7 +81,6 @@ import com.ecquaria.egp.core.common.constants.AppConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
@@ -232,15 +232,15 @@ public final class AppValidatorHelper {
         AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(request);
         ApplicationHelper.checkPremisesHciList(appSubmissionDto.getLicenseeId(), ApplicationHelper.checkIsRfi(request),
                 oldAppSubmissionDto, false, request);
-        return doPreviewSubmitValidate(previewAndSubmitMap, appSubmissionDto, request);
+        doPreviewSubmitValidate(previewAndSubmitMap, appSubmissionDto, request);
+        return previewAndSubmitMap;
     }
 
-    public static Map<String, String> doPreviewSubmitValidate(Map<String, String> previewAndSubmitMap,
+    public static void doPreviewSubmitValidate(Map<String, String> previewAndSubmitMap,
             AppSubmissionDto appSubmissionDto, HttpServletRequest request) {
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
         List<String> premisesHciList = (List<String>) ParamUtil.getSessionAttr(request, HcsaAppConst.PREMISES_HCI_LIST);
         doPreviewSubmitValidate(previewAndSubmitMap, appSubmissionDto, premisesHciList, isRfi);
-        return previewAndSubmitMap;
     }
 
     public static List<String> doPreviewSubmitValidate(Map<String, String> errorMap, AppSubmissionDto appSubmissionDto,
@@ -2457,9 +2457,9 @@ public final class AppValidatorHelper {
         return msg.toString();
     }
 
-    private static StringBuilder handleTabHames(AppSubmissionDto appSubmissionDto, List<String> errorList, StringBuilder msg) {
+    private static void handleTabHames(AppSubmissionDto appSubmissionDto, List<String> errorList, StringBuilder msg) {
         if (msg == null) {
-            msg = new StringBuilder();
+            return;
         }
         msg.append(appSubmissionDto.getLicenceNo()).append(" - [");
         if (errorList.contains(HcsaAppConst.SECTION_LICENSEE)) {
@@ -2482,7 +2482,6 @@ public final class AppValidatorHelper {
         msg.deleteCharAt(msg.length() - 2);
         msg.deleteCharAt(msg.length() - 1);
         msg.append(']');
-        return msg;
     }
 
     private static String handleStepHames(List<String> errorList) {
@@ -2765,10 +2764,12 @@ public final class AppValidatorHelper {
                 }
 
                 String[] sysFileTypeArr = FileUtils.fileTypeToArray(sysFileType);
-                for (String f : sysFileTypeArr) {
-                    if (f.equalsIgnoreCase(substring)) {
-                        flag = true;
-                        break;
+                if (sysFileTypeArr != null) {
+                    for (String f : sysFileTypeArr) {
+                        if (f.equalsIgnoreCase(substring)) {
+                            flag = true;
+                            break;
+                        }
                     }
                 }
                 if (!flag) {
@@ -3767,7 +3768,7 @@ public final class AppValidatorHelper {
                     unitDto.setSecondAddrId(appGrpSecondAddrDto.getId());
                 }
             }
-            validateContactInfo(appGrpSecondAddrDto,errorMap,Integer.valueOf(i),codeList);
+            validateContactInfo(appGrpSecondAddrDto,errorMap, i,codeList);
         }
     }
     private static Map<String, String> validateContactInfo(AppGrpSecondAddrDto appGrpSecondAddrDto,Map<String, String> errorMap, int i,List<String> codeList) {
@@ -3858,9 +3859,14 @@ public final class AppValidatorHelper {
         }
     }
 
-    public static void doValidateRenewalPage(Map<String, String> errorMap, AppSubmissionDto appSubmissionDto, boolean isSingle,
-            HttpServletRequest request) {
-        Date effectiveDate = appSubmissionDto.getEffectiveDate();
+    public static Map<String, String> doValidateRenewal(List<AppSubmissionDto> appSubmissionDtos, HttpServletRequest request) {
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        if (IaisCommonUtils.isEmpty(appSubmissionDtos)) {
+            return errorMap;
+        }
+        AppSubmissionDto firstSubmissionDto = appSubmissionDtos.get(0);
+        boolean isSingle = appSubmissionDtos.size() == 1;
+        Date effectiveDate = firstSubmissionDto.getEffectiveDate();
         if (effectiveDate != null) {
             if (effectiveDate.before(new Date())||effectiveDate.equals(new Date())) {
                 errorMap.put("rfcEffectiveDate", "RFC_ERR012");
@@ -3868,15 +3874,15 @@ public final class AppValidatorHelper {
         }
         if (isSingle) {
             String appType = ApplicationConsts.APPLICATION_TYPE_RENEWAL;
-            AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();
+            AppDeclarationMessageDto appDeclarationMessageDto = firstSubmissionDto.getAppDeclarationMessageDto();
             DeclarationsUtil.declarationsValidate(errorMap, appDeclarationMessageDto, appType);
-            String preQuesKindly = appSubmissionDto.getAppDeclarationMessageDto().getPreliminaryQuestionKindly();
+            String preQuesKindly = firstSubmissionDto.getAppDeclarationMessageDto().getPreliminaryQuestionKindly();
             AppValidatorHelper.validateDeclarationDoc(errorMap, ApplicationHelper.getFileAppendId(appType),
                     "0".equals(preQuesKindly), request);
             //check other eff
             AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) request.getSession().getAttribute("oldAppSubmissionDto");
-            AppEditSelectDto appEditSelectDto = RfcHelper.rfcChangeModuleEvaluationDto(appSubmissionDto, oldAppSubmissionDto);
-            List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+            AppEditSelectDto appEditSelectDto = RfcHelper.rfcChangeModuleEvaluationDto(firstSubmissionDto, oldAppSubmissionDto);
+            List<AppGrpPremisesDto> appGrpPremisesDtoList = firstSubmissionDto.getAppGrpPremisesDtoList();
             if (appEditSelectDto.isPremisesEdit()) {
                 Set<String> premiseTypes = appGrpPremisesDtoList.stream().map(AppGrpPremisesDto::getPremisesType).collect(
                         Collectors.toSet());
@@ -3897,6 +3903,71 @@ public final class AppValidatorHelper {
                 }
             }
         }
+        if (!errorMap.isEmpty()) {
+            /*LicenceDto licenceDto = new LicenceDto();
+            licenceDto.setLicenceNo(renewDto.getAppSubmissionDtos().get(0).getLicenceNo());
+            WebValidationHelper.saveAuditTrailForNoUseResult(licenceDto,allErrMap);*/
+            ParamUtil.setRequestAttr(request, RenewalConstants.PAGE_SWITCH, RenewalConstants.PAGE2);
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            return errorMap;
+        }
+        //check renew own
+        Map<String, String> map = validateLicences(appSubmissionDtos, null);
+        if (IaisCommonUtils.isNotEmpty(map)) {
+            ParamUtil.setRequestAttr(request, RenewalConstants.PAGE_SWITCH, RenewalConstants.PAGE2);
+            AppValidatorHelper.setErrorRequest(map, false, request);
+            return errorMap;
+        }
+        if (!IaisCommonUtils.isEmpty(appSubmissionDtos)) {
+            for (AppSubmissionDto submissionDto : appSubmissionDtos) {
+                AppValidatorHelper.doPreviewSubmitValidate(errorMap, submissionDto, request);
+            }
+        }
+        if (!errorMap.isEmpty()) {
+            ParamUtil.setRequestAttr(request, "needShowErr", AppConsts.TRUE);
+            ParamUtil.setRequestAttr(request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request, RenewalConstants.PAGE_SWITCH, RenewalConstants.PAGE2);
+            return errorMap;
+        }
+        return errorMap;
+    }
+
+    public static LicenceDto doValidateRfc(HttpServletRequest request) {
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(request);
+        AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(request);
+        ApplicationHelper.checkPremisesHciList(appSubmissionDto.getLicenseeId(), ApplicationHelper.checkIsRfi(request),
+                oldAppSubmissionDto, false, request);
+        doPreviewSubmitValidate(errorMap, appSubmissionDto, request);
+        if (!errorMap.isEmpty()) {
+            ParamUtil.setRequestAttr(request, "Msg", errorMap);
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            return null;
+        }
+        String licenceId = appSubmissionDto.getLicenceId();
+        LicenceDto licenceById = getLicCommService().getActiveLicenceById(licenceId);
+        /*
+          when use save it as draft in the previous, and the licence has been updated via other licence,
+          the licence will not be valid any more, so when use do the it from the old draft,
+          the licence will be null.
+         */
+        if (licenceById == null) {
+            log.warn(StringUtil.changeForLog("Invalid selected Licence - " + licenceId));
+            String errorMsg = MessageUtil.getMessageDesc("RFC_ERR023");
+            ParamUtil.setRequestAttr(request, RfcConst.INVALID_LIC, errorMsg);
+            return null;
+        }
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        Set<String> premiseTypes = null;
+        if (appGrpPremisesDtoList != null) {
+            premiseTypes = appGrpPremisesDtoList.stream().map(AppGrpPremisesDto::getPremisesType).collect(Collectors.toSet());
+        }
+        errorMap = AppValidatorHelper.validateLicences(licenceById, premiseTypes, null);
+        if (!errorMap.isEmpty()) {
+            AppValidatorHelper.setErrorRequest(errorMap, false, request);
+            return null;
+        }
+        return licenceById;
     }
 
 }

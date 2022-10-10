@@ -1070,16 +1070,11 @@ public final class RfcHelper {
 //        ApplicationHelper.reSetAdditionalFields(appSubmissionDto, oldAppSubmissionDto);
         // bind application
         setRelatedInfoBaseServiceId(appSubmissionDto);
-        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
-            appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
-            appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
-            Double amount = appSubmissionDto.getAmount();
-            if (amount == null || MiscUtil.doubleEquals(0.0, amount)) {
-                appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
-            }
+        /*if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
+            appSubmissionDto.setAppStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
         } else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
-            appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_RENEWAL);
-        }
+            appSubmissionDto.setAppStatus(ApplicationConsts.APPLICATION_STATUS_RENEWAL);
+        }*/
     }
 
     public static void resolveSvcActionCode(List<AppPremSubSvcRelDto> relList, Map<String, AppPremSubSvcRelDto> oldDtaMap) {

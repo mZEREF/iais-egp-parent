@@ -62,6 +62,16 @@ import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import com.ecquaria.cloud.privilege.Privilege;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -75,15 +85,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @Author: Hc
@@ -724,27 +725,8 @@ public class InterInboxDelegator {
             for(String item:licIds){
                 licIdValue.add(ParamUtil.getMaskedString(bpc.request,item));
             }
-            if(licIdValue.size()==1){
-                List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licIdValue.get(0));
-                String isNeedDelete = bpc.request.getParameter("isNeedDelete");
-                if(!draftByLicAppId.isEmpty()){
-                    StringBuilder stringBuilder=new StringBuilder();
-                    for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
-                        stringBuilder.append(applicationSubDraftDto.getDraftNo()).append(' ');
-                    }
-                    if("delete".equals(isNeedDelete)){
-                        for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
-                            inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
-                        }
-                    }else {
-                        String ack030 = MessageUtil.getMessageDesc("GENERAL_ACK030");
-                        String replace = ack030.replace("{draft application no}", stringBuilder.toString());
-                        bpc.request.setAttribute("draftByLicAppId",replace);
-                        bpc.request.setAttribute("isRenewShow","1");
-                        ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
-                        return;
-                    }
-                }
+            if(licIdValue.size()==1 && !checkRenewDraft(licIdValue.get(0), bpc.request)){
+                return;
             }
             ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
             for (String licId:licIdValue) {
@@ -758,13 +740,6 @@ public class InterInboxDelegator {
                             errorMessage.append(", ").append(licenseNo);
                         }
                     }
-                    result = false;
-                }
-            }
-            if(result && licIdValue.size()==1){
-                List<ApplicationSubDraftDto> applicationSubDraftDtos = inboxService.getDraftByLicAppIdAndStatus(licIdValue.get(0),ApplicationConsts.DRAFT_STATUS_PENDING_PAYMENT);
-                if(!IaisCommonUtils.isEmpty(applicationSubDraftDtos)){
-                    errorMap.put("errorMessage",MessageUtil.getMessageDesc("NEW_ERR0023"));
                     result = false;
                 }
             }
@@ -871,6 +846,36 @@ public class InterInboxDelegator {
                 ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,errorMessage.toString());
             }
         }
+    }
+
+    private boolean checkRenewDraft(String licId, HttpServletRequest request) {
+        List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licId);
+        String isNeedDelete = ParamUtil.getString(request, "isNeedDelete");
+        if (!draftByLicAppId.isEmpty()) {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId) {
+                stringBuilder.append(applicationSubDraftDto.getDraftNo()).append(' ');
+            }
+            if ("delete".equals(isNeedDelete)) {
+                for (ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId) {
+                    inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
+                }
+            } else {
+                String ack030 = MessageUtil.getMessageDesc("GENERAL_ACK030");
+                String replace = ack030.replace("{draft application no}", stringBuilder.toString());
+                ParamUtil.setRequestAttr(request, "draftByLicAppId", replace);
+                ParamUtil.setRequestAttr(request, "isRenewShow", "1");
+                ParamUtil.setSessionAttr(request, "licence_err_list", IaisCommonUtils.genNewArrayListWithData(licId));
+                return false;
+            }
+        }
+        List<ApplicationSubDraftDto> applicationSubDraftDtos = inboxService.getDraftByLicAppIdAndStatus(licId,
+                ApplicationConsts.DRAFT_STATUS_PENDING_PAYMENT);
+        if (!IaisCommonUtils.isEmpty(applicationSubDraftDtos)) {
+            ParamUtil.setRequestAttr(request, InboxConst.LIC_ACTION_ERR_MSG, MessageUtil.getMessageDesc("NEW_ERR0023"));
+            return false;
+        }
+        return true;
     }
 
     // check lic spec,select lic need have base

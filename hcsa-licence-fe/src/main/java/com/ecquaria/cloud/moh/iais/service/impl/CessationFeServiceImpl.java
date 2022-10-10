@@ -694,7 +694,7 @@ public class CessationFeServiceImpl implements CessationFeService {
         appSubmissionDto.setPreInspection(true);
         appSubmissionDto.setRequirement(true);
         appSubmissionDto.setLicenseeId(licenseeId);
-        appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+        appSubmissionDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
         //status
         List<AppPremisesRoutingHistoryDto> hisList;
         Map<String, Object> params = IaisCommonUtils.genNewHashMap(1);
