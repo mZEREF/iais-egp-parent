@@ -1053,6 +1053,7 @@ public final class ApplicationHelper {
                     appSvcPersonAndExtDto = new AppSvcPersonAndExtDto();
                     appSvcPersonDto = MiscUtil.transferEntityDto(psnDto, AppSvcPersonDto.class);
                 } else {
+                    appSvcPersonDto = appSvcPersonAndExtDto.getPersonDto();
                     appSvcPersonExtDtos = appSvcPersonAndExtDto.getPersonExtDtoList();
                 }
                 if (IaisCommonUtils.isEmpty(appSvcPersonExtDtos)) {
