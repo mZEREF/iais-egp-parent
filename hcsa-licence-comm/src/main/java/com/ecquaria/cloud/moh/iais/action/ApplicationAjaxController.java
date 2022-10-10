@@ -173,7 +173,7 @@ public class ApplicationAjaxController {
      * @description: ajax
      * @author: zixian
      */
-    @RequestMapping(value = "/psn-info", method = RequestMethod.GET)
+    /*@RequestMapping(value = "/psn-info", method = RequestMethod.GET)
     public AppSvcPrincipalOfficersDto getPsnInfoByIdNo(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("getPsnInfoByIdNo start ...."));
         String idNo = ParamUtil.getRequestString(request, "idNo");
@@ -196,7 +196,7 @@ public class ApplicationAjaxController {
         }
         log.debug(StringUtil.changeForLog("getPsnInfoByIdNo end ...."));
         return appSvcCgoDto;
-    }
+    }*/
 
     /*@PostMapping(value = "/nuclear-medicine-imaging-html")
     public Map<String, String> addNuclearMedicineImagingHtml(HttpServletRequest request) {
