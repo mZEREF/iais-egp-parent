@@ -4,7 +4,6 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppSpecifiedLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
@@ -20,7 +19,6 @@ public interface CessationFeService {
 
     List<AppCessLicDto> getAppCessDtosByLicIds(List<String> licIds);
 
-    List<String> filtrateSpecLicIds(List<String> licIds);
 
     void updateLicenceFe(List<String> licNos);
 
@@ -30,7 +28,6 @@ public interface CessationFeService {
 
     List<String> listHciName();
 
-    List<AppSpecifiedLicDto> getSpecLicInfo(List<String> licIds);
 
     List<AppCessatonConfirmDto> getConfirmDto(List<AppCessationDto> appCessationDtos, Map<String, List<String>> appIdPremisesMap, LoginContext loginContext) throws ParseException;
 
