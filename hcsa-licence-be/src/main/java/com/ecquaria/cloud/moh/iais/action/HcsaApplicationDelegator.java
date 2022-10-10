@@ -25,7 +25,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesUpdateEmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
@@ -106,22 +105,18 @@ import com.ecquaria.cloud.moh.iais.service.BroadcastService;
 import com.ecquaria.cloud.moh.iais.service.CessationBeService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.GiroDeductionBeService;
-import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
-import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.AppCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremSubSvcBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
-import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
@@ -195,16 +190,7 @@ public class HcsaApplicationDelegator {
     private MsgTemplateClient msgTemplateClient;
 
     @Autowired
-    private LicenseeService licenseeService;
-
-    @Autowired
     private GenerateIdClient generateIdClient;
-
-    @Autowired
-    private EmailClient emailClient;
-
-    @Autowired
-    private InboxMsgService inboxMsgService;
 
     @Autowired
     private OrganizationClient organizationClient;
@@ -236,17 +222,11 @@ public class HcsaApplicationDelegator {
     private AppPremisesCorrClient appPremisesCorrClient;
 
     @Autowired
-    private AppCommClient appCommClient;
-
-    @Autowired
     private AppPremSubSvcBeClient appPremSubSvcBeClient;
 
 
     @Autowired
     private AppCommService appCommService;
-
-    @Value("${iais.email.sender}")
-    private String mailSender;
 
     @Value("${iais.system.one.address}")
     private String systemAddressOne;
@@ -2083,11 +2063,8 @@ public class HcsaApplicationDelegator {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String applicationNo = applicationDto.getApplicationNo();
-        String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
-        LicenseeDto licenseeDto = licenseeService.getLicenseeDtoById(licenseeId);
         String externalRemarks = ParamUtil.getString(bpc.request, "comments");
         String applicationType = applicationDto.getApplicationType();
-        String serviceId = applicationDto.getServiceId();
         String appId = applicationDto.getId();
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
         try {
@@ -2098,9 +2075,6 @@ public class HcsaApplicationDelegator {
                     HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
                     maskParams.put("appealingFor", appealingFor);
                     String appealType = (String) ParamUtil.getSessionAttr(bpc.request, "type");
-/*
-                    sendAppealMessage(appealingFor,licenseeId,maskParams,serviceId,appealType,applicationDto.getApplicationNo());
-*/
                     String url = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_CALL_BACK_URL_Appeal + appealingFor + "&type=" + appealType;
                     applicationService.appealRfiAndEmail(applicationViewDto, applicationDto, maskParams, url,externalRemarks);
                 }
@@ -2112,7 +2086,6 @@ public class HcsaApplicationDelegator {
                     maskParams.put("premiseId", appGrpPremId);
                 }
                 maskParams.put("appId", appId);
-//                sendCessationMessage(appId,appGrpPremId,applicationNo,licenseeId,maskParams,serviceId);
                 String url = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + InboxConst.URL_LICENCE_WEB_MODULE + "MohCessationApplication?appId=" + appId + "&premiseId=" + appGrpPremId;
                 applicationService.appealRfiAndEmail(applicationViewDto, applicationDto, maskParams, url,externalRemarks);
             } else if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)) {
@@ -4869,33 +4842,7 @@ public class HcsaApplicationDelegator {
         return flag;
     }
 
-    //send email helper
-    private String sendEmailHelper(Map<String, Object> tempMap, String msgTemplateId, String subject, String licenseeId, String clientQueryCode) {
-        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(msgTemplateId).getEntity();
-        if (tempMap == null || tempMap.isEmpty() || msgTemplateDto == null
-                || StringUtil.isEmpty(msgTemplateId)
-                || StringUtil.isEmpty(subject)
-                || StringUtil.isEmpty(licenseeId)
-                || StringUtil.isEmpty(clientQueryCode)) {
-            return null;
-        }
-        String mesContext = null;
-        try {
-            mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), tempMap);
-        } catch (IOException | TemplateException e) {
-            log.error(e.getMessage(), e);
-        }
-        EmailDto emailDto = new EmailDto();
-        emailDto.setContent(mesContext);
-        emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + subject);
-        emailDto.setSender(mailSender);
-        emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-        emailDto.setClientQueryCode(clientQueryCode);
-        //send
-        emailClient.sendNotification(emailDto).getEntity();
 
-        return mesContext;
-    }
 
     private EmailParam sendNewAppApproveNotification(String applicantName,
                                                      String licenceNo,
