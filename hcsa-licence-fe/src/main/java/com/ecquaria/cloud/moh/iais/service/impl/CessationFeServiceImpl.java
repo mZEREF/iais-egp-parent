@@ -620,8 +620,8 @@ public class CessationFeServiceImpl implements CessationFeService {
         appSubmissionDto.setPreInspection(true);
         appSubmissionDto.setRequirement(true);
         appSubmissionDto.setLicenseeId(licenseeId);
-        appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-        appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_GET_DATA);
+        appSubmissionDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+        appSubmissionDto.setAppGrpStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_GET_DATA);
         AppDeclarationMessageDto appDeclarationMessageDto = appCessationDtos.get(0).getAppDeclarationMessageDto();
         List<AppDeclarationDocDto> appDeclarationDocDtoList = appCessationDtos.get(0).getAppDeclarationDocDtoList();
         if (appDeclarationMessageDto != null){
