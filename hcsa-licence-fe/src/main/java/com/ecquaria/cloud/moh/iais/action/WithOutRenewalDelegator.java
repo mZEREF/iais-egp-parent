@@ -22,7 +22,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMes
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -57,7 +56,6 @@ import com.ecquaria.cloud.moh.iais.helper.AppDataHelper;
 import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -72,9 +70,7 @@ import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
-import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigFeClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import com.ecquaria.cloud.moh.iais.validation.PaymentValidate;
@@ -144,12 +140,6 @@ public class WithOutRenewalDelegator {
     @Autowired
     RequestForChangeService requestForChangeService;
     @Autowired
-    private GenerateIdClient generateIdClient;
-    @Autowired
-    private EventBusHelper eventBusHelper;
-    @Autowired
-    private OrganizationLienceseeClient organizationLienceseeClient;
-    @Autowired
     private ApplicationFeClient applicationFeClient;
     @Value("${iais.system.one.address}")
     private String systemAddressOne;
@@ -210,35 +200,34 @@ public class WithOutRenewalDelegator {
         ParamUtil.setRequestAttr(bpc.request, "page_value", PAGE1);
         String licenceId = ParamUtil.getMaskedString(bpc.request, "licenceId");
         //init data
-        List<String> licenceIDList = (List<String>) ParamUtil.getSessionAttr(bpc.request,
+        List<String> licenceIdList = (List<String>) ParamUtil.getSessionAttr(bpc.request,
                 RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR);
-        if (licenceIDList == null) {
-            licenceIDList = IaisCommonUtils.genNewArrayList();
+        if (licenceIdList == null) {
+            licenceIdList = IaisCommonUtils.genNewArrayList();
         }
         if (licenceId != null) {
-            licenceIDList = new ArrayList<>(1);
-            licenceIDList.add(licenceId);
+            licenceIdList = new ArrayList<>(1);
+            licenceIdList.add(licenceId);
         }
         List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
         if (StringUtil.isEmpty(draftNo)) {
-            appSubmissionDtoList = outRenewalService.getAppSubmissionDtos(licenceIDList);
-            if (!IaisCommonUtils.isEmpty(appSubmissionDtoList) && appSubmissionDtoList.size() == 1) {
+            appSubmissionDtoList = outRenewalService.getAppSubmissionDtos(licenceIdList);
+            //if (!IaisCommonUtils.isEmpty(appSubmissionDtoList) && appSubmissionDtoList.size() == 1) {
                 //ApplicationHelper.reSetMaxFileIndex(appSubmissionDtoList.get(0).getMaxFileIndex(), request);
-            }
+            //}
             log.info("can not find licence id for without renewal");
             ParamUtil.setSessionAttr(request, "backUrl", "initLic");
         } else {
             AppSubmissionDto appSubmissionDtoDraft = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
-            licenceIDList = new ArrayList<>(1);
-            licenceIDList.add(appSubmissionDtoDraft.getLicenceId());
-            if (StringUtil.isEmpty(appSubmissionDtoDraft.getLicenceId()) || StringUtil.isEmpty(
-                    requestForChangeService.getLicenceById(appSubmissionDtoDraft.getLicenceId()))) {
+            licenceIdList = new ArrayList<>(1);
+            licenceIdList.add(appSubmissionDtoDraft.getLicenceId());
+            if (requestForChangeService.getLicenceById(appSubmissionDtoDraft.getLicenceId()) == null) {
                 log.info(StringUtil.changeForLog(
                         "-----------Invalid selected Licence - " + StringUtil.getNonNull(appSubmissionDtoDraft.getLicenceId())));
                 applicationFeClient.deleteDraftByNo(draftNo);
-                RedirectUtil.redirect(
-                        new StringBuilder().append("https://").append(bpc.request.getServerName())
+                RedirectUtil.redirect(new StringBuilder().append("https://").append(bpc.request.getServerName())
                                 .append("/main-web/eservice/INTERNET/MohInternetInbox").toString(), bpc.request, bpc.response);
+                return;
             }
 
 //            AppDataHelper.initDeclarationFiles(appSubmissionDtoDraft.getAppDeclarationDocDtos(),appSubmissionDtoDraft.getAppType(),bpc.request);
@@ -247,22 +236,22 @@ public class WithOutRenewalDelegator {
             appSubmissionDtoList.add(appSubmissionDtoDraft);
             ParamUtil.setSessionAttr(bpc.request, "backUrl", "initApp");
             //DealSessionUtil.loadCoMap(appSubmissionDtoDraft, bpc.request);
-            //List<AppSubmissionDto> submissionDtos = outRenewalService.getAppSubmissionDtos(licenceIDList);
+            //List<AppSubmissionDto> submissionDtos = outRenewalService.getAppSubmissionDtos(licenceIdList);
             //appSubmissionDtoDraft.setOldRenewAppSubmissionDto(submissionDtos.get(0));
         }
         String appType = ApplicationConsts.APPLICATION_TYPE_RENEWAL;
         //get licensee ID
-        String licenseeId = ApplicationHelper.getLicenseeId(bpc.request);
-        int index = 0;
+        /*String licenseeId = ApplicationHelper.getLicenseeId(bpc.request);
+        int index = 0;*/
         //String firstSvcName = "";
         List<String> serviceNameTitleList = IaisCommonUtils.genNewArrayList();
         List<String> serviceNameList = IaisCommonUtils.genNewArrayList();
 
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = IaisCommonUtils.genNewArrayList();
-        List<List<AppSvcPrincipalOfficersDto>> principalOfficersDtosList = IaisCommonUtils.genNewArrayList();
-        List<List<AppSvcPrincipalOfficersDto>> deputyPrincipalOfficersDtosList = IaisCommonUtils.genNewArrayList();
-        AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
-        List<String> serviceNames = IaisCommonUtils.genNewArrayList();
+//        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = IaisCommonUtils.genNewArrayList();
+//        List<List<AppSvcPrincipalOfficersDto>> principalOfficersDtosList = IaisCommonUtils.genNewArrayList();
+//        List<List<AppSvcPrincipalOfficersDto>> deputyPrincipalOfficersDtosList = IaisCommonUtils.genNewArrayList();
+//        AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+//        List<String> serviceNames = IaisCommonUtils.genNewArrayList();
         List<HcsaSvcDocConfigDto> primaryDocConfig = serviceConfigService.getAllHcsaSvcDocs(null);
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.PRIMARY_DOC_CONFIG, (Serializable) primaryDocConfig);
         if (StringUtil.isEmpty(draftNo)) {
@@ -357,7 +346,7 @@ public class WithOutRenewalDelegator {
                     serviceNameList.add(serviceName);
                 }
                 appSubmissionDto.setServiceName(serviceName);
-                if (licenceIDList.size() == 1) {
+                if (licenceIdList.size() == 1) {
                     appEditSelectDto = ApplicationHelper.createAppEditSelectDto(true);
                     appEditSelectDto.setLicenseeEdit(false);
                     ParamUtil.setSessionAttr(bpc.request, SINGLE_SERVICE, "Y");
@@ -391,7 +380,7 @@ public class WithOutRenewalDelegator {
         }
         if (appSubmissionDtoList.size() == 1) {
             AppSubmissionDto appSubmissionDto = appSubmissionDtoList.get(0);
-            appEditSelectDto = ApplicationHelper.createAppEditSelectDto(true);
+            AppEditSelectDto appEditSelectDto = ApplicationHelper.createAppEditSelectDto(true);
             appEditSelectDto.setLicenseeEdit(false);
             appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
             appSubmissionDto.setOneLicDoRenew(true);
@@ -458,7 +447,6 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request, "txnDt", null);
         ParamUtil.setSessionAttr(bpc.request, "txnRefNo", null);
         log.info("**** the non auto renwal  end ******");
-
     }
 
     /**

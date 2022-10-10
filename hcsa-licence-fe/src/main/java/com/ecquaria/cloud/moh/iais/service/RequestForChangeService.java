@@ -81,7 +81,7 @@ public interface RequestForChangeService {
 
     List<String> getAdminEmail(String orgId);
 
-    void sendRfcSubmittedEmail(List<AppSubmissionDto> appSubmissionDtos, String pmtMethod) throws IOException, TemplateException;
+    void sendRfcSubmittedEmail(List<AppSubmissionDto> appSubmissionDtos, String pmtMethod) throws IOException, TemplateException, Exception;
     List<FeUserDto> getFeUserDtoByLicenseeId(String licenseeId);
     LicenceDto getLicenceDtoByLicNo(String licenceNo);
     boolean serviceConfigIsChange(List<String> serviceId ,String presmiseType);

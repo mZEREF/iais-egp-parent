@@ -277,12 +277,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 }
                 break;
             case "RfcAndOnPay":
-                MsgTemplateDto RfcAndOnPayMsgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate("D9DDBC23-122B-47BA-B579-3B5022816BB6").getEntity();
-                if (RfcAndOnPayMsgTemplateDto != null) {
+                MsgTemplateDto rfcAndOnPayMsgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(
+                        "D9DDBC23-122B-47BA-B579-3B5022816BB6").getEntity();
+                if (rfcAndOnPayMsgTemplateDto != null) {
                     Map<String, Object> tempMap = IaisCommonUtils.genNewHashMap();
                     tempMap.put("serviceName", StringUtil.viewHtml(serviceName));
                     tempMap.put("amount", amount);
-                    String mesContext = MsgUtil.getTemplateMessageByContent(RfcAndOnPayMsgTemplateDto.getMessageContent(), tempMap);
+                    String mesContext = MsgUtil.getTemplateMessageByContent(rfcAndOnPayMsgTemplateDto.getMessageContent(), tempMap);
                     EmailDto emailDto = new EmailDto();
                     emailDto.setContent(mesContext);
                     emailDto.setSubject("MOH IAIS – Successful Submission of Request for Change " + appNo);
@@ -394,6 +395,10 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
     @Override
     public LicenceDto getLicenceById(String licenceId) {
+        log.info(StringUtil.changeForLog("Licence Id: " + licenceId));
+        if (StringUtil.isEmpty(licenceId)) {
+            return null;
+        }
         return licenceClient.getLicBylicId(licenceId).getEntity();
     }
 
@@ -558,22 +563,29 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
-    public void sendRfcSubmittedEmail(List<AppSubmissionDto> appSubmissionDtos, String pmtMethod) throws IOException, TemplateException {
+    public void sendRfcSubmittedEmail(List<AppSubmissionDto> appSubmissionDtos, String pmtMethod) throws Exception {
         if (appSubmissionDtos == null || appSubmissionDtos.isEmpty()) {
             log.info("No submissions to send email.");
             return;
         }
-        appSubmissionDtos.stream()
-                .collect(Collectors.groupingBy(AppSubmissionDto::getAppGrpNo))
-                .forEach((groupNo, appSubmissionDtoList) -> {
-                    log.info(StringUtil.changeForLog("The Group No for Email: " + groupNo));
-                    String method = appSubmissionDtoList.get(0).isAutoRfc() ? null : pmtMethod;
-                    try {
-                        sendRfcEmail(appSubmissionDtoList, method);
-                    } catch (Exception e) {
-                        log.error(StringUtil.changeForLog(groupNo + " : " + e.getMessage()), e);
-                    }
-                });
+        Exception ex = null;
+        Map<String, List<AppSubmissionDto>> map = appSubmissionDtos.stream()
+                .collect(Collectors.groupingBy(AppSubmissionDto::getAppGrpNo));
+        for (Map.Entry<String, List<AppSubmissionDto>> entry : map.entrySet()) {
+            String groupNo = entry.getKey();
+            List<AppSubmissionDto> appSubmissionDtoList = entry.getValue();
+            log.info(StringUtil.changeForLog("The Group No for Email: " + groupNo));
+            String method = appSubmissionDtoList.get(0).isAutoRfc() ? null : pmtMethod;
+            try {
+                sendRfcEmail(appSubmissionDtoList, method);
+            } catch (Exception e) {
+                log.error(StringUtil.changeForLog(groupNo + " : " + e.getMessage()), e);
+                ex = e;
+            }
+        }
+        if (ex != null) {
+            throw ex;
+        }
     }
 
     private void sendRfcEmail(List<AppSubmissionDto> appSubmissionDtos, String pmtMethod) throws IOException,
