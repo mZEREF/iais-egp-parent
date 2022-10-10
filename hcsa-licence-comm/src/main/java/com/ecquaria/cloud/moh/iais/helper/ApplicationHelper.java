@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SpecialServiceSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPsnEditDto;
@@ -1266,10 +1267,23 @@ public final class ApplicationHelper {
         return appSubmissionDto;
     }
 
-    public static List<SelectOption> genOutsourcedServiceSel(HttpServletRequest request, boolean needFirstOpt) {
+    public static List<SelectOption> genOutsourcedServiceSel(AppSubmissionDto appSubmissionDto) {
         List<SelectOption> options = IaisCommonUtils.genNewArrayList();
-        options.add(new SelectOption(HcsaAppConst.CLINICALLABORATOYY, HcsaAppConst.CLINICALLABORATOYY));
-        options.add(new SelectOption(HcsaAppConst.RADIOLOGICALSERVICE, HcsaAppConst.RADIOLOGICALSERVICE));
+        List<AppLicBundleDto> appLicBundleDtoList = appSubmissionDto.getAppLicBundleDtoList();
+        if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)){
+            for (AppLicBundleDto appLicBundleDto : appLicBundleDtoList) {
+                String bundleSvcName = String.valueOf(HcsaServiceCacheHelper.getServiceByCode(appLicBundleDto.getSvcCode()));
+                if (HcsaAppConst.CLINICALLABORATOYY.equals(bundleSvcName)){
+                    options.add(new SelectOption(HcsaAppConst.RADIOLOGICALSERVICE, HcsaAppConst.RADIOLOGICALSERVICE));
+                }
+                if (HcsaAppConst.RADIOLOGICALSERVICE.equals(bundleSvcName)){
+                    options.add(new SelectOption(HcsaAppConst.CLINICALLABORATOYY, HcsaAppConst.CLINICALLABORATOYY));
+                }
+            }
+        }else {
+            options.add(new SelectOption(HcsaAppConst.CLINICALLABORATOYY, HcsaAppConst.CLINICALLABORATOYY));
+            options.add(new SelectOption(HcsaAppConst.RADIOLOGICALSERVICE, HcsaAppConst.RADIOLOGICALSERVICE));
+        }
         return options;
     }
 

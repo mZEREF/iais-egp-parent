@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpSecondAddrDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremGroupOutsourcedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
@@ -34,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoMe
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoNurseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoTopDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoTopPersonDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOutsouredDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
@@ -1969,6 +1971,26 @@ public final class AppValidatorHelper {
 
             }
         }
+    }
+
+    public static Map<String, String> doValidationOutsourced(AppSvcOutsouredDto appSvcOutsouredDto,String curAt){
+        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+        AppPremGroupOutsourcedDto appPremGroupOutsourcedDto = appSvcOutsouredDto.getSearchOutsourced();
+        if (appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto() != null){
+            if ("search".equals(curAt)){
+                ValidationResult vResult = WebValidationHelper.validateProperty(appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto(),"search");
+                if (vResult != null && vResult.isHasErrors()){
+                    errMap = vResult.retrieveAll();
+                }
+            }
+           if ("add".equals(curAt)){
+               ValidationResult result = WebValidationHelper.validateProperty(appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto(),"add");
+               if (result != null && result.isHasErrors()){
+                   errMap = result.retrieveAll(appSvcOutsouredDto.getPrefixVal(),"");
+               }
+           }
+        }
+        return errMap;
     }
 
     public static Map<String, String> doValidateOtherInformation(List<AppSvcOtherInfoDto> appSvcOtherInfoDto, String currCode) {

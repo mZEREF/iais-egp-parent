@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.SpecialServiceSectionD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremGroupOutsourcedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOutSourceProvidersQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
@@ -74,6 +75,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.ecquaria.cloud.moh.iais.action.ServiceInfoDelegator.getAppSubmissionDto;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.PREMISESTYPE;
 
 /**
@@ -592,7 +594,7 @@ public class DealSessionUtil {
                         appPremSpecialisedDtoList, forceInit);
                 initDocumentSession(documentShowDtos, request);
             } else if (HcsaConsts.STEP_OUTSOURCED_PROVIDERS.equals(stepCode)) {
-                initSvcOutsourcedProvider(currSvcInfoDto, forceInit);
+                initSvcOutsourcedProvider(request,currSvcInfoDto, forceInit);
             }
         }
         return currSvcInfoDto;
@@ -734,8 +736,9 @@ public class DealSessionUtil {
         return true;
     }
 
-    public static boolean initSvcOutsourcedProvider(AppSvcRelatedInfoDto currSvcInfoDto, boolean forceInit) {
+    public static boolean initSvcOutsourcedProvider(HttpServletRequest request,AppSvcRelatedInfoDto currSvcInfoDto, boolean forceInit) {
         AppSvcOutsouredDto appSvcOutsouredDto = currSvcInfoDto.getAppPremOutSourceLicenceDto();
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         if (!forceInit && appSvcOutsouredDto != null && appSvcOutsouredDto.isInit()) {
             return false;
         }
@@ -743,6 +746,7 @@ public class DealSessionUtil {
             appSvcOutsouredDto = new AppSvcOutsouredDto();
         }
         // check bundle
+        List<AppLicBundleDto> appLicBundleDtoList = appSubmissionDto.getAppLicBundleDtoList();
         // licence numbers
         List<String> licenceNos = IaisCommonUtils.genNewArrayList();
         List<AppPremGroupOutsourcedDto> outsourcedDtoList = appSvcOutsouredDto.getClinicalLaboratoryList();
@@ -764,6 +768,13 @@ public class DealSessionUtil {
             searchParam.setSortField("SVC_NAME");
             searchParam.setPageSize(licenceNos.size());
             searchParam.addFilter("licenceNos", licenceNos, true);
+            if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)){
+                for (AppLicBundleDto appLicBundleDto : appLicBundleDtoList) {
+                    if (StringUtil.isNotEmpty(appLicBundleDto.getSvcCode())){
+                        searchParam.addFilter("bundleSvcName",HcsaServiceCacheHelper.getServiceByCode(appLicBundleDto.getSvcCode()),true);
+                    }
+                }
+            }
             SearchResult<AppPremOutSourceProvidersQueryDto> searchResult = getLicCommService().queryOutsouceLicences(
                     searchParam);
             if (searchResult != null && IaisCommonUtils.isNotEmpty(searchResult.getRows())) {

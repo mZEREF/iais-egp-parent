@@ -53,7 +53,7 @@
         <tr>
             <td>
                 <p class="visible-xs visible-sm table-row-title">Licence No.</p>
-                <div class="col-xs-6 ">
+                <div class="col-xs-6">
                     <span class="newVal" attr="${appPremOutSourceLicenceDto.licenceNo}">
                         <iais:code code="${appPremOutSourceLicenceDto.licenceNo}}"/>
                     </span>
