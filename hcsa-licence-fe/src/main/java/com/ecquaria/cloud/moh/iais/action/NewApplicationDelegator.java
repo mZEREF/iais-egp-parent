@@ -820,7 +820,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                     String applicationNo = applicationDto.getApplicationNo();
                     List<ApplicationDto> specApps = cessationClient.getAppByBaseAppNo(applicationNo).getEntity();
                     if (!IaisCommonUtils.isEmpty(specApps)) {
-                        List<AppSpecifiedLicDto> appSpecifiedLicDtos = IaisCommonUtils.genNewArrayList();
+                        //List<AppSpecifiedLicDto> appSpecifiedLicDtos = IaisCommonUtils.genNewArrayList();
                         for (ApplicationDto specApp : specApps) {
                             String specId = specApp.getOriginLicenceId();
                             LicenceDto specLicenceDto = licenceClient.getLicDtoById(specId).getEntity();
@@ -835,11 +835,11 @@ public class NewApplicationDelegator extends AppCommDelegator {
                                 appSpecifiedLicDto.setSpecLicNo(specLicenceNo);
                                 appSpecifiedLicDto.setSpecSvcName(specSvcName);
                                 appSpecifiedLicDto.setSpecLicId(licenceDtoId);
-                                appSpecifiedLicDtos.add(appSpecifiedLicDto);
+                                //appSpecifiedLicDtos.add(appSpecifiedLicDto);
                             }
                         }
-                        ParamUtil.setRequestAttr(bpc.request, "specLicInfo", appSpecifiedLicDtos);
-                        ParamUtil.setSessionAttr(bpc.request, "specLicInfoPrint", (Serializable) appSpecifiedLicDtos);
+                        //ParamUtil.setRequestAttr(bpc.request, "specLicInfo", appSpecifiedLicDtos);
+                        //ParamUtil.setSessionAttr(bpc.request, "specLicInfoPrint", (Serializable) appSpecifiedLicDtos);
                     }
                     List<SelectOption> reasonOption = ApplicationHelper.getReasonOption();
                     List<SelectOption> patientsOption = ApplicationHelper.getPatientsOption();

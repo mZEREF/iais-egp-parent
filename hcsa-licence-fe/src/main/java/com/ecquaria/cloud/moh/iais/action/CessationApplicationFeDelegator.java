@@ -108,8 +108,8 @@ public class CessationApplicationFeDelegator {
 
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_CESSATION, AuditTrailConsts.FUNCTION_CESSATION);
         ParamUtil.setSessionAttr(bpc.request, APPCESSATIONDTOS, null);
-        ParamUtil.setSessionAttr(bpc.request, "specLicInfo", null);
-        ParamUtil.setSessionAttr(bpc.request, "specLicInfoFlag", null);
+//        ParamUtil.setSessionAttr(bpc.request, "specLicInfo", null);
+//        ParamUtil.setSessionAttr(bpc.request, "specLicInfoFlag", null);
         ParamUtil.setSessionAttr(bpc.request, "rfiAppId", null);
         ParamUtil.setSessionAttr(bpc.request, "rfiPremiseId", null);
         ParamUtil.setSessionAttr(bpc.request, "rfiAppId", rfiAppId);
@@ -398,7 +398,6 @@ public class CessationApplicationFeDelegator {
         for (AppCessLicDto appCessLicDto : appCessLicDtos) {
             String licenceId = appCessLicDto.getLicenceId();
             List<AppCessHciDto> appCessHciDtos = appCessLicDto.getAppCessHciDtos();
-            List<String> specialLicIds = appCessLicDto.getSpecialLicIds();
             List<AppDeclarationDocDto> appDeclarationDocDtoList = appCessLicDto.getAppDeclarationDocDtos();
             AppDeclarationMessageDto appDeclarationMessageDto = appCessLicDto.getAppDeclarationMessageDto();
             if (appCessHciDtos != null && !appCessHciDtos.isEmpty()) {
@@ -435,7 +434,6 @@ public class CessationApplicationFeDelegator {
                         appCessationDto.setPremiseId(whichTodo);
                         appCessationDto.setReadInfo(readInfo);
                         appCessationDto.setLicId(licenceId);
-                        appCessationDto.setSpecialLicIds(specialLicIds);
                         appCessationDto.setMobileNo(mobileNo);
                         appCessationDto.setEmailAddress(emailAddress);
                         appCessationDto.setTransferDetail(appCessHciDto.getTransferDetail());

@@ -286,7 +286,7 @@
                     </div>
                   </c:forEach>
                 </div>
-                <c:if test="${specLicInfo !=null}">
+                <%--<c:if test="${specLicInfo !=null}">
                 <div class="table-responsive">
                   <div><h4>The following specified healthcare services will also be ceased as
                     their
@@ -326,7 +326,7 @@
                     </c:forEach>
                   </table>
                 </div>
-                </c:if>
+                </c:if>--%>
               </div>
               </c:forEach>
           </div>
