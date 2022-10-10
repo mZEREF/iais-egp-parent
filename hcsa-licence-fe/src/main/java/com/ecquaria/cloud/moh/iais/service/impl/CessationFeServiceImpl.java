@@ -322,9 +322,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                         for (AppPremSubSvcRelDto specSvc : appPremSubSvcRelDtos) {
                             HcsaServiceDto specServiceDto = HcsaServiceCacheHelper.getServiceById(specSvc.getSvcId());
                             String svcName1 = specServiceDto.getSvcName();
-                            serviceCodes.add("<br/>");
                             svcNameLicNo.append(svcName1).append(" : ").append(licenceNo);
-                            serviceCodes.add(specServiceDto.getSvcCode());
                         }
                     }
                     emailMap.put(SERVICE_LICENCE_NAME, svcNameLicNo.toString());
@@ -393,9 +391,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                         for (AppPremSubSvcRelDto specSvc : appPremSubSvcRelDtos) {
                             HcsaServiceDto specServiceDto = HcsaServiceCacheHelper.getServiceById(specSvc.getSvcId());
                             String svcName1 = specServiceDto.getSvcName();
-                            serviceCodes.add("<br/>");
                             svcNameLicNo.append(svcName1).append(" : ").append(licenceNo);
-                            serviceCodes.add(specServiceDto.getSvcCode());
                         }
                     }
                     emailMap.put(SERVICE_LICENCE_NAME, svcNameLicNo.toString());

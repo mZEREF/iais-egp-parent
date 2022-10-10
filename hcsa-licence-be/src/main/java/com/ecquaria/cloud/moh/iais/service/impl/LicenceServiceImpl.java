@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
@@ -19,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.IaisUENDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
@@ -66,6 +68,7 @@ import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AcraUenBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppCommClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremSubSvcBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
@@ -171,6 +174,8 @@ public class LicenceServiceImpl implements LicenceService {
     private String secretKey;
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
+    @Autowired
+    private AppPremSubSvcBeClient appPremSubSvcBeClient;
 
     @Override
     public List<ApplicationLicenceDto> getCanGenerateApplications(GenerateLicenceDto generateLicenceDto) {
@@ -712,7 +717,7 @@ public class LicenceServiceImpl implements LicenceService {
                                     String applicationTypeShow = MasterCodeUtil.getCodeDesc(applicationType);
                                     log.info(StringUtil.changeForLog("send notification applicationType : " + applicationTypeShow));
                                     if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
-                                        sendNewAppApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate,licenceNo,svcCodeList,loginUrl,corpPassUrl,MohName,organizationDto,inspectionRecommendation);
+                                        sendNewAppApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate,licenceNo,svcCodeList,loginUrl,corpPassUrl,MohName,organizationDto,inspectionRecommendation,appPremisesCorrelationDto);
                                     }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
                                         sendRenewalAppApproveNotification(applicantName,applicationTypeShow,applicationNo,appDate,licenceNo,svcCodeList,loginUrl,MohName,inspectionRecommendation);
                                         sendPostInspectionNotification(applicationGroupDto,applicantName,svcDto,svcCodeList,MohName,applicationNo);
@@ -1110,14 +1115,34 @@ public class LicenceServiceImpl implements LicenceService {
                                                String corpPassUrl,
                                                String MohName,
                                                OrganizationDto organizationDto,
-                                               AppPremisesRecommendationDto inspectionRecommendation){
+                                               AppPremisesRecommendationDto inspectionRecommendation,AppPremisesCorrelationDto appPremisesCorrelationDto){
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        ApplicationDto applicationDto = applicationClient.getApplicationById(appPremisesCorrelationDto.getApplicationId()).getEntity();
+        HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getBaseServiceId());
+        AppGrpPremisesDto appGrpPremisesDto=appCommClient.getAppGrpPremisesById(appPremisesCorrelationDto.getAppGrpPremId()).getEntity();
         map.put("ApplicantName", applicantName);
         map.put("ApplicationType", applicationTypeShow);
         map.put("ApplicationNumber", applicationNo);
         map.put("applicationDate", appDate);
         map.put("licenceNumber", licenceNo);
+        map.put("svcNameMOSD", baseServiceDto.getSvcName()+"("+appGrpPremisesDto.getAddress()+")");
+        map.put("BusinessName", appGrpPremisesDto.getBusinessName());
+        map.put("LicenseeName",  applicantName);
         map.put("isSpecial", "N");
+        List<AppPremSubSvcRelDto> appPremSubSvcRelDtos = appPremSubSvcBeClient.getAppPremSubSvcRelDtoListByCorrIdAndType(
+                        appPremisesCorrelationDto.getId(), HcsaConsts.SERVICE_TYPE_SPECIFIED)
+                .getEntity();
+        if (!IaisCommonUtils.isEmpty(appPremSubSvcRelDtos)) {
+            StringBuilder svcNameLicNo = new StringBuilder();
+            for (AppPremSubSvcRelDto specSvc : appPremSubSvcRelDtos) {
+                HcsaServiceDto specServiceDto = HcsaServiceCacheHelper.getServiceById(specSvc.getSvcId());
+                String svcName1 = specServiceDto.getSvcName();
+                svcNameLicNo.append("<p>    ").append(svcName1).append("</p>");
+            }
+            map.put("isSpecial", "Y");
+            map.put("ss1ss2", svcNameLicNo.toString());
+
+        }
         map.put("isCorpPass", "N");
         if(inspectionRecommendation != null){
             map.put("inInspection", "Y");

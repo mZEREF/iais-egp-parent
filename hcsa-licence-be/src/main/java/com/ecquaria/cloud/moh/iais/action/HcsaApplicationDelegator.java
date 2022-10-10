@@ -116,6 +116,7 @@ import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremSubSvcBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -236,6 +237,9 @@ public class HcsaApplicationDelegator {
 
     @Autowired
     private AppCommClient appCommClient;
+
+    @Autowired
+    private AppPremSubSvcBeClient appPremSubSvcBeClient;
 
 
     @Autowired
@@ -4163,7 +4167,7 @@ public class HcsaApplicationDelegator {
                         String organizationId = licenseeDto.getOrganizationId();
                         OrganizationDto organizationDto = organizationClient.getOrganizationById(organizationId).getEntity();
 
-                        emailParam=sendNewAppApproveNotification(applicantName,applicationTypeShow,applicationNo,licenceNo,organizationDto,inspectionRecommendation,appDate);
+                        emailParam=sendNewAppApproveNotification(applicantName,licenceNo,organizationDto,inspectionRecommendation,appDate,applicationViewDto);
                     }
                     if(applicationDto.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_RENEWAL)){
                         emailParam=sendRenewalAppApproveNotification(applicantName,applicationTypeShow,applicationNo,licenceNo,inspectionRecommendation,appDate);
@@ -4894,15 +4898,17 @@ public class HcsaApplicationDelegator {
     }
 
     private EmailParam sendNewAppApproveNotification(String applicantName,
-                                                     String applicationTypeShow,
-                                                     String applicationNo,
                                                      String licenceNo,
                                                      OrganizationDto organizationDto,
-                                                     AppPremisesRecommendationDto inspectionRecommendation ,String appDate
+                                                     AppPremisesRecommendationDto inspectionRecommendation ,String appDate ,ApplicationViewDto applicationViewDto
                                                      ){
         String MohName = AppConsts.MOH_AGENCY_NAME;
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         String corpPassUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + "/main-web/eservice/INTERNET/FE_Landing";
+        ApplicationDto applicationDto =applicationViewDto.getApplicationDto();
+        HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getBaseServiceId());
+        String applicationNo=applicationDto.getApplicationNo();
+        String applicationTypeShow = MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType());
 
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         map.put("ApplicantName", applicantName);
@@ -4910,7 +4916,25 @@ public class HcsaApplicationDelegator {
         map.put("ApplicationNumber", applicationNo);
         map.put("applicationDate", appDate);
         map.put("licenceNumber", licenceNo);
+        map.put("svcNameMOSD", baseServiceDto.getSvcName()+"("+applicationViewDto.getHciAddress()+")");
+        map.put("BusinessName", applicationViewDto.getHciName());
+        map.put("LicenseeName",  applicationViewDto.getSubLicenseeDto().getDisplayName());
         map.put("isSpecial", "N");
+        List<AppPremSubSvcRelDto> appPremSubSvcRelDtos = appPremSubSvcBeClient.getAppPremSubSvcRelDtoListByCorrIdAndType(
+                        applicationViewDto.getAppPremisesCorrelationId(), HcsaConsts.SERVICE_TYPE_SPECIFIED)
+                .getEntity();
+        if (!IaisCommonUtils.isEmpty(appPremSubSvcRelDtos)) {
+            StringBuilder svcNameLicNo = new StringBuilder();
+            for (AppPremSubSvcRelDto specSvc : appPremSubSvcRelDtos) {
+                HcsaServiceDto specServiceDto = HcsaServiceCacheHelper.getServiceById(specSvc.getSvcId());
+                String svcName1 = specServiceDto.getSvcName();
+                svcNameLicNo.append("<p>    ").append(svcName1).append("</p>");
+
+            }
+            map.put("isSpecial", "Y");
+            map.put("ss1ss2", svcNameLicNo.toString());
+
+        }
         map.put("isCorpPass", "N");
 
         if(inspectionRecommendation != null){
