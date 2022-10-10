@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
@@ -13,11 +12,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -28,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
@@ -50,13 +50,14 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.CessationFeService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremSubSvcFeClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import com.ecquaria.sz.commons.util.DateUtil;
@@ -110,7 +111,9 @@ public class CessationFeServiceImpl implements CessationFeService {
     @Autowired
     private AppCommService appCommService;
     @Autowired
-    private AppPremSubSvcFeClient appPremSubSvcFeClient;
+    private AppCommClient appCommClient;
+    @Autowired
+    private OrganizationLienceseeClient organizationLienceseeClient;
     @Override
     public List<AppCessLicDto> getAppCessDtosByLicIds(List<String> licIds) {
         List<AppCessLicDto> appCessLicDtos = IaisCommonUtils.genNewArrayList();
@@ -246,6 +249,7 @@ public class CessationFeServiceImpl implements CessationFeService {
 
     @Override
     public List<AppCessatonConfirmDto> getConfirmDto(List<AppCessationDto> appCessationDtos, Map<String, List<String>> appIdPremisesMap, LoginContext loginContext) throws ParseException {
+        LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(loginContext.getLicenseeId()).getEntity();
         List<AppCessatonConfirmDto> appCessationDtosConfirms = IaisCommonUtils.genNewArrayList();
         List<String> licIds = IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
@@ -282,6 +286,7 @@ public class CessationFeServiceImpl implements CessationFeService {
             }
             ApplicationDto applicationDto = applicationFeClient.getApplicationById(appId).getEntity();
             AppPremisesCorrelationDto appPremisesCorrelationDto=applicationFeClient.getCorrelationByAppNo(applicationDto.getApplicationNo()).getEntity();
+            List<AppSvcBusinessDto> appSvcBusinessDtoList=appCommClient.getAppSvcBusinessDtoListByCorrId(appPremisesCorrelationDto.getId()).getEntity();
             applicationDto.setAuditTrailDto(currentAuditTrailDto);
             applicationDtos.add(applicationDto);
             List<AppCessLicDto> appCessDtosByLicIds = getAppCessDtosByLicIds(licIds);
@@ -313,19 +318,13 @@ public class CessationFeServiceImpl implements CessationFeService {
                     emailMap.put("ApplicantName", applicantName);
                     emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
                     emailMap.put("ApplicationNumber", baseAppNo);
-                    StringBuilder svcNameLicNo = new StringBuilder();
-                    svcNameLicNo.append(svcName).append(" : ").append(licenceNo);
-                    List<AppPremSubSvcRelDto> appPremSubSvcRelDtos = appPremSubSvcFeClient.getAppPremSubSvcRelDtoListByCorrIdAndType(
-                                    appPremisesCorrelationDto.getId(), HcsaConsts.SERVICE_TYPE_SPECIFIED)
-                            .getEntity();
-                    if (!IaisCommonUtils.isEmpty(appPremSubSvcRelDtos)) {
-                        for (AppPremSubSvcRelDto specSvc : appPremSubSvcRelDtos) {
-                            HcsaServiceDto specServiceDto = HcsaServiceCacheHelper.getServiceById(specSvc.getSvcId());
-                            String svcName1 = specServiceDto.getSvcName();
-                            svcNameLicNo.append(svcName1).append(" : ").append(licenceNo);
-                        }
+                    emailMap.put("BusinessName", "-");
+                    if(IaisCommonUtils.isNotEmpty(appSvcBusinessDtoList)){
+                        emailMap.put("BusinessName", appSvcBusinessDtoList.get(0).getBusinessName());
                     }
-                    emailMap.put(SERVICE_LICENCE_NAME, svcNameLicNo.toString());
+                    emailMap.put("LicenseeName", licenseeDto.getName());
+                    emailMap.put("LicenceNo", licenceNo);
+                    emailMap.put(SERVICE_LICENCE_NAME, svcName);
                     emailMap.put(CESSATION_DATE, DateFormatUtils.format(effectiveDate, "dd/MM/yyyy"));
                     emailMap.put(APPLICATION_DATE, DateFormatUtils.format(new Date(), "dd/MM/yyyy"));
                     emailMap.put("email", systemParamConfig.getSystemAddressOne());
@@ -382,19 +381,13 @@ public class CessationFeServiceImpl implements CessationFeService {
                     String applicantName = loginContext.getUserName();
                     emailMap.put("ApplicantName", applicantName);
                     emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
-                    StringBuilder svcNameLicNo = new StringBuilder();
-                    svcNameLicNo.append(svcName).append(" : ").append(licenceNo);
-                    List<AppPremSubSvcRelDto> appPremSubSvcRelDtos = appPremSubSvcFeClient.getAppPremSubSvcRelDtoListByCorrIdAndType(
-                                    appPremisesCorrelationDto.getId(), HcsaConsts.SERVICE_TYPE_SPECIFIED)
-                            .getEntity();
-                    if (!IaisCommonUtils.isEmpty(appPremSubSvcRelDtos)) {
-                        for (AppPremSubSvcRelDto specSvc : appPremSubSvcRelDtos) {
-                            HcsaServiceDto specServiceDto = HcsaServiceCacheHelper.getServiceById(specSvc.getSvcId());
-                            String svcName1 = specServiceDto.getSvcName();
-                            svcNameLicNo.append(svcName1).append(" : ").append(licenceNo);
-                        }
+                    emailMap.put("BusinessName", "-");
+                    if(IaisCommonUtils.isNotEmpty(appSvcBusinessDtoList)){
+                        emailMap.put("BusinessName", appSvcBusinessDtoList.get(0).getBusinessName());
                     }
-                    emailMap.put(SERVICE_LICENCE_NAME, svcNameLicNo.toString());
+                    emailMap.put("LicenseeName", licenseeDto.getName());
+                    emailMap.put("LicenceNo", licenceNo);
+                    emailMap.put(SERVICE_LICENCE_NAME, svcName);
                     emailMap.put("ApplicationNumber", baseAppNo);
                     emailMap.put(CESSATION_DATE, DateFormatUtils.format(effectiveDate, "dd/MM/yyyy"));
                     emailMap.put("email", systemParamConfig.getSystemAddressOne());

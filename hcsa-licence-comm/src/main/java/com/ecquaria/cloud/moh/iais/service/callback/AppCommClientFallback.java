@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpSecondAddrDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -137,6 +138,11 @@ public class AppCommClientFallback implements AppCommClient {
     @Override
     public FeignResponseEntity<List<AppGrpSecondAddrDto>> saveSecondAddress(List<AppGrpSecondAddrDto> addrDtos) {
         return null;
+    }
+
+    @Override
+    public FeignResponseEntity<List<AppSvcBusinessDto>> getAppSvcBusinessDtoListByCorrId(String appPremCorrId) {
+        return IaisEGPHelper.getFeignResponseEntity(appPremCorrId);
     }
 
     @Override

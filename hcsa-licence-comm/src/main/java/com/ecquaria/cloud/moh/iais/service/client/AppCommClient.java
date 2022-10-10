@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpSecondAddrDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -109,4 +110,7 @@ public interface AppCommClient {
 
     @PostMapping(value = "/save-secondAddress",produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppGrpSecondAddrDto>> saveSecondAddress(@RequestBody List<AppGrpSecondAddrDto> addrDtos);
+
+    @GetMapping(path = "/com-svc-business/{appPremCorrId}", produces = MediaType.APPLICATION_JSON_VALUE )
+    FeignResponseEntity<List<AppSvcBusinessDto>> getAppSvcBusinessDtoListByCorrId(@PathVariable(name = "appPremCorrId") String appPremCorrId);
 }
