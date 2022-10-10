@@ -12,7 +12,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppSpecifiedLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -87,8 +86,8 @@ public class ReCessationApplicationBeDelegator {
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>CessationApplicationDelegator");
         ParamUtil.setSessionAttr(bpc.request, APPCESSATIONDTO, null);
-        ParamUtil.setSessionAttr(bpc.request, "specLicInfo", null);
-        ParamUtil.setSessionAttr(bpc.request, "specLicInfoFlag", null);
+//        ParamUtil.setSessionAttr(bpc.request, "specLicInfo", null);
+//        ParamUtil.setSessionAttr(bpc.request, "specLicInfoFlag", null);
         ParamUtil.setSessionAttr(bpc.request, "isGrpLic", null);
         ParamUtil.setSessionAttr(bpc.request, "appCessationDtoSave", null);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", null);
@@ -114,7 +113,7 @@ public class ReCessationApplicationBeDelegator {
         String originLicenceId = applicationDto.getOriginLicenceId();
         List<String> licIds = IaisCommonUtils.genNewArrayList();
         licIds.add(originLicenceId);
-        List<String> specLicIds = cessationBeService.filtrateSpecLicIds(licIds);
+        /*List<String> specLicIds = cessationBeService.filtrateSpecLicIds(licIds);
         List<AppSpecifiedLicDto> specLicInfo = cessationBeService.getSpecLicInfo(licIds);
         if (specLicInfo.size() > 0) {
             Map<String, List<AppSpecifiedLicDto>> map = IaisCommonUtils.genNewHashMap();
@@ -134,7 +133,7 @@ public class ReCessationApplicationBeDelegator {
             }
             ParamUtil.setSessionAttr(bpc.request, "specLicInfo", (Serializable) map);
             ParamUtil.setSessionAttr(bpc.request, "specLicInfoFlag", "exist");
-        }
+        }*/
         List<SelectOption> reasonOption = getReasonOption();
         List<SelectOption> patientsOption = getPatientsOption();
         ParamUtil.setSessionAttr(bpc.request, APPCESSATIONDTO, appCessLicDtos.get(0));

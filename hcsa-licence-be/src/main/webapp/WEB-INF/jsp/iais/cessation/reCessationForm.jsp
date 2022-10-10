@@ -269,7 +269,7 @@
                                 </div>
                             </c:forEach>
                         </div>
-                        <c:if test="${specLicInfo !=null}">
+                        <%--<c:if test="${specLicInfo !=null}">
                             <c:forEach items="${specLicInfo}" var="map">
                                 <c:set var="licNo" value="${map.key}"></c:set>
                                 <c:if test="${appCess.licenceNo==licNo}">
@@ -307,7 +307,7 @@
                                     </table>
                                 </c:if>
                             </c:forEach>
-                        </c:if>
+                        </c:if>--%>
                     </div>
                 </div>
                 <br/>

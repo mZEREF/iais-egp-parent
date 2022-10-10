@@ -3985,7 +3985,7 @@ public class HcsaApplicationDelegator {
                 appCessHciDtos.add(appCessHciDto);
                 appCessLicDto.setAppCessHciDtos(appCessHciDtos);
                 //spec
-                String applicationNo = applicationDto.getApplicationNo();
+                /*String applicationNo = applicationDto.getApplicationNo();
                 List<ApplicationDto> specApps = cessationClient.getAppByBaseAppNo(applicationNo).getEntity();
                 List<AppSpecifiedLicDto> appSpecifiedLicDtos = IaisCommonUtils.genNewArrayList();
                 if (!IaisCommonUtils.isEmpty(specApps)) {
@@ -4007,7 +4007,7 @@ public class HcsaApplicationDelegator {
                         }
                     }
                     ParamUtil.setSessionAttr(request, "specLicInfo", (Serializable) appSpecifiedLicDtos);
-                }
+                }*/
                 ParamUtil.setSessionAttr(request, "confirmDto", appCessLicDto);
                 ParamUtil.setSessionAttr(request, "reasonOption", (Serializable) getReasonOption());
                 ParamUtil.setSessionAttr(request, "patientsOption", (Serializable) getPatientsOption());
