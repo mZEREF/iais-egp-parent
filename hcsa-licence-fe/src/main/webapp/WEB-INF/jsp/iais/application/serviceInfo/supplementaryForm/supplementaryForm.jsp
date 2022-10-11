@@ -20,7 +20,7 @@
         <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
     </c:if>
 
-    <c:out value="${currStepName}"/>---------------->>>>>
+    <c:out value="${currStepName}"/>
 
     <iais:row>
         <div class="col-xs-12">
