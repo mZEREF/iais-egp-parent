@@ -13,7 +13,6 @@
         <input value="${clinicalLaboratoryList.businessName}" name="bName${index}" type="hidden">
         <input value="${clinicalLaboratoryList.address}" name="addr${index}" type="hidden">
         <input value="${clinicalLaboratoryList.expiryDate}" name="expriyDate${index}" type="hidden">
-        <input value="${clinicalLaboratoryList.status}" name="status${index}" type="hidden">
     </c:forEach>
 </c:if>
 <c:if test="${!empty cL.radiologicalServiceList}">
@@ -30,6 +29,5 @@
         <input value="${radiologicalServiceList.businessName}" name="bName${index}" type="hidden">
         <input value="${radiologicalServiceList.address}" name="addr${index}" type="hidden">
         <input value="${radiologicalServiceList.expiryDate}" name="expriyDate${index}" type="hidden">
-        <input value="${radiologicalServiceList.status}" name="status${index}" type="hidden">
     </c:forEach>
 </c:if>

@@ -1,10 +1,12 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts" %>
+<c:set var="cL" value="${currSvcInfoDto.appPremOutSourceLicenceDto}"/>
 <iais:row>
-    <div class="col-xs-12" style="margin-top: 20px;!important;">
+    <div class="col-xs-12 <c:if test="${AppSubmissionDto.appLicBundleDtoList[0].svcCode eq AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES}">hidden</c:if>" style="margin-top: 20px;!important;">
         <p>Radiological Service</p>
     </div>
 </iais:row>
 
-<div class="col-lg-12 col-xs-12 col-md-12">
+<div class="col-lg-12 col-xs-12 col-md-12 <c:if test="${AppSubmissionDto.appLicBundleDtoList[0].svcCode eq AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES}">hidden</c:if>">
     <div class="intranet-content">
         <table aria-describedby="" class="table">
             <thead>
@@ -20,7 +22,6 @@
             </tr>
             </thead>
             <tbody>
-            <c:set var="cL" value="${currSvcInfoDto.appPremOutSourceLicenceDto}"/>
             <c:if test="${empty cL.radiologicalServiceList}">
                 <tr>
                     <td>

@@ -1,5 +1,6 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts" %>
 <c:if test="${not empty outsourceDto.radiologicalServiceList}">
-<div class="amended-service-info-gp form-horizontal min-row">
+<div class="amended-service-info-gp form-horizontal min-row <c:if test="${outsourceDto.bundleSvcCode eq AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES}">hidden</c:if>">
     <div class="col-xs-12">
         <p><strong>Radiological Service</strong></p>
     </div>

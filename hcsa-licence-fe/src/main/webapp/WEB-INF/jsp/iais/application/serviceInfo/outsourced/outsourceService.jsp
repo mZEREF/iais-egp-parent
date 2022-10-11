@@ -1,4 +1,3 @@
-<%@ page import="org.springframework.util.StringUtils" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");

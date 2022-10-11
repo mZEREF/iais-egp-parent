@@ -630,11 +630,8 @@ public class ServiceInfoDelegator {
             currSvcInfoDto.setAppPremOutSourceLicenceDto(appSvcOutsouredDto);
             reSetChangesForApp(appSubmissionDto);
             setAppSvcRelatedInfoMap(request, currSvcId, currSvcInfoDto, appSubmissionDto);
-        }
-        Map<String,String> errorMap = AppValidatorHelper.doValidationOutsourced(appSvcOutsouredDto,curAct);
-        checkAction(errorMap,HcsaConsts.STEP_OUTSOURCED_PROVIDERS,appSubmissionDto,request);
-        if (IaisCommonUtils.isEmpty(errorMap)){
-            AppDataHelper.doSearchParam(request,curAct,appSubmissionDto,appSvcOutsouredDto);
+            Map<String,String> errorMap = AppValidatorHelper.doValidationOutsourced(appSvcOutsouredDto,curAct);
+            checkAction(errorMap,HcsaConsts.STEP_OUTSOURCED_PROVIDERS,appSubmissionDto,request);
         }
     }
 

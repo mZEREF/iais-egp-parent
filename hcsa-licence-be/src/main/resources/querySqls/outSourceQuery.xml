@@ -23,7 +23,7 @@
             JOIN premises AS p ON p.ID = lp.PREMISES_ID
             JOIN lic_prem_business_info b ON b.LIC_PREM_ID = lp.ID
             JOIN lic_second_addr lsa ON  lsa.PREMISES_ID = lp.PREMISES_ID
-            WHERE 1=1
+            WHERE 1=1 AND p.STATUS = 'CMSTAT001'
             <#if svcName??>AND l.SVC_NAME = :svcName </#if>
             <#if businessName??> AND b.BUSINESS_NAME = :businessName</#if>
             <#if licenceNo??> AND l.LICENCE_NO = :licenceNo</#if>
@@ -33,6 +33,7 @@
             <#if licenceNos??> AND l.LICENCE_NO IN (:licenceNos)</#if>
             <#if bundleSvcName??> AND l.SVC_NAME IN (:bundleSvcName)</#if>
             <#if postalCode??> AND lsa.POSTAL_CODE = :postalCode</#if>
+            <#if addId??> AND l.ID = :addId</#if>
         ]]>
     </sql>
 </sqls>

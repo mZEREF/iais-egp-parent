@@ -31,8 +31,9 @@
             <#if ids??> AND l.ID NOT IN (:ids)</#if>
             <#if licenceId??> AND l.LICENSEE_ID NOT IN (:licenceId)</#if>
             <#if licenceNos??> AND l.LICENCE_NO IN (:licenceNos)</#if>
-            <#if bundleSvcName??> AND l.SVC_NAME IN (:bundleSvcName)</#if>
+            <#if bundleSvcName??> AND l.SVC_NAME NOT IN (:bundleSvcName)</#if>
             <#if postalCode??> AND lsa.POSTAL_CODE = :postalCode</#if>
+            <#if addId??> AND l.ID = :addId</#if>
         ]]>
     </sql>
 </sqls>

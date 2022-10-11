@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocSecDetailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocSectionDto;
@@ -1976,23 +1977,42 @@ public final class AppValidatorHelper {
 
     public static Map<String, String> doValidationOutsourced(AppSvcOutsouredDto appSvcOutsouredDto,String curAt){
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+        SearchParam searchParam = appSvcOutsouredDto.getSearchParam();
+        if ("search".equals(curAt)){
+            if (searchParam != null && !searchParam.getFilters().isEmpty()){
+                if (searchParam.getFilters().get("svcName") == null){
+                    errMap.put("serviceCode", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                            "Service", "field"));
+                }
+            }else if (searchParam == null || searchParam.getFilters().isEmpty()){
+                errMap.put("serviceCode", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                        "Service", "field"));
+            }
+        }
         AppPremGroupOutsourcedDto appPremGroupOutsourcedDto = appSvcOutsouredDto.getSearchOutsourced();
-        if (appPremGroupOutsourcedDto != null && appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto() != null){
-            if ("search".equals(curAt)){
-                ValidationResult vResult = WebValidationHelper.validateProperty(appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto(),"search");
-                if (vResult != null && vResult.isHasErrors()){
-                    errMap = vResult.retrieveAll();
+        if ("add".equals(curAt)){
+            if (appPremGroupOutsourcedDto != null){
+                String prefix = appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getId();
+                String startDate = appPremGroupOutsourcedDto.getStartDateStr();
+                if (StringUtil.isEmpty(startDate)){
+                    errMap.put(prefix+"agreementStartDate",MessageUtil.replaceMessage("GENERAL_ERR0006",
+                            "Date of Agreement", "field"));
+                }
+                String endDate = appPremGroupOutsourcedDto.getEndDateStr();
+                if (StringUtil.isEmpty(endDate)){
+                    errMap.put(prefix+"agreementEndDate",MessageUtil.replaceMessage("GENERAL_ERR0006",
+                            "End Date of Agreement", "field"));
+                }
+                String outstandingScope = appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getOutstandingScope();
+                if (StringUtil.isEmpty(outstandingScope)){
+                    errMap.put(prefix+"outstandingScope",MessageUtil.replaceMessage("GENERAL_ERR0006",
+                            "Scope of Outsourcing", "field"));
                 }
             }
-           if ("add".equals(curAt)){
-               ValidationResult result = WebValidationHelper.validateProperty(appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto(),"add");
-               if (result != null && result.isHasErrors()){
-                   errMap = result.retrieveAll(appSvcOutsouredDto.getPrefixVal(),"");
-               }
-           }
         }
         return errMap;
     }
+
 
     public static Map<String, String> doValidateOtherInformation(List<AppSvcOtherInfoDto> appSvcOtherInfoDto, String currCode) {
         if (appSvcOtherInfoDto == null) {

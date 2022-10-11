@@ -2,7 +2,6 @@
     <c:set var="index" value="${r.index}" />
     <c:set var="msgTemplateResult" value="${cL.radiologicalServiceList[index]}"/>
     <c:set var="appPremOutSourceLicenceDto" value="${msgTemplateResult.appPremOutSourceLicenceDto}"/>
-    <c:if test="${msgTemplateResult.status eq 0}">
         <tr>
             <td>
                 <p class="visible-xs visible-sm table-row-title">Licence No.</p>
@@ -38,5 +37,4 @@
                 <button type="button" class="btn btn-default btn-sm btn-rSBtn" data-prefix="${prefix}">DELETE</button>
             </td>
         </tr>
-    </c:if>
 </c:forEach>

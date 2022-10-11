@@ -1,3 +1,4 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts" %>
 <c:set var="cL" value="${currSvcInfoDto.appPremOutSourceLicenceDto}"/>
 <input type="hidden" name="classSort" value="">
 <div class="clService" style="margin-top: 100px;!important;">
@@ -9,12 +10,12 @@
     </iais:row>
 
     <iais:row>
-        <div class="col-xs-12">
+        <div class="col-xs-12 <c:if test="${AppSubmissionDto.appLicBundleDtoList[0].svcCode eq AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY}">hidden</c:if>">
             <p>Clinical Laboratory</p>
         </div>
     </iais:row>
 
-    <div class="col-lg-12 col-xs-12 col-md-12">
+    <div class="col-lg-12 col-xs-12 col-md-12 <c:if test="${AppSubmissionDto.appLicBundleDtoList[0].svcCode eq AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY}">hidden</c:if>">
         <div class="intranet-content">
             <table aria-describedby="" class="table">
                 <thead>
