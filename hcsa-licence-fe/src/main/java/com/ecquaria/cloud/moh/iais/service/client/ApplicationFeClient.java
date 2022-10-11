@@ -356,9 +356,6 @@ public interface ApplicationFeClient {
     @PutMapping(path="/iais-application/fe-giro-retrigger", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationGroupDto> updateAppGrpPmtStatus(@RequestBody ApplicationGroupDto applicationGroupDto, @RequestParam(name = "giroAccNo") String giroAccNo);
 
-    @PutMapping(path="/iais-application/payment-update", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<String> updatePaymentByAppGrp(@RequestBody ApplicationGroupDto applicationGroupDto);
-
     @GetMapping(value = "/iais-submission/draft-by-lic-app-id",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationSubDraftDto>> getDraftByLicAppIdAndStatus(@RequestParam("licAppId") String licAppId,@RequestParam("status") String status);
 

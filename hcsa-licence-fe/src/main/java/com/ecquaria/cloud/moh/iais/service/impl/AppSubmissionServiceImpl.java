@@ -1570,4 +1570,25 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         return appSvcSuplmItemDtoList;
     }
 
+    @Override
+    public void updatePayment(AppSubmissionDto appSubmissionDto, String pmtRefNo) {
+        if (appSubmissionDto == null) {
+            return;
+        }
+        ApplicationGroupDto appGrp = new ApplicationGroupDto();
+        appGrp.setId(appSubmissionDto.getAppGrpId());
+        appGrp.setPmtRefNo(pmtRefNo);
+        appGrp.setGroupNo(appSubmissionDto.getAppGrpNo());
+        appGrp.setAutoRfc(appSubmissionDto.isAutoRfc());
+        Double amount = appSubmissionDto.getAmount();
+        if (amount != null && !MiscUtil.doubleEquals(0.0, amount)) {
+            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+        } else {
+            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+        }
+        appGrp.setPayMethod(appSubmissionDto.getPaymentMethod());
+        applicationFeClient.doPaymentUpDate(appGrp);
+        log.info(StringUtil.changeForLog("App Grp No. is " + appGrp.getGroupNo()));
+    }
+
 }

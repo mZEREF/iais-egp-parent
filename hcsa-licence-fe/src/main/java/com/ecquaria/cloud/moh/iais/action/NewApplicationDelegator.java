@@ -79,7 +79,9 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.lang.instrument.Instrumentation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -490,21 +492,10 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
                 if (ackSubmissionDtos != null) {
                     for (AppSubmissionDto appSubmissionDto1 : ackSubmissionDtos) {
-                        ApplicationGroupDto appGrp = new ApplicationGroupDto();
-                        appGrp.setId(appSubmissionDto1.getAppGrpId());
-                        appGrp.setPmtRefNo(pmtRefNo);
-                        appGrp.setGroupNo(appSubmissionDto1.getAppGrpNo());
-                        appGrp.setAutoRfc(appSubmissionDto1.isAutoRfc());
                         Double amount = appSubmissionDto1.getAmount();
                         if (amount != null && !MiscUtil.doubleEquals(0.0, amount)) {
-                            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
-                            appGrp.setPayMethod(appSubmissionDto.getPaymentMethod());
-                        } else {
-                            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-                            appGrp.setPayMethod(appSubmissionDto.getPaymentMethod());
+                            appSubmissionService.updatePayment(appSubmissionDto1, pmtRefNo);
                         }
-                        log.info(StringUtil.changeForLog("Payment response data is " + JsonUtil.parseToJson(appGrp)));
-                        applicationFeClient.updatePaymentByAppGrp(appGrp);
                         appGrpIds.add(appSubmissionDto1.getAppGrpId());
                     }
                 }
@@ -516,14 +507,9 @@ public class NewApplicationDelegator extends AppCommDelegator {
 
                 //update status for transfor payment
                 String appGrpId = appSubmissionDto.getAppGrpId();
-                if (!appGrpIds.contains(appGrpId)) {
-                    ApplicationGroupDto appGrp = new ApplicationGroupDto();
-                    appGrp.setId(appGrpId);
-                    appGrp.setPmtRefNo(pmtRefNo);
-                    appGrp.setPaymentDt(new Date());
-                    appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
-                    appGrp.setPayMethod(appSubmissionDto.getPaymentMethod());
-                    serviceConfigService.updatePaymentStatus(appGrp);
+                Double amount = appSubmissionDto.getAmount();
+                if (!appGrpIds.contains(appGrpId) && amount != null && !MiscUtil.doubleEquals(0.0, amount)) {
+                    appSubmissionService.updatePayment(appSubmissionDto, pmtRefNo);
                 }
                 //send email
                 if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
@@ -594,21 +580,10 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
                 if (ackSubmissionDtos != null) {
                     for (AppSubmissionDto appSubmissionDto1 : ackSubmissionDtos) {
-                        ApplicationGroupDto appGrp = new ApplicationGroupDto();
-                        appGrp.setId(appSubmissionDto1.getAppGrpId());
-                        appGrp.setPmtRefNo(pmtRefNo);
-                        appGrp.setGroupNo(appSubmissionDto1.getAppGrpNo());
-                        appGrp.setAutoRfc(appSubmissionDto1.isAutoRfc());
                         Double amount = appSubmissionDto1.getAmount();
                         if (amount != null && !MiscUtil.doubleEquals(0.0, amount)) {
-                            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
-                            appGrp.setPayMethod(appSubmissionDto.getPaymentMethod());
-                        } else {
-                            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-                            appGrp.setPayMethod(appSubmissionDto.getPaymentMethod());
+                            appSubmissionService.updatePayment(appSubmissionDto1, pmtRefNo);
                         }
-                        log.info(StringUtil.changeForLog("Payment response data is " + JsonUtil.parseToJson(appGrp)));
-                        applicationFeClient.updatePaymentByAppGrp(appGrp);
                         appGrpIds.add(appSubmissionDto1.getAppGrpId());
                     }
                 }
@@ -620,14 +595,9 @@ public class NewApplicationDelegator extends AppCommDelegator {
 
                 //update status for transfor payment
                 String appGrpId = appSubmissionDto.getAppGrpId();
-                if (!appGrpIds.contains(appGrpId)) {
-                    ApplicationGroupDto appGrp = new ApplicationGroupDto();
-                    appGrp.setId(appGrpId);
-                    appGrp.setPmtRefNo(pmtRefNo);
-                    appGrp.setPaymentDt(new Date());
-                    appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
-                    appGrp.setPayMethod(appSubmissionDto.getPaymentMethod());
-                    serviceConfigService.updatePaymentStatus(appGrp);
+                Double amount = appSubmissionDto.getAmount();
+                if (!appGrpIds.contains(appGrpId) && amount != null && !MiscUtil.doubleEquals(0.0, amount)) {
+                    appSubmissionService.updatePayment(appSubmissionDto, pmtRefNo);
                 }
                 //send email
                 if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
@@ -1016,7 +986,10 @@ public class NewApplicationDelegator extends AppCommDelegator {
 
     @Override
     protected AppSubmissionDto submit(AppSubmissionDto appSubmissionDto) {
-        return appSubmissionService.submit(appSubmissionDto, null);
+        log.info(StringUtil.changeForLog("Orginal size: " + JsonUtil.parseToJson(appSubmissionDto).length()));
+        AppSubmissionDto newDto = ApplicationHelper.toSlim(appSubmissionDto);
+        log.info(StringUtil.changeForLog("New size: " + JsonUtil.parseToJson(newDto).length()));
+        return appSubmissionService.submit(newDto, null);
     }
 
     @Override
@@ -1106,11 +1079,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                     log.info(StringUtil.changeForLog(
                             "--- " + appSubmissionDto1.getAppGrpNo() + " : " + appSubmissionDto1.getAppGrpId() + " ---"));
                     ids.add(appSubmissionDto1.getAppGrpId());
-                    ApplicationGroupDto appGrp = new ApplicationGroupDto();
-                    appGrp.setId(appSubmissionDto1.getAppGrpId());
-                    appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-                    appGrp.setPayMethod(payMethod);
-                    serviceConfigService.updatePaymentStatus(appGrp);
+                    appSubmissionService.updatePayment(appSubmissionDto1, null);
                 }
             }
             ParamUtil.setSessionAttr(bpc.request, ACK_APP_SUBMISSIONS, (Serializable) ackPageAppSubmissionDto);
@@ -1118,11 +1087,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
         Double totalAmount = appSubmissionDto.getAmount();
         if (MiscUtil.doubleEquals(totalAmount, 0.0)) {
             if (StringUtil.isNotEmpty(appGrpId) && !ids.contains(appGrpId)) {
-                ApplicationGroupDto appGrp = new ApplicationGroupDto();
-                appGrp.setId(appGrpId);
-                appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-                appGrp.setPayMethod(payMethod);
-                serviceConfigService.updatePaymentStatus(appGrp);
+                appSubmissionService.updatePayment(appSubmissionDto, null);
                 if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
                     LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,
                             AppConsts.SESSION_ATTR_LOGIN_USER);

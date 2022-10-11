@@ -19,7 +19,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppSpecifiedLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
@@ -154,18 +153,7 @@ public class CessationBeServiceImpl implements CessationBeService {
             licIds.add(licId);
             AppSubmissionDto appSubmissionDto = hcsaLicenceClient.getAppSubmissionDtos(licIds).getEntity().get(0);
             filetDoc(appSubmissionDto);
-            List<String> specLicIds = hcsaLicenceClient.getActSpecIdByActBaseId(licId).getEntity();
             Map<String, List<String>> baseMap = transform(appSubmissionDto, premiseIds);
-            if (!IaisCommonUtils.isEmpty(specLicIds)) {
-                AppSubmissionDto appSubmissionDtoSpec = hcsaLicenceClient.getAppSubmissionDtos(specLicIds).getEntity().get(0);
-                filetDoc(appSubmissionDtoSpec);
-                Map<String, List<String>> specMap = transform(appSubmissionDtoSpec, premiseIds);
-                for (String premiseId : premiseIds) {
-                    List<String> baseAppIds = baseMap.get(premiseId);
-                    List<String> specAppIds = specMap.get(premiseId);
-                    baseAppIds.addAll(specAppIds);
-                }
-            }
             appIdPremisesMap.putAll(baseMap);
         });
 
@@ -193,67 +181,10 @@ public class CessationBeServiceImpl implements CessationBeService {
         return hciNames;
     }
 
-    @Override
-    public List<AppSpecifiedLicDto> getSpecLicInfo(List<String> licIds) {
-        List<AppSpecifiedLicDto> appSpecifiedLicDtos = IaisCommonUtils.genNewArrayList();
-        if (IaisCommonUtils.isEmpty(licIds)) {
-            return appSpecifiedLicDtos;
-        }
-        for (String licId : licIds) {
-            LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(licId).getEntity();
-            String svcName = licenceDto.getSvcName();
-            String licenceNo = licenceDto.getLicenceNo();
-                List<String> specLicIds = hcsaLicenceClient.getActSpecIdByActBaseId(licId).getEntity();
-                if (!IaisCommonUtils.isEmpty(specLicIds)) {
-                    for (String specLicId : specLicIds) {
-                        AppSpecifiedLicDto appSpecifiedLicDto = new AppSpecifiedLicDto();
-                        LicenceDto specLicenceDto = hcsaLicenceClient.getLicDtoById(specLicId).getEntity();
-                        if (specLicenceDto != null) {
-                            String specLicenceNo = specLicenceDto.getLicenceNo();
-                            String licenceDtoId = specLicenceDto.getId();
-                            String specSvcName = specLicenceDto.getSvcName();
-                            appSpecifiedLicDto.setBaseLicNo(licenceNo);
-                            appSpecifiedLicDto.setBaseSvcName(svcName);
-                            appSpecifiedLicDto.setSpecLicNo(specLicenceNo);
-                            appSpecifiedLicDto.setSpecSvcName(specSvcName);
-                            appSpecifiedLicDto.setSpecLicId(licenceDtoId);
-                            appSpecifiedLicDtos.add(appSpecifiedLicDto);
-                        }
-                    }
-            }
-        }
-        return appSpecifiedLicDtos;
-    }
 
 
-    @Override
-    public List<String> filtrateSpecLicIds(List<String> licIds) {
-        List<String> specLicIds = IaisCommonUtils.genNewArrayList();
-        List<String> specLicIdsE = IaisCommonUtils.genNewArrayList();
-        if (IaisCommonUtils.isEmpty(licIds)) {
-            return specLicIds;
-        }
-        for (String licId : licIds) {
-                List<String> specIds = hcsaLicenceClient.getActSpecIdByActBaseId(licId).getEntity();
-                if (!IaisCommonUtils.isEmpty(specIds)) {
-                    for (String specLicId : specIds) {
-                        LicenceDto specLicenceDto = hcsaLicenceClient.getLicDtoById(specLicId).getEntity();
-                        if (specLicenceDto != null) {
-                            String licenceDtoId = specLicenceDto.getId();
-                            specLicIds.add(licenceDtoId);
-                        }
-                    }
-                }
-            }
-        if (!IaisCommonUtils.isEmpty(specLicIds)) {
-            for (String specId : specLicIds) {
-                if (licIds.contains(specId)) {
-                    specLicIdsE.add(specId);
-                }
-            }
-        }
-        return specLicIdsE;
-    }
+
+
 
     @Override
     public List<AppCessatonConfirmDto> getConfirmDto(List<AppCessationDto> appCessationDtos, Map<String, List<String>> appIdPremisesMap, LoginContext loginContext) throws Exception {

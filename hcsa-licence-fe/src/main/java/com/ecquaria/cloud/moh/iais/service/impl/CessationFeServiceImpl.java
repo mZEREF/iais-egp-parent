@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
@@ -49,6 +50,7 @@ import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.CessationFeService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
+import com.ecquaria.cloud.moh.iais.service.OrganizationService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.client.AppCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
@@ -113,7 +115,7 @@ public class CessationFeServiceImpl implements CessationFeService {
     @Autowired
     private AppCommClient appCommClient;
     @Autowired
-    private OrganizationLienceseeClient organizationLienceseeClient;
+    protected OrganizationService organizationService;
     @Override
     public List<AppCessLicDto> getAppCessDtosByLicIds(List<String> licIds) {
         List<AppCessLicDto> appCessLicDtos = IaisCommonUtils.genNewArrayList();
@@ -249,7 +251,6 @@ public class CessationFeServiceImpl implements CessationFeService {
 
     @Override
     public List<AppCessatonConfirmDto> getConfirmDto(List<AppCessationDto> appCessationDtos, Map<String, List<String>> appIdPremisesMap, LoginContext loginContext) throws ParseException {
-        LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(loginContext.getLicenseeId()).getEntity();
         List<AppCessatonConfirmDto> appCessationDtosConfirms = IaisCommonUtils.genNewArrayList();
         List<String> licIds = IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
@@ -260,6 +261,7 @@ public class CessationFeServiceImpl implements CessationFeService {
             String premiseId = appCessationDto.getPremiseId();
             String licId = appCessationDto.getLicId();
             LicenceDto licenceDto = licenceClient.getLicDtoById(licId).getEntity();
+            SubLicenseeDto orgLicensee = organizationService.getSubLicenseeByLicenseeId(licenceDto.getLicenseeId());
             licIds.clear();
             licIds.add(licId);
             List<String> appIds = appIdPremisesMap.get(premiseId);
@@ -322,7 +324,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                     if(IaisCommonUtils.isNotEmpty(appSvcBusinessDtoList)){
                         emailMap.put("BusinessName", appSvcBusinessDtoList.get(0).getBusinessName());
                     }
-                    emailMap.put("LicenseeName", licenseeDto.getName());
+                    emailMap.put("LicenseeName", orgLicensee.getName());
                     emailMap.put("LicenceNo", licenceNo);
                     emailMap.put(SERVICE_LICENCE_NAME, svcName);
                     emailMap.put(CESSATION_DATE, DateFormatUtils.format(effectiveDate, "dd/MM/yyyy"));
@@ -385,7 +387,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                     if(IaisCommonUtils.isNotEmpty(appSvcBusinessDtoList)){
                         emailMap.put("BusinessName", appSvcBusinessDtoList.get(0).getBusinessName());
                     }
-                    emailMap.put("LicenseeName", licenseeDto.getName());
+                    emailMap.put("LicenseeName", orgLicensee.getName());
                     emailMap.put("LicenceNo", licenceNo);
                     emailMap.put(SERVICE_LICENCE_NAME, svcName);
                     emailMap.put("ApplicationNumber", baseAppNo);

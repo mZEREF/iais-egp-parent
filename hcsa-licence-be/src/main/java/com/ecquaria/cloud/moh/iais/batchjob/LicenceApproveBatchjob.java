@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpSecondAddrDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOutSourceLicenceDto;
@@ -47,6 +48,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppPremCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicDocumentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicDocumentRelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
@@ -1900,7 +1902,13 @@ public class LicenceApproveBatchjob {
             //status
             licenceDto.setStatus(getLicenceStatus(licenceDto,applicationGroupDto));
         }
-
+        if(applicationDto != null){
+            AppLicBundleDto appLicBundleDto = applicationDto.getAppLicBundleDto();
+            if(appLicBundleDto != null){
+                LicBundleDto currentLicBundleDto = MiscUtil.transferEntityDto(appLicBundleDto,LicBundleDto.class);
+                licenceDto.setCurrentLicBundleDto(currentLicBundleDto);
+            }
+        }
         licenceDto.setApplicationDtos(applicationDtos1);
         log.info(StringUtil.changeForLog("The  licenceDto.getLicenceNo() is -->:"+licenceDto.getLicenceNo()));
         log.info(StringUtil.changeForLog("The  getLicenceDto end ..."));
