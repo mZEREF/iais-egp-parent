@@ -442,12 +442,15 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
         widthMap.put(1, 30);
         widthMap.put(2, 18);
         widthMap.put(3, 18);
-        widthMap.put(4, 30);
+        widthMap.put(4, 40);
         widthMap.put(5, 18);
-        widthMap.put(6, 18);
-        widthMap.put(7, 15);
-        widthMap.put(8, 15);
-
+        widthMap.put(6, 30);
+        widthMap.put(7, 18);
+        widthMap.put(8, 18);
+        widthMap.put(9, 30);
+        widthMap.put(10, 15);
+        widthMap.put(11, 15);
+        widthMap.put(12, 15);
         return widthMap;
     }
     public static Map<Integer, Integer> getGrpWidthMap() {
@@ -457,11 +460,19 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
         widthMap.put(1, 28);
         widthMap.put(2, 18);
         widthMap.put(3, 18);
-        widthMap.put(4, 28);
-        widthMap.put(5, 18);
+        widthMap.put(4, 18);
+        widthMap.put(5, 40);
         widthMap.put(6, 18);
-        widthMap.put(7, 15);
-        widthMap.put(8, 15);
+        widthMap.put(7, 18);
+        widthMap.put(8, 28);
+        widthMap.put(9, 18);
+        widthMap.put(10, 18);
+        widthMap.put(11, 18);
+        widthMap.put(12, 40);
+        widthMap.put(13, 18);
+        widthMap.put(14, 18);
+        widthMap.put(15, 15);
+        widthMap.put(16, 15);
         return widthMap;
     }
     public static Map<Integer, Integer> getLicWidthMap() {
@@ -471,11 +482,17 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
         widthMap.put(1, 30);
         widthMap.put(2, 18);
         widthMap.put(3, 18);
-        widthMap.put(4, 30);
-        widthMap.put(5, 18);
+        widthMap.put(4, 40);
+        widthMap.put(5, 15);
         widthMap.put(6, 18);
-        widthMap.put(7, 15);
-        widthMap.put(8, 15);
+        widthMap.put(7, 30);
+        widthMap.put(8, 18);
+        widthMap.put(9, 18);
+        widthMap.put(10, 40);
+        widthMap.put(11, 15);
+        widthMap.put(12, 18);
+        widthMap.put(13, 15);
+        widthMap.put(14, 15);
         return widthMap;
     }
     public static Map<Integer, Integer> getUserWidthMap() {
@@ -539,8 +556,12 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                     excelDto.setApplicationNoBe(entry.getValue().getApplicationNoBe());
                     excelDto.setStatusBe(entry.getValue().getStatusBe());
                     excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
-                    if(excelDto.getApplicationNoBe().equals(excelDto.getApplicationNoFe())&&
-                            excelDto.getStatusBe().equals(excelDto.getStatusFe())){
+                    excelDto.setVersionBe(entry.getValue().getVersionBe());
+                    excelDto.setOriginLicenceIdBe(entry.getValue().getOriginLicenceIdBe());
+                    if(excelDto.getApplicationNoBe().equals(excelDto.getApplicationNoFe())
+                            && excelDto.getOriginLicenceIdBe().equals(excelDto.getOriginLicenceIdFe())
+                            && excelDto.getVersionBe().equals(excelDto.getVersionFe())
+                            && excelDto.getStatusBe().equals(excelDto.getStatusFe())){
                         excelDto.setResult("Match");
                     }else {
                         excelDto.setResult("Not Match");
@@ -561,8 +582,14 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                     excelDto.setLicenceNoBe(entry.getValue().getLicenceNoBe());
                     excelDto.setStatusBe(entry.getValue().getStatusBe());
                     excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
-                    if(excelDto.getLicenceNoBe().equals(excelDto.getLicenceNoFe())&&
-                            excelDto.getStatusBe().equals(excelDto.getStatusFe())){
+                    excelDto.setOriginLicenceIdBe(entry.getValue().getOriginLicenceIdBe());
+                    excelDto.setVersionBe(entry.getValue().getVersionBe());
+                    excelDto.setEffectiveDtBe(entry.getValue().getEffectiveDtBe());
+                    if(excelDto.getLicenceNoBe().equals(excelDto.getLicenceNoFe())
+                            && excelDto.getEffectiveDtBe().equals(excelDto.getEffectiveDtFe())
+                            && excelDto.getVersionBe().equals(excelDto.getVersionFe())
+                            && excelDto.getOriginLicenceIdBe().equals(excelDto.getOriginLicenceIdFe())
+                            && excelDto.getStatusBe().equals(excelDto.getStatusFe())){
                         excelDto.setResult("Match");
                     }else {
                         excelDto.setResult("Not Match");
@@ -583,8 +610,16 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                     excelDto.setAppGroupNoBe(entry.getValue().getAppGroupNoBe());
                     excelDto.setStatusBe(entry.getValue().getStatusBe());
                     excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
-                    if(excelDto.getAppGroupNoBe().equals(excelDto.getAppGroupNoFe())&&
-                            excelDto.getStatusBe().equals(excelDto.getStatusFe())){
+                    excelDto.setAmountBe(entry.getValue().getAmountBe());
+                    excelDto.setPmtStatusBe(entry.getValue().getPmtStatusBe());
+                    excelDto.setPmtRefNoBe(entry.getValue().getPmtRefNoBe());
+                    excelDto.setIsAutoApproveBe(entry.getValue().getIsAutoApproveBe());
+                    if(excelDto.getAppGroupNoBe().equals(excelDto.getAppGroupNoFe())
+                            && excelDto.getPmtStatusBe().equals(excelDto.getPmtStatusFe())
+                            && excelDto.getAmountBe().equals(excelDto.getAmountFe())
+                            && excelDto.getPmtRefNoBe().equals(excelDto.getPmtRefNoFe())
+                            && excelDto.getIsAutoApproveBe().equals(excelDto.getIsAutoApproveFe())
+                            && excelDto.getStatusBe().equals(excelDto.getStatusFe())){
                         excelDto.setResult("Match");
                     }else {
                         excelDto.setResult("Not Match");
