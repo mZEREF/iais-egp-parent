@@ -118,12 +118,12 @@ public final class RfcHelper {
         List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtos = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
         int changeVehiclesFields = isChangeAppSvcVehicleDtos(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos);
         boolean changeVehicles = changeVehiclesFields!= RfcConst.RFC_BASE;
-        boolean changeVehicleNonAutoFields = (changeSpecialisedFields & RfcConst.RFC_AMENDMENT) != 0;
-        boolean changeVehicleAutoFields = (changeSpecialisedFields & RfcConst.RFC_NOTIFICATION) != 0;
+        boolean changeVehicleNonAutoFields = (changeVehiclesFields & RfcConst.RFC_AMENDMENT) != 0;
+        boolean changeVehicleAutoFields = (changeVehiclesFields & RfcConst.RFC_NOTIFICATION) != 0;
         int changeBusinessFields = isChangeAppSvcBusinessDtos(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos);
         boolean changeBusiness = changeBusinessFields!= RfcConst.RFC_BASE;
-        boolean changeBusinessNonAutoFields = (changeSpecialisedFields & RfcConst.RFC_AMENDMENT) != 0;
-        boolean changeBusinessAutoFields = (changeSpecialisedFields & RfcConst.RFC_NOTIFICATION) != 0;
+        boolean changeBusinessNonAutoFields = (changeBusinessFields & RfcConst.RFC_AMENDMENT) != 0;
+        boolean changeBusinessAutoFields = (changeBusinessFields & RfcConst.RFC_NOTIFICATION) != 0;
         boolean changeSectionLeader = isChangeAppSvcSectionLeadersViaSvcInfo(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos);
         boolean changeCharges = isChangeAppSvcChargesPageDto(appSvcRelatedInfoDtos.get(0).getAppSvcChargesPageDto(),
                 oldAppSvcRelatedInfoDtos.get(0).getAppSvcChargesPageDto());
