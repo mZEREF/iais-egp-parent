@@ -11,6 +11,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -1363,6 +1365,7 @@ public class ServiceInfoDelegator {
      */
     public void doServicePersonnel(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do doServicePersonnel start ...."));
+//        RFC
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String action = ParamUtil.getRequestString(bpc.request, "nextStep");
         String appType = appSubmissionDto.getAppType();
@@ -1376,21 +1379,21 @@ public class ServiceInfoDelegator {
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         String currentSvcCod = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
-        boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(RfcConst.EDIT_SERVICE,
-                bpc.request);
+        boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(RfcConst.EDIT_SERVICE, bpc.request);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        SvcPersonnelDto svcPersonnelDto = appSvcRelatedInfoDto.getSvcPersonnelDto();
+        SvcPersonnelDto svcPersonnelDto = new SvcPersonnelDto();
         if (isGetDataFromPage) {
             List<String> personnelTypeList = IaisCommonUtils.genNewArrayList();
             List<SelectOption> personnelTypeSel = ApplicationHelper.genPersonnelTypeSel(currentSvcCod);
             for (SelectOption sp : personnelTypeSel) {
                 personnelTypeList.add(sp.getValue());
             }
-            svcPersonnelDto = AppDataHelper.genAppSvcPersonnelDtoList(bpc.request,svcPersonnelDto);
+//            get pageData
+            svcPersonnelDto = AppDataHelper.genAppSvcPersonnelDtoList(bpc.request, appSvcRelatedInfoDto, appType);
+            appSvcRelatedInfoDto.setSvcPersonnelDto(svcPersonnelDto);
             log.debug(StringUtil.changeForLog("cycle cgo dto to retrieve prs info start ..."));
             log.debug("prs server flag {}", prsFlag);
             log.debug(StringUtil.changeForLog("cycle cgo dto to retrieve prs info end ..."));
-            appSvcRelatedInfoDto.setSvcPersonnelDto(svcPersonnelDto);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto);
         }
         if ("next".equals(action)) {
@@ -1704,6 +1707,8 @@ public class ServiceInfoDelegator {
      */
     public void prepareBusiness(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("prepare business start ..."));
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         ParamUtil.setRequestAttr(bpc.request, "maxCount", 3);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId);
@@ -1713,6 +1718,11 @@ public class ServiceInfoDelegator {
         ParamUtil.setRequestAttr(bpc.request, "serviceCode", serviceCode);
         if (!IaisCommonUtils.isEmpty(appSvcBusinessDtos)) {
             for (AppSvcBusinessDto appSvcBusinessDto : appSvcBusinessDtos) {
+                if (StringUtil.isEmpty(appSvcBusinessDto.getPremIndexNo())) {
+                    AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.stream()
+                            .filter(s -> appSvcBusinessDto.getPremAddress().equals(s.getAddress())).findAny().get();
+                    appSvcBusinessDto.setPremIndexNo(appGrpPremisesDto.getPremisesIndexNo());
+                }
                 premAlignBusinessMap.put(appSvcBusinessDto.getPremIndexNo(), appSvcBusinessDto);
             }
         }
@@ -1877,12 +1887,19 @@ public class ServiceInfoDelegator {
         String stepCode=hcsaServiceStepSchemeDtos.get(i).getStepCode();
         String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,
                 HcsaConsts.STEP_DISCIPLINE_ALLOCATION};
+        List<String> checkCodeList=IaisCommonUtils.genNewArrayList();
+        checkCodeList.add(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES);
+        checkCodeList.add(AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL);
+        checkCodeList.add(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY);
         boolean match = appSubmissionDto.getAppSvcRelatedInfoDtoList()
                 .stream().anyMatch(s -> AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL.equals(s.getServiceCode()));
         if (match){
+            List<String> collect = appSubmissionDto.getAppSvcRelatedInfoDtoList().stream().map(AppSvcRelatedInfoDto::getServiceCode).collect(Collectors.toList());
+            checkCodeList.removeAll(collect);
             if (IaisCommonUtils.isNotEmpty(appSubmissionDto.getAppLicBundleDtoList())){
-                int size = appSubmissionDto.getAppLicBundleDtoList().size();
-                if (size>1){
+                List<String> collect1 = appSubmissionDto.getAppLicBundleDtoList().stream().map(AppLicBundleDto::getSvcCode).collect(Collectors.toList());
+                checkCodeList.removeAll(collect1);
+                if (checkCodeList.size()==0){
                     List<String> list = Arrays.asList(skipList);
                     list.add(HcsaConsts.STEP_OUTSOURCED_PROVIDERS);
                     skipList = (String[]) list.toArray();

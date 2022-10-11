@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SpecialServiceSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
@@ -20,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOf
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSpecialServiceInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
@@ -30,7 +32,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStep
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ReflectionUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
@@ -90,13 +91,13 @@ public final class RfcHelper {
         boolean licenseeChange = isChangeSubLicensee(appSubmissionDto.getSubLicenseeDto(), oldAppSubmissionDto.getSubLicenseeDto());
         appEditSelectDto.setLicenseeEdit(licenseeChange);
         // MOSD
-        boolean changeInLocation = !compareLocation(appSubmissionDto.getAppGrpPremisesDtoList(),
+        boolean changeInLocation = isChangeInLocation(appSubmissionDto.getAppGrpPremisesDtoList(),
                 oldAppSubmissionDto.getAppGrpPremisesDtoList());
         boolean changeFloorUnits = isChangeFloorUnit(appGrpPremisesDtoList, oldAppGrpPremisesDtoList);
         boolean changeCoLocation = isChangeCoLocation(appGrpPremisesDtoList, oldAppGrpPremisesDtoList);
-        boolean changePremiseAutoFields = changeCoLocation || isChangeGrpPremisesAutoFields(appGrpPremisesDtoList,
+        boolean changePremiseAutoFields = isChangeGrpPremisesAutoFields(appGrpPremisesDtoList,
                 oldAppGrpPremisesDtoList);
-        boolean grpPremiseIsChange = changeInLocation || changeFloorUnits || hciNameChange || changePremiseAutoFields;
+        boolean grpPremiseIsChange = changeInLocation || changeFloorUnits || hciNameChange || changeCoLocation || changePremiseAutoFields;
         appEditSelectDto.setChangeInLocation(changeInLocation);
         appEditSelectDto.setChangeFloorUnits(changeFloorUnits);
         appEditSelectDto.setChangePremiseAutoFields(changePremiseAutoFields);
@@ -115,15 +116,24 @@ public final class RfcHelper {
         boolean changePersonnel = isChangeKeyPersonnel(appSubmissionDto, oldAppSubmissionDto);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtos = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
-        boolean changeVehicles = isChangeAppSvcVehicleDtos(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos);
-        boolean changeBusiness = isChangeAppSvcBusinessDtos(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos);
+        int changeVehiclesFields = isChangeAppSvcVehicleDtos(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos);
+        boolean changeVehicles = changeVehiclesFields!= RfcConst.RFC_BASE;
+        boolean changeVehicleNonAutoFields = (changeVehiclesFields & RfcConst.RFC_AMENDMENT) != 0;
+        boolean changeVehicleAutoFields = (changeVehiclesFields & RfcConst.RFC_NOTIFICATION) != 0;
+        int changeBusinessFields = isChangeAppSvcBusinessDtos(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos);
+        boolean changeBusiness = changeBusinessFields!= RfcConst.RFC_BASE;
+        boolean changeBusinessNonAutoFields = (changeBusinessFields & RfcConst.RFC_AMENDMENT) != 0;
+        boolean changeBusinessAutoFields = (changeBusinessFields & RfcConst.RFC_NOTIFICATION) != 0;
         boolean changeSectionLeader = isChangeAppSvcSectionLeadersViaSvcInfo(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos);
         boolean changeCharges = isChangeAppSvcChargesPageDto(appSvcRelatedInfoDtos.get(0).getAppSvcChargesPageDto(),
                 oldAppSvcRelatedInfoDtos.get(0).getAppSvcChargesPageDto());
         boolean changeServiceAutoFields = changeCharges || isChangeSvcInfoAutoFields(appSvcRelatedInfoDtos,
                 oldAppSvcRelatedInfoDtos, appEditSelectDto);
         appEditSelectDto.setChangeVehicle(changeVehicles);
-        appEditSelectDto.setChangeBusinessName(changeBusiness);
+        appEditSelectDto.setChangeVehicleAutoFields(changeVehicleAutoFields);
+        appEditSelectDto.setChangeVehicleNonAutoFields(changeVehicleNonAutoFields);
+        appEditSelectDto.setChangeBusinessName(changeBusinessAutoFields);
+        appEditSelectDto.setChangeBusinessNonAutoFields(changeBusinessNonAutoFields);
         appEditSelectDto.setChangePersonnel(changePersonnel);
         appEditSelectDto.setChangeSectionLeader(changeSectionLeader);
         boolean serviceIsChange = changeVehicles || changeBusiness || changeSectionLeader
@@ -182,7 +192,7 @@ public final class RfcHelper {
             if (eqHciNameChange(appGrpPremisesDto, oldAppGrpPremisesDto)) {
                 return true;
             }
-            if (!appGrpPremisesDto.getNonAutoAddressWithoutFU().equals(oldAppGrpPremisesDto.getNonAutoAddressWithoutFU())) {
+            if (isChangeInLocation(appGrpPremisesDto, oldAppGrpPremisesDto)) {
                 return true;
             }
             if (isChangeFloorUnit(appGrpPremisesDto, oldAppGrpPremisesDto)) {
@@ -220,7 +230,7 @@ public final class RfcHelper {
         if (!Objects.equals(appGrpPremisesDto.getPremisesType(), oldAppGrpPremisesDto.getPremisesType())) {
             return true;
         }
-        if (!appGrpPremisesDto.getNonAutoAddressWithoutFU().equals(oldAppGrpPremisesDto.getNonAutoAddressWithoutFU())) {
+        if (!appGrpPremisesDto.getAddressWithoutFU().equals(oldAppGrpPremisesDto.getAddressWithoutFU())) {
             return true;
         }
         if (isChangeFloorUnit(appGrpPremisesDto, oldAppGrpPremisesDto)) {
@@ -537,60 +547,98 @@ public final class RfcHelper {
      * @param oldAppGrpPremisesDtos
      * @return true: the same
      */
-    public static boolean compareLocation(List<AppGrpPremisesDto> appGrpPremisesDtos, List<AppGrpPremisesDto> oldAppGrpPremisesDtos) {
-        int length = appGrpPremisesDtos.size();
-        int oldLength = oldAppGrpPremisesDtos.size();
-        if (length == oldLength) {
-            for (int i = 0; i < length; i++) {
-                AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtos.get(i);
-                AppGrpPremisesDto oldAppGrpPremisesDto = oldAppGrpPremisesDtos.get(i);
-                if (!appGrpPremisesDto.getNonAutoAddressWithoutFU().equals(oldAppGrpPremisesDto.getNonAutoAddressWithoutFU())
-                        || !Objects.equals(StringUtil.getNonNull(appGrpPremisesDto.getVehicleNo()),
-                        StringUtil.getNonNull(oldAppGrpPremisesDto.getVehicleNo()))) {
-                    return false;
-                }
-            }
+    public static boolean isChangeInLocation(List<AppGrpPremisesDto> appGrpPremisesDtos,
+            List<AppGrpPremisesDto> oldAppGrpPremisesDtos) {
+        if (appGrpPremisesDtos == null || oldAppGrpPremisesDtos == null) {
+            return false;
         }
-        return true;
-    }
-
-    public static boolean isChangeAppSvcVehicleDtos(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos,
-            List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtos) {
-        if (appSvcRelatedInfoDtos == null || oldAppSvcRelatedInfoDtos == null) {
+        if (IaisCommonUtils.listChange(appGrpPremisesDtos, oldAppGrpPremisesDtos)) {
             return true;
         }
-        if (appSvcRelatedInfoDtos.size() != oldAppSvcRelatedInfoDtos.size()) {
-            return true;
-        }
-        for (int i = 0, len = appSvcRelatedInfoDtos.size(); i < len; i++) {
-            if (isChangeAppSvcVehicleDto(appSvcRelatedInfoDtos.get(i).getAppSvcVehicleDtoList(),
-                    oldAppSvcRelatedInfoDtos.get(i).getAppSvcVehicleDtoList())) {
+        for (int i = 0; i < appGrpPremisesDtos.size(); i++) {
+            AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtos.get(i);
+            AppGrpPremisesDto oldAppGrpPremisesDto = oldAppGrpPremisesDtos.get(i);
+            if (isChangeInLocation(appGrpPremisesDto, oldAppGrpPremisesDto)) {
                 return true;
             }
         }
         return false;
     }
 
-    public static boolean isChangeAppSvcVehicleDto(List<AppSvcVehicleDto> appSvcVehicleDtoList,
-            List<AppSvcVehicleDto> oldAppSvcVehicleDtoList) {
-        List<AppSvcVehicleDto> n = PageDataCopyUtil.copyAppSvcVehicleDto(appSvcVehicleDtoList);
-        List<AppSvcVehicleDto> o = PageDataCopyUtil.copyAppSvcVehicleDto(oldAppSvcVehicleDtoList);
-        return !n.equals(o);
-    }
-
-    public static boolean isChangeAppSvcBusinessDtos(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList,
-            List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) {
-        if (appSvcRelatedInfoDtoList == null || oldAppSvcRelatedInfoDtoList == null) {
+    public static boolean isChangeInLocation(AppGrpPremisesDto appGrpPremisesDto,
+            AppGrpPremisesDto oldAppGrpPremisesDto) {
+        if (appGrpPremisesDto == null || oldAppGrpPremisesDto == null) {
             return true;
         }
+        return !isSame(appGrpPremisesDto, oldAppGrpPremisesDto, PageDataCopyUtil::copyInLocationFields);
+    }
+
+    public static int isChangeAppSvcVehicleDtos(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos,
+            List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtos) {
+        if (appSvcRelatedInfoDtos == null || oldAppSvcRelatedInfoDtos == null) {
+            return RfcConst.RFC_AMENDMENT;
+        }
+        if (appSvcRelatedInfoDtos.size() != oldAppSvcRelatedInfoDtos.size()) {
+            return RfcConst.RFC_AMENDMENT;
+        }
+        int result = RfcConst.RFC_BASE;
+        for (int i = 0, len = appSvcRelatedInfoDtos.size(); i < len; i++) {
+            result &=isChangeAppSvcVehicleDto(appSvcRelatedInfoDtos.get(i).getAppSvcVehicleDtoList(),
+                    oldAppSvcRelatedInfoDtos.get(i).getAppSvcVehicleDtoList());
+        }
+        return result;
+    }
+
+    public static int isChangeAppSvcVehicleDto(List<AppSvcVehicleDto> appSvcVehicleDtoList,
+            List<AppSvcVehicleDto> oldAppSvcVehicleDtoList) {
+        if (IaisCommonUtils.isEmpty(appSvcVehicleDtoList)) {
+            return RfcConst.RFC_NOTIFICATION;
+        }
+        if (IaisCommonUtils.isEmpty(oldAppSvcVehicleDtoList)) {
+            return RfcConst.RFC_AMENDMENT;
+        }
+        int result = RfcConst.RFC_BASE;
+        // add
+        boolean noneMatch = appSvcVehicleDtoList.stream()
+                .noneMatch(dto -> oldAppSvcVehicleDtoList.stream()
+                        .anyMatch(oldDto -> Objects.equals(dto.getEngineNum(), oldDto.getEngineNum())));
+        if (noneMatch) {
+            result &= RfcConst.RFC_AMENDMENT;
+        }
+        // removal
+        noneMatch = oldAppSvcVehicleDtoList.stream()
+                .noneMatch(dto -> appSvcVehicleDtoList.stream()
+                        .anyMatch(oldDto -> Objects.equals(dto.getEngineNum(), oldDto.getEngineNum())));
+        if (noneMatch) {
+            result &= RfcConst.RFC_NOTIFICATION;
+        }
+        return result;
+    }
+
+    public static int isChangeAppSvcBusinessDtos(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList,
+            List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) {
+        if (appSvcRelatedInfoDtoList == null || oldAppSvcRelatedInfoDtoList == null) {
+            return RfcConst.RFC_AMENDMENT;
+        }
         if (appSvcRelatedInfoDtoList.size() != oldAppSvcRelatedInfoDtoList.size()) {
-            return true;
+            return RfcConst.RFC_AMENDMENT;
         }
         List<AppSvcBusinessDto> appSvcBusinessDtoList = IaisCommonUtils.genNewArrayList();
         appSvcRelatedInfoDtoList.forEach((item) -> appSvcBusinessDtoList.addAll(item.getAppSvcBusinessDtoList()));
         List<AppSvcBusinessDto> oldAppSvcBusinessDtoList = IaisCommonUtils.genNewArrayList();
         oldAppSvcRelatedInfoDtoList.forEach((item) -> oldAppSvcBusinessDtoList.addAll(item.getAppSvcBusinessDtoList()));
-        return isChangeAppSvcBusinessDto(appSvcBusinessDtoList, oldAppSvcBusinessDtoList);
+        int result = RfcConst.RFC_BASE;
+        for (int i = 0, len = appSvcRelatedInfoDtoList.size(); i < len; i++) {
+            boolean changeAppSvcBusinessDto = isChangeAppSvcBusinessDto(appSvcBusinessDtoList, oldAppSvcBusinessDtoList);
+            if (changeAppSvcBusinessDto){
+                result &= RfcConst.RFC_AMENDMENT;
+            }
+            boolean changeAppSvcBusinessDtoOtherInfo = isChangeAppSvcBusinessDtoOtherInfo(appSvcBusinessDtoList, oldAppSvcBusinessDtoList);
+            if (changeAppSvcBusinessDtoOtherInfo){
+                result &= RfcConst.RFC_NOTIFICATION;
+            }
+        }
+        return result;
     }
 
     public static boolean isChangeAppSvcBusinessDto(List<AppSvcBusinessDto> appSvcBusinessDtoList,
@@ -600,6 +648,53 @@ public final class RfcHelper {
         List<String> oldAppSvcBusinessNameList = IaisCommonUtils.genNewArrayList();
         oldAppSvcBusinessDtoList.forEach((v) -> oldAppSvcBusinessNameList.add(v.getBusinessName()));
         return !appSvcBusinessNameList.equals(oldAppSvcBusinessNameList);
+    }
+
+    public static boolean isChangeAppSvcBusinessDtoOtherInfo(List<AppSvcBusinessDto> appSvcBusinessDtoList,
+            List<AppSvcBusinessDto> oldAppSvcBusinessDtoList) {
+        boolean isChange=false;
+        List<String> appSvcBusinessContactList = IaisCommonUtils.genNewArrayList();
+        appSvcBusinessDtoList.forEach((v) -> appSvcBusinessContactList.add(v.getContactNo()));
+        List<String> oldAppSvcBusinessContactList = IaisCommonUtils.genNewArrayList();
+        oldAppSvcBusinessDtoList.forEach((v) -> oldAppSvcBusinessContactList.add(v.getContactNo()));
+        if (!appSvcBusinessContactList.equals(oldAppSvcBusinessContactList)){
+            isChange=true;
+        }
+        List<String> appSvcBusinessEmailList = IaisCommonUtils.genNewArrayList();
+        appSvcBusinessDtoList.forEach((v) -> appSvcBusinessEmailList.add(v.getEmailAddr()));
+        List<String> oldAppSvcBusinessEmailList = IaisCommonUtils.genNewArrayList();
+        oldAppSvcBusinessDtoList.forEach((v) -> oldAppSvcBusinessEmailList.add(v.getEmailAddr()));
+        if (!appSvcBusinessEmailList.equals(oldAppSvcBusinessEmailList)){
+            isChange=true;
+        }
+        List<OperationHoursReloadDto> appSvcBusinessOperationHoursList = IaisCommonUtils.genNewArrayList();
+        appSvcBusinessDtoList.forEach((v) -> {
+            appSvcBusinessOperationHoursList.addAll(v.getWeeklyDtoList());
+            appSvcBusinessOperationHoursList.addAll(v.getPhDtoList());
+
+        });
+        List<OperationHoursReloadDto> n = PageDataCopyUtil.copyOperationHoursReloadDto(appSvcBusinessOperationHoursList);
+        List<OperationHoursReloadDto> oldAppSvcBusinessOperationHoursList = IaisCommonUtils.genNewArrayList();
+        oldAppSvcBusinessDtoList.forEach((v) -> {
+            oldAppSvcBusinessOperationHoursList.addAll(v.getWeeklyDtoList());
+            oldAppSvcBusinessOperationHoursList.addAll(v.getPhDtoList());
+
+        });
+        List<OperationHoursReloadDto> o = PageDataCopyUtil.copyOperationHoursReloadDto(appSvcBusinessOperationHoursList);
+        if (!n.equals(o)){
+            isChange=true;
+        }
+        List<AppPremEventPeriodDto> event=IaisCommonUtils.genNewArrayList();
+        appSvcBusinessDtoList.forEach((v) -> event.addAll(v.getEventDtoList()));
+        List<AppPremEventPeriodDto> copyEvent = PageDataCopyUtil.copyEvent(event);
+        List<AppPremEventPeriodDto> oldevent=IaisCommonUtils.genNewArrayList();
+        oldAppSvcBusinessDtoList.forEach((v) -> oldevent.addAll(v.getEventDtoList()));
+        List<AppPremEventPeriodDto> copyOldEvent = PageDataCopyUtil.copyEvent(event);
+        if (!copyEvent.equals(copyOldEvent)){
+            isChange=true;
+        }
+        return isChange;
+
     }
 
     public static boolean isChangeAppSvcChargesPageDto(AppSvcChargesPageDto appSvcChargesPageDto,

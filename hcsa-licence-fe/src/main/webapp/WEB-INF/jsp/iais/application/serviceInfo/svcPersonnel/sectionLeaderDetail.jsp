@@ -1,5 +1,6 @@
 <div class="form-horizontal sectionLaderContent">
     <input type="hidden" class="indexNo" name="${prepsn}indexNo${index}" value="${sectionLeader.indexNo}"/>
+    <input type="hidden" class="isPartEdit" name="isPartEdit${index}" value="0"/>
     <iais:row>
         <iais:value width="6" cssClass="col-md-6">
             <strong>

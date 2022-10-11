@@ -33,6 +33,28 @@
             let index = $target.data('seq');
             refreshLabel($target, index);
         });
+
+        let appType = $('input[name="applicationType"]').val();
+        if (('APTY005' == appType || 'APTY004' == appType)) {
+            disabledPage();
+        }
+
+        let svcContent = '.person-content';
+        psnEditEvent(svcContent);
+
+        <c:if test="${AppSubmissionDto.needEditController}">
+        $(svcContent).each(function (k,v) {
+            if ($("#errorMapIs").val() == 'error') {
+                $(v).find('.error-msg').on('DOMNodeInserted', function () {
+                    if ($(v).not(':empty')) {
+                        $(v).find('.isPartEdit').val(1);
+                        $('#isEditHiddenVal').val('1');
+                        unDisabledPartPage($(v));
+                    }
+                });
+            }
+        });
+        </c:if>
     });
 
     function refreshAddBtn() {
@@ -203,7 +225,13 @@
             }
             removeBtnEvent();
             refreshAddBtn();
+
             clearFields($('[data-group="' + group + '"][data-seq="' + index + '"][data-prefix="' + prefix + '"]'));
+
+            unDisableContent($('.person-content'))
+
+            $(".isPartEdit").val('1')
+            $("#isEditHiddenVal").val('1')
             checkItemEvent();
             $('.item-record [data-curr][data-prefix="' + prefix + '"]').each(function () {
                 checkItemMandatory($(this));

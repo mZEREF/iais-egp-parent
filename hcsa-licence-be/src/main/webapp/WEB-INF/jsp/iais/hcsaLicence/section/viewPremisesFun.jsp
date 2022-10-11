@@ -156,7 +156,6 @@
         changeCount()
         dismissWaiting();
     }
-    //   TODO ID
     function retrieveAddr(postalCode, target) {
         var $addressSelectors = $(target);
         var data = {

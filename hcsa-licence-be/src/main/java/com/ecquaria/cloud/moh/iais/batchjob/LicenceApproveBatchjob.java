@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpSecondAddrDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremOutSourceLicenceDto;
@@ -47,6 +48,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppPremCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicDocumentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicDocumentRelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
@@ -233,7 +235,8 @@ public class LicenceApproveBatchjob {
                         updateExpiryDateByBaseApplicationNo(licenceGroupDtos);
                         //add the originLicenceLicBaseSpecifiedCorrelationDtos
                        // setOriginLicenceLicBaseSpecifiedCorrelationDtos(licenceGroupDtos);
-
+                        //update bundle Licence expiry Date
+                        updateExpiryDateByBundle(licenceGroupDtos);
                         //
                         String eventBusSubmissionId = generateIdClient.getSeqId().getEntity();
                         EventBusLicenceGroupDtos eventBusLicenceGroupDtos = new EventBusLicenceGroupDtos();
@@ -322,6 +325,32 @@ public class LicenceApproveBatchjob {
         }
         log.info(StringUtil.changeForLog("The setOriginLicenceLicBaseSpecifiedCorrelationDtos is end ..."));
     }*/
+   private void updateExpiryDateByBundle(List<LicenceGroupDto> licenceGroupDtos){
+       log.info(StringUtil.changeForLog("The updateExpiryDateByBundle is strat ..."));
+       if(!IaisCommonUtils.isEmpty(licenceGroupDtos)){
+           log.info(StringUtil.changeForLog("The updateExpiryDateByBundle licenceGroupDtos.size() is -->:"+licenceGroupDtos.size()));
+           for (LicenceGroupDto licenceGroupDto : licenceGroupDtos){
+               List<SuperLicDto>  superLicDtos = licenceGroupDto.getSuperLicDtos();
+               if(!IaisCommonUtils.isEmpty(superLicDtos)){
+                   log.info(StringUtil.changeForLog("The updateExpiryDateByBundle superLicDtos.size() is -->:"+superLicDtos.size()));
+                   for(SuperLicDto superLicDto : superLicDtos){
+                       LicenceDto licenceDto = superLicDto.getLicenceDto();
+                       LicBundleDto licBundleDto = licenceDto.getCurrentLicBundleDto();
+                       if(licBundleDto != null){
+                           long boundCode = licBundleDto.getBoundCode();
+                           log.info(StringUtil.changeForLog("The updateExpiryDateByBundle boundCode is -->:"+boundCode));
+                           Date expiryDate = getEarliestExpiryDateForBundle(superLicDtos,boundCode);
+                           if(expiryDate!=null){
+                               licenceDto.setExpiryDate(expiryDate);
+                           }
+                       }
+
+                   }
+               }
+           }
+       }
+       log.info(StringUtil.changeForLog("The updateExpiryDateByBundle is end ..."));
+   }
     private void updateExpiryDateByAlignFlag(List<LicenceGroupDto> licenceGroupDtos){
         log.info(StringUtil.changeForLog("The updateExpiryDateByAlignFlag is strat ..."));
         if(!IaisCommonUtils.isEmpty(licenceGroupDtos)){
@@ -374,6 +403,34 @@ public class LicenceApproveBatchjob {
             }
         }
         log.info(StringUtil.changeForLog("The updateExpiryDateByBaseApplicationNo is end ..."));
+    }
+
+    private Date getEarliestExpiryDateForBundle(List<SuperLicDto> superLicDtos,long boundCode){
+        log.info(StringUtil.changeForLog("The getEarliestExpiryDateForBundle  start ..."));
+        Date result = null;
+        if(IaisCommonUtils.isNotEmpty(superLicDtos)){
+            for (SuperLicDto superLicDto : superLicDtos){
+                LicenceDto licenceDto = superLicDto.getLicenceDto();
+                LicBundleDto licBundleDto = licenceDto.getCurrentLicBundleDto();
+                if(licBundleDto != null){
+                    long everyBoundCode = licBundleDto.getBoundCode();
+                    Date  expiryDate = licenceDto.getExpiryDate();
+                    log.info(StringUtil.changeForLog("The getEarliestExpiryDateForBundle  everyBoundCode is -->:"+everyBoundCode));
+                    log.info(StringUtil.changeForLog("The getEarliestExpiryDateForBundle  expiryDate is -->:"+expiryDate));
+                    if(everyBoundCode == boundCode ){
+                        if(result == null){
+                            result =  expiryDate;
+                        }else if(expiryDate.before(result)){
+                            result =  expiryDate;
+                        }
+                    }
+                }
+
+            }
+        }
+        log.info(StringUtil.changeForLog("The getEarliestExpiryDateForBundle  result is -->:"+result));
+        log.info(StringUtil.changeForLog("The getEarliestExpiryDateForBundle  end ..."));
+        return result;
     }
 
     private Date getEarliestExpiryDate(List<SuperLicDto> superLicDtos,String alignFlag){
@@ -1900,7 +1957,13 @@ public class LicenceApproveBatchjob {
             //status
             licenceDto.setStatus(getLicenceStatus(licenceDto,applicationGroupDto));
         }
-
+        if(applicationDto != null){
+            AppLicBundleDto appLicBundleDto = applicationDto.getAppLicBundleDto();
+            if(appLicBundleDto != null){
+                LicBundleDto currentLicBundleDto = MiscUtil.transferEntityDto(appLicBundleDto,LicBundleDto.class);
+                licenceDto.setCurrentLicBundleDto(currentLicBundleDto);
+            }
+        }
         licenceDto.setApplicationDtos(applicationDtos1);
         log.info(StringUtil.changeForLog("The  licenceDto.getLicenceNo() is -->:"+licenceDto.getLicenceNo()));
         log.info(StringUtil.changeForLog("The  getLicenceDto end ..."));

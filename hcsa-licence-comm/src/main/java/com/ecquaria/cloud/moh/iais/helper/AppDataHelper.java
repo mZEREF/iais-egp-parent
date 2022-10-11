@@ -2451,19 +2451,17 @@ public final class AppDataHelper {
         return new AppSvcPrincipalOfficersDto();
     }*/
 
-    public static AppSvcPersonnelDto getAppSvcPersonnelParam(HttpServletRequest request, String prefix, String suffix,
-            String personnelType) {
+    public static AppSvcPersonnelDto getAppSvcPersonnelParam(HttpServletRequest request, String prefix, String suffix, String personnelType) {
 
         AppSvcPersonnelDto svcPersonnelDto = ControllerHelper.get(request, AppSvcPersonnelDto.class, prefix, suffix);
 
         if (StringUtil.isEmpty(svcPersonnelDto.getIndexNo())) {
             svcPersonnelDto.setIndexNo(UUID.randomUUID().toString());
         }
-        if ("SP999".equals(prefix)) {
-            svcPersonnelDto.setPersonnelType(ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS);
-        } else if (StringUtil.isNotEmpty(personnelType)) {
+         if(StringUtil.isNotEmpty(personnelType)) {
             svcPersonnelDto.setPersonnelType(personnelType);
-        } else if ("".equals(prefix)||"".equals(personnelType)) {
+//            special
+        } else if (ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS.equals(prefix) || "".equals(personnelType)) {
         }  else {
             svcPersonnelDto.setPersonnelType(prefix);
         }
@@ -2521,77 +2519,231 @@ public final class AppDataHelper {
         return svcPersonnelDto;
     }
 
-    public static SvcPersonnelDto genAppSvcPersonnelDtoList(HttpServletRequest request, SvcPersonnelDto
-            svcPersonnelDto) {
+
+
+//    AR
+    public static List<AppSvcPersonnelDto> getArPersonnel(HttpServletRequest request, String prefix,Boolean isRfi,String appType,AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
+        List<AppSvcPersonnelDto> arPractitionerList = IaisCommonUtils.genNewArrayList();
+        AppSvcPersonnelDto appSvcPersonnelDto = new AppSvcPersonnelDto();
+        String[] arCountStrs = ParamUtil.getStrings(request, prefix+"arCount");
+        String[] isPartEdit = ParamUtil.getStrings(request, prefix+"isPartEdit");
+        String[] indexNos = ParamUtil.getStrings(request,  prefix+"indexNo");
+        int size = 0;
+        if (arCountStrs != null && arCountStrs.length > 0){
+            size = arCountStrs.length;
+        }
+        for (int i = 0; i < size; i++) {
+            boolean pageData = false;
+            boolean nonChanged = false;
+            String indexNo = getVal(indexNos,i);
+            if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+                pageData = true;
+            } else if (AppConsts.YES.equals(getVal(isPartEdit, i))) {
+                pageData = true;
+            } else if (!StringUtil.isEmpty(indexNo)) {
+                nonChanged = true;
+            }
+            if (nonChanged){
+                List<AppSvcPersonnelDto> list = appSvcRelatedInfoDto.getSvcPersonnelDto().getArPractitionerList();
+                appSvcPersonnelDto = list.stream().
+                        filter(dto -> Objects.equals(indexNo, dto.getIndexNo()))
+                        .findAny()
+                        .orElseGet(()->{
+                            AppSvcPersonnelDto dto = new AppSvcPersonnelDto();
+                            dto.setIndexNo(indexNo);
+                            return dto;
+                        });
+            }else if (pageData){
+                appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix, String.valueOf(i), null);
+            }
+            arPractitionerList.add(appSvcPersonnelDto);
+        }
+        return arPractitionerList;
+
+    }
+    public static List<AppSvcPersonnelDto> getNuPersonnel(HttpServletRequest request, String prefix,Boolean isRfi,String appType,AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
+        List<AppSvcPersonnelDto> nurseList = IaisCommonUtils.genNewArrayList();
+        AppSvcPersonnelDto appSvcPersonnelDto = new AppSvcPersonnelDto();
+        String[] nuCountStrs = ParamUtil.getStrings(request, prefix+"nuCount");
+        String[] isPartEdit = ParamUtil.getStrings(request, prefix+"isPartEdit");
+        String[] indexNos = ParamUtil.getStrings(request,  prefix+"indexNo");
+        int size = 0;
+        if (nuCountStrs != null && nuCountStrs.length > 0){
+            size = nuCountStrs.length;
+        }
+        for (int i = 0; i < size; i++) {
+            boolean pageData = false;
+            boolean nonChanged = false;
+            String indexNo = getVal(indexNos,i);
+            if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+                pageData = true;
+            } else if (AppConsts.YES.equals(getVal(isPartEdit, i))) {
+                pageData = true;
+            } else if (!StringUtil.isEmpty(indexNo)) {
+                nonChanged = true;
+            }
+        if (nonChanged){
+            List<AppSvcPersonnelDto> list = appSvcRelatedInfoDto.getSvcPersonnelDto().getNurseList();
+            appSvcPersonnelDto = list.stream().
+                    filter(dto -> Objects.equals(indexNo, dto.getIndexNo()))
+                    .findAny()
+                    .orElseGet(()->{
+                    AppSvcPersonnelDto dto = new AppSvcPersonnelDto();
+                    dto.setIndexNo(indexNo);
+                    return dto;
+            });
+        }else if (pageData){
+           appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix, String.valueOf(i), null);
+        }
+            nurseList.add(appSvcPersonnelDto);
+        }
+        return nurseList;
+    }
+
+
+    public static List<AppSvcPersonnelDto> getEmPersonnel(HttpServletRequest request, String prefix,Boolean isRfi,String appType,AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
+        List<AppSvcPersonnelDto> embryologistList = IaisCommonUtils.genNewArrayList();
+        AppSvcPersonnelDto appSvcPersonnelDto = new AppSvcPersonnelDto();
+        String[] emCountStrs = ParamUtil.getStrings(request, prefix+"emCount");
+        String[] isPartEdit = ParamUtil.getStrings(request, prefix+"isPartEdit");
+        String[] indexNos = ParamUtil.getStrings(request,  prefix+"indexNo");
+        int size = 0;
+        if (emCountStrs != null && emCountStrs.length > 0){
+            size = emCountStrs.length;
+        }
+        for (int i = 0; i < size; i++) {
+            String indexNo = getVal(indexNos,i);
+            boolean pageData = false;
+            boolean nonChanged = false;
+            if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+                pageData = true;
+            } else if (AppConsts.YES.equals(getVal(isPartEdit, i))) {
+                pageData = true;
+            } else if (!StringUtil.isEmpty(indexNo)) {
+                nonChanged = true;
+            }
+            if (nonChanged){
+                List<AppSvcPersonnelDto> list = appSvcRelatedInfoDto.getSvcPersonnelDto().getEmbryologistList();
+                appSvcPersonnelDto = list.stream().
+                        filter(dto -> Objects.equals(indexNo, dto.getIndexNo()))
+                        .findAny()
+                        .orElseGet(()->{
+                            AppSvcPersonnelDto dto = new AppSvcPersonnelDto();
+                            dto.setIndexNo(indexNo);
+                            return dto;
+                        });
+            }else if (pageData){
+                appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix, String.valueOf(i), null);
+            }
+            embryologistList.add(appSvcPersonnelDto);
+        }
+        return embryologistList;
+
+    }
+    public static List<AppSvcPersonnelDto> getNorPersonnel(HttpServletRequest request, String prefix,Boolean isRfi,String appType,AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
+        List<AppSvcPersonnelDto> normalList = IaisCommonUtils.genNewArrayList();
+        AppSvcPersonnelDto appSvcPersonnelDto = new AppSvcPersonnelDto();
+        String[] norCountStrs = ParamUtil.getStrings(request, prefix+"noCount");
+        String[] isPartEdit = ParamUtil.getStrings(request, prefix+"isPartEdit");
+        String[] indexNos = ParamUtil.getStrings(request,  prefix+"indexNo");
+        int size = 0;
+        if (norCountStrs != null && norCountStrs.length > 0){
+            size = norCountStrs.length;
+        }
+        for (int i = 0; i < size; i++) {
+            String indexNo = getVal(indexNos,i);
+            boolean pageData = false;
+            boolean nonChanged = false;
+            if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+                pageData = true;
+            } else if (AppConsts.YES.equals(getVal(isPartEdit, i))) {
+                pageData = true;
+            } else if (!StringUtil.isEmpty(indexNo)) {
+                nonChanged = true;
+            }
+            if (nonChanged){
+                List<AppSvcPersonnelDto> list = appSvcRelatedInfoDto.getSvcPersonnelDto().getNormalList();
+                appSvcPersonnelDto = list.stream().
+                        filter(dto -> Objects.equals(indexNo, dto.getIndexNo()))
+                        .findAny()
+                        .orElseGet(()->{
+                            AppSvcPersonnelDto dto = new AppSvcPersonnelDto();
+                            dto.setIndexNo(indexNo);
+                            return dto;
+                        });
+            }else if (pageData){
+                appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix, String.valueOf(i), null);
+            }
+            normalList.add(appSvcPersonnelDto);
+        }
+        return normalList;
+
+    }
+    public static List<AppSvcPersonnelDto> getSpePersonnel(HttpServletRequest request, String prefix,Boolean isRfi,String appType,AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
+        List<AppSvcPersonnelDto> specialList = IaisCommonUtils.genNewArrayList();
+        AppSvcPersonnelDto appSvcPersonnelDto = new AppSvcPersonnelDto();
+        String[] speCountStrs = ParamUtil.getStrings(request, prefix+"speCount");
+        String[] isPartEdit = ParamUtil.getStrings(request, prefix+"isPartEdit");
+        String[] indexNos = ParamUtil.getStrings(request,  prefix+"indexNo");
+        int size = 0;
+        if (speCountStrs != null && speCountStrs.length > 0){
+            size = speCountStrs.length;
+        }
+        for (int i = 0; i < size; i++) {
+            String indexNo = getVal(indexNos,i);
+            boolean pageData = false;
+            boolean nonChanged = false;
+            if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+                pageData = true;
+            } else if (AppConsts.YES.equals(getVal(isPartEdit, i))) {
+                pageData = true;
+            } else if (!StringUtil.isEmpty(indexNo)) {
+                nonChanged = true;
+            }
+            if (nonChanged){
+                List<AppSvcPersonnelDto> list = appSvcRelatedInfoDto.getSvcPersonnelDto().getSpecialList();
+                appSvcPersonnelDto = list.stream().
+                        filter(dto -> Objects.equals(indexNo, dto.getIndexNo()))
+                        .findAny()
+                        .orElseGet(()->{
+                            AppSvcPersonnelDto dto = new AppSvcPersonnelDto();
+                            dto.setIndexNo(indexNo);
+                            return dto;
+                        });
+            }else if (pageData){
+                appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix, String.valueOf(i), null);
+            }
+            specialList.add(appSvcPersonnelDto);
+        }
+        return specialList;
+    }
+
+
+    public static SvcPersonnelDto genAppSvcPersonnelDtoList(HttpServletRequest request, AppSvcRelatedInfoDto appSvcRelatedInfoDto,String appType) {
+        SvcPersonnelDto svcPersonnelDto = appSvcRelatedInfoDto.getSvcPersonnelDto();
         if (StringUtil.isEmpty(svcPersonnelDto)) {
             svcPersonnelDto = new SvcPersonnelDto();
         }
-        List<AppSvcPersonnelDto> normalList = IaisCommonUtils.genNewArrayList();
-        List<AppSvcPersonnelDto> nurseList = IaisCommonUtils.genNewArrayList();
-        List<AppSvcPersonnelDto> specialList = IaisCommonUtils.genNewArrayList();
-        List<AppSvcPersonnelDto> embryologistList = IaisCommonUtils.genNewArrayList();
-        List<AppSvcPersonnelDto> arPractitionerList = IaisCommonUtils.genNewArrayList();
-        int arCount = 0;
-        int nuCount = 0;
-        int emCount = 0;
-        int speCount = 0;
-        int noCount = 0;
-        String[] arCountStrs = ParamUtil.getStrings(request, "SP002arCount");
-        String[] nuCountStrs = ParamUtil.getStrings(request, "SP003nuCount");
-        String[] emCountStrs = ParamUtil.getStrings(request, "SP001emCount");
-        String[] speCountStrs = ParamUtil.getStrings(request, "SP000speCount");
-        String[] noCountStrs = ParamUtil.getStrings(request, "SP999noCount");
-        if (!StringUtil.isEmpty(arCountStrs)) {
-            arCount = arCountStrs.length;
+        boolean isRfi = ApplicationHelper.checkIsRfi(request);
+        List<AppSvcPersonnelDto> arPersonnel = getArPersonnel(request, ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER, isRfi, appType, appSvcRelatedInfoDto);
+        List<AppSvcPersonnelDto> nuPersonnel = getNuPersonnel(request, ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES, isRfi, appType, appSvcRelatedInfoDto);
+        List<AppSvcPersonnelDto> emPersonnel = getEmPersonnel(request, ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST, isRfi, appType, appSvcRelatedInfoDto);
+        List<AppSvcPersonnelDto> norPersonnel = getNorPersonnel(request, ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS, isRfi, appType, appSvcRelatedInfoDto);
+        List<AppSvcPersonnelDto> spePersonnel = getSpePersonnel(request, ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS, isRfi, appType, appSvcRelatedInfoDto);
+        if (IaisCommonUtils.isNotEmpty(arPersonnel)){
+            svcPersonnelDto.setArPractitionerList(arPersonnel);
         }
-        if (!StringUtil.isEmpty(nuCountStrs)) {
-            nuCount = nuCountStrs.length;
+        if (IaisCommonUtils.isNotEmpty(nuPersonnel)){
+            svcPersonnelDto.setNurseList(nuPersonnel);
         }
-        if (!StringUtil.isEmpty(emCountStrs)) {
-            emCount = emCountStrs.length;
+        if (IaisCommonUtils.isNotEmpty(emPersonnel)){
+            svcPersonnelDto.setEmbryologistList(emPersonnel);
         }
-        if (!StringUtil.isEmpty(speCountStrs)) {
-            speCount = speCountStrs.length;
+        if (IaisCommonUtils.isNotEmpty(norPersonnel)){
+            svcPersonnelDto.setNormalList(norPersonnel);
         }
-        if (!StringUtil.isEmpty(noCountStrs)) {
-            noCount = noCountStrs.length;
-        }
-
-        for (int i = 0; i < arCount; i++) {
-            AppSvcPersonnelDto dto = getAppSvcPersonnelParam(request, "SP002", String.valueOf(i), null);
-            arPractitionerList.add(dto);
-        }
-        for (int i = 0; i < nuCount; i++) {
-            AppSvcPersonnelDto dto = getAppSvcPersonnelParam(request, "SP003", String.valueOf(i), null);
-            nurseList.add(dto);
-        }
-        for (int i = 0; i < emCount; i++) {
-            AppSvcPersonnelDto dto = getAppSvcPersonnelParam(request, "SP001", String.valueOf(i), null);
-            embryologistList.add(dto);
-        }
-        for (int i = 0; i < noCount; i++) {
-            AppSvcPersonnelDto dto = getAppSvcPersonnelParam(request, "SP999", String.valueOf(i), null);
-            normalList.add(dto);
-        }
-        for (int i = 0; i < speCount; i++) {
-            AppSvcPersonnelDto dto = getAppSvcPersonnelParam(request, "", String.valueOf(i), null);
-            specialList.add(dto);
-        }
-
-        if (arPractitionerList.size() != 0) {
-            svcPersonnelDto.setArPractitionerList(arPractitionerList);
-        }
-        if (nurseList.size() != 0) {
-            svcPersonnelDto.setNurseList(nurseList);
-        }
-        if (embryologistList.size() != 0) {
-            svcPersonnelDto.setEmbryologistList(embryologistList);
-        }
-        if (specialList.size() != 0) {
-            svcPersonnelDto.setSpecialList(specialList);
-        }
-        if (normalList.size() != 0) {
-            svcPersonnelDto.setNormalList(normalList);
+        if (IaisCommonUtils.isNotEmpty(spePersonnel)){
+            svcPersonnelDto.setSpecialList(spePersonnel);
         }
         return svcPersonnelDto;
     }

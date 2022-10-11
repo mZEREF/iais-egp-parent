@@ -1,18 +1,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="isis" uri="http://www.ecq.com/iais" %>
-<%@page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <script type="text/javascript"
         src="<%=IaisEGPConstant.CSS_ROOT + IaisEGPConstant.COMMON_CSS_ROOT%>js/file-upload.js"></script>
-
-<c:set var="isRfi" value="${requestInformationConfig != null}"/>
-<%--<input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>--%>
-
+<input type="hidden" id="isEditHiddenVal" class="personnel-content-edit" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
-<input type="hidden" id="isEditHiddenVal" class="person-content-edit" name="isEdit"
-       value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
 <style>
     .addDpoDiv{
         margin-bottom: 20px;
@@ -21,7 +14,6 @@
         margin-top: 20px;
     }
 </style>
-
 <div class="row form-horizontal special-person">
     <input type="hidden" id="curr" name="currentSvcCode" value="${currentSvcCode}"/>
     <c:choose>
@@ -40,16 +32,11 @@
                 requirements at all times</h4>
         </c:when>
     </c:choose>
-    <iais:row>
-        <div class="col-xs-12">
-            <p><span class="error-msg" name="iaisErrorMSg" id="error_psnMandatory"></span></p>
-        </div>
-    </iais:row>
-    <c:set var="editControl"
-           value="${(!empty AppSvcPersonnelDtoList && AppSubmissionDto.needEditController) || !AppSubmissionDto.needEditController}"/>
+
+<%--    <c:set var="editControl" value="${(!empty AppSvcPersonnelDtoList && AppSubmissionDto.needEditController) || !AppSubmissionDto.needEditController}"/>--%>
+
     <div class="personnel-edit">
         <c:if test="${AppSubmissionDto.needEditController }">
-            <c:set var="isClickEdit" value="false"/>
             <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && !isRfi}">
                 <div class="text-right app-font-size-16">
                     <a class="back" id="RfcSkip" href="javascript:void(0);">
@@ -57,18 +44,16 @@
                     </a>
                 </div>
             </c:if>
-            <c:if test="${'true' != isClickEdit}">
-                <c:set var="locking" value="true"/>
-                <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
-            </c:if>
+            <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
         </c:if>
     </div>
-    <input type="hidden" name="prsFlag" value="${prsFlag}"/>
     <c:set var="arPractitionerCount" value="${svcPersonnelDto.arPractitionerCount}"/>
     <c:set var="nurseCount" value="${svcPersonnelDto.nurseCount}"/>
     <c:set var="embryologistMinCount" value="${svcPersonnelDto.embryologistMinCount}"/>
     <c:set var="specialCount" value="${svcPersonnelDto.specialCount}"/>
     <c:set var="normalCount" value="${svcPersonnelDto.normalCount}"/>
+
+
     <c:if test="${arPractitionerCount != 0}">
         <div class="panel-main-content" id="arContent">
             <iais:row>
@@ -87,11 +72,6 @@
             <div class="form-group col-md-12 col-xs-12 addDpoDiv">
          <span class="addListBtn" style="color:deepskyblue;cursor:pointer;"> <span style="">+ Add Another AR Practitioner</span> </span>
             </div>
-<%--            <div class="form-group col-md-12 col-xs-12">--%>
-<%--                <span style="">Total Number of AR Practitioner</span>--%>
-<%--            </div>--%>
-
-
 <%--             TODO --%>
             <iais:row>
                 <iais:field width="5" value="Total Number of AR Practitioner"/>
@@ -100,9 +80,9 @@
 <%--                    <span id="arNumber">0<span>--%>
                 </iais:value>
             </iais:row>
-
         </div>
     </c:if>
+
 
     <c:if test="${nurseCount != 0}">
         <div class="panel-main-content">
@@ -136,6 +116,8 @@
             <div id="selectFileDiv"></div>
         </div>
     </c:if>
+
+
     <c:if test="${embryologistMinCount != 0}">
         <div class="panel-main-content">
             <input type="hidden" class="maxCount" value="${emPersonnelMax}"/>
@@ -145,7 +127,7 @@
                 <c:set var="appSvcPersonnelDto" value="${svcPersonnelDto.embryologistList[index]}"/>
                 <%@include file="servicePersonnelEmbryologist.jsp" %>
             </c:forEach>
-            <div class="form-group col-md-12 col-xs-12 addDpoDiv">
+            <div class="col-md-12 col-xs-12 addDpoDiv">
          <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">
          <span style="">+ Add Another Embryologist </span>
          </span>
@@ -153,11 +135,13 @@
         </div>
     </c:if>
 
+
+
     <c:if test="${normalCount != 0}">
         <div class="panel-main-content">
             <input type="hidden" class="maxCount" value="${othersPersonnelMax}"/>
             <c:forEach begin="0" end="${normalCount - 1}" step="1" varStatus="status">
-                <c:set value="SP999" var="logo"/>
+                <c:set value="SVCPSN" var="logo"/>
                 <c:set var="index" value="${status.index}"/>
                 <c:set var="appSvcPersonnelDto" value="${svcPersonnelDto.normalList[index]}"/>
                 <%@include file="servicePersonnelBlood.jsp" %>
@@ -170,12 +154,14 @@
         </div>
     </c:if>
 
+
+
     <c:if test="${specialCount != 0}">
         <div class="panel-main-content">
             <input type="hidden" class="maxCount" value="${spePersonnelMax}"/>
             <c:forEach begin="0" end="${specialCount - 1}" step="1" varStatus="status">
                 <c:set var="index" value="${status.index}"/>
-                <c:set value="SP000" var="logo"/>
+                <c:set value="SP888" var="logo"/>
                 <c:set var="appSvcPersonnelDto" value="${svcPersonnelDto.specialList[index]}"/>
                 <%@include file="servicePersonnelDetail.jsp" %>
             </c:forEach>
@@ -187,13 +173,15 @@
         </div>
     </c:if>
 
+
     <c:if test="${empty psnContent}">
         <c:set var="psnContent" value="personnel-content"/>
     </c:if>
 
 </div>
-<%@include file="servicePersonnelOthers.jsp" %>
+<%@include file="servicePersonnelOthers.jsp"%>
 <%@include file="/WEB-INF/jsp/iais/application/common/prsLoad.jsp" %>
+<%@include file="/WEB-INF/jsp/iais/application/common/personFun.jsp" %>
 <%@include file="servicePersonnelFun.jsp" %>
 
 

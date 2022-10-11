@@ -24,7 +24,6 @@
                 personnelSelFun(personnelSel, $personnelContentEle);
             });
         }
-        // spRemove();
         initPage($('div.panel-main-content'))
         $('input[name="prsLoading"]').each(function () {
             if ($(this).val() == 'true') {
@@ -32,15 +31,42 @@
                 inputReadonly($currContent.find('.name'));
             }
         });
-        if ("${errormapIs}" == 'error') {
-            $('.svcPsnEdit').trigger('click');
-        }
         init = 1;
         fileUploadEvent()
         designationChange()
         //no
         profRegNoEvent($('.personnel-content'));
         removePersonEvent();
+
+
+
+
+
+        // disablePsnContent($(v), svcContent);
+
+        //  RFC
+        let appType = $('input[name="applicationType"]').val();
+        if (('APTY005' == appType || 'APTY004' == appType)) {
+            disabledPage();
+        }
+
+        let svcContent = '.personnel-content';
+        psnEditEvent(svcContent);
+
+        console.log('errorMap====>',$("#errorMapIs").val())
+        <c:if test="${AppSubmissionDto.needEditController}">
+        $(svcContent).each(function (k,v) {
+            if ($("#errorMapIs").val() == 'error') {
+                $(v).find('.error-msg').on('DOMNodeInserted', function () {
+                    if ($(v).not(':empty')) {
+                        $(v).find('.isPartEdit').val(1);
+                        $('#isEditHiddenVal').val('1');
+                        unDisabledPartPage($(v));
+                    }
+                });
+            }
+        });
+        </c:if>
     });
 
     function initPage(target) {
@@ -203,12 +229,16 @@
         $currContent.find('.othersubSpeciality').html('');
         $currContent.find('.qualification').html('');
         $currContent.find('.otherDesignationDiv').addClass('hidden')
+
+        $currContent.find('.isPartEdit').val(1)
+        $('.personnel-content-edit').val(1)
+
+        unDisabledPartPage($currContent)
+        //
         refreshIndex($currContent, $(target).find('div.personnel-content').length - 1);
         $(target).find('div.personnel-content').first().find('.assign-psn-item').html('1');
         disablePersonnel($currContent, false, true);
-        //  TODO
         controlCountEvent($target);
-
         removePersonEvent();
         profRegNoEvent($currContent);
         designationChange()

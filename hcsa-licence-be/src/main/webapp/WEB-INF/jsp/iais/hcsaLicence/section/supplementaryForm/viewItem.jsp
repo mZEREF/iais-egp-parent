@@ -55,9 +55,9 @@
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_RADIO || oldItemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_RADIO}">
             <tr>
             <td class="col-xs-6">
-                <p class="form-check-label" aria-label="premise-1-cytology">
+                <div class="form-check-label" aria-label="premise-1-cytology">
                         ${itemConfigDto.displayInfo}
-                </p>
+                </div>
             </td>
 
             <td>
@@ -84,17 +84,17 @@
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_CHECKBOX || oldItemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_CHECKBOX}">
             <tr>
                 <td>
-                <div class="col-xs-6 form-check active">
-                    <p class="form-check-label" aria-label="premise-1-cytology">
+                <div class="col-xs-6 form-check active" attr="${itemConfigDto.displayInfo}">
+                    <div class="form-check-label" aria-label="premise-1-cytology">
                         <span class="check-square"></span> ${itemConfigDto.displayInfo}
-                    </p>
+                    </div>
                 </div>
                 </td>
                 <td>
-                    <div class="col-xs-6 form-check active">
-                        <p class="form-check-label" aria-label="premise-1-cytology" style="display: none">
+                    <div class="col-xs-6 form-check active" attr="${oldItemConfigDto.displayInfo}">
+                        <div class="form-check-label" aria-label="premise-1-cytology" style="display: none">
                             <span class="check-square"></span> ${oldItemConfigDto.displayInfo}
-                        </p>
+                        </div>
                     </div>
                 </td>
             </tr>
@@ -104,9 +104,9 @@
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_TEXT || oldItemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_TEXT}">
             <tr>
                 <td class="col-xs-6">
-                    <p class="form-check-label" aria-label="premise-1-cytology">
+                    <div class="form-check-label" aria-label="premise-1-cytology">
                             ${itemConfigDto.displayInfo}
-                    </p>
+                    </div>
                 </td>
 
                 <td>

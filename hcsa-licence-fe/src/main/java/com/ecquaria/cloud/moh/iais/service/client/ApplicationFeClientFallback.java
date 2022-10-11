@@ -883,14 +883,6 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
     }
 
     @Override
-    public FeignResponseEntity<String> updatePaymentByAppGrp(ApplicationGroupDto applicationGroupDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
     public FeignResponseEntity<List<ApplicationSubDraftDto>> getDraftByLicAppIdAndStatus(String licAppId, String status) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

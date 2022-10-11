@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOf
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.WithOutRenewalDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
@@ -440,7 +441,7 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
         AppSubmissionListDto autoAppSubmissionListDto = new AppSubmissionListDto();
         autoAppSubmissionListDto.setAuditTrailDto(AuditTrailHelper.getCurrentAuditTrailDto());
         autoAppSubmissionListDto.setEventRefNo(eventRefNo);
-        autoAppSubmissionListDto.setAppSubmissionDtos(newAppSubmissionList);
+        autoAppSubmissionListDto.setAppSubmissionDtos(ApplicationHelper.toSlim(newAppSubmissionList, ApplicationHelper::toSlim));
         eventBusHelper.submitAsyncRequest(autoAppSubmissionListDto, appCommService.getSeqId(), EventBusConsts.SERVICE_NAME_APPSUBMIT,
                 EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT, eventRefNo, bpc.process);
         return newAppSubmissionList;
