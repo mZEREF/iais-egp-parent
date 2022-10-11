@@ -11,6 +11,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocumentShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -1880,12 +1882,19 @@ public class ServiceInfoDelegator {
         String stepCode=hcsaServiceStepSchemeDtos.get(i).getStepCode();
         String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,
                 HcsaConsts.STEP_DISCIPLINE_ALLOCATION};
+        List<String> checkCodeList=IaisCommonUtils.genNewArrayList();
+        checkCodeList.add(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES);
+        checkCodeList.add(AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL);
+        checkCodeList.add(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY);
         boolean match = appSubmissionDto.getAppSvcRelatedInfoDtoList()
                 .stream().anyMatch(s -> AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL.equals(s.getServiceCode()));
         if (match){
+            List<String> collect = appSubmissionDto.getAppSvcRelatedInfoDtoList().stream().map(AppSvcRelatedInfoDto::getServiceCode).collect(Collectors.toList());
+            checkCodeList.removeAll(collect);
             if (IaisCommonUtils.isNotEmpty(appSubmissionDto.getAppLicBundleDtoList())){
-                int size = appSubmissionDto.getAppLicBundleDtoList().size();
-                if (size>1){
+                List<String> collect1 = appSubmissionDto.getAppLicBundleDtoList().stream().map(AppLicBundleDto::getSvcCode).collect(Collectors.toList());
+                checkCodeList.removeAll(collect1);
+                if (checkCodeList.size()==0){
                     List<String> list = Arrays.asList(skipList);
                     list.add(HcsaConsts.STEP_OUTSOURCED_PROVIDERS);
                     skipList = (String[]) list.toArray();
