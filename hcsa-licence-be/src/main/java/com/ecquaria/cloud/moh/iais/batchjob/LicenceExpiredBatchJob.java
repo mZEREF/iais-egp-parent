@@ -6,8 +6,11 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
@@ -24,21 +27,24 @@ import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationBeService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
+import com.ecquaria.cloud.moh.iais.service.OrganizationService;
+import com.ecquaria.cloud.moh.iais.service.client.AppCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Author weilu
@@ -77,6 +83,10 @@ public class LicenceExpiredBatchJob {
     OrganizationClient organizationClient;
     @Autowired
     private LicCommService licCommService;
+    @Autowired
+    private AppCommClient appCommClient;
+    @Autowired
+    protected OrganizationService organizationService;
 
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("The licenceExpiredBatchJob is start ..."));
@@ -142,17 +152,7 @@ public class LicenceExpiredBatchJob {
             svcNameLicNo.append(svcName).append(" : ").append(licenceNo);
             HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
             serviceCodes.add(hcsaServiceDto.getSvcCode());
-            List<String> specLicIds = hcsaLicenceClient.getActSpecIdByActBaseId(licId).getEntity();
-            if(!IaisCommonUtils.isEmpty(specLicIds)){
-                for(String specLicId :specLicIds){
-                    LicenceDto specLicDto = hcsaLicenceClient.getLicDtoById(specLicId).getEntity();
-                    String svcName1 = specLicDto.getSvcName();
-                    String licenceNo1 = specLicDto.getLicenceNo();
-                    svcNameLicNo.append(svcName1).append(" : ").append(licenceNo1);
-                    HcsaServiceDto hcsaServiceDto1 = HcsaServiceCacheHelper.getServiceByServiceName(svcName1);
-                    serviceCodes.add(hcsaServiceDto1.getSvcCode());
-                }
-            }
+            SubLicenseeDto orgLicensee = organizationService.getSubLicenseeByLicenseeId(licenceDto.getLicenseeId());
 
             //pan daun shi dou you xin de licence sheng cheng
             LicenceDto newLicDto = hcsaLicenceClient.getLicdtoByOrgId(licId).getEntity();
@@ -175,6 +175,8 @@ public class LicenceExpiredBatchJob {
                 Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
                 String appId= licCommService.getLicCorrBylicId(licId).get(0).getApplicationId();
                 ApplicationDto applicationDto=applicationClient.getApplicationById(appId).getEntity();
+                AppPremisesCorrelationDto appPremisesCorrelationDto=applicationClient.getAppPremCorrByAppNo(applicationDto.getApplicationNo()).getEntity();
+                List<AppSvcBusinessDto> appSvcBusinessDtoList=appCommClient.getAppSvcBusinessDtoListByCorrId(appPremisesCorrelationDto.getId()).getEntity();
                 ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
                 if (applicationGroupDto != null){
                     OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
@@ -187,6 +189,13 @@ public class LicenceExpiredBatchJob {
                 emailMap.put("email", systemParamConfig.getSystemAddressOne());
                 emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
                 emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
+                emailMap.put("LicenceNo", licenceNo);
+                emailMap.put("BusinessName", "-");
+                if(IaisCommonUtils.isNotEmpty(appSvcBusinessDtoList)){
+                    emailMap.put("BusinessName", appSvcBusinessDtoList.get(0).getBusinessName());
+                }
+                emailMap.put("LicenseeName", orgLicensee.getDisplayName());
+
                 EmailParam emailParam = new EmailParam();
                 emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE);
                 emailParam.setTemplateContent(emailMap);
@@ -288,6 +297,7 @@ public class LicenceExpiredBatchJob {
         AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
         for (LicenceDto licenceDto : licenceDtos) {
             licenceDto.setAuditTrailDto(auditTrailDto);
+            SubLicenseeDto orgLicensee = organizationService.getSubLicenseeByLicenseeId(licenceDto.getLicenseeId());
             String licId = licenceDto.getId();
             String svcName = licenceDto.getSvcName();
             String licenceNo = licenceDto.getLicenceNo();
@@ -295,6 +305,8 @@ public class LicenceExpiredBatchJob {
                 Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
                 String appId= licCommService.getLicCorrBylicId(licId).get(0).getApplicationId();
                 ApplicationDto applicationDto=applicationClient.getApplicationById(appId).getEntity();
+                AppPremisesCorrelationDto appPremisesCorrelationDto=applicationClient.getAppPremCorrByAppNo(applicationDto.getApplicationNo()).getEntity();
+                List<AppSvcBusinessDto> appSvcBusinessDtoList=appCommClient.getAppSvcBusinessDtoListByCorrId(appPremisesCorrelationDto.getId()).getEntity();
                 ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
                 if (applicationGroupDto != null){
                     OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
@@ -308,6 +320,12 @@ public class LicenceExpiredBatchJob {
                 emailMap.put("email", systemParamConfig.getSystemAddressOne());
                 emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
                 emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
+                emailMap.put("LicenceNo", licenceNo);
+                emailMap.put("BusinessName", "-");
+                if(IaisCommonUtils.isNotEmpty(appSvcBusinessDtoList)){
+                    emailMap.put("BusinessName", appSvcBusinessDtoList.get(0).getBusinessName());
+                }
+                emailMap.put("LicenseeName", orgLicensee.getDisplayName());
                 EmailParam emailParam = new EmailParam();
                 emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE);
                 emailParam.setTemplateContent(emailMap);
