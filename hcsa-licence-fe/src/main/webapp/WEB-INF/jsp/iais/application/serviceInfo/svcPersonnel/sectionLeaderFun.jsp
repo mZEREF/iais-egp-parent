@@ -62,6 +62,9 @@
             refreshSectionLeaderBtn()
             refreshSectionLeaderIndex()
             $('#isEditHiddenVal').val('1');
+            let $currContent = $('.sectionLaderContent:last')
+            $currContent.find('.isPartEdit').val(1)
+            unDisabledPartPage($currContent)
             removeSectionLeaderEvent()
             dismissWaiting();
         });

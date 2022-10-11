@@ -1,6 +1,17 @@
 <div class="personnel-content">
     <input class="not-refresh premTypeValue" type="hidden" name="isUpload" value="true"/>
     <input type="hidden" class="not-refresh " name="${logo}nuCount" value="size"/>
+    <input type="hidden" class="not-refresh indexNo" name="${logo}indexNo" value="${appSvcPersonnelDto.indexNo}"/>
+    <input type="hidden" class="not-refresh isPartEdit" name="${logo}isPartEdit" value="0"/>
+    <iais:row cssClass="edit-content">
+        <c:if test="${canEdit}">
+            <div class="text-right app-font-size-16">
+                <a class="edit psnEdit" href="javascript:void(0);">
+                    <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
+                </a>
+            </div>
+        </c:if>
+    </iais:row>
     <iais:row>
         <iais:value width="6" cssClass="col-md-6">
             <strong>
@@ -15,19 +26,6 @@
                 </h4>
             </div>
         </iais:value>
-    </iais:row>
-
-    <iais:row>
-        <div class="col-md-12 col-xs-12 edit-content">
-            <c:if test="${'true' == canEdit}">
-                <input type="hidden" class="isPartEdit" name="isPartEdit${index}" value="0"/>
-                <div class="text-right app-font-size-16">
-                    <a class="edit" href="javascript:void(0);">
-                        <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
-                    </a>
-                </div>
-            </c:if>
-        </div>
     </iais:row>
     <%--    --%>
     <input type="hidden" name="isPartEdit" value="0"/>

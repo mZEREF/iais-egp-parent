@@ -12,6 +12,8 @@
     </div>
     <div class="form-group">
         <div class="row control control-caption-horizontal">
+
+
             <div class="control-label col-md-5 col-xs-5">
                 <label  class="control-label control-set-font control-font-label">
                     <div class="app-title">
@@ -19,6 +21,8 @@
                     </div>
                 </label>
             </div>
+
+
             <div class="col-md-7 col-xs-7 text-right">
                 <c:if test="${AppSubmissionDto.needEditController }">
                     <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">

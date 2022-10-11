@@ -1366,6 +1366,7 @@ public class ServiceInfoDelegator {
      */
     public void doServicePersonnel(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do doServicePersonnel start ...."));
+//        RFC
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String action = ParamUtil.getRequestString(bpc.request, "nextStep");
         String appType = appSubmissionDto.getAppType();
@@ -1379,21 +1380,21 @@ public class ServiceInfoDelegator {
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         String currentSvcCod = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
-        boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(RfcConst.EDIT_SERVICE,
-                bpc.request);
+        boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(RfcConst.EDIT_SERVICE, bpc.request);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        SvcPersonnelDto svcPersonnelDto = appSvcRelatedInfoDto.getSvcPersonnelDto();
+        SvcPersonnelDto svcPersonnelDto = new SvcPersonnelDto();
         if (isGetDataFromPage) {
             List<String> personnelTypeList = IaisCommonUtils.genNewArrayList();
             List<SelectOption> personnelTypeSel = ApplicationHelper.genPersonnelTypeSel(currentSvcCod);
             for (SelectOption sp : personnelTypeSel) {
                 personnelTypeList.add(sp.getValue());
             }
-            svcPersonnelDto = AppDataHelper.genAppSvcPersonnelDtoList(bpc.request,svcPersonnelDto);
+//            get pageData
+            svcPersonnelDto = AppDataHelper.genAppSvcPersonnelDtoList(bpc.request, appSvcRelatedInfoDto, appType);
+            appSvcRelatedInfoDto.setSvcPersonnelDto(svcPersonnelDto);
             log.debug(StringUtil.changeForLog("cycle cgo dto to retrieve prs info start ..."));
             log.debug("prs server flag {}", prsFlag);
             log.debug(StringUtil.changeForLog("cycle cgo dto to retrieve prs info end ..."));
-            appSvcRelatedInfoDto.setSvcPersonnelDto(svcPersonnelDto);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto);
         }
         if ("next".equals(action)) {

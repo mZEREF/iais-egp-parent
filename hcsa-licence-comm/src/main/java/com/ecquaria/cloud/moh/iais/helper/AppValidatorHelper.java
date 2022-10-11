@@ -2829,14 +2829,6 @@ public final class AppValidatorHelper {
         } else if (name.length() > 110) {
             errorMap.put(prefix + "name" + i, signal);
         }
-        if ("SP999".equals(prefix) || "SP002".equals(prefix)) {
-            String target = StringUtil.toUpperCase(prefix + name);
-            if (personnelNames.contains(target)) {
-                errorMap.put(prefix + "name" + i, "SC_ERR011");
-            } else {
-                personnelNames.add(target);
-            }
-        }
         String wrkExpYear = appSvcPersonnelDto.getWrkExpYear();
         if (StringUtil.isEmpty(wrkExpYear)) {
             errorMap.put(prefix + "wrkExpYear" + i, signal);
@@ -2848,7 +2840,15 @@ public final class AppValidatorHelper {
                 errorMap.put(prefix + "wrkExpYear" + i, "GENERAL_ERR0002");
             }
         }
-        if ("SP002".equals(prefix) || "SP003".equals(prefix)) {
+        if (ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS.equals(prefix) || ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER.equals(prefix)) {
+            String target = StringUtil.toUpperCase(prefix + name);
+            if (personnelNames.contains(target)) {
+                errorMap.put(prefix + "name" + i, "SC_ERR011");
+            } else {
+                personnelNames.add(target);
+            }
+        }
+        if (ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER.equals(prefix) || ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES.equals(prefix)) {
             String designation = appSvcPersonnelDto.getDesignation();
             if (StringUtil.isEmpty(designation)) {
                 errorMap.put(prefix + "designation" + i, signal);
@@ -2913,7 +2913,7 @@ public final class AppValidatorHelper {
                 }
             }
 //             nurse special
-            if ("SP003".equals(prefix)) {
+            if (ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES.equals(prefix)) {
                 String professionType = appSvcPersonnelDto.getProfessionType();
                 if (StringUtil.isEmpty(professionType)) {
                     errorMap.put(prefix + "professionType" + i, signal);
@@ -2929,7 +2929,7 @@ public final class AppValidatorHelper {
 
             }
         }
-        if ("SP999".equals(prefix)) {
+        if (ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS.equals(prefix)) {
             String qualification = appSvcPersonnelDto.getQualification();
             if (StringUtil.isEmpty(qualification)) {
                 errorMap.put(prefix + "qualification" + i, signal);
@@ -2937,7 +2937,7 @@ public final class AppValidatorHelper {
                 errorMap.put(prefix + "qualification" + i, signal);
             }
         }
-        if ("SP003".equals(prefix) || "SP001".equals(prefix)) {
+        if (ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES.equals(prefix) || ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST.equals(prefix)) {
             String salutation = appSvcPersonnelDto.getSalutation();
             if (StringUtil.isEmpty(salutation)) {
                 errorMap.put(prefix + "salutation" + i, signal);
@@ -2949,7 +2949,7 @@ public final class AppValidatorHelper {
                 personnelNames.add(target);
             }
         }
-        if ("SP001".equals(prefix)) {
+        if (ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST.equals(prefix)) {
             //
             String embryologistAuthorized = appSvcPersonnelDto.getEmbryologistAuthorized();
             if (StringUtil.isEmpty(embryologistAuthorized)) {
@@ -3071,13 +3071,13 @@ public final class AppValidatorHelper {
         if (!StringUtil.isEmpty(normalList) && normalList.size() > 0) {
             int count = normalList.size();
             for (int i = 0; i < count; i++) {
-                paramValidate(errorMap, normalList.get(i), "SP999", i, personnelNames);
+                paramValidate(errorMap, normalList.get(i), ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS, i, personnelNames);
             }
         }
         if (!StringUtil.isEmpty(specialList) && specialList.size() > 0) {
             int count = specialList.size();
             for (int i = 0; i < count; i++) {
-                specialValidate(errorMap, specialList.get(i), "", i, personnelNames, false);
+                specialValidate(errorMap, specialList.get(i), ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS, i, personnelNames, false);
             }
         }
     }

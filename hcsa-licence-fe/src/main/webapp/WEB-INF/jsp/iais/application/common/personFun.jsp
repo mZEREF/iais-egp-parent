@@ -42,7 +42,9 @@
             return;
         }
         $currContent.find('.isPartEdit').val('1');
+        console.log(target+'-edit','==========>')
         $(target + '-edit').val('1');
+        $("#isEditHiddenVal").val('1');
         hideTag($currContent.find('.edit-content'));
         unDisableContent($currContent);
         checkPersonDisabled($currContent);

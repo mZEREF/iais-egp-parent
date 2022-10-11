@@ -2,10 +2,11 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
-<input type="hidden" id="isEditHiddenVal" class="person-content-edit" name="isEdit"
-       value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
+<input type="hidden" id="isEditHiddenVal" class="person-content-edit" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
+<div class="row form-horizontal normal-label person-content">
 
-<div class="row form-horizontal normal-label">
+    <input type="hidden" class="not-refresh isPartEdit" name="isPartEdit" value="0"/>
+
     <c:if test="${AppSubmissionDto.needEditController }">
         <c:if test="${(isRfc || isRenew) && !isRfi}">
             <iais:row>
@@ -18,6 +19,9 @@
         </c:if>
         <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
     </c:if>
+
+    <c:out value="${currStepName}"/>---------------->>>>>
+
     <iais:row>
         <div class="col-xs-12">
             <h2 class="app-title"><c:out value="${currStepName}"/></h2>
@@ -36,6 +40,16 @@
         </iais:row>
 
         <c:set var="itemPrefix" value="${appSvcSuplmFormDto.premisesVal}"/>
+
+        <iais:row cssClass="edit-content">
+            <c:if test="${canEdit}">
+                <div class="text-right app-font-size-16">
+                    <a class="edit psnEdit" href="javascript:void(0);">
+                        <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
+                    </a>
+                </div>
+            </c:if>
+        </iais:row>
 
         <c:forEach var="appSvcSuplmGroupDto" items="${appSvcSuplmFormDto.appSvcSuplmGroupDtoList}">
             <c:set var="count" value="${appSvcSuplmGroupDto.count}"/>
@@ -72,6 +86,8 @@
 </div>
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 <%@include file="itemFun.jsp" %>
+<%@include file="/WEB-INF/jsp/iais/application/common/personFun.jsp" %>
+<%@include file="/WEB-INF/jsp/iais/application/common/prsLoad.jsp" %>
 <script type="text/javascript">
     $(function () {
 

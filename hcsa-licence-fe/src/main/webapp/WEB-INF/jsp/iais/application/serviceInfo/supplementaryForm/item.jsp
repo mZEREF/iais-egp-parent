@@ -9,7 +9,6 @@
     data-condition="${itemConfigDto.conditionItemId}" data-specialcondition="${item.specialCondition}"
     data-curr="${itemConfigDto.id}" data-seq="${item.seqNum}" data-prefix="${itemPrefix}"
 </c:set>
-
 <iais:row cssClass="${isCheckBox ? 'form-check ':''}form-level-${item.level} item-record ${itemConfigDto.id} ${itemPrefix}">
     <c:choose>
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_TITLE}">

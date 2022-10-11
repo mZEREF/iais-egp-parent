@@ -17,12 +17,14 @@
         </div>
         <div class="col-md-6">
             <div class="col-md-6">
-            <span class="newVal postalCode" attr="${appGrpSecondAddr.postalCode}"><c:out
-                    value="${appGrpSecondAddr.postalCode}"/></span>
+                <div class="newVal postalCode" attr="${appGrpSecondAddr.postalCode}">
+                    <c:out value="${appGrpSecondAddr.postalCode}"/>
+                </div>
             </div>
             <div class="col-md-6">
-                <span class="oldVal " attr="${appGrpSecondAddr.postalCode}" style="display: none"><c:out
-                        value="${oldAppGrpPremDto.postalCode}"/></span>
+                <div class="oldVal " attr="${appGrpSecondAddr.postalCode}" style="display: none">
+                    <c:out value="${oldAppGrpPremDto.postalCode}"/>
+                </div>
             </div>
         </div>
     </div>
@@ -33,14 +35,14 @@
         </div>
         <div class="col-md-6">
             <div class="col-md-6">
-                  <span class="newVal addrType" attr="${appGrpSecondAddr.addrType}">
+                  <div class="newVal addrType" attr="${appGrpSecondAddr.addrType}">
                     <iais:code code="${appGrpSecondAddr.addrType}"/>
-                  </span>
+                  </div>
             </div>
             <div class="col-md-6">
-                              <span class="oldVal " attr="${oldAppGrpPremDto.addrType}" style="display: none">
-                                <iais:code code="${oldAppGrpPremDto.addrType}"/>
-                              </span>
+                  <div class="oldVal" attr="${oldAppGrpPremDto.addrType}" style="display: none">
+                    <iais:code code="${oldAppGrpPremDto.addrType}"/>
+                  </div>
             </div>
         </div>
     </div>
@@ -51,12 +53,14 @@
         </div>
         <div class="col-md-6">
             <div class="col-md-6">
-                <span class="newVal blkNo" attr="${appGrpSecondAddr.blkNo}"><c:out
-                        value="${appGrpSecondAddr.blkNo}"/></span>
+                <div class="newVal blkNo" attr="${appGrpSecondAddr.blkNo}">
+                    <c:out value="${appGrpSecondAddr.blkNo}"/>
+                </div>
             </div>
             <div class="col-md-6">
-                <span class="oldVal " attr="${oldAppGrpPremDto.blkNo}" style="display: none"><c:out
-                        value="${oldAppGrpPremDto.blkNo}"/></span>
+                <div class="oldVal " attr="${oldAppGrpPremDto.blkNo}" style="display: none">
+                    <c:out value="${oldAppGrpPremDto.blkNo}"/>
+                </div>
             </div>
         </div>
     </div>
@@ -68,14 +72,14 @@
         </div>
         <div class="col-md-6">
             <div class="col-md-6">
-                   <span class="newVal floorNo-unitNo" attr="${appGrpSecondAddr.floorNo}${appGrpSecondAddr.unitNo}">
-                     <c:out value="${appGrpSecondAddr.floorNo}-${appGrpSecondAddr.unitNo}"/>
-                   </span>
+               <div class="newVal floorNo-unitNo" attr="${appGrpSecondAddr.floorNo}${appGrpSecondAddr.unitNo}">
+                 <c:out value="${appGrpSecondAddr.floorNo}-${appGrpSecondAddr.unitNo}"/>
+               </div>
             </div>
             <div class="col-md-6">
-                   <span class="oldVal " attr="${oldAppGrpPremDto.floorNo}${oldAppGrpPremDto.unitNo}" style="display: none">
-                      <c:out value="${oldAppGrpPremDto.floorNo}-${oldAppGrpPremDto.unitNo}"/>
-                   </span>
+               <div class="oldVal " attr="${oldAppGrpPremDto.floorNo}${oldAppGrpPremDto.unitNo}" style="display: none">
+                  <c:out value="${oldAppGrpPremDto.floorNo}-${oldAppGrpPremDto.unitNo}"/>
+               </div>
             </div>
         </div>
     </div>
@@ -87,14 +91,14 @@
             </div>
             <div class="col-md-6">
                 <div class="col-md-6">
-                   <span class="newVal addmorecontent" attr="${othersUnitNo.floorNo}${othersUnitNo.unitNo}">
+                   <div class="newVal addmorecontent" attr="${othersUnitNo.floorNo}${othersUnitNo.unitNo}">
                      <c:out value="${othersUnitNo.floorNo}-${othersUnitNo.unitNo}"/>
-                   </span>
+                   </div>
                 </div>
-                <br>
-                <span class="oldVal " attr="<c:out value="${oldAppGrpPremDto.streetName}"/>" style="display: none">
-                                           <c:out value="${oldAppGrpPremDto.streetName}"/>
-                                       </span>
+                <div class="col-md-6">
+                    <div class="oldVal " attr="<c:out value="${oldAppGrpPremDto.streetName}"/>" style="display: none">
+                       <c:out value="${oldAppGrpPremDto.streetName}"/>
+                    </div>
             </div>
         </div>
     </c:forEach>
@@ -104,15 +108,16 @@
             Street Name
         </div>
         <div class="col-md-6">
-            <div class="col-md-12">
-                   <span class="newVal streetName" attr="<c:out value="${appGrpSecondAddr.streetName}"/>">
+            <div class="col-md-6">
+                   <div class="newVal streetName" attr="<c:out value="${appGrpSecondAddr.streetName}"/>">
                        <c:out value="${appGrpSecondAddr.streetName}"/>
-                   </span>
+                   </div>
             </div>
-            <br>
-            <span class="oldVal " attr="<c:out value="${oldAppGrpPremDto.streetName}"/>" style="display: none">
-                                   <c:out value="${oldAppGrpPremDto.streetName}"/>
-                               </span>
+            <div class="col-md-6">
+                    <div class="oldVal " attr="<c:out value="${oldAppGrpPremDto.streetName}"/>" style="display: none">
+                        <c:out value="${oldAppGrpPremDto.streetName}"/>
+                    </div>
+            </div>
         </div>
     </div>
 
@@ -121,15 +126,17 @@
             Building Name
         </div>
         <div class="col-md-6">
-            <div class="col-md-12">
-                  <span class="newVal buildingName" attr="<c:out value="${appGrpSecondAddr.buildingName}"/>">
+            <div class="col-md-6">
+                  <div class="newVal buildingName" attr="<c:out value="${appGrpSecondAddr.buildingName}"/>">
                     <c:out value="${appGrpSecondAddr.buildingName}"/>
-                  </span>
+                  </div>
             </div>
-            <br>
-            <span class="oldVal " attr="<c:out value="${oldAppGrpPremDto.buildingName}"/>" style="display: none">
-                                <c:out value="${oldAppGrpPremDto.buildingName}"/>
-                              </span>
+            <div class="col-md-6">
+                <div class="oldVal " attr="<c:out value="${oldAppGrpPremDto.buildingName}"/>" style="display: none">
+                 <c:out value="${oldAppGrpPremDto.buildingName}"/>
+                </div>
+            </div>
         </div>
     </div>
+
 </div>
