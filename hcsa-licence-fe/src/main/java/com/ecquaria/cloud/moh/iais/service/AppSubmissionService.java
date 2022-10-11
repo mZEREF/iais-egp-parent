@@ -141,4 +141,6 @@ public interface AppSubmissionService {
 
     boolean validateSubLicenseeDto(Map<String, String> errorMap, SubLicenseeDto subLicenseeDto, HttpServletRequest request);
 
+    void updatePayment(AppSubmissionDto appSubmissionDto, String pmtRefNo);
+
 }
