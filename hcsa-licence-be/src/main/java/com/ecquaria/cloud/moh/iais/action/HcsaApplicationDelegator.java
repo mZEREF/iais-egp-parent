@@ -43,7 +43,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicat
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppSpecifiedLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
@@ -2571,85 +2570,29 @@ public class HcsaApplicationDelegator {
         //cessation
         if (ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus) && ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)) {
             boolean grpLic = applicationDto.isGrpLic();
-            String applicationNo = applicationDto.getApplicationNo();
             String applicationDtoId = applicationDto.getId();
             AppGrpPremisesDto appGrpPremisesDto = cessationClient.getAppGrpPremisesDtoByAppId(applicationDtoId).getEntity();
-            String hciCode = appGrpPremisesDto.getHciCode();
-            String originLicenceId = applicationDto.getOriginLicenceId();
-            List<String> specLicIds = hcsaLicenceClient.getActSpecIdByActBaseId(originLicenceId).getEntity();
             List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
             if (grpLic) {
                 applicationDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_CESSATION_NEED);
                 applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_NEED_LICENCE);
                 applicationDto.setNeedNewLicNo(true);
                 applicationDtos.add(applicationDto);
-                if (!IaisCommonUtils.isEmpty(specLicIds)) {
-                    List<ApplicationDto> specApplicationDtos = cessationClient.getAppsByLicId(specLicIds.get(0)).getEntity();
-                    if (!IaisCommonUtils.isEmpty(specApplicationDtos)) {
-                        for (ApplicationDto dto : specApplicationDtos) {
-                            String id = dto.getId();
-                            String baseApplicationNo = dto.getBaseApplicationNo();
-                            AppGrpPremisesDto appGrpPremisesSpecDto = cessationClient.getAppGrpPremisesDtoByAppId(id).getEntity();
-                            String hciCode1 = appGrpPremisesSpecDto.getHciCode();
-                            if (hciCode.equals(hciCode1) && applicationNo.equals(baseApplicationNo)) {
-                                dto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_CESSATION_NEED);
-                                dto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_NEED_LICENCE);
-                                dto.setNeedNewLicNo(true);
-                                applicationDtos.add(dto);
-                            }
-                        }
-                    }
-                }
+
                 applicationClient.updateCessationApplications(applicationDtos);
             } else {
                 applicationDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_CESSATION_NOT);
                 applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_NEED_LICENCE);
                 applicationDto.setNeedNewLicNo(false);
                 applicationDtos.add(applicationDto);
-                if (!IaisCommonUtils.isEmpty(specLicIds)) {
-                    List<ApplicationDto> specApplicationDtos = cessationClient.getAppsByLicId(specLicIds.get(0)).getEntity();
-                    if (!IaisCommonUtils.isEmpty(specApplicationDtos)) {
-                        for (ApplicationDto dto : specApplicationDtos) {
-                            String baseApplicationNo = dto.getBaseApplicationNo();
-                            if (applicationNo.equals(baseApplicationNo)) {
-                                dto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_CESSATION_NOT);
-                                dto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_NEED_LICENCE);
-                                dto.setNeedNewLicNo(false);
-                                applicationDtos.add(dto);
-                            }
-                        }
-                    }
-                    applicationClient.updateCessationApplications(applicationDtos);
-                }
+
             }
         }
 
         if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus) && ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)) {
             applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
         }
-        if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus) && ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)) {
-            String originLicenceId = applicationDto.getOriginLicenceId();
-            String applicationNo = applicationDto.getApplicationNo();
-            String applicationDtoId = applicationDto.getId();
-            AppGrpPremisesDto appGrpPremisesDto = cessationClient.getAppGrpPremisesDtoByAppId(applicationDtoId).getEntity();
-            String hciCode = appGrpPremisesDto.getHciCode();
-            List<String> specLicIds = hcsaLicenceClient.getActSpecIdByActBaseId(originLicenceId).getEntity();
-            if (!IaisCommonUtils.isEmpty(specLicIds)) {
-                List<ApplicationDto> specApplicationDtos = cessationClient.getAppsByLicId(specLicIds.get(0)).getEntity();
-                if (!IaisCommonUtils.isEmpty(specApplicationDtos)) {
-                    for (ApplicationDto dto : specApplicationDtos) {
-                        String id = dto.getId();
-                        String baseApplicationNo = dto.getBaseApplicationNo();
-                        AppGrpPremisesDto appGrpPremisesSpecDto = cessationClient.getAppGrpPremisesDtoByAppId(id).getEntity();
-                        String hciCode1 = appGrpPremisesSpecDto.getHciCode();
-                        if (hciCode.equals(hciCode1) && applicationNo.equals(baseApplicationNo)) {
-                            dto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
-                        }
-                    }
-                }
-                applicationClient.updateCessationApplications(specApplicationDtos);
-            }
-        }
+
         applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         if(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationType) && ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
             applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);

@@ -21,6 +21,7 @@
     <input type="hidden" name="crud_action_type_form"/>
     <input type="hidden" name="draftNo"/>
     <input type="hidden" name="crud_action_value">
+    <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <div class="container">
         <div class="row">
             <div class="col-xs-3">
@@ -139,6 +140,11 @@
             }
         });
     });
+
+    function jumpToPagechangePage () {
+        showWaiting();
+        submit('chooseBaseSvc','doPage','doPage');
+    }
 
     function saveDraft() {
         let val = $('#draftsave').val();

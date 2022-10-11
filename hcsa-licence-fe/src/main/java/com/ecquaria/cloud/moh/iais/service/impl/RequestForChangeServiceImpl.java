@@ -37,6 +37,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
+import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -872,7 +873,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         AppSubmissionListDto autoAppSubmissionListDto = new AppSubmissionListDto();
         autoAppSubmissionListDto.setAuditTrailDto(AuditTrailHelper.getCurrentAuditTrailDto());
         autoAppSubmissionListDto.setEventRefNo(eventRefNo);
-        autoAppSubmissionListDto.setAppSubmissionDtos(newAppSubmissionList);
+        autoAppSubmissionListDto.setAppSubmissionDtos(ApplicationHelper.toSlim(newAppSubmissionList, ApplicationHelper::toSlim));
         eventBusHelper.submitAsyncRequest(autoAppSubmissionListDto, appCommService.getSeqId(), EventBusConsts.SERVICE_NAME_APPSUBMIT,
                 EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT, eventRefNo, bpc.process);
         return newAppSubmissionList;

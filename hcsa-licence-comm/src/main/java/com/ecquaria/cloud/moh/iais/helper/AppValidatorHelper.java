@@ -1775,10 +1775,6 @@ public final class AppValidatorHelper {
         if (appSvcBusinessDtos == null || appSvcBusinessDtos.isEmpty()) {
             return;
         }
-        //TODO Test
-        if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
-            return;
-        }
         for (int i = 0; i < appSvcBusinessDtos.size(); i++) {
 
             String subfix = "" + i;
@@ -1977,7 +1973,7 @@ public final class AppValidatorHelper {
     public static Map<String, String> doValidationOutsourced(AppSvcOutsouredDto appSvcOutsouredDto,String curAt){
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         AppPremGroupOutsourcedDto appPremGroupOutsourcedDto = appSvcOutsouredDto.getSearchOutsourced();
-        if (appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto() != null){
+        if (appPremGroupOutsourcedDto != null && appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto() != null){
             if ("search".equals(curAt)){
                 ValidationResult vResult = WebValidationHelper.validateProperty(appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto(),"search");
                 if (vResult != null && vResult.isHasErrors()){

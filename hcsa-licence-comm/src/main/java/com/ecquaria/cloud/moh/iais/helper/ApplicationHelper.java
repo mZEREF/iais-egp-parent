@@ -18,16 +18,19 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPsnEditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSpecialServiceInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSuplmFormDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SvcPersonnelDto;
@@ -1297,11 +1300,11 @@ public final class ApplicationHelper {
         List<AppLicBundleDto> appLicBundleDtoList = appSubmissionDto.getAppLicBundleDtoList();
         if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)){
             for (AppLicBundleDto appLicBundleDto : appLicBundleDtoList) {
-                String bundleSvcName = String.valueOf(HcsaServiceCacheHelper.getServiceByCode(appLicBundleDto.getSvcCode()));
-                if (HcsaAppConst.CLINICALLABORATOYY.equals(bundleSvcName)){
+                String bundleSvcName = appLicBundleDto.getSvcCode();
+                if (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(bundleSvcName)){
                     options.add(new SelectOption(HcsaAppConst.RADIOLOGICALSERVICE, HcsaAppConst.RADIOLOGICALSERVICE));
                 }
-                if (HcsaAppConst.RADIOLOGICALSERVICE.equals(bundleSvcName)){
+                if (AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(bundleSvcName)){
                     options.add(new SelectOption(HcsaAppConst.CLINICALLABORATOYY, HcsaAppConst.CLINICALLABORATOYY));
                 }
             }
@@ -3532,4 +3535,54 @@ public final class ApplicationHelper {
         return IaisCommonUtils.genNewArrayList();
     }
 
+    public static AppSubmissionDto toSlim(AppSubmissionDto appSubmissionDto) {
+        AppSubmissionDto newDto = CopyUtil.copyMutableObject(appSubmissionDto);
+        newDto.setFeeInfoDtos(null);
+        newDto.setOldRenewAppSubmissionDto(null);
+        newDto.setOldAppSubmissionDto(null);
+        List<AppPremSpecialisedDto> appPremSpecialisedDtoList = newDto.getAppPremSpecialisedDtoList();
+        if (IaisCommonUtils.isNotEmpty(appPremSpecialisedDtoList)) {
+            for (int i = 0; i < appPremSpecialisedDtoList.size(); i++) {
+                appPremSpecialisedDtoList.set(i, appPremSpecialisedDtoList.get(i).toSlim());
+            }
+            newDto.setAppPremSpecialisedDtoList(appPremSpecialisedDtoList);
+        }
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = newDto.getAppSvcRelatedInfoDtoList();
+        for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList) {
+            appSvcRelatedInfoDto.setDocumentShowDtoList(null);
+            appSvcRelatedInfoDto.setAppSvcSuplmFormList(toSlim(appSvcRelatedInfoDto.getAppSvcSuplmFormList(),
+                    AppSvcSuplmFormDto::toSlim));
+            List<AppSvcOtherInfoDto> appSvcOtherInfoList = appSvcRelatedInfoDto.getAppSvcOtherInfoList();
+            appSvcRelatedInfoDto.setAppSvcOtherInfoList(toSlim(appSvcOtherInfoList, appSvcOtherInfoDto -> {
+                appSvcOtherInfoDto.setOrgUserDto(null);
+                if (appSvcOtherInfoDto.getAppSvcSuplmFormDto() != null) {
+                    appSvcOtherInfoDto.setAppSvcSuplmFormDto(appSvcOtherInfoDto.getAppSvcSuplmFormDto().toSlim());
+                }
+                return appSvcOtherInfoDto;
+            }));
+            List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = appSvcRelatedInfoDto.getAppSvcSpecialServiceInfoList();
+            appSvcRelatedInfoDto.setAppSvcSpecialServiceInfoList(toSlim(appSvcSpecialServiceInfoList, specialServiceInfoDto -> {
+                List<SpecialServiceSectionDto> specialServiceSectionDtoList = specialServiceInfoDto.getSpecialServiceSectionDtoList();
+                specialServiceInfoDto.setSpecialServiceSectionDtoList(toSlim(specialServiceSectionDtoList, dto -> {
+                    AppSvcSuplmFormDto appSvcSuplmFormDto = dto.getAppSvcSuplmFormDto();
+                    if (appSvcSuplmFormDto != null) {
+                        dto.setAppSvcSuplmFormDto(appSvcSuplmFormDto.toSlim());
+                    }
+                    return dto;
+                }));
+                return specialServiceInfoDto;
+            }));
+        }
+        return newDto;
+    }
+
+    public static <T> List<T> toSlim(List<T> source, Function<T, T> toNew) {
+        if (IaisCommonUtils.isEmpty(source)) {
+            return source;
+        }
+        for (int i = 0; i < source.size(); i++) {
+            source.set(i, toNew.apply(source.get(i)));
+        }
+        return source;
+    }
 }
