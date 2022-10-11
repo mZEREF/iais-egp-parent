@@ -5,11 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoTransferStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -51,28 +47,30 @@ public class EmbryoTransferDelegator extends CommonDelegator {
     public void preparePage(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         EmbryoTransferStageDto embryoTransferStageDto = arSuperDataSubmissionDto.getEmbryoTransferStageDto();
+        EmbryoTransferDetailDto embryoTransferDetailDto = arSuperDataSubmissionDto.getEmbryoTransferDetailDto();
         if (embryoTransferStageDto == null) {
             embryoTransferStageDto = new EmbryoTransferStageDto();
             embryoTransferStageDto.setTransferNum(1);
+            if (embryoTransferStageDto.getEmbryoTransferDetailDtos() == null) {
+                int embryoDetail = 1;
+                List<EmbryoTransferDetailDto> embryoTransferDetailDtos = IaisCommonUtils.genNewArrayList(10);
+                for (; embryoDetail <= 10; embryoDetail++) {
+                    embryoTransferDetailDtos.add(embryoTransferDetailDto);
+                }
+                embryoTransferStageDto.setEmbryoTransferDetailDtos(embryoTransferDetailDtos);
+            }
             arSuperDataSubmissionDto.setEmbryoTransferStageDto(embryoTransferStageDto);
             DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, bpc.request);
         }
 
         List<SelectOption> transferNumSelectOption = IaisCommonUtils.genNewArrayList();
-        for (int i = 1; i < 4; i++) {
+        List<SelectOption> embryoAgeSelectOption = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_AGE_OF_EMBRYO_TRANSFER);
+        for (int i = 1; i < 11; i++) {
             String key = String.valueOf(i);
             transferNumSelectOption.add(new SelectOption(key,key));
+            ParamUtil.setRequestAttr(bpc.request, i+"EmbryoAgeSelectOption", embryoAgeSelectOption);
         }
         ParamUtil.setRequestAttr(bpc.request, "transferNumSelectOption", transferNumSelectOption);
-
-        List<SelectOption> firstEmbryoAgeSelectOption = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_AGE_OF_EMBRYO_TRANSFER);
-        ParamUtil.setRequestAttr(bpc.request, "firstEmbryoAgeSelectOption", firstEmbryoAgeSelectOption);
-
-        List<SelectOption> secondEmbryoAgeSelectOption = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_AGE_OF_EMBRYO_TRANSFER);
-        ParamUtil.setRequestAttr(bpc.request, "secondEmbryoAgeSelectOption", secondEmbryoAgeSelectOption);
-
-        List<SelectOption> thirdEmbryoAgeSelectOption = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_AGE_OF_EMBRYO_TRANSFER);
-        ParamUtil.setRequestAttr(bpc.request, "thirdEmbryoAgeSelectOption", thirdEmbryoAgeSelectOption);
 
         setFlagCond(bpc.request);
     }
@@ -119,7 +117,9 @@ public class EmbryoTransferDelegator extends CommonDelegator {
     public void pageAction(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         EmbryoTransferStageDto embryoTransferStageDto = arSuperDataSubmissionDto.getEmbryoTransferStageDto();
+        EmbryoTransferDetailDto embryoTransferDetailDto = arSuperDataSubmissionDto.getEmbryoTransferDetailDto();
         HttpServletRequest request = bpc.request;
+
         fromPageData(embryoTransferStageDto, request);
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, request);
 
@@ -145,30 +145,25 @@ public class EmbryoTransferDelegator extends CommonDelegator {
     @Override
     public void prepareConfim(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        ParamUtil.setRequestAttr(bpc.request, "flagTwo", arDataSubmissionService.flagOutEmbryoTransferAgeAndCount(arSuperDataSubmissionDto));
-        ParamUtil.setRequestAttr(bpc.request, "flagThree", arDataSubmissionService.flagOutEmbryoTransferCountAndPatAge(arSuperDataSubmissionDto));
+        //i will fix this leater
+//        ParamUtil.setRequestAttr(bpc.request, "flagTwo", arDataSubmissionService.flagOutEmbryoTransferAgeAndCount(arSuperDataSubmissionDto));
+//        ParamUtil.setRequestAttr(bpc.request, "flagThree", arDataSubmissionService.flagOutEmbryoTransferCountAndPatAge(arSuperDataSubmissionDto));
         setPatientInv(arSuperDataSubmissionDto);
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, bpc.request);
     }
 
     private void setPatientInv(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
         EmbryoTransferStageDto transferStageDto = arSuperDataSubmissionDto.getEmbryoTransferStageDto();
+        List<EmbryoTransferDetailDto> embryoTransferDetailDtos = transferStageDto.getEmbryoTransferDetailDtos();
+        int transferNum = transferStageDto.getTransferNum();
         int freshEmbryoNum = 0;
         int thawedEmbryoNum = 0;
-        if (DataSubmissionConsts.EMBRYO_TRANSFER_EMBRYO_TYPE_FRESH.equals(transferStageDto.getFirstEmbryoType())) {
-            freshEmbryoNum--;
-        } else if (DataSubmissionConsts.EMBRYO_TRANSFER_EMBRYO_TYPE_THAWED.equals(transferStageDto.getFirstEmbryoType())) {
-            thawedEmbryoNum--;
-        }
-        if (DataSubmissionConsts.EMBRYO_TRANSFER_EMBRYO_TYPE_FRESH.equals(transferStageDto.getSecondEmbryoType())) {
-            freshEmbryoNum--;
-        } else if (DataSubmissionConsts.EMBRYO_TRANSFER_EMBRYO_TYPE_THAWED.equals(transferStageDto.getSecondEmbryoType())) {
-            thawedEmbryoNum--;
-        }
-        if (DataSubmissionConsts.EMBRYO_TRANSFER_EMBRYO_TYPE_FRESH.equals(transferStageDto.getThirdEmbryoType())) {
-            freshEmbryoNum--;
-        } else if (DataSubmissionConsts.EMBRYO_TRANSFER_EMBRYO_TYPE_THAWED.equals(transferStageDto.getThirdEmbryoType())) {
-            thawedEmbryoNum--;
+        for (int i = 0; i < transferNum; i++) {
+            if (DataSubmissionConsts.EMBRYO_TRANSFER_EMBRYO_TYPE_FRESH.equals(embryoTransferDetailDtos.get(i).getEmbryoType())) {
+                freshEmbryoNum--;
+            } else if (DataSubmissionConsts.EMBRYO_TRANSFER_EMBRYO_TYPE_THAWED.equals(embryoTransferDetailDtos.get(i).getEmbryoType())) {
+                thawedEmbryoNum--;
+            }
         }
         ArChangeInventoryDto arChangeInventoryDto = arSuperDataSubmissionDto.getArChangeInventoryDto();
         if (arChangeInventoryDto == null){
@@ -182,14 +177,21 @@ public class EmbryoTransferDelegator extends CommonDelegator {
     private void fromPageData(EmbryoTransferStageDto embryoTransferStageDto, HttpServletRequest request) {
         Integer transferNum = ParamUtil.getInt(request, "transferNum");
 
-        String firstEmbryoAge = ParamUtil.getRequestString(request, "firstEmbryoAge");
-        String firstEmbryoType = ParamUtil.getRequestString(request, "firstEmbryoType");
 
-        String secondEmbryoAge = ParamUtil.getRequestString(request, "secondEmbryoAge");
-        String secondEmbryoType = ParamUtil.getRequestString(request, "secondEmbryoType");
+        List<EmbryoTransferDetailDto> embryoTransferDetailDtos = embryoTransferStageDto.getEmbryoTransferDetailDtos();
+        for (int i = 1; i <= transferNum; i++) {
+            String embryoAge = ParamUtil.getRequestString(request, i+"EmbryoAge");
+            String embryoType = ParamUtil.getRequestString(request, i+"EmbryoType");
+            EmbryoTransferDetailDto embryoTransferDetailDto = embryoTransferDetailDtos.get(i-1);
+            if (embryoTransferDetailDto == null) {
+                 embryoTransferDetailDto = new EmbryoTransferDetailDto();
+            }
+            embryoTransferDetailDto.setEmbryoAge(embryoAge);
+            embryoTransferDetailDto.setEmbryoType(embryoType);
+            embryoTransferDetailDto.setSeqNumber(i);
+            embryoTransferDetailDtos.set(i-1,embryoTransferDetailDto);
+        }
 
-        String thirdEmbryoAge = ParamUtil.getRequestString(request, "thirdEmbryoAge");
-        String thirdEmbryoType = ParamUtil.getRequestString(request, "thirdEmbryoType");
 
         String firstTransferDateString = ParamUtil.getRequestString(request, "firstTransferDate");
         String secondTransferDateString = ParamUtil.getRequestString(request, "secondTransferDate");
@@ -197,12 +199,6 @@ public class EmbryoTransferDelegator extends CommonDelegator {
         Date secondTransferDate = DateUtil.parseDate(secondTransferDateString, AppConsts.DEFAULT_DATE_FORMAT);
 
         embryoTransferStageDto.setTransferNum(transferNum);
-        embryoTransferStageDto.setFirstEmbryoAge(firstEmbryoAge);
-        embryoTransferStageDto.setFirstEmbryoType(firstEmbryoType);
-        embryoTransferStageDto.setSecondEmbryoAge(secondEmbryoAge);
-        embryoTransferStageDto.setSecondEmbryoType(secondEmbryoType);
-        embryoTransferStageDto.setThirdEmbryoAge(thirdEmbryoAge);
-        embryoTransferStageDto.setThirdEmbryoType(thirdEmbryoType);
         embryoTransferStageDto.setFirstTransferDate(firstTransferDate);
         embryoTransferStageDto.setSecondTransferDate(secondTransferDate);
     }
