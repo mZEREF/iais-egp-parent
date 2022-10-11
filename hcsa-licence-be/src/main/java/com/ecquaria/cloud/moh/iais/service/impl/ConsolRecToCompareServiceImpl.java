@@ -585,7 +585,6 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                     excelDto.setVersionBe(entry.getValue().getVersionBe());
                     excelDto.setEffectiveDtBe(entry.getValue().getEffectiveDtBe());
                     if(excelDto.getLicenceNoBe().equals(excelDto.getLicenceNoFe())
-                            && excelDto.getEffectiveDtBe().equals(excelDto.getEffectiveDtFe())
                             && excelDto.getVersionBe().equals(excelDto.getVersionFe())
                             && excelDto.getStatusBe().equals(excelDto.getStatusFe())){
                         excelDto.setResult("Match");
@@ -615,7 +614,6 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                     if(excelDto.getAppGroupNoBe().equals(excelDto.getAppGroupNoFe())
                             && excelDto.getPmtStatusBe().equals(excelDto.getPmtStatusFe())
                             && excelDto.getAmountBe().equals(excelDto.getAmountFe())
-                            && excelDto.getPmtRefNoBe().equals(excelDto.getPmtRefNoFe())
                             && excelDto.getIsAutoApproveBe().equals(excelDto.getIsAutoApproveFe())
                             && excelDto.getStatusBe().equals(excelDto.getStatusFe())){
                         excelDto.setResult("Match");
@@ -666,6 +664,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
             emailDto.setSubject("CompareFEBE Not Match");
             emailDto.setSender(this.mailSender);
             emailDto.setReqRefNum(UUID.randomUUID().toString());
+            emailDto.setClientQueryCode(UUID.randomUUID().toString());
 
             try {
                 emailSmsClient.sendEmail(emailDto, null);
