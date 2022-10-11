@@ -3,8 +3,8 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
@@ -27,6 +27,8 @@ public interface LicenceViewService {
     List<LicenceDto> getLicenceDtoByLicenseeId(String licenseeId);
 
     SearchResult<MenuLicenceDto> getMenuLicence(SearchParam searchParam);
+
+    SearchResult<AppAlignLicQueryDto> getBundleLicence(SearchParam searchParam);
 
     List<SubLicenseeDto> getSubLicenseeDto(String orgId);
 
