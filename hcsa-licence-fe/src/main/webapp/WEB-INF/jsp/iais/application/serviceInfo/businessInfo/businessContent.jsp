@@ -6,6 +6,7 @@
 <div class="row form-horizontal">
 
     <c:if test="${AppSubmissionDto.needEditController }">
+        <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
         <c:if test="${(isRfc || isRenew) && !isRfi}">
             <iais:row>
                 <div class="text-right app-font-size-16">
@@ -87,14 +88,23 @@
 
     $(function() {
         $('.addWeekly').on('click', function () {
+            if (${AppSubmissionDto.needEditController }){
+                $('a.businessEdit').trigger('click');
+            }
             addWeekly($(this).closest('div.weeklyContent'));
         });
 
         $('.addPubHolDay').on('click', function () {
+            if (${AppSubmissionDto.needEditController }){
+                $('a.businessEdit').trigger('click');
+            }
             addPubHolDay($(this).closest('div.pubHolDayContent'));
         });
 
         $('.addEvent').on('click', function () {
+            if (${AppSubmissionDto.needEditController }){
+                $('a.businessEdit').trigger('click');
+            }
             addEvent($(this).closest('div.eventContent'));
         });
 
@@ -113,6 +123,40 @@
             }
         })
 
+        $('div.weeklyContent').each(function (k, v) {
+            if ($("#errorMapIs").val() == 'error') {
+                $(v).find('.error-msg').on('DOMNodeInserted', function () {
+                    if ($(this).not(':empty')) {
+                        $(v).find('.isPartEdit').val(1);
+                        $('#isEditHiddenVal').val('1');
+                        $('a.businessEdit').trigger('click');
+                    }
+                });
+            }
+        });
+        $('div.pubHolDayContent').each(function (k, v) {
+            if ($("#errorMapIs").val() == 'error') {
+                $(v).find('.error-msg').on('DOMNodeInserted', function () {
+                    if ($(this).not(':empty')) {
+                        $(v).find('.isPartEdit').val(1);
+                        $('#isEditHiddenVal').val('1');
+                        $('a.businessEdit').trigger('click');
+                    }
+                });
+            }
+        });
+        $('div.eventContent').each(function (k, v) {
+            if ($("#errorMapIs").val() == 'error') {
+                $(v).find('.error-msg').on('DOMNodeInserted', function () {
+                    if ($(this).not(':empty')) {
+                        $(v).find('.isPartEdit').val(1);
+                        $('#isEditHiddenVal').val('1');
+                        $('a.businessEdit').trigger('click');
+                    }
+                });
+            }
+        });
+
     });
 
     $(document).ready(function () {
@@ -122,9 +166,10 @@
         var rfiObj = $('input[name="rfiObj"]').val();
         //rfc,renew,rfi
         <c:if test="${AppSubmissionDto.needEditController}">
-        $('div.businessContent').each(function () {
-            disableContent($(this));
-        });
+            $('div.businessContent').each(function () {
+                // disableContent($(this));
+                disabledPage();
+            });
         </c:if>
     });
 

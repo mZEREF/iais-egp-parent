@@ -1709,6 +1709,8 @@ public class ServiceInfoDelegator {
      */
     public void prepareBusiness(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("prepare business start ..."));
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         ParamUtil.setRequestAttr(bpc.request, "maxCount", 3);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId);
@@ -1718,6 +1720,11 @@ public class ServiceInfoDelegator {
         ParamUtil.setRequestAttr(bpc.request, "serviceCode", serviceCode);
         if (!IaisCommonUtils.isEmpty(appSvcBusinessDtos)) {
             for (AppSvcBusinessDto appSvcBusinessDto : appSvcBusinessDtos) {
+                if (StringUtil.isEmpty(appSvcBusinessDto.getPremIndexNo())) {
+                    AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.stream()
+                            .filter(s -> appSvcBusinessDto.getPremAddress().equals(s.getAddress())).findAny().get();
+                    appSvcBusinessDto.setPremIndexNo(appGrpPremisesDto.getPremisesIndexNo());
+                }
                 premAlignBusinessMap.put(appSvcBusinessDto.getPremIndexNo(), appSvcBusinessDto);
             }
         }
