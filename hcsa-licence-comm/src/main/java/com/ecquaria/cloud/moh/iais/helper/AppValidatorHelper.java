@@ -1977,7 +1977,7 @@ public final class AppValidatorHelper {
     public static Map<String, String> doValidationOutsourced(AppSvcOutsouredDto appSvcOutsouredDto,String curAt){
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         AppPremGroupOutsourcedDto appPremGroupOutsourcedDto = appSvcOutsouredDto.getSearchOutsourced();
-        if (appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto() != null){
+        if (appPremGroupOutsourcedDto != null && appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto() != null){
             if ("search".equals(curAt)){
                 ValidationResult vResult = WebValidationHelper.validateProperty(appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto(),"search");
                 if (vResult != null && vResult.isHasErrors()){

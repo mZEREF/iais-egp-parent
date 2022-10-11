@@ -1274,11 +1274,11 @@ public final class ApplicationHelper {
         List<AppLicBundleDto> appLicBundleDtoList = appSubmissionDto.getAppLicBundleDtoList();
         if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)){
             for (AppLicBundleDto appLicBundleDto : appLicBundleDtoList) {
-                String bundleSvcName = String.valueOf(HcsaServiceCacheHelper.getServiceByCode(appLicBundleDto.getSvcCode()));
-                if (HcsaAppConst.CLINICALLABORATOYY.equals(bundleSvcName)){
+                String bundleSvcName = appLicBundleDto.getSvcCode();
+                if (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(bundleSvcName)){
                     options.add(new SelectOption(HcsaAppConst.RADIOLOGICALSERVICE, HcsaAppConst.RADIOLOGICALSERVICE));
                 }
-                if (HcsaAppConst.RADIOLOGICALSERVICE.equals(bundleSvcName)){
+                if (AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(bundleSvcName)){
                     options.add(new SelectOption(HcsaAppConst.CLINICALLABORATOYY, HcsaAppConst.CLINICALLABORATOYY));
                 }
             }

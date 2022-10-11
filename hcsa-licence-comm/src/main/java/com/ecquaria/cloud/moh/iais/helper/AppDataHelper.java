@@ -78,6 +78,8 @@ import java.sql.Time;
 import java.text.ParseException;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -662,10 +664,11 @@ public final class AppDataHelper {
         if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)){
             for (AppLicBundleDto appLicBundleDto : appLicBundleDtoList) {
                 String bundleSvcCode = appLicBundleDto.getSvcCode();
-                if (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(bundleSvcCode)){
+                appSvcOutsouredDto.setBundleSvcCode(bundleSvcCode);
+                if (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(bundleSvcCode) && IaisCommonUtils.isNotEmpty(clinicalLaboratoryList)){
                     removeBundleAppPremOutsourced(clinicalLaboratoryList,AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY);
                 }
-                if (AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(bundleSvcCode)){
+                if (AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(bundleSvcCode) && IaisCommonUtils.isNotEmpty(radiologicalServiceList)){
                     removeBundleAppPremOutsourced(radiologicalServiceList,AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES);
                 }
             }
@@ -695,10 +698,71 @@ public final class AppDataHelper {
     }
 
     private static AppSvcOutsouredDto sortOutSourceProviders(HttpServletRequest request,AppSvcOutsouredDto appPremOutSourceProvidersDto){
-        SearchParam searchParam = appPremOutSourceProvidersDto.getSearchParam();
-        CrudHelper.doSorting(searchParam,  request);
-        appPremOutSourceProvidersDto.setSearchParam(searchParam);
+        String classSort = ParamUtil.getString(request, "classSort");
+        String sortFieldName = ParamUtil.getString(request,"crud_action_value");
+        String sortType = ParamUtil.getString(request,"crud_action_additional");
+        if ("cLDSort".equals(classSort)){
+            sortCLDList(appPremOutSourceProvidersDto.getClinicalLaboratoryList());
+        }else if ("rdsSort".equals(classSort)){
+            sortCLDList(appPremOutSourceProvidersDto.getRadiologicalServiceList());
+        }else {
+            SearchParam searchParam = appPremOutSourceProvidersDto.getSearchParam();
+            CrudHelper.doSorting(searchParam,  request);
+            appPremOutSourceProvidersDto.setSearchParam(searchParam);
+        }
         return appPremOutSourceProvidersDto;
+    }
+
+    private static void sortCLDList(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedList){
+        if (IaisCommonUtils.isNotEmpty(appPremGroupOutsourcedList)){
+            Collections.sort(appPremGroupOutsourcedList, new Comparator<AppPremGroupOutsourcedDto>() {
+                @Override
+                public int compare(AppPremGroupOutsourcedDto o1, AppPremGroupOutsourcedDto o2) {
+                    return o1.getBusinessName().compareTo(o2.getBusinessName());
+                }
+            });
+
+            Collections.sort(appPremGroupOutsourcedList, new Comparator<AppPremGroupOutsourcedDto>() {
+                @Override
+                public int compare(AppPremGroupOutsourcedDto o1, AppPremGroupOutsourcedDto o2) {
+                    return o1.getAddress().compareTo(o2.getAddress());
+                }
+            });
+
+            Collections.sort(appPremGroupOutsourcedList, new Comparator<AppPremGroupOutsourcedDto>() {
+                @Override
+                public int compare(AppPremGroupOutsourcedDto o1, AppPremGroupOutsourcedDto o2) {
+                    return o1.getAppPremOutSourceLicenceDto().getLicenceNo().compareTo(o2.getAppPremOutSourceLicenceDto().getLicenceNo());
+                }
+            });
+
+            Collections.sort(appPremGroupOutsourcedList, new Comparator<AppPremGroupOutsourcedDto>() {
+                @Override
+                public int compare(AppPremGroupOutsourcedDto o1, AppPremGroupOutsourcedDto o2) {
+                    return o1.getAppPremOutSourceLicenceDto().getOutstandingScope().compareTo(o2.getAppPremOutSourceLicenceDto().getOutstandingScope());
+                }
+            });
+
+            Collections.sort(appPremGroupOutsourcedList, new Comparator<AppPremGroupOutsourcedDto>() {
+                @Override
+                public int compare(AppPremGroupOutsourcedDto o1, AppPremGroupOutsourcedDto o2) {
+                    return o1.getExpiryDate().compareTo(o2.getExpiryDate());
+                }
+            });
+
+            Collections.sort(appPremGroupOutsourcedList, new Comparator<AppPremGroupOutsourcedDto>() {
+                @Override
+                public int compare(AppPremGroupOutsourcedDto o1, AppPremGroupOutsourcedDto o2) {
+                    if (o2.getAppPremOutSourceLicenceDto().getAgreementStartDate().before(o1.getAppPremOutSourceLicenceDto().getAgreementStartDate())){
+                        return -1;
+                    }
+                    if (o1.getAppPremOutSourceLicenceDto().getAgreementStartDate() == o2.getAppPremOutSourceLicenceDto().getAgreementStartDate()){
+                        return 0;
+                    }
+                    return 1;
+                }
+            });
+        }
     }
 
     private static AppSvcOutsouredDto doOutSourceProvidersPaging(HttpServletRequest request, AppSvcOutsouredDto appPremOutSourceProvidersDto){

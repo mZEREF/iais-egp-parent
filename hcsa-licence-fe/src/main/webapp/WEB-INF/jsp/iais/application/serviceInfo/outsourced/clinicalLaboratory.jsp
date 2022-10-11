@@ -1,3 +1,5 @@
+<c:set var="cL" value="${currSvcInfoDto.appPremOutSourceLicenceDto}"/>
+<input type="hidden" name="classSort" value="">
 <div class="clService" style="margin-top: 100px;!important;">
     <hr>
     <iais:row>
@@ -17,10 +19,10 @@
             <table aria-describedby="" class="table">
                 <thead>
                 <tr>
-<%--                    <iais:sortableHeader needSort="true" field="LICENCE_NO" value="Licence No." style="width:15%;" customSpacing="12"/>--%>
-                    <th style="width: 15%;">
-                        <p style="margin-left: 12px;">Licence No.</p>
-                    </th>
+                    <iais:sortableHeader needSort="true" field="LICENCE_NO" value="Licence No." style="width:15%;" customSpacing="12"/>
+<%--                    <th style="width: 15%;">--%>
+<%--                        <p style="margin-left: 12px;">Licence No.</p>--%>
+<%--                    </th>--%>
                     <th style="width: 15%;">
                         <p style="margin-left: 12px;">
                             Business Name
@@ -55,7 +57,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <c:set var="cL" value="${currSvcInfoDto.appPremOutSourceLicenceDto}"/>
+
                 <c:if test="${empty cL.clinicalLaboratoryList}">
                     <tr>
                         <td>
@@ -120,6 +122,7 @@
     function sortRecords(sortFieldName,sortType){
         showWaiting();
         $("input[name='btnStep']").val("sort");
+        $("input[name='classSort']").val("cLDSort");
         let controlFormLi = $('#controlFormLi').val();
         submitForms('${serviceStepDto.currentStep.stepCode}',sortFieldName,sortType,controlFormLi);
     }
