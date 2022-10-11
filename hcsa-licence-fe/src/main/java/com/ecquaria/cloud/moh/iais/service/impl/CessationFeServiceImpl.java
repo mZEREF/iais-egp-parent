@@ -394,8 +394,11 @@ public class CessationFeServiceImpl implements CessationFeService {
                     emailMap.put("MOH_AGENCY_NAM_GROUP", "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "</b>");
                     emailMap.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
                     Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-                    map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
-                    map.put("ApplicationNumber", baseAppNo);
+                    map.put("BusinessName", "-");
+                    if(IaisCommonUtils.isNotEmpty(appSvcBusinessDtoList)){
+                        map.put("BusinessName", appSvcBusinessDtoList.get(0).getBusinessName());
+                    }
+                    map.put("LicenceNo", licenceNo);
                     MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE).getEntity();
                     String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map);
                     EmailParam emailParam = new EmailParam();
