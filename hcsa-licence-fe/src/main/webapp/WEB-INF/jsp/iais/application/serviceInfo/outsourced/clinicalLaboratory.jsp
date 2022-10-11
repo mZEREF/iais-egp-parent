@@ -20,39 +20,12 @@
                 <thead>
                 <tr>
                     <iais:sortableHeader needSort="true" field="LICENCE_NO" value="Licence No." style="width:15%;" customSpacing="12"/>
-<%--                    <th style="width: 15%;">--%>
-<%--                        <p style="margin-left: 12px;">Licence No.</p>--%>
-<%--                    </th>--%>
-                    <th style="width: 15%;">
-                        <p style="margin-left: 12px;">
-                            Business Name
-                        </p>
-                    </th>
-                    <th style="width: 10%;">
-                        <p style="margin-left: 12px;">
-                            Address
-                        </p>
-                    </th>
-                    <th style="width: 15%;">
-                        <p style="margin-left: 12px;">
-                            Licence Tenure
-                        </p>
-                    </th>
-                    <th style="width: 15%;">
-                        <p style="margin-left: 12px;">
-                            Date of Agreement
-                        </p>
-                    </th>
-                    <th style="width: 15%;">
-                        <p style="margin-left: 12px;">
-                            End Date of Agreement
-                        </p>
-                    </th>
-                    <th style="width: 15%;">
-                        <p style="margin-left: 12px;">
-                            Scope of Outsourcing
-                        </p>
-                    </th>
+                    <iais:sortableHeader needSort="true" field="BUSINESS_NAME" value="Business Name" style="width:15%;" customSpacing="12"/>
+                    <iais:sortableHeader needSort="true" field="ADDRESS" value="Address" style="width:10%;" customSpacing="12"/>
+                    <iais:sortableHeader needSort="true" field="EXPIRY_DATE" value="Licence Tenure" style="width:15%;" customSpacing="30"/>
+                    <iais:sortableHeader needSort="true" field="AGREEMENT_START_DATE" value="Date of Agreement" style="width:15%;" customSpacing="12"/>
+                    <iais:sortableHeader needSort="true" field="AGREEMENT_END_DATE" value="End Date of Agreement" style="width:15%;" customSpacing="12"/>
+                    <iais:sortableHeader needSort="true" field="OUTSTANDING_SCOPE" value="Scope of Outsourcing" style="width:15%;" customSpacing="12"/>
                     <th></th>
                 </tr>
                 </thead>
