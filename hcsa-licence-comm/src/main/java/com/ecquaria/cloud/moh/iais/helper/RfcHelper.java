@@ -91,13 +91,13 @@ public final class RfcHelper {
         boolean licenseeChange = isChangeSubLicensee(appSubmissionDto.getSubLicenseeDto(), oldAppSubmissionDto.getSubLicenseeDto());
         appEditSelectDto.setLicenseeEdit(licenseeChange);
         // MOSD
-        boolean changeInLocation = !compareLocation(appSubmissionDto.getAppGrpPremisesDtoList(),
+        boolean changeInLocation = isChangeInLocation(appSubmissionDto.getAppGrpPremisesDtoList(),
                 oldAppSubmissionDto.getAppGrpPremisesDtoList());
         boolean changeFloorUnits = isChangeFloorUnit(appGrpPremisesDtoList, oldAppGrpPremisesDtoList);
         boolean changeCoLocation = isChangeCoLocation(appGrpPremisesDtoList, oldAppGrpPremisesDtoList);
-        boolean changePremiseAutoFields = changeCoLocation || isChangeGrpPremisesAutoFields(appGrpPremisesDtoList,
+        boolean changePremiseAutoFields = isChangeGrpPremisesAutoFields(appGrpPremisesDtoList,
                 oldAppGrpPremisesDtoList);
-        boolean grpPremiseIsChange = changeInLocation || changeFloorUnits || hciNameChange || changePremiseAutoFields;
+        boolean grpPremiseIsChange = changeInLocation || changeFloorUnits || hciNameChange || changeCoLocation || changePremiseAutoFields;
         appEditSelectDto.setChangeInLocation(changeInLocation);
         appEditSelectDto.setChangeFloorUnits(changeFloorUnits);
         appEditSelectDto.setChangePremiseAutoFields(changePremiseAutoFields);
@@ -192,7 +192,7 @@ public final class RfcHelper {
             if (eqHciNameChange(appGrpPremisesDto, oldAppGrpPremisesDto)) {
                 return true;
             }
-            if (!appGrpPremisesDto.getNonAutoAddressWithoutFU().equals(oldAppGrpPremisesDto.getNonAutoAddressWithoutFU())) {
+            if (isChangeInLocation(appGrpPremisesDto, oldAppGrpPremisesDto)) {
                 return true;
             }
             if (isChangeFloorUnit(appGrpPremisesDto, oldAppGrpPremisesDto)) {
@@ -230,7 +230,7 @@ public final class RfcHelper {
         if (!Objects.equals(appGrpPremisesDto.getPremisesType(), oldAppGrpPremisesDto.getPremisesType())) {
             return true;
         }
-        if (!appGrpPremisesDto.getNonAutoAddressWithoutFU().equals(oldAppGrpPremisesDto.getNonAutoAddressWithoutFU())) {
+        if (!appGrpPremisesDto.getAddressWithoutFU().equals(oldAppGrpPremisesDto.getAddressWithoutFU())) {
             return true;
         }
         if (isChangeFloorUnit(appGrpPremisesDto, oldAppGrpPremisesDto)) {
@@ -547,21 +547,30 @@ public final class RfcHelper {
      * @param oldAppGrpPremisesDtos
      * @return true: the same
      */
-    public static boolean compareLocation(List<AppGrpPremisesDto> appGrpPremisesDtos, List<AppGrpPremisesDto> oldAppGrpPremisesDtos) {
-        int length = appGrpPremisesDtos.size();
-        int oldLength = oldAppGrpPremisesDtos.size();
-        if (length == oldLength) {
-            for (int i = 0; i < length; i++) {
-                AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtos.get(i);
-                AppGrpPremisesDto oldAppGrpPremisesDto = oldAppGrpPremisesDtos.get(i);
-                if (!appGrpPremisesDto.getNonAutoAddressWithoutFU().equals(oldAppGrpPremisesDto.getNonAutoAddressWithoutFU())
-                        || !Objects.equals(StringUtil.getNonNull(appGrpPremisesDto.getVehicleNo()),
-                        StringUtil.getNonNull(oldAppGrpPremisesDto.getVehicleNo()))) {
-                    return false;
-                }
+    public static boolean isChangeInLocation(List<AppGrpPremisesDto> appGrpPremisesDtos,
+            List<AppGrpPremisesDto> oldAppGrpPremisesDtos) {
+        if (appGrpPremisesDtos == null || oldAppGrpPremisesDtos == null) {
+            return false;
+        }
+        if (IaisCommonUtils.listChange(appGrpPremisesDtos, oldAppGrpPremisesDtos)) {
+            return true;
+        }
+        for (int i = 0; i < appGrpPremisesDtos.size(); i++) {
+            AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtos.get(i);
+            AppGrpPremisesDto oldAppGrpPremisesDto = oldAppGrpPremisesDtos.get(i);
+            if (isChangeInLocation(appGrpPremisesDto, oldAppGrpPremisesDto)) {
+                return true;
             }
         }
-        return true;
+        return false;
+    }
+
+    public static boolean isChangeInLocation(AppGrpPremisesDto appGrpPremisesDto,
+            AppGrpPremisesDto oldAppGrpPremisesDto) {
+        if (appGrpPremisesDto == null || oldAppGrpPremisesDto == null) {
+            return true;
+        }
+        return !isSame(appGrpPremisesDto, oldAppGrpPremisesDto, PageDataCopyUtil::copyInLocationFields);
     }
 
     public static int isChangeAppSvcVehicleDtos(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos,

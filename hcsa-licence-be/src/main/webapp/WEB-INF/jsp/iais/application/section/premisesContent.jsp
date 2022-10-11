@@ -1,13 +1,20 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 <script type="text/javascript" src="<%=IaisEGPConstant.CSS_ROOT + IaisEGPConstant.COMMON_CSS_ROOT%>js/file-upload.js"></script>
 
-<c:set var="permanent" value="PERMANENT" />
-<c:set var="conv" value="CONVEYANCE" />
-<c:set var="easMts" value="EASMTS" />
-<c:set var="mobile" value="MOBILE" />
-<c:set var="remote" value="REMOTE" />
+<c:set var="permanent" value="${ApplicationConsts.PREMISES_TYPE_PERMANENT}" />
+<c:set var="conv" value="${ApplicationConsts.PREMISES_TYPE_CONVEYANCE}" />
+<c:set var="easMts" value="${ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE}" />
+<c:set var="mobile" value="${ApplicationConsts.PREMISES_TYPE_MOBILE}" />
+<c:set var="remote" value="${ApplicationConsts.PREMISES_TYPE_REMOTE}" />
+<c:set var="mosdName" value="${ApplicationConsts.MODE_OF_SVC_DELIVERY}" />
+<c:set var="permanentShow" value="${ApplicationConsts.PREMISES_TYPE_PERMANENT_SHOW}" />
+<c:set var="convShow" value="${ApplicationConsts.PREMISES_TYPE_CONVEYANCE_SHOW}" />
+<c:set var="easMtsShow" value="${ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE_SHOW}" />
+<c:set var="mobileShow" value="${ApplicationConsts.PREMISES_TYPE_MOBILE_SHOW}" />
+<c:set var="remoteShow" value="${ApplicationConsts.PREMISES_TYPE_REMOTE_SHOW}" />
 
 <input class="not-refresh" type="hidden" name="isPartEdit" value="0"/>
 <input class="not-refresh" type="hidden" id="isEditHiddenVal" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
@@ -54,7 +61,7 @@
             <div class="form-horizontal">
                 <div class="form-group">
                     <div class="col-xs-12 col-md-6">
-                        <p class="app-title">Mode of Service Delivery <span class="premHeader">${status.index+1}</span></p>
+                        <p class="app-title">${mosdName} <span class="premHeader">${status.index+1}</span></p>
                     </div>
                     <div class="col-xs-12 col-md-4 text-right removeEditDiv <c:if test="${status.first}">hidden</c:if>">
                         <c:choose>
@@ -153,21 +160,11 @@
                                 <input class="form-check-input premTypeRadio"  type="radio" name="premType${status.index}" checked="checked" value="${premType}" aria-invalid="false">
                             </c:if>
                             <label class="form-check-label" ><span class="check-circle"></span>
-                                <c:if test="${premType == permanent}">
-                                    Permanent Premises
-                                </c:if>
-                                <c:if test="${premType == conv}">
-                                    Conveyance
-                                </c:if>
-                                <c:if test="${premType == easMts}">
-                                    Conveyance<br/>(in a mobile clinic / ambulance)
-                                </c:if>
-                                <c:if test="${premType == mobile}">
-                                    Mobile Delivery
-                                </c:if>
-                                <c:if test="${premType == remote}">
-                                    Remote Delivery
-                                </c:if>
+                                <c:if test="${premType == permanent}">${permanentShow}</c:if>
+                                <c:if test="${premType == conv}">${convShow}</c:if>
+                                <c:if test="${premType == easMts}">${easMtsShow}</c:if>
+                                <c:if test="${premType == mobile}">${mobileShow}</c:if>
+                                <c:if test="${premType == remote}">${remoteShow}</c:if>
                                 &nbsp;
                             </label>
                             <c:choose>

@@ -41,18 +41,31 @@ public class PageDataCopyUtil {
         } else {
             copy.setCertIssuedDtStr(appGrpPremisesDto.getCertIssuedDtStr());
         }
+        //copy.setAddrType(appGrpPremisesDto.getAddrType());
+        //copy.setBuildingName(appGrpPremisesDto.getBuildingName());
+        copy.setLocateWtihHcsa(appGrpPremisesDto.getLocateWtihHcsa());
+        return copy;
+    }
+
+    public static AppGrpPremisesDto copyInLocationFields(AppGrpPremisesDto appGrpPremisesDto) {
+        AppGrpPremisesDto copy = new AppGrpPremisesDto();
+        copy.setPremisesType(appGrpPremisesDto.getPremisesType());
+        copy.setVehicleNo(appGrpPremisesDto.getVehicleNo());
+        copy.setPostalCode(appGrpPremisesDto.getPostalCode());
         copy.setAddrType(appGrpPremisesDto.getAddrType());
+        copy.setBlkNo(appGrpPremisesDto.getBlkNo());
+        copy.setStreetName(appGrpPremisesDto.getStreetName());
         copy.setBuildingName(appGrpPremisesDto.getBuildingName());
+
         copy.setEasMtsUseOnly(appGrpPremisesDto.getEasMtsUseOnly());
         copy.setEasMtsPubEmail(appGrpPremisesDto.getEasMtsPubEmail());
         copy.setEasMtsPubHotline(appGrpPremisesDto.getEasMtsPubHotline());
-
         return copy;
     }
 
     public static AppGrpPremisesDto copyCoLocationFields(AppGrpPremisesDto appGrpPremisesDto) {
         AppGrpPremisesDto copy = new AppGrpPremisesDto();
-        copy.setLocateWtihHcsa(appGrpPremisesDto.getLocateWtihHcsa());
+        //copy.setLocateWtihHcsa(appGrpPremisesDto.getLocateWtihHcsa());
         copy.setLocateWtihNonHcsa(appGrpPremisesDto.getLocateWtihNonHcsa());
         copy.setAppPremNonLicRelationDtos(MiscUtil.transferEntityDtos(appGrpPremisesDto.getAppPremNonLicRelationDtos(),
                 AppPremNonLicRelationDto.class));
