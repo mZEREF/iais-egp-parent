@@ -143,6 +143,17 @@
             disabledPage();
             doEdite();
         }
+        $('div.vehicleContent').each(function (k, v) {
+            if ($("#errorMapIs").val() == 'error') {
+                $(v).find('.error-msg').on('DOMNodeInserted', function () {
+                    if ($(this).not(':empty')) {
+                        $(v).find('.isPartEdit').val(1);
+                        $('#isEditHiddenVal').val('1');
+                        unDisabledPartPage($(v));
+                    }
+                });
+            }
+        });
         refreshVehicle();
     });
 
@@ -154,6 +165,9 @@
             var src = $target.clone();
             clearFields(src);
             $('.addVehicleDiv').before(src);
+            var $currContent = $('div.vehicleContent').last();
+            $currContent.find('.isPartEdit').val(1);
+            unDisabledPartPage($currContent);
             removeVehicle();
             refreshVehicle();
             $('#isEditHiddenVal').val('1');
