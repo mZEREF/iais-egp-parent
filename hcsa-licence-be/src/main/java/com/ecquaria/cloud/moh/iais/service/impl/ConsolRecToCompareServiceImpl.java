@@ -559,7 +559,6 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                     excelDto.setVersionBe(entry.getValue().getVersionBe());
                     excelDto.setOriginLicenceIdBe(entry.getValue().getOriginLicenceIdBe());
                     if(excelDto.getApplicationNoBe().equals(excelDto.getApplicationNoFe())
-                            && excelDto.getOriginLicenceIdBe().equals(excelDto.getOriginLicenceIdFe())
                             && excelDto.getVersionBe().equals(excelDto.getVersionFe())
                             && excelDto.getStatusBe().equals(excelDto.getStatusFe())){
                         excelDto.setResult("Match");
@@ -588,7 +587,6 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                     if(excelDto.getLicenceNoBe().equals(excelDto.getLicenceNoFe())
                             && excelDto.getEffectiveDtBe().equals(excelDto.getEffectiveDtFe())
                             && excelDto.getVersionBe().equals(excelDto.getVersionFe())
-                            && excelDto.getOriginLicenceIdBe().equals(excelDto.getOriginLicenceIdFe())
                             && excelDto.getStatusBe().equals(excelDto.getStatusFe())){
                         excelDto.setResult("Match");
                     }else {
