@@ -33,6 +33,9 @@ public class PageDataCopyUtil {
 
     public static AppGrpPremisesDto copyAppGrpPremisesDtoForAutoField(AppGrpPremisesDto appGrpPremisesDto) {
         AppGrpPremisesDto copy = new AppGrpPremisesDto();
+        if (appGrpPremisesDto == null) {
+            return copy;
+        }
         copy.setPremisesType(appGrpPremisesDto.getPremisesType());
         copy.setScdfRefNo(appGrpPremisesDto.getScdfRefNo());
         copy.setCertIssuedDt(appGrpPremisesDto.getCertIssuedDt());
@@ -49,6 +52,9 @@ public class PageDataCopyUtil {
 
     public static AppGrpPremisesDto copyInLocationFields(AppGrpPremisesDto appGrpPremisesDto) {
         AppGrpPremisesDto copy = new AppGrpPremisesDto();
+        if (appGrpPremisesDto == null) {
+            return copy;
+        }
         copy.setPremisesType(appGrpPremisesDto.getPremisesType());
         copy.setVehicleNo(appGrpPremisesDto.getVehicleNo());
         copy.setPostalCode(appGrpPremisesDto.getPostalCode());
@@ -65,6 +71,9 @@ public class PageDataCopyUtil {
 
     public static AppGrpPremisesDto copyCoLocationFields(AppGrpPremisesDto appGrpPremisesDto) {
         AppGrpPremisesDto copy = new AppGrpPremisesDto();
+        if (appGrpPremisesDto == null) {
+            return copy;
+        }
         //copy.setLocateWtihHcsa(appGrpPremisesDto.getLocateWtihHcsa());
         copy.setLocateWtihNonHcsa(appGrpPremisesDto.getLocateWtihNonHcsa());
         copy.setAppPremNonLicRelationDtos(MiscUtil.transferEntityDtos(appGrpPremisesDto.getAppPremNonLicRelationDtos(),
@@ -73,8 +82,8 @@ public class PageDataCopyUtil {
     }
 
     public static List<OperationHoursReloadDto> copyOperationHoursReloadDto(List<OperationHoursReloadDto> list) {
-        if (list == null) {
-            return new ArrayList<>();
+        if (IaisCommonUtils.isEmpty(list)) {
+            return IaisCommonUtils.genNewArrayList();
         }
         List<OperationHoursReloadDto> operationHoursReloadDtoList = new ArrayList<>(list.size());
         for (OperationHoursReloadDto operationHoursReloadDto : list) {
@@ -89,8 +98,8 @@ public class PageDataCopyUtil {
     }
 
     public static List<AppPremEventPeriodDto> copyEvent(List<AppPremEventPeriodDto> list) {
-        if (list == null) {
-            return new ArrayList<>();
+        if (IaisCommonUtils.isEmpty(list)) {
+            return IaisCommonUtils.genNewArrayList();
         }
         List<AppPremEventPeriodDto> appPremEventPeriodDtoList = new ArrayList<>(list.size());
         for (AppPremEventPeriodDto appPremEventPeriodDto : list) {
@@ -105,7 +114,9 @@ public class PageDataCopyUtil {
 
     public static List<AppPremisesOperationalUnitDto> copyAppPremisesOperationalUnitDto(
             List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos) {
-
+        if (IaisCommonUtils.isEmpty(appPremisesOperationalUnitDtos)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
         List<AppPremisesOperationalUnitDto> list = IaisCommonUtils.genNewArrayList();
         for (AppPremisesOperationalUnitDto appPremisesOperationalUnitDto : appPremisesOperationalUnitDtos) {
             AppPremisesOperationalUnitDto operationalUnitDto = new AppPremisesOperationalUnitDto();
@@ -146,6 +157,9 @@ public class PageDataCopyUtil {
     }
 
     public static List<AppSvcDocDto> copySvcDocs(List<AppSvcDocDto> appSvcDocDtoLit) {
+        if (IaisCommonUtils.isEmpty(appSvcDocDtoLit)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
         List<AppSvcDocDto> appSvcDocDtos = new ArrayList<>(appSvcDocDtoLit.size());
         for (AppSvcDocDto appSvcDocDto : appSvcDocDtoLit) {
             if (StringUtil.isEmpty(appSvcDocDto.getMd5Code())) {
@@ -166,6 +180,9 @@ public class PageDataCopyUtil {
     }
 
     public static List<AppSvcPrincipalOfficersDto> copyMedaler(List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList) {
+        if (IaisCommonUtils.isEmpty(appSvcMedAlertPersonList)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
         List<AppSvcPrincipalOfficersDto> list = IaisCommonUtils.genNewArrayList();
         for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcMedAlertPersonList) {
             list.add(copyKeyPersonnel(appSvcPrincipalOfficersDto));
@@ -175,6 +192,9 @@ public class PageDataCopyUtil {
     }
 
     public static List<AppSvcPrincipalOfficersDto> copyAppSvcPo(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList) {
+        if (IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtoList)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
         List<AppSvcPrincipalOfficersDto> list = IaisCommonUtils.genNewArrayList();
         for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtoList) {
             list.add(copyKeyPersonnel(appSvcPrincipalOfficersDto));
@@ -359,7 +379,7 @@ public class PageDataCopyUtil {
             return IaisCommonUtils.genNewArrayList();
         }
         return sourceList.stream()
-                .map(t -> CopyUtil.copyMutableObject(t))
+                .map(CopyUtil::copyMutableObject)
                 .collect(Collectors.toList());
     }
 

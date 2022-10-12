@@ -3970,18 +3970,9 @@ public final class AppValidatorHelper {
         return errorMap;
     }
 
+
     public static LicenceDto doValidateRfc(HttpServletRequest request) {
-        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(request);
-        AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(request);
-        ApplicationHelper.checkPremisesHciList(appSubmissionDto.getLicenseeId(), ApplicationHelper.checkIsRfi(request),
-                oldAppSubmissionDto, false, request);
-        doPreviewSubmitValidate(errorMap, appSubmissionDto, request);
-        if (!errorMap.isEmpty()) {
-            ParamUtil.setRequestAttr(request, "Msg", errorMap);
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            return null;
-        }
         String licenceId = appSubmissionDto.getLicenceId();
         LicenceDto licenceById = getLicCommService().getActiveLicenceById(licenceId);
         /*
@@ -4000,12 +3991,20 @@ public final class AppValidatorHelper {
         if (appGrpPremisesDtoList != null) {
             premiseTypes = appGrpPremisesDtoList.stream().map(AppGrpPremisesDto::getPremisesType).collect(Collectors.toSet());
         }
-        errorMap = AppValidatorHelper.validateLicences(licenceById, premiseTypes, null);
+        Map<String, String> errorMap = validateLicences(licenceById, premiseTypes, null);
         if (!errorMap.isEmpty()) {
-            AppValidatorHelper.setErrorRequest(errorMap, false, request);
+            setErrorRequest(errorMap, false, request);
+            return null;
+        }
+        AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(request);
+        ApplicationHelper.checkPremisesHciList(appSubmissionDto.getLicenseeId(), ApplicationHelper.checkIsRfi(request),
+                oldAppSubmissionDto, false, request);
+        doPreviewSubmitValidate(errorMap, appSubmissionDto, request);
+        if (!errorMap.isEmpty()) {
+            ParamUtil.setRequestAttr(request, "Msg", errorMap);
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             return null;
         }
         return licenceById;
     }
-
 }
