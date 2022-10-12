@@ -1222,7 +1222,12 @@ public class WithOutRenewalDelegator {
         IaisEGPHelper.redirectUrl(response, tokenUrl);
     }
 
-    //doLicenceReview
+    /**
+     * doLicenceReview
+     *
+     * @param bpc
+     * @throws Exception
+     */
     public void doLicenceReview(BaseProcessClass bpc) throws Exception {
         HttpServletRequest request = bpc.request;
         String crud_action_type = ParamUtil.getString(request, "crud_action_additional");
@@ -1256,7 +1261,10 @@ public class WithOutRenewalDelegator {
 
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) request.getSession().getAttribute("oldRenewAppSubmissionDto");
         if (isSingle) {
-            AppEditSelectDto appEditSelectDto = RfcHelper.rfcChangeModuleEvaluationDto(firstSubmissionDto, oldAppSubmissionDto);
+            AppEditSelectDto appEditSelectDto = firstSubmissionDto.getChangeSelectDto();
+            if (appEditSelectDto == null) {
+                appEditSelectDto = RfcHelper.rfcChangeModuleEvaluationDto(firstSubmissionDto, oldAppSubmissionDto);
+            }
             RfcHelper.beforeSubmit(firstSubmissionDto, appEditSelectDto, appGrpNo, appType, request);
             Map<AppSubmissionDto, List<String>> errorListMap = checkOtherSubDto(appGrpNo, autoGrpNo, licenseeId, firstSubmissionDto,
                     appEditSelectDto, autoAppSubmissionDtos, noAutoAppSubmissionDtos, oldAppSubmissionDto);

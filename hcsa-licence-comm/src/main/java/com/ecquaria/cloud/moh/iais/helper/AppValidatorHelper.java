@@ -3918,24 +3918,27 @@ public final class AppValidatorHelper {
             AppValidatorHelper.validateDeclarationDoc(errorMap, ApplicationHelper.getFileAppendId(appType),
                     "0".equals(preQuesKindly), request);
             //check other eff
-            AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) request.getSession().getAttribute("oldAppSubmissionDto");
-            AppEditSelectDto appEditSelectDto = RfcHelper.rfcChangeModuleEvaluationDto(firstSubmissionDto, oldAppSubmissionDto);
-            List<AppGrpPremisesDto> appGrpPremisesDtoList = firstSubmissionDto.getAppGrpPremisesDtoList();
-            if (appEditSelectDto.isPremisesEdit()) {
-                Set<String> premiseTypes = appGrpPremisesDtoList.stream().map(AppGrpPremisesDto::getPremisesType).collect(
-                        Collectors.toSet());
-                for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
-                    String[] selectedLicences = appGrpPremisesDto.getSelectedLicences();
-                    List<LicenceDto> licenceDtos = null;
-                    List<LicenceDto> existLicences = appGrpPremisesDto.getLicenceDtos();
-                    if (IaisCommonUtils.isNotEmpty(existLicences)) {
-                        licenceDtos = existLicences.stream()
-                                .filter(dto -> StringUtil.isIn(dto.getId(), selectedLicences))
-                                .collect(Collectors.toList());
-                    }
-                    if (IaisCommonUtils.isNotEmpty(licenceDtos)) {
-                        for (LicenceDto licenceDto : licenceDtos) {
-                            errorMap.putAll(AppValidatorHelper.validateLicences(licenceDto, premiseTypes, null));
+            if (errorMap.isEmpty()) {
+                AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) request.getSession().getAttribute("oldAppSubmissionDto");
+                AppEditSelectDto appEditSelectDto = RfcHelper.rfcChangeModuleEvaluationDto(firstSubmissionDto, oldAppSubmissionDto);
+                firstSubmissionDto.setChangeSelectDto(appEditSelectDto);
+                List<AppGrpPremisesDto> appGrpPremisesDtoList = firstSubmissionDto.getAppGrpPremisesDtoList();
+                if (appEditSelectDto.isPremisesEdit()) {
+                    Set<String> premiseTypes = appGrpPremisesDtoList.stream().map(AppGrpPremisesDto::getPremisesType).collect(
+                            Collectors.toSet());
+                    for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
+                        String[] selectedLicences = appGrpPremisesDto.getSelectedLicences();
+                        List<LicenceDto> licenceDtos = null;
+                        List<LicenceDto> existLicences = appGrpPremisesDto.getLicenceDtos();
+                        if (IaisCommonUtils.isNotEmpty(existLicences)) {
+                            licenceDtos = existLicences.stream()
+                                    .filter(dto -> StringUtil.isIn(dto.getId(), selectedLicences))
+                                    .collect(Collectors.toList());
+                        }
+                        if (IaisCommonUtils.isNotEmpty(licenceDtos)) {
+                            for (LicenceDto licenceDto : licenceDtos) {
+                                errorMap.putAll(AppValidatorHelper.validateLicences(licenceDto, premiseTypes, null));
+                            }
                         }
                     }
                 }

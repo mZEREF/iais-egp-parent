@@ -1650,8 +1650,6 @@ public abstract class AppCommDelegator {
         // reSet: isNeedNewLicNo and self assessment flag
         //ApplicationHelper.reSetAdditionalFields(appSubmissionDto, oldAppSubmissionDto, appEditSelectDto);
         appSubmissionDto.setChangeSelectDto(appEditSelectDto);
-        log.info(StringUtil.changeForLog(appSubmissionDto.getLicenceNo() + " - App Edit Select Dto: "
-                + JsonUtil.parseToJson(appEditSelectDto)));
         boolean isCharity = ApplicationHelper.isCharity(bpc.request);
         FeeDto feeDto = configCommService.getGroupAmendAmount(getAmendmentFeeDto(appEditSelectDto, isCharity));
         Double amount = feeDto.getTotal();
