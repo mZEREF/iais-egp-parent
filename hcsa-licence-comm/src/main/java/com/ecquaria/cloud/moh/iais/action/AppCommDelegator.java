@@ -1584,66 +1584,6 @@ public abstract class AppCommDelegator {
         if (licenceDto == null) {
             return;
         }
-        /*
-        *//*Integer maxFileIndex = (Integer) ParamUtil.getSessionAttr(bpc.request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR);
-        if (maxFileIndex == null) {
-            maxFileIndex = 0;
-        }
-        appSubmissionDto.setMaxFileIndex(maxFileIndex);*//*
-        // validate the submission data
-        Map<String, String> map = AppValidatorHelper.doPreviewAndSumbit(bpc.request);
-        *//*boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
-        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-        List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
-        if (map.isEmpty() && !isRfi) {
-            boolean changeHciName = false;
-            if (oldAppGrpPremisesDtoList != null && appGrpPremisesDtoList != null
-                    && !appGrpPremisesDtoList.isEmpty() && !oldAppGrpPremisesDtoList.isEmpty()) {
-                changeHciName = RfcHelper.eqHciNameChange(appGrpPremisesDtoList.get(0), oldAppGrpPremisesDtoList.get(0));
-            }
-            if (changeHciName) {
-                AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();
-                DeclarationsUtil.declarationsValidate(map, appDeclarationMessageDto, appSubmissionDto.getAppType());
-                String preQuesKindly = appDeclarationMessageDto == null ? null : appDeclarationMessageDto.getPreliminaryQuestionKindly();
-                AppValidatorHelper.validateDeclarationDoc(map, ApplicationHelper.getFileAppendId(appSubmissionDto.getAppType()),
-                        "0".equals(preQuesKindly), bpc.request);
-            }
-        }*//*
-        if (!map.isEmpty()) {
-            //set audit
-            log.warn(StringUtil.changeForLog("Error Message: " + map));
-            ParamUtil.setRequestAttr(bpc.request, "Msg", map);
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(map));
-            return;
-        }
-        String licenceId = appSubmissionDto.getLicenceId();
-        LicenceDto licenceById = licCommService.getActiveLicenceById(licenceId);
-        *//*
-          when use save it as draft in the previous, and the licence has been updated via other licence,
-          the licence will not be valid any more, so when use do the it from the old draft,
-          the licence will be null.
-         *//*
-        if (licenceById == null) {
-            log.warn(StringUtil.changeForLog("Invalid selected Licence - " + licenceId));
-            bpc.request.setAttribute(RfcConst.INVALID_LIC, MessageUtil.getMessageDesc("RFC_ERR023"));
-            return;
-        }
-        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-        List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
-        Set<String> premiseTypes = null;
-        if (appGrpPremisesDtoList != null) {
-            premiseTypes = appGrpPremisesDtoList.stream().map(AppGrpPremisesDto::getPremisesType).collect(Collectors.toSet());
-        }
-        map = AppValidatorHelper.validateLicences(licenceById, premiseTypes, null);
-        if (!map.isEmpty()) {
-            AppValidatorHelper.setErrorRequest(map, false, bpc.request);
-            return;
-        }
-        *//*String baseServiceId = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getBaseServiceId();
-        if (StringUtil.isEmpty(baseServiceId)) {
-            bpc.request.setAttribute(RfcConst.SERVICE_CONFIG_CHANGE, MessageUtil.getMessageDesc("RFC_ERR020"));
-            return;
-        }*/
         // change edit
         AppEditSelectDto appEditSelectDto = RfcHelper.rfcChangeModuleEvaluationDto(appSubmissionDto, oldAppSubmissionDto);
         boolean isAutoRfc = appEditSelectDto.isAutoRfc();

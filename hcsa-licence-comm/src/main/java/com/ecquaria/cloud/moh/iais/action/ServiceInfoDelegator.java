@@ -74,6 +74,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.StringJoiner;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -875,7 +876,7 @@ public class ServiceInfoDelegator {
      * @throws
      */
     public void prepareJump(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the do prepareJump start ...."));
+        log.info(StringUtil.changeForLog("the do prepareJump start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         Map<String, String> coMap = appSubmissionDto.getCoMap();
         Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
@@ -886,7 +887,7 @@ public class ServiceInfoDelegator {
         }
         setAppSubmissionDto(appSubmissionDto, bpc.request);
 //        bpc.request.getSession().setAttribute(CO_MAP, coMap);
-        log.debug(StringUtil.changeForLog("the do prepareJump end ...."));
+        log.info(StringUtil.changeForLog("the do prepareJump end ...."));
     }
 
     /**
@@ -921,14 +922,24 @@ public class ServiceInfoDelegator {
         if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
             licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, LICPERSONSELECTMAP);
         }
+        Map<String, String> coMap = appSubmissionDto.getCoMap();
+        StringJoiner joiner = new StringJoiner(AppConsts.DFT_DELIMITER);
         for (AppSvcRelatedInfoDto currSvcInfoDto : dto) {
             Map<String, String> map = AppValidatorHelper.doCheckBox(currSvcInfoDto, appSubmissionDto, licPersonMap);
             if (!map.isEmpty()) {
                 errorMap.putAll(map);
                 errorSvcConfig.append(currSvcInfoDto.getServiceId());
+                joiner.add(currSvcInfoDto.getServiceId());
             }
         }
-        ParamUtil.setSessionAttr(bpc.request, "serviceConfig", errorSvcConfig.toString());
+        String sign = joiner.toString();
+        coMap.put(HcsaAppConst.SECTION_MULTI_SVC, sign);
+        if (StringUtil.isEmpty(sign)) {
+            coMap.put(HcsaAppConst.SECTION_SVCINFO, HcsaAppConst.SECTION_SVCINFO);
+        } else {
+            coMap.put(HcsaAppConst.SECTION_SVCINFO, "");
+        }
+        appSubmissionDto.setCoMap(coMap);
         return errorMap;
     }
 
