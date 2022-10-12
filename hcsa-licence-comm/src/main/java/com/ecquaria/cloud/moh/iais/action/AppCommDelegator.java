@@ -56,7 +56,6 @@ import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.OrganizationService;
 import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
-import com.ecquaria.cloud.moh.iais.util.PageDataCopyUtil;
 import com.ecquaria.cloud.moh.iais.validation.DeclarationsUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1814,8 +1813,10 @@ public abstract class AppCommDelegator {
         log.info(StringUtil.changeForLog("##### Only Add claimed: " + addClaimed));
         // Category/Discipline & Specialised Service/Specified Test
         if (appEditSelectDto.isSpecialisedEdit()) {
-            if (appEditSelectDto.isChangeSpecialisedNonAutoFields()) {
+            if (appEditSelectDto.isChangeSpecialisedNonAutoFields() && autoAppSubmissionDto != null) {
                 RfcHelper.resolveSpecialisedNonAutoData(autoAppSubmissionDto, oldAppSubmissionDto);
+                autoChangeSelectDto.setChangeSpecialisedAutoFields(true);
+                appEditSelectDto.setChangeSpecialisedAutoFields(false);
             }
         }
         // re-set change edit select dto
@@ -1837,7 +1838,6 @@ public abstract class AppCommDelegator {
                 }
                 ApplicationHelper.addToAuto(personAppSubmissionList, autoSaveAppsubmission);
             }
-
             // re-set current auto dto
             List<String> changeList = appSubmissionDto.getChangeSelectDto().getPersonnelEditList();
             List<String> stepList = appSubmissionDto.getAppEditSelectDto().getPersonnelEditList();
