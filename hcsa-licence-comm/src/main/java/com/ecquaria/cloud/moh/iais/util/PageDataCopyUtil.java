@@ -76,8 +76,20 @@ public class PageDataCopyUtil {
         }
         //copy.setLocateWtihHcsa(appGrpPremisesDto.getLocateWtihHcsa());
         copy.setLocateWtihNonHcsa(appGrpPremisesDto.getLocateWtihNonHcsa());
-        copy.setAppPremNonLicRelationDtos(MiscUtil.transferEntityDtos(appGrpPremisesDto.getAppPremNonLicRelationDtos(),
-                AppPremNonLicRelationDto.class));
+
+        List<AppPremNonLicRelationDto> appPremNonLicRelationDtos = appGrpPremisesDto.getAppPremNonLicRelationDtos();
+        if (IaisCommonUtils.isNotEmpty(appPremNonLicRelationDtos)) {
+            copy.setAppPremNonLicRelationDtos(appPremNonLicRelationDtos.stream()
+                    .map(dto -> {
+                        AppPremNonLicRelationDto relDto = new AppPremNonLicRelationDto();
+                        relDto.setProvidedService(dto.getProvidedService());
+                        relDto.setBusinessName(dto.getBusinessName());
+                        return relDto;
+                    })
+                    .sorted(Comparator.comparing(AppPremNonLicRelationDto::getBusinessName)
+                            .thenComparing(AppPremNonLicRelationDto::getProvidedService))
+                    .collect(Collectors.toList()));
+        }
         return copy;
     }
 
