@@ -76,6 +76,8 @@ public class ValidateCharges {
                         map.put("maxAmount"+i,MessageUtil.getMessageDesc("NEW_ERR0027"));
                     }
                 }
+            }else {
+                map.put("maxAmount"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "this", "field"));
             }
             String remarks = generalChargesDtos.get(i).getRemarks();
             if(!StringUtil.isEmpty(remarks)&&remarks.length() > 150){
