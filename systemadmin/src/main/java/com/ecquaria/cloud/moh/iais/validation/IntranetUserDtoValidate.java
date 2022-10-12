@@ -101,11 +101,10 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
                 if(  sDate.before(today)) {
                     errorMap.put("accountActivateDatetime", "USER_ERR007");
                 }
+                if( eDate.before(today)) {
+                    errorMap.put("accountDeactivateDatetime", "USER_ERR007");
+                }
             }
-            if( eDate.before(today)) {
-                errorMap.put("accountDeactivateDatetime", "USER_ERR007");
-            }
-
         }else {
             if (!StringUtil.isEmpty(startDateStr) ) {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
