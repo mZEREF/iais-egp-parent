@@ -760,19 +760,12 @@ public final class AppDataHelper {
             ArrayList<AppPremOutSourceProvidersQueryDto> rows = searchResult.getRows();
             for (AppPremOutSourceProvidersQueryDto row : rows) {
                 if (row != null){
-                    row.setOutstandingScope(scpoing);
-                    try {
-                        row.setAgreementStartDate(Formatter.parseDate(startDate));
-                        row.setAgreementEndDate(Formatter.parseDate(endDate));
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
                     if (AppServicesConsts.SERVICE_NAME_CLINICAL_LABORATORY.equals(row.getSvcName())){
-                        resolveAppPremGroupOutsourcedList(appSvcOutsouredDto, clinicalLaboratoryList, row, startDate, endDate);
+                        resolveAppPremGroupOutsourcedList(appSvcOutsouredDto, clinicalLaboratoryList, row, startDate, endDate,scpoing);
                         appSvcOutsouredDto.setClinicalLaboratoryList(clinicalLaboratoryList);
                     }
                     if (AppServicesConsts.SERVICE_NAME_RADIOLOGICAL_SERVICES.equals(row.getSvcName())){
-                        resolveAppPremGroupOutsourcedList(appSvcOutsouredDto,radiologicalServiceList, row,startDate,endDate);
+                        resolveAppPremGroupOutsourcedList(appSvcOutsouredDto,radiologicalServiceList, row,startDate,endDate,scpoing);
                         appSvcOutsouredDto.setClinicalLaboratoryList(radiologicalServiceList);
                     }
                 }
@@ -790,7 +783,7 @@ public final class AppDataHelper {
     }
 
     private static void resolveAppPremGroupOutsourcedList(AppSvcOutsouredDto appSvcOutsouredDto,List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtoList,
-                                                           AppPremOutSourceProvidersQueryDto row,String startDate,String endDate) {
+                                                           AppPremOutSourceProvidersQueryDto row,String startDate,String endDate, String scoping) {
         AppPremGroupOutsourcedDto appPremGroupOutsourcedDto = new AppPremGroupOutsourcedDto();
         AppPremOutSourceLicenceDto appPremOutSourceLicenceDto = new AppPremOutSourceLicenceDto();
         appPremOutSourceLicenceDto.setId(row.getId());
@@ -799,13 +792,17 @@ public final class AppDataHelper {
         appPremGroupOutsourcedDto.setBusinessName(row.getBusinessName());
         appPremGroupOutsourcedDto.setAddress(row.getAddress());
         appPremGroupOutsourcedDto.setExpiryDate(row.getExpiryDate());
-        appPremOutSourceLicenceDto.setAgreementStartDate(row.getAgreementStartDate());
-        appPremOutSourceLicenceDto.setAgreementEndDate(row.getAgreementEndDate());
-        appPremOutSourceLicenceDto.setOutstandingScope(row.getOutstandingScope());
+        try {
+            appPremOutSourceLicenceDto.setAgreementStartDate(Formatter.parseDate(startDate));
+            appPremOutSourceLicenceDto.setAgreementEndDate(Formatter.parseDate(endDate));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        appPremOutSourceLicenceDto.setOutstandingScope(scoping);
         appPremGroupOutsourcedDto.setAppPremOutSourceLicenceDto(appPremOutSourceLicenceDto);
         appPremGroupOutsourcedDto.setStartDateStr(startDate);
         appPremGroupOutsourcedDto.setEndDateStr(endDate);
-        if (StringUtil.isNotEmpty(row.getOutstandingScope()) && row.getAgreementStartDate() != null && row.getAgreementEndDate() != null){
+        if (StringUtil.isNotEmpty(scoping) && StringUtil.isNotEmpty(startDate) && StringUtil.isNotEmpty(endDate)){
             appPremGroupOutsourcedDtoList.add(appPremGroupOutsourcedDto);
         }
         appSvcOutsouredDto.setSearchOutsourced(appPremGroupOutsourcedDto);
