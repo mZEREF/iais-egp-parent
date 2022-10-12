@@ -28,7 +28,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
@@ -59,7 +58,6 @@ import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import com.ecquaria.sz.commons.util.DateUtil;
@@ -324,7 +322,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                     if(IaisCommonUtils.isNotEmpty(appSvcBusinessDtoList)){
                         emailMap.put("BusinessName", appSvcBusinessDtoList.get(0).getBusinessName());
                     }
-                    emailMap.put("LicenseeName", orgLicensee.getName());
+                    emailMap.put("LicenseeName", orgLicensee.getLicenseeName());
                     emailMap.put("LicenceNo", licenceNo);
                     emailMap.put(SERVICE_LICENCE_NAME, svcName);
                     emailMap.put(CESSATION_DATE, DateFormatUtils.format(effectiveDate, "dd/MM/yyyy"));
@@ -387,7 +385,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                     if(IaisCommonUtils.isNotEmpty(appSvcBusinessDtoList)){
                         emailMap.put("BusinessName", appSvcBusinessDtoList.get(0).getBusinessName());
                     }
-                    emailMap.put("LicenseeName", orgLicensee.getName());
+                    emailMap.put("LicenseeName", orgLicensee.getLicenseeName());
                     emailMap.put("LicenceNo", licenceNo);
                     emailMap.put(SERVICE_LICENCE_NAME, svcName);
                     emailMap.put("ApplicationNumber", baseAppNo);
