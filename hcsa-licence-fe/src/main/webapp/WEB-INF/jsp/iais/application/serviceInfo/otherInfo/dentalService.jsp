@@ -1,10 +1,4 @@
 <iais:row>
-    <div class="col-xs-12 col-md-6">
-        <p class="bold">DentalService Other Information</p>
-    </div>
-</iais:row>
-
-<iais:row>
     <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Type of medical records"/>
     <div class="form-check col-md-3">
         <input class="form-check-input" name="${prefix}isMedicalTypeIt" value="1"

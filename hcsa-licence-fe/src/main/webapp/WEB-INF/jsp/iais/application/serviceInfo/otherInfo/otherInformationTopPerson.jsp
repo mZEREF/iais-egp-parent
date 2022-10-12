@@ -1,8 +1,3 @@
-<iais:row>
-    <div class="col-xs-12 col-md-6">
-        <p class="bold">Termination of Pregnancy (TOP)</p>
-    </div>
-</iais:row>
 <iais:row cssClass="row control control-caption-horizontal holdPregnancyDiv">
     <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Do you provide Termination of Pregnancy&nbsp;"/>
     <input type="hidden" class="provideTopVal" name="${prefix}provideTopVal" value="${provideTop}"/>

@@ -1,10 +1,4 @@
 <iais:row>
-    <div class="col-xs-12 col-md-6">
-        <p class="bold">RenalDialysisCentreService Other Information</p>
-    </div>
-</iais:row>
-
-<iais:row>
     <iais:field width="5" cssClass="col-md-5" value="Nurses per Shift"/>
     <iais:value width="7" cssClass="col-md-7">
         <iais:input maxLength="2" type="number" cssClass="perShiftNum" name="${prefix}perShiftNum" value="${n.perShiftNum}"/>

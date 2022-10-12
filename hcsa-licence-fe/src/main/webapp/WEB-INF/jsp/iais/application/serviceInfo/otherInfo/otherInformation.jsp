@@ -48,9 +48,9 @@
         </iais:row>
 
         <c:choose>
-            <c:when test="${(currSvcInfoDto.serviceName == AppServicesConsts.SERVICE_NAME_DENTAL_SERVICE) || (currSvcInfoDto.serviceName == AppServicesConsts.SERVICE_NAME_MEDICAL_SERVICE)}">
+            <c:when test="${(currSvcInfoDto.serviceCode == AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE) || (currSvcInfoDto.serviceCode == AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)}">
                 <%@include file="dentalService.jsp" %>
-                <c:if test="${currSvcInfoDto.serviceName == AppServicesConsts.SERVICE_NAME_MEDICAL_SERVICE}">
+                <c:if test="${currSvcInfoDto.serviceCode == AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE}">
                     <%@include file="otherInformationTopPerson.jsp" %>
                     <%@include file="otherInfoItemForm.jsp"%>
                     <%@include file="documentation.jsp" %>
@@ -58,24 +58,24 @@
                     <%@include file="yFV.jsp"%>
                 </c:if>
             </c:when>
-            <c:when test="${currSvcInfoDto.serviceName == AppServicesConsts.SERVICE_NAME_RENAL_DIALYSIS_CENTRE}">
+            <c:when test="${currSvcInfoDto.serviceCode == AppServicesConsts.SERVICE_CODE_RENAL_DIALYSIS_CENTRE}">
                 <%@include file="renalDialysisCentreService.jsp"%>
             </c:when>
-            <c:when test="${currSvcInfoDto.serviceName == AppServicesConsts.SERVICE_NAME_AMBULATORY_SURGICAL_CENTRE}">
+            <c:when test="${currSvcInfoDto.serviceCode == AppServicesConsts.SERVICE_CODE_AMBULATORY_SURGICAL_CENTRE}">
                 <%@include file="ambulatorySurgicalCentreService.jsp"%>
                 <%@include file="otherInformationTopPerson.jsp" %>
                 <%@include file="otherInfoItemForm.jsp"%>
                 <%@include file="documentation.jsp" %>
                 <%@include file="aboutTop.jsp" %>
             </c:when>
-            <c:when test="${currSvcInfoDto.serviceName == AppServicesConsts.SERVICE_NAME_ACUTE_HOSPITAL}">
+            <c:when test="${currSvcInfoDto.serviceCode == AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL}">
                 <%@include file="otherInformationTopPerson.jsp" %>
                 <%@include file="otherInfoItemForm.jsp"%>
                 <%@include file="documentation.jsp" %>
                 <%@include file="aboutTop.jsp" %>
                 <%@include file="yFV.jsp"%>
             </c:when>
-            <c:when test="${currSvcInfoDto.serviceName == AppServicesConsts.SERVICE_NAME_COMMUNITY_HOSPITAL}">
+            <c:when test="${currSvcInfoDto.serviceCode == AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL}">
                 <%@include file="yFV.jsp"%>
             </c:when>
             <c:otherwise>
