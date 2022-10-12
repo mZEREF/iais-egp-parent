@@ -98,6 +98,8 @@ public final class RfcHelper {
         boolean changePremiseAutoFields = isChangeGrpPremisesAutoFields(appGrpPremisesDtoList,
                 oldAppGrpPremisesDtoList);
         boolean grpPremiseIsChange = changeInLocation || changeFloorUnits || hciNameChange || changeCoLocation || changePremiseAutoFields;
+        String premType = appGrpPremisesDtoList.get(0).getPremisesType();
+        appEditSelectDto.setPremType(premType);
         appEditSelectDto.setChangeInLocation(changeInLocation);
         appEditSelectDto.setChangeFloorUnits(changeFloorUnits);
         appEditSelectDto.setChangePremiseAutoFields(changePremiseAutoFields);
