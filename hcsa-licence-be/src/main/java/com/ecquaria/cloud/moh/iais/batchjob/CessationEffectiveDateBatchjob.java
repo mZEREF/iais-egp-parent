@@ -4,12 +4,18 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
@@ -23,11 +29,15 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
+import com.ecquaria.cloud.moh.iais.service.LicCommService;
+import com.ecquaria.cloud.moh.iais.service.OrganizationService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
+import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DateFormatUtils;
@@ -63,7 +73,12 @@ public class CessationEffectiveDateBatchjob {
     private NotificationHelper notificationHelper;
     @Autowired
     private BeEicGatewayClient gatewayClient;
-
+    @Autowired
+    private LicCommService licCommService;
+    @Autowired
+    protected OrganizationService organizationService;
+    @Autowired
+    private TaskOrganizationClient taskOrganizationClient;
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("The CessationEffectiveDateBatchjob is start ..."));
     }
@@ -342,6 +357,58 @@ public class CessationEffectiveDateBatchjob {
                 msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                 msgParam.setRefId(licenceDto.getId());
                 notificationHelper.sendNotification(msgParam);
+
+                AppSubmissionDto appSubmissionDto = licCommService.viewAppSubmissionDto(licId);
+                DealSessionUtil.initView(appSubmissionDto);
+                List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+                boolean hasTopYf=false;
+                if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
+                    for (AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos
+                    ) {
+                        if(IaisCommonUtils.isNotEmpty(appSvcRelatedInfoDto.getAppSvcOtherInfoList())){
+                            for (AppSvcOtherInfoDto otherInfo :appSvcRelatedInfoDto.getAppSvcOtherInfoList()
+                            ) {
+                                if(otherInfo.getProvideTop().equals("1")||otherInfo.getProvideYfVs().equals("1")){
+                                    hasTopYf=true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                if(hasTopYf){
+                    List<OrgUserDto> orgUserDtos = taskOrganizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_ASO).getEntity();
+                    SubLicenseeDto orgLicensee = organizationService.getSubLicenseeByLicenseeId(licenceDto.getLicenseeId());
+                    InspectionEmailTemplateDto msgTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_EMAIL_005_TOP_YF);
+
+                    for (OrgUserDto aso:orgUserDtos
+                         ) {
+                        List<AppSvcBusinessDto> appSvcBusinessDtoList=appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcBusinessDtoList();
+                        Map<String, Object> emailMap1 = IaisCommonUtils.genNewHashMap();
+                        emailMap1.put("aso_officer_name", aso.getDisplayName());
+                        emailMap1.put("licenceNumber", licenceNo);
+                        emailMap1.put("LicenseeName", orgLicensee.getLicenseeName());
+                        emailMap1.put("LicenceStartDateEndDate", DateFormatUtils.format(licenceDto.getStartDate(), "dd/MM/yyyy")+" - "+DateFormatUtils.format(date, "dd/MM/yyyy"));
+                        emailMap1.put("MOSD", appSubmissionDto.getAppGrpPremisesDtoList().get(0).getAddress());
+                        emailMap1.put("BusinessName", "-");
+                        if(IaisCommonUtils.isNotEmpty(appSvcBusinessDtoList)){
+                            emailMap1.put("BusinessName", appSvcBusinessDtoList.get(0).getBusinessName());
+                        }
+                        emailMap1.put("ServiceName", svcName);
+                        emailMap1.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
+                        EmailParam emailParam5 = new EmailParam();
+                        emailParam5.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_EMAIL_005_TOP_YF);
+                        emailParam5.setTemplateContent(emailMap1);
+                        emailParam5.setQueryCode(licenceNo);
+                        emailParam5.setReqRefNum(licenceNo);
+                        emailParam5.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+                        emailParam5.setRefId(licenceNo);
+                        emailParam5.setRecipientUserId(aso.getId());
+                        emailParam5.setSubject(msgTemplateDto.getSubject());
+                        //email
+                        notificationHelper.sendNotification(emailParam5);
+                    }
+                }
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
                 continue;
