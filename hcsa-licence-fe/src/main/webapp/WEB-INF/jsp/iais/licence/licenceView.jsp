@@ -50,7 +50,7 @@
                         <div class="panel-heading"  id="headingServiceInfo" role="tab">
                           <h4 class="panel-title">
                             <a class="svc-pannel-collapse collapsed"  role="button" data-toggle="collapse" href="#collapseServiceInfo${status.index}" aria-expanded="true" aria-controls="collapseServiceInfo">
-                              Service Related Information - ${currentPreviewSvcInfo.serviceName}
+                              Service Related Information
                             </a>
                           </h4>
                         </div>
