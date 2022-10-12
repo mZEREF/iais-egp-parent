@@ -8,14 +8,14 @@
             <c:set var="dCount" value="${topByDrug.size()}"/>
         </c:otherwise>
     </c:choose>
-    <input type="hidden" class="atdLength" name="${prefix}atdLength" value="${dCount}" />
+    <input type="hidden" class="atdLength" name="${prefix}atdLength" value="${dCount}" data-prefix="${prefix}/>
     <c:forEach begin="0" end="${dCount-1}" step="1" varStatus="cdStat">
         <c:set var="index" value="${cdStat.index}" />
         <c:set var="person" value="${topByDrug[index]}"/>
         <%@include file="aboutTopDetail1.jsp" %>
     </c:forEach>
     <div class="col-md-12 col-xs-12 addTopByDrugDiv
-<c:if test="${('0' == appSvcOtherInfoTop.topType) || ('0' == provideTop) || (empty appSvcOtherInfoTop.topType)}">hidden</c:if>" data-prefix="${prefix}">
+    <c:if test="${('0' == appSvcOtherInfoTop.topType) || ('0' == provideTop) || (empty appSvcOtherInfoTop.topType)}">hidden</c:if>" data-prefix="${prefix}">
         <span class="addTopByDrugBtn" style="color:deepskyblue;cursor:pointer;">
             <span>Add more</span>
         </span>
@@ -36,7 +36,7 @@
         <%@include file="aboutTopDetail2.jsp" %>
     </c:forEach>
     <div class="col-md-12 col-xs-12 addTopBySurgicalProcedureDiv
-<c:if test="${('1' == appSvcOtherInfoTop.topType) || ('0' == provideTop) || (empty appSvcOtherInfoTop.topType)}">hidden</c:if>" data-prefix="${prefix}">
+        <c:if test="${('1' == appSvcOtherInfoTop.topType) || ('0' == provideTop) || (empty appSvcOtherInfoTop.topType)}">hidden</c:if>" data-prefix="${prefix}">
         <span class="addTopBySurgicalProcedureBtn" style="color:deepskyblue;cursor:pointer;">
             <span>Add more</span>
         </span>
@@ -100,7 +100,6 @@
     });
 
     function addTopByDrug(){
-
         resTopDrug();
         $('.addTopByDrugBtn').unbind('click');
         $('.addTopByDrugBtn').click(function (){
@@ -116,8 +115,9 @@
             $('div.addTopByDrugDiv[data-prefix="' + prefix + '"]').before(src);
             let atdLength = $('.topByDrug[data-prefix="' + prefix + '"]').length;
             $('input.atdLength[data-prefix="' + prefix + '"]').val(atdLength);
-            let $c = $('div.topByDrug[data-prefix="' + prefix + '"]').last();
-            clearFields($c);
+            console.log("len:::"+ $('input.atdLength[data-prefix="' + prefix + '"]').val());
+            let $currContent = $('div.topByDrug[data-prefix="' + prefix + '"]').last();
+            clearFields($currContent);
             removeTopDrug();
             if (atdLength <= 1){
                 console.log("init.........")
@@ -137,7 +137,6 @@
     }
 
     function resTopDrug(){
-
         //reset number
         $('.topByDrug').each(function (k,v) {
             console.log("k....."+k);
@@ -176,7 +175,6 @@
 
     function addTopBySurgicalProcedure(){
         console.log("start......")
-
         resTopP();
         $('.addTopBySurgicalProcedureBtn').unbind('click');
         $('.addTopBySurgicalProcedureBtn').click(function (){
@@ -191,7 +189,7 @@
             let src = target.clone();
             $('div.addTopBySurgicalProcedureDiv[data-prefix="' + prefix + '"]').before(src);
             let pLength = $('.topBySurgicalProcedure[data-prefix="' + prefix + '"]').length;
-            $('input.pLength[data-prefix="' + prefix + '"]]').val(pLength);
+            $('input.pLength[data-prefix="' + prefix + '"]').val(pLength);
             let $c = $('div.topBySurgicalProcedure[data-prefix="' + prefix + '"]').last();
             clearFields($c);
             removeTopP();
@@ -232,7 +230,7 @@
             }
             $(this).closest('div.topBySurgicalProcedure[data-prefix="' + prefix + '"]').remove();
             let pLength = $('.topBySurgicalProcedure[data-prefix="' + prefix + '"]').length;
-            $('input.pLength[data-prefix="' + prefix + '"]]').val(pLength);
+            $('input.pLength[data-prefix="' + prefix + '"]').val(pLength);
             //reset number
             $('.topBySurgicalProcedure[data-prefix="' + prefix + '"]').each(function (k,v) {
                 console.log("k....."+k);
@@ -252,7 +250,6 @@
 
     function addTopByAll(){
         console.log("start......")
-
         resTopA();
         $('.addTopAllBtn').unbind('click');
         $('.addTopAllBtn').click(function (){
@@ -268,7 +265,7 @@
             let src = target.clone();
             $('div.addTopAllDiv[data-prefix="' + prefix + '"]').before(src);
             let aLength = $('.topByDrugandSurgicalProcedure[data-prefix="' + prefix + '"]').length;
-            $('input.aLength[data-prefix="' + prefix + '"]]').val(aLength);
+            $('input.aLength[data-prefix="' + prefix + '"]').val(aLength);
             let $c = $('div.topByDrugandSurgicalProcedure[data-prefix="' + prefix + '"]').last();
             clearFields($c);
             removeTopAll();
@@ -309,7 +306,7 @@
             }
             $(this).closest('div.topByDrugandSurgicalProcedure[data-prefix="' + prefix + '"]').remove();
             let aLength = $('.topByDrugandSurgicalProcedure[data-prefix="' + prefix + '"]').length;
-            $('input.aLength[data-prefix="' + prefix + '"]]').val(aLength);
+            $('input.aLength[data-prefix="' + prefix + '"]').val(aLength);
             //reset number
             $('.topByDrugandSurgicalProcedure[data-prefix="' + prefix + '"]').each(function (k,v) {
                 console.log("k....."+k);
