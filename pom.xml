@@ -44,8 +44,6 @@
         <module>hcsa-licence-be</module>
         <module>payment</module>
         <module>be-main</module>
-        <module>bsb-fe</module>
-        <module>bsb-be</module>
     </modules>
     <dependencyManagement>
         <dependencies>
