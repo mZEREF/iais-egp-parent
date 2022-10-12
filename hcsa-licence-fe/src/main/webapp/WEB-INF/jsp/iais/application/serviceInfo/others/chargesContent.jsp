@@ -11,7 +11,7 @@
 <div class="row">
     <div class="col-xs-12 col-md-12 text-right">
         <c:if test="${AppSubmissionDto.needEditController }">
-            <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
+            <input type="hidden" id="isEditHiddenVal" class="person-content-edit" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
             <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
                 <div class="app-font-size-16">
                     <a class="back" id="RfcSkip" href="javascript:void(0);">
@@ -95,21 +95,21 @@
                                         <div class="control-label formtext col-md-4 col-xs-4">
                                             <div class="row">
                                                 <div class="col-xs-5 col-md-5">
-                                                    <iais:input maxLength="4" type="text" cssClass="minAmount" name="minAmount${gcStat.index}" value="${generalChargesDto.minAmount}"></iais:input>
+                                                    <iais:input maxLength="4" type="text" cssClass="minAmount" name="minAmount${gcStat.index}" value="${generalChargesDto.minAmount}"/>
                                                 </div>
                                                 <div class="col-xs-2 col-md-2 text-center">
                                                     <label  class="control-label control-set-font control-font-label">To</label>
                                                 </div>
                                                 <div class="col-xs-5 col-md-5">
-                                                    <iais:input maxLength="4" type="text" cssClass="maxAmount" name="maxAmount${gcStat.index}" value="${generalChargesDto.maxAmount}"></iais:input>
+                                                    <iais:input maxLength="4" type="text" cssClass="maxAmount" name="maxAmount${gcStat.index}" value="${generalChargesDto.maxAmount}"/>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="control-label formtext col-md-2 col-xs-2">
-                                            <iais:input maxLength="150" type="text" cssClass="remarks" name="remarks${gcStat.index}" value="${generalChargesDto.remarks}"></iais:input>
+                                            <iais:input maxLength="150" type="text" cssClass="remarks" name="remarks${gcStat.index}" value="${generalChargesDto.remarks}"/>
                                         </div>
                                         <div class="control-label formtext col-md-1 col-xs-1 general-remove removeBtn <c:if test="${gcStat.first}">hidden</c:if>">
-                                            <c:if test="${!isRfi && !isRfc && !isRenew}">
+                                            <c:if test="${!isRfi}">
                                                 <h4 class="text-danger">
                                                     <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
                                                 </h4>
@@ -161,7 +161,7 @@
 </div>
 
 
-<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+<div class="panel-group chargesContent" id="accordion" role="tablist" aria-multiselectable="true">
     <div class="panel panel-default">
         <div class="panel-heading " id="other-charges-heading"  role="tab">
             <h4 class="panel-title">
@@ -215,7 +215,7 @@
                         <input type="hidden" class="otherChargeLength" name="otherChargeLength" value="${otherChargesLength}" />
                         <c:forEach begin="0" end="${otherChargesLength-1}" step="1" varStatus="ocStat">
                             <c:set var="otherChargesDto" value="${otherChargesDtoList[ocStat.index]}"/>
-                            <div class="other-charges-content charges-content">
+                            <div class="others-charges-content charges-content">
                                 <input type="hidden" class ="isPartEdit" name="otherChargesIsPartEdit${ocStat.index}" value="0"/>
                                 <input type="hidden" class="chargesIndexNo" name="otherChargesIndexNo${ocStat.index}" value="${otherChargesDto.chargesIndexNo}"/>
                                 <div class="col-md-12 col-xs-12">
@@ -261,7 +261,7 @@
                                                 <iais:input maxLength="150" type="text" cssClass="otherRemarks" name="otherRemarks${ocStat.index}" value="${otherChargesDto.remarks}"></iais:input>
                                             </div>
                                             <div class="control-label formtext col-md-1 col-xs-1 other-remove removeBtn">
-                                                <c:if test="${!isRfi && !isRfc && !isRenew}">
+                                                <c:if test="${!isRfi}">
                                                     <h4 class="text-danger">
                                                         <em class="fa fa-times-circle del-size-36 ocRemoveBtn cursorPointer"></em>
                                                     </h4>
@@ -363,6 +363,9 @@
         $('.addGeneralChargesBtn').unbind('click');
         $('.addGeneralChargesBtn').on('click', function () {
             showWaiting();
+            if (${AppSubmissionDto.needEditController }){
+                $('a.chargesEdit').trigger('click');
+            }
             let target = $('div.general-charges-content:first');
             let src = target.clone();
             $('div.addGeneralChargesDiv').before(src);
@@ -392,17 +395,21 @@
     }
 
     function addOtherChargesEvent(){
-        let otherChargeLength = $('.other-charges-content').length;
+        let otherChargeLength = $('.others-charges-content').length;
         refreshOther();
         $('.addOtherChargesBtn').unbind('click');
         $('.addOtherChargesBtn').on('click', function () {
             showWaiting();
-            let target = $('div.other-charges-content:first');
+            if (${AppSubmissionDto.needEditController }){
+                $('a.otherChargesEdit').trigger('click');
+            }
+            let target = $('div.others-charges-content:first');
             let src = target.clone();
             $('div.addOtherChargesDiv').before(src);
+            $(".otherChargeLength").attr("value",)
             otherChargeLength = otherChargeLength+1;
             $(".otherChargeLength").attr("value",otherChargeLength);
-            clearFields($('div.other-charges-content:last'));
+            clearFields($('div.others-charges-content:last'));
             removeOtherChargesHtml();
             searchChargesTypeByCategory();
             refreshOther();
@@ -412,9 +419,9 @@
     }
 
     function refreshOther(){
-        let otherChargeLength = $('.other-charges-content').length;
+        let otherChargeLength = $('.others-charges-content').length;
         $('input[name="otherChargeLength"]').val(otherChargeLength);
-        $('.other-charges-content').each(function (k,v) {
+        $('.others-charges-content').each(function (k,v) {
             toggleTag($(this).find('div.removeBtn'), k != 0);
             $(this).find('select.otherChargesCategory').prop('name','otherChargesCategory'+ k);
             $(this).find('select.otherChargesType').prop('name','otherChargesType'+ k);
@@ -455,12 +462,12 @@
     let removeOtherChargesHtml = function () {
         $('.ocRemoveBtn').unbind('click');
         $('.ocRemoveBtn').click(function () {
-            let $currContent = $(this).closest('div.other-charges-content');
+            let $currContent = $(this).closest('div.others-charges-content');
             $currContent.remove();
             //reset number
-            let otherChargeLength = $('.other-charges-content').length;
+            let otherChargeLength = $('.others-charges-content').length;
             $('input[name="otherChargeLength"]').val(otherChargeLength);
-            $('.other-charges-content').each(function (k,v) {
+            $('.others-charges-content').each(function (k,v) {
                 $(this).find('select.otherChargesCategory').prop('name','otherChargesCategory'+ k);
                 $(this).find('select.otherChargesType').prop('name','otherChargesType'+ k);
                 $(this).find('input.otherAmountMin').prop('name','otherAmountMin'+ k);
@@ -480,7 +487,7 @@
     }
 
     function refreshOtherAddBtn() {
-        toggleTag('.addOtherChargesDiv', $('.other-charges-content').length < '${otherChargesConfig.maximumCount}');
+        toggleTag('.addOtherChargesDiv', $('.others-charges-content').length < '${otherChargesConfig.maximumCount}');
     }
 
     let doEditChargesEvent = function () {
@@ -493,9 +500,10 @@
         });
     };
 
-    var doEditOtherChargesEvent = function () {
+    let doEditOtherChargesEvent = function () {
         $('a.otherChargesEdit').click(function () {
-            var $currContent = $(this).closest('div.other-charges-content');
+            console.log("=======================")
+            var $currContent = $(this).closest('div.others-charges-content');
             $currContent.find('input.isPartEdit').val('1');
             hideTag($currContent.find('.edit-content'));
             unDisableContent($currContent);
@@ -515,9 +523,10 @@
             hideTag($currContent.find('.addGeneralChargesDiv'));
         }
         $target= $currContent.find('.otherChargesEdit');
+        console.log("target:::::::::::::"+$target)
         if (!isEmptyNode($target)) {
             showTag($currContent.find('.other-remove:not(:first)'));
-            refreshOthersAddBtn();
+            refreshOtherAddBtn();
         } else {
             hideTag($currContent.find('.other-remove'));
             hideTag($currContent.find('.addOtherChargesDiv'));
