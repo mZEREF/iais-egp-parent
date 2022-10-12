@@ -123,7 +123,18 @@
             }
         })
 
-        $('div.weeklyContent').each(function (k, v) {
+        $('div.panel-body').each(function (k, v) {
+            if ($("#errorMapIs").val() == 'error') {
+                $(v).find('.error-msg').on('DOMNodeInserted', function () {
+                    if ($(this).not(':empty')) {
+                        $(v).find('.isPartEdit').val(1);
+                        $('#isEditHiddenVal').val('1');
+                        $('a.businessEdit').trigger('click');
+                    }
+                });
+            }
+        });
+        /*$('div.weeklyContent').each(function (k, v) {
             if ($("#errorMapIs").val() == 'error') {
                 $(v).find('.error-msg').on('DOMNodeInserted', function () {
                     if ($(this).not(':empty')) {
@@ -156,7 +167,7 @@
                 });
             }
         });
-
+*/
     });
 
     $(document).ready(function () {
@@ -179,6 +190,7 @@
             $currContent.find('input.isPartEdit').val('1');
             unDisableContent($currContent);
             $('#isEditHiddenVal').val('1');
+            hideTag($currContent.find('.businessEdit'));
         });
     }
 </script>
