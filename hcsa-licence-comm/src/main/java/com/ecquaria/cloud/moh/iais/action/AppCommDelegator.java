@@ -1968,8 +1968,7 @@ public abstract class AppCommDelegator {
         for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
             Double amount = appSubmissionDto.getAmount();
             ackPageAmount = ackPageAmount + (amount == null ? 0D : amount);
-            String s = Formatter.formatterMoney(amount);
-            appSubmissionDto.setAmountStr(s);
+            appSubmissionDto.setAmountStr(Formatter.formatterMoney(amount));
             svcNameSet.add(appSubmissionDto.getServiceName());
             appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setGroupNo(appGrpNo);
         }
