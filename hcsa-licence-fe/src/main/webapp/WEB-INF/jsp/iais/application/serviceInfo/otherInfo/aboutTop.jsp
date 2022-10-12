@@ -8,14 +8,14 @@
             <c:set var="dCount" value="${topByDrug.size()}"/>
         </c:otherwise>
     </c:choose>
-    <input type="hidden" class="atdLength" name="${prefix}atdLength" value="${dCount}" data-prefix="${prefix}/>
+    <input type="hidden" class="atdLength" name="${prefix}atdLength" value="${dCount}" data-prefix="${prefix}"/>
     <c:forEach begin="0" end="${dCount-1}" step="1" varStatus="cdStat">
         <c:set var="index" value="${cdStat.index}" />
         <c:set var="person" value="${topByDrug[index]}"/>
         <%@include file="aboutTopDetail1.jsp" %>
     </c:forEach>
     <div class="col-md-12 col-xs-12 addTopByDrugDiv
-    <c:if test="${('0' == appSvcOtherInfoTop.topType) || ('0' == provideTop) || (empty appSvcOtherInfoTop.topType)}">hidden</c:if>" data-prefix="${prefix}">
+<c:if test="${('0' == appSvcOtherInfoTop.topType) || ('0' == provideTop) || (empty appSvcOtherInfoTop.topType)}">hidden</c:if>" data-prefix="${prefix}">
         <span class="addTopByDrugBtn" style="color:deepskyblue;cursor:pointer;">
             <span>Add more</span>
         </span>
@@ -29,14 +29,14 @@
             <c:set var="pCount" value="${topBySurgicalProcedure.size()}"/>
         </c:otherwise>
     </c:choose>
-    <input type="hidden" class="pLength" name="${prefix}pLength" value="${pCount}" data-prefix="${prefix}"/>
+    <input type="hidden" class="pLength" name="${prefix}pLength" value="${pCount}" />
     <c:forEach begin="0" end="${pCount-1}" step="1" varStatus="cdStat">
         <c:set var="index" value="${cdStat.index}" />
         <c:set var="person" value="${topBySurgicalProcedure[index]}"/>
         <%@include file="aboutTopDetail2.jsp" %>
     </c:forEach>
     <div class="col-md-12 col-xs-12 addTopBySurgicalProcedureDiv
-        <c:if test="${('1' == appSvcOtherInfoTop.topType) || ('0' == provideTop) || (empty appSvcOtherInfoTop.topType)}">hidden</c:if>" data-prefix="${prefix}">
+<c:if test="${('1' == appSvcOtherInfoTop.topType) || ('0' == provideTop) || (empty appSvcOtherInfoTop.topType)}">hidden</c:if>" data-prefix="${prefix}">
         <span class="addTopBySurgicalProcedureBtn" style="color:deepskyblue;cursor:pointer;">
             <span>Add more</span>
         </span>
@@ -50,7 +50,7 @@
             <c:set var="aCount" value="${topByAll.size()}"/>
         </c:otherwise>
     </c:choose>
-    <input type="hidden" class="aLength" name="${prefix}aLength" value="${aCount}" data-prefix="${prefix}"/>
+    <input type="hidden" class="aLength" name="${prefix}aLength" value="${aCount}" />
     <c:forEach begin="0" end="${aCount-1}" step="1" varStatus="cdStat">
         <c:set var="index" value="${cdStat.index}" />
         <c:set var="person" value="${topByAll[index]}"/>
@@ -115,9 +115,8 @@
             $('div.addTopByDrugDiv[data-prefix="' + prefix + '"]').before(src);
             let atdLength = $('.topByDrug[data-prefix="' + prefix + '"]').length;
             $('input.atdLength[data-prefix="' + prefix + '"]').val(atdLength);
-            console.log("len:::"+ $('input.atdLength[data-prefix="' + prefix + '"]').val());
-            let $currContent = $('div.topByDrug[data-prefix="' + prefix + '"]').last();
-            clearFields($currContent);
+            let $c = $('div.topByDrug[data-prefix="' + prefix + '"]').last();
+            clearFields($c);
             removeTopDrug();
             if (atdLength <= 1){
                 console.log("init.........")
