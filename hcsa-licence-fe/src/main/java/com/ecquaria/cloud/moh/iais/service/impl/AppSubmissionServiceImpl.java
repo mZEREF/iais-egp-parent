@@ -1591,4 +1591,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         log.info(StringUtil.changeForLog("App Grp No. is " + appGrp.getGroupNo()));
     }
 
+    @Override
+    public int getBundleMsCount(String item, boolean licOrApp) {
+        Integer result=0;
+        if(!StringUtil.isEmpty(item)) {
+            result = appCommClient.getBundleMsCount(item, licOrApp).getEntity();
+        }
+        return result;
+    }
 }

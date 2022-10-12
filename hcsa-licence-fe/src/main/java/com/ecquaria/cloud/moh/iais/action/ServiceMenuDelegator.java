@@ -55,6 +55,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -381,6 +382,7 @@ public class ServiceMenuDelegator {
     public void doChooseService(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("do choose svc start ..."));
         boolean onlyBaseSvc = false;
+        boolean bundleAchOrMs=true;
         ParamUtil.setSessionAttr(bpc.request, DRAFT_NUMBER, null);
         ParamUtil.setSessionAttr(bpc.request,ONLY_BASE_SVC,onlyBaseSvc);
         String additional = ParamUtil.getString(bpc.request,CRUD_ACTION_ADDITIONAL);
@@ -421,8 +423,12 @@ public class ServiceMenuDelegator {
             List<String> baseSvcNames = baseSvcSort.stream().map(HcsaServiceDto::getSvcCode).collect(Collectors.toList());
             boolean isAllContain=baseSvcNames.contains(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY)&&baseSvcNames.contains(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES);
             if (baseSvcNames.contains(AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL)&&!isAllContain){
+                bundleAchOrMs=true;
                 nextstep = CHOOSE_BASE_SVC;
-            }else {
+            }else if (baseSvcNames.contains(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)&&baseSvcNames.size()==1){
+                bundleAchOrMs=false;
+                nextstep = CHOOSE_BASE_SVC;
+            } else {
                 nextstep = CHOOSE_ALIGN;
             }
             onlyBaseSvc = true;
@@ -502,7 +508,13 @@ public class ServiceMenuDelegator {
                     needContainedSvc.add(allbaseService.stream()
                             .filter(s->AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(s.getSvcCode())).findAny().get());
                     List<String> svcCodes = baseSvcSort.stream().map(HcsaServiceDto::getSvcCode).collect(Collectors.toList());
-                    List<HcsaServiceDto> notContainedSvc=needContainedSvc.stream().filter(s->!svcCodes.contains(s.getSvcCode())).collect(Collectors.toList());
+                    List<HcsaServiceDto> notContainedSvc;
+                    if (bundleAchOrMs){
+                        notContainedSvc=needContainedSvc.stream().filter(s->!svcCodes.contains(s.getSvcCode())).collect(Collectors.toList());
+                    }else {
+                        notContainedSvc= Collections.singletonList(allbaseService.stream()
+                                .filter(s->AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(s.getSvcCode())).findAny().get());
+                    }
                     ParamUtil.setSessionAttr(bpc.request,NOTCONTAINEDSVCMAP, (Serializable) notContainedSvc);
                     List<String> svcNameList = IaisCommonUtils.genNewArrayList();
                     List<String> svcIdList = IaisCommonUtils.genNewArrayList();
@@ -583,6 +595,7 @@ public class ServiceMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request,RELOAD_BASE_SVC_SELECTED, null);
         appSelectSvcDto.setAlign(false);
         ParamUtil.setSessionAttr(bpc.request,APP_SELECT_SERVICE,appSelectSvcDto);
+        ParamUtil.setSessionAttr(bpc.request,"bundleAchOrMs", bundleAchOrMs);
         //test
         String value = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE);
         if(NEXT.equals(value)){
@@ -598,8 +611,11 @@ public class ServiceMenuDelegator {
         List<HcsaServiceDto> baseSvcDtoList = appSelectSvcDto.getBaseSvcDtoList();
         boolean noExistBaseLic = (boolean) ParamUtil.getSessionAttr(bpc.request, NO_EXIST_BASE_LIC);
         boolean noExistBaseApp = (boolean) ParamUtil.getSessionAttr(bpc.request, NO_EXIST_BASE_APP);
+        boolean bundleAchOrMs = (boolean) ParamUtil.getSessionAttr(bpc.request, "bundleAchOrMs");
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
         List<AppLicBundleDto> appLicBundleDtoList=IaisCommonUtils.genNewArrayList();
+        String licenceId="";
+        String applicationNo="";
         if (!noExistBaseLic){
             PaginationHandler<AppAlignLicQueryDto> paginationHandler = (PaginationHandler<AppAlignLicQueryDto>) ParamUtil.getSessionAttr(bpc.request,"licPagDiv__SessionAttr");
             paginationHandler.keepCurrentPageChecked();
@@ -616,6 +632,7 @@ public class ServiceMenuDelegator {
                 appLicBundleDto.setPremisesId(checkData.getPremisesId());
                 appLicBundleDto.setLicOrApp(true);
                 appLicBundleDtoList.add(appLicBundleDto);
+                licenceId=checkData.getLicenceId();
             }
             appSelectSvcDto.setInitPagHandler(false);
         }else if(!noExistBaseApp){
@@ -634,6 +651,7 @@ public class ServiceMenuDelegator {
                 appLicBundleDto.setPremisesId(checkData.getPremisesId());
                 appLicBundleDto.setLicOrApp(false);
                 appLicBundleDtoList.add(appLicBundleDto);
+                applicationNo=checkData.getApplicationNo();
             }
             appSelectSvcDto.setInitPagHandler(false);
         }
@@ -664,6 +682,17 @@ public class ServiceMenuDelegator {
         }
         //validate
         String erroMsg = "";
+        int bundleMsCount=0;
+        if(!bundleAchOrMs){
+            if (!noExistBaseLic&&StringUtil.isNotEmpty(licenceId)){
+                bundleMsCount = appSubmissionService.getBundleMsCount(licenceId, true);
+            } else if (!noExistBaseApp&&StringUtil.isNotEmpty(applicationNo)) {
+                bundleMsCount = appSubmissionService.getBundleMsCount(applicationNo, false);
+            }
+            if (bundleMsCount>=3){
+                erroMsg=MessageUtil.getMessageDesc("GENERAL_ERR0077");
+            }
+        }
         String licenseeId = "";
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
         if(loginContext!=null){

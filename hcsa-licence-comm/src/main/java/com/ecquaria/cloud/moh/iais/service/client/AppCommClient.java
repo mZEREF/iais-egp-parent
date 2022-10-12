@@ -113,4 +113,8 @@ public interface AppCommClient {
 
     @GetMapping(path = "/com-svc-business/{appPremCorrId}", produces = MediaType.APPLICATION_JSON_VALUE )
     FeignResponseEntity<List<AppSvcBusinessDto>> getAppSvcBusinessDtoListByCorrId(@PathVariable(name = "appPremCorrId") String appPremCorrId);
+
+    @GetMapping(value = "/getBundleMsCount", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Integer> getBundleMsCount(@RequestParam("item") String item, @RequestParam("licOrApp")  boolean licOrApp);
+
 }

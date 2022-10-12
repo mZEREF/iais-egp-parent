@@ -143,4 +143,6 @@ public interface AppSubmissionService {
 
     void updatePayment(AppSubmissionDto appSubmissionDto, String pmtRefNo);
 
+    int getBundleMsCount(String item,boolean licOrApp);
+
 }
