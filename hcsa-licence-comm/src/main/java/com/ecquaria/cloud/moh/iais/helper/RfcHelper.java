@@ -777,17 +777,8 @@ public final class RfcHelper {
 
     private static boolean isChangeKeyPersonnel(List<AppSvcPrincipalOfficersDto> newList, List<AppSvcPrincipalOfficersDto> oldList,
             boolean onlyCheckAddRemoval) {
-        return isChangedList(newList, oldList, (dto, list) -> list.stream()
-                .filter(obj -> Objects.equals(IaisCommonUtils.getPersonKey(obj), IaisCommonUtils.getPersonKey(dto)))
-                .findAny()
-                .orElse(null), (clazz, fieldName) -> {
-            if (onlyCheckAddRemoval) {
-                return StringUtil.isIn(fieldName, new String[]{"nationality", "idType", "idNo"});
-            } else {
-                return !StringUtil.isIn(fieldName, new String[]{"psnEditDto", "licPerson", "backend", "singleName", "needSpcOptList",
-                        "spcOptList", "specialityHtml", "id", "indexNo", "curPersonelId", "nationality", "idType", "idNo"});
-            }
-        });
+        return isChangedList(newList, oldList, list -> PageDataCopyUtil.copyKeyPersonnel(list, onlyCheckAddRemoval ? 1 : 0),
+                (dto, list) -> list.stream().anyMatch(obj -> Objects.equals(dto, obj)));
     }
 
     public static boolean isChangeAppSvcSectionLeadersViaSvcInfo(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos,
@@ -1332,147 +1323,22 @@ public final class RfcHelper {
         return newSrc.equals(newTar);
     }
 
-    public static <R> boolean isChanged(Object source, Object target, BiFunction<Object, Object, Object> checkTarget,
-            BiPredicate<Class, String> filter) {
-        if (source == null && target == null) {
-            return false;
-        } else if (source == null ^ target == null) {
-            return true;
-        }
-        if (!Objects.equals(source.getClass(), target.getClass())) {
-            return true;
-        }
-        boolean isChanged;
-        Class<?> type = target.getClass();
-        if (String.class.isAssignableFrom(type)) {
-            isChanged = !Objects.equals(source, target);
-        } else if (int.class.isAssignableFrom(type)) {
-            isChanged = (int) source != (int) target;
-        } else if (long.class.isAssignableFrom(type)) {
-            isChanged = (long) source == (int) target;
-        } else if (double.class.isAssignableFrom(type)
-                || Double.class.isAssignableFrom(type)) {
-            BigDecimal s = BigDecimal.valueOf((double) source);
-            BigDecimal t = BigDecimal.valueOf((double) target);
-            isChanged = s.compareTo(t) != 0;
-        } else if (Integer.class.isAssignableFrom(type)) {
-            isChanged = !Objects.equals(source, target);
-        } else if (Long.class.isAssignableFrom(type)) {
-            isChanged = !Objects.equals(source, target);
-        } else if (boolean.class.isAssignableFrom(type) || Boolean.class.isAssignableFrom(type)) {
-            isChanged = (boolean) source != (boolean) target;
-        } else if (Date.class.isAssignableFrom(type)) {
-            isChanged = !Objects.equals(source, target);
-        } else if (String[].class.isAssignableFrom(type)) {
-            isChanged = isChangedArray((String[]) source, (String[]) target, Comparator.naturalOrder(), null);
-        } else if (Integer[].class.isAssignableFrom(type) || int[].class.isAssignableFrom(type)) {
-            isChanged = isChangedArray((Integer[]) source, (Integer[]) target, Comparator.naturalOrder(), null);
-        } else if (Long[].class.isAssignableFrom(type) || long[].class.isAssignableFrom(type)) {
-            isChanged = isChangedArray((Long[]) source, (Long[]) target, Comparator.naturalOrder(), null);
-        } else if (Double[].class.isAssignableFrom(type) || double[].class.isAssignableFrom(type)) {
-            isChanged = isChangedArray((Double[]) source, (Double[]) target, Comparator.naturalOrder(), null);
-        } else if (List.class.isAssignableFrom(type)) {
-            BiFunction<R, List<R>, R> check = null;
-            if (checkTarget != null) {
-                check = (r, list) -> (R) checkTarget.apply(r, list);
-            }
-            isChanged = isChangedList((List<R>) source, (List<R>) target, check, filter);
-        } else if (Set.class.isAssignableFrom(type)) {
-            BiFunction<R, Set<R>, R> check = null;
-            if (checkTarget != null) {
-                check = (r, list) -> (R) checkTarget.apply(r, list);
-            }
-            isChanged = isChangedSet((Set<R>) source, (Set<R>) target, check, filter);
-        } else if (Map.class.isAssignableFrom(type)) {
-            isChanged = false;// can't
-        } else {
-            Field[] fields = type.getDeclaredFields();
-            if (fields.length == 0) {
-                isChanged = false;
-            } else {
-                isChanged = !Arrays.stream(fields)
-                        .filter(field -> filter == null || filter.test(type, field.getName()))
-                        .filter(field -> !Modifier.isStatic(field.getModifiers()) && Modifier.isNative(field.getModifiers()))
-                        .allMatch(field -> {
-                            Object srcObj = ReflectionUtil.getPropertyObj(field, source);
-                            Object tarObj = ReflectionUtil.getPropertyObj(field, target);
-                            return !isChanged(srcObj, tarObj, checkTarget, filter);
-                        });
-            }
-        }
-        return isChanged;
-    }
-
-    public static <T> boolean isChangedArray(T[] src, T[] oldSrc, Comparator<T> comparator,
-            BiPredicate<Class, String> filter) {
-        if (src == null && oldSrc == null) {
-            return false;
-        } else if (src == null ^ oldSrc == null) {
-            return true;
-        }
-        if (src.length != oldSrc.length) {
-            return true;
-        }
-        if (comparator != null) {
-            Arrays.sort(src, comparator);
-            Arrays.sort(oldSrc, comparator);
-        }
-        int len = src.length;
-        for (int i = 0; i < len; i++) {
-            if (isChanged(src[i], oldSrc[i], null, filter)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static <T> boolean isChangedArray(T[] src, T[] oldSrc, BiFunction<T, T[], T> target,
-            BiPredicate<Class, String> filter) {
-        if (src == null && oldSrc == null) {
-            return false;
-        } else if (src == null ^ oldSrc == null) {
-            return true;
-        }
-        if (src.length != oldSrc.length) {
-            return true;
-        }
-        boolean anyMatch = Arrays.stream(src)
-                .anyMatch(t -> isChanged(t, target.apply(t, oldSrc), null, filter));
-        if (anyMatch) {
-            return true;
-        }
-        return Arrays.stream(oldSrc)
-                .anyMatch(t -> isChanged(t, target.apply(t, src), null, filter));
-    }
-
-    public static <T> boolean isChangedList(List<T> src, List<T> oldSrc, BiFunction<T, List<T>, T> target,
-            BiPredicate<Class, String> filter) {
-        if (src == null && oldSrc == null) {
-            return false;
-        } else if (src == null ^ oldSrc == null) {
-            return true;
-        }
-        if (src.size() != oldSrc.size()) {
-            return true;
-        }
-        boolean anyMatch = src.stream()
-                .anyMatch(t -> isChanged(t, target.apply(t, oldSrc), null, filter));
-        if (anyMatch) {
-            return true;
-        }
-        return oldSrc.stream()
-                .anyMatch(t -> isChanged(t, target.apply(t, src), null, filter));
-    }
-
     public static <T> boolean isChangedList(List<T> src, List<T> oldSrc, BiPredicate<T, List<T>> check) {
-        if (src == null && oldSrc == null) {
+       return isChangedList(src, oldSrc, null, check);
+    }
+
+    public static <T> boolean isChangedList(List<T> source, List<T> oldSource, Function<List<T>, List<T>> newFun,
+            BiPredicate<T, List<T>> check) {
+        if (source == null && oldSource == null) {
             return false;
-        } else if (src == null ^ oldSrc == null) {
+        } else if (source == null ^ oldSource == null) {
             return true;
         }
-        if (src.size() != oldSrc.size()) {
+        if (source.size() != oldSource.size()) {
             return true;
         }
+        List<T> src = newFun != null ? newFun.apply(source) : source;
+        List<T> oldSrc = newFun != null ? newFun.apply(oldSource) : oldSource;
         boolean noneMatch = src.stream()
                 .noneMatch(t -> check.test(t, oldSrc));
         if (noneMatch) {
@@ -1480,25 +1346,6 @@ public final class RfcHelper {
         }
         return oldSrc.stream()
                 .noneMatch(t -> check.test(t, src));
-    }
-
-    public static <T> boolean isChangedSet(Set<T> src, Set<T> oldSrc, BiFunction<T, Set<T>, T> target,
-            BiPredicate<Class, String> filter) {
-        if (src == null && oldSrc == null) {
-            return false;
-        } else if (src == null ^ oldSrc == null) {
-            return true;
-        }
-        if (src.size() != oldSrc.size()) {
-            return true;
-        }
-        boolean anyMatch = src.stream()
-                .anyMatch(t -> isChanged(t, target.apply(t, oldSrc), null, filter));
-        if (anyMatch) {
-            return true;
-        }
-        return oldSrc.stream()
-                .anyMatch(t -> isChanged(t, target.apply(t, src), null, filter));
     }
 
 }

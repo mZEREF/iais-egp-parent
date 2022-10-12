@@ -337,50 +337,61 @@ public class PageDataCopyUtil {
     /**
      * Copy Key Personnel
      *
+     * @param personList target person
+     * @param status 0: all fields; 1: key fields; 2: normal fields for affected person
+     * @return new person dto
+     */
+    public static List<AppSvcPrincipalOfficersDto> copyKeyPersonnel(List<AppSvcPrincipalOfficersDto> personList, int status) {
+        if (IaisCommonUtils.isEmpty(personList)) {
+            return personList;
+        }
+        return personList.stream()
+                .map(dto -> copyKeyPersonnel(dto, status))
+                .sorted(Comparator.comparing(AppSvcPrincipalOfficersDto::getAssignSelect))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Copy Key Personnel
+     *
      * @param person target person
-     * @param status 0: all fields; 1: key fields; 2: special fields for affected person
+     * @param status 0: all fields; 1: key fields; 2: normal fields for affected person
      * @return new person dto
      */
     public static AppSvcPrincipalOfficersDto copyKeyPersonnel(AppSvcPrincipalOfficersDto person, int status) {
         if (person == null) {
             return null;
         }
-        String psnType = person.getPsnType();
         AppSvcPrincipalOfficersDto newPerson = new AppSvcPrincipalOfficersDto();
-        newPerson.setSalutation(person.getSalutation());
-        newPerson.setName(person.getName());
-        newPerson.setIdNo(person.getIdNo());
-        newPerson.setIdType(person.getIdType());
-        newPerson.setNationality(StringUtil.getNonNull(person.getNationality()));
-        if (!ApplicationConsts.PERSONNEL_PSN_KAH.equals(psnType)) {
+        if (2 != status) {
+            newPerson.setIdNo(person.getIdNo());
+            newPerson.setIdType(person.getIdType());
+            newPerson.setNationality(StringUtil.getNonNull(person.getNationality()));
+        }
+        if (1 != status) {
+            newPerson.setSalutation(person.getSalutation());
+            newPerson.setName(person.getName());
             newPerson.setDesignation(person.getDesignation());
             newPerson.setOtherDesignation(StringUtil.getNonNull(person.getOtherDesignation()));
             newPerson.setMobileNo(person.getMobileNo());
             newPerson.setOfficeTelNo(StringUtil.getNonNull(person.getOfficeTelNo()));
             newPerson.setEmailAddr(person.getEmailAddr());
-        }
-
-        if (status == 0) {
-            if (ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType)) {
-                newPerson.setProfessionBoard(person.getProfessionBoard());
-                newPerson.setProfRegNo(person.getProfRegNo());
-                newPerson.setSpeciality(person.getSpeciality());
-                newPerson.setSpecialtyGetDate(person.getSpecialtyGetDate());
-                newPerson.setTypeOfCurrRegi(person.getTypeOfCurrRegi());
-                newPerson.setCurrRegiDate(person.getCurrRegiDate());
-                newPerson.setPraCerEndDate(person.getPraCerEndDate());
-                newPerson.setTypeOfRegister(person.getTypeOfRegister());
-                newPerson.setRelevantExperience(person.getRelevantExperience());
-                newPerson.setHoldCerByEMS(person.getHoldCerByEMS());
-                newPerson.setAclsExpiryDate(person.getAclsExpiryDate());
-            } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)) {
-                newPerson.setProfessionType(person.getProfessionType());
-                newPerson.setProfRegNo(person.getProfRegNo());
-                newPerson.setSpeciality(person.getSpeciality());
-                newPerson.setSubSpeciality(person.getSubSpeciality());
-                newPerson.setQualification(person.getQualification());
-                newPerson.setOtherQualification(person.getOtherQualification());
-            }
+            newPerson.setProfessionType(person.getProfessionType());
+            newPerson.setProfessionBoard(person.getProfessionBoard());
+            newPerson.setProfRegNo(person.getProfRegNo());
+            newPerson.setSpeciality(person.getSpeciality());
+            newPerson.setSpecialtyGetDate(person.getSpecialtyGetDate());
+            newPerson.setSubSpeciality(person.getSubSpeciality());
+            newPerson.setQualification(person.getQualification());
+            newPerson.setOtherQualification(person.getOtherQualification());
+            newPerson.setTypeOfCurrRegi(person.getTypeOfCurrRegi());
+            newPerson.setCurrRegiDate(person.getCurrRegiDate());
+            newPerson.setPraCerEndDate(person.getPraCerEndDate());
+            newPerson.setTypeOfRegister(person.getTypeOfRegister());
+            newPerson.setRelevantExperience(person.getRelevantExperience());
+            newPerson.setHoldCerByEMS(person.getHoldCerByEMS());
+            newPerson.setAclsExpiryDate(person.getAclsExpiryDate());
+            newPerson.setBclsExpiryDate(person.getBclsExpiryDate());
         }
         newPerson.setAssignSelect(ApplicationHelper.getPersonKey(newPerson));
         return newPerson;
