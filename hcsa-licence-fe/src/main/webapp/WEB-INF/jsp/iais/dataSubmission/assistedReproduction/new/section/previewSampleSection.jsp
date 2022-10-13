@@ -86,6 +86,8 @@
                     </iais:row>
                 </div>
 
+
+
                 <div style="${donorSampleDto.sampleType eq 'DONTY004' or donorSampleDto.sampleType eq 'DONTY003'?'':'display: none'}">
                     <iais:row>
                         <iais:field width="6" value="Is the Male Donor's Identity Known? " cssClass="col-md-6"/>
@@ -243,6 +245,7 @@
                         </p>
                     </iais:value>
                 </iais:row>
+                <%@include file="../../common/donorInventoryTable.jsp" %>
             </div>
         </div>
     </div>

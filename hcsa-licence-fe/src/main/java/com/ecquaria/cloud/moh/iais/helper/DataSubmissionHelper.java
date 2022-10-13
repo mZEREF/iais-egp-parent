@@ -393,6 +393,14 @@ public final class DataSubmissionHelper {
         return result;
     }
 
+    public static List<String> getAllOffCycleStage(){
+        List<String> stages = new ArrayList<>(3);
+        stages.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
+        stages.add(DataSubmissionConsts.AR_STAGE_DONATION);
+        stages.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
+        return stages;
+    }
+
     private static void addStartStages(List<String> result) {
         result.add(DataSubmissionConsts.AR_CYCLE_AR);
         result.add(DataSubmissionConsts.AR_CYCLE_IUI);
@@ -809,12 +817,27 @@ public final class DataSubmissionHelper {
         return arSuperDataSubmissionDto != null ? arSuperDataSubmissionDto.getArCurrentInventoryDto() : null;
     }
 
+    public static ArCurrentInventoryDto getSecondCurrentArCurrentInventoryDto(HttpServletRequest request) {
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = getCurrentArDataSubmission(request);
+        return arSuperDataSubmissionDto != null ? arSuperDataSubmissionDto.getSecondArCurrentInventoryDto() : null;
+    }
+
     public static ArChangeInventoryDto getCurrentArChangeInventoryDto(HttpServletRequest request) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = getCurrentArDataSubmission(request);
         ArChangeInventoryDto arChangeInventoryDto = arSuperDataSubmissionDto != null ? arSuperDataSubmissionDto.getArChangeInventoryDto() : new ArChangeInventoryDto();
         if (arChangeInventoryDto == null) {
             arChangeInventoryDto = new ArChangeInventoryDto();
             arSuperDataSubmissionDto.setArChangeInventoryDto(arChangeInventoryDto);
+        }
+        return arChangeInventoryDto;
+    }
+
+    public static ArChangeInventoryDto getSecondCurrentArChangeInventoryDto(HttpServletRequest request) {
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = getCurrentArDataSubmission(request);
+        ArChangeInventoryDto arChangeInventoryDto = arSuperDataSubmissionDto != null ? arSuperDataSubmissionDto.getSecondArChangeInventoryDto() : new ArChangeInventoryDto();
+        if (arChangeInventoryDto == null) {
+            arChangeInventoryDto = new ArChangeInventoryDto();
+            arSuperDataSubmissionDto.setSecondArChangeInventoryDto(arChangeInventoryDto);
         }
         return arChangeInventoryDto;
     }

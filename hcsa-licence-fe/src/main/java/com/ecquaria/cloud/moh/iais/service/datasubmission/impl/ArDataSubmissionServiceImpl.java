@@ -518,6 +518,22 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
+    public List<DonorSampleAgeDto> getMaleDonorSampleDtoByIdTypeAndIdNo(String idType, String idNo) {
+        if (StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNo)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        return arFeClient.getMaleDonorSampleDtoByIdTypeAndIdNo(idType, idNo).getEntity();
+    }
+
+    @Override
+    public List<DonorSampleAgeDto> getFemaleDonorSampleDtoByIdTypeAndIdNo(String idType, String idNo) {
+        if (StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNo)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        return arFeClient.getFemaleDonorSampleDtoByIdTypeAndIdNo(idType, idNo).getEntity();
+    }
+
+    @Override
     public List<DonorSampleAgeDto> getDonorSampleAgeDtos(String idType, String idNo) {
         if (StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNo)) {
             return IaisCommonUtils.genNewArrayList();
