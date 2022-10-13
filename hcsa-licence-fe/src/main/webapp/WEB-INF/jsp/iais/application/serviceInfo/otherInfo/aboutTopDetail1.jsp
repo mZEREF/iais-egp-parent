@@ -1,5 +1,4 @@
-<div class="topByDrug
-<c:if test="${('0' == appSvcOtherInfoTop.topType) || ('0' == provideTop) || (empty appSvcOtherInfoTop.topType)}">hidden</c:if>" data-prefix="${prefix}">
+<div class="person-detail topByDrug <c:if test="${('0' == appSvcOtherInfoTop.topType) || ('0' == provideTop) || (empty appSvcOtherInfoTop.topType)}">hidden</c:if>" data-prefix="${prefix}">
     <iais:row>
         <div class="col-xs-12 col-md-10">
             <p class="bold">TOP (BY Drug)&nbsp;<label class="assign-psn-item" data-prefix="${prefix}"><c:if test="${topByDrug.size() > 1}">${index+1}</c:if></label></p>

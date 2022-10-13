@@ -14,10 +14,9 @@
         <c:set var="person" value="${topByDrug[index]}"/>
         <%@include file="aboutTopDetail1.jsp" %>
     </c:forEach>
-    <div class="col-md-12 col-xs-12 addTopByDrugDiv
-<c:if test="${('0' == appSvcOtherInfoTop.topType) || ('0' == provideTop) || (empty appSvcOtherInfoTop.topType)}">hidden</c:if>" data-prefix="${prefix}">
+    <div class="col-md-12 col-xs-12 addTopByDrugDiv <c:if test="${('0' == appSvcOtherInfoTop.topType) || ('0' == provideTop) || (empty appSvcOtherInfoTop.topType)}">hidden</c:if>" data-prefix="${prefix}">
         <span class="addTopByDrugBtn" style="color:deepskyblue;cursor:pointer;">
-            <span>Add more</span>
+            <span style="">Add more</span>
         </span>
     </div>
 
@@ -29,7 +28,7 @@
             <c:set var="pCount" value="${topBySurgicalProcedure.size()}"/>
         </c:otherwise>
     </c:choose>
-    <input type="hidden" class="pLength" name="${prefix}pLength" value="${pCount}" />
+    <input type="hidden" class="pLength" name="${prefix}pLength" value="${pCount}" data-prefix="${prefix}"/>
     <c:forEach begin="0" end="${pCount-1}" step="1" varStatus="cdStat">
         <c:set var="index" value="${cdStat.index}" />
         <c:set var="person" value="${topBySurgicalProcedure[index]}"/>
@@ -50,7 +49,7 @@
             <c:set var="aCount" value="${topByAll.size()}"/>
         </c:otherwise>
     </c:choose>
-    <input type="hidden" class="aLength" name="${prefix}aLength" value="${aCount}" />
+    <input type="hidden" class="aLength" name="${prefix}aLength" value="${aCount}" data-prefix="${prefix}"/>
     <c:forEach begin="0" end="${aCount-1}" step="1" varStatus="cdStat">
         <c:set var="index" value="${cdStat.index}" />
         <c:set var="person" value="${topByAll[index]}"/>
@@ -104,6 +103,9 @@
         $('.addTopByDrugBtn').unbind('click');
         $('.addTopByDrugBtn').click(function (){
             showWaiting();
+            if (${AppSubmissionDto.needEditController }){
+                $('a.otherInfoEdit').trigger('click');
+            }
             let $tag = $(this);
             let $target = $tag.closest('.addTopByDrugDiv');
             let prefix = $target.data('prefix');
@@ -116,7 +118,7 @@
             let atdLength = $('.topByDrug[data-prefix="' + prefix + '"]').length;
             $('input.atdLength[data-prefix="' + prefix + '"]').val(atdLength);
             let $c = $('div.topByDrug[data-prefix="' + prefix + '"]').last();
-            clearFields($c);
+            clearFields($('div.topByDrug[data-prefix="' + prefix + '"]').last());
             removeTopDrug();
             if (atdLength <= 1){
                 console.log("init.........")
@@ -127,20 +129,19 @@
                 toggleTag($(this).find('div.removeTopByDrugBtn[data-prefix="' + prefix + '"]'), k != 0);
                 $(this).find('.assign-psn-item').html(k+1);
                 console.log("k....."+k)
-                $(this).find('input.year').prop('name','year'+k);
-                $(this).find('input.abortNum').prop('name','abortNum'+k);
+                $(this).find('input.year').prop('name',prefix +'year'+k);
+                $(this).find('input.abortNum').prop('name',prefix +'abortNum'+k);
             });
-            $('#isEditHiddenVal').val('1');
             dismissWaiting();
         })
     }
-
     function resTopDrug(){
         //reset number
         $('.topByDrug').each(function (k,v) {
             console.log("k....."+k);
             toggleTag($(this).find('div.removeTopByDrugBtn'), k != 0);
         });
+        $('#isEditHiddenVal').val('1');
     }
 
     let removeTopDrug = function () {
@@ -161,8 +162,8 @@
                 console.log("k....."+k);
                 toggleTag($(this).find('div.removeTopByDrugBtn[data-prefix="' + prefix + '"]'), k != 0);
                 $(this).find('.assign-psn-item').html(k+1);
-                $(this).find('input.year').prop('name','year'+k);
-                $(this).find('input.abortNum').prop('name','abortNum'+k);
+                $(this).find('input.year').prop('name',prefix +'year'+k);
+                $(this).find('input.abortNum').prop('name',prefix +'abortNum'+k);
             });
             //display add more
             if(atdLength <= 1){
@@ -178,6 +179,9 @@
         $('.addTopBySurgicalProcedureBtn').unbind('click');
         $('.addTopBySurgicalProcedureBtn').click(function (){
             showWaiting();
+            if (${AppSubmissionDto.needEditController }){
+                $('a.otherInfoEdit').trigger('click');
+            }
             let $tag = $(this);
             let $target = $tag.closest('.addTopBySurgicalProcedureDiv');
             let prefix = $target.data('prefix');
@@ -201,20 +205,19 @@
                 toggleTag($(this).find('div.removeTopBySurgicalProcedureBtn[data-prefix="' + prefix + '"]'), k != 0);
                 $(this).find('.assign-psn-item').html(k+1);
                 console.log("k....."+k)
-                $(this).find('input.pyear').prop('name','pyear'+k);
-                $(this).find('input.pabortNum').prop('name','pabortNum'+k);
+                $(this).find('input.pyear').prop('name',prefix +'pyear'+k);
+                $(this).find('input.pabortNum').prop('name',prefix +'pabortNum'+k);
             });
-            $('#isEditHiddenVal').val('1');
             dismissWaiting();
         })
     }
-
     function resTopP(){
         //reset number
         $('.topBySurgicalProcedure').each(function (k,v) {
             console.log("k....."+k);
             toggleTag($(this).find('div.removeTopBySurgicalProcedureBtn'), k != 0);
         });
+        $('#isEditHiddenVal').val('1');
     }
 
     let removeTopP = function () {
@@ -236,8 +239,8 @@
                 toggleTag($(this).find('div.removeTopBySurgicalProcedureBtn[data-prefix="' + prefix + '"]'), k != 0);
                 $(this).find('.assign-psn-item').html(k+1);
                 console.log("k....."+k)
-                $(this).find('input.pyear').prop('name','pyear'+k);
-                $(this).find('input.pabortNum').prop('name','pabortNum'+k);
+                $(this).find('input.pyear').prop('name',prefix +'pyear'+k);
+                $(this).find('input.pabortNum').prop('name',prefix +'pabortNum'+k);
             });
             //display add more
             if(pLength <= 1){
@@ -253,6 +256,9 @@
         $('.addTopAllBtn').unbind('click');
         $('.addTopAllBtn').click(function (){
             showWaiting();
+            if (${AppSubmissionDto.needEditController }){
+                $('a.otherInfoEdit').trigger('click');
+            }
             let $v = $(this);
             let $tag = $v.closest('.addTopAllDiv');
             let prefix = $tag.data('prefix');
@@ -277,20 +283,19 @@
                 toggleTag($(this).find('div.removeTopByAllBtn[data-prefix="' + prefix + '"]'), k != 0);
                 $(this).find('.assign-psn-item').html(k+1);
                 console.log("k....."+k)
-                $(this).find('input.ayear').prop('name','ayear'+k);
-                $(this).find('input.aabortNum').prop('name','aabortNum'+k);
+                $(this).find('input.ayear').prop('name',prefix +'ayear'+k);
+                $(this).find('input.aabortNum').prop('name',prefix +'aabortNum'+k);
             });
-            $('#isEditHiddenVal').val('1');
             dismissWaiting();
         })
     }
-
     function resTopA(){
         //reset number
         $('.topByDrugandSurgicalProcedure').each(function (k,v) {
             console.log("k....."+k);
             toggleTag($(this).find('div.removeTopByAllBtn'), k != 0);
         });
+        $('#isEditHiddenVal').val('1');
     }
 
     let removeTopAll = function () {
@@ -312,8 +317,8 @@
                 toggleTag($(this).find('div.removeTopByAllBtn[data-prefix="' + prefix + '"]'), k != 0);
                 $(this).find('.assign-psn-item').html(k+1);
                 console.log("k....."+k)
-                $(this).find('input.ayear').prop('name','ayear'+k);
-                $(this).find('input.aabortNum').prop('name','aabortNum'+k);
+                $(this).find('input.ayear').prop('name',prefix +'ayear'+k);
+                $(this).find('input.aabortNum').prop('name',prefix +'aabortNum'+k);
             });
             //display add more
             if(aLength <= 1){

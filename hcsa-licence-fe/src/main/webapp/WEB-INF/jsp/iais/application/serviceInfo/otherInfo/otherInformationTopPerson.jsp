@@ -68,7 +68,7 @@
         <%@include file="practitionersDetail.jsp" %>
     </c:forEach>
     <div class="col-md-12 col-xs-12 addPractitionersDiv <c:if test="${'1' != provideTop}">hidden</c:if>" data-prefix="${prefix}">
-        <span class="addPractitionersBtn" style="color:deepskyblue;cursor:pointer;" onclick="pr('${prefix}');">
+        <span class="addPractitionersBtn" style="color:deepskyblue;cursor:pointer;">
             <span style="">Add more</span>
         </span>
     </div>
@@ -191,7 +191,7 @@
 <script>
     $(document).ready(function () {
         medAuthByMoh();
-        rePfresh();
+
         addPractitioners();
         removePractitioners();
 
@@ -305,6 +305,10 @@
         refresh();
         $('.addPractitionersBtn').unbind('click');
         $('.addPractitionersBtn').click(function () {
+            showWaiting();
+            if (${AppSubmissionDto.needEditController }){
+                $('a.otherInfoEdit').trigger('click');
+            }
             let $tag = $(this);
             let $target = $tag.closest('.addPractitionersDiv');
             let prefix = $target.data('prefix');
@@ -339,38 +343,8 @@
                 $(this).find('input.isMedAuthByMoh').prop('name',prefix+'isMedAuthByMoh'+k);
                 $(this).find('input.speciality').prop('name',prefix+'speciality'+k);
             });
-            $('#isEditHiddenVal').val('1');
-
+           dismissWaiting();
         })
-    }
-
-    function rePfresh(){
-        let rmv_ary = [];
-        $('.removePDiv').each(function () {
-            let $tag = $(this);
-            let prefix = $tag.data('prefix');
-            if (isEmpty(prefix)) {
-                prefix = "";
-            }
-            let includes = false;
-            let len = rmv_ary.length;
-            for (let i = 0; i < len; i++) {
-                let obj = rmv_ary[i];
-                if (obj.prefix == prefix) {
-                    includes = true;
-                    break;
-                }
-            }
-            if (!includes) {
-                rmv_ary.push({prefix: prefix});
-            }
-        })
-        rmv_ary.forEach(function (item) {
-            let $removeTag = $('.removePDiv[data-prefix="' + item.prefix + '"]');
-            $removeTag.each(function (index, ele) {
-                toggleTag($(this).find('div.removePractitionersBtn'), ele != 0);
-            });
-        });;
     }
 
     function refresh(){
@@ -379,6 +353,7 @@
             console.log("k....."+k);
             toggleTag($(this).find('div.removePractitionersBtn'), k != 0);
         });
+        $('#isEditHiddenVal').val('1');
     }
 
     let removePractitioners = function () {
@@ -417,11 +392,13 @@
     }
     <%--Anaesthetists--%>
     function addAnaesthetistsBtn(){
-
         refreshAnaesthetists();
         $('.addAnaesthetistsBtn').unbind('click');
         $('.addAnaesthetistsBtn').click(function () {
             showWaiting();
+            if (${AppSubmissionDto.needEditController }){
+                $('a.otherInfoEdit').trigger('click');
+            }
             let $tag = $(this);
             let $target = $tag.closest('.addAnaesthetistsDiv');
             let prefix = $target.data('prefix');
@@ -453,7 +430,6 @@
                 $(this).find('input.aregType').prop('name',prefix+'aregType'+k);
                 $(this).find('input.aqualification').prop('name',prefix+'aqualification'+k);
             });
-            $('#isEditHiddenVal').val('1');
             dismissWaiting();
         })
     }
@@ -463,6 +439,7 @@
         $('.anaesthetists').each(function (k,v) {
             toggleTag($(this).find('div.removeAnaesthetistsBtn'), k != 0);
         });
+        $('#isEditHiddenVal').val('1');
     }
 
     let removeAnaesthetists = function () {
@@ -501,6 +478,9 @@
         $('.addNursesBtn').unbind('click');
         $('.addNursesBtn').click(function () {
             showWaiting();
+            if (${AppSubmissionDto.needEditController }){
+                $('a.otherInfoEdit').trigger('click');
+            }
             let $tag = $(this);
             let $target = $tag.closest('.addNursesDiv');
             let prefix = $target.data('prefix');
@@ -529,7 +509,7 @@
                 $(this).find('input.nname').prop('name',prefix+'nname'+k);
                 $(this).find('input.nqualification').prop('name',prefix+'nqualification'+k);
             });
-            $('#isEditHiddenVal').val('1');
+
             dismissWaiting();
         })
     }
@@ -539,6 +519,7 @@
         $('.nurses').each(function (k,v) {
             toggleTag($(this).find('div.removeNursesBtn'), k != 0);
         });
+        $('#isEditHiddenVal').val('1');
     }
 
     let removeNurses = function () {
@@ -574,6 +555,9 @@
         $('.addCounsellorsBtn').unbind('click');
         $('.addCounsellorsBtn').click(function () {
             showWaiting();
+            if (${AppSubmissionDto.needEditController }){
+                $('a.otherInfoEdit').trigger('click');
+            }
             let $tag = $(this);
             let $target = $tag.closest('.addCounsellorsDiv');
             let prefix = $target.data('prefix');
@@ -603,16 +587,15 @@
                 $(this).find('input.cidNo').prop('name',prefix+'cidNo'+k);
                 $(this).find('input.cqualification').prop('name',prefix+'cqualification'+k);
             });
-            $('#isEditHiddenVal').val('1');
             dismissWaiting();
         })
     }
-
     function refreshCounsellors(){
         //reset number
         $('.counsellors').each(function (k,v) {
             toggleTag($(this).find('div.removeBtn'), k != 0);
         });
+        $('#isEditHiddenVal').val('1');
     }
 
     let removeCounsellors = function () {
