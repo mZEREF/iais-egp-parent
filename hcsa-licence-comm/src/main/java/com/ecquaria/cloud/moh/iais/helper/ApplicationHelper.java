@@ -3445,7 +3445,7 @@ public final class ApplicationHelper {
 
     public static List<AppSvcPrincipalOfficersDto> getSpecialKeyPsnList(String key, AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
         List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = appSvcRelatedInfoDto.getAppSvcSpecialServiceInfoList();
-        if (IaisCommonUtils.isNotEmpty(appSvcSpecialServiceInfoList)) {
+        if (IaisCommonUtils.isEmpty(appSvcSpecialServiceInfoList)) {
             return IaisCommonUtils.genNewArrayList();
         }
         for (AppSvcSpecialServiceInfoDto appSvcSpecialServiceInfoDto : appSvcSpecialServiceInfoList) {

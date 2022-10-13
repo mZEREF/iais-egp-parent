@@ -1,5 +1,6 @@
 <div class="personnel-content">
     <input type="hidden" class="indexNo" name="${prefix}indexNo${index}" value="${sectionLeader.indexNo}"/>
+    <input type="hidden" class="isPartEdit" name="${prefix}isPartEdit${index}" value="0"/>
     <iais:row>
         <div class="col-xs-12 col-md-6">
             <p class="bold">${title} <label class="assign-psn-item">${index+1}</label></p>

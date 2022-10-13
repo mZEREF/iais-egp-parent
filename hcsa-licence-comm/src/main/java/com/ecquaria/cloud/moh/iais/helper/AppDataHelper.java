@@ -965,7 +965,7 @@ public final class AppDataHelper {
     public static List<AppSvcPrincipalOfficersDto> genAppSvcClinicalDirectorDto(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("gen app svc clinical director dto start ..."));
         List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = genKeyPersonnels(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR, "",
-                request);
+                request, false);
         log.debug(StringUtil.changeForLog("gen app svc clinical director dto end ..."));
         return appSvcCgoDtoList;
     }
@@ -1618,11 +1618,11 @@ public final class AppDataHelper {
 
 
     public static List<AppSvcPrincipalOfficersDto> genAppSvcPrincipalOfficersDtos(HttpServletRequest request) {
-        return genKeyPersonnels(ApplicationConsts.PERSONNEL_PSN_TYPE_PO, "", request);
+        return genKeyPersonnels(ApplicationConsts.PERSONNEL_PSN_TYPE_PO, "", request, false);
     }
 
     public static List<AppSvcPrincipalOfficersDto> genAppSvcNomineeDtos(HttpServletRequest request) {
-        return genKeyPersonnels(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, "dpo", request);
+        return genKeyPersonnels(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, "dpo", request, false);
     }
 
     /*
@@ -2076,12 +2076,12 @@ public final class AppDataHelper {
 
     public static List<AppSvcPrincipalOfficersDto> genAppSvcGovernanceOfficersDto(HttpServletRequest request) {
         log.info(StringUtil.changeForLog("genAppSvcCgoDto start ...."));
-        List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = genKeyPersonnels(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, "", request);
+        List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = genKeyPersonnels(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, "", request, false);
         log.info(StringUtil.changeForLog("genAppSvcCgoDto end ...."));
         return appSvcCgoDtoList;
     }
 
-    public static List<AppSvcPrincipalOfficersDto> genKeyPersonnels(String psnType, String prefix, HttpServletRequest request) {
+    public static List<AppSvcPrincipalOfficersDto> genKeyPersonnels(String psnType, String prefix, HttpServletRequest request,boolean isSpecial) {
         List<AppSvcPrincipalOfficersDto> personList = IaisCommonUtils.genNewArrayList();
         String[] licPerson = ParamUtil.getStrings(request, prefix + "licPerson");
         String[] isPartEdit = ParamUtil.getStrings(request, prefix + "isPartEdit");
@@ -2115,14 +2115,26 @@ public final class AppDataHelper {
             log.info(StringUtil.changeForLog("Non changed:" + nonChanged));
             log.info(StringUtil.changeForLog("PageData:" + pageData));
             if (nonChanged) {
-                person = ApplicationHelper.getKeyPersonnel(psnType, currSvcInfoDto).stream()
-                        .filter(dto -> Objects.equals(indexNo, dto.getIndexNo()))
-                        .findAny()
-                        .orElseGet(() -> {
-                            AppSvcPrincipalOfficersDto dto = new AppSvcPrincipalOfficersDto();
-                            dto.setIndexNo(indexNo);
-                            return dto;
-                        });
+                if (isSpecial){
+                    person = ApplicationHelper.getKeyPersonnel(psnType,true, currSvcInfoDto).stream()
+                            .filter(dto -> Objects.equals(indexNo, dto.getIndexNo()))
+                            .findAny()
+                            .orElseGet(() -> {
+                                AppSvcPrincipalOfficersDto dto = new AppSvcPrincipalOfficersDto();
+                                dto.setIndexNo(indexNo);
+                                return dto;
+                            });
+                }else {
+                    person = ApplicationHelper.getKeyPersonnel(psnType, currSvcInfoDto).stream()
+                            .filter(dto -> Objects.equals(indexNo, dto.getIndexNo()))
+                            .findAny()
+                            .orElseGet(() -> {
+                                AppSvcPrincipalOfficersDto dto = new AppSvcPrincipalOfficersDto();
+                                dto.setIndexNo(indexNo);
+                                return dto;
+                            });
+                }
+
             } else if (pageData) {
                 AppPsnEditDto appPsnEditDto = null;
                 if (isExistingPsn(assign, licPsn)) {
@@ -2271,7 +2283,7 @@ public final class AppDataHelper {
     }
 
     public static List<AppSvcSpecialServiceInfoDto> getAppSvcSpecialServiceInfoList(HttpServletRequest request,
-            List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoDtoList) {
+        List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoDtoList, String appType) {
         if (!IaisCommonUtils.isEmpty(appSvcSpecialServiceInfoDtoList)) {
             String prefix = "";
             int i = 0;
@@ -2290,98 +2302,71 @@ public final class AppDataHelper {
                     int diMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR);
                     int nuMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR);
                     if (cgomaxCount!=0){
-                        List<AppSvcPrincipalOfficersDto> dtos = genKeyPersonnels(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, prefix + i + j + "cgo", request);
+                        List<AppSvcPrincipalOfficersDto> dtos = genKeyPersonnels(appSvcSpecialServiceInfoDto.getNewPsnKey(specialServiceSectionDto.getSvcCode(),ApplicationConsts.PERSONNEL_PSN_TYPE_CGO), prefix + i + j + "cgo", request, true);
                         specialServiceSectionDto.setAppSvcCgoDtoList(dtos);
                     }
                     if (slMaxCount != 0) {
-                        List<AppSvcPersonnelDto> personnelDtoList = IaisCommonUtils.genNewArrayList();
-                        int Length = ParamUtil.getInt(request, prefix + i + j + ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER+"Length");
-                        for (int x = 0; x < Length; x++) {
-                            AppSvcPersonnelDto appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix + i + j+"sl",
-                                    prefix + x, ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER);
-                            personnelDtoList.add(appSvcPersonnelDto);
+                        List<AppSvcPersonnelDto> personnelDtoList = getSpecialServiceInforamtionPerson(request, prefix + i + j, ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER,
+                                "sl", specialServiceSectionDto.getAppSvcSectionLeaderList(), appType);
+                        if (IaisCommonUtils.isNotEmpty(personnelDtoList)){
+                            specialServiceSectionDto.setAppSvcSectionLeaderList(personnelDtoList);
                         }
-                        specialServiceSectionDto.setAppSvcSectionLeaderList(personnelDtoList);
                     }
                     if (nicMaxCount != 0) {
-                        List<AppSvcPersonnelDto> appSvcNurseDtoList = IaisCommonUtils.genNewArrayList();
-                        int nicLength = ParamUtil.getInt(request, prefix + i + j + ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE+"Length");
-                        for (int x = 0; x < nicLength; x++) {
-                            AppSvcPersonnelDto appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix + i + j + "nic",
-                                    prefix + x, ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_NURSE_IN_CHARGE);
-                            appSvcNurseDtoList.add(appSvcPersonnelDto);
+                        List<AppSvcPersonnelDto> personnelDtoList = getSpecialServiceInforamtionPerson(request, prefix + i + j, ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE,
+                                "nic", specialServiceSectionDto.getAppSvcNurseDtoList(), appType);
+                        if (IaisCommonUtils.isNotEmpty(personnelDtoList)){
+                            specialServiceSectionDto.setAppSvcNurseDtoList(personnelDtoList);
                         }
-                        specialServiceSectionDto.setAppSvcNurseDtoList(appSvcNurseDtoList);
                     }
                     if (rsoMaxCount != 0) {
-                        List<AppSvcPersonnelDto> appSvcPersonnelDtoList = IaisCommonUtils.genNewArrayList();
-                        int length = ParamUtil.getInt(request, prefix + i + j + ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER+"Length");
-                        for (int x = 0; x < length; x++) {
-                            AppSvcPersonnelDto appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix + i + j + "rso",
-                                    prefix + x,"");
-                            appSvcPersonnelDtoList.add(appSvcPersonnelDto);
+                        List<AppSvcPersonnelDto> personnelDtoList = getSpecialServiceInforamtionPerson(request, prefix + i + j, ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER,
+                                "rso", specialServiceSectionDto.getAppSvcRadiationSafetyOfficerDtoList(), appType);
+                        if (IaisCommonUtils.isNotEmpty(personnelDtoList)){
+                            specialServiceSectionDto.setAppSvcRadiationSafetyOfficerDtoList(personnelDtoList);
                         }
-                        specialServiceSectionDto.setAppSvcRadiationSafetyOfficerDtoList(appSvcPersonnelDtoList);
                     }
                     if (drMaxCount != 0) {
-                        List<AppSvcPersonnelDto> appSvcPersonnelDtoList = IaisCommonUtils.genNewArrayList();
-                        int length = ParamUtil.getInt(request, prefix + i + j + ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR+"Length");
-                        for (int x = 0; x < length; x++) {
-                            AppSvcPersonnelDto appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix + i + j + "dr",
-                                    prefix + x,"");
-                            appSvcPersonnelDtoList.add(appSvcPersonnelDto);
+                        List<AppSvcPersonnelDto> personnelDtoList = getSpecialServiceInforamtionPerson(request, prefix + i + j, ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR,
+                                "dr", specialServiceSectionDto.getAppSvcDiagnosticRadiographerDtoList(), appType);
+                        if (IaisCommonUtils.isNotEmpty(personnelDtoList)){
+                            specialServiceSectionDto.setAppSvcDiagnosticRadiographerDtoList(personnelDtoList);
                         }
-                        specialServiceSectionDto.setAppSvcDiagnosticRadiographerDtoList(appSvcPersonnelDtoList);
                     }
                     if (mpMaxCount != 0) {
-                        List<AppSvcPersonnelDto> appSvcPersonnelDtoList = IaisCommonUtils.genNewArrayList();
-                        int length = ParamUtil.getInt(request, prefix + i + j + ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST+"Length");
-                        for (int x = 0; x < length; x++) {
-                            AppSvcPersonnelDto appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix + i + j + "mp",
-                                    prefix + x,"");
-                            appSvcPersonnelDtoList.add(appSvcPersonnelDto);
+                        List<AppSvcPersonnelDto> personnelDtoList = getSpecialServiceInforamtionPerson(request, prefix + i + j, ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST,
+                                "mp", specialServiceSectionDto.getAppSvcMedicalPhysicistDtoList(), appType);
+                        if (IaisCommonUtils.isNotEmpty(personnelDtoList)){
+                            specialServiceSectionDto.setAppSvcMedicalPhysicistDtoList(personnelDtoList);
                         }
-                        specialServiceSectionDto.setAppSvcMedicalPhysicistDtoList(appSvcPersonnelDtoList);
                     }
                     if (rpMaxCount != 0) {
-                        List<AppSvcPersonnelDto> appSvcPersonnelDtoList = IaisCommonUtils.genNewArrayList();
-                        int length = ParamUtil.getInt(request, prefix + i + j + ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL+"Length");
-                        for (int x = 0; x < length; x++) {
-                            AppSvcPersonnelDto appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix + i + j + "rp",
-                                    prefix + x,"");
-                            appSvcPersonnelDtoList.add(appSvcPersonnelDto);
+                        List<AppSvcPersonnelDto> personnelDtoList = getSpecialServiceInforamtionPerson(request, prefix + i + j, ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL,
+                                "rp", specialServiceSectionDto.getAppSvcRadiationPhysicistDtoList(), appType);
+                        if (IaisCommonUtils.isNotEmpty(personnelDtoList)){
+                            specialServiceSectionDto.setAppSvcRadiationPhysicistDtoList(personnelDtoList);
                         }
-                        specialServiceSectionDto.setAppSvcRadiationPhysicistDtoList(appSvcPersonnelDtoList);
                     }
                     if (nmMaxCount != 0) {
-                        List<AppSvcPersonnelDto> appSvcPersonnelDtoList = IaisCommonUtils.genNewArrayList();
-                        int length = ParamUtil.getInt(request, prefix + i + j + ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM+"Length");
-                        for (int x = 0; x < length; x++) {
-                            AppSvcPersonnelDto appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix + i + j + "nm",
-                                    prefix + x,"");
-                            appSvcPersonnelDtoList.add(appSvcPersonnelDto);
+                        List<AppSvcPersonnelDto> personnelDtoList = getSpecialServiceInforamtionPerson(request, prefix + i + j, ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM,
+                                "nm", specialServiceSectionDto.getAppSvcNMTechnologistDtoList(), appType);
+                        if (IaisCommonUtils.isNotEmpty(personnelDtoList)){
+                            specialServiceSectionDto.setAppSvcNMTechnologistDtoList(personnelDtoList);
                         }
-                        specialServiceSectionDto.setAppSvcNMTechnologistDtoList(appSvcPersonnelDtoList);
                     }
                     if (diMaxCount != 0) {
-                        List<AppSvcPersonnelDto> appSvcDirectorDtoList = IaisCommonUtils.genNewArrayList();
-                        int diLength = ParamUtil.getInt(request, prefix + i + j +ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR+"Length");
-                        for (int x = 0; x < diLength; x++) {
-                            AppSvcPersonnelDto appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix + i + j + "dir",
-                                    prefix + x, ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR);
-                            appSvcDirectorDtoList.add(appSvcPersonnelDto);
+                        List<AppSvcPersonnelDto> personnelDtoList = getSpecialServiceInforamtionPerson(request, prefix + i + j, ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR,
+                                "dir", specialServiceSectionDto.getAppSvcDirectorDtoList(), appType);
+                        if (IaisCommonUtils.isNotEmpty(personnelDtoList)){
+                            specialServiceSectionDto.setAppSvcDirectorDtoList(personnelDtoList);
                         }
-                        specialServiceSectionDto.setAppSvcDirectorDtoList(appSvcDirectorDtoList);
                     }
                     if (nuMaxCount != 0) {
-                        int nuLength = ParamUtil.getInt(request, prefix + i + j +ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR+ "Length");
-                        List<AppSvcPersonnelDto> appSvcNurseDirectorDtoList = IaisCommonUtils.genNewArrayList();
-                        for (int x = 0; x < nuLength; x++) {
-                            AppSvcPersonnelDto appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix + i + j + "nur",
-                                    prefix + x, ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR);
-                            appSvcNurseDirectorDtoList.add(appSvcPersonnelDto);
+                        List<AppSvcPersonnelDto> personnelDtoList = getSpecialServiceInforamtionPerson(request, prefix + i + j, ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR,
+                                "nur", specialServiceSectionDto.getAppSvcNurseDirectorDtoList(), appType);
+                        if (IaisCommonUtils.isNotEmpty(personnelDtoList)){
+                            specialServiceSectionDto.setAppSvcNurseDirectorDtoList(personnelDtoList);
                         }
-                        specialServiceSectionDto.setAppSvcNurseDirectorDtoList(appSvcNurseDirectorDtoList);
                     }
                     if (!IaisCommonUtils.isEmpty(specialServiceSectionDto.getAppSvcSuplmFormDto().getAppSvcSuplmGroupDtoList())) {
                         setAppSvcSuplmFormDto(specialServiceSectionDto.getAppSvcSuplmFormDto(), prefix + i + j, request);
@@ -2392,6 +2377,36 @@ public final class AppDataHelper {
             }
         }
         return appSvcSpecialServiceInfoDtoList;
+    }
+
+    private static List<AppSvcPersonnelDto> getSpecialServiceInforamtionPerson(HttpServletRequest request,String prefix,
+        String personType,String personTypeAbbr,List<AppSvcPersonnelDto> originalPersonnelList,String appType){
+        List<AppSvcPersonnelDto> personnelDtoList = IaisCommonUtils.genNewArrayList();
+        if (IaisCommonUtils.isEmpty(originalPersonnelList)){
+            return personnelDtoList;
+        }
+        boolean isRfi = ApplicationHelper.checkIsRfi(request);
+        int Length = ParamUtil.getInt(request, prefix + personType+"Length");
+        for (int x = 0; x < Length; x++) {
+            AppSvcPersonnelDto appSvcPersonnelDto=null;
+            boolean getDataByOld = false;
+            boolean getPageData = false;
+            String isPartEdit = ParamUtil.getString(request, prefix + personTypeAbbr +"isPartEdit" + x);
+            if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+                getPageData = true;
+            } else if (AppConsts.YES.equals(isPartEdit)) {
+                getPageData = true;
+            } else{
+                getDataByOld = true;
+            }
+            if (getDataByOld) {
+                appSvcPersonnelDto= originalPersonnelList.get(x);
+            } else if (getPageData) {
+                appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix +personTypeAbbr, "" + x, personType);
+            }
+            personnelDtoList.add(appSvcPersonnelDto);
+        }
+        return personnelDtoList;
     }
 
 
@@ -2746,7 +2761,7 @@ public final class AppDataHelper {
     }
 
     public static List<AppSvcPrincipalOfficersDto> genAppSvcKeyAppointmentHolder(HttpServletRequest request) {
-        return genKeyPersonnels(ApplicationConsts.PERSONNEL_PSN_KAH, "", request);
+        return genKeyPersonnels(ApplicationConsts.PERSONNEL_PSN_KAH, "", request, false);
     }
 
 /*

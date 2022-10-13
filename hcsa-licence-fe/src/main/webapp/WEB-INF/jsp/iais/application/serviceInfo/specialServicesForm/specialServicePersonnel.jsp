@@ -53,6 +53,7 @@
         <div class="panel-main-content">
             <c:choose>
                 <c:when test="${psnType == ApplicationConsts.PERSONNEL_PSN_TYPE_CGO}">
+                    <%@include file="editButton.jsp" %>
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
                         <c:set var="index" value="${vs.index}" />
                         <c:set var="person" value="${personList[index]}"/>
@@ -62,6 +63,7 @@
                     </c:forEach>
                 </c:when>
                 <c:when test="${psnType == ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER}">
+                    <%@include file="editButton.jsp" %>
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
                         <c:set var="index" value="${vs.index}" />
                         <c:set var="sectionLeader" value="${personList[index]}"/>
@@ -71,6 +73,7 @@
                     </c:forEach>
                 </c:when>
                 <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE}">
+                    <%@include file="editButton.jsp" %>
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
                         <c:set var="index" value="${vs.index}"/>
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
@@ -80,6 +83,7 @@
                     </c:forEach>
                 </c:when>
                 <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER}">
+                    <%@include file="editButton.jsp" %>
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
                         <c:set var="index" value="${vs.index}" />
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
@@ -91,6 +95,7 @@
                     </c:forEach>
                 </c:when>
                 <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR}">
+                    <%@include file="editButton.jsp" %>
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
                         <c:set var="index" value="${vs.index}" />
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
@@ -102,6 +107,7 @@
                     </c:forEach>
                 </c:when>
                 <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST}">
+                    <%@include file="editButton.jsp" %>
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
                         <c:set var="index" value="${vs.index}" />
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
@@ -113,6 +119,7 @@
                     </c:forEach>
                 </c:when>
                 <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL}">
+                    <%@include file="editButton.jsp" %>
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
                         <c:set var="index" value="${vs.index}" />
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
@@ -124,6 +131,7 @@
                     </c:forEach>
                 </c:when>
                 <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM}">
+                    <%@include file="editButton.jsp" %>
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
                         <c:set var="index" value="${vs.index}" />
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
@@ -135,6 +143,7 @@
                     </c:forEach>
                 </c:when>
                 <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR}">
+                    <%@include file="editButton.jsp" %>
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
                         <c:set var="index" value="${vs.index}"/>
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
@@ -144,6 +153,7 @@
                     </c:forEach>
                 </c:when>
                 <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR}">
+                    <%@include file="editButton.jsp" %>
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
                         <c:set var="index" value="${vs.index}"/>
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
