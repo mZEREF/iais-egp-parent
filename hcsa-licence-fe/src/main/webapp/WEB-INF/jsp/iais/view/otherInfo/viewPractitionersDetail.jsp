@@ -47,8 +47,8 @@
                 (if No, please upload a copy of the Obstetrics & Gynaecology certificate and
                 From 2 at the Document page)"/>
         <iais:value width="3" cssClass="col-md-7">
-            <c:if test="${'1' == person.isMedAuthByMoh}">Yes</c:if>
-            <c:if test="${'0' == person.isMedAuthByMoh}">No</c:if>
+            <c:if test="${'1' == person.medAuthByMoh}">Yes</c:if>
+            <c:if test="${'0' == person.medAuthByMoh}">No</c:if>
         </iais:value>
 
     </iais:row>

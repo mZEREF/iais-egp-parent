@@ -21,7 +21,7 @@
                             <%@include file="viewDentalService.jsp"%>
                             <c:if test="${currentPreviewSvcInfo.serviceCode == AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE}">
                                 <%@include file="viewTop.jsp"%>
-                                <c:if test="${oldOtherInfo.provideTop eq '1'}">
+                                <c:if test="${otherInfo.provideTop eq '1'}">
                                     <c:forEach var="practitioners" items="${otherInfo.otherInfoTopPersonPractitionersList}" varStatus="status">
                                         <c:set var="oldPractitioners" value="${oldOtherInfo.otherInfoTopPersonPractitionersList[status.index]}"/>
                                         <p class="col-xs-12">Name, Professional Regn. No. and Qualification of medical practitioners authorised to perform Abortion&nbsp;
@@ -74,7 +74,7 @@
                         <c:when test="${currentPreviewSvcInfo.serviceCode == AppServicesConsts.SERVICE_CODE_AMBULATORY_SURGICAL_CENTRE}">
                             <%@include file="viewAmbulatorySurgicalCentreService.jsp"%>
                             <%@include file="viewTop.jsp"%>
-                            <c:if test="${oldOtherInfo.provideTop eq '1'}">
+                            <c:if test="${otherInfo.provideTop eq '1'}">
                                 <c:forEach var="practitioners" items="${otherInfo.otherInfoTopPersonPractitionersList}" varStatus="status">
                                     <c:set var="oldPractitioners" value="${oldOtherInfo.otherInfoTopPersonPractitionersList[status.index]}"/>
                                     <p class="col-xs-12">Name, Professional Regn. No. and Qualification of medical practitioners authorised to perform Abortion&nbsp;
@@ -122,7 +122,7 @@
                         </c:when>
                         <c:when test="${currentPreviewSvcInfo.serviceCode == AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL}">
                             <%@include file="viewTop.jsp"%>
-                            <c:if test="${oldOtherInfo.provideTop eq '1'}">
+                            <c:if test="${otherInfo.provideTop eq '1'}">
                                 <c:forEach var="practitioners" items="${otherInfo.otherInfoTopPersonPractitionersList}" varStatus="status">
                                     <c:set var="oldPractitioners" value="${oldOtherInfo.otherInfoTopPersonPractitionersList[status.index]}"/>
                                     <p class="col-xs-12">Name, Professional Regn. No. and Qualification of medical practitioners authorised to perform Abortion&nbsp;

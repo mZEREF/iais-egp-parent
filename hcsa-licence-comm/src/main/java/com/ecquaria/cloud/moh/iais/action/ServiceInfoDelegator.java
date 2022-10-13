@@ -627,6 +627,7 @@ public class ServiceInfoDelegator {
                 RfcConst.EDIT_SERVICE, isEdit, isRfi);
         AppSvcOutsouredDto appSvcOutsouredDto = currSvcInfoDto.getAppPremOutSourceLicenceDto();
         String curAct = ParamUtil.getString(request, "btnStep");
+        currSvcInfoDto.setCurAt(curAct);
         if (isGetDataFromPage) {
             //get data from page
             appSvcOutsouredDto = AppDataHelper.genAppPremOutSourceProvidersDto(curAct,appSvcOutsouredDto,request,appSubmissionDto);

@@ -1,13 +1,13 @@
 <c:forEach var="person" items="${otherInfo.otherInfoAbortDrugList}" varStatus="status">
     <c:set var="oldPerson" value="${oldOtherInfo.otherInfoAbortDrugList[status.index]}"/>
-    <c:if test="${'0' != person.appSvcOtherInfoTopDto.topType}">
+    <c:if test="${'0' != otherInfo.appSvcOtherInfoTopDto.topType}">
         <c:if test="${'1' == person.topType}">
             <p class="col-xs-12">
                 <strong>
                     TOP (BY Drug)<c:if test="${fn:length(otherInfo.otherInfoAbortDrugList)>1}">${status.index+1}</c:if>
                 </strong>
             </p>
-            <table aria-describedby="" class="col-xs-12 <c:if test="${'0' == person.appSvcOtherInfoTopDto.topType}">hidden</c:if>">
+            <table aria-describedby="" class="col-xs-12 <c:if test="${'0' == otherInfo.appSvcOtherInfoTopDto.topType}">hidden</c:if>">
                 <tr>
                     <th scope="col" style="display: none"></th>
                     <td class="col-xs-6">
@@ -63,7 +63,7 @@
                     TOP (By Surgical Procedure)&nbsp;<c:if test="${otherInfo.otherInfoAbortSurgicalProcedureList.size() > 1}">${pstatus.index+1}</c:if>
                 </strong>
             </p>
-            <table aria-describedby="" class="col-xs-12 <c:if test="${'1' == person.appSvcOtherInfoTopDto.topType}">hidden</c:if>">
+            <table aria-describedby="" class="col-xs-12 <c:if test="${'1' == otherInfo.appSvcOtherInfoTopDto.topType}">hidden</c:if>">
                 <tr>
                     <th scope="col" style="display: none"></th>
                     <td class="col-xs-6">
@@ -112,7 +112,7 @@
 
 <c:forEach var="person" items="${otherInfo.otherInfoAbortDrugAndSurgicalList}" varStatus="astatus">
     <c:set var="oldPerson" value="${oldOtherInfo.otherInfoAbortDrugList[astatus.index]}"/>
-    <c:if test="${'-1' == appSvcOtherInfoDto.appSvcOtherInfoTopDto.topType}">
+    <c:if test="${'-1' == otherInfo.appSvcOtherInfoTopDto.topType}">
         <c:if test="${'-1' == person.topType}">
             <p class="col-xs-12">
                 <strong>

@@ -1253,7 +1253,7 @@ public final class AppDataHelper {
                     AppSvcOtherInfoTopPersonDto appSvcOtherInfoTopPersonDto = new AppSvcOtherInfoTopPersonDto();
                     String profRegNo = ParamUtil.getString(request, prefix + "profRegNo" + i);
                     String regType = ParamUtil.getString(request, prefix + "regType" + i);
-                    String isMedAuthByMoh = ParamUtil.getString(request, prefix + "isMedAuthByMoh" + i);
+                    String isMedAuthByMoh = ParamUtil.getString(request, prefix + "medAuthByMoh" + i);
                     String name = ParamUtil.getString(request, prefix + "name" + i);
                     String speciality = ParamUtil.getString(request, prefix + "speciality" + i);
                     String qualification = ParamUtil.getString(request, prefix + "qualification" + i);
@@ -1263,7 +1263,7 @@ public final class AppDataHelper {
                     appSvcOtherInfoTopPersonDto.setProfRegNo(profRegNo);
                     appSvcOtherInfoTopPersonDto.setPsnType(psnType);
                     appSvcOtherInfoTopPersonDto.setRegType(regType);
-                    appSvcOtherInfoTopPersonDto.setIsMedAuthByMoh(isMedAuthByMoh);
+                    appSvcOtherInfoTopPersonDto.setMedAuthByMoh(isMedAuthByMoh);
                     appSvcOtherInfoTopPersonDto.setSeqNum(i);
                     appSvcOtherInfoTopPersonDto.setIdNo(idNo);
                     result.add(appSvcOtherInfoTopPersonDto);

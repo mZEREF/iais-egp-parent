@@ -168,15 +168,15 @@
         </td>
         <td>
             <div class="col-xs-6 ">
-                <span class="newVal" attr="${practitioners.isMedAuthByMoh}">
-                    <c:if test="${'1' == practitioners.isMedAuthByMoh}">Yes</c:if>
-                    <c:if test="${'0' == practitioners.isMedAuthByMoh}">No</c:if>
+                <span class="newVal" attr="${practitioners.medAuthByMoh}">
+                    <c:if test="${'1' == practitioners.medAuthByMoh}">Yes</c:if>
+                    <c:if test="${'0' == practitioners.medAuthByMoh}">No</c:if>
                 </span>
             </div>
             <div class="col-xs-6 ">
-                <span class=" oldVal" attr="${oldPractitioners.isMedAuthByMoh}" style="display: none">
-                     <c:if test="${'1' == oldPractitioners.isMedAuthByMoh}">Yes</c:if>
-                    <c:if test="${'0' == oldPractitioners.isMedAuthByMoh}">No</c:if>
+                <span class=" oldVal" attr="${oldPractitioners.medAuthByMoh}" style="display: none">
+                     <c:if test="${'1' == oldPractitioners.medAuthByMoh}">Yes</c:if>
+                    <c:if test="${'0' == oldPractitioners.medAuthByMoh}">No</c:if>
                 </span>
             </div>
         </td>

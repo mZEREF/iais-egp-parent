@@ -523,7 +523,6 @@
             hideTag($currContent.find('.addGeneralChargesDiv'));
         }
         $target= $currContent.find('.otherChargesEdit');
-        console.log("target:::::::::::::"+$target)
         if (!isEmptyNode($target)) {
             showTag($currContent.find('.other-remove:not(:first)'));
             refreshOtherAddBtn();

@@ -548,6 +548,15 @@ public final class AppValidatorHelper {
                     addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
                     break;
                 }
+                case HcsaConsts.STEP_OUTSOURCED_PROVIDERS: {
+                    AppSvcOutsouredDto appSvcOutsouredDto = dto.getAppPremOutSourceLicenceDto();
+                    Map<String, String> map = doValidationOutsourced(appSvcOutsouredDto,dto.getCurAt());
+                    if (!map.isEmpty()) {
+                        errorMap.putAll(map);
+                    }
+                    addErrorStep(currentStep, stepName , errorMap.size() != prevSize,errorList);
+                    break;
+                }
                 case HcsaConsts.STEP_DOCUMENTS:
                     doValidateSvcDocuments(dto.getDocumentShowDtoList(), errorMap);
                     addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);

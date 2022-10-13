@@ -67,21 +67,21 @@
             </label>
         </iais:value>
 
-        <input type="hidden" class="medAuthByMohVal" name="${prefix}medAuthByMohVal${index}" value="${person.isMedAuthByMoh}"/>
+        <input type="hidden" class="medAuthByMohVal" name="${prefix}medAuthByMohVal${index}" value="${person.medAuthByMoh}"/>
         <iais:value width="3" cssClass="form-check col-md-3">
-            <input class="form-check-input isMedAuthByMoh" <c:if test="${'1' == person.isMedAuthByMoh}">checked="checked"</c:if>  type="radio" name="${prefix}isMedAuthByMoh${index}" value = "1" aria-invalid="false">
+            <input class="form-check-input medAuthByMoh" <c:if test="${'1' == person.medAuthByMoh}">checked="checked"</c:if>  type="radio" name="${prefix}medAuthByMoh${index}" value = "1" aria-invalid="false">
             <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
         </iais:value>
 
         <iais:value width="3" cssClass="form-check col-md-3">
-            <input class="form-check-input isMedAuthByMoh" <c:if test="${'0' == person.isMedAuthByMoh}">checked="checked"</c:if>  type="radio" name="${prefix}isMedAuthByMoh${index}" value = "0" aria-invalid="false">
+            <input class="form-check-input medAuthByMoh" <c:if test="${'0' == person.medAuthByMoh}">checked="checked"</c:if>  type="radio" name="${prefix}medAuthByMoh${index}" value = "0" aria-invalid="false">
             <label class="form-check-label" ><span class="check-circle"></span>No</label>
         </iais:value>
     </iais:row>
     <iais:row cssClass="row control control-caption-horizontal">
         <iais:field width="5" cssClass="col-md-5" mandatory="" value=""/>
         <iais:value width="7" cssClass="col-md-7 col-xs-12">
-            <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}isMedAuthByMoh${index}"></span>
+            <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}medAuthByMoh${index}"></span>
         </iais:value>
     </iais:row>
 </div>

@@ -46,7 +46,7 @@
         <td>
             <div class="col-xs-6 img-show">
                 <span class="newVal " attr="${anaesthetists.idNo}">
-                    ${practitioners.idNo}
+                    ${anaesthetists.idNo}
                         <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
                             <jsp:param name="idNo" value="${anaesthetists.idNo}"/>
                             <jsp:param name="methodName" value="showThisTableNewService"/>
@@ -110,31 +110,6 @@
             <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldAnaesthetists.qualification}" style="display: none">
                      <iais:code code="${oldAnaesthetists.qualification}"></iais:code>
-                </span>
-            </div>
-        </td>
-    </tr>
-
-    <tr>
-        <th scope="col" style="display: none"></th>
-        <td class="col-xs-6">
-            <p class="form-check-label" aria-label="premise-1-cytology">
-                <span class="check-square"></span>Is the medical practitioners authorised by MOH to perform Abortion
-                (if No, please upload a copy of the Obstetrics & Gynaecology certificate and
-                From 2 at the Document page)
-            </p>
-        </td>
-        <td>
-            <div class="col-xs-6 ">
-                <span class="newVal" attr="${practitioners.isMedAuthByMoh}">
-                    <c:if test="${'1' == practitioners.isMedAuthByMoh}">Yes</c:if>
-                    <c:if test="${'0' == practitioners.isMedAuthByMoh}">No</c:if>
-                </span>
-            </div>
-            <div class="col-xs-6 ">
-                <span class=" oldVal" attr="${oldPractitioners.isMedAuthByMoh}" style="display: none">
-                     <c:if test="${'1' == oldPractitioners.isMedAuthByMoh}">Yes</c:if>
-                    <c:if test="${'0' == oldPractitioners.isMedAuthByMoh}">No</c:if>
                 </span>
             </div>
         </td>

@@ -21,7 +21,7 @@
             </div>
         </td>
     </tr>
-    <c:if test="${oldOtherInfo.provideYfVs == 1}">
+    <c:if test="${otherInfo.provideYfVs == 1}">
         <tr>
             <th scope="col" style="display: none"></th>
             <td class="col-xs-6">
