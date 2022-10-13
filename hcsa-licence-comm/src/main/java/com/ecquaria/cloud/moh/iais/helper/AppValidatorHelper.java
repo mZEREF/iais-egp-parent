@@ -2178,7 +2178,7 @@ public final class AppValidatorHelper {
             String regType = practitioners.get(i).getRegType();
             String qualification = practitioners.get(i).getQualification();
             String specialties = practitioners.get(i).getSpeciality();
-            String medAuthByMoh = practitioners.get(i).getIsMedAuthByMoh();
+            String medAuthByMoh = practitioners.get(i).getMedAuthByMoh();
 
             if (StringUtil.isEmpty(medAuthByMoh)) {
                 errMap.put(prefix+"isMedAuthByMoh" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
