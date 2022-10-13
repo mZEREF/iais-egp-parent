@@ -592,8 +592,6 @@ public class CessationFeServiceImpl implements CessationFeService {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
         HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
-        String svcId = hcsaServiceDto.getId();
-        HcsaServiceDto hcsaServiceDto1 = configCommClient.getActiveHcsaServiceDtoById(svcId).getEntity();
         String svcCode = hcsaServiceDto.getSvcCode();
         //get the base service id
         LicenceDto licenceDto = new LicenceDto();
@@ -603,9 +601,9 @@ public class CessationFeServiceImpl implements CessationFeService {
         log.info(StringUtil.changeForLog("The serviceName is -->:"+serviceName));
         String baseServiceId = requestForChangeService.baseSpecLicenceRelation(licenceDto,false);
         log.info(StringUtil.changeForLog("The baseServiceId is -->:"+baseServiceId));
-        appSvcRelatedInfoDtoList.get(0).setServiceId(hcsaServiceDto1.getId());
+        appSvcRelatedInfoDtoList.get(0).setServiceId(hcsaServiceDto.getId());
         appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
-        appSvcRelatedInfoDtoList.get(0).setServiceName(hcsaServiceDto.getSvcName());
+        appSvcRelatedInfoDtoList.get(0).setServiceName(serviceName);
         appSvcRelatedInfoDtoList.get(0).setBaseServiceId(baseServiceId);
 
         appSubmissionDto.setAppGrpNo(grpNo);
