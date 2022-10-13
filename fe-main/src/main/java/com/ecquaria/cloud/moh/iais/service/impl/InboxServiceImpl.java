@@ -42,16 +42,17 @@ import com.ecquaria.cloud.moh.iais.service.client.FeUserClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -252,23 +253,30 @@ public class InboxServiceImpl implements InboxService {
     public Map<String,String> checkRenewalStatus(String licenceId) {
         log.info(StringUtil.changeForLog("----------checkRenewalStatus licenceId : " + licenceId));
         LicenceDto licenceDto = licenceInboxClient.getLicDtoById(licenceId).getEntity();
-        Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+        return checkRenewalStatus(licenceDto);
+    }
+
+    @Override
+    public Map<String, String> checkRenewalStatus(LicenceDto licenceDto) {
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String errorMsgEleven = MessageUtil.getMessageDesc("INBOX_ACK011");
-        if(licenceDto != null){
-            String licenceStatus = licenceDto.getStatus();
-            if(!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceStatus)){
-                if(!(IaisEGPHelper.isActiveMigrated()&&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceStatus)&&licenceDto.getMigrated()!=0)){
-                    errorMap.put("errorMessage2",errorMsgEleven);
-                }
-            }
-        }else{
-            errorMap.put("errorMessage2",errorMsgEleven);
+        if (licenceDto == null) {
+            errorMap.put("errorMessage2", errorMsgEleven);
             return errorMap;
+        }
+        String licenceId = licenceDto.getId();
+        String licenceStatus = licenceDto.getStatus();
+        if (!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceStatus)) {
+            if (!(IaisEGPHelper.isActiveMigrated() && licenceDto.getMigrated() != 0
+                    && ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceStatus))) {
+                errorMap.put("errorMessage2", errorMsgEleven);
+                return errorMap;
+            }
         }
         List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
         List<String> finalStatusList = IaisCommonUtils.getAppFinalStatus();
         boolean hasError = false;
-        if(!IaisCommonUtils.isEmpty(apps)) {
+        if (!IaisCommonUtils.isEmpty(apps)) {
             List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
             for (ApplicationDto app : apps) {
                 String status = app.getStatus();
@@ -298,34 +306,37 @@ public class InboxServiceImpl implements InboxService {
                 }
             }
         }
+        if (!errorMap.isEmpty()) {
+            return errorMap;
+        }
         //appeal
         Boolean appealFlag = appInboxClient.isLiscenceAppealOrCessation(licenceId).getEntity();
-        if(!appealFlag){
+        if (!appealFlag) {
             String errorMsg = MessageUtil.getMessageDesc("INBOX_ACK010");
-            errorMap.put("errorMessage2",errorMsg);
+            errorMap.put("errorMessage2", errorMsg);
         }
         //Verify whether the new licence is generated
         LicenceDto entity = licenceInboxClient.getRootLicenceDtoByOrgId(licenceId).getEntity();
-        if(entity != null){
+        if (entity != null) {
             boolean isRenewApp = false;
             apps = appInboxClient.getAppByLicIdAndExcludeNew(entity.getId()).getEntity();
-            if(IaisCommonUtils.isNotEmpty(apps)){
+            if (IaisCommonUtils.isNotEmpty(apps)) {
                 log.info(StringUtil.changeForLog("----------checkRenewalStatus json : " + JsonUtil.parseToJson(apps)));
                 for (ApplicationDto a : apps) {
-                    if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(a.getApplicationType())
+                    if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(a.getApplicationType())
                             && !ApplicationConsts.APPLICATION_STATUS_REJECTED.equalsIgnoreCase(a.getStatus())
                             && !ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(a.getStatus())
-                            && !ApplicationConsts.APPLICATION_STATUS_DELETED.equals(a.getStatus())){
+                            && !ApplicationConsts.APPLICATION_STATUS_DELETED.equals(a.getStatus())) {
                         isRenewApp = true;
                         break;
                     }
                 }
             }
-            if(isRenewApp){
+            if (isRenewApp) {
                 String errorMsg = MessageUtil.getMessageDesc("INBOX_ACK013");
-                errorMap.put("errorMessage2",errorMsg);
-            }else {
-                errorMap.put("errorMessage",licenceDto.getLicenceNo());
+                errorMap.put("errorMessage2", errorMsg);
+            } else {
+                errorMap.put("errorMessage", licenceDto.getLicenceNo());
             }
         }
         //check expiry date
@@ -337,17 +348,12 @@ public class InboxServiceImpl implements InboxService {
         endCalendar.setTime(expiryDate);
 
         //licence expiry date  day - 6 months
-        endCalendar.add(Calendar.MONTH,-6);
+        endCalendar.add(Calendar.MONTH, -6);
 
         Date firstStartRenewTime = endCalendar.getTime();
-        if(!(nowDate.after(firstStartRenewTime) && nowDate.before(expiryDate))){
-            errorMap.put("errorMessage",licenceDto.getLicenceNo());
+        if (!(nowDate.after(firstStartRenewTime) && nowDate.before(expiryDate))) {
+            errorMap.put("errorMessage", licenceDto.getLicenceNo());
         }
-
-//        int daysBetween = MiscUtil.getDaysBetween(startCalendar,endCalendar);
-//        if(nowDate.before(expiryDate) && daysBetween > 180){
-//            errorMap.put("errorMessage",licenceDto.getLicenceNo());
-//        }
         log.info(StringUtil.changeForLog(" ----------checkRenewalStatus errorMap :" + JsonUtil.parseToJson(errorMap)));
         return errorMap;
     }
@@ -673,5 +679,14 @@ public class InboxServiceImpl implements InboxService {
             return 0;
         }
         return licenceInboxClient.dssDraftNum(interMessageSearchDto).getEntity();
+    }
+
+    @Override
+    public List<LicenceDto> getAllBundleLicences(List<String> licIds) {
+        log.info(StringUtil.changeForLog("Lic Ids: " + licIds));
+        if (IaisCommonUtils.isEmpty(licIds)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        return licenceInboxClient.getAllBundleLicences(licIds).getEntity();
     }
 }

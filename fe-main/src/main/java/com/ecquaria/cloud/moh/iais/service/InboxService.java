@@ -6,11 +6,17 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.*;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxMsgMaskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageSearchDto;
 
 import java.util.List;
 import java.util.Map;
@@ -36,7 +42,11 @@ public interface InboxService {
     Boolean canRecallApplication(RecallApplicationDto recallApplicationDto);
     List<RecallApplicationDto> canRecallApplications(List<RecallApplicationDto> recallApplicationDtos);
     RecallApplicationDto recallApplication(RecallApplicationDto recallApplicationDto);
-    public Map<String,String> checkRenewalStatus(String licenceId);
+
+    Map<String, String> checkRenewalStatus(String licenceId);
+
+    Map<String, String> checkRenewalStatus(LicenceDto licenceDto);
+
     void updateMsgStatusTo(String msgId,String msgStatus);
     Boolean checkEligibility(String appId);
     List<InboxMsgMaskDto> getInboxMaskEntity(String msgId);
@@ -55,4 +65,7 @@ public interface InboxService {
     Map<String,Boolean> getMapCanInsp();
     Integer dssDraftNum(InterMessageSearchDto interMessageSearchDto);
     void recallAppTasksEic(String jsonData);
+
+    List<LicenceDto> getAllBundleLicences(List<String> licIds);
+
 }

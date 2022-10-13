@@ -630,6 +630,7 @@ public class ServiceMenuDelegator {
                 appLicBundleDto.setSvcCode(baseServiceDto.getSvcCode());
                 appLicBundleDto.setLicenceId(checkData.getLicenceId());
                 appLicBundleDto.setPremisesId(checkData.getPremisesId());
+                appLicBundleDto.setPremisesType(checkData.getPremisesType());
                 appLicBundleDto.setLicOrApp(true);
                 appLicBundleDtoList.add(appLicBundleDto);
                 licenceId=checkData.getLicenceId();
@@ -649,6 +650,7 @@ public class ServiceMenuDelegator {
                 appLicBundleDto.setSvcCode(baseServiceDto.getSvcCode());
                 appLicBundleDto.setApplicationNo(checkData.getApplicationNo());
                 appLicBundleDto.setPremisesId(checkData.getPremisesId());
+                appLicBundleDto.setPremisesType(checkData.getPremisesType());
                 appLicBundleDto.setLicOrApp(false);
                 appLicBundleDtoList.add(appLicBundleDto);
                 applicationNo=checkData.getApplicationNo();
