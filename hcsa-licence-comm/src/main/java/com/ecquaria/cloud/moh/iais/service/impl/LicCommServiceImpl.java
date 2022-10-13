@@ -417,24 +417,24 @@ public class LicCommServiceImpl implements LicCommService {
             List<String> personnelEditList = IaisCommonUtils.genNewArrayList();
             AppSvcRelatedInfoDto appSvcRelatedInfoDto2 = appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0);
             if (!list1.isEmpty()) {
-                RfcHelper.reSetPersonnels(appSvcRelatedInfoDto, appSvcRelatedInfoDto2,
+                RfcHelper.syncKeyPersonnel(appSvcRelatedInfoDto, appSvcRelatedInfoDto2,
                         ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, personnelEditList);
             }
             if (!list2.isEmpty()) {
-                RfcHelper.reSetPersonnels(appSvcRelatedInfoDto, appSvcRelatedInfoDto2,
+                RfcHelper.syncKeyPersonnel(appSvcRelatedInfoDto, appSvcRelatedInfoDto2,
                         ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, personnelEditList);
             }
             if (!list3.isEmpty()) {
-                RfcHelper.reSetPersonnels(appSvcRelatedInfoDto, appSvcRelatedInfoDto2,
+                RfcHelper.syncKeyPersonnel(appSvcRelatedInfoDto, appSvcRelatedInfoDto2,
                         ApplicationConsts.PERSONNEL_PSN_TYPE_PO, personnelEditList);
             }
             if (!list4.isEmpty()) {
-                RfcHelper.reSetPersonnels(appSvcRelatedInfoDto, appSvcRelatedInfoDto2,
+                RfcHelper.syncKeyPersonnel(appSvcRelatedInfoDto, appSvcRelatedInfoDto2,
                         ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR, personnelEditList);
             }
             // KAH
             if (!list5.isEmpty()) {
-                RfcHelper.reSetPersonnels(appSvcRelatedInfoDto, appSvcRelatedInfoDto2,
+                RfcHelper.syncKeyPersonnel(appSvcRelatedInfoDto, appSvcRelatedInfoDto2,
                         ApplicationConsts.PERSONNEL_PSN_KAH, personnelEditList);
             }
             appEditSelectDto.setPersonnelEditList(personnelEditList);

@@ -33,7 +33,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeO
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ReflectionUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
@@ -43,17 +42,10 @@ import com.ecquaria.cloud.moh.iais.util.PageDataCopyUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
@@ -118,9 +110,12 @@ public final class RfcHelper {
         }
         appEditSelectDto.setSpecialisedEdit(changeSpecialised);
         // service related info
-        boolean changePersonnel = isChangeKeyPersonnel(appSubmissionDto, oldAppSubmissionDto);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtos = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
+        List<String> autoList = IaisCommonUtils.genNewArrayList();
+        List<String> nonAutoList = IaisCommonUtils.genNewArrayList();
+        // key personnel
+        boolean changePersonnel = isChangeKeyPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, nonAutoList);
         int changeVehiclesFields = isChangeAppSvcVehicleDtos(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos);
         boolean changeVehicles = changeVehiclesFields != RfcConst.RFC_BASE;
         if (changeVehicles) {
@@ -768,6 +763,28 @@ public final class RfcHelper {
         return !isChanged;
     }
 
+    private static boolean isChangeKeyPersonnel(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList,
+            List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList, List<String> personnelList) {
+        if (appSvcRelatedInfoDtoList == null && oldAppSvcRelatedInfoDtoList == null) {
+            return false;
+        } else if (appSvcRelatedInfoDtoList == null ^ oldAppSvcRelatedInfoDtoList == null) {
+            return true;
+        }
+        if (appSvcRelatedInfoDtoList.size() != oldAppSvcRelatedInfoDtoList.size()) {
+            return true;
+        }
+        boolean isChanged = false;
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSvcRelatedInfoDtoList.get(0);
+        AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSvcRelatedInfoDtoList.get(0);
+        for (String psnType : IaisCommonUtils.getKeyPersonnel()) {
+            if (isChangeKeyPersonnel(appSvcRelatedInfoDto, oldAppSvcRelatedInfoDto, psnType, true)) {
+                isChanged = true;
+                personnelList.add(psnType);
+            }
+        }
+        return !isChanged;
+    }
+
     private static boolean isChangeKeyPersonnel(AppSvcRelatedInfoDto appSvcRelatedInfoDto,
             AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto, String psnType, boolean onlyCheckAddRemoval) {
         List<AppSvcPrincipalOfficersDto> newList = ApplicationHelper.getKeyPersonnel(psnType, appSvcRelatedInfoDto);
@@ -777,8 +794,12 @@ public final class RfcHelper {
 
     private static boolean isChangeKeyPersonnel(List<AppSvcPrincipalOfficersDto> newList, List<AppSvcPrincipalOfficersDto> oldList,
             boolean onlyCheckAddRemoval) {
-        return isChangedList(newList, oldList, list -> PageDataCopyUtil.copyKeyPersonnel(list, onlyCheckAddRemoval ? 1 : 0),
-                (dto, list) -> list.stream().anyMatch(obj -> Objects.equals(dto, obj)));
+        int status = isChangedList(newList, oldList, list -> PageDataCopyUtil.copyKeyPersonnel(list, onlyCheckAddRemoval ? 1 : 0),
+                (dto, list) -> list.stream()
+                        .filter(obj -> Objects.equals(dto.getAssignSelect(), obj.getAssignSelect()))
+                        .findAny().orElse(null),
+                (dto1, dto2) -> Objects.equals(dto1, dto2));
+        return status != RfcConst.STATUS_UNCHANGED;
     }
 
     public static boolean isChangeAppSvcSectionLeadersViaSvcInfo(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos,
@@ -850,37 +871,23 @@ public final class RfcHelper {
                 PageDataCopyUtil.copyKeyPersonnel(target, 2));
     }
 
-    public static void reSetPersonnels(AppSvcRelatedInfoDto sourceReletedInfo, AppSvcRelatedInfoDto targetReletedInfo, String psnType,
+    public static void syncKeyPersonnel(AppSvcRelatedInfoDto sourceReletedInfo, AppSvcRelatedInfoDto targetReletedInfo, String psnType,
             List<String> personnelEditList) {
         if (sourceReletedInfo == null || targetReletedInfo == null) {
             return;
         }
         log.info(StringUtil.changeForLog("Re-set personnel affected by " + psnType));
-        List<AppSvcPrincipalOfficersDto> sourceList = null;
-        if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)) {
-            sourceList = sourceReletedInfo.getAppSvcCgoDtoList();
-        } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnType)) {
-            sourceList = sourceReletedInfo.getAppSvcMedAlertPersonList();
-        } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType)) {
-            sourceList = sourceReletedInfo.getAppSvcPrincipalOfficersDtoList();
-        } else if (ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType)) {
-            sourceList = sourceReletedInfo.getAppSvcClinicalDirectorDtoList();
-        } else if (ApplicationConsts.PERSONNEL_PSN_KAH.equals(psnType)) {
-            sourceList = sourceReletedInfo.getAppSvcKeyAppointmentHolderDtoList();
+        List<AppSvcPrincipalOfficersDto> sourceList = ApplicationHelper.getKeyPersonnel(psnType, sourceReletedInfo);
+        if (IaisCommonUtils.isEmpty(sourceList)) {
+            return;
         }
-        reSetPersonnels(sourceList, targetReletedInfo.getAppSvcCgoDtoList(), psnType,
-                ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, personnelEditList);
-        reSetPersonnels(sourceList, targetReletedInfo.getAppSvcMedAlertPersonList(), psnType,
-                ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, personnelEditList);
-        reSetPersonnels(sourceList, targetReletedInfo.getAppSvcPrincipalOfficersDtoList(), psnType,
-                ApplicationConsts.PERSONNEL_PSN_TYPE_PO, personnelEditList);
-        reSetPersonnels(sourceList, targetReletedInfo.getAppSvcClinicalDirectorDtoList(), psnType,
-                ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR, personnelEditList);
-        reSetPersonnels(sourceList, targetReletedInfo.getAppSvcKeyAppointmentHolderDtoList(), psnType,
-                ApplicationConsts.PERSONNEL_PSN_KAH, personnelEditList);
+        for (String tarPsnType : IaisCommonUtils.getKeyPersonnel()) {
+            List<AppSvcPrincipalOfficersDto> targetList = ApplicationHelper.getKeyPersonnel(tarPsnType, targetReletedInfo);
+            syncKeyPersonnel(sourceList, targetList, psnType, tarPsnType, personnelEditList);
+        }
     }
 
-    private static void reSetPersonnels(List<AppSvcPrincipalOfficersDto> sourceList, List<AppSvcPrincipalOfficersDto> targetList,
+    private static void syncKeyPersonnel(List<AppSvcPrincipalOfficersDto> sourceList, List<AppSvcPrincipalOfficersDto> targetList,
             String sourcePsnType, String psnType, List<String> personnelEditList) {
         if (sourceList == null || targetList == null || StringUtil.isEmpty(sourcePsnType)) {
             return;
@@ -1039,15 +1046,16 @@ public final class RfcHelper {
                 /*List<AppSvcDocDto> oldASvcDocDtoLit = oldSvcInfoDto.getAppSvcDocDtoLit();
                 List<AppSvcDocDto> appSvcDocDtoLit = newDto.getAppSvcDocDtoLit();*/
             } else if (HcsaConsts.STEP_PRINCIPAL_OFFICERS.equals(step)) {
-                reSetPersonnels(oldSvcInfoDto, newDto, step, changeList.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_PO));
+                reSetPersonnels(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_TYPE_PO, changeList);
+                reSetPersonnels(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, changeList);
             } else if (HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS.equals(step)) {
-                reSetPersonnels(oldSvcInfoDto, newDto, step, changeList.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO));
+                reSetPersonnels(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, changeList);
             } else if (HcsaConsts.STEP_CLINICAL_DIRECTOR.equals(step)) {
-                reSetPersonnels(oldSvcInfoDto, newDto, step, changeList.contains(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR));
+                reSetPersonnels(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR, changeList);
             } else if (HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER.equals(step)) {
-                reSetPersonnels(oldSvcInfoDto, newDto, step, changeList.contains(ApplicationConsts.PERSONNEL_PSN_KAH));
+                reSetPersonnels(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_KAH, changeList);
             } else if (HcsaConsts.MEDALERT_PERSON.equals(step)) {
-                reSetPersonnels(oldSvcInfoDto, newDto, step, changeList.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP));
+                reSetPersonnels(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, changeList);
             }
         }
         List<AppSvcRelatedInfoDto> result = IaisCommonUtils.genNewArrayList(1);
@@ -1055,31 +1063,12 @@ public final class RfcHelper {
         return result;
     }
 
-    private static void reSetPersonnels(AppSvcRelatedInfoDto sourceReletedInfo, AppSvcRelatedInfoDto targetReletedInfo, String step,
-            boolean isChanged) {
-        List<AppSvcPrincipalOfficersDto> psnList = null;
-        List<AppSvcPrincipalOfficersDto> newList = null;
-        if (HcsaConsts.STEP_PRINCIPAL_OFFICERS.equals(step)) {
-            psnList = (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObjectList(
-                    sourceReletedInfo.getAppSvcPrincipalOfficersDtoList());
-            newList = targetReletedInfo.getAppSvcPrincipalOfficersDtoList();
-        } else if (HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS.equals(step)) {
-            psnList = (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObjectList(
-                    sourceReletedInfo.getAppSvcCgoDtoList());
-            newList = targetReletedInfo.getAppSvcCgoDtoList();
-        } else if (HcsaConsts.STEP_CLINICAL_DIRECTOR.equals(step)) {
-            psnList = (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObjectList(
-                    sourceReletedInfo.getAppSvcClinicalDirectorDtoList());
-            newList = targetReletedInfo.getAppSvcClinicalDirectorDtoList();
-        } else if (HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER.equals(step)) {
-            psnList = (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObjectList(
-                    sourceReletedInfo.getAppSvcKeyAppointmentHolderDtoList());
-            newList = targetReletedInfo.getAppSvcKeyAppointmentHolderDtoList();
-        } else if (HcsaConsts.STEP_MEDALERT_PERSON.equals(step)) {
-            psnList = (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObjectList(
-                    sourceReletedInfo.getAppSvcMedAlertPersonList());
-            newList = targetReletedInfo.getAppSvcMedAlertPersonList();
-        }
+    private static void reSetPersonnels(AppSvcRelatedInfoDto sourceReletedInfo, AppSvcRelatedInfoDto targetReletedInfo, String psnType,
+            List<String> changeList) {
+        List<AppSvcPrincipalOfficersDto> psnList = (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObjectList(
+                ApplicationHelper.getKeyPersonnel(psnType, sourceReletedInfo));
+        List<AppSvcPrincipalOfficersDto> newList = ApplicationHelper.getKeyPersonnel(psnType, targetReletedInfo);
+        boolean isChanged = changeList.contains(psnType);
         if (isChanged && psnList != null && newList != null) {
             for (int i = 0, len = psnList.size(); i < len; i++) {
                 AppSvcPrincipalOfficersDto psnDto = psnList.get(i);
@@ -1091,17 +1080,7 @@ public final class RfcHelper {
                 }
             }
         }
-        if (HcsaConsts.STEP_PRINCIPAL_OFFICERS.equals(step)) {
-            targetReletedInfo.setAppSvcPrincipalOfficersDtoList(psnList);
-        } else if (HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS.equals(step)) {
-            targetReletedInfo.setAppSvcCgoDtoList(psnList);
-        } else if (HcsaConsts.STEP_CLINICAL_DIRECTOR.equals(step)) {
-            targetReletedInfo.setAppSvcClinicalDirectorDtoList(psnList);
-        } else if (HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER.equals(step)) {
-            targetReletedInfo.setAppSvcKeyAppointmentHolderDtoList(psnList);
-        } else if (HcsaConsts.STEP_MEDALERT_PERSON.equals(step)) {
-            targetReletedInfo.setAppSvcMedAlertPersonList(psnList);
-        }
+        ApplicationHelper.setKeyPersonnel(psnList, psnType, targetReletedInfo);
     }
 
     public static void setRiskToDto(AppSubmissionDto appSubmissionDto) {
@@ -1346,6 +1325,49 @@ public final class RfcHelper {
         }
         return oldSrc.stream()
                 .noneMatch(t -> check.test(t, src));
+    }
+
+    /**
+     *
+     * @param source
+     * @param oldSource
+     * @param newFun
+     * @param target
+     * @param check
+     * @param <T>
+     * @return
+     */
+    public static <T> int isChangedList(List<T> source, List<T> oldSource, Function<List<T>, List<T>> newFun,
+            BiFunction<T, List<T>, T> target, BiPredicate<T, T> check) {
+            int status = RfcConst.STATUS_UNCHANGED;
+        if (source == null && oldSource == null) {
+            return status;
+        }
+        if (source == null) {
+            return status | RfcConst.STATUS_REMOVAL;
+        }
+        if (oldSource == null) {
+            return status | RfcConst.STATUS_ADDITION;
+        }
+        List<T> newList = newFun != null ? newFun.apply(source) : source;
+        List<T> oldList = newFun != null ? newFun.apply(oldSource) : oldSource;
+        for (T t : newList) {
+            T u = target.apply(t, oldList);
+            if (u == null) {
+                status |= RfcConst.STATUS_ADDITION;
+            } else if (!check.test(t, u)) {
+                status |= RfcConst.STATUS_CHANGED;
+            }
+        }
+        for (T t : oldList) {
+            T u = target.apply(t, newList);
+            if (u == null) {
+                status |= RfcConst.STATUS_REMOVAL;
+            } else if (!check.test(t, u)) {
+                status |= RfcConst.STATUS_CHANGED;
+            }
+        }
+        return status;
     }
 
 }
