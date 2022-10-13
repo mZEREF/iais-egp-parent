@@ -34,6 +34,7 @@ public class EfoDtoValidator implements CustomizeValidator {
         String reason = efoCycleStageDto.getReason();
         String othersReason = efoCycleStageDto.getOtherReason();
         String cryopresNum = ParamUtil.getString(httpServletRequest,"cryopresNum");
+        String others = ParamUtil.getString(httpServletRequest, "others");
 
 
         if (!StringUtil.isEmpty(sDate) ) {
@@ -46,6 +47,13 @@ public class EfoDtoValidator implements CustomizeValidator {
         if (StringUtil.isEmpty(cryopresNum)) {
             String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","No.Cryopreserved", "field");
             errorMap.put("cryopresNum", errMsg);
+        }
+
+        if ("0".equals(cryopresNum) && StringUtil.isEmpty(others)) {
+            if (StringUtil.isEmpty(others)) {
+                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","others", "field");
+                errorMap.put("others", errMsg);
+            }
         }
 
         if(efoCycleStageDto.getIsMedicallyIndicated()==1){

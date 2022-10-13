@@ -92,6 +92,10 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         if (cryopresNum != null) {
             efoCycleStageDto.setCryopresNum(Integer.parseInt(cryopresNum));
         }
+        if (efoCycleStageDto.getCryopresNum() == 0) {
+            String others = ParamUtil.getRequestString(request, "others");
+            efoCycleStageDto.setOthers(others);
+        }
         efoCycleStageDto.setStartDate(startDate);
         efoCycleStageDto.setIsMedicallyIndicated(indicated);
         if(indicated==1){
