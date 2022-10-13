@@ -1,1 +1,0 @@
-<%@include file = "/WEB-INF/jsp/iais/submissionData/transferNotification/previewSubmit.jsp"%>

@@ -1,1 +1,0 @@
-<%@include file="/WEB-INF/jsp/iais/processDeRegistration/doProcessingPage.jsp"%>

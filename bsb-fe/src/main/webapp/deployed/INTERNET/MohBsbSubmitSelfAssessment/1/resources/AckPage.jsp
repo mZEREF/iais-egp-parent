@@ -1,1 +1,0 @@
-<%@include file="/WEB-INF/jsp/iais/inspection/assessment/ackSubmitSelfAccessment.jsp"%>
