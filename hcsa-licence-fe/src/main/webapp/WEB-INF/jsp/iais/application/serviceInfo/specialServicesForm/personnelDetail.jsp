@@ -7,6 +7,19 @@
     <input type="hidden" class="not-refresh indexNo" name="${prepsn}indexNo" value="${person.indexNo}"/>
     <input type="hidden" class="not-refresh psnEditField" name="${prepsn}psnEditField" value="<c:out value="${person.psnEditFieldStr}" />"/>
     <iais:row>
+        <div class="col-md-12 col-xs-12 edit-content">
+            <c:if test="${'true' == canEdit}">
+                <input type="hidden" class="isPartEdit" name="${status.index}isPartEdit${index}" value="0"/>
+                <div class="text-right app-font-size-16">
+                    <a class="edit" href="javascript:void(0);">
+                        <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
+                    </a>
+                </div>
+            </c:if>
+        </div>
+    </iais:row>
+
+    <iais:row>
         <div class="col-xs-12 col-md-6">
             <p class="bold">${title} <label class="assign-psn-item">${index+1}</label></p>
             <p><span class="error-msg" name="iaisErrorMSg" id="error_${prepsn}personError${index}"></span></p>

@@ -15,7 +15,7 @@
         <c:if test="${AppSubmissionDto.needEditController}">
             disabledPage();
         </c:if>
-        $('div.panel-main-content').each(function (k, v) {
+        $('div.personnel-content').each(function (k, v) {
             if ($("#errorMapIs").val() == 'error') {
                 $(v).find('.error-msg').on('DOMNodeInserted', function () {
                     if ($(this).not(':empty')) {
@@ -30,7 +30,7 @@
 
     var doEdit = function () {
         $('a.edit').click(function () {
-            var $currContent = $(this).closest('div.panel-main-content');
+            var $currContent = $(this).closest('.personnel-content');
             $currContent.find('input.isPartEdit').val('1');
             unDisableContent($currContent);
             $('#isEditHiddenVal').val('1');
@@ -102,6 +102,7 @@
         $currContent.find('input.isPartEdit').val('1');
         $('#isEditHiddenVal').val('1');
         hideTag($currContent.find('.rfc-psn-detail'));
+        hideTag($currContent.find('.edit-content'));
         showTag($currContent.find('.assignSelDiv'));
         unDisabledPartPage($currContent);
         var length =  $target.find('div.personnel-content').length;
