@@ -206,4 +206,7 @@ public interface LicenceInboxClient {
 
     @PutMapping(value = "lic-common/update-status-ds-center", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<DsCenterDto>> updateBeDsCenterStatus();
+
+    @GetMapping(value="/lic-common/bundle-licences", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<LicenceDto>> getAllBundleLicences(@RequestParam(name="licIds") List<String> licIds);
 }

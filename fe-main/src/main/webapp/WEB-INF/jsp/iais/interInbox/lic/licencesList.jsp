@@ -306,8 +306,9 @@
         doLicRenew();
     }
     function bundleNo(){
-        $('#bundle').val('no');
-        doLicRenew();
+        // $('#bundle').val('no');
+        // doLicRenew();
+        $('#bundleShow').modal('hide');
     }
     $('#lic-renew').click(function () {
         doLicRenew();

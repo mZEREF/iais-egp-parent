@@ -425,4 +425,10 @@ public class LicenceInboxFallback implements LicenceInboxClient {
     public FeignResponseEntity<List<DsCenterDto>> updateBeDsCenterStatus() {
         return getEntity();
     }
+
+    @Override
+    public FeignResponseEntity<List<LicenceDto>> getAllBundleLicences(List<String> licIds) {
+        return IaisEGPHelper.getFeignResponseEntity(licIds);
+    }
+
 }
