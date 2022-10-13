@@ -787,7 +787,7 @@ public final class AppDataHelper {
         AppPremGroupOutsourcedDto appPremGroupOutsourcedDto = new AppPremGroupOutsourcedDto();
         AppPremOutSourceLicenceDto appPremOutSourceLicenceDto = new AppPremOutSourceLicenceDto();
         appPremOutSourceLicenceDto.setId(row.getId());
-        appPremOutSourceLicenceDto.setServiceCode(row.getSvcName());
+        appPremOutSourceLicenceDto.setServiceCode(HcsaServiceCacheHelper.getServiceByServiceName(row.getSvcName()).getSvcCode());
         appPremOutSourceLicenceDto.setLicenceNo(row.getLicenceNo());
         appPremGroupOutsourcedDto.setBusinessName(row.getBusinessName());
         appPremGroupOutsourcedDto.setAddress(row.getAddress());
