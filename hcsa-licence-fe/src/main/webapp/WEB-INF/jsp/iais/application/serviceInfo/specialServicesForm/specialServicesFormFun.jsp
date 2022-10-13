@@ -6,11 +6,37 @@
     $(function () {
         let psnContent = '.${psnContent}';
         profRegNoEvent(psnContent);
+        psnEditEvent(psnContent);
+        doEdit();
         assignSelectEvent();
         removePersonnelEvent();
         personnelSel();
         initPerson($('div.panel-main-content'));
+        <c:if test="${AppSubmissionDto.needEditController}">
+            disabledPage();
+        </c:if>
+        $('div.panel-main-content').each(function (k, v) {
+            if ($("#errorMapIs").val() == 'error') {
+                $(v).find('.error-msg').on('DOMNodeInserted', function () {
+                    if ($(this).not(':empty')) {
+                        $(v).find('.isPartEdit').val(1);
+                        $('#isEditHiddenVal').val('1');
+                        $(v).find('a.edit').trigger('click');
+                    }
+                });
+            }
+        });
     });
+
+    var doEdit = function () {
+        $('a.edit').click(function () {
+            var $currContent = $(this).closest('div.panel-main-content');
+            $currContent.find('input.isPartEdit').val('1');
+            unDisableContent($currContent);
+            $('#isEditHiddenVal').val('1');
+            hideTag($currContent.find('a.edit'));
+        });
+    }
 
     function initPerson(target) {
         var $target = $(target);
@@ -72,6 +98,12 @@
         checkPersonContent($currContent, true);
         personnelSel();
         personnelSelFun('',$currContent,'');
+        unDisableContent($currContent.find('.assignSelDiv'));
+        $currContent.find('input.isPartEdit').val('1');
+        $('#isEditHiddenVal').val('1');
+        hideTag($currContent.find('.rfc-psn-detail'));
+        showTag($currContent.find('.assignSelDiv'));
+        unDisabledPartPage($currContent);
         var length =  $target.find('div.personnel-content').length;
         if(length >= maxCount){
             $target.find('.addDiv').addClass('hidden');
@@ -89,7 +121,12 @@
             let $currContent = $Content.find('div.personnel-content');
             $currContent.each(function (k, v) {
                 refreshPerson($(v), k);
+                var isPartEdit = $currContent.find('input.isPartEdit').val();
+                if(isPartEdit==0){
+                    disabledPartPage($currContent);
+                }
             });
+            $('#isEditHiddenVal').val('1');
             if ($currContent.length == 1) {
                 $currContent.find('.assign-psn-item').html('');
             }
@@ -212,7 +249,7 @@
             return;
         }
         var prefix = $currContent.find('.prepsn').val();
-        var subfix=$currContent.index();
+        var subfix=$currContent.index()-1;
         fillFormData($content, data, prefix, subfix, ['psnEditDto']);
         $currContent.find('.speciality p').html(data.speciality);
         $currContent.find('.subSpeciality p').html(data.subSpeciality);
@@ -258,5 +295,16 @@
                 $personnelContentEle.find('.personnel-wrkExpYear').removeClass('hidden');
             }
         }
+    }
+
+    var psnEditEvent = function (target) {
+        var $target = $(target);
+        if (isEmptyNode($target)) {
+            return;
+        }
+        $target.find('.psnEdit').unbind('click');
+        $target.find('.psnEdit').on('click', function () {
+            doEditPsn($(this).closest(target), target);
+        });
     }
 </script>

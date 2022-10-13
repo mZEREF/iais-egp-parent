@@ -1,6 +1,8 @@
 <div class="personnel-content">
     <c:set var="isNIC" value="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE}"/>
     <input type="hidden" class="not-refresh prepsn" name="${psnContent}" value="${prefix}"/>
+    <input type="hidden" class="not-refresh specialPerson" value="1"/>
+    <input type="hidden" class="isPartEdit" name="${prefix}isPartEdit${index}" value="0"/>
     <iais:row>
         <div class="col-xs-12 col-md-6">
             <p class="bold">${title} <label class="assign-psn-item">${index+1}</label></p>
@@ -13,19 +15,6 @@
         </div>
     </iais:row>
 
-    <iais:row>
-        <div class="col-md-12 col-xs-12 edit-content">
-            <c:if test="${'true' == canEdit}">
-                <input type="hidden" class="isPartEdit" name="${status.index}isPartEdit${index}" value="0"/>
-                <div class="text-right app-font-size-16">
-                    <a class="edit" href="javascript:void(0);">
-                        <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
-                    </a>
-                </div>
-            </c:if>
-        </div>
-    </iais:row>
-    <%--    --%>
     <input type="hidden" name="isPartEdit" value="0"/>
     <%--    name--%>
     <iais:row>

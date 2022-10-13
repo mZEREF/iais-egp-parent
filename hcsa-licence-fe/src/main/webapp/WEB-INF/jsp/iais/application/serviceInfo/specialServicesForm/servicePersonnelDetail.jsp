@@ -1,5 +1,6 @@
 <div class="personnel-content">
     <input type="hidden"  class="personTypeToShow not-clear" name="${prefix}personTypeToShow${index}" value="${personTypeToShow}"/>
+    <input type="hidden" class="isPartEdit" name="${prefix}isPartEdit${index}" value="0"/>
     <iais:row cssClass="personnel-header">
         <div class="col-xs-12 col-md-6">
             <p class="bold">${title} <label class="assign-psn-item">${index+1}</label></p>
@@ -10,15 +11,6 @@
                 <em class="fa fa-times-circle del-size-36 removeBtns cursorPointer"></em>
             </h4>
         </div>
-    </iais:row>
-    <iais:row>
-        <c:if test="${'true' == canEdit}">
-            <div class="text-right app-font-size-16">
-                <a id="edit" class="svcPsnEdit" href="javascript:void(0);">
-                    <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
-                </a>
-            </div>
-        </c:if>
     </iais:row>
     <input type="hidden" name="isPartEdit" value="0"/>
     <iais:row cssClass="control  svcPsnSel">

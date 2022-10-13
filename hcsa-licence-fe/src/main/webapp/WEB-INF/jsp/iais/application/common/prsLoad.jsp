@@ -39,7 +39,8 @@
             var assignSelectVal = $currContent.find('.assignSelVal').val();
             var appType = $('input[name="applicationType"]').val();
             var licPerson = $currContent.find('input.licPerson').val();
-            var needControlName = isNeedControlName(assignSelectVal, licPerson, appType);
+            var specialPerson = $currContent.find('input.specialPerson').val();
+            var needControlName = isNeedControlName(assignSelectVal, licPerson, appType,specialPerson);
             checkProfRegNo($currContent, prgNo, needControlName);
         });
     };
@@ -177,8 +178,8 @@
         }
     }
 
-    function isNeedControlName(assignSelectVal, licPerson, appType) {
-        return /*'newOfficer' == assignSelectVal &&*/ '1' != licPerson && 'APTY002' == appType;
+    function isNeedControlName(assignSelectVal, licPerson, appType,specialPerson) {
+        return /*'newOfficer' == assignSelectVal &&*/'1'==specialPerson||('1' != licPerson && 'APTY002' == appType);
     }
 
     function getPrsCallback() {
