@@ -33,7 +33,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeO
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ReflectionUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
@@ -43,22 +42,14 @@ import com.ecquaria.cloud.moh.iais.util.PageDataCopyUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -1351,24 +1342,29 @@ public final class RfcHelper {
             int status = RfcConst.STATUS_UNCHANGED;
         if (source == null && oldSource == null) {
             return status;
-        } else if (source == null ^ oldSource == null) {
-            return status | RfcConst.STATUS_NEW_CHANGED | RfcConst.STATUS_OLD_CHANGE;
         }
-        if (source.size() != oldSource.size()) {
-            return status | RfcConst.STATUS_NEW_CHANGED | RfcConst.STATUS_OLD_CHANGE;
+        if (source == null) {
+            return status | RfcConst.STATUS_REMOVAL;
+        }
+        if (oldSource == null) {
+            return status | RfcConst.STATUS_ADDITION;
         }
         List<T> newList = newFun != null ? newFun.apply(source) : source;
         List<T> oldList = newFun != null ? newFun.apply(oldSource) : oldSource;
         for (T t : newList) {
             T u = target.apply(t, oldList);
-            if (!check.test(t, u)) {
-                status |= RfcConst.STATUS_NEW_CHANGED;
+            if (u == null) {
+                status |= RfcConst.STATUS_ADDITION;
+            } else if (!check.test(t, u)) {
+                status |= RfcConst.STATUS_CHANGED;
             }
         }
         for (T t : oldList) {
             T u = target.apply(t, newList);
-            if (!check.test(t, u)) {
-                status |= RfcConst.STATUS_NEW_CHANGED;
+            if (u == null) {
+                status |= RfcConst.STATUS_REMOVAL;
+            } else if (!check.test(t, u)) {
+                status |= RfcConst.STATUS_CHANGED;
             }
         }
         return status;

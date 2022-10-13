@@ -58,7 +58,8 @@ public class RfcConst {
     public static final int RFC_NOTIFICATION                            = 2;
 
     public static final int STATUS_UNCHANGED                            = 1;
-    public static final int STATUS_NEW_CHANGED                          = 2;
-    public static final int STATUS_OLD_CHANGE                           = 4;
+    public static final int STATUS_ADDITION                             = 2;
+    public static final int STATUS_REMOVAL                              = 4;
+    public static final int STATUS_CHANGED                              = 8;
 
 }
