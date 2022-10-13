@@ -3540,6 +3540,12 @@ public final class ApplicationHelper {
         newDto.setFeeInfoDtos(null);
         newDto.setOldRenewAppSubmissionDto(null);
         newDto.setOldAppSubmissionDto(null);
+        newDto.setCoMap(null);
+        newDto.setAppGrpPremisesDtoList(toSlim(newDto.getAppGrpPremisesDtoList(), appGrpPremisesDto -> {
+            appGrpPremisesDto.setSelectedLicences(null);
+            appGrpPremisesDto.setLicenceDtos(null);
+            return appGrpPremisesDto;
+        }));
         List<AppPremSpecialisedDto> appPremSpecialisedDtoList = newDto.getAppPremSpecialisedDtoList();
         if (IaisCommonUtils.isNotEmpty(appPremSpecialisedDtoList)) {
             for (int i = 0; i < appPremSpecialisedDtoList.size(); i++) {

@@ -172,9 +172,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appSubmissionDto = applicationFeClient.saveSubmision(appSubmissionDto).getEntity();
         //asynchronous save the other data.
-        log.info(StringUtil.changeForLog("Original size: " + JsonUtil.parseToJson(appSubmissionDto).length()));
         AppSubmissionDto newDto = ApplicationHelper.toSlim(appSubmissionDto);
-        log.info(StringUtil.changeForLog("New size: " + JsonUtil.parseToJson(newDto).length()));
         eventBus(newDto, process);
         return appSubmissionDto;
     }
