@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EfoCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
@@ -32,6 +33,7 @@ public class EfoDtoValidator implements CustomizeValidator {
         Date sDate = efoCycleStageDto.getStartDate();
         String reason = efoCycleStageDto.getReason();
         String othersReason = efoCycleStageDto.getOtherReason();
+        String cryopresNum = ParamUtil.getString(httpServletRequest,"cryopresNum");
 
 
         if (!StringUtil.isEmpty(sDate) ) {
@@ -40,6 +42,12 @@ public class EfoDtoValidator implements CustomizeValidator {
                 errorMap.put("startDate", MessageUtil.replaceMessage("DS_ERR001","Date Started", "field"));
             }
         }
+
+        if (StringUtil.isEmpty(cryopresNum)) {
+            String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","No.Cryopreserved", "field");
+            errorMap.put("cryopresNum", errMsg);
+        }
+
         if(efoCycleStageDto.getIsMedicallyIndicated()==1){
             if (!StringUtil.isEmpty(reason)&& DataSubmissionConsts.EFO_REASON_OTHERS.equals(reason)) {
                 if (StringUtil.isEmpty(othersReason)) {
