@@ -987,9 +987,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
     @Override
     protected AppSubmissionDto submit(AppSubmissionDto appSubmissionDto) {
         log.info(StringUtil.changeForLog("Orginal size: " + JsonUtil.parseToJson(appSubmissionDto).length()));
-        AppSubmissionDto newDto = ApplicationHelper.toSlim(appSubmissionDto);
-        log.info(StringUtil.changeForLog("New size: " + JsonUtil.parseToJson(newDto).length()));
-        return appSubmissionService.submit(newDto, null);
+        return appSubmissionService.submit(appSubmissionDto, null);
     }
 
     @Override
