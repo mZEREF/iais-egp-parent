@@ -4,7 +4,7 @@
     <iais:row>
         <div class="col-xs-12 col-md-10" style="padding-top: 25px;">
             <p class="bold">Name, Professional Regn. No. and Qualification of anaesthetists&nbsp;
-                <label class="assign-psn-item" data-prefix="${prefix}"><c:if test="${anaesthetists.size() > 1}">${index+1}</c:if></label>
+                <label class="assign-psn-item" style="font-weight: bold;!important;" data-prefix="${prefix}"><c:if test="${anaesthetists.size() > 1}">${index+1}</c:if></label>
             </p>
         </div>
         <div class="col-xs-12 col-md-2 text-right removeADiv removeAnaesthetistsBtn" data-prefix="${prefix}">

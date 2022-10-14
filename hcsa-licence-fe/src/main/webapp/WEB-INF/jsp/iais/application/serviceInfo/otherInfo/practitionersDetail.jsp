@@ -4,7 +4,7 @@
     <iais:row>
         <div class="col-xs-12 col-md-10">
             <p class="bold">Name, Professional Regn. No. and Qualification of medical practitioners authorised to perform Abortion
-                &nbsp;<label class="assign-psn-item"  data-prefix="${prefix}"><c:if test="${practitioners.size() > 1}">${index+1}</c:if></label>
+                &nbsp;<label class="assign-psn-item" style="font-weight: bold;!important;"  data-prefix="${prefix}"><c:if test="${practitioners.size() > 1}">${index+1}</c:if></label>
             </p>
         </div>
         <div class="col-xs-12 col-md-2 text-right removePractitionersBtn removePDiv" data-prefix="${prefix}">
