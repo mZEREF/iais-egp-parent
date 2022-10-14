@@ -35,6 +35,7 @@
             unDisableContent($currContent);
             $('#isEditHiddenVal').val('1');
             hideTag($currContent.find('a.edit'));
+            $currContent.find('.profRegNo').trigger('blur');
         });
     }
 
@@ -91,7 +92,7 @@
         $currContent.find('.qualification').html('');
         refreshPerson($currContent, $(target).find('div.personnel-content').length - 1);
         disablePrsInfo($currContent, false,true);
-        $(target).find('div.personnel-content').first().find('.psnHeader').html('1');
+        $(target).find('div.personnel-content').first().find('.assign-psn-item').html('1');
         removePersonnelEvent();
         profRegNoEvent($currContent);
         assignSelectEvent($currContent);
@@ -250,7 +251,7 @@
             return;
         }
         var prefix = $currContent.find('.prepsn').val();
-        var subfix=$currContent.index()-1;
+        var subfix=$currContent.index();
         fillFormData($content, data, prefix, subfix, ['psnEditDto']);
         $currContent.find('.speciality p').html(data.speciality);
         $currContent.find('.subSpeciality p').html(data.subSpeciality);

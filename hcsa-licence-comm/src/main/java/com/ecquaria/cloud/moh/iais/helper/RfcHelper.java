@@ -45,7 +45,6 @@ import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import com.ecquaria.cloud.moh.iais.util.PageDataCopyUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.math3.util.Combinations;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -59,7 +58,6 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @Auther chenlei on 5/3/2022.
@@ -180,6 +178,9 @@ public final class RfcHelper {
         boolean changeServiceAutoFields = changeCharges || isChangeSvcInfoAutoFields(appSvcRelatedInfoDtos,
                 oldAppSvcRelatedInfoDtos, appEditSelectDto);
         boolean changeSpecialServiceInformation=ischangeSpecialServiceInformation(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos);
+        if (changeSpecialServiceInformation){
+            nonAutoList.add(HcsaConsts.STEP_SPECIAL_SERVICES_FORM);
+        }
         appEditSelectDto.setChangeBusinessName(changeBusinessNonAutoFields);
         appEditSelectDto.setChangeBusinessAutoFields(changeBusinessAutoFields);
         appEditSelectDto.setChangePersonnel(changePersonnel);
