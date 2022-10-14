@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.privilege.PrivilegeConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -25,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
@@ -37,13 +39,6 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import com.ecquaria.cloud.privilege.Privilege;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
@@ -51,6 +46,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @author wangyu
@@ -148,6 +149,8 @@ public class DataSubmissionInboxDelegator {
 		if(StringUtil.isEmpty(ParamUtil.getSessionAttr(request,ACTION_DS_BUTTON_SHOW))){
 			if(StringUtil.isNotEmpty(interInboxUserDto.getLicenseeId()) || IaisCommonUtils.isEmpty((List<String>)ParamUtil.getSessionAttr(request,DS_TYPES))){
 				SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),SORT_INIT,SearchParam.DESCENDING,false);
+				LoginContext loginContext = AccessUtil.getLoginUser(request);
+				setAccessFilter(loginContext, searchParam);
 				searchParam.addParam("fromCenter",ConfigHelper.getBoolean("halp.ds.tempCenter.enable",false));
 				HalpAssessmentGuideDelegator.setParamByField(searchParam,"licenseeId",interInboxUserDto.getLicenseeId(),true);
 				HalpAssessmentGuideDelegator.setParamByField(searchParam,"dsType",(List<String>) ParamUtil.getSessionAttr(request,DS_TYPES));
@@ -705,4 +708,44 @@ public class DataSubmissionInboxDelegator {
 		return 0;
 	}
 
+	private void setAccessFilter(LoginContext loginContext, SearchParam searchParam) {
+		List<String> roles = loginContext.getRoleIds();
+		StringBuilder sb = new StringBuilder();
+		for (String roleId : roles) {
+			switch (roleId) {
+				case RoleConsts.USER_ROLE_DS_AR:
+					sb.append('\'').append(DataSubmissionConsts.DS_APP_TYPE_NEW).append(DataSubmissionConsts.DS_AR).append("',");
+					break;
+				case RoleConsts.USER_ROLE_DS_AR_SUPERVISOR:
+					sb.append('\'').append(DataSubmissionConsts.DS_APP_TYPE_RFC).append(DataSubmissionConsts.DS_AR).append("',");
+					break;
+				case RoleConsts.USER_ROLE_DS_DP:
+					sb.append('\'').append(DataSubmissionConsts.DS_APP_TYPE_NEW).append(DataSubmissionConsts.DS_DRP).append("',");
+					break;
+				case RoleConsts.USER_ROLE_DS_DP_SUPERVISOR:
+					sb.append('\'').append(DataSubmissionConsts.DS_APP_TYPE_RFC).append(DataSubmissionConsts.DS_DRP).append("',");
+					break;
+				case RoleConsts.USER_ROLE_DS_LDT:
+					sb.append('\'').append(DataSubmissionConsts.DS_APP_TYPE_NEW).append(DataSubmissionConsts.DS_LDT).append("',");
+					break;
+				case RoleConsts.USER_ROLE_DS_LDT_SUPERVISOR:
+					sb.append('\'').append(DataSubmissionConsts.DS_APP_TYPE_RFC).append(DataSubmissionConsts.DS_LDT).append("',");
+					break;
+				case RoleConsts.USER_ROLE_DS_TOP:
+					sb.append('\'').append(DataSubmissionConsts.DS_APP_TYPE_NEW).append(DataSubmissionConsts.DS_TOP).append("',");
+					break;
+				case RoleConsts.USER_ROLE_DS_TOP_SUPERVISOR:
+					sb.append('\'').append(DataSubmissionConsts.DS_APP_TYPE_RFC).append(DataSubmissionConsts.DS_TOP).append("',");
+					break;
+				case RoleConsts.USER_ROLE_DS_VSS:
+					sb.append('\'').append(DataSubmissionConsts.DS_APP_TYPE_NEW).append(DataSubmissionConsts.DS_VSS).append("',");
+					break;
+			}
+		}
+		if (sb.length() == 0) {
+			searchParam.addParam("accessFilter","NANA");
+		} else {
+			searchParam.addParam("accessFilter",sb.substring(0, sb.length() - 1));
+		}
+	}
 }
