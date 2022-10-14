@@ -44,6 +44,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
@@ -655,8 +656,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
         if(hasNotMatch){
             log.info("start send email start");
             EmailDto emailDto = new EmailDto();
-            List<String> receiptEmail=IaisCommonUtils.genNewArrayList();
-            receiptEmail.add(this.mailRecipient);
+            List<String> receiptEmail= Arrays.asList(this.mailRecipient.split(","));
 
             emailDto.setReceipts(receiptEmail);
             String emailContent = "CompareFEBE Not Match";
