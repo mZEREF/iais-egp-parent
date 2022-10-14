@@ -117,7 +117,6 @@ public class EmbryoTransferDelegator extends CommonDelegator {
     public void pageAction(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         EmbryoTransferStageDto embryoTransferStageDto = arSuperDataSubmissionDto.getEmbryoTransferStageDto();
-        EmbryoTransferDetailDto embryoTransferDetailDto = arSuperDataSubmissionDto.getEmbryoTransferDetailDto();
         HttpServletRequest request = bpc.request;
 
         fromPageData(embryoTransferStageDto, request);
