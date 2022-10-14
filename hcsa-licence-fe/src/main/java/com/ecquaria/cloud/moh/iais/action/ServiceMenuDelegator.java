@@ -524,6 +524,11 @@ public class ServiceMenuDelegator {
                     }
                     Set<String> premisesTypeList=IaisCommonUtils.genNewHashSet();
                     premisesTypeList.add(ApplicationConsts.PREMISES_TYPE_PERMANENT);
+                    if(!bundleAchOrMs){
+                        premisesTypeList.add(ApplicationConsts.PREMISES_TYPE_CONVEYANCE);
+                        premisesTypeList.add(ApplicationConsts.PREMISES_TYPE_MOBILE);
+                        premisesTypeList.add(ApplicationConsts.PREMISES_TYPE_REMOTE);
+                    }
                     int alignMinExpiryMonth = systemParamConfig.getAlignMinExpiryMonth();
                     List<AppAlignLicQueryDto> bundleLic = getBundleLicPremInfo(svcIdList,licenseeId,premisesTypeList,alignMinExpiryMonth).getRows();
                     List<AppAlignAppQueryDto> bundleApp=IaisCommonUtils.genNewArrayList();
