@@ -2382,7 +2382,7 @@ public final class AppDataHelper {
     private static List<AppSvcPersonnelDto> getSpecialServiceInforamtionPerson(HttpServletRequest request,String prefix,
         String personType,String personTypeAbbr,List<AppSvcPersonnelDto> originalPersonnelList,String appType){
         List<AppSvcPersonnelDto> personnelDtoList = IaisCommonUtils.genNewArrayList();
-        if (IaisCommonUtils.isEmpty(originalPersonnelList)){
+        if (IaisCommonUtils.isEmpty(originalPersonnelList)&& !ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
             return personnelDtoList;
         }
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
