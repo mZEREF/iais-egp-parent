@@ -113,6 +113,60 @@
                         </tr>
                     </c:forEach>
 
+                    <c:forEach items="${includedSvcFeeExtList}" var="includedSvcFeeExt" >
+                        <c:if test="${not empty includedSvcFeeExt.includeSsFeeExtDto or not empty includedSvcFeeExt.includeCsFeeExtDto }">
+                            <tr>
+                                <td>
+                                    <p>&nbsp;&nbsp;With Specialised Service(s)</p>
+                                    <c:if test="${not empty includedSvcFeeExt.includeSsFeeExtDto }">
+                                        <c:forEach var="svcNameSs" items="${includedSvcFeeExt.includeSsFeeExtDto.svcNames}">
+                                            <p>&nbsp;&nbsp;<strong>- <c:out value="${svcNameSs}"/></strong></p>
+                                        </c:forEach>
+                                    </c:if>
+
+                                    <c:if test="${not empty includedSvcFeeExt.includeCsFeeExtDto }">
+                                        <c:forEach var="svcNameCs" items="${includedSvcFeeExt.includeCsFeeExtDto.svcNames}">
+                                            <p>&nbsp;&nbsp;<strong>- <c:out value="${svcNameCs}"/></strong></p>
+                                        </c:forEach>
+                                    </c:if>
+
+                                </td>
+                                <td>
+                                    <p></p>
+                                </td>
+                                <td>
+                                    <p> </p>
+                                </td>
+                                <td>
+                                    <p >
+                                        <c:choose>
+                                            <c:when test="${empty includedSvcFeeExt.includeSsFeeExtDto}">
+                                                <c:out value="${includedSvcFeeExt.includeCsFeeExtDto.amountStr}"/>
+                                            </c:when>
+                                            <c:when test="${empty includedSvcFeeExt.includeCsFeeExtDto}">
+                                                <c:out value="${includedSvcFeeExt.includeSsFeeExtDto.amountStr}"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:out value="${Formatter.formatterMoney(includedSvcFeeExt.includeSsFeeExtDto.amount+includedSvcFeeExt.includeCsFeeExtDto.amount)}"/>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </p>
+                                    <c:if test="${not empty includedSvcFeeExt.includeSsFeeExtDto }">
+                                        <c:forEach var="svcName" items="${includedSvcFeeExt.includeSsFeeExtDto.svcNames}">
+                                            <p>Include</p>
+                                        </c:forEach>
+                                    </c:if>
+
+                                    <c:if test="${not empty includedSvcFeeExt.includeCsFeeExtDto }">
+                                        <c:forEach var="svcName" items="${includedSvcFeeExt.includeCsFeeExtDto.svcNames}">
+                                            <p>Include</p>
+                                        </c:forEach>
+                                    </c:if>
+                                </td>
+                            </tr>
+                        </c:if>
+                    </c:forEach>
+
                 </c:if>
                 <!--bundleSvcFeeExt -->
                 <c:if test="${not empty bundleSvcFeeExt }">
