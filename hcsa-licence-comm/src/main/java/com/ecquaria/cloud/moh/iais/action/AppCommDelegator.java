@@ -33,7 +33,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -2111,6 +2110,11 @@ public abstract class AppCommDelegator {
         FeeDto feeDto = getNewAppAmount(appSubmissionDto, ApplicationHelper.isCharity(bpc.request));
         appSubmissionDto.setFeeInfoDtos(feeDto.getFeeInfoDtos());
         Double amount = feeDto.getTotal();
+        if(feeDto.getFeeDetail()!=null){
+            ParamUtil.setSessionAttr(bpc.request, "FeeDetail", feeDto.getFeeDetail().toString());
+        }else {
+            ParamUtil.setSessionAttr(bpc.request, "FeeDetail", null);
+        }
         log.info(StringUtil.changeForLog("the amount is -->:" + amount));
         /*if(0.0==amount){
             appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
