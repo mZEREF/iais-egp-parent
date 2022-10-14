@@ -118,7 +118,7 @@
             let atdLength = $('.topByDrug[data-prefix="' + prefix + '"]').length;
             $('input.atdLength[data-prefix="' + prefix + '"]').val(atdLength);
             let $c = $('div.topByDrug[data-prefix="' + prefix + '"]').last();
-            clearFields($('div.topByDrug[data-prefix="' + prefix + '"]').last());
+            clearFields($c);
             removeTopDrug();
             if (atdLength <= 1){
                 console.log("init.........")

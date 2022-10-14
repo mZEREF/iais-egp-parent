@@ -65,7 +65,7 @@
 <iais:row>
     <iais:field width="5" cssClass="col-md-5" mandatory="true" value="GFA Value (in sqm)"/>
     <iais:value width="7" cssClass="col-md-7">
-        <iais:input maxLength="7" type="number" cssClass="gfaValue" name="${prefix}gfaValue" value="${med.gfaValue}"/>
+        <iais:input maxLength="7" type="text" cssClass="gfaValue" name="${prefix}gfaValue" value="${med.gfaValue}"/>
     </iais:value>
 </iais:row>
 
