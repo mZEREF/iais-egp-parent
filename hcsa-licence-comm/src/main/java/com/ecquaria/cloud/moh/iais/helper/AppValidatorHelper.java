@@ -904,9 +904,29 @@ public final class AppValidatorHelper {
                         // GENERAL_ERR0060 - Invalid {data}.
                         errorMap.put("premisesType" + i, MessageUtil.replaceMessage("GENERAL_ERR0060",
                                 "Mode of Service Delivery type", "data"));
-                    } else {
+                    } else if (premTypes.contains(ApplicationConsts.PREMISES_TYPE_PERMANENT)
+                            || premTypes.contains(ApplicationConsts.PREMISES_TYPE_CONVEYANCE)) {
+                        if (ApplicationConsts.PREMISES_TYPE_PERMANENT.equals(premiseType)
+                                || ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
+                            errorMap.put("premisesType" + i, MessageUtil.replaceMessage("GENERAL_ERR0060",
+                                    "Mode of Service Delivery type", "data"));
+                        }
+                    } else if (IaisCommonUtils.isEmpty(premTypes)) {
                         List<String> targetType = getMsBundlePremType(premiseType);
-
+                        List<LicenceDto> licenceList = getLicCommService().getPendingBundledMsLicences(licenseeId,
+                                targetType, premiseType);
+                        if (!IaisCommonUtils.isEmpty(licenceList)) {
+                            // NEW_ERR0036 - There is {data} need to be bundled to current application(s).
+                            String data = "";
+                            if (licenceList.size() == 1) {
+                                data = "a licence (" + licenceList.get(0).getLicenceNo() + ")";
+                            } else {
+                                data = "one of licences (" + licenceList.stream() .map(LicenceDto::getLicenceNo)
+                                        .collect(Collectors.joining(", ")) + ")";
+                            }
+                            errorMap.put("premisesType" + i, MessageUtil.replaceMessage("NEW_ERR0036",
+                                    data, "data"));
+                        }
                     }
                 }
             }
@@ -3545,7 +3565,7 @@ public final class AppValidatorHelper {
                 }
                 break;
         }
-        return size != errorMap.size();
+        return size == errorMap.size();
     }
 
     private static boolean checkConditonMandatory(Map<String, AppSvcSuplmItemDto> itemMap,

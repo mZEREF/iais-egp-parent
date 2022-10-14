@@ -223,19 +223,17 @@ public final class AppDataHelper {
                 if (licPremise != null) {
                     appGrpPremisesDto.setRelatedServices(licPremise.getRelatedServices());
                     appGrpPremisesDto.setHciCode(licPremise.getHciCode());
-                } else {
-                    AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(request);
-                    checkHciCode(appGrpPremisesDto, premisesSel, oldAppSubmissionDto);
                 }
             }
-            setAppGrpPremiseFromPage(appGrpPremisesDto, premIndexNo, i, request);
+            setAppGrpPremiseFromPage(appGrpPremisesDto, i, request);
             // rfc and renewal
-            String[] selectedLicences = ParamUtil.getStrings(request, "selectedLicence");
-            appGrpPremisesDto.setSelectedLicences(selectedLicences);
+            setSelectedLicences(appGrpPremisesDto, premIndexNo, request);
+            AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(request);
+            checkHciCode(appGrpPremisesDto, premIndexNo, premisesSel, oldAppSubmissionDto);
             appGrpPremisesDto.setSeqNum(i + 1);
             appGrpPremisesDto.setHasError(null);
-            appGrpPremisesDto.setExistingData(existingData);
             appGrpPremisesDto.setPremisesIndexNo(premIndexNo);
+            appGrpPremisesDto.setExistingData(existingData);
             appGrpPremisesDto.setPremisesType(premType);
             appGrpPremisesDto.setPremisesSelect(premisesSel);
             appGrpPremisesDtoList.add(appGrpPremisesDto);
@@ -243,32 +241,57 @@ public final class AppDataHelper {
         return appGrpPremisesDtoList;
     }
 
-    private static void checkHciCode(AppGrpPremisesDto appGrpPremisesDto, String premisesSel, AppSubmissionDto oldAppSubmissionDto) {
+    private static void setSelectedLicences(AppGrpPremisesDto appGrpPremisesDto, String premIndexNo,
+            HttpServletRequest request) {
+        AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(request);
+        if (appSubmissionDto != null && appSubmissionDto.getAppGrpPremisesDtoList() != null) {
+            List<LicenceDto> licenceDtos = appSubmissionDto.getAppGrpPremisesDtoList().stream()
+                    .filter(dto -> Objects.equals(premIndexNo, dto.getPremisesIndexNo()))
+                    .map(AppGrpPremisesDto::getLicenceDtos)
+                    .filter(Objects::nonNull)
+                    .findAny()
+                    .orElse(null);
+            appGrpPremisesDto.setLicenceDtos(licenceDtos);
+        }
+        String[] selectedLicences = ParamUtil.getStrings(request, "selectedLicence");
+        appGrpPremisesDto.setSelectedLicences(selectedLicences);
+    }
+
+    private static void checkHciCode(AppGrpPremisesDto appGrpPremisesDto, String premisesIndexNo, String premisesSel,
+            AppSubmissionDto oldAppSubmissionDto) {
         if (oldAppSubmissionDto == null || HcsaAppConst.DFT_FIRST_CODE.equals(premisesSel)
-                ||  HcsaAppConst.NEW_PREMISES.equals(premisesSel) || StringUtil.isEmpty(premisesSel)) {
+                || HcsaAppConst.NEW_PREMISES.equals(premisesSel) || StringUtil.isEmpty(premisesSel)) {
             appGrpPremisesDto.setHciCode(null);
             return;
         }
-        String hciCode = null;
         for (AppGrpPremisesDto grpPremisesDto : oldAppSubmissionDto.getAppGrpPremisesDtoList()) {
-            if (premisesSel.equals(ApplicationHelper.getPremisesKey(grpPremisesDto))) {
-                hciCode = grpPremisesDto.getHciCode();
+            if (Objects.equals(premisesSel, ApplicationHelper.getPremisesKey(grpPremisesDto))) {
+                appGrpPremisesDto.setHciCode(grpPremisesDto.getHciCode());
                 break;
             }
         }
-        appGrpPremisesDto.setHciCode(hciCode);
+        for (AppGrpPremisesDto grpPremisesDto : oldAppSubmissionDto.getAppGrpPremisesDtoList()) {
+            if (Objects.equals(premisesIndexNo, grpPremisesDto.getPremisesIndexNo())) {
+                appGrpPremisesDto.setOldHciCode(grpPremisesDto.getHciCode());
+                break;
+            }
+        }
     }
 
     private static void setAppGrpPremiseNonAutoFields(AppGrpPremisesDto appGrpPremisesDto, String premIndexNo,
             String premType, int i, HttpServletRequest request) {
-        String[] opLengths = ParamUtil.getStrings(request, "opLength");
         String[] retrieveflag = ParamUtil.getStrings(request, "retrieveflag");
         appGrpPremisesDto.setClickRetrieve(AppConsts.YES.equals(getVal(retrieveflag, i)));
+        appGrpPremisesDto.setVehicleNo(ParamUtil.getString(request, "vehicleNo" + i));
+        appGrpPremisesDto.setHciName(ParamUtil.getString(request, "hciName" + i));
+        appGrpPremisesDto.setPostalCode(ParamUtil.getString(request, "postalCode" + i));
+        appGrpPremisesDto.setAddrType(ParamUtil.getString(request, "addrType" + i));
+        appGrpPremisesDto.setBlkNo(ParamUtil.getString(request, "blkNo" + i));
         String floorNo = ParamUtil.getString(request, i + "FloorNo" + 0);
         String unitNo = ParamUtil.getString(request, i + "UnitNo" + 0);
         appGrpPremisesDto.setFloorNo(IaisCommonUtils.getFloorNo(floorNo));
         appGrpPremisesDto.setUnitNo(unitNo);
-
+        String[] opLengths = ParamUtil.getStrings(request, "opLength");
         List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = IaisCommonUtils.genNewArrayList();
         int opLength = 0;
         try {
@@ -291,60 +314,52 @@ public final class AppDataHelper {
             appPremisesOperationalUnitDtos.add(dto);
         }
         appGrpPremisesDto.setAppPremisesOperationalUnitDtos(appPremisesOperationalUnitDtos);
-        appGrpPremisesDto.setAppPremisesOperationalUnitDtos(appPremisesOperationalUnitDtos);
+        appGrpPremisesDto.setStreetName(ParamUtil.getString(request, "streetName" + i));
+        appGrpPremisesDto.setBuildingName(ParamUtil.getString(request, "buildingName" + i));
     }
 
-    private static void setAppGrpPremiseFromPage(AppGrpPremisesDto appGrpPremisesDto, String premIndexNo,
-            int i, HttpServletRequest request) {
-        String[] nonHcsaLengths = ParamUtil.getStrings(request, "nonHcsaLength");
-        ControllerHelper.get(request, appGrpPremisesDto, String.valueOf(i));
+    private static void setAppGrpPremiseFromPage(AppGrpPremisesDto appGrpPremisesDto, int i, HttpServletRequest request) {
+        //ControllerHelper.get(request, appGrpPremisesDto, String.valueOf(i));
+        appGrpPremisesDto.setScdfRefNo(ParamUtil.getString(request, "scdfRefNo" + i));
         String certIssuedDtStr = ParamUtil.getString(request, "certIssuedDt" + i);
         appGrpPremisesDto.setCertIssuedDtStr(certIssuedDtStr);
-        setPremise(appGrpPremisesDto, premIndexNo, ApplicationHelper.getOldAppSubmissionDto(request));
-        List<AppPremNonLicRelationDto> appPremNonLicRelationDtos = IaisCommonUtils.genNewArrayList();
-        int nonHcsaLength = 0;
-        try {
-            nonHcsaLength = Integer.parseInt(nonHcsaLengths[i]);
-        } catch (Exception e) {
-            log.error(StringUtil.changeForLog("Non-hcsa service length can not parse to int"));
-        }
-        for (int k = 0; k < nonHcsaLength; k++) {
-            String coBusinessName = ParamUtil.getString(request, i + "CoBusinessName" + k);
-            String coSvcName = ParamUtil.getString(request, i + "CoSvcName" + k);
-            if (StringUtil.isEmpty(coBusinessName) && StringUtil.isEmpty(coSvcName)) {
-                continue;
+        if (CommonValidator.isDate(certIssuedDtStr)) {
+            try {
+                appGrpPremisesDto.setCertIssuedDt(Formatter.parseDate(certIssuedDtStr));
+            } catch (Exception e) {
+                log.warn(StringUtil.changeForLog(e.getMessage()), e);
             }
-            AppPremNonLicRelationDto dto = new AppPremNonLicRelationDto();
-            dto.setBusinessName(coBusinessName);
-            dto.setProvidedService(coSvcName);
-            dto.setSeqNum(k);
-            appPremNonLicRelationDtos.add(dto);
         }
-        appGrpPremisesDto.setAppPremNonLicRelationDtos(appPremNonLicRelationDtos);
-    }
+        appGrpPremisesDto.setEasMtsUseOnly(ParamUtil.getString(request, "easMtsUseOnly" + i));
+        appGrpPremisesDto.setEasMtsPubEmail(ParamUtil.getString(request, "easMtsPubEmail" + i));
+        appGrpPremisesDto.setEasMtsPubHotline(ParamUtil.getString(request, "easMtsPubHotline" + i));
 
-    private static void setPremise(AppGrpPremisesDto appGrpPremisesDto, String premIndexNo, AppSubmissionDto oldAppSubmissionDto) {
-        String oldHciCode = null;
-        List<LicenceDto> licenceDtos = null;
-        if (oldAppSubmissionDto != null && oldAppSubmissionDto.getAppGrpPremisesDtoList() != null) {
-            oldHciCode = oldAppSubmissionDto.getAppGrpPremisesDtoList().stream()
-                    .filter(dto -> Objects.equals(premIndexNo, dto.getPremisesIndexNo()))
-                    .map(AppGrpPremisesDto::getHciCode)
-                    .filter(Objects::nonNull)
-                    .findAny()
-                    .orElse(null);
-            licenceDtos = oldAppSubmissionDto.getAppGrpPremisesDtoList().stream()
-                    .filter(dto -> Objects.equals(premIndexNo, dto.getPremisesIndexNo()))
-                    .map(AppGrpPremisesDto::getLicenceDtos)
-                    .filter(Objects::nonNull)
-                    .findAny()
-                    .orElse(null);
-            appGrpPremisesDto.setLicenceDtos(licenceDtos);
+        appGrpPremisesDto.setLocateWtihHcsa(ParamUtil.getString(request, "locateWtihHcsa" + i));
+        String locateWtihNonHcsa = ParamUtil.getString(request, "locateWtihNonHcsa" + i);
+        appGrpPremisesDto.setLocateWtihNonHcsa(locateWtihNonHcsa);
+        if (AppConsts.YES.equals(locateWtihNonHcsa)) {
+            String[] nonHcsaLengths = ParamUtil.getStrings(request, "nonHcsaLength");
+            List<AppPremNonLicRelationDto> appPremNonLicRelationDtos = IaisCommonUtils.genNewArrayList();
+            int nonHcsaLength = 0;
+            try {
+                nonHcsaLength = Integer.parseInt(nonHcsaLengths[i]);
+            } catch (Exception e) {
+                log.warn(StringUtil.changeForLog("Non-hcsa service length can not parse to int"));
+            }
+            for (int k = 0; k < nonHcsaLength; k++) {
+                String coBusinessName = ParamUtil.getString(request, i + "CoBusinessName" + k);
+                String coSvcName = ParamUtil.getString(request, i + "CoSvcName" + k);
+                if (StringUtil.isEmpty(coBusinessName) && StringUtil.isEmpty(coSvcName)) {
+                    continue;
+                }
+                AppPremNonLicRelationDto dto = new AppPremNonLicRelationDto();
+                dto.setBusinessName(coBusinessName);
+                dto.setProvidedService(coSvcName);
+                dto.setSeqNum(k);
+                appPremNonLicRelationDtos.add(dto);
+            }
+            appGrpPremisesDto.setAppPremNonLicRelationDtos(appPremNonLicRelationDtos);
         }
-        log.info(StringUtil.changeForLog("--- Old Hci Code: " + oldHciCode));
-        log.info(StringUtil.changeForLog("--- Maybe Affected Licence size: " + (licenceDtos == null ? 0 : licenceDtos.size())));
-        appGrpPremisesDto.setHciCode(oldHciCode);
-        appGrpPremisesDto.setPremisesIndexNo(premIndexNo);
     }
 
     private static void setDataFromExisting(AppGrpPremisesDto dto, AppGrpPremisesDto licPremise) {
@@ -659,74 +674,76 @@ public final class AppDataHelper {
             .sortFieldToMap("SVC_NAME", SearchParam.ASCENDING).build();
 
     public static AppSvcOutsouredDto genAppPremOutSourceProvidersDto(String curAct, AppSvcOutsouredDto appSvcOutsouredDto,
-                                                                     HttpServletRequest request,AppSubmissionDto appSubmissionDto){
+            HttpServletRequest request, AppSubmissionDto appSubmissionDto) {
         List<AppPremGroupOutsourcedDto> clinicalLaboratoryList = appSvcOutsouredDto.getClinicalLaboratoryList();
         List<AppPremGroupOutsourcedDto> radiologicalServiceList = appSvcOutsouredDto.getRadiologicalServiceList();
-        if (IaisCommonUtils.isEmpty(clinicalLaboratoryList)){
+        if (IaisCommonUtils.isEmpty(clinicalLaboratoryList)) {
             clinicalLaboratoryList = IaisCommonUtils.genNewArrayList();
         }
-        if (IaisCommonUtils.isEmpty(radiologicalServiceList)){
+        if (IaisCommonUtils.isEmpty(radiologicalServiceList)) {
             radiologicalServiceList = IaisCommonUtils.genNewArrayList();
         }
-        if ("search".equals(curAct)){
-            appSvcOutsouredDto = getSerchAppPremOutSourceLicenceDto(request,appSvcOutsouredDto, appSubmissionDto);
+        if ("search".equals(curAct)) {
+            appSvcOutsouredDto = getSerchAppPremOutSourceLicenceDto(request, appSvcOutsouredDto, appSubmissionDto);
         }
-        if ("add".equals(curAct)){
-            appSvcOutsouredDto = getAddAppPremOutSourceLicenceDto(request,appSvcOutsouredDto,clinicalLaboratoryList,radiologicalServiceList);
+        if ("add".equals(curAct)) {
+            appSvcOutsouredDto = getAddAppPremOutSourceLicenceDto(request, appSvcOutsouredDto, clinicalLaboratoryList,
+                    radiologicalServiceList);
         }
-        if ("sort".equals(curAct)){
-            appSvcOutsouredDto = sortOutSourceProviders(request,appSvcOutsouredDto);
+        if ("sort".equals(curAct)) {
+            appSvcOutsouredDto = sortOutSourceProviders(request, appSvcOutsouredDto);
         }
-        if ("changePage".equals(curAct)){
-            appSvcOutsouredDto = doOutSourceProvidersPaging(request,appSvcOutsouredDto);
+        if ("changePage".equals(curAct)) {
+            appSvcOutsouredDto = doOutSourceProvidersPaging(request, appSvcOutsouredDto);
         }
-        if ("delete".equals(curAct)){
-            appSvcOutsouredDto = getDelAppOutSourcedDto(request,appSvcOutsouredDto,clinicalLaboratoryList,radiologicalServiceList);
+        if ("delete".equals(curAct)) {
+            appSvcOutsouredDto = getDelAppOutSourcedDto(request, appSvcOutsouredDto, clinicalLaboratoryList, radiologicalServiceList);
         }
         return appSvcOutsouredDto;
     }
 
-    private static AppSvcOutsouredDto getSerchAppPremOutSourceLicenceDto(HttpServletRequest request,AppSvcOutsouredDto appSvcOutsouredDto,AppSubmissionDto appSubmissionDto){
+    private static AppSvcOutsouredDto getSerchAppPremOutSourceLicenceDto(HttpServletRequest request,
+            AppSvcOutsouredDto appSvcOutsouredDto, AppSubmissionDto appSubmissionDto) {
         String svcName = ParamUtil.getString(request, "serviceCode");
         String licNo = ParamUtil.getString(request, "licNo");
-        String businessName = ParamUtil.getString(request,"businessName");
-        String postalCode = ParamUtil.getString(request,"postalCode");
+        String businessName = ParamUtil.getString(request, "businessName");
+        String postalCode = ParamUtil.getString(request, "postalCode");
 
         SearchParam searchParam = appSvcOutsouredDto.getSearchParam();
-        if (StringUtil.isNotEmpty(svcName)){
-            if (searchParam == null){
-                searchParam = IaisEGPHelper.getSearchParam(request,true,filterParameter);
+        if (StringUtil.isNotEmpty(svcName)) {
+            if (searchParam == null) {
+                searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
             }
             clearOldSearchParam(searchParam);
-            searchParam.addFilter("svcName",svcName,true);
-            if (StringUtil.isNotEmpty(licNo)){
-                searchParam.addFilter("licenceNo",licNo,true);
+            searchParam.addFilter("svcName", svcName, true);
+            if (StringUtil.isNotEmpty(licNo)) {
+                searchParam.addFilter("licenceNo", licNo, true);
             }
-            if (StringUtil.isNotEmpty(businessName)){
-                searchParam.addFilter("businessName",businessName,true);
+            if (StringUtil.isNotEmpty(businessName)) {
+                searchParam.addFilter("businessName", businessName, true);
             }
-            if (IaisCommonUtils.isNotEmpty(appSvcOutsouredDto.getClinicalLaboratoryList())){
-                searchParam.addFilter("id",saveOutSourceIds(appSvcOutsouredDto.getClinicalLaboratoryList()),true);
+            if (IaisCommonUtils.isNotEmpty(appSvcOutsouredDto.getClinicalLaboratoryList())) {
+                searchParam.addFilter("id", saveOutSourceIds(appSvcOutsouredDto.getClinicalLaboratoryList()), true);
             }
-            if (IaisCommonUtils.isNotEmpty(appSvcOutsouredDto.getRadiologicalServiceList())){
-                searchParam.addFilter("ids",saveOutSourceIds(appSvcOutsouredDto.getRadiologicalServiceList()),true);
+            if (IaisCommonUtils.isNotEmpty(appSvcOutsouredDto.getRadiologicalServiceList())) {
+                searchParam.addFilter("ids", saveOutSourceIds(appSvcOutsouredDto.getRadiologicalServiceList()), true);
             }
-            if (StringUtil.isNotEmpty(postalCode)){
-                searchParam.addFilter("postalCode",postalCode,true);
+            if (StringUtil.isNotEmpty(postalCode)) {
+                searchParam.addFilter("postalCode", postalCode, true);
             }
-            if (StringUtil.isNotEmpty(appSubmissionDto.getLicenceId())){
-                searchParam.addFilter("licenceId",appSubmissionDto.getLicenceId(),true);
+            if (StringUtil.isNotEmpty(appSubmissionDto.getLicenceId())) {
+                searchParam.addFilter("licenceId", appSubmissionDto.getLicenceId(), true);
             }
             List<AppLicBundleDto> appLicBundleDtoList = appSubmissionDto.getAppLicBundleDtoList();
-            if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)){
+            if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
                 for (AppLicBundleDto appLicBundleDto : appLicBundleDtoList) {
                     String svcCode = appLicBundleDto.getSvcCode();
-                    searchParam.addFilter("bundleSvcName",HcsaServiceCacheHelper.getServiceByCode(svcCode).getSvcName(),true);
+                    searchParam.addFilter("bundleSvcName", HcsaServiceCacheHelper.getServiceByCode(svcCode).getSvcName(), true);
                 }
             }
             appSvcOutsouredDto.setSearchParam(searchParam);
-        }else {
-            if (searchParam != null){
+        } else {
+            if (searchParam != null) {
                 clearOldSearchParam(searchParam);
 //                searchParam.setMainSql("");
             }
@@ -734,7 +751,7 @@ public final class AppDataHelper {
         return appSvcOutsouredDto;
     }
 
-    private static void clearOldSearchParam(SearchParam searchParam){
+    private static void clearOldSearchParam(SearchParam searchParam) {
         searchParam.removeParam("svcName");
         searchParam.removeFilter("svcName");
         searchParam.removeParam("businessName");
@@ -745,27 +762,30 @@ public final class AppDataHelper {
         searchParam.removeFilter("postalCode");
     }
 
-    private static AppSvcOutsouredDto getAddAppPremOutSourceLicenceDto(HttpServletRequest request, AppSvcOutsouredDto appSvcOutsouredDto,
-                                                                       List<AppPremGroupOutsourcedDto> clinicalLaboratoryList, List<AppPremGroupOutsourcedDto> radiologicalServiceList){
+    private static AppSvcOutsouredDto getAddAppPremOutSourceLicenceDto(HttpServletRequest request,
+            AppSvcOutsouredDto appSvcOutsouredDto,
+            List<AppPremGroupOutsourcedDto> clinicalLaboratoryList, List<AppPremGroupOutsourcedDto> radiologicalServiceList) {
         SearchParam searchParam = appSvcOutsouredDto.getSearchParam();
-        String prefix = ParamUtil.getString(request,"prefixVal");
-        if (StringUtil.isNotEmpty(prefix)){
-            searchParam.addFilter("addId",prefix,true);
+        String prefix = ParamUtil.getString(request, "prefixVal");
+        if (StringUtil.isNotEmpty(prefix)) {
+            searchParam.addFilter("addId", prefix, true);
         }
         SearchResult<AppPremOutSourceProvidersQueryDto> searchResult = getLicCommService().queryOutsouceLicences(searchParam);
-        String startDate = ParamUtil.getString(request,prefix+"agreementStartDate");
-        String endDate = ParamUtil.getString(request,prefix+"agreementEndDate");
-        String scpoing = ParamUtil.getString(request,prefix+"outstandingScope");
+        String startDate = ParamUtil.getString(request, prefix + "agreementStartDate");
+        String endDate = ParamUtil.getString(request, prefix + "agreementEndDate");
+        String scpoing = ParamUtil.getString(request, prefix + "outstandingScope");
         if (searchResult != null && IaisCommonUtils.isNotEmpty(searchResult.getRows())) {
             ArrayList<AppPremOutSourceProvidersQueryDto> rows = searchResult.getRows();
             for (AppPremOutSourceProvidersQueryDto row : rows) {
-                if (row != null){
-                    if (AppServicesConsts.SERVICE_NAME_CLINICAL_LABORATORY.equals(row.getSvcName())){
-                        resolveAppPremGroupOutsourcedList(appSvcOutsouredDto, clinicalLaboratoryList, row, startDate, endDate,scpoing);
+                if (row != null) {
+                    if (AppServicesConsts.SERVICE_NAME_CLINICAL_LABORATORY.equals(row.getSvcName())) {
+                        resolveAppPremGroupOutsourcedList(appSvcOutsouredDto, clinicalLaboratoryList, row, startDate, endDate,
+                                scpoing);
                         appSvcOutsouredDto.setClinicalLaboratoryList(clinicalLaboratoryList);
                     }
-                    if (AppServicesConsts.SERVICE_NAME_RADIOLOGICAL_SERVICES.equals(row.getSvcName())){
-                        resolveAppPremGroupOutsourcedList(appSvcOutsouredDto,radiologicalServiceList, row,startDate,endDate,scpoing);
+                    if (AppServicesConsts.SERVICE_NAME_RADIOLOGICAL_SERVICES.equals(row.getSvcName())) {
+                        resolveAppPremGroupOutsourcedList(appSvcOutsouredDto, radiologicalServiceList, row, startDate, endDate,
+                                scpoing);
                         appSvcOutsouredDto.setClinicalLaboratoryList(radiologicalServiceList);
                     }
                 }
@@ -773,17 +793,18 @@ public final class AppDataHelper {
         }
         searchParam.removeParam("addId");
         searchParam.removeFilter("addId");
-        if (IaisCommonUtils.isNotEmpty(appSvcOutsouredDto.getClinicalLaboratoryList())){
-            searchParam.addFilter("id",saveOutSourceIds(appSvcOutsouredDto.getClinicalLaboratoryList()),true);
+        if (IaisCommonUtils.isNotEmpty(appSvcOutsouredDto.getClinicalLaboratoryList())) {
+            searchParam.addFilter("id", saveOutSourceIds(appSvcOutsouredDto.getClinicalLaboratoryList()), true);
         }
-        if (IaisCommonUtils.isNotEmpty(appSvcOutsouredDto.getRadiologicalServiceList())){
-            searchParam.addFilter("ids",saveOutSourceIds(appSvcOutsouredDto.getRadiologicalServiceList()),true);
+        if (IaisCommonUtils.isNotEmpty(appSvcOutsouredDto.getRadiologicalServiceList())) {
+            searchParam.addFilter("ids", saveOutSourceIds(appSvcOutsouredDto.getRadiologicalServiceList()), true);
         }
         return appSvcOutsouredDto;
     }
 
-    private static void resolveAppPremGroupOutsourcedList(AppSvcOutsouredDto appSvcOutsouredDto,List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtoList,
-                                                           AppPremOutSourceProvidersQueryDto row,String startDate,String endDate, String scoping) {
+    private static void resolveAppPremGroupOutsourcedList(AppSvcOutsouredDto appSvcOutsouredDto,
+            List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtoList,
+            AppPremOutSourceProvidersQueryDto row, String startDate, String endDate, String scoping) {
         AppPremGroupOutsourcedDto appPremGroupOutsourcedDto = new AppPremGroupOutsourcedDto();
         AppPremOutSourceLicenceDto appPremOutSourceLicenceDto = new AppPremOutSourceLicenceDto();
         appPremOutSourceLicenceDto.setId(row.getId());
@@ -802,39 +823,41 @@ public final class AppDataHelper {
         appPremGroupOutsourcedDto.setAppPremOutSourceLicenceDto(appPremOutSourceLicenceDto);
         appPremGroupOutsourcedDto.setStartDateStr(startDate);
         appPremGroupOutsourcedDto.setEndDateStr(endDate);
-        if (StringUtil.isNotEmpty(scoping) && StringUtil.isNotEmpty(startDate) && StringUtil.isNotEmpty(endDate)){
+        if (StringUtil.isNotEmpty(scoping) && StringUtil.isNotEmpty(startDate) && StringUtil.isNotEmpty(endDate)) {
             appPremGroupOutsourcedDtoList.add(appPremGroupOutsourcedDto);
         }
         appSvcOutsouredDto.setSearchOutsourced(appPremGroupOutsourcedDto);
         appSvcOutsouredDto.setPrefixVal(row.getId());
     }
 
-    private static AppSvcOutsouredDto sortOutSourceProviders(HttpServletRequest request,AppSvcOutsouredDto appPremOutSourceProvidersDto){
+    private static AppSvcOutsouredDto sortOutSourceProviders(HttpServletRequest request,
+            AppSvcOutsouredDto appPremOutSourceProvidersDto) {
         String classSort = ParamUtil.getString(request, "classSort");
-        String sortFieldName = ParamUtil.getString(request,"crud_action_value");
-        if ("cLDSort".equals(classSort)){
-            sortList(appPremOutSourceProvidersDto.getClinicalLaboratoryList(),sortFieldName);
-        }else if ("rdsSort".equals(classSort)){
-            sortList(appPremOutSourceProvidersDto.getRadiologicalServiceList(),sortFieldName);
-        }else {
+        String sortFieldName = ParamUtil.getString(request, "crud_action_value");
+        if ("cLDSort".equals(classSort)) {
+            sortList(appPremOutSourceProvidersDto.getClinicalLaboratoryList(), sortFieldName);
+        } else if ("rdsSort".equals(classSort)) {
+            sortList(appPremOutSourceProvidersDto.getRadiologicalServiceList(), sortFieldName);
+        } else {
             SearchParam searchParam = appPremOutSourceProvidersDto.getSearchParam();
-            CrudHelper.doSorting(searchParam,  request);
+            CrudHelper.doSorting(searchParam, request);
             appPremOutSourceProvidersDto.setSearchParam(searchParam);
         }
         return appPremOutSourceProvidersDto;
     }
 
-    private static void sortList(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedList,String sortFieldName){
-        if (IaisCommonUtils.isNotEmpty(appPremGroupOutsourcedList) && StringUtil.isNotEmpty(sortFieldName)){
-            if ("LICENCE_NO".equals(sortFieldName)){
+    private static void sortList(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedList, String sortFieldName) {
+        if (IaisCommonUtils.isNotEmpty(appPremGroupOutsourcedList) && StringUtil.isNotEmpty(sortFieldName)) {
+            if ("LICENCE_NO".equals(sortFieldName)) {
                 Collections.sort(appPremGroupOutsourcedList, new Comparator<AppPremGroupOutsourcedDto>() {
                     @Override
                     public int compare(AppPremGroupOutsourcedDto o1, AppPremGroupOutsourcedDto o2) {
-                        return o1.getAppPremOutSourceLicenceDto().getLicenceNo().compareTo(o2.getAppPremOutSourceLicenceDto().getLicenceNo());
+                        return o1.getAppPremOutSourceLicenceDto().getLicenceNo().compareTo(
+                                o2.getAppPremOutSourceLicenceDto().getLicenceNo());
                     }
                 });
             }
-            if ("BUSINESS_NAME".equals(sortFieldName)){
+            if ("BUSINESS_NAME".equals(sortFieldName)) {
                 Collections.sort(appPremGroupOutsourcedList, new Comparator<AppPremGroupOutsourcedDto>() {
                     @Override
                     public int compare(AppPremGroupOutsourcedDto o1, AppPremGroupOutsourcedDto o2) {
@@ -842,7 +865,7 @@ public final class AppDataHelper {
                     }
                 });
             }
-            if ("ADDRESS".equals(sortFieldName)){
+            if ("ADDRESS".equals(sortFieldName)) {
                 Collections.sort(appPremGroupOutsourcedList, new Comparator<AppPremGroupOutsourcedDto>() {
                     @Override
                     public int compare(AppPremGroupOutsourcedDto o1, AppPremGroupOutsourcedDto o2) {
@@ -850,7 +873,7 @@ public final class AppDataHelper {
                     }
                 });
             }
-            if ("EXPIRY_DATE".equals(sortFieldName)){
+            if ("EXPIRY_DATE".equals(sortFieldName)) {
                 Collections.sort(appPremGroupOutsourcedList, new Comparator<AppPremGroupOutsourcedDto>() {
                     @Override
                     public int compare(AppPremGroupOutsourcedDto o1, AppPremGroupOutsourcedDto o2) {
@@ -858,48 +881,52 @@ public final class AppDataHelper {
                     }
                 });
             }
-            if ("AGREEMENT_START_DATE".equals(sortFieldName)){
+            if ("AGREEMENT_START_DATE".equals(sortFieldName)) {
                 Collections.sort(appPremGroupOutsourcedList, new Comparator<AppPremGroupOutsourcedDto>() {
                     @Override
                     public int compare(AppPremGroupOutsourcedDto o1, AppPremGroupOutsourcedDto o2) {
-                        if (o2.getAppPremOutSourceLicenceDto().getAgreementStartDate().before(o1.getAppPremOutSourceLicenceDto().getAgreementStartDate())){
+                        if (o2.getAppPremOutSourceLicenceDto().getAgreementStartDate().before(
+                                o1.getAppPremOutSourceLicenceDto().getAgreementStartDate())) {
                             return -1;
                         }
-                        if (o1.getAppPremOutSourceLicenceDto().getAgreementStartDate() == o2.getAppPremOutSourceLicenceDto().getAgreementStartDate()){
+                        if (o1.getAppPremOutSourceLicenceDto().getAgreementStartDate() == o2.getAppPremOutSourceLicenceDto().getAgreementStartDate()) {
                             return 0;
                         }
                         return 1;
                     }
                 });
             }
-            if ("AGREEMENT_END_DATE".equals(sortFieldName)){
+            if ("AGREEMENT_END_DATE".equals(sortFieldName)) {
                 Collections.sort(appPremGroupOutsourcedList, new Comparator<AppPremGroupOutsourcedDto>() {
                     @Override
                     public int compare(AppPremGroupOutsourcedDto o1, AppPremGroupOutsourcedDto o2) {
-                        if (o2.getAppPremOutSourceLicenceDto().getAgreementEndDate().before(o1.getAppPremOutSourceLicenceDto().getAgreementEndDate())){
+                        if (o2.getAppPremOutSourceLicenceDto().getAgreementEndDate().before(
+                                o1.getAppPremOutSourceLicenceDto().getAgreementEndDate())) {
                             return -1;
                         }
-                        if (o1.getAppPremOutSourceLicenceDto().getAgreementEndDate() == o2.getAppPremOutSourceLicenceDto().getAgreementEndDate()){
+                        if (o1.getAppPremOutSourceLicenceDto().getAgreementEndDate() == o2.getAppPremOutSourceLicenceDto().getAgreementEndDate()) {
                             return 0;
                         }
                         return 1;
                     }
                 });
             }
-            if ("OUTSTANDING_SCOPE".equals(sortFieldName)){
+            if ("OUTSTANDING_SCOPE".equals(sortFieldName)) {
                 Collections.sort(appPremGroupOutsourcedList, new Comparator<AppPremGroupOutsourcedDto>() {
                     @Override
                     public int compare(AppPremGroupOutsourcedDto o1, AppPremGroupOutsourcedDto o2) {
-                        return o1.getAppPremOutSourceLicenceDto().getOutstandingScope().compareTo(o2.getAppPremOutSourceLicenceDto().getOutstandingScope());
+                        return o1.getAppPremOutSourceLicenceDto().getOutstandingScope().compareTo(
+                                o2.getAppPremOutSourceLicenceDto().getOutstandingScope());
                     }
                 });
             }
         }
     }
 
-    private static AppSvcOutsouredDto doOutSourceProvidersPaging(HttpServletRequest request, AppSvcOutsouredDto appPremOutSourceProvidersDto){
+    private static AppSvcOutsouredDto doOutSourceProvidersPaging(HttpServletRequest request,
+            AppSvcOutsouredDto appPremOutSourceProvidersDto) {
         SearchParam searchParam = appPremOutSourceProvidersDto.getSearchParam();
-        CrudHelper.doPaging(searchParam,request);
+        CrudHelper.doPaging(searchParam, request);
         appPremOutSourceProvidersDto.setSearchParam(searchParam);
         return appPremOutSourceProvidersDto;
     }
@@ -2154,8 +2181,7 @@ public final class AppDataHelper {
             }
             person.setLicPerson(AppConsts.YES.equals(licPsn));
             person.setAssignSelect(assign);
-            String[] keys = psnType.split(AppConsts.DFT_DELIMITER);
-            person.setPsnType(keys[keys.length-1]);
+            person.setPsnType(psnType);
             personList.add(person);
         }
         log.info(StringUtil.changeForLog(StringUtil.changeForLog(psnType + " size: " + personList.size())));
