@@ -71,7 +71,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="4" value="" mandatory="false"/>
+                    <iais:field width="4" value="Reason (Others)" mandatory="false"/>
                     <iais:value width="4" cssClass="col-md-4" display="true">
                         <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.reason=='EFOR004'}">
                             <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.otherReason}"/>
