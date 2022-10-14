@@ -100,6 +100,16 @@ public class LicCommServiceImpl implements LicCommService {
     }
 
     @Override
+    public List<LicenceDto> getPendingBundledMsLicences(String licenseeId, List<String> premTypes, String premType) {
+        log.info(StringUtil.changeForLog("Licensee Id: " + licenseeId + " - Prem Types: " + premTypes
+                + "Curr Prem Type: " + premType));
+        if (StringUtil.isEmpty(licenseeId) || StringUtil.isEmpty(premType) || IaisCommonUtils.isEmpty(premTypes)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        return licCommClient.getPendingBundledMsLicences(licenseeId, premTypes, premType).getEntity();
+    }
+
+    @Override
     public AppSubmissionDto getAppSubmissionDtoByLicenceId(String licenceId) {
         log.info(StringUtil.changeForLog("Licence Id: " + licenceId));
         if (StringUtil.isEmpty(licenceId)) {

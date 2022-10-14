@@ -880,7 +880,7 @@ public final class ApplicationHelper {
                     person.setBclsExpiryDateStr(handleDateString(psnDto.getBclsExpiryDate(), psnDto.getBclsExpiryDateStr()));
                 }
                 psnDto.setAssignSelect(person.getAssignSelect());
-                psnDto.setLicPerson(person.isLicPerson());
+                //psnDto.setLicPerson(person.isLicPerson());
                 AppSvcPersonAndExtDto newPersonAndExtDto = new AppSvcPersonAndExtDto();
                 AppSvcPersonDto appSvcPersonDto = MiscUtil.transferEntityDto(person, AppSvcPersonDto.class);
                 AppSvcPersonExtDto appSvcPersonExtDto = getPsnExtDtoBySvcCode(appSvcPersonExtDtos, svcCode);
@@ -899,7 +899,7 @@ public final class ApplicationHelper {
                 appSvcPersonExtDtos.add(appSvcPersonExtDto);
                 newPersonAndExtDto.setPersonDto(appSvcPersonDto);
                 newPersonAndExtDto.setPersonExtDtoList(appSvcPersonExtDtos);
-                newPersonAndExtDto.setLicPerson(person.isLicPerson());
+                newPersonAndExtDto.setLicPerson(psnDto.isLicPerson());
                 personMap.put(personMapKey, newPersonAndExtDto);
             }
         }

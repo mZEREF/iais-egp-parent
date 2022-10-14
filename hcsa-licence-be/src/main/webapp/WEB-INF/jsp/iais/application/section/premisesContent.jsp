@@ -146,8 +146,7 @@
 
             <div class="form-horizontal">
                 <div class="form-group premisesTypeDiv"<c:if test="${isRenew || isRfc}">hidden</c:if> >
-                        <%--<label class="col-xs-12 col-md-4 control-label error-msg-type">What is your mode of service delivery ? <span class="mandatory">*</span></label>--%>
-                    <iais:field value="What is your mode of service delivery ?" width="5" mandatory="true"/>
+                    <iais:field value="What is your Mode of Service Delivery type?" width="5" mandatory="true"/>
 
                     <c:set var="premTypeLen" value="${premisesType.size()}"/>
                     <c:set var="premTypeCss" value="${premTypeLen > 2 ? 'col-md-2' : 'col-md-3'}"/>

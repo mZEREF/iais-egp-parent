@@ -41,7 +41,6 @@
 
         let svcContent = '.person-content';
         psnEditEvent(svcContent);
-
         <c:if test="${AppSubmissionDto.needEditController}">
         $(svcContent).each(function (k,v) {
             if ($("#errorMapIs").val() == 'error') {

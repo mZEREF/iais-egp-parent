@@ -26,6 +26,8 @@ public interface LicCommService {
 
     List<LicenceDto> getLicenceDtoByHciCode(String licenseeId, AppGrpPremisesDto appGrpPremisesDto, String... excludeNos);
 
+    List<LicenceDto> getPendingBundledMsLicences(String licenseeId, List<String> premTypes, String premType);
+
     /**
      * Only retrieve active / approved licence
      *

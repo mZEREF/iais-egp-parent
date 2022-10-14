@@ -274,6 +274,7 @@
             if ($currContent.length == 1) {
                 $currContent.find('.assign-psn-item').html('');
             }
+            $('.personnel-content-edit').val(1)
         });
     }
 
@@ -282,10 +283,6 @@
     });
 
 
-    function removeSp() {
-        console.log("SP --->");
-        $('.spErrorMsg').html("");
-    }
 
     var pageController = function ($Ele) {
         let flag = $("#curr").val();

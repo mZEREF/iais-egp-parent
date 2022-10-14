@@ -149,23 +149,108 @@ public class PageDataCopyUtil {
                     AppSvcPersonnelDto dto = new AppSvcPersonnelDto();
                     dto.setSalutation(StringUtil.getNonNull(svcPersonnelDto.getSalutation()));
                     dto.setPersonnelType(svcPersonnelDto.getPersonnelType());
+                    dto.setIndexNo(svcPersonnelDto.getIndexNo());
                     if (StringUtil.isEmpty(dto.getPersonnelType())) {
                         dto.setPersonnelType(ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL);
                     }
                     dto.setName(svcPersonnelDto.getName());
-                    dto.setDesignation(svcPersonnelDto.getDesignation());
-                    dto.setOtherDesignation(svcPersonnelDto.getOtherDesignation());
-                    dto.setProfRegNo(svcPersonnelDto.getProfRegNo());
-                    dto.setWrkExpYear(StringUtil.getNonNull(svcPersonnelDto.getWrkExpYear()));
-                    dto.setQualification(StringUtil.getNonNull(svcPersonnelDto.getQualification()));
                     return dto;
                 })
                 .sorted(Comparator.comparing(AppSvcPersonnelDto::getSalutation)
                         .thenComparing(AppSvcPersonnelDto::getName)
-                        .thenComparing(AppSvcPersonnelDto::getPersonnelType)
-                        .thenComparing(AppSvcPersonnelDto::getQualification)
-                        .thenComparing(AppSvcPersonnelDto::getWrkExpYear))
+                        .thenComparing(AppSvcPersonnelDto::getPersonnelType))
                 .collect(Collectors.toList());
+    }
+
+    public static List<AppSvcPersonnelDto> copySectionLeaderDetail(List<AppSvcPersonnelDto> appSvcPersonnelDtoList) {
+        if (appSvcPersonnelDtoList == null || appSvcPersonnelDtoList.isEmpty()) {
+            return appSvcPersonnelDtoList;
+        }
+        List<AppSvcPersonnelDto>  dtoList = IaisCommonUtils.genNewArrayList(appSvcPersonnelDtoList.size());
+        for (AppSvcPersonnelDto dto : appSvcPersonnelDtoList) {
+            AppSvcPersonnelDto personnelDto = dto;
+            personnelDto.setName(null);
+            personnelDto.setSalutation(null);
+            personnelDto.setIndexNo(null);
+            dtoList.add(personnelDto);
+        }
+        return dtoList;
+    }
+
+    public static List<AppSvcPersonnelDto> copySectionLeader(List<AppSvcPersonnelDto> appSvcPersonnelDtoList) {
+        if (appSvcPersonnelDtoList == null || appSvcPersonnelDtoList.isEmpty()) {
+            return appSvcPersonnelDtoList;
+        }
+        List<AppSvcPersonnelDto>  dtoList = IaisCommonUtils.genNewArrayList(appSvcPersonnelDtoList.size());
+        for (AppSvcPersonnelDto dto : appSvcPersonnelDtoList) {
+            AppSvcPersonnelDto personnelDto = new AppSvcPersonnelDto();
+            personnelDto.setName(dto.getName());
+            personnelDto.setSalutation(dto.getSalutation());
+            personnelDto.setIndexNo(dto.getIndexNo());
+            dtoList.add(personnelDto);
+        }
+        return dtoList;
+    }
+
+
+    public static List<AppSvcPersonnelDto> copySvcArPersonnel(List<AppSvcPersonnelDto> appSvcPersonnelDtoList) {
+        if (appSvcPersonnelDtoList == null || appSvcPersonnelDtoList.isEmpty()) {
+            return appSvcPersonnelDtoList;
+        }
+        List<AppSvcPersonnelDto>  dtoList = IaisCommonUtils.genNewArrayList(appSvcPersonnelDtoList.size());
+        for (AppSvcPersonnelDto dto : appSvcPersonnelDtoList) {
+            AppSvcPersonnelDto personnelDto = new AppSvcPersonnelDto();
+            personnelDto.setName(dto.getName());
+            personnelDto.setSalutation(dto.getSalutation());
+            personnelDto.setIndexNo(dto.getIndexNo());
+            personnelDto.setPersonnelType(dto.getPersonnelType());
+            dtoList.add(personnelDto);
+        }
+        return dtoList;
+    }
+
+    public static List<AppSvcPersonnelDto> copySvcDetailPersonnel(List<AppSvcPersonnelDto> appSvcPersonnelDtoList) {
+        if (appSvcPersonnelDtoList == null || appSvcPersonnelDtoList.isEmpty()) {
+            return appSvcPersonnelDtoList;
+        }
+        List<AppSvcPersonnelDto>  dtoList = IaisCommonUtils.genNewArrayList(appSvcPersonnelDtoList.size());
+        for (AppSvcPersonnelDto dto : appSvcPersonnelDtoList) {
+            AppSvcPersonnelDto personnelDto = dto;
+            personnelDto.setName(null);
+            personnelDto.setSalutation(null);
+            personnelDto.setIndexNo(null);
+            personnelDto.setPersonnelType(null);
+            dtoList.add(personnelDto);
+        }
+        return dtoList;
+    }
+
+    public static AppSvcPrincipalOfficersDto copyAppSvcPrincipalOfficersDto(AppSvcPrincipalOfficersDto dto) {
+        if (StringUtil.isEmpty(dto)){
+            return dto;
+        }
+        AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
+        appSvcPrincipalOfficersDto.setSalutation(dto.getSalutation());
+        appSvcPrincipalOfficersDto.setName(dto.getName());
+        appSvcPrincipalOfficersDto.setIdNo(dto.getIdNo());
+        appSvcPrincipalOfficersDto.setIndexNo(dto.getIndexNo());
+        return appSvcPrincipalOfficersDto;
+    }
+
+    public static List<AppSvcPrincipalOfficersDto> copyAppSvcPrincipalOfficersDtoDetail(List<AppSvcPrincipalOfficersDto> dtoList) {
+        if (dtoList == null || dtoList.isEmpty()) {
+            return dtoList;
+        }
+        List<AppSvcPrincipalOfficersDto> officersDtoList = IaisCommonUtils.genNewArrayList(dtoList.size());
+        for (AppSvcPrincipalOfficersDto dto : officersDtoList) {
+            AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = dto;
+            appSvcPrincipalOfficersDto.setSalutation(null);
+            appSvcPrincipalOfficersDto.setName(null);
+            appSvcPrincipalOfficersDto.setIdNo(null);
+            appSvcPrincipalOfficersDto.setIndexNo(null);
+            officersDtoList.add(appSvcPrincipalOfficersDto);
+        }
+        return officersDtoList;
     }
 
     public static List<AppSvcDocDto> copySvcDocs(List<AppSvcDocDto> appSvcDocDtoLit) {

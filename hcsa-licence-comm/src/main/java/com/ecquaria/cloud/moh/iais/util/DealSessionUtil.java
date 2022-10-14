@@ -35,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremisesTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.SuppleFormItemConfigDto;
@@ -74,6 +75,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.ecquaria.cloud.moh.iais.action.ServiceInfoDelegator.getAppSubmissionDto;
@@ -396,25 +398,15 @@ public class DealSessionUtil {
         if (!init && IaisCommonUtils.isNotEmpty(collection)) {
             return new HashSet<>(collection);
         }
-        Set<String> premisesType = IaisCommonUtils.genNewHashSet();
+        List<HcsaServiceDto> svcList = hcsaServiceDtoList;
         List<HcsaServiceDto> rfiHcsaService = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request, "rfiHcsaService");
-        List<String> svcIds = IaisCommonUtils.genNewArrayList();
         if (rfiHcsaService != null) {
-            rfiHcsaService.forEach(v -> svcIds.add(v.getId()));
-        } else {
-            if (hcsaServiceDtoList == null) {
-                hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,
-                        AppServicesConsts.HCSASERVICEDTOLIST);
-            }
-            if (hcsaServiceDtoList != null) {
-                hcsaServiceDtoList.forEach(item -> svcIds.add(item.getId()));
-            }
+            svcList = rfiHcsaService;
+        } else if (hcsaServiceDtoList == null) {
+            svcList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,
+                    AppServicesConsts.HCSASERVICEDTOLIST);
         }
-        if (!IaisCommonUtils.isEmpty(svcIds)) {
-            premisesType = getConfigCommService().getAppGrpPremisesTypeBySvcId(svcIds);
-        } else {
-            log.info(StringUtil.changeForLog("do not have select the services"));
-        }
+        Set<String> premisesType = getPremiseTypes(svcList);
         ParamUtil.setSessionAttr(request, PREMISESTYPE, (Serializable) sortPremisesTypes(premisesType));
         return premisesType;
     }
@@ -429,6 +421,48 @@ public class DealSessionUtil {
         return premisesTypes.stream()
                 .sorted(Comparator.comparingInt(IaisCommonUtils::getPremSeqNum))
                 .collect(Collectors.toList());
+    }
+
+    public static Set<String> getPremiseTypes(List<HcsaServiceDto> hcsaServiceDtoList) {
+        if (IaisCommonUtils.isEmpty(hcsaServiceDtoList)) {
+            return IaisCommonUtils.genNewHashSet();
+        }
+        Set<String> premisesType;
+        List<HcsaSvcSpePremisesTypeDto> premisesTypeList = hcsaServiceDtoList.get(0).getPremisesTypeList();
+        if (IaisCommonUtils.isEmpty(premisesTypeList)) {
+            List<String> svcIds = IaisCommonUtils.genNewArrayList();
+            for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtoList) {
+                svcIds.add(hcsaServiceDto.getId());
+            }
+            premisesType = getConfigCommService().getAppGrpPremisesTypeBySvcId(svcIds);
+        } else {
+            premisesType = IaisCommonUtils.genNewHashSet();
+            for (HcsaSvcSpePremisesTypeDto hcsaSvcSpePremisesTypeDto : premisesTypeList) {
+                premisesType.add(hcsaSvcSpePremisesTypeDto.getPremisesType());
+            }
+            int i = hcsaServiceDtoList.size();
+            while (i-- > 1) {
+                premisesTypeList = hcsaServiceDtoList.get(i).getPremisesTypeList();
+                premisesType = handlePermiseType(premisesType, premisesTypeList);
+            }
+        }
+        return premisesType;
+    }
+
+    private static Set<String> handlePermiseType(Set<String> premisesType, List<HcsaSvcSpePremisesTypeDto> premisesTypeList) {
+        if (IaisCommonUtils.isEmpty(premisesTypeList) || IaisCommonUtils.isEmpty(premisesType)) {
+            return premisesType;
+        }
+        Map<String, HcsaSvcSpePremisesTypeDto> map = premisesTypeList.stream()
+                .collect(Collectors.toMap(HcsaSvcSpePremisesTypeDto::getPremisesType, Function.identity(), (u, v) -> v));
+        Iterator<String> iterator = premisesType.iterator();
+        while (iterator.hasNext()) {
+            String next = iterator.next();
+            if (map.get(next) == null) {
+                iterator.remove();
+            }
+        }
+        return premisesType;
     }
 
     public static void setLicseeAndPsnDropDown(String licenseeId, List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos,
