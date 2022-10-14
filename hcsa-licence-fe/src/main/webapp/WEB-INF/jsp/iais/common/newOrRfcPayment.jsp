@@ -39,7 +39,7 @@
                 <c:set var="simpleSpecifiedFeeExt" value="${feeInfoDto.simpleSpecifiedFeeExt}"/>
                 <c:set var="thbSpecifiedFeeExt" value="${feeInfoDto.thbSpecifiedFeeExt}"/>
                 <!--base -->
-                <c:if test="${not empty baseSvcFeeExt }">
+                <c:if test="${not empty baseSvcFeeExt and empty includedSvcFeeExtList}">
                     <tr>
                         <td>
                             <c:forEach var="svcName" items="${baseSvcFeeExt.svcNames}">
@@ -69,14 +69,25 @@
                     </tr>
                 </c:if>
                 <!--included -->
-                <c:if test="${not empty includedSvcFeeExtList }">
+                <c:if test="${not empty baseSvcFeeExt and not empty includedSvcFeeExtList }">
                     <c:forEach items="${includedSvcFeeExtList}" var="includedSvcFeeExt" >
                         <tr>
                             <td>
                                 <p>Bundled Fees</p>
+                                <c:forEach var="svcName" items="${baseSvcFeeExt.svcNames}">
+                                    <p>
+                                        &nbsp;&nbsp;<strong>- <c:out value="${svcName}"/></strong>
+                                    </p>
+                                    <p>
+                                        (${baseSvcFeeExt.address})
+                                    </p>
+                                </c:forEach>
                                 <c:forEach var="svcName" items="${includedSvcFeeExt.svcNames}">
                                     <p>
                                         &nbsp;&nbsp;<strong>- <c:out value="${svcName}"/></strong>
+                                    </p>
+                                    <p>
+                                        (${includedSvcFeeExt.address})
                                     </p>
                                 </c:forEach>
                             </td>
@@ -92,10 +103,11 @@
                             </td>
                             <td>
                                 <p>
-                                    <c:out value="${includedSvcFeeExt.amountStr}"/>
+                                    <c:out value="${Formatter.formatterMoney(baseSvcFeeExt.amount+includedSvcFeeExt.amount)}"/>
                                 </p>
                                 <c:forEach var="svcName" items="${includedSvcFeeExt.svcNames}">
                                     <p>Include</p>
+                                    <p></p>
                                 </c:forEach>
                             </td>
                         </tr>
