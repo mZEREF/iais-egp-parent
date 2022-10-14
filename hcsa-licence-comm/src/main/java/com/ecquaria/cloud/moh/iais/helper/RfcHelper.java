@@ -173,8 +173,7 @@ public final class RfcHelper {
         appEditSelectDto.setSendMessageAndNoAutoSuForm(changeSupplementaryForm);
 
 
-        int[] arr = {1,2,3,4,5};
-        int i = arr[7];
+
 
         boolean changeCharges = isChangeAppSvcChargesPageDto(appSvcRelatedInfoDtos.get(0).getAppSvcChargesPageDto(),
                 oldAppSvcRelatedInfoDtos.get(0).getAppSvcChargesPageDto());
