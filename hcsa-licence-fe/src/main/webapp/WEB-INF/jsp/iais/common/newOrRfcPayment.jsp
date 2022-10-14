@@ -12,16 +12,16 @@
 
     <c:choose>
         <c:when test="${'APTY005' ==AppSubmissionDto.appType}">
-            <c:forEach var="svc" items="${appSubmissionDtos}">
+            <c:forEach var="svc" items="${appSubmissionDtos}" varStatus="index">
                 <tr>
                     <td>
-                        <p><c:out value="${svc.serviceName}"/></p>
+                        <p><strong><c:out value="${svc.serviceName}"/></strong></p>
                     </td>
                     <td>
                         <p>Amendment</p>
                     </td>
                     <td>
-                        <p><c:out value="${svc.appGrpNo}"/></p>
+                        <p><c:out value="${svc.appGrpNo}-0${index.index+1}"/></p>
                     </td>
                     <td>
                         <p><c:out value="${svc.amountStr}"/></p>
@@ -44,7 +44,7 @@
                         <td>
                             <c:forEach var="svcName" items="${baseSvcFeeExt.svcNames}">
                                 <p>
-                                    <c:out value="${svcName}"/>
+                                    <strong><c:out value="${svcName}"/></strong>
                                 </p>
                                 <p>
                                     (${baseSvcFeeExt.address})
@@ -58,7 +58,7 @@
                         </td>
                         <td>
                             <p>
-                                <c:out value="${AppSubmissionDto.appGrpNo}"/>
+                                <c:out value="${AppSubmissionDto.appGrpNo}-0${feeInfoStat.index+1}"/>
                             </p>
                         </td>
                         <td>
@@ -76,7 +76,7 @@
                                 <p>Bundled Fees</p>
                                 <c:forEach var="svcName" items="${includedSvcFeeExt.svcNames}">
                                     <p>
-                                        &nbsp;&nbsp;<c:out value="${svcName}"/>
+                                        &nbsp;&nbsp;<strong>- <c:out value="${svcName}"/></strong>
                                     </p>
                                 </c:forEach>
                             </td>
@@ -108,7 +108,7 @@
                         <td>
                             <p>&nbsp;&nbsp;Bundled Fees</p>
                             <c:forEach var="svcName" items="${bundleSvcFeeExt.svcNames}">
-                                <p>&nbsp;&nbsp;- <c:out value="${svcName}"/></p>
+                                <p>&nbsp;&nbsp;<strong>- <c:out value="${svcName}"/></strong></p>
                             </c:forEach>
 
                         </td>
@@ -137,13 +137,13 @@
                             <p>&nbsp;&nbsp;With Specialised Service(s)</p>
                             <c:if test="${not empty simpleSpecifiedFeeExt }">
                                 <c:forEach var="svcNameSs" items="${simpleSpecifiedFeeExt.svcNames}">
-                                    <p>&nbsp;&nbsp;- <c:out value="${svcNameSs}"/></p>
+                                    <p>&nbsp;&nbsp;<strong>- <c:out value="${svcNameSs}"/></strong></p>
                                 </c:forEach>
                             </c:if>
 
                             <c:if test="${not empty complexSpecifiedFeeExt }">
                                 <c:forEach var="svcNameCs" items="${complexSpecifiedFeeExt.svcNames}">
-                                    <p>&nbsp;&nbsp;- <c:out value="${svcNameCs}"/></p>
+                                    <p>&nbsp;&nbsp;<strong>- <c:out value="${svcNameCs}"/></strong></p>
                                 </c:forEach>
                             </c:if>
 
@@ -189,7 +189,7 @@
                         <td>
                             <p>&nbsp;&nbsp;With Specialised Service(s)</p>
                             <c:forEach var="svcName" items="${thbSpecifiedFeeExt.svcNames}">
-                                <p>&nbsp;&nbsp;- <c:out value="${svcName}"/></p>
+                                <p>&nbsp;&nbsp;<strong>- <c:out value="${svcName}"/></strong></p>
                             </c:forEach>
 
                         </td>
@@ -216,8 +216,8 @@
     <tr>
         <td></td>
         <td></td>
-        <td><p>Total${FeeDetail}</p></td>
-        <td><p><strong> <c:out value="${AppSubmissionDto.amountStr}"/></strong></p></td>
+        <td><p><strong>Total${FeeDetail}</strong></p></td>
+        <td><p><c:out value="${AppSubmissionDto.amountStr}"/></p></td>
     </tr>
     </tbody>
 </table>
