@@ -435,7 +435,9 @@
                 </table>
               </div>
             </div>
+            <#if canShowAddressNote??>
             <span>*Any notice or correspondence to be issued to the Licensee will be made to this address.</span>
+            </#if>
             <div class="lic-dateinfo">
               <table width = "100%" >
                 <tr align = "left">

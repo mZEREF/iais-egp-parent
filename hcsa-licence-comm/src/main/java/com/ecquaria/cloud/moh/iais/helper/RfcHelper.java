@@ -655,7 +655,12 @@ public final class RfcHelper {
         List<AppSvcPersonnelDto> oldPersonnelList = IaisCommonUtils.genNewArrayList();
         appSvcSpecialServiceInfoDtoList.forEach((item) -> oldPersonnelList.addAll(item.getSpecialPersonnelDtoList()));
         boolean changePersonal = isChangeServicePersonnels(personnelList, oldPersonnelList);
-        if (changeKeyPersonnel||changePersonal){
+        List<AppSvcSuplmFormDto> appSvcSuplmFormList = IaisCommonUtils.genNewArrayList();
+        appSvcSpecialServiceInfoDtoList.forEach((item) -> appSvcSuplmFormList.addAll(item.getAppSvcSuplmFormDtoList()));
+        List<AppSvcSuplmFormDto> oldAppSvcSuplmFormList = IaisCommonUtils.genNewArrayList();
+        appSvcSpecialServiceInfoDtoList.forEach((item) -> oldAppSvcSuplmFormList.addAll(item.getAppSvcSuplmFormDtoList()));
+        boolean changeSupplementaryForm = compareSupplementaryForm(appSvcSuplmFormList, oldAppSvcSuplmFormList);
+        if (changeKeyPersonnel||changePersonal||changeSupplementaryForm){
             return true;
         }
         return result;

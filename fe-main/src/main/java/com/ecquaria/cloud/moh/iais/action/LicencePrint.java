@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -81,6 +82,7 @@ public class LicencePrint {
                     map.put("lists",eachPageList);
                 }
                 map.put("content2Page",totle);
+                map.put("canShowAddressNote",ApplicationConsts.PREMISES_TYPE_PERMANENT.equals(licenceViewDto.getPremisesType()));
                 map.put("startDate",licenceViewDto.getStartDate());
                 map.put("endDate",licenceViewDto.getEndDate());
                 List<String> disciplinesSpecifieds = licenceViewDto.getDisciplinesSpecifieds();
