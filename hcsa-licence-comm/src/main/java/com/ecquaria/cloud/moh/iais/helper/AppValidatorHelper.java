@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMes
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpSecondAddrDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremGroupOutsourcedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
@@ -732,6 +733,16 @@ public final class AppValidatorHelper {
         List<String> addressList = IaisCommonUtils.genNewArrayList();
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         Set<String> distinctVehicleNos = IaisCommonUtils.genNewHashSet();
+        boolean checkMs = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())
+                && appSubmissionDto.getAppSvcRelatedInfoDtoList().stream()
+                .anyMatch(dto -> AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(dto.getServiceCode()));
+        List<String> premTypes = IaisCommonUtils.genNewArrayList();
+        if (checkMs) {
+            List<AppLicBundleDto> appLicBundleDtoList = appSubmissionDto.getAppLicBundleDtoList();
+            if (!IaisCommonUtils.isEmpty(appLicBundleDtoList)) {
+                appLicBundleDtoList.forEach(dto -> premTypes.add(dto.getPremisesType()));
+            }
+        }
         boolean needAppendMsg = false;
         String licenseeId = appSubmissionDto.getLicenseeId();
         String licenceId = appSubmissionDto.getLicenceId();
@@ -744,7 +755,7 @@ public final class AppValidatorHelper {
             boolean hciFlag = false;
             if (StringUtil.isEmpty(premiseType)) {
                 if ("".equals(premiseTypeError)) {
-                    premiseTypeError = MessageUtil.replaceMessage("GENERAL_ERR0006", "What is your premises type", "field");
+                    premiseTypeError = MessageUtil.getMessageDesc("GENERAL_ERR0006");
                 }
                 errorMap.put("premisesType" + i, premiseTypeError);
             } else {
@@ -852,7 +863,7 @@ public final class AppValidatorHelper {
                 validateAffectedLicences(appSubmissionDto, errorMap, appGrpPremisesDtoList);
             }
 
-            if (checkOthers) {
+            if (checkOthers && errorMap.isEmpty()) {
                 List<PremisesDto> premisesDtos =
                         getLicCommService().getPremisesDtoByHciNameAndPremType(appGrpPremisesDto.getHciName(),
                                 appGrpPremisesDto.getPremisesType(), licenseeId);
@@ -887,6 +898,17 @@ public final class AppValidatorHelper {
                         needAppendMsg = true;
                     }
                 }
+
+                if (checkMs) {
+                    if (premTypes.contains(premiseType)) {
+                        // GENERAL_ERR0060 - Invalid {data}.
+                        errorMap.put("premisesType" + i, MessageUtil.replaceMessage("GENERAL_ERR0060",
+                                "Mode of Service Delivery type", "data"));
+                    } else {
+                        List<String> targetType = getMsBundlePremType(premiseType);
+
+                    }
+                }
             }
             if (!errorMap.isEmpty()) {
                 appGrpPremisesDto.setHasError(true);
@@ -912,6 +934,24 @@ public final class AppValidatorHelper {
         }
         log.info(StringUtil.changeForLog("the do doValidatePremiss end ...."));
         return errMap;
+    }
+
+    private static List<String> getMsBundlePremType(String premiseType) {
+        List<String> premTypes = IaisCommonUtils.genNewArrayList();
+        if (ApplicationConsts.PREMISES_TYPE_PERMANENT.equals(premiseType)
+                || ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
+            premTypes.add(ApplicationConsts.PREMISES_TYPE_MOBILE);
+            premTypes.add(ApplicationConsts.PREMISES_TYPE_REMOTE);
+        } else if (ApplicationConsts.PREMISES_TYPE_MOBILE.equals(premiseType)) {
+            premTypes.add(ApplicationConsts.PREMISES_TYPE_PERMANENT);
+            premTypes.add(ApplicationConsts.PREMISES_TYPE_CONVEYANCE);
+            premTypes.add(ApplicationConsts.PREMISES_TYPE_REMOTE);
+        } else if (ApplicationConsts.PREMISES_TYPE_REMOTE.equals(premiseType)) {
+            premTypes.add(ApplicationConsts.PREMISES_TYPE_PERMANENT);
+            premTypes.add(ApplicationConsts.PREMISES_TYPE_CONVEYANCE);
+            premTypes.add(ApplicationConsts.PREMISES_TYPE_MOBILE);
+        }
+        return premTypes;
     }
 
     private static void validateAffectedLicences(AppSubmissionDto appSubmissionDto, Map<String, String> errorMap,
@@ -3314,8 +3354,12 @@ public final class AppValidatorHelper {
                 mandatoryErrMsg = mandatoryErrMsg.replace("{mandatoryCount}", String.valueOf(minCount));
                 errorMap.put(prefix + appSvcSuplmGroupDto.getGroupId(), mandatoryErrMsg);
             }
+            boolean multiple = count > 1;
+            boolean isValid;
+            List<String> psn = IaisCommonUtils.genNewArrayList();
             for (AppSvcSuplmItemDto appSvcSuplmItemDto : appSvcSuplmItemDtoList) {
                 SuppleFormItemConfigDto itemConfigDto = appSvcSuplmItemDto.getItemConfigDto();
+                isValid = true;
                 int mandatoryType = itemConfigDto.getMandatoryType();
                 String itemType = itemConfigDto.getItemType();
                 String inputValue = appSvcSuplmItemDto.getInputValue();
@@ -3324,34 +3368,65 @@ public final class AppValidatorHelper {
                 if (HcsaConsts.SUPFORM_ITEM_TYPE_TEXT.equals(itemType)) {
                     if (StringUtil.isEmpty(inputValue) && 1 == mandatoryType) {
                         errorMap.put(errorKey, "GENERAL_ERR0006");
+                        isValid = false;
                     }
-                    validateSuplText(errorMap, itemConfigDto, inputValue, errorKey);
+                    if (!validateSuplText(errorMap, itemConfigDto, inputValue, errorKey)){
+                        isValid = false;
+                    }
                 } else if (HcsaConsts.SUPFORM_ITEM_TYPE_RADIO.equals(itemType)) {
                     if (StringUtil.isEmpty(inputValue) && 1 == mandatoryType) {
                         errorMap.put(errorKey, "GENERAL_ERR0006");
+                        isValid = false;
                     }
                 } else if (HcsaConsts.SUPFORM_ITEM_TYPE_CHECKBOX.equals(itemType)) {
                     if (StringUtil.isEmpty(inputValue) && 1 == mandatoryType) {
                         errorMap.put(errorKey, "GENERAL_ERR0006");
+                        isValid = false;
                     }
                 } else if (HcsaConsts.SUPFORM_ITEM_TYPE_SELECT.equals(itemType)) {
                     if (StringUtil.isEmpty(inputValue) && 1 == mandatoryType) {
                         errorMap.put(errorKey, "GENERAL_ERR0006");
+                        isValid = false;
                     }
                 }
+                if(!checkConditonMandatory(itemMap, radioBatchMap, errorMap, appSvcSuplmItemDto, itemConfigDto, prefix)){
+                    isValid = false;
+                }
 
-                checkConditonMandatory(itemMap, radioBatchMap, errorMap, appSvcSuplmItemDto, itemConfigDto, prefix);
-
+                // check duplication
+                if (isValid && multiple) {
+                    String psnValue = getPsnValue(appSvcSuplmItemDto);
+                    if (!StringUtil.isEmpty(psnValue)) {
+                        if (psn.contains(psnValue)) {
+                            errorMap.put(errorKey, "NEW_ERR0012");
+                        } else {
+                            psn.add(psnValue);
+                        }
+                    }
+                }
             }
+
         }
         return errorMap;
     }
 
-    private static void validateSuplText(Map<String, String> errorMap, SuppleFormItemConfigDto itemConfigDto, String inputValue,
+    private static String getPsnValue(AppSvcSuplmItemDto appSvcSuplmItemDto) {
+        String specialCondition = appSvcSuplmItemDto.getSpecialCondition();
+        if (StringUtil.isEmpty(specialCondition)) {
+            return "";
+        }
+        if (StringUtil.toLowerCase(specialCondition).contains("name")) {
+            return appSvcSuplmItemDto.getInputValue();
+        }
+        return "";
+    }
+
+    private static boolean validateSuplText(Map<String, String> errorMap, SuppleFormItemConfigDto itemConfigDto, String inputValue,
             String errorKey) {
         if (StringUtil.isEmpty(inputValue)) {
-            return;
+            return true;
         }
+        int size = errorMap.size();
         int maxLength = itemConfigDto.getMaxLength();
         if (maxLength > 0 && inputValue.length() > maxLength) {
             errorMap.put(errorKey, repLength(itemConfigDto.getDisplayInfo(), String.valueOf(maxLength)));
@@ -3418,23 +3493,24 @@ public final class AppValidatorHelper {
                 }
                 break;
         }
+        return size != errorMap.size();
     }
 
-    private static void checkConditonMandatory(Map<String, AppSvcSuplmItemDto> itemMap,
+    private static boolean checkConditonMandatory(Map<String, AppSvcSuplmItemDto> itemMap,
             Map<String, List<AppSvcSuplmItemDto>> radioBatchMap,
             Map<String, String> errorMap, AppSvcSuplmItemDto appSvcSuplmItemDto, SuppleFormItemConfigDto itemConfigDto,
             String prefix) {
         int mandatoryType = itemConfigDto.getMandatoryType();
         String inputValue = appSvcSuplmItemDto.getInputValue();
         if (!(2 == mandatoryType || 3 == mandatoryType || 5 == mandatoryType) || !StringUtil.isEmpty(inputValue)) {
-            return;
+            return true;
         }
         int seqNum = appSvcSuplmItemDto.getSeqNum();
         String radioBatchNum = itemConfigDto.getRadioBatchNum();
         String parentItemId = itemConfigDto.getParentItemId();
         String mandatoryCondition = appSvcSuplmItemDto.getMandatoryCondition();
         if (StringUtil.isEmpty(parentItemId)) {
-            return;
+            return true;
         }
         List<AppSvcSuplmItemDto> conditions = IaisCommonUtils.genNewArrayList();
         for (String id : parentItemId.split(AppConsts.DFT_DELIMITER)) {
@@ -3455,7 +3531,7 @@ public final class AppValidatorHelper {
             }
         }
         if (conditions.isEmpty()) {
-            return;
+            return true;
         }
         boolean mandatory = false;
         for (AppSvcSuplmItemDto condDto : conditions) {
@@ -3474,19 +3550,23 @@ public final class AppValidatorHelper {
             }
         }
         if (!mandatory) {
-            return;
+            return true;
         }
+        boolean isValid = true;
         List<AppSvcSuplmItemDto> appSvcSuplmItemDtos = radioBatchMap.get(radioBatchNum + seqNum);
         if (IaisCommonUtils.isEmpty(appSvcSuplmItemDtos)) {
             errorMap.put(prefix + appSvcSuplmItemDto.getItemConfigId() + seqNum, "GENERAL_ERR0006");
+            isValid = false;
         } else {
             if (appSvcSuplmItemDtos.stream().allMatch(dto -> StringUtil.isEmpty(dto.getInputValue()))) {
                 AppSvcSuplmItemDto itemDto = appSvcSuplmItemDtos.stream()
                         .max(Comparator.comparingInt(dto -> dto.getItemConfigDto().getSeqNum()))
                         .orElse(appSvcSuplmItemDto);
                 errorMap.put(prefix + itemDto.getItemConfigId() + itemDto.getSeqNum(), "GENERAL_ERR0006");
+                isValid = false;
             }
         }
+        return isValid;
     }
 
     public static int compareDateByDay(String date) {

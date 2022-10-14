@@ -288,8 +288,11 @@ public class NewApplicationDelegator extends AppCommDelegator {
             appSubmissionDto = new AppSubmissionDto();
             appSubmissionDto.setLicenseeId(ApplicationHelper.getLicenseeId(request));
             appSubmissionDto.setAppType(appType);
+            boolean isMsBundle = false;
             if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
-                fromLic = appLicBundleDtoList.get(0).isLicOrApp();
+                AppLicBundleDto appLicBundleDto = appLicBundleDtoList.get(0);
+                fromLic = appLicBundleDto.isLicOrApp();
+                isMsBundle = AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(appLicBundleDto.getBoundCode());
                 appSubmissionDto.setAppLicBundleDtoList(appLicBundleDtoList);
             }
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
@@ -302,7 +305,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                     break;
                 }
             }
-            if (!StringUtil.isEmpty(premisesId)) {
+            if (!StringUtil.isEmpty(premisesId) && !isMsBundle) {
                 List<AppGrpPremisesDto> appGrpPremisesDtos;
                 if (fromLic) {
                     appGrpPremisesDtos = licCommService.getLicPremisesInfo(premisesId);
@@ -343,7 +346,13 @@ public class NewApplicationDelegator extends AppCommDelegator {
             appGrpPremisesDtos.get(0).setPremisesIndexNo(UUID.randomUUID().toString());
         }
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
-        appSubmissionDto.setReadonlyPrem(true);
+        List<AppLicBundleDto> appLicBundleDtoList = appSubmissionDto.getAppLicBundleDtoList();
+        if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList) && AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(
+                appLicBundleDtoList.get(0).getBoundCode())) {
+            appSubmissionDto.setReadonlyPrem(false);
+        } else {
+            appSubmissionDto.setReadonlyPrem(true);
+        }
     }
 
     /**
@@ -986,7 +995,6 @@ public class NewApplicationDelegator extends AppCommDelegator {
 
     @Override
     protected AppSubmissionDto submit(AppSubmissionDto appSubmissionDto) {
-        log.info(StringUtil.changeForLog("Orginal size: " + JsonUtil.parseToJson(appSubmissionDto).length()));
         return appSubmissionService.submit(appSubmissionDto, null);
     }
 
