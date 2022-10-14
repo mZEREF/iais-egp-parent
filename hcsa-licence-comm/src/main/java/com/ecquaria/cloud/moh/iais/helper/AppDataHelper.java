@@ -2154,7 +2154,8 @@ public final class AppDataHelper {
             }
             person.setLicPerson(AppConsts.YES.equals(licPsn));
             person.setAssignSelect(assign);
-            person.setPsnType(psnType);
+            String[] keys = psnType.split(AppConsts.DFT_DELIMITER);
+            person.setPsnType(keys[keys.length-1]);
             personList.add(person);
         }
         log.info(StringUtil.changeForLog(StringUtil.changeForLog(psnType + " size: " + personList.size())));
