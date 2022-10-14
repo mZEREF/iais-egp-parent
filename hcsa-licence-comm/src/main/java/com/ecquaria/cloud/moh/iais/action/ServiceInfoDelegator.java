@@ -435,6 +435,7 @@ public class ServiceInfoDelegator {
         String currSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request, currSvcId);
+        String currSvcCode = (String) ParamUtil.getSessionAttr(request, CURRENTSVCCODE);
         String isEdit = ParamUtil.getString(request, IS_EDIT);
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
         List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = currSvcInfoDto.getAppSvcSpecialServiceInfoList();
@@ -452,6 +453,12 @@ public class ServiceInfoDelegator {
             Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(
                     request, LICPERSONSELECTMAP);
             AppValidatorHelper.doValidateSpecialServicesForm(appSvcSpecialServiceInfoList,errorMap,licPersonMap);
+        }
+        boolean isValid = checkAction(errorMap, HcsaConsts.STEP_CLINICAL_DIRECTOR, appSubmissionDto, request);
+        if (isValid && isGetDataFromPage) {
+            List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorList=IaisCommonUtils.genNewArrayList();
+            appSvcSpecialServiceInfoList.forEach((item)->appSvcClinicalDirectorList.addAll(item.getAppSvcCgoDtoList()));
+            syncDropDownAndPsn(appSubmissionDto,appSvcClinicalDirectorList, currSvcCode, request);
         }
         checkAction(errorMap, HcsaConsts.STEP_SPECIAL_SERVICES_FORM, appSubmissionDto, request);
         log.debug(StringUtil.changeForLog("do SpecialServicesInformation end ..."));
