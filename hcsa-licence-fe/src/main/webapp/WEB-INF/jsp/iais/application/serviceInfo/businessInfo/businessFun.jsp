@@ -34,6 +34,7 @@
             $(this).closest('.weeklyDiv').remove();
             //reset name
             refreshIndex($weeklyContent.find('div.weeklyDiv'));
+            $('a.businessEdit').trigger('click');
             var weeklyLength = $weeklyContent.find('.weeklyDiv').length;
             if (weeklyLength==0){
                 $weeklyContent.find('input.weeklyLength').val(1);
@@ -79,6 +80,7 @@
             $(this).closest('.pubHolidayDiv').remove();
             //reset name
             refreshIndex($phContent.find('div.pubHolidayDiv'));
+            $('a.businessEdit').trigger('click');
             var phLength = $phContent.find('.pubHolidayDiv').length;
             if(phLength==0){
                 $phContent.find('input.phLength').val(1);
@@ -126,6 +128,7 @@
             $(this).closest('.eventDiv').remove();
             //reset name
             refreshIndex($eventContent.find('div.eventDiv'));
+            $('a.businessEdit').trigger('click');
             var eventLength = $eventContent.find('.eventDiv').length;
             if(eventLength==0){
                 $eventContent.find('input.eventLength').val(1);
