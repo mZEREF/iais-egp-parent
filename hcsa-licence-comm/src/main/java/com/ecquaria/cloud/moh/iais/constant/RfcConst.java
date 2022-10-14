@@ -62,4 +62,10 @@ public class RfcConst {
     public static final int STATUS_REMOVAL                              = 4;
     public static final int STATUS_CHANGED                              = 8;
 
+    public static final int RFC_NULL                                = -1;
+    public static final int RFC_ADD                                 = 0;
+    public static final int RFC_REMOVE                              = 1;
+    public static final int RFC_SAME                                = 2;
+
+
 }
