@@ -1,11 +1,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 
-<input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
-<input type="hidden" id="isEditHiddenVal" class="person-content-edit" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
 <div class="row form-horizontal normal-label person-content">
-
     <input type="hidden" class="not-refresh isPartEdit" name="isPartEdit" value="0"/>
+    <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
+    <input type="hidden" id="isEditHiddenVal" class="person-content-edit" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
 
     <c:if test="${AppSubmissionDto.needEditController }">
         <c:if test="${(isRfc || isRenew) && !isRfi}">

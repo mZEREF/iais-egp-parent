@@ -44,7 +44,6 @@
         $currContent.find('.isPartEdit').val('1');
         console.log(target+'-edit','==========>')
         $(target + '-edit').val('1');
-        $("#isEditHiddenVal").val('1');
         hideTag($currContent.find('.edit-content'));
         unDisableContent($currContent);
         checkPersonDisabled($currContent);
@@ -187,6 +186,7 @@
                 dismissWaiting();
                 return;
             }
+            unDisableContent($content);
             var url = "/person-info";
             if (fromUser) {
                 url = "/user-account-info";
@@ -236,6 +236,7 @@
 
     function checkPersonDisabled($currContent, onlyInit) {
         let psnEditFieldData = $currContent.find('.psnEditField').val();
+        console.log(psnEditFieldData,'edit====>')
         if (isEmpty(psnEditFieldData)) {
             $currContent.find('.licPerson').val(0);
         } else {
