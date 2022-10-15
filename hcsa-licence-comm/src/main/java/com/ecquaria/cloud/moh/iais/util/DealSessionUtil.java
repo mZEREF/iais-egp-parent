@@ -393,7 +393,8 @@ public class DealSessionUtil {
         ParamUtil.setSessionAttr(request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
     }
 
-    public static Set<String> initPremiseTypes(List<HcsaServiceDto> hcsaServiceDtoList, boolean init, HttpServletRequest request) {
+    public static Set<String> initPremiseTypes(List<HcsaServiceDto> hcsaServiceDtoList, List<AppLicBundleDto> appLicBundleDtoList,
+            boolean init, HttpServletRequest request) {
         Collection<String> collection = (Collection<String>) ParamUtil.getSessionAttr(request, PREMISESTYPE);
         if (!init && IaisCommonUtils.isNotEmpty(collection)) {
             return new HashSet<>(collection);
@@ -406,9 +407,49 @@ public class DealSessionUtil {
             svcList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,
                     AppServicesConsts.HCSASERVICEDTOLIST);
         }
-        Set<String> premisesType = getPremiseTypes(svcList);
+        Set<String> premisesType = resolveMsPremTypes(getPremiseTypes(svcList), appLicBundleDtoList);
         ParamUtil.setSessionAttr(request, PREMISESTYPE, (Serializable) sortPremisesTypes(premisesType));
         return premisesType;
+    }
+
+    /**
+     * In the MS bundle group, ther are no the same MOSD type.
+     *
+     * @param premiseType         all MOSD types
+     * @param appLicBundleDtoList the current bundled list
+     * @return New MOSD types
+     */
+    private static Set<String> resolveMsPremTypes(Set<String> premiseType, List<AppLicBundleDto> appLicBundleDtoList) {
+        if (IaisCommonUtils.isEmpty(appLicBundleDtoList)) {
+            return premiseType;
+        }
+        boolean hasBundledMs = false;
+        List<String> premTypes = IaisCommonUtils.genNewArrayList();
+        for (AppLicBundleDto appLicBundleDto : appLicBundleDtoList) {
+            if (AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(appLicBundleDto.getSvcCode())) {
+                hasBundledMs = true;
+                premTypes.add(appLicBundleDto.getPremisesType());
+            }
+        }
+        if (!hasBundledMs || premTypes.size() == premiseType.size()) {
+            return premiseType;
+        }
+        for (String premType : premTypes) {
+            premiseType.remove(premType);
+        }
+        if (premiseType.size() == 1) {
+            return premiseType;
+        }
+        if (premTypes.contains(ApplicationConsts.PREMISES_TYPE_CONVEYANCE)) {
+            premiseType.remove(ApplicationConsts.PREMISES_TYPE_PERMANENT);
+        }
+        if (premiseType.size() == 1) {
+            return premiseType;
+        }
+        if (premTypes.contains(ApplicationConsts.PREMISES_TYPE_PERMANENT)) {
+            premiseType.remove(ApplicationConsts.PREMISES_TYPE_CONVEYANCE);
+        }
+        return premiseType;
     }
 
     private static List<String> sortPremisesTypes(Collection<String> premisesTypes) {
@@ -660,7 +701,7 @@ public class DealSessionUtil {
                         appPremSpecialisedDtoList, forceInit);
                 initDocumentSession(documentShowDtos, request);
             } else if (HcsaConsts.STEP_OUTSOURCED_PROVIDERS.equals(stepCode)) {
-                initSvcOutsourcedProvider(request,currSvcInfoDto, forceInit);
+                initSvcOutsourcedProvider(request, currSvcInfoDto, forceInit);
             }
         }
         return currSvcInfoDto;
@@ -802,7 +843,8 @@ public class DealSessionUtil {
         return true;
     }
 
-    public static boolean initSvcOutsourcedProvider(HttpServletRequest request,AppSvcRelatedInfoDto currSvcInfoDto, boolean forceInit) {
+    public static boolean initSvcOutsourcedProvider(HttpServletRequest request, AppSvcRelatedInfoDto currSvcInfoDto,
+            boolean forceInit) {
         AppSvcOutsouredDto appSvcOutsouredDto = currSvcInfoDto.getAppPremOutSourceLicenceDto();
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         if (!forceInit && appSvcOutsouredDto != null && appSvcOutsouredDto.isInit()) {
@@ -813,15 +855,19 @@ public class DealSessionUtil {
         }
         // check bundle
         List<AppLicBundleDto> appLicBundleDtoList = appSubmissionDto.getAppLicBundleDtoList();
-        if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)){
+        if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
             for (AppLicBundleDto appLicBundleDto : appLicBundleDtoList) {
                 String bundleSvcCode = appLicBundleDto.getSvcCode();
                 appSvcOutsouredDto.setBundleSvcCode(bundleSvcCode);
-                if (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(bundleSvcCode) && IaisCommonUtils.isNotEmpty(appSvcOutsouredDto.getClinicalLaboratoryList())){
-                    removeBundleAppPremOutsourced(appSvcOutsouredDto.getClinicalLaboratoryList(),AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY);
+                if (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(bundleSvcCode) && IaisCommonUtils.isNotEmpty(
+                        appSvcOutsouredDto.getClinicalLaboratoryList())) {
+                    removeBundleAppPremOutsourced(appSvcOutsouredDto.getClinicalLaboratoryList(),
+                            AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY);
                 }
-                if (AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(bundleSvcCode) && IaisCommonUtils.isNotEmpty(appSvcOutsouredDto.getRadiologicalServiceList())){
-                    removeBundleAppPremOutsourced(appSvcOutsouredDto.getRadiologicalServiceList(),AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES);
+                if (AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(bundleSvcCode) && IaisCommonUtils.isNotEmpty(
+                        appSvcOutsouredDto.getRadiologicalServiceList())) {
+                    removeBundleAppPremOutsourced(appSvcOutsouredDto.getRadiologicalServiceList(),
+                            AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES);
                 }
             }
         }
@@ -875,13 +921,13 @@ public class DealSessionUtil {
                 });
     }
 
-    private static void removeBundleAppPremOutsourced(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtoList,String svcCode){
+    private static void removeBundleAppPremOutsourced(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtoList, String svcCode) {
         Iterator<AppPremGroupOutsourcedDto> outsourcedDtoIterator = appPremGroupOutsourcedDtoList.iterator();
-        while (outsourcedDtoIterator.hasNext()){
+        while (outsourcedDtoIterator.hasNext()) {
             AppPremGroupOutsourcedDto appPremGroupOutsourcedDto = outsourcedDtoIterator.next();
-            if (appPremGroupOutsourcedDto != null && appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto() != null){
+            if (appPremGroupOutsourcedDto != null && appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto() != null) {
                 String serviceCode = appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getServiceCode();
-                if (svcCode.equals(serviceCode)){
+                if (svcCode.equals(serviceCode)) {
                     appPremGroupOutsourcedDto.setEndDateStr(null);
                     appPremGroupOutsourcedDto.setStartDateStr(null);
                     appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().setOutstandingScope("");

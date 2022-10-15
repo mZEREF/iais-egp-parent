@@ -292,7 +292,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
             if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
                 AppLicBundleDto appLicBundleDto = appLicBundleDtoList.get(0);
                 fromLic = appLicBundleDto.isLicOrApp();
-                isMsBundle = AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(appLicBundleDto.getBoundCode());
+                isMsBundle = AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(appLicBundleDto.getSvcCode());
                 appSubmissionDto.setAppLicBundleDtoList(appLicBundleDtoList);
             }
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
@@ -348,7 +348,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
         List<AppLicBundleDto> appLicBundleDtoList = appSubmissionDto.getAppLicBundleDtoList();
         if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList) && AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(
-                appLicBundleDtoList.get(0).getBoundCode())) {
+                appLicBundleDtoList.get(0).getSvcCode())) {
             appSubmissionDto.setReadonlyPrem(false);
         } else {
             appSubmissionDto.setReadonlyPrem(true);

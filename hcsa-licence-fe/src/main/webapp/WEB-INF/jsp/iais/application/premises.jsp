@@ -87,6 +87,8 @@
 <script type="text/javascript">
     //var init;
     $(document).ready(function () {
+        reSetPremTypeTooltip();
+        window.addEventListener('resize', reSetPremTypeTooltip);
         //init = 0;
         if ($('#ackMessage').val() == 'ACKMESSAGE') {
             $('#ackMessageConfim').modal('show');

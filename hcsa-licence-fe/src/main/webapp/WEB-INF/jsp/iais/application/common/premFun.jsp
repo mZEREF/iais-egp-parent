@@ -777,4 +777,17 @@
     function doActionAfterUploading(data, fileAppendId) {
         fillNonHcsa($("#" + fileAppendId + "ShowId").closest('div.premContent'), data.appPremNonLicRelationDtos);
     }
+
+    function reSetPremTypeTooltip($currContent) {
+        if (isEmptyNode($currContent)) {
+            $currContent = $(document);
+        }
+        $currContent.find('.premisesTypeDiv .form-check-label').each(function () {
+            let targetSpan = $(this).find('span')[1];
+            let leftWidth = targetSpan.offsetLeft + targetSpan.offsetWidth + 5;
+            let $target = $(this).find('a');
+            $target.css('left', leftWidth + 'px');
+            $target.css('right', '');
+        });
+    }
 </script>
