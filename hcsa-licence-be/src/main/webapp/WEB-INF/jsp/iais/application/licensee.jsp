@@ -13,7 +13,6 @@
 <webui:setLayout name="iais-intranet"/>
 
 <c:set var="dto" value="${AppSubmissionDto.subLicenseeDto}"/>
-<c:set var="isNewApp" value="${AppSubmissionDto.appType== 'APTY002'}" scope="request"/>
 <c:if test="${AppSubmissionDto.needEditController }">
     <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.licenseeEdit}" scope="request"/>
 </c:if>
@@ -41,11 +40,6 @@
 </form>
 </div>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
-<c:if test="${!('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
-    <iais:confirm msg="This application has been saved successfully" callBack="$('#saveDraft').modal('hide');" popupOrder="saveDraft"
-                  yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
-                  cancelFunc="submit('licensee','saveDraft','jumpPage');" />
-</c:if>
 <script type="text/javascript">
     $(document).ready(function() {
         //assignSelectBindEvent();
@@ -64,18 +58,21 @@
             submit('licensee','saveDraft',$('#selectDraftNo').val());
         });
 
-        if($('#saveDraftSuccess').val()=='success'){
-            $('#saveDraft').modal('show');
-        }
-
-        <c:if test="${(!AppSubmissionDto.needEditController && readOnly) || AppSubmissionDto.needEditController}">
-            disableContent('div.licenseeContent');
+        <c:if test="${AppSubmissionDto.needEditController}">
+        disableContent('div.licenseeContent');
+        hideTag(('.retrieveAddr'));
         </c:if>
-        <c:if test="${('APTY002' != AppSubmissionDto.appType || requestInformationConfig != null) && not empty errormapIs}">
-        if ($('#edit').length > 0) {
-            $('#edit').trigger('click');
-        }
+        <c:if test="${not empty errormapIs}">
+        editContent();
         </c:if>
     });
 
+    function checkNextNavTab() {
+        <c:if test="${onlyNextTab}">
+        return "premises";
+        </c:if>
+        <c:if test="${!onlyNextTab}">
+        return "";
+        </c:if>
+    }
 </script>

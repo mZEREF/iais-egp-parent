@@ -11,8 +11,8 @@
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
 <input type="hidden" id="autoCheckRandM" value="${autoCheckRandM}"/>
 
-<c:set var="readonly" value="${AppSubmissionDto.readonlyPrem}" />
-<c:set var="singlePrem" value="${AppSubmissionDto.singlePrem}" />
+<c:set var="readonly" value="${AppSubmissionDto.readonlyPrem}"/>
+<c:set var="singlePrem" value="${AppSubmissionDto.singlePrem}"/>
 
 <webui:setLayout name="iais-internet"/>
 <%@ include file="/WEB-INF/jsp/iais/application/common/dashboard.jsp" %>
@@ -41,7 +41,8 @@
                                             <div class="form-check col-sm-12">
                                                 <ul>
                                                     <li>
-                                                        Changes made will be applied to other licences associated with this mode of service delivery:
+                                                        Changes made will be applied to other licences associated with this mode of
+                                                        service delivery:
                                                     </li>
                                                 </ul>
                                             </div>
@@ -53,7 +54,9 @@
                                 <div class="row">
                                     <div class="col-xs-12" id="addPremBody">
                                         <c:if test="${!isRfi && !isRfc && !isRenew && !readonly && !singlePrem}">
-                                            <button id="addPremBtn" class="btn btn-primary" type="button">Add Mode of Service Delivery</button>
+                                            <button id="addPremBtn" class="btn btn-primary" type="button">Add Mode of Service
+                                                Delivery
+                                            </button>
                                         </c:if>
                                     </div>
                                 </div>
@@ -80,16 +83,11 @@
                   yesBtnDesc="" needEscapHtml="false" needFungDuoJi="false"/>
     <input type="hidden" name="continueStep" id="continueStep" value="${continueStep}">
     <input type="hidden" name="crudActionTypeContinue" id="crudActionTypeContinue" value="${crudActionTypeContinue}">
-    <%--<input type="hidden" name="errorMapIs" id="errorMapIs" value="${errormapIs}">--%>
-    <%--<input type="hidden" id="rfc_eqHciNameChange" value="${rfc_eqHciCode}">--%>
 </form>
-</div>
 <script type="text/javascript">
-    //var init;
     $(document).ready(function () {
         reSetPremTypeTooltip();
         window.addEventListener('resize', reSetPremTypeTooltip);
-        //init = 0;
         if ($('#ackMessage').val() == 'ACKMESSAGE') {
             $('#ackMessageConfim').modal('show');
         }
@@ -156,88 +154,8 @@
     function Continue() {
         $('#hciNameUsed').modal('hide');
         $("[name='crud_action_type_continue']").val("continue");
-        submit($('#continueStep').val(),null,$('#crudActionTypeContinue').val());
+        submit($('#continueStep').val(), null, $('#crudActionTypeContinue').val());
     }
-
-    /*function saveDraft() {
-      $('input[type="radio"]').prop('disabled',false);
-      submit('premises','saveDraft',$('#selectDraftNo').val());
-    }
-
-    function cancelSaveDraft() {
-      submit('premises','saveDraft','cancelSaveDraft');
-    }*/
-
-    /*$("#onSiteSel").change(function(){
-        $("#addPremBody").removeAttr("hidden");
-    })
-    var oval = $("#onSiteSel").val();
-    var cval = $("#conveyanceSel").val();
-    var offval =  $('#offSiteSel').val();
-    console.log("oval"+cval);
-
-    if (oval != -1 || cval != -1 || offval != -1) {
-        $("#addPremBody").removeAttr("hidden");
-    }
-    $("#conveyanceSel").change(function(){
-        $("#addPremBody").removeAttr("hidden");
-    })
-
-    $('#offSiteSel').change(function () {
-        $("#addPremBody").removeAttr("hidden");
-    });
-
-
-    function saveDraft() {
-        $('input[type="radio"]').prop('disabled',false);
-        submit('premises','saveDraft',$('#selectDraftNo').val());
-    }
-
-  function cancelSaveDraft() {
-      submit('premises','saveDraft','cancelSaveDraft');
-  }
-
-  function cancel() {
-      $('#saveDraft').modal('hide');
-  }
-
-  function jumpPage() {
-      submit('premises','saveDraft','jumpPage');
-  }
-
-  function Continue() {
-      $('#hciNameUsed').modal('hide');
-      $("[name='crud_action_type_continue']").val("continue");
-      submit($('#continueStep').val(),null,$('#crudActionTypeContinue').val());
-  }
-
-  function postalCodeCon(){
-      $('#postalCodePop').modal('hide');
-    }
-
-  var handlePage = function($Ele){
-      $Ele.find('div.other-lic-content .other-lic:checked').closest('div').find('span.check-circle').addClass('radio-disabled');;
-      $Ele.find('input[name="onSiteFireSafetyCertIssuedDate"]').addClass('disabled-placeHolder');
-      $Ele.find('.addOperational').addClass('hidden');
-      $Ele.find('.opDel').addClass('hidden');
-      $Ele.find('button.addPubHolDay').addClass('hidden');
-      $Ele.find('.removePhBtn').addClass('hidden');
-      $Ele.find('.weeklyDel').addClass('hidden');
-      $Ele.find('.pubHolidayDel').addClass('hidden');
-      $Ele.find('.eventDel').addClass('hidden');
-      $Ele.find('.addWeeklyDiv').addClass('hidden');
-      $Ele.find('.addPhDiv').addClass('hidden');
-      $Ele.find('.addEventDiv').addClass('hidden');
-      $Ele.find('input.allDay').attr('disabled',true);
-      //for rfi
-      $Ele.find('.date_picker').attr('disabled',true);
-      $Ele.find('.date_picker').addClass('disabled-placeHolder');
-      $Ele.find('a.retrieveAddr').addClass('hidden');
-      $Ele.find('span.multi-select-button').css('border-color','#ededed');
-      $Ele.find('span.multi-select-button').css('color','#999');
-      $Ele.find('.multi-select-container input[type="checkbox"]').prop('disabled',true);
-      $Ele.find('input.useType:checked').closest('div').find('label span.check-circle').addClass('radio-disabled');
-  }*/
 </script>
 
 

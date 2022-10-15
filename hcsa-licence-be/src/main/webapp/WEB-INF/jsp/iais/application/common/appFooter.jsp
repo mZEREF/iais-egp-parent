@@ -16,3 +16,19 @@
         </div>
     </div>
 </div>
+<c:if test="${!isRfi && !(isRfc || isRenew)}">
+    <iais:confirm msg="This application has been saved successfully" callBack="$('#saveDraft').modal('hide');" popupOrder="saveDraft"
+                  yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
+                  cancelFunc="jumpPage()" needFungDuoJi="false"/>
+</c:if>
+<script type="text/javascript">
+    $(document).ready(function() {
+        if($('#saveDraftSuccess').val()=='success'){
+            $('#saveDraft').modal('show');
+        }
+    });
+    function jumpPage() {
+        showWaiting();
+        submit('premises','saveDraft','jumpPage');
+    }
+</script>

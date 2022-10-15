@@ -97,10 +97,10 @@
             checkLicenseeType();
         });
 
-        <c:if test="${(!AppSubmissionDto.needEditController && readOnly) || AppSubmissionDto.needEditController}" var="isSpecial">
+        <%--<c:if test="${AppSubmissionDto.needEditController}" var="isSpecial">
         disableContent('div.licenseeContent');
         $('.retrieveAddr').addClass('hidden');
-        </c:if>
+        </c:if>--%>
     });
 
     function initLicenseePage() {
@@ -168,6 +168,9 @@
     }
 
     function editContent() {
+        if (hideEditBtn()) {
+            return;
+        }
         $('#isEditHiddenVal').val('1');
         <c:if test="${isNew}">
         unDisableContent('div.assignSelectRow');
@@ -177,12 +180,20 @@
         </c:if>
         <c:if test="${!isNew}">
         unDisableContent('div.licensee-detail');
-        $('.retrieveAddr').removeClass('hidden');
+        showTag('.retrieveAddr');
         disableContent('div.ind-no');
         disableContent('#licenseeName');
         </c:if>
         initLicenseePage();
-        $(this).closest('div').hide();
+        hideTag('#edit');
+    }
+
+    function hideEditBtn() {
+        let $target = $('#edit');
+        if (isEmptyNode($target)) {
+            return true;
+        }
+        return $target.is(':hidden');
     }
 
     var loadCompanyLicensee = function ($target) {

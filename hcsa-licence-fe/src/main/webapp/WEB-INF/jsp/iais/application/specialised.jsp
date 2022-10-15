@@ -1,7 +1,6 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
-<%@ taglib prefix="ias" uri="http://www.ecq.com/iais" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 
 <webui:setLayout name="iais-internet"/>
 
@@ -89,5 +88,4 @@
         var mainForm = document.getElementById("mainForm");
         mainForm.submit();
     }
-
 </script>

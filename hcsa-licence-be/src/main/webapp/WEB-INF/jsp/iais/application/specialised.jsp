@@ -1,7 +1,6 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
-<%@ taglib prefix="ias" uri="http://www.ecq.com/iais" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 
 <%
     //handle to the Engine APIs
@@ -63,18 +62,29 @@
             submit('serviceForms', null, null);
             </c:if>
             <c:if test="${not empty specialised_next_code}">
-            submitFormTabs('${specialised_next_code}');
+            submitSpecialisedTabs('${specialised_next_code}');
             </c:if>
         });
         $('#SaveDraft').click(function () {
             showWaiting();
             submit('specialised', 'saveDraft', $('#selectDraftNo').val());
         });
+        <c:if test="${AppSubmissionDto.needEditController}">
+        $('div.specialised-content').each(function () {
+            let $content = $(this);
+            disableSpecialisedContent($content);
+        });
+        </c:if>
+        <c:if test="${not empty errormapIs}">
+        $('div.specialised-content').each(function () {
+            doEditSpecialised($(this));
+        });
+        </c:if>
     });
 
-    function submitFormTabs(action) {
+    function submitSpecialisedTabs(action) {
         $("[name='crud_action_type']").val('specialised');
-        $("[name='specialised_svc_code']").val(action);
+        $("[name='specialised_next_code']").val(action);
         var mainForm = document.getElementById("mainForm");
         mainForm.submit();
     }

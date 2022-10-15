@@ -158,28 +158,27 @@
                             <c:if test="${appGrpPremisesDto.premisesType==premType}">
                                 <input class="form-check-input premTypeRadio"  type="radio" name="premType${status.index}" checked="checked" value="${premType}" aria-invalid="false">
                             </c:if>
-                            <label class="form-check-label" ><span class="check-circle"></span>
-                                <c:if test="${premType == permanent}">${permanentShow}</c:if>
-                                <c:if test="${premType == conv}">${convShow}</c:if>
-                                <c:if test="${premType == easMts}">${easMtsShow}</c:if>
-                                <c:if test="${premType == mobile}">${mobileShow}</c:if>
-                                <c:if test="${premType == remote}">${remoteShow}</c:if>
-                                &nbsp;
+                            <label class="form-check-label" >
+                                <span class="check-circle"></span>
+                                <c:choose>
+                                    <c:when test="${premType == permanent}">
+                                        <span>${permanentShow}</span>
+                                        <a class="btn-tooltip styleguide-tooltip" style="z-index: 99;position: absolute; right: -25px;top: 0px" href="javascript:void(0);" data-placement="top"  data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK019"></iais:message>&lt;/p&gt;">i</a>
+                                    </c:when>
+                                    <c:when test="${premType == conv || premType == easMts}">
+                                        <span>${premType == conv ? convShow : easMtsShow}</span>
+                                        <a class="btn-tooltip styleguide-tooltip" style="z-index: 99;position: absolute; right: -25px;top: 0px" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK021"></iais:message>&lt;/p&gt;">i</a>
+                                    </c:when>
+                                    <c:when test="${premType == mobile}">
+                                        <span>${mobileShow}</span>
+                                        <a class="btn-tooltip styleguide-tooltip"  style="z-index: 99;position: absolute; right: -25px;top: 0px" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK032"></iais:message>&lt;/p&gt;">i</a>
+                                    </c:when>
+                                    <c:when test="${premType == remote}">
+                                        <span>${remoteShow}</span>
+                                        <a class="btn-tooltip styleguide-tooltip"  style="z-index: 99;position: absolute; right: -25px;top: 0px;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK033"></iais:message>&lt;/p&gt;">i</a>
+                                    </c:when>
+                                </c:choose>
                             </label>
-                            <c:choose>
-                                <c:when test="${premType == permanent}">
-                                    <a class="btn-tooltip styleguide-tooltip" style="z-index: 99;position: absolute; right: 30px;" href="javascript:void(0);" data-placement="top"  data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK019"></iais:message>&lt;/p&gt;">i</a>
-                                </c:when>
-                                <c:when test="${premType == conv || premType == easMts}">
-                                    <a class="btn-tooltip styleguide-tooltip" style="z-index: 99;position: absolute; right: 20px;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK021"></iais:message>&lt;/p&gt;">i</a>
-                                </c:when>
-                                <c:when test="${premType == mobile}">
-                                    <a class="btn-tooltip styleguide-tooltip"  style="z-index: 99;position: absolute; right: 0;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK032"></iais:message>&lt;/p&gt;">i</a>
-                                </c:when>
-                                <c:when test="${premType == remote}">
-                                    <a class="btn-tooltip styleguide-tooltip"  style="z-index: 99;position: absolute; right: -8px;" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK033"></iais:message>&lt;/p&gt;">i</a>
-                                </c:when>
-                            </c:choose>
                         </div>
                     </c:forEach>
                 </div>
@@ -380,7 +379,7 @@
                                 <label class="form-check-label" ><span class="check-circle"></span><iais:code code="UOT002"/></label>
                             </div>
                             <div class="col-sm-12">
-                                <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsUseOnly${status.index}"></span>
+                                <span class="error-msg" name="iaisErrorMsg" id="error_easMtsUseOnly${status.index}"></span>
                             </div>
                         </iais:value>
                     </iais:row>
@@ -437,8 +436,7 @@
                                 <p>Please list down all services not licensed under HCSA in the tabs below. Alternatively, you may also submit using the
                                     <a href="${pageContext.request.contextPath}/co-non-hcsa-template">Excel Template</a>
                                 </p>
-                                <div class="uploadFileShowDiv" id="uploadFile${status.index}ShowId">
-                                </div>
+                                <div class="uploadFileShowDiv" id="uploadFile${status.index}ShowId"></div>
                                 <div class="col-xs-12 uploadFileErrorDiv">
                                     <span id="error_uploadFile${status.index}Error" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
@@ -456,7 +454,7 @@
                                     <iais:row cssClass="nonHcsaRow">
                                         <div class="col-xs-12 col-md-4">
                                             <input maxlength="100" class="coBusinessName" type="text" data-base="CoBusinessName" name="${premValue}CoBusinessName${relatedStatus.index}" value="${relatedDto.businessName}" />
-                                            <span  class="error-msg" name="iaisErrorMsg" id="error_${premValue}CoBusinessName${relatedStatus.index}"></span>
+                                            <span class="error-msg" name="iaisErrorMsg" id="error_${premValue}CoBusinessName${relatedStatus.index}"></span>
                                         </div>
                                         <div class="col-xs-12 col-md-4">
                                             <input maxlength="100" class="coSvcName" type="text" data-base="CoSvcName" name="${premValue}CoSvcName${relatedStatus.index}" value="${relatedDto.providedService}" />
@@ -502,15 +500,4 @@
 
 <div id="selectFileDiv"></div>
 <%@include file="/WEB-INF/jsp/iais/application/common/premFun.jsp" %>
-<script type="text/javascript">
-    $(document).ready(function () {
-        initPremiseEvent();
-        checkSelectedLicence();
-        $('div.premContent').each(function (k, v) {
-            checkPremiseContent($(v));
-        });
-        if ($('div.premContent').length == 1) {
-            $('div.premContent').find('.premHeader').html('');
-        }
-    });
-</script>
+

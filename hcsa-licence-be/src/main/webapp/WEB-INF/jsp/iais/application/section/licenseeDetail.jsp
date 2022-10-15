@@ -47,7 +47,7 @@
     <c:if test="${dto.licenseeType eq soloType}">
         <iais:input cssClass="not-clear" type="hidden" name="licenseeType" id="licenseeType" value="${soloType}"/>
     </c:if>
-    <%@include file="../view/previewLicenseeCom.jsp"%>
+    <%@include file="../view/licensee/viewLicenseeCom.jsp"%>
 </div>
 
 <iais:confirm msg="NEW_ACK016" needCancel="false" callBack="$('#postalCodePop').modal('hide');"
@@ -70,11 +70,6 @@
             $('.retrieveAddr').removeClass('hidden');
             checkLicenseeType();
         });
-
-        <c:if test="${(!AppSubmissionDto.needEditController && readOnly) || AppSubmissionDto.needEditController}" var="isSpecial">
-        disableContent('div.licenseeContent');
-        $('.retrieveAddr').addClass('hidden');
-        </c:if>
     });
 
     function initLicenseePage() {
@@ -143,21 +138,32 @@
     }
 
     function editContent() {
+        if (hideEditBtn()) {
+            return;
+        }
         $('#isEditHiddenVal').val('1');
-        <c:if test="${isNewApp}">
+        <c:if test="${isNew}">
         unDisableContent('div.assignSelectRow');
         unDisableContent('div.licenseeType');
         unDisableContent('div.licensee-detail');
-        $('.retrieveAddr').removeClass('hidden');
+        showTag('.retrieveAddr');
         </c:if>
-        <c:if test="${!isNewApp}">
+        <c:if test="${!isNew}">
         unDisableContent('div.licensee-detail');
-        $('.retrieveAddr').removeClass('hidden');
+        showTag('.retrieveAddr');
         disableContent('div.ind-no');
         disableContent('#licenseeName');
         </c:if>
         initLicenseePage();
-        $(this).closest('div').hide();
+        hideTag('#edit');
+    }
+
+    function hideEditBtn() {
+        let $target = $('#edit');
+        if (isEmptyNode($target)) {
+            return true;
+        }
+        return $target.is(':hidden');
     }
 
     var loadCompanyLicensee = function ($target) {

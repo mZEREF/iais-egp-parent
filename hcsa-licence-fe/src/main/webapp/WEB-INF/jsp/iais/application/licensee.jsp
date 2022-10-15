@@ -56,13 +56,12 @@
             submit('licensee','saveDraft',$('#selectDraftNo').val());
         });
 
-        <c:if test="${(!AppSubmissionDto.needEditController && readOnly) || AppSubmissionDto.needEditController}">
-            disableContent('div.licenseeContent');
+        <c:if test="${AppSubmissionDto.needEditController}">
+        disableContent('div.licenseeContent');
+        hideTag(('.retrieveAddr'));
         </c:if>
-        <c:if test="${('APTY002' != AppSubmissionDto.appType || requestInformationConfig != null) && not empty errormapIs}">
-        if ($('#edit').length > 0) {
-            $('#edit').trigger('click');
-        }
+        <c:if test="${not empty errormapIs}">
+        editContent();
         </c:if>
     });
 

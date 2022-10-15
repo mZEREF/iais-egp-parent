@@ -62,7 +62,7 @@
                     <div class="panel-main-content">
                         <div class="col-md-12 col-xs-12">
                             <div class="edit-content">
-                                <c:if test="${'true' == canEdit && (!isRfi || (isRfi && appGrpPremisesDto.rfiCanEdit))}">
+                                <c:if test="${canEdit}">
                                     <p>
                                     <div class="text-right app-font-size-16">
                                         <a class="edit businessEdit" href="javascript:void(0);">

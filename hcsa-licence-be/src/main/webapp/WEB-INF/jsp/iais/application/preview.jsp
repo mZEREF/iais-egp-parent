@@ -45,7 +45,7 @@
                                             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                                                 <%@include file="view/previewLicensee.jsp"%>
                                                 <%@include file="view/previewPremises.jsp"%>
-                                                <%@include file="view/previewPrimary.jsp"%>
+                                                <%@include file="view/previewSpecialised.jsp"%>
                                                 <c:forEach var="hcsaServiceDto" items="${hcsaServiceDtoList}" varStatus="status" >
                                                     <div class="panel panel-default svc-content">
                                                         <input type="hidden" name="iframeId" value="svcIframe${status.index}"/>
@@ -278,7 +278,7 @@
             submit('licensee',null,null);
         });
         </c:if>
-        <c:if test="${AppSubmissionDto.appEditSelectDto..specialisedEdit}">
+        <c:if test="${AppSubmissionDto.appEditSelectDto.specialisedEdit}">
         $('#subLicenseeEdit').unbind();
         $('#premisesEdit').unbind();
         $('.doSvcEdit').unbind();

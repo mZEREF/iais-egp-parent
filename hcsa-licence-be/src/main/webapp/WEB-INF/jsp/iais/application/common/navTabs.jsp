@@ -2,6 +2,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.ParamUtil" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%
     String action = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE);
     if(StringUtil.isEmpty(action)){
@@ -24,15 +25,16 @@
 
     }else{
         %>
+<c:set var="specialisedTitle"><iais:message key="GENERAL_TITLE01" escape="false"/></c:set>
 <ul id="nav-tabs-ul" class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
     <li id="licenseeli" role="presentation" class="${empty coMap.licensee ? 'incomplete' : 'complete'}">
         <a id="licensee" aria-controls="licenseeTab" role="tab" data-toggle="tab">Licensee Details</a>
     </li>
     <li id="premisesli" role="presentation" class="${empty coMap.premises ? 'incomplete' : 'complete'}">
-        <a id="premises" aria-controls="premisesTab" role="tab" data-toggle="tab">Mode of Service Delivery</a>
+        <a id="premises" aria-controls="premisesTab" role="tab" data-toggle="tab">${ApplicationConsts.MODE_OF_SVC_DELIVERY}</a>
     </li>
-    <li id="documentsli" role="presentation" class="${empty coMap.document ? 'incomplete' : 'complete'}">
-        <a id = "documents" aria-controls="documentsTab" role="tab" data-toggle="tab">Primary<br> Documents</a>
+    <li id="specialisedli" role="presentation" class="${empty coMap.specialised ? 'incomplete' : 'complete'}">
+        <a id = "specialised" aria-controls="specialisedTab" role="tab" data-toggle="tab">${specialisedTitle}</a>
     </li>
     <li id="serviceFormsli" role="presentation" class="${empty coMap.information ? 'incomplete' : 'complete'}">
         <a id="serviceForms" aria-controls="serviceInformationTab" role="tab" data-toggle="tab">Service-Related<br> Information</a>
@@ -49,11 +51,21 @@
         <div class="swiper-slide " >
             <a href="#licenseeTab" aria-controls="tabInbox"  role="tab" data-toggle="tab">Licensee Details</a>
         </div>
-        <div class="swiper-slide " ><a href="#premisesTab" aria-controls="licenseeTab"  role="tab" data-toggle="tab">Mode of Service Delivery</a></div>
-        <div class="swiper-slide"><a href="#documentsTab" aria-controls="tabApplication" role="tab" data-toggle="tab">Primary Documents</a></div>
-        <div class="swiper-slide"><a href="#serviceInformationTab" aria-controls="tabLicence" role="tab" data-toggle="tab">Service-Related Information</a></div>
-        <div class="swiper-slide"><a href="#previewTab" aria-controls="tabLicence" role="tab" data-toggle="tab">Preview & Submit</a></div>
-        <div class="swiper-slide"><a href="#paymentTab" aria-controls="tabLicence" role="tab" data-toggle="tab">Payment</a></div>
+        <div class="swiper-slide " >
+            <a href="#premisesTab" aria-controls="licenseeTab"  role="tab" data-toggle="tab">${ApplicationConsts.MODE_OF_SVC_DELIVERY}</a>
+        </div>
+        <div class="swiper-slide">
+            <a href="#specialisedTab" aria-controls="tabApplication" role="tab" data-toggle="tab">${specialisedTitle}</a>
+        </div>
+        <div class="swiper-slide">
+            <a href="#serviceInformationTab" aria-controls="tabLicence" role="tab" data-toggle="tab">Service-Related Information</a>
+        </div>
+        <div class="swiper-slide">
+            <a href="#previewTab" aria-controls="tabLicence" role="tab" data-toggle="tab">Preview & Submit</a>
+        </div>
+        <div class="swiper-slide">
+            <a href="#paymentTab" aria-controls="tabLicence" role="tab" data-toggle="tab">Payment</a>
+        </div>
     </div>
     <div class="swiper-button-prev"></div>
     <div class="swiper-button-next"></div>
@@ -76,7 +88,7 @@
             }
         }
         // bind event
-        if ('licensee' == controlLi && ${!canClickMainTab}) {
+        /*if ('licensee' == controlLi && ${!canClickMainTab}) {
             $('#nav-tabs-ul #premises').on('click', function(){
                 showWaiting();
                 $('#mainForm').find(':input').prop('disabled',false);
@@ -101,7 +113,8 @@
                     submit(currId,null,null);
                 }
             });
-        }
+        }*/
+        navTabEvent();
 
         <c:if test="${!isRfi && (isRfc || isRenew)}">
         <c:if test="${isRenew}">
@@ -119,8 +132,8 @@
         <c:otherwise>
         $('#premises').unbind();
         $('#premisesli').unbind();
-        $('#documents').unbind();
-        $('#documentsli').unbind();
+        $('#specialised').unbind();
+        $('#specialisedli').unbind();
         $('#serviceForms').unbind();
         $('#serviceFormsli').unbind();
         $('#preview').unbind();
@@ -128,7 +141,7 @@
         $('#payment').unbind();
         $('#paymentli').unbind();
         $('#premises').removeAttr("data-toggle");
-        $('#documents').removeAttr("data-toggle");
+        $('#specialised').removeAttr("data-toggle");
         $('#serviceForms').removeAttr("data-toggle");
         $('#preview').removeAttr("data-toggle");
         $('#payment').removeAttr("data-toggle");
@@ -136,6 +149,44 @@
         </c:choose>
         </c:if>
     });
+
+    var navTabEvent = function (nextTab) {
+        $('#nav-tabs-ul a').unbind('click');
+        if (isEmpty(nextTab)) {
+            nextTab = checkNextNavTab();
+        }
+        if (!isEmpty(nextTab)) {
+            $('#nav-tabs-ul #' + nextTab).on('click', function () {
+                showWaiting();
+                //$('#mainForm').find(':input').prop('disabled',false);
+                submit(nextTab, null, null);
+            });
+        } else {
+            let controlLi = $('#controlLi').val();
+            $('#nav-tabs-ul a').click(function () {
+                var currId = $(this).attr('id');
+                console.info(currId);
+                if (controlLi == currId) {
+                    return;
+                } else if ('serviceForms' == currId) {
+                    showWaiting();
+                    $("[name='crud_action_type']").val('serviceForms');
+                    $("[name='crud_action_type_tab']").val('${hcsaServiceDtoList.get(0).svcCode}');
+                    $("[name='crud_action_type_form_page']").val('jump');
+                    var mainForm = document.getElementById("mainForm");
+                    mainForm.submit();
+                } else if (currId != 'payment') {
+                    showWaiting();
+                    //$('#mainForm').find(':input').prop('disabled',false);
+                    submit(currId, null, null);
+                }
+            });
+        }
+    }
+
+    function checkNextNavTab() {
+        return "";
+    }
 
     function submit(action,value,additional){
         $("[name='crud_action_type']").val(action);
@@ -166,7 +217,7 @@
         var mainForm = document.getElementById('mainForm');
         mainForm.submit();
     }
-    function disabledPage(){
+    /*function disabledPage(){
         $('input[type="radio"]').prop('disabled',true);
         $('input[type="text"]').prop('disabled',true);
         $('input[type="file"]').prop('disabled',true);
@@ -255,13 +306,13 @@
         });
         <!--multi -->
         $Ele.find('div.multi-select input').prop('disabled',false);
-    }
+    }*/
 
     var unbindAllTabs = function () {
         $('#premises').unbind();
         $('#premisesli').unbind();
-        $('#documents').unbind();
-        $('#documentsli').unbind();
+        $('#specialised').unbind();
+        $('#specialisedli').unbind();
         $('#serviceForms').unbind();
         $('#serviceFormsli').unbind();
         $('#preview').unbind();
