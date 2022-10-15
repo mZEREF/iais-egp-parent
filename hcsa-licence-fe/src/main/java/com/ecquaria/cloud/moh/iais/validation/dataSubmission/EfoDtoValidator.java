@@ -47,9 +47,13 @@ public class EfoDtoValidator implements CustomizeValidator {
         if (StringUtil.isEmpty(cryopresNum)) {
             String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","No.Cryopreserved", "field");
             errorMap.put("cryopresNum", errMsg);
+        } else if (!StringUtil.isNumber(cryopresNum)) {
+            String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0002","No.Cryopreserved", "field");
+            errorMap.put("cryopresNum", errMsg);
         }
 
-        if ("0".equals(cryopresNum) && StringUtil.isEmpty(others)) {
+        if (arSuperDataSubmissionDto.getSelectionDto().getCycle() == DataSubmissionConsts.DS_CYCLE_EFO &&
+                "0".equals(cryopresNum) && StringUtil.isEmpty(others)) {
             if (StringUtil.isEmpty(others)) {
                 String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","others", "field");
                 errorMap.put("others", errMsg);

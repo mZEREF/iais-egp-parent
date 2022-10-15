@@ -100,12 +100,13 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         String startDateStr = ParamUtil.getRequestString(request, "efoDateStarted");
         Date startDate = DateUtil.parseDate(startDateStr, AppConsts.DEFAULT_DATE_FORMAT);
         String cryopresNum = ParamUtil.getString(request,"cryopresNum");
-        if (cryopresNum != null) {
+        if (cryopresNum != null && StringUtil.isNumber(cryopresNum)) {
             efoCycleStageDto.setCryopresNum(Integer.parseInt(cryopresNum));
-        }
-        if (efoCycleStageDto.getCryopresNum() == 0) {
-            String others = ParamUtil.getRequestString(request, "others");
-            efoCycleStageDto.setOthers(others);
+             if (arSuperDataSubmissionDto.getSelectionDto().getCycle() == DataSubmissionConsts.DS_CYCLE_EFO &&
+                     efoCycleStageDto.getCryopresNum() == 0) {
+                String others = ParamUtil.getRequestString(request, "others");
+                efoCycleStageDto.setOthers(others);
+            }
         }
         efoCycleStageDto.setStartDate(startDate);
         efoCycleStageDto.setIsMedicallyIndicated(indicated);
