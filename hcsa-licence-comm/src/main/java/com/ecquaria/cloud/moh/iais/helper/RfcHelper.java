@@ -1574,28 +1574,28 @@ public final class RfcHelper {
      *
      * @param appSubmissionDto
      * @param oldAppSubmissionDto
-     * @param changeList:         The changed personnel types.
+     * @param autoList:         The changed personnel types.
      *                            Refer to the method - eqServiceChange and personContact
-     * @param stepList:           The steps which is changed, it will contains not-auto fields and maybe it contains auto fields.
+     * @param nonAutoList:           The steps which is changed, it will contains not-auto fields and maybe it contains auto fields.
      *                            Refer to the method - compareNotChangePersonnel
      *                            && rfcChangeModuleEvaluationDto
      * @return The svc related info with the auto fields changed
      */
     public static List<AppSvcRelatedInfoDto> generateDtosForAutoFields(AppSubmissionDto appSubmissionDto,
-            AppSubmissionDto oldAppSubmissionDto, List<String> changeList, List<String> stepList) {
+            AppSubmissionDto oldAppSubmissionDto, List<String> autoList, List<String> nonAutoList) {
         AppSvcRelatedInfoDto oldSvcInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         AppSvcRelatedInfoDto currSvcInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         if (currSvcInfoDto == null || oldSvcInfoDto == null) {
             return null;
         }
-        if (stepList == null || stepList.isEmpty()) {
+        if (nonAutoList == null) {
             return appSubmissionDto.getAppSvcRelatedInfoDtoList();
         }
-        if (changeList == null) {
-            changeList = IaisCommonUtils.genNewArrayList();
+        if (autoList == null) {
+            autoList = IaisCommonUtils.genNewArrayList();
         }
         AppSvcRelatedInfoDto newDto = CopyUtil.copyMutableObject(currSvcInfoDto);
-        for (String step : stepList) {
+        for (String step : nonAutoList) {
             if (HcsaConsts.STEP_BUSINESS_NAME.equals(step)) {
                 newDto.setAppSvcBusinessDtoList(
                         (List<AppSvcBusinessDto>) CopyUtil.copyMutableObjectList(oldSvcInfoDto.getAppSvcBusinessDtoList()));
@@ -1609,16 +1609,16 @@ public final class RfcHelper {
                 /*List<AppSvcDocDto> oldASvcDocDtoLit = oldSvcInfoDto.getAppSvcDocDtoLit();
                 List<AppSvcDocDto> appSvcDocDtoLit = newDto.getAppSvcDocDtoLit();*/
             } else if (HcsaConsts.STEP_PRINCIPAL_OFFICERS.equals(step)) {
-                reSetPersonnels(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_TYPE_PO, changeList);
-                reSetPersonnels(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, changeList);
+                reSetPersonnels(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_TYPE_PO, autoList);
+                reSetPersonnels(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, autoList);
             } else if (HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS.equals(step)) {
-                reSetPersonnels(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, changeList);
+                reSetPersonnels(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, autoList);
             } else if (HcsaConsts.STEP_CLINICAL_DIRECTOR.equals(step)) {
-                reSetPersonnels(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR, changeList);
+                reSetPersonnels(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR, autoList);
             } else if (HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER.equals(step)) {
-                reSetPersonnels(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_KAH, changeList);
+                reSetPersonnels(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_KAH, autoList);
             } else if (HcsaConsts.MEDALERT_PERSON.equals(step)) {
-                reSetPersonnels(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, changeList);
+                reSetPersonnels(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, autoList);
             }
         }
         List<AppSvcRelatedInfoDto> result = IaisCommonUtils.genNewArrayList(1);

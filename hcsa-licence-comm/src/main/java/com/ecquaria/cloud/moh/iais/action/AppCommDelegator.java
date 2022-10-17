@@ -1776,10 +1776,10 @@ public abstract class AppCommDelegator {
                 ApplicationHelper.addToAuto(personAppSubmissionList, autoSaveAppsubmission);
             }
             // re-set current auto dto
-            List<String> changeList = appSubmissionDto.getChangeSelectDto().getPersonnelEditList();
-            List<String> stepList = appSubmissionDto.getAppEditSelectDto().getPersonnelEditList();
-            log.info(StringUtil.changeForLog("StepList: " + stepList + " - ChangeList: " + changeList));
-            if (!isAutoRfc && autoAppSubmissionDto == null && !IaisCommonUtils.isEmpty(changeList)) {
+            List<String> autoList = appSubmissionDto.getChangeSelectDto().getPersonnelEditList();
+            List<String> nonAutoList = appSubmissionDto.getAppEditSelectDto().getPersonnelEditList();
+            log.info(StringUtil.changeForLog("NonAutoList: " + nonAutoList + " - AutoList: " + autoList));
+            if (!isAutoRfc && autoAppSubmissionDto == null && !IaisCommonUtils.isEmpty(autoList)) {
                 autoAppSubmissionDto = CopyUtil.copyMutableObject(appSubmissionDto);
                 autoAppSubmissionDto.setAmount(0.0);
                 autoChangeSelectDto = new AppEditSelectDto();
@@ -1788,7 +1788,7 @@ public abstract class AppCommDelegator {
                 autoChangeSelectDto.setServiceEdit(true);
                 autoAppSubmissionDto.setAppSvcRelatedInfoDtoList(
                         RfcHelper.generateDtosForAutoFields(autoAppSubmissionDto, oldAppSubmissionDto,
-                                changeList, stepList));
+                                autoList, nonAutoList));
                 // re-set change edit select dto
                 if (!appEditSelectDto.isChangeBusinessName() && !appEditSelectDto.isChangeVehicle()
                         && !appEditSelectDto.isChangePersonnel() && !appEditSelectDto.isChangeSectionLeader()) {
