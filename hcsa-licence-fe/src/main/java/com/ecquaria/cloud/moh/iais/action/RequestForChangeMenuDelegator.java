@@ -1560,7 +1560,7 @@ public class RequestForChangeMenuDelegator {
                 oldAppSubmissionDtoappSubmissionDto);
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
         amendmentFeeDto.setChangeInLicensee(Boolean.FALSE);
-        amendmentFeeDto.setChangeInHCIName(eqHciNameChange);
+        amendmentFeeDto.setAdditionOrRemovalVehicles(eqHciNameChange);
         amendmentFeeDto.setChangeInLocation(changeInLocation || eqAddFloorNo);
         // check app edit select dto
         appEditSelectDto.setChangeHciName(eqHciNameChange);
