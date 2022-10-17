@@ -396,7 +396,7 @@ public class WithOutRenewalDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request, "oldRenewAppSubmissionDto", oldAppSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, appSubmissionDto);
-        ParamUtil.setSessionAttr(bpc.request, "licenseeName", appSubmissionDtoList.get(0).getSubLicenseeDto().getLicenseeName());
+        // ParamUtil.setSessionAttr(bpc.request, "licenseeName", appSubmissionDtoList.get(0).getSubLicenseeDto().getLicenseeName());
         RenewDto renewDto = new RenewDto();
         /*String parseToJson = JsonUtil.parseToJson(appSubmissionDtoList);
         log.info(StringUtil.changeForLog("without renewal submission json info " + parseToJson));

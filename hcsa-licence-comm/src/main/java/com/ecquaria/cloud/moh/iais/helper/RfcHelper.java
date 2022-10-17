@@ -200,7 +200,7 @@ public final class RfcHelper {
         appSubmissionDto.setChangeSelectDto(appEditSelectDto);
         // for splitting the submission
         AppEditSelectDto showDto = appSubmissionDto.getAppEditSelectDto();
-        List<String> stepList = IaisCommonUtils.getList(showDto.getPersonnelEditList());
+        /*List<String> stepList = IaisCommonUtils.getList(showDto.getPersonnelEditList());
         if (changeCharges) {
             IaisCommonUtils.addToList(HcsaConsts.STEP_CHARGES, stepList);
         }
@@ -213,9 +213,10 @@ public final class RfcHelper {
         if (changeSectionLeader) {
             stepList.add(HcsaConsts.STEP_SECTION_LEADER);
             //stepList.add(HcsaConsts.STEP_DOCUMENTS);
-        }
-        showDto.setPersonnelEditList(stepList);
+        }*/
+        showDto.setPersonnelEditList(nonAutoList);
         appSubmissionDto.setAppEditSelectDto(showDto);
+        appEditSelectDto.setPersonnelEditList(autoList);
         log.info(StringUtil.changeForLog(appSubmissionDto.getLicenceNo() + " - App Edit Select Dto: "
                 + JsonUtil.parseToJson(appEditSelectDto)));
         return appEditSelectDto;

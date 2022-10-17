@@ -2,7 +2,6 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
@@ -52,7 +51,7 @@
                                                 <td class="word-wrap">${appSubmissionDtos.licenceNo}</td>
                                                 <td>${appSubmissionDtos.serviceName}</td>
                                                 <c:if test="${isSingle == 'Y'}">
-                                                    <td>${licenseeName}</td>
+                                                    <td><c:out value="${appSubmissionDtos.subLicenseeDto.licenseeName}" /></td>
                                                 </c:if>
                                                 <td><c:forEach items="${appSubmissionDtos.appGrpPremisesDtoList}" var="appGrpPremisesDtoList"><span>${appGrpPremisesDtoList.renewPremises}</span><br/></c:forEach></td>
                                                 <td><fmt:formatDate value='${appSubmissionDtos.licStartDate}' pattern='dd/MM/yyyy'/></td>

@@ -92,7 +92,7 @@ public class InboxServiceImpl implements InboxService {
         InterInboxUserDto interInboxUserDto = feUserClient.findUserInfoByUserId(userId).getEntity();
         List<String> appGrpIdList = appInboxClient.getAppGrpIdsByLicenseeIs(interInboxUserDto.getLicenseeId()).getEntity();
         interInboxUserDto.setAppGrpIds(appGrpIdList);
-        return  interInboxUserDto;
+        return interInboxUserDto;
     }
 
     @Override
@@ -100,14 +100,16 @@ public class InboxServiceImpl implements InboxService {
     public SearchResult<InboxAppQueryDto> appDoQuery(SearchParam searchParam) {
         SearchResult<InboxAppQueryDto> inboxAppQueryDtoSearchResult = appInboxClient.searchResultFromApp(searchParam).getEntity();
         List<InboxAppQueryDto> inboxAppQueryDtoList = inboxAppQueryDtoSearchResult.getRows();
-        for (InboxAppQueryDto inboxAppQueryDto:inboxAppQueryDtoList) {
-            if (ApplicationConsts.APPLICATION_STATUS_DRAFT.equals(inboxAppQueryDto.getStatus()) || ApplicationConsts.APPLICATION_STATUS_DRAFT_PENDING.equals(inboxAppQueryDto.getStatus())){
+        for (InboxAppQueryDto inboxAppQueryDto : inboxAppQueryDtoList) {
+            if (ApplicationConsts.APPLICATION_STATUS_DRAFT.equals(
+                    inboxAppQueryDto.getStatus()) || ApplicationConsts.APPLICATION_STATUS_DRAFT_PENDING.equals(
+                    inboxAppQueryDto.getStatus())) {
                 ApplicationDraftDto applicationDraftDto = appInboxClient.getDraftInfo(inboxAppQueryDto.getId()).getEntity();
                 inboxAppQueryDto.setServiceId(HalpSearchResultHelper.splitServiceName(applicationDraftDto.getServiceCode()));
-            }else{
-                if(!inboxAppQueryDto.getServiceId().isEmpty()){
+            } else {
+                if (!inboxAppQueryDto.getServiceId().isEmpty()) {
                     inboxAppQueryDto.setServiceId(getServiceNameById(inboxAppQueryDto.getServiceId()));
-                }else{
+                } else {
                     inboxAppQueryDto.setServiceId("N/A");
                 }
             }
@@ -120,7 +122,7 @@ public class InboxServiceImpl implements InboxService {
     public SearchResult<InboxQueryDto> inboxDoQuery(SearchParam searchParam) {
         SearchResult<InboxQueryDto> inboxQueryDtoSearchResult = inboxClient.searchInbox(searchParam).getEntity();
         List<InboxQueryDto> inboxAppQueryDtoListRows = inboxQueryDtoSearchResult.getRows();
-        for (InboxQueryDto inboxQueryDto:inboxAppQueryDtoListRows) {
+        for (InboxQueryDto inboxQueryDto : inboxAppQueryDtoListRows) {
             inboxQueryDto.setServiceCodes(HalpSearchResultHelper.splitServiceName(inboxQueryDto.getServiceCodes()));
         }
         return inboxQueryDtoSearchResult;
@@ -148,7 +150,7 @@ public class InboxServiceImpl implements InboxService {
 
     @Override
     public void updateDraftStatus(String draftNo, String status) {
-        appInboxClient.updateDraftStatus(draftNo,status).getEntity();
+        appInboxClient.updateDraftStatus(draftNo, status).getEntity();
     }
 
     @Override
@@ -161,16 +163,17 @@ public class InboxServiceImpl implements InboxService {
         List<String> refNoList = IaisCommonUtils.genNewArrayList();
         String appId = recallApplicationDto.getAppId();
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtoList = appInboxClient.listAppPremisesCorrelation(appId).getEntity();
-        for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtoList
-                ) {
+        for (AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtoList
+        ) {
             refNoList.add(appPremisesCorrelationDto.getId());
         }
         recallApplicationDto.setRefNo(refNoList);
         try {
-            recallApplicationDto = eicGatewayFeMainClient.callEicWithTrackForOrg(recallApplicationDto, eicGatewayFeMainClient::recallAppChangeTask,
+            recallApplicationDto = eicGatewayFeMainClient.callEicWithTrackForOrg(recallApplicationDto,
+                    eicGatewayFeMainClient::recallAppChangeTask,
                     "recallAppChangeTask").getEntity();
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
         }
         return recallApplicationDto.getResult();
     }
@@ -178,22 +181,24 @@ public class InboxServiceImpl implements InboxService {
     @Override
     public List<RecallApplicationDto> canRecallApplications(List<RecallApplicationDto> recallApplicationDtos) {
         List<RecallApplicationDto> recallApplicationDtoList = IaisCommonUtils.genNewArrayList();
-        for (RecallApplicationDto h:recallApplicationDtos
-             ) {
+        for (RecallApplicationDto h : recallApplicationDtos
+        ) {
             String appId = h.getAppId();
             List<String> refNoList = IaisCommonUtils.genNewArrayList();
-            List<AppPremisesCorrelationDto> appPremisesCorrelationDtoList = appInboxClient.listAppPremisesCorrelation(appId).getEntity();
-            for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtoList
-                    ) {
+            List<AppPremisesCorrelationDto> appPremisesCorrelationDtoList = appInboxClient.listAppPremisesCorrelation(
+                    appId).getEntity();
+            for (AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtoList
+            ) {
                 refNoList.add(appPremisesCorrelationDto.getId());
             }
             h.setRefNo(refNoList);
         }
         try {
-            recallApplicationDtoList = eicGatewayFeMainClient.callEicWithTrackForOrg(recallApplicationDtos, eicGatewayFeMainClient::recallAppTasks,
+            recallApplicationDtoList = eicGatewayFeMainClient.callEicWithTrackForOrg(recallApplicationDtos,
+                    eicGatewayFeMainClient::recallAppTasks,
                     this.getClass(), "recallAppTasksEic").getEntity();
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
         }
         return recallApplicationDtoList;
     }
@@ -211,46 +216,48 @@ public class InboxServiceImpl implements InboxService {
     public RecallApplicationDto recallApplication(RecallApplicationDto recallApplicationDto) {
         boolean result = false;
         ApplicationDto applicationDto = appInboxClient.getApplicarionById(recallApplicationDto.getAppId()).getEntity();
-        if (applicationDto != null){
+        if (applicationDto != null) {
             ApplicationGroupDto applicationGroupDto = appInboxClient.getApplicationGroup(applicationDto.getAppGrpId()).getEntity();
-            if (ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED.equals(applicationGroupDto.getStatus())){
+            if (ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED.equals(applicationGroupDto.getStatus())) {
                 result = true;
                 recallApplicationDto.setResult(result);
                 recallApplicationDto.setMessage("RECALLMSG002");
-                appInboxClient.updateFeAppStatus(recallApplicationDto.getAppId(),ApplicationConsts.APPLICATION_STATUS_RECALLED);
+                appInboxClient.updateFeAppStatus(recallApplicationDto.getAppId(), ApplicationConsts.APPLICATION_STATUS_RECALLED);
                 return recallApplicationDto;
             }
         }
         List<String> refNoList = IaisCommonUtils.genNewArrayList();
         String appId = recallApplicationDto.getAppId();
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtoList = appInboxClient.listAppPremisesCorrelation(appId).getEntity();
-        for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtoList
-             ) {
+        for (AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtoList
+        ) {
             refNoList.add(appPremisesCorrelationDto.getId());
         }
         recallApplicationDto.setRefNo(refNoList);
         try {
-            recallApplicationDto = eicGatewayFeMainClient.callEicWithTrackForOrg(recallApplicationDto, eicGatewayFeMainClient::recallAppChangeTask,
+            recallApplicationDto = eicGatewayFeMainClient.callEicWithTrackForOrg(recallApplicationDto,
+                    eicGatewayFeMainClient::recallAppChangeTask,
                     "recallAppChangeTask").getEntity();
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
         }
-        if (recallApplicationDto.getResult()){
+        if (recallApplicationDto.getResult()) {
             try {
                 result = eicGatewayFeMainClient.callEicWithTrackForApp(recallApplicationDto,
                         eicGatewayFeMainClient::updateApplicationStatus, "updateApplicationStatus").getEntity();
-            }catch (Exception e){
-                log.error(e.getMessage(),e);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
             }
         }
-        if(result || "RECALLMSG002".equals(recallApplicationDto.getMessage()) || "RECALLMSG003".equals(recallApplicationDto.getMessage())){
-            appInboxClient.updateFeAppStatus(recallApplicationDto.getAppId(),ApplicationConsts.APPLICATION_STATUS_RECALLED);
+        if (result || "RECALLMSG002".equals(recallApplicationDto.getMessage()) || "RECALLMSG003".equals(
+                recallApplicationDto.getMessage())) {
+            appInboxClient.updateFeAppStatus(recallApplicationDto.getAppId(), ApplicationConsts.APPLICATION_STATUS_RECALLED);
         }
         return recallApplicationDto;
     }
 
     @Override
-    public Map<String,String> checkRenewalStatus(String licenceId) {
+    public Map<String, String> checkRenewalStatus(String licenceId) {
         log.info(StringUtil.changeForLog("----------checkRenewalStatus licenceId : " + licenceId));
         LicenceDto licenceDto = licenceInboxClient.getLicDtoById(licenceId).getEntity();
         return checkRenewalStatus(licenceDto);
@@ -273,70 +280,33 @@ public class InboxServiceImpl implements InboxService {
                 return errorMap;
             }
         }
-        List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
-        List<String> finalStatusList = IaisCommonUtils.getAppFinalStatus();
-        boolean hasError = false;
-        if (!IaisCommonUtils.isEmpty(apps)) {
-            List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
-            for (ApplicationDto app : apps) {
-                String status = app.getStatus();
-                if (!finalStatusList.contains(status)) {
-                    errorMap.put("errorMessage1", "This application is performing the renew process");
-                    hasError = true;
-                }
-                // 81903
-                if (ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(status)
-                        && ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(app.getApplicationType())) {
-                    errorMap.put("errorMessage2", MessageUtil.getMessageDesc("INBOX_ACK013"));
-                    hasError = true;
-                }
-                if (ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT.equals(status)) {
-                    appGrpIds.add(app.getAppGrpId());
-                }
-            }
-            if (!hasError && !appGrpIds.isEmpty()) {
-                List<ApplicationGroupDto> appGrpDtos = appInboxClient.getApplicationGroupsByIds(appGrpIds).getEntity();
-                if (!IaisCommonUtils.isEmpty(appGrpDtos)) {
-                    boolean matched = appGrpDtos.stream()
-                            .anyMatch(dto -> ApplicationConsts.APPLICATION_GROUP_STATUS_PENDING_PAYMENT.equals(dto.getStatus()));
-                    if (matched) {
-                        // GENERAL_ERR0062 - There is a related pending payment application.
-                        errorMap.put("errorMessage2", MessageUtil.getMessageDesc("GENERAL_ERR0062"));
+        boolean hasError = checkAppsOnLic(licenceId, errorMap);
+        if (hasError) {
+            log.info("An error in checking apps on licence.");
+        } else {
+            // 76035 - Verify whether the new licence is generated
+            LicenceDto entity = licenceInboxClient.getRootLicenceDtoByOrgId(licenceId).getEntity();
+            if (entity != null) {
+                boolean isRenewApp = false;
+                List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(entity.getId()).getEntity();
+                if (IaisCommonUtils.isNotEmpty(apps)) {
+                    log.info(StringUtil.changeForLog("----------checkRenewalStatus json : " + JsonUtil.parseToJson(apps)));
+                    for (ApplicationDto a : apps) {
+                        if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(a.getApplicationType())
+                                && !ApplicationConsts.APPLICATION_STATUS_REJECTED.equalsIgnoreCase(a.getStatus())
+                                && !ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(a.getStatus())
+                                && !ApplicationConsts.APPLICATION_STATUS_DELETED.equals(a.getStatus())) {
+                            isRenewApp = true;
+                            break;
+                        }
                     }
                 }
-            }
-        }
-        if (!errorMap.isEmpty()) {
-            return errorMap;
-        }
-        //appeal
-        Boolean appealFlag = appInboxClient.isLiscenceAppealOrCessation(licenceId).getEntity();
-        if (!appealFlag) {
-            String errorMsg = MessageUtil.getMessageDesc("INBOX_ACK010");
-            errorMap.put("errorMessage2", errorMsg);
-        }
-        //Verify whether the new licence is generated
-        LicenceDto entity = licenceInboxClient.getRootLicenceDtoByOrgId(licenceId).getEntity();
-        if (entity != null) {
-            boolean isRenewApp = false;
-            apps = appInboxClient.getAppByLicIdAndExcludeNew(entity.getId()).getEntity();
-            if (IaisCommonUtils.isNotEmpty(apps)) {
-                log.info(StringUtil.changeForLog("----------checkRenewalStatus json : " + JsonUtil.parseToJson(apps)));
-                for (ApplicationDto a : apps) {
-                    if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(a.getApplicationType())
-                            && !ApplicationConsts.APPLICATION_STATUS_REJECTED.equalsIgnoreCase(a.getStatus())
-                            && !ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(a.getStatus())
-                            && !ApplicationConsts.APPLICATION_STATUS_DELETED.equals(a.getStatus())) {
-                        isRenewApp = true;
-                        break;
-                    }
+                if (isRenewApp) {
+                    String errorMsg = MessageUtil.getMessageDesc("INBOX_ACK013");
+                    errorMap.put("errorMessage2", errorMsg);
+                } else {
+                    errorMap.put("errorMessage", licenceDto.getLicenceNo());
                 }
-            }
-            if (isRenewApp) {
-                String errorMsg = MessageUtil.getMessageDesc("INBOX_ACK013");
-                errorMap.put("errorMessage2", errorMsg);
-            } else {
-                errorMap.put("errorMessage", licenceDto.getLicenceNo());
             }
         }
         //check expiry date
@@ -359,8 +329,8 @@ public class InboxServiceImpl implements InboxService {
     }
 
     @Override
-    public void updateMsgStatusTo(String msgId,String msgStatus) {
-        inboxClient.updateMsgStatusTo(msgId,msgStatus);
+    public void updateMsgStatusTo(String msgId, String msgStatus) {
+        inboxClient.updateMsgStatusTo(msgId, msgStatus);
     }
 
     @Override
@@ -398,83 +368,102 @@ public class InboxServiceImpl implements InboxService {
 
     @Override
     public Map<String, String> checkRfcStatus(String licenceId) {
-        Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         LicenceDto licenceDto = licenceInboxClient.getLicDtoById(licenceId).getEntity();
         boolean isActive = false;
-        if(licenceDto != null ){
-            if( ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())){
-                isActive=true;
+        if (licenceDto != null) {
+            if (ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())) {
+                isActive = true;
             }
-            if(IaisEGPHelper.isActiveMigrated() &&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus())&&licenceDto.getMigrated()!=0){
-                isActive=true;
+            if (IaisEGPHelper.isActiveMigrated() && ApplicationConsts.LICENCE_STATUS_APPROVED.equals(
+                    licenceDto.getStatus()) && licenceDto.getMigrated() != 0) {
+                isActive = true;
             }
         }
-        if(isActive){
-            List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
-            List<String> finalStatusList = IaisCommonUtils.getAppFinalStatus();
-            boolean hasError = false;
-            if (!IaisCommonUtils.isEmpty(apps)) {
-                List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
-                for (ApplicationDto app : apps) {
-                    String status = app.getStatus();
-                    if(!finalStatusList.contains(status)){
-                        String message = MessageUtil.getMessageDesc("RFC_ERR011");
-                        errorMap.put("errorMessage",message);
-                        hasError = true;
-                    }
-                    if (ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(status)
-                            && ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(app.getApplicationType())) {
-                        errorMap.put("errorMessage", MessageUtil.getMessageDesc("INBOX_ACK025"));
-                        hasError = true;
-                    }
-                    if (ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT.equals(status)) {
-                        appGrpIds.add(app.getAppGrpId());
-                    }
-                }
-                if (!hasError && !appGrpIds.isEmpty()) {
-                    List<ApplicationGroupDto> appGrpDtos = appInboxClient.getApplicationGroupsByIds(appGrpIds).getEntity();
-                    if (!IaisCommonUtils.isEmpty(appGrpDtos)) {
-                        boolean matched = appGrpDtos.stream()
-                                .anyMatch(dto -> ApplicationConsts.APPLICATION_GROUP_STATUS_PENDING_PAYMENT.equals(dto.getStatus()));
-                        if (matched) {
-                            // GENERAL_ERR0062 - There is a related pending payment application.
-                            errorMap.put("errorMessage", MessageUtil.getMessageDesc("GENERAL_ERR0062"));
-                        }
-                    }
-                }
-            }
-            Boolean entity = appInboxClient.isLiscenceAppealOrCessation(licenceId).getEntity();
-            if(!entity){
-                errorMap.put("errorMessage",MessageUtil.getMessageDesc("INBOX_ACK010"));
+        if (isActive) {
+            boolean hasError = checkAppsOnLic(licenceId, errorMap);
+            if (hasError) {
+                log.info("An error in checking apps on licence.");
             }
             List<LicenceDto> licenceDtos = licenceInboxClient.getLicenceDtosByLicenseeId(licenceDto.getLicenseeId()).getEntity();
-            for (LicenceDto licenceDto1 : licenceDtos){
+            for (LicenceDto licenceDto1 : licenceDtos) {
                 if (ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto1.getStatus()) &&
                         StringUtil.isNotEmpty(licenceDto.getSvcName()) &&
                         licenceDto.getSvcName().equals(licenceDto1.getSvcName()) &&
                         StringUtil.isNotEmpty(licenceDto1.getOriginLicenceId()) &&
-                        licenceDto1.getOriginLicenceId().equals(licenceDto.getId())){
-                    errorMap.put("errorMessage",MessageUtil.getMessageDesc("INBOX_ACK025"));
+                        licenceDto1.getOriginLicenceId().equals(licenceDto.getId())) {
+                    errorMap.put("errorMessage", MessageUtil.getMessageDesc("INBOX_ACK025"));
                 }
             }
-        }else{
-            errorMap.put("errorMessage",MessageUtil.getMessageDesc("INBOX_ACK011"));
+        } else {
+            errorMap.put("errorMessage", MessageUtil.getMessageDesc("INBOX_ACK011"));
         }
         return errorMap;
+    }
+
+    private boolean checkAppsOnLic(String licenceId, Map<String, String> errorMap) {
+        List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
+        boolean hasError = false;
+        if (!IaisCommonUtils.isEmpty(apps)) {
+            List<String> finalStatusList = IaisCommonUtils.getAppFinalStatus();
+            List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
+            for (ApplicationDto app : apps) {
+                String status = app.getStatus();
+                // 128600 - exclude the approved status for Audit / Post inspection
+                boolean isValid = finalStatusList.contains(status) || ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(status)
+                        && StringUtil.isIn(app.getApplicationType(), new String[]{ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION,
+                        ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK});
+                if (!isValid) {
+                    String message = MessageUtil.getMessageDesc("RFC_ERR011");
+                    errorMap.put("errorMessage", message);
+                    hasError = true;
+                }
+                if (ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(status)
+                        && ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(app.getApplicationType())) {
+                    errorMap.put("errorMessage", MessageUtil.getMessageDesc("INBOX_ACK025"));
+                    hasError = true;
+                }
+                if (ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT.equals(status)) {
+                    appGrpIds.add(app.getAppGrpId());
+                }
+            }
+            if (!hasError && !appGrpIds.isEmpty()) {
+                List<ApplicationGroupDto> appGrpDtos = appInboxClient.getApplicationGroupsByIds(appGrpIds).getEntity();
+                if (!IaisCommonUtils.isEmpty(appGrpDtos)) {
+                    boolean matched = appGrpDtos.stream()
+                            .anyMatch(dto -> ApplicationConsts.APPLICATION_GROUP_STATUS_PENDING_PAYMENT.equals(dto.getStatus()));
+                    if (matched) {
+                        // GENERAL_ERR0062 - There is a related pending payment application.
+                        errorMap.put("errorMessage", MessageUtil.getMessageDesc("GENERAL_ERR0062"));
+                        hasError = true;
+                    }
+                }
+            }
+        }
+        // appeal
+        if (!hasError) {
+            Boolean entity = appInboxClient.isLiscenceAppealOrCessation(licenceId).getEntity();
+            if (!entity) {
+                errorMap.put("errorMessage", MessageUtil.getMessageDesc("INBOX_ACK010"));
+                hasError = true;
+            }
+        }
+        return hasError;
     }
 
     @Override
     public Map<String, Boolean> listResultCeased(List<String> licIds) {
         Map<String, Boolean> map = IaisCommonUtils.genNewHashMap();
-        for(String licId : licIds){
+        for (String licId : licIds) {
             LicenceDto licenceDto = licenceInboxClient.getLicDtoById(licId).getEntity();
-            if(licenceDto==null){
-                map.put(licId,Boolean.FALSE);
+            if (licenceDto == null) {
+                map.put(licId, Boolean.FALSE);
                 return map;
-            }else {
-                if( !ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())){
-                    if(!(IaisEGPHelper.isActiveMigrated() &&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus())&&licenceDto.getMigrated()!=0)){
-                        map.put(licId,Boolean.FALSE);
+            } else {
+                if (!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())) {
+                    if (!(IaisEGPHelper.isActiveMigrated() && ApplicationConsts.LICENCE_STATUS_APPROVED.equals(
+                            licenceDto.getStatus()) && licenceDto.getMigrated() != 0)) {
+                        map.put(licId, Boolean.FALSE);
                         return map;
                     }
                 }
@@ -485,14 +474,14 @@ public class InboxServiceImpl implements InboxService {
 
     @Override
     public Map<String, String> appealIsApprove(String licenceId, String type) {
-        Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         List<String> endStatusList = IaisCommonUtils.getAppFinalStatus();
         endStatusList.add("APST005");
-        if("licence".equals(type)){
+        if ("licence".equals(type)) {
             List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
-            if(!IaisCommonUtils.isEmpty(apps)){
-                for(ApplicationDto applicationDto:apps){
-                    if(!endStatusList.contains(applicationDto.getStatus())){
+            if (!IaisCommonUtils.isEmpty(apps)) {
+                for (ApplicationDto applicationDto : apps) {
+                    if (!endStatusList.contains(applicationDto.getStatus())) {
                         errorMap.put("errorMessage", MessageUtil.getMessageDesc("RFC_ERR011"));
                         break;
                     }
@@ -500,9 +489,9 @@ public class InboxServiceImpl implements InboxService {
             }
             return errorMap;
 
-        }else if("application".equals(type)){
+        } else if ("application".equals(type)) {
             ApplicationDto applicationDto = appInboxClient.getApplicarionById(licenceId).getEntity();
-            if(!endStatusList.contains(applicationDto.getStatus())){
+            if (!endStatusList.contains(applicationDto.getStatus())) {
                 errorMap.put("errorMessage", MessageUtil.getMessageDesc("RFC_ERR011"));
             }
         }
@@ -533,62 +522,67 @@ public class InboxServiceImpl implements InboxService {
 
     @Getter
     @Setter
-    class InnerLicenceViewData{
+    class InnerLicenceViewData {
+
         String value;
         List<String> innerLicenceViewDatas;
 
     }
 
-    private String getHcsaServiceSubTypeDisplayName(List<HcsaServiceSubTypeDto> hcsaServiceSubTypeDtos,String id){
-          String result = "";
-          for(HcsaServiceSubTypeDto hcsaServiceSubTypeDto : hcsaServiceSubTypeDtos){
-             if(hcsaServiceSubTypeDto.getId().equals(id)){
-                 result = hcsaServiceSubTypeDto.getSubtypeName();
-                 break;
-             }
-          }
-          return result;
-    }
-    private String getHcsaServiceDtoDisplayName(List<HcsaServiceDto> hcsaServiceDtos,String code){
+    private String getHcsaServiceSubTypeDisplayName(List<HcsaServiceSubTypeDto> hcsaServiceSubTypeDtos, String id) {
         String result = "";
-        for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtos){
-            if(hcsaServiceDto.getSvcCode().equals(code)){
+        for (HcsaServiceSubTypeDto hcsaServiceSubTypeDto : hcsaServiceSubTypeDtos) {
+            if (hcsaServiceSubTypeDto.getId().equals(id)) {
+                result = hcsaServiceSubTypeDto.getSubtypeName();
+                break;
+            }
+        }
+        return result;
+    }
+
+    private String getHcsaServiceDtoDisplayName(List<HcsaServiceDto> hcsaServiceDtos, String code) {
+        String result = "";
+        for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
+            if (hcsaServiceDto.getSvcCode().equals(code)) {
                 result = hcsaServiceDto.getSvcName();
                 break;
             }
         }
         return result;
     }
-    private List<InnerLicenceViewData> tidyInnerLicenceViewData(List<LicPremisesScopeDto> licPremisesScopeDtos,List<LicPremSubSvcRelDto> licPremSubSvcRelDtos ){
+
+    private List<InnerLicenceViewData> tidyInnerLicenceViewData(List<LicPremisesScopeDto> licPremisesScopeDtos,
+            List<LicPremSubSvcRelDto> licPremSubSvcRelDtos) {
         List<InnerLicenceViewData> result = IaisCommonUtils.genNewArrayList();
-        if(IaisCommonUtils.isNotEmpty(licPremisesScopeDtos)){
+        if (IaisCommonUtils.isNotEmpty(licPremisesScopeDtos)) {
             List<String> ids = IaisCommonUtils.genNewArrayList();
-            for (LicPremisesScopeDto licPremisesScopeDto : licPremisesScopeDtos){
+            for (LicPremisesScopeDto licPremisesScopeDto : licPremisesScopeDtos) {
                 ids.add(licPremisesScopeDto.getSubTypeId());
             }
             List<HcsaServiceSubTypeDto> hcsaServiceSubTypeDtos = configInboxClient.getHcsaServiceSubTypeDtosByIds(ids).getEntity();
-            for (LicPremisesScopeDto licPremisesScopeDto : licPremisesScopeDtos){
+            for (LicPremisesScopeDto licPremisesScopeDto : licPremisesScopeDtos) {
                 InnerLicenceViewData innerLicenceViewData = new InnerLicenceViewData();
-                innerLicenceViewData.setValue(getHcsaServiceSubTypeDisplayName(hcsaServiceSubTypeDtos,licPremisesScopeDto.getSubTypeId()));
+                innerLicenceViewData.setValue(
+                        getHcsaServiceSubTypeDisplayName(hcsaServiceSubTypeDtos, licPremisesScopeDto.getSubTypeId()));
                 result.add(innerLicenceViewData);
             }
         }
-        if(IaisCommonUtils.isNotEmpty(licPremSubSvcRelDtos)){
+        if (IaisCommonUtils.isNotEmpty(licPremSubSvcRelDtos)) {
             List<String> svcCodes = IaisCommonUtils.genNewArrayList();
-            for (LicPremSubSvcRelDto licPremSubSvcRelDto : licPremSubSvcRelDtos){
+            for (LicPremSubSvcRelDto licPremSubSvcRelDto : licPremSubSvcRelDtos) {
                 svcCodes.add(licPremSubSvcRelDto.getSvcCode());
             }
             List<HcsaServiceDto> hcsaServiceDtos = configInboxClient.getHcsaServiceDtoByCode(svcCodes).getEntity();
-            InnerLicenceViewData innerLicenceViewData = new InnerLicenceViewData();
+            InnerLicenceViewData innerLicenceViewData;
             List<String> innerLicenceViewDataList = IaisCommonUtils.genNewArrayList();
-            for (LicPremSubSvcRelDto licPremSubSvcRelDto : licPremSubSvcRelDtos){
-                if(licPremSubSvcRelDto.getLevel() == 0){
+            for (LicPremSubSvcRelDto licPremSubSvcRelDto : licPremSubSvcRelDtos) {
+                if (licPremSubSvcRelDto.getLevel() == 0) {
                     innerLicenceViewData = new InnerLicenceViewData();
-                    innerLicenceViewData.setValue(getHcsaServiceDtoDisplayName(hcsaServiceDtos,licPremSubSvcRelDto.getSvcCode()));
+                    innerLicenceViewData.setValue(getHcsaServiceDtoDisplayName(hcsaServiceDtos, licPremSubSvcRelDto.getSvcCode()));
                     innerLicenceViewDataList = IaisCommonUtils.genNewArrayList();
                     innerLicenceViewData.setInnerLicenceViewDatas(innerLicenceViewDataList);
                     result.add(innerLicenceViewData);
-                }else{
+                } else {
                     innerLicenceViewDataList.add(licPremSubSvcRelDto.getSvcCode());
                 }
             }
@@ -598,26 +592,26 @@ public class InboxServiceImpl implements InboxService {
 
     @Override
     public LicenceViewDto getLicenceViewDtoByLicenceId(String licenceId) {
-        LicenceViewDto licenceViewDto =  licenceInboxClient.getAllStatusLicenceByLicenceId(licenceId).getEntity();
+        LicenceViewDto licenceViewDto = licenceInboxClient.getAllStatusLicenceByLicenceId(licenceId).getEntity();
         List<LicPremisesScopeDto> licPremisesScopeDtos = licenceViewDto.getLicPremisesScopeDtos();
         List<LicPremSubSvcRelDto> licPremSubSvcRelDtos = licenceViewDto.getLicPremSubSvcRelDtos();
-        List<InnerLicenceViewData> innerLicenceViewDataList = tidyInnerLicenceViewData(licPremisesScopeDtos,licPremSubSvcRelDtos);
+        List<InnerLicenceViewData> innerLicenceViewDataList = tidyInnerLicenceViewData(licPremisesScopeDtos, licPremSubSvcRelDtos);
         List<String> disciplinesSpecifieds = IaisCommonUtils.genNewArrayList();
-        if(IaisCommonUtils.isNotEmpty(innerLicenceViewDataList)){
+        if (IaisCommonUtils.isNotEmpty(innerLicenceViewDataList)) {
             StringBuilder str = new StringBuilder();
-            int eachPage =14;
-            for(int i = 0;i<innerLicenceViewDataList.size();i++) {
+            int eachPage = 14;
+            for (int i = 0; i < innerLicenceViewDataList.size(); i++) {
                 int d = (i + 1) % eachPage;
                 str.append("<li>").append(innerLicenceViewDataList.get(i).getValue());
                 List<String> innerLicenceViewDatas = innerLicenceViewDataList.get(i).getInnerLicenceViewDatas();
-                if(IaisCommonUtils.isNotEmpty(innerLicenceViewDatas)){
-                  str.append("<br></br>");
-                  for(int j = 0 ; j < innerLicenceViewDatas.size(); j++){
-                      str.append("- "+innerLicenceViewDatas.get(j));
-                      if(j != innerLicenceViewDatas.size() -1){
-                          str.append("<br></br>");
-                      }
-                  }
+                if (IaisCommonUtils.isNotEmpty(innerLicenceViewDatas)) {
+                    str.append("<br></br>");
+                    for (int j = 0; j < innerLicenceViewDatas.size(); j++) {
+                        str.append("- ").append(innerLicenceViewDatas.get(j));
+                        if (j != innerLicenceViewDatas.size() - 1) {
+                            str.append("<br></br>");
+                        }
+                    }
                 }
                 if (d == 0) {
                     str.append("</li>");
@@ -642,28 +636,27 @@ public class InboxServiceImpl implements InboxService {
 
     @Override
     public List<ApplicationSubDraftDto> getDraftByLicAppIdAndStatus(String licAppId, String status) {
-        return appInboxClient.getDraftByLicAppIdAndStatus(licAppId,status).getEntity();
+        return appInboxClient.getDraftByLicAppIdAndStatus(licAppId, status).getEntity();
     }
 
     @Override
     public Map<String, Boolean> getMapCanInsp() {
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = null;
         try {
-            hcsaSvcRoutingStageDtos = eicGatewayFeMainClient.getHcsaSvcRoutingStageDtoByStageId(HcsaConsts.ROUTING_STAGE_INS).getEntity();
-        }catch (Exception e){
-         log.error(e.getMessage(),e);
+            hcsaSvcRoutingStageDtos = eicGatewayFeMainClient.getHcsaSvcRoutingStageDtoByStageId(
+                    HcsaConsts.ROUTING_STAGE_INS).getEntity();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
         }
         Map<String, Boolean> map = IaisCommonUtils.genNewHashMap();
-        if(IaisCommonUtils.isNotEmpty(hcsaSvcRoutingStageDtos)){
+        if (IaisCommonUtils.isNotEmpty(hcsaSvcRoutingStageDtos)) {
             List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigClient.getActiveServices().getEntity();
-            if(IaisCommonUtils.isNotEmpty(hcsaServiceDtos)){
-                for(HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto : hcsaSvcRoutingStageDtos){
-                    for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtos){
-                        if(hcsaServiceDto.getId().equalsIgnoreCase(hcsaSvcRoutingStageDto.getServiceId())){
-                            String key = hcsaSvcRoutingStageDto.getAppType() +"_"+hcsaServiceDto.getSvcCode();
-                            if(map.get(key) == null){
-                                map.put(key,Boolean.TRUE);
-                            }
+            if (IaisCommonUtils.isNotEmpty(hcsaServiceDtos)) {
+                for (HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto : hcsaSvcRoutingStageDtos) {
+                    for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
+                        if (hcsaServiceDto.getId().equalsIgnoreCase(hcsaSvcRoutingStageDto.getServiceId())) {
+                            String key = hcsaSvcRoutingStageDto.getAppType() + "_" + hcsaServiceDto.getSvcCode();
+                            map.putIfAbsent(key, Boolean.TRUE);
                             break;
                         }
                     }
@@ -675,7 +668,8 @@ public class InboxServiceImpl implements InboxService {
 
     @Override
     public Integer dssDraftNum(InterMessageSearchDto interMessageSearchDto) {
-        if(StringUtil.isEmpty(interMessageSearchDto.getLicenseeId()) || IaisCommonUtils.isEmpty(interMessageSearchDto.getServiceCodes())){
+        if (StringUtil.isEmpty(interMessageSearchDto.getLicenseeId()) || IaisCommonUtils.isEmpty(
+                interMessageSearchDto.getServiceCodes())) {
             return 0;
         }
         return licenceInboxClient.dssDraftNum(interMessageSearchDto).getEntity();
@@ -689,4 +683,5 @@ public class InboxServiceImpl implements InboxService {
         }
         return licenceInboxClient.getAllBundleLicences(licIds).getEntity();
     }
+
 }
