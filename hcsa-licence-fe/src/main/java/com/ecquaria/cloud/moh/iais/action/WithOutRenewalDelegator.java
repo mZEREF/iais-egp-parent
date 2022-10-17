@@ -1024,32 +1024,23 @@ public class WithOutRenewalDelegator {
             String appGrpNo = appSubmissionDtoList.get(0).getAppGrpNo();
 
             if (feeInfoDto.getBaseSvcFeeExt() != null) {
-                setAppFeeDetails(feeInfoDto.getBaseSvcFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo);
+                setAppFeeDetails(feeInfoDto.getBaseSvcFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,appSubmissionDto);
             }
             if (feeInfoDto.getThbSpecifiedFeeExt() != null) {
-                setAppFeeDetails(feeInfoDto.getThbSpecifiedFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo);
+                setAppFeeDetails(feeInfoDto.getThbSpecifiedFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,appSubmissionDto);
             }
             if (feeInfoDto.getSimpleSpecifiedFeeExt() != null) {
-                setAppFeeDetails(feeInfoDto.getSimpleSpecifiedFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo);
+                setAppFeeDetails(feeInfoDto.getSimpleSpecifiedFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,appSubmissionDto);
             }
             if (feeInfoDto.getComplexSpecifiedFeeExt() != null) {
-                setAppFeeDetails(feeInfoDto.getComplexSpecifiedFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo);
+                setAppFeeDetails(feeInfoDto.getComplexSpecifiedFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,appSubmissionDto);
             }
             if (feeInfoDto.getBundleSvcFeeExt() != null) {
-                setAppFeeDetails(feeInfoDto.getBundleSvcFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo);
+                setAppFeeDetails(feeInfoDto.getBundleSvcFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,appSubmissionDto);
             }
             if (feeInfoDto.getGradualFeeExt() != null) {
-                setAppFeeDetails(feeInfoDto.getGradualFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo);
+                setAppFeeDetails(feeInfoDto.getGradualFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,appSubmissionDto);
             }
-
-            appSubmissionDto.setRenewalFeeType(lateFeeType);
-            appSubmissionDto.setLateFee(lateFeeAmount);
-            appSubmissionDto.setLateFeeStr(Formatter.formatterMoney(lateFeeAmount));
-            appSubmissionDto.setAmount(amount);
-            appSubmissionDto.setAmountStr(Formatter.formatterMoney(amount));
-            /*if (MiscUtil.doubleEquals(0.0, amount)) {
-                appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
-            }*/
             appFeeDetailsDto1.setBaseFee(amount);
             appFeeDetailsDto1.setLaterFee(lateFeeAmount);
             appFeeDetailsDto1.setAdmentFee(feeDto.getTotal());
@@ -1059,13 +1050,18 @@ public class WithOutRenewalDelegator {
     }
 
     private static void setAppFeeDetails(FeeExtDto feeExtDto, Double lateFeeAmount, Double amount, String lateFeeType,
-            String appGrpNo) {
+            String appGrpNo,AppSubmissionDto appSubmissionDto) {
         feeExtDto.setAppGroupNo(appGrpNo);
         if (feeExtDto.getLateFeeType() != null) {
             lateFeeType = feeExtDto.getLateFeeType();
             lateFeeAmount += feeExtDto.getLateFeeAmoumt();
         }
         amount += feeExtDto.getAmount();
+        appSubmissionDto.setRenewalFeeType(lateFeeType);
+        appSubmissionDto.setLateFee(lateFeeAmount);
+        appSubmissionDto.setLateFeeStr(Formatter.formatterMoney(lateFeeAmount));
+        appSubmissionDto.setAmount(amount);
+        appSubmissionDto.setAmountStr(Formatter.formatterMoney(amount));
     }
 
     public static HashMap<String, List<FeeExtDto>> getLaterFeeDetailsMap(List<FeeInfoDto> feeInfoDtos) {
