@@ -5,7 +5,10 @@
                 <div class="topByDrug <c:if test="${'0' == appSvcOtherInfoDto.appSvcOtherInfoTopDto.topType}">hidden</c:if>">
                     <iais:row>
                         <div class="col-xs-12 col-md-10">
-                            <p class="bold">TOP (BY Drug)&nbsp;<c:if test="${appSvcOtherInfoDto.otherInfoAbortDrugList.size() > 1}">${status.index+1}</c:if></p>
+                            <p class="bold">
+                                TOP (By Drug)
+                                <c:if test="${appSvcOtherInfoDto.otherInfoAbortDrugList.size() > 1}">${status.index+1}</c:if>
+                            </p>
                         </div>
                     </iais:row>
                     <iais:row>

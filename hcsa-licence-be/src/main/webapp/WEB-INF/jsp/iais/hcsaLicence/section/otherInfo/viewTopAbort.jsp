@@ -4,7 +4,8 @@
         <c:if test="${'1' == person.topType}">
             <p class="col-xs-12">
                 <strong>
-                    TOP (BY Drug)<c:if test="${fn:length(otherInfo.otherInfoAbortDrugList)>1}">${status.index+1}</c:if>
+                    TOP (By Drug)
+                    <c:if test="${fn:length(otherInfo.otherInfoAbortDrugList)>1}">${status.index+1}</c:if>
                 </strong>
             </p>
             <table aria-describedby="" class="col-xs-12 <c:if test="${'0' == otherInfo.appSvcOtherInfoTopDto.topType}">hidden</c:if>">
