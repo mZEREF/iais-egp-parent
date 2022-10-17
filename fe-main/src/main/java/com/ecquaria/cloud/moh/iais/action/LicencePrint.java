@@ -82,7 +82,9 @@ public class LicencePrint {
                     map.put("lists",eachPageList);
                 }
                 map.put("content2Page",totle);
-                map.put("canShowAddressNote",ApplicationConsts.PREMISES_TYPE_PERMANENT.equals(licenceViewDto.getPremisesType()));
+                if(ApplicationConsts.PREMISES_TYPE_PERMANENT.equals(licenceViewDto.getPremisesType())){
+                    map.put("canShowAddressNote",true);
+                }
                 map.put("startDate",licenceViewDto.getStartDate());
                 map.put("endDate",licenceViewDto.getEndDate());
                 List<String> disciplinesSpecifieds = licenceViewDto.getDisciplinesSpecifieds();
