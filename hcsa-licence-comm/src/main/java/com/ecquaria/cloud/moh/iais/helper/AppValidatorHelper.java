@@ -3352,7 +3352,15 @@ public final class AppValidatorHelper {
                 continue;
             }
             String premisesVal = specialisedDto.getPremisesVal();
-            String baseSvcCode = specialisedDto.getBaseSvcCode();
+            // 84698
+            List<AppPremScopeDto> appPremScopeDtoList = specialisedDto.getAppPremScopeDtoList();
+            if (appPremScopeDtoList != null && !appPremScopeDtoList.isEmpty()) {
+                List<AppPremScopeDto> checkedAppPremScopeDtoList = specialisedDto.getCheckedAppPremScopeDtoList();
+                if (checkedAppPremScopeDtoList == null || checkedAppPremScopeDtoList.isEmpty()) {
+                    errorMap.put(premisesVal + "_sub_type", "GENERAL_ERR0006");
+                }
+            }
+            /*String baseSvcCode = specialisedDto.getBaseSvcCode();
             if (StringUtil.isIn(baseSvcCode, new String[]{AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL,
                     AppServicesConsts.SERVICE_CODE_RENAL_DIALYSIS_CENTRE,
                     AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY})) {
@@ -3372,7 +3380,7 @@ public final class AppValidatorHelper {
                 if (checkedAppPremSubSvcRelDtoList == null || checkedAppPremSubSvcRelDtoList.isEmpty()) {
                     errorMap.put(premisesVal + "_service", "GENERAL_ERR0006");
                 }
-            }
+            }*/
         }
         return errorMap;
     }
