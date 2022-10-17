@@ -1752,14 +1752,10 @@ public abstract class AppCommDelegator {
         if (appEditSelectDto.isSpecialisedEdit()) {
             if (appEditSelectDto.isChangeSpecialisedNonAutoFields() && autoAppSubmissionDto != null) {
                 RfcHelper.resolveSpecialisedNonAutoData(autoAppSubmissionDto, oldAppSubmissionDto);
+                autoChangeSelectDto.setSpecialisedEdit(true);
                 autoChangeSelectDto.setChangeSpecialisedAutoFields(true);
                 appEditSelectDto.setChangeSpecialisedAutoFields(false);
             }
-        }
-        // re-set change edit select dto
-        if (appEditSelectDto.isSpecialisedEdit() && autoAppSubmissionDto != null) {
-            appEditSelectDto.setSpecialisedEdit(false);
-            autoChangeSelectDto.setSpecialisedEdit(true);
         }
         // check app submissions affected by personnel (service info)
         if (appEditSelectDto.isServiceEdit()) {
@@ -1813,6 +1809,13 @@ public abstract class AppCommDelegator {
                 autoAppSubmissionDto.setAppGrpPremisesDtoList(oldAppSubmissionDto.getAppGrpPremisesDtoList());
             }
             autoGroupNo = getRfcGroupNo(autoGroupNo);
+            FeeDto autoFee = configCommService.getGroupAmendAmount(getAmendmentFeeDto(autoChangeSelectDto, isCharity));
+            Double autoAmount = autoFee.getTotal();
+            if (licenceDto.getMigrated() == 1 && IaisEGPHelper.isActiveMigrated()) {
+                autoAmount = 0.0;
+            }
+            log.info(StringUtil.changeForLog("Auto Amount: " + autoAmount));
+            autoAppSubmissionDto.setAmount(autoAmount);
             ApplicationHelper.reSetAdditionalFields(autoAppSubmissionDto, autoChangeSelectDto, autoGroupNo);
             autoAppSubmissionDto.setChangeSelectDto(autoChangeSelectDto);
             autoSaveAppsubmission.add(0, autoAppSubmissionDto);
@@ -2194,19 +2197,13 @@ public abstract class AppCommDelegator {
     }
 
     private AmendmentFeeDto getAmendmentFeeDto(AppEditSelectDto appEditSelectDto, boolean isCharity) {
-        return getAmendmentFeeDto(appEditSelectDto.isChangeHciName(),
-                appEditSelectDto.isChangeInLocation() || appEditSelectDto.isChangeFloorUnits(),
-                appEditSelectDto.isChangeVehicle(), isCharity, appEditSelectDto.isChangeBusinessName());
-    }
-
-    private AmendmentFeeDto getAmendmentFeeDto(boolean changeHciName, boolean changeLocation, boolean changeVehicles,
-            boolean isCharity, boolean changeBusiness) {
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
         amendmentFeeDto.setChangeInLicensee(Boolean.FALSE);
-        amendmentFeeDto.setChangeInLocation(changeLocation);
-        amendmentFeeDto.setAdditionOrRemovalVehicles(changeVehicles);
+        amendmentFeeDto.setChangeInLocation(appEditSelectDto.isChangeInLocation() || appEditSelectDto.isChangeFloorUnits());
+        amendmentFeeDto.setAdditionOrRemovalVehicles(appEditSelectDto.isChangeVehicle());
         amendmentFeeDto.setIsCharity(isCharity);
-        amendmentFeeDto.setChangeBusinessName(changeBusiness);
+        amendmentFeeDto.setChangeBusinessName(appEditSelectDto.isChangeBusinessName());
+        amendmentFeeDto.setAdditionOrRemovalSpecialisedServices(appEditSelectDto.isSpecialisedEdit());
         return amendmentFeeDto;
     }
 
