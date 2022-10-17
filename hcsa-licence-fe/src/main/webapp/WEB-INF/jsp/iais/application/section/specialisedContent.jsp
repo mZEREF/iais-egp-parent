@@ -1,3 +1,4 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
 <div class="row form-horizontal">
     <c:forEach var="specialised" items="${AppSubmissionDto.appPremSpecialisedDtoList}">
         <c:if test="${specialised_svc_code == specialised.baseSvcCode}">
@@ -21,7 +22,7 @@
                 <c:if test="${not empty specialised.allAppPremScopeDtoList}">
                     <div class="">
                         <div class="app-title">${specialised.categorySectionName}</div>
-                        <div><iais:message key="NEW_ACK036"/></div>
+                        <div><iais:message key="NEW_ACK036" paramKeys="data" paramValues="${StringUtil.toLowerCase(specialised.categorySectionName)}"/></div>
                     </div>
                     <iais:row>
                         <fieldset class="fieldset-content col-xs-12">
@@ -49,7 +50,7 @@
                 <c:if test="${not empty specialised.allAppPremSubSvcRelDtoList}">
                     <div class="">
                         <div class="app-title">${specialised.specialSvcSecName}</div>
-                        <div><iais:message key="NEW_ACK037"/></div>
+                        <div><iais:message key="NEW_ACK037" paramKeys="data" paramValues="${StringUtil.toLowerCase(specialised.specialSvcSecName)}"/></div>
                     </div>
                     <iais:row>
                         <fieldset class="fieldset-content col-xs-12">
