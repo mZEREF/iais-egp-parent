@@ -1,11 +1,11 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 
 <script type="text/javascript" src="<%=IaisEGPConstant.CSS_ROOT + IaisEGPConstant.COMMON_CSS_ROOT%>js/file-upload.js"></script>
 
-<input type="hidden" name="sysFileSize" id="sysFileSize" value="${sysFileSize}"/>
-<c:if test="${requestInformationConfig == null}">
+<div class="row form-horizontal">
+<c:if test="${isRfi}">
     <c:set var="isClickEdit" value="true"/>
 </c:if>
 <c:if test="${AppSubmissionDto.needEditController}">
@@ -30,12 +30,17 @@
             </a>
         </div>
     </c:if>
-    <c:if test="${'true' != isClickEdit}">
+</c:if>
+
+<h2>Service-related Documents</h2>
+
+<c:if test="${AppSubmissionDto.needEditController}">
+    <c:if test="${!isClickEdit}">
         <c:set var="locking" value="true"/>
         <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
         <div id="edit-content">
             <c:choose>
-                <c:when test="${'true' == canEdit}">
+                <c:when test="${canEdit}">
                     <div class="text-right app-font-size-16">
                         <a id="edit" class="svcDocEdit" href="javascript:void(0);">
                             <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
@@ -53,46 +58,39 @@
 <div id="selectFileDiv">
     <input id="selectedFile" class="selectedFile"  name="selectedFile" type="file" style="display: none;" onclick="fileClicked(event)" onchange="fileChangedLocal(this,event)" aria-label="selectedFile1">
 </div>
-<c:set var="docType" value="svcDoc"/>
-<c:forEach var="config" items="${svcDocConfig}" varStatus="configStat">
-    <c:choose>
-        <c:when test="${'0' == config.dupForPrem}">
-            <c:choose>
-                <c:when test="${empty config.dupForPerson}">
-                    <c:set var="fileList" value="${svcDocReloadMap[config.id]}"/>
-                    <c:set var="configIndex" value="${configStat.index}svcDoc${currentSvcCode}"/>
-                    <%@include file="../section/docContent.jsp"%>
-                    <br/>
-                </c:when>
-                <c:otherwise>
-                    <c:set var="premIndexNo" value=""/>
-                    <%@include file="dupForPerson.jsp"%>
-                </c:otherwise>
-            </c:choose>
-        </c:when>
-        <c:when test="${'1' == config.dupForPrem}">
-            <c:forEach var="prem" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="premStat">
-                <c:choose>
-                    <c:when test="${empty config.dupForPerson}">
-                        <c:set var="mapKey" value="${prem.premisesIndexNo}${config.id}"/>
-                        <c:set var="fileList" value="${svcDocReloadMap[mapKey]}"/>
-                        <c:set var="configIndex" value="${configStat.index}svcDoc${currentSvcCode}${prem.premisesIndexNo}"/>
-                        <%@include file="../section/docContent.jsp"%>
-                        <br/>
-                    </c:when>
-                    <c:otherwise>
-                        <c:set var="premIndexNo" value="${prem.premisesIndexNo}"/>
-                        <%@include file="dupForPerson.jsp"%>
-                    </c:otherwise>
-                </c:choose>
-            </c:forEach>
-        </c:when>
-        <c:otherwise>
-
-        </c:otherwise>
-    </c:choose>
+<c:forEach var="docShowDto" items="${currSvcInfoDto.documentShowDtoList}" varStatus="stat">
+    <iais:row>
+        <div class="col-xs-12 app-title">
+            <p><c:out value="${docShowDto.premName}"/></p>
+            <p>Address: <c:out value="${docShowDto.premAddress}"/></p>
+        </div>
+    </iais:row>
+    <div class="panel-group" id="${docShowDto.premisesVal}" role="tablist" aria-multiselectable="true">
+        <c:forEach var="secDto" items="${docShowDto.docSectionList}" varStatus="secStat">
+            <c:set var="panelKey">${docShowDto.premisesVal}-${secDto.svcId}</c:set>
+            <div class="panel panel-default deputy-panel">
+                <div class="panel-heading" role="tab">
+                    <h4 class="panel-title">
+                        <a role="button" class="" data-toggle="collapse" href="#${panelKey}" aria-expanded="true" aria-controls="${panelKey}">
+                            <c:out value="${secDto.sectionName}"/>
+                        </a>
+                    </h4>
+                </div>
+                <div id="${panelKey}" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        <div class="panel-main-content">
+                            <c:forEach var="doc" items="${secDto.docSecDetailList}" varStatus="docStat">
+                                <c:set var="configIndex" value="${docStat.index}svcDoc${secDto.svcCode}${docShowDto.premisesVal}"/>
+                                <%@include file="docContent.jsp"%>
+                            </c:forEach>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </c:forEach>
+    </div>
 </c:forEach>
-
+</div>
 <script>
     $(document).ready(function () {
         if (${AppSubmissionDto.needEditController && !isClickEdit}) {
@@ -111,7 +109,7 @@
             var index = $(this).closest('.file-upload-gp').find('input[name="configIndex"]').val();
             $('input[name="uploadKey"]').val(index);
             clearFlagValueFEFile();
-            $('#selectFileDiv').html('<input id="' + index + '" class="selectedFile"  name="selectedFile" type="file" style="display: none;" onclick="fileClicked(event)" onchange="fileChangedLocal(this,event)" aria-label="selectedFile1">');
+            $('#selectFileDiv').html('<input id="' + index + '"  class="selectedFile"  name="selectedFile" type="file" style="display: none;" onclick="fileClicked(event)" onchange="fileChangedLocal(this,event)" aria-label="selectedFile1">');
             $('input[type="file"]').click();
         });
     });
@@ -168,5 +166,43 @@
         }
 
     });
+
+    function getFileTag(fileAppendId) {
+        var $file = $("#" + fileAppendId);
+        if ($file.length == 0) {
+            $file = $("input[type='file'][name='selectedFile']:first");
+        }
+        if ($file.length == 0) {
+            $file = $("input[type='file']:first");
+        }
+        return $file;
+    }
+
+   /* function reUploadFileFeAjax(fileAppendId, index, idForm) {
+        $("#reloadIndex").val(index);
+        $("#fileAppendId").val(fileAppendId);
+        $("#uploadFormId").val(idForm);
+        //$("#selectedFile").click();
+        getFileTag(fileAppendId).click();
+    }*/
+
+    /*function validateFileSizeMaxOrEmpty(maxSize) {
+        var $file = getFileTag($("#fileAppendId").val());
+        var fileV = $file.val();
+        var file = $file.get(0).files[0];
+        if (fileV == null || fileV == "" || file == null || file == undefined) {
+            return "E";
+        }
+        var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
+        //alert('fileSize:'+fileSize);
+        //alert('maxSize:'+maxSize);
+        fileSize = parseInt(fileSize);
+        if (fileSize >= maxSize) {
+            $file.after($file.clone().val(""));
+            $file.eq('0').remove();
+            return "N";
+        }
+        return "Y";
+    }*/
 
 </script>
