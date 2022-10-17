@@ -67,7 +67,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -1009,9 +1008,7 @@ public class RequestForChangeDelegator {
 
     private FeeDto getTransferFee(boolean isCharity){
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
-        amendmentFeeDto.setChangeInHCIName(Boolean.FALSE);
         amendmentFeeDto.setChangeInLicensee(Boolean.TRUE);
-        amendmentFeeDto.setChangeInLocation(Boolean.FALSE);
         amendmentFeeDto.setIsCharity(isCharity);
         FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
         return feeDto;

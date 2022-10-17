@@ -306,10 +306,10 @@
                       <p>1</p>
                     </td>
                     <td>
-                      <p>${businessName}</p>
+                      <p style="text-transform: uppercase;">${businessName}</p>
                     </td>
                     <td>
-                      <p> ${premisesType}</p>
+                      <p style="text-transform: uppercase;"> ${premisesType}</p>
                     </td>
                     <td>
                     ${content}
@@ -364,10 +364,10 @@
                                              <p>1</p>
                                            </td>
                                            <td>
-                                             <p>${businessName}</p>
+                                             <p style="text-transform: uppercase;">${businessName}</p>
                                            </td>
                                            <td>
-                                             <p> ${premisesType}</p>
+                                             <p style="text-transform: uppercase;"> ${premisesType}</p>
                                            </td>
                                            <td>
                                              ${s!''}
@@ -422,10 +422,10 @@
                       <p>1</p>
                     </td>
                     <td>
-                      <p>${businessName}</p>
+                      <p style="text-transform: uppercase;">${businessName}</p>
                     </td>
                     <td>
-                      <p> ${premisesType}</p>
+                      <p style="text-transform: uppercase;"> ${premisesType}</p>
                     </td>
                     <td>
                     ${content2}

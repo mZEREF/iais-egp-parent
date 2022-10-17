@@ -2203,11 +2203,8 @@ public abstract class AppCommDelegator {
             boolean isCharity, boolean changeBusiness) {
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
         amendmentFeeDto.setChangeInLicensee(Boolean.FALSE);
-        amendmentFeeDto.setChangeInHCIName(changeHciName);
         amendmentFeeDto.setChangeInLocation(changeLocation);
-        if (changeVehicles) {
-            amendmentFeeDto.setChangeInHCIName(Boolean.TRUE);
-        }
+        amendmentFeeDto.setAdditionOrRemovalVehicles(changeVehicles);
         amendmentFeeDto.setIsCharity(isCharity);
         amendmentFeeDto.setChangeBusinessName(changeBusiness);
         return amendmentFeeDto;
