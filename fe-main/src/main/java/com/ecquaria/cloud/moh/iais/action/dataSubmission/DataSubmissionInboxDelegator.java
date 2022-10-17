@@ -35,7 +35,6 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import com.ecquaria.cloud.privilege.Privilege;
@@ -711,12 +710,16 @@ public class DataSubmissionInboxDelegator {
 	private void setAccessFilter(LoginContext loginContext, SearchParam searchParam) {
 		List<String> roles = loginContext.getRoleIds();
 		List<String> twoTypes = IaisCommonUtils.genDsDraftTwoTypesFilter(roles);
-		String insql = SqlHelper.constructInCondition("APP_TYPE + DS_TYPE", twoTypes.size());
-		searchParam.addParam("accessFilter", insql);
+		StringBuilder sb = new StringBuilder();
 		if (IaisCommonUtils.isNotEmpty(twoTypes)) {
-			for (int i = 0; i < twoTypes.size(); i++) {
-				searchParam.addFilter("APP_TYPE + DS_TYPE" + i, twoTypes.get(i));
+			for (String type : twoTypes) {
+				sb.append('\'').append(type).append("',");
 			}
+		}
+		if (sb.length() == 0) {
+			searchParam.addParam("accessFilter","NANA");
+		} else {
+			searchParam.addParam("accessFilter",sb.substring(0, sb.length() - 1));
 		}
 	}
 }
