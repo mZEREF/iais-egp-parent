@@ -79,10 +79,15 @@
                 <div id="${panelKey}" class="panel-collapse collapse in">
                     <div class="panel-body">
                         <div class="panel-main-content">
-                            <c:forEach var="doc" items="${secDto.docSecDetailList}" varStatus="docStat">
-                                <c:set var="configIndex" value="${docStat.index}svcDoc${secDto.svcCode}${docShowDto.premisesVal}"/>
-                                <%@include file="docContent.jsp"%>
-                            </c:forEach>
+                            <c:if test="${not empty secDto.docSecDetailList}" var="hasDocConfig">
+                                <c:forEach var="doc" items="${secDto.docSecDetailList}" varStatus="docStat">
+                                    <c:set var="configIndex" value="${docStat.index}svcDoc${secDto.svcCode}${docShowDto.premisesVal}"/>
+                                    <%@include file="docContent.jsp"%>
+                                </c:forEach>
+                            </c:if>
+                            <c:if test="${not hasDocConfig}">
+                                <p><h4><iais:message key="NEW_ACK039"/></h4></p>
+                            </c:if>
                         </div>
                     </div>
                 </div>
