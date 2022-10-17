@@ -199,12 +199,18 @@ function showNextStageRow() {
     const cycleRadioVal = $("input[name='cycleRadio']:checked").val();
     const hasCycleVal = $('input[name="hasCycle"]').val();
     const nextStageRow = $('#nextStageRow');
-
-    if (hasCycleVal === 'N' || cycleRadioVal === 'newCycle') {
+    const nextOffStageRow = $('#nextOffStageRow');
+    if (cycleRadioVal === 'newCycle' && hasCycleVal === 'Y') {
+        nextOffStageRow.show();
+        nextStageRow.hide();
+    } else if (cycleRadioVal === 'newCycle' || hasCycleVal === 'N') {
         nextStageRow.show();
+        nextOffStageRow.hide();
     } else {
+        nextOffStageRow.hide();
         nextStageRow.hide();
         clearFields(nextStageRow);
+        clearFields(nextOffStageRow);
     }
 }
 

@@ -104,7 +104,7 @@
     </iais:row>
     <iais:row cssClass="form-check-gp" id="nextOffStageRow">
         <p class="form-check-title">What information do you want to submit? </p>
-        <iais:select name="nextStage" firstOption="Please Select" id="nextStage"
+        <iais:select name="nextNunCycleStage" firstOption="Please Select" id="nextNunCycleStage"
                      options="offCycleOps"
                      value="${arSuperDataSubmissionDto.selectionDto.stage}"/>
     </iais:row>

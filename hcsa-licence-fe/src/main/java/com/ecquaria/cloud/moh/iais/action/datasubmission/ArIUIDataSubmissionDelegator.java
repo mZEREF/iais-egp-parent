@@ -136,6 +136,7 @@ public class ArIUIDataSubmissionDelegator {
         }
 
         boolean startNewCycle = false;
+        boolean startNunCycle = false;
         if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(submissionType)) {
             PatientInfoDto patientInfo = genPatientByPage(request, currentSuper.getOrgId(),false);
             String previousIdentification = ParamUtil.getString(request, "previousIdentification");
@@ -159,13 +160,18 @@ public class ArIUIDataSubmissionDelegator {
                 // jump to sub stage
                 selectionDto = (CycleStageSelectionDto) ParamUtil.getSessionAttr(request, "selectionDto");
                 String nextStage = ParamUtil.getString(request, "nextStage");
+                String nextNunCycleStage = ParamUtil.getString(request,"nextNunCycleStage");
                 String cycleRadio = ParamUtil.getString(request, CYCLE_SELECT);
                 ParamUtil.setRequestAttr(request, CYCLE_SELECT, cycleRadio);
                 String hasCycle = ParamUtil.getString(request, HAS_CYCLE);
                 currentSuper.getDataSubmissionDto().setCycleStage(nextStage);
-                startNewCycle = "N".equals(hasCycle) || "newCycle".equals(cycleRadio);
+                startNewCycle = "N".equals(hasCycle) && cycleRadio == null;
+                startNunCycle = "Y".equals(hasCycle) && "newCycle".equals(cycleRadio);
                 if (startNewCycle && StringUtil.isEmpty(nextStage)) {
                     errorMap.put("nextStage", "GENERAL_ERR0006");
+                }
+                if (startNunCycle && StringUtil.isEmpty(nextNunCycleStage)) {
+                    errorMap.put("nextNunCycleStage", "GENERAL_ERR0006");
                 }
                 if ("Y".equals(hasCycle) && StringUtil.isEmpty(cycleRadio)) {
                     errorMap.put(CYCLE_SELECT, "GENERAL_ERR0006");
@@ -184,12 +190,17 @@ public class ArIUIDataSubmissionDelegator {
                         selectionDto.setLastStageDesc("-");
                     }
                 }
-                selectionDto.setStage(nextStage);
                 String licenseeId = DataSubmissionHelper.getLicenseeId(request);
-                currentSuper.setCycleDto(DataSubmissionHelper.initCycleDto(selectionDto, currentSuper.getSvcName(), hciCode, licenseeId));
                 if (startNewCycle){
+                    selectionDto.setStage(nextStage);
+                    currentSuper.setCycleDto(DataSubmissionHelper.initCycleDto(selectionDto, currentSuper.getSvcName(), hciCode, licenseeId));
                     selectionDto.setNavCurrentCycle(selectionDto.getCycle());
+                } else if (startNunCycle){
+                    selectionDto.setStage(nextNunCycleStage);
+                    currentSuper.setCycleDto(DataSubmissionHelper.initCycleDto(selectionDto, currentSuper.getSvcName(), hciCode, licenseeId));
                 } else {
+                    selectionDto.setStage(nextStage);
+                    currentSuper.setCycleDto(DataSubmissionHelper.initCycleDto(selectionDto, currentSuper.getSvcName(), hciCode, licenseeId));
                     selectionDto.setNavCurrentCycle(
                             selectionDto
                                     .getCycleDtos().stream().filter(it-> cycleRadio.equals(it.getId()))

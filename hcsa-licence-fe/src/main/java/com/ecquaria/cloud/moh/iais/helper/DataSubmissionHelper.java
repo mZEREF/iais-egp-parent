@@ -296,6 +296,11 @@ public final class DataSubmissionHelper {
         if (DataSubmissionConsts.DS_CYCLE_AR.equals(lastCycle) && DsHelper.isSpecialStage(lastStage)) {
             lastStage = selectionDto.getAdditionalStage();
         }
+        if (DataSubmissionConsts.DS_CYCLE_NON.equals(selectionDto.getCycle())) {
+            List<String> result = IaisCommonUtils.genNewArrayList(1);
+            result.add(selectionDto.getStage());
+            return result;
+        }
         List<String> result = getNextStagesForAr(lastCycle, lastStage, lastStatus, undergoingCycle, frozenOocyte, frozenEmbryo, freshNatural, freshStimulated);
         log.info(StringUtil.changeForLog("----- The Next Stages: " + result + " ----- "));
         return result;
@@ -416,7 +421,7 @@ public final class DataSubmissionHelper {
         // 3.3.3.3.1 Transfer In & Out stage will always tagged under Non-cycles.
         if (DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT.equals(stage)) {
             cycle = DataSubmissionConsts.DS_CYCLE_NON;
-        } else if (selectionDto.isUndergoingCycle() && !DsHelper.isCycleFinalStatusWithSpec(selectionDto.getLastStatus())) {
+        } else if (selectionDto.isUndergoingCycle() && !DsHelper.isCycleFinalStatusWithSpec(selectionDto.getLastStatus()) && selectionDto.getLastCycle()!= null) {
             cycleDto = selectionDto.getLastCycleDto();
             cycle = cycleDto.getCycleType();
             cycleId = cycleDto.getId();
