@@ -20,7 +20,7 @@
                 </iais:row>
                 <c:if test="${isDisplayAppeal}">
                     <iais:row>
-                        <iais:field width="5" value="Is there an approved appeal?" />
+                        <iais:field width="5" value="Appeal reference number (if applicable)" />
                         <iais:value width="7" cssClass="col-md-7" display="true">
                             <c:out value="${arTreatmentSubsidiesStageDto.isThereAppeal?'Yes':'No'}"/>
                         </iais:value>
