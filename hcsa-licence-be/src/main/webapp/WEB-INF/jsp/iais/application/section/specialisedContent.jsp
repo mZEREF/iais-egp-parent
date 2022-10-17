@@ -1,3 +1,4 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
 <div class="row form-horizontal">
     <c:forEach var="specialised" items="${AppSubmissionDto.appPremSpecialisedDtoList}">
         <c:if test="${specialised_svc_code == specialised.baseSvcCode}">
