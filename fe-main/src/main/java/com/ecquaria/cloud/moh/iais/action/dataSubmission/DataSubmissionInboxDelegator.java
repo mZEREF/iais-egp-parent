@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.privilege.PrivilegeConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -36,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import com.ecquaria.cloud.privilege.Privilege;
@@ -710,42 +710,13 @@ public class DataSubmissionInboxDelegator {
 
 	private void setAccessFilter(LoginContext loginContext, SearchParam searchParam) {
 		List<String> roles = loginContext.getRoleIds();
-		StringBuilder sb = new StringBuilder();
-		for (String roleId : roles) {
-			switch (roleId) {
-				case RoleConsts.USER_ROLE_DS_AR:
-					sb.append('\'').append(DataSubmissionConsts.DS_APP_TYPE_NEW).append(DataSubmissionConsts.DS_AR).append("',");
-					break;
-				case RoleConsts.USER_ROLE_DS_AR_SUPERVISOR:
-					sb.append('\'').append(DataSubmissionConsts.DS_APP_TYPE_RFC).append(DataSubmissionConsts.DS_AR).append("',");
-					break;
-				case RoleConsts.USER_ROLE_DS_DP:
-					sb.append('\'').append(DataSubmissionConsts.DS_APP_TYPE_NEW).append(DataSubmissionConsts.DS_DRP).append("',");
-					break;
-				case RoleConsts.USER_ROLE_DS_DP_SUPERVISOR:
-					sb.append('\'').append(DataSubmissionConsts.DS_APP_TYPE_RFC).append(DataSubmissionConsts.DS_DRP).append("',");
-					break;
-				case RoleConsts.USER_ROLE_DS_LDT:
-					sb.append('\'').append(DataSubmissionConsts.DS_APP_TYPE_NEW).append(DataSubmissionConsts.DS_LDT).append("',");
-					break;
-				case RoleConsts.USER_ROLE_DS_LDT_SUPERVISOR:
-					sb.append('\'').append(DataSubmissionConsts.DS_APP_TYPE_RFC).append(DataSubmissionConsts.DS_LDT).append("',");
-					break;
-				case RoleConsts.USER_ROLE_DS_TOP:
-					sb.append('\'').append(DataSubmissionConsts.DS_APP_TYPE_NEW).append(DataSubmissionConsts.DS_TOP).append("',");
-					break;
-				case RoleConsts.USER_ROLE_DS_TOP_SUPERVISOR:
-					sb.append('\'').append(DataSubmissionConsts.DS_APP_TYPE_RFC).append(DataSubmissionConsts.DS_TOP).append("',");
-					break;
-				case RoleConsts.USER_ROLE_DS_VSS:
-					sb.append('\'').append(DataSubmissionConsts.DS_APP_TYPE_NEW).append(DataSubmissionConsts.DS_VSS).append("',");
-					break;
+		List<String> twoTypes = IaisCommonUtils.genDsDraftTwoTypesFilter(roles);
+		String insql = SqlHelper.constructInCondition("APP_TYPE + DS_TYPE", twoTypes.size());
+		searchParam.addParam("accessFilter", insql);
+		if (IaisCommonUtils.isNotEmpty(twoTypes)) {
+			for (int i = 0; i < twoTypes.size(); i++) {
+				searchParam.addFilter("APP_TYPE + DS_TYPE" + i, twoTypes.get(i));
 			}
-		}
-		if (sb.length() == 0) {
-			searchParam.addParam("accessFilter","NANA");
-		} else {
-			searchParam.addParam("accessFilter",sb.substring(0, sb.length() - 1));
 		}
 	}
 }

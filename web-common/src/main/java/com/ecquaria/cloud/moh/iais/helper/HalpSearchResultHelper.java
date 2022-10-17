@@ -18,12 +18,11 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.privilege.Privilege;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
 
 public class HalpSearchResultHelper {
 
@@ -261,11 +260,13 @@ public class HalpSearchResultHelper {
         }
     }
 
-    public static InterMessageSearchDto initInterDssSearchDto(HttpServletRequest request,String licenseeId,String createdBy){
+    public static InterMessageSearchDto initInterDssSearchDto(HttpServletRequest request,String licenseeId, String createdBy){
+        LoginContext loginContext = AccessUtil.getLoginUser(request);
         InterMessageSearchDto interMessageSearchDto = new InterMessageSearchDto();
         interMessageSearchDto.setLicenseeId(licenseeId);
         interMessageSearchDto.setCreatBy(createdBy);
-        interMessageSearchDto.setServiceCodes(getDsTypes(AccessUtil.getLoginUser(request).getPrivileges().stream().map(Privilege::getId).collect(Collectors.toList())));
+        interMessageSearchDto.setRoles(loginContext.getRoleIds());
+        interMessageSearchDto.setServiceCodes(getDsTypes(loginContext.getPrivileges().stream().map(Privilege::getId).collect(Collectors.toList())));
 
         return interMessageSearchDto;
     }
