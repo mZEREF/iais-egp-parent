@@ -773,6 +773,7 @@ public class RequestForChangeDelegator {
                         appSubmissionDto.setAppGroupMiscDtos(appGroupMiscDtoList);
                          AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
                         appEditSelectDto.setNeedNewLicNo(true);
+                        appEditSelectDto.setAuto(AppConsts.NO);
                         appCommService.checkAffectedAppSubmissions(appSubmissionDto, null, feeDto, draftNo, grpNo,
                                 appEditSelectDto, null);
                         appSubmissionDto.setGetAppInfoFromDto(false);
