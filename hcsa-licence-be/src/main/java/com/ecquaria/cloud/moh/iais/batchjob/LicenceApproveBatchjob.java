@@ -1957,13 +1957,19 @@ public class LicenceApproveBatchjob {
             //status
             licenceDto.setStatus(getLicenceStatus(licenceDto,applicationGroupDto));
         }
-        if(applicationDto != null){
-            AppLicBundleDto appLicBundleDto = applicationDto.getAppLicBundleDto();
-            if(appLicBundleDto != null){
-                LicBundleDto currentLicBundleDto = MiscUtil.transferEntityDto(appLicBundleDto,LicBundleDto.class);
-                licenceDto.setCurrentLicBundleDto(currentLicBundleDto);
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())
+                && !applicationGroupDto.getLicenseeId().equals(applicationGroupDto.getNewLicenseeId())){
+           log.info(StringUtil.changeForLog("Transfer for to other UEN..."));
+        }else{
+            if(applicationDto != null){
+                AppLicBundleDto appLicBundleDto = applicationDto.getAppLicBundleDto();
+                if(appLicBundleDto != null){
+                    LicBundleDto currentLicBundleDto = MiscUtil.transferEntityDto(appLicBundleDto,LicBundleDto.class);
+                    licenceDto.setCurrentLicBundleDto(currentLicBundleDto);
+                }
             }
         }
+
         licenceDto.setApplicationDtos(applicationDtos1);
         log.info(StringUtil.changeForLog("The  licenceDto.getLicenceNo() is -->:"+licenceDto.getLicenceNo()));
         log.info(StringUtil.changeForLog("The  getLicenceDto end ..."));
