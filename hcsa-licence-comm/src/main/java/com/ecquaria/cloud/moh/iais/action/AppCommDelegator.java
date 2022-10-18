@@ -967,12 +967,11 @@ public abstract class AppCommDelegator {
 
         // check result
         int result = checkAction(errorMap, action, HcsaAppConst.ACTION_PREMISES, appSubmissionDto, bpc.request);
-        boolean isValid = HcsaAppConst.ACTION_RESULT_ERROR_BLOCK != result;
-        if (isValid) {
+        if (HcsaAppConst.ACTION_RESULT_ERROR_BLOCK != result) {
             checkBundle(appSubmissionDto);
         }
         ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
-        if (isValid) {
+        if (HcsaAppConst.ACTION_RESULT_ERROR_BLOCK != result) {
             saveDraft(bpc);
         }
         log.info(StringUtil.changeForLog("the do doPremises end ...."));
@@ -982,23 +981,43 @@ public abstract class AppCommDelegator {
         if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
             return;
         }
-        boolean hasMs = appSubmissionDto.getAppSvcRelatedInfoDtoList().stream()
-                .anyMatch(dto -> AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(dto.getServiceCode()));
+        boolean hasAch = false;
+        boolean hasMs = false;
+        boolean hasEasMts = false;
+        for (AppSvcRelatedInfoDto dto : appSubmissionDto.getAppSvcRelatedInfoDtoList()) {
+            String serviceCode = dto.getServiceCode();
+            if (AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL.equals(serviceCode)) {
+                hasAch = true;
+            } else if (AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(serviceCode)) {
+                hasMs = true;
+            } else if (AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(serviceCode)) {
+                hasEasMts = true;
+            }
+        }
         String bundleStatus = IaisCommonUtils.isNotEmpty(appSubmissionDto.getAppLicBundleDtoList()) ?
                 AppConsts.YES : AppConsts.NO;
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         int size = appGrpPremisesDtoList.size();
-        if (hasMs && size > 1) {
-            bundleStatus = AppConsts.YES;
-            Set<String> premTypes = IaisCommonUtils.genNewHashSet();
-            for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
-                premTypes.add(appGrpPremisesDto.getPremisesType());
+        if (size > 1 && AppConsts.NO.equals(bundleStatus)) {
+            if (hasMs) {
+                bundleStatus = AppConsts.YES;
+                Set<String> premTypes = IaisCommonUtils.genNewHashSet();
+                for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
+                    premTypes.add(appGrpPremisesDto.getPremisesType());
+                }
+                if (size != premTypes.size() || premTypes.contains(ApplicationConsts.PREMISES_TYPE_PERMANENT)
+                        && premTypes.contains(ApplicationConsts.PREMISES_TYPE_CONVEYANCE)) {
+                    bundleStatus = AppConsts.NO;
+                }
             }
-            if (size != premTypes.size()) {
-                appSubmissionDto.setBundleStatus(AppConsts.NO);
-            } else if (premTypes.contains(ApplicationConsts.PREMISES_TYPE_PERMANENT)
-                    && premTypes.contains(ApplicationConsts.PREMISES_TYPE_CONVEYANCE)) {
-                appSubmissionDto.setBundleStatus(AppConsts.NO);
+            if (hasAch && appSubmissionDto.getAppSvcRelatedInfoDtoList().stream().anyMatch(dto ->
+                    AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(dto.getServiceCode())
+                            || AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(dto.getServiceCode()))) {
+                bundleStatus = AppConsts.YES;
+            }
+            if (hasEasMts && appSubmissionDto.getAppSvcRelatedInfoDtoList().stream().anyMatch(dto ->
+                    AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(dto.getServiceCode()))) {
+                bundleStatus = AppConsts.YES;
             }
         }
         appSubmissionDto.setBundleStatus(bundleStatus);

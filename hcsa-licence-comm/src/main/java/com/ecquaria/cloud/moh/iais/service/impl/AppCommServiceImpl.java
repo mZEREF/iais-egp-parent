@@ -668,14 +668,12 @@ public class AppCommServiceImpl implements AppCommService {
         }
         AppEditSelectDto editDto = MiscUtil.transferEntityDto(appEditSelectDto, AppEditSelectDto.class);
         RfcHelper.beforeSubmit(appSubmissionDto, editDto, appGroupNo, appType, null);
-
-
         //appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
         /*appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
         if (MiscUtil.doubleEquals(0.0, total)) {
             appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
         }*/
-        appSubmissionDto.setGetAppInfoFromDto(true);
+        /*appSubmissionDto.setGetAppInfoFromDto(true);
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         // set app GrpPremisess
         boolean groupLic = appSubmissionDto.isGroupLic();
@@ -688,7 +686,7 @@ public class AppCommServiceImpl implements AppCommService {
         }
         appSubmissionDto.getAppGrpPremisesDtoList().get(0).setHciNameChanged(hciNameChange);
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
-        ApplicationHelper.reSetAdditionalFields(appSubmissionDto, appEditSelectDto);
+        ApplicationHelper.reSetAdditionalFields(appSubmissionDto, appEditSelectDto);*/
         if (appSubmissionDtos != null) {
             appSubmissionDtos.add(appSubmissionDto);
         }

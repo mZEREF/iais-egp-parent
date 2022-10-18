@@ -929,12 +929,12 @@ public final class AppValidatorHelper {
                             hasError = true;
                         }
                     } else if (bundleTypes.isEmpty()) {
-                        List<String> targetType = getMsBundlePremType(typeList);
+                        List<String> targetType = getMsBundlePremType(typeList, premiseType);
                         List<LicenceDto> licenceList = getLicCommService().getPendingBundledMsLicences(licenseeId,
                                 targetType, premiseType);
                         if (!IaisCommonUtils.isEmpty(licenceList)) {
                             // NEW_ERR0036 - There is {data} need to be bundled to current application(s).
-                            String data = "";
+                            String data;
                             if (licenceList.size() == 1) {
                                 data = "a licence (" + licenceList.get(0).getLicenceNo() + ")";
                             } else {
@@ -946,8 +946,8 @@ public final class AppValidatorHelper {
                             hasError = true;
                         }
                     }
-                    if (!hasError && typeList.size() > 0) {
-                        if (!bundleTypes.isEmpty() && bundleTypes.stream().anyMatch(t -> typeList.contains(t))) {
+                    if (typeList.size() > 0) {
+                        if (!bundleTypes.isEmpty() && bundleTypes.stream().anyMatch(typeList::contains)) {
                             hasError = true;
                         } else if (ApplicationConsts.PREMISES_TYPE_PERMANENT.equals(premiseType)
                                 || ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
@@ -1003,13 +1003,12 @@ public final class AppValidatorHelper {
         return errMap;
     }
 
-    private static List<String> getMsBundlePremType(List<String> typeList) {
-        List<String> premTypes = getMsBundlePremType(typeList.get(0));
-        int size = typeList.size();
-        for (int i = 1; i < size; i++) {
-            List<String> msBundlePremTypes = getMsBundlePremType(typeList.get(i));
+    private static List<String> getMsBundlePremType(List<String> typeList, String premiseType) {
+        List<String> premTypes = getMsBundlePremType(premiseType);
+        for (String type : typeList) {
+            List<String> msBundlePremTypes = getMsBundlePremType(type);
             premTypes = premTypes.stream()
-                    .filter(type -> msBundlePremTypes.contains(type))
+                    .filter(msBundlePremTypes::contains)
                     .collect(Collectors.toList());
             if (premTypes.isEmpty()) {
                 return premTypes;
