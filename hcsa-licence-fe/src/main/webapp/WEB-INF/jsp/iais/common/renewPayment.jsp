@@ -374,12 +374,6 @@
                 </c:if>
             </c:forEach>
 
-            <tr>
-                <td></td>
-                <td></td>
-                <td><p><strong>Total${FeeDetail}</strong></p></td>
-                <td><p><c:out value="${svc.amountStr}"/></p></td>
-            </tr>
         </c:forEach>
         <c:forEach items="${laterFeeDetailsMap}" var="laterFeeDetailMap">
             <c:set var="laterFeeType" value='${laterFeeDetailMap.key}' />
