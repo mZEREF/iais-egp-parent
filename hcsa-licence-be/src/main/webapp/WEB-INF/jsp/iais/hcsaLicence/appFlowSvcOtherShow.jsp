@@ -46,7 +46,7 @@
   </c:if>
   <c:if test="${'view' eq appOtherFlag}">
     <iais:row>
-      <iais:field value="Specialised Service <br> Processing Decision"/>
+      <iais:field value="Other Service <br> Processing Decision"/>
       <iais:value width="7">
         <div class="table-gp" id = "processRecRfi">
           <table aria-describedby="" class="table">
