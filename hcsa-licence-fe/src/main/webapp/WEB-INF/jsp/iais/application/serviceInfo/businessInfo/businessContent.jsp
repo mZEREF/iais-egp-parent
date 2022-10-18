@@ -178,8 +178,7 @@
         //rfc,renew,rfi
         <c:if test="${AppSubmissionDto.needEditController}">
             $('div.businessContent').each(function () {
-                // disableContent($(this));
-                disabledPage();
+                disableContent(this);
             });
         </c:if>
     });
