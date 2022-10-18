@@ -912,14 +912,10 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
                 codeDesc = "Thawing";
             } else if (DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING.equals(option)) {
                 codeDesc = "Preimplantation Genetic Testing";
-            } else if (DataSubmissionConsts.AR_STAGE_OUTCOME.equals(option)) {
-                codeDesc = "Outcome";
             } else if (DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT.equals(option)) {
                 codeDesc = "Transfer In & Out";
             } else if (DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(option)) {
                 codeDesc = "Completed/Abandoned Cycle";
-            } else if (DataSubmissionConsts.AR_CYCLE_IUI.equals(option)) {
-                codeDesc = "New IUI Treatment";
             } else {
                 codeDesc = MasterCodeUtil.getCodeDesc(option);
             }

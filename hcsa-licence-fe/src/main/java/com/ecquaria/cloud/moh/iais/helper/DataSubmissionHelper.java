@@ -356,6 +356,7 @@ public final class DataSubmissionHelper {
                 if (!undergoingCycle && DsHelper.isSpecialFinalStatus(lastStatus)) {
                     addStartStages(result);
                 }
+                result.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY);
             } else if (DataSubmissionConsts.AR_STAGE_FREEZING.equals(lastStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_FERTILISATION);
                 result.add(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING);
@@ -376,10 +377,10 @@ public final class DataSubmissionHelper {
                 if (!undergoingCycle && DsHelper.isSpecialFinalStatus(lastStatus)) {
                     addStartStages(result);
                 }
-                result.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED);
+                result.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY);
                 result.add(DataSubmissionConsts.AR_STAGE_IUI_TREATMENT_SUBSIDIES);
             } else if (DataSubmissionConsts.AR_STAGE_IUI_TREATMENT_SUBSIDIES.equals(lastStage)) {
-                result.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED);
+                result.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY);
             }
         } else if (DataSubmissionConsts.DS_CYCLE_EFO.equals(lastCycle)) {
             if (DataSubmissionConsts.AR_CYCLE_EFO.equals(lastStage) || StringUtil.isEmpty(lastStage)) {
@@ -703,7 +704,7 @@ public final class DataSubmissionHelper {
     }
 
     public static List<String> getAllARCycleStages() {
-        List<String> stages = new ArrayList<>(14);
+        List<String> stages = new ArrayList<>(15);
         stages.add(DataSubmissionConsts.AR_CYCLE_AR);
         stages.add(DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL);
         stages.add(DataSubmissionConsts.AR_STAGE_FREEZING);
@@ -713,6 +714,7 @@ public final class DataSubmissionHelper {
         stages.add(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING);
         stages.add(DataSubmissionConsts.AR_STAGE_EMBRYO_TRANSFER);
         stages.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED);//todo may change OutCome
+        stages.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY);
 //        combine to all ar cycle stage after
 //        ar cycle still have this stage
         stages.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
@@ -729,6 +731,7 @@ public final class DataSubmissionHelper {
         stages.add(DataSubmissionConsts.AR_CYCLE_IUI);
         stages.add(DataSubmissionConsts.AR_STAGE_OUTCOME);
         stages.add(DataSubmissionConsts.AR_STAGE_IUI_TREATMENT_SUBSIDIES);
+        stages.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY);
         return stages;
     }
 

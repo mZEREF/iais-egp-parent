@@ -32,9 +32,6 @@ import java.util.Map;
 @Slf4j
 public class OutcomeEmbryoTransferredDelegator extends CommonDelegator{
     public static final String OUTCOME_OF_EMBRYO_TRANSFERREDS = "OutcomeEmbryoTransferreds";
-
-    @Autowired
-    private OutcomePregnancyDelegator outcomePregnancyDelegator;
     @Override
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -43,14 +40,10 @@ public class OutcomeEmbryoTransferredDelegator extends CommonDelegator{
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Outcome</strong>");
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
         HttpServletRequest request = bpc.request;
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
-    }
-    @Override
-    public void preparePage(BaseProcessClass bpc) {
-        outcomePregnancyDelegator.preparePage(bpc);
     }
     @Override
     public void prepareConfim(BaseProcessClass bpc) {
@@ -68,19 +61,12 @@ public class OutcomeEmbryoTransferredDelegator extends CommonDelegator{
         arSuperDataSubmissionDto.setEmbryoTransferredOutcomeStageDto(embryoTransferredOutcomeStageDto);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String crud_action_type = ParamUtil.getRequestString(request, IntranetUserConstant.CRUD_ACTION_TYPE);
-        PregnancyOutcomeStageDto pregnancyOutcomeStageDto = arSuperDataSubmissionDto.getPregnancyOutcomeStageDto();
-        outcomePregnancyDelegator.fromPageData(pregnancyOutcomeStageDto, request);
         if ("confirm".equals(crud_action_type)) {
             ValidationResult validationResult = WebValidationHelper.validateProperty(embryoTransferredOutcomeStageDto, "save");
-            ValidationResult validationResult1 = WebValidationHelper.validateProperty(pregnancyOutcomeStageDto, "save");
-
             errorMap = validationResult.retrieveAll();
-            errorMap.putAll(validationResult1.retrieveAll());
             verifyCommon(request, errorMap);
             if(errorMap.isEmpty()){
                 valRFC(request, embryoTransferredOutcomeStageDto);
-                outcomePregnancyDelegator.valRFC(request, pregnancyOutcomeStageDto);
-
             }
         }
 

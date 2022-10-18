@@ -151,9 +151,9 @@
                                             <%-- AR_STAGE_IUI_TREATMENT_SUBSIDIES --%>
                                             <%@include file="cycleStage/previewIuiTreatmentSubsidiesDetail.jsp" %>
                                         </c:if>
-                                        <c:if test="${cycleStage == 'AR_STG009'||cycleStage == 'AR_STG011'}">
+                                        <c:if test="${cycleStage == 'AR_STG009'}">
                                             <%-- AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED--%>
-                                            <%@include file="cycleStage/previewPregnancyOutcomeStageDetail.jsp" %>
+                                            <%@include file="cycleStage/previewEmbryoTransferredOutcomeStageDetail.jsp" %>
                                         </c:if>
                                         <c:if test="${cycleStage == 'AR_STG010'}">
                                             <%-- AR_STAGE_OUTCOME--%>

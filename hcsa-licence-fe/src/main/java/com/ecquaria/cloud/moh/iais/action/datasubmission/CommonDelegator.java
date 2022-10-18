@@ -320,12 +320,14 @@ public abstract class CommonDelegator {
                     status = DataSubmissionConsts.DS_STATUS_OET_NO_PREGNACY_UNKNOWN;
                 } else if (StringUtil.isIn(transferedOutcome, new String[]{
                         DataSubmissionConsts.OUTCOME_OF_EMBRYO_TRANSFERRED_CLINICAL_PREGNANCY})) {//3.3.4.3
+                    status = DataSubmissionConsts.DS_STATUS_PENDING_BIRTH_OUTCOMES;
+                } else if (DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY.equals(stage)) {
                     status = DataSubmissionConsts.DS_STATUS_COMPLETED_OUTCOME_OF_PREGNANCY;
                 }
             } else if (DataSubmissionConsts.AR_STAGE_OUTCOME.equals(stage)) {//3.3.4.3
                 OutcomeStageDto outcomeStageDto = arSuperDataSubmission.getOutcomeStageDto();
                 if (outcomeStageDto.getPregnancyDetected()) {
-                    status = DataSubmissionConsts.DS_STATUS_COMPLETED_OUTCOME_OF_PREGNANCY;
+                    status = DataSubmissionConsts.DS_STATUS_PENDING_BIRTH_OUTCOMES;
                 }
             }
         } else if (DataSubmissionConsts.DS_CYCLE_EFO.equals(cycleType)) {
@@ -338,8 +340,10 @@ public abstract class CommonDelegator {
                 if (!outcomeStageDto.getPregnancyDetected()) {
                     status = DataSubmissionConsts.DS_STATUS_OUTCOME_NO_DETECTED;
                 } else {//3.3.4.3
-                    status = DataSubmissionConsts.DS_STATUS_COMPLETED_OUTCOME_OF_PREGNANCY;
+                    status = DataSubmissionConsts.DS_STATUS_PENDING_BIRTH_OUTCOMES;
                 }
+            } else if (DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY.equals(stage)) {
+                status = DataSubmissionConsts.DS_STATUS_COMPLETED_OUTCOME_OF_PREGNANCY;
             }
         } else if (DataSubmissionConsts.DS_CYCLE_NON.equals(cycleType)) {
             status = DataSubmissionConsts.DS_STATUS_COMPLETED;
