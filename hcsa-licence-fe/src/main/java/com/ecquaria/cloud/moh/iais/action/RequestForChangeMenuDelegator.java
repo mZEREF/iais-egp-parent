@@ -11,17 +11,14 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
@@ -55,7 +52,6 @@ import com.ecquaria.cloud.moh.iais.helper.AppDataHelper;
 import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -72,7 +68,6 @@ import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
-import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -740,8 +735,10 @@ public class RequestForChangeMenuDelegator {
             appEditSelectDto.setChangePersonnel(!Objects.equals(newPerson.getIdNo(), oldPersonnelDto.getIdNo()));
         }
         log.info(StringUtil.changeForLog("The App Edit Select Dto - " + JsonUtil.parseToJson(appEditSelectDto)));
+        FeeDto feeDto=new FeeDto();
+        feeDto.setTotal(0.0d);
         for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
-            appCommService.checkAffectedAppSubmissions(appSubmissionDto, null, 0.0D, draftNo, appGroupNo,
+            appCommService.checkAffectedAppSubmissions(appSubmissionDto, null, feeDto, draftNo, appGroupNo,
                     appEditSelectDto, null);
             if ("replace".equals(editSelect)) {
                 replacePersonnelDate(appSubmissionDto, newPerson, ApplicationHelper.getPersonKey(oldPersonnelDto.getNationality(),
@@ -1579,7 +1576,7 @@ public class RequestForChangeMenuDelegator {
         Map<String, String> errorMap = null;
         if (selectLicence != null) {
             errorMap = appCommService.checkAffectedAppSubmissions(selectLicence, appGrpPremisesDtoList1.get(0),
-                    total, null, appGroupNo, appEditSelectDto, appSubmissionDtos);
+                    feeDto, null, appGroupNo, appEditSelectDto, appSubmissionDtos);
             log.info(StringUtil.changeForLog("The affected data is valid - " + errorMap));
         }
         if (errorMap != null && !errorMap.isEmpty()) {

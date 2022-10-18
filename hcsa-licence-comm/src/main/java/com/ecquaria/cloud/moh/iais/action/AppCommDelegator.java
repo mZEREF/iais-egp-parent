@@ -1597,6 +1597,7 @@ public abstract class AppCommDelegator {
             currentAmount = 0.0;
         }
         log.info(StringUtil.changeForLog("the current amount is -->:" + currentAmount));
+        appSubmissionDto.setFeeInfoDtos(feeDto.getFeeInfoDtos());
         appSubmissionDto.setAmount(currentAmount);
 
         String appType = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE;
@@ -1674,7 +1675,7 @@ public abstract class AppCommDelegator {
             log.info(StringUtil.changeForLog("The premise changed amount: " + otherAmount));
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             List<AppSubmissionDto> appSubmissionDtos = IaisCommonUtils.genNewArrayList();
-            boolean isValid = checkAffectedAppSubmissions(appGrpPremisesDtoList, otherAmount, draftNo, groupNo, changeSelectDto,
+            boolean isValid = checkAffectedAppSubmissions(appGrpPremisesDtoList,  premiseFee, draftNo, groupNo, changeSelectDto,
                     appSubmissionDtos, bpc.request);
             if (!isValid) {
                 return;
@@ -1725,11 +1726,13 @@ public abstract class AppCommDelegator {
                 }
                 AppEditSelectDto changeSelectDto = new AppEditSelectDto();
                 changeSelectDto.setLicenseeEdit(true);
+                FeeDto feeDto1=new FeeDto();
+                feeDto1.setTotal(0.0d);
                 StreamSupport.stream(licenseeAffectedList.spliterator(),
                         licenseeAffectedList.size() >= RfcConst.DFT_MIN_PARALLEL_SIZE)
                         .forEach(dto -> dto.setSubLicenseeDto(
                                 MiscUtil.transferEntityDto(appSubmissionDto.getSubLicenseeDto(), SubLicenseeDto.class)));
-                boolean isValid = checkAffectedAppSubmissions(licenseeAffectedList, 0.0D, draftNo, groupNo, changeSelectDto,
+                boolean isValid = checkAffectedAppSubmissions(licenseeAffectedList, feeDto1, draftNo, groupNo, changeSelectDto,
                         HcsaAppConst.SECTION_LICENSEE, bpc.request);
                 if (!isValid) {
                     return;
@@ -1764,7 +1767,9 @@ public abstract class AppCommDelegator {
                     appSubmissionDto, oldAppSubmissionDto, rfcSplitFlag ? 0 : 1);
             if (personAppSubmissionList != null && !personAppSubmissionList.isEmpty()) {
                 autoGroupNo = getRfcGroupNo(autoGroupNo);
-                boolean isValid = checkAffectedAppSubmissions(personAppSubmissionList, 0.0D, draftNo, autoGroupNo,
+                FeeDto feeDto1=new FeeDto();
+                feeDto1.setTotal(0.0d);
+                boolean isValid = checkAffectedAppSubmissions(personAppSubmissionList, feeDto1, draftNo, autoGroupNo,
                         null, HcsaAppConst.SECTION_SVCINFO, bpc.request);
                 if (!isValid) {
                     return;
@@ -1926,7 +1931,7 @@ public abstract class AppCommDelegator {
         return groupNo;
     }
 
-    private boolean checkAffectedAppSubmissions(List<AppGrpPremisesDto> appGrpPremisesDtoList, double amount, String draftNo,
+    private boolean checkAffectedAppSubmissions(List<AppGrpPremisesDto> appGrpPremisesDtoList, FeeDto premiseFee, String draftNo,
             String appGroupNo, AppEditSelectDto appEditSelectDto, List<AppSubmissionDto> appSubmissionDtos,
             HttpServletRequest request) {
         if (appGrpPremisesDtoList == null) {
@@ -1942,7 +1947,7 @@ public abstract class AppCommDelegator {
                         .collect(Collectors.toList());
             }
             Map<String, String> errorMap = appCommService.checkAffectedAppSubmissions(licenceDtos, premisesDto,
-                    amount, draftNo, appGroupNo, appEditSelectDto, appSubmissionDtos);
+                    premiseFee, draftNo, appGroupNo, appEditSelectDto, appSubmissionDtos);
             if (!errorMap.isEmpty()) {
                 AppValidatorHelper.setErrorRequest(errorMap, false, request);
                 return false;
@@ -1951,7 +1956,7 @@ public abstract class AppCommDelegator {
         return true;
     }
 
-    private boolean checkAffectedAppSubmissions(List<AppSubmissionDto> appSubmissionDtos, double amount, String draftNo,
+    private boolean checkAffectedAppSubmissions(List<AppSubmissionDto> appSubmissionDtos, FeeDto premiseFee, String draftNo,
             String appGroupNo, AppEditSelectDto appEditSelectDto, String type, HttpServletRequest request) {
         if (appSubmissionDtos == null || appSubmissionDtos.isEmpty()) {
             return true;
@@ -1972,7 +1977,7 @@ public abstract class AppCommDelegator {
             return false;
         }
         StreamSupport.stream(appSubmissionDtos.spliterator(), parallel)
-                .forEach(dto -> appCommService.checkAffectedAppSubmissions(dto, null, amount, draftNo, appGroupNo,
+                .forEach(dto -> appCommService.checkAffectedAppSubmissions(dto, null, premiseFee, draftNo, appGroupNo,
                         appEditSelectDto, null));
         return true;
     }
