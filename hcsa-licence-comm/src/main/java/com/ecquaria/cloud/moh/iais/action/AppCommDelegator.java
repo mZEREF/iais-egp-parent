@@ -2132,6 +2132,7 @@ public abstract class AppCommDelegator {
         appEditSelectDto.setLicenseeEdit(ApplicationHelper.canLicenseeEdit(appSubmissionDto.getSubLicenseeDto(),
                 appSubmissionDto.getAppType(), true, true));
         appEditSelectDto.setNeedNewLicNo(true);
+        appEditSelectDto.setAuto(AppConsts.NO);
         RfcHelper.beforeSubmit(appSubmissionDto, appEditSelectDto, appGroupNo, appType, bpc.request);
 
         appSubmissionDto = submit(appSubmissionDto);
