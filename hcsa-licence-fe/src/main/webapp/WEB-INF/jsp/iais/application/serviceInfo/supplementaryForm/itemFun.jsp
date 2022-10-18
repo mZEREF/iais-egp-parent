@@ -36,7 +36,7 @@
 
         let appType = $('input[name="applicationType"]').val();
         if (('APTY005' == appType || 'APTY004' == appType)) {
-            disabledPage();
+            disableContent($('.person-content'));
         }
 
         let svcContent = '.person-content';
@@ -48,7 +48,7 @@
                     if ($(v).not(':empty')) {
                         $(v).find('.isPartEdit').val(1);
                         $('#isEditHiddenVal').val('1');
-                        unDisabledPartPage($(v));
+                        unDisableContent($(v))
                     }
                 });
             }

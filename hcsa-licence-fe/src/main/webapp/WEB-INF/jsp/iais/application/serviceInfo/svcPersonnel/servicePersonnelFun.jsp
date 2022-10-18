@@ -55,7 +55,7 @@
                     if ($(v).not(':empty')) {
                         $(v).find('.isPartEdit').val(1);
                         $('#isEditHiddenVal').val('1');
-                        unDisabledPartPage($(v));
+                        unDisableContent($(v))
                     }
                 });
             }
