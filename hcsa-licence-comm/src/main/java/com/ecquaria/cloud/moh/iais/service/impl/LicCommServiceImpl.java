@@ -491,6 +491,15 @@ public class LicCommServiceImpl implements LicCommService {
         return licCommClient.getPremisesDtosByPremType(premType).getEntity();
     }
 
+    @Override
+    public List<PremisesDto> getBundledLicPremises(long boundCode) {
+        log.info(StringUtil.changeForLog("Bound Code: " + boundCode));
+        if (boundCode <= 0) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        return licCommClient.getBundledLicPremises(boundCode).getEntity();
+    }
+
     @SearchTrack(catalog = "outSourceQuery", key = "searchOutSource")
     @Override
     public SearchResult<AppPremOutSourceProvidersQueryDto> queryOutsouceLicences(SearchParam param) {

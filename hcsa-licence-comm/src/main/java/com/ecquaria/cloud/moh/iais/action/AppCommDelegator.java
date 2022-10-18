@@ -964,13 +964,44 @@ public abstract class AppCommDelegator {
                 ParamUtil.setRequestAttr(bpc.request, "newAppPopUpMsg", hciNameUsed);
             }
         }
+
         // check result
         int result = checkAction(errorMap, action, HcsaAppConst.ACTION_PREMISES, appSubmissionDto, bpc.request);
+        boolean isValid = HcsaAppConst.ACTION_RESULT_ERROR_BLOCK != result;
+        if (isValid) {
+            checkBundle(appSubmissionDto);
+        }
         ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
-        if (HcsaAppConst.ACTION_RESULT_ERROR_BLOCK != result) {
+        if (isValid) {
             saveDraft(bpc);
         }
         log.info(StringUtil.changeForLog("the do doPremises end ...."));
+    }
+
+    private void checkBundle(AppSubmissionDto appSubmissionDto) {
+        if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
+            return;
+        }
+        boolean hasMs = appSubmissionDto.getAppSvcRelatedInfoDtoList().stream()
+                .anyMatch(dto -> AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(dto.getServiceCode()));
+        String bundleStatus = IaisCommonUtils.isNotEmpty(appSubmissionDto.getAppLicBundleDtoList()) ?
+                AppConsts.YES : AppConsts.NO;
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        int size = appGrpPremisesDtoList.size();
+        if (hasMs && size > 1) {
+            bundleStatus = AppConsts.YES;
+            Set<String> premTypes = IaisCommonUtils.genNewHashSet();
+            for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
+                premTypes.add(appGrpPremisesDto.getPremisesType());
+            }
+            if (size != premTypes.size()) {
+                appSubmissionDto.setBundleStatus(AppConsts.NO);
+            } else if (premTypes.contains(ApplicationConsts.PREMISES_TYPE_PERMANENT)
+                    && premTypes.contains(ApplicationConsts.PREMISES_TYPE_CONVEYANCE)) {
+                appSubmissionDto.setBundleStatus(AppConsts.NO);
+            }
+        }
+        appSubmissionDto.setBundleStatus(bundleStatus);
     }
 
     protected void checkAppPremisesChanged(AppSubmissionDto appSubmissionDto, List<AppGrpPremisesDto> oldAppGrpPremisesDtoList) {
