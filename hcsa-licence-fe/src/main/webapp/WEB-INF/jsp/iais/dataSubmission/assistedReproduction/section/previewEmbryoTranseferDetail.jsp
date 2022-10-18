@@ -48,23 +48,23 @@
                                         </c:if>
                                     </label>
 
-                            <iais:value width="6" cssClass="col-md-6">
+                            <iais:value width="6" cssClass="col-md-6" display="true">
                                 <iais:code code="${embryoTransferDetailDto.embryoAge}"/>
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <c:choose>
-                                <c:when test="${seq.index eq '0'}"><iais:field width="6" value="Was the 1st Embryo Embryo Transferred a fresh or thawed embryo?"
+                                <c:when test="${seq.index eq '0'}"><iais:field width="6" value="Was the 1st Embryo Transferred a fresh or thawed embryo?"
                                                                                mandatory="false" cssClass="col-md-6"/></c:when>
-                                <c:when test="${seq.index eq '1'}"><iais:field width="6" value="Was the 2nd Embryo Embryo Transferred a fresh or thawed embryo?"
+                                <c:when test="${seq.index eq '1'}"><iais:field width="6" value="Was the 2nd Embryo Transferred a fresh or thawed embryo?"
                                                                                mandatory="false" cssClass="col-md-6"/></c:when>
-                                <c:when test="${seq.index eq '2'}"><iais:field width="6" value="Was the 3rd Embryo Embryo Transferred a fresh or thawed embryo?"
+                                <c:when test="${seq.index eq '2'}"><iais:field width="6" value="Was the 3rd Embryo Transferred a fresh or thawed embryo?"
                                                                                mandatory="false" cssClass="col-md-6"/></c:when>
-                                <c:otherwise><iais:field width="6" value="Was the ${seq.index+1} Embryo Embryo Transferred a fresh or thawed embryo?"
+                                <c:otherwise><iais:field width="6" value="Was the ${seq.index+1}th Embryo Transferred a fresh or thawed embryo?"
                                                          mandatory="false" cssClass="col-md-6"/></c:otherwise>
                             </c:choose>
 
-                            <iais:value width="3" cssClass="col-md-3">
+                            <iais:value width="3" cssClass="col-md-3" display="true">
                                 <c:out value="${embryoTransferDetailDto.embryoType == 'fresh'?  'Fresh Embryo' : 'Thawed Embryo'}"/>
                             </iais:value>
                         </iais:row>

@@ -35,13 +35,13 @@
                     </iais:row>
                     <iais:row>
                         <c:choose>
-                            <c:when test="${seq.index eq '0'}"><iais:field width="6" value="Was the 1st Embryo Embryo Transferred a fresh or thawed embryo?"
+                            <c:when test="${seq.index eq '0'}"><iais:field width="6" value="Was the 1st Embryo Transferred a fresh or thawed embryo?"
                                                                            mandatory="false" cssClass="col-md-6"/></c:when>
-                            <c:when test="${seq.index eq '1'}"><iais:field width="6" value="Was the 2nd Embryo Embryo Transferred a fresh or thawed embryo?"
+                            <c:when test="${seq.index eq '1'}"><iais:field width="6" value="Was the 2nd Embryo Transferred a fresh or thawed embryo?"
                                                                            mandatory="false" cssClass="col-md-6"/></c:when>
-                            <c:when test="${seq.index eq '2'}"><iais:field width="6" value="Was the 3rd Embryo Embryo Transferred a fresh or thawed embryo?"
+                            <c:when test="${seq.index eq '2'}"><iais:field width="6" value="Was the 3rd Embryo Transferred a fresh or thawed embryo?"
                                                                            mandatory="false" cssClass="col-md-6"/></c:when>
-                            <c:otherwise><iais:field width="5" value="Was the ${seq.index+1} Embryo Embryo Transferred a fresh or thawed embryo?"
+                            <c:otherwise><iais:field width="5" value="Was the ${seq.index+1}th Embryo Transferred a fresh or thawed embryo?"
                                                      mandatory="false" cssClass="col-md-6"/></c:otherwise>
                         </c:choose>
                         <iais:value width="7" display="true" cssClass="col-md-7">

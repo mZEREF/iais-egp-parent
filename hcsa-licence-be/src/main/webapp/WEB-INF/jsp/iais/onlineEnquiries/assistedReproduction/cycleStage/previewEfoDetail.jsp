@@ -49,12 +49,18 @@
                 </iais:row>
                 <div id="othersReason" <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.reason!='EFOR004'}">style="display: none"</c:if> >
                     <iais:row>
-                        <iais:field width="5" value="" mandatory="false"/>
+                        <iais:field width="5" value="Reason (Others)" mandatory="false"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
                             <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.otherReason}"/>
                         </iais:value>
                     </iais:row>
                 </div>
+                <iais:row>
+                    <iais:field  width="5" value="No.Cryopreserved" mandatory="false"/>
+                    <iais:value width="7" cssClass="col-md-7" display="true">
+                        <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.cryopresNum}"/>
+                    </iais:value>
+                </iais:row>
             </div>
         </div>
     </div>

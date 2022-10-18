@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -189,6 +190,14 @@ public class ArFeClientFallback implements ArFeClient {
     }
     @Override
     public FeignResponseEntity<List<DonorSampleDto>> getDonorSampleDtoBySampleKey(String sampleKey) {
+        return getFeignResponseEntity();
+    }
+    @Override
+    public FeignResponseEntity<List<DonorSampleAgeDto>> getMaleDonorSampleDtoByIdTypeAndIdNo(String idType, String idNo) {
+        return getFeignResponseEntity();
+    }
+    @Override
+    public FeignResponseEntity<List<DonorSampleAgeDto>> getFemaleDonorSampleDtoByIdTypeAndIdNo(String idType, String idNo) {
         return getFeignResponseEntity();
     }
 
