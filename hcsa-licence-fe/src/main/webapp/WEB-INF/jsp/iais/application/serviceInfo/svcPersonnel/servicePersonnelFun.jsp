@@ -38,16 +38,10 @@
         profRegNoEvent($('.personnel-content'));
         removePersonEvent();
 
-
-
-
-
-        // disablePsnContent($(v), svcContent);
-
         //  RFC
         let appType = $('input[name="applicationType"]').val();
         if (('APTY005' == appType || 'APTY004' == appType)) {
-            disabledPage();
+            disableContent($('.personnel-content'));
         }
 
         let svcContent = '.personnel-content';
@@ -270,6 +264,10 @@
             let $currContent = $Content.find('div.personnel-content');
             $currContent.each(function (k, v) {
                 refreshIndex($(v), k);
+                var isPartEdit = $currContent.find('input.isPartEdit').val();
+                if(isPartEdit==0){
+                    disableContent($currContent);
+                }
             });
             if ($currContent.length == 1) {
                 $currContent.find('.assign-psn-item').html('');
