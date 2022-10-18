@@ -34,7 +34,7 @@
         init = 1;
         fileUploadEvent()
         designationChange()
-        //no
+
         profRegNoEvent($('.personnel-content'));
         removePersonEvent();
 
@@ -46,8 +46,6 @@
 
         let svcContent = '.personnel-content';
         psnEditEvent(svcContent);
-
-        console.log('errorMap====>',$("#errorMapIs").val())
         <c:if test="${AppSubmissionDto.needEditController}">
         $(svcContent).each(function (k,v) {
             if ($("#errorMapIs").val() == 'error') {
