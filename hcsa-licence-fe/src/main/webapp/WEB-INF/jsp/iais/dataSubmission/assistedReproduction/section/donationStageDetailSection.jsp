@@ -108,7 +108,7 @@
 
 
                 <iais:row>
-                    <iais:field width="6" cssClass="col-md-6" value="Donated For" mandatory="true"/>
+                    <iais:field width="6" cssClass="col-md-6" value="Purpose of Donation" mandatory="true"/>
                     <div class="col-md-6" style="padding-right: 0;padding-left: 0;">
                         <iais:value width="12" cssClass="col-md-12" style="padding-right: 0;padding-left: 0;">
                             <div class="form-check">

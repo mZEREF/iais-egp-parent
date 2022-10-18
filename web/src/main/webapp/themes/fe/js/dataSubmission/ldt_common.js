@@ -63,7 +63,7 @@ function printData() {
     var token = $('input[name="OWASP_CSRFTOKEN"]').val();
     var title = $('input[name="title"]').val();
     const isRfc = $('input[name="isRfc"]').val() === 'true';
-    const role = isRfc?'DS_LDT_SUP':'DS_LDT'
+    const templateId = isRfc?'77281D34-E7EF-4A45-BBEF-604ADA0F77F3':'FDEA8D3B-33B1-EB11-8B7D-000C293F0C99'
     if (!isEmpty(token)) {
         url += '?OWASP_CSRFTOKEN=' + token;
     }
@@ -83,9 +83,9 @@ function printData() {
         }
     }
     if (url.indexOf('?') < 0) {
-        url += '?role=' + role;
+        url += '?templateId=' + templateId;
     } else {
-        url += '&role=' + role;
+        url += '&templateId=' + templateId;
     }
     var data = getDataForPrinting();
     if (isEmpty(data)) {

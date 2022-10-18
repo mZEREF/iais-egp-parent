@@ -1729,8 +1729,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public int getBundleMsCount(String item, boolean licOrApp) {
-        Integer result = 0;
+    public List<AppLicBundleDto> getBundleMsCount(String item, boolean licOrApp) {
+        List<AppLicBundleDto> result=IaisCommonUtils.genNewArrayList();
         if (!StringUtil.isEmpty(item)) {
             result = appCommClient.getBundleMsCount(item, licOrApp).getEntity();
         }

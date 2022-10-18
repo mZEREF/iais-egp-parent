@@ -4,6 +4,7 @@ import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.monitoringExcel.AppGroupExcelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.monitoringExcel.AppProcessFileTrackExcelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.monitoringExcel.ApplicationExcelDto;
@@ -21,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.ConsolRecToCompareService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.EmailSmsClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.systeminfo.ServicesSysteminfo;
@@ -42,10 +44,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
@@ -71,7 +75,12 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
     private String rsltSharedPath;
     @Autowired
     private ApplicationClient applicationClient;
-
+    @Autowired
+    private EmailSmsClient emailSmsClient;
+    @Value("${iais.email.sender}")
+    private String mailSender;
+    @Value("${iais.datacompair.email}")
+    private String mailRecipient ;
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
 
@@ -434,12 +443,15 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
         widthMap.put(1, 30);
         widthMap.put(2, 18);
         widthMap.put(3, 18);
-        widthMap.put(4, 30);
+        widthMap.put(4, 40);
         widthMap.put(5, 18);
-        widthMap.put(6, 18);
-        widthMap.put(7, 15);
-        widthMap.put(8, 15);
-
+        widthMap.put(6, 30);
+        widthMap.put(7, 18);
+        widthMap.put(8, 18);
+        widthMap.put(9, 30);
+        widthMap.put(10, 15);
+        widthMap.put(11, 15);
+        widthMap.put(12, 15);
         return widthMap;
     }
     public static Map<Integer, Integer> getGrpWidthMap() {
@@ -449,11 +461,19 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
         widthMap.put(1, 28);
         widthMap.put(2, 18);
         widthMap.put(3, 18);
-        widthMap.put(4, 28);
-        widthMap.put(5, 18);
+        widthMap.put(4, 18);
+        widthMap.put(5, 40);
         widthMap.put(6, 18);
-        widthMap.put(7, 15);
-        widthMap.put(8, 15);
+        widthMap.put(7, 18);
+        widthMap.put(8, 28);
+        widthMap.put(9, 18);
+        widthMap.put(10, 18);
+        widthMap.put(11, 18);
+        widthMap.put(12, 40);
+        widthMap.put(13, 18);
+        widthMap.put(14, 18);
+        widthMap.put(15, 15);
+        widthMap.put(16, 15);
         return widthMap;
     }
     public static Map<Integer, Integer> getLicWidthMap() {
@@ -463,11 +483,17 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
         widthMap.put(1, 30);
         widthMap.put(2, 18);
         widthMap.put(3, 18);
-        widthMap.put(4, 30);
-        widthMap.put(5, 18);
+        widthMap.put(4, 40);
+        widthMap.put(5, 15);
         widthMap.put(6, 18);
-        widthMap.put(7, 15);
-        widthMap.put(8, 15);
+        widthMap.put(7, 30);
+        widthMap.put(8, 18);
+        widthMap.put(9, 18);
+        widthMap.put(10, 40);
+        widthMap.put(11, 15);
+        widthMap.put(12, 18);
+        widthMap.put(13, 15);
+        widthMap.put(14, 15);
         return widthMap;
     }
     public static Map<Integer, Integer> getUserWidthMap() {
@@ -502,6 +528,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
 
     private MonitoringSheetsDto fileToDto(String str)
     {
+        boolean hasNotMatch=false;
         MonitoringSheetsDto monitoringSheetsDto = JsonUtil.parseToObject(str, MonitoringSheetsDto.class);
         MonitoringSheetsDto monitoringAppSheetsDto=applicationClient.getMonitoringAppSheetsDto().getEntity();
         MonitoringSheetsDto monitoringLicSheetsDto=hcsaLicenceClient.getMonitoringLicenceSheetsDto().getEntity();
@@ -510,7 +537,18 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
         monitoringAppSheetsDto.setUserAccountExcelDtoMap(monitoringUserSheetsDto.getUserAccountExcelDtoMap());
 
         monitoringSheetsDto.setAppProcessFileTrackExcelDtoMap(monitoringAppSheetsDto.getAppProcessFileTrackExcelDtoMap());
-
+        for (Map.Entry<String, AppProcessFileTrackExcelDto> entry:monitoringAppSheetsDto.getAppProcessFileTrackExcelDtoMap().entrySet()
+        ) {
+            if(monitoringSheetsDto.getAppProcessFileTrackExcelDtoMap().containsKey(entry.getKey())){
+                AppProcessFileTrackExcelDto excelDto=monitoringSheetsDto.getAppProcessFileTrackExcelDtoMap().get(entry.getKey());
+                if(!excelDto.getStatus().equals("PFT005")){
+                    excelDto.setResult("Not Match");
+                    hasNotMatch=true;
+                }else {
+                    excelDto.setResult("Match");
+                }
+            }
+        }
         if(IaisCommonUtils.isNotEmpty(monitoringAppSheetsDto.getApplicationExcelDtoMap())){
             for (Map.Entry<String, ApplicationExcelDto> entry:monitoringAppSheetsDto.getApplicationExcelDtoMap().entrySet()
             ) {
@@ -519,7 +557,19 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                     excelDto.setApplicationNoBe(entry.getValue().getApplicationNoBe());
                     excelDto.setStatusBe(entry.getValue().getStatusBe());
                     excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
+                    excelDto.setVersionBe(entry.getValue().getVersionBe());
+                    excelDto.setOriginLicenceIdBe(entry.getValue().getOriginLicenceIdBe());
+                    if(excelDto.getApplicationNoBe().equals(excelDto.getApplicationNoFe())
+                            && excelDto.getVersionBe().equals(excelDto.getVersionFe())
+                            && excelDto.getStatusBe().equals(excelDto.getStatusFe())){
+                        excelDto.setResult("Match");
+                    }else {
+                        excelDto.setResult("Not Match");
+                        hasNotMatch=true;
+                    }
                 }else {
+                    entry.getValue().setResult("Not Match");
+                    hasNotMatch=true;
                     monitoringSheetsDto.getApplicationExcelDtoMap().put(entry.getKey(),entry.getValue());
                 }
             }
@@ -532,8 +582,20 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                     excelDto.setLicenceNoBe(entry.getValue().getLicenceNoBe());
                     excelDto.setStatusBe(entry.getValue().getStatusBe());
                     excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
-
+                    excelDto.setOriginLicenceIdBe(entry.getValue().getOriginLicenceIdBe());
+                    excelDto.setVersionBe(entry.getValue().getVersionBe());
+                    excelDto.setEffectiveDtBe(entry.getValue().getEffectiveDtBe());
+                    if(excelDto.getLicenceNoBe().equals(excelDto.getLicenceNoFe())
+                            && excelDto.getVersionBe().equals(excelDto.getVersionFe())
+                            && excelDto.getStatusBe().equals(excelDto.getStatusFe())){
+                        excelDto.setResult("Match");
+                    }else {
+                        excelDto.setResult("Not Match");
+                        hasNotMatch=true;
+                    }
                 }else {
+                    entry.getValue().setResult("Not Match");
+                    hasNotMatch=true;
                     monitoringSheetsDto.getLicenceExcelDtoMap().put(entry.getKey(),entry.getValue());
                 }
             }
@@ -546,8 +608,23 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                     excelDto.setAppGroupNoBe(entry.getValue().getAppGroupNoBe());
                     excelDto.setStatusBe(entry.getValue().getStatusBe());
                     excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
-
+                    excelDto.setAmountBe(entry.getValue().getAmountBe());
+                    excelDto.setPmtStatusBe(entry.getValue().getPmtStatusBe());
+                    excelDto.setPmtRefNoBe(entry.getValue().getPmtRefNoBe());
+                    excelDto.setIsAutoApproveBe(entry.getValue().getIsAutoApproveBe());
+                    if(excelDto.getAppGroupNoBe().equals(excelDto.getAppGroupNoFe())
+                            && excelDto.getPmtStatusBe().equals(excelDto.getPmtStatusFe())
+                            && excelDto.getAmountBe().equals(excelDto.getAmountFe())
+                            && excelDto.getIsAutoApproveBe().equals(excelDto.getIsAutoApproveFe())
+                            && excelDto.getStatusBe().equals(excelDto.getStatusFe())){
+                        excelDto.setResult("Match");
+                    }else {
+                        excelDto.setResult("Not Match");
+                        hasNotMatch=true;
+                    }
                 }else {
+                    entry.getValue().setResult("Not Match");
+                    hasNotMatch=true;
                     monitoringSheetsDto.getAppGroupExcelDtoMap().put(entry.getKey(),entry.getValue());
                 }
             }
@@ -561,13 +638,42 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                     excelDto.setStatusBe(entry.getValue().getStatusBe());
                     excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
                     excelDto.setUserDomainBe(entry.getValue().getUserDomainBe());
-
+                    if(excelDto.getDisplayNameBe().equals(excelDto.getDisplayNameFe())&&
+                            excelDto.getStatusBe().equals(excelDto.getStatusFe())&&
+                            excelDto.getUserDomainBe().equals(excelDto.getUserDomainFe())){
+                        excelDto.setResult("Match");
+                    }else {
+                        excelDto.setResult("Not Match");
+                        hasNotMatch=true;
+                    }
                 }else {
+                    entry.getValue().setResult("Not Match");
+                    hasNotMatch=true;
                     monitoringSheetsDto.getUserAccountExcelDtoMap().put(entry.getKey(),entry.getValue());
                 }
             }
         }
+        if(hasNotMatch){
+            log.info("start send email start");
+            EmailDto emailDto = new EmailDto();
+            List<String> receiptEmail= Arrays.asList(this.mailRecipient.split(","));
 
+            emailDto.setReceipts(receiptEmail);
+            String emailContent = "CompareFEBE Not Match";
+            emailDto.setContent(emailContent);
+            emailDto.setSubject("CompareFEBE Not Match");
+            emailDto.setSender(this.mailSender);
+            emailDto.setReqRefNum(UUID.randomUUID().toString());
+            emailDto.setClientQueryCode(UUID.randomUUID().toString());
+
+            try {
+                emailSmsClient.sendEmail(emailDto, null);
+            } catch (IOException e) {
+                log.error(e.getMessage());
+            }
+
+            log.info("start send email end");
+        }
         return monitoringSheetsDto;
 
     }

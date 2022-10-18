@@ -17,24 +17,9 @@
                     </span>
                 </h3>
                 <iais:row>
-                    <iais:field width="6" cssClass="col-md-6" value="Is Current Cycle Abandoned?" mandatory="true"/>
-                    <iais:value width="3" cssClass="col-md-3">
+                    <iais:field width="6" cssClass="col-md-6" value="Is Current Cycle Completed?" mandatory="true"/>
+                    <iais:value cssClass="col-md-3">
                         <div class="form-check" style="padding-left: 0px;">
-                            <input class="form-check-input"
-                                   type="radio"
-                                   name="cycleAbandoned"
-                                   value="true"
-                                   id="radioYes"
-                                   <c:if test="${endCycleStageDto.cycleAbandoned}">checked</c:if>
-                                   aria-invalid="false">
-                            <label class="form-check-label"
-                                   for="radioYes"><span
-                                    class="check-circle"></span>Yes</label>
-                        </div>
-                        <span class="error-msg" name="iaisErrorMsg" id="error_cycleAbandoned"></span>
-                    </iais:value>
-                    <iais:value width="3" cssClass="col-md-3">
-                        <div class="form-check">
                             <input class="form-check-input"
                                    type="radio"
                                    name="cycleAbandoned"
@@ -44,7 +29,22 @@
                                    aria-invalid="false">
                             <label class="form-check-label"
                                    for="radioNo"><span
-                                    class="check-circle"></span>No, Cycle has ended</label>
+                                    class="check-circle"></span>Yes, Cycle has ended</label>
+                        </div>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_cycleAbandoned"></span>
+                    </iais:value>
+                    <iais:value cssClass="col-md-3">
+                        <div class="form-check">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="cycleAbandoned"
+                                   value="true"
+                                   id="radioYes"
+                                   <c:if test="${endCycleStageDto.cycleAbandoned}">checked</c:if>
+                                   aria-invalid="false">
+                            <label class="form-check-label"
+                                   for="radioYes"><span
+                                    class="check-circle"></span>No</label>
                         </div>
                     </iais:value>
                 </iais:row>

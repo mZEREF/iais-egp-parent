@@ -14,14 +14,14 @@
                 <c:set var="endCycleStageDto" value="${arSuperDataSubmissionDto.endCycleStageDto}" />
                 <c:set var="endCycleStageDtoVersion" value="${arSuperDataSubmissionDtoVersion.endCycleStageDto}" />
                 <iais:row>
-                    <iais:field width="4" value="Is Current Cycle Abandoned?"/>
+                    <iais:field width="4" value="Is Current Cycle Completed?"/>
                     <iais:value width="4" cssClass="col-md-4" display="true">
-                        <c:if test="${endCycleStageDto.cycleAbandoned == true }">Yes</c:if>
-                        <c:if test="${endCycleStageDto.cycleAbandoned == false }">No, Cycle has ended</c:if>
+                        <c:if test="${endCycleStageDto.cycleAbandoned == true }">No</c:if>
+                        <c:if test="${endCycleStageDto.cycleAbandoned == false }">Yes, Cycle has ended</c:if>
                     </iais:value>
                     <iais:value width="4" cssClass="col-md-4" display="true">
-                        <c:if test="${endCycleStageDtoVersion.cycleAbandoned == true }">Yes</c:if>
-                        <c:if test="${endCycleStageDtoVersion.cycleAbandoned == false }">No, Cycle has ended</c:if>
+                        <c:if test="${endCycleStageDtoVersion.cycleAbandoned == true }">No</c:if>
+                        <c:if test="${endCycleStageDtoVersion.cycleAbandoned == false }">Yes, Cycle has ended</c:if>
                     </iais:value>
                 </iais:row>
                 <div <c:if test="${endCycleStageDto.cycleAbandoned !=true && endCycleStageDtoVersion.cycleAbandoned !=true}">style="display: none;"</c:if>>

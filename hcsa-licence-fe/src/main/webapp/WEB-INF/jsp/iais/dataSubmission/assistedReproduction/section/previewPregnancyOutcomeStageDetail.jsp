@@ -1,14 +1,10 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:set var="pregnancyOutcomeStageDto" value="${arSuperDataSubmissionDto.pregnancyOutcomeStageDto}"/>
-<c:set var="embryoTransferredOutcomeStageDto" value="${arSuperDataSubmissionDto.embryoTransferredOutcomeStageDto}"/>
-<c:set var="cycle" value="${arSuperDataSubmissionDto.selectionDto.cycle}"/>
-
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
             <a class="collapsed" href="#cycleDetails" data-toggle="collapse">
-                <c:if test="${cycle == 'DSCL_008'}">Outcome</c:if>
-                <c:if test="${cycle == 'DSCL_009'}">Outcome of Pregnancy</c:if>
+                Outcome of Pregnancy
             </a>
         </h4>
     </div>
@@ -20,12 +16,6 @@
                     <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
                     </span>
                 </h3>
-                <iais:row>
-                    <iais:field width="6" value="Outcome of Embryo Transferred" cssClass="col-md-6"/>
-                    <iais:value width="6" cssClass="col-md-6" display="true" >
-                        <iais:code code="${embryoTransferredOutcomeStageDto.transferedOutcome}"/>
-                    </iais:value>
-                </iais:row>
                 <iais:row>
                     <iais:field width="6" value="Order Shown in 1st Ultrasound (if Pregnancy confirmed)"
                                 cssClass="col-md-6"/>

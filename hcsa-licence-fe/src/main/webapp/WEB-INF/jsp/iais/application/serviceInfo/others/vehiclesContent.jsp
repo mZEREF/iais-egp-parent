@@ -91,9 +91,6 @@
         </div>
     </c:forEach>
 
-    </div>
-
-
     <c:if test="${!isRfi}">
         <c:choose>
             <c:when test="${!empty vehicleDtoList}">
@@ -128,8 +125,8 @@
             </span>
         </div>
     </c:if>
-
 </div>
+
 <iais:confirm msg="NEW_ACK031"  needCancel="false" callBack="tagConfirmCallbacksupport()" popupOrder="support" ></iais:confirm>
 <script>
     $(document).ready(function () {
@@ -140,7 +137,7 @@
         var rfiObj = $('input[name="rfiObj"]').val();
         //rfc,renew,rfi
         if (('APTY005' == appType || 'APTY004' == appType) || '1' == rfiObj) {
-            disabledPage();
+            disableContent($('.vehiclesForm'));
             doEdite();
         }
         $('div.vehicleContent').each(function (k, v) {
@@ -149,7 +146,7 @@
                     if ($(this).not(':empty')) {
                         $(v).find('.isPartEdit').val(1);
                         $('#isEditHiddenVal').val('1');
-                        unDisabledPartPage($(v));
+                        unDisableContent($(v));
                     }
                 });
             }
@@ -167,7 +164,7 @@
             $('.addVehicleDiv').before(src);
             var $currContent = $('div.vehicleContent').last();
             $currContent.find('.isPartEdit').val(1);
-            unDisabledPartPage($currContent);
+            unDisableContent($currContent);
             removeVehicle();
             refreshVehicle();
             $('#isEditHiddenVal').val('1');

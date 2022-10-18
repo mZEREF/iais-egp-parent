@@ -16,6 +16,7 @@
 <c:set var="smallTitle" value="You are Amending for Assisted Reproduction"/>
 
 <%@ include file="common/header.jsp" %>
+<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/arSelection/patient.js"></script>
 <%--@elvariable id="arSuperDataSubmissionDto" type="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto"--%>
 <form method="post" id="mainForm" action=<%=continueURL%>>
     <div class="main-content">
@@ -80,6 +81,32 @@
                                         </iais:value>
                                     </iais:row>
 
+                                    <iais:row>
+                                        <iais:field cssClass="col-md-6" value="Has patient registered for AR/IUI Treatment using another Identification Number before?" mandatory="true"/>
+                                        <iais:value width="12">
+                                            <iais:value width="12">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input triggerObj" id="isArIUIRegisteredN" type="radio"
+                                                        name="previousIdentification" value="0"
+                                                        <c:if test="${patient.previousIdentification eq false}">checked</c:if> />
+                                                    <label class="form-check-label" for="isArIUIRegisteredN">
+                                                        <span class="check-circle"></span>No
+                                                    </label>
+                                                </div>
+                                            </iais:value>
+                                            <iais:value width="12">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input triggerObj" id="isArIUIRegisteredY" type="radio"
+                                                        name="previousIdentification" value="1"
+                                                        <c:if test="${patient.previousIdentification}">checked</c:if> />
+                                                    <label class="form-check-label" for="isArIUIRegisteredY">
+                                                        <span class="check-circle"></span>Yes
+                                                    </label>
+                                                </div>
+                                            </iais:value>
+                                        </iais:value>
+                                    </iais:row>
+
                                     <div class="form-group" id="ptEthnicGroupOtherDiv"
                                          style="<c:if test="${patient.ethnicGroup ne 'ETHG005'}">display:none</c:if>">
                                         <iais:field cssClass="col-md-6" value="Ethnic Group (Others)" mandatory="true"/>
@@ -88,9 +115,10 @@
                                         </iais:value>
                                     </div>
 
+                                    <div id = "previousPatientSection">
                                     <p style="border-bottom: 1px solid;font-weight: 600;font-size: 2rem">Patient's identification details used for previous AR/IUI treatment: </p>
                                     <iais:row>
-                                        <iais:field cssClass="col-md-6" value="ID No."/>
+                                        <iais:field cssClass="col-md-6" value="ID No." mandatory="true"/>
                                         <iais:value width="12">
                                             <iais:input maxLength="20" type="text" name="preIdNumber"
                                                         value="${previous.idNumber}"/>
@@ -98,7 +126,7 @@
                                     </iais:row>
 
                                     <iais:row>
-                                        <iais:field cssClass="col-md-6" value="Nationality"/>
+                                        <iais:field cssClass="col-md-6" value="Nationality" mandatory="true"/>
                                         <iais:value width="12">
                                             <iais:select name="preNationality" firstOption="Please Select" codeCategory="CATE_ID_NATIONALITY"
                                                          value="${previous.nationality}"
@@ -107,11 +135,12 @@
                                     </iais:row>
 
                                     <iais:row>
-                                        <iais:field cssClass="col-md-6" value="Name"/>
+                                        <iais:field cssClass="col-md-6" value="Name" mandatory="true"/>
                                         <iais:value width="12">
                                             <iais:input maxLength="20" type="text" name="preName" value="${previous.name}"/>
                                         </iais:value>
                                     </iais:row>
+                                    </div>
 
                                     <p style="border-bottom: 1px solid;font-weight: 600;font-size: 2rem">Details of Husband</p>
                                     <iais:row>

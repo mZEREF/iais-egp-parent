@@ -321,6 +321,7 @@
          SELECT db.*,db.ID_NUMBER Patient_Id_Number FROM (SELECT ddsd.ID ID, null CYCLE_ID,ddsd.HCI_CODE HCI_CODE,ddsd.DS_TYPE DS_TYPE,ddsd.CYCLE_TYPE [type],ddsd.STATUS STATUS,ddsd.DRAFT_NO SUBMISSION_NO,ddsd.CREATED_DT SUBMIT_DT,ddsd.UPDATED_DT UPDATED_DT,ddsd.SUBMISSION_STAGE CYCLE_STAGE ,ddsd.SUBMISSION_TYPE SUBMISSION_TYPE,ddsd.APP_TYPE APP_TYPE,ddsd.SVC_NAME SVC_NAME, LICENSEE_ID dclicenseeId,
            'DS001' group_status, 0  LOCK_STATUS,null keyId,ddsd.ORGANIZATION_ID ORGANIZATION_ID,ddsd.ID_TYPE ID_TYPE,ddsd.ID_NUMBER ID_NUMBER,{replaceSubByTwo} ,ddsd.PATIENT_NAME
            FROM ds_data_submission_draft ddsd WHERE STATUS = 'DS010'
+           <#if accessFilter ??> and APP_TYPE + DS_TYPE IN (${accessFilter}) </#if>
            <#if creatdBy??> and CREATED_BY =:creatdBy</#if>
            ) db LEFT  JOIN (Select pai.PATIENT_CODE keyId,pai.ID_NUMBER ID_NUMBER,pai.NAME PATIENT_NAME,pai.ID_TYPE ID_TYPE,pai.CEN_ORGANIZATION_ID CEN_ORGANIZATION_ID ,'ARPDRP' PATTYP FROM ds_patient_information pai left join ds_data_submission dds  on  pai.SUBMISSION_ID = dds.ID WHERE dds.STATUS NOT IN ('DS002','DS012')
             UNION SELECT null keyId,topa.PATIENT_ID_NO ID_NUMBER,SUBSTRING ((SELECT top(1) ''+topaa.PATIENT_NAME

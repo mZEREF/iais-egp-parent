@@ -17,7 +17,7 @@
                 <%@include file="common/headStepNavTab.jsp" %>
                 <h3>Please key in the cycle information below.</h3>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <%@include file="section/pregnancyOutcomeStageSection.jsp" %>
+                    <%@include file="section/embryoTransferredOutcomeStageSection.jsp" %>
                     <%@include file="section/disposalStageDetailSection.jsp" %>
                     <%@include file="common/dsAmendment.jsp" %>
                 </div>

@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EfoCycleStageDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -22,6 +23,7 @@ import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
@@ -69,10 +71,19 @@ public class EfoCycleStageDelegator extends CommonDelegator{
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto=DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         log.info(StringUtil.changeForLog("crud_action_type is ======>"+ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE)));
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Oocyte Freezing Only Cycle</strong>");
         List<SelectOption> efoReasonSelectOption= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_EFO_REASON);
-        ParamUtil.setRequestAttr(bpc.request,"efoReasonSelectOption",efoReasonSelectOption);
+        if (arSuperDataSubmissionDto.getSelectionDto().getCycle() == DataSubmissionConsts.DS_CYCLE_EFO){
+            ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Oocyte Freezing Only Cycle</strong>");
+            ParamUtil.setRequestAttr(bpc.request,"efoReasonSelectOption",efoReasonSelectOption);
+        } else {
+            ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Sperm Freezing Only Cycle</strong>");
+            List<SelectOption> sfoReasonSelectOption = IaisCommonUtils.genNewArrayList(2);
+            sfoReasonSelectOption.add(0, efoReasonSelectOption.get(0));
+            sfoReasonSelectOption.add(1, efoReasonSelectOption.get(3));
+            ParamUtil.setSessionAttr(bpc.request,"sfoReasonSelectOption", (Serializable) sfoReasonSelectOption);
+        }
 
     }
 
@@ -89,8 +100,13 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         String startDateStr = ParamUtil.getRequestString(request, "efoDateStarted");
         Date startDate = DateUtil.parseDate(startDateStr, AppConsts.DEFAULT_DATE_FORMAT);
         String cryopresNum = ParamUtil.getString(request,"cryopresNum");
-        if (cryopresNum != null) {
+        if (cryopresNum != null && StringUtil.isNumber(cryopresNum)) {
             efoCycleStageDto.setCryopresNum(Integer.parseInt(cryopresNum));
+             if (arSuperDataSubmissionDto.getSelectionDto().getCycle() == DataSubmissionConsts.DS_CYCLE_EFO &&
+                     efoCycleStageDto.getCryopresNum() == 0) {
+                String others = ParamUtil.getRequestString(request, "others");
+                efoCycleStageDto.setOthers(others);
+            }
         }
         efoCycleStageDto.setStartDate(startDate);
         efoCycleStageDto.setIsMedicallyIndicated(indicated);

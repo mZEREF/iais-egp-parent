@@ -7,17 +7,9 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.HusbandDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -38,7 +30,6 @@ import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionServic
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +38,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.ws.rs.HEAD;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -146,6 +136,7 @@ public class ArIUIDataSubmissionDelegator {
         }
 
         boolean startNewCycle = false;
+        boolean startNunCycle = false;
         if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(submissionType)) {
             PatientInfoDto patientInfo = genPatientByPage(request, currentSuper.getOrgId(),false);
             String previousIdentification = ParamUtil.getString(request, "previousIdentification");
@@ -169,13 +160,18 @@ public class ArIUIDataSubmissionDelegator {
                 // jump to sub stage
                 selectionDto = (CycleStageSelectionDto) ParamUtil.getSessionAttr(request, "selectionDto");
                 String nextStage = ParamUtil.getString(request, "nextStage");
+                String nextNunCycleStage = ParamUtil.getString(request,"nextNunCycleStage");
                 String cycleRadio = ParamUtil.getString(request, CYCLE_SELECT);
                 ParamUtil.setRequestAttr(request, CYCLE_SELECT, cycleRadio);
                 String hasCycle = ParamUtil.getString(request, HAS_CYCLE);
                 currentSuper.getDataSubmissionDto().setCycleStage(nextStage);
-                startNewCycle = "N".equals(hasCycle) || "newCycle".equals(cycleRadio);
+                startNewCycle = "N".equals(hasCycle) && cycleRadio == null;
+                startNunCycle = "Y".equals(hasCycle) && "newCycle".equals(cycleRadio);
                 if (startNewCycle && StringUtil.isEmpty(nextStage)) {
                     errorMap.put("nextStage", "GENERAL_ERR0006");
+                }
+                if (startNunCycle && StringUtil.isEmpty(nextNunCycleStage)) {
+                    errorMap.put("nextNunCycleStage", "GENERAL_ERR0006");
                 }
                 if ("Y".equals(hasCycle) && StringUtil.isEmpty(cycleRadio)) {
                     errorMap.put(CYCLE_SELECT, "GENERAL_ERR0006");
@@ -194,12 +190,17 @@ public class ArIUIDataSubmissionDelegator {
                         selectionDto.setLastStageDesc("-");
                     }
                 }
-                selectionDto.setStage(nextStage);
                 String licenseeId = DataSubmissionHelper.getLicenseeId(request);
-                currentSuper.setCycleDto(DataSubmissionHelper.initCycleDto(selectionDto, currentSuper.getSvcName(), hciCode, licenseeId));
                 if (startNewCycle){
+                    selectionDto.setStage(nextStage);
+                    currentSuper.setCycleDto(DataSubmissionHelper.initCycleDto(selectionDto, currentSuper.getSvcName(), hciCode, licenseeId));
                     selectionDto.setNavCurrentCycle(selectionDto.getCycle());
+                } else if (startNunCycle){
+                    selectionDto.setStage(nextNunCycleStage);
+                    currentSuper.setCycleDto(DataSubmissionHelper.initCycleDto(selectionDto, currentSuper.getSvcName(), hciCode, licenseeId));
                 } else {
+                    selectionDto.setStage(nextStage);
+                    currentSuper.setCycleDto(DataSubmissionHelper.initCycleDto(selectionDto, currentSuper.getSvcName(), hciCode, licenseeId));
                     selectionDto.setNavCurrentCycle(
                             selectionDto
                                     .getCycleDtos().stream().filter(it-> cycleRadio.equals(it.getId()))
@@ -218,8 +219,84 @@ public class ArIUIDataSubmissionDelegator {
                 currentSuper.setSelectionDto(selectionDto);
                 ParamUtil.setRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, transferNextStage(nextStage));
             }
+            // submit donorSample
         } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(submissionType)) {
             donorSamplePageAction(request, submissionType, actionType, errorMap);
+            // donor Inventory
+            DonorSampleDto donorSampleDto = currentSuper.getDonorSampleDto();
+            String sampleType = donorSampleDto.getSampleType();
+
+            ArCurrentInventoryDto arCurrentInventoryDto = currentSuper.getArCurrentInventoryDto();
+            ArCurrentInventoryDto secondArCurrentInventoryDto = currentSuper.getSecondArCurrentInventoryDto();
+            int curFreshOocyteNum = 0;
+            int curFrozenOocyteNum = 0;
+            int curFrozenEmbryoNum = 0;
+            int curFrozenSpermNum = 0;
+
+            int secondCurFrozenEmbryoNum = 0;
+            int secondCurFrozenSpermNum = 0;
+
+            String femaleDonorIdType = donorSampleDto.getIdType();
+            String femaleDonorIdNo = donorSampleDto.getIdNumber();
+            String maleDonorIdType = donorSampleDto.getIdTypeMale();
+            String maleDonorIdno = donorSampleDto.getIdNumberMale();
+            if (DataSubmissionConsts.DONATED_TYPE_FRESH_OOCYTE.equals(sampleType) || DataSubmissionConsts.DONATED_TYPE_FROZEN_OOCYTE.equals(sampleType) ) {
+                List<DonorSampleAgeDto> donorSampleAgeDtos =  arDataSubmissionService.getFemaleDonorSampleDtoByIdTypeAndIdNo(femaleDonorIdType, femaleDonorIdNo);
+                for (DonorSampleAgeDto opt: donorSampleAgeDtos) {
+                    if (opt.getSampleType().equals(DataSubmissionConsts.DONATED_TYPE_FRESH_OOCYTE)) {
+                        curFreshOocyteNum += 1;
+                    } else if (opt.getSampleType().equals(DataSubmissionConsts.DONATED_TYPE_FROZEN_OOCYTE)) {
+                        curFrozenOocyteNum += 1;
+                    } else if (opt.getSampleType().equals(DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO)) {
+                        curFrozenEmbryoNum += 1;
+                    }
+                }
+            } else if (DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM.equals(sampleType)) {
+                List<DonorSampleAgeDto> donorSampleDtos = arDataSubmissionService.getMaleDonorSampleDtoByIdTypeAndIdNo(maleDonorIdType, maleDonorIdno);
+                for (DonorSampleAgeDto opt: donorSampleDtos) {
+                    if (opt.getSampleType().equals(DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO)) {
+                        curFrozenEmbryoNum += 1;
+                    } else if (opt.getSampleType().equals(DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM)) {
+                        curFrozenSpermNum += 1;
+                    }
+                }
+            } else if (DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO.equals(sampleType)) {
+                List<DonorSampleAgeDto> femaleDtos =  arDataSubmissionService.getFemaleDonorSampleDtoByIdTypeAndIdNo(femaleDonorIdType, femaleDonorIdNo);
+                List<DonorSampleAgeDto> maleDtos = arDataSubmissionService.getMaleDonorSampleDtoByIdTypeAndIdNo(maleDonorIdType, maleDonorIdno);
+                for (DonorSampleAgeDto opt: femaleDtos) {
+                    if (opt.getSampleType().equals(DataSubmissionConsts.DONATED_TYPE_FRESH_OOCYTE)) {
+                        curFreshOocyteNum += 1;
+                    } else if (opt.getSampleType().equals(DataSubmissionConsts.DONATED_TYPE_FROZEN_OOCYTE)) {
+                        curFrozenOocyteNum += 1;
+                    } else if (opt.getSampleType().equals(DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO)) {
+                        curFrozenEmbryoNum += 1;
+                    }
+                }
+                for (DonorSampleAgeDto opt: maleDtos) {
+                    if (opt.getSampleType().equals(DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO)) {
+                        secondCurFrozenEmbryoNum += 1;
+                    } else if (opt.getSampleType().equals(DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM)) {
+                        secondCurFrozenSpermNum += 1;
+                    }
+                }
+            }
+            if (arCurrentInventoryDto == null) {
+                arCurrentInventoryDto = new ArCurrentInventoryDto();
+            }
+            arCurrentInventoryDto.setFreshOocyteNum(curFreshOocyteNum);
+            arCurrentInventoryDto.setFrozenOocyteNum(curFrozenOocyteNum);
+            arCurrentInventoryDto.setFrozenEmbryoNum(curFrozenEmbryoNum);
+            arCurrentInventoryDto.setFrozenSpermNum(curFrozenSpermNum);
+            if (DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO.equals(sampleType)) {
+                if (secondArCurrentInventoryDto == null) {
+                    secondArCurrentInventoryDto = new ArCurrentInventoryDto();
+                }
+                secondArCurrentInventoryDto.setFrozenEmbryoNum(secondCurFrozenEmbryoNum);
+                secondArCurrentInventoryDto.setFrozenSpermNum(secondCurFrozenSpermNum);
+                currentSuper.setSecondArCurrentInventoryDto(secondArCurrentInventoryDto);
+            }
+
+            currentSuper.setArCurrentInventoryDto(arCurrentInventoryDto);
         }
 
         // action is next and error is empty
@@ -236,7 +313,6 @@ public class ArIUIDataSubmissionDelegator {
         }
         DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, request);
     }
-
 
     public void preAmendPatient(BaseProcessClass bpc) {
         ParamUtil.setRequestAttr(bpc.request, CURRENT_PAGE_STAGE, ACTION_TYPE_AMEND);
@@ -346,7 +422,7 @@ public class ArIUIDataSubmissionDelegator {
     public void prepareAck(BaseProcessClass bpc) {
         ParamUtil.setRequestAttr(bpc.request, CURRENT_PAGE_STAGE, ACTION_TYPE_ACK);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_ACKART);
-        String emailAddress = DataSubmissionHelper.getEmailAddrsByRoleIdsAndLicenseeId(bpc.request, Collections.singletonList(RoleConsts.USER_ROLE_DS_AR));
+        String emailAddress = DataSubmissionHelper.getEmailAddrsByRoleIdsAndLicenseeId(bpc.request, MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_EMAIL);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.EMAIL_ADDRESS, emailAddress);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.SUBMITTED_BY, DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
     }
@@ -388,10 +464,54 @@ public class ArIUIDataSubmissionDelegator {
     public void init(BaseProcessClass bpc) {
     }
 
+    private void setDonorInv(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
+        DonorSampleDto donorSampleDto = arSuperDataSubmissionDto.getDonorSampleDto();
+        int freshOocyteNum = 0;
+        int frozenOocyteNum = 0;
+        int frozenEmbryoNum = 0;
+        int frozenSpermNum = 0;
+
+        if (DataSubmissionConsts.DONATED_TYPE_FRESH_OOCYTE.equals(donorSampleDto.getSampleType())) {
+            freshOocyteNum += 1;
+        } else if (DataSubmissionConsts.DONATED_TYPE_FROZEN_OOCYTE.equals(donorSampleDto.getSampleType())) {
+            frozenOocyteNum += 1;
+        } else if (DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO.equals(donorSampleDto.getSampleType())) {
+            frozenEmbryoNum += 1;
+        } else if (DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM.equals(donorSampleDto.getSampleType())){
+            frozenSpermNum += 1;
+        }
+        ArChangeInventoryDto arChangeInventoryDto = arSuperDataSubmissionDto.getArChangeInventoryDto();
+        if (DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO.equals(donorSampleDto.getSampleType())) {
+            ArChangeInventoryDto secondArChangeInventoryDto = arSuperDataSubmissionDto.getSecondArChangeInventoryDto();
+            if (secondArChangeInventoryDto == null) {
+                secondArChangeInventoryDto = new ArChangeInventoryDto();
+            }
+            int secondFrozenEmbryoNum = 0;
+            int secondFrozenSpermNum = 0;
+            if (DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO.equals(donorSampleDto.getSampleType())) {
+                secondFrozenEmbryoNum += 1;
+            } else if (DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM.equals(donorSampleDto.getSampleType())){
+                secondFrozenSpermNum += 1;
+            }
+            secondArChangeInventoryDto.setFrozenEmbryoNum(secondFrozenEmbryoNum);
+            secondArChangeInventoryDto.setFrozenSpermNum(secondFrozenSpermNum);
+            arSuperDataSubmissionDto.setSecondArChangeInventoryDto(secondArChangeInventoryDto);
+        }
+        if (arChangeInventoryDto == null){
+            arChangeInventoryDto = new ArChangeInventoryDto();
+        }
+        arChangeInventoryDto.setFreshOocyteNum(freshOocyteNum);
+        arChangeInventoryDto.setFrozenOocyteNum(frozenOocyteNum);
+        arChangeInventoryDto.setFrozenEmbryoNum(frozenEmbryoNum);
+        arChangeInventoryDto.setFrozenSpermNum(frozenSpermNum);
+        arSuperDataSubmissionDto.setArChangeInventoryDto(arChangeInventoryDto);
+    }
+
     private void donorSamplePageAction(HttpServletRequest request, String submissionType, String actionType, Map<String, String> errorMap) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         DonorSampleDto donorSampleDto = genDonorSampleDtoByPage(request);
         arSuperDataSubmissionDto.setDonorSampleDto(donorSampleDto);
+        setDonorInv(arSuperDataSubmissionDto);
         if (ACTION_TYPE_SUBMISSION.equals(actionType)) {
             ValidationResult validationResult = WebValidationHelper.validateProperty(donorSampleDto, "save");
             errorMap.putAll(validationResult.retrieveAll());
@@ -428,6 +548,11 @@ public class ArIUIDataSubmissionDelegator {
                 .map(it -> new SelectOption(it.getCode(), it.getDescription()))
                 .collect(Collectors.toList());
         ParamUtil.setRequestAttr(bpc.request, "nricFinTypeSelOpts", nricFinTypeSelOpts);
+
+        List<SelectOption> offCycleOpts = MasterCodeUtil.retrieveOptionsByCodes(
+                DataSubmissionHelper.getAllOffCycleStage().toArray(new String[]{}));
+        ParamUtil.setRequestAttr(bpc.request, "offCycleOps", offCycleOpts);
+
         List<SelectOption> newCycleOpts = MasterCodeUtil.retrieveOptionsByCodes(
                 DataSubmissionHelper.getNextStagesForAr(null, null, null, false, false, false, false, false)
                         .toArray(new String[]{}));

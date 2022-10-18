@@ -81,7 +81,7 @@
                 </iais:row>
                 <div id="othersReason" <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.reason!='EFOR004'}">style="display: none"</c:if> >
                     <iais:row>
-                        <iais:field width="6" cssClass="col-md-6" value="" mandatory="false"/>
+                        <iais:field width="6" cssClass="col-md-6" value="Reason (Others)" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
                             <input type="text" maxlength="100"   name="othersReason" value="${arSuperDataSubmissionDto.efoCycleStageDto.otherReason}" >
                             <span class="error-msg" name="iaisErrorMsg" id="error_othersReason"></span>
@@ -91,9 +91,20 @@
                 <iais:row id="cryopresNum">
                     <iais:field width="6" cssClass="col-md-6" value="No.Cryopreserved" mandatory="true"/>
                     <iais:value width="6" cssClass="col-md-6">
-                        <iais:input type="text" maxLength="50" value="${arSuperDataSubmissionDto.efoCycleStageDto.cryopresNum}" name="cryopresNum" />
+                        <iais:input type="text" maxLength="50" value="${arSuperDataSubmissionDto.efoCycleStageDto.cryopresNum}" id="cryopresNum" name="cryopresNum" />
+                        <span class="error-msg" name="iaisErrorMsg" id="error_cryopresNum"></span>
                     </iais:value>
                 </iais:row>
+
+                <div id = "Others"  <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.cryopresNum ne 0}">style="display: none"</c:if>>
+                    <iais:row id="others">
+                        <iais:field width="6" cssClass="col-md-6" value="others" mandatory="true"/>
+                        <iais:value width="6" cssClass="col-md-6">
+                            <input type="text" maxlength="100"   name="others" value="${arSuperDataSubmissionDto.efoCycleStageDto.others}" >
+                            <span class="error-msg" name="iaisErrorMsg" id="error_others"></span>
+                        </iais:value>
+                    </iais:row>
+                </div>
                 <%@include file="hasDisposalRow.jsp"%>
             </div>
         </div>

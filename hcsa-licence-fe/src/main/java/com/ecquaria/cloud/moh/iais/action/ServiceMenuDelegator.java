@@ -665,6 +665,10 @@ public class ServiceMenuDelegator {
                     AppLicBundleDto appLicBundleDto=new AppLicBundleDto();
                     appLicBundleDto.setSvcCode(baseServiceDto.getSvcCode());
                     appLicBundleDto.setLicenceId(checkData.getLicenceId());
+                    List<AppLicBundleDto> licBundleDtos = appSubmissionService.getBundleMsCount(checkData.getLicenceId(), true);
+                    if (IaisCommonUtils.isNotEmpty(licBundleDtos)){
+                        appLicBundleDto.setBoundCode(licBundleDtos.get(0).getBoundCode());
+                    }
                     appLicBundleDto.setPremisesId(checkData.getPremisesId());
                     appLicBundleDto.setPremisesType(checkData.getPremisesType());
                     appLicBundleDto.setLicOrApp(true);
@@ -691,6 +695,10 @@ public class ServiceMenuDelegator {
                     appLicBundleDto.setPremisesId(checkData.getPremisesId());
                     appLicBundleDto.setPremisesType(checkData.getPremisesType());
                     appLicBundleDto.setLicOrApp(false);
+                    List<AppLicBundleDto> licBundleDtos = appSubmissionService.getBundleMsCount(checkData.getApplicationNo(), false);
+                    if (IaisCommonUtils.isNotEmpty(licBundleDtos)){
+                        appLicBundleDto.setBoundCode(licBundleDtos.get(0).getBoundCode());
+                    }
                     appLicBundleDtoList.add(appLicBundleDto);
                     addressList.add(checkData.getAddress());
                     applicationNoMap.put(hcsaServiceDto.getSvcCode(),checkData.getApplicationNo());
@@ -745,7 +753,10 @@ public class ServiceMenuDelegator {
                     for (HcsaServiceDto hcsaServiceDto : notContainedSvc) {
                         String licenceId = licenceIdMap.get(hcsaServiceDto.getSvcCode());
                         if (StringUtil.isNotEmpty(licenceId)){
-                            bundleMsCount = appSubmissionService.getBundleMsCount(licenceId, true);
+                            List<AppLicBundleDto> licBundleDtos = appSubmissionService.getBundleMsCount(licenceId, true);
+                            if (IaisCommonUtils.isNotEmpty(licBundleDtos)){
+                                bundleMsCount = licBundleDtos.size();
+                            }
                             if (bundleMsCount!=0){
                                 subErrorMsg=MessageUtil.getMessageDesc("GENERAL_ERR0077");
                                 ParamUtil.setRequestAttr(bpc.request,hcsaServiceDto.getSvcCode()+"chooseBaseErr",subErrorMsg);
@@ -756,7 +767,10 @@ public class ServiceMenuDelegator {
                     for (HcsaServiceDto hcsaServiceDto : notContainedSvc) {
                         String applicationNo = applicationNoMap.get(hcsaServiceDto.getSvcCode());
                         if (StringUtil.isNotEmpty(applicationNo)){
-                            bundleMsCount = appSubmissionService.getBundleMsCount(applicationNo, false);
+                            List<AppLicBundleDto> licBundleDtos = appSubmissionService.getBundleMsCount(applicationNo, false);
+                            if (IaisCommonUtils.isNotEmpty(licBundleDtos)){
+                                bundleMsCount = licBundleDtos.size();
+                            }
                             if (bundleMsCount!=0){
                                 subErrorMsg=MessageUtil.getMessageDesc("GENERAL_ERR0077");
                                 ParamUtil.setRequestAttr(bpc.request,hcsaServiceDto.getSvcCode()+"chooseBaseErr",subErrorMsg);
@@ -767,7 +781,10 @@ public class ServiceMenuDelegator {
             }else{
                 String licenceId = licenceIdMap.get(notContainedSvc.get(0).getSvcCode());
                 if (!noExistBaseLic&&StringUtil.isNotEmpty(licenceId)){
-                    bundleMsCount = appSubmissionService.getBundleMsCount(licenceId, true);
+                    List<AppLicBundleDto> licBundleDtos = appSubmissionService.getBundleMsCount(licenceId, true);
+                    if (IaisCommonUtils.isNotEmpty(licBundleDtos)){
+                        bundleMsCount = licBundleDtos.size();
+                    }
                     if (bundleMsCount>=3){
                         erroMsg=MessageUtil.getMessageDesc("GENERAL_ERR0077");
                     }

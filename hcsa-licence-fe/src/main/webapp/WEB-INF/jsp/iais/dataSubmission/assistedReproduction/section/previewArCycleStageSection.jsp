@@ -17,7 +17,7 @@
                 <iais:row>
                     <iais:field width="5" value="Premises where AR is performed" />
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                        <c:out value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"/>
+                        <iais:optionText value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -70,7 +70,7 @@
                 </iais:row>
 
                 <iais:row>
-                    <iais:field width="5" value="Current AR Treatment" />
+                    <iais:field width="5" value="Current AR Cycle" />
                     <iais:value width="7" cssClass="col-md-7"  display="true">
                             <c:forEach items="${arCycleStageDto.currentArTreatmentValues}" var="currentAR" varStatus="status">
                                 <c:if test="${status.index != 0}"><br></c:if> <iais:code code="${currentAR}"/>

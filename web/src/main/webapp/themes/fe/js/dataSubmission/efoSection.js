@@ -27,7 +27,14 @@ $(document).ready(function() {
 
     });
 
-
+    $('input[type=text][name="cryopresNum"]').change(function() {
+        var cryopresVal = $('input[name="cryopresNum"]').val();
+        if (cryopresVal == '0') {
+            $("#Others").show();
+        } else {
+            $("#Others").hide();
+        }
+    });
 });
 
 function othersReasonDisplay() {

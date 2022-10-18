@@ -13,14 +13,12 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Collections;
 
 /**
  * Process: MohDsPrint
@@ -42,8 +40,8 @@ public class MohDsPrintDelegator {
         String printflag = ParamUtil.getString(bpc.request, DataSubmissionConstant.PRINT_FLAG);
         if (StringUtil.isIn(printflag, new String[]{DataSubmissionConstant.PRINT_FLAG_ACKART,
                 DataSubmissionConstant.PRINT_FLAG_ACKDRP,DataSubmissionConstant.PRINT_FLAG_ACKLDT,DataSubmissionConstant.PRINT_FLAG_ACKTOP,DataSubmissionConstant.PRINT_FLAG_ACKVSS})) {
-            String role = ParamUtil.getString(bpc.request, "role");
-            ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.EMAIL_ADDRESS,DataSubmissionHelper.getEmailAddrsByRoleIdsAndLicenseeId(bpc.request, Collections.singletonList(role)));
+            String templateId = ParamUtil.getString(bpc.request, "templateId");
+            ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.EMAIL_ADDRESS,DataSubmissionHelper.getEmailAddrsByRoleIdsAndLicenseeId(bpc.request, templateId));
             ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.SUBMITTED_BY,
                     DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
         }
