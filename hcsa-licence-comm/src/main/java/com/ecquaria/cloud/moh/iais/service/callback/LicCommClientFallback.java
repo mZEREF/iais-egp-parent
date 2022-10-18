@@ -127,6 +127,11 @@ public class LicCommClientFallback implements LicCommClient {
     }
 
     @Override
+    public FeignResponseEntity<List<PremisesDto>> getBundledLicPremises(long boundCode) {
+        return IaisEGPHelper.getFeignResponseEntity(boundCode);
+    }
+
+    @Override
     public FeignResponseEntity<List<String>> getPersonnelDtoByIdNo(String idNo) {
         return IaisEGPHelper.getFeignResponseEntity(idNo);
     }

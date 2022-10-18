@@ -49,7 +49,7 @@
                 </div>
 
                 <iais:row>
-                    <iais:field width="5" value="Donated For"  />
+                    <iais:field width="5" value="Purpose of Donation"  />
                     <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:if test="${ arSuperDataSubmissionDto.donationStageDto.donatedForResearch ==1 }">Research<br></c:if>
                         <c:if test="${ arSuperDataSubmissionDto.donationStageDto.donatedForTraining ==1 }">Training<br></c:if>

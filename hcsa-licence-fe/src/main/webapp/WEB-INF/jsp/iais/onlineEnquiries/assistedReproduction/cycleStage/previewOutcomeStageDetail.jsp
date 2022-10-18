@@ -23,7 +23,3 @@
         </div>
     </div>
 </div>
-
-<c:if test="${outcomeStageDto.pregnancyDetected == true }">
-    <%@include file="previewPregnancyOutcomeStageDetail.jsp"%>
-</c:if>

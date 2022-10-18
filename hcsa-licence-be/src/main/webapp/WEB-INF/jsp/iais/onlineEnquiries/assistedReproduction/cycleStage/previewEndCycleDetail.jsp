@@ -13,10 +13,10 @@
                 <%@include file="comPart.jsp" %>
                 <c:set var="endCycleStageDto" value="${arSuperDataSubmissionDto.endCycleStageDto}" />
                 <iais:row>
-                    <iais:field width="5" value="Is Current Cycle Abandoned?"/>
+                    <iais:field width="5" value="Is Current Cycle Completed?"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                        <c:if test="${endCycleStageDto.cycleAbandoned == true }">Yes</c:if>
-                        <c:if test="${endCycleStageDto.cycleAbandoned == false }">No, Cycle has ended</c:if>
+                        <c:if test="${endCycleStageDto.cycleAbandoned == true }">No</c:if>
+                        <c:if test="${endCycleStageDto.cycleAbandoned == false }">Yes, Cycle has ended</c:if>
                     </iais:value>
                 </iais:row>
                 <div <c:if test="${endCycleStageDto.cycleAbandoned !=true}">style="display: none;"</c:if>>

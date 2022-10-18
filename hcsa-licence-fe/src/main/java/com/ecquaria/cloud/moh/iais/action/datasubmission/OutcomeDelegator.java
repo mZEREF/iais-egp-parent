@@ -31,18 +31,7 @@ import java.util.Map;
 @Delegator("outcomeDelegator")
 @Slf4j
 public class OutcomeDelegator extends CommonDelegator{
-    public static final String OUTCOME_OF_EMBRYO_TRANSFERREDS = "OutcomeEmbryoTransferreds";
 
-    @Autowired
-    private OutcomePregnancyDelegator outcomePregnancyDelegator;
-    @Autowired
-    private OutcomeEmbryoTransferredDelegator outcomeEmbryoTransferredDelegator;
-
-    @Override
-    public void start(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request,OUTCOME_OF_EMBRYO_TRANSFERREDS, (Serializable) MasterCodeUtil.retrieveByCategory(MasterCodeUtil.OUTCOME_OF_EMBRYO_TRANSFERRED));
-    }
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("crud_action_type is ======>"+ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE)));
@@ -53,7 +42,6 @@ public class OutcomeDelegator extends CommonDelegator{
     public void preparePage(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
-        outcomePregnancyDelegator.preparePage(bpc);
     }
 
     @Override
@@ -73,37 +61,6 @@ public class OutcomeDelegator extends CommonDelegator{
             ValidationResult validationResult = WebValidationHelper.validateProperty(outcomeStageDto, "save");
 
             Map<String, String> errorMap = validationResult.retrieveAll();
-            if ("true".equals(pregnancyDetected)) {
-                HttpServletRequest request = bpc.request;
-                EmbryoTransferredOutcomeStageDto embryoTransferredOutcomeStageDto =
-                        arSuperDataSubmissionDto.getEmbryoTransferredOutcomeStageDto() == null ? new EmbryoTransferredOutcomeStageDto() : arSuperDataSubmissionDto.getEmbryoTransferredOutcomeStageDto();
-                PregnancyOutcomeStageDto pregnancyOutcomeStageDto =
-                        arSuperDataSubmissionDto.getPregnancyOutcomeStageDto() == null ? new PregnancyOutcomeStageDto() : arSuperDataSubmissionDto.getPregnancyOutcomeStageDto();
-                ControllerHelper.get(request, embryoTransferredOutcomeStageDto);
-                outcomePregnancyDelegator.fromPageData(pregnancyOutcomeStageDto, request);
-                String crud_action_type = ParamUtil.getRequestString(request, IntranetUserConstant.CRUD_ACTION_TYPE);
-                if ("confirm".equals(crud_action_type)) {
-                    ValidationResult validationResult1 = WebValidationHelper.validateProperty(embryoTransferredOutcomeStageDto, "save");
-                    ValidationResult validationResult2 = WebValidationHelper.validateProperty(pregnancyOutcomeStageDto, "save");
-
-                    errorMap = validationResult1.retrieveAll();
-                    errorMap.putAll(validationResult2.retrieveAll());
-                    verifyCommon(request, errorMap);
-                    if(errorMap.isEmpty()){
-                        outcomeEmbryoTransferredDelegator.valRFC(request, embryoTransferredOutcomeStageDto);
-                        outcomePregnancyDelegator.valRFC(request, pregnancyOutcomeStageDto);
-
-                    }
-                    if (!errorMap.isEmpty()) {
-                        WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-                        ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMAP, errorMap);
-                        ParamUtil.setRequestAttr(request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                        ParamUtil.setRequestAttr(request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
-                    }
-                }
-                arSuperDataSubmissionDto.setEmbryoTransferredOutcomeStageDto(embryoTransferredOutcomeStageDto);
-            }
-
             if(StringUtil.isEmpty(pregnancyDetected)){
                 errorMap.put("pregnancyDetected" ,"GENERAL_ERR0006");
             }

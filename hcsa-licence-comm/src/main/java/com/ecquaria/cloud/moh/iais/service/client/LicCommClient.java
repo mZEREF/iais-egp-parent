@@ -104,6 +104,9 @@ public interface LicCommClient {
     @GetMapping(value = "/licence-premises/{premType}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PremisesDto>> getPremisesDtosByPremType(@PathVariable("premType") String premType);
 
+    @GetMapping(value = "/bundled-lic-premises", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<PremisesDto>> getBundledLicPremises(@RequestParam("boundCode") long boundCode);
+
     @GetMapping(value = "/getPersonnelDtoByLicId/{idNo}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> getPersonnelDtoByIdNo(@PathVariable(name = "idNo") String idNo);
 

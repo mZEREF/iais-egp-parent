@@ -524,6 +524,8 @@
             </div>
         </div>
       </div>
+      <iais:confirm msg="NEW_ACK016" needCancel="false" callBack="$('#postalCodePop').modal('hide');" popupOrder="postalCodePop"
+                    yesBtnDesc="" needEscapHtml="false" needFungDuoJi="false"/>
     </div>
   </div>
 </div>

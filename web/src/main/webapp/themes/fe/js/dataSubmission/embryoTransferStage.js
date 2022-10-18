@@ -1,20 +1,118 @@
 $(document).ready(function () {
     $('.transferNumSelect').change(function () {
         let v = parseInt($(this).val());
-        let $section2nd = $('#section2nd');
-        let $section3rd = $('#section3rd');
+        let $section2 = $('#2Embryo');
+        let $section3 = $('#3Embryo');
+        let $section4 = $('#4Embryo');
+        let $section5 = $('#5Embryo');
+        let $section6 = $('#6Embryo');
+        let $section7 = $('#7Embryo');
+        let $section8 = $('#8Embryo');
+        let $section9 = $('#9Embryo');
+        let $section10 = $('#10Embryo');
         if (v == 1) {
-            $section2nd.hide();
-            $section3rd.hide();
+            $section2.hide();
+            $section3.hide();
+            $section4.hide();
+            $section5.hide();
+            $section6.hide();
+            $section7.hide();
+            $section8.hide();
+            $section9.hide();
+            $section10.hide();
             hide2nd();
             hide3rd();
         } else if (v == 2) {
-            $section2nd.show();
-            $section3rd.hide();
+            $section2.show();
+            $section3.hide();
+            $section4.hide();
+            $section5.hide();
+            $section6.hide();
+            $section7.hide();
+            $section8.hide();
+            $section9.hide();
+            $section10.hide();
             hide3rd();
         } else if (v == 3) {
-            $section2nd.show();
-            $section3rd.show();
+            $section2.show();
+            $section3.show();
+            $section4.hide();
+            $section5.hide();
+            $section6.hide();
+            $section7.hide();
+            $section8.hide();
+            $section9.hide();
+            $section10.hide();
+        } else if (v == 4) {
+            $section2.show();
+            $section3.show();
+            $section4.show();
+            $section5.hide();
+            $section6.hide();
+            $section7.hide();
+            $section8.hide();
+            $section9.hide();
+            $section10.hide();
+        }else if (v == 5) {
+            $section2.show();
+            $section3.show();
+            $section4.show();
+            $section5.show();
+            $section6.hide();
+            $section7.hide();
+            $section8.hide();
+            $section9.hide();
+            $section10.hide();
+        }else if (v == 6) {
+            $section2.show();
+            $section3.show();
+            $section4.show();
+            $section5.show();
+            $section6.show();
+            $section7.hide();
+            $section8.hide();
+            $section9.hide();
+            $section10.hide();
+        }else if (v == 7) {
+            $section2.show();
+            $section3.show();
+            $section4.show();
+            $section5.show();
+            $section6.show();
+            $section7.show();
+            $section8.hide();
+            $section9.hide();
+            $section10.hide();
+        }else if (v == 8) {
+            $section2.show();
+            $section3.show();
+            $section4.show();
+            $section5.show();
+            $section6.show();
+            $section7.show();
+            $section8.show();
+            $section9.hide();
+            $section10.hide();
+        }else if (v == 9) {
+            $section2.show();
+            $section3.show();
+            $section4.show();
+            $section5.show();
+            $section6.show();
+            $section7.show();
+            $section8.show();
+            $section9.show();
+            $section10.hide();
+        }else if (v == 10) {
+            $section2.show();
+            $section3.show();
+            $section4.show();
+            $section5.show();
+            $section6.show();
+            $section7.show();
+            $section8.show();
+            $section9.show();
+            $section10.show();
         }
         triggerFlag(3);
     });

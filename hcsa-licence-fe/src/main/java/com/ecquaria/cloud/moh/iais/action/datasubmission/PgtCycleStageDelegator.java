@@ -108,6 +108,11 @@ public class PgtCycleStageDelegator extends CommonDelegator{
         pgtStageDto.setIsPgtAAma(0);
         pgtStageDto.setIsPgtATomrif(0);
         pgtStageDto.setIsPgtATomrpl(0);
+        pgtStageDto.setIsPgtCoFunding(2);
+        pgtStageDto.setIsPgtMRareCoFunding(2);
+        pgtStageDto.setIsPgtACoFunding(2);
+        pgtStageDto.setIsPgtSrCoFunding(2);
+        pgtStageDto.setIsPttCoFunding(2);
 
         HttpServletRequest request=bpc.request;
         String isPgtMCom =  ParamUtil.getString(request, "isPgtMCom");
@@ -146,11 +151,39 @@ public class PgtCycleStageDelegator extends CommonDelegator{
             pgtStageDto.setPgtMCondition(pgtMCondition);
         }
 
+        if ("on".equals(isPgtMCom)) {
+            String isPgtCoFunding = ParamUtil.getString(request, "isPgtMComCoFunding");
+            if ("0".equals(isPgtCoFunding)) {
+                pgtStageDto.setIsPgtCoFunding(0);
+            } else if("1".equals(isPgtCoFunding)) {
+                pgtStageDto.setIsPgtCoFunding(1);
+            } else if ("2".equals(isPgtCoFunding)) {
+                pgtStageDto.setIsPgtCoFunding(2);
+            }
+        }
+        if ("on".equals(isPgtMRare)) {
+            String isPgtMRareCoFunding = ParamUtil.getString(request, "isPgtMRareCoFunding");
+            if ("0".equals(isPgtMRareCoFunding)) {
+                pgtStageDto.setIsPgtMRareCoFunding(0);
+            } else if("1".equals(isPgtMRareCoFunding)) {
+                pgtStageDto.setIsPgtMRareCoFunding(1);
+            } else if("2".equals(isPgtMRareCoFunding)) {
+                pgtStageDto.setIsPgtMRareCoFunding(2);
+            }
+        }
+
         if("on".equals(isPgtSr)){
             pgtStageDto.setIsPgtSr(1);
             String pgtSrCondition = ParamUtil.getString(request, "pgtSrCondition");
+            String isPgtSrCoFunding = ParamUtil.getString(request, "isPgtSrCoFunding");
+            if("0".equals(isPgtSrCoFunding)){
+                pgtStageDto.setIsPgtSrCoFunding(0);
+            } else if("1".equals(isPgtSrCoFunding)) {
+                pgtStageDto.setIsPgtSrCoFunding(1);
+            } else if("2".equals(isPgtSrCoFunding)) {
+                pgtStageDto.setIsPgtSrCoFunding(2);
+            }
             pgtStageDto.setPgtSrCondition(pgtSrCondition);
-
         }
 
         if("on".equals(isPgtA)){
@@ -173,14 +206,28 @@ public class PgtCycleStageDelegator extends CommonDelegator{
                 String pgtACondition = ParamUtil.getString(request, "pgtACondition");
                 pgtStageDto.setPgtACondition(pgtACondition);
             }
-
+            String isPgtACoFunding = ParamUtil.getString(request, "isPgtACoFunding");
+            if("0".equals(isPgtACoFunding)){
+                pgtStageDto.setIsPgtACoFunding(0);
+            } else if("1".equals(isPgtACoFunding)) {
+                pgtStageDto.setIsPgtACoFunding(1);
+            } else if("2".equals(isPgtACoFunding)) {
+                pgtStageDto.setIsPgtACoFunding(2);
+            }
         }
 
         if("on".equals(isPtt)){
             pgtStageDto.setIsPtt(1);
             String pttCondition = ParamUtil.getString(request, "pttCondition");
             pgtStageDto.setPttCondition(pttCondition);
-
+            String isPttCoFunding = ParamUtil.getString(request, "isPttCoFunding");
+            if("0".equals(isPttCoFunding)){
+                pgtStageDto.setIsPttCoFunding(0);
+            } else if("1".equals(isPttCoFunding)){
+                pgtStageDto.setIsPttCoFunding(1);
+            } else if("2".equals(isPttCoFunding)){
+                pgtStageDto.setIsPttCoFunding(2);
+            }
         }
 
         if("on".equals(isOtherPgt)){
@@ -189,13 +236,6 @@ public class PgtCycleStageDelegator extends CommonDelegator{
             pgtStageDto.setOtherPgt(otherPgt);
         }
 
-        String isPgtCoFunding = ParamUtil.getString(request, "isPgtCoFunding");
-        if("0".equals(isPgtCoFunding)){
-            pgtStageDto.setIsPgtCoFunding(0);
-        }
-        if("1".equals(isPgtCoFunding)){
-            pgtStageDto.setIsPgtCoFunding(1);
-        }
         String isEmbryosBiopsiedLocal = ParamUtil.getString(request, "isEmbryosBiopsiedLocal");
         pgtStageDto.setIsEmbryosBiopsiedLocal(isEmbryosBiopsiedLocal);
         if("Others".equals(isEmbryosBiopsiedLocal)){

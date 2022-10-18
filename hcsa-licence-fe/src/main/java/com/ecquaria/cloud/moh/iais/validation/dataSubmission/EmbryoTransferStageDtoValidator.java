@@ -2,10 +2,7 @@ package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoTransferStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
@@ -16,6 +13,7 @@ import lombok.SneakyThrows;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,26 +30,37 @@ public class EmbryoTransferStageDtoValidator implements CustomizeValidator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String errMsg002 = MessageUtil.getMessageDesc("DS_ERR002");
         EmbryoTransferStageDto embryoTransferStageDto = (EmbryoTransferStageDto) obj;
-        if (embryoTransferStageDto.getTransferNum() > 1) {
-            if (StringUtil.isEmpty(embryoTransferStageDto.getSecondEmbryoAge())) {
-                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "Age of 2nd Embryo Transferred", "field");
-                errorMap.put("secondEmbryoAge", errMsg);
+        List<EmbryoTransferDetailDto> embryoTransferDetailDtos =  embryoTransferStageDto.getEmbryoTransferDetailDtos();
+        int detailNum = embryoTransferStageDto.getTransferNum();
+        for (int i = 1; i <= detailNum; i++) {
+            if (StringUtil.isEmpty(embryoTransferDetailDtos.get(i-1).getEmbryoAge())) {
+                String errMsg = null;
+                if (i == 1) {
+                    errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","1st Embryo", "field");
+                } else if (i==2) {
+                    errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","2nd Embryo", "field");
+                } else if (i == 3) {
+                    errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","3rd Embryo", "field");
+                } else {
+                    errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006",i +"th Embryo", "field");
+                }
+                errorMap.put(i+"EmbryoAge",errMsg);
             }
-            if (StringUtil.isEmpty(embryoTransferStageDto.getSecondEmbryoType())) {
-                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "Was the 2nd Embryo Transferred a fresh or thawed embryo?", "field");
-                errorMap.put("secondEmbryoType", errMsg);
+            if (StringUtil.isEmpty(embryoTransferDetailDtos.get(i-1).getEmbryoType())) {
+                String errMsg = null;
+                if (i == 1) {
+                    errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "Was the 1st Embryo Transferred a fresh or thawed embryo?", "field");
+                } else if (i == 2) {
+                    errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "Was the 2nd Embryo Transferred a fresh or thawed embryo?", "field");
+                } else if (i == 3) {
+                    errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "Was the 3rd Embryo Transferred a fresh or thawed embryo?", "field");
+                } else {
+                    errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "Was the " + i + "th Embryo Transferred a fresh or thawed embryo?", "field");
+                }
+                errorMap.put(i + "EmbryoType", errMsg);
             }
         }
-        if (embryoTransferStageDto.getTransferNum() > 2) {
-            if (StringUtil.isEmpty(embryoTransferStageDto.getThirdEmbryoAge())) {
-                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "Age of 3rd Embryo Transferred", "field");
-                errorMap.put("thirdEmbryoAge", errMsg);
-            }
-            if (StringUtil.isEmpty(embryoTransferStageDto.getThirdEmbryoType())) {
-                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "Was the 3rd Embryo Transferred a fresh or thawed embryo?", "field");
-                errorMap.put("thirdEmbryoType", errMsg);
-            }
-        }
+
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         CycleDto cycleDto = arSuperDataSubmissionDto.getCycleDto();
         String cycleId = cycleDto.getId();
@@ -68,20 +77,12 @@ public class EmbryoTransferStageDtoValidator implements CustomizeValidator {
 
         int freshEmbryoNum = 0;
         int thawedEmbryoNum = 0;
-        if (DataSubmissionConsts.EMBRYO_TRANSFER_EMBRYO_TYPE_FRESH.equals(embryoTransferStageDto.getFirstEmbryoType())) {
-            freshEmbryoNum++;
-        } else if (DataSubmissionConsts.EMBRYO_TRANSFER_EMBRYO_TYPE_THAWED.equals(embryoTransferStageDto.getFirstEmbryoType())) {
-            thawedEmbryoNum++;
-        }
-        if (DataSubmissionConsts.EMBRYO_TRANSFER_EMBRYO_TYPE_FRESH.equals(embryoTransferStageDto.getSecondEmbryoType())) {
-            freshEmbryoNum++;
-        } else if (DataSubmissionConsts.EMBRYO_TRANSFER_EMBRYO_TYPE_THAWED.equals(embryoTransferStageDto.getSecondEmbryoType())) {
-            thawedEmbryoNum++;
-        }
-        if (DataSubmissionConsts.EMBRYO_TRANSFER_EMBRYO_TYPE_FRESH.equals(embryoTransferStageDto.getThirdEmbryoType())) {
-            freshEmbryoNum++;
-        } else if (DataSubmissionConsts.EMBRYO_TRANSFER_EMBRYO_TYPE_THAWED.equals(embryoTransferStageDto.getThirdEmbryoType())) {
-            thawedEmbryoNum++;
+        for (int i =0;i < detailNum; i++) {
+            if (DataSubmissionConsts.EMBRYO_TRANSFER_EMBRYO_TYPE_FRESH.equals(embryoTransferDetailDtos.get(i).getEmbryoType())) {
+                freshEmbryoNum++;
+            } else if (DataSubmissionConsts.EMBRYO_TRANSFER_EMBRYO_TYPE_THAWED.equals(embryoTransferDetailDtos.get(i).getEmbryoType())) {
+                thawedEmbryoNum++;
+            }
         }
         ArCurrentInventoryDto arCurrentInventoryDto = arSuperDataSubmissionDto.getArCurrentInventoryDto();
         if (freshEmbryoNum > arCurrentInventoryDto.getFreshEmbryoNum()) {

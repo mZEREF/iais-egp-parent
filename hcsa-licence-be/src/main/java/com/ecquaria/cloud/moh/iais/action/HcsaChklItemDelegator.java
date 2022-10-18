@@ -799,14 +799,13 @@ public class HcsaChklItemDelegator {
                 List<String> svcNames = hcsaChklService.listServiceName(AppServicesConsts.SVC_TYPE_CHECKLIST);
                 if (IaisCommonUtils.isNotEmpty(svcNames)) {
                     svcNames.sort(Comparator.naturalOrder());
-                    List<String> values = IaisCommonUtils.genNewArrayList(svcNames.size());
                     int size = svcNames.size();
                     Map<Integer, List<Integer>> excelConfigIndex = IaisCommonUtils.genNewLinkedHashMap(size);
                     for (int i = 0; i < size; i++) {
                         excelConfigIndex.put(i, Collections.singletonList(5));
                     }
                     inputFile = IrregularExcelWriterUtil.writerToExcelByIndex(inputFile, 2,
-                            values.toArray(new String[values.size()]), excelConfigIndex);
+                            svcNames.toArray(new String[size]), excelConfigIndex);
                 }
                 // write Service Sub Type
                 List<String> subtypeNames = hcsaChklService.listSpecName();

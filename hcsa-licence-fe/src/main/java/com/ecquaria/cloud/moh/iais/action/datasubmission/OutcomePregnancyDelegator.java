@@ -37,7 +37,7 @@ import java.util.Map;
 public class OutcomePregnancyDelegator extends CommonDelegator {
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Outcome</strong>");
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Outcome of Pregnancy Stage</strong>");
     }
 
     @Override

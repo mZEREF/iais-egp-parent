@@ -39,7 +39,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" cssClass="col-md-6" value="Is it Medically Indicated?" info="${MessageUtil.getMessageDesc('DS_MSG025')}" mandatory="true"/>
+                    <iais:field width="6" cssClass="col-md-6" value="Is it Medically Indicated?" info="${MessageUtil.getMessageDesc('DS_MSG037')}" mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-3">
                         <div class="form-check">
                             <input class="form-check-input"
@@ -71,7 +71,7 @@
                     <iais:field width="6" cssClass="col-md-6" value="Reason" mandatory="true"/>
                     <iais:value width="6" cssClass="col-md-6">
                         <div id="reasonDisplay1" <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.isMedicallyIndicated == 0}">style="display: none"</c:if> >
-                            <iais:select cssClass="reasonSelect"  name="reasonSelect" firstOption="Please Select" options="efoReasonSelectOption" value="${arSuperDataSubmissionDto.efoCycleStageDto.reason}"></iais:select>
+                            <iais:select cssClass="reasonSelect"  name="reasonSelect" firstOption="Please Select" options="sfoReasonSelectOption" value="${arSuperDataSubmissionDto.efoCycleStageDto.reason}"></iais:select>
                         </div>
                         <div id="reasonDisplay0" <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.isMedicallyIndicated == 1}">style="display: none"</c:if> >
                             <input type="text" maxlength="66" name="textReason" value="${arSuperDataSubmissionDto.efoCycleStageDto.reason}" >
@@ -81,7 +81,7 @@
                 </iais:row>
                 <div id="othersReason" <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.reason!='EFOR004'}">style="display: none"</c:if> >
                     <iais:row>
-                        <iais:field width="6" cssClass="col-md-6" value="" mandatory="false"/>
+                        <iais:field width="6" cssClass="col-md-6" value="Reason (Others)" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
                             <input type="text" maxlength="100"   name="othersReason" value="${arSuperDataSubmissionDto.efoCycleStageDto.otherReason}" >
                             <span class="error-msg" name="iaisErrorMsg" id="error_othersReason"></span>

@@ -32,7 +32,6 @@
     <div id="idIdentify">
         <p class="form-check-title">Please indicate the patient's NRIC/FIN number</p>
     </div>
-    <p>Note: Data for ID no. should be stored in the same field within the database. Only the label is changed.</p>
     <div class="row">
         <div class="col-xs-9 col-md-6">
             <iais:input maxLength="20" type="text" name="identityNo" id="identityNo" value="${patient.idNumber}"/>
@@ -101,6 +100,12 @@
         <p class="form-check-title">What information do you want to submit? </p>
         <iais:select name="nextStage" firstOption="Please Select" id="nextStage"
                      options="newCycleOpts"
+                     value="${arSuperDataSubmissionDto.selectionDto.stage}"/>
+    </iais:row>
+    <iais:row cssClass="form-check-gp" id="nextOffStageRow">
+        <p class="form-check-title">What information do you want to submit? </p>
+        <iais:select name="nextNunCycleStage" firstOption="Please Select" id="nextNunCycleStage"
+                     options="offCycleOps"
                      value="${arSuperDataSubmissionDto.selectionDto.stage}"/>
     </iais:row>
 </div>
