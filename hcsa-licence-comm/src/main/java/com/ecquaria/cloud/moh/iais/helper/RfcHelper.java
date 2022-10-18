@@ -828,7 +828,7 @@ public final class RfcHelper {
         return !newSrc.equals(newTar);
     }
 
-    private static boolean ischangeSpecialServiceInformation(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList, List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) {
+    private static boolean ischangeSpecialServiceInformation(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList,List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList, List<String> nonAutoList) {
         if (appSvcRelatedInfoDtoList == null || oldAppSvcRelatedInfoDtoList == null) {
             return false;
         }
@@ -855,7 +855,8 @@ public final class RfcHelper {
         List<AppSvcSuplmFormDto> oldAppSvcSuplmFormList = IaisCommonUtils.genNewArrayList();
         appSvcSpecialServiceInfoDtoList.forEach((item) -> oldAppSvcSuplmFormList.addAll(item.getAppSvcSuplmFormDtoList()));
         boolean changeSupplementaryForm = compareSupplementaryForm(appSvcSuplmFormList, oldAppSvcSuplmFormList);
-        if (changeKeyPersonnel||changePersonal||changeSupplementaryForm){
+        if (changeKeyPersonnel || changePersonal || changeSupplementaryForm) {
+            nonAutoList.add(HcsaConsts.STEP_SPECIAL_SERVICES_FORM);
             return true;
         }
         return result;
