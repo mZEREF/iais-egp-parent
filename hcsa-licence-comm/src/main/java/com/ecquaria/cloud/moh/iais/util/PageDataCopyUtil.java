@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -162,96 +163,35 @@ public class PageDataCopyUtil {
                 .collect(Collectors.toList());
     }
 
-    public static List<AppSvcPersonnelDto> copySectionLeaderDetail(List<AppSvcPersonnelDto> appSvcPersonnelDtoList) {
-        if (appSvcPersonnelDtoList == null || appSvcPersonnelDtoList.isEmpty()) {
-            return appSvcPersonnelDtoList;
-        }
-        List<AppSvcPersonnelDto>  dtoList = IaisCommonUtils.genNewArrayList(appSvcPersonnelDtoList.size());
-        for (AppSvcPersonnelDto dto : appSvcPersonnelDtoList) {
-            AppSvcPersonnelDto personnelDto = dto;
-            personnelDto.setName(null);
-            personnelDto.setSalutation(null);
-            personnelDto.setIndexNo(null);
-            dtoList.add(personnelDto);
-        }
-        return dtoList;
-    }
 
-    public static List<AppSvcPersonnelDto> copySectionLeader(List<AppSvcPersonnelDto> appSvcPersonnelDtoList) {
+    public static List<AppSvcPersonnelDto> copySvcPersonnel(List<AppSvcPersonnelDto> appSvcPersonnelDtoList) {
         if (appSvcPersonnelDtoList == null || appSvcPersonnelDtoList.isEmpty()) {
             return appSvcPersonnelDtoList;
         }
         List<AppSvcPersonnelDto>  dtoList = IaisCommonUtils.genNewArrayList(appSvcPersonnelDtoList.size());
         for (AppSvcPersonnelDto dto : appSvcPersonnelDtoList) {
             AppSvcPersonnelDto personnelDto = new AppSvcPersonnelDto();
+            personnelDto.setIndexNo(dto.getIndexNo());
             personnelDto.setName(dto.getName());
             personnelDto.setSalutation(dto.getSalutation());
-            personnelDto.setIndexNo(dto.getIndexNo());
-            dtoList.add(personnelDto);
-        }
-        return dtoList;
-    }
-
-
-    public static List<AppSvcPersonnelDto> copySvcArPersonnel(List<AppSvcPersonnelDto> appSvcPersonnelDtoList) {
-        if (appSvcPersonnelDtoList == null || appSvcPersonnelDtoList.isEmpty()) {
-            return appSvcPersonnelDtoList;
-        }
-        List<AppSvcPersonnelDto>  dtoList = IaisCommonUtils.genNewArrayList(appSvcPersonnelDtoList.size());
-        for (AppSvcPersonnelDto dto : appSvcPersonnelDtoList) {
-            AppSvcPersonnelDto personnelDto = new AppSvcPersonnelDto();
-            personnelDto.setName(dto.getName());
-            personnelDto.setSalutation(dto.getSalutation());
-            personnelDto.setIndexNo(dto.getIndexNo());
             personnelDto.setPersonnelType(dto.getPersonnelType());
             dtoList.add(personnelDto);
         }
         return dtoList;
     }
 
-    public static List<AppSvcPersonnelDto> copySvcDetailPersonnel(List<AppSvcPersonnelDto> appSvcPersonnelDtoList) {
-        if (appSvcPersonnelDtoList == null || appSvcPersonnelDtoList.isEmpty()) {
-            return appSvcPersonnelDtoList;
+    public static List<AppSvcPrincipalOfficersDto> copyAppSvcCd(List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList) {
+        List<AppSvcPrincipalOfficersDto> list = IaisCommonUtils.genNewArrayList();
+        if (appSvcCgoDtoList == null || appSvcCgoDtoList.isEmpty()) {
+            return list;
         }
-        List<AppSvcPersonnelDto>  dtoList = IaisCommonUtils.genNewArrayList(appSvcPersonnelDtoList.size());
-        for (AppSvcPersonnelDto dto : appSvcPersonnelDtoList) {
-            AppSvcPersonnelDto personnelDto = dto;
-            personnelDto.setName(null);
-            personnelDto.setSalutation(null);
-            personnelDto.setIndexNo(null);
-            personnelDto.setPersonnelType(null);
-            dtoList.add(personnelDto);
+        for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtoList) {
+            list.add(copyKeyPersonnelCd(appSvcCgoDto));
         }
-        return dtoList;
+        list.sort(Comparator.comparing(AppSvcPrincipalOfficersDto::getAssignSelect));
+        return list;
     }
 
-    public static AppSvcPrincipalOfficersDto copyAppSvcPrincipalOfficersDto(AppSvcPrincipalOfficersDto dto) {
-        if (StringUtil.isEmpty(dto)){
-            return dto;
-        }
-        AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
-        appSvcPrincipalOfficersDto.setSalutation(dto.getSalutation());
-        appSvcPrincipalOfficersDto.setName(dto.getName());
-        appSvcPrincipalOfficersDto.setIdNo(dto.getIdNo());
-        appSvcPrincipalOfficersDto.setIndexNo(dto.getIndexNo());
-        return appSvcPrincipalOfficersDto;
-    }
-
-    public static List<AppSvcPrincipalOfficersDto> copyAppSvcPrincipalOfficersDtoDetail(List<AppSvcPrincipalOfficersDto> dtoList) {
-        if (dtoList == null || dtoList.isEmpty()) {
-            return dtoList;
-        }
-        List<AppSvcPrincipalOfficersDto> officersDtoList = IaisCommonUtils.genNewArrayList(dtoList.size());
-        for (AppSvcPrincipalOfficersDto dto : officersDtoList) {
-            AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = dto;
-            appSvcPrincipalOfficersDto.setSalutation(null);
-            appSvcPrincipalOfficersDto.setName(null);
-            appSvcPrincipalOfficersDto.setIdNo(null);
-            appSvcPrincipalOfficersDto.setIndexNo(null);
-            officersDtoList.add(appSvcPrincipalOfficersDto);
-        }
-        return officersDtoList;
-    }
 
     public static List<AppSvcDocDto> copySvcDocs(List<AppSvcDocDto> appSvcDocDtoLit) {
         if (IaisCommonUtils.isEmpty(appSvcDocDtoLit)) {
@@ -414,11 +354,12 @@ public class PageDataCopyUtil {
         list.sort(Comparator.comparing(AppSvcPrincipalOfficersDto::getAssignSelect));
         return list;
     }
-
+    public static AppSvcPrincipalOfficersDto copyKeyPersonnelCd(AppSvcPrincipalOfficersDto person) {
+        return copyKeyPersonnel(person, 1);
+    }
     public static AppSvcPrincipalOfficersDto copyKeyPersonnel(AppSvcPrincipalOfficersDto person) {
         return copyKeyPersonnel(person, 0);
     }
-
     /**
      * Copy Key Personnel
      *
