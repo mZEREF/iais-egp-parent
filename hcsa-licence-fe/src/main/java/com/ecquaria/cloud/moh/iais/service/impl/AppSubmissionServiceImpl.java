@@ -708,6 +708,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 boolean hadEas = false;
                 boolean hadMts = false;
                 boolean hadAch = false;
+
                 for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
                     String serviceCode = appSvcRelatedInfoDto.getServiceCode();
                     if (AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(serviceCode)) {
@@ -786,6 +787,15 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                     } else {
                                         licenceFeeDto.setBundle(1);
                                     }
+                                    break;
+                                }
+                            }
+                        }
+                        if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
+                            for (AppLicBundleDto alb : appLicBundleDtoList
+                            ) {
+                                if (alb.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY)||alb.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES)) {
+                                    licenceFeeDto.setBundle(4);
                                     break;
                                 }
                             }

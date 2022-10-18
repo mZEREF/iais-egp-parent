@@ -222,10 +222,9 @@
                                 <p>
                                     <c:out value="${Formatter.formatterMoney(baseSvcFeeExt.amount+includedSvcFeeExt.amount)}"/>
                                 </p>
-                                <br>
                                 <p>Include</p>
                                 <c:forEach var="svcName" items="${includedSvcFeeExt.svcNames}">
-                                    <br>
+                                    <p>&nbsp;&nbsp;</p>
                                     <p>Include</p>
                                 </c:forEach>
                             </td>
