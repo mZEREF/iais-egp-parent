@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -1590,7 +1591,32 @@ public abstract class AppCommDelegator {
         //ApplicationHelper.reSetAdditionalFields(appSubmissionDto, oldAppSubmissionDto, appEditSelectDto);
         appSubmissionDto.setChangeSelectDto(appEditSelectDto);
         boolean isCharity = ApplicationHelper.isCharity(bpc.request);
-        FeeDto feeDto = configCommService.getGroupAmendAmount(getAmendmentFeeDto(appEditSelectDto, isCharity));
+        AmendmentFeeDto amendmentFeeDto = getAmendmentFeeDto(appEditSelectDto, isCharity);
+        //add ss fee
+        List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList=appSubmissionDto.getAppPremSpecialisedDtoList().get(0).getFlatAppPremSubSvcRelList(dto -> ApplicationConsts.RECORD_ACTION_CODE_ADD.equals(dto.getActCode()));
+        if (IaisCommonUtils.isNotEmpty(appPremSubSvcRelDtoList)) {
+            amendmentFeeDto.setAdditionOrRemovalSpecialisedServices(Boolean.TRUE);
+            List<LicenceFeeDto> licenceFeeSpecDtos = IaisCommonUtils.genNewArrayList();
+            for (AppPremSubSvcRelDto subSvc : appPremSubSvcRelDtoList
+            ) {
+                if (subSvc.isChecked()) {
+                    LicenceFeeDto specFeeDto = new LicenceFeeDto();
+                    specFeeDto.setBundle(0);
+                    specFeeDto.setBaseService(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceCode());
+                    specFeeDto.setServiceCode(subSvc.getSvcCode());
+                    specFeeDto.setServiceName(subSvc.getSvcName());
+                    specFeeDto.setPremises(appSubmissionDto.getAppGrpPremisesDtoList().get(0).getAddress());
+                    specFeeDto.setCharity(isCharity);
+                    licenceFeeSpecDtos.add(specFeeDto);
+                }
+            }
+            amendmentFeeDto.setSpecifiedLicenceFeeDto(licenceFeeSpecDtos);
+        }
+        List<AppPremSubSvcRelDto> removalDtoList=appSubmissionDto.getAppPremSpecialisedDtoList().get(0).getFlatAppPremSubSvcRelList(dto -> ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()));
+        if (IaisCommonUtils.isNotEmpty(removalDtoList)) {
+            amendmentFeeDto.setAdditionOrRemovalSpecialisedServices(Boolean.TRUE);
+        }
+        FeeDto feeDto = configCommService.getGroupAmendAmount(amendmentFeeDto);
         Double amount = feeDto.getTotal();
         double currentAmount = amount == null ? 0.0 : amount;
         if (licenceDto.getMigrated() == 1 && IaisEGPHelper.isActiveMigrated()) {
