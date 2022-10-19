@@ -1,6 +1,5 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:set var="pregnancyOutcomeStageDto" value="${arSuperDataSubmissionDto.pregnancyOutcomeStageDto}"/>
-<c:set var="embryoTransferredOutcomeStageDto" value="${arSuperDataSubmissionDto.embryoTransferredOutcomeStageDto}"/>
 
 <div class="panel panel-default">
     <div class="panel-heading ">
@@ -14,12 +13,6 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal "><%--min-row--%>
                 <%@include file="comPart.jsp" %>
-                <iais:row>
-                    <iais:field width="5" value="Outcome of Embryo Transferred"/>
-                    <iais:value width="7" cssClass="col-md-7"  display="true">
-                        <iais:code code="${embryoTransferredOutcomeStageDto.transferedOutcome}"/>
-                    </iais:value>
-                </iais:row>
                 <iais:row>
                     <iais:field width="5" value="Order Shown in 1st Ultrasound (if Pregnancy confirmed)"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">

@@ -22,10 +22,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigExce
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemExcel;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -65,8 +65,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.Serializable;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Delegator(value = "hcsaChklItemDelegator")
 @Slf4j
@@ -789,19 +796,31 @@ public class HcsaChklItemDelegator {
                             values.toArray(new String[values.size()]), excelConfigIndex);
                 }
                 // write service name
-                List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigClient.getActiveServices(AppServicesConsts.SVC_TYPE_ALL).getEntity();
-                if (IaisCommonUtils.isNotEmpty(hcsaServiceDtos)) {
-                    Collections.sort(hcsaServiceDtos, Comparator.comparing(HcsaServiceDto::getSvcName));
-                    List<String> values = IaisCommonUtils.genNewArrayList(hcsaServiceDtos.size());
-                    Map<Integer, List<Integer>> excelConfigIndex = IaisCommonUtils.genNewLinkedHashMap(hcsaServiceDtos.size());
-                    int i = 1;
-                    for (HcsaServiceDto view : hcsaServiceDtos) {
-                        values.add(view.getSvcName());
-                        excelConfigIndex.put(i++, Collections.singletonList(5));
+                List<String> svcNames = hcsaChklService.listServiceName(AppServicesConsts.SVC_TYPE_CHECKLIST);
+                if (IaisCommonUtils.isNotEmpty(svcNames)) {
+                    svcNames.sort(Comparator.naturalOrder());
+                    int size = svcNames.size();
+                    Map<Integer, List<Integer>> excelConfigIndex = IaisCommonUtils.genNewLinkedHashMap(size);
+                    for (int i = 0; i < size; i++) {
+                        excelConfigIndex.put(i, Collections.singletonList(5));
                     }
                     inputFile = IrregularExcelWriterUtil.writerToExcelByIndex(inputFile, 2,
-                            values.toArray(new String[values.size()]), excelConfigIndex);
+                            svcNames.toArray(new String[size]), excelConfigIndex);
                 }
+                // write Service Sub Type
+                List<String> subtypeNames = hcsaChklService.listSpecName();
+                if (IaisCommonUtils.isNotEmpty(subtypeNames)) {
+                    subtypeNames.sort(Comparator.naturalOrder());
+                    int size = subtypeNames.size();
+                    Map<Integer, List<Integer>> excelConfigIndex = IaisCommonUtils.genNewLinkedHashMap(size);
+                    for (int i = 0; i < size; i++) {
+                        excelConfigIndex.put(i, Collections.singletonList(1));
+                    }
+                    inputFile = IrregularExcelWriterUtil.writerToExcelByIndex(inputFile, 2,
+                            subtypeNames.toArray(new String[subtypeNames.size()]), excelConfigIndex);
+                }
+                inputFile = IrregularExcelWriterUtil.lockSheetWorkspace(inputFile, 2,
+                        Formatter.formatDateTime(new Date(), "yyyyMMdd"));
             }
 
             LinkedHashSet<String> checked = (LinkedHashSet<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);

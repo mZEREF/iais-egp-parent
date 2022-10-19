@@ -736,11 +736,17 @@ public final class AppValidatorHelper {
         boolean checkMs = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())
                 && appSubmissionDto.getAppSvcRelatedInfoDtoList().stream()
                 .anyMatch(dto -> AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(dto.getServiceCode()));
-        List<String> premTypes = IaisCommonUtils.genNewArrayList();
+        List<String> bundleTypes = IaisCommonUtils.genNewArrayList();
+        long boundCode = 0;
         if (checkMs) {
             List<AppLicBundleDto> appLicBundleDtoList = appSubmissionDto.getAppLicBundleDtoList();
             if (!IaisCommonUtils.isEmpty(appLicBundleDtoList)) {
-                appLicBundleDtoList.forEach(dto -> premTypes.add(dto.getPremisesType()));
+                for (AppLicBundleDto dto : appLicBundleDtoList) {
+                    bundleTypes.add(dto.getPremisesType());
+                    if (boundCode == 0) {
+                        boundCode = dto.getBoundCode();
+                    }
+                }
             }
         }
         boolean needAppendMsg = false;
@@ -748,7 +754,9 @@ public final class AppValidatorHelper {
         String licenceId = appSubmissionDto.getLicenceId();
         String premiseTypeError = "";
         String selectPremises = "";
-        for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
+        int size = appGrpPremisesDtoList.size();
+        List<String> typeList = IaisCommonUtils.genNewArrayList(size);
+        for (int i = 0; i < size; i++) {
             Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
             AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(i);
             String premiseType = appGrpPremisesDto.getPremisesType();
@@ -900,33 +908,72 @@ public final class AppValidatorHelper {
                 }
 
                 if (checkMs) {
-                    if (premTypes.contains(premiseType)) {
+                    boolean hasError = false;
+                    if (boundCode != 0) {
+                        List<PremisesDto> bundledPremises = getLicCommService().getBundledLicPremises(boundCode);
+                        if (IaisCommonUtils.isNotEmpty(bundledPremises)) {
+                            bundledPremises.forEach(dto -> bundleTypes.add(dto.getPremisesType()));
+                        }
+                    }
+                    if (bundleTypes.contains(premiseType)) {
                         // GENERAL_ERR0060 - Invalid {data}.
                         errorMap.put("premisesType" + i, MessageUtil.replaceMessage("GENERAL_ERR0060",
                                 "Mode of Service Delivery type", "data"));
-                    } else if (premTypes.contains(ApplicationConsts.PREMISES_TYPE_PERMANENT)
-                            || premTypes.contains(ApplicationConsts.PREMISES_TYPE_CONVEYANCE)) {
+                        hasError = true;
+                    } else if (bundleTypes.contains(ApplicationConsts.PREMISES_TYPE_PERMANENT)
+                            || bundleTypes.contains(ApplicationConsts.PREMISES_TYPE_CONVEYANCE)) {
                         if (ApplicationConsts.PREMISES_TYPE_PERMANENT.equals(premiseType)
                                 || ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
                             errorMap.put("premisesType" + i, MessageUtil.replaceMessage("GENERAL_ERR0060",
                                     "Mode of Service Delivery type", "data"));
+                            hasError = true;
                         }
-                    } else if (IaisCommonUtils.isEmpty(premTypes)) {
-                        List<String> targetType = getMsBundlePremType(premiseType);
+                    } else if (bundleTypes.isEmpty()) {
+                        List<String> targetType = getMsBundlePremType(typeList, premiseType);
                         List<LicenceDto> licenceList = getLicCommService().getPendingBundledMsLicences(licenseeId,
                                 targetType, premiseType);
                         if (!IaisCommonUtils.isEmpty(licenceList)) {
                             // NEW_ERR0036 - There is {data} need to be bundled to current application(s).
-                            String data = "";
+                            String data;
                             if (licenceList.size() == 1) {
                                 data = "a licence (" + licenceList.get(0).getLicenceNo() + ")";
                             } else {
-                                data = "one of licences (" + licenceList.stream() .map(LicenceDto::getLicenceNo)
+                                data = "one of licences (" + licenceList.stream().map(LicenceDto::getLicenceNo)
                                         .collect(Collectors.joining(", ")) + ")";
                             }
                             errorMap.put("premisesType" + i, MessageUtil.replaceMessage("NEW_ERR0036",
                                     data, "data"));
+                            hasError = true;
                         }
+                    }
+                    if (typeList.size() > 0) {
+                        if (!bundleTypes.isEmpty() && bundleTypes.stream().anyMatch(typeList::contains)) {
+                            hasError = true;
+                        } else if (ApplicationConsts.PREMISES_TYPE_PERMANENT.equals(premiseType)
+                                || ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
+                            if (typeList.contains(ApplicationConsts.PREMISES_TYPE_PERMANENT)
+                                    || typeList.contains(ApplicationConsts.PREMISES_TYPE_CONVEYANCE)) {
+                                if (!bundleTypes.isEmpty() || typeList.contains(ApplicationConsts.PREMISES_TYPE_REMOTE)
+                                        || typeList.contains(ApplicationConsts.PREMISES_TYPE_MOBILE)) {
+                                    hasError = true;
+                                }
+                            }
+                        } else if (ApplicationConsts.PREMISES_TYPE_REMOTE.equals(premiseType)) {
+                            if (!bundleTypes.isEmpty() && typeList.contains(ApplicationConsts.PREMISES_TYPE_REMOTE)) {
+                                hasError = true;
+                            }
+                        } else if (ApplicationConsts.PREMISES_TYPE_MOBILE.equals(premiseType)) {
+                            if (!bundleTypes.isEmpty() && typeList.contains(ApplicationConsts.PREMISES_TYPE_MOBILE)) {
+                                hasError = true;
+                            }
+                        }
+                        if (hasError) {
+                            errorMap.put("premisesType" + i, MessageUtil.replaceMessage("GENERAL_ERR0060",
+                                    "Mode of Service Delivery type", "data"));
+                        }
+                    }
+                    if (!hasError) {
+                        typeList.add(premiseType);
                     }
                 }
             }
@@ -954,6 +1001,20 @@ public final class AppValidatorHelper {
         }
         log.info(StringUtil.changeForLog("the do doValidatePremiss end ...."));
         return errMap;
+    }
+
+    private static List<String> getMsBundlePremType(List<String> typeList, String premiseType) {
+        List<String> premTypes = getMsBundlePremType(premiseType);
+        for (String type : typeList) {
+            List<String> msBundlePremTypes = getMsBundlePremType(type);
+            premTypes = premTypes.stream()
+                    .filter(msBundlePremTypes::contains)
+                    .collect(Collectors.toList());
+            if (premTypes.isEmpty()) {
+                return premTypes;
+            }
+        }
+        return premTypes;
     }
 
     private static List<String> getMsBundlePremType(String premiseType) {

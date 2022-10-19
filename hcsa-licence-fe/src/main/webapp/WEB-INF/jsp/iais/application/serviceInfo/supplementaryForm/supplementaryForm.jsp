@@ -18,9 +18,6 @@
         </c:if>
         <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
     </c:if>
-
-    <c:out value="${currStepName}"/>
-
     <iais:row>
         <div class="col-xs-12">
             <h2 class="app-title"><c:out value="${currStepName}"/></h2>

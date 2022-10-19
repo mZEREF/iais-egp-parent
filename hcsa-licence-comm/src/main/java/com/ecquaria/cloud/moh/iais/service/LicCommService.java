@@ -96,5 +96,8 @@ public interface LicCommService {
 
     List<PremisesDto> getPremisesDtosByPremType(String premType);
 
+    List<PremisesDto> getBundledLicPremises(long boundCode);
+
     SearchResult<AppPremOutSourceProvidersQueryDto> queryOutsouceLicences(SearchParam param);
+
 }

@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
@@ -562,8 +563,8 @@ public class AppCommServiceImpl implements AppCommService {
 
     @Override
     public Map<String, String> checkAffectedAppSubmissions(List<LicenceDto> selectLicences, AppGrpPremisesDto appGrpPremisesDto,
-            double amount,  String draftNo, String appGroupNo, AppEditSelectDto appEditSelectDto,
-            List<AppSubmissionDto> appSubmissionDtos) {
+                                                           FeeDto premiseFee, String draftNo, String appGroupNo, AppEditSelectDto appEditSelectDto,
+                                                           List<AppSubmissionDto> appSubmissionDtos) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if (selectLicences == null || selectLicences.isEmpty()) {
             return errorMap;
@@ -611,7 +612,7 @@ public class AppCommServiceImpl implements AppCommService {
                     // Premises
                     ApplicationHelper.reSetPremeses(appSubmissionDtoByLicenceId, appGrpPremisesDto);
                     // check mains
-                    checkAffectedAppSubmissions(appSubmissionDtoByLicenceId, licence, amount, draft, appGroupNo,
+                    checkAffectedAppSubmissions(appSubmissionDtoByLicenceId, licence, premiseFee, draft, appGroupNo,
                             appEditSelectDto, null);
                     return appSubmissionDtoByLicenceId;
                 })
@@ -628,7 +629,7 @@ public class AppCommServiceImpl implements AppCommService {
     }
 
     @Override
-    public Map<String, String> checkAffectedAppSubmissions(AppSubmissionDto appSubmissionDto, LicenceDto licence, Double amount,
+    public Map<String, String> checkAffectedAppSubmissions(AppSubmissionDto appSubmissionDto, LicenceDto licence, FeeDto premiseFee,
             String draftNo, String appGroupNo, AppEditSelectDto appEditSelectDto, List<AppSubmissionDto> appSubmissionDtos) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if (appSubmissionDto == null) {
@@ -650,13 +651,14 @@ public class AppCommServiceImpl implements AppCommService {
         appSubmissionDto.setDraftNo(draftNo);
         // amount
         double total = 0.0;
-        if (amount != null) {
-            total = amount.doubleValue();
+        if (premiseFee.getTotal() != null) {
+            total = premiseFee.getTotal().doubleValue();
         }
         if (licence.getMigrated() == 1 && IaisEGPHelper.isActiveMigrated()) {
             total = 0.0;
         }
         appSubmissionDto.setAmount(total);
+        appSubmissionDto.setFeeInfoDtos(premiseFee.getFeeInfoDtos());
         // check app edit select dto
         if (appEditSelectDto == null) {
             appEditSelectDto = appSubmissionDto.getChangeSelectDto();
@@ -666,14 +668,12 @@ public class AppCommServiceImpl implements AppCommService {
         }
         AppEditSelectDto editDto = MiscUtil.transferEntityDto(appEditSelectDto, AppEditSelectDto.class);
         RfcHelper.beforeSubmit(appSubmissionDto, editDto, appGroupNo, appType, null);
-
-
         //appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
         /*appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
         if (MiscUtil.doubleEquals(0.0, total)) {
             appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
         }*/
-        appSubmissionDto.setGetAppInfoFromDto(true);
+        /*appSubmissionDto.setGetAppInfoFromDto(true);
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         // set app GrpPremisess
         boolean groupLic = appSubmissionDto.isGroupLic();
@@ -686,7 +686,7 @@ public class AppCommServiceImpl implements AppCommService {
         }
         appSubmissionDto.getAppGrpPremisesDtoList().get(0).setHciNameChanged(hciNameChange);
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
-        ApplicationHelper.reSetAdditionalFields(appSubmissionDto, appEditSelectDto);
+        ApplicationHelper.reSetAdditionalFields(appSubmissionDto, appEditSelectDto);*/
         if (appSubmissionDtos != null) {
             appSubmissionDtos.add(appSubmissionDto);
         }

@@ -62,6 +62,38 @@
                             <c:out value="${arSuperDataSubmissionDto.pgtStageDto.pgtMCondition}"/>
                         </iais:value>
                     </iais:row>
+                    <div id="pgtMComSubsidies" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMCom !=1 }">style="display: none"</c:if>>
+                    <iais:row>
+                        <iais:field width="5" value="Please indicate if co-funding was provided for PGT-M (Common)"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true">
+                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding == 1 }">
+                                Yes
+                            </c:if>
+                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding == 0 }">
+                                No
+                            </c:if>
+                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding == 2 }">
+                                N/A
+                            </c:if>
+                        </iais:value>
+                    </iais:row>
+                    </div>
+                    <div id="pgtMRareSubsidies" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMRare !=1 }">style="display: none"</c:if>>
+                        <iais:row>
+                            <iais:field width="5" value="Please indicate if co-funding was provided for PGT-M (Rare)"/>
+                            <iais:value width="7" cssClass="col-md-7" display="true">
+                                <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMRare == 1 }">
+                                    Yes
+                                </c:if>
+                                <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMRare == 0 }">
+                                    No
+                                </c:if>
+                                <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMRare == 2 }">
+                                    N/A
+                                </c:if>
+                            </iais:value>
+                        </iais:row>
+                    </div>
                 </div>
                 <div id="pgtSrDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtSr !=1 }">style="display: none"</c:if> >
                     <iais:row>
@@ -71,6 +103,20 @@
                         <iais:field width="5" value="What Condition and Structural Rearrangement was PGT-SR Performed For?"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
                             <c:out value="${arSuperDataSubmissionDto.pgtStageDto.pgtSrCondition}"/>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field width="5" value="Please indicate if co-funding was provided for PGT-SR"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true">
+                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtSrCoFunding == 1 }">
+                                Yes
+                            </c:if>
+                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtSrCoFunding == 0 }">
+                                No
+                            </c:if>
+                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtSrCoFunding == 2 }">
+                                N/A
+                            </c:if>
                         </iais:value>
                     </iais:row>
                 </div>
@@ -100,6 +146,20 @@
                             </iais:value>
                         </iais:row>
                     </div>
+                    <iais:row>
+                        <iais:field width="5" value="Please indicate if co-funding was provided for PGT-A"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true">
+                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtACoFunding == 1 }">
+                                Yes
+                            </c:if>
+                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtACoFunding == 0 }">
+                                No
+                            </c:if>
+                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtACoFunding == 2 }">
+                                N/A
+                            </c:if>
+                        </iais:value>
+                    </iais:row>
                 </div>
                 <div id="pttDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPtt !=1 }">style="display: none"</c:if> >
                     <iais:row>
@@ -111,18 +171,21 @@
                             <c:out value="${arSuperDataSubmissionDto.pgtStageDto.pttCondition}"/>
                         </iais:value>
                     </iais:row>
+                    <iais:row>
+                        <iais:field width="5" value="Please indicate if co-funding was provided for PTT"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true">
+                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPttCoFunding == 1 }">
+                                Yes
+                            </c:if>
+                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPttCoFunding == 0 }">
+                                No
+                            </c:if>
+                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPttCoFunding == 2 }">
+                                N/A
+                            </c:if>
+                        </iais:value>
+                    </iais:row>
                 </div>
-                <iais:row>
-                    <iais:field width="5" value="Please indicate Preimplantation Genetic Testing Co-funding?"/>
-                    <iais:value width="7" cssClass="col-md-7" display="true">
-                        <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding ==1 }">
-                            Yes
-                        </c:if>
-                        <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding ==0 }">
-                            No
-                        </c:if>
-                    </iais:value>
-                </iais:row>
                 <div <c:if test="${ appealDisplayShow!=true}">style="display: none"</c:if>>
                     <iais:row >
                         <iais:field width="5" value="Is there an Appeal?"/>
@@ -139,14 +202,14 @@
                 <iais:row>
                     <iais:field width="5" value="Embryos were Biospied At"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                        <c:out value="${arSuperDataSubmissionDto.pgtStageDto.embryosBiopsiedLocal}"/>
+                        <iais:optionText value="${arSuperDataSubmissionDto.pgtStageDto.embryosBiopsiedLocal}"/>
                     </iais:value>
                 </iais:row>
                 <div id="othersEmbryosBiopsyDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isEmbryosBiopsiedLocal !='Others' }">style="display: none"</c:if> >
                     <iais:row>
                         <iais:field width="5" value="Other Centre where Embryos were Biospied At"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <c:out value="${arSuperDataSubmissionDto.pgtStageDto.otherEmbryosBiopsiedAddr}"/>
+                            <iais:optionText value="${arSuperDataSubmissionDto.pgtStageDto.otherEmbryosBiopsiedAddr}"/>
                         </iais:value>
                     </iais:row>
                 </div>

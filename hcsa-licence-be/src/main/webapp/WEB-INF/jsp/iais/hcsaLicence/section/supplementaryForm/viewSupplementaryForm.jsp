@@ -23,7 +23,7 @@
                     <c:set var="batchSize" value="${appSvcSuplmGroupDto.count}"/>
                     <c:if test="${batchSize > 0}">
                         <c:forEach var="item" items="${appSvcSuplmGroupDto.appSvcSuplmItemDtoList}" varStatus="statuss">
-                            <c:set var="oldItem" value="${oldAppSvcSuplmFormDto.appSvcSuplmGroupDtoList[statuss.index]}"/>
+                            <c:set var="oldItem" value="${oldAppSvcSuplmGroupDto.appSvcSuplmItemDtoList[statuss.index]}"/>
                             <c:if test="${item.display}">
                                 <%@ include file="viewItem.jsp" %>
                             </c:if>

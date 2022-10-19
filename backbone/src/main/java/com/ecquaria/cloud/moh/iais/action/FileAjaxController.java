@@ -157,7 +157,7 @@ public class FileAjaxController {
                 AppSvcPersonnelDto dto = new AppSvcPersonnelDto();
                 dto.setSalutation(getCode(data.get(0), MasterCodeUtil.CATE_ID_SALUTATION));
                 dto.setName(data.get(1));
-                dto.setDesignation(data.get(2));
+                dto.setDesignation(getCode(data.get(2), MasterCodeUtil.CATE_ID_DESIGNATION));
                 dto.setOtherDesignation(data.get(3));
                 dto.setProfessionBoard(getCode(data.get(4), MasterCodeUtil.CATE_ID_PROFESSION_BOARD));
                 dto.setProfessionType(getCode(data.get(5), MasterCodeUtil.CATE_ID_PROFESSIONAL_TYPE));

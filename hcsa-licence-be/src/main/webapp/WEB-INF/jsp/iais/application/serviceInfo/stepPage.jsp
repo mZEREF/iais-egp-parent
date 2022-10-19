@@ -33,7 +33,7 @@
                                                     <c:choose>
                                                         <c:when test="${currentStep == 'SVST012'}">
                                                             <div class="business">
-                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/businessContent.jsp"/>
+                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/businessInfo/businessContent.jsp"/>
                                                             </div>
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST008'}">

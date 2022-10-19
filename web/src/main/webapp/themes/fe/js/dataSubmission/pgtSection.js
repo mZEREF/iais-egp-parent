@@ -13,6 +13,11 @@ $(document).ready(function () {
         }else {
             $('#pgtMDisplay').attr("style","display: none");
         }
+        if ($('#isPgtMCom').is(':checked')) {
+            $('#pgtMComSubsidies').attr("style","display: block");
+        } else {
+            $('#pgtMComSubsidies').attr("style","display: none");
+        }
         isThereAppealDisplay();
     });
     $('#isPgtMRare').change(function () {
@@ -20,6 +25,11 @@ $(document).ready(function () {
             $('#pgtMDisplay').attr("style","display: block");
         }else {
             $('#pgtMDisplay').attr("style","display: none");
+        }
+        if ($('#isPgtMRare').is(':checked')) {
+            $('#pgtMRareSubsidies').attr("style","display: block");
+        } else {
+            $('#pgtMRareSubsidies').attr("style","display: none");
         }
         isThereAppealDisplay();
     });

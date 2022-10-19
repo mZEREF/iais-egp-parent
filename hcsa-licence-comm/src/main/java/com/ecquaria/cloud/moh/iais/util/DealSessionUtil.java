@@ -31,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfo
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSpecialServiceInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSuplmFormDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
@@ -424,14 +425,27 @@ public class DealSessionUtil {
             return premiseType;
         }
         boolean hasBundledMs = false;
-        List<String> premTypes = IaisCommonUtils.genNewArrayList();
+        long boundCode = 0;
+        Set<String> premTypes = IaisCommonUtils.genNewHashSet();
         for (AppLicBundleDto appLicBundleDto : appLicBundleDtoList) {
             if (AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(appLicBundleDto.getSvcCode())) {
                 hasBundledMs = true;
                 premTypes.add(appLicBundleDto.getPremisesType());
             }
+            if (boundCode == 0) {
+                boundCode = appLicBundleDto.getBoundCode();
+            }
         }
-        if (!hasBundledMs || premTypes.size() == premiseType.size()) {
+        if (!hasBundledMs) {
+            return premiseType;
+        }
+        if (boundCode != 0) {
+            List<PremisesDto> bundledPremises = getLicCommService().getBundledLicPremises(boundCode);
+            if (IaisCommonUtils.isNotEmpty(bundledPremises)) {
+                bundledPremises.forEach(dto -> premTypes.add(dto.getPremisesType()));
+            }
+        }
+        if (premiseType.size() == premTypes.size()) {
             return premiseType;
         }
         for (String premType : premTypes) {

@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
 import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelValidatorHelper;
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
@@ -295,6 +296,11 @@ public final class DataSubmissionHelper {
         if (DataSubmissionConsts.DS_CYCLE_AR.equals(lastCycle) && DsHelper.isSpecialStage(lastStage)) {
             lastStage = selectionDto.getAdditionalStage();
         }
+        if (DataSubmissionConsts.DS_CYCLE_NON.equals(selectionDto.getCycle())) {
+            List<String> result = IaisCommonUtils.genNewArrayList(1);
+            result.add(selectionDto.getStage());
+            return result;
+        }
         List<String> result = getNextStagesForAr(lastCycle, lastStage, lastStatus, undergoingCycle, frozenOocyte, frozenEmbryo, freshNatural, freshStimulated);
         log.info(StringUtil.changeForLog("----- The Next Stages: " + result + " ----- "));
         return result;
@@ -350,6 +356,7 @@ public final class DataSubmissionHelper {
                 if (!undergoingCycle && DsHelper.isSpecialFinalStatus(lastStatus)) {
                     addStartStages(result);
                 }
+                result.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY);
             } else if (DataSubmissionConsts.AR_STAGE_FREEZING.equals(lastStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_FERTILISATION);
                 result.add(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING);
@@ -370,10 +377,10 @@ public final class DataSubmissionHelper {
                 if (!undergoingCycle && DsHelper.isSpecialFinalStatus(lastStatus)) {
                     addStartStages(result);
                 }
-                result.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED);
+                result.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY);
                 result.add(DataSubmissionConsts.AR_STAGE_IUI_TREATMENT_SUBSIDIES);
             } else if (DataSubmissionConsts.AR_STAGE_IUI_TREATMENT_SUBSIDIES.equals(lastStage)) {
-                result.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED);
+                result.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY);
             }
         } else if (DataSubmissionConsts.DS_CYCLE_EFO.equals(lastCycle)) {
             if (DataSubmissionConsts.AR_CYCLE_EFO.equals(lastStage) || StringUtil.isEmpty(lastStage)) {
@@ -392,6 +399,14 @@ public final class DataSubmissionHelper {
         return result;
     }
 
+    public static List<String> getAllOffCycleStage(){
+        List<String> stages = new ArrayList<>(3);
+        stages.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
+        stages.add(DataSubmissionConsts.AR_STAGE_DONATION);
+        stages.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
+        return stages;
+    }
+
     private static void addStartStages(List<String> result) {
         result.add(DataSubmissionConsts.AR_CYCLE_AR);
         result.add(DataSubmissionConsts.AR_CYCLE_IUI);
@@ -407,7 +422,7 @@ public final class DataSubmissionHelper {
         // 3.3.3.3.1 Transfer In & Out stage will always tagged under Non-cycles.
         if (DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT.equals(stage)) {
             cycle = DataSubmissionConsts.DS_CYCLE_NON;
-        } else if (selectionDto.isUndergoingCycle() && !DsHelper.isCycleFinalStatusWithSpec(selectionDto.getLastStatus())) {
+        } else if (selectionDto.isUndergoingCycle() && !DsHelper.isCycleFinalStatusWithSpec(selectionDto.getLastStatus()) && selectionDto.getLastCycle()!= null) {
             cycleDto = selectionDto.getLastCycleDto();
             cycle = cycleDto.getCycleType();
             cycleId = cycleDto.getId();
@@ -689,7 +704,7 @@ public final class DataSubmissionHelper {
     }
 
     public static List<String> getAllARCycleStages() {
-        List<String> stages = new ArrayList<>(14);
+        List<String> stages = new ArrayList<>(15);
         stages.add(DataSubmissionConsts.AR_CYCLE_AR);
         stages.add(DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL);
         stages.add(DataSubmissionConsts.AR_STAGE_FREEZING);
@@ -699,8 +714,10 @@ public final class DataSubmissionHelper {
         stages.add(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING);
         stages.add(DataSubmissionConsts.AR_STAGE_EMBRYO_TRANSFER);
         stages.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED);//todo may change OutCome
+        stages.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY);
 //        combine to all ar cycle stage after
-//        stages.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
+//        ar cycle still have this stage
+        stages.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
         stages.add(DataSubmissionConsts.AR_STAGE_DONATION);
         stages.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
         stages.add(DataSubmissionConsts.AR_STAGE_AR_TREATMENT_SUBSIDIES);
@@ -714,6 +731,7 @@ public final class DataSubmissionHelper {
         stages.add(DataSubmissionConsts.AR_CYCLE_IUI);
         stages.add(DataSubmissionConsts.AR_STAGE_OUTCOME);
         stages.add(DataSubmissionConsts.AR_STAGE_IUI_TREATMENT_SUBSIDIES);
+        stages.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY);
         return stages;
     }
 
@@ -807,6 +825,11 @@ public final class DataSubmissionHelper {
         return arSuperDataSubmissionDto != null ? arSuperDataSubmissionDto.getArCurrentInventoryDto() : null;
     }
 
+    public static ArCurrentInventoryDto getSecondCurrentArCurrentInventoryDto(HttpServletRequest request) {
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = getCurrentArDataSubmission(request);
+        return arSuperDataSubmissionDto != null ? arSuperDataSubmissionDto.getSecondArCurrentInventoryDto() : null;
+    }
+
     public static ArChangeInventoryDto getCurrentArChangeInventoryDto(HttpServletRequest request) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = getCurrentArDataSubmission(request);
         ArChangeInventoryDto arChangeInventoryDto = arSuperDataSubmissionDto != null ? arSuperDataSubmissionDto.getArChangeInventoryDto() : new ArChangeInventoryDto();
@@ -817,13 +840,27 @@ public final class DataSubmissionHelper {
         return arChangeInventoryDto;
     }
 
+    public static ArChangeInventoryDto getSecondCurrentArChangeInventoryDto(HttpServletRequest request) {
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = getCurrentArDataSubmission(request);
+        ArChangeInventoryDto arChangeInventoryDto = arSuperDataSubmissionDto != null ? arSuperDataSubmissionDto.getSecondArChangeInventoryDto() : new ArChangeInventoryDto();
+        if (arChangeInventoryDto == null) {
+            arChangeInventoryDto = new ArChangeInventoryDto();
+            arSuperDataSubmissionDto.setSecondArChangeInventoryDto(arChangeInventoryDto);
+        }
+        return arChangeInventoryDto;
+    }
+
     public static String getLicenseeEmailAddrs(HttpServletRequest request) {
         return getEmailAddrsByRoleIdsAndLicenseeId(request, null);
     }
 
-    public static String getEmailAddrsByRoleIdsAndLicenseeId(HttpServletRequest request, List<String> roleIds) {
+    public static String getEmailAddrsByRoleIdsAndLicenseeId(HttpServletRequest request, String templateId) {
         LoginContext loginContext = getLoginContext(request);
         List<String> emailAddresses;
+        SystemAdminClient generateIdClient = SpringContextHelper.getContext().getBean(SystemAdminClient.class);
+        MsgCommonUtil msgCommonUtil = SpringContextHelper.getContext().getBean(MsgCommonUtil.class);
+        List<String> recptRoles = generateIdClient.getMsgTemplateReceiptToCc(templateId).getEntity();
+        List<String> roleIds = msgCommonUtil.getAllRoleIdsInUserRole(recptRoles);
         if(IaisCommonUtils.isEmpty(roleIds)){
             emailAddresses = IaisEGPHelper.getLicenseeEmailAddrs(loginContext.getLicenseeId());
         } else {

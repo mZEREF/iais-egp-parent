@@ -105,6 +105,10 @@ public interface ArDataSubmissionService {
 
     List<DonorSampleDto> getDonorSampleDtoBySampleKey(String sampleKey);
 
+    List<DonorSampleAgeDto> getMaleDonorSampleDtoByIdTypeAndIdNo(String idType, String idNo);
+
+    List<DonorSampleAgeDto> getFemaleDonorSampleDtoByIdTypeAndIdNo(String idType, String idNo);
+
     List<DonorSampleAgeDto>  getDonorSampleAgeDtos(String idType, String idNo);
 
     String getDonorSampleKey(String idType, String idNo);

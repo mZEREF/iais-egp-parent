@@ -34,26 +34,18 @@
         init = 1;
         fileUploadEvent()
         designationChange()
-        //no
+
         profRegNoEvent($('.personnel-content'));
         removePersonEvent();
-
-
-
-
-
-        // disablePsnContent($(v), svcContent);
 
         //  RFC
         let appType = $('input[name="applicationType"]').val();
         if (('APTY005' == appType || 'APTY004' == appType)) {
-            disabledPage();
+            disableContent($('.personnel-content'));
         }
 
         let svcContent = '.personnel-content';
         psnEditEvent(svcContent);
-
-        console.log('errorMap====>',$("#errorMapIs").val())
         <c:if test="${AppSubmissionDto.needEditController}">
         $(svcContent).each(function (k,v) {
             if ($("#errorMapIs").val() == 'error') {
@@ -61,7 +53,7 @@
                     if ($(v).not(':empty')) {
                         $(v).find('.isPartEdit').val(1);
                         $('#isEditHiddenVal').val('1');
-                        unDisabledPartPage($(v));
+                        unDisableContent($(v))
                     }
                 });
             }
@@ -233,7 +225,7 @@
         $currContent.find('.isPartEdit').val(1)
         $('.personnel-content-edit').val(1)
 
-        unDisabledPartPage($currContent)
+        unDisableContent($currContent)
         //
         refreshIndex($currContent, $(target).find('div.personnel-content').length - 1);
         $(target).find('div.personnel-content').first().find('.assign-psn-item').html('1');
@@ -342,6 +334,7 @@
         }
         clearFields($premContent)
         var len = data.length;
+        console.log(data,'data========>>>>')
         for (var i = 0; i < len; i++) {
             let $target = $premContent.find('.personnel-content').eq(i);
             if (isEmptyNode($target)) {
@@ -351,9 +344,18 @@
             }
             fillFormData($target, data[i], 'SP003', i)
             let profRegNo = $target.find('.profRegNo').val()
-            console.log(profRegNo,"============>NO")
+            let designation = $target.find('.designation').val()
+            unDisableContent($target)
             if (!isEmpty(profRegNo)){
                 $target.find('.profRegNo').trigger('blur')
+            }
+            if (!isEmpty(designation)){
+                $target.find('.designation').trigger('change')
+            }
+            let maxCount = '${nuPersonnelMax}';
+            controlCountEvent($premContent)
+            if (i >= maxCount-1){
+                break;
             }
         }
     }

@@ -797,10 +797,12 @@ public class WithOutRenewalDelegator {
         List<AppSubmissionDto> submissionDtos = licCommService.getAlginAppSubmissionDtos(appSubmissionDto.getLicenceId(), checkSpec);
         if (IaisCommonUtils.isNotEmpty(submissionDtos)) {
             boolean parallel = submissionDtos.size() >= RfcConst.DFT_MIN_PARALLEL_SIZE;
+            FeeDto feeDto =new FeeDto();
+            feeDto.setTotal(0.0d);
             StreamSupport.stream(submissionDtos.spliterator(), parallel)
                     .forEach(dto -> {
                         ApplicationHelper.reSetPremeses(dto, appSubmissionDto.getAppGrpPremisesDtoList());
-                        appCommService.checkAffectedAppSubmissions(dto, null, 0.0d, appSubmissionDto.getDraftNo(),
+                        appCommService.checkAffectedAppSubmissions(dto, null, feeDto, appSubmissionDto.getDraftNo(),
                                 appSubmissionDto.getAppGrpNo(),
                                 appEditSelectDto, null);
                     });
@@ -912,12 +914,14 @@ public class WithOutRenewalDelegator {
 
     private List<AppSubmissionDto> getAutoChangeLicAppSubmissions(AppSubmissionDto oldAppSubmissionDto, String groupNo,
             AppSubmissionDto appSubmissionDto) {
+        FeeDto feeDto =new FeeDto();
+        feeDto.setTotal(0.0d);
         List<AppSubmissionDto> appSubmissionDtos = getLicChangeSubmissionDtos(oldAppSubmissionDto);
         appSubmissionDtos.forEach(dto -> {
             dto.setSubLicenseeDto(MiscUtil.transferEntityDto(appSubmissionDto.getSubLicenseeDto(), SubLicenseeDto.class));
             AppEditSelectDto changeSelectDto = new AppEditSelectDto();
             changeSelectDto.setLicenseeEdit(true);
-            appCommService.checkAffectedAppSubmissions(dto, null, 0.0, null, groupNo, changeSelectDto, null);
+            appCommService.checkAffectedAppSubmissions(dto, null, feeDto, null, groupNo, changeSelectDto, null);
             dto.setAutoRfc(true);
         });
         return appSubmissionDtos;

@@ -52,20 +52,3 @@
         </div>
     </div>
 </div>
-
-<div id="pregnancy">
-    <%@include file="pregnancyOutcomeStageSection.jsp" %>
-</div>
-
-<script type="text/javascript">
-    $(document).ready(function() {
-        pregnancyDetect()
-    })
-    function pregnancyDetect() {
-        if (document.getElementById('radioYes').checked) {
-            $("#pregnancy").show();
-        } else {
-            $("#pregnancy").hide();
-        }
-    }
-</script>

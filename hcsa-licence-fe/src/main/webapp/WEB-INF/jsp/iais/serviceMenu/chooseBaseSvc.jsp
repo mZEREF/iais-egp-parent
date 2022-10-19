@@ -39,7 +39,21 @@
             </div>
             <br/>
             <div>
-                <%@include file="comm/chooseBaseSvcContent.jsp"%>
+                <c:forEach items="${notContainedSvc}" var="service" varStatus="status">
+                    <%@include file="comm/chooseBaseSvcContent.jsp"%>
+                    <c:if test="${!status.last}">
+                        <br>
+                    </c:if>
+                </c:forEach>
+                <div class="row">
+                    <div class="col-xs-12 col-md-3">
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+                        <c:if test="${!empty chooseBaseErr}">
+                            <span class="error-msg">${chooseBaseErr}</span>
+                        </c:if>
+                    </div>
+                </div>
             </div>
             <br/>
             <div class="row">
@@ -84,20 +98,8 @@
             submit('chooseSvc',null,'back');
         });
         $('#baseContinue').click(function () {
-            var allNew=true;
-            var length = $('input.isNewOrBase').length;
-            $('input.isNewOrBase').each(function (k, v) {
-                var isNewOrBase = $(v).val();
-                if (isNewOrBase=='base'){
-                    allNew=false;
-                }
-            });
-            if (allNew&&length>=1){
-                $('#saveApplicationAddress').modal('show');
-            }else {
-                showWaiting();
-                submit('chooseAlign',null,'next');
-            }
+            showWaiting();
+            submit('chooseAlign',null,'next');
         });
 
         if( $('#draftsave').val()!=null|| $('#draftsave').val()!=''){
@@ -123,7 +125,7 @@
             });
         }
 
-        $('.firstStep').change(function () {
+        /*$('.firstStep').change(function () {
             var $currSpecContent = $(this).closest('div.speSvcContent');
             var $baseLicContent = $(this).closest('div.exist-base-lic-content');
             //clear select when click other base
@@ -138,7 +140,7 @@
                 $currSpecContent.find('div.exist-base-lic-content input[type="radio"]').prop('checked',false);
                 $currSpecContent.find('div.exist-base-lic-content div.existing-base-content input[type="radio"]').prop('disabled',true);
             }
-        });
+        });*/
     });
 
     function jumpToPagechangePage () {

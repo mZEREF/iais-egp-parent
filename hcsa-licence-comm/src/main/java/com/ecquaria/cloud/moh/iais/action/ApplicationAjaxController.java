@@ -840,6 +840,20 @@ public class ApplicationAjaxController {
                 inputFile = IrregularExcelWriterUtil.writerToExcelByIndex(inputFile, 2, values.toArray(new String[size]),
                         excelConfigIndex);
             }
+            // Designation
+            masterCodes = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_DESIGNATION);
+            if (IaisCommonUtils.isNotEmpty(masterCodes)) {
+                int size = masterCodes.size();
+                List<String> values = IaisCommonUtils.genNewArrayList(size);
+                Map<Integer, List<Integer>> excelConfigIndex = IaisCommonUtils.genNewLinkedHashMap(size);
+                int i = 1;
+                for (MasterCodeView view : masterCodes) {
+                    values.add(view.getCodeValue());
+                    excelConfigIndex.put(i++, Collections.singletonList(7));
+                }
+                inputFile = IrregularExcelWriterUtil.writerToExcelByIndex(inputFile, 2, values.toArray(new String[size]),
+                        excelConfigIndex);
+            }
             inputFile = IrregularExcelWriterUtil.lockSheetWorkspace(inputFile, 2,
                     Formatter.formatDateTime(new Date(), "yyyyMMdd"));
 

@@ -981,14 +981,14 @@ public class ConfigServiceDelegator {
             //handle the step for Other Information, Supplementary Form,Special Services Information,Outsourced Providers
             handleStep(hcsaServiceConfigDto);
 
-            addStepSchemeDto(hcsaServiceConfigDto.getOtherInformation()
+            /*addStepSchemeDto(hcsaServiceConfigDto.getOtherInformation()
                     , HcsaConsts.STEP_OTHER_INFORMATION, HcsaConsts.OTHER_INFORMATION, hcsaServiceStepSchemeDtos);
             addStepSchemeDto(hcsaServiceConfigDto.getSupplementaryForm()
                     , HcsaConsts.STEP_SUPPLEMENTARY_FORM, HcsaConsts.SUPPLEMENTARY_FORM, hcsaServiceStepSchemeDtos);
             addStepSchemeDto(hcsaServiceConfigDto.getSpecialServicesInformation()
                     , HcsaConsts.STEP_SPECIAL_SERVICES_FORM, hcsaServiceConfigDto.getSpecialisedSectionHeader()+HcsaConsts.SPECIAL_SERVICES_FORM, hcsaServiceStepSchemeDtos);
             addStepSchemeDto(hcsaServiceConfigDto.getOutsourcedProviders()
-                    , HcsaConsts.STEP_OUTSOURCED_PROVIDERS, HcsaConsts.OUTSOURCED_PROVIDERS, hcsaServiceStepSchemeDtos);
+                    , HcsaConsts.STEP_OUTSOURCED_PROVIDERS, HcsaConsts.OUTSOURCED_PROVIDERS, hcsaServiceStepSchemeDtos);*/
         }
 //        else if(HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(serviceType)){
 //            boolean isNeedSvcPersonnelDto = isNeed(nurseInCharge)||isNeed(rso)||isNeed(diagnosticRadiographer)||isNeed(medicalPhysicist)||isNeed(radiationPhysicist)||isNeed(nMTechnologist);

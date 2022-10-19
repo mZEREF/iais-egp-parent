@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppAlignAppQueryD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpSecondAddrDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
@@ -16,7 +17,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.client.AppCommClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-
 import java.util.List;
 
 /**
@@ -146,12 +146,12 @@ public class AppCommClientFallback implements AppCommClient {
     }
 
     @Override
-    public FeignResponseEntity<Integer> getBundleMsCount(String item, boolean licOrApp) {
-        return null;
+    public FeignResponseEntity<List<AppLicBundleDto>> getBundleMsCount(String item, boolean licOrApp) {
+        return IaisEGPHelper.getFeignResponseEntity(item,licOrApp);
     }
 
     @Override
     public FeignResponseEntity<List<AppAlignAppQueryDto>> getActiveApplicationsAddress(String licenseeId, List<String> svcIdList) {
-        return IaisEGPHelper.getFeignResponseEntity(licenseeId);
+        return IaisEGPHelper.getFeignResponseEntity(licenseeId,svcIdList);
     }
 }

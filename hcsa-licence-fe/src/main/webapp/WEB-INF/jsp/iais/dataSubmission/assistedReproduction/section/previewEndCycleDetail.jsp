@@ -16,10 +16,10 @@
                 </h3>
                 <c:set var="endCycleStageDto" value="${arSuperDataSubmissionDto.endCycleStageDto}" />
                 <iais:row>
-                    <iais:field width="6" value="Is Current Cycle Abandoned?"/>
+                    <iais:field width="6" value="Is Current Cycle Completed?"/>
                     <iais:value width="6" display="true">
-                        <c:if test="${endCycleStageDto.cycleAbandoned == true }">Yes</c:if>
-                        <c:if test="${endCycleStageDto.cycleAbandoned == false }">No, Cycle has ended</c:if>
+                        <c:if test="${endCycleStageDto.cycleAbandoned == true }">No</c:if>
+                        <c:if test="${endCycleStageDto.cycleAbandoned == false }">Yes, Cycle has ended</c:if>
                     </iais:value>
                 </iais:row>
                 <div <c:if test="${endCycleStageDto.cycleAbandoned !=true}">style="display: none;"</c:if>>

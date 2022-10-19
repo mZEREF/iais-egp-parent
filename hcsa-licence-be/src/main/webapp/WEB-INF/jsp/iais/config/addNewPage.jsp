@@ -48,6 +48,7 @@
       <input  type="hidden" name="svcName" value="${hcsaServiceConfigDto.hcsaServiceDto.svcName}">
       <input  type="hidden" name="svcCode" value="${hcsaServiceConfigDto.hcsaServiceDto.svcCode}">
       <input  type="hidden" name="svcType"  value="${hcsaServiceConfigDto.hcsaServiceDto.svcType}">
+      <input  type="hidden" name="effectiveDate"  value="${hcsaServiceConfigDto.hcsaServiceDto.effectiveDate}">
     </c:if>
     <input type="text" style="display: none" name="serviceSvcCode" id="serviceSvcCode" value="${hcsaServiceDto.svcCode}">
     <div class="col-lg-12 col-xs-12">
@@ -257,7 +258,7 @@
               <span class="error-msg" class="form-check-input other-lic co-location" name="iaisErrorMsg" id="error_businessInformation"></span>
             </div>
           </div>
-          <div class="col-xs-12 col-md-9">
+          <%--<div class="col-xs-12 col-md-9">
             <label class="col-xs-12 col-md-7 control-label" >Other Information <span class="mandatory">*</span></label>
             <div class="cl-xs-12 col-md-4">
               <div class="col-xs-12 col-md-6 form-check">
@@ -312,7 +313,7 @@
               </div>
               <span class="error-msg" class="form-check-input other-lic co-location" name="iaisErrorMsg" id="error_outsourcedProviders"></span>
             </div>
-          </div>
+          </div>--%>
         </div>
 
       <div class="form-group" >
@@ -1390,7 +1391,7 @@
         </div>
       </div>
       </div>
-      <div class="col-xs-12 col-md-9">
+      <div class="col-xs-12 col-md-9 editReadonly">
         <div class="form-group">
           <label class="col-xs-12 col-md-7 control-label">Effective Start Date&nbsp;<span class="mandatory">*</span></label>
           <div class=" col-xs-7 col-sm-4 col-md-3">

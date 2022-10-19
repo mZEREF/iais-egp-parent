@@ -1,4 +1,5 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts" %>
 <style>
     .align-lic-table{
         margin-left: -30px;
@@ -10,7 +11,7 @@
         </div>
         <div class="col-xs-12 col-md-6">
             <h3>
-                You may choose to bundle your new licence(s) to any of your existing licences.
+                You may choose to align to one of following licences.
             </h3>
         </div>
     </div>
@@ -27,7 +28,7 @@
                         <th scope="col"><div class="form-check align-lic-table"><label class="form-check-label"><strong>Mode of Service Delivery</strong></label></div></th>
                     </tr>
                     </thead>
-                    <tbody id="licBodyDiv"></tbody>
+                    <tbody id="${service.svcCode}licBodyDiv"></tbody>
                 </table>
             </div>
         </div>
@@ -36,7 +37,7 @@
         <div class="col-xs-12 col-md-3">
         </div>
         <div class="col-xs-6 col-md-6">
-            <div id="licPagDiv"></div>
+            <div id="${service.svcCode}licPagDiv"></div>
         </div>
     </div>
 </c:if>
@@ -47,7 +48,7 @@
         </div>
         <div class="col-xs-12 col-md-6">
             <h3>
-                You may choose to bundle your new licence(s) to any of your existing applications.
+                You may choose to align to one of following applications.
             </h3>
         </div>
     </div>
@@ -62,9 +63,10 @@
                         <th scope="col"><div class="form-check align-lic-table"><label class="form-check-label"><strong>Application No.</strong></label></div></th>
                         <th scope="col"><div class="form-check align-lic-table"><label class="form-check-label"><strong>Type</strong></label></div></th>
                         <th scope="col"><div class="form-check align-lic-table"><label class="form-check-label"><strong>Mode of Service Delivery</strong></label></div></th>
+                        <th scope="col"><div class="form-check align-lic-table"><label class="form-check-label"><strong>Licensee</strong></label></div></th>
                     </tr>
                     </thead>
-                    <tbody id="appBodyDiv"></tbody>
+                    <tbody id="${service.svcCode}appBodyDiv"></tbody>
                 </table>
             </div>
         </div>
@@ -73,32 +75,30 @@
         <div class="col-xs-12 col-md-3">
         </div>
         <div class="col-xs-6 col-md-6">
-            <div id="appPagDiv"></div>
+            <div id="${service.svcCode}appPagDiv"></div>
         </div>
     </div>
 </c:if>
 
-<c:if test="${noExistBaseLic&&noExistBaseApp}">
+<c:if test="${service.svcCode==AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY}">
     <div class="row">
         <div class="col-xs-12 col-md-3">
         </div>
         <div class="col-xs-12 col-md-6">
-            <div class="self-assessment-checkbox-gp gradient-light-grey">
-                <div class="row">
-                    <div class="col-xs-12 col-md-12">
-                        <iais:message key="NEW_ACK44"></iais:message>
-                    </div>
-                </div>
-            </div>
+            <c:if test="${!empty CLBchooseBaseErr}">
+                <span class="error-msg">${CLBchooseBaseErr}</span>
+            </c:if>
         </div>
     </div>
 </c:if>
-<div class="row">
-    <div class="col-xs-12 col-md-3">
+<c:if test="${service.svcCode==AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES}">
+    <div class="row">
+        <div class="col-xs-12 col-md-3">
+        </div>
+        <div class="col-xs-12 col-md-6">
+            <c:if test="${!empty RDSchooseBaseErr}">
+                <span class="error-msg">${RDSchooseBaseErr}</span>
+            </c:if>
+        </div>
     </div>
-    <div class="col-xs-12 col-md-6">
-        <c:if test="${!empty chooseBaseErr}">
-            <span class="error-msg">${chooseBaseErr}</span>
-        </c:if>
-    </div>
-</div>
+</c:if>

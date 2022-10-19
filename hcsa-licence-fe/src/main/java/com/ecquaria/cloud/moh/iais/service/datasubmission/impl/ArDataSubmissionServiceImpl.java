@@ -7,22 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCurrentInventoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSubFreezingStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDraftDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EicArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoTransferStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiCycleStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -533,6 +518,22 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
+    public List<DonorSampleAgeDto> getMaleDonorSampleDtoByIdTypeAndIdNo(String idType, String idNo) {
+        if (StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNo)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        return arFeClient.getMaleDonorSampleDtoByIdTypeAndIdNo(idType, idNo).getEntity();
+    }
+
+    @Override
+    public List<DonorSampleAgeDto> getFemaleDonorSampleDtoByIdTypeAndIdNo(String idType, String idNo) {
+        if (StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNo)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        return arFeClient.getFemaleDonorSampleDtoByIdTypeAndIdNo(idType, idNo).getEntity();
+    }
+
+    @Override
     public List<DonorSampleAgeDto> getDonorSampleAgeDtos(String idType, String idNo) {
         if (StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNo)) {
             return IaisCommonUtils.genNewArrayList();
@@ -712,9 +713,14 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         if (embryoTransferStageDto == null) {
             return false;
         }
-        return greaterFourDay(embryoTransferStageDto.getFirstEmbryoAge()) || greaterFourDay(
-                embryoTransferStageDto.getSecondEmbryoAge())
-                || greaterFourDay(embryoTransferStageDto.getThirdEmbryoAge());
+        int transferNum = embryoTransferStageDto.getTransferNum();
+        boolean hasGreaterFourDay = false;
+        List<EmbryoTransferDetailDto> embryoTransferDetailDtos = embryoTransferStageDto.getEmbryoTransferDetailDtos();
+        for (int i = 0; i < transferNum; i++) {
+            hasGreaterFourDay = hasGreaterFourDay || greaterFourDay(embryoTransferDetailDtos.get(i).getEmbryoAge());
+        }
+        return hasGreaterFourDay;
+
     }
 
     private boolean greaterFourDay(String code) {
@@ -906,14 +912,10 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
                 codeDesc = "Thawing";
             } else if (DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING.equals(option)) {
                 codeDesc = "Preimplantation Genetic Testing";
-            } else if (DataSubmissionConsts.AR_STAGE_OUTCOME.equals(option)) {
-                codeDesc = "Outcome";
             } else if (DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT.equals(option)) {
                 codeDesc = "Transfer In & Out";
             } else if (DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(option)) {
                 codeDesc = "Completed/Abandoned Cycle";
-            } else if (DataSubmissionConsts.AR_CYCLE_IUI.equals(option)) {
-                codeDesc = "New IUI Treatment";
             } else {
                 codeDesc = MasterCodeUtil.getCodeDesc(option);
             }

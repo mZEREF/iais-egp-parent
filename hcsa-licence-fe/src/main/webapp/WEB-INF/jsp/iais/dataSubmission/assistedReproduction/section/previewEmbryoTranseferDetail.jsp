@@ -29,72 +29,48 @@
                         <c:out value="${embryoTransferStageDto.transferNum}"/>
                     </iais:value>
                 </iais:row>
-                <iais:row>
-                    <label class="col-xs-6 col-md-6 control-label">1st Embryo
-                        <c:if test="${flagTwo && (embryoTransferStageDto.firstEmbryoAge == 'AOFET005' || embryoTransferStageDto.firstEmbryoAge == 'AOFET006')}">
-                            <a class="btn-tooltip styleguide-tooltip flag2" href="javascript:void(0);"
-                               data-toggle="tooltip"
-                               data-html="true"
-                               title="&lt;p&gt;<iais:message key="DS_ERR047"/>&lt;/p&gt;">!</a>
-                        </c:if>
-                    </label>
-                    <iais:value width="6" display="true" cssClass="col-md-6">
-                        <iais:code code="${embryoTransferStageDto.firstEmbryoAge}"/>
-                    </iais:value>
-                </iais:row>
-                <iais:row>
-                    <iais:field width="6" value="Was the 1st Embryo Transferred a fresh or thawed embryo?"
-                                cssClass="col-md-6"/>
-                    <iais:value width="6" display="true" cssClass="col-md-6">
-                        <c:out value="${embryoTransferStageDto.firstEmbryoType == 'fresh'?  'Fresh Embryo' : 'Thawed Embryo'}"/>
-                    </iais:value>
-                </iais:row>
-                <div id="section2nd"
-                     <c:if test="${embryoTransferStageDto.transferNum < 2}">style="display: none;"</c:if>>
-                    <iais:row>
-                        <label class="col-xs-6 col-md-6 control-label">Age of 2nd Embryo Transferred
-                            <c:if test="${flagTwo && (embryoTransferStageDto.secondEmbryoAge == 'AOFET005' || embryoTransferStageDto.secondEmbryoAge == 'AOFET006')}">
-                                <a class="btn-tooltip styleguide-tooltip flag2" href="javascript:void(0);"
-                                   data-toggle="tooltip"
-                                   data-html="true"
-                                   title="&lt;p&gt;<iais:message key="DS_ERR047"/>&lt;/p&gt;">!</a>
-                            </c:if>
-                        </label>
-                        <iais:value width="6" display="true" cssClass="col-md-6">
-                            <iais:code code="${embryoTransferStageDto.secondEmbryoAge}"/>
-                        </iais:value>
-                    </iais:row>
-                    <iais:row>
-                        <iais:field width="6" value="Was the 2nd Embryo Transferred a fresh or thawed embryo?"
-                                    cssClass="col-md-6"/>
-                        <iais:value width="6" display="true" cssClass="col-md-6">
-                            <c:out value="${embryoTransferStageDto.secondEmbryoType == 'fresh'?  'Fresh Embryo' : 'Thawed Embryo'}"/>
-                        </iais:value>
-                    </iais:row>
-                </div>
-                <div id="section2nd"
-                     <c:if test="${embryoTransferStageDto.transferNum < 3}">style="display: none;"</c:if>>
-                    <iais:row>
-                        <label class="col-xs-6 col-md-6 control-label">Age of 3rd Embryo Transferred
-                            <c:if test="${flagTwo && (embryoTransferStageDto.thirdEmbryoAge == 'AOFET005' || embryoTransferStageDto.thirdEmbryoAge == 'AOFET006')}">
-                                <a class="btn-tooltip styleguide-tooltip flag2" href="javascript:void(0);"
-                                   data-toggle="tooltip"
-                                   data-html="true"
-                                   title="&lt;p&gt;<iais:message key="DS_ERR047"/>&lt;/p&gt;">!</a>
-                            </c:if>
-                        </label>
-                        <iais:value width="6" display="true" cssClass="col-md-6">
-                            <iais:code code="${embryoTransferStageDto.thirdEmbryoAge}"/>
-                        </iais:value>
-                    </iais:row>
-                    <iais:row>
-                        <iais:field width="6" value="Was the 3rd Embryo Transferred a fresh or thawed embryo?"
-                                    cssClass="col-md-6"/>
-                        <iais:value width="6" display="true" cssClass="col-md-6">
-                            <c:out value="${embryoTransferStageDto.thirdEmbryoType == 'fresh'?  'Fresh Embryo' : 'Thawed Embryo'}"/>
-                        </iais:value>
-                    </iais:row>
-                </div>
+                <c:forEach var="embryoTransferDetailDto" items="${embryoTransferStageDto.embryoTransferDetailDtos}" varStatus="seq">
+                    <div id="${seq.index+1}Embryo"
+                         <c:if test="${embryoTransferStageDto.transferNum < seq.index+1}">style="display: none;"</c:if>>
+                        <iais:row>
+                                    <label class="col-xs-6 col-md-6 control-label">
+                                        <c:choose>
+                                            <c:when test="${seq.index eq '0'}">1st Embryo</c:when>
+                                            <c:when test="${seq.index eq '1'}">2nd Embryo</c:when>
+                                            <c:when test="${seq.index eq '2'}">3rd Embryo</c:when>
+                                            <c:otherwise>${seq.index+1}th Embryo</c:otherwise>
+                                        </c:choose>
+                                        <c:if test="${flagTwo && (embryoTransferDetailDto.embryoAge == 'AOFET005' || embryoTransferDetailDto.embryoAge == 'AOFET006')}">
+                                            <a class="btn-tooltip styleguide-tooltip flag2" href="javascript:void(0);"
+                                               data-toggle="tooltip"
+                                               data-html="true"
+                                               title="&lt;p&gt;<iais:message key="DS_ERR047"/>&lt;/p&gt;">!</a>
+                                        </c:if>
+                                    </label>
+
+                            <iais:value width="6" cssClass="col-md-6" display="true">
+                                <iais:code code="${embryoTransferDetailDto.embryoAge}"/>
+                            </iais:value>
+                        </iais:row>
+                        <iais:row>
+                            <c:choose>
+                                <c:when test="${seq.index eq '0'}"><iais:field width="6" value="Was the 1st Embryo Transferred a fresh or thawed embryo?"
+                                                                               mandatory="false" cssClass="col-md-6"/></c:when>
+                                <c:when test="${seq.index eq '1'}"><iais:field width="6" value="Was the 2nd Embryo Transferred a fresh or thawed embryo?"
+                                                                               mandatory="false" cssClass="col-md-6"/></c:when>
+                                <c:when test="${seq.index eq '2'}"><iais:field width="6" value="Was the 3rd Embryo Transferred a fresh or thawed embryo?"
+                                                                               mandatory="false" cssClass="col-md-6"/></c:when>
+                                <c:otherwise><iais:field width="6" value="Was the ${seq.index+1}th Embryo Transferred a fresh or thawed embryo?"
+                                                         mandatory="false" cssClass="col-md-6"/></c:otherwise>
+                            </c:choose>
+
+                            <iais:value width="3" cssClass="col-md-3" display="true">
+                                <c:out value="${embryoTransferDetailDto.embryoType == 'fresh'?  'Fresh Embryo' : 'Thawed Embryo'}"/>
+                            </iais:value>
+                        </iais:row>
+                    </div>
+                </c:forEach>
+
                 <iais:row>
                     <iais:field width="6" value="1st Date of Transfer" cssClass="col-md-6"/>
                     <iais:value width="6" display="true">

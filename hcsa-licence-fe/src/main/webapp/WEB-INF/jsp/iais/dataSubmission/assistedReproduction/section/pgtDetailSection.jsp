@@ -169,6 +169,94 @@
                         </iais:value>
                     </iais:row>
                 </div>
+                <div id="pgtMComSubsidies" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMCom !=1 }">style="display: none"</c:if>>
+                    <iais:row>
+                        <iais:field width="5" value="Please indicate if co-funding was provided for PGT-M (Common)" mandatory="true"/>
+                        <div class="col-md-6" style="padding-right: 0;padding-left: 0;">
+                            <iais:value width="4" cssClass="col-md-4" style="padding-right: 0;padding-left: 0;">
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="radio"
+                                           name="isPgtMComCoFunding"
+                                           value="1"
+                                           id="radioYes"
+                                           <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding ==1 }">checked</c:if>
+                                           aria-invalid="false">
+                                    <label class="form-check-label"
+                                           for="radioYes"><span
+                                            class="check-circle"></span>Yes</label>
+                                </div>
+                            </iais:value>
+                            <iais:value width="4" cssClass="col-md-4" style="padding-right: 0;padding-left: 0;">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio"
+                                           name="isPgtMComCoFunding" value="0" id="radioNo"
+                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding == 0}">checked</c:if>
+                                           aria-invalid="false">
+                                    <label class="form-check-label"
+                                           for="radioNo"><span
+                                            class="check-circle"></span>No</label>
+                                </div>
+                            </iais:value>
+                            <iais:value width="4" cssClass="col-md-4" style="padding-right: 0;padding-left: 0;">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio"
+                                           name="isPgtMComCoFunding" value="2" id="radioNA"
+                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding == 2}">checked</c:if>
+                                           aria-invalid="false">
+                                    <label class="form-check-label"
+                                           for="radioNA"><span
+                                            class="check-circle"></span>N/A</label>
+                                </div>
+                            </iais:value>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_isPgtCoFunding" style="padding-right: 15px;padding-left: 15px;"></span>
+                        </div>
+                    </iais:row>
+                </div>
+                <div id="pgtMRareSubsidies" <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtMRare ne 1}">style="display: none"</c:if>>
+                    <iais:row>
+                        <iais:field width="5" value="Please indicate if co-funding was provided for PGT-M (Rare)" mandatory="true"/>
+                        <div class="col-md-6" style="padding-right: 0;padding-left: 0;">
+                            <iais:value width="4" cssClass="col-md-4" style="padding-right: 0;padding-left: 0;">
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="radio"
+                                           name="isPgtMRareCoFunding"
+                                           value="1"
+                                           id="radioRareYes"
+                                           <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMRareCoFunding ==1 }">checked</c:if>
+                                           aria-invalid="false">
+                                    <label class="form-check-label"
+                                           for="radioRareYes"><span
+                                            class="check-circle"></span>Yes</label>
+                                </div>
+                            </iais:value>
+                            <iais:value width="4" cssClass="col-md-4" style="padding-right: 0;padding-left: 0;">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio"
+                                           name="isPgtMRareCoFunding" value="0" id="radioRareNo"
+                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtMRareCoFunding == 0}">checked</c:if>
+                                           aria-invalid="false">
+                                    <label class="form-check-label"
+                                           for="radioRareNo"><span
+                                            class="check-circle"></span>No</label>
+                                </div>
+                            </iais:value>
+                            <iais:value width="4" cssClass="col-md-4" style="padding-right: 0;padding-left: 0;">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio"
+                                           name="isPgtMRareCoFunding" value="2" id="radioRareNA"
+                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtMRareCoFunding == 2}">checked</c:if>
+                                           aria-invalid="false">
+                                    <label class="form-check-label"
+                                           for="radioRareNA"><span
+                                            class="check-circle"></span>N/A</label>
+                                </div>
+                            </iais:value>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_isPgtMRareCoFunding" style="padding-right: 15px;padding-left: 15px;"></span>
+                        </div>
+                    </iais:row>
+                </div>
 
                 <div id="pgtSrDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtSr !=1 }">style="display: none"</c:if>>
                     <iais:row>
@@ -180,6 +268,48 @@
                             <input type="text" maxlength="100"   name="pgtSrCondition" value="${arSuperDataSubmissionDto.pgtStageDto.pgtSrCondition}" >
                             <span class="error-msg" name="iaisErrorMsg" id="error_PgtSrCondition"></span>
                         </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field width="5" value="Please indicate if co-funding was provided for PGT-SR" mandatory="true"/>
+                        <div class="col-md-6" style="padding-right: 0;padding-left: 0;">
+                            <iais:value width="4" cssClass="col-md-4" style="padding-right: 0;padding-left: 0;">
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="radio"
+                                           name="isPgtSrCoFunding"
+                                           value="1"
+                                           id="radioSrYes"
+                                           <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtSrCoFunding ==1 }">checked</c:if>
+                                           aria-invalid="false">
+                                    <label class="form-check-label"
+                                           for="radioSrYes"><span
+                                            class="check-circle"></span>Yes</label>
+                                </div>
+                            </iais:value>
+                            <iais:value width="4" cssClass="col-md-4" style="padding-right: 0;padding-left: 0;">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio"
+                                           name="isPgtSrCoFunding" value="0" id="radioSrNo"
+                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtSrCoFunding == 0}">checked</c:if>
+                                           aria-invalid="false">
+                                    <label class="form-check-label"
+                                           for="radioSrNo"><span
+                                            class="check-circle"></span>No</label>
+                                </div>
+                            </iais:value>
+                            <iais:value width="4" cssClass="col-md-4" style="padding-right: 0;padding-left: 0;">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio"
+                                           name="isPgtSrCoFunding" value="2" id="radioSrNA"
+                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtSrCoFunding == 2}">checked</c:if>
+                                           aria-invalid="false">
+                                    <label class="form-check-label"
+                                           for="radioSrNA"><span
+                                            class="check-circle"></span>N/A</label>
+                                </div>
+                            </iais:value>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_isPgtSrCoFunding" style="padding-right: 15px;padding-left: 15px;"></span>
+                        </div>
                     </iais:row>
                 </div>
 
@@ -267,6 +397,48 @@
                             </iais:value>
                         </iais:row>
                     </div>
+                    <iais:row>
+                        <iais:field width="5" value="Please indicate if co-funding was provided for PGT-A" mandatory="true"/>
+                        <div class="col-md-6" style="padding-right: 0;padding-left: 0;">
+                            <iais:value width="4" cssClass="col-md-4" style="padding-right: 0;padding-left: 0;">
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="radio"
+                                           name="isPgtACoFunding"
+                                           value="1"
+                                           id="radioAYes"
+                                           <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtACoFunding ==1 }">checked</c:if>
+                                           aria-invalid="false">
+                                    <label class="form-check-label"
+                                           for="radioAYes"><span
+                                            class="check-circle"></span>Yes</label>
+                                </div>
+                            </iais:value>
+                            <iais:value width="4" cssClass="col-md-4" style="padding-right: 0;padding-left: 0;">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio"
+                                           name="isPgtACoFunding" value="0" id="radioANo"
+                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtACoFunding == 0}">checked</c:if>
+                                           aria-invalid="false">
+                                    <label class="form-check-label"
+                                           for="radioANo"><span
+                                            class="check-circle"></span>No</label>
+                                </div>
+                            </iais:value>
+                            <iais:value width="4" cssClass="col-md-4" style="padding-right: 0;padding-left: 0;">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio"
+                                           name="isPgtACoFunding" value="2" id="radioANA"
+                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtACoFunding == 2}">checked</c:if>
+                                           aria-invalid="false">
+                                    <label class="form-check-label"
+                                           for="radioANA"><span
+                                            class="check-circle"></span>N/A</label>
+                                </div>
+                            </iais:value>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_isPgtACoFunding" style="padding-right: 15px;padding-left: 15px;"></span>
+                        </div>
+                    </iais:row>
                 </div>
 
                 <div id="pttDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPtt !=1 }">style="display: none"</c:if>>
@@ -280,40 +452,50 @@
                             <span class="error-msg" name="iaisErrorMsg" id="error_pttCondition"></span>
                         </iais:value>
                     </iais:row>
-
+                    <iais:row>
+                        <iais:field width="5" value="Please indicate if co-funding was provided for PTT" mandatory="true"/>
+                        <div class="col-md-6" style="padding-right: 0;padding-left: 0;">
+                            <iais:value width="4" cssClass="col-md-4" style="padding-right: 0;padding-left: 0;">
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="radio"
+                                           name="isPttCoFunding"
+                                           value="1"
+                                           id="radioPttYes"
+                                           <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPttCoFunding ==1 }">checked</c:if>
+                                           aria-invalid="false">
+                                    <label class="form-check-label"
+                                           for="radioPttYes"><span
+                                            class="check-circle"></span>Yes</label>
+                                </div>
+                            </iais:value>
+                            <iais:value width="4" cssClass="col-md-4" style="padding-right: 0;padding-left: 0;">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio"
+                                           name="isPttCoFunding" value="0" id="radioPttNo"
+                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPttCoFunding == 0}">checked</c:if>
+                                           aria-invalid="false">
+                                    <label class="form-check-label"
+                                           for="radioPttNo"><span
+                                            class="check-circle"></span>No</label>
+                                </div>
+                            </iais:value>
+                            <iais:value width="4" cssClass="col-md-4" style="padding-right: 0;padding-left: 0;">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio"
+                                           name="isPttCoFunding" value="2" id="radioPttNA"
+                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPttCoFunding == 2}">checked</c:if>
+                                           aria-invalid="false">
+                                    <label class="form-check-label"
+                                           for="radioPttNA"><span
+                                            class="check-circle"></span>N/A</label>
+                                </div>
+                            </iais:value>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_isPttCoFunding" style="padding-right: 15px;padding-left: 15px;"></span>
+                        </div>
+                    </iais:row>
                 </div>
 
-                <iais:row>
-                    <iais:field width="5" value="Please indicate Preimplantation Genetic Testing Co-funding?" mandatory="true"/>
-                    <div class="col-md-6" style="padding-right: 0;padding-left: 0;">
-                        <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
-                            <div class="form-check">
-                                <input class="form-check-input"
-                                       type="radio"
-                                       name="isPgtCoFunding"
-                                       value="1"
-                                       id="radioYes"
-                                       <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding ==1 }">checked</c:if>
-                                       aria-invalid="false">
-                                <label class="form-check-label"
-                                       for="radioYes"><span
-                                        class="check-circle"></span>Yes</label>
-                            </div>
-                        </iais:value>
-                        <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio"
-                                       name="isPgtCoFunding" value="0" id="radioNo"
-                                       <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding == 0}">checked</c:if>
-                                       aria-invalid="false">
-                                <label class="form-check-label"
-                                       for="radioNo"><span
-                                        class="check-circle"></span>No</label>
-                            </div>
-                        </iais:value>
-                        <span class="error-msg" name="iaisErrorMsg" id="error_isPgtCoFunding" style="padding-right: 15px;padding-left: 15px;"></span>
-                    </div>
-                </iais:row>
                 <div id="appealDisplay" <c:if test="${ count<6 || arSuperDataSubmissionDto.pgtStageDto.isPgtMCom !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtMRare !=1 && arSuperDataSubmissionDto.pgtStageDto.isPgtSr !=1 || arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding == 0}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Is there an Appeal?" mandatory="true"/>

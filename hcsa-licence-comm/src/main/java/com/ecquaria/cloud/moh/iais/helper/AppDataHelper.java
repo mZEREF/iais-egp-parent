@@ -2577,7 +2577,7 @@ public final class AppDataHelper {
             if (getDataByOld) {
                 appSvcPersonnelDto= originalPersonnelList.get(x);
             } else if (getPageData) {
-                appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix +personTypeAbbr, "" + x, personType);
+                appSvcPersonnelDto = getAppSvcPersonnelParam(null,request, prefix +personTypeAbbr, "" + x, personType);
             }
             personnelDtoList.add(appSvcPersonnelDto);
         }
@@ -2638,14 +2638,16 @@ public final class AppDataHelper {
         return new AppSvcPrincipalOfficersDto();
     }*/
 
-    public static AppSvcPersonnelDto getAppSvcPersonnelParam(HttpServletRequest request, String prefix, String suffix, String personnelType) {
+    public static AppSvcPersonnelDto getAppSvcPersonnelParam(String indexNo,HttpServletRequest request, String prefix, String suffix, String personnelType) {
 
         AppSvcPersonnelDto svcPersonnelDto = ControllerHelper.get(request, AppSvcPersonnelDto.class, prefix, suffix);
 
-        if (StringUtil.isEmpty(svcPersonnelDto.getIndexNo())) {
+        if (StringUtil.isEmpty(svcPersonnelDto.getIndexNo()) && StringUtil.isEmpty(indexNo)) {
             svcPersonnelDto.setIndexNo(UUID.randomUUID().toString());
+        }else {
+            svcPersonnelDto.setIndexNo(indexNo);
         }
-         if(StringUtil.isNotEmpty(personnelType)) {
+        if(StringUtil.isNotEmpty(personnelType)) {
             svcPersonnelDto.setPersonnelType(personnelType);
 //            special
         } else if (ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS.equals(prefix) || "".equals(personnelType)) {
@@ -2741,7 +2743,7 @@ public final class AppDataHelper {
                             return dto;
                         });
             }else if (pageData){
-                appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix, String.valueOf(i), null);
+                appSvcPersonnelDto = getAppSvcPersonnelParam(indexNo,request, prefix, String.valueOf(i), null);
             }
             arPractitionerList.add(appSvcPersonnelDto);
         }
@@ -2780,7 +2782,7 @@ public final class AppDataHelper {
                     return dto;
             });
         }else if (pageData){
-           appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix, String.valueOf(i), null);
+           appSvcPersonnelDto = getAppSvcPersonnelParam(indexNo,request, prefix, String.valueOf(i), null);
         }
             nurseList.add(appSvcPersonnelDto);
         }
@@ -2820,7 +2822,7 @@ public final class AppDataHelper {
                             return dto;
                         });
             }else if (pageData){
-                appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix, String.valueOf(i), null);
+                appSvcPersonnelDto = getAppSvcPersonnelParam(indexNo,request, prefix, String.valueOf(i), null);
             }
             embryologistList.add(appSvcPersonnelDto);
         }
@@ -2859,7 +2861,7 @@ public final class AppDataHelper {
                             return dto;
                         });
             }else if (pageData){
-                appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix, String.valueOf(i), null);
+                appSvcPersonnelDto = getAppSvcPersonnelParam(indexNo,request, prefix, String.valueOf(i), null);
             }
             normalList.add(appSvcPersonnelDto);
         }
@@ -2898,7 +2900,7 @@ public final class AppDataHelper {
                             return dto;
                         });
             }else if (pageData){
-                appSvcPersonnelDto = getAppSvcPersonnelParam(request, prefix, String.valueOf(i), null);
+                appSvcPersonnelDto = getAppSvcPersonnelParam(indexNo,request, prefix, String.valueOf(i), null);
             }
             specialList.add(appSvcPersonnelDto);
         }

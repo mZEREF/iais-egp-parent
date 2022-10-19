@@ -700,7 +700,37 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             hcsaFeeBundleItemDtos.forEach(o -> bundleSvcCodes.add(o.getSvcCode()));
         }
         List<AppLicBundleDto> appLicBundleDtoList = appSubmissionDto.getAppLicBundleDtoList();
-
+        List<String[]> msList=IaisCommonUtils.genNewArrayList();
+        String[] msPreOrConArray={"","",""};
+        msList.add(msPreOrConArray);
+        if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
+            for (AppLicBundleDto alb : appLicBundleDtoList
+            ) {
+                if (alb.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)) {
+                    int index=0;
+                    if(alb.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_MOBILE)){
+                        index=1;
+                    }
+                    if(alb.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_REMOTE)){
+                        index=2;
+                    }
+                    boolean find=false;
+                    for (String[] ms:msList
+                    ) {
+                        if(StringUtil.isEmpty(ms[index])){
+                            ms[index]="LicBundle";
+                            find=true;
+                            break;
+                        }
+                    }
+                    if(!find){
+                        String[] newArray={"","",""};
+                        newArray[index]="LicBundle";
+                        msList.add(newArray);
+                    }
+                }
+            }
+        }
         if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
             log.debug("appGrpPremisesDtos size {}", appGrpPremisesDtos.size());
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
@@ -708,6 +738,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 boolean hadEas = false;
                 boolean hadMts = false;
                 boolean hadAch = false;
+
                 for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
                     String serviceCode = appSvcRelatedInfoDto.getServiceCode();
                     if (AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(serviceCode)) {
@@ -736,6 +767,70 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         licenceFeeDto.setAlignLicenceNo(appSvcRelatedInfoDto.getAlignLicenceNo());
                     }
                     log.info(StringUtil.changeForLog("svcName:" + appSvcRelatedInfoDto.getServiceName()));
+                    //set mosd bundle
+                    if(serviceCode.equals(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)){
+                        if(appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_PERMANENT)||appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_CONVEYANCE)){
+                            boolean find=false;
+                            for (String[] ms:msList
+                            ) {
+                                if(StringUtil.isEmpty(ms[0])){
+                                    ms[0]=appGrpPremisesDto.getPremisesType();
+                                    find=true;
+                                    if(ms[1].equals("LicBundle")||ms[2].equals("LicBundle")){
+                                        licenceFeeDto.setBundle(4);
+                                    }else {
+                                        licenceFeeDto.setBundle(0);
+                                    }
+                                    break;
+                                }
+                            }
+                            if(!find){
+                                String[] newArray={appGrpPremisesDto.getPremisesType(),"",""};
+                                msList.add(newArray);
+                            }
+                        }
+
+                        if(appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_REMOTE)){
+                            boolean find=false;
+                            for (String[] ms:msList
+                            ) {
+                                if(StringUtil.isEmpty(ms[1])){
+                                    ms[1]=appGrpPremisesDto.getPremisesType();
+                                    find=true;
+                                    if(ms[0].equals("LicBundle")){
+                                        licenceFeeDto.setBundle(4);
+                                    }else {
+                                        licenceFeeDto.setBundle(3);
+                                    }
+                                    break;
+                                }
+                            }
+                            if(!find){
+                                String[] newArray={"",appGrpPremisesDto.getPremisesType(),""};
+                                msList.add(newArray);
+                            }
+                        }
+                        if(appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_MOBILE)){
+                            boolean find=false;
+                            for (String[] ms:msList
+                            ) {
+                                if(StringUtil.isEmpty(ms[2])){
+                                    ms[2]=appGrpPremisesDto.getPremisesType();
+                                    find=true;
+                                    if(ms[0].equals("LicBundle")){
+                                        licenceFeeDto.setBundle(4);
+                                    }else {
+                                        licenceFeeDto.setBundle(3);
+                                    }
+                                    break;
+                                }
+                            }
+                            if(!find){
+                                String[] newArray={"","",appGrpPremisesDto.getPremisesType()};
+                                msList.add(newArray);
+                            }
+                        }
+                    }
                     //set EAS/MTS bundle
                     if (!IaisCommonUtils.isEmpty(hcsaFeeBundleItemDtos) && bundleSvcCodes.contains(serviceCode)) {
                         log.debug(StringUtil.changeForLog("set bundle info ..."));
@@ -786,6 +881,15 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                     } else {
                                         licenceFeeDto.setBundle(1);
                                     }
+                                    break;
+                                }
+                            }
+                        }
+                        if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
+                            for (AppLicBundleDto alb : appLicBundleDtoList
+                            ) {
+                                if (alb.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY)||alb.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES)) {
+                                    licenceFeeDto.setBundle(4);
                                     break;
                                 }
                             }
@@ -895,7 +999,38 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
             List<AppPremSpecialisedDto> appPremSpecialisedDtos = appSubmissionDto.getAppPremSpecialisedDtoList();
             List<String> baseServiceIds = IaisCommonUtils.genNewArrayList();
-
+            List<AppLicBundleDto> appLicBundleDtoList = appSubmissionDto.getAppLicBundleDtoList();
+            List<String[]> msList=IaisCommonUtils.genNewArrayList();
+            String[] msPreOrConArray={"","",""};
+            msList.add(msPreOrConArray);
+            if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
+                for (AppLicBundleDto alb : appLicBundleDtoList
+                ) {
+                    if (alb.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)) {
+                        int index=0;
+                        if(alb.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_MOBILE)){
+                            index=1;
+                        }
+                        if(alb.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_REMOTE)){
+                            index=2;
+                        }
+                        boolean find=false;
+                        for (String[] ms:msList
+                        ) {
+                            if(StringUtil.isEmpty(ms[index])){
+                                ms[index]="LicBundle";
+                                find=true;
+                                break;
+                            }
+                        }
+                        if(!find){
+                            String[] newArray={"","",""};
+                            newArray[index]="LicBundle";
+                            msList.add(newArray);
+                        }
+                    }
+                }
+            }
             log.debug("eas vehicle count is {}", easVehicleCount);
             log.debug("mts vehicle count is {}", mtsVehicleCount);
 
@@ -939,6 +1074,70 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             licenceFeeDto.setExpiryDate(licExpiryDate);
                         }
                         licenceFeeDto.setLicenceId(licenceId);
+                    }
+                    //set mosd bundle
+                    if(serviceCode.equals(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)){
+                        if(appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_PERMANENT)||appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_CONVEYANCE)){
+                            boolean find=false;
+                            for (String[] ms:msList
+                            ) {
+                                if(StringUtil.isEmpty(ms[0])){
+                                    ms[0]=appGrpPremisesDto.getPremisesType();
+                                    find=true;
+                                    if(ms[1].equals("LicBundle")||ms[2].equals("LicBundle")){
+                                        licenceFeeDto.setBundle(4);
+                                    }else {
+                                        licenceFeeDto.setBundle(0);
+                                    }
+                                    break;
+                                }
+                            }
+                            if(!find){
+                                String[] newArray={appGrpPremisesDto.getPremisesType(),"",""};
+                                msList.add(newArray);
+                            }
+                        }
+
+                        if(appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_REMOTE)){
+                            boolean find=false;
+                            for (String[] ms:msList
+                            ) {
+                                if(StringUtil.isEmpty(ms[1])){
+                                    ms[1]=appGrpPremisesDto.getPremisesType();
+                                    find=true;
+                                    if(ms[0].equals("LicBundle")){
+                                        licenceFeeDto.setBundle(4);
+                                    }else {
+                                        licenceFeeDto.setBundle(3);
+                                    }
+                                    break;
+                                }
+                            }
+                            if(!find){
+                                String[] newArray={"",appGrpPremisesDto.getPremisesType(),""};
+                                msList.add(newArray);
+                            }
+                        }
+                        if(appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_MOBILE)){
+                            boolean find=false;
+                            for (String[] ms:msList
+                            ) {
+                                if(StringUtil.isEmpty(ms[2])){
+                                    ms[2]=appGrpPremisesDto.getPremisesType();
+                                    find=true;
+                                    if(ms[0].equals("LicBundle")){
+                                        licenceFeeDto.setBundle(4);
+                                    }else {
+                                        licenceFeeDto.setBundle(3);
+                                    }
+                                    break;
+                                }
+                            }
+                            if(!find){
+                                String[] newArray={"","",appGrpPremisesDto.getPremisesType()};
+                                msList.add(newArray);
+                            }
+                        }
                     }
                     //set EAS/MTS bundle
                     if (!IaisCommonUtils.isEmpty(hcsaFeeBundleItemDtos) && bundleSvcCodes.contains(serviceCode)) {
@@ -1622,8 +1821,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public int getBundleMsCount(String item, boolean licOrApp) {
-        Integer result = 0;
+    public List<AppLicBundleDto> getBundleMsCount(String item, boolean licOrApp) {
+        List<AppLicBundleDto> result=IaisCommonUtils.genNewArrayList();
         if (!StringUtil.isEmpty(item)) {
             result = appCommClient.getBundleMsCount(item, licOrApp).getEntity();
         }

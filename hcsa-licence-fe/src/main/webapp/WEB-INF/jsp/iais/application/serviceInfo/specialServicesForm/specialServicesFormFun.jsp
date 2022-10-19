@@ -13,7 +13,7 @@
         personnelSel();
         initPerson($('div.panel-main-content'));
         <c:if test="${AppSubmissionDto.needEditController}">
-            disabledPage();
+            disableContent($('.form-horizontal'));
         </c:if>
         $('div.personnel-content').each(function (k, v) {
             if ($("#errorMapIs").val() == 'error') {
@@ -99,13 +99,12 @@
         checkPersonContent($currContent, true);
         personnelSel();
         personnelSelFun('',$currContent,'');
-        unDisableContent($currContent.find('.assignSelDiv'));
         $currContent.find('input.isPartEdit').val('1');
         $('#isEditHiddenVal').val('1');
         hideTag($currContent.find('.rfc-psn-detail'));
         hideTag($currContent.find('.edit-content'));
         showTag($currContent.find('.assignSelDiv'));
-        unDisabledPartPage($currContent);
+        unDisableContent($currContent);
         var length =  $target.find('div.personnel-content').length;
         if(length >= maxCount){
             $target.find('.addDiv').addClass('hidden');
@@ -123,10 +122,10 @@
             let $currContent = $Content.find('div.personnel-content');
             $currContent.each(function (k, v) {
                 refreshPerson($(v), k);
-                var isPartEdit = $currContent.find('input.isPartEdit').val();
+                /*var isPartEdit = $currContent.find('input.isPartEdit').val();
                 if(isPartEdit==0){
-                    disabledPartPage($currContent);
-                }
+                    disableContent($currContent);
+                }*/
             });
             $('#isEditHiddenVal').val('1');
             if ($currContent.length == 1) {

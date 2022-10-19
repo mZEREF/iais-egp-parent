@@ -2,6 +2,7 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="isis" uri="http://www.ecq.com/iais" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <script type="text/javascript"
         src="<%=IaisEGPConstant.CSS_ROOT + IaisEGPConstant.COMMON_CSS_ROOT%>js/file-upload.js"></script>
 <input type="hidden" id="isEditHiddenVal" class="personnel-content-edit" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
@@ -32,9 +33,6 @@
                 requirements at all times</h4>
         </c:when>
     </c:choose>
-
-<%--    <c:set var="editControl" value="${(!empty AppSvcPersonnelDtoList && AppSubmissionDto.needEditController) || !AppSubmissionDto.needEditController}"/>--%>
-
     <div class="personnel-edit">
         <c:if test="${AppSubmissionDto.needEditController }">
             <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && !isRfi}">
@@ -63,7 +61,7 @@
             </iais:row>
             <input type="hidden" class="maxCount" value="${arPersonnelMax}"/>
             <c:forEach begin="0" end="${arPractitionerCount - 1}" step="1" varStatus="status">
-                <c:set value="SP002" var="logo"/>
+                <c:set value="${ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER}" var="logo"/>
                 <c:set var="index" value="${status.index}"/>
                 <c:set var="appSvcPersonnelDto" value="${svcPersonnelDto.arPractitionerList[index]}"/>
                 <%@include file="servicePersonnelArDetail.jsp" %>
@@ -88,7 +86,7 @@
         <div class="panel-main-content">
             <input type="hidden" class="maxCount" value="${nuPersonnelMax}"/>
             <c:forEach begin="0" end="${nurseCount - 1}" step="1" varStatus="status">
-                <c:set value="SP003" var="logo"/>
+                <c:set value="${ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES}" var="logo"/>
                 <c:set var="index" value="${status.index}"/>
                 <c:set var="appSvcPersonnelDto" value="${svcPersonnelDto.nurseList[index]}"/>
                 <%@include file="servicePersonnelNurse.jsp" %>
@@ -122,7 +120,7 @@
         <div class="panel-main-content">
             <input type="hidden" class="maxCount" value="${emPersonnelMax}"/>
             <c:forEach begin="0" end="${embryologistMinCount - 1}" step="1" varStatus="status">
-                <c:set value="SP001" var="logo"/>
+                <c:set value="${ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST}" var="logo"/>
                 <c:set var="index" value="${status.index}"/>
                 <c:set var="appSvcPersonnelDto" value="${svcPersonnelDto.embryologistList[index]}"/>
                 <%@include file="servicePersonnelEmbryologist.jsp" %>
@@ -141,7 +139,7 @@
         <div class="panel-main-content">
             <input type="hidden" class="maxCount" value="${othersPersonnelMax}"/>
             <c:forEach begin="0" end="${normalCount - 1}" step="1" varStatus="status">
-                <c:set value="SVCPSN" var="logo"/>
+                <c:set value="${ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS}" var="logo"/>
                 <c:set var="index" value="${status.index}"/>
                 <c:set var="appSvcPersonnelDto" value="${svcPersonnelDto.normalList[index]}"/>
                 <%@include file="servicePersonnelBlood.jsp" %>
@@ -161,7 +159,7 @@
             <input type="hidden" class="maxCount" value="${spePersonnelMax}"/>
             <c:forEach begin="0" end="${specialCount - 1}" step="1" varStatus="status">
                 <c:set var="index" value="${status.index}"/>
-                <c:set value="SP888" var="logo"/>
+                <c:set value="${ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS}" var="logo"/>
                 <c:set var="appSvcPersonnelDto" value="${svcPersonnelDto.specialList[index]}"/>
                 <%@include file="servicePersonnelDetail.jsp" %>
             </c:forEach>

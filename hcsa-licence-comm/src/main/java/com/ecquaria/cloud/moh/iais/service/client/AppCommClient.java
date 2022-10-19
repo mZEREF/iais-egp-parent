@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppAlignAppQueryD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpSecondAddrDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
@@ -115,6 +116,6 @@ public interface AppCommClient {
     FeignResponseEntity<List<AppSvcBusinessDto>> getAppSvcBusinessDtoListByCorrId(@PathVariable(name = "appPremCorrId") String appPremCorrId);
 
     @GetMapping(value = "/getBundleMsCount", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Integer> getBundleMsCount(@RequestParam("item") String item, @RequestParam("licOrApp")  boolean licOrApp);
+    FeignResponseEntity<List<AppLicBundleDto>> getBundleMsCount(@RequestParam("item") String item, @RequestParam("licOrApp")  boolean licOrApp);
 
 }

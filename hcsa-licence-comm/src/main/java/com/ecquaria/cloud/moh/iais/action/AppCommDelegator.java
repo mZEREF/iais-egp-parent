@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -963,13 +964,63 @@ public abstract class AppCommDelegator {
                 ParamUtil.setRequestAttr(bpc.request, "newAppPopUpMsg", hciNameUsed);
             }
         }
+
         // check result
         int result = checkAction(errorMap, action, HcsaAppConst.ACTION_PREMISES, appSubmissionDto, bpc.request);
+        if (HcsaAppConst.ACTION_RESULT_ERROR_BLOCK != result) {
+            checkBundle(appSubmissionDto);
+        }
         ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
         if (HcsaAppConst.ACTION_RESULT_ERROR_BLOCK != result) {
             saveDraft(bpc);
         }
         log.info(StringUtil.changeForLog("the do doPremises end ...."));
+    }
+
+    private void checkBundle(AppSubmissionDto appSubmissionDto) {
+        if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
+            return;
+        }
+        boolean hasAch = false;
+        boolean hasMs = false;
+        boolean hasEasMts = false;
+        for (AppSvcRelatedInfoDto dto : appSubmissionDto.getAppSvcRelatedInfoDtoList()) {
+            String serviceCode = dto.getServiceCode();
+            if (AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL.equals(serviceCode)) {
+                hasAch = true;
+            } else if (AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE.equals(serviceCode)) {
+                hasMs = true;
+            } else if (AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(serviceCode)) {
+                hasEasMts = true;
+            }
+        }
+        String bundleStatus = IaisCommonUtils.isNotEmpty(appSubmissionDto.getAppLicBundleDtoList()) ?
+                AppConsts.YES : AppConsts.NO;
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        int size = appGrpPremisesDtoList.size();
+        if (size > 1 && AppConsts.NO.equals(bundleStatus)) {
+            if (hasMs) {
+                bundleStatus = AppConsts.YES;
+                Set<String> premTypes = IaisCommonUtils.genNewHashSet();
+                for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
+                    premTypes.add(appGrpPremisesDto.getPremisesType());
+                }
+                if (size != premTypes.size() || premTypes.contains(ApplicationConsts.PREMISES_TYPE_PERMANENT)
+                        && premTypes.contains(ApplicationConsts.PREMISES_TYPE_CONVEYANCE)) {
+                    bundleStatus = AppConsts.NO;
+                }
+            }
+            if (hasAch && appSubmissionDto.getAppSvcRelatedInfoDtoList().stream().anyMatch(dto ->
+                    AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(dto.getServiceCode())
+                            || AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(dto.getServiceCode()))) {
+                bundleStatus = AppConsts.YES;
+            }
+            if (hasEasMts && appSubmissionDto.getAppSvcRelatedInfoDtoList().stream().anyMatch(dto ->
+                    AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(dto.getServiceCode()))) {
+                bundleStatus = AppConsts.YES;
+            }
+        }
+        appSubmissionDto.setBundleStatus(bundleStatus);
     }
 
     protected void checkAppPremisesChanged(AppSubmissionDto appSubmissionDto, List<AppGrpPremisesDto> oldAppGrpPremisesDtoList) {
@@ -1590,13 +1641,39 @@ public abstract class AppCommDelegator {
         //ApplicationHelper.reSetAdditionalFields(appSubmissionDto, oldAppSubmissionDto, appEditSelectDto);
         appSubmissionDto.setChangeSelectDto(appEditSelectDto);
         boolean isCharity = ApplicationHelper.isCharity(bpc.request);
-        FeeDto feeDto = configCommService.getGroupAmendAmount(getAmendmentFeeDto(appEditSelectDto, isCharity));
+        AmendmentFeeDto amendmentFeeDto = getAmendmentFeeDto(appEditSelectDto, isCharity);
+        //add ss fee
+        List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList=appSubmissionDto.getAppPremSpecialisedDtoList().get(0).getFlatAppPremSubSvcRelList(dto -> ApplicationConsts.RECORD_ACTION_CODE_ADD.equals(dto.getActCode()));
+        if (IaisCommonUtils.isNotEmpty(appPremSubSvcRelDtoList)) {
+            amendmentFeeDto.setAdditionOrRemovalSpecialisedServices(Boolean.TRUE);
+            List<LicenceFeeDto> licenceFeeSpecDtos = IaisCommonUtils.genNewArrayList();
+            for (AppPremSubSvcRelDto subSvc : appPremSubSvcRelDtoList
+            ) {
+                if (subSvc.isChecked()) {
+                    LicenceFeeDto specFeeDto = new LicenceFeeDto();
+                    specFeeDto.setBundle(0);
+                    specFeeDto.setBaseService(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceCode());
+                    specFeeDto.setServiceCode(subSvc.getSvcCode());
+                    specFeeDto.setServiceName(subSvc.getSvcName());
+                    specFeeDto.setPremises(appSubmissionDto.getAppGrpPremisesDtoList().get(0).getAddress());
+                    specFeeDto.setCharity(isCharity);
+                    licenceFeeSpecDtos.add(specFeeDto);
+                }
+            }
+            amendmentFeeDto.setSpecifiedLicenceFeeDto(licenceFeeSpecDtos);
+        }
+        List<AppPremSubSvcRelDto> removalDtoList=appSubmissionDto.getAppPremSpecialisedDtoList().get(0).getFlatAppPremSubSvcRelList(dto -> ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()));
+        if (IaisCommonUtils.isNotEmpty(removalDtoList)) {
+            amendmentFeeDto.setAdditionOrRemovalSpecialisedServices(Boolean.TRUE);
+        }
+        FeeDto feeDto = configCommService.getGroupAmendAmount(amendmentFeeDto);
         Double amount = feeDto.getTotal();
         double currentAmount = amount == null ? 0.0 : amount;
         if (licenceDto.getMigrated() == 1 && IaisEGPHelper.isActiveMigrated()) {
             currentAmount = 0.0;
         }
         log.info(StringUtil.changeForLog("the current amount is -->:" + currentAmount));
+        appSubmissionDto.setFeeInfoDtos(feeDto.getFeeInfoDtos());
         appSubmissionDto.setAmount(currentAmount);
 
         String appType = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE;
@@ -1674,7 +1751,7 @@ public abstract class AppCommDelegator {
             log.info(StringUtil.changeForLog("The premise changed amount: " + otherAmount));
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             List<AppSubmissionDto> appSubmissionDtos = IaisCommonUtils.genNewArrayList();
-            boolean isValid = checkAffectedAppSubmissions(appGrpPremisesDtoList, otherAmount, draftNo, groupNo, changeSelectDto,
+            boolean isValid = checkAffectedAppSubmissions(appGrpPremisesDtoList,  premiseFee, draftNo, groupNo, changeSelectDto,
                     appSubmissionDtos, bpc.request);
             if (!isValid) {
                 return;
@@ -1725,11 +1802,13 @@ public abstract class AppCommDelegator {
                 }
                 AppEditSelectDto changeSelectDto = new AppEditSelectDto();
                 changeSelectDto.setLicenseeEdit(true);
+                FeeDto feeDto1=new FeeDto();
+                feeDto1.setTotal(0.0d);
                 StreamSupport.stream(licenseeAffectedList.spliterator(),
                         licenseeAffectedList.size() >= RfcConst.DFT_MIN_PARALLEL_SIZE)
                         .forEach(dto -> dto.setSubLicenseeDto(
                                 MiscUtil.transferEntityDto(appSubmissionDto.getSubLicenseeDto(), SubLicenseeDto.class)));
-                boolean isValid = checkAffectedAppSubmissions(licenseeAffectedList, 0.0D, draftNo, groupNo, changeSelectDto,
+                boolean isValid = checkAffectedAppSubmissions(licenseeAffectedList, feeDto1, draftNo, groupNo, changeSelectDto,
                         HcsaAppConst.SECTION_LICENSEE, bpc.request);
                 if (!isValid) {
                     return;
@@ -1764,7 +1843,9 @@ public abstract class AppCommDelegator {
                     appSubmissionDto, oldAppSubmissionDto, rfcSplitFlag ? 0 : 1);
             if (personAppSubmissionList != null && !personAppSubmissionList.isEmpty()) {
                 autoGroupNo = getRfcGroupNo(autoGroupNo);
-                boolean isValid = checkAffectedAppSubmissions(personAppSubmissionList, 0.0D, draftNo, autoGroupNo,
+                FeeDto feeDto1=new FeeDto();
+                feeDto1.setTotal(0.0d);
+                boolean isValid = checkAffectedAppSubmissions(personAppSubmissionList, feeDto1, draftNo, autoGroupNo,
                         null, HcsaAppConst.SECTION_SVCINFO, bpc.request);
                 if (!isValid) {
                     return;
@@ -1926,7 +2007,7 @@ public abstract class AppCommDelegator {
         return groupNo;
     }
 
-    private boolean checkAffectedAppSubmissions(List<AppGrpPremisesDto> appGrpPremisesDtoList, double amount, String draftNo,
+    private boolean checkAffectedAppSubmissions(List<AppGrpPremisesDto> appGrpPremisesDtoList, FeeDto premiseFee, String draftNo,
             String appGroupNo, AppEditSelectDto appEditSelectDto, List<AppSubmissionDto> appSubmissionDtos,
             HttpServletRequest request) {
         if (appGrpPremisesDtoList == null) {
@@ -1942,7 +2023,7 @@ public abstract class AppCommDelegator {
                         .collect(Collectors.toList());
             }
             Map<String, String> errorMap = appCommService.checkAffectedAppSubmissions(licenceDtos, premisesDto,
-                    amount, draftNo, appGroupNo, appEditSelectDto, appSubmissionDtos);
+                    premiseFee, draftNo, appGroupNo, appEditSelectDto, appSubmissionDtos);
             if (!errorMap.isEmpty()) {
                 AppValidatorHelper.setErrorRequest(errorMap, false, request);
                 return false;
@@ -1951,7 +2032,7 @@ public abstract class AppCommDelegator {
         return true;
     }
 
-    private boolean checkAffectedAppSubmissions(List<AppSubmissionDto> appSubmissionDtos, double amount, String draftNo,
+    private boolean checkAffectedAppSubmissions(List<AppSubmissionDto> appSubmissionDtos, FeeDto premiseFee, String draftNo,
             String appGroupNo, AppEditSelectDto appEditSelectDto, String type, HttpServletRequest request) {
         if (appSubmissionDtos == null || appSubmissionDtos.isEmpty()) {
             return true;
@@ -1972,7 +2053,7 @@ public abstract class AppCommDelegator {
             return false;
         }
         StreamSupport.stream(appSubmissionDtos.spliterator(), parallel)
-                .forEach(dto -> appCommService.checkAffectedAppSubmissions(dto, null, amount, draftNo, appGroupNo,
+                .forEach(dto -> appCommService.checkAffectedAppSubmissions(dto, null, premiseFee, draftNo, appGroupNo,
                         appEditSelectDto, null));
         return true;
     }
@@ -2132,6 +2213,7 @@ public abstract class AppCommDelegator {
         appEditSelectDto.setLicenseeEdit(ApplicationHelper.canLicenseeEdit(appSubmissionDto.getSubLicenseeDto(),
                 appSubmissionDto.getAppType(), true, true));
         appEditSelectDto.setNeedNewLicNo(true);
+        appEditSelectDto.setAuto(AppConsts.NO);
         RfcHelper.beforeSubmit(appSubmissionDto, appEditSelectDto, appGroupNo, appType, bpc.request);
 
         appSubmissionDto = submit(appSubmissionDto);

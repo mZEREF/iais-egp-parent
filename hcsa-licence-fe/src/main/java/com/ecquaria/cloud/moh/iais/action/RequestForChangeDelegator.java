@@ -17,6 +17,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
@@ -54,6 +56,14 @@ import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
 import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,15 +73,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 /****
  *
@@ -773,9 +774,11 @@ public class RequestForChangeDelegator {
                         appSubmissionDto.setAppGroupMiscDtos(appGroupMiscDtoList);
                          AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
                         appEditSelectDto.setNeedNewLicNo(true);
-                        appCommService.checkAffectedAppSubmissions(appSubmissionDto, null, amount, draftNo, grpNo,
+                        appEditSelectDto.setAuto(AppConsts.NO);
+                        appCommService.checkAffectedAppSubmissions(appSubmissionDto, null, feeDto, draftNo, grpNo,
                                 appEditSelectDto, null);
                         appSubmissionDto.setGetAppInfoFromDto(false);
+                        setAppPremSubSvcRelDtoStatus(appSubmissionDto,ApplicationConsts.RECORD_STATUS_APPROVE_CODE);
                         AppSubmissionDto tranferSub = requestForChangeService.submitChange(appSubmissionDto);
                         ParamUtil.setSessionAttr(bpc.request, "app-rfc-tranfer", tranferSub);
                         if (amount == null || MiscUtil.doubleEquals(amount, 0.0)) {
@@ -807,6 +810,35 @@ public class RequestForChangeDelegator {
         }
         log.info(StringUtil.changeForLog("The doSubmit end ..."));
     }
+
+    private void setAppPremSubSvcRelDtoStatus(AppSubmissionDto appSubmissionDto,String status){
+        log.info(StringUtil.changeForLog("The setAppPremSubSvcRelDtoStatus start ..."));
+        List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
+        if(IaisCommonUtils.isNotEmpty(appPremSpecialisedDtoList)){
+            log.info(StringUtil.changeForLog("The appPremSpecialisedDtoList.size() is -->:"+appPremSpecialisedDtoList.size()));
+            for(AppPremSpecialisedDto appPremSpecialisedDto : appPremSpecialisedDtoList){
+               List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList = appPremSpecialisedDto.getAppPremSubSvcRelDtoList();
+                setAppPremSubSvcRelDtoStatusDetail(appPremSubSvcRelDtoList,status);
+           }
+        }else{
+           log.info(StringUtil.changeForLog("The appPremSpecialisedDtoList is null"));
+        }
+        log.info(StringUtil.changeForLog("The setAppPremSubSvcRelDtoStatus end ..."));
+    }
+
+    private void setAppPremSubSvcRelDtoStatusDetail(List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList,String status){
+        log.info(StringUtil.changeForLog("The setAppPremSubSvcRelDtoStatusDetail start ..."));
+        if(IaisCommonUtils.isNotEmpty(appPremSubSvcRelDtoList)){
+            log.info(StringUtil.changeForLog("The appPremSubSvcRelDtoList.size() is -->:"+appPremSubSvcRelDtoList.size()));
+            for(AppPremSubSvcRelDto appPremSubSvcRelDto : appPremSubSvcRelDtoList){
+                appPremSubSvcRelDto.setStatus(status);
+                List<AppPremSubSvcRelDto> subAppPremSubSvcRelDtoList = appPremSubSvcRelDto.getAppPremSubSvcRelDtos();
+                setAppPremSubSvcRelDtoStatusDetail(subAppPremSubSvcRelDtoList,status);
+            }
+        }
+        log.info(StringUtil.changeForLog("The setAppPremSubSvcRelDtoStatusDetail end ..."));
+    }
+
     /**
      * @param bpc
      * @Decription compareChangePercentage

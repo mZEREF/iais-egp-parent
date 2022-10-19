@@ -3481,34 +3481,7 @@ public final class ApplicationHelper {
     }
 
 
-    public static void setKeyPersonnel(List<AppSvcPrincipalOfficersDto> sourceList, String psnType,
-            AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
-        if (StringUtil.isEmpty(psnType) || appSvcRelatedInfoDto == null) {
-            return;
-        }
-        switch (psnType) {
-            case ApplicationConsts.PERSONNEL_PSN_TYPE_CGO:
-                appSvcRelatedInfoDto.setAppSvcCgoDtoList(sourceList);
-                break;
-            case ApplicationConsts.PERSONNEL_PSN_TYPE_PO:
-                appSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(sourceList);
-                break;
-            case ApplicationConsts.PERSONNEL_PSN_TYPE_DPO:
-                appSvcRelatedInfoDto.setAppSvcNomineeDtoList(sourceList);
-                break;
-            case ApplicationConsts.PERSONNEL_PSN_TYPE_MAP:
-                appSvcRelatedInfoDto.setAppSvcMedAlertPersonList(sourceList);
-                break;
-            case ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR:
-                appSvcRelatedInfoDto.setAppSvcClinicalDirectorDtoList(sourceList);
-                break;
-            case ApplicationConsts.PERSONNEL_PSN_KAH:
-                appSvcRelatedInfoDto.setAppSvcKeyAppointmentHolderDtoList(sourceList);
-                break;
-            default:
-                break;
-        }
-    }
+
 
     public static void setOtherInfoPerson(List<AppSvcOtherInfoTopPersonDto> sourceList, String psnType, AppSvcOtherInfoDto appSvcOtherInfoDto){
         if (StringUtil.isEmpty(psnType) || appSvcOtherInfoDto == null){
@@ -3528,6 +3501,38 @@ public final class ApplicationHelper {
                 appSvcOtherInfoDto.setOtherInfoTopPersonCounsellorsList(sourceList);
                 break;
         }
+
+    public static void setSvcPersonnel(List<AppSvcPersonnelDto> sourceList, String psnType,
+                                       AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
+        if (StringUtil.isEmpty(psnType) || appSvcRelatedInfoDto == null) {
+            return;
+        }
+        SvcPersonnelDto svcPersonnelDto = appSvcRelatedInfoDto.getSvcPersonnelDto();
+        boolean flag = ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER.equals(psnType);
+        if (StringUtil.isEmpty(svcPersonnelDto) && !flag) {
+            return;
+        }
+        switch (psnType) {
+            case ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER:
+                svcPersonnelDto.setArPractitionerList(sourceList);
+                break;
+            case ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES:
+                svcPersonnelDto.setNurseList(sourceList);
+                break;
+            case ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST:
+                svcPersonnelDto.setEmbryologistList(sourceList);
+                break;
+            case ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS:
+                svcPersonnelDto.setNormalList(sourceList);
+                break;
+            case ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS:
+                svcPersonnelDto.setSpecialList(sourceList);
+                break;
+            case ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER:
+                appSvcRelatedInfoDto.setAppSvcSectionLeaderList(sourceList);
+                break;
+        }
+    }
 
     }
     public static List<String> getSvcPsnTypes(AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
