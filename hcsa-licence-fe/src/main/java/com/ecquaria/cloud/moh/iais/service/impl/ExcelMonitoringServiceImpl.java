@@ -69,6 +69,7 @@ public class ExcelMonitoringServiceImpl implements ExcelMonitoringService {
         MonitoringSheetsDto monitoringLicSheetsDto=licenceClient.getMonitoringLicenceSheetsDto().getEntity();
         MonitoringSheetsDto monitoringUserSheetsDto=organizationLienceseeClient.getMonitoringUserSheetsDto().getEntity();
         monitoringAppSheetsDto.setLicenceExcelDtoMap(monitoringLicSheetsDto.getLicenceExcelDtoMap());
+        monitoringAppSheetsDto.setAppLicExcelDtoMap(monitoringLicSheetsDto.getAppLicExcelDtoMap());
         monitoringAppSheetsDto.setUserAccountExcelDtoMap(monitoringUserSheetsDto.getUserAccountExcelDtoMap());
         return monitoringAppSheetsDto;
     }
