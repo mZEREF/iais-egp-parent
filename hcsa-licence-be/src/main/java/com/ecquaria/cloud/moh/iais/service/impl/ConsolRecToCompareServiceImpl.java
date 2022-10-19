@@ -621,7 +621,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
         if(IaisCommonUtils.isNotEmpty(monitoringAppSheetsDto.getApplicationExcelDtoMap())){
             for (Map.Entry<String, ApplicationExcelDto> entry:monitoringAppSheetsDto.getApplicationExcelDtoMap().entrySet()
             ) {
-                if(monitoringSheetsDto.getApplicationExcelDtoMap().containsKey(entry.getKey())){
+                if(monitoringSheetsDto.getApplicationExcelDtoMap()!=null&&monitoringSheetsDto.getApplicationExcelDtoMap().containsKey(entry.getKey())){
                     ApplicationExcelDto excelDto=monitoringSheetsDto.getApplicationExcelDtoMap().get(entry.getKey());
                     excelDto.setApplicationNoBe(entry.getValue().getApplicationNoBe());
                     excelDto.setStatusBe(entry.getValue().getStatusBe());
@@ -639,6 +639,9 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                 }else {
                     entry.getValue().setResult("Not Match");
                     hasNotMatch=true;
+                    if(IaisCommonUtils.isEmpty(monitoringSheetsDto.getApplicationExcelDtoMap())){
+                        monitoringSheetsDto.setApplicationExcelDtoMap(IaisCommonUtils.genNewHashMap());
+                    }
                     monitoringSheetsDto.getApplicationExcelDtoMap().put(entry.getKey(),entry.getValue());
                 }
             }
@@ -646,7 +649,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
         if(IaisCommonUtils.isNotEmpty(monitoringAppSheetsDto.getLicenceExcelDtoMap())){
             for (Map.Entry<String, LicenceExcelDto> entry:monitoringAppSheetsDto.getLicenceExcelDtoMap().entrySet()
             ) {
-                if(monitoringSheetsDto.getLicenceExcelDtoMap().containsKey(entry.getKey())){
+                if(monitoringSheetsDto.getLicenceExcelDtoMap()!=null&&monitoringSheetsDto.getLicenceExcelDtoMap().containsKey(entry.getKey())){
                     LicenceExcelDto excelDto=monitoringSheetsDto.getLicenceExcelDtoMap().get(entry.getKey());
                     excelDto.setLicenceNoBe(entry.getValue().getLicenceNoBe());
                     excelDto.setStatusBe(entry.getValue().getStatusBe());
@@ -667,6 +670,9 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                 }else {
                     entry.getValue().setResult("Not Match");
                     hasNotMatch=true;
+                    if(IaisCommonUtils.isEmpty(monitoringSheetsDto.getLicenceExcelDtoMap())){
+                        monitoringSheetsDto.setLicenceExcelDtoMap(IaisCommonUtils.genNewHashMap());
+                    }
                     monitoringSheetsDto.getLicenceExcelDtoMap().put(entry.getKey(),entry.getValue());
                 }
             }
@@ -674,7 +680,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
         if(IaisCommonUtils.isNotEmpty(monitoringAppSheetsDto.getAppGroupExcelDtoMap())){
             for (Map.Entry<String, AppGroupExcelDto> entry:monitoringAppSheetsDto.getAppGroupExcelDtoMap().entrySet()
             ) {
-                if(monitoringSheetsDto.getAppGroupExcelDtoMap().containsKey(entry.getKey())){
+                if(monitoringSheetsDto.getAppGroupExcelDtoMap()!=null&&monitoringSheetsDto.getAppGroupExcelDtoMap().containsKey(entry.getKey())){
                     AppGroupExcelDto excelDto=monitoringSheetsDto.getAppGroupExcelDtoMap().get(entry.getKey());
                     excelDto.setAppGroupNoBe(entry.getValue().getAppGroupNoBe());
                     excelDto.setStatusBe(entry.getValue().getStatusBe());
@@ -696,6 +702,9 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                 }else {
                     entry.getValue().setResult("Not Match");
                     hasNotMatch=true;
+                    if(IaisCommonUtils.isEmpty(monitoringSheetsDto.getAppGroupExcelDtoMap())){
+                        monitoringSheetsDto.setAppGroupExcelDtoMap(IaisCommonUtils.genNewHashMap());
+                    }
                     monitoringSheetsDto.getAppGroupExcelDtoMap().put(entry.getKey(),entry.getValue());
                 }
             }
@@ -703,7 +712,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
         if(IaisCommonUtils.isNotEmpty(monitoringAppSheetsDto.getUserAccountExcelDtoMap())){
             for (Map.Entry<String, UserAccountExcelDto> entry:monitoringAppSheetsDto.getUserAccountExcelDtoMap().entrySet()
             ) {
-                if(monitoringSheetsDto.getUserAccountExcelDtoMap().containsKey(entry.getKey())){
+                if(monitoringSheetsDto.getUserAccountExcelDtoMap()!=null&&monitoringSheetsDto.getUserAccountExcelDtoMap().containsKey(entry.getKey())){
                     UserAccountExcelDto excelDto=monitoringSheetsDto.getUserAccountExcelDtoMap().get(entry.getKey());
                     excelDto.setDisplayNameBe(entry.getValue().getDisplayNameBe());
                     excelDto.setStatusBe(entry.getValue().getStatusBe());
@@ -720,6 +729,9 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                 }else {
                     entry.getValue().setResult("Not Match");
                     hasNotMatch=true;
+                    if(IaisCommonUtils.isEmpty(monitoringSheetsDto.getUserAccountExcelDtoMap())){
+                        monitoringSheetsDto.setUserAccountExcelDtoMap(IaisCommonUtils.genNewHashMap());
+                    }
                     monitoringSheetsDto.getUserAccountExcelDtoMap().put(entry.getKey(),entry.getValue());
                 }
             }
@@ -727,7 +739,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
         if(IaisCommonUtils.isNotEmpty(monitoringAppSheetsDto.getAppLicExcelDtoMap())){
             for (Map.Entry<String, AppLicExcelDto> entry:monitoringAppSheetsDto.getAppLicExcelDtoMap().entrySet()
             ) {
-                if(monitoringSheetsDto.getAppLicExcelDtoMap().containsKey(entry.getKey())){
+                if(monitoringSheetsDto.getAppLicExcelDtoMap()!=null&&monitoringSheetsDto.getAppLicExcelDtoMap().containsKey(entry.getKey())){
                     AppLicExcelDto excelDto=monitoringSheetsDto.getAppLicExcelDtoMap().get(entry.getKey());
                     excelDto.setApplicationIdBe(entry.getValue().getApplicationIdBe());
                     excelDto.setLicenceIdBe(entry.getValue().getLicenceIdBe());
@@ -742,6 +754,9 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                 }else {
                     entry.getValue().setResult("Not Match");
                     hasNotMatch=true;
+                    if(IaisCommonUtils.isEmpty(monitoringSheetsDto.getAppLicExcelDtoMap())){
+                        monitoringSheetsDto.setAppLicExcelDtoMap(IaisCommonUtils.genNewHashMap());
+                    }
                     monitoringSheetsDto.getAppLicExcelDtoMap().put(entry.getKey(),entry.getValue());
                 }
             }
