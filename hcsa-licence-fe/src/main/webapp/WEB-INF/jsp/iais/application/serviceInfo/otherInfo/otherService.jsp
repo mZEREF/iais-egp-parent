@@ -1,11 +1,18 @@
-<div class="specialised-content">
-    <iais:row>
-        <div class="col-xs-12 col-md-11 text-right editDiv">
-            <a class="premises-summary-preview specialisedEdit app-font-size-16"><em class="fa fa-pencil-square-o"></em><span style="display: inline-block;">&nbsp;</span>Edit</a>
-        </div>
-    </iais:row>
-
+<div class="otherServiceContent">
     <c:if test="${not empty appSvcOtherInfoDto.allAppPremSubSvcRelDtoList}">
+        <input type="hidden" class ="isPartEditOtherService" name="isPartEditOtherService" value="0"/>
+        <input type="hidden" class="otherInfoIndexNo" name="otherInfoIndexNo" value="${appSvcOtherInfoDto.premiseIndex}"/>
+        <div class="col-md-12 col-xs-12">
+            <div class="edit-content">
+                <c:if test="${canEdit}">
+                    <div class="text-right app-font-size-16">
+                        <a class="edit otherServiceEdit" href="javascript:void(0);">
+                            <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
+                        </a>
+                    </div>
+                </c:if>
+            </div>
+        </div>
         <div class="">
             <div class="app-title">Other Services</div>
         </div>
@@ -32,53 +39,3 @@
         </iais:row>
     </c:if>
 </div>
-<script>
-    $(document).ready(function (){
-        editSpecialisedEvent();
-        <c:if test="${AppSubmissionDto.needEditController}">
-        disableOtherInfoContent();
-        </c:if>
-    })
-    function editSpecialisedEvent() {
-        let $target = $('.specialisedEdit');
-        if (isEmptyNode($target)) {
-            return;
-        }
-        $target.unbind('click');
-        $target.on('click', function () {
-            let $content = $(this).closest('div.specialised-content');
-            doEditSpecialised($content);
-        });
-    }
-
-    function disableSpecialisedContent() {
-        disableContent('div.specialised-content');
-        let $target = $('.editDiv');
-        if (!isEmptyNode($target)) {
-            showTag($target);
-        }
-    }
-
-    function doEditSpecialised($content) {
-        if (hideEditBtn($content)) {
-            return;
-        }
-        $('#isEditHiddenVal').val('1');
-        unDisableContent($content);
-        let $editDiv = $content.find('.editDiv');
-        let $editParent = $editDiv.closest('.form-group');
-        if (!isEmptyNode($editParent)) {
-            hideTag($editParent);
-        } else {
-            hideTag($editDiv);
-        }
-    }
-
-    function hideEditBtn ($content) {
-        let $target= $content.find('.editDiv');
-        if (isEmptyNode($target)) {
-            return true;
-        }
-        return $target.is(':hidden');
-    }
-</script>

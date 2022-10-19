@@ -1,6 +1,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts" %>
 
 <div class="amended-service-info-gp">
     <label class="title-font-size">${currStepName}</label>
@@ -12,7 +13,7 @@
                     <c:set var="isSpecialService" value="${currentPreviewSvcInfo.serviceCode==AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL||currentPreviewSvcInfo.serviceCode==AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL}"/>
                     <div class="col-xs-12">
                         <span class="newVal" attr="${businessDto.premType}:${businessDto.premAddress}">
-                            <strong >${businessDto.premTypeNameOnly}</strong>: ${businessDto.premAddress}
+                            <strong>${businessDto.premTypeNameOnly}</strong>: ${businessDto.premAddress}
                         </span>
                     </div>
                     <div class="col-xs-12">

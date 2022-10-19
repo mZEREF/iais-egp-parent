@@ -1,6 +1,6 @@
 <div class="otherInfoASCSContent">
-    <input type="hidden" class ="isPartEdit" name="isPartEdit${status.index}" value="0"/>
-    <%--        <input type="hidden" class="chargesIndexNo" name="chargesIndexNo${status.index}" value="${appSvcOtherInfoDto.chargesIndexNo}"/>--%>
+    <input type="hidden" class ="isPartEdit" name="isPartEdit" value="0"/>
+    <input type="hidden" class="otherInfoMedASCId" name="otherInfoMedASCId" value="${m.id}"/>
     <div class="col-md-12 col-xs-12">
         <div class="edit-content">
             <c:if test="${canEdit}">
@@ -22,9 +22,9 @@
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="I declare that I have met URA's requirements for gross floor area"/>
         <div class="form-check col-md-3">
-            <input class="form-check-input" name="${prefix}ascsDeclaration" value="1"
+            <input class="form-check-input" name="${prefix}ascsDeclaration" value="0"
                    type="checkbox" aria-invalid="false"
-                   <c:if test="${'1' == ascsDeclaration}">checked="checked"</c:if> />
+                   <c:if test="${'0' == ascsDeclaration}">checked="checked"</c:if> />
             <label class="form-check-label">
                 <span class="check-square"></span><c:out value=""/>
             </label>

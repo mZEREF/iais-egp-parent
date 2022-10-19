@@ -51,14 +51,14 @@
                 <p class="font-18 bold">${appSvcOtherInfoDto.premAddress}</p>
             </div>
         </iais:row>
-
         <c:choose>
             <c:when test="${(currSvcInfoDto.serviceCode == AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE) || (currSvcInfoDto.serviceCode == AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)}">
+                <input type="hidden" name="otherInfoServiceCode" value="${currSvcInfoDto.serviceCode}">
                 <%@include file="dentalService.jsp" %>
                 <c:if test="${currSvcInfoDto.serviceCode == AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE}">
-                    <div class="otherInfoTopContent">
-                        <input type="hidden" class="isPartEdit" name="isPartEdit${status.index}" value="0"/>
-                            <%--        <input type="hidden" class="chargesIndexNo" name="chargesIndexNo${status.index}" value="${appSvcOtherInfoDto.chargesIndexNo}"/>--%>
+                    <div class="otherInfoTopContent" data-prefix="${prefix}" data-group="${appSvcOtherInfoTop.topType}" ata-seq="${provideTop}">
+                        <input type="hidden" class ="isPartEditTop" name="isPartEditTop" value="0"/>
+                        <input type="hidden" class="otherInfoIndexNo" name="otherInfoIndexNo" value="${appSvcOtherInfoDto.premiseIndex}"/>
                         <div class="col-md-12 col-xs-12">
                             <div class="edit-content">
                                 <c:if test="${canEdit}">
@@ -79,17 +79,19 @@
                 </c:if>
             </c:when>
             <c:when test="${currSvcInfoDto.serviceCode == AppServicesConsts.SERVICE_CODE_RENAL_DIALYSIS_CENTRE}">
+                <input type="hidden" name="otherInfoServiceCode" value="${currSvcInfoDto.serviceCode}">
                 <%@include file="renalDialysisCentreService.jsp" %>
             </c:when>
             <c:when test="${currSvcInfoDto.serviceCode == AppServicesConsts.SERVICE_CODE_AMBULATORY_SURGICAL_CENTRE}">
+                <input type="hidden" name="otherInfoServiceCode" value="${currSvcInfoDto.serviceCode}">
                 <%@include file="ambulatorySurgicalCentreService.jsp" %>
-                <div class="otherInfoTopContent">
-                    <input type="hidden" class="isPartEdit" name="isPartEdit${status.index}" value="0"/>
-                        <%--        <input type="hidden" class="chargesIndexNo" name="chargesIndexNo${status.index}" value="${appSvcOtherInfoDto.chargesIndexNo}"/>--%>
+                <div class="otherInfoTopContent" data-prefix="${prefix}">
+                    <input type="hidden" class ="isPartEditTop" name="isPartEditTop" value="0"/>
+                    <input type="hidden" class="otherInfoPremisesVal" name="otherInfoPremisesVal" value="${appSvcOtherInfoDto.premisesVal}"/>
                     <div class="col-md-12 col-xs-12">
                         <div class="edit-content">
                             <c:if test="${canEdit}">
-                RF                <div class="text-right app-font-size-16">
+                                <div class="text-right app-font-size-16">
                                     <a class="edit otherInfoTopEdit" href="javascript:void(0);">
                                         <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
                                     </a>
@@ -104,9 +106,10 @@
                 </div>
             </c:when>
             <c:when test="${currSvcInfoDto.serviceCode == AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL}">
-                <div class="otherInfoTopContent">
-                    <input type="hidden" class="isPartEdit" name="isPartEdit${status.index}" value="0"/>
-                        <%--        <input type="hidden" class="chargesIndexNo" name="chargesIndexNo${status.index}" value="${appSvcOtherInfoDto.chargesIndexNo}"/>--%>
+                <input type="hidden" name="otherInfoServiceCode" value="${currSvcInfoDto.serviceCode}">
+                <div class="otherInfoTopContent" data-prefix="${prefix}">
+                    <input type="hidden" class ="isPartEditTop" name="isPartEditTop" value="0"/>
+                    <input type="hidden" class="otherInfoIndexNo" name="otherInfoIndexNo" value="${appSvcOtherInfoDto.premiseIndex}"/>
                     <div class="col-md-12 col-xs-12">
                         <div class="edit-content">
                             <c:if test="${canEdit}">
@@ -126,9 +129,10 @@
                 </div>
             </c:when>
             <c:when test="${currSvcInfoDto.serviceCode == AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL}">
-                <div class="otherInfoTopContent">
-                    <input type="hidden" class="isPartEdit" name="isPartEdit${status.index}" value="0"/>
-                        <%--        <input type="hidden" class="chargesIndexNo" name="chargesIndexNo${status.index}" value="${appSvcOtherInfoDto.chargesIndexNo}"/>--%>
+                <input type="hidden" name="otherInfoServiceCode" value="${currSvcInfoDto.serviceCode}">
+                <div class="otherInfoTopContent" data-prefix="${prefix}">
+                    <input type="hidden" class ="isPartEditTop" name="isPartEditTop" value="0"/>
+                    <input type="hidden" class="otherInfoIndexNo" name="otherInfoIndexNo" value="${appSvcOtherInfoDto.premiseIndex}"/>
                     <div class="col-md-12 col-xs-12">
                         <div class="edit-content">
                             <c:if test="${canEdit}">
@@ -151,12 +155,16 @@
         <%@include file="otherService.jsp" %>
     </c:forEach>
 </div>
+<%@include file="/WEB-INF/jsp/iais/application/common/personFun.jsp" %>
 <script>
     $(document).ready(function () {
         doEditOtherInfoRDCEvent();
         doEditOtherInfoDentalServiceEvent();
         doEditOtherInfoASCSEvent();
         doEditOtherInfoTopEvent();
+        //other service
+        otherServiceCheckboxEvent();
+        doEditOtherServiceEvent();
         //rfc,renew,rfi
         <c:if test="${AppSubmissionDto.needEditController}">
             disableOtherInfoContent();
@@ -195,15 +203,107 @@
     }
 
     let doEditOtherInfoTopEvent = function () {
-        $('a.otherInfoTopContent').click(function () {
+        $('a.otherInfoTopEdit').click(function () {
+            let $tag = $('div.otherInfoTopContent');
+            let prefix = $tag.data('prefix');
+            console.log("doTopEdit-prefix:"+prefix);
+            if (!isEmpty(prefix)){
+                $('input.rfcEdit[data-prefix="' + prefix + '"]').val('doEditPractitioners');
+                $('input.rfcAnaesthetistsEdit[data-prefix="' + prefix + '"]').val('doEditAnaesthetists');
+                $('input.rfcNursesEdit[data-prefix="' + prefix + '"]').val('doEditNurses');
+                $('input.rfcCounsellorsEdit[data-prefix="' + prefix + '"]').val('doEditCounsellors');
+                $('input.rfcDrugEdit[data-prefix="' + prefix + '"]').val('doEditDrug');
+                $('input.rfcSurgicalEdit[data-prefix="' + prefix + '"]').val('doEditSurgical');
+                $('input.rfcAllEdit[data-prefix="' + prefix + '"]').val('doEditAll');
+            }
             let $currContent = $(this).closest('div.otherInfoTopContent');
+            $currContent.find('input.isPartEditTop').val('1');
             $currContent.find('input.isPartEdit').val('1');
+            $currContent.find('input.aisPartEdit').val('1');
+            $currContent.find('input.nisPartEdit').val('1');
+            $currContent.find('input.cisPartEdit').val('1');
+            $currContent.find('input.isPartEditDrug').val('1');
+            $currContent.find('input.isPartEditSurgical').val('1');
+            $currContent.find('input.isPartEditAll').val('1');
+            removeB(prefix);
             hideTag($currContent.find('.edit-content'));
             unDisableContent($currContent);
             $('#isEditHiddenVal').val('1');
         });
     }
 
+    function otherServiceCheckboxEvent() {
+        $('input[type="checkbox"]').on('click', function () {
+            checkOtherServiceCheckbox($(this));
+        });
+    }
+    function checkOtherServiceCheckbox($input) {
+        let data = $input.data('prem') + '-' + $input.val();
+        if ($input.is(':checked')) {
+            showTag($('div[data-parent="' + data + '"]'));
+        } else {
+            hideTag($('div[data-parent="' + data + '"]'));
+        }
+    }
+
+
+    let doEditOtherServiceEvent = function (){
+        let $target = $('.otherServiceEdit');
+        if (isEmptyNode($target)) {
+            return;
+        }
+        $target.unbind('click');
+        $target.on('click', function () {
+            console.log("otherService.............")
+            let $currContent = $(this).closest('div.otherServiceContent');
+            $currContent.find('input.isPartEditOtherService').val('1');
+            hideTag($currContent.find('.edit-content'));
+            unDisableContent($currContent);
+            $('#isEditHiddenVal').val('1');
+        });
+    }
+    function refreshOtherPAddBtn(prefix) {
+        if (isEmpty(prefix)){
+            prefix = "";
+        }
+        toggleTag('.addPractitionersDiv', $('div.practitioners[data-prefix="' + prefix + '"]').length < '10');
+    }
+    function refreshOtherAAddBtn(prefix) {
+        if (isEmpty(prefix)){
+            prefix = "";
+        }
+        toggleTag('.addAnaesthetistsDiv', $('div.anaesthetists[data-prefix="' + prefix + '"]').length < '10');
+    }
+    function refreshOtherNAddBtn(prefix) {
+        if (isEmpty(prefix)){
+            prefix = "";
+        }
+        toggleTag('.addNursesDiv', $('div.nurses[data-prefix="' + prefix + '"]').length < '10');
+    }
+    function refreshOtherCAddBtn(prefix) {
+        if (isEmpty(prefix)){
+            prefix = "";
+        }
+        toggleTag('.addCounsellorsDiv', $('div.counsellors[data-prefix="' + prefix + '"]').length < '10');
+    }
+    function refreshOtherDAddBtn(prefix) {
+        if (isEmpty(prefix)){
+            prefix = "";
+        }
+        toggleTag('.addTopByDrugDiv', $('div.topByDrug[data-prefix="' + prefix + '"]').length < '10');
+    }
+    function refreshOtherSAddBtn(prefix) {
+        if (isEmpty(prefix)){
+            prefix = "";
+        }
+        toggleTag('.addTopBySurgicalProcedureDiv', $('div.topBySurgicalProcedure[data-prefix="' + prefix + '"]').length < '10');
+    }
+    function refreshOtherLAddBtn(prefix) {
+        if (isEmpty(prefix)){
+            prefix = "";
+        }
+        toggleTag('.addTopAllDiv', $('div.topByDrugandSurgicalProcedure[data-prefix="' + prefix + '"]').length < '10');
+    }
     function disableOtherInfoContent() {
         // edit btn
         let $currContent = $('div.otherInfoPageContent');
@@ -214,6 +314,88 @@
         let $ascsContent = $('.otherInfoASCSContent');
         disableContent($ascsContent);
         let $topContent = $('.otherInfoTopContent');
+        let $tag = $topContent.find('.otherInfoTopEdit');
+        let prefix = $topContent.data('prefix');
+        let topType = $topContent.data('group');
+        let provideTop = $topContent.data('seq');
+        console.log("topType:"+topType);
+        console.log("provideTop:"+provideTop);
+        if (provideTop == '1'){
+            if (!isEmptyNode($tag)) {
+                showTag($currContent.find('.removePDiv:not(:first)'));
+                showTag($currContent.find('.removeADiv:not(:first)'));
+                showTag($currContent.find('.removeNDiv:not(:first)'));
+                showTag($currContent.find('.removeCODiv:not(:first)'));
+                showTag($currContent.find('.rDiv:not(:first)'));
+                showTag($currContent.find('.rdDiv:not(:first)'));
+                showTag($currContent.find('.rTDiv:not(:first)'));
+                refreshOtherPAddBtn(prefix);
+                refreshOtherAAddBtn(prefix);
+                refreshOtherNAddBtn(prefix);
+                refreshOtherCAddBtn(prefix);
+                if (topType == '1' || topType == '0'){
+                    refreshOtherDAddBtn(prefix);
+                }
+                if (topType == '-1' || topType == '0'){
+                    refreshOtherSAddBtn(prefix);
+                }
+                if (topType == '0'){
+                    refreshOtherLAddBtn(prefix);
+                }
+            } else {
+                hideTag($currContent.find('.removePDiv'));
+                hideTag($currContent.find('.addPractitionersDiv'));
+                hideTag($currContent.find('.removeADiv'));
+                hideTag($currContent.find('.addAnaesthetistsDiv'));
+                hideTag($currContent.find('.removeNDiv'));
+                hideTag($currContent.find('.addNursesDiv'));
+                hideTag($currContent.find('.removeCODiv'));
+                hideTag($currContent.find('.addCounsellorsDiv'));
+                if (topType == '1' || topType == '0'){
+                    hideTag($currContent.find('.rDiv'));
+                    hideTag($currContent.find('.addTopByDrugDiv'));
+                }
+                if (topType == '-1' || topType == '0'){
+                    hideTag($currContent.find('.rdDiv'));
+                    hideTag($currContent.find('.addTopBySurgicalProcedureDiv'));
+                }
+                if (topType == '0'){
+                    hideTag($currContent.find('.rTDiv'));
+                    hideTag($currContent.find('.addTopAllDiv'));
+                }
+            }
+        }
+        disableR(prefix)
         disableContent($topContent);
+        let $otherServiceContent = $('.otherServiceContent');
+        disableContent($otherServiceContent);
+    }
+
+    function disableR(prefix){
+        console.log("dis:"+prefix);
+        if (isEmpty(prefix)){
+            prefix = "";
+        }
+        $('div.removePDiv[data-prefix="' + prefix + '"]').prop('disabled',true).css('pointer-events','none').css('border-color', '#ededed').css('color', '#999');
+        $('div.removeADiv[data-prefix="' + prefix + '"]').prop('disabled',true).css('pointer-events','none').css('border-color', '#ededed').css('color', '#999');
+        $('div.removeNDiv[data-prefix="' + prefix + '"]').prop('disabled',true).css('pointer-events','none').css('border-color', '#ededed').css('color', '#999');
+        $('div.removeCODiv[data-prefix="' + prefix + '"]').prop('disabled',true).css('pointer-events','none').css('border-color', '#ededed').css('color', '#999');
+        $('div.rDiv[data-prefix="' + prefix + '"]').prop('disabled',true).css('pointer-events','none').css('border-color', '#ededed').css('color', '#999');
+        $('div.rdDiv[data-prefix="' + prefix + '"]').prop('disabled',true).css('pointer-events','none').css('border-color', '#ededed').css('color', '#999');
+        $('div.rTDiv[data-prefix="' + prefix + '"]').prop('disabled',true).css('pointer-events','none').css('border-color', '#ededed').css('color', '#999');
+    }
+
+    function removeB(prefix){
+        console.log("rem:"+prefix);
+        if (isEmpty(prefix)){
+            prefix = "";
+        }
+        $('div.removePDiv[data-prefix="' + prefix + '"]').prop('disabled',false).css('pointer-events','').css('border-color', '').css('color', '');
+        $('div.removeADiv[data-prefix="' + prefix + '"]').prop('disabled',false).css('pointer-events','').css('border-color', '').css('color', '');
+        $('div.removeNDiv[data-prefix="' + prefix + '"]').prop('disabled',false).css('pointer-events','').css('border-color', '').css('color', '');
+        $('div.removeCODiv[data-prefix="' + prefix + '"]').prop('disabled',false).css('pointer-events','').css('border-color', '').css('color', '');
+        $('div.rDiv[data-prefix="' + prefix + '"]').prop('disabled',false).css('pointer-events','').css('border-color', '').css('color', '');
+        $('div.rdDiv[data-prefix="' + prefix + '"]').prop('disabled',false).css('pointer-events','').css('border-color', '').css('color', '');
+        $('div.rTDiv[data-prefix="' + prefix + '"]').prop('disabled',false).css('pointer-events','').css('border-color', '').css('color', '');
     }
 </script>

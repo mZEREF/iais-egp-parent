@@ -1962,13 +1962,13 @@ public final class AppValidatorHelper {
                 }
             }
 
-            if (appSvcBusinessDtos.get(i).getWeeklyDtoList() != null) {
+            if (IaisCommonUtils.isNotEmpty(appSvcBusinessDtos.get(i).getWeeklyDtoList())) {
                 validateWeek(appSvcBusinessDtos.get(i), subfix, errorMap);
             }
-            if (appSvcBusinessDtos.get(i).getPhDtoList() != null) {
+            if (IaisCommonUtils.isNotEmpty(appSvcBusinessDtos.get(i).getPhDtoList())) {
                 validatePh(appSvcBusinessDtos.get(i), subfix, errorMap);
             }
-            if (appSvcBusinessDtos.get(i).getEventDtoList() != null) {
+            if (IaisCommonUtils.isNotEmpty(appSvcBusinessDtos.get(i).getEventDtoList())) {
                 validateEvent(appSvcBusinessDtos.get(i), subfix, errorMap);
             }
         }
@@ -2417,7 +2417,7 @@ public final class AppValidatorHelper {
         if ((ApplicationConsts.OTHER_INFO_SD.equals(topType)) || (ApplicationConsts.OTHER_INFO_DSP.equals(topType))) {
             for (int i = 0; i < topByDrug.size(); i++) {
                 String year = String.valueOf(topByDrug.get(i).getYear());
-                if (StringUtil.isEmpty(year)) {
+                if ("null".equals(year)) {
                     errMap.put(prefix+"year" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
                             "Year.",
                             "field"));
@@ -3079,6 +3079,8 @@ public final class AppValidatorHelper {
             String currRegiDate = appSvcPersonnelDto.getCurrRegiDate();
             if (StringUtil.isEmpty(currRegiDate)) {
                 errorMap.put(prefix + "currRegiDate" + i, signal);
+            }else if (!CommonValidator.isDate(currRegiDate)){
+                errorMap.put(prefix + "currRegiDate" + i, "GENERAL_ERR0033");
             } else if (currRegiDate.length() > 15) {
                 errorMap.put(prefix + "currRegiDate" + i, signal);
             }
@@ -3086,6 +3088,8 @@ public final class AppValidatorHelper {
             String praCerEndDateStr = appSvcPersonnelDto.getPraCerEndDate();
             if (StringUtil.isEmpty(praCerEndDateStr)) {
                 errorMap.put(prefix + "praCerEndDate" + i, signal);
+            }else if (!CommonValidator.isDate(praCerEndDateStr)){
+                errorMap.put(prefix + "praCerEndDate" + i, "GENERAL_ERR0033");
             } else if (praCerEndDateStr.length() > 15) {
                 errorMap.put(prefix + "praCerEndDate" + i, signal);
             }
@@ -3101,6 +3105,8 @@ public final class AppValidatorHelper {
             String specialtyGetDateStr = appSvcPersonnelDto.getSpecialtyGetDate();
             if (StringUtil.isEmpty(specialtyGetDateStr)) {
                 errorMap.put(prefix + "specialtyGetDate" + i, signal);
+            } else if (!CommonValidator.isDate(specialtyGetDateStr)){
+                errorMap.put(prefix + "specialtyGetDate" + i, "GENERAL_ERR0033");
             } else if (specialtyGetDateStr.length() > 15) {
                 errorMap.put(prefix + "specialtyGetDate" + i, signal);
             }
@@ -3108,6 +3114,8 @@ public final class AppValidatorHelper {
             String bclsExpiryDateStr = appSvcPersonnelDto.getBclsExpiryDate();
             if (StringUtil.isEmpty(bclsExpiryDateStr)) {
                 errorMap.put(prefix + "bclsExpiryDate" + i, signal);
+            }else if (!CommonValidator.isDate(bclsExpiryDateStr)){
+                errorMap.put(prefix + "bclsExpiryDate" + i, "GENERAL_ERR0033");
             } else {
                 if (!isEarly(bclsExpiryDateStr, currRegiDate)) {
                     errorMap.put(prefix + "bclsExpiryDate" + i, "SC_ERR009");
@@ -3126,6 +3134,8 @@ public final class AppValidatorHelper {
                 String cprExpiryDate = appSvcPersonnelDto.getCprExpiryDate();
                 if (StringUtil.isEmpty(cprExpiryDate)) {
                     errorMap.put(prefix + "cprExpiryDate" + i, signal);
+                }else if (!CommonValidator.isDate(cprExpiryDate)){
+                    errorMap.put(prefix + "cprExpiryDate" + i, "GENERAL_ERR0033");
                 }
 
             }

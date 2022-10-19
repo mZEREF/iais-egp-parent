@@ -511,11 +511,6 @@ public class ServiceInfoDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId,null);
-        List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
-        // Other Information Director config
-//        if (DealSessionUtil.initOtherInfoForm(currSvcInfoDto,appSubmissionDto.getAppGrpPremisesDtoList(), false,bpc.request)) {
-//            setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
-//        }
         DealSessionUtil.initAppSvcOtherInfoList(currSvcInfoDto,appSubmissionDto.getAppGrpPremisesDtoList(),false, bpc.request);
         ParamUtil.setRequestAttr(bpc.request, "orgUserDto",AppDataHelper.getOtherInfoYfVs(bpc.request));
     }
@@ -637,7 +632,7 @@ public class ServiceInfoDelegator {
         currSvcInfoDto.setCurAt(curAct);
         if (isGetDataFromPage) {
             //get data from page
-            appSvcOutsouredDto = AppDataHelper.genAppPremOutSourceProvidersDto(curAct,appSvcOutsouredDto,request,appSubmissionDto);
+            appSvcOutsouredDto = AppDataHelper.genAppPremOutSourceProvidersDto(curAct,appSvcOutsouredDto,request,appSubmissionDto,appType);
             currSvcInfoDto.setAppPremOutSourceLicenceDto(appSvcOutsouredDto);
             reSetChangesForApp(appSubmissionDto);
             setAppSvcRelatedInfoMap(request, currSvcId, currSvcInfoDto, appSubmissionDto);

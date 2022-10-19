@@ -13,7 +13,8 @@
             </h4>
         </div>
     </iais:row>
-
+    <input type="hidden" class="aisPartEdit" name="${prefix}aisPartEdit${index}" value="0" data-prefix="${prefix}"/>
+    <input type="hidden" class="anaesthetistsIndexNo" name="${prefix}anaesthetistsIndexNo${index}" value="${person.idNo}"/>
     <input type="hidden" class="apsnType" name="${prefix}apsnType${index}" value="${psnType}" data-prefix="${prefix}">
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Professional Regn. No."/>

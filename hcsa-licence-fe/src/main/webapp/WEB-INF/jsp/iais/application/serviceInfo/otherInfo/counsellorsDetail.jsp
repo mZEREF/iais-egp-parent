@@ -14,7 +14,8 @@
             </h4>
         </div>
     </iais:row>
-
+    <input type="hidden" class="cisPartEdit" name="${prefix}cisPartEdit${index}" value="0" data-prefix="${prefix}"/>
+    <input type="hidden" class="counsellorsIndexNo" name="counsellorsIndexNo${index}" value="${person.idNo}"/>
     <input type="hidden" class="cpsnType" name="${prefix}cpsnType${index}" value="${psnType}" data-prefix="${prefix}">
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Name of certified TOP counsellors(Only Doctor/Nurse)"/>

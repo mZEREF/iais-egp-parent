@@ -50,8 +50,6 @@
         </iais:row>
     </div>
 
-
-
     <%--TODO...practitioners--%>
     <c:choose>
         <c:when test="${empty practitioners}">
@@ -62,6 +60,7 @@
         </c:otherwise>
     </c:choose>
     <input type="hidden" class="cdLength" name="${prefix}cdLength" value="${personCount}" data-prefix="${prefix}"/>
+    <input type="hidden" name="${prefix}rfcEdit" class="rfcEdit" value="" data-prefix="${prefix}">
     <c:forEach begin="0" end="${personCount-1}" step="1" varStatus="pStat">
         <c:set var="index" value="${pStat.index}" />
         <c:set var="person" value="${practitioners[index]}"/>
@@ -84,6 +83,7 @@
         </c:otherwise>
     </c:choose>
     <input type="hidden" class="anaLength" name="${prefix}anaLength" value="${aCount}" data-prefix="${prefix}"/>
+    <input type="hidden" name="${prefix}rfcAnaesthetistsEdit" class="rfcAnaesthetistsEdit" value="" data-prefix="${prefix}">
     <c:forEach begin="0" end="${aCount-1}" step="1" varStatus="cdStat">
         <c:set var="index" value="${cdStat.index}" />
         <c:set var="person" value="${anaesthetists[index]}"/>
@@ -105,6 +105,7 @@
         </c:otherwise>
     </c:choose>
     <input type="hidden" class="nLength" name="${prefix}nLength" value="${nCount}" data-prefix="${prefix}"/>
+    <input type="hidden" name="${prefix}rfcNursesEdit" class="rfcNursesEdit" value="" data-prefix="${prefix}">
     <c:forEach begin="0" end="${nCount-1}" step="1" varStatus="cdStat">
         <c:set var="index" value="${cdStat.index}" />
         <c:set var="person" value="${nurses[index]}"/>
@@ -126,6 +127,7 @@
         </c:otherwise>
     </c:choose>
     <input type="hidden" class="cLength" name="${prefix}cLength" value="${cCount}" data-prefix="${prefix}"/>
+    <input type="hidden" name="${prefix}rfcCounsellorsEdit" class="rfcCounsellorsEdit" value="" data-prefix="${prefix}">
     <c:forEach begin="0" end="${cCount-1}" step="1" varStatus="cdStat">
         <c:set var="index" value="${cdStat.index}" />
         <c:set var="person" value="${counsellors[index]}"/>
@@ -307,7 +309,7 @@
         $('.addPractitionersBtn').click(function () {
             showWaiting();
             if (${AppSubmissionDto.needEditController }){
-                $('a.otherInfoEdit').trigger('click');
+                $('a.otherInfoTopEdit').trigger('click');
             }
             let $tag = $(this);
             let $target = $tag.closest('.addPractitionersDiv');
@@ -315,7 +317,6 @@
             if (isEmpty(prefix)) {
                 prefix = "";
             }
-            console.log(prefix)
             let target = $('div.practitioners[data-prefix="' + prefix + '"]').first();
             let src = target.clone();
             $('div.addPractitionersDiv[data-prefix="' + prefix + '"]').before(src);
@@ -325,14 +326,13 @@
             clearFields($currContent);
             removePractitioners();
             if(cdLength <= 1){
-                console.log("init.........")
                 $('.practitioners[data-prefix="' + prefix + '"]:eq(0) .assign-psn-item').html('');
             }
             $('.practitioners[data-prefix="' + prefix + '"]').each(function (k,v) {
-                console.log("k....."+k);
                 toggleTag($(this).find('div.removePractitionersBtn[data-prefix="' + prefix + '"]'), k != 0);
                 $(this).find('.assign-psn-item').html(k+1);
-                console.log("k....."+k)
+                $(this).find('input.isPartEdit').prop('name',prefix+'isPartEdit'+k);
+                $(this).find('input.practitionersIndexNo').prop('name',prefix+'practitionersIndexNo'+k);
                 $(this).find('input.psnType').prop('name',prefix+'psnType'+k);
                 $('input.psnType[data-prefix="' + prefix + '"]').val("practitioners");
                 $(this).find('input.profRegNo').prop('name',prefix+'profRegNo'+k);
@@ -340,9 +340,14 @@
                 $(this).find('input.idNo').prop('name',prefix+'idNo'+k);
                 $(this).find('input.regType').prop('name',prefix+'regType'+k);
                 $(this).find('input.qualification').prop('name',prefix+'qualification'+k);
-                $(this).find('input.isMedAuthByMoh').prop('name',prefix+'isMedAuthByMoh'+k);
+                $(this).find('input.medAuthByMoh').prop('name',prefix+'medAuthByMoh'+k);
                 $(this).find('input.speciality').prop('name',prefix+'speciality'+k);
             });
+            let rfcEdit = $('input.rfcEdit[data-prefix="' + prefix + '"]').val();
+            console.log("addRfcEdit:"+rfcEdit);
+            if (!isEmpty(rfcEdit) && 'doEditPractitioners' == rfcEdit){
+                $('input.isPartEdit[data-prefix="' + prefix + '"]').val('1');
+            }
            dismissWaiting();
         })
     }
@@ -362,7 +367,6 @@
             let $v = $(this);
             let $tag = $v.closest('.removePDiv');
             let prefix = $tag.data('prefix');
-            console.log(prefix)
             if (isEmpty(prefix)) {
                 prefix = "";
             }
@@ -371,17 +375,17 @@
             $('input.cdLength[data-prefix="' + prefix + '"]').val(cdLength);
             //reset number
             $('div.practitioners[data-prefix="' + prefix + '"]').each(function (k,v) {
-                console.log("k....."+k)
                 $(this).find('.assign-psn-item').html(k+1);
+                $(this).find('input.isPartEdit').prop('name',prefix+'isPartEdit'+k);
+                $(this).find('input.practitionersIndexNo').prop('name',prefix+'practitionersIndexNo'+k);
                 $(this).find('input.psnType').prop('name',prefix+'psnType'+k);
                 $(this).find('input.profRegNo').prop('name',prefix+'profRegNo'+k);
-                $(this).find('input.profRegNo').prop('id',prefix+'profRegNo'+k);
                 $(this).find('input.name').prop('name',prefix+'name'+k);
                 $(this).find('input.idNo').prop('name',prefix+'idNo'+k);
                 $(this).find('input.regType').prop('name',prefix+'regType'+k);
                 $(this).find('input.qualification').prop('name',prefix+'qualification'+k);
-                $(this).find('input.specialties').prop('name',prefix+'specialties'+k);
-                $(this).find('input.holdMPA').prop('name',prefix+'holdMPA'+k);
+                $(this).find('input.speciality').prop('name',prefix+'speciality'+k);
+                $(this).find('input.medAuthByMoh').prop('name',prefix+'medAuthByMoh'+k);
             });
             //display add more
             if(cdLength <= 1){
@@ -397,7 +401,7 @@
         $('.addAnaesthetistsBtn').click(function () {
             showWaiting();
             if (${AppSubmissionDto.needEditController }){
-                $('a.otherInfoEdit').trigger('click');
+                $('a.otherInfoTopEdit').trigger('click');
             }
             let $tag = $(this);
             let $target = $tag.closest('.addAnaesthetistsDiv');
@@ -405,7 +409,6 @@
             if (isEmpty(prefix)) {
                 prefix = "";
             }
-            console.log(prefix)
             let target = $('div.anaesthetists[data-prefix="' + prefix + '"]').first();
             let src = target.clone();
             $('div.addAnaesthetistsDiv[data-prefix="' + prefix + '"]').before(src);
@@ -415,21 +418,25 @@
             clearFields($currContent);
             removeAnaesthetists();
             if(anaLength <= 1){
-                console.log("init.........")
                 $('.anaesthetists[data-prefix="' + prefix + '"]:eq(0) .assign-psn-item').html('');
             }
             $('.anaesthetists[data-prefix="' + prefix + '"]').each(function (k,v) {
                 toggleTag($(this).find('div.removeAnaesthetistsBtn[data-prefix="' + prefix + '"]'), k != 0);
-                console.log("k...."+k);
                 $(this).find('.assign-psn-item').html(k+1);
+                $(this).find('input.aisPartEdit').prop('name',prefix+'aisPartEdit'+k);
                 $(this).find('input.apsnType').prop('name',prefix+'apsnType'+k);
                 $('input.apsnType[data-prefix="' + prefix + '"]').val("anaesthetists");
-                $(this).find('input.aprofRegNo').prop('aname',prefix+'profRegNo'+k);
+                $(this).find('input.aprofRegNo').prop('name',prefix+'aprofRegNo'+k);
                 $(this).find('input.aname').prop('name',prefix+'aname'+k);
                 $(this).find('input.idANo').prop('name',prefix+'idANo'+k);
                 $(this).find('input.aregType').prop('name',prefix+'aregType'+k);
                 $(this).find('input.aqualification').prop('name',prefix+'aqualification'+k);
             });
+            let rfcEdit = $('input.rfcAnaesthetistsEdit[data-prefix="' + prefix + '"]').val();
+            console.log("addRfcEdit:"+rfcEdit);
+            if (!isEmpty(rfcEdit) && 'doEditAnaesthetists' == rfcEdit){
+                $('input.aisPartEdit[data-prefix="' + prefix + '"]').val('1');
+            }
             dismissWaiting();
         })
     }
@@ -457,8 +464,9 @@
             //reset number
             $('div.anaesthetists[data-prefix="' + prefix + '"]').each(function (k,v) {
                 $(this).find('.assign-psn-item').html(k+1);
+                $(this).find('input.aisPartEdit').prop('name',prefix+'aisPartEdit'+k);
                 $(this).find('input.apsnType').prop('name',prefix+'apsnType'+k);
-                $(this).find('input.aprofRegNo').prop('aname',prefix+'profRegNo'+k);
+                $(this).find('input.aprofRegNo').prop('aname',prefix+'aprofRegNo'+k);
                 $(this).find('input.aname').prop('name',prefix+'aname'+k);
                 $(this).find('input.idANo').prop('name',prefix+'idANo'+k);
                 $(this).find('input.aregType').prop('name',prefix+'aregType'+k);
@@ -479,7 +487,7 @@
         $('.addNursesBtn').click(function () {
             showWaiting();
             if (${AppSubmissionDto.needEditController }){
-                $('a.otherInfoEdit').trigger('click');
+                $('a.otherInfoTopEdit').trigger('click');
             }
             let $tag = $(this);
             let $target = $tag.closest('.addNursesDiv');
@@ -504,12 +512,17 @@
                 toggleTag($(this).find('div.removeNursesBtn[data-prefix="' + prefix + '"]'), k != 0);
                 console.log("k...."+k);
                 $(this).find('.assign-psn-item').html(k+1);
-                $('input.npsnType[data-prefix="' + prefix + '"]').val("nurses");
+                $(this).find('input.nisPartEdit').prop('name',prefix+'nisPartEdit'+k);
                 $(this).find('input.npsnType').prop('name',prefix+'npsnType'+k);
+                $('input.npsnType[data-prefix="' + prefix + '"]').val("nurses");
                 $(this).find('input.nname').prop('name',prefix+'nname'+k);
                 $(this).find('input.nqualification').prop('name',prefix+'nqualification'+k);
             });
-
+            let rfcEdit = $('input.rfcNursesEdit[data-prefix="' + prefix + '"]').val();
+            console.log("addRfcEdit:"+rfcEdit);
+            if (!isEmpty(rfcEdit) && 'doEditNurses' == rfcEdit){
+                $('input.nisPartEdit[data-prefix="' + prefix + '"]').val('1');
+            }
             dismissWaiting();
         })
     }
@@ -538,6 +551,7 @@
             $('div.nurses[data-prefix="' + prefix + '"]').each(function (k,v) {
                 console.log("k....."+k)
                 $(this).find('.assign-psn-item').html(k+1);
+                $(this).find('input.nisPartEdit').prop('name',prefix+'nisPartEdit'+k);
                 $(this).find('input.npsnType').prop('name',prefix+'npsnType'+k);
                 $(this).find('input.nname').prop('name',prefix+'nname'+k);
                 $(this).find('input.nqualification').prop('name',prefix+'nqualification'+k);
@@ -556,7 +570,7 @@
         $('.addCounsellorsBtn').click(function () {
             showWaiting();
             if (${AppSubmissionDto.needEditController }){
-                $('a.otherInfoEdit').trigger('click');
+                $('a.otherInfoTopEdit').trigger('click');
             }
             let $tag = $(this);
             let $target = $tag.closest('.addCounsellorsDiv');
@@ -581,12 +595,18 @@
                 toggleTag($(this).find('div.removeBtn[data-prefix="' + prefix + '"]'), k != 0);
                 console.log("k...."+k);
                 $(this).find('.assign-psn-item').html(k+1);
+                $(this).find('input.cisPartEdit').prop('name',prefix+'cisPartEdit'+k);
                 $(this).find('input.cpsnType').prop('name',prefix+'cpsnType'+k);
                 $('input.cpsnType[data-prefix="' + prefix + '"]').val("counsellors");
                 $(this).find('input.cname').prop('name',prefix+'cname'+k);
                 $(this).find('input.cidNo').prop('name',prefix+'cidNo'+k);
                 $(this).find('input.cqualification').prop('name',prefix+'cqualification'+k);
             });
+            let rfcEdit = $('input.rfcCounsellorsEdit[data-prefix="' + prefix + '"]').val();
+            console.log("addRfcEdit:"+rfcEdit);
+            if (!isEmpty(rfcEdit) && 'doEditCounsellors' == rfcEdit){
+                $('input.cisPartEdit[data-prefix="' + prefix + '"]').val('1');
+            }
             dismissWaiting();
         })
     }
@@ -614,6 +634,7 @@
             $('div.counsellors[data-prefix="' + prefix + '"]').each(function (k,v) {
                 console.log("k....."+k)
                 $(this).find('.assign-psn-item').html(k+1);
+                $(this).find('input.cisPartEdit').prop('name',prefix+'cisPartEdit'+k);
                 $(this).find('input.cpsnType').prop('name',prefix+'cpsnType'+k);
                 $(this).find('input.cprofRegNo').prop('name',prefix+'cprofRegNo'+k);
                 $(this).find('input.cprofRegNo').prop('id',prefix+'cprofRegNo'+k);

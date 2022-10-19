@@ -7,6 +7,7 @@
                 <c:if test="${'0' == appSvcOtherInfoDto.provideTop}">No</c:if>
             </iais:value>
         </iais:row>
+
         <div class="personTop <c:if test="${'0' == appSvcOtherInfoDto.provideTop}">hidden</c:if>">
             <iais:row>
                 <iais:field width="5"  value="Please indicate"/>
@@ -17,47 +18,39 @@
                 </iais:value>
             </iais:row>
             <c:forEach var="person" items="${appSvcOtherInfoDto.otherInfoTopPersonPractitionersList}" varStatus="status">
-                <c:if test="${person.psnType == 'MedPra'}">
-                    <iais:row>
-                        <div class="col-xs-12">
-                            <p><strong>Name, Professional Regn. No. and Qualification of medical practitioners authorised to perform Abortion&nbsp;<c:if test="${appSvcOtherInfoDto.otherInfoTopPersonPractitionersList.size()>1}">${status.index+1}:</c:if></strong></p>
-                        </div>
-                    </iais:row>
-                    <%@include file="viewPractitionersDetail.jsp"%>
-                </c:if>
+                <iais:row>
+                    <div class="col-xs-12">
+                        <p><strong>Name, Professional Regn. No. and Qualification of medical practitioners authorised to perform Abortion&nbsp;<c:if test="${appSvcOtherInfoDto.otherInfoTopPersonPractitionersList.size()>1}">${status.index+1}:</c:if></strong></p>
+                    </div>
+                </iais:row>
+                <%@include file="viewPractitionersDetail.jsp"%>
             </c:forEach>
 
             <c:forEach var="person" items="${appSvcOtherInfoDto.otherInfoTopPersonAnaesthetistsList}" varStatus="astatus">
-                <c:if test="${person.psnType == 'MedAna'}">
-                    <iais:row>
-                        <div class="col-xs-12">
-                            <p><strong>Name, Professional Regn. No. and Qualification of anaesthetists&nbsp;<c:if test="${appSvcOtherInfoDto.otherInfoTopPersonAnaesthetistsList.size()>1}">${astatus.index+1}:</c:if></strong></p>
-                        </div>
-                    </iais:row>
-                    <%@include file="viewAnaesthetistsDetail.jsp"%>
-                </c:if>
+                <iais:row>
+                    <div class="col-xs-12">
+                        <p><strong>Name, Professional Regn. No. and Qualification of anaesthetists&nbsp;<c:if test="${appSvcOtherInfoDto.otherInfoTopPersonAnaesthetistsList.size()>1}">${astatus.index+1}:</c:if></strong></p>
+                    </div>
+                </iais:row>
+                <%@include file="viewAnaesthetistsDetail.jsp"%>
             </c:forEach>
 
             <c:forEach var="person" items="${appSvcOtherInfoDto.otherInfoTopPersonNursesList}" varStatus="nstatus">
-                <c:if test="${person.psnType == 'MedNur'}">
-                    <iais:row>
-                        <div class="col-xs-12">
-                            <p><strong>Name and Qualification of trained nurses&nbsp;<c:if test="${appSvcOtherInfoDto.otherInfoTopPersonNursesList.size()>1}">${nstatus.index+1}:</c:if></strong></p>
-                        </div>
-                    </iais:row>
-                    <%@include file="viewNursesDetail.jsp"%>
-                </c:if>
+                <iais:row>
+                    <div class="col-xs-12">
+                        <p><strong>Name and Qualification of trained nurses&nbsp;<c:if test="${appSvcOtherInfoDto.otherInfoTopPersonNursesList.size()>1}">${nstatus.index+1}:</c:if></strong></p>
+                    </div>
+                </iais:row>
+                <%@include file="viewNursesDetail.jsp"%>
             </c:forEach>
 
             <c:forEach var="person" items="${appSvcOtherInfoDto.otherInfoTopPersonCounsellorsList}" varStatus="cstatus">
-                <c:if test="${person.psnType == 'MedCou'}">
-                    <iais:row>
-                        <div class="col-xs-12">
-                            <p><strong>Name, Professional Regn. No. and Qualification of certified TOP counsellors&nbsp;<c:if test="${appSvcOtherInfoDto.otherInfoTopPersonCounsellorsList.size()>1}">${cstatus.index+1}:</c:if></strong></p>
-                        </div>
-                    </iais:row>
-                    <%@include file="viewCounsellorsDetail.jsp"%>
-                </c:if>
+                <iais:row>
+                    <div class="col-xs-12">
+                        <p><strong>Name, Professional Regn. No. and Qualification of certified TOP counsellors&nbsp;<c:if test="${appSvcOtherInfoDto.otherInfoTopPersonCounsellorsList.size()>1}">${cstatus.index+1}:</c:if></strong></p>
+                    </div>
+                </iais:row>
+                <%@include file="viewCounsellorsDetail.jsp"%>
             </c:forEach>
 
             <iais:row cssClass="row control control-caption-horizontal">

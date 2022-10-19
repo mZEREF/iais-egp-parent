@@ -1,33 +1,38 @@
 <c:forEach var="phDto" items="${businessDto.phDtoList}" varStatus="stat">
     <c:set var="oldphDto" value="${oldBusiness.phDtoList[stat.index]}"/>
-    <c:if test="${stat.first}">
+    <table  class="col-xs-12" aria-describedby="">
+        <thead style="display: none">
         <tr>
-            <div class="col-xs-12">
-                <p class="form-check-label" aria-label="premise-1-cytology"><span>Public Holiday</span></p>
-            </div>
+            <th scope="col"></th>
         </tr>
-    </c:if>
-    <tr>
-        <td class="col-xs-6">
-            <div class="col-xs-6">
-                <div class="newVal" attr="${phDto.selectValList}">
-                    <c:forEach var="phName" items="${phDto.selectValList}" varStatus="phStat">
-                        <iais:code code="${phName}"/><c:if test="${!phStat.last}">,</c:if>
-                    </c:forEach>
+        </thead>
+        <c:if test="${stat.first}">
+            <tr>
+                <div class="col-xs-12">
+                    <label class="control-label">Public Holiday</label>
                 </div>
-            </div>
-            <div class="col-xs-6">
-                <div class="oldVal" style="display: none" attr="${oldphDto.selectValList}">
-                    <c:forEach var="phName" items="${oldphDto.selectValList}" varStatus="phStat">
-                        <iais:code code="${phName}"/><c:if test="${!phStat.last}">,</c:if>
-                    </c:forEach>
+            </tr>
+        </c:if>
+        <tr>
+            <td class="col-xs-6">
+                <div class="col-xs-12 row">
+                    <div class="newVal" attr="${phDto.selectValList}">
+                        <c:forEach var="phName" items="${phDto.selectValList}" varStatus="phStat">
+                            <iais:code code="${phName}"/><c:if test="${!phStat.last}">,</c:if>
+                        </c:forEach>
+                    </div>
                 </div>
-            </div>
-        </td>
-        <td>
-            <div class="col-xs-6">
+                <div class="col-xs-12 row">
+                    <div class="oldVal" style="display: none" attr="${oldphDto.selectValList}">
+                        <c:forEach var="phName" items="${oldphDto.selectValList}" varStatus="phStat">
+                            <iais:code code="${phName}"/><c:if test="${!phStat.last}">,</c:if>
+                        </c:forEach>
+                    </div>
+                </div>
+            </td>
+            <td class="col-xs-6">
                 <div class="col-xs-4">
-                    <div class="col-xs-6">
+                    <div class="col-xs-12 row">
                         <div class="newVal" attr="${phDto.startFromHH}:${phDto.startFromMM}">
                             <c:if test="${!phDto.selectAllDay}">
                                 <c:if test="${phDto.startFromHH != null}">
@@ -56,7 +61,7 @@
                             </c:if>
                         </div>
                     </div>
-                    <div class="col-xs-6">
+                    <div class="col-xs-12 row">
                         <div class="oldVal" style="display: none" attr="${oldphDto.startFromHH}:${oldphDto.startFromMM}">
                             <c:if test="${!oldphDto.selectAllDay}">
                                 <c:if test="${oldphDto.startFromHH != null}">
@@ -87,7 +92,7 @@
                     </div>
                 </div>
                 <div class="col-xs-4">
-                    <div class="col-xs-6">
+                    <div class="col-xs-12 row">
                         <div class="newVal" attr="${phDto.endToHH}:${phDto.endToMM}">
                             <c:if test="${!phDto.selectAllDay}">
                                 <c:if test="${phDto.endToHH != null}">
@@ -116,7 +121,7 @@
                             </c:if>
                         </div>
                     </div>
-                    <div class="col-xs-6">
+                    <div class="col-xs-12 row">
                         <div class="oldVal" style="display: none" attr="${oldphDto.endToHH}:${oldphDto.endToMM}">
                             <c:if test="${!oldphDto.selectAllDay}">
                                 <c:if test="${oldphDto.endToHH != null}">
@@ -147,7 +152,7 @@
                     </div>
                 </div>
                 <div class="col-xs-4">
-                    <div class="col-xs-6">
+                    <div class="col-xs-12 row">
                         <c:if test="${phDto.selectAllDay}">
                             <div class="newVal" attr="${phDto.selectAllDay}">
                                 <div class="form-check active">
@@ -156,7 +161,7 @@
                             </div>
                         </c:if>
                     </div>
-                    <div class="col-xs-6">
+                    <div class="col-xs-12 row">
                         <c:if test="${oldphDto.selectAllDay}">
                             <div class="oldVal" style="display: none" attr="${oldphDto.selectAllDay}">
                                 <div class="form-check active">
@@ -166,7 +171,7 @@
                         </c:if>
                     </div>
                 </div>
-            </div>
-        </td>
-    </tr>
+            </td>
+        </tr>
+    </table>
 </c:forEach>

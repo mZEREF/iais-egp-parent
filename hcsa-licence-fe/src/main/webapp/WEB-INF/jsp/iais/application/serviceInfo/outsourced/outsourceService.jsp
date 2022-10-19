@@ -28,18 +28,6 @@
         margin-bottom: 55px;
     }
 </style>
-<c:if test="${AppSubmissionDto.needEditController }">
-    <c:if test="${(isRfc || isRenew) && !isRfi}">
-        <iais:row>
-            <div class="text-right app-font-size-16">
-                <a class="back" id="RfcSkip" href="javascript:void(0);">
-                    Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em>
-                </a>
-            </div>
-        </iais:row>
-    </c:if>
-    <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
-</c:if>
 <iais:row>
     <div class="col-xs-12">
         <h2 class="app-title">Outsourced Service(s)</h2>
@@ -48,7 +36,20 @@
     </div>
 </iais:row>
 
-<div class="searchService clearTep" >
+<div class="searchService clearTep outsourced-content">
+    <input type="hidden" class ="isPartEdit" name="isPartEdit" value="0"/>
+    <input type="hidden" class="outsourcedIndexNo" name="outsourcedIndexNo" value=""/>
+    <div class="col-md-12 col-xs-12">
+        <div class="edit-content">
+            <c:if test="${canEdit}">
+                <div class="text-right app-font-size-16">
+                    <a class="edit outsourcedEdit" href="javascript:void(0);">
+                        <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
+                    </a>
+                </div>
+            </c:if>
+        </div>
+    </div>
     <input type="hidden" name="btnStep" value="">
     <input type="hidden" name="pIds" value="">
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
@@ -101,8 +102,8 @@
         <div class="col-xs-12 col-md-12 cSBtn">
             <div class="col-xs-6 col-md-6"></div>
             <div class="col-xs-6 col-md-6" style="padding-left: 200px;!important;">
-                <a class="btn btn-secondary" id="ANT_Clearn">Clear</a>
-                <a class="btn btn-primary" id="ANT_Search">Search</a>
+                <a class="btn btn-secondary btn-outsourced-clear" id="ANT_Clearn">Clear</a>
+                <a class="btn btn-primary btn-outsourced-search" id="ANT_Search">Search</a>
             </div>
         </div>
         <c:if test="${!empty outSourceParam}">

@@ -1,6 +1,6 @@
 <div class="otherInfoRDCPageContent">
-    <input type="hidden" class ="isPartEdit" name="isPartEdit${status.index}" value="0"/>
-    <%--        <input type="hidden" class="chargesIndexNo" name="chargesIndexNo${status.index}" value="${appSvcOtherInfoDto.chargesIndexNo}"/>--%>
+    <input type="hidden" class ="isPartEdit" name="isPartEdit" value="0"/>
+    <input type="hidden" class="otherInfoNurseId" name="otherInfoNurseId" value="${n.id}"/>
     <div class="col-md-12 col-xs-12">
         <div class="edit-content">
             <c:if test="${canEdit}">

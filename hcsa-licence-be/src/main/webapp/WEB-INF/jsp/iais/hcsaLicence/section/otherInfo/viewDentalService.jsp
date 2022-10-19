@@ -9,18 +9,18 @@
         <td>
             <div class="col-xs-6 ">
                 <span class="newVal" attr="${otherInfo.appSvcOtherInfoMedDto.isMedicalTypeIt}">
-                   <c:if test="${oldOtherInfo.appSvcOtherInfoMedDto.isMedicalTypeIt eq 1}">IT System</c:if>
+                   <c:if test="${otherInfo.appSvcOtherInfoMedDto.isMedicalTypeIt eq '0'}">IT System</c:if>
                 </span>
                 <span class="newVal" attr="${otherInfo.appSvcOtherInfoMedDto.isMedicalTypePaper}">
-                    <c:if test="${oldOtherInfo.appSvcOtherInfoMedDto.isMedicalTypePaper eq 1}">Paper cards</c:if>
+                    <c:if test="${otherInfo.appSvcOtherInfoMedDto.isMedicalTypePaper eq '0'}">Paper cards</c:if>
                 </span>
             </div>
             <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldOtherInfo.appSvcOtherInfoMedDto.isMedicalTypeIt}" style="display: none">
-                   <c:if test="${oldOtherInfo.appSvcOtherInfoMedDto.isMedicalTypeIt eq 1}">IT System</c:if>
+                   <c:if test="${oldOtherInfo.appSvcOtherInfoMedDto.isMedicalTypeIt eq '0'}">IT System</c:if>
                 </span>
                 <span class=" oldVal" attr="${oldOtherInfo.appSvcOtherInfoMedDto.isMedicalTypePaper}" style="display: none">
-                    <c:if test="${oldOtherInfo.appSvcOtherInfoMedDto.isMedicalTypePaper eq 1}">Paper cards</c:if>
+                    <c:if test="${oldOtherInfo.appSvcOtherInfoMedDto.isMedicalTypePaper eq '0'}">Paper cards</c:if>
                 </span>
             </div>
         </td>
@@ -134,12 +134,12 @@
         <td>
             <div class="col-xs-6 ">
                 <span class="newVal" attr="${otherInfo.dsDeclaration}">
-                     <c:if test="${otherInfo.dsDeclaration eq '1'}">Yes</c:if>
+                     <c:if test="${empty otherInfo.dsDeclaration}">Yes</c:if>
                 </span>
             </div>
             <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldOtherInfo.dsDeclaration}" style="display: none">
-                     <c:if test="${oldOtherInfo.dsDeclaration eq '1'}">Yes</c:if>
+                     <c:if test="${empty oldOtherInfo.dsDeclaration eq '1'}">Yes</c:if>
                 </span>
             </div>
         </td>
