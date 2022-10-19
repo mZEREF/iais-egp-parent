@@ -47,6 +47,7 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskApplicationClient;
+import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import com.ecquaria.cloudfeign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -406,6 +407,7 @@ public class CessationBeServiceImpl implements CessationBeService {
     }
 
     private Map<String, List<String>> transform(AppSubmissionDto appSubmissionDto, List<String> premiseIds) {
+        DealSessionUtil.initView(appSubmissionDto);
         Map<String, List<String>> map = IaisCommonUtils.genNewHashMap();
         String licenseeId = appSubmissionDto.getLicenseeId();
         Double amount = 0.0;
