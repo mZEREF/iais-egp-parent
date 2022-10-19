@@ -168,7 +168,7 @@ public final class RfcHelper {
                 oldAppSvcRelatedInfoDtos.get(0).getAppSvcChargesPageDto());
         boolean changeServiceAutoFields = changeCharges || isChangeSvcInfoAutoFields(appSvcRelatedInfoDtos,
                 oldAppSvcRelatedInfoDtos, appEditSelectDto);
-        boolean changeSpecialServiceInformation=ischangeSpecialServiceInformation(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos);
+        boolean changeSpecialServiceInformation=ischangeSpecialServiceInformation(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, nonAutoList);
         //other info
         boolean changeOtherInfo = isChangeAppSvcOtherInfoDto(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos);
         boolean changeOtherInfoPerson = isChangeAppSvcOtherInfoPerson(appSvcRelatedInfoDtos,oldAppSvcRelatedInfoDtos,autoList);
@@ -187,8 +187,6 @@ public final class RfcHelper {
         if (changeOutsourceFields){
             nonAutoList.add(HcsaConsts.STEP_OUTSOURCED_PROVIDERS);
         }
-        appEditSelectDto.setChangeBusinessName(changeBusinessNonAutoFields);
-        appEditSelectDto.setChangeBusinessAutoFields(changeBusinessAutoFields);
         appEditSelectDto.setChangePersonnel(changePersonnel);
         appEditSelectDto.setChangeSectionLeader(changeSectionLeader);
         appEditSelectDto.setChangeSpecialServiceInformation(changeSpecialServiceInformation);
