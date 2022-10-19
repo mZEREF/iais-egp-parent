@@ -262,10 +262,6 @@
             let $currContent = $Content.find('div.personnel-content');
             $currContent.each(function (k, v) {
                 refreshIndex($(v), k);
-                // var isPartEdit = $currContent.find('input.isPartEdit').val();
-                // if(isPartEdit==0){
-                //     disableContent($currContent);
-                // }
             });
             if ($currContent.length == 1) {
                 $currContent.find('.assign-psn-item').html('');
@@ -338,6 +334,7 @@
         }
         clearFields($premContent)
         var len = data.length;
+        console.log(data,'data========>>>>')
         for (var i = 0; i < len; i++) {
             let $target = $premContent.find('.personnel-content').eq(i);
             if (isEmptyNode($target)) {
@@ -347,9 +344,13 @@
             }
             fillFormData($target, data[i], 'SP003', i)
             let profRegNo = $target.find('.profRegNo').val()
-            console.log(profRegNo,"============>NO")
             if (!isEmpty(profRegNo)){
                 $target.find('.profRegNo').trigger('blur')
+            }
+            let maxCount = '${nuPersonnelMax}';
+            controlCountEvent($premContent)
+            if (i >= maxCount-1){
+                break;
             }
         }
     }
