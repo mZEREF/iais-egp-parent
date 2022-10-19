@@ -122,10 +122,10 @@
             let $currContent = $Content.find('div.personnel-content');
             $currContent.each(function (k, v) {
                 refreshPerson($(v), k);
-                var isPartEdit = $currContent.find('input.isPartEdit').val();
+                /*var isPartEdit = $currContent.find('input.isPartEdit').val();
                 if(isPartEdit==0){
                     disableContent($currContent);
-                }
+                }*/
             });
             $('#isEditHiddenVal').val('1');
             if ($currContent.length == 1) {
