@@ -12,7 +12,7 @@
                     <p><strong >${businessDto.premTypeNameOnly}: ${businessDto.premAddress}</strong></p>
                 </div>
             </iais:row>
-            <c:set var="isSpecialService" value="${businessDto.currService==AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL||businessDto.currService==AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL}"/>
+            <c:set var="isSpecialService" value="${currentPreviewSvcInfo.serviceCode==AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL||currentPreviewSvcInfo.serviceCode==AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL}"/>
             <iais:row>
                 <iais:field width="5" value="Business Name"/>
                 <iais:value width="7" cssClass="col-md-7" display="true">
