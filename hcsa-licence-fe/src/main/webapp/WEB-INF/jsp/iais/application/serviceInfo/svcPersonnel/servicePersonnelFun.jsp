@@ -344,8 +344,13 @@
             }
             fillFormData($target, data[i], 'SP003', i)
             let profRegNo = $target.find('.profRegNo').val()
+            let designation = $target.find('.designation').val()
+            unDisableContent($target)
             if (!isEmpty(profRegNo)){
                 $target.find('.profRegNo').trigger('blur')
+            }
+            if (!isEmpty(designation)){
+                $target.find('.designation').trigger('change')
             }
             let maxCount = '${nuPersonnelMax}';
             controlCountEvent($premContent)
