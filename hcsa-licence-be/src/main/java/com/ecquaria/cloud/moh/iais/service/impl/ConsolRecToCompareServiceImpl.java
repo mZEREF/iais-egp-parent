@@ -594,7 +594,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
         MonitoringSheetsDto monitoringUserSheetsDto=organizationClient.getMonitoringUserSheetsDto().getEntity();
         monitoringAppSheetsDto.setLicenceExcelDtoMap(monitoringLicSheetsDto.getLicenceExcelDtoMap());
         monitoringAppSheetsDto.setUserAccountExcelDtoMap(monitoringUserSheetsDto.getUserAccountExcelDtoMap());
-        monitoringAppSheetsDto.setLicEicTrackExcelDtoMap(monitoringLicSheetsDto.getLicEicTrackExcelDtoMap());
+        monitoringSheetsDto.setLicEicTrackExcelDtoMap(monitoringLicSheetsDto.getLicEicTrackExcelDtoMap());
         monitoringAppSheetsDto.setAppLicExcelDtoMap(monitoringLicSheetsDto.getAppLicExcelDtoMap());
 
         if(IaisCommonUtils.isNotEmpty(monitoringSheetsDto.getAppProcessFileTrackExcelDtoMap())){
