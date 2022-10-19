@@ -1,18 +1,10 @@
 <c:set var="soloType" value="LICT002" />
 <c:set var="subLicenseeDto" value="${AppSubmissionDto.subLicenseeDto}"/>
-<c:if test="${empty printView}">
-    <c:choose>
-        <c:when test="${!FirstView}">
-            <c:set var="headingSign" value="${empty coMap.licensee ? 'incompleted' : 'completed'}" />
-        </c:when>
-        <c:when test="${needShowErr}">
-            <c:set var="headingSign" value="${not empty svcSecMap.licensee ? 'incompleted' : 'completed'}" />
-        </c:when>
-    </c:choose>
+<c:if test="${empty printView && (!FirstView || needShowErr)}">
+    <c:set var="headingSign" value="${empty coMap.licensee ? 'incompleted' : 'completed'}" />
 </c:if>
-
 <div class="panel panel-default">
-    <div class="panel-heading ${ (doRenewViewYes eq '1'  && 'completed' eq headingSign ) ? '' :  headingSign}">
+    <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
             <a class="collapsed" style="text-decoration: none;" data-toggle="collapse"  href="#previewLicensee${empty documentIndex ? "" : documentIndex}">
                 Licensee Details

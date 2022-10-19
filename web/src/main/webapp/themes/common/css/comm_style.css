@@ -221,3 +221,7 @@ input.allDay {
     margin-top: 25px;
     display: inline-block;
 }
+
+.block-error .error-msg:not(:empty) {
+    display: block;
+}

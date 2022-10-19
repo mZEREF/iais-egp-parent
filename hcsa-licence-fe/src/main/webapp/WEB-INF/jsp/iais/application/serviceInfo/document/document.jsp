@@ -4,7 +4,7 @@
 
 <script type="text/javascript" src="<%=IaisEGPConstant.CSS_ROOT + IaisEGPConstant.COMMON_CSS_ROOT%>js/file-upload.js"></script>
 
-<div class="row form-horizontal">
+<div class="row form-horizontal block-error">
 <c:if test="${isRfi}">
     <c:set var="isClickEdit" value="true"/>
 </c:if>
@@ -65,7 +65,7 @@
             <p>Address: <c:out value="${docShowDto.premAddress}"/></p>
         </div>
     </iais:row>
-    <div class="panel-group" id="${docShowDto.premisesVal}" role="tablist" aria-multiselectable="true">
+    <div class="panel-group doc-svc-content" id="${docShowDto.premisesVal}" role="tablist" aria-multiselectable="true">
         <c:forEach var="secDto" items="${docShowDto.docSectionList}" varStatus="secStat">
             <c:set var="panelKey">${docShowDto.premisesVal}-${secDto.svcId}</c:set>
             <div class="panel panel-default deputy-panel">
@@ -99,10 +99,11 @@
 <script>
     $(document).ready(function () {
         if (${AppSubmissionDto.needEditController && !isClickEdit}) {
-            disabledPage();
-            $('.file-upload').addClass('hidden');
-            $('.delFileBtn').addClass('hidden');
-            $('.reUploadFileBtn').addClass('hidden');
+            //disabledPage();doc-svc-content
+            disableContent('.doc-svc-content');
+            hideTag('.file-upload');
+            hideTag('.delFileBtn');
+            hideTag('.reUploadFileBtn');
         }
 
         doEdit();
@@ -149,12 +150,10 @@
         $('#edit').click(function () {
             $('#edit-content').addClass('hidden');
             $('#isEditHiddenVal').val('1');
-            $('input[type="file"]').prop('disabled', false);
-            $('.existFile').removeClass('hidden');
-            $('.existFile').removeClass('existFile');
-            $('.file-upload').removeClass('hidden');
-            $('.delFileBtn').removeClass('hidden');
-            $('.reUploadFileBtn').removeClass('hidden');
+            disableContent('.doc-svc-content');
+            showTag('.file-upload');
+            showTag('.delFileBtn');
+            showTag('.reUploadFileBtn');
         });
     }
 

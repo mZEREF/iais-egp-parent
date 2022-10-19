@@ -819,6 +819,7 @@ public abstract class AppCommDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String appType = appSubmissionDto.getAppType();
         boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
+        boolean isNew = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
         //rfc/renew
         boolean isRfcRenewal = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)
                 || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType);
@@ -875,13 +876,12 @@ public abstract class AppCommDelegator {
         }
         ParamUtil.setRequestAttr(bpc.request, "isMultiPremService", ApplicationHelper.isMultiPremService(hcsaServiceDtoList));
         */
-        boolean singlePrem = baseSvcCount > 1 || !ApplicationHelper.isMultiPremService(hcsaServiceDtoList);
+        boolean singlePrem = isRfcRenewal || baseSvcCount > 1 || !ApplicationHelper.isMultiPremService(hcsaServiceDtoList);
         appSubmissionDto.setSinglePrem(singlePrem);
         /*
          * 14. For Medical Service, “Remote Delivery” and “Mobile Delivery” sections will be displayed if Applicant selects either
          * “Permanent Premises” or “Conveyance”
          */
-        boolean isNew = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
         if (isNew && !isRfi && baseSvcCount == 1 && hasMs) {
             ParamUtil.setRequestAttr(bpc.request, "autoCheckRandM", AppConsts.YES);
         }

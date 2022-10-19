@@ -282,7 +282,6 @@ public final class AppDataHelper {
             String premType, int i, HttpServletRequest request) {
         String[] retrieveflag = ParamUtil.getStrings(request, "retrieveflag");
         appGrpPremisesDto.setClickRetrieve(AppConsts.YES.equals(getVal(retrieveflag, i)));
-        appGrpPremisesDto.setVehicleNo(ParamUtil.getString(request, "vehicleNo" + i));
         appGrpPremisesDto.setHciName(ParamUtil.getString(request, "hciName" + i));
         appGrpPremisesDto.setPostalCode(ParamUtil.getString(request, "postalCode" + i));
         appGrpPremisesDto.setAddrType(ParamUtil.getString(request, "addrType" + i));
@@ -320,6 +319,7 @@ public final class AppDataHelper {
 
     private static void setAppGrpPremiseFromPage(AppGrpPremisesDto appGrpPremisesDto, int i, HttpServletRequest request) {
         //ControllerHelper.get(request, appGrpPremisesDto, String.valueOf(i));
+        appGrpPremisesDto.setVehicleNo(ParamUtil.getString(request, "vehicleNo" + i));
         appGrpPremisesDto.setScdfRefNo(ParamUtil.getString(request, "scdfRefNo" + i));
         String certIssuedDtStr = ParamUtil.getString(request, "certIssuedDt" + i);
         appGrpPremisesDto.setCertIssuedDtStr(certIssuedDtStr);

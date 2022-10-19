@@ -187,12 +187,6 @@ public class WithOutRenewalDelegator {
         bpc.request.getSession().removeAttribute("declaration_page_is");
         ParamUtil.setSessionAttr(bpc.request, "viewPrint", null);
         ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR, 0);
-        /*HashMap<String, String> coMap = new HashMap<>(4);
-        coMap.put("premises", "");
-        coMap.put("document", "");
-        coMap.put("information", "");
-        coMap.put("previewli", "");
-        bpc.request.getSession().setAttribute("coMap", coMap);*/
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.CURR_ORG_USER_ACCOUNT, null);
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.LICPERSONSELECTMAP, null);
         HttpServletRequest request = bpc.request;
@@ -213,9 +207,6 @@ public class WithOutRenewalDelegator {
         List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
         if (StringUtil.isEmpty(draftNo)) {
             appSubmissionDtoList = outRenewalService.getAppSubmissionDtos(licenceIdList);
-            //if (!IaisCommonUtils.isEmpty(appSubmissionDtoList) && appSubmissionDtoList.size() == 1) {
-            //ApplicationHelper.reSetMaxFileIndex(appSubmissionDtoList.get(0).getMaxFileIndex(), request);
-            //}
             log.info("can not find licence id for without renewal");
             ParamUtil.setSessionAttr(request, "backUrl", "initLic");
         } else {
@@ -231,28 +222,14 @@ public class WithOutRenewalDelegator {
                 return;
             }
 
-//            AppDataHelper.initDeclarationFiles(appSubmissionDtoDraft.getAppDeclarationDocDtos(),appSubmissionDtoDraft.getAppType(),bpc.request);
             ParamUtil.setSessionAttr(bpc.request, LOADING_DRAFT, AppConsts.YES);
-            //ApplicationHelper.reSetMaxFileIndex(appSubmissionDtoDraft.getMaxFileIndex(), request);
             appSubmissionDtoList.add(appSubmissionDtoDraft);
             ParamUtil.setSessionAttr(bpc.request, "backUrl", "initApp");
-            //DealSessionUtil.loadCoMap(appSubmissionDtoDraft, bpc.request);
-            //List<AppSubmissionDto> submissionDtos = outRenewalService.getAppSubmissionDtos(licenceIdList);
-            //appSubmissionDtoDraft.setOldRenewAppSubmissionDto(submissionDtos.get(0));
         }
         String appType = ApplicationConsts.APPLICATION_TYPE_RENEWAL;
-        //get licensee ID
-        /*String licenseeId = ApplicationHelper.getLicenseeId(bpc.request);
-        int index = 0;*/
-        //String firstSvcName = "";
         List<String> serviceNameTitleList = IaisCommonUtils.genNewArrayList();
         List<String> serviceNameList = IaisCommonUtils.genNewArrayList();
 
-//        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = IaisCommonUtils.genNewArrayList();
-//        List<List<AppSvcPrincipalOfficersDto>> principalOfficersDtosList = IaisCommonUtils.genNewArrayList();
-//        List<List<AppSvcPrincipalOfficersDto>> deputyPrincipalOfficersDtosList = IaisCommonUtils.genNewArrayList();
-//        AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
-//        List<String> serviceNames = IaisCommonUtils.genNewArrayList();
         List<HcsaSvcDocConfigDto> primaryDocConfig = serviceConfigService.getAllHcsaSvcDocs(null);
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.PRIMARY_DOC_CONFIG, (Serializable) primaryDocConfig);
         if (StringUtil.isEmpty(draftNo)) {
@@ -266,118 +243,8 @@ public class WithOutRenewalDelegator {
             DealSessionUtil.init(appSubmissionDto, hcsaServiceDtoList, false, null);
             for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtoList) {
                 serviceNameList.add(hcsaServiceDto.getSvcName());
-                serviceNameList.add(hcsaServiceDto.getSvcName());
+                serviceNameTitleList.add(hcsaServiceDto.getSvcName());
             }
-            /*List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-            Map<String, AppSvcPersonAndExtDto> licPersonMap = IaisCommonUtils.genNewHashMap();
-            if(licenseeId != null){
-                //user account
-                List<FeUserDto> feUserDtos = requestForChangeService.getFeUserDtoByLicenseeId(licenseeId);
-                ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.CURR_ORG_USER_ACCOUNT, (Serializable) feUserDtos);
-                //existing person
-                List<PersonnelListQueryDto> licPersonList = requestForChangeService.getLicencePersonnelListQueryDto(licenseeId);
-                ApplicationHelper.getLicPsnIntoSelMap(feUserDtos,licPersonList,licPersonMap);
-            }
-            ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.LICPERSONSELECTMAP, (Serializable) licPersonMap);
-
-            appCommService.transform(appSubmissionDto, ApplicationHelper.getLicenseeId(bpc.request),
-                    ApplicationConsts.APPLICATION_TYPE_RENEWAL, false);
-            if (!appSubmissionDto.getAppSvcRelatedInfoDtoList().isEmpty()) {
-                AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
-                String svcId = appSvcRelatedInfoDto.getServiceId();
-                String serviceName = appSvcRelatedInfoDto.getServiceName();
-                //set svc step
-                List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(svcId);
-                appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
-
-                boolean isRfi = false;
-
-                *//*List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
-                //svc doc set align
-                if(appGrpPremisesDtos != null && appGrpPremisesDtos.size() > 0){
-                    String premTye = appGrpPremisesDtos.get(0).getPremisesType();
-                    String premVal = appGrpPremisesDtos.get(0).getPremisesIndexNo();
-                    if(!IaisCommonUtils.isEmpty(appSvcDocDtos)) {
-                        for (AppSvcDocDto appSvcDocDto : appSvcDocDtos) {
-                            if ("1".equals(appSvcDocDto.getDupForPrem())) {
-                                appSvcDocDto.setPremisesVal(premVal);
-                                appSvcDocDto.setPremisesType(premTye);
-                            }
-                        }
-                    }
-                }
-                appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
-*//*
-             *//*List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = ApplicationHelper.transferCgoToPsnDtoList(appSvcRelatedInfoDto.getAppSvcCgoDtoList());
-                String svcCode = appSvcRelatedInfoDto.getServiceCode();
-                ApplicationHelper.initSetPsnIntoSelMap(licPersonMap, appSvcCgoDtos, svcCode);
-                //reset dto
-                List<AppSvcPrincipalOfficersDto> newCgoDtoList = IaisCommonUtils.genNewArrayList();
-                for (AppSvcPrincipalOfficersDto item : appSvcCgoDtos) {
-                    newCgoDtoList.add(MiscUtil.transferEntityDto(item, AppSvcPrincipalOfficersDto.class));
-                }
-                appSvcRelatedInfoDto.setAppSvcCgoDtoList(newCgoDtoList);
-                ApplicationHelper.initSetPsnIntoSelMap(licPersonMap, appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList(), svcCode);
-                ApplicationHelper.initSetPsnIntoSelMap(licPersonMap, appSvcRelatedInfoDto.getAppSvcMedAlertPersonList(), svcCode);*//*
-
-                appSvcRelatedInfoDtoList.add(appSvcRelatedInfoDto);
-                List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
-                List<AppSvcPrincipalOfficersDto> principalOfficersDtos = IaisCommonUtils.genNewArrayList();
-                List<AppSvcPrincipalOfficersDto> deputyPrincipalOfficersDtos = IaisCommonUtils.genNewArrayList();
-                if (appSvcPrincipalOfficersDtos != null && !appSvcPrincipalOfficersDtos.isEmpty()) {
-                    for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtos) {
-                        if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(appSvcPrincipalOfficersDto.getPsnType())) {
-                            principalOfficersDtos.add(appSvcPrincipalOfficersDto);
-                        } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(appSvcPrincipalOfficersDto.getPsnType())) {
-                            deputyPrincipalOfficersDtos.add(appSvcPrincipalOfficersDto);
-                        }
-                    }
-                }
-                principalOfficersDtosList.add(principalOfficersDtos);
-                deputyPrincipalOfficersDtosList.add(deputyPrincipalOfficersDtos);
-
-                if (!StringUtil.isEmpty(serviceName)) {
-                    if (index == 0) {
-                        firstSvcName = serviceName;
-                        index++;
-                        ParamUtil.setSessionAttr(bpc.request, "AppSubmissionDto", appSubmissionDto);
-                    } else {
-                        serviceNameTitleList.add(serviceName);
-                    }
-                    serviceNameList.add(serviceName);
-                }
-                appSubmissionDto.setServiceName(serviceName);
-                if (licenceIdList.size() == 1) {
-                    appEditSelectDto = ApplicationHelper.createAppEditSelectDto(true);
-                    appEditSelectDto.setLicenseeEdit(false);
-                    ParamUtil.setSessionAttr(bpc.request, SINGLE_SERVICE, "Y");
-                    ParamUtil.setSessionAttr(bpc.request,"renew_licence_no",appSubmissionDto.getLicenceNo());
-                } else {
-                    ParamUtil.setSessionAttr(bpc.request, SINGLE_SERVICE, "N");
-                }
-                appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
-            }
-            appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_RENEWAL);
-            LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(licenseeId).getEntity();
-            if (licenseeDto != null) {
-                ParamUtil.setSessionAttr(bpc.request, "licenseeName", appSubmissionDto.getSubLicenseeDto().getLicenseeName());
-            }
-            String groupNumber = appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
-
-            log.info(StringUtil.changeForLog("without renewal group number =====>" + groupNumber));
-            if (StringUtil.isEmpty(draftNo)) {
-                String draftNumber = appSubmissionService.getDraftNo(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
-                appSubmissionDto.setDraftNo(draftNumber);
-                log.info(StringUtil.changeForLog("without renewal deafrt number =====>" + draftNumber));
-            } else {
-                appSubmissionDto.setDraftNo(draftNo);
-            }
-            appSubmissionDto.setAppGrpNo(groupNumber);
-            try {
-                ApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
-            } catch (CloneNotSupportedException e) {
-                log.error(e.getMessage());
-            }*/
         }
         if (appSubmissionDtoList.size() == 1) {
             AppSubmissionDto appSubmissionDto = appSubmissionDtoList.get(0);
@@ -398,38 +265,8 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, appSubmissionDto);
         // ParamUtil.setSessionAttr(bpc.request, "licenseeName", appSubmissionDtoList.get(0).getSubLicenseeDto().getLicenseeName());
         RenewDto renewDto = new RenewDto();
-        /*String parseToJson = JsonUtil.parseToJson(appSubmissionDtoList);
-        log.info(StringUtil.changeForLog("without renewal submission json info " + parseToJson));
-        if (!IaisCommonUtils.isEmpty(serviceNames)) {
-            List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getHcsaServiceByNames(serviceNames);
-            ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
-        }*/
         renewDto.setAppSubmissionDtos(appSubmissionDtoList);
         List<AppSubmissionDto> cloneAppsbumissionDtos = IaisCommonUtils.genNewArrayList();
-        /*if (appSubmissionDtoList != null && appSubmissionDtoList.size() != 0) {
-            appSubmissionDtoList.get(0).setOneLicDoRenew(true);
-            AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) request.getSession().getAttribute(
-                    "oldRenewAppSubmissionDto");
-            boolean flag = false;
-            if (oldAppSubmissionDto == null) {
-                oldAppSubmissionDto = appSubmissionDtoList.get(0);
-                flag = true;
-            }
-            Object loadingDraft = ParamUtil.getSessionAttr(bpc.request, LOADING_DRAFT);
-            if (loadingDraft != null) {
-                AppSubmissionDto oldAppSubmisDto = appSubmissionDtoList.get(0).getOldRenewAppSubmissionDto();
-                if (oldAppSubmisDto != null) {
-                    oldAppSubmissionDto = oldAppSubmisDto;
-                }
-            }
-            if (flag) {
-                if (renewDto.getAppSubmissionDtos().get(0).getOldRenewAppSubmissionDto() == null) {
-                    Object object = CopyUtil.copyMutableObject(oldAppSubmissionDto);
-                    renewDto.getAppSubmissionDtos().get(0).setOldRenewAppSubmissionDto((AppSubmissionDto) object);
-                }
-                bpc.request.getSession().setAttribute("oldRenewAppSubmissionDto", oldAppSubmissionDto);
-            }
-        }*/
         CopyUtil.copyMutableObjectList(appSubmissionDtoList, cloneAppsbumissionDtos);
         ParamUtil.setSessionAttr(bpc.request, "oldSubmissionDtos", (Serializable) cloneAppsbumissionDtos);
         ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR, renewDto);
@@ -439,9 +276,6 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request, "serviceNameTitleList", (Serializable) serviceNameTitleList);
         //serviceNameList
         ParamUtil.setSessionAttr(bpc.request, "serviceNames", (Serializable) serviceNameList);
-//        ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfoList", (Serializable) appSvcRelatedInfoDtoList);
-//        ParamUtil.setSessionAttr(bpc.request, "ReloadPrincipalOfficersList", (Serializable) principalOfficersDtosList);
-//        ParamUtil.setSessionAttr(bpc.request, "deputyPrincipalOfficersDtosList", (Serializable) deputyPrincipalOfficersDtosList);
 
         //init app submit
         ParamUtil.setSessionAttr(bpc.request, "hasAppSubmit", null);
@@ -543,7 +377,7 @@ public class WithOutRenewalDelegator {
 //           }
             appSubmissionService.setPreviewDta(newAppSubmissionDtos.get(0), bpc);
         }
-        if (!IaisCommonUtils.isEmpty(oldSubmissionDtos) && !IaisCommonUtils.isEmpty(newAppSubmissionDtos)) {
+        /*if (!IaisCommonUtils.isEmpty(oldSubmissionDtos) && !IaisCommonUtils.isEmpty(newAppSubmissionDtos)) {
             List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList = oldSubmissionDtos.get(0).getAppSvcRelatedInfoDtoList();
             List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = oldSubmissionDtos.get(0).getAppGrpPremisesDtoList();
             List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList = newAppSubmissionDtos.get(0).getAppSvcRelatedInfoDtoList();
@@ -564,9 +398,9 @@ public class WithOutRenewalDelegator {
             if (replacePerson || updatePerson || eqGrpPremisesResult || editDoc) {
                 ParamUtil.setRequestAttr(bpc.request, "changeRenew", "Y");
             }
-            //bug fix 76354
-            ParamUtil.setRequestAttr(bpc.request, "doRenewViewYes", AppConsts.YES);
-        }
+        }*/
+        //bug fix 76354
+        ParamUtil.setRequestAttr(bpc.request, "doRenewViewYes", AppConsts.YES);
     }
 
     //preparePayment
@@ -797,7 +631,7 @@ public class WithOutRenewalDelegator {
         List<AppSubmissionDto> submissionDtos = licCommService.getAlginAppSubmissionDtos(appSubmissionDto.getLicenceId(), checkSpec);
         if (IaisCommonUtils.isNotEmpty(submissionDtos)) {
             boolean parallel = submissionDtos.size() >= RfcConst.DFT_MIN_PARALLEL_SIZE;
-            FeeDto feeDto =new FeeDto();
+            FeeDto feeDto = new FeeDto();
             feeDto.setTotal(0.0d);
             StreamSupport.stream(submissionDtos.spliterator(), parallel)
                     .forEach(dto -> {
@@ -914,7 +748,7 @@ public class WithOutRenewalDelegator {
 
     private List<AppSubmissionDto> getAutoChangeLicAppSubmissions(AppSubmissionDto oldAppSubmissionDto, String groupNo,
             AppSubmissionDto appSubmissionDto) {
-        FeeDto feeDto =new FeeDto();
+        FeeDto feeDto = new FeeDto();
         feeDto.setTotal(0.0d);
         List<AppSubmissionDto> appSubmissionDtos = getLicChangeSubmissionDtos(oldAppSubmissionDto);
         appSubmissionDtos.forEach(dto -> {
@@ -1028,22 +862,24 @@ public class WithOutRenewalDelegator {
             String appGrpNo = appSubmissionDtoList.get(0).getAppGrpNo();
 
             if (feeInfoDto.getBaseSvcFeeExt() != null) {
-                setAppFeeDetails(feeInfoDto.getBaseSvcFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,appSubmissionDto);
+                setAppFeeDetails(feeInfoDto.getBaseSvcFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo, appSubmissionDto);
             }
             if (feeInfoDto.getThbSpecifiedFeeExt() != null) {
-                setAppFeeDetails(feeInfoDto.getThbSpecifiedFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,appSubmissionDto);
+                setAppFeeDetails(feeInfoDto.getThbSpecifiedFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo, appSubmissionDto);
             }
             if (feeInfoDto.getSimpleSpecifiedFeeExt() != null) {
-                setAppFeeDetails(feeInfoDto.getSimpleSpecifiedFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,appSubmissionDto);
+                setAppFeeDetails(feeInfoDto.getSimpleSpecifiedFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,
+                        appSubmissionDto);
             }
             if (feeInfoDto.getComplexSpecifiedFeeExt() != null) {
-                setAppFeeDetails(feeInfoDto.getComplexSpecifiedFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,appSubmissionDto);
+                setAppFeeDetails(feeInfoDto.getComplexSpecifiedFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,
+                        appSubmissionDto);
             }
             if (feeInfoDto.getBundleSvcFeeExt() != null) {
-                setAppFeeDetails(feeInfoDto.getBundleSvcFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,appSubmissionDto);
+                setAppFeeDetails(feeInfoDto.getBundleSvcFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo, appSubmissionDto);
             }
             if (feeInfoDto.getGradualFeeExt() != null) {
-                setAppFeeDetails(feeInfoDto.getGradualFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,appSubmissionDto);
+                setAppFeeDetails(feeInfoDto.getGradualFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo, appSubmissionDto);
             }
             appFeeDetailsDto1.setBaseFee(amount);
             appFeeDetailsDto1.setLaterFee(lateFeeAmount);
@@ -1054,7 +890,7 @@ public class WithOutRenewalDelegator {
     }
 
     private static void setAppFeeDetails(FeeExtDto feeExtDto, Double lateFeeAmount, Double amount, String lateFeeType,
-            String appGrpNo,AppSubmissionDto appSubmissionDto) {
+            String appGrpNo, AppSubmissionDto appSubmissionDto) {
         feeExtDto.setAppGroupNo(appGrpNo);
         if (feeExtDto.getLateFeeType() != null) {
             lateFeeType = feeExtDto.getLateFeeType();
@@ -1265,6 +1101,8 @@ public class WithOutRenewalDelegator {
             if (appEditSelectDto == null) {
                 appEditSelectDto = RfcHelper.rfcChangeModuleEvaluationDto(firstSubmissionDto, oldAppSubmissionDto);
             }
+            appEditSelectDto.setNeedNewLicNo(true);
+            appEditSelectDto.setAuto(AppConsts.NO);
             RfcHelper.beforeSubmit(firstSubmissionDto, appEditSelectDto, appGrpNo, appType, request);
             Map<AppSubmissionDto, List<String>> errorListMap = checkOtherSubDto(appGrpNo, autoGrpNo, licenseeId, firstSubmissionDto,
                     appEditSelectDto, autoAppSubmissionDtos, noAutoAppSubmissionDtos, oldAppSubmissionDto);
@@ -1277,6 +1115,7 @@ public class WithOutRenewalDelegator {
             for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
                 AppEditSelectDto appEditSelectDto = ApplicationHelper.createAppEditSelectDto(false);
                 appEditSelectDto.setNeedNewLicNo(true);
+                appEditSelectDto.setAuto(AppConsts.NO);
                 RfcHelper.beforeSubmit(appSubmissionDto, appEditSelectDto, appGrpNo, appType, request);
             }
             moreAppSubmissionDtoAction(appSubmissionDtos);
@@ -1749,7 +1588,7 @@ public class WithOutRenewalDelegator {
      */
     public void prepareJump(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do prepareJump start ...."));
-        String editValue = (String) ParamUtil.getString(bpc.request, "EditValue");
+        String editValue = ParamUtil.getString(bpc.request, "EditValue");
         RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
         List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
         AppSubmissionDto appSubmissionDto = appSubmissionDtos.get(0);
@@ -1869,7 +1708,6 @@ public class WithOutRenewalDelegator {
             String applicationTypeShow = MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
             String MohName = AppConsts.MOH_AGENCY_NAME;
             String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
-            String paymentMethodName = "onlinePayment";
             String groupNo = appSubmissionDtos.get(0).getAppGrpNo();
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
             String applicationName = loginContext.getUserName();
@@ -1923,6 +1761,7 @@ public class WithOutRenewalDelegator {
             map.put("systemLink", loginUrl);
             map.put("emailAddress", systemAddressOne);
             map.put("MOH_AGENCY_NAME", MohName);
+            String paymentMethodName;
             if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(paymentMethod)
                     || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(paymentMethod)
                     || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(paymentMethod)) {

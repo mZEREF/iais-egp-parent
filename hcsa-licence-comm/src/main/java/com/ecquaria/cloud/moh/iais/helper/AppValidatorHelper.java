@@ -2532,6 +2532,9 @@ public final class AppValidatorHelper {
     }
 
     public static Map<Integer, String> checkBlacklist(String name, String blacklist) {
+        if (StringUtil.isEmpty(name)) {
+            return IaisCommonUtils.genNewHashMap();
+        }
         if (StringUtil.isEmpty(blacklist)) {
             blacklist = MasterCodeUtil.getCodeDesc("MS001");
         }
@@ -2541,7 +2544,7 @@ public final class AppValidatorHelper {
         }
         String[] s = blacklist.split("[ ]+");
         name = name.toUpperCase(AppConsts.DFT_LOCALE);
-        String[] target = name.split("[ ]+");
+        String[] target = name.split("[^A-Z]+");
         for (String value : s) {
             String t = value.toUpperCase();
             if (Arrays.stream(target).parallel().anyMatch(x -> x.equals(t))) {
@@ -4149,7 +4152,7 @@ public final class AppValidatorHelper {
                     "0".equals(preQuesKindly), request);
             //check other eff
             if (errorMap.isEmpty()) {
-                AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) request.getSession().getAttribute("oldAppSubmissionDto");
+                AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) request.getSession().getAttribute("oldRenewAppSubmissionDto");
                 AppEditSelectDto appEditSelectDto = RfcHelper.rfcChangeModuleEvaluationDto(firstSubmissionDto, oldAppSubmissionDto);
                 firstSubmissionDto.setChangeSelectDto(appEditSelectDto);
                 List<AppGrpPremisesDto> appGrpPremisesDtoList = firstSubmissionDto.getAppGrpPremisesDtoList();
