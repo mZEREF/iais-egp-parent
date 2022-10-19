@@ -2356,7 +2356,7 @@ public final class AppValidatorHelper {
         if ((ApplicationConsts.OTHER_INFO_SD.equals(topType)) || (ApplicationConsts.OTHER_INFO_DSP.equals(topType))) {
             for (int i = 0; i < topByDrug.size(); i++) {
                 String year = String.valueOf(topByDrug.get(i).getYear());
-                if (StringUtil.isEmpty(year)) {
+                if ("null".equals(year)) {
                     errMap.put(prefix+"year" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
                             "Year.",
                             "field"));

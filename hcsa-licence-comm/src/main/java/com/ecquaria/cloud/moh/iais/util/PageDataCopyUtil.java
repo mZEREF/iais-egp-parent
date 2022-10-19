@@ -4,12 +4,21 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremGroupOutsourcedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoAbortDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoMedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoNurseDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoTopDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoTopPersonDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOutsouredDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
@@ -403,6 +412,236 @@ public class PageDataCopyUtil {
         }
         return o;
     }
+
+    public static List<AppSvcOtherInfoDto> copyAppSvcOtherInfoList(List<AppSvcOtherInfoDto> appSvcOtherInfoDtoList){
+        if (IaisCommonUtils.isEmpty(appSvcOtherInfoDtoList)){
+            return appSvcOtherInfoDtoList;
+        }
+        List<AppSvcOtherInfoDto> appSvcOtherInfoDtos = IaisCommonUtils.genNewArrayList();
+        for (AppSvcOtherInfoDto appSvcOtherInfoDto : appSvcOtherInfoDtoList) {
+            AppSvcOtherInfoDto svcOtherInfoDto = new AppSvcOtherInfoDto();
+            //med
+            AppSvcOtherInfoMedDto dsMedDto = copyAppSvcOtherInfoMed(appSvcOtherInfoDto.getAppSvcOtherInfoMedDto());
+            AppSvcOtherInfoMedDto rscMedDto = copyAppSvcOtherInfoMed(appSvcOtherInfoDto.getOtherInfoMedAmbulatorySurgicalCentre());
+            //nurse
+            AppSvcOtherInfoNurseDto appSvcOtherInfoNurseDto = copyAppSvcOtherInfoNurse(appSvcOtherInfoDto.getAppSvcOtherInfoNurseDto());
+            svcOtherInfoDto.setAppSvcOtherInfoNurseDto(appSvcOtherInfoNurseDto);
+            svcOtherInfoDto.setAppSvcOtherInfoMedDto(dsMedDto);
+            svcOtherInfoDto.setOtherInfoMedAmbulatorySurgicalCentre(rscMedDto);
+            svcOtherInfoDto.setAscsDeclaration(appSvcOtherInfoDto.getAscsDeclaration());
+            svcOtherInfoDto.setDsDeclaration(appSvcOtherInfoDto.getDsDeclaration());
+            svcOtherInfoDto.setPremisesVal(appSvcOtherInfoDto.getPremisesVal());
+            svcOtherInfoDto.setInit(appSvcOtherInfoDto.isInit());
+            appSvcOtherInfoDtos.add(svcOtherInfoDto);
+        }
+        return appSvcOtherInfoDtos;
+    }
+
+    public static List<AppSvcOtherInfoDto> copyAppSvcOtherInfoPersonList(List<AppSvcOtherInfoDto> appSvcOtherInfoDtoList ,List<String> autoList){
+        if (IaisCommonUtils.isEmpty(appSvcOtherInfoDtoList)){
+            return appSvcOtherInfoDtoList;
+        }
+        List<AppSvcOtherInfoDto> appSvcOtherInfoDtos = IaisCommonUtils.genNewArrayList();
+        for (AppSvcOtherInfoDto appSvcOtherInfoDto : appSvcOtherInfoDtoList) {
+            AppSvcOtherInfoDto svcOtherInfoDto = new AppSvcOtherInfoDto();
+            //top documentation
+            AppSvcOtherInfoTopDto appSvcOtherInfoTopDto = copyAppSvcOtherInfoTopDto(appSvcOtherInfoDto.getAppSvcOtherInfoTopDto());
+            //person
+            List<AppSvcOtherInfoTopPersonDto> otherInfoPersonPractitioners =
+                    copyAppSvcOtherInfoPerson(appSvcOtherInfoDto.getOtherInfoTopPersonPractitionersList(), autoList);
+            List<AppSvcOtherInfoTopPersonDto> otherInfoPersonAnaesthetists =
+                    copyAppSvcOtherInfoPerson(appSvcOtherInfoDto.getOtherInfoTopPersonAnaesthetistsList(), autoList);
+            List<AppSvcOtherInfoTopPersonDto> otherInfoPersonNurses =
+                    copyAppSvcOtherInfoPerson(appSvcOtherInfoDto.getOtherInfoTopPersonNursesList(), autoList);
+            List<AppSvcOtherInfoTopPersonDto> otherInfoPersonCounsellors =
+                    copyAppSvcOtherInfoPerson(appSvcOtherInfoDto.getOtherInfoTopPersonCounsellorsList(), autoList);
+            //abort
+            List<AppSvcOtherInfoAbortDto> otherInfoAbortDrug =
+                    copyAppSvcOtherInfoAbortDto(appSvcOtherInfoDto.getOtherInfoAbortDrugList());
+            List<AppSvcOtherInfoAbortDto> otherInfoAbortSurgicalProcedure  =
+                    copyAppSvcOtherInfoAbortDto(appSvcOtherInfoDto.getOtherInfoAbortSurgicalProcedureList());
+            List<AppSvcOtherInfoAbortDto> otherInfoAbortDrugAndSurgical =
+                    copyAppSvcOtherInfoAbortDto(appSvcOtherInfoDto.getOtherInfoAbortDrugAndSurgicalList());
+            svcOtherInfoDto.setPremisesVal(appSvcOtherInfoDto.getPremisesVal());
+            svcOtherInfoDto.setProvideTop(appSvcOtherInfoDto.getProvideTop());
+            svcOtherInfoDto.setInit(appSvcOtherInfoDto.isInit());
+            svcOtherInfoDto.setProvideYfVs(appSvcOtherInfoDto.getProvideYfVs());
+            svcOtherInfoDto.setDeclaration(appSvcOtherInfoDto.getDeclaration());
+            svcOtherInfoDto.setYfCommencementDateStr(appSvcOtherInfoDto.getYfCommencementDateStr());
+            svcOtherInfoDto.setYfCommencementDate(appSvcOtherInfoDto.getYfCommencementDate());
+            svcOtherInfoDto.setOrgUserDto(appSvcOtherInfoDto.getOrgUserDto());
+            svcOtherInfoDto.setAppSvcOtherInfoTopDto(appSvcOtherInfoTopDto);
+            svcOtherInfoDto.setOtherInfoTopPersonPractitionersList(otherInfoPersonPractitioners);
+            svcOtherInfoDto.setOtherInfoTopPersonAnaesthetistsList(otherInfoPersonAnaesthetists);
+            svcOtherInfoDto.setOtherInfoTopPersonNursesList(otherInfoPersonNurses);
+            svcOtherInfoDto.setOtherInfoTopPersonCounsellorsList(otherInfoPersonCounsellors);
+            svcOtherInfoDto.setOtherInfoAbortDrugList(otherInfoAbortDrug);
+            svcOtherInfoDto.setOtherInfoAbortSurgicalProcedureList(otherInfoAbortSurgicalProcedure);
+            svcOtherInfoDto.setOtherInfoAbortDrugAndSurgicalList(otherInfoAbortDrugAndSurgical);
+        }
+        return appSvcOtherInfoDtos;
+    }
+    /*public static List<AppSvcOtherInfoDto> copyAppSvcOtherInfoList(List<AppSvcOtherInfoDto> appSvcOtherInfoDtoList){
+        if (IaisCommonUtils.isEmpty(appSvcOtherInfoDtoList)){
+            return appSvcOtherInfoDtoList;
+        }
+        List<AppSvcOtherInfoDto> appSvcOtherInfoDtos = IaisCommonUtils.genNewArrayList();
+        for (AppSvcOtherInfoDto appSvcOtherInfoDto : appSvcOtherInfoDtoList) {
+            AppSvcOtherInfoDto svcOtherInfoDto = new AppSvcOtherInfoDto();
+            //med
+            AppSvcOtherInfoMedDto appSvcOtherInfoMedDto = copyAppSvcOtherInfoMed(appSvcOtherInfoDto.getAppSvcOtherInfoMedDto());
+            //nurse
+            AppSvcOtherInfoNurseDto appSvcOtherInfoNurseDto = copyAppSvcOtherInfoNurse(appSvcOtherInfoDto.getAppSvcOtherInfoNurseDto());
+            //top documentation
+            AppSvcOtherInfoTopDto appSvcOtherInfoTopDto = copyAppSvcOtherInfoTopDto(appSvcOtherInfoDto.getAppSvcOtherInfoTopDto());
+            //person
+            List<AppSvcOtherInfoTopPersonDto> otherInfoPersonPractitioners = copyAppSvcOtherInfoPerson(appSvcOtherInfoDto.getOtherInfoTopPersonPractitionersList());
+            List<AppSvcOtherInfoTopPersonDto> otherInfoPersonAnaesthetists = copyAppSvcOtherInfoPerson(appSvcOtherInfoDto.getOtherInfoTopPersonAnaesthetistsList());
+            List<AppSvcOtherInfoTopPersonDto> otherInfoPersonNurses        = copyAppSvcOtherInfoPerson(appSvcOtherInfoDto.getOtherInfoTopPersonNursesList());
+            List<AppSvcOtherInfoTopPersonDto> otherInfoPersonCounsellors   = copyAppSvcOtherInfoPerson(appSvcOtherInfoDto.getOtherInfoTopPersonCounsellorsList());
+            //abort
+            List<AppSvcOtherInfoAbortDto> otherInfoAbortDrug               = copyAppSvcOtherInfoAbortDto(appSvcOtherInfoDto.getOtherInfoAbortDrugList());
+            List<AppSvcOtherInfoAbortDto> otherInfoAbortSurgicalProcedure  = copyAppSvcOtherInfoAbortDto(appSvcOtherInfoDto.getOtherInfoAbortSurgicalProcedureList());
+            List<AppSvcOtherInfoAbortDto> otherInfoAbortDrugAndSurgical    = copyAppSvcOtherInfoAbortDto(appSvcOtherInfoDto.getOtherInfoAbortDrugAndSurgicalList());
+            svcOtherInfoDto.setDeclaration(appSvcOtherInfoDto.getDeclaration());
+            svcOtherInfoDto.setPremisesVal(appSvcOtherInfoDto.getPremisesVal());
+            svcOtherInfoDto.setPremName(appSvcOtherInfoDto.getPremName());
+            svcOtherInfoDto.setPremisesType(appSvcOtherInfoDto.getPremisesType());
+            svcOtherInfoDto.setProvideTop(appSvcOtherInfoTopDto.getTopType());
+            svcOtherInfoDto.setDsDeclaration(appSvcOtherInfoDto.getDsDeclaration());
+            svcOtherInfoDto.setAscsDeclaration(appSvcOtherInfoDto.getAscsDeclaration());
+            svcOtherInfoDto.setInit(appSvcOtherInfoDto.isInit());
+            svcOtherInfoDto.setYfCommencementDateStr(appSvcOtherInfoDto.getYfCommencementDateStr());
+            svcOtherInfoDto.setYfCommencementDate(appSvcOtherInfoDto.getYfCommencementDate());
+            svcOtherInfoDto.setProvideYfVs(appSvcOtherInfoDto.getProvideYfVs());
+            svcOtherInfoDto.setAppSvcOtherInfoMedDto(appSvcOtherInfoMedDto);
+            svcOtherInfoDto.setAppSvcOtherInfoNurseDto(appSvcOtherInfoNurseDto);
+            svcOtherInfoDto.setAppSvcOtherInfoTopDto(appSvcOtherInfoTopDto);
+            svcOtherInfoDto.setOtherInfoTopPersonCounsellorsList(otherInfoPersonPractitioners);
+            svcOtherInfoDto.setOtherInfoTopPersonAnaesthetistsList(otherInfoPersonAnaesthetists);
+            svcOtherInfoDto.setOtherInfoTopPersonNursesList(otherInfoPersonNurses);
+            svcOtherInfoDto.setOtherInfoTopPersonCounsellorsList(otherInfoPersonCounsellors);
+            svcOtherInfoDto.setOtherInfoAbortDrugList(otherInfoAbortDrug);
+            svcOtherInfoDto.setOtherInfoAbortSurgicalProcedureList(otherInfoAbortSurgicalProcedure);
+            svcOtherInfoDto.setOtherInfoAbortDrugAndSurgicalList(otherInfoAbortDrugAndSurgical);
+            svcOtherInfoDto.setOrgUserDto(appSvcOtherInfoDto.getOrgUserDto());
+        }
+        return appSvcOtherInfoDtos;
+    }*/
+
+    private static AppSvcOtherInfoMedDto copyAppSvcOtherInfoMed(AppSvcOtherInfoMedDto appSvcOtherInfoMedDto){
+        if (appSvcOtherInfoMedDto == null){
+            return new AppSvcOtherInfoMedDto();
+        }
+        AppSvcOtherInfoMedDto svcOtherInfoMedDto = new AppSvcOtherInfoMedDto();
+        svcOtherInfoMedDto.setId(appSvcOtherInfoMedDto.getId());
+        svcOtherInfoMedDto.setAppPremId(appSvcOtherInfoMedDto.getAppPremId());
+        svcOtherInfoMedDto.setSystemOption(appSvcOtherInfoMedDto.getSystemOption());
+        svcOtherInfoMedDto.setIsMedicalTypeIt(appSvcOtherInfoMedDto.getIsMedicalTypeIt());
+        svcOtherInfoMedDto.setIsMedicalTypePaper(appSvcOtherInfoMedDto.getIsMedicalTypePaper());
+        svcOtherInfoMedDto.setIsOpenToPublic(appSvcOtherInfoMedDto.getIsOpenToPublic());
+        svcOtherInfoMedDto.setOtherSystemOption(appSvcOtherInfoMedDto.getOtherSystemOption());
+
+        return svcOtherInfoMedDto;
+    }
+
+    private static AppSvcOtherInfoNurseDto copyAppSvcOtherInfoNurse(AppSvcOtherInfoNurseDto appSvcOtherInfoNurseDto){
+        if (appSvcOtherInfoNurseDto == null){
+            return new AppSvcOtherInfoNurseDto();
+        }
+        AppSvcOtherInfoNurseDto svcOtherInfoNurseDto = new AppSvcOtherInfoNurseDto();
+        svcOtherInfoNurseDto.setDialysisStationsNum(appSvcOtherInfoNurseDto.getDialysisStationsNum());
+        svcOtherInfoNurseDto.setPerShiftNum(appSvcOtherInfoNurseDto.getPerShiftNum());
+        svcOtherInfoNurseDto.setAppPremId(appSvcOtherInfoNurseDto.getAppPremId());
+        svcOtherInfoNurseDto.setHelpBStationNum(appSvcOtherInfoNurseDto.getHelpBStationNum());
+        svcOtherInfoNurseDto.setIsOpenToPublic(appSvcOtherInfoNurseDto.getIsOpenToPublic());
+        return svcOtherInfoNurseDto;
+    }
+
+
+    private static List<AppSvcOtherInfoTopPersonDto> copyAppSvcOtherInfoPerson(List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtoList, List<String> autoList) {
+        if (IaisCommonUtils.isEmpty(appSvcOtherInfoTopPersonDtoList)) {
+            return appSvcOtherInfoTopPersonDtoList;
+        }
+        appSvcOtherInfoTopPersonDtoList.stream()
+                .forEach((item) -> autoList.add(item.getPsnType()));
+        List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos = appSvcOtherInfoTopPersonDtoList.stream()
+                .map(dto -> MiscUtil.transferEntityDto(dto, AppSvcOtherInfoTopPersonDto.class))
+                .collect(Collectors.toList());
+        return appSvcOtherInfoTopPersonDtos;
+    }
+
+    private static AppSvcOtherInfoTopDto copyAppSvcOtherInfoTopDto(AppSvcOtherInfoTopDto appSvcOtherInfoTopDto){
+        if (appSvcOtherInfoTopDto == null){
+            return appSvcOtherInfoTopDto;
+        }
+        AppSvcOtherInfoTopDto svcOtherInfoTopDto = new AppSvcOtherInfoTopDto();
+        svcOtherInfoTopDto.setId(appSvcOtherInfoTopDto.getId());
+        svcOtherInfoTopDto.setTopType(appSvcOtherInfoTopDto.getTopType());
+        svcOtherInfoTopDto.setAppPremId(appSvcOtherInfoTopDto.getAppPremId());
+        svcOtherInfoTopDto.setIsProvideHpb(appSvcOtherInfoTopDto.getIsProvideHpb());
+        svcOtherInfoTopDto.setHasConsuAttendCourse(appSvcOtherInfoTopDto.getHasConsuAttendCourse());
+        svcOtherInfoTopDto.setCompCaseNum(appSvcOtherInfoTopDto.getCompCaseNum());
+        svcOtherInfoTopDto.setIsOutcomeProcRecord(appSvcOtherInfoTopDto.getIsOutcomeProcRecord());
+        return svcOtherInfoTopDto;
+    }
+
+    public static List<AppPremSubSvcRelDto> copyOtherService(List<AppPremSubSvcRelDto> appPremSubSvcRelList){
+        if (IaisCommonUtils.isEmpty(appPremSubSvcRelList)){
+            return appPremSubSvcRelList;
+        }
+
+        return appPremSubSvcRelList.stream()
+                .map(dto -> MiscUtil.transferEntityDto(dto , AppPremSubSvcRelDto.class))
+                .collect(Collectors.toList());
+    }
+
+    private static List<AppSvcOtherInfoAbortDto> copyAppSvcOtherInfoAbortDto(List<AppSvcOtherInfoAbortDto> abortDtoList){
+        if (IaisCommonUtils.isEmpty(abortDtoList)){
+            return abortDtoList;
+        }
+        List<AppSvcOtherInfoAbortDto> appSvcOtherInfoAbortDtoList = abortDtoList.stream()
+                .map(dto -> MiscUtil.transferEntityDto(dto, AppSvcOtherInfoAbortDto.class))
+                .collect(Collectors.toList());
+        return appSvcOtherInfoAbortDtoList;
+    }
+
+    public static List<AppSvcOutsouredDto> copyAppSvcOutsourcedDto(List<AppSvcOutsouredDto> appSvcOutsouredDtoList){
+        if (IaisCommonUtils.isEmpty(appSvcOutsouredDtoList)){
+            return appSvcOutsouredDtoList;
+        }
+        List<AppSvcOutsouredDto> appSvcOutsouredDtos = IaisCommonUtils.genNewArrayList();
+        for (AppSvcOutsouredDto appSvcOutsouredDto : appSvcOutsouredDtoList) {
+            AppSvcOutsouredDto outsouredDto = new AppSvcOutsouredDto();
+            List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtoList = copyAppPremGroupSoutsourcedList(appSvcOutsouredDto.getClinicalLaboratoryList());
+            List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtos = copyAppPremGroupSoutsourcedList(appSvcOutsouredDto.getRadiologicalServiceList());
+            outsouredDto.setClinicalLaboratoryList(appPremGroupOutsourcedDtoList);
+            outsouredDto.setRadiologicalServiceList(appPremGroupOutsourcedDtos);
+            appSvcOutsouredDtos.add(outsouredDto);
+        }
+        return appSvcOutsouredDtos;
+    }
+
+    public static List<AppPremGroupOutsourcedDto> copyAppPremGroupSoutsourcedList(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtoList){
+        if (IaisCommonUtils.isEmpty(appPremGroupOutsourcedDtoList)){
+            return appPremGroupOutsourcedDtoList;
+        }
+        List<AppPremGroupOutsourcedDto> premGroupOutsourcedDtoList = IaisCommonUtils.genNewArrayList();
+        appPremGroupOutsourcedDtoList.stream()
+                .forEach((item) -> {
+                    AppPremGroupOutsourcedDto appPremGroupOutsourcedDto = new AppPremGroupOutsourcedDto();
+                    appPremGroupOutsourcedDto.setBusinessName(item.getBusinessName());
+                    appPremGroupOutsourcedDto.setAddress(item.getAddress());
+                    appPremGroupOutsourcedDto.setExpiryDate(item.getExpiryDate());
+                    appPremGroupOutsourcedDto.setAppPremOutSourceLicenceDto(item.getAppPremOutSourceLicenceDto());
+                    appPremGroupOutsourcedDto.setStartDateStr(item.getStartDateStr());
+                    appPremGroupOutsourcedDto.setEndDateStr(item.getEndDateStr());
+                    premGroupOutsourcedDtoList.add(appPremGroupOutsourcedDto);
+                });
+        return premGroupOutsourcedDtoList;
+    }
+
+
 
     public static List<AppSvcPrincipalOfficersDto> copyAppSvcClinicalDirector(
             List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos) {

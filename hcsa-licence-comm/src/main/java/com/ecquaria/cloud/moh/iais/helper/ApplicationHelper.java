@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoTopPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
@@ -3443,6 +3444,28 @@ public final class ApplicationHelper {
         return IaisCommonUtils.getList(result);
     }
 
+    public static List<AppSvcOtherInfoTopPersonDto> getOtherInfoPerson(String psnType, AppSvcOtherInfoDto appSvcOtherInfoDto){
+        if (StringUtil.isEmpty(psnType) || appSvcOtherInfoDto == null){
+            return IaisCommonUtils.genNewArrayList();
+        }
+        List<AppSvcOtherInfoTopPersonDto> result = null;
+        switch (psnType){
+            case ApplicationConsts.OTHER_TOP_PRACTITIONERS:
+                result = appSvcOtherInfoDto.getOtherInfoTopPersonPractitionersList();
+                break;
+            case ApplicationConsts.OTHER_TOP_ANAESTHETISTS:
+                result = appSvcOtherInfoDto.getOtherInfoTopPersonAnaesthetistsList();
+                break;
+            case ApplicationConsts.OTHER_TOP_NURSES:
+                result = appSvcOtherInfoDto.getOtherInfoTopPersonNursesList();
+                break;
+            case ApplicationConsts.OTHER_TOP_COUNSELLORS:
+                result = appSvcOtherInfoDto.getOtherInfoTopPersonCounsellorsList();
+                break;
+        }
+        return IaisCommonUtils.getList(result);
+    }
+
     public static List<AppSvcPrincipalOfficersDto> getSpecialKeyPsnList(String key, AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
         List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = appSvcRelatedInfoDto.getAppSvcSpecialServiceInfoList();
         if (IaisCommonUtils.isEmpty(appSvcSpecialServiceInfoList)) {
@@ -3487,6 +3510,26 @@ public final class ApplicationHelper {
         }
     }
 
+    public static void setOtherInfoPerson(List<AppSvcOtherInfoTopPersonDto> sourceList, String psnType, AppSvcOtherInfoDto appSvcOtherInfoDto){
+        if (StringUtil.isEmpty(psnType) || appSvcOtherInfoDto == null){
+            return;
+        }
+        switch (psnType){
+            case ApplicationConsts.OTHER_TOP_PRACTITIONERS:
+                appSvcOtherInfoDto.setOtherInfoTopPersonPractitionersList(sourceList);
+                break;
+            case ApplicationConsts.OTHER_TOP_ANAESTHETISTS:
+                appSvcOtherInfoDto.setOtherInfoTopPersonAnaesthetistsList(sourceList);
+                break;
+            case ApplicationConsts.OTHER_TOP_NURSES:
+                appSvcOtherInfoDto.setOtherInfoTopPersonNursesList(sourceList);
+                break;
+            case ApplicationConsts.OTHER_TOP_COUNSELLORS:
+                appSvcOtherInfoDto.setOtherInfoTopPersonCounsellorsList(sourceList);
+                break;
+        }
+
+    }
     public static List<String> getSvcPsnTypes(AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
         List<String> psnTypes = IaisCommonUtils.genNewArrayListWithData(IaisCommonUtils.getSvcPersonnel());
         List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = appSvcRelatedInfoDto.getAppSvcSpecialServiceInfoList();

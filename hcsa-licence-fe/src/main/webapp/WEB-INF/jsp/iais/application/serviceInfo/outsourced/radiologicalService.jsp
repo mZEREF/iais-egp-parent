@@ -72,10 +72,13 @@
                 showWaiting();
                 let $tag = $(this);
                 let prefix = $tag.data('prefix');
+                let outsourcedIndexNo = $tag.data('group');
                 console.log("prefix:"+prefix);
+                console.log("outsourcedIndexNo:"+outsourcedIndexNo);
                 $('input[name="btnStep"]').val("delete");
                 $('input[name="pIds"]').val(prefix);
                 $('input[name="prefixVal"]').val(prefix);
+                $('input[name="outsourcedIndexNo"]').val(outsourcedIndexNo);
                 let controlFormLi = $('#controlFormLi').val();
                 submitForms('${serviceStepDto.currentStep.stepCode}',prefix,null,controlFormLi);
                 let tr =this.parentNode.parentNode;

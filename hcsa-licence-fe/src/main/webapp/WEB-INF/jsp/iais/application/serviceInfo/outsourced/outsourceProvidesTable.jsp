@@ -33,6 +33,7 @@
                 <tbody>
                 <c:forEach var="outSourceResult" items="${outSourceResult.rows}" varStatus="status">
                     <c:set var="prefix" value="${outSourceResult.id}"/>
+                    <c:set var="outsourcedIndexNo" value="${outSourceResult.licenceNo}"/>
                 <tr>
                     <td>
                         <p class="visible-xs visible-sm table-row-title" style="width: 30px;!important;">Service</p>
@@ -91,7 +92,7 @@
                     </td>
                     <td>
                         <input type="hidden" name="prefixVal" value="">
-                        <button type="button" class="btn btn-default btn-sm btn-add" data-prefix="${prefix}">Add</button>
+                        <button type="button" class="btn btn-default btn-sm btn-add" data-prefix="${prefix}" data-group="${outsourcedIndexNo}">Add</button>
                     </td>
                 </tr>
                 </c:forEach>
@@ -113,10 +114,13 @@
                 showWaiting();
                 let $tag = $(this);
                 let prefix = $tag.data('prefix');
+                let outsourcedIndexNo = $tag.data('group');
                 console.log("prefix:"+prefix);
+                console.log("outsourcedIndexNo:"+outsourcedIndexNo);
                 $('input[name="btnStep"]').val("add");
                 $('input[name="pIds"]').val(prefix);
                 $('input[name="prefixVal"]').val(prefix);
+                $('input[name="outsourcedIndexNo"]').val(outsourcedIndexNo);
                 let controlFormLi = $('#controlFormLi').val();
                 submitForms('${serviceStepDto.currentStep.stepCode}',prefix,null,controlFormLi);
                 let tr =this.parentNode.parentNode;

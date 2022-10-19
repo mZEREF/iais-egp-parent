@@ -820,6 +820,11 @@ public class DealSessionUtil {
                         .filter(dto -> Objects.equals(appGrpPremisesDto.getPremisesIndexNo(), dto.getPremisesVal()))
                         .findAny()
                         .orElseGet(AppSvcOtherInfoDto::new);
+                appSvcOtherInfoList.forEach((item) ->{
+                    appSvcOtherInfoDto.setDeclaration(item.getDeclaration());
+                    appSvcOtherInfoDto.setAscsDeclaration(item.getAscsDeclaration());
+                    appSvcOtherInfoDto.setDsDeclaration(item.getDsDeclaration());
+                });
             } else {
                 appSvcOtherInfoDto = new AppSvcOtherInfoDto();
             }

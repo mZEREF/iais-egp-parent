@@ -34,6 +34,7 @@
             <#if bundleSvcName??> AND l.SVC_NAME NOT IN (:bundleSvcName)</#if>
             <#if postalCode??> AND lsa.POSTAL_CODE = :postalCode</#if>
             <#if addId??> AND l.ID = :addId</#if>
+            <#if sLicenceNo??> AND l.LICENCE_NO NOT IN (:sLicenceNo)</#if>
         ]]>
     </sql>
 </sqls>

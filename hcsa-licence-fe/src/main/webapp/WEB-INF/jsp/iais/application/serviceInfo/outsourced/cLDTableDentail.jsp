@@ -2,6 +2,7 @@
     <c:set var="index" value="${c.index}" />
     <c:set var="msgTemplateResult" value="${cL.clinicalLaboratoryList[index]}"/>
     <c:set var="appPremOutSourceLicenceDto" value="${msgTemplateResult.appPremOutSourceLicenceDto}"/>
+    <c:set var="outsourcedIndexNo" value="${appPremOutSourceLicenceDto.licenceNo}"/>
         <tr>
             <td>
                 <p class="visible-xs visible-sm table-row-title">Licence No.</p>
@@ -34,7 +35,7 @@
             <td>
                 <input type="hidden" name="prefixVal" value="${appPremOutSourceLicenceDto.id}">
                 <c:set var="prefix" value="${appPremOutSourceLicenceDto.id}"/>
-                <button type="button" class="btn btn-default btn-sm btn-cldBtn" data-prefix="${prefix}">DELETE</button>
+                <button type="button" class="btn btn-default btn-sm btn-cldBtn" data-prefix="${prefix}" data-group="${outsourcedIndexNo}">DELETE</button>
             </td>
         </tr>
 </c:forEach>

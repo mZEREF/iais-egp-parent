@@ -14,6 +14,8 @@
             </h4>
         </div>
     </iais:row>
+    <input type="hidden" class="isPartEditDrug" name="${prefix}isPartEditDrug${index}" value="0" data-prefix="${prefix}"/>
+    <input type="hidden" class="topTypeDrug" name="${prefix}topTypeDrug${index}" value="${person.topType}" data-prefix="${prefix}"/>
     <input type="hidden" name="aboutType" value="Drug">
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Year."/>
