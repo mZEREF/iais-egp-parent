@@ -353,7 +353,7 @@
                 $target.find('.designation').trigger('change')
             }
             let maxCount = '${nuPersonnelMax}';
-            controlCountEvent($premContent)
+            controlCountEvent($($premContent))
             if (i >= maxCount-1){
                 break;
             }
