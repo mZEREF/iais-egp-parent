@@ -135,6 +135,9 @@
             if (!isEmptyNode($cal4)) {
                 checkItemTotal($cal4);
             }
+            unDisableContent($('.person-content'))
+            $('.person-content').find('.isPartEdit').val(1)
+            $('#isEditHiddenVal').val(1)
         });
     }
 

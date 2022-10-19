@@ -225,7 +225,7 @@
         $currContent.find('.isPartEdit').val(1)
         $('.personnel-content-edit').val(1)
 
-        unDisabledPartPage($currContent)
+        unDisableContent($currContent)
         //
         refreshIndex($currContent, $(target).find('div.personnel-content').length - 1);
         $(target).find('div.personnel-content').first().find('.assign-psn-item').html('1');
@@ -262,10 +262,10 @@
             let $currContent = $Content.find('div.personnel-content');
             $currContent.each(function (k, v) {
                 refreshIndex($(v), k);
-                var isPartEdit = $currContent.find('input.isPartEdit').val();
-                if(isPartEdit==0){
-                    disableContent($currContent);
-                }
+                // var isPartEdit = $currContent.find('input.isPartEdit').val();
+                // if(isPartEdit==0){
+                //     disableContent($currContent);
+                // }
             });
             if ($currContent.length == 1) {
                 $currContent.find('.assign-psn-item').html('');
