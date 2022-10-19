@@ -838,10 +838,11 @@ function checkDisabled(targetSelector, disabled) {
 }
 
 function disableContent(targetSelector) {
-    var $selector = getJqueryNode(targetSelector);
+    let $selector = getJqueryNode(targetSelector);
     if (isEmptyNode($selector)) {
         return;
     }
+    let $multiSelect = $selector.find('div.multi-select-container');
     if (!$selector.is(":input")) {
         $selector = $selector.find(':input');
     }
@@ -860,6 +861,7 @@ function disableContent(targetSelector) {
             updateSelectTag($input);
         }
     });
+    disableContent($multiSelect);
 }
 
 function unDisableContent(targetSelector) {
