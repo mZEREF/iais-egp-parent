@@ -654,7 +654,7 @@ public final class RfcHelper {
             List<AppSvcPrincipalOfficersDto> newList = appSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList();
             List<AppSvcPrincipalOfficersDto> oldList = oldAppSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList();
             if (RfcConst.RFC_ADD == compareLength(newList,oldList)){
-                nonAutoList.add(ApplicationConsts.PERSONNEL_PSN_KAH+RfcConst.RFC_ADD);
+                nonAutoList.add(ApplicationConsts.PERSONNEL_PSN_KAH);
                 return true;
             }
             if (combinationAppSvcCd(newList,oldList,flag)) {
