@@ -3515,7 +3515,6 @@ public final class ApplicationHelper {
                 break;
             case ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER:
                 appSvcRelatedInfoDto.setAppSvcSectionLeaderList(sourceList);
-            default:
                 break;
         }
     }
