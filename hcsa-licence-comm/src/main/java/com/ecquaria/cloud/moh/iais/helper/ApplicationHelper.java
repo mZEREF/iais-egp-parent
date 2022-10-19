@@ -3487,6 +3487,39 @@ public final class ApplicationHelper {
         }
     }
 
+    public static void setSvcPersonnel(List<AppSvcPersonnelDto> sourceList, String psnType,
+                                       AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
+        if (StringUtil.isEmpty(psnType) || appSvcRelatedInfoDto == null) {
+            return;
+        }
+        SvcPersonnelDto svcPersonnelDto = appSvcRelatedInfoDto.getSvcPersonnelDto();
+        boolean flag = ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER.equals(psnType);
+        if (StringUtil.isEmpty(svcPersonnelDto) && !flag) {
+            return;
+        }
+        switch (psnType) {
+            case ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER:
+                svcPersonnelDto.setArPractitionerList(sourceList);
+                break;
+            case ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES:
+                svcPersonnelDto.setNurseList(sourceList);
+                break;
+            case ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST:
+                svcPersonnelDto.setEmbryologistList(sourceList);
+                break;
+            case ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS:
+                svcPersonnelDto.setNormalList(sourceList);
+                break;
+            case ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS:
+                svcPersonnelDto.setSpecialList(sourceList);
+                break;
+            case ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER:
+                appSvcRelatedInfoDto.setAppSvcSectionLeaderList(sourceList);
+            default:
+                break;
+        }
+    }
+
     public static List<String> getSvcPsnTypes(AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
         List<String> psnTypes = IaisCommonUtils.genNewArrayListWithData(IaisCommonUtils.getSvcPersonnel());
         List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = appSvcRelatedInfoDto.getAppSvcSpecialServiceInfoList();

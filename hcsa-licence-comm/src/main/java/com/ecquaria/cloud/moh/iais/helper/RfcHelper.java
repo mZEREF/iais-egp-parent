@@ -572,6 +572,11 @@ public final class RfcHelper {
         List<AppSvcPrincipalOfficersDto> target = IaisCommonUtils.genNewArrayList();
         if (IaisCommonUtils.isNotEmpty(newList) && IaisCommonUtils.isNotEmpty(oldList)){
             newList.forEach(e->newType.add(e.getIndexNo()));
+            oldList.forEach(e->newTypes.add(e.getIndexNo()));
+            if (newType.size() == newTypes.size() && !Objects.equals(newType,newTypes) && flag){
+                return true;
+            }
+            newTypes.clear();
             for (String type : newType) {
                 List<AppSvcPrincipalOfficersDto> collect = oldList.stream().filter(dto -> Objects.equals(type, dto.getIndexNo())).collect(Collectors.toList());
                 if (IaisCommonUtils.isNotEmpty(collect)){
@@ -777,6 +782,11 @@ public final class RfcHelper {
         List<AppSvcPersonnelDto> target = IaisCommonUtils.genNewArrayList();
         if (IaisCommonUtils.isNotEmpty(newList) && IaisCommonUtils.isNotEmpty(oldList)){
             newList.forEach(e->indexNo.add(e.getIndexNo()));
+            oldList.forEach(e->indexNos.add(e.getIndexNo()));
+            if (indexNo.size() == indexNos.size() && !Objects.equals(indexNo,indexNos) && flag){
+                return true;
+            }
+            indexNos.clear();
             for (String index : indexNo) {
                 List<AppSvcPersonnelDto> collect = oldList.stream().filter(dto -> Objects.equals(index, dto.getIndexNo())).collect(Collectors.toList());
                 if (IaisCommonUtils.isNotEmpty(collect)){
@@ -1714,50 +1724,133 @@ public final class RfcHelper {
                 reSetBusiness(oldSvcInfoDto, newDto,autoList);
             } else if (HcsaConsts.STEP_VEHICLES.equals(step)) {
                 reSetVehicle(oldSvcInfoDto, newDto,autoList);
-            } else if (HcsaConsts.STEP_SECTION_LEADER.equals(step)) {
-                List<AppSvcPersonnelDto> dtoList = (List<AppSvcPersonnelDto>) CopyUtil.copyMutableObjectList(oldSvcInfoDto.getAppSvcSectionLeaderList());
-                newDto.setAppSvcSectionLeaderList(
-                        (List<AppSvcPersonnelDto>) CopyUtil.copyMutableObjectList(oldSvcInfoDto.getAppSvcSectionLeaderList()));
+            } else if (ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER.equals(step)) {
+                reSetSvcPersonnel(oldSvcInfoDto, newDto, step, autoList);
             } else if (HcsaConsts.STEP_DOCUMENTS.equals(step)) {
                 /*List<AppSvcDocDto> oldASvcDocDtoLit = oldSvcInfoDto.getAppSvcDocDtoLit();
                 List<AppSvcDocDto> appSvcDocDtoLit = newDto.getAppSvcDocDtoLit();*/
             } else if (HcsaConsts.STEP_PRINCIPAL_OFFICERS.equals(step)) {
                 reSetPersonnels(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_TYPE_PO, autoList);
                 reSetPersonnels(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, autoList);
-            } else if (HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS.equals(step)) {
-                reSetPersonnels(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, autoList);
+            } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(step)) {
+                reSetPersonnel(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, autoList);
             } else if (HcsaConsts.STEP_CLINICAL_DIRECTOR.equals(step)) {
                 reSetPersonnels(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR, autoList);
-            } else if (HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER.equals(step)) {
-                reSetPersonnels(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_KAH, autoList);
+            } else if (ApplicationConsts.PERSONNEL_PSN_KAH.equals(step)) {
+                reSetPersonnel(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_KAH, autoList);
             } else if (HcsaConsts.MEDALERT_PERSON.equals(step)) {
                 reSetPersonnels(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, autoList);
             } else if (ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER.equals(step)) {
-                reSetSvcPersonnel(oldSvcInfoDto.getSvcPersonnelDto().getArPractitionerList(),
-                        newDto.getSvcPersonnelDto().getArPractitionerList(), step, autoList);
+                reSetSvcPersonnel(oldSvcInfoDto, newDto, step, autoList);
             } else if (ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES.equals(step)) {
-                reSetSvcPersonnel(oldSvcInfoDto.getSvcPersonnelDto().getNurseList(),
-                        newDto.getSvcPersonnelDto().getNurseList(), step, autoList);
+                reSetSvcPersonnel(oldSvcInfoDto, newDto, step, autoList);
             } else if (ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST.equals(step)) {
-                reSetSvcPersonnel(oldSvcInfoDto.getSvcPersonnelDto().getEmbryologistList(),
-                        newDto.getSvcPersonnelDto().getEmbryologistList(), step, autoList);
+                reSetSvcPersonnel(oldSvcInfoDto, newDto, step, autoList);
             } else if (ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS.equals(step)) {
-                reSetSvcPersonnel(oldSvcInfoDto.getSvcPersonnelDto().getNormalList(),
-                        newDto.getSvcPersonnelDto().getNormalList(), step, autoList);
+                reSetSvcPersonnel(oldSvcInfoDto, newDto, step, autoList);
             } else if (ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS.equals(step)) {
-                reSetSvcPersonnel(oldSvcInfoDto.getSvcPersonnelDto().getSpecialList(),
-                        newDto.getSvcPersonnelDto().getSpecialList(), step, autoList);
+                reSetSvcPersonnel(oldSvcInfoDto, newDto, step, autoList);
+            } else if (HcsaConsts.STEP_SUPPLEMENTARY_FORM.equals(step)){
+                reSetSupplementaryForm(oldSvcInfoDto, newDto, HcsaConsts.STEP_SUPPLEMENTARY_FORM, autoList);
             }
-            else if (HcsaConsts.STEP_SUPPLEMENTARY_FORM.equals(step)){
-
-            }
-
         }
         List<AppSvcRelatedInfoDto> result = IaisCommonUtils.genNewArrayList(1);
         result.add(newDto);
         return result;
     }
-    private static void reSetSvcPersonnel(List<AppSvcPersonnelDto> source,List<AppSvcPersonnelDto> target, String psnType, List<String> changeList) {
+
+    private static void reSetPersonnel(AppSvcRelatedInfoDto sourceReletedInfo, AppSvcRelatedInfoDto targetReletedInfo, String psnType, List<String> changeList) {
+        List<AppSvcPrincipalOfficersDto> psnList = (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObjectList(
+                ApplicationHelper.getKeyPersonnel(psnType, sourceReletedInfo));
+        List<AppSvcPrincipalOfficersDto> newList = ApplicationHelper.getKeyPersonnel(psnType, targetReletedInfo);
+        boolean isChanged = changeList.contains(psnType);
+        if (isChanged && psnList != null && newList != null) {
+            for (int i = 0, len = psnList.size(); i < len; i++) {
+                AppSvcPrincipalOfficersDto psnDto = psnList.get(i);
+                int init = RfcConst.RFC_NULL;
+                for (AppSvcPrincipalOfficersDto newPsn : newList) {
+                    if (Objects.equals(psnDto.getIdNo(), newPsn.getIdNo())) {
+                        psnList.set(i, newPsn);
+                        init = RfcConst.RFC_UNCHANGED;
+                        break;
+                    }
+                }
+                if (init == RfcConst.RFC_NULL) {
+                    psnList.remove(i);
+                }
+            }
+        }
+        ApplicationHelper.setKeyPersonnel(psnList, psnType, targetReletedInfo);
+    }
+
+    private static void reSetSvcPersonnel(AppSvcRelatedInfoDto sourceReletedInfo, AppSvcRelatedInfoDto targetReletedInfo, String psnType, List<String> changeList) {
+        List<AppSvcPersonnelDto> oldList = getStepPersonnel(sourceReletedInfo, psnType);
+        List<AppSvcPersonnelDto> newList = getStepPersonnel(targetReletedInfo, psnType);
+        boolean isChanged = changeList.contains(psnType);
+        if (isChanged && oldList != null && newList != null) {
+            for (int i = 0, len = oldList.size(); i < len; i++) {
+                AppSvcPersonnelDto appSvcPersonnelDto = oldList.get(i);
+                int init = RfcConst.RFC_NULL;
+                for (int j = 0; j < newList.size(); j++) {
+                    AppSvcPersonnelDto appSvcDto = newList.get(j);
+                    if (Objects.equals(appSvcPersonnelDto.getIndexNo(), appSvcDto.getIndexNo())) {
+                        oldList.set(i, appSvcDto);
+                        init = RfcConst.RFC_UNCHANGED;
+                        break;
+                    }
+                }
+                if (init == RfcConst.RFC_NULL) {
+                    oldList.remove(i);
+                }
+            }
+        }
+        ApplicationHelper.setSvcPersonnel(oldList, psnType, targetReletedInfo);
+    }
+
+    private static List<AppSvcPersonnelDto> getStepPersonnel(AppSvcRelatedInfoDto sourceReletedInfo, String psnType) {
+        SvcPersonnelDto svcPersonnelDto = sourceReletedInfo.getSvcPersonnelDto();
+        List<AppSvcPersonnelDto> list = IaisCommonUtils.genNewArrayList();
+        boolean flag = ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER.equals(psnType);
+        if (StringUtil.isEmpty(svcPersonnelDto) && !flag){
+            return list;
+        }
+        switch (psnType){
+            case ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER :
+                list = svcPersonnelDto.getArPractitionerList();
+                break;
+            case ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES :
+                list = svcPersonnelDto.getNurseList();
+                break;
+            case ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST :
+                list = svcPersonnelDto.getEmbryologistList();
+                break;
+            case ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS :
+                list = svcPersonnelDto.getNormalList();
+                break;
+            case ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS :
+                list = svcPersonnelDto.getSpecialList();
+                break;
+            case ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER :
+                list =  sourceReletedInfo.getAppSvcSectionLeaderList();
+        }
+        return list;
+    }
+    private static void reSetSupplementaryForm(AppSvcRelatedInfoDto sourceReletedInfo, AppSvcRelatedInfoDto targetReletedInfo, String psnType, List<String> changeList) {
+        List<AppSvcSuplmFormDto> oldAppSvcSuplmFormList = sourceReletedInfo.getAppSvcSuplmFormList();
+        List<AppSvcSuplmFormDto> appSvcSuplmFormList = targetReletedInfo.getAppSvcSuplmFormList();
+        boolean isChanged = changeList.contains(psnType);
+        if (isChanged && oldAppSvcSuplmFormList != null && appSvcSuplmFormList != null){
+            for (int i = 0, len = oldAppSvcSuplmFormList.size(); i < len; i++) {
+                AppSvcSuplmFormDto appSvcSuplmFormDto = oldAppSvcSuplmFormList.get(i);
+                for (AppSvcSuplmFormDto formDto : appSvcSuplmFormList) {
+                    if (Objects.equals(appSvcSuplmFormDto.getSvcId(), formDto.getSvcId())) {
+                        oldAppSvcSuplmFormList.set(i, formDto);
+                        break;
+                    }
+                }
+            }
+        }
+        targetReletedInfo.setAppSvcSuplmFormList(oldAppSvcSuplmFormList);
 
     }
 
