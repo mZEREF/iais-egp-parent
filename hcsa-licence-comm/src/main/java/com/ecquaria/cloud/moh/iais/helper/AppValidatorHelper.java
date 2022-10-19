@@ -1962,13 +1962,13 @@ public final class AppValidatorHelper {
                 }
             }
 
-            if (appSvcBusinessDtos.get(i).getWeeklyDtoList() != null) {
+            if (IaisCommonUtils.isNotEmpty(appSvcBusinessDtos.get(i).getWeeklyDtoList())) {
                 validateWeek(appSvcBusinessDtos.get(i), subfix, errorMap);
             }
-            if (appSvcBusinessDtos.get(i).getPhDtoList() != null) {
+            if (IaisCommonUtils.isNotEmpty(appSvcBusinessDtos.get(i).getPhDtoList())) {
                 validatePh(appSvcBusinessDtos.get(i), subfix, errorMap);
             }
-            if (appSvcBusinessDtos.get(i).getEventDtoList() != null) {
+            if (IaisCommonUtils.isNotEmpty(appSvcBusinessDtos.get(i).getEventDtoList())) {
                 validateEvent(appSvcBusinessDtos.get(i), subfix, errorMap);
             }
         }
