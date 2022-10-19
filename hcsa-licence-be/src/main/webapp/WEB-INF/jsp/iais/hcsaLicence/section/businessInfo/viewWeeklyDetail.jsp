@@ -1,26 +1,35 @@
 <c:forEach var="weeklyDto" items="${businessDto.weeklyDtoList}" varStatus="stat">
     <c:set var="oldweeklyDto" value="${oldBusiness.weeklyDtoList[stat.index]}"/>
-    <tr>
-        <td class="col-xs-6">
-            <div class="col-xs-6">
-                <div class="newVal" attr="${weeklyDto.selectValList}">
-                    <c:forEach var="weeklyName" items="${weeklyDto.selectValList}" varStatus="weeklyStat">
-                        <iais:code code="${weeklyName}"/><c:if test="${!weeklyStat.last}">,</c:if>
-                    </c:forEach>
+    <table  class="col-xs-12" aria-describedby="">
+        <thead style="display: none">
+        <tr>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tr>
+            <td class="col-xs-6">
+                <div class="col-xs-12 row">
+                    <div class="newVal" attr="${weeklyDto.selectValList}">
+                        <p>
+                            <c:forEach var="weeklyName" items="${weeklyDto.selectValList}" varStatus="weeklyStat">
+                                <iais:code code="${weeklyName}"/><c:if test="${!weeklyStat.last}">,</c:if>
+                            </c:forEach>
+                        </p>
+                    </div>
                 </div>
-            </div>
-            <div class="col-xs-6">
-                <div class="oldVal" style="display: none" attr="${oldweeklyDto.selectValList}">
-                    <c:forEach var="weeklyName" items="${oldweeklyDto.selectValList}" varStatus="weeklyStat">
-                        <iais:code code="${weeklyName}"/><c:if test="${!weeklyStat.last}">,</c:if>
-                    </c:forEach>
+                <div class="col-xs-12 row">
+                    <div class="oldVal" style="display: none" attr="${oldweeklyDto.selectValList}">
+                        <p>
+                            <c:forEach var="weeklyName" items="${oldweeklyDto.selectValList}" varStatus="weeklyStat">
+                                <iais:code code="${weeklyName}"/><c:if test="${!weeklyStat.last}">,</c:if>
+                            </c:forEach>
+                        </p>
+                    </div>
                 </div>
-            </div>
-        </td>
-        <td>
-            <div class="col-xs-6">
+            </td>
+            <td>
                 <div class="col-xs-4">
-                    <div class="col-xs-6">
+                    <div class="col-xs-12 row">
                         <div class="newVal" attr="${weeklyDto.startFromHH}:${weeklyDto.startFromMM}">
                             <c:if test="${!weeklyDto.selectAllDay}">
                                 <c:if test="${weeklyDto.startFromHH != null}">
@@ -49,7 +58,7 @@
                             </c:if>
                         </div>
                     </div>
-                    <div class="col-xs-6">
+                    <div class="col-xs-12 row">
                         <div class="oldVal" style="display: none" attr="${oldweeklyDto.startFromHH}:${oldweeklyDto.startFromMM}">
                             <c:if test="${!oldweeklyDto.selectAllDay}">
                                 <c:if test="${oldweeklyDto.startFromHH != null}">
@@ -80,7 +89,7 @@
                     </div>
                 </div>
                 <div class="col-xs-4">
-                    <div class="col-xs-6">
+                    <div class="col-xs-12 row">
                         <div class="newVal" attr="${weeklyDto.endToHH}:${weeklyDto.endToMM}">
                             <c:if test="${!weeklyDto.selectAllDay}">
                                 <c:if test="${weeklyDto.endToHH != null}">
@@ -109,7 +118,7 @@
                             </c:if>
                         </div>
                     </div>
-                    <div class="col-xs-6">
+                    <div class="col-xs-12 row">
                         <div class="oldVal" style="display: none" attr="${oldweeklyDto.endToHH}:${oldweeklyDto.endToMM}">
                             <c:if test="${!oldweeklyDto.selectAllDay}">
                                 <c:if test="${oldweeklyDto.endToHH != null}">
@@ -140,7 +149,7 @@
                     </div>
                 </div>
                 <div class="col-xs-4">
-                    <div class="col-xs-6">
+                    <div class="col-xs-12 row">
                         <c:if test="${weeklyDto.selectAllDay}">
                             <div class="newVal" attr="${weeklyDto.selectAllDay}">
                                 <div class="form-check active">
@@ -149,7 +158,7 @@
                             </div>
                         </c:if>
                     </div>
-                    <div class="col-xs-6">
+                    <div class="col-xs-12 row">
                         <c:if test="${oldweeklyDto.selectAllDay}">
                             <div class="oldVal" style="display: none" attr="${oldweeklyDto.selectAllDay}">
                                 <div class="form-check active">
@@ -159,7 +168,7 @@
                         </c:if>
                     </div>
                 </div>
-            </div>
-        </td>
-    </tr>
+            </td>
+        </tr>
+    </table>
 </c:forEach>

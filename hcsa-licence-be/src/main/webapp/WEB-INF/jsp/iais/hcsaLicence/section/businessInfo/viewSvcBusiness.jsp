@@ -12,7 +12,7 @@
                     <c:set var="isSpecialService" value="${currentPreviewSvcInfo.serviceCode==AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL||currentPreviewSvcInfo.serviceCode==AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL}"/>
                     <div class="col-xs-12">
                         <span class="newVal" attr="${businessDto.premType}:${businessDto.premAddress}">
-                            <strong >${businessDto.premTypeNameOnly}</strong>: ${businessDto.premAddress}
+                            <strong>${businessDto.premTypeNameOnly}</strong>: ${businessDto.premAddress}
                         </span>
                     </div>
                     <div class="col-xs-12">
