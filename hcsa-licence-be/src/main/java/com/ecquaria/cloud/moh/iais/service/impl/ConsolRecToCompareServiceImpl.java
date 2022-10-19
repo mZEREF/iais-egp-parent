@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.monitoringExcel.AppGroupExcelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.monitoringExcel.AppLicExcelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.monitoringExcel.AppProcessFileTrackExcelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.monitoringExcel.ApplicationExcelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.monitoringExcel.LicEicTrackExcelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.monitoringExcel.LicenceExcelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.monitoringExcel.MonitoringSheetsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.monitoringExcel.UserAccountExcelDto;
@@ -401,14 +402,29 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                 userAccountExcelDtos.add(entry.getValue());
             }
         }
+        List<AppLicExcelDto> appLicExcelDtos= IaisCommonUtils.genNewArrayList();
+        if(IaisCommonUtils.isNotEmpty(sheetsDto.getAppLicExcelDtoMap())){
+            for (Map.Entry<String,AppLicExcelDto> entry:sheetsDto.getAppLicExcelDtoMap().entrySet()
+            ) {
+                appLicExcelDtos.add(entry.getValue());
+            }
+        }
+        List<LicEicTrackExcelDto> licEicTrackExcelDtos= IaisCommonUtils.genNewArrayList();
+        if(IaisCommonUtils.isNotEmpty(sheetsDto.getLicEicTrackExcelDtoMap())){
+            for (Map.Entry<String,LicEicTrackExcelDto> entry:sheetsDto.getLicEicTrackExcelDtoMap().entrySet()
+            ) {
+                licEicTrackExcelDtos.add(entry.getValue());
+            }
+        }
         List<ExcelSheetDto> excelSheetDtos = IaisCommonUtils.genNewArrayList();
         int sheetAt = 0;
         excelSheetDtos.add(getExcelSheetDto(sheetAt++, "app_group", groupExcelDtos,AppGroupExcelDto.class));
         excelSheetDtos.add(getExcelSheetDto(sheetAt++, "application", applicationExcelDtos,ApplicationExcelDto.class));
         excelSheetDtos.add(getExcelSheetDto(sheetAt++, "apft", appProcessFileTrackExcelDtos,AppProcessFileTrackExcelDto.class));
         excelSheetDtos.add(getExcelSheetDto(sheetAt++, "licence", licenceExcelDtos,LicenceExcelDto.class));
-        excelSheetDtos.add(getExcelSheetDto(sheetAt, "user_account", userAccountExcelDtos,UserAccountExcelDto.class));
-
+        excelSheetDtos.add(getExcelSheetDto(sheetAt++, "user_account", userAccountExcelDtos,UserAccountExcelDto.class));
+        excelSheetDtos.add(getExcelSheetDto(sheetAt++, "lic_app_correlation", appLicExcelDtos,AppLicExcelDto.class));
+        excelSheetDtos.add(getExcelSheetDto(sheetAt, "lic_eic_request_tracking", licEicTrackExcelDtos,LicEicTrackExcelDto.class));
 
         return excelSheetDtos;
     }
