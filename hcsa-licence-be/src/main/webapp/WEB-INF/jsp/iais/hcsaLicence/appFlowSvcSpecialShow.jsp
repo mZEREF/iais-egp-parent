@@ -1,7 +1,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <c:set var="appPremSpecialSubSvcRelDtoList" value="${applicationViewDto.appPremSpecialSubSvcRelDtoList}"/>
 
-<c:if test="${!applicationViewDto.transfer}">
+<c:if test="${!applicationViewDto.applicationGroupDto.transfer}">
   <c:if test="${not empty appPremSpecialSubSvcRelDtoList}">
     <c:if test="${'edit' eq appSpecialFlag}">
       <iais:row>
