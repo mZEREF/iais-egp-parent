@@ -3481,13 +3481,40 @@ public final class ApplicationHelper {
     }
 
 
-
-
-    public static void setOtherInfoPerson(List<AppSvcOtherInfoTopPersonDto> sourceList, String psnType, AppSvcOtherInfoDto appSvcOtherInfoDto){
-        if (StringUtil.isEmpty(psnType) || appSvcOtherInfoDto == null){
+    public static void setKeyPersonnel(List<AppSvcPrincipalOfficersDto> sourceList, String psnType,
+                                       AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
+        if (StringUtil.isEmpty(psnType) || appSvcRelatedInfoDto == null) {
             return;
         }
-        switch (psnType){
+        switch (psnType) {
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_CGO:
+                appSvcRelatedInfoDto.setAppSvcCgoDtoList(sourceList);
+                break;
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_PO:
+                appSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(sourceList);
+                break;
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_DPO:
+                appSvcRelatedInfoDto.setAppSvcNomineeDtoList(sourceList);
+                break;
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_MAP:
+                appSvcRelatedInfoDto.setAppSvcMedAlertPersonList(sourceList);
+                break;
+            case ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR:
+                appSvcRelatedInfoDto.setAppSvcClinicalDirectorDtoList(sourceList);
+                break;
+            case ApplicationConsts.PERSONNEL_PSN_KAH:
+                appSvcRelatedInfoDto.setAppSvcKeyAppointmentHolderDtoList(sourceList);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public static void setOtherInfoPerson(List<AppSvcOtherInfoTopPersonDto> sourceList, String psnType, AppSvcOtherInfoDto appSvcOtherInfoDto) {
+        if (StringUtil.isEmpty(psnType) || appSvcOtherInfoDto == null) {
+            return;
+        }
+        switch (psnType) {
             case ApplicationConsts.OTHER_TOP_PRACTITIONERS:
                 appSvcOtherInfoDto.setOtherInfoTopPersonPractitionersList(sourceList);
                 break;
@@ -3501,6 +3528,7 @@ public final class ApplicationHelper {
                 appSvcOtherInfoDto.setOtherInfoTopPersonCounsellorsList(sourceList);
                 break;
         }
+    }
 
     public static void setSvcPersonnel(List<AppSvcPersonnelDto> sourceList, String psnType,
                                        AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
@@ -3532,8 +3560,6 @@ public final class ApplicationHelper {
                 appSvcRelatedInfoDto.setAppSvcSectionLeaderList(sourceList);
                 break;
         }
-    }
-
     }
     public static List<String> getSvcPsnTypes(AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
         List<String> psnTypes = IaisCommonUtils.genNewArrayListWithData(IaisCommonUtils.getSvcPersonnel());
