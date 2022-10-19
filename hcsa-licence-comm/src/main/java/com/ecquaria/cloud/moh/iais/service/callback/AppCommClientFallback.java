@@ -147,11 +147,11 @@ public class AppCommClientFallback implements AppCommClient {
 
     @Override
     public FeignResponseEntity<List<AppLicBundleDto>> getBundleMsCount(String item, boolean licOrApp) {
-        return null;
+        return IaisEGPHelper.getFeignResponseEntity(item,licOrApp);
     }
 
     @Override
     public FeignResponseEntity<List<AppAlignAppQueryDto>> getActiveApplicationsAddress(String licenseeId, List<String> svcIdList) {
-        return IaisEGPHelper.getFeignResponseEntity(licenseeId);
+        return IaisEGPHelper.getFeignResponseEntity(licenseeId,svcIdList);
     }
 }
