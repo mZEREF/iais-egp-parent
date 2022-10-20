@@ -367,7 +367,7 @@
                 </div>
 
                 <div class="text-box">
-                  <p><strong>${licenseeName} </strong>is authorised by the Director of Medical Services to provide the following disciplines/ specified tests as part of its Clinical Laboratory Service (licenced under <strong>${licenceNo}),</strong> subject to its compliance with the Healthcare Services Act 2020, and all regulations, rules, code of practices and directions issued thereunder, as well as any license conditions that may be imposed by the Director of Medical Services relating to the provision of such disciplines/ specified tests: </p>
+                  <p><strong>${licenseeName} </strong>is authorised by the Director of Medical Services to provide the following disciplines/ specified tests as part of its Clinical Laboratory Service (licenced under <strong>${licenceNo}</strong>), subject to its compliance with the Healthcare Services Act 2020, and all regulations, rules, code of practices and directions issued thereunder, as well as any license conditions that may be imposed by the Director of Medical Services relating to the provision of such disciplines/ specified tests: </p>
                   <div class="lic-list">
                     <ol>
                       ${disciplinesSpecifiedsFirst}
