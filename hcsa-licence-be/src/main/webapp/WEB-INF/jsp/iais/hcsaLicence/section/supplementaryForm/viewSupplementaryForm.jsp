@@ -33,7 +33,6 @@
                 </c:forEach>
                 </div>
             </div>
-                    </table>
             </c:forEach>
         </div>
     </div>

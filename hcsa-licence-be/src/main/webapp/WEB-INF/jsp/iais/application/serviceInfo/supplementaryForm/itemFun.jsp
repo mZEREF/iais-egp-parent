@@ -34,13 +34,14 @@
             refreshLabel($target, index);
         });
 
-        let appType = $('input[name="applicationType"]').val();
-        if (('APTY005' == appType || 'APTY004' == appType)) {
+        <c:if test="${(isRfc || isRenew) && !isRfi}">
             disableContent($('.person-content'));
-        }
-
+        </c:if>
+        <c:if test="${isRfi}">
+            disableContent($('.person-content'));
+        </c:if>
         let svcContent = '.person-content';
-        psnEditEvent(svcContent);
+        psnEditEvents(svcContent)
         <c:if test="${AppSubmissionDto.needEditController}">
         $(svcContent).each(function (k,v) {
             if ($("#errorMapIs").val() == 'error') {
@@ -55,6 +56,34 @@
         });
         </c:if>
     });
+
+    var psnEditEvents = function (target) {
+        var $target = $(target);
+        if (isEmptyNode($target)) {
+            return;
+        }
+
+        $target.find('.psnEdit').unbind('click');
+        $target.find('.psnEdit').on('click', function () {
+            doEditPsns($(this).closest(target), target);
+        });
+    }
+
+    function doEditPsns($currContent, target) {
+        if (isEmptyNode($currContent) || isEmpty(target)) {
+            return;
+        }
+        if (hideEditBtn($currContent)) {
+            return;
+        }
+        $currContent.find('.isPartEdit').val('1');
+        $('input[name="isEdit"]').each(function (k,v) {
+            $(v).val('1')
+        })
+        console.log($('input[name="isEdit"]').length,'length=======>>>')
+        hideTag($currContent.find('.edit-content'));
+        unDisableContent($currContent);
+    }
 
     function refreshAddBtn() {
         $('.addMoreDiv').each(function () {
@@ -136,8 +165,8 @@
                 checkItemTotal($cal4);
             }
             unDisableContent($('.person-content'))
-            $('.person-content').find('.isPartEdit').val(1)
-            $('#isEditHiddenVal').val(1)
+            $('.person-content').find('.isPartEdit').val('1')
+            $('#isEditHiddenVal').val('1')
         });
     }
 

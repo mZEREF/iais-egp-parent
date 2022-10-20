@@ -97,6 +97,9 @@
                                                                 <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/outsourced/outsourcedProviders.jsp"/>
                                                             </div>
                                                         </c:when>
+                                                        <c:when test="${currentStep == 'SVST016'}">
+                                                            <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/supplementaryForm/supplementaryForm.jsp"/>
+                                                        </c:when>
                                                     </c:choose>
                                                 </div>
                                             </div>

@@ -44,7 +44,7 @@
                     </div>
                     <div class="col-xs-6">
                         <div class="oldVal " attr="${oldItem.inputValue}" style="display: none">
-                             <iais:code code="${oldItem.inputValue}"/>
+                            <c:out value="${oldItem.inputValue}"/>
                         </div>
                     </div>
                 </td>
@@ -84,7 +84,7 @@
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_CHECKBOX || oldItemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_CHECKBOX}">
             <tr>
                 <td>
-                <div class="col-xs-6 form-check active" attr="${itemConfigDto.displayInfo}">
+                <div class="col-xs-6 form-check active" attr="${item.inputValue}">
                     <div class="form-check-label" aria-label="premise-1-cytology">
                         <span class="check-square"></span> ${itemConfigDto.displayInfo}
                     </div>
@@ -93,7 +93,7 @@
                 <td>
                     <div class="col-xs-6 form-check active" attr="${oldItemConfigDto.displayInfo}">
                         <div class="form-check-label" aria-label="premise-1-cytology" style="display: none">
-                            <span class="check-square"></span> ${oldItemConfigDto.displayInfo}
+                            <span class="check-square"></span> ${oldItem.inputValue}
                         </div>
                     </div>
                 </td>
