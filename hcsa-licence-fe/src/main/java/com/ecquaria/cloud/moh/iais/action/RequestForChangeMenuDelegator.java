@@ -1600,6 +1600,10 @@ public class RequestForChangeMenuDelegator {
         if (total == null) {
             total = 0.0;
         }
+        ParamUtil.setSessionAttr(bpc.request, "FeeDetail", null);
+        if(feeDto.getFeeDetail()!=null){
+            ParamUtil.setSessionAttr(bpc.request, "FeeDetail", feeDto.getFeeDetail().toString());
+        }
         Map<String, String> errorMap = null;
         if (selectLicence != null) {
             errorMap = appCommService.checkAffectedAppSubmissions(selectLicence, appGrpPremisesDtoList1.get(0),

@@ -41,18 +41,18 @@
                 <c:if test="${empty baseSvcFeeExt }">
                     <tr>
                         <td>
-                            <p><strong><c:out value="${svc.serviceName}"/></strong></p>
+                            <p><strong><c:out value="${AppSubmissionDto.serviceName}"/></strong></p>
 
                         </td>
                         <td>
                             <p>Amendment</p>
                         </td>
                         <td>
-                            <p><c:out value="${svc.appGrpNo}-0${index.index+1}"/></p>
+                            <p><c:out value="${AppSubmissionDto.appGrpNo}-0${index.index+1}"/></p>
                         </td>
                         <td>
                             <p>
-                                <c:out value="${svc.amountStr}"/>
+                                <c:out value="${AppSubmissionDto.amountStr}"/>
                             </p>
                         </td>
                     </tr>
@@ -141,7 +141,7 @@
                 <td></td>
                 <td></td>
                 <td><p><strong>Total${FeeDetail}</strong></p></td>
-                <td><p><c:out value="${svc.amountStr}"/></p></td>
+                <td><p><c:out value="${AppSubmissionDto.amountStr}"/></p></td>
             </tr>
         </c:when>
 
