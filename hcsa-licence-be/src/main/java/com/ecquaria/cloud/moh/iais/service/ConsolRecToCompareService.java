@@ -10,4 +10,6 @@ public interface ConsolRecToCompareService {
     void initPath();
 
     void decompression();
+
+    void compareFeBe();
 }

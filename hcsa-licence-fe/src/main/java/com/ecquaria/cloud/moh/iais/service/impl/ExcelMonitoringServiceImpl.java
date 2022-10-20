@@ -194,7 +194,7 @@ public class ExcelMonitoringServiceImpl implements ExcelMonitoringService {
                     }
 
                     Date date = new Date();
-                    String dateStr = Formatter.formatDateTime(date, Formatter.DATE_ELIS);
+                    String dateStr = Formatter.formatDateTime(date, Formatter.DATE_FILE);
                     String s =  "FECompareResults_"+dateStr;
                     File curFile = MiscUtil.generateFile(sharedOutPath, s + ".zip");
                     boolean b = file.renameTo(curFile);

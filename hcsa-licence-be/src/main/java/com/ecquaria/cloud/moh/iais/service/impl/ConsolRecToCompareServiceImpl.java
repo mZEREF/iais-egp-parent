@@ -46,6 +46,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
@@ -73,6 +74,8 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
     private String sharedPath;
     @Value("${iais.sharedfolder.datacompair.in}")
     private String inSharedPath;
+    @Value("${iais.sharedfolder.datacompair.out}")
+    private String outSharedPath;
     @Value("${iais.sharedfolder.datacompair.rslt}")
     private String rsltSharedPath;
     @Autowired
@@ -115,7 +118,46 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
 
     @Override
     public void decompression() {
+        String outFolder = outSharedPath;
+        if (!outFolder.endsWith(File.separator)) {
+            outFolder += File.separator;
+        }
         log.info("-------------decompression start ---------");
+        MonitoringSheetsDto monitoringAppSheetsDto=applicationClient.getMonitoringAppSheetsDto().getEntity();
+        MonitoringSheetsDto monitoringLicSheetsDto=hcsaLicenceClient.getMonitoringLicenceSheetsDto().getEntity();
+        MonitoringSheetsDto monitoringUserSheetsDto=organizationClient.getMonitoringUserSheetsDto().getEntity();
+        monitoringAppSheetsDto.setLicenceExcelDtoMap(monitoringLicSheetsDto.getLicenceExcelDtoMap());
+        monitoringAppSheetsDto.setLicEicTrackExcelDtoMap(monitoringLicSheetsDto.getLicEicTrackExcelDtoMap());
+        monitoringAppSheetsDto.setAppLicExcelDtoMap(monitoringLicSheetsDto.getAppLicExcelDtoMap());
+        monitoringAppSheetsDto.setUserAccountExcelDtoMap(monitoringUserSheetsDto.getUserAccountExcelDtoMap());
+
+        String str = JsonUtil.parseToJson(monitoringAppSheetsDto);
+        String s = "";
+        try{
+            Date date = new Date();
+            String dateStr = Formatter.formatDateTime(date, Formatter.DATE_FILE);
+            s =  "BECompareResults_"+dateStr;
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
+        File file = MiscUtil.generateFile(outFolder+ AppServicesConsts.FILE_NAME, s+AppServicesConsts.FILE_FORMAT);
+        try (OutputStream fileOutputStream  = newOutputStream(file.toPath());) {
+            if(!file.exists()){
+                boolean newFile = file.createNewFile();
+                if(newFile){
+                    log.info("***newFile createNewFile***");
+                }
+            }
+            fileOutputStream.write(str.getBytes(StandardCharsets.UTF_8));
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+
+        }
+
+    }
+
+    @Override
+    public void compareFeBe() {
         String inFolder = inSharedPath;
         if (!inFolder.endsWith(File.separator)) {
             inFolder += File.separator;
@@ -173,7 +215,6 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                 }
             }
         }
-
     }
 
     private void moveFile(File file) {
@@ -601,203 +642,238 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
         return widthMap;
     }
 
-    private MonitoringSheetsDto fileToDto(String str)
+    private MonitoringSheetsDto fileToDto(String str) throws Exception
     {
         boolean hasNotMatch=false;
+        //fe
         MonitoringSheetsDto monitoringSheetsDto = JsonUtil.parseToObject(str, MonitoringSheetsDto.class);
-        MonitoringSheetsDto monitoringAppSheetsDto=applicationClient.getMonitoringAppSheetsDto().getEntity();
-        MonitoringSheetsDto monitoringLicSheetsDto=hcsaLicenceClient.getMonitoringLicenceSheetsDto().getEntity();
-        MonitoringSheetsDto monitoringUserSheetsDto=organizationClient.getMonitoringUserSheetsDto().getEntity();
-        monitoringAppSheetsDto.setLicenceExcelDtoMap(monitoringLicSheetsDto.getLicenceExcelDtoMap());
-        monitoringAppSheetsDto.setUserAccountExcelDtoMap(monitoringUserSheetsDto.getUserAccountExcelDtoMap());
-        monitoringSheetsDto.setLicEicTrackExcelDtoMap(monitoringLicSheetsDto.getLicEicTrackExcelDtoMap());
-        monitoringAppSheetsDto.setAppLicExcelDtoMap(monitoringLicSheetsDto.getAppLicExcelDtoMap());
+        MonitoringSheetsDto monitoringAppSheetsDto=null;
 
-        if(IaisCommonUtils.isNotEmpty(monitoringSheetsDto.getAppProcessFileTrackExcelDtoMap())){
-            monitoringSheetsDto.getAppProcessFileTrackExcelDtoMap().putAll(monitoringAppSheetsDto.getAppProcessFileTrackExcelDtoMap());
-        }else {
-            monitoringSheetsDto.setAppProcessFileTrackExcelDtoMap(monitoringAppSheetsDto.getAppProcessFileTrackExcelDtoMap());
+        //be
+        InputStream  fileInputStream = null;
+        try {
+            String outFolder = outSharedPath;
+            if (!outFolder.endsWith(File.separator)) {
+                outFolder += File.separator;
+            }
+            String s = "";
+            try{
+                Date date = new Date();
+                String dateStr = Formatter.formatDateTime(date, Formatter.DATE_FILE);
+                s =  "BECompareResults_"+dateStr;
+            }catch (Exception e){
+                log.error(e.getMessage(),e);
+            }
+            File file = MiscUtil.generateFile(outFolder+ AppServicesConsts.FILE_NAME, s+AppServicesConsts.FILE_FORMAT);
+            fileInputStream= newInputStream(file.toPath());
+            ByteArrayOutputStream by=new ByteArrayOutputStream();
+            int count;
+            byte [] size=new byte[1024];
+            count=fileInputStream.read(size);
+            while(count!=-1){
+                by.write(size,0,count);
+                count= fileInputStream.read(size);
+            }
+            monitoringAppSheetsDto = JsonUtil.parseToObject(by.toString(), MonitoringSheetsDto.class);
+
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }finally {
+            if(fileInputStream !=null){
+                fileInputStream.close();
+            }
         }
 
-        if(IaisCommonUtils.isNotEmpty(monitoringAppSheetsDto.getAppProcessFileTrackExcelDtoMap())){
-            for (Map.Entry<String, AppProcessFileTrackExcelDto> entry:monitoringAppSheetsDto.getAppProcessFileTrackExcelDtoMap().entrySet()
-            ) {
-                if(monitoringSheetsDto.getAppProcessFileTrackExcelDtoMap().containsKey(entry.getKey())){
-                    AppProcessFileTrackExcelDto excelDto=monitoringSheetsDto.getAppProcessFileTrackExcelDtoMap().get(entry.getKey());
+        if(monitoringAppSheetsDto!=null){
+            monitoringSheetsDto.setLicEicTrackExcelDtoMap(monitoringAppSheetsDto.getLicEicTrackExcelDtoMap());
 
-                    if(excelDto.getStatus().equals("PFT005")||excelDto.getStatusFe().equals("PFT005")){
-                        excelDto.setResult("Match");
-                    }else {
-                        excelDto.setResult("Not Match");
-                        hasNotMatch=true;
+            if(IaisCommonUtils.isNotEmpty(monitoringSheetsDto.getAppProcessFileTrackExcelDtoMap())){
+                monitoringSheetsDto.getAppProcessFileTrackExcelDtoMap().putAll(monitoringAppSheetsDto.getAppProcessFileTrackExcelDtoMap());
+            }else {
+                monitoringSheetsDto.setAppProcessFileTrackExcelDtoMap(monitoringAppSheetsDto.getAppProcessFileTrackExcelDtoMap());
+            }
+
+            if(IaisCommonUtils.isNotEmpty(monitoringAppSheetsDto.getAppProcessFileTrackExcelDtoMap())){
+                for (Map.Entry<String, AppProcessFileTrackExcelDto> entry:monitoringAppSheetsDto.getAppProcessFileTrackExcelDtoMap().entrySet()
+                ) {
+                    if(monitoringSheetsDto.getAppProcessFileTrackExcelDtoMap().containsKey(entry.getKey())){
+                        AppProcessFileTrackExcelDto excelDto=monitoringSheetsDto.getAppProcessFileTrackExcelDtoMap().get(entry.getKey());
+
+                        if(excelDto.getStatus().equals("PFT005")||excelDto.getStatusFe().equals("PFT005")){
+                            excelDto.setResult("Match");
+                        }else {
+                            excelDto.setResult("Not Match");
+                            hasNotMatch=true;
+                        }
                     }
                 }
             }
-        }
-        if(IaisCommonUtils.isNotEmpty(monitoringAppSheetsDto.getApplicationExcelDtoMap())){
-            for (Map.Entry<String, ApplicationExcelDto> entry:monitoringAppSheetsDto.getApplicationExcelDtoMap().entrySet()
-            ) {
-                if(monitoringSheetsDto.getApplicationExcelDtoMap()!=null&&monitoringSheetsDto.getApplicationExcelDtoMap().containsKey(entry.getKey())){
-                    ApplicationExcelDto excelDto=monitoringSheetsDto.getApplicationExcelDtoMap().get(entry.getKey());
-                    excelDto.setApplicationNoBe(entry.getValue().getApplicationNoBe());
-                    excelDto.setStatusBe(entry.getValue().getStatusBe());
-                    excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
-                    excelDto.setVersionBe(entry.getValue().getVersionBe());
-                    excelDto.setOriginLicenceIdBe(entry.getValue().getOriginLicenceIdBe());
-                    if(excelDto.getApplicationNoBe().equals(excelDto.getApplicationNoFe())
-                            && excelDto.getVersionBe().equals(excelDto.getVersionFe())
-                            && excelDto.getStatusBe().equals(excelDto.getStatusFe())){
-                        excelDto.setResult("Match");
+            if(IaisCommonUtils.isNotEmpty(monitoringAppSheetsDto.getApplicationExcelDtoMap())){
+                for (Map.Entry<String, ApplicationExcelDto> entry:monitoringAppSheetsDto.getApplicationExcelDtoMap().entrySet()
+                ) {
+                    if(monitoringSheetsDto.getApplicationExcelDtoMap()!=null&&monitoringSheetsDto.getApplicationExcelDtoMap().containsKey(entry.getKey())){
+                        ApplicationExcelDto excelDto=monitoringSheetsDto.getApplicationExcelDtoMap().get(entry.getKey());
+                        excelDto.setApplicationNoBe(entry.getValue().getApplicationNoBe());
+                        excelDto.setStatusBe(entry.getValue().getStatusBe());
+                        excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
+                        excelDto.setVersionBe(entry.getValue().getVersionBe());
+                        excelDto.setOriginLicenceIdBe(entry.getValue().getOriginLicenceIdBe());
+                        if(excelDto.getApplicationNoBe().equals(excelDto.getApplicationNoFe())
+                                && excelDto.getVersionBe().equals(excelDto.getVersionFe())
+                                && excelDto.getStatusBe().equals(excelDto.getStatusFe())){
+                            excelDto.setResult("Match");
+                        }else {
+                            excelDto.setResult("Not Match");
+                            hasNotMatch=true;
+                        }
                     }else {
-                        excelDto.setResult("Not Match");
+                        entry.getValue().setResult("Not Match");
                         hasNotMatch=true;
+                        if(IaisCommonUtils.isEmpty(monitoringSheetsDto.getApplicationExcelDtoMap())){
+                            monitoringSheetsDto.setApplicationExcelDtoMap(IaisCommonUtils.genNewHashMap());
+                        }
+                        monitoringSheetsDto.getApplicationExcelDtoMap().put(entry.getKey(),entry.getValue());
                     }
-                }else {
-                    entry.getValue().setResult("Not Match");
-                    hasNotMatch=true;
-                    if(IaisCommonUtils.isEmpty(monitoringSheetsDto.getApplicationExcelDtoMap())){
-                        monitoringSheetsDto.setApplicationExcelDtoMap(IaisCommonUtils.genNewHashMap());
-                    }
-                    monitoringSheetsDto.getApplicationExcelDtoMap().put(entry.getKey(),entry.getValue());
                 }
             }
-        }
-        if(IaisCommonUtils.isNotEmpty(monitoringAppSheetsDto.getLicenceExcelDtoMap())){
-            for (Map.Entry<String, LicenceExcelDto> entry:monitoringAppSheetsDto.getLicenceExcelDtoMap().entrySet()
-            ) {
-                if(monitoringSheetsDto.getLicenceExcelDtoMap()!=null&&monitoringSheetsDto.getLicenceExcelDtoMap().containsKey(entry.getKey())){
-                    LicenceExcelDto excelDto=monitoringSheetsDto.getLicenceExcelDtoMap().get(entry.getKey());
-                    excelDto.setLicenceNoBe(entry.getValue().getLicenceNoBe());
-                    excelDto.setStatusBe(entry.getValue().getStatusBe());
-                    excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
-                    excelDto.setOriginLicenceIdBe(entry.getValue().getOriginLicenceIdBe());
-                    excelDto.setVersionBe(entry.getValue().getVersionBe());
-                    excelDto.setEffectiveDtBe(entry.getValue().getEffectiveDtBe());
-                    excelDto.setUenNoBe(entry.getValue().getUenNoBe());
-                    excelDto.setLicenseeNameBe(entry.getValue().getLicenseeNameBe());
-                    if(excelDto.getLicenceNoBe().equals(excelDto.getLicenceNoFe())
-                            && excelDto.getVersionBe().equals(excelDto.getVersionFe())
-                            && excelDto.getStatusBe().equals(excelDto.getStatusFe())){
-                        excelDto.setResult("Match");
+            if(IaisCommonUtils.isNotEmpty(monitoringAppSheetsDto.getLicenceExcelDtoMap())){
+                for (Map.Entry<String, LicenceExcelDto> entry:monitoringAppSheetsDto.getLicenceExcelDtoMap().entrySet()
+                ) {
+                    if(monitoringSheetsDto.getLicenceExcelDtoMap()!=null&&monitoringSheetsDto.getLicenceExcelDtoMap().containsKey(entry.getKey())){
+                        LicenceExcelDto excelDto=monitoringSheetsDto.getLicenceExcelDtoMap().get(entry.getKey());
+                        excelDto.setLicenceNoBe(entry.getValue().getLicenceNoBe());
+                        excelDto.setStatusBe(entry.getValue().getStatusBe());
+                        excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
+                        excelDto.setOriginLicenceIdBe(entry.getValue().getOriginLicenceIdBe());
+                        excelDto.setVersionBe(entry.getValue().getVersionBe());
+                        excelDto.setEffectiveDtBe(entry.getValue().getEffectiveDtBe());
+                        excelDto.setUenNoBe(entry.getValue().getUenNoBe());
+                        excelDto.setLicenseeNameBe(entry.getValue().getLicenseeNameBe());
+                        if(excelDto.getLicenceNoBe().equals(excelDto.getLicenceNoFe())
+                                && excelDto.getVersionBe().equals(excelDto.getVersionFe())
+                                && excelDto.getStatusBe().equals(excelDto.getStatusFe())){
+                            excelDto.setResult("Match");
+                        }else {
+                            excelDto.setResult("Not Match");
+                            hasNotMatch=true;
+                        }
                     }else {
-                        excelDto.setResult("Not Match");
+                        entry.getValue().setResult("Not Match");
                         hasNotMatch=true;
+                        if(IaisCommonUtils.isEmpty(monitoringSheetsDto.getLicenceExcelDtoMap())){
+                            monitoringSheetsDto.setLicenceExcelDtoMap(IaisCommonUtils.genNewHashMap());
+                        }
+                        monitoringSheetsDto.getLicenceExcelDtoMap().put(entry.getKey(),entry.getValue());
                     }
-                }else {
-                    entry.getValue().setResult("Not Match");
-                    hasNotMatch=true;
-                    if(IaisCommonUtils.isEmpty(monitoringSheetsDto.getLicenceExcelDtoMap())){
-                        monitoringSheetsDto.setLicenceExcelDtoMap(IaisCommonUtils.genNewHashMap());
-                    }
-                    monitoringSheetsDto.getLicenceExcelDtoMap().put(entry.getKey(),entry.getValue());
                 }
             }
-        }
-        if(IaisCommonUtils.isNotEmpty(monitoringAppSheetsDto.getAppGroupExcelDtoMap())){
-            for (Map.Entry<String, AppGroupExcelDto> entry:monitoringAppSheetsDto.getAppGroupExcelDtoMap().entrySet()
-            ) {
-                if(monitoringSheetsDto.getAppGroupExcelDtoMap()!=null&&monitoringSheetsDto.getAppGroupExcelDtoMap().containsKey(entry.getKey())){
-                    AppGroupExcelDto excelDto=monitoringSheetsDto.getAppGroupExcelDtoMap().get(entry.getKey());
-                    excelDto.setAppGroupNoBe(entry.getValue().getAppGroupNoBe());
-                    excelDto.setStatusBe(entry.getValue().getStatusBe());
-                    excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
-                    excelDto.setAmountBe(entry.getValue().getAmountBe());
-                    excelDto.setPmtStatusBe(entry.getValue().getPmtStatusBe());
-                    excelDto.setPmtRefNoBe(entry.getValue().getPmtRefNoBe());
-                    excelDto.setIsAutoApproveBe(entry.getValue().getIsAutoApproveBe());
-                    if(excelDto.getAppGroupNoBe().equals(excelDto.getAppGroupNoFe())
-                            && excelDto.getPmtStatusBe().equals(excelDto.getPmtStatusFe())
-                            && excelDto.getAmountBe().equals(excelDto.getAmountFe())
-                            && excelDto.getIsAutoApproveBe().equals(excelDto.getIsAutoApproveFe())
-                            && excelDto.getStatusBe().equals(excelDto.getStatusFe())){
-                        excelDto.setResult("Match");
+            if(IaisCommonUtils.isNotEmpty(monitoringAppSheetsDto.getAppGroupExcelDtoMap())){
+                for (Map.Entry<String, AppGroupExcelDto> entry:monitoringAppSheetsDto.getAppGroupExcelDtoMap().entrySet()
+                ) {
+                    if(monitoringSheetsDto.getAppGroupExcelDtoMap()!=null&&monitoringSheetsDto.getAppGroupExcelDtoMap().containsKey(entry.getKey())){
+                        AppGroupExcelDto excelDto=monitoringSheetsDto.getAppGroupExcelDtoMap().get(entry.getKey());
+                        excelDto.setAppGroupNoBe(entry.getValue().getAppGroupNoBe());
+                        excelDto.setStatusBe(entry.getValue().getStatusBe());
+                        excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
+                        excelDto.setAmountBe(entry.getValue().getAmountBe());
+                        excelDto.setPmtStatusBe(entry.getValue().getPmtStatusBe());
+                        excelDto.setPmtRefNoBe(entry.getValue().getPmtRefNoBe());
+                        excelDto.setIsAutoApproveBe(entry.getValue().getIsAutoApproveBe());
+                        if(excelDto.getAppGroupNoBe().equals(excelDto.getAppGroupNoFe())
+                                && excelDto.getPmtStatusBe().equals(excelDto.getPmtStatusFe())
+                                && excelDto.getAmountBe().equals(excelDto.getAmountFe())
+                                && excelDto.getIsAutoApproveBe().equals(excelDto.getIsAutoApproveFe())
+                                && excelDto.getStatusBe().equals(excelDto.getStatusFe())){
+                            excelDto.setResult("Match");
+                        }else {
+                            excelDto.setResult("Not Match");
+                            hasNotMatch=true;
+                        }
                     }else {
-                        excelDto.setResult("Not Match");
+                        entry.getValue().setResult("Not Match");
                         hasNotMatch=true;
+                        if(IaisCommonUtils.isEmpty(monitoringSheetsDto.getAppGroupExcelDtoMap())){
+                            monitoringSheetsDto.setAppGroupExcelDtoMap(IaisCommonUtils.genNewHashMap());
+                        }
+                        monitoringSheetsDto.getAppGroupExcelDtoMap().put(entry.getKey(),entry.getValue());
                     }
-                }else {
-                    entry.getValue().setResult("Not Match");
-                    hasNotMatch=true;
-                    if(IaisCommonUtils.isEmpty(monitoringSheetsDto.getAppGroupExcelDtoMap())){
-                        monitoringSheetsDto.setAppGroupExcelDtoMap(IaisCommonUtils.genNewHashMap());
-                    }
-                    monitoringSheetsDto.getAppGroupExcelDtoMap().put(entry.getKey(),entry.getValue());
                 }
             }
-        }
-        if(IaisCommonUtils.isNotEmpty(monitoringAppSheetsDto.getUserAccountExcelDtoMap())){
-            for (Map.Entry<String, UserAccountExcelDto> entry:monitoringAppSheetsDto.getUserAccountExcelDtoMap().entrySet()
-            ) {
-                if(monitoringSheetsDto.getUserAccountExcelDtoMap()!=null&&monitoringSheetsDto.getUserAccountExcelDtoMap().containsKey(entry.getKey())){
-                    UserAccountExcelDto excelDto=monitoringSheetsDto.getUserAccountExcelDtoMap().get(entry.getKey());
-                    excelDto.setDisplayNameBe(entry.getValue().getDisplayNameBe());
-                    excelDto.setStatusBe(entry.getValue().getStatusBe());
-                    excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
-                    excelDto.setUserDomainBe(entry.getValue().getUserDomainBe());
-                    if(excelDto.getDisplayNameBe().equals(excelDto.getDisplayNameFe())&&
-                            excelDto.getStatusBe().equals(excelDto.getStatusFe())&&
-                            excelDto.getUserDomainBe().equals(excelDto.getUserDomainFe())){
-                        excelDto.setResult("Match");
+            if(IaisCommonUtils.isNotEmpty(monitoringAppSheetsDto.getUserAccountExcelDtoMap())){
+                for (Map.Entry<String, UserAccountExcelDto> entry:monitoringAppSheetsDto.getUserAccountExcelDtoMap().entrySet()
+                ) {
+                    if(monitoringSheetsDto.getUserAccountExcelDtoMap()!=null&&monitoringSheetsDto.getUserAccountExcelDtoMap().containsKey(entry.getKey())){
+                        UserAccountExcelDto excelDto=monitoringSheetsDto.getUserAccountExcelDtoMap().get(entry.getKey());
+                        excelDto.setDisplayNameBe(entry.getValue().getDisplayNameBe());
+                        excelDto.setStatusBe(entry.getValue().getStatusBe());
+                        excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
+                        excelDto.setUserDomainBe(entry.getValue().getUserDomainBe());
+                        if(excelDto.getDisplayNameBe().equals(excelDto.getDisplayNameFe())&&
+                                excelDto.getStatusBe().equals(excelDto.getStatusFe())&&
+                                excelDto.getUserDomainBe().equals(excelDto.getUserDomainFe())){
+                            excelDto.setResult("Match");
+                        }else {
+                            excelDto.setResult("Not Match");
+                            hasNotMatch=true;
+                        }
                     }else {
-                        excelDto.setResult("Not Match");
+                        entry.getValue().setResult("Not Match");
                         hasNotMatch=true;
+                        if(IaisCommonUtils.isEmpty(monitoringSheetsDto.getUserAccountExcelDtoMap())){
+                            monitoringSheetsDto.setUserAccountExcelDtoMap(IaisCommonUtils.genNewHashMap());
+                        }
+                        monitoringSheetsDto.getUserAccountExcelDtoMap().put(entry.getKey(),entry.getValue());
                     }
-                }else {
-                    entry.getValue().setResult("Not Match");
-                    hasNotMatch=true;
-                    if(IaisCommonUtils.isEmpty(monitoringSheetsDto.getUserAccountExcelDtoMap())){
-                        monitoringSheetsDto.setUserAccountExcelDtoMap(IaisCommonUtils.genNewHashMap());
-                    }
-                    monitoringSheetsDto.getUserAccountExcelDtoMap().put(entry.getKey(),entry.getValue());
                 }
             }
-        }
-        if(IaisCommonUtils.isNotEmpty(monitoringAppSheetsDto.getAppLicExcelDtoMap())){
-            for (Map.Entry<String, AppLicExcelDto> entry:monitoringAppSheetsDto.getAppLicExcelDtoMap().entrySet()
-            ) {
-                if(monitoringSheetsDto.getAppLicExcelDtoMap()!=null&&monitoringSheetsDto.getAppLicExcelDtoMap().containsKey(entry.getKey())){
-                    AppLicExcelDto excelDto=monitoringSheetsDto.getAppLicExcelDtoMap().get(entry.getKey());
-                    excelDto.setApplicationIdBe(entry.getValue().getApplicationIdBe());
-                    excelDto.setLicenceIdBe(entry.getValue().getLicenceIdBe());
-                    excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
-                    if(excelDto.getApplicationIdBe().equals(excelDto.getApplicationIdFe())&&
-                            excelDto.getLicenceIdBe().equals(excelDto.getLicenceIdFe())){
-                        excelDto.setResult("Match");
+            if(IaisCommonUtils.isNotEmpty(monitoringAppSheetsDto.getAppLicExcelDtoMap())){
+                for (Map.Entry<String, AppLicExcelDto> entry:monitoringAppSheetsDto.getAppLicExcelDtoMap().entrySet()
+                ) {
+                    if(monitoringSheetsDto.getAppLicExcelDtoMap()!=null&&monitoringSheetsDto.getAppLicExcelDtoMap().containsKey(entry.getKey())){
+                        AppLicExcelDto excelDto=monitoringSheetsDto.getAppLicExcelDtoMap().get(entry.getKey());
+                        excelDto.setApplicationIdBe(entry.getValue().getApplicationIdBe());
+                        excelDto.setLicenceIdBe(entry.getValue().getLicenceIdBe());
+                        excelDto.setUpdatedDtBe(entry.getValue().getUpdatedDtBe());
+                        if(excelDto.getApplicationIdBe().equals(excelDto.getApplicationIdFe())&&
+                                excelDto.getLicenceIdBe().equals(excelDto.getLicenceIdFe())){
+                            excelDto.setResult("Match");
+                        }else {
+                            excelDto.setResult("Not Match");
+                            hasNotMatch=true;
+                        }
                     }else {
-                        excelDto.setResult("Not Match");
+                        entry.getValue().setResult("Not Match");
                         hasNotMatch=true;
+                        if(IaisCommonUtils.isEmpty(monitoringSheetsDto.getAppLicExcelDtoMap())){
+                            monitoringSheetsDto.setAppLicExcelDtoMap(IaisCommonUtils.genNewHashMap());
+                        }
+                        monitoringSheetsDto.getAppLicExcelDtoMap().put(entry.getKey(),entry.getValue());
                     }
-                }else {
-                    entry.getValue().setResult("Not Match");
-                    hasNotMatch=true;
-                    if(IaisCommonUtils.isEmpty(monitoringSheetsDto.getAppLicExcelDtoMap())){
-                        monitoringSheetsDto.setAppLicExcelDtoMap(IaisCommonUtils.genNewHashMap());
-                    }
-                    monitoringSheetsDto.getAppLicExcelDtoMap().put(entry.getKey(),entry.getValue());
                 }
             }
-        }
-        if(hasNotMatch){
-            log.info("start send email start");
-            EmailDto emailDto = new EmailDto();
-            List<String> receiptEmail= Arrays.asList(this.mailRecipient.split(","));
+            if(hasNotMatch){
+                log.info("start send email start");
+                EmailDto emailDto = new EmailDto();
+                List<String> receiptEmail= Arrays.asList(this.mailRecipient.split(","));
 
-            emailDto.setReceipts(receiptEmail);
-            String emailContent = "CompareFEBE Not Match";
-            emailDto.setContent(emailContent);
-            emailDto.setSubject("CompareFEBE Not Match");
-            emailDto.setSender(this.mailSender);
-            emailDto.setReqRefNum(UUID.randomUUID().toString());
-            emailDto.setClientQueryCode(UUID.randomUUID().toString());
+                emailDto.setReceipts(receiptEmail);
+                String emailContent = "CompareFEBE Not Match";
+                emailDto.setContent(emailContent);
+                emailDto.setSubject("CompareFEBE Not Match");
+                emailDto.setSender(this.mailSender);
+                emailDto.setReqRefNum(UUID.randomUUID().toString());
+                emailDto.setClientQueryCode(UUID.randomUUID().toString());
 
-            try {
-                emailSmsClient.sendEmail(emailDto, null);
-            } catch (IOException e) {
-                log.error(e.getMessage());
+                try {
+                    emailSmsClient.sendEmail(emailDto, null);
+                } catch (IOException e) {
+                    log.error(e.getMessage());
+                }
+
+                log.info("start send email end");
             }
-
-            log.info("start send email end");
         }
+
         return monitoringSheetsDto;
 
     }
