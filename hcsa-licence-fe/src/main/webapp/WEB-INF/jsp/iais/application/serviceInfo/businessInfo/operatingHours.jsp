@@ -5,19 +5,19 @@
 <c:if test="${!isSpecialService}">
     <iais:row>
         <div class="col-md-12 col-xs-12">
-            <label class="control-label">Operating Hours</label>
+            <label class="control-label"><strong>Operating Hours</strong></label>
         </div>
         <div class="col-md-4 col-xs-4  hidden-xs hidden-sm">
-            <label class="control-label">Weekly <span class="mandatory">*</span></label>
+            <label class="control-label"><strong>Weekly </strong><span class="mandatory">*</span></label>
         </div>
         <div class="col-md-3 col-xs-3 input-padding hidden-xs hidden-sm">
-            <label class="control-label">Start</label>
+            <label class="control-label"><strong>Start</strong></label>
         </div>
         <div class="col-md-3 col-xs-3 input-padding hidden-xs hidden-sm">
-            <label class="control-label">End</label>
+            <label class="control-label"><strong>End</strong></label>
         </div>
         <div class="col-md-2 col-xs-2 hidden-xs hidden-sm">
-            <label class="control-label">24 Hours</label>
+            <label class="control-label"><strong>24 Hours</strong></label>
         </div>
     </iais:row>
 

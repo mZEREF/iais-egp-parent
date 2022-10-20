@@ -1594,11 +1594,16 @@ public class RequestForChangeMenuDelegator {
         if (IaisCommonUtils.isNotEmpty(removalDtoList)) {
             amendmentFeeDto.setAdditionOrRemovalSpecialisedServices(Boolean.TRUE);
         }
-
+        amendmentFeeDto.setServiceCode(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceCode());
+        amendmentFeeDto.setLicenceNo(appSubmissionDto.getLicenceNo());
         FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
         Double total = feeDto.getTotal();
         if (total == null) {
             total = 0.0;
+        }
+        ParamUtil.setSessionAttr(bpc.request, "FeeDetail", null);
+        if(feeDto.getFeeDetail()!=null){
+            ParamUtil.setSessionAttr(bpc.request, "FeeDetail", feeDto.getFeeDetail().toString());
         }
         Map<String, String> errorMap = null;
         if (selectLicence != null) {

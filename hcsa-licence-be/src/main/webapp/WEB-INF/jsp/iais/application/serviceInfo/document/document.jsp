@@ -4,7 +4,7 @@
 
 <script type="text/javascript" src="<%=IaisEGPConstant.CSS_ROOT + IaisEGPConstant.COMMON_CSS_ROOT%>js/file-upload.js"></script>
 
-<div class="row form-horizontal">
+<div class="row form-horizontal  block-error">
 <c:if test="${isRfi}">
     <c:set var="isClickEdit" value="true"/>
 </c:if>
@@ -65,10 +65,10 @@
             <p>Address: <c:out value="${docShowDto.premAddress}"/></p>
         </div>
     </iais:row>
-    <div class="panel-group" id="${docShowDto.premisesVal}" role="tablist" aria-multiselectable="true">
+    <div class="panel-group doc-svc-content" id="${docShowDto.premisesVal}" role="tablist" aria-multiselectable="true">
         <c:forEach var="secDto" items="${docShowDto.docSectionList}" varStatus="secStat">
             <c:set var="panelKey">${docShowDto.premisesVal}-${secDto.svcId}</c:set>
-            <div class="panel panel-default deputy-panel">
+            <div class="panel panel-default doc-panel">
                 <div class="panel-heading" role="tab">
                     <h4 class="panel-title">
                         <a role="button" class="" data-toggle="collapse" href="#${panelKey}" aria-expanded="true" aria-controls="${panelKey}">
@@ -99,7 +99,7 @@
 <script>
     $(document).ready(function () {
         if (${AppSubmissionDto.needEditController && !isClickEdit}) {
-            disableContent('.doc-svc-content');
+            disableContent('.doc-panel');
             hideTag('.file-upload');
             hideTag('.delFileBtn');
             hideTag('.reUploadFileBtn');
@@ -149,7 +149,7 @@
         $('#edit').click(function () {
             $('#edit-content').addClass('hidden');
             $('#isEditHiddenVal').val('1');
-            unDisableContent('.doc-svc-content');
+            unDisableContent('.doc-panel');
             showTag('.file-upload');
             showTag('.delFileBtn');
             showTag('.reUploadFileBtn');
