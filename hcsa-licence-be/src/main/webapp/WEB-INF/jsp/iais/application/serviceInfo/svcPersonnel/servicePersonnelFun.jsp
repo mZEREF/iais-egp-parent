@@ -17,13 +17,12 @@
         }
         pageController('');
         let flag = $("#curr").val();
-        // if (flag == 'NMI' || 'NMA' == flag) {
+        if (flag == 'NMI' || 'NMA' == flag) {
             $('.personnel-content').each(function (k, v) {
                 var personnelSel = $(this).find('.personnelType').val();
-                console.log(personnelSel,'personnlellll====>>>')
                 personnelSelFun(personnelSel, $(v));
             });
-        // }
+        }
         initPage($('div.contents'))
         $('input[name="prsLoading"]').each(function () {
             if ($(this).val() == 'true') {
@@ -83,9 +82,14 @@
             return;
         }
         $currContent.find('.isPartEdit').val('1');
-        $('#isEditHiddenVal').val('1')
+        console.log(target+'-edit','==========>')
+        $('#isEditHiddenVal').val('1');
         hideTag($currContent.find('.edit-content'));
         unDisableContent($currContent);
+        checkPersonDisabled($currContent);
+        if (typeof refreshPersonOthers === 'function') {
+            refreshPersonOthers($currContent);
+        }
     }
 
     function initPage(target) {
@@ -306,7 +310,7 @@
     var pageController = function ($Ele) {
         let flag = $("#curr").val();
         // NMI
-        // if (flag == 'NMI' || flag == 'NMA') {
+        if (flag == 'NMI' || flag == 'NMA') {
             console.log("begin---->",init)
             personnelSel();
             if ($Ele == '') {
@@ -315,7 +319,7 @@
             } else {
                 $Ele.find('.personnelType').trigger('change');
             }
-        // }
+        }
     }
     function inputReadonly($content) {
         $content.prop('readonly', true);

@@ -136,8 +136,8 @@
                 checkItemTotal($cal4);
             }
             unDisableContent($('.person-content'))
-            $('.person-content').find('.isPartEdit').val(1)
-            $('#isEditHiddenVal').val(1)
+            $('.person-content').find('.isPartEdit').val('1')
+            $('#isEditHiddenVal').val('1')
         });
     }
 
