@@ -392,7 +392,7 @@ public class CessationEffectiveDateBatchjob {
                     for (OrgUserDto aso:orgUserDtos
                          ) {
                         List<AppSvcBusinessDto> appSvcBusinessDtoList=appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcBusinessDtoList();
-                        HashMap<String, String> emailMap1 = IaisCommonUtils.genNewHashMap();
+                        Map<String, Object> emailMap1 = IaisCommonUtils.genNewHashMap();
                         emailMap1.put("aso_officer_name", aso.getDisplayName());
                         emailMap1.put("licenceNumber", licenceNo);
                         emailMap1.put("LicenseeName", orgLicensee.getLicenseeName());
@@ -413,7 +413,8 @@ public class CessationEffectiveDateBatchjob {
                         receiptEmail.clear();
                         receiptEmail.addAll(set);
                         emailDto.setReceipts(receiptEmail);
-                        emailDto.setContent(notificationHelper.replaceText(msgTemplateDto.getMessageContent(),emailMap1));
+                        String mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), emailMap1);
+                        emailDto.setContent(mesContext);
                         emailDto.setSubject(msgTemplateDto.getSubject());
                         emailDto.setSender(this.mailSender);
                         emailDto.setClientQueryCode(licenceNo);
