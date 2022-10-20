@@ -256,6 +256,7 @@ public class DrugPrescribedDispensedValidator implements CustomizeValidator {
                     if (preCount == null || nowCount > (preCount - totalGet)) {
                         drugMedicationDto.setExcess("Y");
                         quantityMatchS.add("No");
+                        errorMap.put("quantity","");
                     } else {
                         drugMedicationDto.setExcess("N");
                         quantityMatchS.add("Yes");

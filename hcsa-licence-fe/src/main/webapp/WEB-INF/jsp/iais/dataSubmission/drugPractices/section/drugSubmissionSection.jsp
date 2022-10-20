@@ -282,7 +282,6 @@
 <input type="hidden" name="doctorSource" id="doctorSource" value="">
 <input type="hidden" name="quantityMatch" id="quantityMatch" value="${quantityMatch}">
 <input type="hidden" name="action" id="action" value="">
-<input type="hidden" name="haveError" id="haveError" value="${haveError}">
 <input type="hidden" name="noChangeForRFC" id="noChangeForRFC" value="${RFC_NO_CHANGE_ERROR}">
 <div class="modal fade" id="START_DATE_OF_DISPENSING" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -784,8 +783,7 @@
     function showQuantityNotMatchModal() {
         var quantityMatch = $('input[name="quantityMatch"]').val();
         var noChangeForRFC = $('input[name="noChangeForRFC"]').val();
-        var haveError = $('input[name="haveError"]').val();
-        if (haveError == "No" && quantityMatch == "No" && (noChangeForRFC == null || noChangeForRFC == '') && !isEmpty($('#prescriptionSubmissionId').val())){
+        if (quantityMatch == "No" && (noChangeForRFC == null || noChangeForRFC == '') && !isEmpty($('#prescriptionSubmissionId').val())){
             console.log("quantityMatch :" + quantityMatch);
             $('#QUANTITY_NOT_MATCH').modal('show');
         }
