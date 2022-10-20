@@ -3,8 +3,7 @@
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
 <input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
 
-<div class="row form-horizontal">
-
+<div class="row form-horizontal col-md-11 col-xs-11 normal-label">
     <c:if test="${AppSubmissionDto.needEditController }">
         <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
         <c:if test="${(isRfc || isRenew) && !isRfi}">
@@ -58,19 +57,19 @@
                             <iais:row>
                                 <c:set var="info"><iais:message key="NEW_ACK028"></iais:message></c:set>
                                 <iais:field width="4" cssClass="col-md-4" mandatory="true" value="Business Name" info="${info}"/>
-                                <iais:value width="8" cssClass="col-md-8">
+                                <iais:value width="7" cssClass="col-md-7">
                                     <iais:input cssClass="businessName" maxLength="100" type="text" name="businessName${status.index}" value="${businessDto.businessName}"></iais:input>
                                 </iais:value>
                             </iais:row>
                             <iais:row>
                                 <iais:field width="4" cssClass="col-md-4" mandatory="true" value="Contact No."/>
-                                <iais:value width="8" cssClass="col-md-8">
+                                <iais:value width="7" cssClass="col-md-7">
                                     <iais:input  cssClass="contactNo" maxLength="8" type="text" name="contactNo${status.index}" value="${businessDto.contactNo}"></iais:input>
                                 </iais:value>
                             </iais:row>
                             <iais:row>
                                 <iais:field width="4" cssClass="col-md-4" mandatory="true" value="Email"/>
-                                <iais:value width="8" cssClass="col-md-8">
+                                <iais:value width="7" cssClass="col-md-7">
                                     <iais:input cssClass="emailAddr" maxLength="100" type="text" name="emailAddr${status.index}" value="${businessDto.emailAddr}"></iais:input>
                                 </iais:value>
                             </iais:row>
@@ -87,27 +86,6 @@
 <script>
 
     $(function() {
-        $('.addWeekly').on('click', function () {
-            if (${AppSubmissionDto.needEditController }){
-                $('a.businessEdit').trigger('click');
-            }
-            addWeekly($(this).closest('div.weeklyContent'));
-        });
-
-        $('.addPubHolDay').on('click', function () {
-            if (${AppSubmissionDto.needEditController }){
-                $('a.businessEdit').trigger('click');
-            }
-            addPubHolDay($(this).closest('div.pubHolDayContent'));
-        });
-
-        $('.addEvent').on('click', function () {
-            if (${AppSubmissionDto.needEditController }){
-                $('a.businessEdit').trigger('click');
-            }
-            addEvent($(this).closest('div.eventContent'));
-        });
-
         clickAllDay();
         removeWeekly();
         removePh();
@@ -134,40 +112,6 @@
                 });
             }
         });
-        /*$('div.weeklyContent').each(function (k, v) {
-            if ($("#errorMapIs").val() == 'error') {
-                $(v).find('.error-msg').on('DOMNodeInserted', function () {
-                    if ($(this).not(':empty')) {
-                        $(v).find('.isPartEdit').val(1);
-                        $('#isEditHiddenVal').val('1');
-                        $('a.businessEdit').trigger('click');
-                    }
-                });
-            }
-        });
-        $('div.pubHolDayContent').each(function (k, v) {
-            if ($("#errorMapIs").val() == 'error') {
-                $(v).find('.error-msg').on('DOMNodeInserted', function () {
-                    if ($(this).not(':empty')) {
-                        $(v).find('.isPartEdit').val(1);
-                        $('#isEditHiddenVal').val('1');
-                        $('a.businessEdit').trigger('click');
-                    }
-                });
-            }
-        });
-        $('div.eventContent').each(function (k, v) {
-            if ($("#errorMapIs").val() == 'error') {
-                $(v).find('.error-msg').on('DOMNodeInserted', function () {
-                    if ($(this).not(':empty')) {
-                        $(v).find('.isPartEdit').val(1);
-                        $('#isEditHiddenVal').val('1');
-                        $('a.businessEdit').trigger('click');
-                    }
-                });
-            }
-        });
-*/
     });
 
     $(document).ready(function () {

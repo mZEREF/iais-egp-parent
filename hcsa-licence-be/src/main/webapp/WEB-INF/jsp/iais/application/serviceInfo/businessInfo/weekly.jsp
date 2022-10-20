@@ -98,10 +98,4 @@
             </iais:row>
         </div>
     </c:forEach>
-
-    <div class="form-group addWeeklyDiv <c:if test="${weeklyList.size() >= maxCount}">hidden</c:if>">
-        <iais:value cssClass="col-xs-4 col-sm-4 col-md-4">
-            <a class="addWeekly" style="text-decoration:none;">+ Add</a>
-        </iais:value>
-    </div>
 </div>
