@@ -113,17 +113,19 @@
                                 <c:set var="appSvcSuplmFormDto" value="${specialServiceSectionDto.appSvcSuplmFormDto}"/>
                                 <c:set var="oldAppSvcSuplmFormDto" value="${oldspecialServiceSectionDto.appSvcSuplmFormDto}"/>
                                 <c:forEach var="appSvcSuplmGroupDto" items="${appSvcSuplmFormDto.appSvcSuplmGroupDtoList}" varStatus="status">
-                                    <c:set var="oldAppSvcSuplmGroupDto" value="${oldAppSvcSuplmFormDto.appSvcSuplmGroupDtoList[status.index]}"/>
-                                    <c:set var="batchSize" value="${appSvcSuplmGroupDto.count}"/>
-                                    <c:if test="${batchSize > 0}">
-                                        <c:set var="groupId" value="${appSvcSuplmGroupDto.groupId}"/>
-                                        <c:forEach var="item" items="${appSvcSuplmGroupDto.appSvcSuplmItemDtoList}" varStatus="statuss">
-                                            <c:set var="oldItem" value="${oldAppSvcSuplmFormDto.appSvcSuplmGroupDtoList[statuss.index]}"/>
-                                            <c:if test="${item.display}">
-                                                <%@ include file="../supplementaryForm/viewItem.jsp" %>
-                                            </c:if>
-                                        </c:forEach>
-                                    </c:if>
+                                    <table class="col-xs-12">
+                                        <c:set var="oldAppSvcSuplmGroupDto" value="${oldAppSvcSuplmFormDto.appSvcSuplmGroupDtoList[status.index]}"/>
+                                        <c:set var="batchSize" value="${appSvcSuplmGroupDto.count}"/>
+                                        <c:if test="${batchSize > 0}">
+                                            <c:set var="groupId" value="${appSvcSuplmGroupDto.groupId}"/>
+                                            <c:forEach var="item" items="${appSvcSuplmGroupDto.appSvcSuplmItemDtoList}" varStatus="statuss">
+                                                <c:set var="oldItem" value="${oldAppSvcSuplmGroupDto.appSvcSuplmItemDtoList[statuss.index]}"/>
+                                                <c:if test="${item.display || oldItem.display}">
+                                                    <%@ include file="../supplementaryForm/viewItem.jsp" %>
+                                                </c:if>
+                                            </c:forEach>
+                                        </c:if>
+                                    </table>
                                 </c:forEach>
                             </div>
                         </div>
