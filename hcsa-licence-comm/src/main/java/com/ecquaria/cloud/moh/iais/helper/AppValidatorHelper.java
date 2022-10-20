@@ -4207,7 +4207,7 @@ public final class AppValidatorHelper {
             }
         }
         if (!errorMap.isEmpty()) {
-            ParamUtil.setRequestAttr(request, "needShowErr", AppConsts.TRUE);
+            ParamUtil.setRequestAttr(request, RfcConst.SHOW_HEADING_SIGN, Boolean.TRUE);
             ParamUtil.setRequestAttr(request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, RenewalConstants.PAGE_SWITCH, RenewalConstants.PAGE2);
             return errorMap;

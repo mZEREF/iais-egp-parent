@@ -31,7 +31,8 @@ public class RfcConst {
     public static final String RFC_CURRENT_EDIT = "RfcCurrentEdit";
 
     public static final String DODRAFTCONFIG = "DoDraftConfig";
-    public static final String FIRSTVIEW = "FirstView";
+
+    public static final String SHOW_HEADING_SIGN = "showHeadingSign";
 
     public static final String EDIT_LICENSEE = "licensee";
     public static final String EDIT_PREMISES = "premises";

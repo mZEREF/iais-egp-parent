@@ -70,6 +70,7 @@
                         </c:otherwise>
                     </c:choose>
                     <input type="hidden" class="generalChargeLength" name="generalChargeLength" value="${pageLength}" />
+                    <input type="hidden" name="rfcChargeEdit" class="rfcChargeEdit" value="">
                     <c:forEach begin="0" end="${pageLength-1}" step="1" varStatus="gcStat">
                         <c:set var="generalChargesDto" value="${generalChargesDtoList[gcStat.index]}"/>
                         <div class="general-charges-content charges-content">
@@ -148,11 +149,13 @@
                                 <c:set var="needAddPsn" value="false"/>
                             </c:when>
                         </c:choose>
-                        <div class="col-md-12 col-xs-12 addGeneralChargesDiv <c:if test="${!needAddPsn}">hidden</c:if>">
+                        <c:if test="${!isRfi}">
+                            <div class="col-md-12 col-xs-12 addGeneralChargesDiv <c:if test="${!needAddPsn}">hidden</c:if>">
                             <span class="addGeneralChargesBtn" style="color:deepskyblue;cursor:pointer;">
                                 <span style="">+ Add Other Conveyance Related Charges</span>
                             </span>
-                        </div>
+                            </div>
+                        </c:if>
                     </c:if>
                 </div>
             </div>
@@ -213,10 +216,11 @@
                             </c:otherwise>
                         </c:choose>
                         <input type="hidden" class="otherChargeLength" name="otherChargeLength" value="${otherChargesLength}" />
+                        <input type="hidden" name="rfcOtherChargeEdit" class="rfcOtherChargeEdit" value="">
                         <c:forEach begin="0" end="${otherChargesLength-1}" step="1" varStatus="ocStat">
                             <c:set var="otherChargesDto" value="${otherChargesDtoList[ocStat.index]}"/>
                             <div class="others-charges-content charges-content">
-                                <input type="hidden" class ="isPartEdit" name="otherChargesIsPartEdit${ocStat.index}" value="0"/>
+                                <input type="hidden" class ="otherChargesIsPartEdit" name="otherChargesIsPartEdit${ocStat.index}" value="0"/>
                                 <input type="hidden" class="chargesIndexNo" name="otherChargesIndexNo${ocStat.index}" value="${otherChargesDto.chargesIndexNo}"/>
                                 <div class="col-md-12 col-xs-12">
                                     <div class="edit-content">
@@ -238,7 +242,6 @@
                                                     <div class="col-md-6 col-xs-6">
                                                         <iais:select cssClass="otherChargesCategory"  name="otherChargesCategory${ocStat.index}" codeCategory="CATE_ID_MEDICAL_EQUIPMENT_AND_OTHER_CHARGES_CATEGORY" value="${otherChargesDto.chargesCategory}" firstOption="Please Select" />
                                                     </div>
-
                                                     <div class="col-md-6 col-xs-6 other-charges-type-div">
                                                         <iais:select cssClass="otherChargesType"  name="otherChargesType${ocStat.index}" codeCategory="${otherChargesDto.cateRelationType}" value="${otherChargesDto.chargesType}" firstOption="Please Select" />
                                                     </div>
@@ -300,11 +303,13 @@
                                     <c:set var="needAddPsn" value="false"/>
                                 </c:when>
                             </c:choose>
-                            <div class="col-md-12 col-xs-12 addOtherChargesDiv <c:if test="${!needAddPsn}">hidden</c:if>">
+                            <c:if test="${!isRfi}">
+                                <div class="col-md-12 col-xs-12 addOtherChargesDiv <c:if test="${!needAddPsn}">hidden</c:if>">
                                 <span class="addOtherChargesBtn" style="color:deepskyblue;cursor:pointer;">
                                     <span style="">+ Add Medical Equipment And Other Charges</span>
                                 </span>
-                            </div>
+                                </div>
+                            </c:if>
                         </c:if>
                     </div>
                 </div>
@@ -373,6 +378,11 @@
             clearFields($('div.general-charges-content:last'));
             removeGeneralChargesEvent();
             refreshGeneralCharges();
+            let rfcEdit = $('input.rfcChargeEdit').val();
+            console.log("addRfcEdit:"+rfcEdit);
+            if (!isEmpty(rfcEdit) && 'doChargeEdit' == rfcEdit){
+                $('input.isPartEdit').val('1');
+            }
             dismissWaiting();
         })
     }
@@ -413,6 +423,11 @@
             removeOtherChargesHtml();
             searchChargesTypeByCategory();
             refreshOther();
+            let rfcEdit = $('input.rfcOtherChargeEdit').val();
+            console.log("addRfcEdit:"+rfcEdit);
+            if (!isEmpty(rfcEdit) && 'doOtherChargeEdit' == rfcEdit){
+                $('input.otherChargesIsPartEdit').val('1');
+            }
             dismissWaiting();
         })
 
@@ -425,10 +440,11 @@
             toggleTag($(this).find('div.removeBtn'), k != 0);
             $(this).find('select.otherChargesCategory').prop('name','otherChargesCategory'+ k);
             $(this).find('select.otherChargesType').prop('name','otherChargesType'+ k);
+            $(this).find('select.otherChargesType').prop('id', 'otherChargesType' + k);
             $(this).find('input.otherAmountMin').prop('name','otherAmountMin'+ k);
             $(this).find('input.otherAmountMax').prop('name','otherAmountMax'+ k);
             $(this).find('input.otherRemarks').prop('name','otherRemarks'+ k);
-            $(this).find('.isPartEdit').prop('name','otherChargesIsPartEdit'+k);
+            $(this).find('.otherChargesIsPartEdit').prop('name','otherChargesIsPartEdit'+k);
             $(this).find('.chargesIndexNo').prop('name','otherChargesIndexNo'+k);
         });
         //display add btn
@@ -473,7 +489,7 @@
                 $(this).find('input.otherAmountMin').prop('name','otherAmountMin'+ k);
                 $(this).find('input.otherAmountMax').prop('name','otherAmountMax'+ k);
                 $(this).find('input.otherRemarks').prop('name','otherRemarks'+ k);
-                $(this).find('.isPartEdit').prop('name','otherChargesIsPartEdit'+k);
+                $(this).find('.otherChargesIsPartEdit').prop('name','otherChargesIsPartEdit'+k);
                 $(this).find('.chargesIndexNo').prop('name','otherChargesIndexNo'+k);
             });
             //display add btn
@@ -493,6 +509,7 @@
     let doEditChargesEvent = function () {
         $('a.chargesEdit').click(function () {
             var $currContent = $(this).closest('div.general-charges-content');
+            $('input.rfcChargeEdit').val('doChargeEdit');
             $currContent.find('input.isPartEdit').val('1');
             hideTag($currContent.find('.edit-content'));
             unDisableContent($currContent);
@@ -502,9 +519,9 @@
 
     let doEditOtherChargesEvent = function () {
         $('a.otherChargesEdit').click(function () {
-            console.log("=======================")
             var $currContent = $(this).closest('div.others-charges-content');
-            $currContent.find('input.isPartEdit').val('1');
+            $('input.rfcOtherChargeEdit').val('doOtherChargeEdit');
+            $currContent.find('input.otherChargesIsPartEdit').val('1');
             hideTag($currContent.find('.edit-content'));
             unDisableContent($currContent);
             $('#isEditHiddenVal').val('1');

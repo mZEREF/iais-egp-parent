@@ -48,7 +48,7 @@
         <iais:row>
             <div class="col-xs-12">
                 <div class="app-title">${appSvcOtherInfoDto.premName}</div>
-                <p class="font-18 bold">${appSvcOtherInfoDto.premAddress}</p>
+                <p class="font-18 bold">Address:${appSvcOtherInfoDto.premAddress}</p>
             </div>
         </iais:row>
         <c:choose>
@@ -156,8 +156,10 @@
     </c:forEach>
 </div>
 <%@include file="/WEB-INF/jsp/iais/application/common/personFun.jsp" %>
+<%--<%@include file="/WEB-INF/jsp/iais/application/common/prsLoad.jsp" %>--%>
 <script>
     $(document).ready(function () {
+
         doEditOtherInfoRDCEvent();
         doEditOtherInfoDentalServiceEvent();
         doEditOtherInfoASCSEvent();
@@ -398,4 +400,6 @@
         $('div.rdDiv[data-prefix="' + prefix + '"]').prop('disabled',false).css('pointer-events','').css('border-color', '').css('color', '');
         $('div.rTDiv[data-prefix="' + prefix + '"]').prop('disabled',false).css('pointer-events','').css('border-color', '').css('color', '');
     }
+
+
 </script>

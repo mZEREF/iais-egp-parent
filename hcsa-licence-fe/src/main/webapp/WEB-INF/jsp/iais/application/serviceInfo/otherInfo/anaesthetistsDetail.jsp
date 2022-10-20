@@ -1,6 +1,6 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <c:set var="psnType" value="${ApplicationConsts.OTHER_TOP_ANAESTHETISTS}"/>
-<div class="person-detail anaesthetists  <c:if test="${'1' != provideTop}">hidden</c:if>" data-prefix="${prefix}" data-prefix="${prefix}">
+<div class="person-detail anaesthetists  aperson-content  <c:if test="${'1' != provideTop}">hidden</c:if>" data-prefix="${prefix}" data-prefix="${prefix}">
     <iais:row>
         <div class="col-xs-12 col-md-10" style="padding-top: 25px;">
             <p class="bold">Name, Professional Regn. No. and Qualification of anaesthetists&nbsp;

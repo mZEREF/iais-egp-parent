@@ -1376,7 +1376,7 @@ public final class AppDataHelper {
                                                                   HttpServletRequest request, String appType, boolean isRfi,
                                                                    boolean getPageData, String isPartEdit) {
         if (appSvcOtherInfoTopDto == null) {
-            return appSvcOtherInfoTopDto;
+            appSvcOtherInfoTopDto = new AppSvcOtherInfoTopDto();
         }
         boolean getDataByIndexNo = false;
         String otherInfoNurseId = ParamUtil.getString(request, "otherInfoNurseId");

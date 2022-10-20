@@ -41,7 +41,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -79,9 +78,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.lang.instrument.Instrumentation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -92,7 +89,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.ACKMESSAGE;
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.ACKSTATUS;
@@ -1100,7 +1096,6 @@ public class NewApplicationDelegator extends AppCommDelegator {
                     appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto, loginContext.getUserName());
                 }
             }
-
             StringBuilder url = new StringBuilder();
             url.append("https://")
                     .append(bpc.request.getServerName())
@@ -1114,25 +1109,10 @@ public class NewApplicationDelegator extends AppCommDelegator {
         if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
                 || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
                 || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payMethod)) {
-            //send email
             try {
-                //inspectionDateSendNewApplicationPaymentOnlineEmail(appSubmissionDto, bpc);
-            } catch (Exception e) {
-                log.error(StringUtil.changeForLog("send email error ...." + e.getMessage()), e);
-            }
-            String amount = String.valueOf(appSubmissionDto.getAmount());
-            Map<String, String> fieldMap = new HashMap<String, String>();
-            fieldMap.put(GatewayConstants.AMOUNT_KEY, amount);
-            fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, payMethod);
-            fieldMap.put(GatewayConstants.SVCREF_NO, appSubmissionDto.getAppGrpNo() + "_" + System.currentTimeMillis());
-            PmtReturnUrlDto pmtReturnUrlDto = new PmtReturnUrlDto();
-            pmtReturnUrlDto.setCreditRetUrl(GatewayStripeConfig.return_url);
-            pmtReturnUrlDto.setPayNowRetUrl(GatewayConfig.return_url);
-            pmtReturnUrlDto.setNetsRetUrl(GatewayConfig.return_url);
-            pmtReturnUrlDto.setOtherRetUrl(GatewayConfig.return_url);
-            try {
+                String url = NewApplicationHelper.genBankUrl(payMethod, appSubmissionDto.getAmount(), GatewayConfig.return_url,
+                        payMethod, appSubmissionDto.getAppGrpNo() + "_" + System.currentTimeMillis(), bpc.request);
                 appSubmissionService.updateDraftStatus(appSubmissionDto.getDraftNo(), ApplicationConsts.DRAFT_STATUS_PENDING_PAYMENT);
-                String url = NewApplicationHelper.genBankUrl(bpc.request, payMethod, fieldMap, pmtReturnUrlDto);
                 IaisEGPHelper.redirectUrl(bpc.response, url);
                 //ParamUtil.setRequestAttr(bpc.request, "jumpHtml", html);
             } catch (Exception e) {

@@ -66,11 +66,13 @@
         <c:set var="person" value="${practitioners[index]}"/>
         <%@include file="practitionersDetail.jsp" %>
     </c:forEach>
-    <div class="col-md-12 col-xs-12 addPractitionersDiv <c:if test="${'1' != provideTop}">hidden</c:if>" data-prefix="${prefix}">
+    <c:if test="${!isRfi}">
+        <div class="col-md-12 col-xs-12 addPractitionersDiv <c:if test="${'1' != provideTop}">hidden</c:if>" data-prefix="${prefix}">
         <span class="addPractitionersBtn" style="color:deepskyblue;cursor:pointer;">
             <span style="">Add more</span>
         </span>
-    </div>
+        </div>
+    </c:if>
 
 
     <%--TODO...anaesthetists--%>
@@ -89,11 +91,13 @@
         <c:set var="person" value="${anaesthetists[index]}"/>
         <%@include file="anaesthetistsDetail.jsp" %>
     </c:forEach>
-    <div class="col-md-12 col-xs-12 addAnaesthetistsDiv <c:if test="${'1' != provideTop}">hidden</c:if>" data-prefix="${prefix}">
+    <c:if test="${!isRfi}">
+        <div class="col-md-12 col-xs-12 addAnaesthetistsDiv <c:if test="${'1' != provideTop}">hidden</c:if>" data-prefix="${prefix}">
             <span class="addAnaesthetistsBtn" style="color:deepskyblue;cursor:pointer;">
                 <span style="">Add more</span>
             </span>
-    </div>
+        </div>
+    </c:if>
 
     <%--TODO...nurses--%>
     <c:choose>
@@ -111,11 +115,13 @@
         <c:set var="person" value="${nurses[index]}"/>
         <%@include file="nursesDetail.jsp" %>
     </c:forEach>
-    <div class="col-md-12 col-xs-12 addNursesDiv <c:if test="${'1' != provideTop}">hidden</c:if>" data-prefix="${prefix}">
+    <c:if test="${!isRfi}">
+        <div class="col-md-12 col-xs-12 addNursesDiv <c:if test="${'1' != provideTop}">hidden</c:if>" data-prefix="${prefix}">
         <span class="addNursesBtn" style="color:deepskyblue;cursor:pointer;">
             <span style="">Add more</span>
         </span>
-    </div>
+        </div>
+    </c:if>
 
     <%--TODO...counsellors--%>
     <c:choose>
@@ -133,11 +139,13 @@
         <c:set var="person" value="${counsellors[index]}"/>
         <%@include file="counsellorsDetail.jsp" %>
     </c:forEach>
-    <div class="col-md-12 col-xs-12 addCounsellorsDiv <c:if test="${'1' != provideTop}">hidden</c:if>" data-prefix="${prefix}">
+    <c:if test="${!isRfi}">
+        <div class="col-md-12 col-xs-12 addCounsellorsDiv <c:if test="${'1' != provideTop}">hidden</c:if>" data-prefix="${prefix}">
             <span class="addCounsellorsBtn" style="color:deepskyblue;cursor:pointer;">
                 <span style="">Add more</span>
             </span>
-    </div>
+        </div>
+    </c:if>
 
     <div class="lowt <c:if test="${'1' != provideTop}">hidden</c:if>" data-prefix="${prefix}">
         <iais:row cssClass="row">
@@ -324,6 +332,8 @@
             $('input.cdLength[data-prefix="' + prefix + '"]').val(cdLength);
             let $currContent = $('div.practitioners[data-prefix="' + prefix + '"]').last();
             clearFields($currContent);
+            let ta = '.person-content';
+            profRegNoEvent(ta);
             removePractitioners();
             if(cdLength <= 1){
                 $('.practitioners[data-prefix="' + prefix + '"]:eq(0) .assign-psn-item').html('');
@@ -647,4 +657,5 @@
             $('#isEditHiddenVal').val('1');
         });
     }
+
 </script>

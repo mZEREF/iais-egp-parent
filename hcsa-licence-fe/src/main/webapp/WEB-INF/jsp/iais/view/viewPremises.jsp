@@ -4,7 +4,7 @@
 
 <c:set var="mosdName" value="${ApplicationConsts.MODE_OF_SVC_DELIVERY}" />
 
-<c:if test="${empty printView && doRenewViewYes ne '1' && (!FirstView || needShowErr)}">
+<c:if test="${showHeadingSign}">
     <c:set var="headingSign" value="${coMap.premises == 'premises' ? 'completed' : 'incompleted'}"/>
 </c:if>
 <div class="panel panel-default">

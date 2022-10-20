@@ -87,6 +87,16 @@
                                                         <c:when test="${currentStep == 'SVST005'}">
                                                             <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/document/document.jsp"/>
                                                         </c:when>
+                                                        <c:when test="${currentStep == 'SVST015'}">
+                                                            <div class="clinical-governance-officer">
+                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/otherInfo/otherInformation.jsp"/>
+                                                            </div>
+                                                        </c:when>
+                                                        <c:when test="${currentStep == 'SVST018'}">
+                                                            <div class="clinical-governance-officer">
+                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/outsourced/outsourcedProviders.jsp"/>
+                                                            </div>
+                                                        </c:when>
                                                     </c:choose>
                                                 </div>
                                             </div>
