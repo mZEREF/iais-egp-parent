@@ -703,7 +703,7 @@ public final class RfcHelper {
 
     public static boolean isChangeSupplementaryForm(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList, List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList,List<String> autoList) {
         if (appSvcRelatedInfoDtoList == null || oldAppSvcRelatedInfoDtoList == null) {
-            return true;
+            return false;
         }
         int size = appSvcRelatedInfoDtoList.size();
         if (size != oldAppSvcRelatedInfoDtoList.size()) {
@@ -723,7 +723,7 @@ public final class RfcHelper {
         Map<String,String> newMap = IaisCommonUtils.genNewHashMap();
         Map<String,String> oldMap = IaisCommonUtils.genNewHashMap();
         if (appSvcSuplmFormList == null || oldAppSvcSuplmFormList == null) {
-            return true;
+            return false;
         }
         int size = appSvcSuplmFormList.size();
         if (size != oldAppSvcSuplmFormList.size()) {
@@ -735,7 +735,7 @@ public final class RfcHelper {
             List<AppSvcSuplmGroupDto> appSvcSuplmGroupDtoList = appSvcSuplmFormDto.getAppSvcSuplmGroupDtoList();
             List<AppSvcSuplmGroupDto> oldAppSvcSuplmGroupDtoList = oldAppSvcSuplmFormDto.getAppSvcSuplmGroupDtoList();
             if (appSvcSuplmGroupDtoList == null || oldAppSvcSuplmGroupDtoList == null) {
-                return true;
+                return false;
             }
             int sizes = appSvcSuplmGroupDtoList.size();
             if (sizes != oldAppSvcSuplmGroupDtoList.size()) {
@@ -747,7 +747,7 @@ public final class RfcHelper {
                 AppSvcSuplmGroupDto oldAppSvcSuplmGroupDto = oldAppSvcSuplmGroupDtoList.get(j);
                 List<AppSvcSuplmItemDto> oldAppSvcSuplmItemDtoList = oldAppSvcSuplmGroupDto.getAppSvcSuplmItemDtoList();
                 if (appSvcSuplmItemDtoList == null || oldAppSvcSuplmItemDtoList == null) {
-                    return true;
+                    return false;
                 }
                 int count = appSvcSuplmItemDtoList.size();
                 if (count != oldAppSvcSuplmItemDtoList.size()) {
