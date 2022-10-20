@@ -1810,7 +1810,7 @@ public final class ApplicationHelper {
         if (licIds.isEmpty()) {
             return IaisCommonUtils.genNewArrayList();
         }
-        int size = appSubmissionDtos != null && !appSubmissionDtos.isEmpty() ? appSubmissionDtos.size() : 1;
+        long size = licIds != null && !licIds.isEmpty() ? licIds.stream().distinct().count() : 1L;
         List<GiroAccountInfoDto> result = IaisCommonUtils.genNewArrayList();
         LicCommService licCommService = SpringContextHelper.getContext().getBean(LicCommService.class);
         List<GiroAccountInfoDto> giroAccountInfoDtos = licCommService.getGiroAccountsByLicIds(licIds);
