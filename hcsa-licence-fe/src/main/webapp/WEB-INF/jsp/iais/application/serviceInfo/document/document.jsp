@@ -150,7 +150,7 @@
         $('#edit').click(function () {
             $('#edit-content').addClass('hidden');
             $('#isEditHiddenVal').val('1');
-            disableContent('.doc-svc-content');
+            unDisableContent('.doc-svc-content');
             showTag('.file-upload');
             showTag('.delFileBtn');
             showTag('.reUploadFileBtn');
@@ -171,6 +171,7 @@
 
     });
 
+    /*
     function getFileTag(fileAppendId) {
         var $file = $("#" + fileAppendId);
         if ($file.length == 0) {
@@ -182,7 +183,7 @@
         return $file;
     }
 
-   /* function reUploadFileFeAjax(fileAppendId, index, idForm) {
+   function reUploadFileFeAjax(fileAppendId, index, idForm) {
         $("#reloadIndex").val(index);
         $("#fileAppendId").val(fileAppendId);
         $("#uploadFormId").val(idForm);
