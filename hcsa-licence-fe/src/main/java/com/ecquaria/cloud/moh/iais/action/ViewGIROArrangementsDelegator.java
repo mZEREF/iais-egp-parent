@@ -96,6 +96,7 @@ public class ViewGIROArrangementsDelegator {
                 giroAccountInfoViewDto.setAcctNo(gai.getAcctNo());
                 giroAccountInfoViewDto.setBankCode(gai.getBankCode());
                 giroAccountInfoViewDto.setBankName(gai.getBankName());
+                giroAccountInfoViewDto.setBankNameDesc(gai.getBankNameDesc());
                 giroAccountInfoViewDto.setBranchCode(gai.getBranchCode());
                 giroAccountInfoViewDto.setLicenceNo(gai.getLicenceNo());
                 giroAccountInfoViewDto.setLicenseeName(gai.getLicenseeName());
