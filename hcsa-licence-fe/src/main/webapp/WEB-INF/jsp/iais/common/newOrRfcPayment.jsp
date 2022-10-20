@@ -137,12 +137,6 @@
                     </tr>
                 </c:if>
             </c:forEach>
-            <tr>
-                <td></td>
-                <td></td>
-                <td><p><strong>Total${FeeDetail}</strong></p></td>
-                <td><p><c:out value="${AppSubmissionDto.amountStr}"/></p></td>
-            </tr>
         </c:when>
 
         <c:otherwise>
