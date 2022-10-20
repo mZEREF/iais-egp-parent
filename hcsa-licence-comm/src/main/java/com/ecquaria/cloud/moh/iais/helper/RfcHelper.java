@@ -1517,7 +1517,7 @@ public final class RfcHelper {
         oldAppSvcOtherInfoDtoList.stream()
                 .filter(dto -> IaisCommonUtils.isNotEmpty(dto.getAllAppPremSubSvcRelDtoList()))
                 .forEach((item) -> oldAppPremSubSvcRelList.addAll(item.getAllAppPremSubSvcRelDtoList()));
-        boolean changeOtherService = isSame(appPremSubSvcRelList, oldAppPremSubSvcRelList, PageDataCopyUtil::copyOtherService);
+        boolean changeOtherService = !isSame(appPremSubSvcRelList, oldAppPremSubSvcRelList, PageDataCopyUtil::copyOtherService);
         if (changeOtherService){
             result = true;
         }
@@ -2361,7 +2361,7 @@ public final class RfcHelper {
      */
     public static <T> int isChangedList(List<T> source, List<T> oldSource, Function<List<T>, List<T>> newFun,
             BiFunction<T, List<T>, T> target, BiPredicate<T, T> check) {
-        int status = RfcConst.STATUS_UNCHANGED;
+            int status = RfcConst.STATUS_UNCHANGED;
         if (source == null && oldSource == null) {
             return status;
         }
