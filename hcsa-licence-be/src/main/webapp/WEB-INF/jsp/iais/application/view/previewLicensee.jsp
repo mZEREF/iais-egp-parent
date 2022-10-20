@@ -1,6 +1,6 @@
 <c:set var="soloType" value="LICT002" />
 <c:set var="subLicenseeDto" value="${AppSubmissionDto.subLicenseeDto}"/>
-<c:if test="${empty printView && (!FirstView || needShowErr)}">
+<c:if test="${showHeadingSign}">
     <c:set var="headingSign" value="${empty coMap.licensee ? 'incompleted' : 'completed'}" />
 </c:if>
 <div class="panel panel-default">

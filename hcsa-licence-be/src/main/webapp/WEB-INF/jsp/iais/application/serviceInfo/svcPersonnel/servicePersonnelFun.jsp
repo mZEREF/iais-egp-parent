@@ -17,14 +17,14 @@
         }
         pageController('');
         let flag = $("#curr").val();
-        if (flag == 'NMI' || 'NMA' == flag) {
+        // if (flag == 'NMI' || 'NMA' == flag) {
             $('.personnel-content').each(function (k, v) {
                 var personnelSel = $(this).find('.personnelType').val();
                 console.log(personnelSel,'personnlellll====>>>')
                 personnelSelFun(personnelSel, $(v));
             });
-        }
-        initPage($('div.panel-main-content'))
+        // }
+        initPage($('div.contents'))
         $('input[name="prsLoading"]').each(function () {
             if ($(this).val() == 'true') {
                 var $currContent = $(this).closest('.personnel-content');
@@ -34,6 +34,7 @@
         init = 1;
         fileUploadEvent()
         designationChange()
+
         profRegNoEvent($('.personnel-content'));
         removePersonEvent();
 
@@ -43,8 +44,9 @@
         <c:if test="${(isRfc || isRenew) && !isRfi}">
             disableContent($('.personnel-content'));
         </c:if>
-
-
+        <c:if test="${isRfi}">
+            disableContent($('.personnel-content'));
+        </c:if>
         let svcContent = '.personnel-content';
         psnEditEvent(svcContent);
         <c:if test="${AppSubmissionDto.needEditController}">
@@ -61,6 +63,30 @@
         });
         </c:if>
     });
+
+    var psnEditEvent = function (target) {
+        var $target = $(target);
+        if (isEmptyNode($target)) {
+            return;
+        }
+        $target.find('.psnEdit').unbind('click');
+        $target.find('.psnEdit').on('click', function () {
+            doEditPsn($(this).closest(target), target);
+        });
+    }
+
+    function doEditPsn($currContent, target) {
+        if (isEmptyNode($currContent) || isEmpty(target)) {
+            return;
+        }
+        if (hideEditBtn($currContent)) {
+            return;
+        }
+        $currContent.find('.isPartEdit').val('1');
+        $('#isEditHiddenVal').val('1')
+        hideTag($currContent.find('.edit-content'));
+        unDisableContent($currContent);
+    }
 
     function initPage(target) {
         var $target = $(target);
@@ -223,9 +249,8 @@
         $currContent.find('.othersubSpeciality').html('');
         $currContent.find('.qualification').html('');
         $currContent.find('.otherDesignationDiv').addClass('hidden')
-
-        $currContent.find('.isPartEdit').val(1)
-        $('.personnel-content-edit').val(1)
+        $currContent.find('.isPartEdit').val('1')
+        $('#isEditHiddenVal').val(1)
 
         unDisableContent($currContent)
         //
@@ -268,7 +293,7 @@
             if ($currContent.length == 1) {
                 $currContent.find('.assign-psn-item').html('');
             }
-            $('.personnel-content-edit').val(1)
+            $('#isEditHiddenVal').val('1')
         });
     }
 
@@ -281,7 +306,7 @@
     var pageController = function ($Ele) {
         let flag = $("#curr").val();
         // NMI
-        if (flag == 'NMI' || flag == 'NMA') {
+        // if (flag == 'NMI' || flag == 'NMA') {
             console.log("begin---->",init)
             personnelSel();
             if ($Ele == '') {
@@ -290,7 +315,7 @@
             } else {
                 $Ele.find('.personnelType').trigger('change');
             }
-        }
+        // }
     }
     function inputReadonly($content) {
         $content.prop('readonly', true);

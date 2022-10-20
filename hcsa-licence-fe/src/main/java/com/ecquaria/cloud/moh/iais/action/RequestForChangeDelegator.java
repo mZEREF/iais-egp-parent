@@ -406,7 +406,6 @@ public class RequestForChangeDelegator {
         DealSessionUtil.initView(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, RfcConst.RFCAPPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, appSubmissionDto);
-        ParamUtil.setRequestAttr(bpc.request, RfcConst.FIRSTVIEW, AppConsts.TRUE);
         log.debug(StringUtil.changeForLog("the do prepareFirstView end ...."));
     }
 

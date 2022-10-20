@@ -89,7 +89,6 @@ public class LicenceViewDelegator {
                     ParamUtil.setRequestAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
                 }
                 ParamUtil.setSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO, appSubmissionDto);
-                ParamUtil.setRequestAttr(bpc.request, RfcConst.FIRSTVIEW, AppConsts.TRUE);
                 ParamUtil.setRequestAttr(bpc.request, "cessationForm", "Licence Details");
             }
         }

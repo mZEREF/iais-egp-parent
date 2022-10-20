@@ -3,7 +3,7 @@
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="com.ecquaria.cloud.RedirectUtil" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
@@ -12,11 +12,9 @@
 <webui:setLayout name="iais-internet"/>
 <br/>
 <%@include file="../common/dashboard.jsp" %>
-<style>
-    .app-font-size-16 {
-        font-size: 16px;
-    }
-</style>
+
+<c:set var="isRenew" value="true" scope="request"/>
+
 <form class="table-responsive" method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="switch_value" value=""/>
     <input type="hidden" id="checkSingle" value="${isSingle}"/>
@@ -71,9 +69,10 @@
                                                 <input hidden id="DtoSize" value="${renewDto.appSubmissionDtos.size() - 1}"/>
                                                 <c:forEach var="AppSubmissionDto" items="${renewDto.appSubmissionDtos}" varStatus="status">
                                                     <c:set var="AppSubmissionDto" value="${AppSubmissionDto}" scope="request"/>
+                                                    <c:set var="coMap" value="${AppSubmissionDto.coMap}" scope="request"/>
                                                     <c:set var="documentIndex" value="${status.index}" scope="request"/>
-                                                    <c:set var="key" value="${AppSubmissionDto.serviceName}${status.index}"/>
-                                                    <c:set var="svcSecMap" value="${svcSecMaps[key]}" scope="request"/>
+                                                    <%--<c:set var="key" value="${AppSubmissionDto.serviceName}${status.index}"/>
+                                                    <c:set var="svcSecMap" value="${svcSecMaps[key]}" scope="request"/>--%>
                                                     <div class="tab-pane ${status.index == '0' ? 'active' : ''}"
                                                          id="serviceName${status.index}" role="tabpanel">
                                                         <div class="preview-gp">
@@ -90,10 +89,11 @@
                                                                         <jsp:include page="/WEB-INF/jsp/iais/view/viewLicensee.jsp"/>
                                                                         <jsp:include page="/WEB-INF/jsp/iais/view/viewPremises.jsp"/>
                                                                         <jsp:include page="/WEB-INF/jsp/iais/view/viewSpecialised.jsp"/>
-                                                                        <c:if test="${empty printView && doRenewViewYes ne '1' && (!FirstView || needShowErr)}">
-                                                                            <c:set var="headingSign" value="${StringUtil.isIn(hcsaServiceDto.id, coMap.multiSvc) ? 'incompleted' : 'completed'}" />
-                                                                        </c:if>
                                                                         <c:set var="currentPreviewSvcInfo" value="${AppSubmissionDto.appSvcRelatedInfoDtoList.get(0)}" scope="request"/>
+                                                                        <c:if test="${showHeadingSign}">
+                                                                            <%--<c:set var="headingSign" value="${coMap.information == 'information' ? 'completed' : 'incompleted'}"/>--%>
+                                                                            <c:set var="headingSign" value="${StringUtil.isIn(currentPreviewSvcInfo.serviceId, coMap.multiSvc) ? 'incompleted' : 'completed'}" />
+                                                                        </c:if>
                                                                         <div class="panel panel-default svc-content">
                                                                             <div class="panel-heading ${headingSign}" id="headingServiceInfo${status.index}"
                                                                                  role="tab">
@@ -109,7 +109,7 @@
                                                                                  role="tabpanel" aria-labelledby="headingServiceInfo">
                                                                                 <div class="panel-body">
                                                                                     <c:if test="${AppSubmissionDto.appEditSelectDto==null||AppSubmissionDto.appEditSelectDto.serviceEdit && (empty isSingle || isSingle == 'Y')}">
-                                                                                        <div class="text-right app-font-size-16">
+                                                                                        <div class="text-right font-16">
                                                                                             <a href="#" id="doSvcEdit">
                                                                                                 <em class="fa fa-pencil-square-o"></em>Edit
                                                                                             </a>

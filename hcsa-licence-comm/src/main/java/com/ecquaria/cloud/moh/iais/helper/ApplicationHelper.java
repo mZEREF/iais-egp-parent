@@ -1489,7 +1489,7 @@ public final class ApplicationHelper {
     }
 
     public static boolean checkFromDraft(HttpServletRequest request) {
-        return ParamUtil.getSessionAttr(request, HcsaAppConst.DRAFTCONFIG) != null;
+        return ParamUtil.getSessionAttr(request, HcsaAppConst.DRAFTCONFIG) != null;// new / rfc
     }
 
     public static AppSvcPrincipalOfficersDto getPsnInfoFromLic(HttpServletRequest request, String personKey) {

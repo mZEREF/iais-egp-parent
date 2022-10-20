@@ -53,7 +53,7 @@
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST013'}">
                                                             <div class="section-leader">
-                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/sectionLeader.jsp"/>
+                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/svcPersonnel/sectionLeader.jsp"/>
                                                             </div>
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST010'}">
@@ -64,7 +64,7 @@
                                                         <c:when test="${currentStep == 'SVST006'}">
                                                             <div class="clinical-governance-officer">
                                                                 <!--start -->
-                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/servicePersonnel.jsp" />
+                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/svcPersonnel/servicePersonnel.jsp" />
                                                                 <!--end -->
                                                             </div>
                                                         </c:when>

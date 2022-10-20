@@ -11,7 +11,7 @@
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
 <input type="hidden" id="isEditHiddenVal" class="person-content-edit" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
 
-<div class="row form-horizontal">
+<div class="row form-horizontal normal-label">
     <c:if test="${AppSubmissionDto.needEditController}">
         <c:if test="${(isRfc || isRenew) && !isRfi}">
             <iais:row>

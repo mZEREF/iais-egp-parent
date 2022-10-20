@@ -302,6 +302,7 @@ public class InboxServiceImpl implements InboxService {
                     }
                 }
                 if (isRenewApp) {
+                    // INBOX_ACK013 - This licence has already been renewed.
                     String errorMsg = MessageUtil.getMessageDesc("INBOX_ACK013");
                     errorMap.put("errorMessage2", errorMsg);
                 } else {
@@ -420,6 +421,7 @@ public class InboxServiceImpl implements InboxService {
                 }
                 if (ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(status)
                         && ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(app.getApplicationType())) {
+                    // INBOX_ACK025 - This licence has already been amended, please wait for the newly generated licence to be active before proceeding with amendment
                     errorMap.put("errorMessage", MessageUtil.getMessageDesc("INBOX_ACK025"));
                     hasError = true;
                 }
