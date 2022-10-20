@@ -144,10 +144,6 @@ public abstract class AppCommDelegator {
         boolean flag = AppConsts.SUCCESS.equals(statust) && loadingServiceConfig(bpc);
         log.info(StringUtil.changeForLog("The loadingServiceConfig -->:" + flag));
         if (flag) {
-            //TODO renewal draft test
-            Object sessionAttr = ParamUtil.getSessionAttr(bpc.request, HcsaAppConst.LOADING_DRAFT);
-            log.info(StringUtil.changeForLog("Renewal Draft: " + sessionAttr));
-            //TODO end
             boolean fromDraft = ApplicationHelper.checkFromDraft(bpc.request);
             DealSessionUtil.initSession(fromDraft, bpc.request);
         }
@@ -1158,6 +1154,7 @@ public abstract class AppCommDelegator {
      */
     public void preparePreview(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do preparePreview start ...."));
+        ParamUtil.setRequestAttr(bpc.request, RfcConst.SHOW_HEADING_SIGN, Boolean.TRUE);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         DealSessionUtil.initView(appSubmissionDto);
         List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();

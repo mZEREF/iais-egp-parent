@@ -2,7 +2,7 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <c:set var="soloType" value="LICT002" />
 <c:set var="subLicenseeDto" value="${AppSubmissionDto.subLicenseeDto}"/>
-<c:if test="${empty printView && doRenewViewYes ne '1' && (!FirstView || needShowErr)}">
+<c:if test="${showHeadingSign}">
     <c:set var="headingSign" value="${empty coMap.licensee ? 'incompleted' : 'completed'}" />
 </c:if>
 <div class="panel panel-default">

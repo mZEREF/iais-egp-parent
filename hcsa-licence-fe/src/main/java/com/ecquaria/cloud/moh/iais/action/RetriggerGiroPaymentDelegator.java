@@ -266,8 +266,6 @@ public class RetriggerGiroPaymentDelegator {
 
     public void prepreview(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the prepreview start ...."));
-        ParamUtil.setRequestAttr(bpc.request,RfcConst.FIRSTVIEW,AppConsts.TRUE);
-        ParamUtil.setRequestAttr(bpc.request,"needShowErr",AppConsts.FALSE);
         ParamUtil.setRequestAttr(bpc.request,"retriggerGiro","test");
         log.info(StringUtil.changeForLog("the prepreview end ...."));
     }

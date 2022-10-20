@@ -177,6 +177,15 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         return appSubmissionDto;
     }
 
+    private void eventBus(AppSubmissionDto appSubmissionDto, Process process) {
+        //prepare request parameters
+        appSubmissionDto.setEventRefNo(appSubmissionDto.getAppGrpNo());
+        eventBusHelper.submitAsyncRequest(appSubmissionDto, generateIdClient.getSeqId().getEntity(),
+                EventBusConsts.SERVICE_NAME_APPSUBMIT, EventBusConsts.OPERATION_NEW_APP_SUBMIT,
+                appSubmissionDto.getEventRefNo(), "Submit Application",
+                appSubmissionDto.getAppGrpId());
+    }
+
     @Override
     public void sendEmailAndSMSAndMessage(AppSubmissionDto appSubmissionDto, String applicantName) {
         if (appSubmissionDto.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)) {
@@ -1400,28 +1409,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 EventBusConsts.SERVICE_NAME_APPSUBMIT, EventBusConsts.OPERATION_REQUEST_INFORMATION,
                 appSubmissionRequestInformationDto.getEventRefNo(), "Submit Application",
                 appSubmissionRequestInformationDto.getAppSubmissionDto().getAppGrpId());
-    }
-
-    private void premisesListInformationEventBus(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto,
-            Process process) {
-        appSubmissionRequestInformationDto.setEventRefNo(appSubmissionRequestInformationDto.getAppSubmissionDto().getAppGrpNo());
-        SubmitResp submitResp = eventBusHelper.submitAsyncRequest(appSubmissionRequestInformationDto,
-                generateIdClient.getSeqId().getEntity(),
-                EventBusConsts.SERVICE_NAME_APPSUBMIT,
-                EventBusConsts.OPERATION_REQUEST_INFORMATION,
-                appSubmissionRequestInformationDto.getEventRefNo(), "Submit Application Premises List",
-                appSubmissionRequestInformationDto.getAppSubmissionDto().getAppGrpId());
-    }
-
-    private void eventBus(AppSubmissionDto appSubmissionDto, Process process) {
-        //prepare request parameters
-        appSubmissionDto.setEventRefNo(appSubmissionDto.getAppGrpNo());
-
-        SubmitResp submitResp = eventBusHelper.submitAsyncRequest(appSubmissionDto, generateIdClient.getSeqId().getEntity(),
-                EventBusConsts.SERVICE_NAME_APPSUBMIT,
-                EventBusConsts.OPERATION_NEW_APP_SUBMIT,
-                appSubmissionDto.getEventRefNo(), "Submit Application",
-                appSubmissionDto.getAppGrpId());
     }
 
     @Override

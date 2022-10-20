@@ -6,7 +6,7 @@
 
 <c:set var="specialisedTitle"><iais:message key="GENERAL_TITLE01" escape="false"/></c:set>
 <c:forEach var="specialised" items="${AppSubmissionDto.appPremSpecialisedDtoList}" varStatus="vs">
-    <c:if test="${empty printView && (!FirstView || needShowErr)}">
+    <c:if test="${showHeadingSign}">
         <c:set var="headingSign" value="${StringUtil.isIn(specialised.baseSvcCode, coMap.multiSpecialised) ? 'incompleted' : 'completed'}" />
     </c:if>
     <div class="panel panel-default">
