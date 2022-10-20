@@ -4,8 +4,10 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.MasterCodePair;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserRoleAccessMatrixDto;
@@ -19,17 +21,17 @@ import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.HalpSearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Map;
 
 /**
  * ApplyGiroFromDelegateo
@@ -68,6 +70,9 @@ public class ViewGIROArrangementsDelegator {
         filter.put("org_id", orgId);
         giroAccountParameter.setFilters(filter);
         SearchParam giroAccountParam = SearchResultHelper.getSearchParam(request, giroAccountParameter,true);
+        List<SelectOption> bankNameOpts = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BANK_NAME);
+        MasterCodePair mcp = new MasterCodePair("BANK_NAME", "BANK_NAME_DESC", bankNameOpts);
+        giroAccountParam.setMasterCode(mcp);
         CrudHelper.doPaging(giroAccountParam,bpc.request);
         String sortFieldName = ParamUtil.getString(request,"crud_action_value");
         String sortType = ParamUtil.getString(request,"crud_action_additional");

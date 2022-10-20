@@ -793,7 +793,12 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
             }
             if(orgGiroAccountInfoDto!= null && !StringUtil.isEmpty(orgGiroAccountInfoDto.getAcctNo())&& AppConsts.COMMON_STATUS_ACTIVE.equalsIgnoreCase(orgGiroAccountInfoDto.getStatus())){
                 // index 2 : dda refNo
-                return Arrays.asList(orgGiroAccountInfoDto.getAcctNo(),MasterCodeUtil.getDecByCateIdAndCodeValue(MasterCodeUtil.CATE_ID_GIRO_BANK_CODE,orgGiroAccountInfoDto.getBankCode()),StringUtil.getNonNull(orgGiroAccountInfoDto.getCustomerReferenceNo()));
+                String accNum = orgGiroAccountInfoDto.getAcctNo();
+                if ("BANK005".equals(orgGiroAccountInfoDto.getBankName())
+                        || "BANK001".equalsIgnoreCase(orgGiroAccountInfoDto.getBankName())) {
+                    accNum = StringUtil.nullToEmptyStr(orgGiroAccountInfoDto.getBranchCode()) + accNum;
+                }
+                return Arrays.asList(accNum,MasterCodeUtil.getDecByCateIdAndCodeValue(MasterCodeUtil.CATE_ID_GIRO_BANK_CODE,orgGiroAccountInfoDto.getBankCode()),StringUtil.getNonNull(orgGiroAccountInfoDto.getCustomerReferenceNo()));
             }else if(orgGiroAccountInfoDto!= null && StringUtil.isEmpty(orgGiroAccountInfoDto.getAcctNo())){
                 log.info(StringUtil.changeForLog("--------giro account is null------------"));
             }else {

@@ -52,7 +52,7 @@
                                                          field="ACCT_NAME"
                                                          value="Account Name"/>
                                     <iais:sortableHeader needSort="true"
-                                                         field="BANK_NAME" style="width:8%"
+                                                         field="BANK_NAME_DESC" style="width:8%"
                                                          value="Bank Name"/>
                                     <iais:sortableHeader needSort="true"
                                                          field="BANK_CODE"
@@ -99,7 +99,7 @@
                                                 </td>
                                                 <td>
                                                     <p class="visible-xs visible-sm table-row-title">Bank Name</p>
-                                                    <p><c:out value="${pool.bankName}"/></p>
+                                                    <p><c:out value="${pool.bankNameDesc}"/></p>
                                                 </td>
                                                 <td>
                                                     <p class="visible-xs visible-sm table-row-title">Bank Code</p>

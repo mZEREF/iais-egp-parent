@@ -101,7 +101,7 @@
                                                                                  field="ACCT_NAME"
                                                                                  value="Account Name"/>
                                                             <iais:sortableHeader needSort="true"
-                                                                                 field="BANK_NAME"
+                                                                                 field="BANK_NAME_DESC"
                                                                                  value="Bank Name"/>
                                                             <iais:sortableHeader needSort="true"
                                                                                  field="BANK_CODE"
@@ -165,7 +165,7 @@
                                                                             <c:out value="${pool.acctName}"/>
                                                                         </td>
                                                                         <td>
-                                                                            <c:out value="${pool.bankName}"/>
+                                                                            <c:out value="${pool.bankNameDesc}"/>
                                                                         </td>
                                                                         <td>
                                                                             <c:out value="${pool.bankCode}"/>

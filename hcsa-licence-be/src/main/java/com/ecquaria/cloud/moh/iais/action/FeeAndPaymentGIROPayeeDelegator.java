@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.dto.MasterCodePair;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -129,6 +130,9 @@ public class FeeAndPaymentGIROPayeeDelegator {
         giroAccountParameter.setFilters(filter);
         SearchParam giroAccountParam = SearchResultHelper.getSearchParam(request, giroAccountParameter,true);
         CrudHelper.doPaging(giroAccountParam,bpc.request);
+        List<SelectOption> bankNameOpts = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BANK_NAME);
+        MasterCodePair mcp = new MasterCodePair("BANK_NAME", "BANK_NAME_DESC", bankNameOpts);
+        giroAccountParam.setMasterCode(mcp);
         String sortFieldName = ParamUtil.getString(request,"crud_action_value");
         String sortType = ParamUtil.getString(request,"crud_action_additional");
         String actionType=ParamUtil.getString(request,"crud_action_type");
@@ -155,6 +159,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
                 giroAccountInfoViewDto.setBankCode(gai.getBankCode());
                 giroAccountInfoViewDto.setGiroAccountFormDocDtoList(giroAccountFormDocDtoList);
                 giroAccountInfoViewDto.setBankName(gai.getBankName());
+                giroAccountInfoViewDto.setBankNameDesc(gai.getBankNameDesc());
                 giroAccountInfoViewDto.setBranchCode(gai.getBranchCode());
                 giroAccountInfoViewDto.setLicenceNo(gai.getLicenceNo());
                 giroAccountInfoViewDto.setLicenseeName(gai.getLicenseeName());
@@ -498,7 +503,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
             giroAccountInfoDto.setCustomerReferenceNo(cusRefNo);
             //giroAccountInfoDto.setDdaRefNo(cusRefNo);
             giroAccountInfoDto.setBankCode(bankCode);
-            giroAccountInfoDto.setBankName(MasterCodeUtil.getCodeDesc(bankName));
+            giroAccountInfoDto.setBankName(bankName);
             giroAccountInfoDto.setOrganizationId(opv.getOrgId());
             giroAccountInfoDto.setLicenceId(opv.getId());
             giroAccountInfoDto.setInternetRemarks(remarks);
