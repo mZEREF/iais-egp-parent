@@ -151,7 +151,7 @@ public class FertilisationDtoValidator implements CustomizeValidator {
         }
 
         // the validation of 'fresh or frozen oocyte(s) used' and 'How many oocytes were used in this cycle' still need to be more clear
-        if(StringUtil.isNotEmpty(usedOocytes) && StringUtil.isNotEmpty(oocyteUsed)){
+        if(StringUtil.isNotEmpty(usedOocytes) && StringUtil.isNumber(usedOocytes) && StringUtil.isNotEmpty(oocyteUsed)){
             int usedOocytesNum = Integer.parseInt(usedOocytes);
             if (oocyteUsed.equals("Fresh") && (usedOocytesNum != totalFreshSum)) {
                 errorMap.put("usedOocytesNum","Please check the number of oocytes");

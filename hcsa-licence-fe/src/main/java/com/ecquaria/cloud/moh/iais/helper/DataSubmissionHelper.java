@@ -367,6 +367,7 @@ public final class DataSubmissionHelper {
                 result.add(DataSubmissionConsts.AR_STAGE_EMBRYO_TRANSFER);
             }
             result.add(DataSubmissionConsts.AR_STAGE_DONATION);
+            result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
             result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
             result.add(DataSubmissionConsts.AR_STAGE_AR_TREATMENT_SUBSIDIES);
             result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
@@ -739,7 +740,7 @@ public final class DataSubmissionHelper {
     }
 
     public static List<String> getAllIUICycleStages(){
-        List<String> stages = new ArrayList<>(3);
+        List<String> stages = new ArrayList<>(4);
         stages.add(DataSubmissionConsts.AR_CYCLE_IUI);
         stages.add(DataSubmissionConsts.AR_STAGE_OUTCOME);
         stages.add(DataSubmissionConsts.AR_STAGE_IUI_TREATMENT_SUBSIDIES);

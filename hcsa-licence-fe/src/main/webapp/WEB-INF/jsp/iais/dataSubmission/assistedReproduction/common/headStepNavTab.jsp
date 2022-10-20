@@ -6,12 +6,12 @@
 
 <c:if test="${not empty stageList}">
     <ul class="stage-tracker">
-        <c:forEach var="stage" items="${stageList}" varStatus="status" begin="0" end="6">
+        <c:forEach var="stage" items="${stageList}" varStatus="status" begin="0" end="7">
             <li class="tracker-item ${stage.status}" data-step-key="${stage.stepKey}" data-permissions="${stage.permissions}"><a href="javascript:void(0)">${stage.stepValue}</a></li>
         </c:forEach>
     </ul>
     <ul class="stage-tracker">
-        <c:forEach var="stage" items="${stageList}" varStatus="status" begin="7" end="13">
+        <c:forEach var="stage" items="${stageList}" varStatus="status" begin="8" end="14">
             <li class="tracker-item ${stage.status}" data-step-key="${stage.stepKey}" data-permissions="${stage.permissions}"><a href="javascript:void(0)">${stage.stepValue}</a></li>
         </c:forEach>
     </ul>

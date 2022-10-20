@@ -62,6 +62,9 @@ public class DisposalStageDelegator extends CommonDelegator{
 
         DisposalStageDto disposalStageDto=arSuperDataSubmissionDto.getDisposalStageDto();
         HttpServletRequest request=bpc.request;
+        if (disposalStageDto == null) {
+            disposalStageDto = new DisposalStageDto();
+        }
         String disposedType=ParamUtil.getString(request,"disposedType");
         disposalStageDto.setDisposedType(disposedType);
         int totalNum =0;

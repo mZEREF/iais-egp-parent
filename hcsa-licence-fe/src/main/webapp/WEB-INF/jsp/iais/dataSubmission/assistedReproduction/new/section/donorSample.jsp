@@ -119,7 +119,7 @@
                     mandatory="true"
                     cssClass="col-md-6"/>
         <iais:value width="6" cssClass="col-md-6">
-            <iais:input maxLength="3" type="text" name="donorSampleAge" id="donorSampleAge"
+            <iais:input maxLength="2" type="text" name="donorSampleAge" id="donorSampleAge"
                         value="${donorSampleDto.donorSampleAge}"/>
         </iais:value>
     </iais:row>
@@ -209,7 +209,7 @@
         <iais:field style="padding-left:0" width="6" value="Age of Male Donor at the Point of Donation "
                     mandatory="true" cssClass="col-md-6"/>
         <iais:value width="6" cssClass="col-md-6">
-            <iais:input maxLength="3" type="text" name="maleDonorSampleAge" id="maleDonorSampleAge"
+            <iais:input maxLength="2" type="text" name="maleDonorSampleAge" id="maleDonorSampleAge"
                         value="${donorSampleDto.maleDonorSampleAge}"/>
         </iais:value>
     </iais:row>

@@ -158,13 +158,18 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
             if (IaisCommonUtils.isNotEmpty(donorSampleDtoAgeList)) {
                 donorSampleDto.setSampleKey(donorSampleDtoAgeList.get(0).getSampleKey());
             }
-            if (IaisCommonUtils.isNotEmpty(donorSampleDtoAgeList
-                    .stream()
-                    .filter(it -> it.getAge() == Integer.parseInt(donorSampleDto.getDonorSampleAge()))
-                    .collect(Collectors.toList()))) {
-                errorMap.put("donorSampleAge", "DS_ERR046");
-                return false;
+            if (!StringUtil.isNumber(donorSampleDto.getDonorSampleAge())) {
+                errorMap.put("donorSampleAge", "GENERAL_ERR0002");
+            } else {
+                if (IaisCommonUtils.isNotEmpty(donorSampleDtoAgeList
+                        .stream()
+                        .filter(it -> it.getAge() == Integer.parseInt(donorSampleDto.getDonorSampleAge()))
+                        .collect(Collectors.toList()))) {
+                    errorMap.put("donorSampleAge", "DS_ERR046");
+                    return false;
+                }
             }
+
         }
         return true;
     }
@@ -231,12 +236,16 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
             if (IaisCommonUtils.isNotEmpty(donorSampleDtoAgeList)) {
                 donorSampleDto.setSampleKeyMale(donorSampleDtoAgeList.get(0).getSampleKey());
             }
-            if (IaisCommonUtils.isNotEmpty(donorSampleDtoAgeList
-                    .stream()
-                    .filter(it -> it.getAge() == Integer.parseInt(donorSampleDto.getMaleDonorSampleAge()))
-                    .collect(Collectors.toList()))) {
-                errorMap.put("maleDonorSampleAge", "DS_ERR046");
-                return false;
+            if (!StringUtil.isNumber(donorSampleDto.getMaleDonorSampleAge())) {
+                errorMap.put("maleDonorSampleAge", "GENERAL_ERR0002");
+            } else {
+                if (IaisCommonUtils.isNotEmpty(donorSampleDtoAgeList
+                        .stream()
+                        .filter(it -> it.getAge() == Integer.parseInt(donorSampleDto.getMaleDonorSampleAge()))
+                        .collect(Collectors.toList()))) {
+                    errorMap.put("maleDonorSampleAge", "DS_ERR046");
+                    return false;
+                }
             }
         }
         return true;

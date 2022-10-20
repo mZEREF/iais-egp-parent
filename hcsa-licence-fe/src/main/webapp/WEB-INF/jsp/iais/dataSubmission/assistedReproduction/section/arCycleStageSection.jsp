@@ -165,10 +165,8 @@
                 <iais:row id="totalNumberARCOtherRow">
                     <iais:field width="6" cssClass="col-md-6" value="No. of AR Cycles undergone Overseas" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <iais:select name="cyclesUndergoneOverseas" options="cyclesUndergoneOverseasDropDown"
-                                         firstOption="Please Select" value="${arCycleStageDto.cyclesUndergoneOverseas}"
-                                         cssClass="cyclesUndergoneOverseasSel"
-                                         onchange="doEnhancedCounsellingMandatory('${enhancedCounsellingMandatory}')"/>
+                            <iais:input maxLength="2" type="text" name="cyclesUndergoneOverseas" id="cyclesUndergoneOverseas"
+                                        value="${arCycleStageDto.cyclesUndergoneOverseas}"/>
                         </iais:value>
                 </iais:row>
 
@@ -181,7 +179,7 @@
 
                 <iais:row>
                     <iais:field width="6" cssClass="col-md-6" value="Enhanced Counselling" id="enhancedCounsellingTitle" mandatory="${enhancedCounsellingMandatory == 'true' ? enhancedCounsellingMandatory :
-                      (!empty arCycleStageDto.cyclesUndergoneOverseas && arCycleStageDto.cyclesUndergoneOverseas >10  ? 'true' : 'false')}"/>
+                      (!empty arCycleStageDto.cyclesUndergoneOverseas && (arCycleStageDto.cyclesUndergoneOverseas).matches('[0-9]+') && arCycleStageDto.cyclesUndergoneOverseas >10  ? 'true' : 'false')}"/>
                     <iais:value width="3" cssClass="col-md-3">
                         <div class="form-check" style="padding-left: 0px;">
                             <input class="form-check-input"

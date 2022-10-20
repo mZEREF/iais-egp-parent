@@ -164,6 +164,9 @@ public class ArIUIDataSubmissionDelegator {
                 String cycleRadio = ParamUtil.getString(request, CYCLE_SELECT);
                 String lastStatus = ParamUtil.getString(request, "lastStatus");
                 boolean start = DataSubmissionHelper.startNewCycle(lastStatus);
+                if (selectionDto.getCycleDtos().size() == 1) {
+                    start = true;
+                }
                 ParamUtil.setRequestAttr(request, CYCLE_SELECT, cycleRadio);
                 String hasCycle = ParamUtil.getString(request, HAS_CYCLE);
                 currentSuper.getDataSubmissionDto().setCycleStage(nextStage);

@@ -46,14 +46,14 @@
                     <iais:row>
                         <iais:field width="6" value="No. Live Birth (Male)" mandatory="true" cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <iais:input maxLength="1" type="text" name="maleLiveBirthNum" id="maleLiveBirthNum"
+                            <iais:input maxLength="2" type="text" name="maleLiveBirthNum" id="maleLiveBirthNum"
                                         value="${pregnancyOutcomeStageDto.maleLiveBirthNum}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="6" value="No. Live Birth (Female)" mandatory="true" cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <iais:input maxLength="1" type="text" name="femaleLiveBirthNum" id="femaleLiveBirthNum"
+                            <iais:input maxLength="2" type="text" name="femaleLiveBirthNum" id="femaleLiveBirthNum"
                                         value="${pregnancyOutcomeStageDto.femaleLiveBirthNum}"/>
                         </iais:value>
                     </iais:row>
@@ -69,21 +69,21 @@
                     <iais:row>
                         <iais:field width="6" value="No. of Still Birth" mandatory="true" cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <iais:input maxLength="1" type="text" name="stillBirthNum" id="stillBirthNum"
+                            <iais:input maxLength="2" type="text" name="stillBirthNum" id="stillBirthNum"
                                         value="${pregnancyOutcomeStageDto.stillBirthNum}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="6" value="No. of Spontaneous Abortion" mandatory="true" cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <iais:input maxLength="1" type="text" name="spontAbortNum" id="spontAbortNum"
+                            <iais:input maxLength="2" type="text" name="spontAbortNum" id="spontAbortNum"
                                         value="${pregnancyOutcomeStageDto.spontAbortNum}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="6" value="No. of Intra-uterine Death" mandatory="true" cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <iais:input maxLength="1" type="text" name="intraUterDeathNum" id="intraUterDeathNum"
+                            <iais:input maxLength="2" type="text" name="intraUterDeathNum" id="intraUterDeathNum"
                                         value="${pregnancyOutcomeStageDto.intraUterDeathNum}"/>
                         </iais:value>
                     </iais:row>
@@ -269,7 +269,7 @@
                         <iais:field width="6" value="No. Days Baby Stay in L2 (Provide average if > one baby stayed)"
                                     cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <iais:input maxLength="4" type="text" name="l2CareBabyDays" id="l2CareBabyDays"
+                            <iais:input maxLength="2" type="text" name="l2CareBabyDays" id="l2CareBabyDays"
                                         value="${pregnancyOutcomeStageDto.l2CareBabyDays}"/>
                         </iais:value>
                     </iais:row>
@@ -279,7 +279,7 @@
                         <iais:field width="6" value="No. Days Baby Stay in L3 (Provide average if > one baby stayed)"
                                     cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <iais:input maxLength="4" type="text" name="l3CareBabyDays" id="l3CareBabyDays"
+                            <iais:input maxLength="2" type="text" name="l3CareBabyDays" id="l3CareBabyDays"
                                         value="${pregnancyOutcomeStageDto.l3CareBabyDays}"/>
                         </iais:value>
                     </iais:row>
