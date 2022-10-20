@@ -1595,6 +1595,7 @@ public class RequestForChangeMenuDelegator {
             amendmentFeeDto.setAdditionOrRemovalSpecialisedServices(Boolean.TRUE);
         }
         amendmentFeeDto.setServiceCode(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceCode());
+        amendmentFeeDto.setLicenceNo(appSubmissionDto.getLicenceNo());
         FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
         Double total = feeDto.getTotal();
         if (total == null) {
