@@ -1,4 +1,4 @@
-<div class="personnel-content">
+<div class="personnel-content normal-label">
     <c:set var="isCgo" value="${psnType == ApplicationConsts.PERSONNEL_PSN_TYPE_CGO}"/>
     <input type="hidden" class="not-refresh not-clear prepsn" name="${psnContent}" value="${prepsn}"/>
     <input type="hidden" class="not-refresh assignSelVal" name="${prepsn}assignSelVal" value="${person.assignSelect}"/>
@@ -21,7 +21,7 @@
 
     <iais:row>
         <div class="col-xs-12 col-md-6">
-            <p class="bold">${title} <label class="assign-psn-item">${index+1}</label></p>
+            <p class="bold">${title} <label class="assign-psn-item"><strong>${index+1}</strong></label></p>
             <p><span class="error-msg" name="iaisErrorMSg" id="error_${prepsn}personError${index}"></span></p>
         </div>
         <div class="col-xs-12 col-md-6 text-right removeEditDiv <c:if test="${index == 0}">hidden</c:if>">

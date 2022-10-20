@@ -158,9 +158,11 @@
                     <input type="hidden" class ="psnType" value="${psnType}"/>
                     <input type="hidden" class ="MaxCount" value="${pMax.value}"/>
                     <input type="hidden" class ="Length" name="${status.index}${subSvcRelStatus.index}${psnType}Length" value="${personCount}"/>
-                    <span class="addBtn" style="color:deepskyblue;cursor:pointer;">
-                        <span style="">Add more</span>
-                    </span>
+                    <c:if test="${!isRfi}">
+                        <span class="addBtn" style="color:deepskyblue;cursor:pointer;">
+                            <span style="">Add more</span>
+                        </span>
+                    </c:if>
                 </div>
             </iais:row>
         </div>
