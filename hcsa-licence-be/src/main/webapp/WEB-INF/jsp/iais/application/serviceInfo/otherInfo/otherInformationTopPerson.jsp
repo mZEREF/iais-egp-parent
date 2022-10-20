@@ -332,8 +332,6 @@
             $('input.cdLength[data-prefix="' + prefix + '"]').val(cdLength);
             let $currContent = $('div.practitioners[data-prefix="' + prefix + '"]').last();
             clearFields($currContent);
-            let ta = '.person-content';
-            profRegNoEvent(ta);
             removePractitioners();
             if(cdLength <= 1){
                 $('.practitioners[data-prefix="' + prefix + '"]:eq(0) .assign-psn-item').html('');
@@ -657,5 +655,4 @@
             $('#isEditHiddenVal').val('1');
         });
     }
-
 </script>

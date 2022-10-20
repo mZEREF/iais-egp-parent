@@ -53,7 +53,7 @@
     <iais:row id="otherInfo" style="${med.systemOption eq 'MED06' ?'' : ' display : none'}">
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Please specify"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="50" type="text" cssClass="otherSystemOption" name="${prefix}otherSystemOption" value="${med.otherSystemOption}"/>
+            <iais:input maxLength="20" type="text" cssClass="otherSystemOption" name="${prefix}otherSystemOption" value="${med.otherSystemOption}"/>
         </iais:value>
     </iais:row>
 

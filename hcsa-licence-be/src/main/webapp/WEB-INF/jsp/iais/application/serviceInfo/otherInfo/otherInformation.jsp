@@ -48,9 +48,10 @@
         <iais:row>
             <div class="col-xs-12">
                 <div class="app-title">${appSvcOtherInfoDto.premName}</div>
-                <p class="font-18 bold">Address:${appSvcOtherInfoDto.premAddress}</p>
+                <p class="font-18 bold">${appSvcOtherInfoDto.premAddress}</p>
             </div>
         </iais:row>
+        ============================${appSvcOtherInfoDto}============================
         <c:choose>
             <c:when test="${(currSvcInfoDto.serviceCode == AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE) || (currSvcInfoDto.serviceCode == AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)}">
                 <input type="hidden" name="otherInfoServiceCode" value="${currSvcInfoDto.serviceCode}">
@@ -71,7 +72,7 @@
                             </div>
                         </div>
                         <%@include file="otherInformationTopPerson.jsp" %>
-                        <%@include file="otherInfoItemForm.jsp" %>
+<%--                        <%@include file="otherInfoItemForm.jsp" %>--%>
                         <%@include file="documentation.jsp" %>
                         <%@include file="aboutTop.jsp" %>
                         <%@include file="yFV.jsp" %>
@@ -100,7 +101,7 @@
                         </div>
                     </div>
                     <%@include file="otherInformationTopPerson.jsp" %>
-                    <%@include file="otherInfoItemForm.jsp" %>
+<%--                    <%@include file="otherInfoItemForm.jsp" %>--%>
                     <%@include file="documentation.jsp" %>
                     <%@include file="aboutTop.jsp" %>
                 </div>
@@ -122,7 +123,7 @@
                         </div>
                     </div>
                     <%@include file="otherInformationTopPerson.jsp" %>
-                    <%@include file="otherInfoItemForm.jsp" %>
+<%--                    <%@include file="otherInfoItemForm.jsp" %>--%>
                     <%@include file="documentation.jsp" %>
                     <%@include file="aboutTop.jsp" %>
                     <%@include file="yFV.jsp" %>
@@ -156,10 +157,8 @@
     </c:forEach>
 </div>
 <%@include file="/WEB-INF/jsp/iais/application/common/personFun.jsp" %>
-<%@include file="/WEB-INF/jsp/iais/application/common/prsLoad.jsp" %>
 <script>
     $(document).ready(function () {
-
         doEditOtherInfoRDCEvent();
         doEditOtherInfoDentalServiceEvent();
         doEditOtherInfoASCSEvent();
@@ -400,6 +399,4 @@
         $('div.rdDiv[data-prefix="' + prefix + '"]').prop('disabled',false).css('pointer-events','').css('border-color', '').css('color', '');
         $('div.rTDiv[data-prefix="' + prefix + '"]').prop('disabled',false).css('pointer-events','').css('border-color', '').css('color', '');
     }
-
-
 </script>

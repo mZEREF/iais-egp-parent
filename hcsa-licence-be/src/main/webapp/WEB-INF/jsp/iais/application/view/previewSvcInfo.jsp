@@ -41,5 +41,11 @@
             <%--STEP_DOCUMENTS--%>
             <jsp:include page="/WEB-INF/jsp/iais/application/view/document/viewSvcDocument.jsp"/>
         </c:when>
+        <c:when test="${hcsaServiceStepSchemeDto.stepCode == 'SVST015'}">
+            <jsp:include page="/WEB-INF/jsp/iais/application/view/otherInfo/viewOtherInformation.jsp"/>
+        </c:when>
+        <c:when test="${hcsaServiceStepSchemeDto.stepCode == 'SVST018'}">
+            <jsp:include page="/WEB-INF/jsp/iais/application/view/outsourced/viewOutsourcedProviders.jsp"/>
+        </c:when>
     </c:choose>
 </c:forEach>

@@ -1,6 +1,6 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <c:set var="psnType" value="${ApplicationConsts.OTHER_TOP_PRACTITIONERS}"/>
-<div class="practitioners person-detail  person-content <c:if test="${'1' != provideTop}">hidden</c:if>" data-prefix="${prefix}">
+<div class="practitioners person-detail <c:if test="${'1' != provideTop}">hidden</c:if>" data-prefix="${prefix}">
     <iais:row>
         <div class="col-xs-12 col-md-10">
             <p class="bold">Name, Professional Regn. No. and Qualification of medical practitioners authorised to perform Abortion
