@@ -1277,7 +1277,7 @@ public final class AppDataHelper {
     private static AppSvcOtherInfoMedDto getAppSvcOtherInfoMedDto(AppSvcOtherInfoMedDto appSvcOtherInfoMedDto,String prefix,
                                                                   HttpServletRequest request, boolean getDataByIndexNo, boolean getPageData,String otherInfoMedId){
         if (appSvcOtherInfoMedDto == null){
-            return appSvcOtherInfoMedDto;
+            appSvcOtherInfoMedDto = new AppSvcOtherInfoMedDto();
         }
         if (getDataByIndexNo) {
             AppSvcOtherInfoMedDto svcOtherInfoMedDto = getOtherInfoMedById(appSvcOtherInfoMedDto,otherInfoMedId);
@@ -1306,7 +1306,7 @@ public final class AppDataHelper {
     private static AppSvcOtherInfoMedDto getAppSvcOtherInfoASCMedDto(AppSvcOtherInfoMedDto appSvcOtherInfoMedDto,String prefix,
                                                                      HttpServletRequest request,boolean getDataByIndexNo,boolean getPageData,String otherInfoMedASCId){
         if (appSvcOtherInfoMedDto == null){
-            return appSvcOtherInfoMedDto;
+            appSvcOtherInfoMedDto = new AppSvcOtherInfoMedDto();
         }
         if (getDataByIndexNo) {
             AppSvcOtherInfoMedDto svcOtherInfoMedDto = getOtherInfoMedById(appSvcOtherInfoMedDto,otherInfoMedASCId);
@@ -1341,7 +1341,7 @@ public final class AppDataHelper {
     private static AppSvcOtherInfoNurseDto getAppSvcOtherInfoNurseDto(AppSvcOtherInfoNurseDto appSvcOtherInfoNurseDto,String prefix,
                                                                       HttpServletRequest request,boolean getDataByIndexNo, boolean getPageData, String otherInfoNurseId) {
         if (appSvcOtherInfoNurseDto == null){
-            return appSvcOtherInfoNurseDto;
+            appSvcOtherInfoNurseDto = new AppSvcOtherInfoNurseDto();
         }
         if (getDataByIndexNo) {
             AppSvcOtherInfoNurseDto svcOtherInfoNurseDto = getOtherInfoNurseById(appSvcOtherInfoNurseDto, otherInfoNurseId);
