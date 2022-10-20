@@ -168,6 +168,7 @@ public final class RfcHelper {
                 oldAppSvcRelatedInfoDtos.get(0).getAppSvcChargesPageDto());
         boolean changeServiceAutoFields = changeCharges || isChangeSvcInfoAutoFields(appSvcRelatedInfoDtos,
                 oldAppSvcRelatedInfoDtos, appEditSelectDto);
+        //SpecialService Information
         boolean changeSpecialServiceInformation=ischangeSpecialServiceInformation(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, nonAutoList);
         //other info
         boolean changeOtherInfo = isChangeAppSvcOtherInfoDto(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos);
@@ -177,9 +178,6 @@ public final class RfcHelper {
         boolean changeOutsourceFields = isChangeAppSvcOutsouredDto(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos);
         if (changeCharges){
             nonAutoList.add(HcsaConsts.STEP_CHARGES);
-        }
-        if (changeSpecialServiceInformation){
-            nonAutoList.add(HcsaConsts.STEP_SPECIAL_SERVICES_FORM);
         }
         if (changeOtherService || changeOtherInfo){
             nonAutoList.add(HcsaConsts.STEP_OTHER_INFORMATION);

@@ -134,40 +134,6 @@
                 });
             }
         });
-        /*$('div.weeklyContent').each(function (k, v) {
-            if ($("#errorMapIs").val() == 'error') {
-                $(v).find('.error-msg').on('DOMNodeInserted', function () {
-                    if ($(this).not(':empty')) {
-                        $(v).find('.isPartEdit').val(1);
-                        $('#isEditHiddenVal').val('1');
-                        $('a.businessEdit').trigger('click');
-                    }
-                });
-            }
-        });
-        $('div.pubHolDayContent').each(function (k, v) {
-            if ($("#errorMapIs").val() == 'error') {
-                $(v).find('.error-msg').on('DOMNodeInserted', function () {
-                    if ($(this).not(':empty')) {
-                        $(v).find('.isPartEdit').val(1);
-                        $('#isEditHiddenVal').val('1');
-                        $('a.businessEdit').trigger('click');
-                    }
-                });
-            }
-        });
-        $('div.eventContent').each(function (k, v) {
-            if ($("#errorMapIs").val() == 'error') {
-                $(v).find('.error-msg').on('DOMNodeInserted', function () {
-                    if ($(this).not(':empty')) {
-                        $(v).find('.isPartEdit').val(1);
-                        $('#isEditHiddenVal').val('1');
-                        $('a.businessEdit').trigger('click');
-                    }
-                });
-            }
-        });
-*/
     });
 
     $(document).ready(function () {

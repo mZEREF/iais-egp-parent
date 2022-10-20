@@ -1987,21 +1987,21 @@ public final class AppValidatorHelper {
                 if (!StringUtil.isEmpty(eventName) || startDate != null || endDate != null) {
                     boolean dateIsEmpty = false;
                     if (StringUtil.isEmpty(eventName)) {
-                        errorMap.put("onSiteEvent" + subfix + j, emptyErrMsg);
+                        errorMap.put(subfix + "onSiteEvent"+ j, emptyErrMsg);
                     } else if (eventName.length() > 100) {
-                        errorMap.put("onSiteEvent" + subfix + j, repLength("Event Name", "100"));
+                        errorMap.put(subfix + "onSiteEvent" + j, repLength("Event Name", "100"));
                     }
                     if (startDate == null) {
-                        errorMap.put("onSiteEventStart" + subfix + j, emptyErrMsg);
+                        errorMap.put(subfix + "onSiteEventStart" + j, emptyErrMsg);
                         dateIsEmpty = true;
                     }
                     if (endDate == null) {
-                        errorMap.put("onSiteEventEnd" + subfix + j, emptyErrMsg);
+                        errorMap.put(subfix + "onSiteEventEnd" + j, emptyErrMsg);
                         dateIsEmpty = true;
                     }
                     if (!dateIsEmpty) {
                         if (startDate.after(endDate)) {
-                            errorMap.put("onSiteEventDate" + subfix + j, MessageUtil.getMessageDesc("NEW_ERR0020"));
+                            errorMap.put(subfix + "onSiteEventDate" + j, MessageUtil.getMessageDesc("NEW_ERR0020"));
                         }
                     }
                 }
@@ -2009,7 +2009,6 @@ public final class AppValidatorHelper {
             }
         }
     }
-
     //ph
     private static void validatePh(AppSvcBusinessDto appSvcBusinessDto, String subfix, Map<String, String> errorMap) {
         List<OperationHoursReloadDto> phDtos = appSvcBusinessDto.getPhDtoList();
@@ -2017,10 +2016,10 @@ public final class AppValidatorHelper {
             int j = 0;
             for (OperationHoursReloadDto phDto : phDtos) {
                 Map<String, String> errNameMap = IaisCommonUtils.genNewHashMap();
-                errNameMap.put("select", "onSitePubHoliday" + subfix);
-                errNameMap.put("start", "onSitePhStart" + subfix);
-                errNameMap.put("end", "onSitePhEnd" + subfix);
-                errNameMap.put("time", "onSitePhTime" + subfix);
+                errNameMap.put("select", subfix+"onSitePubHoliday");
+                errNameMap.put("start", subfix + "onSitePhStart");
+                errNameMap.put("end", subfix + "onSitePhEnd");
+                errNameMap.put("time", subfix + "onSitePhTime");
                 doOperationHoursValidate(phDto, errorMap, errNameMap, j + "", false);
                 j++;
             }
@@ -2032,17 +2031,17 @@ public final class AppValidatorHelper {
         List<OperationHoursReloadDto> weeklyDtos = appSvcBusinessDto.getWeeklyDtoList();
         String emptyErrMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
         if (IaisCommonUtils.isEmpty(weeklyDtos)) {
-            errorMap.put("onSiteWeekly" + subfix + 0, emptyErrMsg);
-            errorMap.put("onSiteWeeklyStart" + subfix + 0, emptyErrMsg);
-            errorMap.put("onSiteWeeklyEnd" + subfix + 0, emptyErrMsg);
+            errorMap.put(subfix + "onSiteWeekly" + 0, emptyErrMsg);
+            errorMap.put(subfix + "onSiteWeeklyStart" + 0, emptyErrMsg);
+            errorMap.put(subfix +"onSiteWeeklyEnd" +  0, emptyErrMsg);
         } else {
             int j = 0;
             for (OperationHoursReloadDto weeklyDto : weeklyDtos) {
                 Map<String, String> errNameMap = IaisCommonUtils.genNewHashMap();
-                errNameMap.put("select", "onSiteWeekly" + subfix);
-                errNameMap.put("start", "onSiteWeeklyStart" + subfix);
-                errNameMap.put("end", "onSiteWeeklyEnd" + subfix);
-                errNameMap.put("time", "onSiteWeeklyTime" + subfix);
+                errNameMap.put("select", subfix + "onSiteWeekly");
+                errNameMap.put("start", subfix + "onSiteWeeklyStart");
+                errNameMap.put("end", subfix + "onSiteWeeklyEnd");
+                errNameMap.put("time", subfix + "onSiteWeeklyTime");
                 doOperationHoursValidate(weeklyDto, errorMap, errNameMap, j + "", true);
                 j++;
             }

@@ -3202,8 +3202,8 @@ public final class AppDataHelper {
                         //weekly
                         for (int j = 0; j < weeklyLength; j++) {
                             OperationHoursReloadDto weeklyDto = new OperationHoursReloadDto();
-                            String[] weeklyVal = ParamUtil.getStrings(request, "onSiteWeekly" + i + j);
-                            String allDay = ParamUtil.getString(request, "onSiteWeeklyAllDay" + i + j);
+                            String[] weeklyVal = ParamUtil.getStrings(request, i+"onSiteWeekly" + j);
+                            String allDay = ParamUtil.getString(request, i+"onSiteWeeklyAllDay" + j);
                             //reload
                             String weeklySelect = StringUtil.arrayToString(weeklyVal);
                             weeklyDto.setSelectVal(weeklySelect);
@@ -3221,14 +3221,14 @@ public final class AppDataHelper {
                                 weeklyDto.setEndToMM(null);
                                 weeklyDto.setEndTo(tim);
                             } else {
-                                String weeklyStartHH = ParamUtil.getString(request, "onSiteWeeklyStartHH" + i + j);
-                                String weeklyStartMM = ParamUtil.getString(request, "onSiteWeeklyStartMM" + i + j);
+                                String weeklyStartHH = ParamUtil.getString(request, i+"onSiteWeeklyStartHH" + j);
+                                String weeklyStartMM = ParamUtil.getString(request, i+"onSiteWeeklyStartMM" + j);
                                 int weeklyStartH = weeklyStartHH != null ? Integer.parseInt(weeklyStartHH) : 0;
                                 int weeklyStartM = weeklyStartMM != null ? Integer.parseInt(weeklyStartMM) : 0;
                                 Time timStart = Time.valueOf(LocalTime.of(weeklyStartH, weeklyStartM, 0));
 
-                                String weeklyEndHH = ParamUtil.getString(request, "onSiteWeeklyEndHH" + i + j);
-                                String weeklyEndMM = ParamUtil.getString(request, "onSiteWeeklyEndMM" + i + j);
+                                String weeklyEndHH = ParamUtil.getString(request, i+"onSiteWeeklyEndHH"+ j);
+                                String weeklyEndMM = ParamUtil.getString(request, i+"onSiteWeeklyEndMM"+ j);
                                 int weeklyEndH = weeklyEndHH != null ? Integer.parseInt(weeklyEndHH) : 0;
                                 int weeklyEndM = weeklyEndMM != null ? Integer.parseInt(weeklyEndMM) : 0;
                                 Time timEnd = Time.valueOf(LocalTime.of(weeklyEndH, weeklyEndM, 0));
@@ -3246,8 +3246,8 @@ public final class AppDataHelper {
                         //ph
                         for (int j = 0; j < phLength; j++) {
                             OperationHoursReloadDto phDto = new OperationHoursReloadDto();
-                            String[] phVal = ParamUtil.getStrings(request, "onSitePubHoliday" + i + j);
-                            String allDay = ParamUtil.getString(request, "onSitePhAllDay" + i + j);
+                            String[] phVal = ParamUtil.getStrings(request, i + "onSitePubHoliday" + j);
+                            String allDay = ParamUtil.getString(request, i + "onSitePhAllDay" + j);
                             //reload
                             String phSelect = StringUtil.arrayToString(phVal);
                             phDto.setSelectVal(phSelect);
@@ -3266,14 +3266,14 @@ public final class AppDataHelper {
                                 phDto.setEndTo(tim);
                                 phDtoList.add(phDto);
                             } else {
-                                String phStartHH = ParamUtil.getString(request, "onSitePhStartHH" + i + j);
-                                String phStartMM = ParamUtil.getString(request, "onSitePhStartMM" + i + j);
+                                String phStartHH = ParamUtil.getString(request, i + "onSitePhStartHH" + j);
+                                String phStartMM = ParamUtil.getString(request, i + "onSitePhStartMM" + j);
                                 int phStartH = phStartHH != null ? Integer.parseInt(phStartHH) : 0;
                                 int phStartM = phStartMM != null ? Integer.parseInt(phStartMM) : 0;
                                 Time timStart = Time.valueOf(LocalTime.of(phStartH, phStartM, 0));
 
-                                String phEndHH = ParamUtil.getString(request, "onSitePhEndHH" + i + j);
-                                String phEndMM = ParamUtil.getString(request, "onSitePhEndMM" + i + j);
+                                String phEndHH = ParamUtil.getString(request, i + "onSitePhEndHH" + j);
+                                String phEndMM = ParamUtil.getString(request, i + "onSitePhEndMM" + j);
                                 int phEndH = phEndHH != null ? Integer.parseInt(phEndHH) : 0;
                                 int phEndM = phEndMM != null ? Integer.parseInt(phEndMM) : 0;
                                 Time timEnd = Time.valueOf(LocalTime.of(phEndH, phEndM, 0));
@@ -3295,10 +3295,10 @@ public final class AppDataHelper {
                         //event
                         for (int j = 0; j < eventLength; j++) {
                             AppPremEventPeriodDto appPremEventPeriodDto = new AppPremEventPeriodDto();
-                            String eventName = ParamUtil.getString(request, "onSiteEvent" + i + j);
-                            String eventStartStr = ParamUtil.getString(request, "onSiteEventStart" + i + j);
+                            String eventName = ParamUtil.getString(request, i + "onSiteEvent" + j);
+                            String eventStartStr = ParamUtil.getString(request, i + "onSiteEventStart" + j);
                             Date eventStart = DateUtil.parseDate(eventStartStr, Formatter.DATE);
-                            String eventEndStr = ParamUtil.getString(request, "onSiteEventEnd" + i + j);
+                            String eventEndStr = ParamUtil.getString(request, i + "onSiteEventEnd" + j);
                             Date eventEnd = DateUtil.parseDate(eventEndStr, Formatter.DATE);
                             appPremEventPeriodDto.setEventName(eventName);
                             appPremEventPeriodDto.setStartDate(eventStart);
