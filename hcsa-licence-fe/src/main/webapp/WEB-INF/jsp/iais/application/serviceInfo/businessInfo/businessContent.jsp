@@ -44,7 +44,7 @@
                     <input type="hidden" class="businessIndexNo" name="businessIndexNo${status.index}" value="${businessDto.businessIndexNo}"/>
                     <input type="hidden" class="currService" name="currService${status.index}" value="${serviceCode}">
                     <div class="panel-body">
-                        <div class="panel-main-content">
+                        <div class="panel-main-content normal-label">
                             <iais:row cssClass="edit-content">
                                 <c:if test="${canEdit}">
                                     <div class="text-right app-font-size-16">

@@ -1,32 +1,5 @@
 <script>
 
-    function addWeekly(target){
-        var $target = $(target);
-        if (isEmptyNode($target)) {
-            return;
-        }
-        showWaiting();
-        var $tgt = $(target).find("div.weeklyDiv").last();
-        var src = $tgt.clone();
-        $tgt.after(src);
-
-        var $currContent = $(target).find("div.weeklyDiv").last();
-        $currContent.find('select.onSiteWeekly').next('.multi-select-container').remove();
-        clearFields($currContent);
-        refreshContent($currContent, $target.find('div.weeklyDiv').length - 1);
-        removeWeekly();
-        clickAllDay();
-        var length =  $target.find('div.weeklyDiv').length;
-        $target.find('input.weeklyLength').val(length);
-        if(length >= '${maxCount}'){
-            $target.find('.addWeeklyDiv').addClass('hidden');
-        }
-        $target.find('select.onSiteWeekly').each(function () {
-            $(this).multiSelect();
-        });
-        dismissWaiting();
-    }
-
     var removeWeekly = function () {
         $('.weeklyDel').unbind('click');
         $('.weeklyDel').click(function () {
@@ -47,32 +20,6 @@
         });
     }
 
-    function addPubHolDay(target){
-        var $target = $(target);
-        if (isEmptyNode($target)) {
-            return;
-        }
-        showWaiting();
-        var $tgt = $(target).find("div.pubHolidayDiv").last();
-        var src = $tgt.clone();
-        $tgt.after(src);
-        var $currContent = $(target).find("div.pubHolidayDiv").last();
-        $currContent.find('select.onSitePubHoliday').next('.multi-select-container').remove();
-        clearFields($currContent);
-        refreshContent($currContent, $target.find('div.pubHolidayDiv').length - 1);
-        removePh();
-        clickAllDay();
-        var length =  $target.find('div.pubHolidayDiv').length;
-        $target.find('input.phLength').val(length);
-        if(length >= '${maxCount}'){
-            $target.find('.addPhDiv').addClass('hidden');
-        }
-        $target.find('select.onSitePubHoliday').each(function () {
-            $(this).multiSelect();
-        });
-        dismissWaiting();
-    }
-
     var removePh = function () {
         $('.pubHolidayDel').unbind('click');
         $('.pubHolidayDel').click(function () {
@@ -91,34 +38,6 @@
                 $phContent.find('.addPhDiv').removeClass('hidden');
             }
         });
-    }
-
-    function addEvent (target) {
-        var $target = $(target);
-        if (isEmptyNode($target)) {
-            return;
-        }
-        showWaiting();
-        var $tgt = $(target).find("div.eventDiv").last();
-        var src = $tgt.clone();
-        $tgt.after(src);
-        var $currContent = $(target).find("div.eventDiv").last();
-        $currContent.find('.date_picker').datepicker({
-            format:"dd/mm/yyyy",
-            autoclose:true,
-            todayHighlight:true,
-            orientation:'bottom'
-        });
-        clearFields($currContent);
-        refreshContent($currContent, $target.find('div.eventDiv').length - 1);
-        removeEvent();
-        var length =  $target.find('div.eventDiv').length;
-        $target.find('input.eventLength').val(length);
-        console.log($target.find('input.eventLength').val());
-        if(length >= '${maxCount}'){
-            $target.find('.addEventDiv').addClass('hidden');
-        }
-        dismissWaiting();
     }
 
     var removeEvent = function () {

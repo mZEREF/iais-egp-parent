@@ -15,7 +15,7 @@
 
     <iais:row>
         <div class="col-md-12 col-xs-12">
-            <label class="control-label">Event</label>
+            <label class="control-label"><strong>Event</strong></label>
         </div>
     </iais:row>
 
@@ -59,10 +59,4 @@
             </iais:row>
         </div>
     </c:forEach>
-
-    <div class="form-group addEventDiv <c:if test="${eventList.size() >= maxCount}">hidden</c:if>">
-        <iais:value cssClass="col-xs-4 col-sm-4 col-md-4">
-            <a class="addEvent" style="text-decoration:none;">+ Add Event</a>
-        </iais:value>
-    </div>
 </div>

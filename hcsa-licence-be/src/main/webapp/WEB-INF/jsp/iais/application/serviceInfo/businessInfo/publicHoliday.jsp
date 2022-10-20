@@ -15,7 +15,7 @@
 
     <iais:row>
         <div class="col-md-12">
-            <label class="control-label">Public Holiday</label>
+            <label class="control-label"><strong>Public Holiday</strong></label>
         </div>
     </iais:row>
 
@@ -101,10 +101,4 @@
             </iais:row>
         </div>
     </c:forEach>
-
-    <div class="form-group addPhDiv <c:if test="${phList.size() >= maxCount}">hidden</c:if>">
-        <iais:value cssClass="col-xs-4 col-sm-4 col-md-4">
-            <a class="addPubHolDay" style="text-decoration:none;">+ Add</a>
-        </iais:value>
-    </div>
 </div>
