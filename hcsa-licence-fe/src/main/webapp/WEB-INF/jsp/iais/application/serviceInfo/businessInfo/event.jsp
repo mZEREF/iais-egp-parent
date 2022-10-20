@@ -15,7 +15,7 @@
 
     <iais:row>
         <div class="col-md-12 col-xs-12">
-            <label class="control-label">Event</label>
+            <label class="control-label"><strong>Event</strong></label>
         </div>
     </iais:row>
 

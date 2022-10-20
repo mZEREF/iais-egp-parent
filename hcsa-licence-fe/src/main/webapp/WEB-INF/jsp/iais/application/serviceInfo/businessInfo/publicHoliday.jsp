@@ -15,7 +15,7 @@
 
     <iais:row>
         <div class="col-md-12">
-            <label class="control-label">Public Holiday</label>
+            <label class="control-label"><strong>Public Holiday</strong></label>
         </div>
     </iais:row>
 
