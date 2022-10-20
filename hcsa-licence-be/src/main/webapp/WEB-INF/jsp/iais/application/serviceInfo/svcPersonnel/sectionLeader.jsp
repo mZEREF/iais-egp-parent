@@ -1,19 +1,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <c:set var="isRfi" value="${requestInformationConfig != null}"/>
-
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
 <input type="hidden" name="rfiObj" value="${isRFi ? '1' : '0'}"/>
 <input id="isEditHiddenVal" type="hidden" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
-
 <div class="row">
     <div class="form-group">
         <h4><iais:message key="NEW_ACK030"/></h4>
     </div>
     <div class="form-group">
         <div class="row control control-caption-horizontal">
-
-
             <div class="control-label col-md-5 col-xs-5">
                 <label  class="control-label control-set-font control-font-label">
                     <div class="app-title">
@@ -21,8 +17,6 @@
                     </div>
                 </label>
             </div>
-
-
             <div class="col-md-7 col-xs-7 text-right">
                 <c:if test="${AppSubmissionDto.needEditController }">
                     <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
