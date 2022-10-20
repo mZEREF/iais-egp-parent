@@ -156,6 +156,15 @@
             unDisableContent($currContent);
             $('#isEditHiddenVal').val('1');
             hideTag($currContent.find('.businessEdit'));
+            $("input.allDay").each(function (){
+                var $allDayDiv = $(this).closest('div.all-day-div');
+                if($(this).is(':checked')){
+                    disabeleForAllDay($allDayDiv);
+                }else{
+                    unDisableContent($allDayDiv.siblings('.start-div'));
+                    unDisableContent($allDayDiv.siblings('.end-div'));
+                }
+            })
         });
     }
 </script>
