@@ -81,6 +81,9 @@
                                                                 <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/medAlertContent.jsp"/>
                                                             </div>
                                                         </c:when>
+                                                        <c:when test="${currentStep == 'SVST017'}">
+                                                            <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/specialServicesForm/specialServicesForm.jsp"/>
+                                                        </c:when>
                                                         <c:when test="${currentStep == 'SVST005'}">
                                                             <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/document/document.jsp"/>
                                                         </c:when>
