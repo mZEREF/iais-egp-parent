@@ -125,8 +125,6 @@ public final class RfcHelper {
         List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtos = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<String> autoList = IaisCommonUtils.genNewArrayList();
         List<String> nonAutoList = IaisCommonUtils.genNewArrayList();
-        // key personnel
-        boolean changePersonnel = isChangeKeyPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, nonAutoList);
         int changeVehiclesFields = isChangeAppSvcVehicleDtos(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, autoList, nonAutoList);
         boolean changeVehicles = changeVehiclesFields != RfcConst.RFC_UNCHANGED;
         if (changeVehicles) {
@@ -144,7 +142,6 @@ public final class RfcHelper {
             appEditSelectDto.setChangeBusinessName(changeBusinessNonAutoFields);
             appEditSelectDto.setChangeBusinessAutoFields(changeBusinessAutoFields);
         }
-        boolean changeSectionLeader = isChangeAppSvcSectionLeadersViaSvcInfo(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos);
 //      Leader   add
         boolean sectionSendMessageNoAuto = isAddOrReplaceAppSvcSectionLeaders(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos,nonAutoList);
         boolean sectionSendMessageAuto = isRemoveAppSvcSectionLeaders(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos,autoList);
@@ -185,8 +182,6 @@ public final class RfcHelper {
         if (changeOutsourceFields){
             nonAutoList.add(HcsaConsts.STEP_OUTSOURCED_PROVIDERS);
         }
-        appEditSelectDto.setChangePersonnel(changePersonnel);
-        appEditSelectDto.setChangeSectionLeader(changeSectionLeader);
         appEditSelectDto.setChangeSpecialServiceInformation(changeSpecialServiceInformation);
         appEditSelectDto.setChangeOtherInfo(changeOtherInfo);
         appEditSelectDto.setChangeOtherInfoPerson(changeOtherInfoPerson);
@@ -529,6 +524,9 @@ public final class RfcHelper {
                 SvcPersonnelDto svcPersonnelDto = svcPersonnelDtoList.get(i);
                 if (!StringUtil.isEmpty(oldSvcPersonnelDtoList.get(i))) {
                     oldSvcPersonnelDto = oldSvcPersonnelDtoList.get(i);
+                }
+                if (StringUtil.isEmpty(svcPersonnelDto)) {
+                    svcPersonnelDto = new SvcPersonnelDto();
                 }
                 List<AppSvcPersonnelDto> arPractitionerList = svcPersonnelDto.getArPractitionerList();
                 List<AppSvcPersonnelDto> nurseList = svcPersonnelDto.getNurseList();
