@@ -1877,7 +1877,7 @@ public abstract class AppCommDelegator {
                                 autoList, nonAutoList));
                 // re-set change edit select dto
                 if (!appEditSelectDto.isChangeBusinessName() && !appEditSelectDto.isChangeVehicle()
-                        && !appEditSelectDto.isChangePersonnel() && !appEditSelectDto.isChangeSectionLeader()) {
+                        && !appEditSelectDto.isChangePersonnel()) {
                     appEditSelectDto.setServiceEdit(false);
                 }
             }
