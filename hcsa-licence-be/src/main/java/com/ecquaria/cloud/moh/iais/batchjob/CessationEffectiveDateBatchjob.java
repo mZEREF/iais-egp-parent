@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -34,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.service.OrganizationService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
+import com.ecquaria.cloud.moh.iais.service.client.EmailSmsClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
@@ -42,6 +44,7 @@ import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.util.Date;
@@ -79,6 +82,10 @@ public class CessationEffectiveDateBatchjob {
     protected OrganizationService organizationService;
     @Autowired
     private TaskOrganizationClient taskOrganizationClient;
+    @Value("${iais.email.sender}")
+    private String mailSender;
+    @Autowired
+    private EmailSmsClient emailSmsClient;
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("The CessationEffectiveDateBatchjob is start ..."));
     }
@@ -396,18 +403,24 @@ public class CessationEffectiveDateBatchjob {
                         }
                         emailMap1.put("ServiceName", svcName);
                         emailMap1.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
-                        EmailParam emailParam5 = new EmailParam();
-                        emailParam5.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_EMAIL_005_TOP_YF);
-                        emailParam5.setTemplateContent(emailMap1);
-                        emailParam5.setQueryCode(licenceNo);
-                        emailParam5.setReqRefNum(licenceNo);
-                        emailParam5.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-                        emailParam5.setRefId(licenceNo);
-                        emailParam5.setRecipientUserId(aso.getId());
-                        emailParam5.setSubject(msgTemplateDto.getSubject());
                         //email
-                        notificationHelper.sendNotification(emailParam5);
+                        EmailDto emailDto = new EmailDto();
+                        List<String> receiptEmail=IaisCommonUtils.genNewArrayList();
+                        receiptEmail.add(aso.getEmail());
+                        Set<String> set = IaisCommonUtils.genNewHashSet();
+                        set.addAll(receiptEmail);
+                        receiptEmail.clear();
+                        receiptEmail.addAll(set);
+                        emailDto.setReceipts(receiptEmail);
+                        String mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), emailMap1);
+                        emailDto.setContent(mesContext);
+                        emailDto.setSubject(msgTemplateDto.getSubject());
+                        emailDto.setSender(this.mailSender);
+                        emailDto.setClientQueryCode(licenceNo);
+                        emailDto.setReqRefNum(licenceNo);
+                        emailSmsClient.sendEmail(emailDto, null);
                     }
+
                 }
             } catch (Exception e) {
                 log.error(e.getMessage(), e);

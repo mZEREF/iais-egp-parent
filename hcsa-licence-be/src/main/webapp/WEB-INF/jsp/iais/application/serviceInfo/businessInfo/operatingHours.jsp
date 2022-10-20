@@ -11,7 +11,7 @@
             <label class="control-label"><strong>Weekly </strong><span class="mandatory">*</span></label>
         </div>
         <div class="col-md-3 col-xs-3 input-padding hidden-xs hidden-sm">
-            <label class="control-label"><strong>>Start</strong></label>
+            <label class="control-label"><strong>Start</strong></label>
         </div>
         <div class="col-md-3 col-xs-3 input-padding hidden-xs hidden-sm">
             <label class="control-label"><strong>End</strong></label>

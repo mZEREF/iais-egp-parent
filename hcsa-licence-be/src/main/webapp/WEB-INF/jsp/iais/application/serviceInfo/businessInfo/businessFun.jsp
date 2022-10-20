@@ -83,8 +83,7 @@
             unDisableContent($target.find('div.start-div'));
             unDisableContent($target.find('div.end-div'));
         }
-        var prefix=$target.closest('div.panel-group').index();
-        resetIndexNo($target, k,prefix);
+        resetIndex($target, k);
     }
 
     var disabeleForAllDay = function ($allDayDiv) {
@@ -93,77 +92,6 @@
 
         clearFields($allDayDiv.siblings('.end-div'));
         disableContent($allDayDiv.siblings('.end-div'));
-    }
-
-    function refreshIndex(targetSelector) {
-        var $target = getJqueryNode(targetSelector);
-        if (isEmptyNode($target)) {
-            return;
-        }
-        $target.each(function (k, v) {
-            var $ele = $(v);
-            var $selector;
-            if ($ele.is(':input')) {
-                $selector = $ele;
-            } else {
-                $selector = $ele.find(':input');
-            }
-            if ($selector.length == 0) {
-                return;
-            }
-            $selector.each(function () {
-                var prefix=$target.closest('div.panel-group').index();
-                resetIndexNo(this, k,prefix);
-            });
-        });
-    }
-
-    function resetIndexNo(targetTag, index, prefix) {
-        var $target = getJqueryNode(targetTag);
-        if (isEmptyNode($target) || $target.hasClass('not-refresh')) {
-            return;
-        }
-        var tag = $target[0].tagName.toLowerCase();
-        if ($target.is(':input')) {
-            var orgName = $target.attr('name');
-            var orgId = $target.attr('id');
-            if (isEmpty(orgName)) {
-                orgName = orgId;
-            }
-            if (isEmpty(orgName)) {
-                return;
-            }
-            if (isEmpty(prefix)) {
-                prefix = "";
-            }
-            var base = $target.data('base');
-            if (isEmpty(base)) {
-                var result;
-                if (isEmpty(prefix)) {
-                    prefix = "";
-                    result = /(.*\D+)/g.exec(orgName);
-                } else {
-                    result = /(\D+.*\D+)/g.exec(orgName);
-                }
-                base = !isEmpty(result) && result.length > 0 ? result[0] : orgName;
-            }
-            var newName =base + prefix  + index;
-            $target.prop('name', newName);
-            if (orgName == orgId || base == orgId || !isEmpty(orgId) && $('#' + orgId).length > 1) {
-                $target.prop('id', newName);
-            }
-            var $errorSpan = $target.closest('.form-group').find('span[name="iaisErrorMsg"][id="error_' + orgName + '"]');
-            if ($errorSpan.length > 0) {
-                $errorSpan.prop('id', 'error_' + newName);
-            }
-            if (tag == 'select') {
-                updateSelectTag($target);
-            }
-        } else {
-            $target.find(':input').each(function () {
-                resetIndexNo(this, index, prefix);
-            });
-        }
     }
 
 </script>
