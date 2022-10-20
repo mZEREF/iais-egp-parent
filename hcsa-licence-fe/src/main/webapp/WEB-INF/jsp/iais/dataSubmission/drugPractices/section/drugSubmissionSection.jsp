@@ -793,11 +793,5 @@
 
     function closeQuantityNotMatchModal() {
         $('#QUANTITY_NOT_MATCH').modal('hide');
-        var haveError = $('input[name="haveError"]').val();
-        var noChangeForRFC = $('input[name="noChangeForRFC"]').val();
-        if (haveError == "No" && noChangeForRFC != "1") {
-            $('input[name="action"]').val("confirm");
-            $('#nextBtn').click();
-        }
     }
 </script>
