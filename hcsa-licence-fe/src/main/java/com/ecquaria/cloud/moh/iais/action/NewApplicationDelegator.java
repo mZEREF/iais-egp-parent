@@ -69,6 +69,7 @@ import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
+import com.ecquaria.sz.commons.util.Calculator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -1069,25 +1070,29 @@ public class NewApplicationDelegator extends AppCommDelegator {
         log.info(StringUtil.changeForLog("The AppGrpNo: " + appSubmissionDto.getAppGrpNo() + "; payment method: "
                 + appSubmissionDto.getPaymentMethod() + "; the amount: " + appSubmissionDto.getAmount()
                 + " - " + appSubmissionDto.getAppGrpId()));
-        List<String> ids = new ArrayList<>();
+        Double totalAmount = 0.0;
         //68099
         List<AppSubmissionDto> ackPageAppSubmissionDto = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request,
                 ACK_APP_SUBMISSIONS);
         if (!IaisCommonUtils.isEmpty(ackPageAppSubmissionDto)) {
             for (AppSubmissionDto appSubmissionDto1 : ackPageAppSubmissionDto) {
                 if (!MiscUtil.doubleEquals(appSubmissionDto1.getAmount(), 0.0)) {
+                    totalAmount = Calculator.add(totalAmount, appSubmissionDto1.getAmount());
                     appSubmissionDto1.setPaymentMethod(payMethod);
-                } else {
-                    log.info(StringUtil.changeForLog(
-                            "--- " + appSubmissionDto1.getAppGrpNo() + " : " + appSubmissionDto1.getAppGrpId() + " ---"));
-                    ids.add(appSubmissionDto1.getAppGrpId());
-                    appSubmissionService.updatePayment(appSubmissionDto1, null);
                 }
             }
             ParamUtil.setSessionAttr(bpc.request, ACK_APP_SUBMISSIONS, (Serializable) ackPageAppSubmissionDto);
         }
-        Double totalAmount = appSubmissionDto.getAmount();
+        totalAmount = Calculator.add(totalAmount, appSubmissionDto.getAmount());
         if (MiscUtil.doubleEquals(totalAmount, 0.0)) {
+            List<String> ids = new ArrayList<>();
+            if (!IaisCommonUtils.isEmpty(ackPageAppSubmissionDto)) {
+                for (AppSubmissionDto appSubmissionDto1 : ackPageAppSubmissionDto) {
+                    appSubmissionService.updatePayment(appSubmissionDto1, null);
+                    ids.add(appSubmissionDto1.getAppGrpId());
+                }
+                ParamUtil.setSessionAttr(bpc.request, ACK_APP_SUBMISSIONS, (Serializable) ackPageAppSubmissionDto);
+            }
             if (StringUtil.isNotEmpty(appGrpId) && !ids.contains(appGrpId)) {
                 appSubmissionService.updatePayment(appSubmissionDto, null);
                 if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
@@ -1138,14 +1143,29 @@ public class NewApplicationDelegator extends AppCommDelegator {
             } catch (Exception e) {
                 log.error(StringUtil.changeForLog("send email error ...." + e.getMessage()), e);
             }
-            ApplicationGroupDto appGrp = new ApplicationGroupDto();
-            appGrp.setId(appGrpId);
-            appGrp.setPmtStatus(serviceConfigService.giroPaymentXmlUpdateByGrpNo(appSubmissionDto).getPmtStatus());
-            String giroTranNo = appSubmissionDto.getGiroTranNo();
-            appGrp.setPmtRefNo(giroTranNo);
-            appGrp.setPayMethod(payMethod);
-            serviceConfigService.updateAppGrpPmtStatus(appGrp, appSubmissionDto.getGiroAcctNum());
-            serviceConfigService.updatePaymentStatus(appGrp);
+            String giroTranNo = null;
+            List<String> ids = new ArrayList<>();
+            if (!IaisCommonUtils.isEmpty(ackPageAppSubmissionDto)) {
+                for (AppSubmissionDto appSubmissionDto1 : ackPageAppSubmissionDto) {
+                    appSubmissionService.updatePayment(appSubmissionDto1, null);
+                    ids.add(appSubmissionDto1.getAppGrpId());
+                    if (StringUtil.isEmpty(giroTranNo)) {
+                        giroTranNo = appSubmissionDto1.getGiroTranNo();
+                    }
+                }
+                ParamUtil.setSessionAttr(bpc.request, ACK_APP_SUBMISSIONS, (Serializable) ackPageAppSubmissionDto);
+            }
+            if (StringUtil.isNotEmpty(appGrpId) && !ids.contains(appGrpId)) {
+                appSubmissionService.updatePayment(appSubmissionDto, null);
+                if (StringUtil.isEmpty(giroTranNo)) {
+                    giroTranNo = appSubmissionDto.getGiroTranNo();
+                }
+                if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
+                    LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,
+                            AppConsts.SESSION_ATTR_LOGIN_USER);
+                    appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto, loginContext.getUserName());
+                }
+            }
             ParamUtil.setRequestAttr(bpc.request, "PmtStatus", ApplicationConsts.PAYMENT_METHOD_NAME_GIRO);
             ParamUtil.setSessionAttr(bpc.request, "txnRefNo", giroTranNo);
             // change

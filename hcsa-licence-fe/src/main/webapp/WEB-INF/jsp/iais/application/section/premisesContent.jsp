@@ -145,12 +145,8 @@
                 <c:set var="premTypeCss" value="${premTypeLen > 2 ? 'col-md-2' : 'col-md-3'}"/>
                 <c:forEach var="premType" items="${premisesType}">
                     <div class="col-xs-12 ${premTypeCss} form-check">
-                        <c:if test="${appGrpPremisesDto.premisesType!=premType}">
-                            <input class="form-check-input premTypeRadio"  type="radio" name="premType${status.index}" value="${premType}" aria-invalid="false">
-                        </c:if>
-                        <c:if test="${appGrpPremisesDto.premisesType==premType}">
-                            <input class="form-check-input premTypeRadio"  type="radio" name="premType${status.index}" checked="checked" value="${premType}" aria-invalid="false">
-                        </c:if>
+                        <input class="form-check-input ${StringUtil.toLowerCase(premType)} premTypeRadio"  type="radio" name="premType${status.index}" value="${premType}"
+                               ${appGrpPremisesDto.premisesType==premType ? 'checked="checked"' : ''}  aria-invalid="false">
                         <label class="form-check-label" >
                             <span class="check-circle"></span>
                             <c:choose>
