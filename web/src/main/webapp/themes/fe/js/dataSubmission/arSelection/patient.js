@@ -83,6 +83,7 @@ function validatePatient(isPatHasId, identityNo) {
         },
         type: 'POST',
         success: function (data) {
+            $("#lastStatus").val(data.lastStatus)
             if (data.needShowError) {
                 $('input[name="existedPatient"]').val('N').trigger('change');
                 // TODO
@@ -197,21 +198,22 @@ function showCycleRadioRow() {
 
 function showNextStageRow() {
     const cycleRadioVal = $("input[name='cycleRadio']:checked").val();
-    const hasCycleVal = $('input[name="hasCycle"]').val();
     const nextStageRow = $('#nextStageRow');
     const nextOffStageRow = $('#nextOffStageRow');
-    if (cycleRadioVal === 'newCycle' && hasCycleVal === 'Y') {
-        nextOffStageRow.show();
-        nextStageRow.hide();
-    } else if (cycleRadioVal === 'newCycle' || hasCycleVal === 'N') {
+    const lastStatus = $('input[name="lastStatus"]').val();
+    if (cycleRadioVal === 'newCycle' && (lastStatus === 'DS003' || lastStatus==='DS005' ||lastStatus==='DS006'|| lastStatus==='DS007' || lastStatus==='DS016')) {
         nextStageRow.show();
         nextOffStageRow.hide();
+    } else if (cycleRadioVal === 'newCycle') {
+        nextOffStageRow.show();
+        nextStageRow.hide();
     } else {
         nextOffStageRow.hide();
         nextStageRow.hide();
         clearFields(nextStageRow);
         clearFields(nextOffStageRow);
     }
+
 }
 
 function showPreviousPatientSection() {

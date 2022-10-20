@@ -303,6 +303,7 @@ public class ArAjaxController {
         ParamUtil.setSessionAttr(request, "patientInfoDto", patientInfoDto);
 
         result.put("cycles", dbDto.getDsCycleRadioDtos());
+        result.put("lastStatus",dbDto.getLastStatus());
         log.debug(StringUtil.changeForLog("the AR patient info validation end ...."));
         return result;
     }

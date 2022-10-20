@@ -394,6 +394,7 @@ public abstract class CommonDelegator {
                 arSuperDataSubmission.getHciCode(), arSuperDataSubmission.getCycleDto().getId());
         selectionDto.setCycle(cycleType);
         selectionDto.setNavCurrentCycle(navCurrentCycle);
+        selectionDto.setLastStatus(cycle.getStatus());
         arSuperDataSubmission.setSelectionDto(selectionDto);
         ParamUtil.setRequestAttr(bpc.request, "stageList", arDataSubmissionService.genAvailableStageList(bpc.request, true));
     }

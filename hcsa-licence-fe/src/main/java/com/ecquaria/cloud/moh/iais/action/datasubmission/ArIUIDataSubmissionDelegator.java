@@ -162,11 +162,13 @@ public class ArIUIDataSubmissionDelegator {
                 String nextStage = ParamUtil.getString(request, "nextStage");
                 String nextNunCycleStage = ParamUtil.getString(request,"nextNunCycleStage");
                 String cycleRadio = ParamUtil.getString(request, CYCLE_SELECT);
+                String lastStatus = ParamUtil.getString(request, "lastStatus");
+                boolean start = DataSubmissionHelper.startNewCycle(lastStatus);
                 ParamUtil.setRequestAttr(request, CYCLE_SELECT, cycleRadio);
                 String hasCycle = ParamUtil.getString(request, HAS_CYCLE);
                 currentSuper.getDataSubmissionDto().setCycleStage(nextStage);
-                startNewCycle = "N".equals(hasCycle) && cycleRadio == null;
-                startNunCycle = "Y".equals(hasCycle) && "newCycle".equals(cycleRadio);
+                startNewCycle = start==true;
+                startNunCycle = start==false && "newCycle".equals(cycleRadio);
                 if (startNewCycle && StringUtil.isEmpty(nextStage)) {
                     errorMap.put("nextStage", "GENERAL_ERR0006");
                 }

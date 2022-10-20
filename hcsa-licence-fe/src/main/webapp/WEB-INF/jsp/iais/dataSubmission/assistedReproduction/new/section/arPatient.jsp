@@ -6,6 +6,7 @@
 <c:set var="husband" value="${patientInfoDto.husband}"/>
 <input type="hidden" name="existedPatient" value="${existedPatient}">
 <input type="hidden" name="hasCycle" value="${arSuperDataSubmissionDto.selectionDto.dsCycleRadioDtos.size()>0?'Y':'N'}">
+<input type='hidden' id="lastStatus" name='lastStatus'>
 <iais:row cssClass="form-check-gp">
     <p class="form-check-title">Does the patient have a NRIC/FIN number?</p>
     <div class="form-check form-check-inline">
