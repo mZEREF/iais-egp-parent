@@ -51,7 +51,6 @@
                 <p class="font-18 bold">${appSvcOtherInfoDto.premAddress}</p>
             </div>
         </iais:row>
-        ============================${appSvcOtherInfoDto}============================
         <c:choose>
             <c:when test="${(currSvcInfoDto.serviceCode == AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE) || (currSvcInfoDto.serviceCode == AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)}">
                 <input type="hidden" name="otherInfoServiceCode" value="${currSvcInfoDto.serviceCode}">
