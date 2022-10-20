@@ -156,7 +156,7 @@
     </c:forEach>
 </div>
 <%@include file="/WEB-INF/jsp/iais/application/common/personFun.jsp" %>
-<%@include file="/WEB-INF/jsp/iais/application/common/prsLoad.jsp" %>
+<%--<%@include file="/WEB-INF/jsp/iais/application/common/prsLoad.jsp" %>--%>
 <script>
     $(document).ready(function () {
 
