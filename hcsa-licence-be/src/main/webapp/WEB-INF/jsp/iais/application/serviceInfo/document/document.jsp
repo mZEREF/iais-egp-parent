@@ -99,13 +99,13 @@
 <script>
     $(document).ready(function () {
         if (${AppSubmissionDto.needEditController && !isClickEdit}) {
-            disabledPage();
-            $('.file-upload').addClass('hidden');
-            $('.delFileBtn').addClass('hidden');
-            $('.reUploadFileBtn').addClass('hidden');
+            disableContent('.doc-svc-content');
+            hideTag('.file-upload');
+            hideTag('.delFileBtn');
+            hideTag('.reUploadFileBtn');
         }
 
-        doEdit();
+        doEditDocEvent();
         if($("#errorMapIs").val()=='error'){
             $('#edit').trigger('click');
         }
@@ -145,16 +145,14 @@
         $(this).closest('.fileContent').find('input.delFlag').val('Y');
     });
 
-    var doEdit = function () {
+    var doEditDocEvent = function () {
         $('#edit').click(function () {
             $('#edit-content').addClass('hidden');
             $('#isEditHiddenVal').val('1');
-            $('input[type="file"]').prop('disabled', false);
-            $('.existFile').removeClass('hidden');
-            $('.existFile').removeClass('existFile');
-            $('.file-upload').removeClass('hidden');
-            $('.delFileBtn').removeClass('hidden');
-            $('.reUploadFileBtn').removeClass('hidden');
+            disableContent('.doc-svc-content');
+            showTag('.file-upload');
+            showTag('.delFileBtn');
+            showTag('.reUploadFileBtn');
         });
     }
 
@@ -169,7 +167,6 @@
             $(this).closest('.document-upload-list').find('.error-msg').html('');
             dismissWaiting();
         }
-
     });
 
     function getFileTag(fileAppendId) {
@@ -182,32 +179,5 @@
         }
         return $file;
     }
-
-   /* function reUploadFileFeAjax(fileAppendId, index, idForm) {
-        $("#reloadIndex").val(index);
-        $("#fileAppendId").val(fileAppendId);
-        $("#uploadFormId").val(idForm);
-        //$("#selectedFile").click();
-        getFileTag(fileAppendId).click();
-    }*/
-
-    /*function validateFileSizeMaxOrEmpty(maxSize) {
-        var $file = getFileTag($("#fileAppendId").val());
-        var fileV = $file.val();
-        var file = $file.get(0).files[0];
-        if (fileV == null || fileV == "" || file == null || file == undefined) {
-            return "E";
-        }
-        var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
-        //alert('fileSize:'+fileSize);
-        //alert('maxSize:'+maxSize);
-        fileSize = parseInt(fileSize);
-        if (fileSize >= maxSize) {
-            $file.after($file.clone().val(""));
-            $file.eq('0').remove();
-            return "N";
-        }
-        return "Y";
-    }*/
 
 </script>

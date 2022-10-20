@@ -106,7 +106,7 @@
             hideTag('.reUploadFileBtn');
         }
 
-        doEdit();
+        doEditDocEvent();
         if($("#errorMapIs").val()=='error'){
             $('#edit').trigger('click');
         }
@@ -146,7 +146,7 @@
         $(this).closest('.fileContent').find('input.delFlag').val('Y');
     });
 
-    var doEdit = function () {
+    var doEditDocEvent = function () {
         $('#edit').click(function () {
             $('#edit-content').addClass('hidden');
             $('#isEditHiddenVal').val('1');
