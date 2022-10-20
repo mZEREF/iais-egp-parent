@@ -1217,9 +1217,11 @@
                     <c:when test="${hcsaServiceConfigDto.specHcsaServiceSubServicePageDtoMap[premTypeMap.key].hcsaServiceSubServiceErrorsDtos.size() == 0}">
                       <c:if test="${!isView}">
                         <div class="add col-xs-12 col-md-12"  style="margin-top: 20px ;margin-bottom: 20px">
-                          <div class="col-xs-12 col-md-5" style="padding-right: 20%;margin-left:${hcsaServiceSubServiceErrorsDto.marginLeft}px" >
-                            <iais:select name="${premTypeMap.key}-SVTP003-subServiceCodes" options="specHcsaServiceOptions" firstOption="Please Select"
+                          <div class="col-xs-12 col-md-5" style="padding-right: 10%;margin-left:${hcsaServiceSubServiceErrorsDto.marginLeft}px" >
+                            <div>
+                              <iais:select name="${premTypeMap.key}-SVTP003-subServiceCodes" options="specHcsaServiceOptions" firstOption="Please Select"
                                          value=""/>
+                              </div>
                             <span class="error-msg" ></span>
                           </div>
                           <div class="value">
@@ -1231,6 +1233,10 @@
                           <div  class="col-xs-12 col-md-2" >
                             <a class="btn  btn-secondary view" <c:if test="${!isView}"> onclick="outdent(this)" </c:if> >outdent</a>
                           </div>
+                          <div class="col-xs-12 col-md-2 up">
+                            <a class="btn  btn-secondary up view" <c:if test="${!isView}"> onclick="up(this)" </c:if> style="margin-bottom: 10%;width:60%;">UP</a>
+                            <a class="btn  btn-secondary down view" <c:if test="${!isView}"> onclick="down(this)" </c:if> style="margin-bottom: 10%;width:60%;">DOWN</a>
+                          </div>
                           <div class="col-xs-12 col-md-1">
                             <a class="btn  btn-secondary view" <c:if test="${!isView}"> onclick="removeThis(this)" </c:if> >-</a>
                           </div>
@@ -1240,9 +1246,11 @@
                     <c:otherwise>
                       <c:forEach items="${hcsaServiceConfigDto.specHcsaServiceSubServicePageDtoMap[premTypeMap.key].hcsaServiceSubServiceErrorsDtos}" var = "hcsaServiceSubServiceErrorsDto">
                         <div class="add col-xs-12 col-md-12"  style="margin-top: 20px ;margin-bottom: 20px">
-                          <div class="col-xs-12 col-md-5" style="padding-right: 20%;margin-left:${hcsaServiceSubServiceErrorsDto.marginLeft}px" >
-                            <iais:select name="${premTypeMap.key}-SVTP003-subServiceCodes" options="specHcsaServiceOptions" firstOption="Please Select"
+                          <div class="col-xs-12 col-md-4" style="padding-right: 10%;margin-left:${hcsaServiceSubServiceErrorsDto.marginLeft}px" >
+                            <div>
+                              <iais:select name="${premTypeMap.key}-SVTP003-subServiceCodes" options="specHcsaServiceOptions" firstOption="Please Select"
                                          value="${hcsaServiceSubServiceErrorsDto.subServiceCode}"/>
+                              </div>
                             <span class="error-msg" >${hcsaServiceSubServiceErrorsDto.errorMsg}</span>
                           </div>
                           <div class="value">
@@ -1253,6 +1261,10 @@
                           </div>
                           <div  class="col-xs-12 col-md-2" >
                             <a class="btn  btn-secondary view" <c:if test="${!isView}"> onclick="outdent(this)" </c:if> >outdent</a>
+                          </div>
+                          <div class="col-xs-12 col-md-2 up">
+                            <a class="btn  btn-secondary up view" <c:if test="${!isView}"> onclick="up(this)" </c:if> style="margin-bottom: 10%;width:60%;">UP</a>
+                            <a class="btn  btn-secondary down view" <c:if test="${!isView}"> onclick="down(this)" </c:if> style="margin-bottom: 10%;width:60%;">DOWN</a>
                           </div>
                           <div class="col-xs-12 col-md-1">
                             <a class="btn  btn-secondary view" <c:if test="${!isView}"> onclick="removeThis(this)" </c:if> >-</a>
@@ -1265,9 +1277,11 @@
                 <c:otherwise>
                   <c:if test="${!isView}">
                     <div class="add col-xs-12 col-md-12"  style="margin-top: 20px ;margin-bottom: 20px">
-                      <div class="col-xs-12 col-md-5" style="padding-right: 20%;margin-left:${hcsaServiceSubServiceErrorsDto.marginLeft}px" >
-                        <iais:select name="${premTypeMap.key}-SVTP003-subServiceCodes" options="specHcsaServiceOptions" firstOption="Please Select"
+                      <div class="col-xs-12 col-md-4" style="padding-right: 10%;margin-left:${hcsaServiceSubServiceErrorsDto.marginLeft}px" >
+                        <div>
+                          <iais:select name="${premTypeMap.key}-SVTP003-subServiceCodes" options="specHcsaServiceOptions" firstOption="Please Select"
                                      value=""/>
+                          </div>
                         <span class="error-msg" ></span>
                       </div>
                       <div class="value">
@@ -1278,6 +1292,10 @@
                       </div>
                       <div  class="col-xs-12 col-md-2" >
                         <a class="btn  btn-secondary view" <c:if test="${!isView}"> onclick="outdent(this)" </c:if> >outdent</a>
+                      </div>
+                      <div class="col-xs-12 col-md-2 up">
+                        <a class="btn  btn-secondary up view" <c:if test="${!isView}"> onclick="up(this)" </c:if> style="margin-bottom: 10%;width:60%;">UP</a>
+                        <a class="btn  btn-secondary down view" <c:if test="${!isView}"> onclick="down(this)" </c:if> style="margin-bottom: 10%;width:60%;">DOWN</a>
                       </div>
                       <div class="col-xs-12 col-md-1">
                         <a class="btn  btn-secondary view" <c:if test="${!isView}"> onclick="removeThis(this)" </c:if> >-</a>
@@ -1311,9 +1329,11 @@
                     <c:when test="${hcsaServiceConfigDto.otherHcsaServiceSubServicePageDtoMap[premTypeMap.key].hcsaServiceSubServiceErrorsDtos.size() == 0}">
                       <c:if test="${!isView}">
                         <div class="add col-xs-12 col-md-12"  style="margin-top: 20px ;margin-bottom: 20px">
-                          <div class="col-xs-12 col-md-5" style="padding-right: 20%;margin-left:${hcsaServiceSubServiceErrorsDto.marginLeft}px" >
+                          <div class="col-xs-12 col-md-4" style="padding-right: 10%;margin-left:${hcsaServiceSubServiceErrorsDto.marginLeft}px" >
+                            <div>
                             <iais:select name="${premTypeMap.key}-SVTP005-subServiceCodes" options="otherHcsaServiceOptions" firstOption="Please Select"
                                          value=""/>
+                              </div>
                             <span class="error-msg" ></span>
                           </div>
                           <div class="value">
@@ -1325,6 +1345,10 @@
                           <div  class="col-xs-12 col-md-2" >
                             <a class="btn  btn-secondary view" <c:if test="${!isView}">  onclick="outdent(this)" </c:if> >outdent</a>
                           </div>
+                          <div class="col-xs-12 col-md-2 up">
+                            <a class="btn  btn-secondary up view" <c:if test="${!isView}"> onclick="up(this)" </c:if> style="margin-bottom: 10%;width:60%;">UP</a>
+                            <a class="btn  btn-secondary down view" <c:if test="${!isView}"> onclick="down(this)" </c:if> style="margin-bottom: 10%;width:60%;">DOWN</a>
+                          </div>
                           <div class="col-xs-12 col-md-1">
                             <a class="btn  btn-secondary view"  <c:if test="${!isView}"> onclick="removeThis(this)" </c:if> >-</a>
                           </div>
@@ -1334,9 +1358,11 @@
                     <c:otherwise>
                       <c:forEach items="${hcsaServiceConfigDto.otherHcsaServiceSubServicePageDtoMap[premTypeMap.key].hcsaServiceSubServiceErrorsDtos}" var = "hcsaServiceSubServiceErrorsDto">
                         <div class="add col-xs-12 col-md-12"  style="margin-top: 20px ;margin-bottom: 20px">
-                          <div class="col-xs-12 col-md-5" style="padding-right: 20%;margin-left:${hcsaServiceSubServiceErrorsDto.marginLeft}px" >
+                          <div class="col-xs-12 col-md-4" style="padding-right: 10%;margin-left:${hcsaServiceSubServiceErrorsDto.marginLeft}px" >
+                            <div>
                             <iais:select name="${premTypeMap.key}-SVTP005-subServiceCodes" options="otherHcsaServiceOptions" firstOption="Please Select"
                                          value="${hcsaServiceSubServiceErrorsDto.subServiceCode}"/>
+                            </div>
                             <span class="error-msg" >${hcsaServiceSubServiceErrorsDto.errorMsg}</span>
                           </div>
                           <div class="value">
@@ -1348,6 +1374,10 @@
                           <div  class="col-xs-12 col-md-2" >
                             <a class="btn  btn-secondary view" <c:if test="${!isView}">  onclick="outdent(this)" </c:if> >outdent</a>
                           </div>
+                          <div class="col-xs-12 col-md-2 up">
+                            <a class="btn  btn-secondary up view" <c:if test="${!isView}"> onclick="up(this)" </c:if> style="margin-bottom: 10%;width:60%;">UP</a>
+                            <a class="btn  btn-secondary down view" <c:if test="${!isView}"> onclick="down(this)" </c:if> style="margin-bottom: 10%;width:60%;">DOWN</a>
+                          </div>
                           <div class="col-xs-12 col-md-1">
                             <a class="btn  btn-secondary view"  <c:if test="${!isView}"> onclick="removeThis(this)" </c:if> >-</a>
                           </div>
@@ -1358,20 +1388,26 @@
                 </c:when>
                 <c:otherwise>
                   <c:if test="${!isView}">
-                    <div class="add col-xs-12 col-md-12"  style="margin-top: 20px ;margin-bottom: 20px">
-                      <div class="col-xs-12 col-md-5" style="padding-right: 20%;margin-left:${hcsaServiceSubServiceErrorsDto.marginLeft}px" >
+                    <div class="add col-xs-12 col-md-12" style="margin-top: 20px ;margin-bottom: 20px" >
+                      <div class="col-xs-12 col-md-4" style="padding-right: 10%;margin-left:${hcsaServiceSubServiceErrorsDto.marginLeft}px" >
+                        <div>
                         <iais:select name="${premTypeMap.key}-SVTP005-subServiceCodes" options="otherHcsaServiceOptions" firstOption="Please Select"
                                      value=""/>
+                        </div>
                         <span class="error-msg" ></span>
                       </div>
                       <div class="value">
                         <input type="text" value="0" name="${premTypeMap.key}-SVTP005-levels" style="display: none">
                       </div>
-                      <div  class="col-xs-12 col-md-2" style="padding-left: 3%;" >
+                      <div  class="col-xs-12 col-md-2"  >
                         <a class="btn  btn-secondary  view" <c:if test="${!isView}"> onclick="indents(this)" </c:if>  >indent</a>
                       </div>
                       <div  class="col-xs-12 col-md-2" >
                         <a class="btn  btn-secondary view" <c:if test="${!isView}">  onclick="outdent(this)" </c:if> >outdent</a>
+                      </div>
+                      <div class="col-xs-12 col-md-2 up">
+                        <a class="btn  btn-secondary up view" <c:if test="${!isView}"> onclick="up(this)" </c:if> style="margin-bottom: 10%;width:60%;">UP</a>
+                        <a class="btn  btn-secondary down view" <c:if test="${!isView}"> onclick="down(this)" </c:if> style="margin-bottom: 10%;width:60%;">DOWN</a>
                       </div>
                       <div class="col-xs-12 col-md-1">
                         <a class="btn  btn-secondary view"  <c:if test="${!isView}"> onclick="removeThis(this)" </c:if> >-</a>
@@ -1639,7 +1675,7 @@
             'success':function (data) {
                 if('<%=AppConsts.AJAX_RES_CODE_SUCCESS%>' == data.resCode){
                     $(obj).closest("div").prev("div").after("<div class=\"add col-xs-12 col-md-12\"  style=\"margin-top: 20px ;margin-bottom: 20px\">\n" +
-                        "              <div class=\"col-xs-12 col-md-5\" style=\"padding-right: 20%;\" >\n" + data.resultJson +
+                        "              <div class=\"col-xs-12 col-md-4\" style=\"padding-right: 10%;\" >\n" + data.resultJson +
                         "              </div>\n" +
                         "              <div class=\"value\">\n" +
                         "                <input type=\"text\" value=\"0\" name=\""+levelName+"\" style=\"display: none\">\n" +
@@ -1650,6 +1686,10 @@
                         "              <div  class=\"col-xs-12 col-md-2\" >\n" +
                         "                <a class=\"btn  btn-secondary view\"  onclick=\"outdent(this)\" >outdent</a>\n" +
                         "              </div>\n" +
+                        "              <div class=\"col-xs-12 col-md-2 up\">\n" +
+                        "                 <a class=\"btn  btn-secondary up view\" onclick=\"up(this)\" style=\"margin-bottom: 10%;width:60%;\">UP</a>\n" +
+                        "                 <a class=\"btn  btn-secondary down view\" onclick=\"down(this)\" style=\"margin-bottom: 10%;width:60%;\">DOWN</a>\n" +
+                        "              </div>"+
                         "              <div class=\"col-xs-12 col-md-1\">\n" +
                         "                <a class=\"btn  btn-secondary view\"  onclick=\"removeThis(this)\" >-</a>\n" +
                         "              </div>\n" +
@@ -1670,30 +1710,59 @@
     }
 
     function indents(obj) {
-        let serviceDropdown = $(obj).closest('div.add').children("div.col-md-5");
+        let serviceDropdown = $(obj).closest('div.add').children("div.col-md-4");
         var level = $(obj).closest('div.add').children("div.value").children();
         var levelValue = parseInt($(level).val());
         console.log(levelValue);
         if(levelValue <2){
             var length = 60 + 60*levelValue;
-            $(serviceDropdown).attr("style","padding-right: 20%;margin-left:"+length+"px");
+            $(serviceDropdown).attr("style","padding-right: 10%;margin-left:"+length+"px");
             $(level).attr("value",levelValue+1);
         }
     }
 
     function outdent(obj) {
-        var serviceDropdown = $(obj).closest('div.add').children("div.col-md-5");
+        var serviceDropdown = $(obj).closest('div.add').children("div.col-md-4");
         var level = $(obj).closest('div.add').children("div.value").children();
         var levelValue = parseInt($(level).val());
         console.log(levelValue);
         if(levelValue >0){
             levelValue = levelValue-1;
             var length =  60*levelValue;
-            $(serviceDropdown).attr("style","padding-right: 20%;margin-left:"+length+"px");
+            $(serviceDropdown).attr("style","padding-right: 10%;margin-left:"+length+"px");
             $(level).attr("value",levelValue);
 
         }
     }
+
+    function up(obj) {
+
+        let preVal = $(obj).closest('div.add').prev('div.add').children("div.col-md-4").children("div").children("div.nice-select").children("ul").children("li.selected").attr('data-value');
+        let currentVal = $(obj).closest('div.add').children("div.col-md-4").children("div").children("div.nice-select").children("ul").children("li.selected").attr('data-value');
+
+        console.log(preVal);
+        console.log(currentVal);
+
+        if("undefined" !=typeof preVal){
+            console.log('up');
+            fillValue($(obj).closest('div.add').prev('div.add').children("div.col-md-4").children("div").children("select"),currentVal);
+            fillValue($(obj).closest('div.add').children("div.col-md-4").children("div").children("select"),preVal);
+        }
+    }
+
+    function down(obj) {
+
+        let currentVal = $(obj).closest('div.add').children("div.col-md-4").children("div").children("div.nice-select").children("ul").children("li.selected").attr('data-value');
+        let nextVal = $(obj).closest('div.add').next('div.add').children("div.col-md-4").children("div").children("div.nice-select").children("ul").children("li.selected").attr('data-value');
+        console.log(currentVal);
+        console.log(nextVal);
+        if("undefined" !=typeof nextVal){
+            console.log('down');
+            fillValue($(obj).closest('div.add').children("div.col-md-4").children("div").children("select"),nextVal);
+            fillValue($(obj).closest('div.add').next('div.add').children("div.col-md-4").children("div").children("select"),currentVal);
+        }
+    }
+
     $('#NumberDocument').keyup(function () {
         serviceDocpersonnel(false);
     });
