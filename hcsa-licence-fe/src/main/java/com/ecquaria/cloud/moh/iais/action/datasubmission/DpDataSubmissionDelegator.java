@@ -163,23 +163,18 @@ public class DpDataSubmissionDelegator {
             }
             String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
             log.info(StringUtil.changeForLog("Action Type: " + actionValue));
-            if (StringUtil.isEmpty(actionValue)) {
-                DpSuperDataSubmissionDto dataSubmissionDraft = dpDataSubmissionService.getDpSuperDataSubmissionDtoDraftByConds(
-                        orgId, submissionType, svcName, hciCode, userId);
-                if (dataSubmissionDraft != null) {
-                    ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
-                    actionType = "back";
-                }
-            } else if ("resume".equals(actionValue)) {
-                dpSuperDataSubmissionDto = dpDataSubmissionService.getDpSuperDataSubmissionDtoDraftByConds(
-                        orgId, submissionType, svcName, hciCode, userId);
-                if (dpSuperDataSubmissionDto == null) {
-                    log.warn("Can't resume data!");
+            if (!StringUtil.isEmpty(actionValue)) {
+                if ("resume".equals(actionValue)) {
+                    dpSuperDataSubmissionDto = dpDataSubmissionService.getDpSuperDataSubmissionDtoDraftByConds(
+                            orgId, submissionType, svcName, hciCode, userId);
+                    if (dpSuperDataSubmissionDto == null) {
+                        log.warn("Can't resume data!");
+                        dpSuperDataSubmissionDto = new DpSuperDataSubmissionDto();
+                    }
+                } else if ("delete".equals(actionValue)) {
+                    dpDataSubmissionService.deleteDpSuperDataSubmissionDtoDraftByConds(orgId, submissionType, hciCode);
                     dpSuperDataSubmissionDto = new DpSuperDataSubmissionDto();
                 }
-            } else if ("delete".equals(actionValue)) {
-                dpDataSubmissionService.deleteDpSuperDataSubmissionDtoDraftByConds(orgId, submissionType, hciCode);
-                dpSuperDataSubmissionDto = new DpSuperDataSubmissionDto();
             }
             dpSuperDataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_NEW);
             dpSuperDataSubmissionDto.setOrgId(orgId);
@@ -236,10 +231,10 @@ public class DpDataSubmissionDelegator {
                     orgId = loginContext.getOrgId();
                     userId = loginContext.getUserId();
                 }
-                if (dpDataSubmissionService.getDpSuperDataSubmissionDtoRfcDraftByConds(
-                        orgId, dpSuperDataSubmissionDto.getSubmissionType(), dpSuperDataSubmissionDto.getSvcName(), dpSuperDataSubmissionDto.getHciCode(), dataSubmissionDto.getId(), userId) != null) {
-                    ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
-                }
+//                if (dpDataSubmissionService.getDpSuperDataSubmissionDtoRfcDraftByConds(
+//                        orgId, dpSuperDataSubmissionDto.getSubmissionType(), dpSuperDataSubmissionDto.getSvcName(), dpSuperDataSubmissionDto.getHciCode(), dataSubmissionDto.getId(), userId) != null) {
+//                    ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
+//                }
             }
         }
         DataSubmissionHelper.setCurrentDpDataSubmission(dpSuperDataSubmissionDto,bpc.request);

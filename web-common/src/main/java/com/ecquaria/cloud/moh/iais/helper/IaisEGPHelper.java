@@ -979,7 +979,8 @@ public final class IaisEGPHelper extends EGPHelper {
     public static List<String> getFeRoles(List<String> data) {
         List<String> roles = IaisCommonUtils.genNewArrayList();
         roles.add(RoleConsts.USER_ROLE_ORG_USER);
-        if (data != null && data.isEmpty()) {
+        String dsEnableFlag = ConfigHelper.getString("iais.ds.enable.flag", AppConsts.YES);
+        if ((data != null && data.isEmpty()) || !AppConsts.YES.equals(dsEnableFlag)) {
             return roles;
         }
         // services & DS centers

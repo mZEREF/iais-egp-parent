@@ -14,7 +14,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DrugSubmissionDto;
@@ -541,15 +540,15 @@ public class DataSubmissionInboxDelegator {
 			String crudType = ParamUtil.getString(request, "crud_type");
 
 			boolean hasDrafts = false;
-			if(!StringUtils.hasLength(crudType) || !"delete".equals(crudType)){
-				DataSubmissionDraftDto draftDto = licenceInboxClient.getDataSubmissionDraftDtoBySubmissionId(inboxDataSubmissionQueryDto.getId()).getEntity();
-				if (draftDto != null) {
-					hasDrafts = true;
-					ParamUtil.setRequestAttr(request, "hasDrafts", Boolean.TRUE);
-					ParamUtil.setRequestAttr(request,"crud_action_type","page");
-					ParamUtil.setRequestAttr(request,"draftSubmissionNo",draftDto.getDraftNo());
-				}
-			}
+//			if(!StringUtils.hasLength(crudType) || !"delete".equals(crudType)){
+//				DataSubmissionDraftDto draftDto = licenceInboxClient.getDataSubmissionDraftDtoBySubmissionId(inboxDataSubmissionQueryDto.getId()).getEntity();
+//				if (draftDto != null) {
+//					hasDrafts = true;
+//					ParamUtil.setRequestAttr(request, "hasDrafts", Boolean.TRUE);
+//					ParamUtil.setRequestAttr(request,"crud_action_type","page");
+//					ParamUtil.setRequestAttr(request,"draftSubmissionNo",draftDto.getDraftNo());
+//				}
+//			}
 			if ("delete".equals(crudType)) {
 				licenceInboxClient.deleteDraftBySubmissionId(inboxDataSubmissionQueryDto.getId());
 			}
