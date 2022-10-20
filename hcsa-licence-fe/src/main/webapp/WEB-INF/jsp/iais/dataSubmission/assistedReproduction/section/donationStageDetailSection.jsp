@@ -17,65 +17,12 @@
                     </span>
                 </h3>
                 <iais:row>
-                    <label class="col-xs-4 col-md-4 control-label">What was Donated? <span class="mandatory">*</span>
-                        <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
-                           title="<span style='font-size: 1.5rem;'>${MessageUtil.getMessageDesc("DS_MSG013")}</span>"
-                           style="z-index: 10"
-                           data-original-title="">i</a>
-                    </label>
-                    <div class="col-md-7" style="padding-right: 0;padding-left: 0;">
-                        <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
-                            <div class="form-check">
-                                <input class="form-check-input"
-                                       type="radio"
-                                       name="donatedType"
-                                       value="DONTY001"
-                                       id="donatedType1"
-                                       <c:if test="${ arSuperDataSubmissionDto.donationStageDto.donatedType =='DONTY001' }">checked</c:if>
-                                       aria-invalid="false">
-                                <label class="form-check-label"
-                                       for="donatedType1"><span
-                                        class="check-circle"></span><iais:code code="DONTY001"/></label>
-                            </div>
-                        </iais:value>
-                        <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio"
-                                       name="donatedType" value="DONTY002" id="donatedType2"
-                                       <c:if test="${arSuperDataSubmissionDto.donationStageDto.donatedType == 'DONTY002'}">checked</c:if>
-                                       aria-invalid="false">
-                                <label class="form-check-label"
-                                       for="donatedType2"><span
-                                        class="check-circle"></span><iais:code code="DONTY002"/></label>
-                            </div>
-                        </iais:value>
-                        <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
-                            <div class="form-check">
-                                <input class="form-check-input"
-                                       type="radio"
-                                       name="donatedType"
-                                       value="DONTY003"
-                                       id="donatedType3"
-                                       <c:if test="${ arSuperDataSubmissionDto.donationStageDto.donatedType =='DONTY003' }">checked</c:if>
-                                       aria-invalid="false">
-                                <label class="form-check-label"
-                                       for="donatedType3"><span
-                                        class="check-circle"></span><iais:code code="DONTY003"/></label>
-                            </div>
-                        </iais:value>
-                        <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio"
-                                       name="donatedType" value="DONTY004" id="donatedType4"
-                                       <c:if test="${arSuperDataSubmissionDto.donationStageDto.donatedType == 'DONTY004'}">checked</c:if>
-                                       aria-invalid="false">
-                                <label class="form-check-label"
-                                       for="donatedType4"><span
-                                        class="check-circle"></span><iais:code code="DONTY004"/></label>
-                            </div>
+                    <iais:field width="6" cssClass="col-md-6" value="What was Donated?" info="${MessageUtil.getMessageDesc('DS_MSG013')}"  mandatory="true"/>
+                        <iais:value width="6" cssClass="col-md-6">
+                            <iais:select name="sampleType" id="sampleType" firstOption="Please Select" codeCategory="CATE_ID_DONATED_TYPE"
+                                         value="${arSuperDataSubmissionDto.donationStageDto.donatedType}"/>
                         </iais:value>
                         <span class="error-msg" name="iaisErrorMsg" id="error_donatedType" style="padding-right: 15px;padding-left: 15px;"></span>
-                    </div>
                 </iais:row>
                 <iais:row>
                     <iais:field width="6" cssClass="col-md-6" value="Which AR Centre was Gamete(s)/Embryo(s) Donated to?" id="donatedCentreField" mandatory="true"/>
