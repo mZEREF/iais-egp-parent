@@ -1667,6 +1667,7 @@ public abstract class AppCommDelegator {
             amendmentFeeDto.setAdditionOrRemovalSpecialisedServices(Boolean.TRUE);
         }
         ParamUtil.setSessionAttr(bpc.request, "FeeDetail", null);
+        amendmentFeeDto.setServiceCode(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceCode());
         FeeDto feeDto = configCommService.getGroupAmendAmount(amendmentFeeDto);
         Double amount = feeDto.getTotal();
         if(feeDto.getFeeDetail()!=null){
@@ -1748,7 +1749,9 @@ public abstract class AppCommDelegator {
             }
             // reSet amount
             double otherAmount = 0.0D;
-            FeeDto premiseFee = configCommService.getGroupAmendAmount(getAmendmentFeeDto(changeSelectDto, isCharity));
+            AmendmentFeeDto amendmentFeeDto1 =getAmendmentFeeDto(changeSelectDto, isCharity);
+            amendmentFeeDto1.setServiceCode(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceCode());
+            FeeDto premiseFee = configCommService.getGroupAmendAmount(amendmentFeeDto1);
             if (premiseFee != null && premiseFee.getTotal() != null) {
                 otherAmount = premiseFee.getTotal();
             }
@@ -1897,7 +1900,9 @@ public abstract class AppCommDelegator {
                 autoAppSubmissionDto.setAppGrpPremisesDtoList(oldAppSubmissionDto.getAppGrpPremisesDtoList());
             }
             autoGroupNo = getRfcGroupNo(autoGroupNo);
-            FeeDto autoFee = configCommService.getGroupAmendAmount(getAmendmentFeeDto(autoChangeSelectDto, isCharity));
+            AmendmentFeeDto amendmentFeeDto1 =getAmendmentFeeDto(autoChangeSelectDto, isCharity);
+            amendmentFeeDto1.setServiceCode(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceCode());
+            FeeDto autoFee = configCommService.getGroupAmendAmount(amendmentFeeDto1);
             Double autoAmount = autoFee.getTotal();
             if (licenceDto.getMigrated() == 1 && IaisEGPHelper.isActiveMigrated()) {
                 autoAmount = 0.0;
