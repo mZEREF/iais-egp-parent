@@ -874,19 +874,28 @@ public final class RfcHelper {
         boolean result = false;
         List<AppSvcPrincipalOfficersDto> keyPersonnelList = IaisCommonUtils.genNewArrayList();
         appSvcSpecialServiceInfoDtoList.forEach((item) -> keyPersonnelList.addAll(item.getAppSvcCgoDtoList()));
-        List<AppSvcPrincipalOfficersDto> oldKkeyPersonnelList = IaisCommonUtils.genNewArrayList();
+        List<AppSvcPrincipalOfficersDto> oldKeyPersonnelList = IaisCommonUtils.genNewArrayList();
         appSvcSpecialServiceInfoDtoList.forEach((item) -> keyPersonnelList.addAll(item.getAppSvcCgoDtoList()));
-        boolean changeKeyPersonnel = isChangeKeyPersonnel(keyPersonnelList, oldKkeyPersonnelList, false);
+        boolean changeKeyPersonnel=false;
+        if (IaisCommonUtils.isNotEmpty(keyPersonnelList)&&IaisCommonUtils.isNotEmpty(oldKeyPersonnelList)){
+            changeKeyPersonnel=isChangeKeyPersonnel(keyPersonnelList, oldKeyPersonnelList, false);
+        }
         List<AppSvcPersonnelDto> personnelList = IaisCommonUtils.genNewArrayList();
         appSvcSpecialServiceInfoDtoList.forEach((item) -> personnelList.addAll(item.getSpecialPersonnelDtoList()));
         List<AppSvcPersonnelDto> oldPersonnelList = IaisCommonUtils.genNewArrayList();
         appSvcSpecialServiceInfoDtoList.forEach((item) -> oldPersonnelList.addAll(item.getSpecialPersonnelDtoList()));
-        boolean changePersonal = isChangeServicePersonnels(personnelList, oldPersonnelList);
+        boolean changePersonal=false;
+        if (IaisCommonUtils.isNotEmpty(personnelList)&&IaisCommonUtils.isNotEmpty(oldPersonnelList)){
+            changePersonal=isChangeServicePersonnels(personnelList, oldPersonnelList);
+        }
         List<AppSvcSuplmFormDto> appSvcSuplmFormList = IaisCommonUtils.genNewArrayList();
         appSvcSpecialServiceInfoDtoList.forEach((item) -> appSvcSuplmFormList.addAll(item.getAppSvcSuplmFormDtoList()));
         List<AppSvcSuplmFormDto> oldAppSvcSuplmFormList = IaisCommonUtils.genNewArrayList();
         appSvcSpecialServiceInfoDtoList.forEach((item) -> oldAppSvcSuplmFormList.addAll(item.getAppSvcSuplmFormDtoList()));
-        boolean changeSupplementaryForm = compareSupplementaryForm(appSvcSuplmFormList, oldAppSvcSuplmFormList);
+        boolean changeSupplementaryForm = false;
+        if (IaisCommonUtils.isNotEmpty(appSvcSuplmFormList)&&IaisCommonUtils.isNotEmpty(oldAppSvcSuplmFormList)){
+            changeSupplementaryForm = compareSupplementaryForm(appSvcSuplmFormList, oldAppSvcSuplmFormList);
+        }
         if (changeKeyPersonnel || changePersonal || changeSupplementaryForm) {
             nonAutoList.add(HcsaConsts.STEP_SPECIAL_SERVICES_FORM);
             return true;
@@ -1426,7 +1435,7 @@ public final class RfcHelper {
             oldAppSvcBusinessOperationHoursList.addAll(v.getPhDtoList());
 
         });
-        List<OperationHoursReloadDto> o = PageDataCopyUtil.copyOperationHoursReloadDto(appSvcBusinessOperationHoursList);
+        List<OperationHoursReloadDto> o = PageDataCopyUtil.copyOperationHoursReloadDto(oldAppSvcBusinessOperationHoursList);
         if (!n.equals(o)) {
             isChange = true;
         }
