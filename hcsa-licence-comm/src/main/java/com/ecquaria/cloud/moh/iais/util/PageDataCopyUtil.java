@@ -425,13 +425,10 @@ public class PageDataCopyUtil {
     }
 
 
-    public static List<AppSvcOtherInfoTopPersonDto> copyAppSvcOtherInfoPerson(List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtoList, List<String> autoList) {
+    public static List<AppSvcOtherInfoTopPersonDto> copyAppSvcOtherInfoPerson(List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtoList) {
         if (IaisCommonUtils.isEmpty(appSvcOtherInfoTopPersonDtoList)) {
             return IaisCommonUtils.genNewArrayList();
         }
-        appSvcOtherInfoTopPersonDtoList.stream()
-                .forEach((item) -> autoList.add(item.getPsnType()));
-
         List<AppSvcOtherInfoTopPersonDto> appSvcOtherInfoTopPersonDtos = appSvcOtherInfoTopPersonDtoList.stream()
                 .map(dto -> MiscUtil.transferEntityDto(dto, AppSvcOtherInfoTopPersonDto.class))
                 .collect(Collectors.toList());
