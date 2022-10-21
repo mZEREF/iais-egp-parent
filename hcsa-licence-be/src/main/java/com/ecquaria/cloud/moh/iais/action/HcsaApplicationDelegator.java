@@ -2535,7 +2535,7 @@ public class HcsaApplicationDelegator {
         broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);
 
         //aso email for appeal history
-        if(applicationType.equals(ApplicationConsts.APPLICATION_TYPE_APPEAL)&&processDecision.equals(ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL)){
+        if(applicationType.equals(ApplicationConsts.APPLICATION_TYPE_APPEAL)&&ApplicationConsts.PROCESSING_DECISION_ASO_SEND_EMAIL.equals(processDecision)){
             AppPremiseMiscDto appPremiseMiscDto=applicationViewDto.getPremiseMiscDto();
             if(appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO)
                     ||appPremiseMiscDto.getReason().equals(ApplicationConsts.APPEAL_REASON_APPLICATION_REJECTION)
@@ -2652,7 +2652,7 @@ public class HcsaApplicationDelegator {
                 if (ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING.equals(appStatus) && !StringUtil.isEmpty(newTaskDto.getWkGrpId())) {
                     setInspLeadsInRecommendation(newTaskDto, newTaskDto.getWkGrpId(), IaisEGPHelper.getCurrentAuditTrailDto());
                 }
-            }else if(processDecision.equals(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY)){
+            }else if(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY.equals(processDecision)){
                 String aoWorkGroupId = null;
                 String aoUserId = null;
                 String lrSelect = ParamUtil.getRequestString(bpc.request, "lrSelect");
