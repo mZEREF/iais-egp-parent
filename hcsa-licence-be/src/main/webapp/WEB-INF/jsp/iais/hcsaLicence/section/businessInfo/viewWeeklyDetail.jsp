@@ -7,7 +7,7 @@
         </tr>
         </thead>
         <tr>
-            <td class="col-xs-6">
+            <td class="col-xs-4">
                 <div class="col-xs-12 row">
                     <div class="newVal" attr="${weeklyDto.selectValList}">
                         <p>

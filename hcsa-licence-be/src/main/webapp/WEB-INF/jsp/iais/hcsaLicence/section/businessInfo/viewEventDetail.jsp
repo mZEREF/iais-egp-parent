@@ -14,7 +14,7 @@
             </tr>
         </c:if>
         <tr>
-            <td class="col-xs-6">
+            <td class="col-xs-4">
                 <div class="col-xs-12 row">
                     <div class="newVal" attr="${eventDto.eventName}">
                         <c:out value="${eventDto.eventName}"/>
@@ -26,7 +26,7 @@
                     </div>
                 </div>
             </td>
-            <td class="col-xs-6">
+            <td class="col-xs-8">
                 <div class="col-xs-4">
                     <div class="col-xs-12 row">
                         <div class="newVal" attr="${eventDto.startDateStr}">

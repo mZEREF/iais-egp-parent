@@ -1517,34 +1517,11 @@ public abstract class AppCommDelegator {
             ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.ERROR_APP, appError);
             return;
         }
-        AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
-        appSubmissionRequestInformationDto.setAppGrpStatus(checkMap.get(HcsaAppConst.STATUS_GRP));
-        appSubmissionRequestInformationDto.setRfiStatus(checkMap.get(HcsaAppConst.STATUS_APP));
-        Integer maxFileIndex = (Integer) ParamUtil.getSessionAttr(bpc.request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR);
-        if (maxFileIndex == null) {
-            maxFileIndex = 0;
-        }
-        appSubmissionDto.setMaxFileIndex(maxFileIndex);
         //oldAppSubmissionDtos
         AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(bpc.request);
-        /*StringBuilder stringBuilder = new StringBuilder(10);
-        stringBuilder.append(appSubmissionDto);
-        String str = stringBuilder.toString();
-        log.info(StringUtil.changeForLog("appSubmissionDto:" + str));
-        stringBuilder.setLength(0);
-        stringBuilder.append(oldAppSubmissionDto);
-        str = stringBuilder.toString();
-        log.info(StringUtil.changeForLog("oldAppSubmissionDto:" + str));*/
-        Map<String, String> doComChangeMap = AppValidatorHelper.doComChange(appSubmissionDto, oldAppSubmissionDto);
-        if (!doComChangeMap.isEmpty()) {
-            initErrorAction(ACTION_PREVIEW, doComChangeMap, appSubmissionDto, bpc.request);
-            ParamUtil.setRequestAttr(bpc.request, COND_TYPE_RFI, "N");
-            return;
-        }
-        log.info("doComChange is ok ...");
-        Map<String, String> map = AppValidatorHelper.doPreviewAndSumbit(bpc.request);
-        if (!map.isEmpty()) {
-            initErrorAction(ACTION_PREVIEW, map, appSubmissionDto, bpc.request);
+        Map<String, String> errorMap = AppValidatorHelper.doValidateRfi(appSubmissionDto, oldAppSubmissionDto, bpc.request);
+        if (!errorMap.isEmpty()) {
+            initErrorAction(ACTION_PREVIEW, errorMap, appSubmissionDto, bpc.request);
             ParamUtil.setRequestAttr(bpc.request, COND_TYPE_RFI, "N");
             return;
         }
@@ -1558,16 +1535,16 @@ public abstract class AppCommDelegator {
             ParamUtil.setRequestAttr(bpc.request, COND_TYPE_RFI, "N");
             return;
         }
-        //ApplicationHelper.reSetAdditionalFields(appSubmissionDto, oldAppSubmissionDto);
-        appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        oldAppSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
+        appSubmissionRequestInformationDto.setAppGrpStatus(checkMap.get(HcsaAppConst.STATUS_GRP));
+        appSubmissionRequestInformationDto.setRfiStatus(checkMap.get(HcsaAppConst.STATUS_APP));
         String appType = appSubmissionDto.getAppType();
         if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)
                 || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
             appSubmissionDto.setAppDeclarationDocDtos(oldAppSubmissionDto.getAppDeclarationDocDtos());
             appSubmissionDto.setAppDeclarationMessageDto(oldAppSubmissionDto.getAppDeclarationMessageDto());
         }
-
+        RfcHelper.beforeSubmit(appSubmissionDto, null, appSubmissionDto.getAppGrpNo(), appType, bpc.request);
         if (ApplicationHelper.isFrontend()) {
             String msgId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
             appSubmissionDto.setRfiMsgId(msgId);
@@ -1576,11 +1553,11 @@ public abstract class AppCommDelegator {
         appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldAppSubmissionDto);
         appSubmissionRequestInformationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 
-
         appSubmissionDto = submitRequestInformation(appSubmissionRequestInformationDto, appType);
 
         if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
             List<AppSubmissionDto> appSubmissionDtos = new ArrayList<>(1);
+            appSubmissionDto.setAmount(0D);
             appSubmissionDto.setAmountStr("N/A");
             appSubmissionDtos.add(appSubmissionDto);
             ParamUtil.setSessionAttr(bpc.request, ACK_APP_SUBMISSIONS, (Serializable) appSubmissionDtos);
