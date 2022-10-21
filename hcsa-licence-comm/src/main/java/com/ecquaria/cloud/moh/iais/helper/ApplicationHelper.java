@@ -3610,6 +3610,9 @@ public final class ApplicationHelper {
     }
 
     public static AppSubmissionDto toSlim(AppSubmissionDto appSubmissionDto) {
+        if (appSubmissionDto == null) {
+            return null;
+        }
         AppSubmissionDto newDto = CopyUtil.copyMutableObject(appSubmissionDto);
         newDto.setFeeInfoDtos(null);
         newDto.setOldRenewAppSubmissionDto(null);

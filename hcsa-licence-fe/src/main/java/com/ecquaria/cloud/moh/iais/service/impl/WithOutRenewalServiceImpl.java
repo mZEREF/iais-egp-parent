@@ -433,6 +433,9 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
     @Override
     public List<AppSubmissionDto> saveAppSubmissionList(List<AppSubmissionDto> appSubmissionDtoList, String eventRefNo,
             BaseProcessClass bpc) {
+        if (IaisCommonUtils.isEmpty(appSubmissionDtoList)) {
+            return appSubmissionDtoList;
+        }
         // save application
         List<AppSubmissionDto> newAppSubmissionList = appSubmissionService.saveAppsForRequestForGoupAndAppChangeByList(
                 appSubmissionDtoList);
@@ -441,7 +444,9 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
         AppSubmissionListDto autoAppSubmissionListDto = new AppSubmissionListDto();
         autoAppSubmissionListDto.setAuditTrailDto(AuditTrailHelper.getCurrentAuditTrailDto());
         autoAppSubmissionListDto.setEventRefNo(eventRefNo);
-        autoAppSubmissionListDto.setAppSubmissionDtos(ApplicationHelper.toSlim(newAppSubmissionList, ApplicationHelper::toSlim));
+        List<AppSubmissionDto> slimList = IaisCommonUtils.genNewArrayList(newAppSubmissionList.size());
+        newAppSubmissionList.forEach(dto -> slimList.add(ApplicationHelper.toSlim(dto)));
+        autoAppSubmissionListDto.setAppSubmissionDtos(slimList);
         eventBusHelper.submitAsyncRequest(autoAppSubmissionListDto, appCommService.getSeqId(), EventBusConsts.SERVICE_NAME_APPSUBMIT,
                 EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT, eventRefNo, bpc.process);
         return newAppSubmissionList;

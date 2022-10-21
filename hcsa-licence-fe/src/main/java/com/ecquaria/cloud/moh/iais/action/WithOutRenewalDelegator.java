@@ -1180,8 +1180,8 @@ public class WithOutRenewalDelegator {
 
         firstSubmissionDto.setFeeInfoDtos(renewalAmount.getFeeInfoDtos());
 
-        List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
-        appSubmissionDtoList.addAll(appSubmissionDtos);
+        List<AppSubmissionDto> nonAutoAppSubmissionDtoList = IaisCommonUtils.genNewArrayList();
+        nonAutoAppSubmissionDtoList.addAll(appSubmissionDtos);
         boolean needSetOtherEff = isSingle && IaisCommonUtils.isNotEmpty(noAutoAppSubmissionDtos);
         if (needSetOtherEff) {
             Date effectiveDate = MiscUtil.addDays(oldAppSubmissionDto.getLicExpiryDate(), 1);
@@ -1192,7 +1192,7 @@ public class WithOutRenewalDelegator {
                 setRfcSubInfo(firstSubmissionDto, appSubmissionDto, isSingle);
             }
         }
-        appSubmissionDtoList.addAll(noAutoAppSubmissionDtos);
+        nonAutoAppSubmissionDtoList.addAll(noAutoAppSubmissionDtos);
 
 //        AppSubmissionListDto appSubmissionListDto = new AppSubmissionListDto();
 //        String submissionId = generateIdClient.getSeqId().getEntity();
@@ -1226,10 +1226,10 @@ public class WithOutRenewalDelegator {
             appGrpStatus = ApplicationConsts.APPLICATION_GROUP_STATUS_PENDING_AUTO;
         }
 
-        for (AppSubmissionDto appSubmissionDto : appSubmissionDtoList) {
+        for (AppSubmissionDto appSubmissionDto : nonAutoAppSubmissionDtoList) {
             appSubmissionDto.setAppGrpStatus(appGrpStatus);
         }
-        List<AppSubmissionDto> newAppSubmissionList = outRenewalService.saveAppSubmissionList(appSubmissionDtoList,
+        List<AppSubmissionDto> newAppSubmissionList = outRenewalService.saveAppSubmissionList(nonAutoAppSubmissionDtoList,
                 eventRefNo, bpc);
         renewAppSubmissionDtos.addAll(newAppSubmissionList);
         String notAutoGroupId = newAppSubmissionList.get(0).getAppGrpId();
@@ -1241,6 +1241,7 @@ public class WithOutRenewalDelegator {
                     firstSubmissionDto, renewAppSubmissionDtos);
         }
         ParamUtil.setRequestAttr(request, "renewAppSubmissionDtos", renewAppSubmissionDtos);
+        appSubmissionDtos.forEach(dto -> dto.setAppGrpId(notAutoGroupId));
         ParamUtil.setSessionAttr(request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR, renewDto);
 
         //go page3

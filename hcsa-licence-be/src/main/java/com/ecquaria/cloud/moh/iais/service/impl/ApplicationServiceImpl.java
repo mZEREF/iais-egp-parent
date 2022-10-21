@@ -54,6 +54,7 @@ import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -1523,6 +1524,9 @@ public class ApplicationServiceImpl implements ApplicationService {
         AppSubmissionDto appSubmissionDto = appSubmissionRequestInformationDto.getAppSubmissionDto();
         // for call back - EventbusCallBackDelegate#callback -> ${link this#updateTasks}
         appSubmissionRequestInformationDto.setEventRefNo(appSubmissionDto.getAppGrpId());
+        appSubmissionRequestInformationDto.setAppSubmissionDto(ApplicationHelper.toSlim(appSubmissionDto));
+        appSubmissionRequestInformationDto.setOldAppSubmissionDto(
+                ApplicationHelper.toSlim(appSubmissionRequestInformationDto.getOldAppSubmissionDto()));
         eventBusHelper.submitAsyncRequest(appSubmissionRequestInformationDto, generateIdClient.getSeqId().getEntity(),
                 EventBusConsts.SERVICE_NAME_APPSUBMIT, EventBusConsts.OPERATION_APP_SUBMIT_BE,
                 appSubmissionRequestInformationDto.getEventRefNo(), "Submit BE RFI Application",

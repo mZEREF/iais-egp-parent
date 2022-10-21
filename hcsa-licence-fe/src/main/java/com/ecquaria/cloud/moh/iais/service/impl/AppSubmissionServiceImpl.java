@@ -618,12 +618,15 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     public AppSubmissionDto submitRequestRfcRenewInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto,
             Process process) {
         appSubmissionRequestInformationDto.setEventRefNo(UUID.randomUUID().toString());
+        AppSubmissionDto appSubmissionDto = appSubmissionRequestInformationDto.getAppSubmissionDto();
+        appSubmissionRequestInformationDto.setAppSubmissionDto(ApplicationHelper.toSlim(appSubmissionDto));
+        appSubmissionRequestInformationDto.setOldAppSubmissionDto(
+                ApplicationHelper.toSlim(appSubmissionRequestInformationDto.getOldAppSubmissionDto()));
         eventBusHelper.submitAsyncRequest(appSubmissionRequestInformationDto,
                 generateIdClient.getSeqId().getEntity(),
                 EventBusConsts.SERVICE_NAME_APPSUBMIT, EventBusConsts.OPERATION_REQUEST_RFC_RENEW_INFORMATION_SUBMIT,
                 appSubmissionRequestInformationDto.getEventRefNo(), "Submit RFC Renew Application",
                 appSubmissionRequestInformationDto.getAppSubmissionDto().getAppGrpId());
-        AppSubmissionDto appSubmissionDto = appSubmissionRequestInformationDto.getAppSubmissionDto();
         return appSubmissionDto;
     }
 
@@ -1448,6 +1451,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     @Override
     public void updateApplicationsStatus(String appGroupId, String stuts) {
+        log.info(StringUtil.changeForLog("appGroupId: " + appGroupId));
+        if (StringUtil.isEmpty(appGroupId)) {
+            return;
+        }
         List<ApplicationDto> applicationDtos = listApplicationByGroupId(appGroupId);
         for (ApplicationDto application : applicationDtos) {
             application.setStatus(stuts);
