@@ -138,6 +138,7 @@
                     </iais:value>
                 </iais:row>
                </c:forEach>
+<%--                <%@include file="../common/donorInventoryTable.jsp" %>--%>
             </div>
         </div>
     </div>
