@@ -174,21 +174,6 @@ public class DonationStageDelegator extends CommonDelegator{
                 donationStageDto.setTrainingNum(trainingNum);
                 totalNum+=trainingNum;
             }
-//            try {
-//                String trainingNumString=ParamUtil.getString(request, "trainingNum");
-//                donationStageDto.setTrainingNumStr(trainingNumString);
-//                if(StringUtil.isEmpty(trainingNumString)){
-//                    donationStageDto.setTrainingNum(null);
-//                }else {
-//                    trainingNum = ParamUtil.getInt(request, "trainingNum");
-//                    donationStageDto.setTrainingNum(trainingNum);
-//                    totalNum+=trainingNum;
-//                }
-//            }catch (Exception e){
-//                log.error("no int");
-//                        isInt=false;
-//                donationStageDto.setTrainingNum(null);
-//            }
         }
         String donatedForTreatment=ParamUtil.getString(request,"donatedForTreatment");
         if("on".equals(donatedForTreatment)){

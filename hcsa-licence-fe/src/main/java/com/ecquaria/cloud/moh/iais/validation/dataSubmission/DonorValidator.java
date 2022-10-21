@@ -31,6 +31,8 @@ public class DonorValidator {
              errorMap.put("idNumber"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");
          }else if(needValIdType && arDonorDto.isDirectedDonation() && !arDonorDto.validateIdNo(arDonorDto.getIdNumber())){
              errorMap.put("idNumber"+ arDonorDto.getArDonorIndex() ,"RFC_ERR0012");
+         } else if(needValIdType && !arDonorDto.validateIdNo(arDonorDto.getDonorSampleCode())){
+             errorMap.put("donorSampleCode"+ arDonorDto.getArDonorIndex() ,"RFC_ERR0012");
          }
          if(!arDonorDto.validateDirectedDonationNoNotNull(arDonorDto.getDonorSampleCode())){
              errorMap.put("donorSampleCode"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");
