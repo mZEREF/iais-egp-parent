@@ -30,7 +30,7 @@
 
     var doEdit = function () {
         $('a.edit').click(function () {
-            var $currContent = $(this).closest('.personnel-content');
+            var $currContent = $(this).closest('.panel-main-content');
             $currContent.find('input.isPartEdit').val('1');
             unDisableContent($currContent);
             $('#isEditHiddenVal').val('1');
