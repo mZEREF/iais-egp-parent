@@ -1587,12 +1587,14 @@ public final class RfcHelper {
             List<AppSvcOtherInfoDto> oldAppSvcOtherInfoDtoList, List<String> autoList) {
         boolean result = false;
         for (int i = 0; i < appSvcOtherInfoDtoList.size(); i++) {
-            if (!result && AppConsts.YES.equals(appSvcOtherInfoDtoList.get(i).getProvideTop())) {
-                result = isChangeOtherInfoPersonDto(appSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonPractitionersList(),
-                        oldAppSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonPractitionersList()) ? true : false;
-            } else {
-                addOtherInfoPersonAutoList(appSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonPractitionersList(), autoList);
-                break;
+            if (AppConsts.YES.equals(appSvcOtherInfoDtoList.get(i).getProvideTop())){
+                if (!result) {
+                    result = isChangeOtherInfoPersonDto(appSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonPractitionersList(),
+                            oldAppSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonPractitionersList()) ? true : false;
+                } else {
+                    addOtherInfoPersonAutoList(appSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonPractitionersList(), autoList);
+                    break;
+                }
             }
         }
         return result;
@@ -1602,12 +1604,14 @@ public final class RfcHelper {
             List<AppSvcOtherInfoDto> oldAppSvcOtherInfoDtoList, List<String> autoList) {
         boolean result = false;
         for (int i = 0; i < appSvcOtherInfoDtoList.size(); i++) {
-            if (!result && AppConsts.YES.equals(appSvcOtherInfoDtoList.get(i).getProvideTop())) {
-                result |= isChangeOtherInfoPersonDto(appSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonAnaesthetistsList(),
-                        oldAppSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonAnaesthetistsList()) ? true : false;
-            } else {
-                addOtherInfoPersonAutoList(appSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonAnaesthetistsList(), autoList);
-                break;
+            if (AppConsts.YES.equals(appSvcOtherInfoDtoList.get(i).getProvideTop())){
+                if (!result) {
+                    result |= isChangeOtherInfoPersonDto(appSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonAnaesthetistsList(),
+                            oldAppSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonAnaesthetistsList()) ? true : false;
+                } else {
+                    addOtherInfoPersonAutoList(appSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonAnaesthetistsList(), autoList);
+                    break;
+                }
             }
         }
         return result;
@@ -1617,12 +1621,14 @@ public final class RfcHelper {
             List<AppSvcOtherInfoDto> oldAppSvcOtherInfoDtoList, List<String> autoList) {
         boolean result = false;
         for (int i = 0; i < appSvcOtherInfoDtoList.size(); i++) {
-            if (!result && AppConsts.YES.equals(appSvcOtherInfoDtoList.get(i).getProvideTop())) {
-                result = isChangeOtherInfoPersonDto(appSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonNursesList(),
-                        oldAppSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonNursesList()) ? true : false;
-            } else {
-                addOtherInfoPersonAutoList(appSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonNursesList(), autoList);
-                break;
+            if (AppConsts.YES.equals(appSvcOtherInfoDtoList.get(i).getProvideTop())){
+                if (!result) {
+                    result = isChangeOtherInfoPersonDto(appSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonNursesList(),
+                            oldAppSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonNursesList()) ? true : false;
+                } else {
+                    addOtherInfoPersonAutoList(appSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonNursesList(), autoList);
+                    break;
+                }
             }
         }
         return result;
@@ -1632,12 +1638,14 @@ public final class RfcHelper {
             List<AppSvcOtherInfoDto> oldAppSvcOtherInfoDtoList, List<String> autoList) {
         boolean result = false;
         for (int i = 0; i < appSvcOtherInfoDtoList.size(); i++) {
-            if (!result && AppConsts.YES.equals(appSvcOtherInfoDtoList.get(i).getProvideTop())) {
-                result = isChangeOtherInfoPersonDto(appSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonCounsellorsList(),
-                        oldAppSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonCounsellorsList()) ? true : false;
-            } else {
-                addOtherInfoPersonAutoList(appSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonCounsellorsList(),autoList);
-                break;
+            if (AppConsts.YES.equals(appSvcOtherInfoDtoList.get(i).getProvideTop())){
+                if (!result) {
+                    result = isChangeOtherInfoPersonDto(appSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonCounsellorsList(),
+                            oldAppSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonCounsellorsList()) ? true : false;
+                } else {
+                    addOtherInfoPersonAutoList(appSvcOtherInfoDtoList.get(i).getOtherInfoTopPersonCounsellorsList(),autoList);
+                    break;
+                }
             }
         }
         return result;
