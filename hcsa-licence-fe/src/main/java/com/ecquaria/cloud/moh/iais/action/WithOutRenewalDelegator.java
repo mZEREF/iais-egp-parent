@@ -1140,7 +1140,7 @@ public class WithOutRenewalDelegator {
             amendmentFeeDto.setChangeInLicensee(Boolean.FALSE);
             amendmentFeeDto.setAdditionOrRemovalVehicles(Boolean.FALSE);
             amendmentFeeDto.setIsCharity(isCharity);
-//add ss fee
+            //add ss fee
             List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList=appSubmissionDto.getAppPremSpecialisedDtoList().get(0).getFlatAppPremSubSvcRelList(dto -> ApplicationConsts.RECORD_ACTION_CODE_ADD.equals(dto.getActCode()));
             if (IaisCommonUtils.isNotEmpty(appPremSubSvcRelDtoList)) {
                 amendmentFeeDto.setAdditionOrRemovalSpecialisedServices(Boolean.TRUE);
