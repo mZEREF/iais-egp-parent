@@ -17,12 +17,42 @@
                     </span>
                 </h3>
                 <iais:row>
+                    <iais:field cssClass="col-md-6" value="Is the sample donated locally or from overseas?" mandatory="true"/>
+                    <iais:value width="3" cssClass="col-md-6" >
+                        <div class="form-check col-md-6" style="padding-left: 0;">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="localOrOversea"
+                                   value="1"
+                                   id="local"
+                                   <c:if test="${ arSuperDataSubmissionDto.donationStageDto.localOrOversea == 1}">checked</c:if>
+                                   aria-invalid="false">
+                            <label class="form-check-label"
+                                   for="local"><span
+                                    class="check-circle"></span>Local</label>
+                        </div>
+                        <div class="form-check col-md-6" style="padding-left: 0;">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="localOrOversea"
+                                   value="0"
+                                   id="oversea"
+                                   <c:if test="${ arSuperDataSubmissionDto.donationStageDto.localOrOversea == 0}">checked</c:if>
+                                   aria-invalid="false">
+                            <label class="form-check-label"
+                                   for="oversea"><span
+                                    class="check-circle"></span>Oversea</label>
+                        </div>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_localOrOversea"></span>
+                    </iais:value>
+                </iais:row>
+                <iais:row>
                     <iais:field width="6" cssClass="col-md-6" value="What was Donated?" info="${MessageUtil.getMessageDesc('DS_MSG013')}"  mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <iais:select name="sampleType" id="sampleType" firstOption="Please Select" codeCategory="CATE_ID_DONATED_TYPE"
+                            <iais:select name="donatedType" id="donatedType" firstOption="Please Select" codeCategory="CATE_ID_DONATED_TYPE"
                                          value="${arSuperDataSubmissionDto.donationStageDto.donatedType}"/>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_donatedType"></span>
                         </iais:value>
-                        <span class="error-msg" name="iaisErrorMsg" id="error_donatedType" style="padding-right: 15px;padding-left: 15px;"></span>
                 </iais:row>
                 <iais:row>
                     <iais:field width="6" cssClass="col-md-6" value="Which AR Centre was Gamete(s)/Embryo(s) Donated to?" id="donatedCentreField" mandatory="true"/>

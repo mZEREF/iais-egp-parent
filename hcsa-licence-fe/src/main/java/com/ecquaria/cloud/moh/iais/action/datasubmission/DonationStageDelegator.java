@@ -86,6 +86,10 @@ public class DonationStageDelegator extends CommonDelegator{
 
         DonationStageDto donationStageDto=arSuperDataSubmissionDto.getDonationStageDto();
         HttpServletRequest request=bpc.request;
+        String localOrOversea = ParamUtil.getString(request,"localOrOversea");
+        if (localOrOversea != null) {
+            donationStageDto.setLocalOrOversea(Integer.parseInt(localOrOversea));
+        }
         String donatedType=ParamUtil.getString(request,"donatedType");
         donationStageDto.setDonatedType(donatedType);
         String donatedCentre=ParamUtil.getString(request,"donatedCentre");

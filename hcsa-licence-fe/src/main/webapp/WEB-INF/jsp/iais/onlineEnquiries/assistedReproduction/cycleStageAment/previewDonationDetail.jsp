@@ -12,6 +12,17 @@
             <div class="panel-main-content form-horizontal">
                 <%@include file="comPart.jsp" %>
                 <iais:row>
+                    <iais:field width="4" value="Is the sample donated locally or from overseas?" mandatory="false"/>
+                    <iais:value width="4" cssClass="col-md-4" display="true">
+                        <c:if test="${arSuperDataSubmissionDto.donationStageDto.localOrOversea == 1}">Local</c:if>
+                        <c:if test="${arSuperDataSubmissionDto.donationStageDto.localOrOversea == 0}">Oversea</c:if>
+                    </iais:value>
+                    <iais:value width="4" cssClass="col-md-4" display="true">
+                        <c:if test="${arSuperDataSubmissionDtoVersion.donationStageDto.localOrOversea == 1}">Local</c:if>
+                        <c:if test="${arSuperDataSubmissionDtoVersion.donationStageDto.localOrOversea == 0}">Oversea</c:if>
+                    </iais:value>
+                </iais:row>
+                <iais:row>
                     <label class="col-xs-4 col-md-4 control-label">What was Donated?
                         <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
                            title="<span style='font-size: 1.5rem;'>${MessageUtil.getMessageDesc("DS_MSG013")}</span>"
