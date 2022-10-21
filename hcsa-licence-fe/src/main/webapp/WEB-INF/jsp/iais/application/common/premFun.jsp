@@ -641,6 +641,7 @@
                 hideTag($(ele).find('.operationAdlDiv'));
             } else {
                 showTag($(ele).find('.operationAdlDiv'));
+                showTag($(ele).find('.opDelDiv'));
                 $(ele).find('.floorUnitLabel').html('');
             }
             resetField(ele, i, prefix);
