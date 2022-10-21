@@ -79,8 +79,6 @@ public interface AppSubmissionService {
 
     AppSubmissionDto viewAppSubmissionDto(String licenceId);
 
-    FeeDto getGroupAmendAmount(AmendmentFeeDto amendmentFeeDto);
-
     AppSubmissionDto submitRenew(AppSubmissionDto appSubmissionDto);
 
     MsgTemplateDto getMsgTemplateById(String id);

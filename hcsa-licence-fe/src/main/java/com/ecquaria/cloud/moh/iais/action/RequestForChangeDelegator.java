@@ -50,6 +50,7 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
@@ -107,6 +108,8 @@ public class RequestForChangeDelegator {
     
     @Autowired
     private AppCommService appCommService;
+    @Autowired
+    private ConfigCommService configCommService;
 
     @PostMapping(value = "/check-uen")
     public @ResponseBody
@@ -705,10 +708,13 @@ public class RequestForChangeDelegator {
                     boolean isCharity = ApplicationHelper.isCharity(bpc.request);
                     AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
                     amendmentFeeDto.setChangeInLicensee(Boolean.TRUE);
+
                     amendmentFeeDto.setIsCharity(isCharity);
-                    amendmentFeeDto.setServiceCode(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceCode());
-                    amendmentFeeDto.setLicenceNo(appSubmissionDto.getLicenceNo());
-                    FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
+                    amendmentFeeDto.setAddress(appSubmissionDto.getAppGrpPremisesDtoList().get(0).getAddress());
+                    amendmentFeeDto.setServiceName(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName());
+                    amendmentFeeDto.setAppGrpNo(appSubmissionDto.getAppGrpNo());
+
+                    FeeDto feeDto = configCommService.getGroupAmendAmount(amendmentFeeDto);
                     if(feeDto != null){
                         Double amount = feeDto.getTotal();
                         if(licenceDto.getStatus().equals(ApplicationConsts.LICENCE_STATUS_APPROVED)&&licenceDto.getMigrated()==1&& IaisEGPHelper.isActiveMigrated()){

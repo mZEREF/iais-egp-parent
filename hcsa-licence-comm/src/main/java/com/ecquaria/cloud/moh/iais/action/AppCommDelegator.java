@@ -1666,6 +1666,9 @@ public abstract class AppCommDelegator {
         ParamUtil.setSessionAttr(bpc.request, "FeeDetail", null);
         amendmentFeeDto.setServiceCode(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceCode());
         amendmentFeeDto.setLicenceNo(appSubmissionDto.getLicenceNo());
+        amendmentFeeDto.setAddress(appSubmissionDto.getAppGrpPremisesDtoList().get(0).getAddress());
+        amendmentFeeDto.setServiceName(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName());
+        amendmentFeeDto.setAppGrpNo(appSubmissionDto.getAppGrpNo());
         FeeDto feeDto = configCommService.getGroupAmendAmount(amendmentFeeDto);
         Double amount = feeDto.getTotal();
         if(feeDto.getFeeDetail()!=null){
@@ -1748,14 +1751,15 @@ public abstract class AppCommDelegator {
             // reSet amount
             double otherAmount = 0.0D;
             AmendmentFeeDto amendmentFeeDto1 =getAmendmentFeeDto(changeSelectDto, isCharity);
-            amendmentFeeDto1.setServiceCode(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceCode());
-            amendmentFeeDto1.setLicenceNo(appSubmissionDto.getLicenceNo());
+            amendmentFeeDto1.setAddress(appSubmissionDto.getAppGrpPremisesDtoList().get(0).getAddress());
+            amendmentFeeDto1.setServiceName(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName());
+            amendmentFeeDto1.setAppGrpNo(appSubmissionDto.getAppGrpNo());
             FeeDto premiseFee = configCommService.getGroupAmendAmount(amendmentFeeDto1);
             if (premiseFee != null && premiseFee.getTotal() != null) {
                 otherAmount = premiseFee.getTotal();
-            }
-            if(premiseFee.getFeeDetail()!=null){
-                ParamUtil.setSessionAttr(bpc.request, "FeeDetail", premiseFee.getFeeDetail().toString());
+                appSubmissionDto.getFeeInfoDtos().addAll(premiseFee.getFeeInfoDtos());
+                ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+
             }
             log.info(StringUtil.changeForLog("The premise changed amount: " + otherAmount));
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
@@ -1902,7 +1906,13 @@ public abstract class AppCommDelegator {
             AmendmentFeeDto amendmentFeeDto1 =getAmendmentFeeDto(autoChangeSelectDto, isCharity);
             amendmentFeeDto1.setServiceCode(autoAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceCode());
             amendmentFeeDto1.setLicenceNo(autoAppSubmissionDto.getLicenceNo());
+            amendmentFeeDto1.setIsCharity(isCharity);
+            amendmentFeeDto1.setAddress(autoAppSubmissionDto.getAppGrpPremisesDtoList().get(0).getAddress());
+            amendmentFeeDto1.setServiceName(autoAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName());
+            amendmentFeeDto1.setAppGrpNo(autoAppSubmissionDto.getAppGrpNo());
             FeeDto autoFee = configCommService.getGroupAmendAmount(amendmentFeeDto1);
+            appSubmissionDto.getFeeInfoDtos().addAll(autoFee.getFeeInfoDtos());
+            ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
             Double autoAmount = autoFee.getTotal();
             if (licenceDto.getMigrated() == 1 && IaisEGPHelper.isActiveMigrated()) {
                 autoAmount = 0.0;

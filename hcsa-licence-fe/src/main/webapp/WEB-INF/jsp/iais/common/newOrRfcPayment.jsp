@@ -20,13 +20,20 @@
                 <c:if test="${not empty baseSvcFeeExt }">
                     <tr>
                         <td>
-                            <p><strong><c:out value="${AppSubmissionDto.serviceName}"/></strong></p>
+                            <c:forEach var="svcName" items="${baseSvcFeeExt.svcNames}">
+                                <p>
+                                    <strong><c:out value="${svcName}"/></strong>
+                                </p>
+                                <p>
+                                    (${baseSvcFeeExt.address})
+                                </p>
+                            </c:forEach>
                         </td>
                         <td>
                             <p>Amendment</p>
                         </td>
                         <td>
-                            <p><c:out value="${AppSubmissionDto.appGrpNo}-0${feeInfoStat.index+1}"/></p>
+                            <p><c:out value="${baseSvcFeeExt.appGroupNo}-0${feeInfoStat.index+1}"/></p>
                         </td>
                         <td>
                             <p>
