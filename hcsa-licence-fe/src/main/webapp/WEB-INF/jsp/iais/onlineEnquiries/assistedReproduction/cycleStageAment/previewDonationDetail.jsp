@@ -102,7 +102,7 @@
                     </iais:row>
 
                     <iais:row>
-                        <iais:field width="4" value="Type of Research for Which Donated"  />
+                        <iais:field width="4" value="Type of Research for Which Gamete(s) was Donated"  />
                         <iais:value width="4" cssClass="col-md-4" display="true">
                             <c:if test="${ arSuperDataSubmissionDto.donationStageDto.donatedForResearchHescr ==1 }">Human Embryonic Stem Cell Research<br></c:if>
                             <c:if test="${ arSuperDataSubmissionDto.donationStageDto.donatedForResearchRrar ==1 }">Research Related to Assisted Reproduction<br></c:if>
@@ -116,7 +116,7 @@
                     </iais:row>
                     <div id="donatedForResearchOtherDisplay" <c:if test="${ arSuperDataSubmissionDto.donationStageDto.donatedForResearchOther !=1 && arSuperDataSubmissionDtoVersion.donationStageDto.donatedForResearchOther !=1 }">style="display: none"</c:if>>
                         <iais:row>
-                            <iais:field width="4" value="Other Type of Research Donated for" />
+                            <iais:field width="4" value="Please Indicate the Other Type of Research" />
                             <iais:value width="4" cssClass="col-md-4" display="true">
                                 <c:out value="${arSuperDataSubmissionDto.donationStageDto.donatedForResearchOtherType}"/>
                             </iais:value>

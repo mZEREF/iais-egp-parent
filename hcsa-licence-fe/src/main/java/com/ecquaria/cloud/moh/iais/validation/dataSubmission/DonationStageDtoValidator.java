@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonationStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
@@ -110,7 +111,12 @@ public class DonationStageDtoValidator implements CustomizeValidator {
         }
 
         if(donationStageDto.getDonatedForTraining()==1){
-            if(donationStageDto.getTrainingNum()!=null){
+            String trainingNumStr = ParamUtil.getString(request, "trainingNum");
+            if (StringUtil.isEmpty(trainingNumStr)) {
+                errorMap.put("trainingNum", "GENERAL_ERR0006");
+            } else if (!StringUtil.isNumber(trainingNumStr)) {
+                errorMap.put("trainingNum", "GENERAL_ERR0002");
+            } else if(donationStageDto.getTrainingNum()!=null){
                 if(donationStageDto.getTrainingNum()>99||donationStageDto.getTrainingNum()<0){
                     Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
                     repMap.put("minNum","0");
@@ -121,14 +127,6 @@ public class DonationStageDtoValidator implements CustomizeValidator {
                 }
                 if(donationStageDto.getTrainingNum()>maxSamplesNum){
                     errorMap.put("trainingNum", errMsg023);
-                }
-                if(donationStageDto.getTrainingNumStr().length()>2){
-                    String general_err0041= AppValidatorHelper.repLength("This field","2");
-                    errorMap.put("trainingNum", general_err0041);
-                }
-            }else {
-                if(StringUtil.isNotEmpty(donationStageDto.getTrainingNumStr())){
-                    errorMap.put("trainingNum", errMsgErr008);
                 }
             }
         }

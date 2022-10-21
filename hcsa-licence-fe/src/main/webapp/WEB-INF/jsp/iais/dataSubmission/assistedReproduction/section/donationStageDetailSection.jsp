@@ -146,7 +146,7 @@
                     </iais:row>
 
                     <iais:row>
-                        <iais:field width="6" cssClass="col-md-6" value="Type of Research for Which Donated" mandatory="true"/>
+                        <iais:field width="6" cssClass="col-md-6" value="Type of Research for Which Gamete(s) was Donated" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6" style="padding-right: 0;padding-left: 0;">
                             <div class="form-check">
                                 <input class="form-check-input"
@@ -186,7 +186,7 @@
                     </iais:row>
                     <div id="donatedForResearchOtherDisplay" <c:if test="${ arSuperDataSubmissionDto.donationStageDto.donatedForResearchOther !=1 }">style="display: none"</c:if>>
                         <iais:row>
-                            <iais:field width="6" cssClass="col-md-6" value="Other Type of Research Donated for"  mandatory="true"/>
+                            <iais:field width="6" cssClass="col-md-6" value="Please Indicate the Other Type of Research"  mandatory="true"/>
                             <iais:value width="6" cssClass="col-md-6">
                                 <input type="text" maxlength="100"   name="donatedForResearchOtherType" value="${arSuperDataSubmissionDto.donationStageDto.donatedForResearchOtherType}" >
                                 <span class="error-msg" name="iaisErrorMsg" id="error_donatedForResearchOtherType"></span>
@@ -197,7 +197,7 @@
 
                 <div id="trainingDisplay" <c:if test="${ arSuperDataSubmissionDto.donationStageDto.donatedForTraining !=1 }">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="6" cssClass="col-md-6" value="No. Used for Training" mandatory="false"/>
+                        <iais:field width="6" cssClass="col-md-6" value="No. Used for Training" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
                             <iais:input maxLength="2" type="text"  id="trainingNum" name="trainingNum" value="${arSuperDataSubmissionDto.donationStageDto.trainingNumStr==null?arSuperDataSubmissionDto.donationStageDto.trainingNum:arSuperDataSubmissionDto.donationStageDto.trainingNumStr}" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_trainingNum"></span>

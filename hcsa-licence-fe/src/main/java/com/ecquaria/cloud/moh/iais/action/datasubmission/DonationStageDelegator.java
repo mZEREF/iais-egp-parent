@@ -167,22 +167,28 @@ public class DonationStageDelegator extends CommonDelegator{
         String donatedForTraining=ParamUtil.getString(request,"donatedForTraining");
         if("on".equals(donatedForTraining)){
             donationStageDto.setDonatedForTraining(1);
-            Integer trainingNum = null;
-            try {
-                String trainingNumString=ParamUtil.getString(request, "trainingNum");
-                donationStageDto.setTrainingNumStr(trainingNumString);
-                if(StringUtil.isEmpty(trainingNumString)){
-                    donationStageDto.setTrainingNum(null);
-                }else {
-                    trainingNum = ParamUtil.getInt(request, "trainingNum");
-                    donationStageDto.setTrainingNum(trainingNum);
-                    totalNum+=trainingNum;
-                }
-            }catch (Exception e){
-                log.error("no int");
-                        isInt=false;
-                donationStageDto.setTrainingNum(null);
+            String trainingNumStr = ParamUtil.getString(request, "trainingNum");
+            donationStageDto.setTrainingNumStr(trainingNumStr);
+            if (StringUtil.isNumber(trainingNumStr)) {
+                int trainingNum = Integer.parseInt(trainingNumStr);
+                donationStageDto.setTrainingNum(trainingNum);
+                totalNum+=trainingNum;
             }
+//            try {
+//                String trainingNumString=ParamUtil.getString(request, "trainingNum");
+//                donationStageDto.setTrainingNumStr(trainingNumString);
+//                if(StringUtil.isEmpty(trainingNumString)){
+//                    donationStageDto.setTrainingNum(null);
+//                }else {
+//                    trainingNum = ParamUtil.getInt(request, "trainingNum");
+//                    donationStageDto.setTrainingNum(trainingNum);
+//                    totalNum+=trainingNum;
+//                }
+//            }catch (Exception e){
+//                log.error("no int");
+//                        isInt=false;
+//                donationStageDto.setTrainingNum(null);
+//            }
         }
         String donatedForTreatment=ParamUtil.getString(request,"donatedForTreatment");
         if("on".equals(donatedForTreatment)){
