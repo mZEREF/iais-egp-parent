@@ -11,7 +11,7 @@
     <c:if test="${stat.first}">
         <div class="row">
             <div class="col-md-12">
-                <p class="form-check-label" aria-label="premise-1-cytology"><span>Event</span></p>
+                <p class="form-check-label" aria-label="premise-1-cytology"><strong>Event</strong></p>
             </div>
         </div>
     </c:if>
