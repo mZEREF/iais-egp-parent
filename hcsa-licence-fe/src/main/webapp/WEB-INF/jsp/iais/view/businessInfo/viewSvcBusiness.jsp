@@ -36,22 +36,22 @@
             <c:if test="${!isSpecialService}">
                 <iais:row>
                     <div class="col-md-12 col-xs-12">
-                        <label class="control-label">Operating Hours</label>
+                        <label class="control-label"><strong>Operating Hours</strong></label>
                     </div>
                 </iais:row>
                 <iais:row>
                     <div class="col-md-6 col-sm-6 col-xs-6">
-                        <label class="control-label">Weekly</label>
+                        <label class="control-label"><strong>Weekly</strong></label>
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6">
                         <div class="col-md-4  col-sm-4 col-xs-4 input-padding hidden-xs" style="padding-left: 0;">
-                            <label class="control-label">Start</label>
+                            <label class="control-label"><strong>Start</strong></label>
                         </div>
                         <div class="col-md-4 col-sm-4 col-xs-4 input-padding hidden-xs">
-                            <label class="control-label">End</label>
+                            <label class="control-label"><strong>End</strong></label>
                         </div>
                         <div class="col-md-3 col-sm-3 col-xs-3 hidden-xs">
-                            <label class="control-label">24 Hours</label>
+                            <label class="control-label"><strong>24 Hours</strong></label>
                         </div>
                     </div>
                 </iais:row>
