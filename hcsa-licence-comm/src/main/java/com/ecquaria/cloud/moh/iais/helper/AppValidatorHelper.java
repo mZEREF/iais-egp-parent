@@ -192,7 +192,7 @@ public final class AppValidatorHelper {
         Map<String, String> result = IaisCommonUtils.genNewHashMap();
         AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
 
-        if (appEditSelectDto != null) {
+        /*if (appEditSelectDto != null) {
             if (!appEditSelectDto.isPremisesEdit()) {
                 List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
                 for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
@@ -219,7 +219,7 @@ public final class AppValidatorHelper {
                     result.put("serviceId", MessageUtil.replaceMessage("GENERAL_ERR0006", "serviceId", "field"));
                 }
             }
-        }
+        }*/
         return result;
     }
 
@@ -4151,12 +4151,16 @@ public final class AppValidatorHelper {
 
     public static Map<String, String> doValidateRfi(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto,
             HttpServletRequest request) {
-        Map<String, String> errorMap = doComChange(appSubmissionDto, oldAppSubmissionDto);
+        /*Map<String, String> errorMap = doComChange(appSubmissionDto, oldAppSubmissionDto);
         if (errorMap.isEmpty()) {
             ApplicationHelper.checkPremisesHciList(appSubmissionDto.getLicenseeId(), ApplicationHelper.checkIsRfi(request),
                     oldAppSubmissionDto, false, request);
             doPreviewSubmitValidate(errorMap, appSubmissionDto, request);
-        }
+        }*/
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        ApplicationHelper.checkPremisesHciList(appSubmissionDto.getLicenseeId(), ApplicationHelper.checkIsRfi(request),
+                oldAppSubmissionDto, false, request);
+        doPreviewSubmitValidate(errorMap, appSubmissionDto, request);
         return errorMap;
     }
 
