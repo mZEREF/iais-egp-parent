@@ -1,3 +1,4 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.Formatter" %>
 <div class="table-responsive">
     <table aria-describedby="" class="table">
         <thead>
@@ -168,13 +169,21 @@
                 </tr>
             </c:if>
             <!--simpleSpecifiedFeeExt -->
-            <c:if test="${not empty simpleSpecifiedFeeExt }">
+            <c:if test="${not empty simpleSpecifiedFeeExt or not empty complexSpecifiedFeeExt }">
                 <tr>
                     <td>
                         <p>&nbsp;&nbsp;With Specialised Service(s)</p>
-                        <c:forEach var="svcName" items="${simpleSpecifiedFeeExt.svcNames}">
-                            <p>&nbsp;&nbsp;<strong>- <c:out value="${svcName}"/></strong></p>
-                        </c:forEach>
+                        <c:if test="${not empty simpleSpecifiedFeeExt }">
+                            <c:forEach var="svcNameSs" items="${simpleSpecifiedFeeExt.svcNames}">
+                                <p>&nbsp;&nbsp;<strong>- <c:out value="${svcNameSs}"/></strong></p>
+                            </c:forEach>
+                        </c:if>
+
+                        <c:if test="${not empty complexSpecifiedFeeExt }">
+                            <c:forEach var="svcNameCs" items="${complexSpecifiedFeeExt.svcNames}">
+                                <p>&nbsp;&nbsp;<strong>- <c:out value="${svcNameCs}"/></strong></p>
+                            </c:forEach>
+                        </c:if>
 
                     </td>
                     <td>
@@ -185,37 +194,29 @@
                     </td>
                     <td>
                         <p >
-                            <c:out value="${simpleSpecifiedFeeExt.amountStr}"/>
+                            <c:choose>
+                                <c:when test="${empty simpleSpecifiedFeeExt}">
+                                    <c:out value="${complexSpecifiedFeeExt.amountStr}"/>
+                                </c:when>
+                                <c:when test="${empty complexSpecifiedFeeExt}">
+                                    <c:out value="${simpleSpecifiedFeeExt.amountStr}"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:out value="${Formatter.formatterMoney(simpleSpecifiedFeeExt.amount+complexSpecifiedFeeExt.amount)}"/>
+                                </c:otherwise>
+                            </c:choose>
                         </p>
-                        <c:forEach var="svcName" items="${simpleSpecifiedFeeExt.svcNames}">
-                            <p>Include</p>
-                        </c:forEach>
-                    </td>
-                </tr>
-            </c:if>
+                        <c:if test="${not empty simpleSpecifiedFeeExt }">
+                            <c:forEach var="svcName" items="${simpleSpecifiedFeeExt.svcNames}">
+                                <p>Include</p>
+                            </c:forEach>
+                        </c:if>
 
-            <!--complexSpecifiedFeeExt -->
-            <c:if test="${not empty complexSpecifiedFeeExt }">
-                <tr>
-                    <td class="breakdown">
-                        <p>&nbsp;&nbsp;With Specialised Service(s)</p>
-                        <c:forEach var="svcName" items="${complexSpecifiedFeeExt.svcNames}">
-                            <p>&nbsp;&nbsp;<strong>- <c:out value="${svcName}"/></strong></p>
-                        </c:forEach>
-                    </td>
-                    <td>
-                        <p></p>
-                    </td>
-                    <td>
-                        <p> </p>
-                    </td>
-                    <td>
-                        <p >
-                            <c:out value="${complexSpecifiedFeeExt.amountStr}"/>
-                        </p>
-                        <c:forEach var="svcName" items="${complexSpecifiedFeeExt.svcNames}">
-                            <p>Include</p>
-                        </c:forEach>
+                        <c:if test="${not empty complexSpecifiedFeeExt }">
+                            <c:forEach var="svcName" items="${complexSpecifiedFeeExt.svcNames}">
+                                <p>Include</p>
+                            </c:forEach>
+                        </c:if>
                     </td>
                 </tr>
             </c:if>
