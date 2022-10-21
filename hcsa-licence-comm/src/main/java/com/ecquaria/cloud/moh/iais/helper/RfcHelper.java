@@ -2417,7 +2417,9 @@ public final class RfcHelper {
             return;
         }
         DealSessionUtil.initView(appSubmissionDto);
-        //appSubmissionDto.setAppGrpId(null);
+        if (!ApplicationHelper.checkIsRfi(request)) {
+            appSubmissionDto.setAppGrpId(null);
+        }
         appSubmissionDto.setFromBe(ApplicationHelper.isBackend());
         appSubmissionDto.setAppType(appType);
         appSubmissionDto.setAuditTrailDto(AuditTrailHelper.getCurrentAuditTrailDto());
