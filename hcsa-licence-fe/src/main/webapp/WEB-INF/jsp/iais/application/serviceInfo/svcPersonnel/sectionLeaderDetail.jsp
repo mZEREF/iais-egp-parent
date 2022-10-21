@@ -2,19 +2,17 @@
     <input type="hidden" class="indexNo" name="${prepsn}indexNo${index}" value="${sectionLeader.indexNo}"/>
     <input type="hidden" class="isPartEdit" name="isPartEdit${index}" value="0"/>
     <iais:row>
-        <iais:value width="6" cssClass="col-md-6">
+        <div class="col-xs-12 col-md-6">
             <strong>
                 <c:out value="${singleName}"/>
-                <label class="assign-psn-item"><c:if test="${pageLength > 1}">${index+1}</c:if></label>
+                <span class="assign-psn-item"><c:if test="${pageLength > 1}">${index+1}</c:if></span>
             </strong>
-        </iais:value>
-        <iais:value width="6" cssClass="col-md-6 text-right removeSectionLeaderDiv">
-            <c:if test="${!isRfi}">
-                <h4 class="text-danger">
-                    <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
-                </h4>
-            </c:if>
-        </iais:value>
+        </div>
+        <div class="col-xs-12 col-md-6 text-right removeSectionLeaderDiv <c:if test="${index == 0}">hidden</c:if>">
+            <h4 class="text-danger">
+                <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
+            </h4>
+        </div>
     </iais:row>
     <iais:row>
         <div class="col-md-12 col-xs-12 edit-content">

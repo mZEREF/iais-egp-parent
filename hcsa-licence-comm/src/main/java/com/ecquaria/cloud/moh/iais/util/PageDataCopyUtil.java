@@ -53,6 +53,9 @@ public class PageDataCopyUtil {
         }
         //copy.setAddrType(appGrpPremisesDto.getAddrType());
         //copy.setBuildingName(appGrpPremisesDto.getBuildingName());
+        copy.setEasMtsUseOnly(appGrpPremisesDto.getEasMtsUseOnly());
+        copy.setEasMtsPubEmail(appGrpPremisesDto.getEasMtsPubEmail());
+        copy.setEasMtsPubHotline(appGrpPremisesDto.getEasMtsPubHotline());
         copy.setLocateWtihHcsa(appGrpPremisesDto.getLocateWtihHcsa());
         return copy;
     }
@@ -69,10 +72,6 @@ public class PageDataCopyUtil {
         copy.setBlkNo(appGrpPremisesDto.getBlkNo());
         copy.setStreetName(appGrpPremisesDto.getStreetName());
         copy.setBuildingName(appGrpPremisesDto.getBuildingName());
-
-        copy.setEasMtsUseOnly(appGrpPremisesDto.getEasMtsUseOnly());
-        copy.setEasMtsPubEmail(appGrpPremisesDto.getEasMtsPubEmail());
-        copy.setEasMtsPubHotline(appGrpPremisesDto.getEasMtsPubHotline());
         return copy;
     }
 
