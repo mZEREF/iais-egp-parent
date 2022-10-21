@@ -81,8 +81,10 @@ public class IuiTreatmentSubsidiesDelegator extends CommonDelegator {
         }
             String pleaseIndicateIui = ParamUtil.getString(bpc.request, "pleaseIndicateIui");
             String thereAppeal = ParamUtil.getRequestString(bpc.request, "thereAppeal");
+            String appealNumber = ParamUtil.getRequestString(bpc.request, "appealNumber");
             iuiTreatmentSubsidiesDto.setArtCoFunding(pleaseIndicateIui);
             iuiTreatmentSubsidiesDto.setThereAppeal(Boolean.parseBoolean(thereAppeal));
+            iuiTreatmentSubsidiesDto.setAppealNumber(appealNumber);
             arSuperDataSubmissionDto.setIuiTreatmentSubsidiesDto(iuiTreatmentSubsidiesDto);
             ValidationResult validationResult = WebValidationHelper.validateProperty(iuiTreatmentSubsidiesDto, "save");
             Map<String, String> errorMap = validationResult.retrieveAll();

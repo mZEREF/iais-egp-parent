@@ -33,6 +33,15 @@
                         <c:if test="${iuiTreatmentSubsidiesDtoVersion.thereAppeal == false }">No</c:if>
                     </iais:value>
                 </iais:row>
+                <iais:row>
+                    <iais:field width="5" value="Please indicate appeal reference number (if applicable)"/>
+                    <iais:value width="7" cssClass="col-md-7" display="true">
+                        <c:out value="${iuiTreatmentSubsidiesDto.appealNumber}"/>
+                    </iais:value>
+                    <iais:value width="7" cssClass="col-md-7" display="true">
+                        <c:out value="${iuiTreatmentSubsidiesDtoVersion.appealNumber}"/>
+                    </iais:value>
+                </iais:row>
             </div>
 
         </div>
