@@ -150,7 +150,6 @@ public class DataSubmissionInboxDelegator {
 				LoginContext loginContext = AccessUtil.getLoginUser(request);
 				setAccessFilter(loginContext, searchParam);
 				searchParam.addParam("fromCenter",ConfigHelper.getBoolean("halp.ds.tempCenter.enable",false));
-				searchParam.addFilter("creatdBy", loginContext.getUserId(), true);
 				HalpAssessmentGuideDelegator.setParamByField(searchParam,"licenseeId",interInboxUserDto.getLicenseeId(),true);
 				HalpAssessmentGuideDelegator.setParamByField(searchParam,"dsType",(List<String>) ParamUtil.getSessionAttr(request,DS_TYPES));
 				QueryHelp.setMainSql(InboxConst.INBOX_QUERY, InboxConst.INBOX_DS_QUERY,searchParam);
