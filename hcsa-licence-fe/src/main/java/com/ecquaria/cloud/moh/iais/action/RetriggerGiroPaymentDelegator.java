@@ -13,12 +13,15 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
@@ -28,7 +31,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PmtReturnUrlDto;
 import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
@@ -40,6 +42,7 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
@@ -72,6 +75,8 @@ public class RetriggerGiroPaymentDelegator {
     private ServiceConfigService serviceConfigService;
     @Autowired
     private RequestForChangeService requestForChangeService;
+    @Autowired
+    private ConfigCommService configCommService;
 
     private static final String SWITCH = "switch";
     private static final String SWITCH_VALUE_PRE_ACK = "preack";
@@ -273,6 +278,8 @@ public class RetriggerGiroPaymentDelegator {
     public void prePayment(BaseProcessClass bpc) throws Exception {
         log.info(StringUtil.changeForLog("the prePayment start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO);
+        boolean isCharity = ApplicationHelper.isCharity(bpc.request);
+
         List<AppSubmissionDto> forGiroList = IaisCommonUtils.genNewArrayList();
         if(appSubmissionDto != null){
             String appType = appSubmissionDto.getAppType();
@@ -283,27 +290,60 @@ public class RetriggerGiroPaymentDelegator {
                 String amountStr = Formatter.formatterMoney(appSubmissionDto.getAmount());
                 appSubmissionDto.setAmountStr(amountStr);
                 forGiroList.add(appSubmissionDto);
+                if(feeDto.getFeeDetail()!=null){
+                    ParamUtil.setSessionAttr(bpc.request, "FeeDetail", feeDto.getFeeDetail().toString());
+                }else {
+                    ParamUtil.setSessionAttr(bpc.request, "FeeDetail", null);
+                }
             }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
-                List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
                 if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
-                    double rfcAmount = 100;
-                    if(ApplicationHelper.isCharity(bpc.request)){
-                        rfcAmount=12;
-                    }
                     for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                         appSubmissionDto.setLicenceId(appSvcRelatedInfoDto.getLicenceId());
-                        AppSubmissionDto oneSvcSubmisonDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
-                        List<AppSvcRelatedInfoDto> oneSvcRelateInfoDto = IaisCommonUtils.genNewArrayList();
-                        oneSvcRelateInfoDto.add(appSvcRelatedInfoDto);
-                        oneSvcSubmisonDto.setAppSvcRelatedInfoDtoList(oneSvcRelateInfoDto);
-                        oneSvcSubmisonDto.setServiceName(appSvcRelatedInfoDto.getServiceName());
-                        String amountStr  = Formatter.formatterMoney(rfcAmount);
-                        oneSvcSubmisonDto.setAmountStr(amountStr);
-                        appSubmissionDtoList.add(oneSvcSubmisonDto);
                     }
                 }
+                AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
+                amendmentFeeDto.setChangeInLicensee(Boolean.FALSE);
+                amendmentFeeDto.setAdditionOrRemovalVehicles(Boolean.TRUE);
+                //add ss fee
+                List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList=appSubmissionDto.getAppPremSpecialisedDtoList().get(0).getFlatAppPremSubSvcRelList(dto -> ApplicationConsts.RECORD_ACTION_CODE_ADD.equals(dto.getActCode()));
+                if (IaisCommonUtils.isNotEmpty(appPremSubSvcRelDtoList)) {
+                    amendmentFeeDto.setAdditionOrRemovalSpecialisedServices(Boolean.TRUE);
+                    List<LicenceFeeDto> licenceFeeSpecDtos = IaisCommonUtils.genNewArrayList();
+                    for (AppPremSubSvcRelDto subSvc : appPremSubSvcRelDtoList
+                    ) {
+                        if (subSvc.isChecked()) {
+                            LicenceFeeDto specFeeDto = new LicenceFeeDto();
+                            specFeeDto.setBundle(0);
+                            specFeeDto.setBaseService(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceCode());
+                            specFeeDto.setServiceCode(subSvc.getSvcCode());
+                            specFeeDto.setServiceName(subSvc.getSvcName());
+                            specFeeDto.setPremises(appSubmissionDto.getAppGrpPremisesDtoList().get(0).getAddress());
+                            specFeeDto.setCharity(isCharity);
+                            licenceFeeSpecDtos.add(specFeeDto);
+                        }
+                    }
+                    amendmentFeeDto.setSpecifiedLicenceFeeDto(licenceFeeSpecDtos);
+                }
+                List<AppPremSubSvcRelDto> removalDtoList=appSubmissionDto.getAppPremSpecialisedDtoList().get(0).getFlatAppPremSubSvcRelList(dto -> ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()));
+                if (IaisCommonUtils.isNotEmpty(removalDtoList)) {
+                    amendmentFeeDto.setAdditionOrRemovalSpecialisedServices(Boolean.TRUE);
+                }
+                amendmentFeeDto.setServiceCode(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceCode());
+                amendmentFeeDto.setLicenceNo(appSubmissionDto.getLicenceNo());
+
+                amendmentFeeDto.setIsCharity(isCharity);
+                amendmentFeeDto.setAddress(appSubmissionDto.getAppGrpPremisesDtoList().get(0).getAddress());
+                amendmentFeeDto.setServiceName(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName());
+                amendmentFeeDto.setAppGrpNo(appSubmissionDto.getAppGrpNo());
+                FeeDto feeDto = configCommService.getGroupAmendAmount(amendmentFeeDto);
+                appSubmissionDto.setFeeInfoDtos(feeDto.getFeeInfoDtos());
+                appSubmissionDto.setAmount(feeDto.getTotal());
                 forGiroList.add(appSubmissionDto);
-                ParamUtil.setSessionAttr(bpc.request,"appSubmissionDtos", (Serializable) appSubmissionDtoList);
+                if(feeDto.getFeeDetail()!=null){
+                    ParamUtil.setSessionAttr(bpc.request, "FeeDetail", feeDto.getFeeDetail().toString());
+                }else {
+                    ParamUtil.setSessionAttr(bpc.request, "FeeDetail", null);
+                }
             }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
                 List<AppSubmissionDto> rfcAppSubmissionDtos = IaisCommonUtils.genNewArrayList();
                 RenewDto renewDto = new RenewDto();
@@ -332,7 +372,6 @@ public class RetriggerGiroPaymentDelegator {
                     forGiroList.addAll(renewSubmisonDtos);
                 }
                 //set fee info
-                boolean isCharity = ApplicationHelper.isCharity(bpc.request);
                 FeeDto renewalAmount;
                 if(isCharity){
                     renewalAmount = appSubmissionService.getCharityRenewalAmount(renewSubmisonDtos,isCharity);
