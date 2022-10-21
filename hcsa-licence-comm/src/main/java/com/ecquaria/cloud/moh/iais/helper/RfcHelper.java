@@ -205,7 +205,7 @@ public final class RfcHelper {
         // document
         boolean changeSvcDocs = isChangeSvcDocs(appSvcRelatedInfoDtos.get(0), oldAppSvcRelatedInfoDtos.get(0));
         if (changeSvcDocs) {
-            IaisCommonUtils.addToList(HcsaConsts.STEP_DOCUMENTS, autoList);
+            autoList.add(HcsaConsts.STEP_DOCUMENTS);
         }
         boolean changeServiceAutoFields = changeCharges || changeSvcDocs;
         boolean serviceIsChange = changeVehicles || changeBusiness
@@ -2578,7 +2578,7 @@ public final class RfcHelper {
             return true;
         }
         if (source.size() != target.size()) {
-            return true;
+            return false;
         }
         List<R> newSrc = newList.apply(source);
         List<R> newTar = newList.apply(target);

@@ -212,7 +212,7 @@ public class PageDataCopyUtil {
             svcDocDto.setSvcDocId(appSvcDocDto.getSvcDocId());
             svcDocDto.setDocName(appSvcDocDto.getDocName());
             svcDocDto.setDocSize(appSvcDocDto.getDocSize());
-            svcDocDto.setFileRepoId(appSvcDocDto.getFileRepoId());
+            //svcDocDto.setFileRepoId(appSvcDocDto.getFileRepoId());
             svcDocDto.setSvcId(appSvcDocDto.getSvcId());
             //premiseVal May be ""
             svcDocDto.setMd5Code(appSvcDocDto.getMd5Code());
