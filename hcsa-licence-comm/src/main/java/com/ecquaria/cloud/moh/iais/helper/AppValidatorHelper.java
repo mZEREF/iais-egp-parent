@@ -4149,6 +4149,17 @@ public final class AppValidatorHelper {
         }
     }
 
+    public static Map<String, String> doValidateRfi(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto,
+            HttpServletRequest request) {
+        Map<String, String> errorMap = doComChange(appSubmissionDto, oldAppSubmissionDto);
+        if (errorMap.isEmpty()) {
+            ApplicationHelper.checkPremisesHciList(appSubmissionDto.getLicenseeId(), ApplicationHelper.checkIsRfi(request),
+                    oldAppSubmissionDto, false, request);
+            doPreviewSubmitValidate(errorMap, appSubmissionDto, request);
+        }
+        return errorMap;
+    }
+
     public static Map<String, String> doValidateRenewal(List<AppSubmissionDto> appSubmissionDtos, HttpServletRequest request) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if (IaisCommonUtils.isEmpty(appSubmissionDtos)) {
