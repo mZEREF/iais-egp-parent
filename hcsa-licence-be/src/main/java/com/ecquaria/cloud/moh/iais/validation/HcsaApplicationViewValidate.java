@@ -242,8 +242,11 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             rejectCode.add(RECOMMENDATION_REJECT);
             rejectCode.add(DECISION_REJECT);
             valiVehicleEasMtsCommon(request, errMap, applicationViewDto, recommendationStr, rejectCode, decisionValue);
-            valiSpecialEasMtsCommon(request, errMap, applicationViewDto, recommendationStr, rejectCode, decisionValue);
-            valiOtherEasMtsCommon(request, errMap, applicationViewDto, recommendationStr, rejectCode, decisionValue);
+            boolean transfer = applicationViewDto.getApplicationGroupDto().isTransfer();
+            if (!transfer){
+                valiSpecialEasMtsCommon(request, errMap, applicationViewDto, recommendationStr, rejectCode, decisionValue);
+                valiOtherEasMtsCommon(request, errMap, applicationViewDto, recommendationStr, rejectCode, decisionValue);
+            }
         }
         return errMap;
     }

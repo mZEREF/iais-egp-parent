@@ -95,7 +95,7 @@
                     </td>
                     <td>
                         <p>
-                            <c:out value="${baseSvcFeeExt.appGrpNo}"/>
+                            <c:out value="${baseSvcFeeExt.appGroupNo}"/>
                         </p>
                     </td>
                     <td>
@@ -124,7 +124,7 @@
                         </td>
                         <td>
                             <p>
-                                <c:out value="${includedSvcFeeExt.appGrpNo}"/>
+                                <c:out value="${includedSvcFeeExt.appGroupNo}"/>
                             </p>
                         </td>
                         <td>
@@ -154,7 +154,7 @@
                     </td>
                     <td>
                         <p>
-                            <c:out value="${bundleSvcFeeExt.appGrpNo}"/>
+                            <c:out value="${bundleSvcFeeExt.appGroupNo}"/>
                         </p>
                     </td>
                     <td>
@@ -279,7 +279,6 @@
                     <tr>
                         <td>
                             <p><strong><c:out value="${svc.serviceName}"/></strong></p>
-
                         </td>
                         <td>
                             <p>Amendment</p>

@@ -501,7 +501,7 @@ public class HcsaApplicationDelegator {
      * @throws
      */
     public void chooseStage(BaseProcessClass bpc) throws Exception {
-        log.debug(StringUtil.changeForLog("the do chooseStage start ...."));
+        log.info(StringUtil.changeForLog("the do chooseStage start ...."));
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         //do upload file
         String doDocument = ParamUtil.getString(bpc.request, "uploadFile");
@@ -839,7 +839,7 @@ public class HcsaApplicationDelegator {
                 nextStage = approveSelect;
             }
 
-            log.debug(StringUtil.changeForLog("the nextStage is -->:" + nextStage));
+            log.info(StringUtil.changeForLog("the nextStage is -->:" + nextStage));
             ParamUtil.setRequestAttr(bpc.request, "crud_action_type", nextStage);
 
             if (ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())
@@ -849,7 +849,7 @@ public class HcsaApplicationDelegator {
                     applicationViewDto.getApplicationDto().setFastTracking(true);
                 }
             }
-            log.debug(StringUtil.changeForLog("the do chooseStage end ...."));
+            log.info(StringUtil.changeForLog("the do chooseStage end ...."));
         }
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
     }

@@ -20,16 +20,13 @@
                 <c:if test="${not empty baseSvcFeeExt }">
                     <tr>
                         <td>
-                            <p><strong><c:out value="${svc.serviceName}"/></strong></p>
-                            <p>
-                                (${baseSvcFeeExt.address})
-                            </p>
+                            <p><strong><c:out value="${AppSubmissionDto.serviceName}"/></strong></p>
                         </td>
                         <td>
                             <p>Amendment</p>
                         </td>
                         <td>
-                            <p><c:out value="${svc.appGrpNo}-0${index.index+1}"/></p>
+                            <p><c:out value="${AppSubmissionDto.appGrpNo}-0${feeInfoStat.index+1}"/></p>
                         </td>
                         <td>
                             <p>
@@ -42,13 +39,12 @@
                     <tr>
                         <td>
                             <p><strong><c:out value="${AppSubmissionDto.serviceName}"/></strong></p>
-
                         </td>
                         <td>
                             <p>Amendment</p>
                         </td>
                         <td>
-                            <p><c:out value="${AppSubmissionDto.appGrpNo}-0${index.index+1}"/></p>
+                            <p><c:out value="${AppSubmissionDto.appGrpNo}-0${feeInfoStat.index+1}"/></p>
                         </td>
                         <td>
                             <p>

@@ -557,8 +557,13 @@ public class AppCommServiceImpl implements AppCommService {
         saveAppGrpMisc(appGroupMiscDto);
     }
 
-    private void saveAppGrpMisc(AppGroupMiscDto appGroupMiscDto) {
-        appCommClient.saveAppGroupMiscDto(appGroupMiscDto);
+    @Override
+    public AppGroupMiscDto saveAppGrpMisc(AppGroupMiscDto appGroupMiscDto) {
+        if (appGroupMiscDto == null || StringUtil.isEmpty(appGroupMiscDto.getAppGrpId())) {
+            log.warn(StringUtil.changeForLog("The data has some wrong - " + JsonUtil.parseToJson(appGroupMiscDto)));
+            return appGroupMiscDto;
+        }
+        return appCommClient.saveAppGroupMiscDto(appGroupMiscDto).getEntity();
     }
 
     @Override

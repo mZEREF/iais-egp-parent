@@ -16,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperat
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoAbortDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoDto;
@@ -37,10 +36,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.SuppleFormItemConfigDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -55,7 +51,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -1913,7 +1908,7 @@ public final class RfcHelper {
      * @param appSubmissionDto
      */
     public static void setRelatedInfoBaseServiceId(AppSubmissionDto appSubmissionDto) {
-        if (appSubmissionDto == null) {
+        /*if (appSubmissionDto == null) {
             return;
         }
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -1948,7 +1943,7 @@ public final class RfcHelper {
                         break;
                     }
                 }
-                /*if (!StringUtil.isEmpty(baseService)) {
+                if (!StringUtil.isEmpty(baseService)) {
                     String service_name = configCommService.getServiceNameById(baseService);
                     List<LicBaseSpecifiedCorrelationDto> entity = licCommService.getLicBaseSpecifiedCorrelationDtos(
                             HcsaConsts.SERVICE_TYPE_SPECIFIED, licenceId);
@@ -1964,13 +1959,13 @@ public final class RfcHelper {
                             }
                         }
                     }
-                }*/
+                }
             }
             var1.setServiceId(activeHcsaServiceDtoByName.getId());
-        }
+        }*/
     }
 
-    public static void recursingChooseLabUpward(Map<String, HcsaSvcSubtypeOrSubsumedDto> map, String targetSvcScopeId,
+    /*public static void recursingChooseLabUpward(Map<String, HcsaSvcSubtypeOrSubsumedDto> map, String targetSvcScopeId,
             List<String> svcScopeIdList, List<AppSvcChckListDto> newSvcScopeList) {
         HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto = map.get(targetSvcScopeId);
         if (hcsaSvcSubtypeOrSubsumedDto != null) {
@@ -1995,7 +1990,7 @@ public final class RfcHelper {
             }
         }
 
-    }
+    }*/
 
     /**
      * Generate the svc related info with the auto fields changed
