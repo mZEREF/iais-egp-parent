@@ -48,6 +48,17 @@
                                     <%@include file="specialServicePersonnel.jsp" %>
                                     <c:if test="${not empty appSvcSuplmFormDto.appSvcSuplmGroupDtoList}">
                                         <div class="panel-main-content">
+                                            <iais:row>
+                                                <div class="col-md-12 col-xs-12 edit-content">
+                                                    <c:if test="${'true' == canEdit}">
+                                                        <div class="text-right app-font-size-16">
+                                                            <a class="edit" href="javascript:void(0);">
+                                                                <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
+                                                            </a>
+                                                        </div>
+                                                    </c:if>
+                                                </div>
+                                            </iais:row>
                                             <c:set var="itemPrefix" value="${status.index}${subSvcRelStatus.index}"/>
                                             <c:forEach var="appSvcSuplmGroupDto" items="${appSvcSuplmFormDto.appSvcSuplmGroupDtoList}">
                                                 <c:set var="count" value="${appSvcSuplmGroupDto.count}"/>
