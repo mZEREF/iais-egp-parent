@@ -221,10 +221,8 @@ public final class RfcHelper {
         boolean svcPersonnel = isAddOrReplaceSvcPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos,nonAutoList);
         boolean governanceOfficer = isAddOrReplaceCd(appSvcRelatedInfoDtos,oldAppSvcRelatedInfoDtos,true,nonAutoList);
         boolean keyPersonnel = isAddOrReplaceKey(appSvcRelatedInfoDtos,oldAppSvcRelatedInfoDtos,true,nonAutoList);
-        if (sectionLeader || svcPersonnel || governanceOfficer || keyPersonnel){
-            return true;
-        }
-        return false;
+        boolean flag = sectionLeader || svcPersonnel || governanceOfficer || keyPersonnel;
+        return flag;
     }
 
 //    SendMessageAuto
@@ -233,10 +231,8 @@ public final class RfcHelper {
         boolean svcPersonnel = isRemoveSvcPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos,autoList);
         boolean governanceOfficer = isRemoveClinicalGovernanceOfficers(appSvcRelatedInfoDtos,oldAppSvcRelatedInfoDtos,autoList);
         boolean keyPersonnel = isRemoveKeyPersonnel(appSvcRelatedInfoDtos,oldAppSvcRelatedInfoDtos,autoList);
-        if (sectionLeader || svcPersonnel || governanceOfficer || keyPersonnel){
-            return true;
-        }
-        return false;
+        boolean flag = sectionLeader || svcPersonnel || governanceOfficer || keyPersonnel;
+        return flag;
     }
 //    noSendMessageAndAuto
     public static boolean changePersonnel(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos, List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtos,List<String> nonAutoList,List<String> autoList){
@@ -244,10 +240,8 @@ public final class RfcHelper {
         boolean svcPersonnel = isChangeDetailSvcPersonnel(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos,autoList);
         boolean governanceOfficer = isChangeDetailClinicalGovernanceOfficers(appSvcRelatedInfoDtos,oldAppSvcRelatedInfoDtos,autoList);
         boolean keyPersonnel = isChangeDetailKeyPersonnel(appSvcRelatedInfoDtos,oldAppSvcRelatedInfoDtos,autoList);
-        if (sectionLeader || svcPersonnel || governanceOfficer || keyPersonnel){
-            return true;
-        }
-        return false;
+        boolean flag = sectionLeader || svcPersonnel || governanceOfficer || keyPersonnel;
+        return flag;
     }
 
     public static boolean isChangeDetailClinicalGovernanceOfficers(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList, List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList, List<String> autoList) {

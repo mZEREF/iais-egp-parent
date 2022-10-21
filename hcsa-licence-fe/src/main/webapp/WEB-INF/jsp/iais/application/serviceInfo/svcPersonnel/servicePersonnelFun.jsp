@@ -24,7 +24,7 @@
                 personnelSelFun(personnelSel, $(v));
             });
         }
-        initPage($('div.panel-main-content'))
+        initPage($('div.contents'))
         $('input[name="prsLoading"]').each(function () {
             if ($(this).val() == 'true') {
                 var $currContent = $(this).closest('.personnel-content');
@@ -43,7 +43,9 @@
         <c:if test="${(isRfc || isRenew) && !isRfi}">
             disableContent($('.personnel-content'));
         </c:if>
-
+        <c:if test="${isRfi}">
+            disableContent($('.personnel-content'));
+        </c:if>
 
         let svcContent = '.personnel-content';
         psnEditEvent(svcContent);

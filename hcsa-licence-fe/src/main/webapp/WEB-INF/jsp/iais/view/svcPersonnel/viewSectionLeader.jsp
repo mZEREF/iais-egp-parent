@@ -6,7 +6,7 @@
         <c:forEach var="sectionLeader" items="${currentPreviewSvcInfo.appSvcSectionLeaderList}" varStatus="status">
             <iais:row>
                 <div class="col-xs-12">
-                    <p><strong>Section Leader<c:if test="${currentPreviewSvcInfo.appSvcSectionLeaderList.size() > 1}"> ${index+1}</c:if>:</strong></p>
+                    <p><strong>Section Leader<c:if test="${currentPreviewSvcInfo.appSvcSectionLeaderList.size() > 1}"> ${status.index+1}</c:if>:</strong></p>
                 </div>
             </iais:row>
             <iais:row>
