@@ -13,7 +13,7 @@
 
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
     <form id="mainForm" method="post" ${currentStep == 'SVST005' ? 'enctype="multipart/form-data"' : '' } action="<%=process.runtime.continueURL()%>">
-        <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
+<%--        <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>--%>
         <div class="main-content">
             <div class="row">
                 <div class="center-content">
@@ -43,12 +43,12 @@
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST009'}">
                                                             <div class="clinical-director">
-                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/clinicalDirectorContent.jsp"/>
+                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/keyPersonnel/clinicalDirectorContent.jsp"/>
                                                             </div>
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST002'}">
                                                             <div class="clinical-governance-officer">
-                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/governanceOfficers.jsp"/>
+                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/keyPersonnel/governanceOfficers.jsp"/>
                                                             </div>
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST013'}">
@@ -73,7 +73,7 @@
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST014'}">
                                                             <div class="key-appointment-holder">
-                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/keyAppointmentHolder.jsp"/>
+                                                                <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/keyPersonnel/keyAppointmentHolder.jsp"/>
                                                             </div>
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST007'}">
