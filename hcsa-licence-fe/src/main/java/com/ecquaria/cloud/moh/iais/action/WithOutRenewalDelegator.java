@@ -1235,7 +1235,7 @@ public class WithOutRenewalDelegator {
         String notAutoGroupId = newAppSubmissionList.get(0).getAppGrpId();
         // app group misc
         appCommService.saveAutoRfcLinkAppGroupMisc(notAutoGroupId, autoGroupId);
-
+        // draft
         if (isSingle) {
             appSubmissionService.handleDraft(appSubmissionDtos.get(0).getDraftNo(), licenseeId,
                     firstSubmissionDto, renewAppSubmissionDtos);
@@ -1245,7 +1245,6 @@ public class WithOutRenewalDelegator {
 
         //go page3
         ParamUtil.setRequestAttr(request, PAGE_SWITCH, PAGE3);
-        // validateOtherSubDto(bpc.request,renewDto,oldAppSubmissionDto);
     }
 
     private Map<AppSubmissionDto, List<String>> checkOtherSubDto(String appGrpNo, String autoGrpNo, String licenseeId,
@@ -1255,66 +1254,63 @@ public class WithOutRenewalDelegator {
         Map<AppSubmissionDto, List<String>> errorListMap = IaisCommonUtils.genNewHashMap();
         // create rfc data
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-        if (appGrpPremisesDtoList != null) {
-            if (appEditSelectDto.isPremisesEdit()) {
-                AppEditSelectDto changeSelectDto = new AppEditSelectDto();
-                changeSelectDto.setPremisesEdit(true);
-                changeSelectDto.setPremisesListEdit(true);
-                changeSelectDto.setChangeHciName(appEditSelectDto.isChangeHciName());
-                changeSelectDto.setChangeInLocation(appEditSelectDto.isChangeInLocation());
-                changeSelectDto.setChangeFloorUnits(appEditSelectDto.isChangeFloorUnits());
-                for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
-                    AppGrpPremisesDto premisesDto = appGrpPremisesDtoList.get(i);
-                    String[] selectedLicences = premisesDto.getSelectedLicences();
-                    List<LicenceDto> licenceDtos = null;
-                    List<LicenceDto> existLicences = premisesDto.getLicenceDtos();
-                    if (IaisCommonUtils.isNotEmpty(existLicences)) {
-                        licenceDtos = existLicences.stream()
-                                .filter(dto -> StringUtil.isIn(dto.getId(), selectedLicences))
-                                .collect(Collectors.toList());
-                    }
-                    if (licenceDtos != null) {
-                        String draftNo = appSubmissionDto.getDraftNo();
-                        boolean autoRfc = changeSelectDto.isAutoRfc();
-                        for (LicenceDto licenceDto : licenceDtos) {
-                            AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(
-                                    licenceDto.getId());
-                            // Premises
-                            ApplicationHelper.reSetPremeses(appSubmissionDtoByLicenceId, appGrpPremisesDtoList.get(i));
-                            appSubmissionDtoByLicenceId.setAmount(0.0D);
-                            appSubmissionDtoByLicenceId.setDraftNo(draftNo);
-                            AppEditSelectDto editSelectDto = MiscUtil.transferEntityDto(changeSelectDto, AppEditSelectDto.class);
-                            RfcHelper.beforeSubmit(appSubmissionDto, editSelectDto, autoRfc ? autoGrpNo : appGrpNo,
-                                    ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE, null);
-                            if (autoRfc) {
-                                autoAppSubmissionDtos.add(appSubmissionDtoByLicenceId);
-                            } else {
-                                noAutoAppSubmissionDtos.add(appSubmissionDtoByLicenceId);
-                            }
-                        }
+        if (appGrpPremisesDtoList != null && appEditSelectDto.isPremisesEdit()) {
+            AppEditSelectDto changeSelectDto = new AppEditSelectDto();
+            changeSelectDto.setPremisesEdit(true);
+            changeSelectDto.setPremisesListEdit(true);
+            changeSelectDto.setChangeHciName(appEditSelectDto.isChangeHciName());
+            changeSelectDto.setChangeInLocation(appEditSelectDto.isChangeInLocation());
+            changeSelectDto.setChangeFloorUnits(appEditSelectDto.isChangeFloorUnits());
+            for (AppGrpPremisesDto premisesDto : appGrpPremisesDtoList) {
+                String[] selectedLicences = premisesDto.getSelectedLicences();
+                List<LicenceDto> licenceDtos = null;
+                List<LicenceDto> existLicences = premisesDto.getLicenceDtos();
+                if (IaisCommonUtils.isNotEmpty(existLicences)) {
+                    licenceDtos = existLicences.stream()
+                            .filter(dto -> StringUtil.isIn(dto.getId(), selectedLicences))
+                            .collect(Collectors.toList());
+                }
+                if (licenceDtos == null || licenceDtos.isEmpty()) {
+                    continue;
+                }
+                String draftNo = appSubmissionDto.getDraftNo();
+                boolean autoRfc = changeSelectDto.isAutoRfc();
+                for (LicenceDto licenceDto : licenceDtos) {
+                    AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(
+                            licenceDto.getId());
+                    // Premises
+                    ApplicationHelper.reSetPremeses(appSubmissionDtoByLicenceId, premisesDto);
+                    appSubmissionDtoByLicenceId.setAmount(0.0D);
+                    appSubmissionDtoByLicenceId.setDraftNo(draftNo);
+                    AppEditSelectDto editSelectDto = MiscUtil.transferEntityDto(changeSelectDto, AppEditSelectDto.class);
+                    RfcHelper.beforeSubmit(appSubmissionDto, editSelectDto, autoRfc ? autoGrpNo : appGrpNo,
+                            ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE, null);
+                    if (autoRfc) {
+                        autoAppSubmissionDtos.add(appSubmissionDtoByLicenceId);
+                    } else {
+                        noAutoAppSubmissionDtos.add(appSubmissionDtoByLicenceId);
                     }
                 }
             }
-            log.info(StringUtil.changeForLog("---- premisesEdit autoAppSubmissionDtos size :" + autoAppSubmissionDtos.size()));
-            if (!ConfigHelper.getBoolean("halp.rfc.split.flag", true)) {
-                if (appEditSelectDto.isLicenseeEdit()) {
-                    //gen lic change rfc
-                    ApplicationHelper.addToAuto(getAutoChangeLicAppSubmissions(oldAppSubmissionDto, autoGrpNo, appSubmissionDto),
-                            autoAppSubmissionDtos);
-                }
-                log.info(StringUtil.changeForLog("---- licenseeEdit autoAppSubmissionDtos size :" + autoAppSubmissionDtos.size()));
-
-                if (appEditSelectDto.isServiceEdit()) {
-                    List<AppSubmissionDto> personAppSubmissionList = licCommService.personContact(licenseeId, appSubmissionDto,
-                            oldAppSubmissionDto, 2);
-                    ApplicationHelper.addToAuto(personAppSubmissionList, autoAppSubmissionDtos);
-                }
-                log.info(StringUtil.changeForLog("---- serviceEdit autoAppSubmissionDtos size :" + autoAppSubmissionDtos.size()));
-            }
-
-            errorListMap.putAll(validateOtherSubDto(autoAppSubmissionDtos));
-            errorListMap.putAll(validateOtherSubDto(noAutoAppSubmissionDtos));
         }
+        log.info(StringUtil.changeForLog("---- premisesEdit autoAppSubmissionDtos size :" + autoAppSubmissionDtos.size()));
+        if (!ConfigHelper.getBoolean("halp.rfc.split.flag", true)) {
+            if (appEditSelectDto.isLicenseeEdit()) {
+                //gen lic change rfc
+                ApplicationHelper.addToAuto(getAutoChangeLicAppSubmissions(oldAppSubmissionDto, autoGrpNo, appSubmissionDto),
+                        autoAppSubmissionDtos);
+            }
+            log.info(StringUtil.changeForLog("---- licenseeEdit autoAppSubmissionDtos size :" + autoAppSubmissionDtos.size()));
+
+            if (appEditSelectDto.isServiceEdit()) {
+                List<AppSubmissionDto> personAppSubmissionList = licCommService.personContact(licenseeId, appSubmissionDto,
+                        oldAppSubmissionDto, 2);
+                ApplicationHelper.addToAuto(personAppSubmissionList, autoAppSubmissionDtos);
+            }
+            log.info(StringUtil.changeForLog("---- serviceEdit autoAppSubmissionDtos size :" + autoAppSubmissionDtos.size()));
+        }
+        errorListMap.putAll(validateOtherSubDto(autoAppSubmissionDtos));
+        errorListMap.putAll(validateOtherSubDto(noAutoAppSubmissionDtos));
         return errorListMap;
     }
 
