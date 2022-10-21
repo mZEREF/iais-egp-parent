@@ -2438,7 +2438,9 @@ public final class RfcHelper {
         //set Risk Score
         setRiskToDto(appSubmissionDto);
         // reSetAdditionalFields
-        appSubmissionDto.setChangeSelectDto(appEditSelectDto);
+        if (appEditSelectDto != null) {
+            appSubmissionDto.setChangeSelectDto(appEditSelectDto);
+        }
         ApplicationHelper.reSetAdditionalFields(appSubmissionDto, appEditSelectDto, appGrpNo);
 //        ApplicationHelper.reSetAdditionalFields(appSubmissionDto, oldAppSubmissionDto);
         // bind application
