@@ -454,7 +454,7 @@ public class PageDataCopyUtil {
     }
     public static List<AppSvcOtherInfoAbortDto> copyAppSvcOtherInfoAbortDto(List<AppSvcOtherInfoAbortDto> abortDtoList){
         if (IaisCommonUtils.isEmpty(abortDtoList)){
-            return abortDtoList;
+            return IaisCommonUtils.genNewArrayList();
         }
         List<AppSvcOtherInfoAbortDto> appSvcOtherInfoAbortDtoList = abortDtoList.stream()
                 .map(dto -> MiscUtil.transferEntityDto(dto, AppSvcOtherInfoAbortDto.class))
