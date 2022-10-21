@@ -40,10 +40,10 @@
                     </div>
                 </iais:row>
                 <iais:row>
-                    <div class="col-md-6 col-sm-6 col-xs-6">
+                    <div class="col-md-4 col-sm-4 col-xs-4">
                         <label class="control-label"><strong>Weekly</strong></label>
                     </div>
-                    <div class="col-md-6 col-sm-6 col-xs-6">
+                    <div class="col-md-8 col-sm-8 col-xs-8">
                         <div class="col-md-4  col-sm-4 col-xs-4 input-padding hidden-xs" style="padding-left: 0;">
                             <label class="control-label"><strong>Start</strong></label>
                         </div>

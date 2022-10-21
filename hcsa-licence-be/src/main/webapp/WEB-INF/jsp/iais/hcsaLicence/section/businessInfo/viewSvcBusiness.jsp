@@ -87,13 +87,13 @@
                             </div>
                         </tr>
                         <tr>
-                            <td class="col-xs-6">
-                                <div class="col-xs-6">
+                            <td class="col-xs-4">
+                                <div class="col-xs-4">
                                     <label class="control-label">Weekly</label>
                                 </div>
                             </td>
                             <td>
-                                <div class="col-xs-6">
+                                <div class="col-xs-8">
                                     <div class="col-xs-4 hidden-xs" style="margin-left: -5px">
                                         <label class="control-label">Start</label>
                                     </div>
