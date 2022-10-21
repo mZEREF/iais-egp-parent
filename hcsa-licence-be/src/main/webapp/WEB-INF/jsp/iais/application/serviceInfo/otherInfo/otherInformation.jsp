@@ -71,7 +71,7 @@
                             </div>
                         </div>
                         <%@include file="otherInformationTopPerson.jsp" %>
-<%--                        <%@include file="otherInfoItemForm.jsp" %>--%>
+                        <%@include file="otherInfoItemForm.jsp" %>
                         <%@include file="documentation.jsp" %>
                         <%@include file="aboutTop.jsp" %>
                         <%@include file="yFV.jsp" %>
@@ -100,7 +100,7 @@
                         </div>
                     </div>
                     <%@include file="otherInformationTopPerson.jsp" %>
-<%--                    <%@include file="otherInfoItemForm.jsp" %>--%>
+                    <%@include file="otherInfoItemForm.jsp" %>
                     <%@include file="documentation.jsp" %>
                     <%@include file="aboutTop.jsp" %>
                 </div>
@@ -122,7 +122,7 @@
                         </div>
                     </div>
                     <%@include file="otherInformationTopPerson.jsp" %>
-<%--                    <%@include file="otherInfoItemForm.jsp" %>--%>
+                    <%@include file="otherInfoItemForm.jsp" %>
                     <%@include file="documentation.jsp" %>
                     <%@include file="aboutTop.jsp" %>
                     <%@include file="yFV.jsp" %>

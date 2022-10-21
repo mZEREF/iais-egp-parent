@@ -30,12 +30,12 @@
         <td>
             <div class="col-xs-6">
                 <span class="newVal" attr="${otherInfo.ascsDeclaration}">
-                     <c:if test="${empty  otherInfo.ascsDeclaration}">Yes</c:if>
+                     <c:if test="${otherInfo.ascsDeclaration eq '0'}">Yes</c:if>
                 </span>
             </div>
             <div class="col-xs-6">
                 <span class=" oldVal" attr="${oldOtherInfo.ascsDeclaration}" style="display: none">
-                      <c:if test="${empty  oldOtherInfo.ascsDeclaration}">Yes</c:if>
+                      <c:if test="${oldOtherInfo.ascsDeclaration eq '0'}">Yes</c:if>
                 </span>
             </div>
         </td>

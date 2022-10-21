@@ -66,6 +66,7 @@ import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
@@ -134,6 +135,8 @@ public class RequestForChangeMenuDelegator {
     private AppCommService appCommService;
     @Autowired
     private LicCommService licCommService;
+    @Autowired
+    private ConfigCommService configCommService;
     /**
      * @param bpc
      * @Decription start
@@ -1569,7 +1572,6 @@ public class RequestForChangeMenuDelegator {
         ApplicationHelper.reSetAdditionalFields(appSubmissionDto, appEditSelectDto);
 
         boolean isCharity = ApplicationHelper.isCharity(bpc.request);
-        amendmentFeeDto.setIsCharity(isCharity);
         //add ss fee
         List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList=appSubmissionDto.getAppPremSpecialisedDtoList().get(0).getFlatAppPremSubSvcRelList(dto -> ApplicationConsts.RECORD_ACTION_CODE_ADD.equals(dto.getActCode()));
         if (IaisCommonUtils.isNotEmpty(appPremSubSvcRelDtoList)) {
@@ -1596,11 +1598,16 @@ public class RequestForChangeMenuDelegator {
         }
         amendmentFeeDto.setServiceCode(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceCode());
         amendmentFeeDto.setLicenceNo(appSubmissionDto.getLicenceNo());
-        FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
-        Double total = feeDto.getTotal();
-        if (total == null) {
-            total = 0.0;
-        }
+
+        amendmentFeeDto.setIsCharity(isCharity);
+        amendmentFeeDto.setAddress(appSubmissionDto.getAppGrpPremisesDtoList().get(0).getAddress());
+        amendmentFeeDto.setServiceName(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName());
+        amendmentFeeDto.setAppGrpNo(appSubmissionDto.getAppGrpNo());
+        FeeDto feeDto = configCommService.getGroupAmendAmount(amendmentFeeDto);
+        appSubmissionDto.setFeeInfoDtos(feeDto.getFeeInfoDtos());
+        appSubmissionDto.setAmount(feeDto.getTotal());
+        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+
         ParamUtil.setSessionAttr(bpc.request, "FeeDetail", null);
         if(feeDto.getFeeDetail()!=null){
             ParamUtil.setSessionAttr(bpc.request, "FeeDetail", feeDto.getFeeDetail().toString());

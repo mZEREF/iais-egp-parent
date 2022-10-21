@@ -667,32 +667,6 @@ public final class AppDataHelper {
         return result;
     }
 
-    private static void getAppSvcOutsourcedDtoByLicenceNo(AppSvcOutsouredDto appSvcOutsouredDto, String outsourcedLicenceNo, String curAct) {
-        if (appSvcOutsouredDto != null && StringUtil.isNotEmpty(outsourcedLicenceNo)) {
-            List<AppPremGroupOutsourcedDto> clbList = appSvcOutsouredDto.getClinicalLaboratoryList();
-            List<AppPremGroupOutsourcedDto> rsList = appSvcOutsouredDto.getRadiologicalServiceList();
-            AppSvcOutsouredDto outsouredDto = new AppSvcOutsouredDto();
-            if (IaisCommonUtils.isNotEmpty(clbList)) {
-                List<AppPremGroupOutsourcedDto> cList = IaisCommonUtils.genNewArrayList();
-                for (AppPremGroupOutsourcedDto appPremGroupOutsourcedDto : clbList) {
-                    if (outsourcedLicenceNo.equals(appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getLicenceNo())) {
-                        cList.add(appPremGroupOutsourcedDto);
-                        outsouredDto.setClinicalLaboratoryList(cList);
-                    }
-                }
-            }
-            if (IaisCommonUtils.isNotEmpty(rsList)) {
-                List<AppPremGroupOutsourcedDto> rList = IaisCommonUtils.genNewArrayList();
-                for (AppPremGroupOutsourcedDto appPremGroupOutsourcedDto : rsList) {
-                    if (outsourcedLicenceNo.equals(appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getLicenceNo())) {
-                        rList.add(appPremGroupOutsourcedDto);
-                        outsouredDto.setRadiologicalServiceList(rList);
-                    }
-                }
-            }
-        }
-    }
-
     private static final FilterParameter filterParameter = new FilterParameter.Builder()
             .clz(AppPremOutSourceProvidersQueryDto.class)
             .searchAttr(ApplicationConsts.OUT_SOURCE_PARAM)
@@ -701,21 +675,15 @@ public final class AppDataHelper {
 
     public static AppSvcOutsouredDto genAppPremOutSourceProvidersDto(String curAct, AppSvcOutsouredDto appSvcOutsouredDto,
                                                                      HttpServletRequest request, AppSubmissionDto appSubmissionDto, String appType) {
-        boolean getDataByIndexNo = false;
         boolean getPageData = false;
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
         String isPartEdit = ParamUtil.getString(request, "isPartEdit");
-        String outsourcedIndexNo = ParamUtil.getString(request, "outsourcedIndexNo");
         if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
             getPageData = true;
         }else if (AppConsts.YES.equals(isPartEdit)){
             getPageData = true;
-        }else if (StringUtil.isNotEmpty(outsourcedIndexNo)){
-            getDataByIndexNo = true;
         }
-        if (getDataByIndexNo){
-            getAppSvcOutsourcedDtoByLicenceNo(appSvcOutsouredDto, outsourcedIndexNo, curAct);
-        }else if (getPageData){
+        if (getPageData){
             List<AppPremGroupOutsourcedDto> clinicalLaboratoryList = appSvcOutsouredDto.getClinicalLaboratoryList();
             List<AppPremGroupOutsourcedDto> radiologicalServiceList = appSvcOutsouredDto.getRadiologicalServiceList();
             if (IaisCommonUtils.isEmpty(clinicalLaboratoryList)){

@@ -2133,6 +2133,16 @@ public final class AppValidatorHelper {
                     errMap.put(prefix+"outstandingScope",MessageUtil.replaceMessage("GENERAL_ERR0006",
                             "Scope of Outsourcing", "field"));
                 }
+                if (StringUtil.isNotEmpty(startDate) && StringUtil.isNotEmpty(endDate)){
+                    try {
+                        if (Formatter.parseDate(startDate).after(Formatter.parseDate(endDate))) {
+                            errMap.put(prefix+"agreementStartDate",MessageUtil.replaceMessage("NEW_ERR0020",
+                                    "Date of Agreement", "field"));
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
         return errMap;

@@ -32,7 +32,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.HcsaFeeBundleItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
@@ -1428,10 +1427,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         return licCommService.viewAppSubmissionDto(licenceId);
     }
 
-    @Override
-    public FeeDto getGroupAmendAmount(AmendmentFeeDto amendmentFeeDto) {
-        return configCommClient.amendmentFee(amendmentFeeDto).getEntity();
-    }
 
     @Override
     public AppSubmissionDto submitRenew(AppSubmissionDto appSubmissionDto) {
