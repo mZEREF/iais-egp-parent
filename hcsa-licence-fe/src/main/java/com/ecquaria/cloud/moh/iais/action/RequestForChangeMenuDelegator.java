@@ -1572,7 +1572,6 @@ public class RequestForChangeMenuDelegator {
         ApplicationHelper.reSetAdditionalFields(appSubmissionDto, appEditSelectDto);
 
         boolean isCharity = ApplicationHelper.isCharity(bpc.request);
-        amendmentFeeDto.setIsCharity(isCharity);
         //add ss fee
         List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList=appSubmissionDto.getAppPremSpecialisedDtoList().get(0).getFlatAppPremSubSvcRelList(dto -> ApplicationConsts.RECORD_ACTION_CODE_ADD.equals(dto.getActCode()));
         if (IaisCommonUtils.isNotEmpty(appPremSubSvcRelDtoList)) {
