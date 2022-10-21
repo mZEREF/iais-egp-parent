@@ -1458,26 +1458,40 @@ public final class RfcHelper {
         }
         List<OperationHoursReloadDto> appSvcBusinessOperationHoursList = IaisCommonUtils.genNewArrayList();
         appSvcBusinessDtoList.forEach((v) -> {
-            appSvcBusinessOperationHoursList.addAll(v.getWeeklyDtoList());
-            appSvcBusinessOperationHoursList.addAll(v.getPhDtoList());
-
+            if (IaisCommonUtils.isNotEmpty(v.getWeeklyDtoList())){
+                appSvcBusinessOperationHoursList.addAll(v.getWeeklyDtoList());
+            }
+            if (IaisCommonUtils.isNotEmpty(v.getPhDtoList())){
+                appSvcBusinessOperationHoursList.addAll(v.getPhDtoList());
+            }
         });
         List<OperationHoursReloadDto> n = PageDataCopyUtil.copyOperationHoursReloadDto(appSvcBusinessOperationHoursList);
         List<OperationHoursReloadDto> oldAppSvcBusinessOperationHoursList = IaisCommonUtils.genNewArrayList();
         oldAppSvcBusinessDtoList.forEach((v) -> {
-            oldAppSvcBusinessOperationHoursList.addAll(v.getWeeklyDtoList());
-            oldAppSvcBusinessOperationHoursList.addAll(v.getPhDtoList());
-
+            if (IaisCommonUtils.isNotEmpty(v.getWeeklyDtoList())){
+                oldAppSvcBusinessOperationHoursList.addAll(v.getWeeklyDtoList());
+            }
+            if (IaisCommonUtils.isNotEmpty(v.getPhDtoList())){
+                oldAppSvcBusinessOperationHoursList.addAll(v.getPhDtoList());
+            }
         });
         List<OperationHoursReloadDto> o = PageDataCopyUtil.copyOperationHoursReloadDto(oldAppSvcBusinessOperationHoursList);
         if (!n.equals(o)) {
             isChange = true;
         }
         List<AppPremEventPeriodDto> event = IaisCommonUtils.genNewArrayList();
-        appSvcBusinessDtoList.forEach((v) -> event.addAll(v.getEventDtoList()));
+        appSvcBusinessDtoList.forEach((v) -> {
+            if (IaisCommonUtils.isNotEmpty(v.getEventDtoList())){
+                event.addAll(v.getEventDtoList());
+            }
+        });
         List<AppPremEventPeriodDto> copyEvent = PageDataCopyUtil.copyEvent(event);
         List<AppPremEventPeriodDto> oldevent = IaisCommonUtils.genNewArrayList();
-        oldAppSvcBusinessDtoList.forEach((v) -> oldevent.addAll(v.getEventDtoList()));
+        oldAppSvcBusinessDtoList.forEach((v) -> {
+            if (IaisCommonUtils.isNotEmpty(v.getEventDtoList())){
+                oldevent.addAll(v.getEventDtoList());
+            }
+        });
         List<AppPremEventPeriodDto> copyOldEvent = PageDataCopyUtil.copyEvent(event);
         if (!copyEvent.equals(copyOldEvent)) {
             isChange = true;
@@ -2454,7 +2468,9 @@ public final class RfcHelper {
         //set Risk Score
         setRiskToDto(appSubmissionDto);
         // reSetAdditionalFields
-        appSubmissionDto.setChangeSelectDto(appEditSelectDto);
+        if (appEditSelectDto != null) {
+            appSubmissionDto.setChangeSelectDto(appEditSelectDto);
+        }
         ApplicationHelper.reSetAdditionalFields(appSubmissionDto, appEditSelectDto, appGrpNo);
 //        ApplicationHelper.reSetAdditionalFields(appSubmissionDto, oldAppSubmissionDto);
         // bind application
