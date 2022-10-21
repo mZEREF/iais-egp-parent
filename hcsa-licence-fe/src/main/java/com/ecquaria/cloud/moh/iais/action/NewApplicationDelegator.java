@@ -498,10 +498,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
                 if (ackSubmissionDtos != null) {
                     for (AppSubmissionDto appSubmissionDto1 : ackSubmissionDtos) {
-                        Double amount = appSubmissionDto1.getAmount();
-                        if (amount != null && !MiscUtil.doubleEquals(0.0, amount)) {
-                            appSubmissionService.updatePayment(appSubmissionDto1, pmtRefNo);
-                        }
+                        appSubmissionService.updatePayment(appSubmissionDto1, pmtRefNo);
                         appGrpIds.add(appSubmissionDto1.getAppGrpId());
                     }
                 }
@@ -513,8 +510,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
 
                 //update status for transfor payment
                 String appGrpId = appSubmissionDto.getAppGrpId();
-                Double amount = appSubmissionDto.getAmount();
-                if (!appGrpIds.contains(appGrpId) && amount != null && !MiscUtil.doubleEquals(0.0, amount)) {
+                if (!appGrpIds.contains(appGrpId)) {
                     appSubmissionService.updatePayment(appSubmissionDto, pmtRefNo);
                 }
                 //send email
@@ -545,8 +541,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
             List<PaymentRequestDto> paymentRequestDtos = appGrpPaymentClient.getPaymentRequestDtoByReqRefNoLike(
                     AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY, appSubmissionDto.getAppGrpNo()).getEntity();
             if (paymentRequestDtos != null) {
-                for (PaymentRequestDto paymentRequestDto : paymentRequestDtos
-                ) {
+                for (PaymentRequestDto paymentRequestDto : paymentRequestDtos) {
                     if ("success".equals(paymentRequestDto.getStatus())) {
                         paymentRequestDtoSuss = paymentRequestDto;
                         break;
@@ -565,9 +560,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 }
             }
             if (paymentDto != null && "success".equals(paymentDto.getPmtStatus())) {
-
                 pmtRefNo = paymentDto.getReqRefNo();
-
                 log.debug(StringUtil.changeForLog("online payment success ..."));
                 try {
                     if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
@@ -586,10 +579,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
                 if (ackSubmissionDtos != null) {
                     for (AppSubmissionDto appSubmissionDto1 : ackSubmissionDtos) {
-                        Double amount = appSubmissionDto1.getAmount();
-                        if (amount != null && !MiscUtil.doubleEquals(0.0, amount)) {
-                            appSubmissionService.updatePayment(appSubmissionDto1, pmtRefNo);
-                        }
+                        appSubmissionService.updatePayment(appSubmissionDto1, pmtRefNo);
                         appGrpIds.add(appSubmissionDto1.getAppGrpId());
                     }
                 }
@@ -601,8 +591,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
 
                 //update status for transfor payment
                 String appGrpId = appSubmissionDto.getAppGrpId();
-                Double amount = appSubmissionDto.getAmount();
-                if (!appGrpIds.contains(appGrpId) && amount != null && !MiscUtil.doubleEquals(0.0, amount)) {
+                if (!appGrpIds.contains(appGrpId)) {
                     appSubmissionService.updatePayment(appSubmissionDto, pmtRefNo);
                 }
                 //send email
@@ -1070,7 +1059,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
         log.info(StringUtil.changeForLog("The AppGrpNo: " + appSubmissionDto.getAppGrpNo() + "; payment method: "
                 + appSubmissionDto.getPaymentMethod() + "; the amount: " + appSubmissionDto.getAmount()
                 + " - " + appSubmissionDto.getAppGrpId()));
-        Double totalAmount = 0.0;
+        double totalAmount = appSubmissionDto.getAmount();
         //68099
         List<AppSubmissionDto> ackPageAppSubmissionDto = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request,
                 ACK_APP_SUBMISSIONS);
@@ -1083,7 +1072,6 @@ public class NewApplicationDelegator extends AppCommDelegator {
             }
             ParamUtil.setSessionAttr(bpc.request, ACK_APP_SUBMISSIONS, (Serializable) ackPageAppSubmissionDto);
         }
-        totalAmount = Calculator.add(totalAmount, appSubmissionDto.getAmount());
         if (MiscUtil.doubleEquals(totalAmount, 0.0)) {
             List<String> ids = new ArrayList<>();
             if (!IaisCommonUtils.isEmpty(ackPageAppSubmissionDto)) {

@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppAlignAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
@@ -709,32 +710,32 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             hcsaFeeBundleItemDtos.forEach(o -> bundleSvcCodes.add(o.getSvcCode()));
         }
         List<AppLicBundleDto> appLicBundleDtoList = appSubmissionDto.getAppLicBundleDtoList();
-        List<String[]> msList=IaisCommonUtils.genNewArrayList();
-        String[] msPreOrConArray={"","",""};
+        List<String[]> msList = IaisCommonUtils.genNewArrayList();
+        String[] msPreOrConArray = {"", "", ""};
         msList.add(msPreOrConArray);
         if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
             for (AppLicBundleDto alb : appLicBundleDtoList
             ) {
                 if (alb.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)) {
-                    int index=0;
-                    if(alb.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_MOBILE)){
-                        index=1;
+                    int index = 0;
+                    if (alb.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_MOBILE)) {
+                        index = 1;
                     }
-                    if(alb.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_REMOTE)){
-                        index=2;
+                    if (alb.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_REMOTE)) {
+                        index = 2;
                     }
-                    boolean find=false;
-                    for (String[] ms:msList
+                    boolean find = false;
+                    for (String[] ms : msList
                     ) {
-                        if(StringUtil.isEmpty(ms[index])){
-                            ms[index]="LicBundle";
-                            find=true;
+                        if (StringUtil.isEmpty(ms[index])) {
+                            ms[index] = "LicBundle";
+                            find = true;
                             break;
                         }
                     }
-                    if(!find){
-                        String[] newArray={"","",""};
-                        newArray[index]="LicBundle";
+                    if (!find) {
+                        String[] newArray = {"", "", ""};
+                        newArray[index] = "LicBundle";
                         msList.add(newArray);
                     }
                 }
@@ -777,65 +778,67 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     }
                     log.info(StringUtil.changeForLog("svcName:" + appSvcRelatedInfoDto.getServiceName()));
                     //set mosd bundle
-                    if(serviceCode.equals(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)){
-                        if(appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_PERMANENT)||appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_CONVEYANCE)){
-                            boolean find=false;
-                            for (String[] ms:msList
+                    if (serviceCode.equals(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)) {
+                        if (appGrpPremisesDto.getPremisesType().equals(
+                                ApplicationConsts.PREMISES_TYPE_PERMANENT) || appGrpPremisesDto.getPremisesType().equals(
+                                ApplicationConsts.PREMISES_TYPE_CONVEYANCE)) {
+                            boolean find = false;
+                            for (String[] ms : msList
                             ) {
-                                if(StringUtil.isEmpty(ms[0])){
-                                    ms[0]=appGrpPremisesDto.getPremisesType();
-                                    find=true;
-                                    if(ms[1].equals("LicBundle")||ms[2].equals("LicBundle")){
+                                if (StringUtil.isEmpty(ms[0])) {
+                                    ms[0] = appGrpPremisesDto.getPremisesType();
+                                    find = true;
+                                    if (ms[1].equals("LicBundle") || ms[2].equals("LicBundle")) {
                                         licenceFeeDto.setBundle(4);
-                                    }else {
+                                    } else {
                                         licenceFeeDto.setBundle(0);
                                     }
                                     break;
                                 }
                             }
-                            if(!find){
-                                String[] newArray={appGrpPremisesDto.getPremisesType(),"",""};
+                            if (!find) {
+                                String[] newArray = {appGrpPremisesDto.getPremisesType(), "", ""};
                                 msList.add(newArray);
                             }
                         }
 
-                        if(appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_REMOTE)){
-                            boolean find=false;
-                            for (String[] ms:msList
+                        if (appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_REMOTE)) {
+                            boolean find = false;
+                            for (String[] ms : msList
                             ) {
-                                if(StringUtil.isEmpty(ms[1])){
-                                    ms[1]=appGrpPremisesDto.getPremisesType();
-                                    find=true;
-                                    if(ms[0].equals("LicBundle")){
+                                if (StringUtil.isEmpty(ms[1])) {
+                                    ms[1] = appGrpPremisesDto.getPremisesType();
+                                    find = true;
+                                    if (ms[0].equals("LicBundle")) {
                                         licenceFeeDto.setBundle(4);
-                                    }else {
+                                    } else {
                                         licenceFeeDto.setBundle(3);
                                     }
                                     break;
                                 }
                             }
-                            if(!find){
-                                String[] newArray={"",appGrpPremisesDto.getPremisesType(),""};
+                            if (!find) {
+                                String[] newArray = {"", appGrpPremisesDto.getPremisesType(), ""};
                                 msList.add(newArray);
                             }
                         }
-                        if(appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_MOBILE)){
-                            boolean find=false;
-                            for (String[] ms:msList
+                        if (appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_MOBILE)) {
+                            boolean find = false;
+                            for (String[] ms : msList
                             ) {
-                                if(StringUtil.isEmpty(ms[2])){
-                                    ms[2]=appGrpPremisesDto.getPremisesType();
-                                    find=true;
-                                    if(ms[0].equals("LicBundle")){
+                                if (StringUtil.isEmpty(ms[2])) {
+                                    ms[2] = appGrpPremisesDto.getPremisesType();
+                                    find = true;
+                                    if (ms[0].equals("LicBundle")) {
                                         licenceFeeDto.setBundle(4);
-                                    }else {
+                                    } else {
                                         licenceFeeDto.setBundle(3);
                                     }
                                     break;
                                 }
                             }
-                            if(!find){
-                                String[] newArray={"","",appGrpPremisesDto.getPremisesType()};
+                            if (!find) {
+                                String[] newArray = {"", "", appGrpPremisesDto.getPremisesType()};
                                 msList.add(newArray);
                             }
                         }
@@ -897,7 +900,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
                             for (AppLicBundleDto alb : appLicBundleDtoList
                             ) {
-                                if (alb.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY)||alb.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES)) {
+                                if (alb.getSvcCode().equals(
+                                        AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY) || alb.getSvcCode().equals(
+                                        AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES)) {
                                     licenceFeeDto.setBundle(4);
                                     break;
                                 }
@@ -1009,32 +1014,32 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             List<AppPremSpecialisedDto> appPremSpecialisedDtos = appSubmissionDto.getAppPremSpecialisedDtoList();
             List<String> baseServiceIds = IaisCommonUtils.genNewArrayList();
             List<AppLicBundleDto> appLicBundleDtoList = appSubmissionDto.getAppLicBundleDtoList();
-            List<String[]> msList=IaisCommonUtils.genNewArrayList();
-            String[] msPreOrConArray={"","",""};
+            List<String[]> msList = IaisCommonUtils.genNewArrayList();
+            String[] msPreOrConArray = {"", "", ""};
             msList.add(msPreOrConArray);
             if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
                 for (AppLicBundleDto alb : appLicBundleDtoList
                 ) {
                     if (alb.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)) {
-                        int index=0;
-                        if(alb.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_MOBILE)){
-                            index=1;
+                        int index = 0;
+                        if (alb.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_MOBILE)) {
+                            index = 1;
                         }
-                        if(alb.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_REMOTE)){
-                            index=2;
+                        if (alb.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_REMOTE)) {
+                            index = 2;
                         }
-                        boolean find=false;
-                        for (String[] ms:msList
+                        boolean find = false;
+                        for (String[] ms : msList
                         ) {
-                            if(StringUtil.isEmpty(ms[index])){
-                                ms[index]="LicBundle";
-                                find=true;
+                            if (StringUtil.isEmpty(ms[index])) {
+                                ms[index] = "LicBundle";
+                                find = true;
                                 break;
                             }
                         }
-                        if(!find){
-                            String[] newArray={"","",""};
-                            newArray[index]="LicBundle";
+                        if (!find) {
+                            String[] newArray = {"", "", ""};
+                            newArray[index] = "LicBundle";
                             msList.add(newArray);
                         }
                     }
@@ -1085,65 +1090,67 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         licenceFeeDto.setLicenceId(licenceId);
                     }
                     //set mosd bundle
-                    if(serviceCode.equals(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)){
-                        if(appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_PERMANENT)||appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_CONVEYANCE)){
-                            boolean find=false;
-                            for (String[] ms:msList
+                    if (serviceCode.equals(AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)) {
+                        if (appGrpPremisesDto.getPremisesType().equals(
+                                ApplicationConsts.PREMISES_TYPE_PERMANENT) || appGrpPremisesDto.getPremisesType().equals(
+                                ApplicationConsts.PREMISES_TYPE_CONVEYANCE)) {
+                            boolean find = false;
+                            for (String[] ms : msList
                             ) {
-                                if(StringUtil.isEmpty(ms[0])){
-                                    ms[0]=appGrpPremisesDto.getPremisesType();
-                                    find=true;
-                                    if(ms[1].equals("LicBundle")||ms[2].equals("LicBundle")){
+                                if (StringUtil.isEmpty(ms[0])) {
+                                    ms[0] = appGrpPremisesDto.getPremisesType();
+                                    find = true;
+                                    if (ms[1].equals("LicBundle") || ms[2].equals("LicBundle")) {
                                         licenceFeeDto.setBundle(4);
-                                    }else {
+                                    } else {
                                         licenceFeeDto.setBundle(0);
                                     }
                                     break;
                                 }
                             }
-                            if(!find){
-                                String[] newArray={appGrpPremisesDto.getPremisesType(),"",""};
+                            if (!find) {
+                                String[] newArray = {appGrpPremisesDto.getPremisesType(), "", ""};
                                 msList.add(newArray);
                             }
                         }
 
-                        if(appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_REMOTE)){
-                            boolean find=false;
-                            for (String[] ms:msList
+                        if (appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_REMOTE)) {
+                            boolean find = false;
+                            for (String[] ms : msList
                             ) {
-                                if(StringUtil.isEmpty(ms[1])){
-                                    ms[1]=appGrpPremisesDto.getPremisesType();
-                                    find=true;
-                                    if(ms[0].equals("LicBundle")){
+                                if (StringUtil.isEmpty(ms[1])) {
+                                    ms[1] = appGrpPremisesDto.getPremisesType();
+                                    find = true;
+                                    if (ms[0].equals("LicBundle")) {
                                         licenceFeeDto.setBundle(4);
-                                    }else {
+                                    } else {
                                         licenceFeeDto.setBundle(3);
                                     }
                                     break;
                                 }
                             }
-                            if(!find){
-                                String[] newArray={"",appGrpPremisesDto.getPremisesType(),""};
+                            if (!find) {
+                                String[] newArray = {"", appGrpPremisesDto.getPremisesType(), ""};
                                 msList.add(newArray);
                             }
                         }
-                        if(appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_MOBILE)){
-                            boolean find=false;
-                            for (String[] ms:msList
+                        if (appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_MOBILE)) {
+                            boolean find = false;
+                            for (String[] ms : msList
                             ) {
-                                if(StringUtil.isEmpty(ms[2])){
-                                    ms[2]=appGrpPremisesDto.getPremisesType();
-                                    find=true;
-                                    if(ms[0].equals("LicBundle")){
+                                if (StringUtil.isEmpty(ms[2])) {
+                                    ms[2] = appGrpPremisesDto.getPremisesType();
+                                    find = true;
+                                    if (ms[0].equals("LicBundle")) {
                                         licenceFeeDto.setBundle(4);
-                                    }else {
+                                    } else {
                                         licenceFeeDto.setBundle(3);
                                     }
                                     break;
                                 }
                             }
-                            if(!find){
-                                String[] newArray={"","",appGrpPremisesDto.getPremisesType()};
+                            if (!find) {
+                                String[] newArray = {"", "", appGrpPremisesDto.getPremisesType()};
                                 msList.add(newArray);
                             }
                         }
@@ -1791,25 +1798,50 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         if (appSubmissionDto == null) {
             return;
         }
+        String appGrpId = appSubmissionDto.getAppGrpId();
+        String appGrpNo = appSubmissionDto.getAppGrpNo();
+        log.info(StringUtil.changeForLog("App Grp is " + appGrpNo + "[" + appGrpId + "]"));
+        if (StringUtil.isEmpty(appGrpId)) {
+            return;
+        }
+        String paymentMethod = appSubmissionDto.getPaymentMethod();
         ApplicationGroupDto appGrp = new ApplicationGroupDto();
-        appGrp.setId(appSubmissionDto.getAppGrpId());
+        appGrp.setId(appGrpId);
         appGrp.setPmtRefNo(pmtRefNo);
-        appGrp.setGroupNo(appSubmissionDto.getAppGrpNo());
+        appGrp.setGroupNo(appGrpNo);
         appGrp.setAutoRfc(appSubmissionDto.isAutoRfc());
         Double amount = appSubmissionDto.getAmount();
         if (amount != null && !MiscUtil.doubleEquals(0.0, amount)) {
-            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+            if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(paymentMethod)) {
+                appGrp.setPmtStatus(serviceConfigService.giroPaymentXmlUpdateByGrpNo(appSubmissionDto).getPmtStatus());
+                appGrp.setPmtRefNo(appSubmissionDto.getGiroTranNo());
+            } else {
+                appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+            }
         } else {
             appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
         }
-        appGrp.setPayMethod(appSubmissionDto.getPaymentMethod());
+        appGrp.setPayMethod(paymentMethod);
+        saveAppGrpGiroAcct(appGrpId, appSubmissionDto.getGiroAcctNum());
         applicationFeClient.doPaymentUpDate(appGrp);
-        log.info(StringUtil.changeForLog("App Grp No. is " + appGrp.getGroupNo()));
+    }
+
+    private void saveAppGrpGiroAcct(String appGrpId, String giroAccNo) {
+        if (StringUtil.isEmpty(appGrpId) || StringUtil.isEmpty(giroAccNo)) {
+            return;
+        }
+        log.info(StringUtil.changeForLog("Save Giro Acc No - " + giroAccNo));
+        AppGroupMiscDto appGroupMiscDto = new AppGroupMiscDto();
+        appGroupMiscDto.setAppGrpId(appGrpId);
+        appGroupMiscDto.setMiscType(ApplicationConsts.APP_GROUP_MISC_TYPE_GIRO_ACCOUNT_NUMBER);
+        appGroupMiscDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        appGroupMiscDto.setMiscValue(giroAccNo);
+        appCommService.saveAppGrpMisc(appGroupMiscDto);
     }
 
     @Override
     public List<AppLicBundleDto> getBundleMsCount(String item, boolean licOrApp) {
-        List<AppLicBundleDto> result=IaisCommonUtils.genNewArrayList();
+        List<AppLicBundleDto> result = IaisCommonUtils.genNewArrayList();
         if (!StringUtil.isEmpty(item)) {
             result = appCommClient.getBundleMsCount(item, licOrApp).getEntity();
         }
