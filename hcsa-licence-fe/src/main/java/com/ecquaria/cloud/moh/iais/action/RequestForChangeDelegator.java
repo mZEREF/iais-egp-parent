@@ -56,14 +56,6 @@ import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
 import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +65,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /****
  *
@@ -702,7 +703,12 @@ public class RequestForChangeDelegator {
                     log.info(StringUtil.changeForLog("The baseServiceId is -->:"+baseServiceId));
                     appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setBaseServiceId(baseServiceId);*/
                     boolean isCharity = ApplicationHelper.isCharity(bpc.request);
-                    FeeDto feeDto = getTransferFee(isCharity);
+                    AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
+                    amendmentFeeDto.setChangeInLicensee(Boolean.TRUE);
+                    amendmentFeeDto.setIsCharity(isCharity);
+                    amendmentFeeDto.setServiceCode(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceCode());
+                    amendmentFeeDto.setLicenceNo(appSubmissionDto.getLicenceNo());
+                    FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
                     if(feeDto != null){
                         Double amount = feeDto.getTotal();
                         if(licenceDto.getStatus().equals(ApplicationConsts.LICENCE_STATUS_APPROVED)&&licenceDto.getMigrated()==1&& IaisEGPHelper.isActiveMigrated()){
@@ -1037,13 +1043,7 @@ public class RequestForChangeDelegator {
 
     }
 
-    private FeeDto getTransferFee(boolean isCharity){
-        AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
-        amendmentFeeDto.setChangeInLicensee(Boolean.TRUE);
-        amendmentFeeDto.setIsCharity(isCharity);
-        FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
-        return feeDto;
-    }
+
 
     private boolean isSelect(String[] selectCheakboxs,String premisesIndexNo){
         boolean isSelect = false;
