@@ -1196,8 +1196,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                         appSubmissionDto.getLicenseeId(), mtsVehicleCount, appSubmissionDto.getAppType());
                             }
                         }
-
-
                     }
 
                     if (AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL.equals(
@@ -1257,12 +1255,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         if (IaisCommonUtils.isNotEmpty(licenceFeeSpecDtos)) {
                             licenceFeeDto.setSpecifiedLicenceFeeDto(licenceFeeSpecDtos);
                         }
-                        if (hadAch && (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(
-                                serviceCode) || AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(serviceCode))) {
-                            achLicenceFeeDtoList.add(licenceFeeDto);
-                        } else {
-                            linenceFeeQuaryDtos.add(licenceFeeDto);
-                        }
+                    }
+                    if (hadAch && (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(
+                            serviceCode) || AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(serviceCode))) {
+                        achLicenceFeeDtoList.add(licenceFeeDto);
+                    }else {
+                        linenceFeeQuaryDtos.add(licenceFeeDto);
                     }
                     if (IaisCommonUtils.isNotEmpty(achLicenceFeeDtoList)) {
                         for (LicenceFeeDto svcFee : linenceFeeQuaryDtos
@@ -1272,7 +1270,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             }
                         }
                     }
-                    linenceFeeQuaryDtos.add(licenceFeeDto);
                 }
                 log.debug(StringUtil.changeForLog(
                         "the AppSubmisionServiceImpl linenceFeeQuaryDtos.size() is -->:" + linenceFeeQuaryDtos.size()));
