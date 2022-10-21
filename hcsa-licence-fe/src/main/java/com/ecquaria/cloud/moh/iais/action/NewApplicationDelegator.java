@@ -3,8 +3,6 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.api.config.GatewayConfig;
-import com.ecquaria.cloud.moh.iais.api.config.GatewayConstants;
-import com.ecquaria.cloud.moh.iais.api.config.GatewayStripeConfig;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -25,7 +23,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequ
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
@@ -50,7 +47,6 @@ import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.AppSelectSvcDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.dto.PmtReturnUrlDto;
 import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
@@ -83,7 +79,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -331,7 +326,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 .filter(IaisCommonUtils::isNotEmpty)
                 .map(appSvcRelatedInfoDtoList -> appSvcRelatedInfoDtoList.get(0).getLicPremisesId())
                 .orElse(null);
-        if (StringUtil.isEmpty(licPremisesId)){
+        if (StringUtil.isEmpty(licPremisesId)) {
             return;
         }
         List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
@@ -482,7 +477,10 @@ public class NewApplicationDelegator extends AppCommDelegator {
             if ("success".equals(result) && !StringUtil.isEmpty(pmtRefNo)) {
                 log.debug(StringUtil.changeForLog("online payment success ..."));
                 try {
-                    if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
+                    boolean isEmailSend = appSubmissionDto.getChangeSelectDto() != null && appSubmissionDto.getChangeSelectDto().isEmailSend();
+                    if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
+                            && isEmailSend) {
+                        log.info(StringUtil.changeForLog("RFC Email Sending ..."));
                         List<AppSubmissionDto> appSubmissionDtos1 = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request,
                                 APP_SUBMISSIONS);
                         if (appSubmissionDtos1 == null || appSubmissionDtos1.size() == 0) {

@@ -2106,7 +2106,10 @@ public abstract class AppCommDelegator {
             if (!StringUtil.isEmpty(noNeedPayment)) {
                 ParamUtil.setSessionAttr(bpc.request, "txnRefNo", "");
                 try {
-                    if (appSubmissionDto.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)) {
+                    boolean isEmailSend = appSubmissionDto.getChangeSelectDto() != null && appSubmissionDto.getChangeSelectDto().isEmailSend();
+                    if (appSubmissionDto.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)
+                            && isEmailSend) {
+                        log.info(StringUtil.changeForLog("RFC Email Sending ..."));
                         List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request,
                                 APP_SUBMISSIONS);
                         if (appSubmissionDtos == null || appSubmissionDtos.size() == 0) {
