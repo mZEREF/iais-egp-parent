@@ -81,7 +81,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -842,10 +841,11 @@ public final class AppDataHelper {
     private static AppSvcOutsouredDto sortOutSourceProviders(HttpServletRequest request,AppSvcOutsouredDto appPremOutSourceProvidersDto){
         String classSort = ParamUtil.getString(request, "classSort");
         String sortFieldName = ParamUtil.getString(request,"crud_action_value");
+        String sortType = ParamUtil.getString(request,"crud_action_additional");
         if ("cLDSort".equals(classSort)){
-            sortList(appPremOutSourceProvidersDto.getClinicalLaboratoryList(),sortFieldName);
+            sortList(appPremOutSourceProvidersDto.getClinicalLaboratoryList(),sortFieldName,sortType);
         }else if ("rdsSort".equals(classSort)){
-            sortList(appPremOutSourceProvidersDto.getRadiologicalServiceList(),sortFieldName);
+            sortList(appPremOutSourceProvidersDto.getRadiologicalServiceList(),sortFieldName,sortType);
         }else {
             SearchParam searchParam = appPremOutSourceProvidersDto.getSearchParam();
             CrudHelper.doSorting(searchParam,  request);
@@ -854,74 +854,62 @@ public final class AppDataHelper {
         return appPremOutSourceProvidersDto;
     }
 
-    private static void sortList(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedList,String sortFieldName){
+    private static void sortList(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedList,String sortFieldName,String sortType){
         if (IaisCommonUtils.isNotEmpty(appPremGroupOutsourcedList) && StringUtil.isNotEmpty(sortFieldName)){
             if ("LICENCE_NO".equals(sortFieldName)){
-                Collections.sort(appPremGroupOutsourcedList, new Comparator<AppPremGroupOutsourcedDto>() {
-                    @Override
-                    public int compare(AppPremGroupOutsourcedDto o1, AppPremGroupOutsourcedDto o2) {
-                        return o1.getAppPremOutSourceLicenceDto().getLicenceNo().compareTo(o2.getAppPremOutSourceLicenceDto().getLicenceNo());
+                Collections.sort(appPremGroupOutsourcedList, (o1, o2) ->  {
+                    if ("DESC".equals(sortType)){
+                        return -o1.getAppPremOutSourceLicenceDto().getLicenceNo().compareTo(o2.getAppPremOutSourceLicenceDto().getLicenceNo());
                     }
+                    return o1.getAppPremOutSourceLicenceDto().getLicenceNo().compareTo(o2.getAppPremOutSourceLicenceDto().getLicenceNo());
                 });
             }
             if ("BUSINESS_NAME".equals(sortFieldName)){
-                Collections.sort(appPremGroupOutsourcedList, new Comparator<AppPremGroupOutsourcedDto>() {
-                    @Override
-                    public int compare(AppPremGroupOutsourcedDto o1, AppPremGroupOutsourcedDto o2) {
-                        return o1.getBusinessName().compareTo(o2.getBusinessName());
+                Collections.sort(appPremGroupOutsourcedList, (o1, o2) ->  {
+                    if ("DESC".equals(sortType)){
+                        return -o1.getBusinessName().compareTo(o2.getBusinessName());
                     }
+                    return o1.getBusinessName().compareTo(o2.getBusinessName());
                 });
             }
             if ("ADDRESS".equals(sortFieldName)){
-                Collections.sort(appPremGroupOutsourcedList, new Comparator<AppPremGroupOutsourcedDto>() {
-                    @Override
-                    public int compare(AppPremGroupOutsourcedDto o1, AppPremGroupOutsourcedDto o2) {
-                        return o1.getAddress().compareTo(o2.getAddress());
+                Collections.sort(appPremGroupOutsourcedList, (o1, o2) ->  {
+                    if ("DESC".equals(sortType)){
+                        return -o1.getAddress().compareTo(o2.getAddress());
                     }
+                    return o1.getAddress().compareTo(o2.getAddress());
                 });
             }
             if ("EXPIRY_DATE".equals(sortFieldName)){
-                Collections.sort(appPremGroupOutsourcedList, new Comparator<AppPremGroupOutsourcedDto>() {
-                    @Override
-                    public int compare(AppPremGroupOutsourcedDto o1, AppPremGroupOutsourcedDto o2) {
-                        return o1.getExpiryDate().compareTo(o2.getExpiryDate());
+                Collections.sort(appPremGroupOutsourcedList, (o1, o2) ->  {
+                    if ("DESC".equals(sortType)){
+                        return -o1.getExpiryDate().compareTo(o2.getExpiryDate());
                     }
+                    return o1.getExpiryDate().compareTo(o2.getExpiryDate());
                 });
             }
             if ("AGREEMENT_START_DATE".equals(sortFieldName)){
-                Collections.sort(appPremGroupOutsourcedList, new Comparator<AppPremGroupOutsourcedDto>() {
-                    @Override
-                    public int compare(AppPremGroupOutsourcedDto o1, AppPremGroupOutsourcedDto o2) {
-                        if (o2.getAppPremOutSourceLicenceDto().getAgreementStartDate().before(o1.getAppPremOutSourceLicenceDto().getAgreementStartDate())){
-                            return -1;
-                        }
-                        if (o1.getAppPremOutSourceLicenceDto().getAgreementStartDate() == o2.getAppPremOutSourceLicenceDto().getAgreementStartDate()){
-                            return 0;
-                        }
-                        return 1;
+                Collections.sort(appPremGroupOutsourcedList, (o1, o2) ->  {
+                    if ("DESC".equals(sortType)){
+                        return -o1.getAppPremOutSourceLicenceDto().getAgreementStartDate().compareTo(o2.getAppPremOutSourceLicenceDto().getAgreementStartDate());
                     }
+                    return o1.getAppPremOutSourceLicenceDto().getAgreementStartDate().compareTo(o2.getAppPremOutSourceLicenceDto().getAgreementStartDate());
                 });
             }
             if ("AGREEMENT_END_DATE".equals(sortFieldName)){
-                Collections.sort(appPremGroupOutsourcedList, new Comparator<AppPremGroupOutsourcedDto>() {
-                    @Override
-                    public int compare(AppPremGroupOutsourcedDto o1, AppPremGroupOutsourcedDto o2) {
-                        if (o2.getAppPremOutSourceLicenceDto().getAgreementEndDate().before(o1.getAppPremOutSourceLicenceDto().getAgreementEndDate())){
-                            return -1;
-                        }
-                        if (o1.getAppPremOutSourceLicenceDto().getAgreementEndDate() == o2.getAppPremOutSourceLicenceDto().getAgreementEndDate()){
-                            return 0;
-                        }
-                        return 1;
+                Collections.sort(appPremGroupOutsourcedList, (o1, o2) ->  {
+                    if ("DESC".equals(sortType)){
+                        return -o1.getAppPremOutSourceLicenceDto().getAgreementEndDate().compareTo(o2.getAppPremOutSourceLicenceDto().getAgreementEndDate());
                     }
+                    return o1.getAppPremOutSourceLicenceDto().getAgreementEndDate().compareTo(o2.getAppPremOutSourceLicenceDto().getAgreementEndDate());
                 });
             }
             if ("OUTSTANDING_SCOPE".equals(sortFieldName)){
-                Collections.sort(appPremGroupOutsourcedList, new Comparator<AppPremGroupOutsourcedDto>() {
-                    @Override
-                    public int compare(AppPremGroupOutsourcedDto o1, AppPremGroupOutsourcedDto o2) {
-                        return o1.getAppPremOutSourceLicenceDto().getOutstandingScope().compareTo(o2.getAppPremOutSourceLicenceDto().getOutstandingScope());
+                Collections.sort(appPremGroupOutsourcedList, (o1, o2) ->  {
+                    if ("DESC".equals(sortType)){
+                        return -o1.getAppPremOutSourceLicenceDto().getOutstandingScope().compareTo(o2.getAppPremOutSourceLicenceDto().getOutstandingScope());
                     }
+                    return o1.getAppPremOutSourceLicenceDto().getOutstandingScope().compareTo(o2.getAppPremOutSourceLicenceDto().getOutstandingScope());
                 });
             }
         }
