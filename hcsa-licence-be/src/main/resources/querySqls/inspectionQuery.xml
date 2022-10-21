@@ -269,7 +269,7 @@
                lpb.CONTACT_NO HCI_CONTACT_NO,
                t5.SCDF_REF_NO,t5.CERT_ISSUED_DT,t5.VEHICLE_NO,t5.PREMISES_TYPE as premisesType,t5.POSTAL_CODE  as postalCode,
                t5.ADDR_TYPE,t5.BLK_NO,t5.FLOOR_NO,t5.UNIT_NO,t5.STREET_NAME,t5.BUILDING_NAME,t5.VERSION as premises_version ,t5.STATUS,t5.ORGANIZATION_ID,
-               t5.WRK_TIME_FROM,t5.WRK_TIME_TO,t5.IS_LOCATE_WITH_OTHERS,
+
                isnull(t5.BLK_NO,'')+
 		      ' '+isnull(t5.STREET_NAME,'')
 		      +' '+isnull(t5.BUILDING_NAME,'')
@@ -357,7 +357,7 @@
                lpb.CONTACT_NO HCI_CONTACT_NO,
                t5.SCDF_REF_NO,t5.CERT_ISSUED_DT,t5.VEHICLE_NO,t5.PREMISES_TYPE as premisesType,t5.POSTAL_CODE  as postalCode,
                t5.ADDR_TYPE,t5.BLK_NO,t5.FLOOR_NO,t5.UNIT_NO,t5.STREET_NAME,t5.BUILDING_NAME,t5.VERSION,t5.STATUS,t5.ORGANIZATION_ID,
-               t5.WRK_TIME_FROM,t5.WRK_TIME_TO,t5.IS_LOCATE_WITH_OTHERS,
+
                isnull(t5.BLK_NO,'')+
 		      ' '+isnull(t5.STREET_NAME,'')
 		      +' '+isnull(t5.BUILDING_NAME,'')
@@ -418,7 +418,7 @@
                lpb.CONTACT_NO HCI_CONTACT_NO,
                t5.SCDF_REF_NO,t5.CERT_ISSUED_DT,t5.VEHICLE_NO,t5.PREMISES_TYPE as premisesType,t5.POSTAL_CODE  as postalCode,
                t5.ADDR_TYPE,t5.BLK_NO,t5.FLOOR_NO,t5.UNIT_NO,t5.STREET_NAME,t5.BUILDING_NAME,t5.VERSION,t5.STATUS,t5.ORGANIZATION_ID,
-               t5.WRK_TIME_FROM,t5.WRK_TIME_TO,t5.IS_LOCATE_WITH_OTHERS,
+
                isnull(t5.BLK_NO,'')+
 		      ' '+isnull(t5.STREET_NAME,'')
 		      +' '+isnull(t5.BUILDING_NAME,'')
