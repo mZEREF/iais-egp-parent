@@ -12,8 +12,8 @@
 
     <c:choose>
         <c:when test="${'APTY005' ==AppSubmissionDto.appType}">
-            <c:forEach items="${appSubmissionDtos}" var="appDto" varStatus="feeInfoStat">
-                <c:forEach items="${appDto.feeInfoDtos}" var="feeInfoDto" >
+            <c:forEach items="${appSubmissionDtos}" var="appDto" >
+                <c:forEach items="${appDto.feeInfoDtos}" var="feeInfoDto" varStatus="feeInfoStat">
                     <c:set var="baseSvcFeeExt" value="${feeInfoDto.baseSvcFeeExt}"/>
                     <c:set var="complexSpecifiedFeeExt" value="${feeInfoDto.complexSpecifiedFeeExt}"/>
                     <c:set var="simpleSpecifiedFeeExt" value="${feeInfoDto.simpleSpecifiedFeeExt}"/>
