@@ -68,8 +68,7 @@ public interface AppCommService {
     AppGroupMiscDto saveAppGrpMisc(AppGroupMiscDto appGroupMiscDto);
 
     Map<String, String> checkAffectedAppSubmissions(List<LicenceDto> selectLicence, AppGrpPremisesDto appGrpPremisesDto,
-                                                    FeeDto premiseFee, String draftNo, String appGroupNo, AppEditSelectDto appEditSelectDto,
-                                                    List<AppSubmissionDto> appSubmissionDtos);
+            String draftNo, String appGroupNo, AppEditSelectDto appEditSelectDto, List<AppSubmissionDto> appSubmissionDtos);
 
     Map<String, String> checkAffectedAppSubmissions(AppSubmissionDto appSubmissionDto, LicenceDto licence, FeeDto premiseFee,
             String draftNo, String appGroupNo, AppEditSelectDto appEditSelectDto, List<AppSubmissionDto> appSubmissionDtos);

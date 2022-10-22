@@ -1630,42 +1630,9 @@ public abstract class AppCommDelegator {
         }
         appSubmissionDto.setDraftNo(draftNo);
         boolean isCharity = ApplicationHelper.isCharity(bpc.request);
-        AmendmentFeeDto amendmentFeeDto = getAmendmentFeeDto(appEditSelectDto, isCharity);
-        //add ss fee
-        List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList=appSubmissionDto.getAppPremSpecialisedDtoList().get(0).getFlatAppPremSubSvcRelList(dto -> ApplicationConsts.RECORD_ACTION_CODE_ADD.equals(dto.getActCode()));
-        if (IaisCommonUtils.isNotEmpty(appPremSubSvcRelDtoList)) {
-            amendmentFeeDto.setAdditionOrRemovalSpecialisedServices(Boolean.TRUE);
-            List<LicenceFeeDto> licenceFeeSpecDtos = IaisCommonUtils.genNewArrayList();
-            for (AppPremSubSvcRelDto subSvc : appPremSubSvcRelDtoList
-            ) {
-                if (subSvc.isChecked()) {
-                    LicenceFeeDto specFeeDto = new LicenceFeeDto();
-                    specFeeDto.setBundle(0);
-                    specFeeDto.setBaseService(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceCode());
-                    specFeeDto.setServiceCode(subSvc.getSvcCode());
-                    specFeeDto.setServiceName(subSvc.getSvcName());
-                    specFeeDto.setPremises(appSubmissionDto.getAppGrpPremisesDtoList().get(0).getAddress());
-                    specFeeDto.setCharity(isCharity);
-                    licenceFeeSpecDtos.add(specFeeDto);
-                }
-            }
-            amendmentFeeDto.setSpecifiedLicenceFeeDto(licenceFeeSpecDtos);
-        }
-        List<AppPremSubSvcRelDto> removalDtoList=appSubmissionDto.getAppPremSpecialisedDtoList().get(0).getFlatAppPremSubSvcRelList(dto -> ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()));
-        if (IaisCommonUtils.isNotEmpty(removalDtoList)) {
-            amendmentFeeDto.setAdditionOrRemovalSpecialisedServices(Boolean.TRUE);
-        }
-        ParamUtil.setSessionAttr(bpc.request, "FeeDetail", null);
-        amendmentFeeDto.setServiceCode(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceCode());
-        amendmentFeeDto.setLicenceNo(appSubmissionDto.getLicenceNo());
-        amendmentFeeDto.setAddress(appSubmissionDto.getAppGrpPremisesDtoList().get(0).getAddress());
-        amendmentFeeDto.setServiceName(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName());
-        amendmentFeeDto.setAppGrpNo(appSubmissionDto.getAppGrpNo());
+        AmendmentFeeDto amendmentFeeDto = RfcHelper.getAmendmentFeeDto(appSubmissionDto, appEditSelectDto, isCharity);
         FeeDto feeDto = configCommService.getGroupAmendAmount(amendmentFeeDto);
         Double amount = feeDto.getTotal();
-        if(feeDto.getFeeDetail()!=null){
-            ParamUtil.setSessionAttr(bpc.request, "FeeDetail", feeDto.getFeeDetail().toString());
-        }
         double currentAmount = amount == null ? 0.0 : amount;
         if (licenceDto.getMigrated() == 1 && IaisEGPHelper.isActiveMigrated()) {
             currentAmount = 0.0;
@@ -1673,7 +1640,6 @@ public abstract class AppCommDelegator {
         log.info(StringUtil.changeForLog("the current amount is -->:" + currentAmount));
         appSubmissionDto.setFeeInfoDtos(feeDto.getFeeInfoDtos());
         appSubmissionDto.setAmount(currentAmount);
-
 
         RfcHelper.beforeSubmit(appSubmissionDto, appEditSelectDto, null, appType, bpc.request);
         // set status
@@ -1726,23 +1692,9 @@ public abstract class AppCommDelegator {
                 appGroupNo = getRfcGroupNo(appGroupNo);
                 groupNo = appGroupNo;
             }
-            // reSet amount
-            double otherAmount = 0.0D;
-            AmendmentFeeDto amendmentFeeDto1 =getAmendmentFeeDto(changeSelectDto, isCharity);
-            amendmentFeeDto1.setAddress(appSubmissionDto.getAppGrpPremisesDtoList().get(0).getAddress());
-            amendmentFeeDto1.setServiceName(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName());
-            amendmentFeeDto1.setAppGrpNo(appSubmissionDto.getAppGrpNo());
-            FeeDto premiseFee = configCommService.getGroupAmendAmount(amendmentFeeDto1);
-            if (premiseFee != null && premiseFee.getTotal() != null) {
-                otherAmount = premiseFee.getTotal();
-                appSubmissionDto.getFeeInfoDtos().addAll(premiseFee.getFeeInfoDtos());
-                ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-
-            }
-            log.info(StringUtil.changeForLog("The premise changed amount: " + otherAmount));
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             List<AppSubmissionDto> appSubmissionDtos = IaisCommonUtils.genNewArrayList();
-            boolean isValid = checkAffectedAppSubmissions(appGrpPremisesDtoList,  premiseFee, draftNo, groupNo, changeSelectDto,
+            boolean isValid = checkAffectedAppSubmissions(appGrpPremisesDtoList, draftNo, groupNo, changeSelectDto,
                     appSubmissionDtos, bpc.request);
             if (!isValid) {
                 return;
@@ -1881,22 +1833,15 @@ public abstract class AppCommDelegator {
                 autoAppSubmissionDto.setAppGrpPremisesDtoList(oldAppSubmissionDto.getAppGrpPremisesDtoList());
             }
             autoGroupNo = getRfcGroupNo(autoGroupNo);
-            AmendmentFeeDto amendmentFeeDto1 =getAmendmentFeeDto(autoChangeSelectDto, isCharity);
-            amendmentFeeDto1.setServiceCode(autoAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceCode());
-            amendmentFeeDto1.setLicenceNo(autoAppSubmissionDto.getLicenceNo());
-            amendmentFeeDto1.setIsCharity(isCharity);
-            amendmentFeeDto1.setAddress(autoAppSubmissionDto.getAppGrpPremisesDtoList().get(0).getAddress());
-            amendmentFeeDto1.setServiceName(autoAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName());
-            amendmentFeeDto1.setAppGrpNo(autoAppSubmissionDto.getAppGrpNo());
-            FeeDto autoFee = configCommService.getGroupAmendAmount(amendmentFeeDto1);
-            appSubmissionDto.getFeeInfoDtos().addAll(autoFee.getFeeInfoDtos());
-            ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+            AmendmentFeeDto autoAmendmentFeeDto = RfcHelper.getAmendmentFeeDto(autoAppSubmissionDto, autoChangeSelectDto, isCharity);
+            FeeDto autoFee = configCommService.getGroupAmendAmount(autoAmendmentFeeDto);
             Double autoAmount = autoFee.getTotal();
             if (licenceDto.getMigrated() == 1 && IaisEGPHelper.isActiveMigrated()) {
                 autoAmount = 0.0;
             }
             log.info(StringUtil.changeForLog("Auto Amount: " + autoAmount));
             autoAppSubmissionDto.setAmount(autoAmount);
+            autoAppSubmissionDto.setFeeInfoDtos(autoFee.getFeeInfoDtos());
             ApplicationHelper.reSetAdditionalFields(autoAppSubmissionDto, autoChangeSelectDto, autoGroupNo);
             autoAppSubmissionDto.setChangeSelectDto(autoChangeSelectDto);
             autoSaveAppsubmission.add(0, autoAppSubmissionDto);
@@ -2007,7 +1952,7 @@ public abstract class AppCommDelegator {
         return groupNo;
     }
 
-    private boolean checkAffectedAppSubmissions(List<AppGrpPremisesDto> appGrpPremisesDtoList, FeeDto premiseFee, String draftNo,
+    private boolean checkAffectedAppSubmissions(List<AppGrpPremisesDto> appGrpPremisesDtoList, String draftNo,
             String appGroupNo, AppEditSelectDto appEditSelectDto, List<AppSubmissionDto> appSubmissionDtos,
             HttpServletRequest request) {
         if (appGrpPremisesDtoList == null) {
@@ -2023,7 +1968,7 @@ public abstract class AppCommDelegator {
                         .collect(Collectors.toList());
             }
             Map<String, String> errorMap = appCommService.checkAffectedAppSubmissions(licenceDtos, premisesDto,
-                    premiseFee, draftNo, appGroupNo, appEditSelectDto, appSubmissionDtos);
+                    draftNo, appGroupNo, appEditSelectDto, appSubmissionDtos);
             if (!errorMap.isEmpty()) {
                 AppValidatorHelper.setErrorRequest(errorMap, false, request);
                 return false;
@@ -2279,17 +2224,6 @@ public abstract class AppCommDelegator {
         }
 
         log.info(StringUtil.changeForLog("the do prepareJump end ...."));
-    }
-
-    private AmendmentFeeDto getAmendmentFeeDto(AppEditSelectDto appEditSelectDto, boolean isCharity) {
-        AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
-        amendmentFeeDto.setChangeInLicensee(Boolean.FALSE);
-        amendmentFeeDto.setChangeInLocation(appEditSelectDto.isChangeInLocation() || appEditSelectDto.isChangeFloorUnits());
-        amendmentFeeDto.setAdditionOrRemovalVehicles(appEditSelectDto.isChangeVehicle());
-        amendmentFeeDto.setIsCharity(isCharity);
-        amendmentFeeDto.setChangeBusinessName(appEditSelectDto.isChangeBusinessName());
-        amendmentFeeDto.setAdditionOrRemovalSpecialisedServices(appEditSelectDto.isSpecialisedEdit());
-        return amendmentFeeDto;
     }
 
     protected static AppSubmissionDto getAppSubmissionDto(HttpServletRequest request) {

@@ -33,6 +33,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
@@ -2445,78 +2447,6 @@ public final class RfcHelper {
         return result;
     }
 
-    public static void beforeSubmit(AppSubmissionDto appSubmissionDto, AppEditSelectDto appEditSelectDto, String appGrpNo,
-            String appType, HttpServletRequest request) {
-        if (appSubmissionDto == null) {
-            return;
-        }
-        DealSessionUtil.initView(appSubmissionDto);
-        if (!ApplicationHelper.checkIsRfi(request)) {
-            appSubmissionDto.setAppGrpId(null);
-        }
-        appSubmissionDto.setFromBe(ApplicationHelper.isBackend());
-        appSubmissionDto.setAppType(appType);
-        appSubmissionDto.setAuditTrailDto(AuditTrailHelper.getCurrentAuditTrailDto());
-        // max file index
-        DealSessionUtil.initMaxFileIndex(appSubmissionDto, request);
-
-        //judge is the preInspection
-        PreOrPostInspectionResultDto preOrPostInspectionResultDto = getConfigCommService().judgeIsPreInspection(appSubmissionDto);
-        if (preOrPostInspectionResultDto == null) {
-            appSubmissionDto.setPreInspection(true);
-            appSubmissionDto.setRequirement(true);
-        } else {
-            appSubmissionDto.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
-            appSubmissionDto.setRequirement(preOrPostInspectionResultDto.isRequirement());
-        }
-        //set Risk Score
-        setRiskToDto(appSubmissionDto);
-        // reSetAdditionalFields
-        if (appEditSelectDto != null) {
-            appSubmissionDto.setChangeSelectDto(appEditSelectDto);
-        }
-        ApplicationHelper.reSetAdditionalFields(appSubmissionDto, appEditSelectDto, appGrpNo);
-//        ApplicationHelper.reSetAdditionalFields(appSubmissionDto, oldAppSubmissionDto);
-        // bind application
-        setRelatedInfoBaseServiceId(appSubmissionDto);
-        /*if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
-            appSubmissionDto.setAppStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
-        } else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
-            appSubmissionDto.setAppStatus(ApplicationConsts.APPLICATION_STATUS_RENEWAL);
-        }*/
-    }
-
-    public static void resolveSvcActionCode(List<AppPremSubSvcRelDto> relList, Map<String, AppPremSubSvcRelDto> oldDtaMap) {
-        if (IaisCommonUtils.isEmpty(relList)) {
-            return;
-        }
-        for (AppPremSubSvcRelDto relDto : relList) {
-            AppPremSubSvcRelDto oldRelDto = oldDtaMap.get(relDto.getSvcCode());
-            if (oldRelDto == null && !relDto.isChecked()) {
-                continue;
-            }
-            relDto.setStatus(ApplicationConsts.RECORD_STATUS_SUBMIT_CODE);
-            if (oldRelDto == null && relDto.isChecked()) {
-                relDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_ADD);
-            } else if (oldRelDto != null) {
-                boolean oldExisted = !ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(oldRelDto.getActCode())
-                        && oldRelDto.isChecked();
-                if (!relDto.isChecked() && oldExisted) {
-                    relDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_REMOVE);
-                } else if (relDto.isChecked() && oldExisted) {
-                    relDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE);
-                } else if (!relDto.isChecked() && !oldExisted) {
-                    if (ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(oldRelDto.getActCode())) {
-                        relDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_REMOVE);
-                    }
-                } else if (relDto.isChecked() && !oldExisted) {
-                    relDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_ADD);
-                }
-            }
-            resolveSvcActionCode(relDto.getAppPremSubSvcRelDtos(), oldDtaMap);
-        }
-    }
-
     public static void resolveSpecialisedNonAutoData(AppSubmissionDto autoAppSubmissionDto, AppSubmissionDto oldAppSubmissionDto) {
         if (autoAppSubmissionDto == null || oldAppSubmissionDto == null) {
             return;
@@ -2690,4 +2620,115 @@ public final class RfcHelper {
         return status;
     }
 
+    public static void resolveSvcActionCode(List<AppPremSubSvcRelDto> relList, Map<String, AppPremSubSvcRelDto> oldDtaMap) {
+        if (IaisCommonUtils.isEmpty(relList)) {
+            return;
+        }
+        for (AppPremSubSvcRelDto relDto : relList) {
+            AppPremSubSvcRelDto oldRelDto = oldDtaMap.get(relDto.getSvcCode());
+            if (oldRelDto == null && !relDto.isChecked()) {
+                continue;
+            }
+            relDto.setStatus(ApplicationConsts.RECORD_STATUS_SUBMIT_CODE);
+            if (oldRelDto == null && relDto.isChecked()) {
+                relDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_ADD);
+            } else if (oldRelDto != null) {
+                boolean oldExisted = !ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(oldRelDto.getActCode())
+                        && oldRelDto.isChecked();
+                if (!relDto.isChecked() && oldExisted) {
+                    relDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_REMOVE);
+                } else if (relDto.isChecked() && oldExisted) {
+                    relDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE);
+                } else if (!relDto.isChecked() && !oldExisted) {
+                    if (ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(oldRelDto.getActCode())) {
+                        relDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_REMOVE);
+                    }
+                } else if (relDto.isChecked() && !oldExisted) {
+                    relDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_ADD);
+                }
+            }
+            resolveSvcActionCode(relDto.getAppPremSubSvcRelDtos(), oldDtaMap);
+        }
+    }
+
+    public static AmendmentFeeDto getAmendmentFeeDto(AppSubmissionDto appSubmissionDto, AppEditSelectDto appEditSelectDto,
+            boolean isCharity) {
+        AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
+        amendmentFeeDto.setChangeInLicensee(Boolean.FALSE);
+        amendmentFeeDto.setChangeInLocation(appEditSelectDto.isChangeInLocation() || appEditSelectDto.isChangeFloorUnits());
+        amendmentFeeDto.setAdditionOrRemovalVehicles(appEditSelectDto.isChangeVehicle());
+        amendmentFeeDto.setIsCharity(isCharity);
+        amendmentFeeDto.setChangeBusinessName(appEditSelectDto.isChangeBusinessName());
+        //amendmentFeeDto.setAdditionOrRemovalSpecialisedServices(appEditSelectDto.isSpecialisedEdit());
+        amendmentFeeDto.setAddress(appSubmissionDto.getAppGrpPremisesDtoList().get(0).getAddress());
+        amendmentFeeDto.setServiceName(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName());
+        amendmentFeeDto.setAppGrpNo(appSubmissionDto.getAppGrpNo());
+        amendmentFeeDto.setLicenceNo(appSubmissionDto.getLicenceNo());
+        amendmentFeeDto.setIsCharity(isCharity);
+        if (appEditSelectDto.isSpecialisedEdit()) {
+            //add ss fee
+            List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList=appSubmissionDto.getAppPremSpecialisedDtoList().get(0).getFlatAppPremSubSvcRelList(dto -> ApplicationConsts.RECORD_ACTION_CODE_ADD.equals(dto.getActCode()));
+            if (IaisCommonUtils.isNotEmpty(appPremSubSvcRelDtoList)) {
+                amendmentFeeDto.setAdditionOrRemovalSpecialisedServices(Boolean.TRUE);
+                List<LicenceFeeDto> licenceFeeSpecDtos = IaisCommonUtils.genNewArrayList();
+                for (AppPremSubSvcRelDto subSvc : appPremSubSvcRelDtoList) {
+                    LicenceFeeDto specFeeDto = new LicenceFeeDto();
+                    specFeeDto.setBundle(0);
+                    specFeeDto.setBaseService(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceCode());
+                    specFeeDto.setServiceCode(subSvc.getSvcCode());
+                    specFeeDto.setServiceName(subSvc.getSvcName());
+                    specFeeDto.setPremises(appSubmissionDto.getAppGrpPremisesDtoList().get(0).getAddress());
+                    specFeeDto.setCharity(isCharity);
+                    licenceFeeSpecDtos.add(specFeeDto);
+                }
+                amendmentFeeDto.setSpecifiedLicenceFeeDto(licenceFeeSpecDtos);
+            }
+            List<AppPremSubSvcRelDto> removalDtoList=appSubmissionDto.getAppPremSpecialisedDtoList().get(0).getFlatAppPremSubSvcRelList(dto -> ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()));
+            if (IaisCommonUtils.isNotEmpty(removalDtoList)) {
+                amendmentFeeDto.setAdditionOrRemovalSpecialisedServices(Boolean.TRUE);
+            }
+        }
+        return amendmentFeeDto;
+    }
+
+    public static void beforeSubmit(AppSubmissionDto appSubmissionDto, AppEditSelectDto appEditSelectDto, String appGrpNo,
+            String appType, HttpServletRequest request) {
+        if (appSubmissionDto == null) {
+            return;
+        }
+        DealSessionUtil.initView(appSubmissionDto);
+        if (!ApplicationHelper.checkIsRfi(request)) {
+            appSubmissionDto.setAppGrpId(null);
+        }
+        appSubmissionDto.setFromBe(ApplicationHelper.isBackend());
+        appSubmissionDto.setAppType(appType);
+        appSubmissionDto.setAuditTrailDto(AuditTrailHelper.getCurrentAuditTrailDto());
+        // max file index
+        DealSessionUtil.initMaxFileIndex(appSubmissionDto, request);
+
+        //judge is the preInspection
+        PreOrPostInspectionResultDto preOrPostInspectionResultDto = getConfigCommService().judgeIsPreInspection(appSubmissionDto);
+        if (preOrPostInspectionResultDto == null) {
+            appSubmissionDto.setPreInspection(true);
+            appSubmissionDto.setRequirement(true);
+        } else {
+            appSubmissionDto.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
+            appSubmissionDto.setRequirement(preOrPostInspectionResultDto.isRequirement());
+        }
+        //set Risk Score
+        setRiskToDto(appSubmissionDto);
+        // reSetAdditionalFields
+        if (appEditSelectDto != null) {
+            appSubmissionDto.setChangeSelectDto(appEditSelectDto);
+        }
+        ApplicationHelper.reSetAdditionalFields(appSubmissionDto, appEditSelectDto, appGrpNo);
+//        ApplicationHelper.reSetAdditionalFields(appSubmissionDto, oldAppSubmissionDto);
+        // bind application
+//        setRelatedInfoBaseServiceId(appSubmissionDto);
+        /*if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
+            appSubmissionDto.setAppStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
+        } else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
+            appSubmissionDto.setAppStatus(ApplicationConsts.APPLICATION_STATUS_RENEWAL);
+        }*/
+    }
 }

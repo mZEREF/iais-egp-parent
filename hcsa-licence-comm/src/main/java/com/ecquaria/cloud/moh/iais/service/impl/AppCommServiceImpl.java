@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -61,7 +62,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
- * @Auther chenlei on 5/3/2022.
+ * @author chenlei on 5/3/2022.
  */
 @Slf4j
 @Service
@@ -568,8 +569,7 @@ public class AppCommServiceImpl implements AppCommService {
 
     @Override
     public Map<String, String> checkAffectedAppSubmissions(List<LicenceDto> selectLicences, AppGrpPremisesDto appGrpPremisesDto,
-                                                           FeeDto premiseFee, String draftNo, String appGroupNo, AppEditSelectDto appEditSelectDto,
-                                                           List<AppSubmissionDto> appSubmissionDtos) {
+            String draftNo, String appGroupNo, AppEditSelectDto appEditSelectDto, List<AppSubmissionDto> appSubmissionDtos) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if (selectLicences == null || selectLicences.isEmpty()) {
             return errorMap;
@@ -607,6 +607,7 @@ public class AppCommServiceImpl implements AppCommService {
         if (!errorMap.isEmpty()) {
             return errorMap;
         }
+        boolean isCharity = ApplicationHelper.isCharity(MiscUtil.getCurrentRequest());
         if (StringUtil.isEmpty(draftNo)) {
             draftNo = systemAdminClient.draftNumber(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE).getEntity();
         }
@@ -616,6 +617,9 @@ public class AppCommServiceImpl implements AppCommService {
                     AppSubmissionDto appSubmissionDtoByLicenceId = licCommService.getAppSubmissionDtoByLicenceId(licence.getId());
                     // Premises
                     ApplicationHelper.reSetPremeses(appSubmissionDtoByLicenceId, appGrpPremisesDto);
+                    AmendmentFeeDto amendmentFeeDto = RfcHelper.getAmendmentFeeDto(appSubmissionDtoByLicenceId, appEditSelectDto,
+                            isCharity);
+                    FeeDto premiseFee = configCommService.getGroupAmendAmount(amendmentFeeDto);
                     // check mains
                     checkAffectedAppSubmissions(appSubmissionDtoByLicenceId, licence, premiseFee, draft, appGroupNo,
                             appEditSelectDto, null);
@@ -657,7 +661,7 @@ public class AppCommServiceImpl implements AppCommService {
         // amount
         double total = 0.0;
         if (premiseFee.getTotal() != null) {
-            total = premiseFee.getTotal().doubleValue();
+            total = premiseFee.getTotal();
         }
         if (licence.getMigrated() == 1 && IaisEGPHelper.isActiveMigrated()) {
             total = 0.0;
@@ -674,24 +678,6 @@ public class AppCommServiceImpl implements AppCommService {
         AppEditSelectDto editDto = MiscUtil.transferEntityDto(appEditSelectDto, AppEditSelectDto.class);
         RfcHelper.beforeSubmit(appSubmissionDto, editDto, appGroupNo, appType, null);
         //appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
-        /*appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
-        if (MiscUtil.doubleEquals(0.0, total)) {
-            appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
-        }*/
-        /*appSubmissionDto.setGetAppInfoFromDto(true);
-        appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        // set app GrpPremisess
-        boolean groupLic = appSubmissionDto.isGroupLic();
-        int hciNameChange = appEditSelectDto.isChangeHciName() ? 1 : 0;
-        appSubmissionDto.setGroupLic(groupLic);
-        List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-        if (groupLic) {
-            appGrpPremisesDtos.get(0).setGroupLicenceFlag(licence.getId());
-            appSubmissionDto.setPartPremise(true);
-        }
-        appSubmissionDto.getAppGrpPremisesDtoList().get(0).setHciNameChanged(hciNameChange);
-        appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
-        ApplicationHelper.reSetAdditionalFields(appSubmissionDto, appEditSelectDto);*/
         if (appSubmissionDtos != null) {
             appSubmissionDtos.add(appSubmissionDto);
         }

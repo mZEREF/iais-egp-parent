@@ -18,16 +18,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPsnTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListDto;
@@ -72,6 +69,7 @@ import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
+import com.ecquaria.cloud.moh.iais.util.PageDataCopyUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1557,13 +1555,9 @@ public class RequestForChangeMenuDelegator {
 
         //amount
         boolean eqHciNameChange = !compareHciName(premisesListQueryDto, appSubmissionDto.getAppGrpPremisesDtoList().get(0));
-        boolean changeInLocation = compareLocation(premisesListQueryDto, appSubmissionDto.getAppGrpPremisesDtoList().get(0));
-        boolean eqAddFloorNo = RfcHelper.isChangeFloorUnit(appSubmissionDto,
-                oldAppSubmissionDtoappSubmissionDto);
-        AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
-        amendmentFeeDto.setChangeInLicensee(Boolean.FALSE);
-        amendmentFeeDto.setAdditionOrRemovalVehicles(eqHciNameChange);
-        amendmentFeeDto.setChangeInLocation(changeInLocation || eqAddFloorNo);
+        boolean changeInLocation = RfcHelper.isChangeInLocation(PageDataCopyUtil.copyInLocationFields(premisesListQueryDto),
+                appSubmissionDto.getAppGrpPremisesDtoList().get(0));
+        boolean eqAddFloorNo = RfcHelper.isChangeFloorUnit(appSubmissionDto, oldAppSubmissionDtoappSubmissionDto);
         // check app edit select dto
         appEditSelectDto.setChangeHciName(eqHciNameChange);
         appEditSelectDto.setChangeInLocation(changeInLocation);
@@ -1571,51 +1565,10 @@ public class RequestForChangeMenuDelegator {
         log.info(StringUtil.changeForLog("The App Edit Select Dto - " + JsonUtil.parseToJson(appEditSelectDto)));
         ApplicationHelper.reSetAdditionalFields(appSubmissionDto, appEditSelectDto);
 
-        boolean isCharity = ApplicationHelper.isCharity(bpc.request);
-        //add ss fee
-        List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList=appSubmissionDto.getAppPremSpecialisedDtoList().get(0).getFlatAppPremSubSvcRelList(dto -> ApplicationConsts.RECORD_ACTION_CODE_ADD.equals(dto.getActCode()));
-        if (IaisCommonUtils.isNotEmpty(appPremSubSvcRelDtoList)) {
-            amendmentFeeDto.setAdditionOrRemovalSpecialisedServices(Boolean.TRUE);
-            List<LicenceFeeDto> licenceFeeSpecDtos = IaisCommonUtils.genNewArrayList();
-            for (AppPremSubSvcRelDto subSvc : appPremSubSvcRelDtoList
-            ) {
-                if (subSvc.isChecked()) {
-                    LicenceFeeDto specFeeDto = new LicenceFeeDto();
-                    specFeeDto.setBundle(0);
-                    specFeeDto.setBaseService(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceCode());
-                    specFeeDto.setServiceCode(subSvc.getSvcCode());
-                    specFeeDto.setServiceName(subSvc.getSvcName());
-                    specFeeDto.setPremises(appSubmissionDto.getAppGrpPremisesDtoList().get(0).getAddress());
-                    specFeeDto.setCharity(isCharity);
-                    licenceFeeSpecDtos.add(specFeeDto);
-                }
-            }
-            amendmentFeeDto.setSpecifiedLicenceFeeDto(licenceFeeSpecDtos);
-        }
-        List<AppPremSubSvcRelDto> removalDtoList=appSubmissionDto.getAppPremSpecialisedDtoList().get(0).getFlatAppPremSubSvcRelList(dto -> ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()));
-        if (IaisCommonUtils.isNotEmpty(removalDtoList)) {
-            amendmentFeeDto.setAdditionOrRemovalSpecialisedServices(Boolean.TRUE);
-        }
-        amendmentFeeDto.setServiceCode(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceCode());
-        amendmentFeeDto.setLicenceNo(appSubmissionDto.getLicenceNo());
-
-        amendmentFeeDto.setIsCharity(isCharity);
-        amendmentFeeDto.setAddress(appSubmissionDto.getAppGrpPremisesDtoList().get(0).getAddress());
-        amendmentFeeDto.setServiceName(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName());
-        amendmentFeeDto.setAppGrpNo(appSubmissionDto.getAppGrpNo());
-        FeeDto feeDto = configCommService.getGroupAmendAmount(amendmentFeeDto);
-        appSubmissionDto.setFeeInfoDtos(feeDto.getFeeInfoDtos());
-        appSubmissionDto.setAmount(feeDto.getTotal());
-        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-
-        ParamUtil.setSessionAttr(bpc.request, "FeeDetail", null);
-        if(feeDto.getFeeDetail()!=null){
-            ParamUtil.setSessionAttr(bpc.request, "FeeDetail", feeDto.getFeeDetail().toString());
-        }
         Map<String, String> errorMap = null;
         if (selectLicence != null) {
             errorMap = appCommService.checkAffectedAppSubmissions(selectLicence, appGrpPremisesDtoList1.get(0),
-                    feeDto, null, appGroupNo, appEditSelectDto, appSubmissionDtos);
+                    null, appGroupNo, appEditSelectDto, appSubmissionDtos);
             log.info(StringUtil.changeForLog("The affected data is valid - " + errorMap));
         }
         if (errorMap != null && !errorMap.isEmpty()) {
@@ -1780,15 +1733,6 @@ public class RequestForChangeMenuDelegator {
         appGrpPremisesDto.setAddrType(siteAddressType);
         appGrpPremisesDto.setScdfRefNo(scdfRefNo);
         return appGrpPremisesDto;
-    }
-
-    private boolean compareLocation(PremisesListQueryDto premisesListQueryDto, AppGrpPremisesDto appGrpPremisesDto) {
-        String oldAddress = premisesListQueryDto.getAddressWithoutFU();
-        String newAddress = appGrpPremisesDto.getAddressWithoutFU();
-        if (!oldAddress.equals(newAddress)) {
-            return false;
-        }
-        return true;
     }
 
     private boolean compareHciName(PremisesListQueryDto premisesListQueryDto, AppGrpPremisesDto appGrpPremisesDto) {

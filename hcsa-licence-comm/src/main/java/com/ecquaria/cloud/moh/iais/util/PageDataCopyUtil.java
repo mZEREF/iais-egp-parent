@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -72,6 +73,21 @@ public class PageDataCopyUtil {
         copy.setBlkNo(appGrpPremisesDto.getBlkNo());
         copy.setStreetName(appGrpPremisesDto.getStreetName());
         copy.setBuildingName(appGrpPremisesDto.getBuildingName());
+        return copy;
+    }
+
+    public static AppGrpPremisesDto copyInLocationFields(PremisesListQueryDto premisesListQueryDto) {
+        AppGrpPremisesDto copy = new AppGrpPremisesDto();
+        if (premisesListQueryDto == null) {
+            return copy;
+        }
+        copy.setPremisesType(premisesListQueryDto.getPremisesType());
+        copy.setVehicleNo(premisesListQueryDto.getVehicleNo());
+        copy.setPostalCode(premisesListQueryDto.getPostalCode());
+        copy.setAddrType(premisesListQueryDto.getAddrType());
+        copy.setBlkNo(premisesListQueryDto.getBlkNo());
+        copy.setStreetName(premisesListQueryDto.getStreetName());
+        copy.setBuildingName(premisesListQueryDto.getBuildingName());
         return copy;
     }
 
