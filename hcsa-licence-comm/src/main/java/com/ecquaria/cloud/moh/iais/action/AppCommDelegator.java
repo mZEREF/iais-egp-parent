@@ -534,7 +534,7 @@ public abstract class AppCommDelegator {
             AppDataHelper.setSpecialisedData(appPremSpecialisedDtoList, svcCode, request);
             appSubmissionDto.setAppPremSpecialisedDtoList(appPremSpecialisedDtoList);
             // check specialised change
-            checkSpecialisedChanged(appSubmissionDto, oldSpecialSerices);
+            checkSpecialisedChanged(appSubmissionDto, oldSpecialSerices, bpc.request);
         }
         // validation
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
@@ -603,12 +603,16 @@ public abstract class AppCommDelegator {
         specialisedDto.initAllAppPremSubSvcRelDtoList();
     }
 
-    protected void checkSpecialisedChanged(AppSubmissionDto appSubmissionDto, List<String> oldSpecialSerices) {
+    protected void checkSpecialisedChanged(AppSubmissionDto appSubmissionDto, List<String> oldSpecialSerices,
+            HttpServletRequest request) {
         List<String> specialServiceList = RfcHelper.getSpecialServiceList(appSubmissionDto);
         boolean changed = !IaisCommonUtils.isSame(specialServiceList, oldSpecialSerices);
         log.info(StringUtil.changeForLog("App Specialised Changed: " + changed));
         if (changed) {
             DealSessionUtil.reSetInit(appSubmissionDto, HcsaAppConst.SECTION_SPECIALISED);
+            List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,
+                    AppServicesConsts.HCSASERVICEDTOLIST);
+            DealSessionUtil.init(appSubmissionDto, hcsaServiceDtoList, false, null);
         }
     }
 
@@ -937,7 +941,7 @@ public abstract class AppCommDelegator {
                 appSubmissionDto.setChangeSelectDto(appEditSelectDto);
             }
             // check app premises change
-            checkAppPremisesChanged(appSubmissionDto, oldAppGrpPremisesDtoList);
+            checkAppPremisesChanged(appSubmissionDto, oldAppGrpPremisesDtoList, bpc.request);
         }
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String crud_action_additional = ParamUtil.getString(bpc.request, "crud_action_additional");
@@ -1018,12 +1022,16 @@ public abstract class AppCommDelegator {
         appSubmissionDto.setBundleStatus(bundleStatus);
     }
 
-    protected void checkAppPremisesChanged(AppSubmissionDto appSubmissionDto, List<AppGrpPremisesDto> oldAppGrpPremisesDtoList) {
+    protected void checkAppPremisesChanged(AppSubmissionDto appSubmissionDto, List<AppGrpPremisesDto> oldAppGrpPremisesDtoList,
+            HttpServletRequest request) {
         boolean changed = RfcHelper.isChangeAppPremisesAddress(appSubmissionDto.getAppGrpPremisesDtoList(),
                 oldAppGrpPremisesDtoList);
         log.info(StringUtil.changeForLog("App Premises Changed: " + changed));
         if (changed) {
             DealSessionUtil.reSetInit(appSubmissionDto, HcsaAppConst.SECTION_PREMISES);
+            List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,
+                    AppServicesConsts.HCSASERVICEDTOLIST);
+            DealSessionUtil.init(appSubmissionDto, hcsaServiceDtoList, false, null);
         }
     }
 
