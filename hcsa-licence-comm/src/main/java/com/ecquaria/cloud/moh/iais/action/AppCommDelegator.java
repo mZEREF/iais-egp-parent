@@ -1637,6 +1637,10 @@ public abstract class AppCommDelegator {
         if (licenceDto.getMigrated() == 1 && IaisEGPHelper.isActiveMigrated()) {
             currentAmount = 0.0;
         }
+        ParamUtil.setSessionAttr(bpc.request, "FeeDetail", null);
+        if(feeDto.getFeeDetail()!=null){
+            ParamUtil.setSessionAttr(bpc.request, "FeeDetail", feeDto.getFeeDetail().toString());
+        }
         log.info(StringUtil.changeForLog("the current amount is -->:" + currentAmount));
         appSubmissionDto.setFeeInfoDtos(feeDto.getFeeInfoDtos());
         appSubmissionDto.setAmount(currentAmount);
