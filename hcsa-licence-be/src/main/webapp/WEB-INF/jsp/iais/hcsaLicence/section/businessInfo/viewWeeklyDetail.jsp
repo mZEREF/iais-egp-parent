@@ -10,20 +10,16 @@
             <td class="col-xs-4">
                 <div class="col-xs-12 row">
                     <div class="newVal" attr="${weeklyDto.selectValList}">
-                        <p>
-                            <c:forEach var="weeklyName" items="${weeklyDto.selectValList}" varStatus="weeklyStat">
-                                <iais:code code="${weeklyName}"/><c:if test="${!weeklyStat.last}">,</c:if>
-                            </c:forEach>
-                        </p>
+                        <c:forEach var="weeklyName" items="${weeklyDto.selectValList}" varStatus="weeklyStat">
+                            <iais:code code="${weeklyName}"/><c:if test="${!weeklyStat.last}">,</c:if>
+                        </c:forEach>
                     </div>
                 </div>
                 <div class="col-xs-12 row">
                     <div class="oldVal" style="display: none" attr="${oldweeklyDto.selectValList}">
-                        <p>
-                            <c:forEach var="weeklyName" items="${oldweeklyDto.selectValList}" varStatus="weeklyStat">
-                                <iais:code code="${weeklyName}"/><c:if test="${!weeklyStat.last}">,</c:if>
-                            </c:forEach>
-                        </p>
+                        <c:forEach var="weeklyName" items="${oldweeklyDto.selectValList}" varStatus="weeklyStat">
+                            <iais:code code="${weeklyName}"/><c:if test="${!weeklyStat.last}">,</c:if>
+                        </c:forEach>
                     </div>
                 </div>
             </td>
