@@ -48,6 +48,7 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.helper.RfcHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ApptInspectionDateService;
 import com.ecquaria.cloud.moh.iais.service.AuditSystemListService;
@@ -975,8 +976,10 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             entity.setEventRefNo(grpNo);
             entity.setLicenceId(auditCombinationDto.getAuditTaskDataFillterDto().getLicId());
             entity.setLicenseeId(auditCombinationDto.getAuditTaskDataFillterDto().getLicenseeId());
+            RfcHelper.beforeSubmit(entity,null,grpNo,ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK,null);
             setRiskToDto(entity);
         }
+
         auditCombinationDto.setAppSubmissionDtoList(appSubmissionDtoList);
         try {
             log.info("========================>>>>> create audit !!!!");
