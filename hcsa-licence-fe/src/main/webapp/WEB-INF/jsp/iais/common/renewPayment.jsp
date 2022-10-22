@@ -398,7 +398,7 @@
         <tr>
             <td></td>
             <td></td>
-            <td><p>Total</p></td>
+            <td><p>Total&nbsp;</p></td>
             <td><p><strong><c:out value="${totalStr}"></c:out></strong></p></td>
         </tr>
         </tbody>
