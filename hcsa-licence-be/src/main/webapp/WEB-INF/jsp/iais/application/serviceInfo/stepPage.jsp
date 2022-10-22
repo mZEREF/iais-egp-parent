@@ -69,7 +69,7 @@
                                                             </div>
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST004'}">
-                                                            <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/principalOfficers.jsp"/>
+                                                            <jsp:include page="/WEB-INF/jsp/iais/application/serviceInfo/keyPersonnel/principalOfficers.jsp"/>
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST014'}">
                                                             <div class="key-appointment-holder">

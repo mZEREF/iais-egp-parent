@@ -16,7 +16,7 @@
 <%--<c:set var="prepsn" value="po"/>--%>
 <%--<c:set var="psnContent" value="person-content"/>--%>
 
-<div class="row form-horizontal">
+<div class="row form-horizontal normal-label">
     <c:if test="${AppSubmissionDto.needEditController }">
         <c:if test="${(isRfc || isRenew) && !isRfi}">
             <iais:row>

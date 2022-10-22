@@ -87,8 +87,7 @@
     <c:forEach var="othersUnitNo" items="${appGrpSecondAddr.appPremisesOperationalUnitDtos}" varStatus="status">
         <div class="row addmore">
             <input type="hidden" class="othersId" value="${othersUnitNo.id}">
-            <div class="col-md-6">
-            </div>
+            <div class="col-md-6"></div>
             <div class="col-md-6">
                 <div class="col-md-6">
                    <div class="newVal addmorecontent" attr="${othersUnitNo.floorNo}${othersUnitNo.unitNo}">
@@ -99,6 +98,7 @@
                     <div class="oldVal " attr="<c:out value="${oldAppGrpPremDto.streetName}"/>" style="display: none">
                        <c:out value="${oldAppGrpPremDto.streetName}"/>
                     </div>
+                </div>
             </div>
         </div>
     </c:forEach>
@@ -128,12 +128,12 @@
         <div class="col-md-6">
             <div class="col-md-6">
                   <div class="newVal buildingName" attr="<c:out value="${appGrpSecondAddr.buildingName}"/>">
-                    <c:out value="${appGrpSecondAddr.buildingName}"/>
+                      <c:out value="${appGrpSecondAddr.buildingName}"/>
                   </div>
             </div>
             <div class="col-md-6">
                 <div class="oldVal " attr="<c:out value="${oldAppGrpPremDto.buildingName}"/>" style="display: none">
-                 <c:out value="${oldAppGrpPremDto.buildingName}"/>
+                    <c:out value="${oldAppGrpPremDto.buildingName}"/>
                 </div>
             </div>
         </div>
