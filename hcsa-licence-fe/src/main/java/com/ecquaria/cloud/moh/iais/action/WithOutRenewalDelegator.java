@@ -859,7 +859,6 @@ public class WithOutRenewalDelegator {
             return;
         }
         int index = 0;
-
         for (AppSubmissionDto appSubmissionDto : appSubmissionDtoList) {
             AppFeeDetailsDto appFeeDetailsDto1 = new AppFeeDetailsDto();
             FeeInfoDto feeInfoDto = detailFeeDtoList.get(index);
@@ -869,25 +868,31 @@ public class WithOutRenewalDelegator {
             String appGrpNo = appSubmissionDtoList.get(0).getAppGrpNo();
 
             if (feeInfoDto.getBaseSvcFeeExt() != null) {
-                setAppFeeDetails(feeInfoDto.getBaseSvcFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo, appSubmissionDto);
+                amount = setAppFeeDetails(feeInfoDto.getBaseSvcFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,
+                        appSubmissionDto);
             }
             if (feeInfoDto.getThbSpecifiedFeeExt() != null) {
-                setAppFeeDetails(feeInfoDto.getThbSpecifiedFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo, appSubmissionDto);
+                amount = setAppFeeDetails(feeInfoDto.getThbSpecifiedFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,
+                        appSubmissionDto);
             }
             if (feeInfoDto.getSimpleSpecifiedFeeExt() != null) {
-                setAppFeeDetails(feeInfoDto.getSimpleSpecifiedFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,
+                amount = setAppFeeDetails(feeInfoDto.getSimpleSpecifiedFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,
                         appSubmissionDto);
             }
             if (feeInfoDto.getComplexSpecifiedFeeExt() != null) {
-                setAppFeeDetails(feeInfoDto.getComplexSpecifiedFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,
+                amount = setAppFeeDetails(feeInfoDto.getComplexSpecifiedFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,
                         appSubmissionDto);
             }
             if (feeInfoDto.getBundleSvcFeeExt() != null) {
-                setAppFeeDetails(feeInfoDto.getBundleSvcFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo, appSubmissionDto);
+                amount = setAppFeeDetails(feeInfoDto.getBundleSvcFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,
+                        appSubmissionDto);
             }
             if (feeInfoDto.getGradualFeeExt() != null) {
-                setAppFeeDetails(feeInfoDto.getGradualFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo, appSubmissionDto);
+                amount = setAppFeeDetails(feeInfoDto.getGradualFeeExt(), lateFeeAmount, amount, lateFeeType, appGrpNo,
+                        appSubmissionDto);
             }
+            appSubmissionDto.setAmount(feeDto.getTotal());
+            appSubmissionDto.setAmountStr(Formatter.formatterMoney(feeDto.getTotal()));
             appFeeDetailsDto1.setBaseFee(amount);
             appFeeDetailsDto1.setLaterFee(lateFeeAmount);
             appFeeDetailsDto1.setAdmentFee(feeDto.getTotal());
@@ -896,19 +901,17 @@ public class WithOutRenewalDelegator {
         }
     }
 
-    private static void setAppFeeDetails(FeeExtDto feeExtDto, Double lateFeeAmount, Double amount, String lateFeeType,
+    private static double setAppFeeDetails(FeeExtDto feeExtDto, Double lateFeeAmount, Double amount, String lateFeeType,
             String appGrpNo, AppSubmissionDto appSubmissionDto) {
         feeExtDto.setAppGroupNo(appGrpNo);
         if (feeExtDto.getLateFeeType() != null) {
             lateFeeType = feeExtDto.getLateFeeType();
             lateFeeAmount += feeExtDto.getLateFeeAmoumt();
         }
-        amount += feeExtDto.getAmount();
         appSubmissionDto.setRenewalFeeType(lateFeeType);
         appSubmissionDto.setLateFee(lateFeeAmount);
         appSubmissionDto.setLateFeeStr(Formatter.formatterMoney(lateFeeAmount));
-        appSubmissionDto.setAmount(amount);
-        appSubmissionDto.setAmountStr(Formatter.formatterMoney(amount));
+        return amount + feeExtDto.getAmount();
     }
 
     public static HashMap<String, List<FeeExtDto>> getLaterFeeDetailsMap(List<FeeInfoDto> feeInfoDtos) {
