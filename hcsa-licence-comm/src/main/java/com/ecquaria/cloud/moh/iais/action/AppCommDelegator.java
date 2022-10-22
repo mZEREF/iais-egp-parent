@@ -27,7 +27,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -1837,6 +1836,7 @@ public abstract class AppCommDelegator {
                 autoAppSubmissionDto.setAppGrpPremisesDtoList(oldAppSubmissionDto.getAppGrpPremisesDtoList());
             }
             autoGroupNo = getRfcGroupNo(autoGroupNo);
+            ApplicationHelper.reSetAdditionalFields(autoAppSubmissionDto, autoChangeSelectDto, autoGroupNo);
             AmendmentFeeDto autoAmendmentFeeDto = RfcHelper.getAmendmentFeeDto(autoAppSubmissionDto, autoChangeSelectDto, isCharity);
             FeeDto autoFee = configCommService.getGroupAmendAmount(autoAmendmentFeeDto);
             Double autoAmount = autoFee.getTotal();
@@ -1846,7 +1846,6 @@ public abstract class AppCommDelegator {
             log.info(StringUtil.changeForLog("Auto Amount: " + autoAmount));
             autoAppSubmissionDto.setAmount(autoAmount);
             autoAppSubmissionDto.setFeeInfoDtos(autoFee.getFeeInfoDtos());
-            ApplicationHelper.reSetAdditionalFields(autoAppSubmissionDto, autoChangeSelectDto, autoGroupNo);
             autoAppSubmissionDto.setChangeSelectDto(autoChangeSelectDto);
             autoSaveAppsubmission.add(0, autoAppSubmissionDto);
         }
