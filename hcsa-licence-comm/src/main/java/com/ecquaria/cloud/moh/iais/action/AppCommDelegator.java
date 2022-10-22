@@ -1615,6 +1615,20 @@ public abstract class AppCommDelegator {
         // reSet: isNeedNewLicNo and self assessment flag
         //ApplicationHelper.reSetAdditionalFields(appSubmissionDto, oldAppSubmissionDto, appEditSelectDto);
         appSubmissionDto.setChangeSelectDto(appEditSelectDto);
+        String appType = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE;
+        String appGroupNo = null;
+        String autoGroupNo = null;
+        String draftNo = Optional.ofNullable(appSubmissionDto.getDraftNo())
+                .orElseGet(() -> appCommService.getDraftNo(appType));
+        log.info(StringUtil.changeForLog("the draft is -->:" + draftNo));
+        if (isAutoRfc) {
+            autoGroupNo = getRfcGroupNo(null);
+            appSubmissionDto.setAppGrpNo(autoGroupNo);
+        } else {
+            appGroupNo = getRfcGroupNo(null);
+            appSubmissionDto.setAppGrpNo(appGroupNo);
+        }
+        appSubmissionDto.setDraftNo(draftNo);
         boolean isCharity = ApplicationHelper.isCharity(bpc.request);
         AmendmentFeeDto amendmentFeeDto = getAmendmentFeeDto(appEditSelectDto, isCharity);
         //add ss fee
@@ -1660,20 +1674,6 @@ public abstract class AppCommDelegator {
         appSubmissionDto.setFeeInfoDtos(feeDto.getFeeInfoDtos());
         appSubmissionDto.setAmount(currentAmount);
 
-        String appType = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE;
-        String appGroupNo = null;
-        String autoGroupNo = null;
-        String draftNo = Optional.ofNullable(appSubmissionDto.getDraftNo())
-                .orElseGet(() -> appCommService.getDraftNo(appType));
-        log.info(StringUtil.changeForLog("the draft is -->:" + draftNo));
-        if (isAutoRfc) {
-            autoGroupNo = getRfcGroupNo(null);
-            appSubmissionDto.setAppGrpNo(autoGroupNo);
-        } else {
-            appGroupNo = getRfcGroupNo(null);
-            appSubmissionDto.setAppGrpNo(appGroupNo);
-        }
-        appSubmissionDto.setDraftNo(draftNo);
 
         RfcHelper.beforeSubmit(appSubmissionDto, appEditSelectDto, null, appType, bpc.request);
         // set status
