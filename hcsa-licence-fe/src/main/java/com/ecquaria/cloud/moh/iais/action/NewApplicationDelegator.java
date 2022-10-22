@@ -492,6 +492,10 @@ public class NewApplicationDelegator extends AppCommDelegator {
                 } catch (Exception e) {
                     log.info(StringUtil.changeForLog(e.getMessage()), e);
                 }
+                String txnDt = ParamUtil.getMaskedString(bpc.request, "txnDt");
+                String txnRefNo = ParamUtil.getMaskedString(bpc.request, "txnRefNo");
+                ParamUtil.setSessionAttr(bpc.request, "txnDt", txnDt);
+                ParamUtil.setSessionAttr(bpc.request, "txnRefNo", txnRefNo);
 
                 List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
                 if (ackSubmissionDtos != null) {
@@ -500,10 +504,6 @@ public class NewApplicationDelegator extends AppCommDelegator {
                         appGrpIds.add(appSubmissionDto1.getAppGrpId());
                     }
                 }
-                String txnDt = ParamUtil.getMaskedString(bpc.request, "txnDt");
-                String txnRefNo = ParamUtil.getMaskedString(bpc.request, "txnRefNo");
-                ParamUtil.setSessionAttr(bpc.request, "txnDt", txnDt);
-                ParamUtil.setSessionAttr(bpc.request, "txnRefNo", txnRefNo);
                 switch2 = "ack";
 
                 //update status for transfor payment

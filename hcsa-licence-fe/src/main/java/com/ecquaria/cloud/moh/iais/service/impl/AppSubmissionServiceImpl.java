@@ -1821,6 +1821,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
         }
         appGrp.setPayMethod(paymentMethod);
+        appGrp.setPaymentDt(new Date());
         saveAppGrpGiroAcct(appGrpId, appSubmissionDto.getGiroAcctNum());
         applicationFeClient.doPaymentUpDate(appGrp);
     }

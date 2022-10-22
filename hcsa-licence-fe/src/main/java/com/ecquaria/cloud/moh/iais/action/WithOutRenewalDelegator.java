@@ -294,14 +294,12 @@ public class WithOutRenewalDelegator {
     }
 
     private void paymentCallBack(HttpServletRequest request) {
-        String pay = "";
         RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
-        List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
-        String groupId = "";
-        if (appSubmissionDtos != null && appSubmissionDtos.size() != 0) {
-            groupId = appSubmissionDtos.get(0).getAppGrpId();
-            pay = appSubmissionDtos.get(0).getPaymentMethod();
+        if (renewDto == null || IaisCommonUtils.isEmpty(renewDto.getAppSubmissionDtos())) {
+            return;
         }
+        List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
+        String pay = appSubmissionDtos.get(0).getPaymentMethod();
         /*if (appSubmissionDtos != null && appSubmissionDtos.size() > 0) {
             appSubmissionService.updateDraftStatus(appSubmissionDtos.get(0).getDraftNo(), AppConsts.COMMON_STATUS_ACTIVE);
         }*/
@@ -320,12 +318,13 @@ public class WithOutRenewalDelegator {
 
                 ParamUtil.setSessionAttr(request, "txnDt", txnDt);
                 ParamUtil.setSessionAttr(request, "txnRefNo", txnRefNo);
-                String pmtMethod = "";
+                /*String pmtMethod = "";
                 if (appSubmissionDtos != null && appSubmissionDtos.size() > 0) {
                     pmtMethod = appSubmissionDtos.get(0).getPaymentMethod();
-                }
+                }*/
                 //update status
-                ApplicationGroupDto appGrp = new ApplicationGroupDto();
+                appSubmissionService.updatePayment(appSubmissionDtos.get(0), pmtRefNo);
+               /* ApplicationGroupDto appGrp = new ApplicationGroupDto();
                 appGrp.setId(groupId);
                 appGrp.setPmtRefNo(pmtRefNo);
                 appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
@@ -333,6 +332,7 @@ public class WithOutRenewalDelegator {
                 serviceConfigService.updatePaymentStatus(appGrp);
                 //update application status
                 appSubmissionService.updateApplicationsStatus(groupId, ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
+                */
                 //jump page to acknowledgement
                 //send email pay success
                 try {
@@ -1403,10 +1403,11 @@ public class WithOutRenewalDelegator {
                 log.error(e.getMessage(), e);
                 log.error(StringUtil.changeForLog("send email error"));
             }
-            String giroAccNum = "";
-            if (!StringUtil.isEmpty(payMethod) && ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)) {
-                giroAccNum = ParamUtil.getString(bpc.request, "giroAccount");
-            }
+            AppSubmissionDto appSubmissionDto = appSubmissionDtos.get(0);
+            String giroAccNum = ParamUtil.getString(bpc.request, "giroAccount");
+            appSubmissionDto.setGiroAcctNum(giroAccNum);
+            appSubmissionService.updatePayment(appSubmissionDto, null);
+            /*
             appSubmissionDtos.get(0).setGiroAcctNum(giroAccNum);
             ApplicationGroupDto appGrp = new ApplicationGroupDto();
             appGrp.setId(appGrpId);
@@ -1415,11 +1416,11 @@ public class WithOutRenewalDelegator {
             appGrp.setPmtRefNo(giroTranNo);
             appGrp.setPayMethod(payMethod);
             serviceConfigService.updateAppGrpPmtStatus(appGrp, giroAccNum);
-            serviceConfigService.updatePaymentStatus(appGrp);
+            serviceConfigService.updatePaymentStatus(appGrp);*/
             String txnDt = DateUtil.formatDate(new Date(), "dd/MM/yyyy");
             ParamUtil.setSessionAttr(bpc.request, "txnDt", txnDt);
+            ParamUtil.setSessionAttr(bpc.request, "txnRefNo", appSubmissionDto.getGiroTranNo());
             ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE4);
-            ParamUtil.setSessionAttr(bpc.request, "txnRefNo", giroTranNo);
             StringBuilder url = new StringBuilder();
             url.append("https://").append(bpc.request.getServerName())
                     .append("/hcsa-licence-web/eservice/INTERNET/MohWithOutRenewal/1/preparatData");
