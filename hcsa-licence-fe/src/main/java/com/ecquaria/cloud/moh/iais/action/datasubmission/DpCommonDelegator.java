@@ -256,6 +256,11 @@ public abstract class DpCommonDelegator {
         submission(bpc);
         DpSuperDataSubmissionDto dpSuperDataSubmissionDto = DataSubmissionHelper.getCurrentDpDataSubmission(bpc.request);
         DataSubmissionDto dataSubmissionDto = dpSuperDataSubmissionDto.getDataSubmissionDto();
+        if (!DataSubmissionHelper.canDoRfc(dataSubmissionDto.getId())) {
+            ParamUtil.setRequestAttr(bpc.request, "valFlag", "fail");
+            ParamUtil.setRequestAttr(bpc.request, "rfcOutdateFlag", "yes");
+            return;
+        }
         CycleDto cycle = dpSuperDataSubmissionDto.getCycleDto();
         String cycleType = cycle.getCycleType();
         if (StringUtil.isEmpty(dataSubmissionDto.getSubmissionNo())) {
@@ -356,6 +361,7 @@ public abstract class DpCommonDelegator {
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_ACK);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_ACKDRP);
         ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, AppConsts.YES);
+        ParamUtil.setRequestAttr(bpc.request, "valFlag", "pass");
     }
 
     /**

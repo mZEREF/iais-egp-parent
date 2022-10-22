@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="6" minorVersion="0" name="MohDPDrugPrescribed" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="10" minorVersion="0" name="MohDPDrugPrescribed" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices />
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Start" x="50" y="310">
@@ -90,7 +90,7 @@
    <Description />
    <probepoint type="none" />
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Ack" stageIndicator="" x="690" y="560">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Ack" stageIndicator="" x="790" y="560">
    <OnPageLoad />
    <OnPageSubmit />
    <Description />
@@ -126,9 +126,6 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/PageConfirmAction" linkstyle="Direct" name="" sourceName="/Pages/WebPage/StagePageConfirm" style="oblique">
    <position>{(750,330)(920,330)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/Ack" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Submission" style="oblique">
-   <position>{(560,580)(710,580)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/Retrun" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Return" style="rectanular">
    <position>{(570,90)(750,90)}</position>
   </SynchronousLink>
@@ -139,7 +136,7 @@
    <position>{(910,210)(1170,330)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/Ack" style="oblique">
-   <position>{(710,580)(1170,330)}</position>
+   <position>{(810,580)(1170,330)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Draft" style="oblique">
    <position>{(580,480)(1170,330)}</position>
@@ -159,8 +156,21 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareSwitch" linkstyle="Rectangle" name="" sourceName="/Steps/InvokeStep/Patient" style="rectanular">
    <position>{(370,570)(230,571)(210,330)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Validate" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Submission" style="rectanular">
+   <position>{(560,580)(680,580)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Ack" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Validate" style="rectanular">
+   <position>{(680,580)(810,580)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareConfim" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Validate" style="oblique">
+   <position>{(680,580)(580,330)}</position>
+  </SynchronousLink>
  </Links>
- <Conditions />
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/PrepareConfim" componentIfTrue="/Pages/WebPage/Ack" defClass="" executor="" icon="" leftOperand="valFlag" name="Validate" operator="=" rightOperand="&quot;pass&quot;" x="660" y="560">
+   <Description />
+  </Condition>
+ </Conditions>
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="350" y="310">
    <Description />

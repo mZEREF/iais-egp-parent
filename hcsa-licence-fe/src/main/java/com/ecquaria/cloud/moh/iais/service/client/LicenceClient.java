@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CounsellingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsCenterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
@@ -187,6 +188,11 @@ public interface LicenceClient {
     @GetMapping(value = "/hcsa-licence/monitoring-licence-sheet",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<MonitoringSheetsDto> getMonitoringLicenceSheetsDto();
 
+
     @GetMapping(value = "/hcsa-licence/approveLicenceByLicenseeId/{licenseeId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenceDto>> getApproveLicenceDtoByLicenseeId(@PathVariable(name="licenseeId") String licenseeId);
+
+    @GetMapping(value = "/data-submission/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<DataSubmissionDto> getDataSubmissionDto(@PathVariable("id") String id);
+
 }

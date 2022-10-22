@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
 import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelValidatorHelper;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
@@ -1143,4 +1144,16 @@ public final class DataSubmissionHelper {
         ParamUtil.setRequestAttr(request,"goBackUrl",tokenUrl);
     }
 
+    public static boolean canDoRfc(String oldDsId) {
+        if (StringUtil.isEmpty(oldDsId)) {
+            return true;
+        }
+        LicenceClient licenceClient = SpringContextHelper.getContext().getBean(LicenceClient.class);
+        DataSubmissionDto dsDto = licenceClient.getDataSubmissionDto(oldDsId).getEntity();
+        if (dsDto != null && DataSubmissionConsts.DS_STATUS_INACTIVE.equals(dsDto.getStatus())) {
+            return false;
+        }
+
+        return true;
+    }
 }

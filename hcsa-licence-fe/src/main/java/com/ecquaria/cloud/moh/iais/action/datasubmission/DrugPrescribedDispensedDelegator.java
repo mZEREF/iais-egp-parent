@@ -26,10 +26,14 @@ import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DocInfoService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
@@ -37,12 +41,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import static com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts.DRUG_DISPENSED;
 import static com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts.DRUG_PRESCRIBED;
@@ -60,9 +58,6 @@ import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.DP_DOC
 @Delegator("drugPrescribedDispensedDelegator")
 @Slf4j
 public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
-
-    @Autowired
-    private AppCommService appSubmissionService;
 
     @Autowired
     private PatientService patientService;
@@ -156,10 +151,10 @@ public class DrugPrescribedDispensedDelegator extends DpCommonDelegator{
                     orgId = loginContext.getOrgId();
                     userId = loginContext.getUserId();
                 }
-                if (dpDataSubmissionService.getDpSuperDataSubmissionDtoRfcDraftByConds(
-                        orgId, dpSuperDataSubmissionDto.getSubmissionType(), dpSuperDataSubmissionDto.getSvcName(), dpSuperDataSubmissionDto.getHciCode(), dataSubmissionDto.getId(),userId) != null) {
-                    ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
-                }
+//                if (dpDataSubmissionService.getDpSuperDataSubmissionDtoRfcDraftByConds(
+//                        orgId, dpSuperDataSubmissionDto.getSubmissionType(), dpSuperDataSubmissionDto.getSvcName(), dpSuperDataSubmissionDto.getHciCode(), dataSubmissionDto.getId(),userId) != null) {
+//                    ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
+//                }
             }
             String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
             if ("resume".equals(actionValue)) {
