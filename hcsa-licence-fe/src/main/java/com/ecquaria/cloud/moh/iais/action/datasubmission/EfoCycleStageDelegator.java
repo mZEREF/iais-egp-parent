@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArChangeInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EfoCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -100,12 +101,20 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         String startDateStr = ParamUtil.getRequestString(request, "efoDateStarted");
         Date startDate = DateUtil.parseDate(startDateStr, AppConsts.DEFAULT_DATE_FORMAT);
         String cryopresNum = ParamUtil.getString(request,"cryopresNum");
+        ArChangeInventoryDto arChangeInventoryDto = arSuperDataSubmissionDto.getArChangeInventoryDto();
         if (cryopresNum != null && StringUtil.isNumber(cryopresNum)) {
-            efoCycleStageDto.setCryopresNum(Integer.valueOf(cryopresNum));
-             if (DataSubmissionConsts.DS_CYCLE_EFO.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle()) &&
-                     efoCycleStageDto.getCryopresNum() == 0) {
-                String others = ParamUtil.getRequestString(request, "others");
-                efoCycleStageDto.setOthers(others);
+            efoCycleStageDto.setCryopresNum(Integer.parseInt(cryopresNum));
+             if (DataSubmissionConsts.DS_CYCLE_EFO.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle())) {
+                 if (efoCycleStageDto.getCryopresNum() == 0) {
+                     String others = ParamUtil.getRequestString(request, "others");
+                     efoCycleStageDto.setOthers(others);
+                 }
+                 arChangeInventoryDto.setFrozenSpermNum(0);
+                 arChangeInventoryDto.setFrozenOocyteNum(Integer.parseInt(cryopresNum));
+            }
+            if (DataSubmissionConsts.DS_CYCLE_SFO.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle())) {
+                arChangeInventoryDto.setFrozenSpermNum(Integer.parseInt(cryopresNum));
+                arChangeInventoryDto.setFrozenOocyteNum(0);
             }
         }
         efoCycleStageDto.setStartDate(startDate);
