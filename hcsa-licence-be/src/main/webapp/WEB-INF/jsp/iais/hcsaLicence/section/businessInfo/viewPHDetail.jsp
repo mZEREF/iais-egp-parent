@@ -30,7 +30,7 @@
                     </div>
                 </div>
             </td>
-            <td class="col-xs-8">
+            <td>
                 <div class="col-xs-4">
                     <div class="col-xs-12 row">
                         <div class="newVal" attr="${phDto.startFromHH}:${phDto.startFromMM}">
