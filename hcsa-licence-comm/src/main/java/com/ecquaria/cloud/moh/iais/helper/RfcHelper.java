@@ -112,7 +112,7 @@ public final class RfcHelper {
         // specialised
         int changeSpecialisedFields = isChangeSpecialisedFields(appSubmissionDto.getAppPremSpecialisedDtoList(),
                 appSubmissionDto.getAppPremSpecialisedDtoList());
-        boolean changeSpecialised = changeSpecialisedFields != RfcConst.RFC_BASE;
+        boolean changeSpecialised = changeSpecialisedFields != RfcConst.RFC_UNCHANGED;
         if (changeSpecialised) {
             boolean changeSpecialisedNonAutoFields = (changeSpecialisedFields & RfcConst.RFC_AMENDMENT) != 0;
             boolean changeSpecialisedAutoFields = (changeSpecialisedFields & RfcConst.RFC_NOTIFICATION) != 0;
@@ -1062,7 +1062,7 @@ public final class RfcHelper {
     public static int isChangeSpecialisedFields(List<AppPremSpecialisedDto> specialisedList,
             List<AppPremSpecialisedDto> oldSpecialisedList) {
         if (IaisCommonUtils.isEmpty(specialisedList) && IaisCommonUtils.isEmpty(oldSpecialisedList)) {
-            return RfcConst.RFC_BASE;
+            return RfcConst.RFC_UNCHANGED;
         }
         if (IaisCommonUtils.isEmpty(specialisedList)) {
             return RfcConst.RFC_NOTIFICATION;
@@ -1074,7 +1074,7 @@ public final class RfcHelper {
         if (size != oldSpecialisedList.size()) {
             return RfcConst.RFC_AMENDMENT;
         }
-        int result = RfcConst.RFC_BASE;
+        int result = RfcConst.RFC_UNCHANGED;
         for (int i = 0; i < size; i++) {
             result |= isChangeSpecialisedFields(specialisedList.get(i), oldSpecialisedList.get(i));
         }
