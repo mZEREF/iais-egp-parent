@@ -337,10 +337,17 @@ public class MohDsActionDelegator {
                     for (PgtStageDto pgt:oldPgtList
                     ) {
                         if (pgt.getIsPgtMCom() + pgt.getIsPgtMRare() > 0 && pgt.getCreatedAt().before(arSuper.getDataSubmissionDto().getSubmitDt())) {
-                            countNo += pgt.getIsPgtCoFunding();
+                            if (pgt.getIsPgtMCom() == 1 && "Y".equals(pgt.getIsPgtCoFunding())) {
+                                countNo += 1;
+                            }
+                            if (pgt.getIsPgtMRare() == 1 && "Y".equals(pgt.getIsPgtMRareCoFunding())) {
+                                countNo += 1;
+                            }
                         }
                         if (pgt.getIsPgtSr() > 0 && pgt.getCreatedAt().before(arSuper.getDataSubmissionDto().getSubmitDt())) {
-                            countNo += pgt.getIsPgtCoFunding();
+                            if ("Y".equals(pgt.getIsPgtSrCoFunding())) {
+                                countNo += 1;
+                            }
                         }
 
                     }

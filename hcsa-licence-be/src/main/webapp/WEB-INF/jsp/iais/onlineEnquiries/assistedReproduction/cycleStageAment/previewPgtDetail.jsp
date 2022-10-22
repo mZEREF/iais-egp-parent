@@ -91,24 +91,24 @@
                     <iais:row>
                         <iais:field width="4" value="Please indicate if co-funding was provided for PGT-M (Common)"/>
                         <iais:value width="4" cssClass="col-md-4" display="true">
-                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding == 1 }">
+                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding == 'Y'}">
                                 Yes
                             </c:if>
-                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding == 0 }">
+                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding == 'N'}">
                                 No
                             </c:if>
-                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding == 2 }">
+                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding == 'NA'}">
                                 N/A
                             </c:if>
                         </iais:value>
                         <iais:value width="4" cssClass="col-md-4" display="true">
-                            <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtCoFunding ==1 }">
+                            <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtCoFunding == 'Y'}">
                                 Yes
                             </c:if>
-                            <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtCoFunding ==0 }">
+                            <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtCoFunding == 'N'}">
                                 No
                             </c:if>
-                            <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtCoFunding == 2 }">
+                            <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtCoFunding == 'NA'}">
                                 N/A
                             </c:if>
                         </iais:value>
@@ -118,24 +118,24 @@
                         <iais:row>
                             <iais:field width="4" value="Please indicate if co-funding was provided for PGT-M (Rare)"/>
                             <iais:value width="4" cssClass="col-md-4" display="true">
-                                <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMRareCoFunding ==1 }">
+                                <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMRareCoFunding == 'Y'}">
                                     Yes
                                 </c:if>
-                                <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMRareCoFunding ==0 }">
+                                <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMRareCoFunding == 'N'}">
                                     No
                                 </c:if>
-                                <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMRareCoFunding ==2 }">
+                                <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMRareCoFunding == 'NA'}">
                                     N/A
                                 </c:if>
                             </iais:value>
                             <iais:value width="4" cssClass="col-md-4" display="true">
-                                <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtMRareCoFunding ==1 }">
+                                <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtMRareCoFunding == 'Y'}">
                                     Yes
                                 </c:if>
-                                <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtMRareCoFunding ==0 }">
+                                <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtMRareCoFunding == 'N'}">
                                     No
                                 </c:if>
-                                <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtMRareCoFunding ==2 }">
+                                <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtMRareCoFunding == 'NA'}">
                                     N/A
                                 </c:if>
                             </iais:value>
@@ -158,24 +158,24 @@
                     <iais:row>
                         <iais:field width="4" value="Please indicate if co-funding was provided for PGT-SR"/>
                         <iais:value width="4" cssClass="col-md-4" display="true">
-                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtSrCoFunding ==1 }">
+                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtSrCoFunding == 'Y'}">
                                 Yes
                             </c:if>
-                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtSrCoFunding ==0 }">
+                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtSrCoFunding == 'N'}">
                                 No
                             </c:if>
-                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtSrCoFunding ==2 }">
+                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtSrCoFunding == 'NA'}">
                                 N/A
                             </c:if>
                         </iais:value>
                         <iais:value width="4" cssClass="col-md-4" display="true">
-                            <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtSrCoFunding ==1 }">
+                            <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtSrCoFunding == 'Y'}">
                                 Yes
                             </c:if>
-                            <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtSrCoFunding ==0 }">
+                            <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtSrCoFunding == 'N'}">
                                 No
                             </c:if>
-                            <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtSrCoFunding ==2 }">
+                            <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtSrCoFunding == 'NA'}">
                                 N/A
                             </c:if>
                         </iais:value>
@@ -221,24 +221,24 @@
                     <iais:row>
                         <iais:field width="4" value="Please indicate if co-funding was provided for PGT-A"/>
                         <iais:value width="4" cssClass="col-md-4" display="true">
-                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtACoFunding ==1 }">
+                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtACoFunding == 'Y'}">
                                 Yes
                             </c:if>
-                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtACoFunding ==0 }">
+                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtACoFunding == 'N'}">
                                 No
                             </c:if>
-                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtACoFunding ==2 }">
+                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtACoFunding == 'NA'}">
                                 N/A
                             </c:if>
                         </iais:value>
                         <iais:value width="4" cssClass="col-md-4" display="true">
-                            <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtACoFunding ==1 }">
+                            <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtACoFunding == 'Y'}">
                                 Yes
                             </c:if>
-                            <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtACoFunding ==0 }">
+                            <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtACoFunding == 'N'}">
                                 No
                             </c:if>
-                            <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtACoFunding ==2 }">
+                            <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtACoFunding == 'NA'}">
                                 N/A
                             </c:if>
                         </iais:value>
@@ -260,24 +260,24 @@
                     <iais:row>
                         <iais:field width="4" value="Please indicate if co-funding was provided for PTT"/>
                         <iais:value width="4" cssClass="col-md-4" display="true">
-                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPttCoFunding ==1 }">
+                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPttCoFunding == 'Y'}">
                                 Yes
                             </c:if>
-                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPttCoFunding ==0 }">
+                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPttCoFunding == 'N'}">
                                 No
                             </c:if>
-                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPttCoFunding ==2 }">
+                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPttCoFunding == 'NA'}">
                                 N/A
                             </c:if>
                         </iais:value>
                         <iais:value width="4" cssClass="col-md-4" display="true">
-                            <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPttCoFunding ==1 }">
+                            <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPttCoFunding == 'Y'}">
                                 Yes
                             </c:if>
-                            <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPttCoFunding ==0 }">
+                            <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPttCoFunding == 'N'}">
                                 No
                             </c:if>
-                            <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPttCoFunding ==2 }">
+                            <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.isPttCoFunding == 'NA'}">
                                 N/A
                             </c:if>
                         </iais:value>
