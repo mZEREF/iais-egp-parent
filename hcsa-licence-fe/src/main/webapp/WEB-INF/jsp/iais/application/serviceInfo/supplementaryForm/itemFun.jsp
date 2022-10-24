@@ -33,11 +33,13 @@
             let index = $target.data('seq');
             refreshLabel($target, index);
         });
-
-        let appType = $('input[name="applicationType"]').val();
-        if (('APTY005' == appType || 'APTY004' == appType)) {
+        <c:if test="${(isRfc || isRenew) && !isRfi}">
             disableContent($('.person-content'));
-        }
+        </c:if>
+        console.log('${isRfi}','===================>>>');
+        <c:if test="${isRfi}">
+            disableContent($('.person-content'));
+        </c:if>
 
         let svcContent = '.person-content';
         psnEditEvent(svcContent);

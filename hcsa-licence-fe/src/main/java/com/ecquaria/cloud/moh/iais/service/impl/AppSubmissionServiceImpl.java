@@ -1010,15 +1010,16 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         }
         int easVehicleCount = getEasVehicleCount(appSvcRelatedInfoDtosAll);
         int mtsVehicleCount = getMtsVehicleCount(appSvcRelatedInfoDtosAll);
+        List<String[]> msList = IaisCommonUtils.genNewArrayList();
+        String[] msPreOrConArray = {"", "", ""};
+        msList.add(msPreOrConArray);
         for (AppSubmissionDto appSubmissionDto : appSubmissionDtoList) {
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
             List<AppPremSpecialisedDto> appPremSpecialisedDtos = appSubmissionDto.getAppPremSpecialisedDtoList();
             List<String> baseServiceIds = IaisCommonUtils.genNewArrayList();
             List<AppLicBundleDto> appLicBundleDtoList = appSubmissionDto.getAppLicBundleDtoList();
-            List<String[]> msList = IaisCommonUtils.genNewArrayList();
-            String[] msPreOrConArray = {"", "", ""};
-            msList.add(msPreOrConArray);
+
             if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
                 for (AppLicBundleDto alb : appLicBundleDtoList
                 ) {

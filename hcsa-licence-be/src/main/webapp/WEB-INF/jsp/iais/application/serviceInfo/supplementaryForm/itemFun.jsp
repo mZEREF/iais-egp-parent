@@ -37,6 +37,7 @@
         <c:if test="${(isRfc || isRenew) && !isRfi}">
             disableContent($('.person-content'));
         </c:if>
+        console.log('${isRfi}','===================>>>');
         <c:if test="${isRfi}">
             disableContent($('.person-content'));
         </c:if>

@@ -75,14 +75,15 @@
                     </div>
                 </td>
                 <td>
-                    <div class="col-xs-12">
+                    <div class="col-xs-6">
                         <div class="newVal " attr="<c:out value="${person.qualification}"/>">
                             <c:out value="${person.qualification}"/>
                         </div>
+                    </div>
+                    <div class="col-xs-6">
                         <div class="oldVal " attr="<c:out value="${oldPerson.qualification}"/>" style="display: none">
                             <c:out value="${oldPerson.qualification}"/>
                         </div>
-                    </div>
                     </div>
                 </td>
             </tr>
@@ -93,14 +94,15 @@
                     </div>
                 </td>
                 <td>
-                    <div class="col-xs-12">
+                    <div class="col-xs-6">
                         <div class="newVal " attr="<c:out value="${person.wrkExpYear}"/>">
                             <c:out value="${person.wrkExpYear}"/>
                         </div>
+                    </div>
+                    <div class="col-xs-6">
                         <div class="oldVal " attr="<c:out value="${oldPerson.wrkExpYear}"/>" style="display: none">
                             <c:out value="${oldPerson.wrkExpYear}"/>
                         </div>
-                    </div>
                     </div>
                 </td>
             </tr>
