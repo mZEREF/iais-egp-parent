@@ -1653,8 +1653,6 @@ public abstract class AppCommDelegator {
         }*/
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         appSubmissionDto.setGetAppInfoFromDto(true);
-        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
-        appSubmissionDto.setAuditTrailDto(auditTrailDto);
         List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
         List<AppSubmissionDto> autoSaveAppsubmission = IaisCommonUtils.genNewArrayList();
         List<AppSubmissionDto> notAutoSaveAppsubmission = IaisCommonUtils.genNewArrayList();
@@ -1669,8 +1667,7 @@ public abstract class AppCommDelegator {
             }
         }
         // init auto app submission
-        if (!isAutoRfc && (appEditSelectDto.isLicenseeEdit() || appEditSelectDto.isChangeSpecialisedAutoFields()
-                || appEditSelectDto.isChangePremiseAutoFields())) {
+        if (!isAutoRfc && appEditSelectDto.isChangeAutoFields()) {
             autoAppSubmissionDto = CopyUtil.copyMutableObject(appSubmissionDto);
             autoAppSubmissionDto.setAmount(0.0);
             autoChangeSelectDto = new AppEditSelectDto();
@@ -1715,11 +1712,6 @@ public abstract class AppCommDelegator {
             }
             // for spliting
             if (changeSelectDto.isAutoRfc() && !isAutoRfc) {
-                if (autoAppSubmissionDto == null) {
-                    autoAppSubmissionDto = CopyUtil.copyMutableObject(appSubmissionDto);
-                    autoAppSubmissionDto.setAmount(0.0);
-                    autoChangeSelectDto = new AppEditSelectDto();
-                }
                 autoChangeSelectDto.setPremisesEdit(true);
                 appEditSelectDto.setPremisesEdit(false);
                 appEditSelectDto.setPremisesListEdit(false);
@@ -1803,12 +1795,7 @@ public abstract class AppCommDelegator {
             List<String> autoList = appSubmissionDto.getChangeSelectDto().getPersonnelEditList();
             List<String> nonAutoList = appSubmissionDto.getAppEditSelectDto().getPersonnelEditList();
             log.info(StringUtil.changeForLog("NonAutoList: " + nonAutoList + " - AutoList: " + autoList));
-            if (!isAutoRfc && autoAppSubmissionDto == null && !IaisCommonUtils.isEmpty(autoList)) {
-                autoAppSubmissionDto = CopyUtil.copyMutableObject(appSubmissionDto);
-                autoAppSubmissionDto.setAmount(0.0);
-                autoChangeSelectDto = new AppEditSelectDto();
-            }
-            if (autoAppSubmissionDto != null) {
+            if (autoAppSubmissionDto != null && !IaisCommonUtils.isEmpty(autoList)) {
                 autoChangeSelectDto.setServiceEdit(true);
                 autoAppSubmissionDto.setAppSvcRelatedInfoDtoList(
                         RfcHelper.generateDtosForAutoFields(autoAppSubmissionDto, oldAppSubmissionDto,

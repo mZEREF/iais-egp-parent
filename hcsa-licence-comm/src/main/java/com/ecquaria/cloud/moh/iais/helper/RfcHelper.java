@@ -87,7 +87,6 @@ public final class RfcHelper {
             for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
                 hciNameChange = eqHciNameChange(appGrpPremisesDtoList.get(i), oldAppGrpPremisesDtoList.get(i));
                 if (hciNameChange) {
-                    appEditSelectDto.setChangeHciName(hciNameChange);
                     break;
                 }
             }
@@ -101,9 +100,11 @@ public final class RfcHelper {
         boolean changeCoLocation = isChangeCoLocation(appGrpPremisesDtoList, oldAppGrpPremisesDtoList);
         boolean changePremiseAutoFields = isChangeGrpPremisesAutoFields(appGrpPremisesDtoList,
                 oldAppGrpPremisesDtoList);
-        boolean grpPremiseIsChange = changeInLocation || changeFloorUnits || hciNameChange || changeCoLocation || changePremiseAutoFields;
+        boolean grpPremiseIsChange = hciNameChange || changeInLocation || changeFloorUnits || changeCoLocation
+                || changePremiseAutoFields;
         String premType = appGrpPremisesDtoList.get(0).getPremisesType();
         appEditSelectDto.setPremType(premType);
+        appEditSelectDto.setChangeHciName(hciNameChange);
         appEditSelectDto.setChangeInLocation(changeInLocation);
         appEditSelectDto.setChangeFloorUnits(changeFloorUnits);
         appEditSelectDto.setChangePremiseAutoFields(changePremiseAutoFields);
@@ -1760,7 +1761,7 @@ public final class RfcHelper {
 
     private static boolean isChangeOtherDto(List<AppSvcOtherInfoDto> appSvcOtherInfoDtoList,
             List<AppSvcOtherInfoDto> oldAppSvcOtherInfoDtoList) {
-        return isSame(appSvcOtherInfoDtoList, oldAppSvcOtherInfoDtoList, PageDataCopyUtil::copyAppSvcOtherInfoPersonList);
+        return !isSame(appSvcOtherInfoDtoList, oldAppSvcOtherInfoDtoList, PageDataCopyUtil::copyAppSvcOtherInfoPersonList);
     }
 
     private static boolean isChangeCheckOtherService(List<AppSvcOtherInfoDto> appSvcOtherInfoDtoList,List<AppSvcOtherInfoDto> oldAppSvcOtherInfoDtoList) {
@@ -2444,13 +2445,20 @@ public final class RfcHelper {
         List<AppPremScopeDto> appPremScopeDtoList = appPremSpecialisedDto.getAppPremScopeDtoList();
         if (IaisCommonUtils.isNotEmpty(appPremScopeDtoList)) {
             for (AppPremScopeDto scopeDto : appPremScopeDtoList) {
-                if (scopeDtoMap.get(scopeDto.getSubTypeId()) == null) {
-                    scopeDto.setChecked(false);
-                    scopeDto.resolveAppPremScopeDtos(dto -> dto.setChecked(false));
-                }
+                scopeDto.resolveAppPremScopeDtos(scopeDtoMap, (dto, oldScopeDtoMap) -> {
+                    if (oldScopeDtoMap.get(dto.getSubTypeId()) == null) {
+                        dto.setChecked(false);
+                    }
+                });
             }
             appPremSpecialisedDto.initAllAppPremScopeDtoList();
         }
+       /* List<AppPremScopeDto> oldAppPremScopeDtoList = oldAppPremSpecialisedDto.getAppPremScopeDtoList();
+        appPremSpecialisedDto.setAppPremScopeDtoList((List<AppPremScopeDto>) CopyUtil.copyMutableObjectList(oldAppPremScopeDtoList));
+        if (IaisCommonUtils.isNotEmpty(oldAppPremScopeDtoList)) {
+            appPremSpecialisedDto.initAllAppPremScopeDtoList();
+        }*/
+
         // service
         Map<String, AppPremSubSvcRelDto> relDtoMap = oldAppPremSpecialisedDto.getFlatAppPremSubSvcRelList(dto -> true)
                 .stream().collect(Collectors.toMap(AppPremSubSvcRelDto::getSvcCode, Function.identity()));
@@ -2474,12 +2482,14 @@ public final class RfcHelper {
                     AppPremSubSvcRelDto oldRel = relDtoMap.get(relDto.getSvcCode());
                     if (relDto.isChecked() && !oldRel.isChecked()) {
                         relDto.setChecked(false);
+                        relDto.setActCode(null);
                     }
                 }
                 if (relDto.isRemovalFlow()) {
                     AppPremSubSvcRelDto oldRel = relDtoMap.get(relDto.getSvcCode());
                     if (!relDto.isChecked() && oldRel.isChecked()) {
                         relDto.setChecked(true);
+                        relDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE);
                         SpecialServiceSectionDto sectionDto = sectionDtoMap.get(relDto.getSvcCode());
                         if (sectionDto != null) {
                             sectionList.add(sectionDto);
