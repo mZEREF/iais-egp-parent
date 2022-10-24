@@ -2501,7 +2501,7 @@ public final class RfcHelper {
                     }
                 }
                 if (relDto.isChecked()) {
-                    relDto.setActCode(ApplicationConsts.RECORD_STATUS_APPROVE_CODE);
+                    relDto.setStatus(ApplicationConsts.RECORD_STATUS_APPROVE_CODE);
                 }
             };
             for (AppPremSubSvcRelDto relDto : appPremSubSvcRelDtoList) {
