@@ -29,13 +29,16 @@
             <jsp:include page="/WEB-INF/jsp/iais/application/view/previewSvcCharges.jsp"/>
         </c:when>
         <c:when test="${hcsaServiceStepSchemeDto.stepCode=='SVST012'}">
-            <jsp:include page="/WEB-INF/jsp/iais/application/view/previewSvcBusiness.jsp"/>
+            <jsp:include page="/WEB-INF/jsp/iais/application/view/businessInfo/viewSvcBusiness.jsp" />
         </c:when>
         <c:when test="${hcsaServiceStepSchemeDto.stepCode=='SVST013'}">
             <jsp:include page="/WEB-INF/jsp/iais/application/view/svcPersonnel/viewSectionLeader.jsp"/>
         </c:when>
         <c:when test="${hcsaServiceStepSchemeDto.stepCode=='SVST014'}">
             <jsp:include page="/WEB-INF/jsp/iais/application/view/keyPersonnel/viewKeyAppointmentHolder.jsp"/>
+        </c:when>
+        <c:when test="${hcsaServiceStepSchemeDto.stepCode=='SVST017'}">
+            <jsp:include page="/WEB-INF/jsp/iais/application/view/specialServicesForm/viewSpecialServicesForm.jsp"/>
         </c:when>
         <c:when test="${hcsaServiceStepSchemeDto.stepCode=='SVST005'}">
             <%--STEP_DOCUMENTS--%>
