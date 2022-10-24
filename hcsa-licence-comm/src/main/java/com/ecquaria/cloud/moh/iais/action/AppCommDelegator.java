@@ -1769,7 +1769,8 @@ public abstract class AppCommDelegator {
         // Category/Discipline & Specialised Service/Specified Test
         if (appEditSelectDto.isSpecialisedEdit()) {
             if (appEditSelectDto.isChangeSpecialisedNonAutoFields() && autoAppSubmissionDto != null) {
-                RfcHelper.resolveSpecialisedNonAutoData(autoAppSubmissionDto, oldAppSubmissionDto);
+                RfcHelper.resolveSpecialisedRfc(autoAppSubmissionDto, oldAppSubmissionDto, true);
+                RfcHelper.resolveSpecialisedRfc(appSubmissionDto, oldAppSubmissionDto, false);
                 autoChangeSelectDto.setSpecialisedEdit(true);
                 autoChangeSelectDto.setChangeSpecialisedAutoFields(true);
                 appEditSelectDto.setChangeSpecialisedAutoFields(false);
