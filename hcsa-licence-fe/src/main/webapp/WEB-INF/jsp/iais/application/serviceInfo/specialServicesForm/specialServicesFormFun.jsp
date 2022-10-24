@@ -35,7 +35,10 @@
             unDisableContent($currContent);
             $('#isEditHiddenVal').val('1');
             hideTag($currContent.find('a.edit'));
-            $currContent.find('.profRegNo').trigger('blur');
+            if (!isEmpty($currContent.find('.profRegNo').val())){
+                $currContent.find('.profRegNo').trigger('blur');
+            }
+
         });
     }
 
