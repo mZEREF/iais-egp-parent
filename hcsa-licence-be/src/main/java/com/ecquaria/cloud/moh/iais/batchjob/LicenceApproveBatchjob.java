@@ -1967,6 +1967,10 @@ public class LicenceApproveBatchjob {
                     LicBundleDto currentLicBundleDto = MiscUtil.transferEntityDto(appLicBundleDto,LicBundleDto.class);
                     licenceDto.setCurrentLicBundleDto(currentLicBundleDto);
                 }
+                List<AppLicBundleDto> licAppLicBundleDto = applicationDto.getLicAppLicBundleDto();
+                if(IaisCommonUtils.isNotEmpty(licAppLicBundleDto)){
+                    licenceDto.setPreviousLicBundleDto(MiscUtil.transferEntityDtos(licAppLicBundleDto,LicBundleDto.class));
+                }
             }
         }
 
