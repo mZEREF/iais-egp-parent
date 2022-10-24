@@ -3636,7 +3636,7 @@ public final class AppValidatorHelper {
                 }
                 break;
             case HcsaConsts.SUPFORM_DATA_TYPE_DOUBLE:
-                if (!StringUtil.isDigit(inputValue)) {
+                if (!StringUtil.isNumber(inputValue)) {
                     errorMap.put(errorKey, "GENERAL_ERR0002");
                 }
                 break;
