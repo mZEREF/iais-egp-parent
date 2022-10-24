@@ -1566,7 +1566,7 @@ public class ServiceInfoDelegator {
                     currSvcInfoDto.getServiceName());
             List<AppSvcVehicleDto> oldAppSvcVehicleDto = appCommService.getActiveVehicles(ids, true);
             new ValidateVehicle().doValidateVehicles(map, appSvcVehicleDtos, currSvcInfoDto.getAppSvcVehicleDtoList(),
-                    oldAppSvcVehicleDto);
+                    oldAppSvcVehicleDto, isRfi);
         }
         checkAction(map, HcsaConsts.STEP_VEHICLES, appSubmissionDto, bpc.request);
         log.debug(StringUtil.changeForLog("doVehicles end ..."));
