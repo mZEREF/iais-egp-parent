@@ -36,7 +36,7 @@
                            <c:if test="${stat.index != 0}">
                                <c:if test="${stat.index != stat.index-1}">,</c:if>
                            </c:if>
-                            <iais:code code="${docShowDto.businessName}"/>
+                            <c:out value="${docShowDto.businessName}"/>
                         </span>
                     </c:forEach>
                 </div>
@@ -53,12 +53,12 @@
             <td>
                 <div class="col-xs-6 ">
                     <span class="newVal" attr="${otherInfo.orgUserDto.email}">
-                        <iais:code code="${otherInfo.orgUserDto.email}"/>
+                        <c:out value="${otherInfo.orgUserDto.email}"/>
                     </span>
                 </div>
                 <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldOtherInfo.orgUserDto.email}" style="display: none">
-                    <iais:code code="${oldOtherInfo.orgUserDto.email}"/>
+                    <c:out value="${oldOtherInfo.orgUserDto.email}"/>
                 </span>
                 </div>
             </td>
@@ -74,12 +74,12 @@
             <td>
                 <div class="col-xs-6 ">
                     <span class="newVal" attr="${otherInfo.orgUserDto.displayName}">
-                        <iais:code code="${otherInfo.orgUserDto.displayName}"/>
+                        <c:out value="${otherInfo.orgUserDto.displayName}"/>
                     </span>
                 </div>
                 <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldOtherInfo.orgUserDto.displayName}" style="display: none">
-                    <iais:code code="${oldOtherInfo.orgUserDto.displayName}"/>
+                    <c:out value="${oldOtherInfo.orgUserDto.displayName}"/>
                 </span>
                 </div>
             </td>
@@ -95,12 +95,12 @@
             <td>
                 <div class="col-xs-6 ">
                     <span class="newVal" attr="${otherInfo.orgUserDto.designation}">
-                        <iais:code code="${otherInfo.orgUserDto.designation}"/>
+                        <c:out value="${otherInfo.orgUserDto.designation}"/>
                     </span>
                 </div>
                 <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldOtherInfo.orgUserDto.designation}" style="display: none">
-                    <iais:code code="${oldOtherInfo.orgUserDto.designation}"/>
+                    <c:out value="${oldOtherInfo.orgUserDto.designation}"/>
                 </span>
                 </div>
             </td>
@@ -116,12 +116,12 @@
             <td>
                 <div class="col-xs-6 ">
                     <span class="newVal" attr="${otherInfo.orgUserDto.mobileNo}">
-                        <iais:code code="${otherInfo.orgUserDto.mobileNo}"/>
+                        <c:out value="${otherInfo.orgUserDto.mobileNo}"/>
                     </span>
                 </div>
                 <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldOtherInfo.orgUserDto.mobileNo}" style="display: none">
-                    <iais:code code="${oldOtherInfo.orgUserDto.mobileNo}"/>
+                    <c:out value="${oldOtherInfo.orgUserDto.mobileNo}"/>
                 </span>
                 </div>
             </td>
@@ -137,12 +137,12 @@
             <td>
                 <div class="col-xs-6 ">
                     <span class="newVal" attr="${otherInfo.yfCommencementDateStr}">
-                        <iais:code code="${otherInfo.yfCommencementDateStr}"/>
+                        <c:out value="${otherInfo.yfCommencementDateStr}"/>
                     </span>
                 </div>
                 <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldOtherInfo.yfCommencementDateStr}" style="display: none">
-                    <iais:code code="${oldOtherInfo.yfCommencementDateStr}"/>
+                    <c:out value="${oldOtherInfo.yfCommencementDateStr}"/>
                 </span>
                 </div>
             </td>

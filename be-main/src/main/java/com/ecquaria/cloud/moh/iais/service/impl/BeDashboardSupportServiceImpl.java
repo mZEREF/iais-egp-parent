@@ -137,7 +137,7 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
         for(ApplicationDto applicationDto : applicationDtos){
             log.info(StringUtil.changeForLog("**** saveRejectReturnFee applicationDto ***** " + applicationDto.getApplicationNo()));
             log.info(StringUtil.changeForLog("**** saveRejectReturnFee applicationDto ***** " + applicationDto.getStatus()));
-            if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(applicationDto.getStatus())){
+            if ( !ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationDto.getApplicationType()) && !ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())) {
                 AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
                 Double returnFee = applicationDto.getReturnFee();
                 if(returnFee==null || MiscUtil.doubleEquals(returnFee, 0d)){

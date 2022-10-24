@@ -33,12 +33,12 @@
         <td>
             <div class="col-xs-6 ">
                 <span class="newVal" attr="${otherInfo.appSvcOtherInfoTopDto.compCaseNum}">
-                    <iais:code code="${otherInfo.appSvcOtherInfoTopDto.compCaseNum}"/>
+                    <c:out value="${otherInfo.appSvcOtherInfoTopDto.compCaseNum}"/>
                 </span>
             </div>
             <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldOtherInfo.appSvcOtherInfoTopDto.compCaseNum}" style="display: none">
-                    <iais:code code="${oldOtherInfo.appSvcOtherInfoTopDto.compCaseNum}"/>
+                    <c:out value="${oldOtherInfo.appSvcOtherInfoTopDto.compCaseNum}"/>
                 </span>
             </div>
         </td>

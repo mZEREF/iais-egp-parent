@@ -11,9 +11,11 @@
                     <div class="col-xs-10 form-check active">
                         <div class="newVal" attr="${item.checked}<c:out value="${item.svcName}"/>">
                             <c:if test="${item.checked}">
-                                    <p class="form-check-label" aria-label="premise-1-cytology">
-                                        <span class="check-square"></span> <c:out value="${item.svcName}" />
-                                    </p>
+                                <div class="form-check active">
+                                    <div class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                                        <c:out value="${item.svcName}" />
+                                    </div>
+                                </div>
                             </c:if>
                         </div>
                     </div>
@@ -22,9 +24,11 @@
                     <div class="col-xs-10 form-check active">
                         <div class="oldVal " attr="${olditem.checked}<c:out value="${olditem.svcName}" />">
                             <c:if test="${olditem.checked}">
+                                <div class="form-check active">
                                     <div class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
                                         <c:out value="${olditem.svcName}" />
                                     </div>
+                                </div>
                             </c:if>
                         </div>
                     </div>

@@ -68,12 +68,12 @@
             <td>
                 <div class="col-xs-6 ">
                 <span class="newVal" attr="${otherInfo.appSvcOtherInfoMedDto.otherSystemOption}">
-                    <iais:code code="${otherInfo.appSvcOtherInfoMedDto.otherSystemOption}"/>
+                    <c:out value="${otherInfo.appSvcOtherInfoMedDto.otherSystemOption}"/>
                 </span>
                 </div>
                 <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldOtherInfo.appSvcOtherInfoMedDto.otherSystemOption}" style="display: none">
-                    <iais:code code="${oldOtherInfo.appSvcOtherInfoMedDto.otherSystemOption}"/>
+                    <c:out value="${oldOtherInfo.appSvcOtherInfoMedDto.otherSystemOption}"/>
                 </span>
                 </div>
             </td>
@@ -113,12 +113,12 @@
         <td>
             <div class="col-xs-6 ">
                 <span class="newVal" attr="${otherInfo.appSvcOtherInfoMedDto.gfaValue}">
-                     <iais:code code="${otherInfo.appSvcOtherInfoMedDto.gfaValue}"/>
+                    <c:out value="${otherInfo.appSvcOtherInfoMedDto.gfaValue}" />
                 </span>
             </div>
             <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldOtherInfo.appSvcOtherInfoMedDto.gfaValue}" style="display: none">
-                      <iais:code code="${oldOtherInfo.appSvcOtherInfoMedDto.gfaValue}"/>
+                      <c:out value="${oldOtherInfo.appSvcOtherInfoMedDto.gfaValue}"/>
                 </span>
             </div>
         </td>

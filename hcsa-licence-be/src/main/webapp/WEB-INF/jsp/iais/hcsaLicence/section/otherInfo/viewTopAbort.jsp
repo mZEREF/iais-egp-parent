@@ -19,12 +19,12 @@
                     <td>
                         <div class="col-xs-6 ">
                             <span class="newVal" attr="${person.year}">
-                               <iais:code code="${person.year}"/>
+                               <c:out value="${person.year}"/>
                             </span>
                         </div>
                         <div class="col-xs-6 ">
                             <span class=" oldVal" attr="${oldPerson.year}" style="display: none">
-                                 <iais:code code="${oldPerson.year}"/>
+                                 <c:out value="${oldPerson.year}"/>
                             </span>
                         </div>
                     </td>
@@ -40,12 +40,12 @@
                     <td>
                         <div class="col-xs-6 ">
                             <span class="newVal" attr="${person.abortNum}">
-                               <iais:code code="${person.abortNum}"></iais:code>
+                               <c:out value="${person.abortNum}"/>
                             </span>
                         </div>
                         <div class="col-xs-6 ">
                             <span class=" oldVal" attr="${oldPerson.abortNum}" style="display: none">
-                                 <iais:code code="${oldPerson.abortNum}"></iais:code>
+                                 <c:out value="${oldPerson.abortNum}"/>
                             </span>
                         </div>
                     </td>
@@ -75,12 +75,12 @@
                     <td>
                         <div class="col-xs-6 ">
                             <span class="newVal" attr="${person.year}">
-                               <iais:code code="${person.year}"/>
+                               <c:out value="${person.year}"/>
                             </span>
                         </div>
                         <div class="col-xs-6 ">
                             <span class=" oldVal" attr="${oldPerson.year}" style="display: none">
-                                <iais:code code="${oldPerson.year}"/>
+                                <c:out value="${oldPerson.year}"/>
                             </span>
                         </div>
                     </td>
@@ -96,12 +96,12 @@
                     <td>
                         <div class="col-xs-6 ">
                             <span class="newVal" attr="${person.abortNum}">
-                               <iais:code code="${person.abortNum}"></iais:code>
+                               <c:out value="${person.abortNum}"/>
                             </span>
                         </div>
                         <div class="col-xs-6 ">
                             <span class=" oldVal" attr="${oldPerson.abortNum}" style="display: none">
-                                 <iais:code code="${oldPerson.abortNum}"></iais:code>
+                                 <c:out value="${oldPerson.abortNum}"/>
                             </span>
                         </div>
                     </td>
@@ -131,12 +131,12 @@
                     <td>
                         <div class="col-xs-6 ">
                             <span class="newVal" attr="${person.year}">
-                               <iais:code code="${person.year}"/>
+                               <c:out value="${person.year}"/>
                             </span>
                         </div>
                         <div class="col-xs-6 ">
                             <span class=" oldVal" attr="${oldPerson.year}" style="display: none">
-                                <iais:code code="${oldPerson.year}"/>
+                                <c:out value="${oldPerson.year}"/>
                             </span>
                         </div>
                     </td>
@@ -152,12 +152,12 @@
                     <td>
                         <div class="col-xs-6 ">
                             <span class="newVal" attr="${person.abortNum}">
-                               <iais:code code="${person.abortNum}"></iais:code>
+                               <c:out value="${person.abortNum}"/>
                             </span>
                         </div>
                         <div class="col-xs-6 ">
                             <span class=" oldVal" attr="${oldPerson.abortNum}" style="display: none">
-                                 <iais:code code="${oldPerson.abortNum}"></iais:code>
+                                 <c:out value="${oldPerson.abortNum}"/>
                             </span>
                         </div>
                     </td>
