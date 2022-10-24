@@ -26,7 +26,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremGroupOutso
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
@@ -2286,7 +2285,7 @@ public final class AppValidatorHelper {
                     }
                 }
             }
-            if (StringUtil.isIn(currCode, new String[]{AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE,
+           /* if (StringUtil.isIn(currCode, new String[]{AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE,
                     AppServicesConsts.SERVICE_CODE_RENAL_DIALYSIS_CENTRE,
                     AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE,
                     AppServicesConsts.SERVICE_CODE_AMBULATORY_SURGICAL_CENTRE})) {
@@ -2297,7 +2296,7 @@ public final class AppValidatorHelper {
                         errMap.put(svcOtherInfoDto.getPremisesVal() + "_service", "GENERAL_ERR0006");
                     }
                 }
-            }
+            }*/
         }
         return errMap;
     }
