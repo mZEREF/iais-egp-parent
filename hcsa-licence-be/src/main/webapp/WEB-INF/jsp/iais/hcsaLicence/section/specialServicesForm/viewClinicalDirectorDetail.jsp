@@ -417,6 +417,8 @@
                     <div class="newVal " attr="<c:out value="${person.otherQualification}"/>">
                         <c:out value="${person.otherQualification}"/>
                     </div>
+                </div>
+                <div class="col-xs-6">
                     <div class="oldVal " attr="<c:out value="${oldPerson.otherQualification}"/>" style="display: none">
                         <c:out value="${oldPerson.otherQualification}"/>
                     </div>
