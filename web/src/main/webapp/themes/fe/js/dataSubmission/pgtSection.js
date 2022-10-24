@@ -116,7 +116,7 @@ var isThereAppealDisplay = function () {
     var pgtSr=$("#isPgtSr").is(':checked');
     var radioYes=$("#radioYes").is(':checked');
     var count= $("#pgtCount").val();
-    if((pgtMCom || pgtMRare|| pgtMEbt|| pgtSr)&& radioYes && count>=6){
+    if((pgtMCom || pgtMRare|| pgtSr)&& radioYes && count>=6){
         $('#appealDisplay').attr("style","display: block");
     }else {
         $('#appealDisplay').attr("style","display: none");
