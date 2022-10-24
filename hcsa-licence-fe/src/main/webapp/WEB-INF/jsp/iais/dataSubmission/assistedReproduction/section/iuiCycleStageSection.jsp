@@ -50,7 +50,7 @@
                   <iais:row id="otherPremisesRow">
                     <iais:field width="6" cssClass="col-md-6" value="Name of Premise Where IUI Treatment Is Performed" mandatory="true"/>
                     <iais:value width="6" cssClass="col-md-6">
-                      <iais:input type="text" maxLength="50" value="${iuiCycleStageDto.otherPremises}" name="otherPremises" />
+                      <iais:input type="text" maxLength="66" value="${iuiCycleStageDto.otherPremises}" name="otherPremises" />
                     </iais:value>
                   </iais:row>
                   <iais:row>
