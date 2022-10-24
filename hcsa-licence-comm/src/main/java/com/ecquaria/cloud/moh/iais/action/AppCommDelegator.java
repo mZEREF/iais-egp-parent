@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -1497,14 +1498,6 @@ public abstract class AppCommDelegator {
 
     public void inboxToPreview(BaseProcessClass bpc) throws Exception {}
 
-    private List<AppSvcRelatedInfoDto> getOtherAppSvcRelatedInfoDtos(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos,
-            String serviceId, String appNo) {
-        return appSvcRelatedInfoDtos.stream()
-                .filter(dto -> Objects.equals(serviceId, dto.getServiceId())
-                        && !Objects.equals(appNo, dto.getAppNo()))
-                .collect(Collectors.toList());
-    }
-
     /**
      * StartStep: doReDquestInformationSubmit
      * prepare
@@ -1870,6 +1863,8 @@ public abstract class AppCommDelegator {
             return;
         }
         log.info(StringUtil.changeForLog("the appGroupNo --> Not-auto: " + appGroupNo + " - Auto:" + autoGroupNo));
+        log.info(StringUtil.changeForLog(appSubmissionDto.getLicenceNo() + " - App Edit Select Dto: "
+                + JsonUtil.parseToJson(appEditSelectDto)));
         AppDeclarationMessageDto appDeclarationMessageDto = !appEditSelectDto.isChangeHciName() ? null :
                 appSubmissionDto.getAppDeclarationMessageDto();
         List<AppDeclarationDocDto> appDeclarationDocDtos = !appEditSelectDto.isChangeHciName() ? null :

@@ -606,7 +606,6 @@ public class DealSessionUtil {
                 if (StringUtil.isEmpty(appGrpPremisesDto.getExistingData())) {
                     appGrpPremisesDto.setExistingData(AppConsts.NO);
                 }
-                //appGrpPremisesDto.setId(null);
             }
         }
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
