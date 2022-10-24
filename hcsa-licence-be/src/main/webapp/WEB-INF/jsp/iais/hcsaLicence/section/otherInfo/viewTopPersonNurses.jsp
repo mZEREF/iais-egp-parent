@@ -9,12 +9,12 @@
         <td>
             <div class="col-xs-6 ">
                 <span class="newVal" attr="${nurses.name}">
-                   <iais:code code="${nurses.name}"></iais:code>
+                   <c:out value="${nurses.name}"/>
                 </span>
             </div>
             <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldNurses.name}" style="display: none">
-                     <iais:code code="${oldNurses.name}"></iais:code>
+                     <c:out value="${oldNurses.name}"/>
                 </span>
             </div>
         </td>
@@ -30,12 +30,12 @@
         <td>
             <div class="col-xs-6 ">
                 <span class="newVal" attr="${nurses.qualification}">
-                   <iais:code code="${nurses.qualification}"></iais:code>
+                   <c:out value="${nurses.qualification}"/>
                 </span>
             </div>
             <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldNurses.qualification}" style="display: none">
-                     <iais:code code="${oldNurses.qualification}"></iais:code>
+                     <c:out value="${oldNurses.qualification}"/>
                 </span>
             </div>
         </td>

@@ -9,12 +9,12 @@
         <td>
             <div class="col-xs-6 ">
                 <span class="newVal" attr="${otherInfo.appSvcOtherInfoNurseDto.perShiftNum}">
-                    <iais:code code="${otherInfo.appSvcOtherInfoNurseDto.perShiftNum}"/>
+                    <c:out value="${otherInfo.appSvcOtherInfoNurseDto.perShiftNum}"/>
                 </span>
             </div>
             <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldOtherInfo.appSvcOtherInfoNurseDto.perShiftNum}" style="display: none">
-                    <iais:code code="${oldOtherInfo.appSvcOtherInfoNurseDto.perShiftNum}"/>
+                    <c:out value="${oldOtherInfo.appSvcOtherInfoNurseDto.perShiftNum}"/>
                 </span>
             </div>
         </td>
@@ -30,12 +30,12 @@
         <td>
             <div class="col-xs-6 ">
                 <span class="newVal" attr="${otherInfo.appSvcOtherInfoNurseDto.dialysisStationsNum}">
-                    <iais:code code="${otherInfo.appSvcOtherInfoNurseDto.dialysisStationsNum}"/>
+                    <c:out value="${otherInfo.appSvcOtherInfoNurseDto.dialysisStationsNum}"/>
                 </span>
             </div>
             <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldOtherInfo.appSvcOtherInfoNurseDto.dialysisStationsNum}" style="display: none">
-                    <iais:code code="${oldOtherInfo.appSvcOtherInfoNurseDto.dialysisStationsNum}"/>
+                    <c:out value="${oldOtherInfo.appSvcOtherInfoNurseDto.dialysisStationsNum}"/>
                 </span>
             </div>
         </td>
@@ -51,12 +51,12 @@
         <td>
             <div class="col-xs-6 ">
                 <span class="newVal" attr="${otherInfo.appSvcOtherInfoNurseDto.helpBStationNum}">
-                    <iais:code code="${otherInfo.appSvcOtherInfoNurseDto.helpBStationNum}"/>
+                    <c:out value="${otherInfo.appSvcOtherInfoNurseDto.helpBStationNum}"/>
                 </span>
             </div>
             <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldOtherInfo.appSvcOtherInfoNurseDto.helpBStationNum}" style="display: none">
-                    <iais:code code="${oldOtherInfo.appSvcOtherInfoNurseDto.helpBStationNum}"/>
+                    <c:out value="${oldOtherInfo.appSvcOtherInfoNurseDto.helpBStationNum}"/>
                 </span>
             </div>
         </td>

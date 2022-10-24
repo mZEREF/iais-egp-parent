@@ -83,12 +83,12 @@
         <td>
             <div class="col-xs-6 ">
                 <span class="newVal" attr="${practitioners.regType}">
-                   <iais:code code="${practitioners.regType}"></iais:code>
+                   <c:out value="${practitioners.regType}"/>
                 </span>
             </div>
             <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldPractitioners.regType}" style="display: none">
-                     <iais:code code="${oldPractitioners.regType}"></iais:code>
+                     <c:out value="${oldPractitioners.regType}"/>
                 </span>
             </div>
         </td>
@@ -104,12 +104,12 @@
         <td>
             <div class="col-xs-6 ">
                 <span class="newVal" attr="${practitioners.name}">
-                   <iais:code code="${practitioners.name}"></iais:code>
+                   <c:out value="${practitioners.name}"/>
                 </span>
             </div>
             <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldPractitioners.name}" style="display: none">
-                     <iais:code code="${oldPractitioners.name}"></iais:code>
+                     <c:out value="${oldPractitioners.name}"/>
                 </span>
             </div>
         </td>
@@ -125,12 +125,12 @@
         <td>
             <div class="col-xs-6 ">
                 <span class="newVal" attr="${practitioners.speciality}">
-                   <iais:code code="${practitioners.speciality}"></iais:code>
+                   <c:out value="${practitioners.speciality}"/>
                 </span>
             </div>
             <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldPractitioners.speciality}" style="display: none">
-                     <iais:code code="${oldPractitioners.speciality}"></iais:code>
+                     <c:out value="${oldPractitioners.speciality}"/>
                 </span>
             </div>
         </td>
@@ -146,12 +146,12 @@
         <td>
             <div class="col-xs-6 ">
                 <span class="newVal" attr="${practitioners.qualification}">
-                   <iais:code code="${practitioners.qualification}"></iais:code>
+                   <c:out value="${practitioners.qualification}"/>
                 </span>
             </div>
             <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldPractitioners.qualification}" style="display: none">
-                     <iais:code code="${oldPractitioners.qualification}"></iais:code>
+                     <c:out value="${oldPractitioners.qualification}"/>
                 </span>
             </div>
         </td>

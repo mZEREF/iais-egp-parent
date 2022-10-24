@@ -9,12 +9,12 @@
         <td>
             <div class="col-xs-6 ">
                 <span class="newVal" attr="${counsellors.name}">
-                   <iais:code code="${counsellors.name}"></iais:code>
+                   <c:out value="${counsellors.name}"/>
                 </span>
             </div>
             <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldCounsellors.name}" style="display: none">
-                     <iais:code code="${oldCounsellors.name}"></iais:code>
+                     <c:out value="${oldCounsellors.name}"/>
                 </span>
             </div>
         </td>
@@ -67,12 +67,12 @@
         <td>
             <div class="col-xs-6 ">
                 <span class="newVal" attr="${counsellors.qualification}">
-                   <iais:code code="${counsellors.qualification}"></iais:code>
+                   <c:out value="${counsellors.qualification}"/>
                 </span>
             </div>
             <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldCounsellors.qualification}" style="display: none">
-                     <iais:code code="${oldCounsellors.qualification}"></iais:code>
+                     <c:out value="${oldCounsellors.qualification}"/>
                 </span>
             </div>
         </td>
