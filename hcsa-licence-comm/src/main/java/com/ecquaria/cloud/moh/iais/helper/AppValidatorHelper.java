@@ -3448,7 +3448,11 @@ public final class AppValidatorHelper {
                 continue;
             }
             String premisesVal = specialisedDto.getPremisesVal();
-            // 84698
+            /*
+             * 84698
+             * 1. There should be at least 1 Category selected if configured
+             * 2. Specified Service is not mandatory for all LHSes
+             */
             List<AppPremScopeDto> appPremScopeDtoList = specialisedDto.getAppPremScopeDtoList();
             if (appPremScopeDtoList != null && !appPremScopeDtoList.isEmpty()) {
                 List<AppPremScopeDto> checkedAppPremScopeDtoList = specialisedDto.getCheckedAppPremScopeDtoList();
