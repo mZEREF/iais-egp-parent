@@ -467,10 +467,10 @@ public class MohDsActionDelegator {
                 orgId = loginContext.getOrgId();
                 userId = loginContext.getUserId();
             }
-            LdtSuperDataSubmissionDto dataSubmissionDraft = ldtDataSubmissionService.getLdtSuperDataSubmissionDraftByConds(orgId, userId, dataSubmissionDto.getId());
-            if (dataSubmissionDraft != null) {
-                uri += "&hasDraft=" + Boolean.TRUE;
-            }
+//            LdtSuperDataSubmissionDto dataSubmissionDraft = ldtDataSubmissionService.getLdtSuperDataSubmissionDraftByConds(orgId, userId, dataSubmissionDto.getId());
+//            if (dataSubmissionDraft != null) {
+//                uri += "&hasDraft=" + Boolean.TRUE;
+//            }
         }
         DataSubmissionHelper.setCurrentLdtSuperDataSubmissionDto(ldtSuperDataSubmissionDto, request);
         return uri;

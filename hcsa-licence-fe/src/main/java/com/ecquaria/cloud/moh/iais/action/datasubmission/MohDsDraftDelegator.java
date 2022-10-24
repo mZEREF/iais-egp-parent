@@ -120,6 +120,7 @@ public class MohDsDraftDelegator {
         if (ldtSuper == null) {
             uri = DEFAULT_URI;
         } else {
+            ParamUtil.setSessionAttr(request, LdtDataSubmissionDelegator.SUBMIT_FLAG, null);
             uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohLDTDataSubmission/PrepareSwitch?crud_type=" + DataSubmissionConstant.CRUD_TYPE_FROM_DRAFT;
         }
         DataSubmissionHelper.setCurrentLdtSuperDataSubmissionDto(ldtSuper, request);

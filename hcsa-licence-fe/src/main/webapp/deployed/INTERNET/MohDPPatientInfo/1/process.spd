@@ -56,14 +56,14 @@
     <JavaCode defClass="" executor="" methodName="pageConfirmAction_OnStepProcess_0" name="pageConfirmAction_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Draft" x="520" y="420">
+  <AutomaticStep defClass="" executor="" icon="" name="Draft" x="670" y="380">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="draft_OnStepProcess_0" name="draft_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Submission" x="430" y="500">
+  <AutomaticStep defClass="" executor="" icon="" name="Submission" x="430" y="490">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -118,10 +118,10 @@
    <position>{(290,290)(510,320)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Draft" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(290,290)(540,440)}</position>
+   <position>{(290,290)(690,400)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Submission" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(290,290)(450,520)}</position>
+   <position>{(290,290)(450,510)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/StagePageConfirm" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareConfim" style="oblique">
    <position>{(510,320)(630,320)}</position>
@@ -129,14 +129,11 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/PageConfirmAction" linkstyle="Direct" name="" sourceName="/Pages/WebPage/StagePageConfirm" style="oblique">
    <position>{(630,320)(750,320)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/Ack" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Submission" style="rectanular">
-   <position>{(450,520)(670,510)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PageAction" style="oblique">
    <position>{(780,200)(980,270)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Draft" style="oblique">
-   <position>{(540,440)(980,270)}</position>
+   <position>{(690,400)(980,270)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PageConfirmAction" style="oblique">
    <position>{(750,320)(980,270)}</position>
@@ -147,8 +144,21 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareSwitch" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
    <position>{(980,270)(975,25)(886,25)(863,25)(838,42)(751,132)(595,29)(210,28)(190,290)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Validation" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Submission" style="rectanular">
+   <position>{(450,510)(570,510)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Ack" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Validation" style="rectanular">
+   <position>{(570,510)(670,510)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareConfim" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Validation" style="oblique">
+   <position>{(570,510)(510,320)}</position>
+  </SynchronousLink>
  </Links>
- <Conditions/>
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/PrepareConfim" componentIfTrue="/Pages/WebPage/Ack" defClass="" executor="" icon="" leftOperand="valFlag" name="Validation" operator="=" rightOperand="&quot;pass&quot;" x="550" y="490">
+   <Description/>
+  </Condition>
+ </Conditions>
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="270" y="270">
    <Description/>

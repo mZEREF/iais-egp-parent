@@ -1,4 +1,7 @@
 $(document).ready(function() {
+    if ($('#rfcOutDateFlag').val() == 'yes') {
+        $('#validateRfcOutdate').modal('show');
+    }
     // tab click
     var controlLi = $('#controlLi').val();
     var $tarSel = $('#'+controlLi+'li');

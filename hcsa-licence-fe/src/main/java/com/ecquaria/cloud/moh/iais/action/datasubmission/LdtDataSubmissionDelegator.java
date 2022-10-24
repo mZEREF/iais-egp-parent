@@ -121,10 +121,10 @@ public class LdtDataSubmissionDelegator {
             userId = loginContext.getUserId();
         }
 
-        LdtSuperDataSubmissionDto dataSubmissionDraft = ldtDataSubmissionService.getLdtSuperDataSubmissionDraftByConds(orgId, userId,null);
-        if (dataSubmissionDraft != null) {
-            ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
-        }
+//        LdtSuperDataSubmissionDto dataSubmissionDraft = ldtDataSubmissionService.getLdtSuperDataSubmissionDraftByConds(orgId, userId,null);
+//        if (dataSubmissionDraft != null) {
+//            ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
+//        }
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_DATA_SUBMISSION, AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY_LDT);
 
         String isGuide = ParamUtil.getString(bpc.request, DataSubmissionConstant.LDT_IS_GUIDE);
@@ -173,6 +173,11 @@ public class LdtDataSubmissionDelegator {
         LdtSuperDataSubmissionDto ldtSuperDataSubmissionDto = DataSubmissionHelper.getCurrentLdtSuperDataSubmissionDto(bpc.request);
 
         DataSubmissionDto dataSubmissionDto = ldtSuperDataSubmissionDto.getDataSubmissionDto();
+        if (!DataSubmissionHelper.canDoRfc(dataSubmissionDto.getId())) {
+            ParamUtil.setRequestAttr(bpc.request, "valFlag", "fail");
+            ParamUtil.setRequestAttr(bpc.request, "rfcOutdateFlag", "yes");
+            return;
+        }
         CycleDto cycle = ldtSuperDataSubmissionDto.getCycleDto();
 
         if (StringUtil.isEmpty(dataSubmissionDto.getSubmissionNo())) {

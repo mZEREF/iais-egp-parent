@@ -1,6 +1,7 @@
 <%@ include file="./common/ldtHeader.jsp" %>
 <c:set value="${LdtSuperDataSubmissionDto.dsLaboratoryDevelopTestDto}" var="dsLaboratoryDevelopTestDto"/>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+    <input type="hidden" id="rfcOutDateFlag" name="rfcOutDateFlag" value="<c:out value="${rfcOutdateFlag}"/>"/>
     <input type="hidden" name="crud_action_type">
     <input type="hidden" name="title" value="${title}">
     <div class="main-content">
@@ -18,5 +19,7 @@
             <%@ include file="./section/prviewLdtSection.jsp" %>
             <%@include file="./common/ldtFooter.jsp" %>
         </div>
+        <iais:confirm msg="DS_ERR071" callBack="$('#validateRfcOutdate').modal('hide');" popupOrder="validateRfcOutdate" yesBtnDesc="Close"
+                      yesBtnCls="btn btn-secondary" needCancel="false" needFungDuoJi="false"/>
     </div>
 </form>

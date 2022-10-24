@@ -12,6 +12,7 @@
 
 <c:set var="headingSign" value="completed"/>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+    <input type="hidden" id="rfcOutDateFlag" name="rfcOutDateFlag" value="<c:out value="${rfcOutdateFlag}"/>"/>
     <div class="main-content">
         <div class="container center-content">
             <div class="col-xs-12">
@@ -32,6 +33,8 @@
                 </div>
                 <%@include file="common/dpFooter.jsp" %>
             </div>
+            <iais:confirm msg="DS_ERR071" callBack="$('#validateRfcOutdate').modal('hide');" popupOrder="validateRfcOutdate" yesBtnDesc="Close"
+                          yesBtnCls="btn btn-secondary" needCancel="false" needFungDuoJi="false"/>
         </div>
     </div>
 </form>

@@ -1,4 +1,8 @@
 $(document).ready(function () {
+    if ($('#rfcOutDateFlag').val() == 'yes') {
+        $('#validateRfcOutdate').modal('show');
+    }
+
     if ($('#saveDraftSuccess').val() == 'success') {
         $('#saveDraft').modal('show');
     }
