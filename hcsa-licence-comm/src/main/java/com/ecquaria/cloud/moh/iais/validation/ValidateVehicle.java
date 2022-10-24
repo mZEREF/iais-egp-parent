@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.VehNoValidator;
 import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
-import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -32,7 +31,7 @@ public class ValidateVehicle {
     private static final String CHASSIS_NAME = "chassisNum";
 
     public void doValidateVehicles(Map<String, String> errorMap, List<AppSvcVehicleDto> appSvcVehicleDtoAlls,
-            List<AppSvcVehicleDto> appSvcVehicleDtos, List<AppSvcVehicleDto> oldAppSvcVehicleDto) {
+            List<AppSvcVehicleDto> appSvcVehicleDtos, List<AppSvcVehicleDto> oldAppSvcVehicleDto,boolean isRfi) {
         if (appSvcVehicleDtos == null) {
             return;
         }
@@ -55,6 +54,10 @@ public class ValidateVehicle {
                     } else {
                         vehicleNumList.add(vehicleNum);
                     }
+                }
+            }else if (isRfi){
+                if (StringUtil.isEmpty(vehicleNum)){
+                    map.put(VEHICLE_NAME + i, MessageUtil.getMessageDesc("GENERAL_ERR0006"));
                 }
             }
 
@@ -157,7 +160,7 @@ public class ValidateVehicle {
             if (appSvcVehicleDtoList == null) {
                 continue;
             }
-            doValidateVehicles(map, appSvcVehicleDtos, appSvcVehicleDtoList, null);
+            doValidateVehicles(map, appSvcVehicleDtos, appSvcVehicleDtoList, null, false);
         }
     }
 

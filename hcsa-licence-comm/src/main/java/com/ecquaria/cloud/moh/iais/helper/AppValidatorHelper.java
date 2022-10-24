@@ -65,7 +65,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ReflectionUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
@@ -426,7 +425,7 @@ public final class AppValidatorHelper {
                         }
                     }
                     new ValidateVehicle().doValidateVehicles(errorMap, appSvcVehicleDtos, dto.getAppSvcVehicleDtoList(),
-                            otherExistedVehicles);
+                            otherExistedVehicles, false);
                     addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
                     break;
                 case HcsaConsts.STEP_CLINICAL_DIRECTOR:
@@ -3761,68 +3760,67 @@ public final class AppValidatorHelper {
             for (int j = 0; j < specialServiceSectionDtoList.size(); j++) {
                 SpecialServiceSectionDto specialServiceSectionDto = specialServiceSectionDtoList.get(j);
                 Map<String, Integer> minCount = specialServiceSectionDto.getMinCount();
-                boolean cgoIsMandatory= minCount.get(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO)!=0;
-                boolean slIsMandatory = minCount.get(ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER)!=0;
-                boolean nicIsMandatory = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE)!=0;
-                boolean rsoIsMandatory = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER)!=0;
-                boolean drIsMandatory = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR)!=0;
-                boolean mpIsMandatory = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST)!=0;
-                boolean rpIsMandatory = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL)!=0;
-                boolean nmIsMandatory = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM)!=0;
-                boolean diIsMandatory = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR)!=0;
-                boolean nuIsMandatory = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR)!=0;
+                int cgoMandatoryCount = minCount.get(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
+                int slMandatoryCount = minCount.get(ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER);
+                int nicMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE);
+                int rsoMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER);
+                int drMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR);
+                int mpMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST);
+                int rpMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL);
+                int nmMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM);
+                int diMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR);
+                int nuMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR);
                 List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = specialServiceSectionDto.getAppSvcCgoDtoList();
-                if (appSvcCgoDtoList != null) {
-                    boolean isAllEmpty=appSvcCgoDtoList.stream().allMatch(ReflectionUtil::isEmpty);
-                    if (cgoIsMandatory) {
-                        Map<String, String> map = validateKeyPersonnel(appSvcCgoDtoList,
-                                prefix + i + j + "cgo", licPersonMap, null, null, null, true);
-                        if (IaisCommonUtils.isNotEmpty(map)) {
-                            errorMap.putAll(map);
-                        }
-                    } else {
-                        if (!isAllEmpty) {
-                            Map<String, String> map = validateKeyPersonnel(appSvcCgoDtoList,
-                                    prefix + i + j + "cgo", licPersonMap, null, null, null, true);
-                            if (IaisCommonUtils.isNotEmpty(map)) {
-                                errorMap.putAll(map);
-                            }
-                        }
+                if (appSvcCgoDtoList == null) {
+                    if (cgoMandatoryCount > 0) {
+                        errorMap.put(prefix + i + j + "cgo"+"personError"+0, "No related Personnel found!");
+                    }
+                } else if (appSvcCgoDtoList.size() < cgoMandatoryCount) {
+                    String mandatoryErrMsg = MessageUtil.getMessageDesc("NEW_ERR0025");
+                    mandatoryErrMsg = mandatoryErrMsg.replace("{psnType}",
+                            IaisCommonUtils.getPersonName(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, ApplicationHelper.isBackend()));
+                    mandatoryErrMsg = mandatoryErrMsg.replace("{mandatoryCount}", String.valueOf(cgoMandatoryCount));
+                    errorMap.put(prefix + i + j + "cgo"+"personError"+0, mandatoryErrMsg);
+                }else {
+                    Map<String, String> map = validateKeyPersonnel(appSvcCgoDtoList,
+                            prefix + i + j + "cgo", licPersonMap, null, null, null, true);
+                    if (IaisCommonUtils.isNotEmpty(map)) {
+                        errorMap.putAll(map);
                     }
                 }
                 List<AppSvcPersonnelDto> appSvcSectionLeaderList = specialServiceSectionDto.getAppSvcSectionLeaderList();
-                if (appSvcSectionLeaderList != null) {
-                    boolean isAllEmpty = appSvcSectionLeaderList.stream().allMatch(ReflectionUtil::isEmpty);
-                    if (slIsMandatory) {
-                        for (int x = 0; x < appSvcSectionLeaderList.size(); x++) {
-                            specialValidate(errorMap, appSvcSectionLeaderList.get(x), prefix + i + j + "sl",
-                                    x, sectionLeaderNames, true);
-                        }
-                    } else {
-                        if (!isAllEmpty) {
-                            for (int x = 0; x < appSvcSectionLeaderList.size(); x++) {
-                                specialValidate(errorMap, appSvcSectionLeaderList.get(x), prefix + i + j + "sl",
-                                        x, sectionLeaderNames, true);
-                            }
-                        }
+                if (appSvcSectionLeaderList == null) {
+                    if (slMandatoryCount > 0) {
+                        errorMap.put(prefix + i + j + "sl"+"personError"+0, "No related Personnel found!");
+                    }
+                } else if (appSvcSectionLeaderList.size() < slMandatoryCount) {
+                    String mandatoryErrMsg = MessageUtil.getMessageDesc("NEW_ERR0025");
+                    mandatoryErrMsg = mandatoryErrMsg.replace("{psnType}",
+                            IaisCommonUtils.getPersonName(ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER, ApplicationHelper.isBackend()));
+                    mandatoryErrMsg = mandatoryErrMsg.replace("{mandatoryCount}", String.valueOf(slMandatoryCount));
+                    errorMap.put(prefix + i + j + "sl"+"personError"+0, mandatoryErrMsg);
+                }else {
+                    for (int x = 0; x < appSvcSectionLeaderList.size(); x++) {
+                        specialValidate(errorMap, appSvcSectionLeaderList.get(x), prefix + i + j + "sl",
+                                x, sectionLeaderNames, true);
                     }
                 }
                 validateSpecialServicePersonMandatory(specialServiceSectionDto.getAppSvcNurseDtoList(),
-                        nicIsMandatory,prefix + i + j + "nic", errorMap, nurseNames);
+                        nicMandatoryCount,prefix + i + j + "nic", errorMap, nurseNames,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE);
                 validateSpecialServiceOtherPersonMandatory(specialServiceSectionDto.getAppSvcRadiationSafetyOfficerDtoList(),
-                        rsoIsMandatory,prefix + i + j + "rso",errorMap,rsoNames,false);
+                        rsoMandatoryCount,prefix + i + j + "rso",errorMap,rsoNames,false,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER);
                 validateSpecialServiceOtherPersonMandatory(specialServiceSectionDto.getAppSvcDiagnosticRadiographerDtoList(),
-                        drIsMandatory,prefix + i + j + "dr",errorMap,drNames,false);
+                        drMandatoryCount,prefix + i + j + "dr",errorMap,drNames,false,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR);
                 validateSpecialServiceOtherPersonMandatory(specialServiceSectionDto.getAppSvcMedicalPhysicistDtoList(),
-                        mpIsMandatory,prefix + i + j + "mp",errorMap,mpNames,true);
+                        mpMandatoryCount,prefix + i + j + "mp",errorMap,mpNames,true,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST);
                 validateSpecialServiceOtherPersonMandatory(specialServiceSectionDto.getAppSvcRadiationPhysicistDtoList(),
-                        rpIsMandatory,prefix + i + j + "rp",errorMap,rpNames,true);
+                        rpMandatoryCount,prefix + i + j + "rp",errorMap,rpNames,true,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL);
                 validateSpecialServiceOtherPersonMandatory(specialServiceSectionDto.getAppSvcNMTechnologistDtoList(),
-                        nmIsMandatory,prefix + i + j + "nm",errorMap,nmNames,true);
+                        nmMandatoryCount,prefix + i + j + "nm",errorMap,nmNames,true,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM);
                 validateSpecialServicePersonMandatory(specialServiceSectionDto.getAppSvcDirectorDtoList(),
-                        diIsMandatory,prefix + i + j + "dir", errorMap, dirNames);
+                        diMandatoryCount,prefix + i + j + "dir", errorMap, dirNames,ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR);
                 validateSpecialServicePersonMandatory(specialServiceSectionDto.getAppSvcNurseDirectorDtoList(),
-                        nuIsMandatory,prefix + i + j + "nur", errorMap, nurNames);
+                        nuMandatoryCount,prefix + i + j + "nur", errorMap, nurNames,ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR);
                 if (!IaisCommonUtils.isEmpty(specialServiceSectionDto.getAppSvcSuplmFormDto().getAppSvcSuplmGroupDtoList())) {
                     errorMap.putAll(doValidateSupplementaryForm(specialServiceSectionDto.getAppSvcSuplmFormDto(), prefix + i + j));
                 }
@@ -3830,42 +3828,42 @@ public final class AppValidatorHelper {
         }
     }
 
-    private static void validateSpecialServiceOtherPersonMandatory(List<AppSvcPersonnelDto> appSvcPersonnelDto, boolean isMandatory,
-            String prefix, Map<String, String> errorMap, List<String> usedNames, boolean checkOthers) {
-        if (appSvcPersonnelDto != null) {
-            boolean isAllEmpty = appSvcPersonnelDto.stream().allMatch(ReflectionUtil::isEmpty);
-            if (isMandatory) {
-                for (int x = 0; x < appSvcPersonnelDto.size(); x++) {
-                    validateSpecialServiceOtherPersonDetail(appSvcPersonnelDto.get(x),
-                            prefix, "" + x, errorMap, usedNames, checkOthers);
-                }
-            } else {
-                if (!isAllEmpty) {
-                    for (int x = 0; x < appSvcPersonnelDto.size(); x++) {
-                        validateSpecialServiceOtherPersonDetail(appSvcPersonnelDto.get(x),
-                                prefix, "" + x, errorMap, usedNames, checkOthers);
-                    }
-                }
+    private static void validateSpecialServiceOtherPersonMandatory(List<AppSvcPersonnelDto> appSvcPersonnelDto, int mandatoryCount,
+            String prefix, Map<String, String> errorMap, List<String> usedNames, boolean checkOthers,String psnType) {
+        if (appSvcPersonnelDto == null) {
+            if (mandatoryCount > 0) {
+                errorMap.put(prefix+"personError"+0, "No related Personnel found!");
+            }
+        } else if (appSvcPersonnelDto.size() < mandatoryCount) {
+            String mandatoryErrMsg = MessageUtil.getMessageDesc("NEW_ERR0025");
+            mandatoryErrMsg = mandatoryErrMsg.replace("{psnType}",
+                    IaisCommonUtils.getPersonName(psnType, ApplicationHelper.isBackend()));
+            mandatoryErrMsg = mandatoryErrMsg.replace("{mandatoryCount}", String.valueOf(mandatoryCount));
+            errorMap.put(prefix+"personError"+0, mandatoryErrMsg);
+        }else {
+            for (int x = 0; x < appSvcPersonnelDto.size(); x++) {
+                validateSpecialServiceOtherPersonDetail(appSvcPersonnelDto.get(x),
+                        prefix, "" + x, errorMap, usedNames, checkOthers);
             }
         }
     }
 
-    private static void validateSpecialServicePersonMandatory(List<AppSvcPersonnelDto> appSvcPersonnelDto, boolean isMandatory,
-            String prefix, Map<String, String> errorMap, List<String> usedNames) {
-        if (appSvcPersonnelDto != null) {
-            boolean isAllEmpty = appSvcPersonnelDto.stream().allMatch(ReflectionUtil::isEmpty);
-            if (isMandatory) {
-                for (int x = 0; x < appSvcPersonnelDto.size(); x++) {
-                    validateSpecialServicePersonDetail(appSvcPersonnelDto.get(x),
-                            prefix, "" + x, errorMap, usedNames);
-                }
-            } else {
-                if (!isAllEmpty) {
-                    for (int x = 0; x < appSvcPersonnelDto.size(); x++) {
-                        validateSpecialServicePersonDetail(appSvcPersonnelDto.get(x),
-                                prefix, "" + x, errorMap, usedNames);
-                    }
-                }
+    private static void validateSpecialServicePersonMandatory(List<AppSvcPersonnelDto> appSvcPersonnelDto, int mandatoryCount,
+            String prefix, Map<String, String> errorMap, List<String> usedNames,String psnType) {
+        if (appSvcPersonnelDto == null) {
+            if (mandatoryCount > 0) {
+                errorMap.put(prefix+"personError"+0, "No related Personnel found!");
+            }
+        } else if (appSvcPersonnelDto.size() < mandatoryCount) {
+            String mandatoryErrMsg = MessageUtil.getMessageDesc("NEW_ERR0025");
+            mandatoryErrMsg = mandatoryErrMsg.replace("{psnType}",
+                    IaisCommonUtils.getPersonName(psnType, ApplicationHelper.isBackend()));
+            mandatoryErrMsg = mandatoryErrMsg.replace("{mandatoryCount}", String.valueOf(mandatoryCount));
+            errorMap.put(prefix+"personError"+0, mandatoryErrMsg);
+        }else {
+            for (int x = 0; x < appSvcPersonnelDto.size(); x++) {
+                validateSpecialServicePersonDetail(appSvcPersonnelDto.get(x),
+                        prefix, "" + x, errorMap, usedNames);
             }
         }
     }
