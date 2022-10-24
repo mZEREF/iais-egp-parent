@@ -1485,14 +1485,24 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                     for (PgtStageDto pgt:oldPgtList
                     ) {
                         if(pgt.getIsPgtMCom()+pgt.getIsPgtMRare()>0 && pgt.getCreatedAt().before(arSuper.getDataSubmissionDto().getSubmitDt())){
-                            count+=pgt.getIsPgtCoFunding();
+                            if (pgt.getIsPgtMCom() == 1 && "Y".equals(pgt.getIsPgtCoFunding())) {
+                                count += 1;
+                            }
+                            if (pgt.getIsPgtMRare() == 1 && "Y".equals(pgt.getIsPgtMRareCoFunding())) {
+                                count += 1;
+                            }
                         }
                         if(pgt.getIsPgtSr()>0 && pgt.getCreatedAt().before(arSuper.getDataSubmissionDto().getSubmitDt())){
-                            count+=pgt.getIsPgtCoFunding();
+                            if ("Y".equals(pgt.getIsPgtSrCoFunding())) {
+                                count += 1;
+                            }
                         }
                     }
                 }
-                if(count>=6 && arSuper.getPgtStageDto().getIsPgtMRare()+arSuper.getPgtStageDto().getIsPgtMCom()+arSuper.getPgtStageDto().getIsPgtSr()>0 &&arSuper.getPgtStageDto().getIsPgtCoFunding()==1){
+                if(count>=6 && arSuper.getPgtStageDto().getIsPgtMRare()+arSuper.getPgtStageDto().getIsPgtMCom()+arSuper.getPgtStageDto().getIsPgtSr()>0
+                        && (arSuper.getPgtStageDto().getIsPgtCoFunding()!=null && "Y".equals(arSuper.getPgtStageDto().getIsPgtCoFunding())
+                        || arSuper.getPgtStageDto().getIsPgtMRareCoFunding()!=null && "Y".equals(arSuper.getPgtStageDto().getIsPgtMRareCoFunding())
+                        || arSuper.getPgtStageDto().getIsPgtSrCoFunding()!=null && "Y".equals(arSuper.getPgtStageDto().getIsPgtSrCoFunding()))){
                     ParamUtil.setRequestAttr(request, "appealDisplayShow",Boolean.TRUE);
                 }
             }
