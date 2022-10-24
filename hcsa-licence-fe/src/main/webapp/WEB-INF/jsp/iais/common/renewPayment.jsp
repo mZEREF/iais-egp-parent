@@ -146,7 +146,7 @@
                     <td>
                         <p>&nbsp;&nbsp;Bundled Fees</p>
                         <c:forEach var="svcName" items="${bundleSvcFeeExt.svcNames}">
-                            <p>&nbsp;&nbsp;<strong>- <c:out value="${svcName}"/></strong></p>
+                            <p>&nbsp;&nbsp;<strong><c:out value="${svcName}"/></strong></p>
                         </c:forEach>
 
                     </td>
@@ -175,13 +175,13 @@
                         <p>&nbsp;&nbsp;With Specialised Service(s)</p>
                         <c:if test="${not empty simpleSpecifiedFeeExt }">
                             <c:forEach var="svcNameSs" items="${simpleSpecifiedFeeExt.svcNames}">
-                                <p>&nbsp;&nbsp;<strong>- <c:out value="${svcNameSs}"/></strong></p>
+                                <p>&nbsp;&nbsp;<strong><c:out value="${svcNameSs}"/></strong></p>
                             </c:forEach>
                         </c:if>
 
                         <c:if test="${not empty complexSpecifiedFeeExt }">
                             <c:forEach var="svcNameCs" items="${complexSpecifiedFeeExt.svcNames}">
-                                <p>&nbsp;&nbsp;<strong>- <c:out value="${svcNameCs}"/></strong></p>
+                                <p>&nbsp;&nbsp;<strong><c:out value="${svcNameCs}"/></strong></p>
                             </c:forEach>
                         </c:if>
 
@@ -227,7 +227,7 @@
                     <td>
                         <p>&nbsp;&nbsp;With Specialised Service(s)</p>
                         <c:forEach var="svcName" items="${thbSpecifiedFeeExt.svcNames}">
-                            <p>&nbsp;&nbsp;<strong>- <c:out value="${svcName}"/></strong></p>
+                            <p>&nbsp;&nbsp;<strong><c:out value="${svcName}"/></strong></p>
                         </c:forEach>
 
                     </td>
@@ -301,13 +301,13 @@
                             <p>&nbsp;&nbsp;With Specialised Service(s)</p>
                             <c:if test="${not empty simpleSpecifiedFeeExt }">
                                 <c:forEach var="svcNameSs" items="${simpleSpecifiedFeeExt.svcNames}">
-                                    <p>&nbsp;&nbsp;<strong>- <c:out value="${svcNameSs}"/></strong></p>
+                                    <p>&nbsp;&nbsp;<strong><c:out value="${svcNameSs}"/></strong></p>
                                 </c:forEach>
                             </c:if>
 
                             <c:if test="${not empty complexSpecifiedFeeExt }">
                                 <c:forEach var="svcNameCs" items="${complexSpecifiedFeeExt.svcNames}">
-                                    <p>&nbsp;&nbsp;<strong>- <c:out value="${svcNameCs}"/></strong></p>
+                                    <p>&nbsp;&nbsp;<strong><c:out value="${svcNameCs}"/></strong></p>
                                 </c:forEach>
                             </c:if>
 
@@ -352,7 +352,7 @@
                         <td>
                             <p>&nbsp;&nbsp;With Specialised Service(s)</p>
                             <c:forEach var="svcName" items="${thbSpecifiedFeeExt.svcNames}">
-                                <p>&nbsp;&nbsp;<strong>- <c:out value="${svcName}"/></strong></p>
+                                <p>&nbsp;&nbsp;<strong><c:out value="${svcName}"/></strong></p>
                             </c:forEach>
 
                         </td>
@@ -386,7 +386,7 @@
             <c:forEach items="${laterFeeDetailMap.value}" var="laterFeeDetail">
                 <tr>
                     <td style="border-top: none;">
-                        <p>-&nbsp;${laterFeeDetail.svcNames.get(0)}</p>
+                        <p><STRONG>${laterFeeDetail.svcNames.get(0)}</STRONG></p>
                     </td>
                     <td style="border-top: none;">N/A</td>
                     <td style="border-top: none;">N/A</td>
