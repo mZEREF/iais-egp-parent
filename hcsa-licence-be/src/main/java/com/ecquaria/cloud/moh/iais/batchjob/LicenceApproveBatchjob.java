@@ -1841,6 +1841,7 @@ public class LicenceApproveBatchjob {
                     }
                     //expiryDate
                     expiryDate = LicenceUtil.getExpiryDate(startDate, appPremisesRecommendationDto);
+
                     log.info(StringUtil.changeForLog("The  getLicenceDto Renew expiryDate is " + expiryDate));
                 } else {
                     //startDate
@@ -1973,7 +1974,11 @@ public class LicenceApproveBatchjob {
                 }
             }
         }
-
+        if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())){
+            licenceDto.setRenew(true);
+        }else{
+            licenceDto.setRenew(false);
+        }
         licenceDto.setApplicationDtos(applicationDtos1);
         log.info(StringUtil.changeForLog("The  licenceDto.getLicenceNo() is -->:"+licenceDto.getLicenceNo()));
         log.info(StringUtil.changeForLog("The  getLicenceDto end ..."));

@@ -91,6 +91,13 @@ import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
 import com.ecquaria.cloudfeign.FeignException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.web.client.RestTemplate;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
@@ -100,12 +107,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.web.client.RestTemplate;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @Process: MohHcsaBeDashboard
@@ -1394,10 +1395,15 @@ public class MohHcsaBeDashboardDelegator {
                         log.info(StringUtil.changeForLog("****viewitem ***** " + viewitem.getApplicationNo()));
                     }
                     if(needUpdateGroup){
-                        //get and set return fee
-                        saveApplicationDtoList = hcsaConfigMainClient.returnFee(saveApplicationDtoList).getEntity();
-                        //save return fee
-                        beDashboardSupportService.saveRejectReturnFee(saveApplicationDtoList,broadcastApplicationDto);
+
+                        if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)){
+                            List<ApplicationDto> applicationDtos=IaisCommonUtils.genNewArrayList();
+                            applicationDtos.add(applicationDto);
+                            //get and set return fee
+                            applicationDtos = hcsaConfigMainClient.returnFee(applicationDtos).getEntity();
+                            //save return fee
+                            beDashboardSupportService.saveRejectReturnFee(applicationDtos,broadcastApplicationDto);
+                        }
                         //clearApprovedHclCodeByExistRejectApp
                         applicationViewService.clearApprovedHclCodeByExistRejectApp(saveApplicationDtoList,applicationGroupDto.getAppType(), broadcastApplicationDto.getApplicationDto());
                     }

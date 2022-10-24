@@ -1629,21 +1629,6 @@ public abstract class AppCommDelegator {
             appSubmissionDto.setAppGrpNo(appGroupNo);
         }
         appSubmissionDto.setDraftNo(draftNo);
-        boolean isCharity = ApplicationHelper.isCharity(bpc.request);
-        AmendmentFeeDto amendmentFeeDto = RfcHelper.getAmendmentFeeDto(appSubmissionDto, appEditSelectDto, isCharity);
-        FeeDto feeDto = configCommService.getGroupAmendAmount(amendmentFeeDto);
-        Double amount = feeDto.getTotal();
-        double currentAmount = amount == null ? 0.0 : amount;
-        if (licenceDto.getMigrated() == 1 && IaisEGPHelper.isActiveMigrated()) {
-            currentAmount = 0.0;
-        }
-        ParamUtil.setSessionAttr(bpc.request, "FeeDetail", null);
-        if(feeDto.getFeeDetail()!=null){
-            ParamUtil.setSessionAttr(bpc.request, "FeeDetail", feeDto.getFeeDetail().toString());
-        }
-        log.info(StringUtil.changeForLog("the current amount is -->:" + currentAmount));
-        appSubmissionDto.setFeeInfoDtos(feeDto.getFeeInfoDtos());
-        appSubmissionDto.setAmount(currentAmount);
 
         RfcHelper.beforeSubmit(appSubmissionDto, appEditSelectDto, null, appType, bpc.request);
         // set status
@@ -1658,7 +1643,7 @@ public abstract class AppCommDelegator {
         List<AppSubmissionDto> notAutoSaveAppsubmission = IaisCommonUtils.genNewArrayList();
         AppSubmissionDto autoAppSubmissionDto = null;
         AppEditSelectDto autoChangeSelectDto = null;
-        if (appEditSelectDto.isLicenseeEdit() || appEditSelectDto.isPremisesEdit() || appEditSelectDto.isSpecialisedEdit() || appEditSelectDto.isServiceEdit()) {
+        if (appEditSelectDto.isEdited()) {
             // add the current dto to the group
             if (isAutoRfc) {
                 autoSaveAppsubmission.add(appSubmissionDto);
@@ -1672,7 +1657,7 @@ public abstract class AppCommDelegator {
             autoAppSubmissionDto.setAmount(0.0);
             autoChangeSelectDto = new AppEditSelectDto();
         }
-
+        boolean isCharity = ApplicationHelper.isCharity(bpc.request);
         boolean rfcSplitFlag = ConfigHelper.getBoolean("halp.rfc.split.flag", true);
         log.info(StringUtil.changeForLog("##### halp rfc split flag: " + rfcSplitFlag));
         // check the premises step is auto or not
@@ -1722,6 +1707,10 @@ public abstract class AppCommDelegator {
         boolean addClaimed = false;
         // check app submissions affected by sub licensee
         if (appEditSelectDto.isLicenseeEdit()) {
+            if (!isAutoRfc) {
+                appEditSelectDto.setLicenseeEdit(false);
+                autoChangeSelectDto.setLicenseeEdit(true);
+            }
             if (!rfcSplitFlag) {
                 autoGroupNo = getRfcGroupNo(autoGroupNo);
                 String groupNo = autoGroupNo;
@@ -1850,6 +1839,21 @@ public abstract class AppCommDelegator {
             bpc.request.setAttribute("RFC_ERROR_NO_CHANGE", MessageUtil.getMessageDesc("RFC_ERR010"));
             return;
         }
+        AmendmentFeeDto amendmentFeeDto = RfcHelper.getAmendmentFeeDto(appSubmissionDto, appEditSelectDto, isCharity);
+        FeeDto feeDto = configCommService.getGroupAmendAmount(amendmentFeeDto);
+        Double amount = feeDto.getTotal();
+        double currentAmount = amount == null ? 0.0 : amount;
+        if (licenceDto.getMigrated() == 1 && IaisEGPHelper.isActiveMigrated()) {
+            currentAmount = 0.0;
+        }
+        ParamUtil.setSessionAttr(bpc.request, "FeeDetail", null);
+        if(feeDto.getFeeDetail()!=null){
+            ParamUtil.setSessionAttr(bpc.request, "FeeDetail", feeDto.getFeeDetail().toString());
+        }
+        log.info(StringUtil.changeForLog("the current amount is -->:" + currentAmount));
+        appSubmissionDto.setFeeInfoDtos(feeDto.getFeeInfoDtos());
+        appSubmissionDto.setAmount(currentAmount);
+
         log.info(StringUtil.changeForLog("the appGroupNo --> Not-auto: " + appGroupNo + " - Auto:" + autoGroupNo));
         log.info(StringUtil.changeForLog(appSubmissionDto.getLicenceNo() + " - App Edit Select Dto: "
                 + JsonUtil.parseToJson(appEditSelectDto)));

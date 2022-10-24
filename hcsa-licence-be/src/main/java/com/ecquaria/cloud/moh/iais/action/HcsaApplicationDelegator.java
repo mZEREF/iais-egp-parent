@@ -2733,10 +2733,14 @@ public class HcsaApplicationDelegator {
                         broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
 
                         if (needUpdateGroupStatus) {
-                            //get and set return fee
-                            saveApplicationDtoList = hcsaConfigClient.returnFee(saveApplicationDtoList).getEntity();
-                            //save return fee
-                            saveRejectReturnFee(saveApplicationDtoList, broadcastApplicationDto);
+                            if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)){
+                                List<ApplicationDto> applicationDtos=IaisCommonUtils.genNewArrayList();
+                                applicationDtos.add(applicationDto);
+                                //get and set return fee
+                                applicationDtos = hcsaConfigClient.returnFee(applicationDtos).getEntity();
+                                //save return fee
+                                saveRejectReturnFee(applicationDtos, broadcastApplicationDto);
+                            }
                             //clearApprovedHclCodeByExistRejectApp
                             applicationViewService.clearApprovedHclCodeByExistRejectApp(saveApplicationDtoList, applicationGroupDto.getAppType(), broadcastApplicationDto.getApplicationDto());
                         }
@@ -3107,7 +3111,7 @@ public class HcsaApplicationDelegator {
         List<AppReturnFeeDto> saveReturnFeeDtos = IaisCommonUtils.genNewArrayList();
         //save return fee
         for (ApplicationDto applicationDto : applicationDtos) {
-            if (ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(applicationDto.getStatus()) && !ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationDto.getApplicationType()) && !ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())) {
+            if ( !ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationDto.getApplicationType()) && !ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())) {
                 AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
                 Double returnFee = applicationDto.getReturnFee();
                 if (returnFee == null || MiscUtil.doubleEquals(returnFee, 0d)) {

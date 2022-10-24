@@ -2528,9 +2528,6 @@ public final class AppDataHelper {
     private static List<AppSvcPersonnelDto> getSpecialServiceInforamtionPerson(HttpServletRequest request,String prefix,
         String personType,String personTypeAbbr,List<AppSvcPersonnelDto> originalPersonnelList,String appType){
         List<AppSvcPersonnelDto> personnelDtoList = IaisCommonUtils.genNewArrayList();
-        if (IaisCommonUtils.isEmpty(originalPersonnelList)&& !ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
-            return personnelDtoList;
-        }
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
         int Length = ParamUtil.getInt(request, prefix + personType+"Length");
         for (int x = 0; x < Length; x++) {
@@ -2545,7 +2542,7 @@ public final class AppDataHelper {
             } else{
                 getDataByOld = true;
             }
-            if (getDataByOld) {
+            if (getDataByOld&&IaisCommonUtils.isNotEmpty(originalPersonnelList)&&x<originalPersonnelList.size()) {
                 appSvcPersonnelDto= originalPersonnelList.get(x);
             } else if (getPageData) {
                 appSvcPersonnelDto = getAppSvcPersonnelParam(null,request, prefix +personTypeAbbr, "" + x, personType);
