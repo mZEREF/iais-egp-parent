@@ -63,11 +63,12 @@
                                     </p>
                                 </td>
                                 <td>
-                                    <div class="col-xs-12">
+                                    <div class="col-xs-6">
                                         <span class="newVal " attr="<iais:code code="${sectionLeader.qualification}"/>">
                                             <iais:code code="${sectionLeader.qualification}"/>
                                         </span>
-                                        <br>
+                                    </div>
+                                    <div class="col-xs-6">
                                         <span class="oldVal " attr="<iais:code code="${oldSectionLeader.qualification}"/>" style="display: none">
                                             <iais:code code="${oldSectionLeader.qualification}"/>
                                         </span>

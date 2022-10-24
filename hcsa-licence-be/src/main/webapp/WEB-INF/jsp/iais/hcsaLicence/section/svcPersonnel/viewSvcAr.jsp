@@ -341,32 +341,7 @@
                 </div>
             </td>
         </tr>
-
-
-
-
-<%--     TODO  TOTAL--%>
-<%--    <tr>--%>
-<%--        <td class="col-xs-6">--%>
-<%--            <p class="form-check-label" aria-label="premise-1-cytology">--%>
-<%--                Expiry Date (BCLS and AED)--%>
-<%--            </p>--%>
-<%--        </td>--%>
-<%--        <td>--%>
-<%--            <div class="col-xs-6">--%>
-<%--                                                <span class="newVal " attr="${arPractitionerList.bclsExpiryDate}">--%>
-<%--                                                    <c:out value="${arPractitionerList.bclsExpiryDate}"/>--%>
-<%--                                                </span>--%>
-<%--            </div>--%>
-<%--            <div class="col-xs-6">--%>
-<%--                                                <span class="oldVal " attr="${oldArPractitionerList.bclsExpiryDate}"--%>
-<%--                                                      style="display: none">--%>
-<%--                                                        ${oldArPractitionerList.bclsExpiryDate}--%>
-<%--                                                </span>--%>
-<%--            </div>--%>
-<%--        </td>--%>
-<%--    </tr>--%>
-            </table>
+    </table>
         </c:forEach>
     </div>
     </div>

@@ -62,36 +62,6 @@
         });
         </c:if>
     });
-
-    var psnEditEvent = function (target) {
-        var $target = $(target);
-        if (isEmptyNode($target)) {
-            return;
-        }
-        $target.find('.psnEdit').unbind('click');
-        $target.find('.psnEdit').on('click', function () {
-            doEditPsn($(this).closest(target), target);
-        });
-    }
-
-    function doEditPsn($currContent, target) {
-        if (isEmptyNode($currContent) || isEmpty(target)) {
-            return;
-        }
-        if (hideEditBtn($currContent)) {
-            return;
-        }
-        $currContent.find('.isPartEdit').val('1');
-        console.log(target+'-edit','==========>')
-        $('#isEditHiddenVal').val('1');
-        hideTag($currContent.find('.edit-content'));
-        unDisableContent($currContent);
-        checkPersonDisabled($currContent);
-        if (typeof refreshPersonOthers === 'function') {
-            refreshPersonOthers($currContent);
-        }
-    }
-
     function initPage(target) {
         var $target = $(target);
         if (isEmptyNode($target)) {

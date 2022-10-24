@@ -16,7 +16,7 @@
         <%--Validation fields Start--%>
         <input type="hidden" name="crud_action_type_continue" value="">
         <%--Validation fields End--%>
-        <div class="main-content">
+        <div class="main-content normal-label">
             <div class="row">
                 <div class="center-content">
                     <div class="col-xs-12 intranet-content">
@@ -47,6 +47,7 @@
                                         </c:if>
                                         <!--prem content -->
                                         <%@include file="section/premisesContent.jsp" %>
+<%--                                        <%@include file="section/secondAddress.jsp"%>--%>
                                     </div>
                                     <%@ include file="/WEB-INF/jsp/iais/application/common/appFooter.jsp" %>
                                 </div>

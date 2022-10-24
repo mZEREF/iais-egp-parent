@@ -275,13 +275,14 @@
             </td>
             <td>
                 <div class="col-xs-6">
-                <span class="newVal " attr="<c:out value="${person.currRegiDateStr}" />">
-                   <c:out value="${person.currRegiDateStr}"/>
-                </span>
-                    <br>
-                    <span class="oldVal " attr="<c:out value="${oldPerson.currRegiDateStr}" />" style="display: none">
-                    <c:out value="${oldPerson.currRegiDateStr}"/>
-                </span>
+                    <div class="newVal " attr="<c:out value="${person.currRegiDateStr}" />">
+                       <c:out value="${person.currRegiDateStr}"/>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="oldVal " attr="<c:out value="${oldPerson.currRegiDateStr}" />" style="display: none">
+                        <c:out value="${oldPerson.currRegiDateStr}"/>
+                    </div>
                 </div>
             </td>
         </tr>
@@ -293,13 +294,14 @@
             </td>
             <td>
                 <div class="col-xs-6">
-                    <span class="newVal " attr="${person.praCerEndDateStr}">
+                    <div class="newVal " attr="${person.praCerEndDateStr}">
                        <c:out value="${person.praCerEndDateStr}"/>
-                    </span>
-                    <br>
-                    <span class="oldVal " attr="${oldPerson.praCerEndDateStr}" style="display: none">
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="oldVal " attr="${oldPerson.praCerEndDateStr}" style="display: none">
                         <c:out value="${oldPerson.praCerEndDateStr}"/>
-                    </span>
+                    </div>
                 </div>
             </td>
         </tr>
@@ -311,13 +313,14 @@
             </td>
             <td>
                 <div class="col-xs-6">
-                    <span class="newVal " attr="<c:out value="${person.typeOfRegister}" />">
+                    <div class="newVal " attr="<c:out value="${person.typeOfRegister}" />">
                        <c:out value="${person.typeOfRegister}"/>
-                    </span>
-                    <br>
-                    <span class="oldVal " attr="<c:out value="${oldPerson.typeOfRegister}" />" style="display: none">
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="oldVal " attr="<c:out value="${oldPerson.typeOfRegister}" />" style="display: none">
                         <c:out value="${oldPerson.typeOfRegister}"/>
-                    </span>
+                    </div>
                 </div>
             </td>
         </tr>
@@ -329,13 +332,14 @@
             </td>
             <td>
                 <div class="col-xs-6">
-                <span class="newVal " attr="${person.speciality}">
-                   <c:out value="${person.speciality}"/>
-                </span>
-                    <br>
-                    <span class="oldVal " attr="${oldPerson.speciality}" style="display: none">
-                    <c:out value="${oldPerson.speciality}"/>
-                </span>
+                    <div class="newVal " attr="${person.speciality}">
+                       <c:out value="${person.speciality}"/>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="oldVal " attr="${oldPerson.speciality}" style="display: none">
+                        <c:out value="${oldPerson.speciality}"/>
+                    </div>
                 </div>
             </td>
         </tr>
@@ -346,10 +350,12 @@
                 </div>
             </td>
             <td>
-                <div class="col-xs-12">
+                <div class="col-xs-6">
                     <div class="newVal " attr="<c:out value="${person.subSpeciality}" />">
                         <c:out value="${person.subSpeciality}"/>
                     </div>
+                </div>
+                <div class="col-xs-6">
                     <div class="oldVal " attr="<c:out value="${oldPerson.subSpeciality}" />" style="display: none">
                         <c:out value="${oldPerson.subSpeciality}"/>
                     </div>
@@ -363,10 +369,12 @@
                 </div>
             </td>
             <td>
-                <div class="col-xs-12">
+                <div class="col-xs-6">
                     <div class="newVal " attr="<c:out value="${person.specialityOther}" />">
                         <c:out value="${person.specialityOther}"/>
                     </div>
+                </div>
+                <div class="col-xs-6">
                     <div class="oldVal " attr="<c:out value="${oldPerson.specialityOther}" />" style="display: none">
                         <c:out value="${oldPerson.specialityOther}"/>
                     </div>
@@ -380,10 +388,12 @@
                 </div>
             </td>
             <td>
-                <div class="col-xs-12">
+                <div class="col-xs-6">
                     <div class="newVal " attr="${person.specialtyGetDateStr}">
                         <c:out value="${person.specialtyGetDateStr}"/>
                     </div>
+                </div>
+                <div class="col-xs-6">
                     <div class="oldVal " attr="${oldPerson.specialtyGetDateStr}" style="display: none">
                         <c:out value="${oldPerson.specialtyGetDateStr}"/>
                     </div>
@@ -397,10 +407,12 @@
                 </div>
             </td>
             <td>
-                <div class="col-xs-12">
+                <div class="col-xs-6">
                     <div class="newVal " attr="<c:out value="${person.qualification}"/>">
                         <c:out value="${person.qualification}"/>
                     </div>
+                </div>
+                <div class="col-xs-6">
                     <div class="oldVal " attr="<c:out value="${oldPerson.qualification}"/>" style="display: none">
                         <c:out value="${oldPerson.qualification}"/>
                     </div>
@@ -418,6 +430,8 @@
                     <div class="newVal " attr="<c:out value="${person.otherQualification}"/>">
                         <c:out value="${person.otherQualification}"/>
                     </div>
+                </div>
+                <div class="col-xs-6">
                     <div class="oldVal " attr="<c:out value="${oldPerson.otherQualification}"/>" style="display: none">
                         <c:out value="${oldPerson.otherQualification}"/>
                     </div>
@@ -452,10 +466,12 @@
             </div>
         </td>
         <td>
-            <div class="col-xs-12">
+            <div class="col-xs-6">
                 <div class="newVal " attr="${person.emailAddr}">
                     <c:out value="${person.emailAddr}"/>
                 </div>
+            </div>
+            <div class="col-xs-6">
                 <div class="oldVal " attr="${oldPerson.emailAddr}" style="display: none">
                     <c:out value="${oldPerson.emailAddr}"/>
                 </div>

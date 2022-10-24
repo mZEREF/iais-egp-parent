@@ -43,11 +43,12 @@
                         </p>
                     </td>
                     <td>
-                        <div class="col-xs-12">
-                            <div class="newVal " attr="${normalList.qualification}"/>
-                            <c:out value="${normalList.qualification}"/>
-                            </span>
-                            <br>
+                        <div class="col-xs-6">
+                            <div class="newVal " attr="${normalList.qualification}">
+                                <c:out value="${normalList.qualification}"/>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
                             <div class="oldVal " attr="${oldNormalList.qualification}" style="display: none">
                                 <c:out value="${oldNormalList.qualification}"/>
                             </div>
