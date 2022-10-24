@@ -344,7 +344,7 @@
                 $(this).find('input.isPartEdit').prop('name',prefix+'isPartEdit'+k);
                 $(this).find('input.practitionersIndexNo').prop('name',prefix+'practitionersIndexNo'+k);
                 $(this).find('input.psnType').prop('name',prefix+'psnType'+k);
-                $('input.psnType[data-prefix="' + prefix + '"]').val("practitioners");
+                $('input.psnType[data-prefix="' + prefix + '"]').val("MedPra");
                 $(this).find('input.profRegNo').prop('name',prefix+'profRegNo'+k);
                 $(this).find('input.name').prop('name',prefix+'name'+k);
                 $(this).find('input.idNo').prop('name',prefix+'idNo'+k);
@@ -435,7 +435,7 @@
                 $(this).find('.assign-psn-item').html(k+1);
                 $(this).find('input.aisPartEdit').prop('name',prefix+'aisPartEdit'+k);
                 $(this).find('input.apsnType').prop('name',prefix+'apsnType'+k);
-                $('input.apsnType[data-prefix="' + prefix + '"]').val("anaesthetists");
+                $('input.apsnType[data-prefix="' + prefix + '"]').val("MedAna");
                 $(this).find('input.aprofRegNo').prop('name',prefix+'aprofRegNo'+k);
                 $(this).find('input.aname').prop('name',prefix+'aname'+k);
                 $(this).find('input.idANo').prop('name',prefix+'idANo'+k);
@@ -524,7 +524,7 @@
                 $(this).find('.assign-psn-item').html(k+1);
                 $(this).find('input.nisPartEdit').prop('name',prefix+'nisPartEdit'+k);
                 $(this).find('input.npsnType').prop('name',prefix+'npsnType'+k);
-                $('input.npsnType[data-prefix="' + prefix + '"]').val("nurses");
+                $('input.npsnType[data-prefix="' + prefix + '"]').val("MedNur");
                 $(this).find('input.nname').prop('name',prefix+'nname'+k);
                 $(this).find('input.nqualification').prop('name',prefix+'nqualification'+k);
             });
@@ -607,7 +607,7 @@
                 $(this).find('.assign-psn-item').html(k+1);
                 $(this).find('input.cisPartEdit').prop('name',prefix+'cisPartEdit'+k);
                 $(this).find('input.cpsnType').prop('name',prefix+'cpsnType'+k);
-                $('input.cpsnType[data-prefix="' + prefix + '"]').val("counsellors");
+                $('input.cpsnType[data-prefix="' + prefix + '"]').val("MedCou");
                 $(this).find('input.cname').prop('name',prefix+'cname'+k);
                 $(this).find('input.cidNo').prop('name',prefix+'cidNo'+k);
                 $(this).find('input.cqualification').prop('name',prefix+'cqualification'+k);
