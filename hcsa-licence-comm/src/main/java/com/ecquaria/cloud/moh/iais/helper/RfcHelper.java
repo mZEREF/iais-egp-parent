@@ -2328,7 +2328,9 @@ public final class RfcHelper {
     }
 
     private static void reSetOtherService(AppSvcOtherInfoDto oldAppSvcOtherInfoDto, AppSvcOtherInfoDto newAppSvcOtherInfoDto) {
-        oldAppSvcOtherInfoDto.setAllAppPremSubSvcRelDtoList(newAppSvcOtherInfoDto.getAllAppPremSubSvcRelDtoList());
+        List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList = newAppSvcOtherInfoDto.getFlatAppPremSubSvcRelList( dto -> StringUtil.isNotEmpty(dto.getActCode()));
+        oldAppSvcOtherInfoDto.setAppPremSubSvcRelDtoList(appPremSubSvcRelDtoList);
+        oldAppSvcOtherInfoDto.initAllAppPremSubSvcRelDtoList();
     }
 
 
