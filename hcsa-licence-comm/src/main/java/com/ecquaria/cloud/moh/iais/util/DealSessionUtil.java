@@ -1150,9 +1150,6 @@ public class DealSessionUtil {
         if (IaisCommonUtils.isEmpty(appPremSpecialisedDtoList)) {
             return appPremSpecialisedDtoList;
         }
-        String baseSvcId = currSvcInfoDto.getServiceId();
-        ConfigCommService configCommService = getConfigCommService();
-        HcsaServiceDto svcConfig = configCommService.getHcsaServiceDtoById(baseSvcId);
         List<AppPremSpecialisedDto> result = IaisCommonUtils.genNewArrayList();
         CopyUtil.copyMutableObjectList(appPremSpecialisedDtoList, result);
         for (AppPremSpecialisedDto appPremSpecialisedDto : result) {
@@ -1161,9 +1158,12 @@ public class DealSessionUtil {
                 appPremSubSvcRelDtos = IaisCommonUtils.genNewArrayList();
             }
             AppPremSubSvcRelDto relDto = new AppPremSubSvcRelDto();
-            relDto.setSvcConfigDto(svcConfig);
+            relDto.setSvcType(currSvcInfoDto.getServiceType());
+            relDto.setSvcId(currSvcInfoDto.getServiceId());
+            relDto.setSvcCode(currSvcInfoDto.getServiceCode());
+            relDto.setSvcName(currSvcInfoDto.getServiceName());
             relDto.setChecked(true);
-            appPremSubSvcRelDtos.add(relDto);
+            appPremSubSvcRelDtos.add(0, relDto);
             appPremSpecialisedDto.setAppPremSubSvcRelDtoList(appPremSubSvcRelDtos);
         }
         return result;
