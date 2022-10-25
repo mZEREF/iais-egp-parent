@@ -674,49 +674,68 @@ public class DealSessionUtil {
         } else {
             currSvcInfoDto.setDeputyPoFlag(AppConsts.YES);
         }
-        for (HcsaServiceStepSchemeDto hcsaServiceStepScheme : hcsaServiceStepSchemes) {
-            String stepCode = hcsaServiceStepScheme.getStepCode();
-            if (HcsaConsts.STEP_SUPPLEMENTARY_FORM.equals(stepCode)) {
-                initSupplementoryForm(currSvcInfoDto, appGrpPremisesDtos, forceInit);
-                if (!forceInit) {
-                    List<AppSvcSuplmFormDto> appSvcSuplmFormList = currSvcInfoDto.getAppSvcSuplmFormList();
-                    if (IaisCommonUtils.isNotEmpty(appSvcSuplmFormList)) {
-                        appSvcSuplmFormList.forEach(AppSvcSuplmFormDto::checkDisplay);
-                    }
+        Map<String, HcsaServiceStepSchemeDto> stepMap = hcsaServiceStepSchemes.stream()
+                .collect(Collectors.toMap(HcsaServiceStepSchemeDto::getStepCode, Function.identity()));
+        HcsaServiceStepSchemeDto hcsaServiceStepScheme = stepMap.get(HcsaConsts.STEP_SUPPLEMENTARY_FORM);
+        if (hcsaServiceStepScheme != null) {
+            initSupplementoryForm(currSvcInfoDto, appGrpPremisesDtos, forceInit);
+            if (!forceInit) {
+                List<AppSvcSuplmFormDto> appSvcSuplmFormList = currSvcInfoDto.getAppSvcSuplmFormList();
+                if (IaisCommonUtils.isNotEmpty(appSvcSuplmFormList)) {
+                    appSvcSuplmFormList.forEach(AppSvcSuplmFormDto::checkDisplay);
                 }
-            } else if (HcsaConsts.STEP_OTHER_INFORMATION.equals(stepCode)) {
-                initAppSvcOtherInfoList(currSvcInfoDto, appGrpPremisesDtos, forceInit, request);
-                if (!forceInit) {
-                    List<AppSvcOtherInfoDto> appSvcOtherInfoList = currSvcInfoDto.getAppSvcOtherInfoList();
-                    if (IaisCommonUtils.isNotEmpty(appSvcOtherInfoList)) {
-                        appSvcOtherInfoList.forEach(dto -> {
-                            AppSvcSuplmFormDto appSvcSuplmFormDto = dto.getAppSvcSuplmFormDto();
-                            if (appSvcSuplmFormDto != null) {
-                                appSvcSuplmFormDto.checkDisplay();
-                            }
-                        });
-                    }
-                }
-            } else if (HcsaConsts.STEP_SPECIAL_SERVICES_FORM.equals(stepCode)) {
-                initAppSvcSpecialServiceInfoDtoList(currSvcInfoDto, appPremSpecialisedDtoList);
-                if (!forceInit) {
-                    List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = currSvcInfoDto.getAppSvcSpecialServiceInfoList();
-                    if (IaisCommonUtils.isNotEmpty(appSvcSpecialServiceInfoList)) {
-                        appSvcSpecialServiceInfoList.forEach(dto -> dto.getSpecialServiceSectionDtoList().forEach(sDto -> {
-                            AppSvcSuplmFormDto appSvcSuplmFormDto = sDto.getAppSvcSuplmFormDto();
-                            if (appSvcSuplmFormDto != null) {
-                                appSvcSuplmFormDto.checkDisplay();
-                            }
-                        }));
-                    }
-                }
-            } else if (HcsaConsts.STEP_DOCUMENTS.equals(stepCode)) {
-                List<DocumentShowDto> documentShowDtos = initDocumentShowList(currSvcInfoDto,
-                        appPremSpecialisedDtoList, forceInit);
-                initDocumentSession(documentShowDtos, request);
-            } else if (HcsaConsts.STEP_OUTSOURCED_PROVIDERS.equals(stepCode)) {
-                initSvcOutsourcedProvider(request, currSvcInfoDto, forceInit);
             }
+        } else {
+            currSvcInfoDto.setAppSvcSuplmFormList(null);
+        }
+        hcsaServiceStepScheme = stepMap.get(HcsaConsts.STEP_OTHER_INFORMATION);
+        if (hcsaServiceStepScheme != null) {
+            initAppSvcOtherInfoList(currSvcInfoDto, appGrpPremisesDtos, forceInit, request);
+            if (!forceInit) {
+                List<AppSvcOtherInfoDto> appSvcOtherInfoList = currSvcInfoDto.getAppSvcOtherInfoList();
+                if (IaisCommonUtils.isNotEmpty(appSvcOtherInfoList)) {
+                    appSvcOtherInfoList.forEach(dto -> {
+                        AppSvcSuplmFormDto appSvcSuplmFormDto = dto.getAppSvcSuplmFormDto();
+                        if (appSvcSuplmFormDto != null) {
+                            appSvcSuplmFormDto.checkDisplay();
+                        }
+                    });
+                }
+            }
+        } else {
+            currSvcInfoDto.setAppSvcOtherInfoList(null);
+        }
+        hcsaServiceStepScheme = stepMap.get(HcsaConsts.STEP_SPECIAL_SERVICES_FORM);
+        if (hcsaServiceStepScheme != null) {
+            initAppSvcSpecialServiceInfoDtoList(currSvcInfoDto, appPremSpecialisedDtoList);
+            if (!forceInit) {
+                List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = currSvcInfoDto.getAppSvcSpecialServiceInfoList();
+                if (IaisCommonUtils.isNotEmpty(appSvcSpecialServiceInfoList)) {
+                    appSvcSpecialServiceInfoList.forEach(dto -> dto.getSpecialServiceSectionDtoList().forEach(sDto -> {
+                        AppSvcSuplmFormDto appSvcSuplmFormDto = sDto.getAppSvcSuplmFormDto();
+                        if (appSvcSuplmFormDto != null) {
+                            appSvcSuplmFormDto.checkDisplay();
+                        }
+                    }));
+                }
+            }
+        } else {
+            currSvcInfoDto.setAppSvcSpecialServiceInfoList(null);
+        }
+        hcsaServiceStepScheme = stepMap.get(HcsaConsts.STEP_DOCUMENTS);
+        if (hcsaServiceStepScheme != null) {
+            List<DocumentShowDto> documentShowDtos = initDocumentShowList(currSvcInfoDto,
+                    appPremSpecialisedDtoList, forceInit);
+            initDocumentSession(documentShowDtos, request);
+        } else {
+            currSvcInfoDto.setAppSvcDocDtoLit(null);
+            currSvcInfoDto.setDocumentShowDtoList(null);
+        }
+        hcsaServiceStepScheme = stepMap.get(HcsaConsts.STEP_OUTSOURCED_PROVIDERS);
+        if (hcsaServiceStepScheme != null) {
+            initSvcOutsourcedProvider(request, currSvcInfoDto, forceInit);
+        } else {
+            currSvcInfoDto.setAppPremOutSourceLicenceDto(null);
         }
         return currSvcInfoDto;
     }
