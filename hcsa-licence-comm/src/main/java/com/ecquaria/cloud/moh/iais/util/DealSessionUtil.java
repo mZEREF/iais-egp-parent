@@ -1145,11 +1145,12 @@ public class DealSessionUtil {
         }
     }
 
-    private static List<AppPremSpecialisedDto> addBaseSvc(List<AppPremSpecialisedDto> appPremSpecialisedDtoList) {
+    private static List<AppPremSpecialisedDto> addBaseSvc(List<AppPremSpecialisedDto> appPremSpecialisedDtoList,
+            AppSvcRelatedInfoDto currSvcInfoDto) {
         if (IaisCommonUtils.isEmpty(appPremSpecialisedDtoList)) {
             return appPremSpecialisedDtoList;
         }
-        String baseSvcId = appPremSpecialisedDtoList.get(0).getBaseSvcId();
+        String baseSvcId = currSvcInfoDto.getServiceId();
         ConfigCommService configCommService = getConfigCommService();
         HcsaServiceDto svcConfig = configCommService.getHcsaServiceDtoById(baseSvcId);
         List<AppPremSpecialisedDto> result = IaisCommonUtils.genNewArrayList();
@@ -1176,7 +1177,7 @@ public class DealSessionUtil {
         if (!forceInit && IaisCommonUtils.isNotEmpty(currSvcInfoDto.getDocumentShowDtoList())) {
             return currSvcInfoDto.getDocumentShowDtoList();
         }
-        List<DocumentShowDto> documentShowDtos = genDocumentShowDtoList(addBaseSvc(appPremSpecialisedDtoList), currSvcInfoDto);
+        List<DocumentShowDto> documentShowDtos = genDocumentShowDtoList(addBaseSvc(appPremSpecialisedDtoList, currSvcInfoDto), currSvcInfoDto);
         currSvcInfoDto.setDocumentShowDtoList(documentShowDtos);
         List<AppSvcDocDto> appSvcDocDtos = documentShowDtos.stream()
                 .map(DocumentShowDto::allDocuments)
