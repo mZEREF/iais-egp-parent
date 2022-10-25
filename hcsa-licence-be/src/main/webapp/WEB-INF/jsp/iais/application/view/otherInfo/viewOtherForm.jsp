@@ -8,7 +8,7 @@
         <c:if test="${batchSize > 0}">
             <c:set var="groupId" value="${appSvcSuplmGroupDto.groupId}"/>
             <c:forEach var="item" items="${appSvcSuplmGroupDto.appSvcSuplmItemDtoList}" varStatus="status">
-<%--                <%@ include file="/WEB-INF/jsp/iais/application/view/" %>--%>
+                <%@ include file="/WEB-INF/jsp/iais/application/view/supplementaryForm/viewItem.jsp" %>
             </c:forEach>
         </c:if>
     </c:forEach>
