@@ -31,11 +31,14 @@ import com.ecquaria.cloud.systeminfo.ServicesSysteminfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.client.RestTemplate;
 
@@ -153,6 +156,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
             log.error(e.getMessage(),e);
 
         }
+        saveFileToOtherNodes(str.getBytes(StandardCharsets.UTF_8),s+AppServicesConsts.FILE_FORMAT,outFolder+ AppServicesConsts.FILE_NAME);
 
     }
 
@@ -877,4 +881,51 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
         return monitoringSheetsDto;
 
     }
+
+    private void saveFileToOtherNodes(byte[] content, String fileName, String tempFolder) {
+        List<String> ipAddrs = ServicesSysteminfo.getInstance().getAddressesByServiceName("hcsa-licence-web");
+        if (ipAddrs != null && ipAddrs.size() > 1 && fileName != null) {
+            String localIp = MiscUtil.getLocalHostExactAddress();
+            log.info(StringUtil.changeForLog("Local Ip is ==>" + localIp));
+            RestTemplate restTemplate = new RestTemplate();
+            for (String ip : ipAddrs) {
+                if (localIp.equals(ip)) {
+                    continue;
+                }
+                try {
+                    String port = ConfigHelper.getString("server.port", "8080");
+                    StringBuilder apiUrl = new StringBuilder("http://");
+                    apiUrl.append(ip).append(':').append(port).append("/hcsa-licence-web/tempFile-handler");
+                    log.info("Request URL ==> {}", apiUrl);
+
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+                    MultiValueMap<String, Object> multipartRequest = new LinkedMultiValueMap<>();
+                    HttpHeaders fileHeader = new HttpHeaders();
+                    ByteArrayResource fileContentAsResource = new ByteArrayResource(content) {
+                        @Override
+                        public String getFilename() {
+                            return fileName;
+                        }
+                    };
+                    HttpEntity<ByteArrayResource> fileEnt = new HttpEntity<>(fileContentAsResource, fileHeader);
+                    multipartRequest.add("selectedFile", fileEnt);
+                    HttpHeaders jsonHeader = new HttpHeaders();
+                    jsonHeader.setContentType(MediaType.APPLICATION_JSON);
+                    HttpEntity<String> jsonPart = new HttpEntity<>(fileName, jsonHeader);
+                    multipartRequest.add("fileName", jsonPart);
+                    jsonHeader = new HttpHeaders();
+                    jsonHeader.setContentType(MediaType.APPLICATION_JSON);
+                    jsonPart = new HttpEntity<>("ajaxUpload" + tempFolder, jsonHeader);
+                    multipartRequest.add("folderName", jsonPart);
+                    HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(multipartRequest, headers);
+                    restTemplate.postForObject(apiUrl.toString(), requestEntity, String.class);
+                } catch (Throwable e) {
+                    log.error(e.getMessage(), e);
+                }
+            }
+        }
+    }
+
 }
