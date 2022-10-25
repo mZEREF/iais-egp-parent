@@ -1010,6 +1010,10 @@ public class ConfigServiceDelegator {
         log.info(StringUtil.changeForLog("The handleStep serviceCode is -->:"+serviceCode));
         Map<String, HcsaServiceSubServicePageDto> specHcsaServiceSubServicePageDtoMap = hcsaServiceConfigDto.getSpecHcsaServiceSubServicePageDtoMap();
         Map<String, HcsaServiceSubServicePageDto> otherHcsaServiceSubServicePageDtoMap = hcsaServiceConfigDto.getOtherHcsaServiceSubServicePageDtoMap();
+        hcsaServiceConfigDto.setOtherInformation(false);
+        hcsaServiceConfigDto.setSupplementaryForm(false);
+        hcsaServiceConfigDto.setSpecialServicesInformation(false);
+        hcsaServiceConfigDto.setOutsourcedProviders(false);
         if(StringUtil.isNotEmpty(serviceCode)){
             if(ServiceConfigConstant.NEEDOTHERINFORMATIONSTEP.contains(serviceCode)
                     || isNotEmpty(otherHcsaServiceSubServicePageDtoMap)){
