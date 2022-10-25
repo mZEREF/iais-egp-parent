@@ -1612,6 +1612,8 @@ public abstract class AppCommDelegator {
         // change edit
         AppEditSelectDto appEditSelectDto = RfcHelper.rfcChangeModuleEvaluationDto(appSubmissionDto, oldAppSubmissionDto);
         boolean isAutoRfc = appEditSelectDto.isAutoRfc();
+        log.info(StringUtil.changeForLog(appSubmissionDto.getLicenceNo() + " - App Edit Select Dto: "
+                + JsonUtil.parseToJson(appEditSelectDto)));
         // reSet: isNeedNewLicNo and self assessment flag
         //ApplicationHelper.reSetAdditionalFields(appSubmissionDto, oldAppSubmissionDto, appEditSelectDto);
         appSubmissionDto.setChangeSelectDto(appEditSelectDto);
@@ -1855,8 +1857,6 @@ public abstract class AppCommDelegator {
         appSubmissionDto.setAmount(currentAmount);
 
         log.info(StringUtil.changeForLog("the appGroupNo --> Not-auto: " + appGroupNo + " - Auto:" + autoGroupNo));
-        log.info(StringUtil.changeForLog(appSubmissionDto.getLicenceNo() + " - App Edit Select Dto: "
-                + JsonUtil.parseToJson(appEditSelectDto)));
         AppDeclarationMessageDto appDeclarationMessageDto = !appEditSelectDto.isChangeHciName() ? null :
                 appSubmissionDto.getAppDeclarationMessageDto();
         List<AppDeclarationDocDto> appDeclarationDocDtos = !appEditSelectDto.isChangeHciName() ? null :
