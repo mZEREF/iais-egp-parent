@@ -1696,7 +1696,7 @@ public abstract class AppCommDelegator {
                 isAutoPremises = 0;
             }
             // for spliting
-            if (changeSelectDto.isAutoRfc() && !isAutoRfc) {
+            if (changeSelectDto.isAutoRfc() && autoChangeSelectDto != null) {
                 autoChangeSelectDto.setPremisesEdit(true);
                 appEditSelectDto.setPremisesEdit(false);
                 appEditSelectDto.setPremisesListEdit(false);
@@ -1707,7 +1707,7 @@ public abstract class AppCommDelegator {
         boolean addClaimed = false;
         // check app submissions affected by sub licensee
         if (appEditSelectDto.isLicenseeEdit()) {
-            if (!isAutoRfc) {
+            if (autoChangeSelectDto != null) {
                 appEditSelectDto.setLicenseeEdit(false);
                 autoChangeSelectDto.setLicenseeEdit(true);
             }
