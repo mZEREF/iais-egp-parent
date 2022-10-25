@@ -54,7 +54,7 @@
                     </iais:value>
                   </iais:row>
                   <iais:row>
-                    <iais:field width="6" cssClass="col-md-6" value="Date Started" mandatory="true" style="margin-bottom: 0px;"/>
+                    <iais:field width="6" cssClass="col-md-6" value="Date Started" info="${MessageUtil.getMessageDesc('DS_MSG038')}" mandatory="true"/>
                     <iais:value width="6" cssClass="col-md-6" >
                       <iais:datePicker id = "iuiCycleStartDate" name = "iuiCycleStartDate" dateVal="${iuiCycleStageDto.startDate}"></iais:datePicker>
                       <span class="error-msg" name="iaisErrorMsg" id="error_startDate"></span>

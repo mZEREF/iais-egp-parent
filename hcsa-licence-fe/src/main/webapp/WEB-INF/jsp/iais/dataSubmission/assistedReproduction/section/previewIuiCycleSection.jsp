@@ -36,7 +36,7 @@
         </iais:row>
         </c:if>
         <iais:row>
-          <iais:field width="5" value="Date Started" mandatory="false"/>
+          <iais:field width="5" value="Date Started" info="${MessageUtil.getMessageDesc('DS_MSG038')}" mandatory="false"/>
           <iais:value  width="7" cssClass="col-md-7" display="true" >
           <fmt:formatDate value='${arSuperDataSubmissionDto.iuiCycleStageDto.startDate}' pattern='dd/MM/yyyy' />
           </iais:value>
