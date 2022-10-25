@@ -1765,6 +1765,8 @@ public abstract class AppCommDelegator {
                 autoChangeSelectDto.setSpecialisedEdit(true);
                 autoChangeSelectDto.setChangeSpecialisedAutoFields(true);
                 appEditSelectDto.setChangeSpecialisedAutoFields(false);
+            } else if (!appEditSelectDto.isChangeSpecialisedNonAutoFields()) {
+                RfcHelper.resolveSpecialisedRfc(appSubmissionDto, oldAppSubmissionDto, true);
             }
         }
         // check app submissions affected by personnel (service info)
@@ -1787,7 +1789,7 @@ public abstract class AppCommDelegator {
             List<String> autoList = appSubmissionDto.getChangeSelectDto().getPersonnelEditList();
             List<String> nonAutoList = appSubmissionDto.getAppEditSelectDto().getPersonnelEditList();
             log.info(StringUtil.changeForLog("NonAutoList: " + nonAutoList + " - AutoList: " + autoList));
-            if (autoAppSubmissionDto != null && !IaisCommonUtils.isEmpty(autoList)) {
+            if (autoAppSubmissionDto != null && !IaisCommonUtils.isEmpty(nonAutoList)) {
                 autoChangeSelectDto.setServiceEdit(true);
                 autoAppSubmissionDto.setAppSvcRelatedInfoDtoList(
                         RfcHelper.generateDtosForAutoFields(autoAppSubmissionDto, oldAppSubmissionDto,
