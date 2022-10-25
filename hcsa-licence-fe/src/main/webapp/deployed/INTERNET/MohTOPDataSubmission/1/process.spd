@@ -80,7 +80,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AckPage" stageIndicator="" x="650" y="230">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AckPage" stageIndicator="" x="660" y="230">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -113,9 +113,6 @@
   <SynchronousLink destinationName="/Pages/WebPage/StepPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareStepData" style="rectanular">
    <position>{(490,150)(670,150)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/AckPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/DoSubmission" style="rectanular">
-   <position>{(490,250)(670,250)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/DoControl" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/DoRfc" style="oblique">
    <position>{(510,340)(790,250)}</position>
   </SynchronousLink>
@@ -129,7 +126,7 @@
    <position>{(800,150)(790,250)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/DoControl" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/AckPage" style="rectanular">
-   <position>{(670,250)(790,250)}</position>
+   <position>{(680,250)(790,250)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/DoControl" style="rectanular">
    <position>{(790,250)(800,340)}</position>
@@ -146,8 +143,21 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareSwitch" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
    <position>{(910,140)(910,81)(257,24)(240,150)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Validation" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/DoSubmission" style="rectanular">
+   <position>{(490,250)(600,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/AckPage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Validation" style="rectanular">
+   <position>{(600,250)(680,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareStepData" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Validation" style="oblique">
+   <position>{(600,250)(490,150)}</position>
+  </SynchronousLink>
  </Links>
- <Conditions/>
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/PrepareStepData" componentIfTrue="/Pages/WebPage/AckPage" defClass="" executor="" icon="" leftOperand="valFlag" name="Validation" operator="=" rightOperand="&quot;pass&quot;" x="580" y="230">
+   <Description/>
+  </Condition>
+ </Conditions>
  <Switches>
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/PrepareStepData" executor="" icon="" leftOperand="crud_action_type_top" name="Switch1" x="370" y="130">
    <Description/>

@@ -122,17 +122,6 @@ public class TopDataSubmissionDelegator {
         DataSubmissionHelper.clearSession(bpc.request);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_DATA_SUBMISSION, AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY_TOP);
 
-        String orgId = "";
-        String userId = "";
-        LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
-        if (loginContext != null) {
-            orgId = loginContext.getOrgId();
-            userId = loginContext.getUserId();
-        }
-        TopSuperDataSubmissionDto topSuperDataSubmissionDto = topDataSubmissionService.getTopSuperDataSubmissionDtoDraftByConds(orgId,DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE,userId);
-        if (topSuperDataSubmissionDto != null) {
-            ParamUtil.setRequestAttr(bpc.request, "hasDrafts", Boolean.TRUE);
-        }
         ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, null);
     }
 
@@ -169,9 +158,9 @@ public class TopDataSubmissionDelegator {
                         orgId = loginContext.getOrgId();
                         userId = loginContext.getUserId();
                     }
-                    if (topDataSubmissionService.getTopSuperDataSubmissionDtoRfcDraftByConds(orgId,DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE,dataSubmissionDto.getId(),userId) != null) {
-                        ParamUtil.setRequestAttr(bpc.request, "hasDrafts", Boolean.TRUE);
-                    }
+//                    if (topDataSubmissionService.getTopSuperDataSubmissionDtoRfcDraftByConds(orgId,DataSubmissionConsts.TOP_TYPE_SBT_TERMINATION_OF_PRE,dataSubmissionDto.getId(),userId) != null) {
+//                        ParamUtil.setRequestAttr(bpc.request, "hasDrafts", Boolean.TRUE);
+//                    }
                 }
             }
             //draft
@@ -1496,6 +1485,11 @@ public class TopDataSubmissionDelegator {
             throw new IaisRuntimeException("Double Submit");
         }
         TopSuperDataSubmissionDto topSuperDataSubmissionDto = DataSubmissionHelper.getCurrentTopDataSubmission(bpc.request);
+        if (!DataSubmissionHelper.canDoRfc(topSuperDataSubmissionDto.getDataSubmissionDto().getId())) {
+            ParamUtil.setRequestAttr(bpc.request, "valFlag", "fail");
+            ParamUtil.setRequestAttr(bpc.request, "rfcOutdateFlag", "yes");
+            return;
+        }
         topSuperDataSubmissionDto.setDataSubmissionDto(DataSubmissionHelper.initDataSubmission(topSuperDataSubmissionDto, false));
         topSuperDataSubmissionDto.setCycleDto(DataSubmissionHelper.initCycleDto(topSuperDataSubmissionDto,
                 DataSubmissionHelper.getLicenseeId(bpc.request), false));
@@ -1641,6 +1635,7 @@ public class TopDataSubmissionDelegator {
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_ACKTOP);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_ACK);
         ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, AppConsts.YES);
+        ParamUtil.setRequestAttr(bpc.request, "valFlag", "pass");
     }
 
     /**

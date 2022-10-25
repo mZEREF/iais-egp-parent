@@ -104,8 +104,6 @@ public class LdtDataSubmissionDelegator {
         log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Start -----"));
         DataSubmissionHelper.clearSession(bpc.request);
 
-        String orgId = "";
-        String userId = "";
         LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
         if (loginContext != null) {
             String licenseeId = loginContext.getLicenseeId();
@@ -117,14 +115,8 @@ public class LdtDataSubmissionDelegator {
                 ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.LDT_CANOT_LDT, "Y");
                 ParamUtil.setRequestAttr(bpc.request, CRUD_ACTION_TYPE_LDT, ACTION_TYPE_RETURN);
             }
-            orgId = loginContext.getOrgId();
-            userId = loginContext.getUserId();
         }
 
-//        LdtSuperDataSubmissionDto dataSubmissionDraft = ldtDataSubmissionService.getLdtSuperDataSubmissionDraftByConds(orgId, userId,null);
-//        if (dataSubmissionDraft != null) {
-//            ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
-//        }
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_DATA_SUBMISSION, AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY_LDT);
 
         String isGuide = ParamUtil.getString(bpc.request, DataSubmissionConstant.LDT_IS_GUIDE);
@@ -243,6 +235,7 @@ public class LdtDataSubmissionDelegator {
         ParamUtil.setRequestAttr(bpc.request, CURRENT_PAGE, ACTION_TYPE_SUBMIT);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_ACKLDT);
         ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, AppConsts.YES);
+        ParamUtil.setRequestAttr(bpc.request, "valFlag", "pass");
     }
 
     /**
