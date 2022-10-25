@@ -2317,7 +2317,8 @@ public final class RfcHelper {
                     AppSvcOtherInfoDto oldAppSvcOtherInfoDto = oldList.get(i);
                     for (AppSvcOtherInfoDto newAppSvcOtherInfoDto : newList) {
                         if (Objects.equals(oldAppSvcOtherInfoDto.getPremisesVal(), newAppSvcOtherInfoDto.getPremisesVal())) {
-                            reSetOtherInfoTop(oldAppSvcOtherInfoDto, newAppSvcOtherInfoDto);
+                            // set autoList
+                            reSetOtherService(oldAppSvcOtherInfoDto, newAppSvcOtherInfoDto);
                         }
                     }
                 }
@@ -2326,35 +2327,8 @@ public final class RfcHelper {
         }
     }
 
-    private static void reSetOtherInfoTop(AppSvcOtherInfoDto oldAppSvcOtherInfoDto, AppSvcOtherInfoDto newAppSvcOtherInfoDto) {
-        oldAppSvcOtherInfoDto.setDsDeclaration(newAppSvcOtherInfoDto.getDsDeclaration());
-        oldAppSvcOtherInfoDto.setAscsDeclaration(newAppSvcOtherInfoDto.getAscsDeclaration());
-        oldAppSvcOtherInfoDto.setDeclaration(newAppSvcOtherInfoDto.getDeclaration());
-        oldAppSvcOtherInfoDto.setYfCommencementDate(newAppSvcOtherInfoDto.getYfCommencementDate());
-        oldAppSvcOtherInfoDto.setYfCommencementDateStr(newAppSvcOtherInfoDto.getYfCommencementDateStr());
-        oldAppSvcOtherInfoDto.setOrgUserDto(newAppSvcOtherInfoDto.getOrgUserDto());
-        oldAppSvcOtherInfoDto.setProvideYfVs(newAppSvcOtherInfoDto.getProvideYfVs());
-        oldAppSvcOtherInfoDto.setProvideTop(newAppSvcOtherInfoDto.getProvideTop());
-        oldAppSvcOtherInfoDto.setPremisesVal(newAppSvcOtherInfoDto.getPremisesVal());
-        oldAppSvcOtherInfoDto.setOtherInfoMedAmbulatorySurgicalCentre(newAppSvcOtherInfoDto.getOtherInfoMedAmbulatorySurgicalCentre());
-        oldAppSvcOtherInfoDto.setAppSvcOtherInfoNurseDto(newAppSvcOtherInfoDto.getAppSvcOtherInfoNurseDto());
-        oldAppSvcOtherInfoDto.setAppSvcOtherInfoMedDto(newAppSvcOtherInfoDto.getAppSvcOtherInfoMedDto());
-        oldAppSvcOtherInfoDto.setAppSvcOtherInfoTopDto(newAppSvcOtherInfoDto.getAppSvcOtherInfoTopDto());
-        oldAppSvcOtherInfoDto.setAppSvcOtherInfoMedDto(newAppSvcOtherInfoDto.getAppSvcOtherInfoMedDto());
-        oldAppSvcOtherInfoDto.setAppSvcOtherInfoMedDto(newAppSvcOtherInfoDto.getAppSvcOtherInfoMedDto());
-        oldAppSvcOtherInfoDto.setAppSvcOtherInfoMedDto(newAppSvcOtherInfoDto.getAppSvcOtherInfoMedDto());
-        oldAppSvcOtherInfoDto.setOtherInfoTopPersonPractitionersList(newAppSvcOtherInfoDto.getOtherInfoTopPersonPractitionersList());
-        oldAppSvcOtherInfoDto.setOtherInfoTopPersonAnaesthetistsList(newAppSvcOtherInfoDto.getOtherInfoTopPersonAnaesthetistsList());
-        oldAppSvcOtherInfoDto.setOtherInfoTopPersonNursesList(newAppSvcOtherInfoDto.getOtherInfoTopPersonNursesList());
-        oldAppSvcOtherInfoDto.setOtherInfoTopPersonCounsellorsList(newAppSvcOtherInfoDto.getOtherInfoTopPersonCounsellorsList());
-        oldAppSvcOtherInfoDto.setOtherInfoAbortDrugList(
-                newAppSvcOtherInfoDto.getOtherInfoAbortDrugList());
-        oldAppSvcOtherInfoDto.setOtherInfoAbortSurgicalProcedureList(
-                newAppSvcOtherInfoDto.getOtherInfoAbortSurgicalProcedureList());
-        oldAppSvcOtherInfoDto.setOtherInfoAbortDrugAndSurgicalList(
-                newAppSvcOtherInfoDto.getOtherInfoAbortDrugAndSurgicalList());
-        oldAppSvcOtherInfoDto.setAppSvcSuplmFormDto(newAppSvcOtherInfoDto.getAppSvcSuplmFormDto());
-        log.info("rfi-otherinfo:" + oldAppSvcOtherInfoDto);
+    private static void reSetOtherService(AppSvcOtherInfoDto oldAppSvcOtherInfoDto, AppSvcOtherInfoDto newAppSvcOtherInfoDto) {
+        oldAppSvcOtherInfoDto.setAllAppPremSubSvcRelDtoList(newAppSvcOtherInfoDto.getAllAppPremSubSvcRelDtoList());
     }
 
 
