@@ -26,6 +26,21 @@
     </c:if>
 </div>
 <script>
+    $(function (){
+        $('div.outsourcedContent').each(function (k, v) {
+            console.log("valu::::"+$("#errorMapIs").val())
+            if ($("#errorMapIs").val() == 'error') {
+                $(v).find('.error-msg').on('DOMNodeInserted', function () {
+                    if ($(this).not(':empty')) {
+                        $(v).find('.isPartEdit').val(1);
+                        $('#isEditHiddenVal').val('1');
+                        $('a.outsourcedEdit').trigger('click');
+                    }
+                });
+            }
+        });
+    })
+
     $(document).ready(function (){
 
         doEditOutsourcedEvent();
