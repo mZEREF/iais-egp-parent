@@ -69,7 +69,11 @@
                           <span class="newVal" attr="${item.labels[idx]}"><c:out value="${item.labels[idx]}"/></span>
                     </c:if>
                 </div>
+
                 <div class="col-xs-6">
+                    <div class="oldVal " attr="${oldItem.inputValue}">
+                        <c:out value="${oldItem.inputValue}"/>
+                    </div>
                     <c:if test="${item.codes[idx] == item.inputValue || oldItem.codes[idx] == oldItem.inputValue}">
                         <span class="oldVal" attr="${oldItem.labels[idx]}" style="display: none">
                             <c:out value="${oldItem.labels[idx]}"/>
@@ -84,18 +88,23 @@
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_CHECKBOX || oldItemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_CHECKBOX}">
             <tr>
                 <td>
-                <div class="col-xs-6 form-check active" attr="${item.inputValue}">
-                    <div class="form-check-label" aria-label="premise-1-cytology">
-                        <span class="check-square"></span> ${itemConfigDto.displayInfo}
-                    </div>
-                </div>
-                </td>
-                <td>
-                    <div class="col-xs-6 form-check active" attr="${oldItemConfigDto.displayInfo}">
-                        <div class="form-check-label" aria-label="premise-1-cytology" style="display: none">
-                            <span class="check-square"></span> ${oldItem.inputValue}
+                    <div class="col-xs-6">
+                        <div class="newVal form-check active" attr="${item.inputValue}">
+                            <div class="form-check-label" aria-label="premise-1-cytology">
+                                <span class="check-square"></span>
+                                <c:out value="${itemConfigDto.displayInfo}" escapeXml="false"/>
+                            </div>
                         </div>
                     </div>
+                    <div class="col-xs-6">
+                        <div class="oldVal form-check active" attr="${oldItem.inputValue}">
+                            <div class="form-check-label" aria-label="premise-1-cytology" style="display: none">
+                                <span class="check-square"></span>
+                                <c:out value="${oldItemConfigDto.displayInfo}" escapeXml="false"/>
+                            </div>
+                        </div>
+                    </div>
+
                 </td>
             </tr>
         </c:when>
