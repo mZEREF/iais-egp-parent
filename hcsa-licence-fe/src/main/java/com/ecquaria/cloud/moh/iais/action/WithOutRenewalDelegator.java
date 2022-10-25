@@ -1110,6 +1110,8 @@ public class WithOutRenewalDelegator {
             }
             appEditSelectDto.setNeedNewLicNo(true);
             appEditSelectDto.setAuto(AppConsts.NO);
+            log.info(StringUtil.changeForLog(firstSubmissionDto.getLicenceNo() + " - App Edit Select Dto: "
+                    + JsonUtil.parseToJson(appEditSelectDto)));
             RfcHelper.beforeSubmit(firstSubmissionDto, appEditSelectDto, appGrpNo, appType, request);
             Map<AppSubmissionDto, List<String>> errorListMap = checkOtherSubDto(appGrpNo, autoGrpNo, licenseeId, firstSubmissionDto,
                     appEditSelectDto, autoAppSubmissionDtos, noAutoAppSubmissionDtos, oldAppSubmissionDto);
