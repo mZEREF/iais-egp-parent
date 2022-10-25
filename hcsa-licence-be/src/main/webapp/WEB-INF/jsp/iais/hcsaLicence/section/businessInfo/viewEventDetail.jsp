@@ -8,9 +8,11 @@
         </thead>
         <c:if test="${stat.first}">
             <tr>
-                <div class="col-xs-12">
-                    <label class="control-label">Event</label>
-                </div>
+                <td class="col-xs-4">
+                    <div class="col-xs-12 row">
+                        <label class="control-label">Event</label>
+                    </div>
+                </td>
             </tr>
         </c:if>
         <tr>
@@ -30,24 +32,24 @@
                 <div class="col-xs-4">
                     <div class="col-xs-12 row">
                         <div class="newVal" attr="${eventDto.startDateStr}">
-                            <p class="form-check-label" aria-label="premise-1-cytology"><span><c:out value="${eventDto.startDateStr}"/></span></p>
+                            <c:out value="${eventDto.startDateStr}"/>
                         </div>
                     </div>
                     <div class="col-xs-12 row">
                         <div class="oldVal" style="display: none" attr="${oldeventDto.startDateStr}">
-                            <p class="form-check-label" aria-label="premise-1-cytology"><span><c:out value="${oldeventDto.startDateStr}"/></span></p>
+                            <c:out value="${oldeventDto.startDateStr}"/>
                         </div>
                     </div>
                 </div>
                 <div class="col-xs-4">
                     <div class="col-xs-12 row">
                         <div class="newVal" attr="${eventDto.endDateStr}">
-                            <p class="form-check-label" aria-label="premise-1-cytology"><span><c:out value="${eventDto.endDateStr}"/></span></p>
+                            <c:out value="${eventDto.endDateStr}"/>
                         </div>
                     </div>
                     <div class="col-xs-12 row">
                         <div class="oldVal" style="display: none" attr="${oldeventDto.endDateStr}">
-                            <p class="form-check-label" aria-label="premise-1-cytology"><span><c:out value="${oldeventDto.endDateStr}"/></span></p>
+                            <c:out value="${oldeventDto.endDateStr}"/>
                         </div>
                     </div>
                 </div>

@@ -112,7 +112,7 @@ public final class RfcHelper {
         appEditSelectDto.setPremisesEdit(grpPremiseIsChange);
         // specialised
         int changeSpecialisedFields = isChangeSpecialisedFields(appSubmissionDto.getAppPremSpecialisedDtoList(),
-                appSubmissionDto.getAppPremSpecialisedDtoList());
+                oldAppSubmissionDto.getAppPremSpecialisedDtoList());
         boolean changeSpecialised = changeSpecialisedFields != RfcConst.RFC_UNCHANGED;
         if (changeSpecialised) {
             boolean changeSpecialisedNonAutoFields = (changeSpecialisedFields & RfcConst.RFC_AMENDMENT) != 0;
@@ -2540,26 +2540,30 @@ public final class RfcHelper {
                     .stream().collect(Collectors.groupingBy(AppSvcDocDto::getSvcId, Collectors.toList()));
             int docSize = appSvcDocDtoLit.size();
             Consumer<AppPremSubSvcRelDto> change = relDto -> {
+                AppPremSubSvcRelDto oldRel = relDtoMap.get(relDto.getSvcCode());
+                if (oldRel == null) {
+                    oldRel = new AppPremSubSvcRelDto();
+                }
                 if (relDto.isAdditionFlow()) {
-                    AppPremSubSvcRelDto oldRel = relDtoMap.get(relDto.getSvcCode());
                     if (isAuto && relDto.isChecked() && !oldRel.isChecked()) {
                         relDto.setChecked(false);
                         relDto.setActCode(null);
                         relDto.setStatus(null);
                     }
                 } else {
-                    AppPremSubSvcRelDto oldRel = relDtoMap.get(relDto.getSvcCode());
+                    if (relDto.isChecked()) {
+                        relDto.setStatus(ApplicationConsts.RECORD_STATUS_APPROVE_CODE);
+                    }
                     if (!isAuto && relDto.isChecked() && !oldRel.isChecked()) {
                         relDto.setChecked(true);
                         relDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE);
-                        relDto.setStatus(ApplicationConsts.RECORD_STATUS_APPROVE_CODE);
                     }
                 }
                 if (relDto.isRemovalFlow()) {
-                    AppPremSubSvcRelDto oldRel = relDtoMap.get(relDto.getSvcCode());
                     if (isAuto && !relDto.isChecked() && oldRel.isChecked()) {
                         relDto.setChecked(true);
                         relDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE);
+                        relDto.setStatus(ApplicationConsts.RECORD_STATUS_APPROVE_CODE);
                         SpecialServiceSectionDto sectionDto = sectionDtoMap.get(relDto.getSvcCode());
                         if (sectionDto != null) {
                             sectionList.add(sectionDto);
@@ -2570,7 +2574,9 @@ public final class RfcHelper {
                         }
                     }
                 } else {
-                    AppPremSubSvcRelDto oldRel = relDtoMap.get(relDto.getSvcCode());
+                    if (oldRel.isChecked()) {
+                        relDto.setStatus(ApplicationConsts.RECORD_STATUS_APPROVE_CODE);
+                    }
                     if (!isAuto && !relDto.isChecked() && oldRel.isChecked()) {
                         relDto.setChecked(false);
                         relDto.setActCode(null);

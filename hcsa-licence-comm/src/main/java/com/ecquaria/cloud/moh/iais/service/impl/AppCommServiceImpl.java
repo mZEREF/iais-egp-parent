@@ -716,7 +716,10 @@ public class AppCommServiceImpl implements AppCommService {
     }
 
     @Override
-    public List<AppPremSpecialisedDto> getAppPremSpecialisedDtoList(List<String> appPremCorreIds){
+    public List<AppPremSpecialisedDto> getAppPremSpecialisedDtoList(List<String> appPremCorreIds) {
+        if (IaisCommonUtils.isEmpty(appPremCorreIds)) {
+            return IaisCommonUtils.genNewArrayList();
+        }
         return appCommClient.getAppPremSpecialisedDtoList(appPremCorreIds).getEntity();
     }
 

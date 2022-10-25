@@ -104,7 +104,7 @@ public interface AppCommClient {
             @RequestParam(name = "appNo") String appNo);
 
     @PostMapping(value = "/find-all-app-prem-specialised-dto", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<AppPremSpecialisedDto>> getAppPremSpecialisedDtoList(List<String> appPremCorreIds);
+    FeignResponseEntity<List<AppPremSpecialisedDto>> getAppPremSpecialisedDtoList(@RequestBody List<String> appPremCorreIds);
 
     @GetMapping(value = "/active-applicationsAddress", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppAlignAppQueryDto>> getActiveApplicationsAddress(@RequestParam("licenseeId") String licenseeId, @RequestParam(value = "svcIdList", required = false)  List<String> svcIdList);
