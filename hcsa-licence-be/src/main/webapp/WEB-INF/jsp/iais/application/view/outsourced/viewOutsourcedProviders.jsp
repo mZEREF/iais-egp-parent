@@ -6,7 +6,7 @@
             <p class="app-title"><c:out value="${currStepName}"/></p>
         </div>
         <div class="amend-preview-info form-horizontal min-row">
-            <c:set var="outsourceDto" value="${currentPreviewSvcInfo.appPremOutSourceLicenceDto}"/>
+            <c:set var="outsourceDto" value="${currentPreviewSvcInfo.appSvcOutsouredDto}"/>
             <%@include file="viewClinicalBoratoryContent.jsp"%>
             <%@include file="viewRadiologicalServiceContent.jsp"%>
         </div>

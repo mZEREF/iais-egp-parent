@@ -1,4 +1,4 @@
-<c:set var="cL" value="${currSvcInfoDto.appPremOutSourceLicenceDto}"/>
+<c:set var="cL" value="${currSvcInfoDto.appSvcOutsouredDto}"/>
 <c:if test="${!empty cL.clinicalLaboratoryList}">
     <c:set var="clen" value="${cL.clinicalLaboratoryList.size()}"/>
     <input name="clenght" value="${clen}" type="hidden">

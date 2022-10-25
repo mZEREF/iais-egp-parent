@@ -1,5 +1,5 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts" %>
-<c:set var="cL" value="${currSvcInfoDto.appPremOutSourceLicenceDto}"/>
+<c:set var="cL" value="${currSvcInfoDto.appSvcOutsouredDto}"/>
 <input type="hidden" name="classSort" value="">
 <div class="clService" style="margin-top: 100px;!important;">
     <hr>

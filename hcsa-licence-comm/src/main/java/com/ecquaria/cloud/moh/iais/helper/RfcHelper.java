@@ -164,8 +164,8 @@ public final class RfcHelper {
             appEditSelectDto.setChangeOtherService(changeOtherService);
         }
         //outsource
-        boolean changeOutsourceFields = isChangeAppSvcOutsouredDto(appSvcRelatedInfoDtos.get(0).getAppPremOutSourceLicenceDto(),
-                oldAppSvcRelatedInfoDtos.get(0).getAppPremOutSourceLicenceDto());
+        boolean changeOutsourceFields = isChangeAppSvcOutsouredDto(appSvcRelatedInfoDtos.get(0).getAppSvcOutsouredDto(),
+                oldAppSvcRelatedInfoDtos.get(0).getAppSvcOutsouredDto());
         if (changeCharges) {
             autoList.add(HcsaConsts.STEP_CHARGES);
         }
@@ -2120,8 +2120,8 @@ public final class RfcHelper {
             } else if (HcsaConsts.MEDALERT_PERSON.equals(step)) {
                 reSetPersonnels(oldSvcInfoDto, newDto, ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, autoList);
             } else if (HcsaConsts.STEP_OUTSOURCED_PROVIDERS.equals(step)) {
-                newDto.setAppPremOutSourceLicenceDto(
-                        CopyUtil.copyMutableObject(oldSvcInfoDto.getAppPremOutSourceLicenceDto()));
+                newDto.setAppSvcOutsouredDto(
+                        CopyUtil.copyMutableObject(oldSvcInfoDto.getAppSvcOutsouredDto()));
             } else if (HcsaConsts.STEP_OTHER_INFORMATION.equals(step)) {
                 reSetOtherInfo(oldSvcInfoDto, newDto);
             }

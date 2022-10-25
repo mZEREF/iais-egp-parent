@@ -594,7 +594,7 @@ public class ServiceInfoDelegator {
         if (DealSessionUtil.initSvcOutsourcedProvider(request,currSvcInfoDto, false)) {
             setAppSvcRelatedInfoMap(request, currSvcId, currSvcInfoDto);
         }
-        AppSvcOutsouredDto appSvcOutsouredDto = currSvcInfoDto.getAppPremOutSourceLicenceDto();
+        AppSvcOutsouredDto appSvcOutsouredDto = currSvcInfoDto.getAppSvcOutsouredDto();
         SearchParam searchParam = appSvcOutsouredDto.getSearchParam();
         if (searchParam != null){
             SearchResult searchResult = licCommService.queryOutsouceLicences(searchParam);
@@ -627,13 +627,13 @@ public class ServiceInfoDelegator {
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
         boolean isGetDataFromPage = ApplicationHelper.isGetDataFromPage(appSubmissionDto,
                 RfcConst.EDIT_SERVICE, isEdit, isRfi);
-        AppSvcOutsouredDto appSvcOutsouredDto = currSvcInfoDto.getAppPremOutSourceLicenceDto();
+        AppSvcOutsouredDto appSvcOutsouredDto = currSvcInfoDto.getAppSvcOutsouredDto();
         String curAct = ParamUtil.getString(request, "btnStep");
         currSvcInfoDto.setCurAt(curAct);
         if (isGetDataFromPage) {
             //get data from page
             appSvcOutsouredDto = AppDataHelper.genAppPremOutSourceProvidersDto(curAct,appSvcOutsouredDto,request,appSubmissionDto,appType);
-            currSvcInfoDto.setAppPremOutSourceLicenceDto(appSvcOutsouredDto);
+            currSvcInfoDto.setAppSvcOutsouredDto(appSvcOutsouredDto);
             reSetChangesForApp(appSubmissionDto);
             setAppSvcRelatedInfoMap(request, currSvcId, currSvcInfoDto, appSubmissionDto);
             Map<String,String> errorMap = AppValidatorHelper.doValidationOutsourced(appSvcOutsouredDto,curAct);

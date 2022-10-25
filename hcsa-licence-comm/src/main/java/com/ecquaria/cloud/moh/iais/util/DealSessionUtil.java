@@ -735,7 +735,7 @@ public class DealSessionUtil {
         if (hcsaServiceStepScheme != null) {
             initSvcOutsourcedProvider(request, currSvcInfoDto, forceInit);
         } else {
-            currSvcInfoDto.setAppPremOutSourceLicenceDto(null);
+            currSvcInfoDto.setAppSvcOutsouredDto(null);
         }
         return currSvcInfoDto;
     }
@@ -878,7 +878,7 @@ public class DealSessionUtil {
 
     public static boolean initSvcOutsourcedProvider(HttpServletRequest request, AppSvcRelatedInfoDto currSvcInfoDto,
             boolean forceInit) {
-        AppSvcOutsouredDto appSvcOutsouredDto = currSvcInfoDto.getAppPremOutSourceLicenceDto();
+        AppSvcOutsouredDto appSvcOutsouredDto = currSvcInfoDto.getAppSvcOutsouredDto();
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         if (!forceInit && appSvcOutsouredDto != null && appSvcOutsouredDto.isInit()) {
             return false;
@@ -936,7 +936,7 @@ public class DealSessionUtil {
             }
         }
         appSvcOutsouredDto.setInit(true);
-        currSvcInfoDto.setAppPremOutSourceLicenceDto(appSvcOutsouredDto);
+        currSvcInfoDto.setAppSvcOutsouredDto(appSvcOutsouredDto);
         return true;
     }
 

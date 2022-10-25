@@ -1,4 +1,4 @@
-<c:if test="${not empty currentPreviewSvcInfo.appPremOutSourceLicenceDto.clinicalLaboratoryList}">
+<c:if test="${not empty currentPreviewSvcInfo.appSvcOutsouredDto.clinicalLaboratoryList}">
     <p class="col-xs-12">
         <strong>
             Clinical Laboratory
@@ -46,8 +46,8 @@
         </tr>
         </thead>
         <tbody>
-        <c:forEach var="msgTemplateResult" items="${currentPreviewSvcInfo.appPremOutSourceLicenceDto.clinicalLaboratoryList}" varStatus="status">
-            <c:set var="oldMsgTemplateResult"  value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appPremOutSourceLicenceDto.clinicalLaboratoryList[status.index]}" />
+        <c:forEach var="msgTemplateResult" items="${currentPreviewSvcInfo.appSvcOutsouredDto.clinicalLaboratoryList}" varStatus="status">
+            <c:set var="oldMsgTemplateResult"  value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcOutsouredDto.clinicalLaboratoryList[status.index]}" />
             <c:set var="appPremOutSourceLicenceDto" value="${msgTemplateResult.appPremOutSourceLicenceDto}"/>
             <c:set var="oldAppPremOutSourceLicenceDto" value="${oldMsgTemplateResult.appPremOutSourceLicenceDto}"/>
             <tr>

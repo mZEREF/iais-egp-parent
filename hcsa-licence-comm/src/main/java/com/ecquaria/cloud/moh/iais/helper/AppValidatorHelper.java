@@ -548,7 +548,7 @@ public final class AppValidatorHelper {
                     break;
                 }
                 case HcsaConsts.STEP_OUTSOURCED_PROVIDERS: {
-                    AppSvcOutsouredDto appSvcOutsouredDto = dto.getAppPremOutSourceLicenceDto();
+                    AppSvcOutsouredDto appSvcOutsouredDto = dto.getAppSvcOutsouredDto();
                     Map<String, String> map = doValidationOutsourced(appSvcOutsouredDto, dto.getCurAt());
                     if (!map.isEmpty()) {
                         errorMap.putAll(map);
