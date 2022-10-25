@@ -40,22 +40,6 @@
         <c:if test="${isRfi}">
             disableContent($('.person-content'));
         </c:if>
-
-        let svcContent = '.person-content';
-        psnEditEvent(svcContent);
-        <c:if test="${AppSubmissionDto.needEditController}">
-        $(svcContent).each(function (k,v) {
-            if ($("#errorMapIs").val() == 'error') {
-                $(v).find('.error-msg').on('DOMNodeInserted', function () {
-                    if ($(v).not(':empty')) {
-                        $(v).find('.isPartEdit').val(1);
-                        $('#isEditHiddenVal').val('1');
-                        unDisableContent($(v))
-                    }
-                });
-            }
-        });
-        </c:if>
     });
 
     function refreshAddBtn() {
