@@ -102,6 +102,7 @@ public class MohDsDraftDelegator {
         if (dpSuper == null) {
             uri = DEFAULT_URI;
         } else {
+            ParamUtil.setSessionAttr(request, DpCommonDelegator.SUBMIT_FLAG, null);
             if (DataSubmissionConsts.DP_TYPE_SBT_PATIENT_INFO.equals(dpSuper.getSubmissionType())) {
                 uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohDPDataSumission/PreparePatientInfo";
             } else if (DataSubmissionConsts.DP_TYPE_SBT_DRUG_PRESCRIBED.equals(dpSuper.getSubmissionType())) {
@@ -132,6 +133,7 @@ public class MohDsDraftDelegator {
         if (vssSuper == null) {
             uri = DEFAULT_URI;
         } else {
+            ParamUtil.setSessionAttr(request, VssDataSubmissionDelegator.SUBMIT_FLAG, null);
             uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohVSSDataSubmission/PrepareSwitch?crud_type="+ DataSubmissionConstant.CRUD_TYPE_FROM_DRAFT;
         }
         DataSubmissionHelper.setCurrentVssDataSubmission(vssSuper, request);

@@ -84,7 +84,7 @@ import static com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant.VS_DOC
 @Slf4j
 @Delegator("vssDataSubmissionDelegator")
 public class VssDataSubmissionDelegator {
-    private static final String SUBMIT_FLAG = "VSS_SubmitFlaaaaaa7$frg";
+    public static final String SUBMIT_FLAG = "VSS_SubmitFlaaaaaa7$frg";
 
     private static final String VSS_FILES = "vssFiles";
 
@@ -137,17 +137,17 @@ public class VssDataSubmissionDelegator {
                 IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_DATA_SUBMISSION, AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY_VSS);
 
-        String orgId = "";
-        String userId = "";
-        LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
-        if (loginContext != null) {
-            orgId = loginContext.getOrgId();
-            userId = loginContext.getUserId();
-        }
-        VssSuperDataSubmissionDto vssSuperDataSubmissionDto = vssDataSubmissionService.getVssSuperDataSubmissionDtoDraftByConds(orgId, DataSubmissionConsts.VSS_TYPE_SBT_VSS, userId);
-        if (vssSuperDataSubmissionDto != null) {
-            ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
-        }
+//        String orgId = "";
+//        String userId = "";
+//        LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
+//        if (loginContext != null) {
+//            orgId = loginContext.getOrgId();
+//            userId = loginContext.getUserId();
+//        }
+//        VssSuperDataSubmissionDto vssSuperDataSubmissionDto = vssDataSubmissionService.getVssSuperDataSubmissionDtoDraftByConds(orgId, DataSubmissionConsts.VSS_TYPE_SBT_VSS, userId);
+//        if (vssSuperDataSubmissionDto != null) {
+//            ParamUtil.setRequestAttr(bpc.request, "hasDraft", Boolean.TRUE);
+//        }
         ParamUtil.setSessionAttr(bpc.request, SUBMIT_FLAG, null);
     }
 
