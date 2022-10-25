@@ -84,11 +84,57 @@
 </div>
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 <%@include file="itemFun.jsp" %>
-<%@include file="/WEB-INF/jsp/iais/application/common/personFun.jsp" %>
-<%@include file="/WEB-INF/jsp/iais/application/common/prsLoad.jsp" %>
 <script type="text/javascript">
     $(function () {
-
+        let svcContent = '.person-content';
+        psnEditEvents(svcContent);
+        <c:if test="${AppSubmissionDto.needEditController}">
+        $(svcContent).each(function (k,v) {
+            if ($("#errorMapIs").val() == 'error') {
+                $(v).find('.error-msg').on('DOMNodeInserted', function () {
+                    if ($(this).not(':empty')) {
+                        $(v).find('.isPartEdit').val(1);
+                        $('#isEditHiddenVal').val('1');
+                        $(v).find('a.edit').trigger('click');
+                    }
+                });
+            }
+        });
+        </c:if>
     });
 
+    var psnEditEvents = function (target) {
+        var $target = $(target);
+        if (isEmptyNode($target)) {
+            return;
+        }
+        $target.find('.psnEdit').unbind('click');
+        $target.find('.psnEdit').on('click', function () {
+            doEditPsn($(this).closest(target), target);
+        });
+    }
+
+    function doEditPsn($currContent, target) {
+        if (isEmptyNode($currContent) || isEmpty(target)) {
+            return;
+        }
+        if (hideEditBtn($currContent)) {
+            return;
+        }
+        $currContent.find('.isPartEdit').val('1');
+        console.log(target+'-edit','==========>')
+        $(target + '-edit').val('1');
+        hideTag($currContent.find('.edit-content'));
+        unDisableContent($currContent);
+    }
+
+    function hideEditBtn($currContent) {
+        let $target = $currContent.find('.psnEdit');
+        if (isEmptyNode($target)) {
+            return true;
+        }
+        return $target.is(':hidden');
+    }
 </script>
+
+
