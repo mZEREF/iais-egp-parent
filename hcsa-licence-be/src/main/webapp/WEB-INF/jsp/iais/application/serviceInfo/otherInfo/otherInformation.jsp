@@ -157,6 +157,54 @@
 </div>
 <%@include file="/WEB-INF/jsp/iais/application/common/personFun.jsp" %>
 <script>
+
+    $(function (){
+        $('div.otherInfoPageContent').each(function (k, v) {
+            if ($("#errorMapIs").val() == 'error') {
+                $(v).find('.error-msg').on('DOMNodeInserted', function () {
+                    if ($(this).not(':empty')) {
+                        $(v).find('.isPartEdit').val(1);
+                        $('#isEditHiddenVal').val('1');
+                        $('a.otherInfoDSEdit').trigger('click');
+                    }
+                });
+            }
+        });
+        $('div.otherInfoASCSContent').each(function (k, v) {
+            if ($("#errorMapIs").val() == 'error') {
+                $(v).find('.error-msg').on('DOMNodeInserted', function () {
+                    if ($(this).not(':empty')) {
+                        $(v).find('.isPartEdit').val(1);
+                        $('#isEditHiddenVal').val('1');
+                        $('a.otherInfoASCSEdit').trigger('click');
+                    }
+                });
+            }
+        });
+        $('div.otherInfoRDCPageContent').each(function (k, v) {
+            if ($("#errorMapIs").val() == 'error') {
+                $(v).find('.error-msg').on('DOMNodeInserted', function () {
+                    if ($(this).not(':empty')) {
+                        $(v).find('.isPartEdit').val(1);
+                        $('#isEditHiddenVal').val('1');
+                        $('a.otherInfoRDCEdit').trigger('click');
+                    }
+                });
+            }
+        });
+        $('div.otherInfoTopContent').each(function (k, v) {
+            if ($("#errorMapIs").val() == 'error') {
+                $(v).find('.error-msg').on('DOMNodeInserted', function () {
+                    if ($(this).not(':empty')) {
+                        $(v).find('.isPartEditTop').val(1);
+                        $('#isEditHiddenVal').val('1');
+                        $('a.otherInfoTopEdit').trigger('click');
+                    }
+                });
+            }
+        });
+    })
+
     $(document).ready(function () {
         doEditOtherInfoRDCEvent();
         doEditOtherInfoDentalServiceEvent();
