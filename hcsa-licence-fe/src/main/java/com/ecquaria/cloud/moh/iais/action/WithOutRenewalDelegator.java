@@ -70,7 +70,6 @@ import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigFeClient;
-import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import com.ecquaria.cloud.moh.iais.validation.PaymentValidate;
 import com.ecquaria.sz.commons.util.Calculator;
@@ -123,23 +122,23 @@ import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.LOADING_DRAFT;
 public class WithOutRenewalDelegator {
 
     @Autowired
-    WithOutRenewalService outRenewalService;
+    private WithOutRenewalService outRenewalService;
 
     @Autowired
-    AppSubmissionService appSubmissionService;
+    private AppSubmissionService appSubmissionService;
 
     @Autowired
-    ServiceConfigService serviceConfigService;
-    @Autowired
-    private SystemAdminClient systemAdminClient;
-    @Autowired
-    NewApplicationDelegator newApplicationDelegator;
+    private ServiceConfigService serviceConfigService;
+
     @Autowired
     private HcsaConfigFeClient hcsaConfigFeClient;
+
     @Autowired
     RequestForChangeService requestForChangeService;
+
     @Autowired
     private ApplicationFeClient applicationFeClient;
+
     @Value("${iais.system.one.address}")
     private String systemAddressOne;
 
@@ -154,6 +153,7 @@ public class WithOutRenewalDelegator {
 
     @Autowired
     private LicCommService licCommService;
+
     @Autowired
     private ConfigCommService configCommService;
 
@@ -371,7 +371,6 @@ public class WithOutRenewalDelegator {
     //prepareLicenceReview
     public void prepareLicenceReview(BaseProcessClass bpc) throws Exception {
         ParamUtil.setRequestAttr(bpc.request, "hasDetail", "Y");
-        List<AppSubmissionDto> oldSubmissionDtos = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "oldSubmissionDtos");
         RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
         List<AppSubmissionDto> newAppSubmissionDtos = renewDto.getAppSubmissionDtos();
         if (!IaisCommonUtils.isEmpty(newAppSubmissionDtos)) {
@@ -1110,6 +1109,8 @@ public class WithOutRenewalDelegator {
             }
             appEditSelectDto.setNeedNewLicNo(true);
             appEditSelectDto.setAuto(AppConsts.NO);
+            log.info(StringUtil.changeForLog(firstSubmissionDto.getLicenceNo() + " - App Edit Select Dto: "
+                    + JsonUtil.parseToJson(appEditSelectDto)));
             RfcHelper.beforeSubmit(firstSubmissionDto, appEditSelectDto, appGrpNo, appType, request);
             Map<AppSubmissionDto, List<String>> errorListMap = checkOtherSubDto(appGrpNo, autoGrpNo, licenseeId, firstSubmissionDto,
                     appEditSelectDto, autoAppSubmissionDtos, noAutoAppSubmissionDtos, oldAppSubmissionDto);
@@ -1144,7 +1145,8 @@ public class WithOutRenewalDelegator {
             amendmentFeeDto.setAdditionOrRemovalVehicles(Boolean.FALSE);
             amendmentFeeDto.setIsCharity(isCharity);
             //add ss fee
-            List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList=appSubmissionDto.getAppPremSpecialisedDtoList().get(0).getFlatAppPremSubSvcRelList(dto -> ApplicationConsts.RECORD_ACTION_CODE_ADD.equals(dto.getActCode()));
+            List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList = appSubmissionDto.getAppPremSpecialisedDtoList().get(
+                    0).getFlatAppPremSubSvcRelList(dto -> ApplicationConsts.RECORD_ACTION_CODE_ADD.equals(dto.getActCode()));
             if (IaisCommonUtils.isNotEmpty(appPremSubSvcRelDtoList)) {
                 amendmentFeeDto.setAdditionOrRemovalSpecialisedServices(Boolean.TRUE);
                 List<LicenceFeeDto> licenceFeeSpecDtos = IaisCommonUtils.genNewArrayList();
@@ -1163,7 +1165,8 @@ public class WithOutRenewalDelegator {
                 }
                 amendmentFeeDto.setSpecifiedLicenceFeeDto(licenceFeeSpecDtos);
             }
-            List<AppPremSubSvcRelDto> removalDtoList=appSubmissionDto.getAppPremSpecialisedDtoList().get(0).getFlatAppPremSubSvcRelList(dto -> ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()));
+            List<AppPremSubSvcRelDto> removalDtoList = appSubmissionDto.getAppPremSpecialisedDtoList().get(
+                    0).getFlatAppPremSubSvcRelList(dto -> ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()));
             if (IaisCommonUtils.isNotEmpty(removalDtoList)) {
                 amendmentFeeDto.setAdditionOrRemovalSpecialisedServices(Boolean.TRUE);
             }
@@ -1451,7 +1454,7 @@ public class WithOutRenewalDelegator {
 
 
     //doAcknowledgement
-    public void doAcknowledgement(BaseProcessClass bpc) throws Exception {
+    public void doAcknowledgement(BaseProcessClass bpc) {
         String payMethod = ParamUtil.getString(bpc.request, "payMethod");
         String totalStr = (String) ParamUtil.getSessionAttr(bpc.request, "totalStr");
         if ("Credit".equals(payMethod)) {
@@ -1511,7 +1514,6 @@ public class WithOutRenewalDelegator {
             ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE4);
         } else {
             ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE3);
-            return;
         }
     }
 
@@ -1643,7 +1645,7 @@ public class WithOutRenewalDelegator {
     /**
      * AutoStep: toPrepareData
      */
-    public void toPrepareData(BaseProcessClass bpc) throws Exception {
+    public void toPrepareData(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do toPrepareData start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, HcsaAppConst.APPSUBMISSIONDTO);
         RenewDto renewDto = new RenewDto();
@@ -1671,10 +1673,7 @@ public class WithOutRenewalDelegator {
             List<List<AppSvcPrincipalOfficersDto>> deputyPrincipalOfficersDtosList = IaisCommonUtils.genNewArrayList();
             for (AppSubmissionDto appSubmissionDtoCirculation : appSubmissionDtos) {
                 if (!appSubmissionDto.getAppSvcRelatedInfoDtoList().isEmpty()) {
-                    String serviceName = appSubmissionDtoCirculation.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
                     //add to service name list;
-                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
-                    String svcId = hcsaServiceDto.getId();
                     AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDtoCirculation.getAppSvcRelatedInfoDtoList().get(0);
                     appSvcRelatedInfoDtoList.add(appSvcRelatedInfoDto);
 

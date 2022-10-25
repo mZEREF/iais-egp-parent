@@ -169,44 +169,4 @@
         }
 
     });
-
-    /*
-    function getFileTag(fileAppendId) {
-        var $file = $("#" + fileAppendId);
-        if ($file.length == 0) {
-            $file = $("input[type='file'][name='selectedFile']:first");
-        }
-        if ($file.length == 0) {
-            $file = $("input[type='file']:first");
-        }
-        return $file;
-    }
-
-   function reUploadFileFeAjax(fileAppendId, index, idForm) {
-        $("#reloadIndex").val(index);
-        $("#fileAppendId").val(fileAppendId);
-        $("#uploadFormId").val(idForm);
-        //$("#selectedFile").click();
-        getFileTag(fileAppendId).click();
-    }*/
-
-    /*function validateFileSizeMaxOrEmpty(maxSize) {
-        var $file = getFileTag($("#fileAppendId").val());
-        var fileV = $file.val();
-        var file = $file.get(0).files[0];
-        if (fileV == null || fileV == "" || file == null || file == undefined) {
-            return "E";
-        }
-        var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
-        //alert('fileSize:'+fileSize);
-        //alert('maxSize:'+maxSize);
-        fileSize = parseInt(fileSize);
-        if (fileSize >= maxSize) {
-            $file.after($file.clone().val(""));
-            $file.eq('0').remove();
-            return "N";
-        }
-        return "Y";
-    }*/
-
 </script>
