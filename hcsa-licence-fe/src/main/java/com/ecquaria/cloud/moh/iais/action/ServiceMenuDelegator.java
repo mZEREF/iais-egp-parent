@@ -505,6 +505,8 @@ public class ServiceMenuDelegator {
                 if(nextstep.equals(CHOOSE_BASE_SVC)){
                     if (bundleAchOrMs){
                         initChooseBaseSvc(bpc, bundleAchOrMs, allbaseService, baseSvcSort, licenseeId);
+                    }else {
+                        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
                     }
                 }else if(nextstep.equals(CHOOSE_ALIGN)){
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
