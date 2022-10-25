@@ -8,9 +8,11 @@
         </thead>
         <c:if test="${stat.first}">
             <tr>
-                <div class="col-xs-12">
-                    <label class="control-label">Public Holiday</label>
-                </div>
+                <td class="col-xs-4">
+                    <div class="col-xs-12 row">
+                        <label class="control-label">Public Holiday</label>
+                    </div>
+                </td>
             </tr>
         </c:if>
         <tr>
