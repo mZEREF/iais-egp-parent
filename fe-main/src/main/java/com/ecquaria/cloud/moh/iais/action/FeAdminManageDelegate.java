@@ -71,7 +71,8 @@ public class FeAdminManageDelegate {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_USER_MANAGEMENT, AuditTrailConsts.FUNCTION_USER_MANAGEMENT);
         ParamUtil.clearSession(bpc.request,IaisEGPConstant.SESSION_NAME_ROLES,FE_NO_ADMIN_ROLES_SHOW);
         myInfoAjax.setVerifyTakenAndAuthoriseApiUrl(bpc.request,"MohFeAdminUserManagement/Edit");
-        ParamUtil.setSessionAttr(bpc.request,"AllServicesForHcsaRole",(Serializable) HcsaServiceCacheHelper.getAllServiceSelectOptions());
+        ParamUtil.setSessionAttr(bpc.request,"AllServicesForHcsaRole",
+                (Serializable) HcsaServiceCacheHelper.getAllServiceSelectOptions(true));
     }
 
     /**

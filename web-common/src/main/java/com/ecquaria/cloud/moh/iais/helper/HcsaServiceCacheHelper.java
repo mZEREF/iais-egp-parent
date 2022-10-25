@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.RedisNameSpaceConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
@@ -158,9 +159,12 @@ public final class HcsaServiceCacheHelper {
 		}
 	}
 
-	public static List<SelectOption> getAllServiceSelectOptions(){
-		List<SelectOption> selectOptions = receiveAllHcsaService().stream().map(obj-> new SelectOption(obj.getSvcCode(),obj.getSvcName())).collect(Collectors.toList());
-		selectOptions.add(0,new SelectOption(AppServicesConsts.SERVICE_MATRIX_ALL,AppServicesConsts.SERVICE_MATRIX_ALL_NAME));
+	public static List<SelectOption> getAllServiceSelectOptions(boolean onlyBase) {
+		List<SelectOption> selectOptions = receiveAllHcsaService().stream()
+				.filter(dto -> !onlyBase || HcsaConsts.SERVICE_TYPE_BASE.equals(dto.getSvcType()))
+				.map(obj -> new SelectOption(obj.getSvcCode(), obj.getSvcName()))
+				.collect(Collectors.toList());
+		selectOptions.add(0, new SelectOption(AppServicesConsts.SERVICE_MATRIX_ALL, AppServicesConsts.SERVICE_MATRIX_ALL_NAME));
 		return selectOptions;
 	}
 
@@ -204,15 +208,24 @@ public final class HcsaServiceCacheHelper {
 	public static List<String> controlServices(int searchDataTab, List<UserRoleAccessMatrixDto> userRoleAccessMatrixDtos){
 		if(IaisCommonUtils.isNotEmpty( userRoleAccessMatrixDtos)){
 			for (UserRoleAccessMatrixDto obj: userRoleAccessMatrixDtos) {
-				if(AppServicesConsts.SERVICE_MATRIX_ALL.equalsIgnoreCase(obj.getMatrixValue())){
-					if(searchDataTab == 0 || searchDataTab == 1){
-						return receiveAllHcsaService().stream().map(hcsaServiceDto ->hcsaServiceDto.getSvcCode()+ "@").collect(Collectors.toList());
+				if (AppServicesConsts.SERVICE_MATRIX_ALL.equalsIgnoreCase(obj.getMatrixValue())) {
+					if (searchDataTab == 0 || searchDataTab == 1) {
+						return receiveAllHcsaService().stream()
+								.filter(dto -> HcsaConsts.SERVICE_TYPE_BASE.equals(dto.getSvcType()))
+								.map(hcsaServiceDto -> hcsaServiceDto.getSvcCode() + "@")
+								.collect(Collectors.toList());
 					}
-					if(searchDataTab == 2){
-						return receiveAllHcsaService().stream().map(HcsaServiceDto::getSvcName).collect(Collectors.toList());
+					if (searchDataTab == 2) {
+						return receiveAllHcsaService().stream()
+								.filter(dto -> HcsaConsts.SERVICE_TYPE_BASE.equals(dto.getSvcType()))
+								.map(HcsaServiceDto::getSvcName)
+								.collect(Collectors.toList());
 					}
-					if(searchDataTab == 3){
-						return receiveAllHcsaService().stream().map(HcsaServiceDto::getSvcCode).collect(Collectors.toList());
+					if (searchDataTab == 3) {
+						return receiveAllHcsaService().stream()
+								.filter(dto -> HcsaConsts.SERVICE_TYPE_BASE.equals(dto.getSvcType()))
+								.map(HcsaServiceDto::getSvcCode)
+								.collect(Collectors.toList());
 					}
 				}
 			}

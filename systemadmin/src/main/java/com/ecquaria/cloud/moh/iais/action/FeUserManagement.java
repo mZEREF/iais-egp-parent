@@ -65,7 +65,8 @@ public class FeUserManagement {
         getSearchParam(bpc.request,true);
         ParamUtil.clearSession(bpc.request, FeUserConstants.SESSION_USER_DTO,FeUserConstants.SESSION_USER_UEN_NAME);
         ParamUtil.setSessionAttr(bpc.request,"uenNo",null);
-        ParamUtil.setSessionAttr(bpc.request,"AllServicesForHcsaRole",(Serializable) HcsaServiceCacheHelper.getAllServiceSelectOptions());
+        ParamUtil.setSessionAttr(bpc.request,"AllServicesForHcsaRole",
+                (Serializable) HcsaServiceCacheHelper.getAllServiceSelectOptions(true));
     }
 
     public void prepare(BaseProcessClass bpc){

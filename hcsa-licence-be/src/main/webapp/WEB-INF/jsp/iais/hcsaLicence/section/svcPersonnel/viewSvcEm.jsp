@@ -156,33 +156,31 @@
                         </p>
                     </td>
                     <td>
-                        <div class="col-xs-6">
-                            <c:if test="${embryologistList.embryologistAuthorized == '1' || oldEmbryologistList.embryologistAuthorized == '1'}">
-                                <div class="col-xs-6">
-                                    <div class="newVal " attr="${embryologistList.embryologistAuthorized}">
-                                        <c:out value="Yes"/>
-                                    </div>
+                        <c:if test="${embryologistList.embryologistAuthorized == '1' || oldEmbryologistList.embryologistAuthorized == '1'}">
+                            <div class="col-xs-6">
+                                <div class="newVal " attr="${embryologistList.embryologistAuthorized}">
+                                    <c:out value="Yes"/>
                                 </div>
-                                <div class="col-xs-6">
-                                    <div class="oldVal" attr="${oldEmbryologistList.embryologistAuthorized}" style="display: none">
-                                        <c:out value="Yes"/>
-                                    </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="oldVal" attr="${oldEmbryologistList.embryologistAuthorized}" style="display: none">
+                                    <c:out value="Yes"/>
                                 </div>
-                            </c:if>
-                            <c:if test="${embryologistList.embryologistAuthorized == '0' || oldEmbryologistList.embryologistAuthorized == '0'}">
-                                <div class="col-xs-6">
-                                    <div class="newVal" attr="${embryologistList.embryologistAuthorized}">
-                                        <c:out value="No"/>
-                                    </div>
+                            </div>
+                        </c:if>
+                        <c:if test="${embryologistList.embryologistAuthorized == '0' || oldEmbryologistList.embryologistAuthorized == '0'}">
+                            <div class="col-xs-6">
+                                <div class="newVal" attr="${embryologistList.embryologistAuthorized}">
+                                    <c:out value="No"/>
                                 </div>
-                                <div class="col-xs-6">
-                                    <div class="oldVal " attr="${oldEmbryologistList.embryologistAuthorized}" style="display: none">
-                                        <c:out value="No"/>
-                                    </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="oldVal " attr="${oldEmbryologistList.embryologistAuthorized}" style="display: none">
+                                    <c:out value="No"/>
                                 </div>
-                            </c:if>
-                        </div>
-                    </td>
+                            </div>
+                        </c:if>
+                        </td>
                 </tr>
             </table>
         </c:forEach>
