@@ -865,6 +865,11 @@ public final class AppValidatorHelper {
                 }
             }
 
+            // rfc, renewal
+            if (!rfi && checkOthers) {
+                validateAffectedLicences(appSubmissionDto, errorMap, appGrpPremisesDtoList);
+            }
+
             if (checkOthers && errorMap.isEmpty()) {
                 List<PremisesDto> premisesDtos =
                         getLicCommService().getPremisesDtoByHciNameAndPremType(appGrpPremisesDto.getHciName(),
@@ -1027,6 +1032,25 @@ public final class AppValidatorHelper {
             premTypes.add(ApplicationConsts.PREMISES_TYPE_MOBILE);
         }
         return premTypes;
+    }
+
+    private static void validateAffectedLicences(AppSubmissionDto appSubmissionDto, Map<String, String> errorMap,
+            List<AppGrpPremisesDto> appGrpPremisesDtoList) {
+        String appType = appSubmissionDto.getAppType();
+        if (!StringUtil.isIn(appType, new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,
+                ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE})) {
+            return;
+        }
+        AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(0);
+        List<LicenceDto> licenceDtos = appGrpPremisesDto.getLicenceDtos();
+        if (IaisCommonUtils.isEmpty(licenceDtos)) {
+            return;
+        }
+        // mandatory for RFC and Renewal, not RFI
+        String[] selectedLicences = appGrpPremisesDto.getSelectedLicences();
+        if (selectedLicences == null || selectedLicences.length == 0 || selectedLicences[0] == null) {
+            errorMap.put("selectedLicences", "GENERAL_ERR0006");
+        }
     }
 
     /**
