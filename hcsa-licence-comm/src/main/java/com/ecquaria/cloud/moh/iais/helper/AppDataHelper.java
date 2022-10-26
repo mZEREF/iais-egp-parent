@@ -721,6 +721,7 @@ public final class AppDataHelper {
             if (searchParam == null){
                 searchParam = IaisEGPHelper.getSearchParam(request,true,filterParameter);
             }
+            appSvcOutsouredDto.setBundleSvcCode(svcName);
             clearOldSearchParam(searchParam);
             searchParam.addFilter("svcName",svcName,true);
             if (StringUtil.isNotEmpty(licNo)){
@@ -740,8 +741,12 @@ public final class AppDataHelper {
             if (StringUtil.isNotEmpty(postalCode)){
                 searchParam.addFilter("postalCode",postalCode,true);
             }
-            if (StringUtil.isNotEmpty(appSubmissionDto.getLicenceId())){
-                searchParam.addFilter("licenceId",appSubmissionDto.getLicenceId(),true);
+            List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+            if (IaisCommonUtils.isNotEmpty(appGrpPremisesDtos)){
+                searchParam.addFilter("dPostCode",getPostalCode(appGrpPremisesDtos),true);
+            }
+            if (StringUtil.isNotEmpty(appSubmissionDto.getLicenseeId())){
+                searchParam.addFilter("licenseeId",appSubmissionDto.getLicenseeId(),true);
             }
             List<AppLicBundleDto> appLicBundleDtoList = appSubmissionDto.getAppLicBundleDtoList();
             if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)){
@@ -753,8 +758,8 @@ public final class AppDataHelper {
             appSvcOutsouredDto.setSearchParam(searchParam);
         }else {
             if (searchParam != null){
-                clearOldSearchParam(searchParam);
-//                searchParam.setMainSql("");
+                searchParam.removeParam("svcName");
+                searchParam.removeFilter("svcName");
             }
         }
         return appSvcOutsouredDto;
@@ -971,6 +976,13 @@ public final class AppDataHelper {
         }
     }
 
+    private static List<String> getPostalCode(List<AppGrpPremisesDto> appGrpPremisesDtos){
+        List<String> postcode = IaisCommonUtils.genNewArrayList();
+        for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
+            postcode.add(appGrpPremisesDto.getPostalCode());
+        }
+        return postcode;
+    }
 
     private static List<String> getOutSourceIds(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtoList){
         List<String> ids = IaisCommonUtils.genNewArrayList();
@@ -1066,7 +1078,7 @@ public final class AppDataHelper {
     public static List<AppSvcOtherInfoDto> genAppSvcOtherInfoList(HttpServletRequest request, String appType,
                                                                   List<AppSvcOtherInfoDto> appSvcOtherInfoDtos) {
         if (IaisCommonUtils.isEmpty(appSvcOtherInfoDtos)) {
-            return appSvcOtherInfoDtos;
+            return IaisCommonUtils.genNewArrayList();
         }
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
         String otherInfoServiceCode = ParamUtil.getString(request, "otherInfoServiceCode");
@@ -1143,41 +1155,43 @@ public final class AppDataHelper {
                     getPageData = true;
                 }
                 if (getPageData){
-                    String topType = ParamUtil.getString(request, prefix + "topType");
                     String provideTop = ParamUtil.getString(request, prefix + "provideTop");
-                    String declaration = ParamUtil.getString(request, prefix + "declaration");
-                    appSvcOtherInfoDto.setAppSvcOtherInfoTopDto(
-                            getAppSvcOtherInfoTopDto(appSvcOtherInfoDto.getAppSvcOtherInfoTopDto(), prefix, request, appType, isRfi , getPageData,isPartEdit));
-                    appSvcOtherInfoDto.setOtherInfoTopPersonPractitionersList(getAppSvcOtherInfoTopPersonDtoPractitioners(request,
-                            appType, isRfi, appSvcOtherInfoDto.getOtherInfoTopPersonPractitionersList(), prefix));
-                    appSvcOtherInfoDto.setOtherInfoTopPersonAnaesthetistsList(getAppSvcOtherInfoTopPersonDtoAnaesthetists(request,
-                            appType, isRfi, appSvcOtherInfoDto.getOtherInfoTopPersonAnaesthetistsList(), prefix));
-                    appSvcOtherInfoDto.setOtherInfoTopPersonNursesList( getAppSvcOtherInfoTopPersonDtoNurses(request, appType, isRfi,
-                            appSvcOtherInfoDto.getOtherInfoTopPersonNursesList(), prefix));
-                    appSvcOtherInfoDto.setOtherInfoTopPersonCounsellorsList(getAppSvcOtherInfoTopPersonDtoCounsellors(request,
-                            appType, isRfi, appSvcOtherInfoDto.getOtherInfoTopPersonCounsellorsList(), prefix));
-                    if (ApplicationConsts.OTHER_INFO_SD.equals(topType) || ApplicationConsts.OTHER_INFO_DSP.equals(topType)) {
-                        appSvcOtherInfoDto.setOtherInfoAbortDrugList(getAppSvcOtherInfoAbortDto1(request, appType, isRfi,
-                                appSvcOtherInfoDto.getOtherInfoAbortDrugList(), prefix));
-                    } else {
-                        appSvcOtherInfoDto.setOtherInfoAbortDrugList(null);
-                    }
-                    if (ApplicationConsts.OTHER_INFO_SSP.equals(topType) || ApplicationConsts.OTHER_INFO_DSP.equals(topType)) {
-                        appSvcOtherInfoDto.setOtherInfoAbortSurgicalProcedureList(getAppSvcOtherInfoAbortDto2(request, appType
-                                , isRfi, appSvcOtherInfoDto.getOtherInfoAbortSurgicalProcedureList(), prefix));
-                    } else {
-                        appSvcOtherInfoDto.setOtherInfoAbortSurgicalProcedureList(null);
-                    }
-                    if (ApplicationConsts.OTHER_INFO_DSP.equals(topType)) {
-                        appSvcOtherInfoDto.setOtherInfoAbortDrugAndSurgicalList(getAppSvcOtherInfoAbortDto3(request, appType,
-                                isRfi, appSvcOtherInfoDto.getOtherInfoAbortDrugAndSurgicalList(), prefix));
-                    } else {
-                        appSvcOtherInfoDto.setOtherInfoAbortDrugAndSurgicalList(null);
+                    if (AppConsts.YES.equals(provideTop)){
+                        String topType = ParamUtil.getString(request, prefix + "topType");
+                        String declaration = ParamUtil.getString(request, prefix + "declaration");
+                        appSvcOtherInfoDto.setAppSvcOtherInfoTopDto(
+                                getAppSvcOtherInfoTopDto(appSvcOtherInfoDto.getAppSvcOtherInfoTopDto(), prefix, request, appType, isRfi , getPageData,isPartEdit));
+                        appSvcOtherInfoDto.setOtherInfoTopPersonPractitionersList(getAppSvcOtherInfoTopPersonDtoPractitioners(request,
+                                appType, isRfi, appSvcOtherInfoDto.getOtherInfoTopPersonPractitionersList(), prefix));
+                        appSvcOtherInfoDto.setOtherInfoTopPersonAnaesthetistsList(getAppSvcOtherInfoTopPersonDtoAnaesthetists(request,
+                                appType, isRfi, appSvcOtherInfoDto.getOtherInfoTopPersonAnaesthetistsList(), prefix));
+                        appSvcOtherInfoDto.setOtherInfoTopPersonNursesList( getAppSvcOtherInfoTopPersonDtoNurses(request, appType, isRfi,
+                                appSvcOtherInfoDto.getOtherInfoTopPersonNursesList(), prefix));
+                        appSvcOtherInfoDto.setOtherInfoTopPersonCounsellorsList(getAppSvcOtherInfoTopPersonDtoCounsellors(request,
+                                appType, isRfi, appSvcOtherInfoDto.getOtherInfoTopPersonCounsellorsList(), prefix));
+                        if (ApplicationConsts.OTHER_INFO_SD.equals(topType) || ApplicationConsts.OTHER_INFO_DSP.equals(topType)) {
+                            appSvcOtherInfoDto.setOtherInfoAbortDrugList(getAppSvcOtherInfoAbortDto1(request, appType, isRfi,
+                                    appSvcOtherInfoDto.getOtherInfoAbortDrugList(), prefix));
+                        } else {
+                            appSvcOtherInfoDto.setOtherInfoAbortDrugList(null);
+                        }
+                        if (ApplicationConsts.OTHER_INFO_SSP.equals(topType) || ApplicationConsts.OTHER_INFO_DSP.equals(topType)) {
+                            appSvcOtherInfoDto.setOtherInfoAbortSurgicalProcedureList(getAppSvcOtherInfoAbortDto2(request, appType
+                                    , isRfi, appSvcOtherInfoDto.getOtherInfoAbortSurgicalProcedureList(), prefix));
+                        } else {
+                            appSvcOtherInfoDto.setOtherInfoAbortSurgicalProcedureList(null);
+                        }
+                        if (ApplicationConsts.OTHER_INFO_DSP.equals(topType)) {
+                            appSvcOtherInfoDto.setOtherInfoAbortDrugAndSurgicalList(getAppSvcOtherInfoAbortDto3(request, appType,
+                                    isRfi, appSvcOtherInfoDto.getOtherInfoAbortDrugAndSurgicalList(), prefix));
+                        } else {
+                            appSvcOtherInfoDto.setOtherInfoAbortDrugAndSurgicalList(null);
+                        }
+                        appSvcOtherInfoDto.setDeclaration(declaration);
+                        appSvcOtherInfoDto.setAppSvcSuplmFormDto(appSvcOtherInfoDto.getAppSvcSuplmFormDto());
+                        setAppSvcOtherFormList(appSvcOtherInfoDtos, request);
                     }
                     appSvcOtherInfoDto.setProvideTop(provideTop);
-                    appSvcOtherInfoDto.setDeclaration(declaration);
-                    appSvcOtherInfoDto.setAppSvcSuplmFormDto(appSvcOtherInfoDto.getAppSvcSuplmFormDto());
-                    setAppSvcOtherFormList(appSvcOtherInfoDtos, request);
                 }
             }
             if (StringUtil.isIn(otherInfoServiceCode, new String[]{AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL,
