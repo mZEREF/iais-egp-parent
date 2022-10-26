@@ -53,7 +53,7 @@ public class ExcelMonitoringServiceImpl implements ExcelMonitoringService {
     private String sharedPath;
     @Value("${iais.sharedfolder.datacompair.out}")
     private String sharedOutPath;
-    @Value("${iais.sharedfolder.datacompair.subfolder : folder}")
+    @Value("${iais.sharedfolder.datacompair.subfolder:folder}")
     private String subFolder;
 
     @Autowired

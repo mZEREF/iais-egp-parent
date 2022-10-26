@@ -81,7 +81,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
     private String outSharedPath;
     @Value("${iais.sharedfolder.datacompair.rslt}")
     private String rsltSharedPath;
-    @Value("${iais.sharedfolder.datacompair.subfolder : folder}")
+    @Value("${iais.sharedfolder.datacompair.subfolder:folder}")
     private String subFolder;
     @Autowired
     private ApplicationClient applicationClient;
