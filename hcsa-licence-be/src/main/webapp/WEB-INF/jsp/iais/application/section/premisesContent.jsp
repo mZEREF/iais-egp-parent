@@ -146,7 +146,7 @@
 
             <div class="form-horizontal">
                 <div class="form-group premisesTypeDiv"<c:if test="${isRenew || isRfc}">hidden</c:if> >
-                    <iais:field value="What is your Mode of Service Delivery type?" width="5" mandatory="true"/>
+                    <iais:field value="What is your Mode of Service Delivery type" width="5" mandatory="true"/>
 
                     <c:set var="premTypeLen" value="${premisesType.size()}"/>
                     <c:set var="premTypeCss" value="${premTypeLen > 2 ? 'col-md-2' : 'col-md-3'}"/>
@@ -187,7 +187,7 @@
 
                 <c:if test="${StringUtil.isIn(permanent, premisesType)}">
                     <iais:row cssClass="permanentSelect hidden">
-                        <iais:field value="Add or select a Permanent Premises from the list :" width="5" mandatory="true"/>
+                        <iais:field value="Add or select a ${permanentShow} from the list :" width="5" mandatory="true"/>
                         <iais:value id="permanentSelect" cssClass="col-xs-11 col-sm-7 col-md-5">
                             <iais:select cssClass="premSelect permanentSel" name="permanentSel${status.index}" options="permanentSelect" needSort="false" value="${appGrpPremisesDto.premisesSelect}"/>
                         </iais:value>
@@ -195,7 +195,7 @@
                 </c:if>
                 <c:if test="${StringUtil.isIn(conv, premisesType)}">
                     <iais:row cssClass="conveyanceSelect hidden">
-                        <iais:field value="Add or select a Conveyance from the list :" width="5" mandatory="true"/>
+                        <iais:field value="Add or select a ${convShow} from the list :" width="5" mandatory="true"/>
                         <iais:value id="conveyanceSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
                             <iais:select cssClass="premSelect conveyanceSel" name="conveyanceSel${status.index}"  options="conveyancePremSel" needSort="false"  value="${appGrpPremisesDto.premisesSelect}"/>
                         </iais:value>
@@ -203,7 +203,7 @@
                 </c:if>
                 <c:if test="${StringUtil.isIn(easMts, premisesType)}">
                     <iais:row cssClass="easMtsSelect hidden">
-                        <iais:field value="Add or select a Conveyance from the list :" width="5" mandatory="true"/>
+                        <iais:field value="Add or select a ${convShow} from the list :" width="5" mandatory="true"/>
                         <iais:value id="easMtsSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
                             <iais:select cssClass="premSelect easMtsSel" name="easMtsSel${status.index}" options="easMtsPremSel" needSort="false"  value="${appGrpPremisesDto.premisesSelect}"/>
                         </iais:value>
@@ -211,7 +211,7 @@
                 </c:if>
                 <c:if test="${StringUtil.isIn(mobile, premisesType)}">
                     <iais:row cssClass="mobileSelect hidden">
-                        <iais:field value="Add or select a Mobile Delivery from the list :" width="5" mandatory="true"/>
+                        <iais:field value="Add or select a ${mobileShow} from the list :" width="5" mandatory="true"/>
                         <iais:value id="mobileSelect" cssClass="col-xs-11 col-sm-7 col-md-5">
                             <iais:select cssClass="premSelect mobileSel" name="mobileSel${status.index}" options="mobilePremSel" needSort="false"  value="${appGrpPremisesDto.premisesSelect}"/>
                         </iais:value>
@@ -219,7 +219,7 @@
                 </c:if>
                 <c:if test="${StringUtil.isIn(remote, premisesType)}">
                     <iais:row cssClass="remoteSelect hidden">
-                        <iais:field value="Add or select a Remote Delivery from the list :" width="5" mandatory="true"/>
+                        <iais:field value="Add or select a ${remoteShow} from the list :" width="5" mandatory="true"/>
                         <iais:value id="remoteSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
                             <iais:select cssClass="premSelect remoteSel" name="remoteSel${status.index}" options="remotePremSel" needSort="false"  value="${appGrpPremisesDto.premisesSelect}"/>
                         </iais:value>
@@ -237,7 +237,7 @@
                 <div class="form-horizontal">
                     <iais:row cssClass="scdfRefNoRow">
                         <c:set var="scdfRefNoInfo"><iais:message key="NEW_ACK006"></iais:message></c:set>
-                        <iais:field value="Fire Safety & Shelter Bureau Ref. No." width="5" info="${scdfRefNoInfo}"/>
+                        <iais:field value="Fire Safety & Shelter Bureau Ref No." width="5" info="${scdfRefNoInfo}"/>
                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 fireIssuedDateDiv">
                             <iais:input maxLength="66" name="scdfRefNo${status.index}" type="text" value="${appGrpPremisesDto.scdfRefNo}"/>
                         </iais:value>
@@ -396,7 +396,7 @@
 
                     <div class="co-location-div">
                         <iais:row>
-                            <iais:field value="Co-Location Service" width="10" />
+                            <iais:field value="Co-Location Services" width="10" />
                             <iais:value/>
                         </iais:row>
                         <iais:row>

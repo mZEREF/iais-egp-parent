@@ -607,27 +607,31 @@
         });
     }
 
-    function fillFloorUnit($premContent, data) {
+    function fillFloorUnit($currContent, data) {
         if (isEmpty(data)) {
             return;
         }
         // base
-        var $firstFU = $premContent.find('.operationDiv:first');
+        var $firstFU = $currContent.find('.operationDiv:first');
         fillValue($firstFU.find('input.floorNo'), data.floorNo);
         fillValue($firstFU.find('input.unitNo'), data.unitNo);
         // additional
-        $premContent.find('div.operationDivGroup .operationDiv').remove();
+        $currContent.find('div.operationDivGroup .operationDiv').remove();
         var floorUnits = data.appPremisesOperationalUnitDtos;
-        var $parent = $premContent.find('div.operationDivGroup');
-        var len = floorUnits.length;
-        for (var i = 0; i < len; i++) {
-            var $target = $parent.find('.operationDiv').eq(i);
-            if ($target.length === 0) {
-                addFloorUnit($parent);
-                $target = $parent.find('.operationDiv').eq(i);
+        if (isEmpty(floorUnits)) {
+            $currContent.find('div.operationDivGroup .operationDiv').remove();
+        } else {
+            var $parent = $currContent.find('div.operationDivGroup');
+            var len = floorUnits.length;
+            for (var i = 0; i < len; i++) {
+                var $target = $parent.find('.operationDiv').eq(i);
+                if ($target.length === 0) {
+                    addFloorUnit($parent);
+                    $target = $parent.find('.operationDiv').eq(i);
+                }
+                fillValue($target.find('input.floorNo'), floorUnits[i].floorNo);
+                fillValue($target.find('input.unitNo'), floorUnits[i].unitNo);
             }
-            fillValue($target.find('input.floorNo'), floorUnits[i].floorNo);
-            fillValue($target.find('input.unitNo'), floorUnits[i].unitNo);
         }
     }
 

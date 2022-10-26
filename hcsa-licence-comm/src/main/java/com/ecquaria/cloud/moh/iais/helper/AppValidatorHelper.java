@@ -792,7 +792,7 @@ public final class AppValidatorHelper {
                         case ApplicationConsts.PREMISES_TYPE_PERMANENT:
                             String scdfRefNo = appGrpPremisesDto.getScdfRefNo();
                             if (!StringUtil.isEmpty(scdfRefNo) && scdfRefNo.length() > 66) {
-                                errorMap.put("scdfRefNo" + i, repLength("Fire Safety & Shelter Bureau Ref. No.", "66"));
+                                errorMap.put("scdfRefNo" + i, repLength("Fire Safety & Shelter Bureau Ref No.", "66"));
                             }
                             String certIssuedDtStr = appGrpPremisesDto.getCertIssuedDtStr();
                             if (!StringUtil.isEmpty(certIssuedDtStr) && !CommonValidator.isDate(certIssuedDtStr)) {
