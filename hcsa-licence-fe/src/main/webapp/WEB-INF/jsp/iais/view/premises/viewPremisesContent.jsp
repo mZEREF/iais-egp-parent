@@ -53,7 +53,7 @@
 
     <c:if test="${premType == permanent}">
         <iais:row>
-            <iais:field width="5" value="Fire Safety & Shelter Bureau Ref. No."/>
+            <iais:field width="5" value="Fire Safety & Shelter Bureau Ref No."/>
             <iais:value width="7" display="true">
                 <c:out value="${appGrpPremDto.scdfRefNo}"/>
             </iais:value>
@@ -146,7 +146,7 @@
 
     <c:if test="${premType == permanent || premType == conv}">
         <iais:row>
-            <iais:field value="Co-Location Service" width="10" />
+            <iais:field value="Co-Location Services" width="10" />
         </iais:row>
         <iais:row>
             <iais:field width="5" value="Are you co-locating with a service that is licensed under HCSA?"/>

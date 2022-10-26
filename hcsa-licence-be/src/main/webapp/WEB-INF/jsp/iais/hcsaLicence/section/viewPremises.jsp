@@ -90,7 +90,7 @@
             <c:if test="${permanent == appGrpPremDto.premisesType || permanent == oldAppGrpPremDto.premisesType}">
               <div class="row">
                 <div class="col-md-6">
-                  Fire Safety & Shelter Bureau Ref. No.
+                  Fire Safety & Shelter Bureau Ref No.
                 </div>
                 <div class="col-md-6">
                   <div class="col-md-12">
@@ -327,7 +327,7 @@
                 || oldAppGrpPremDto.premisesType == permanent || oldAppGrpPremDto.premisesType == conv}">
               <div class="row">
                 <div class="col-md-12">
-                  Co-Location Service
+                  Co-Location Services
                 </div>
               </div>
               <div class="row">

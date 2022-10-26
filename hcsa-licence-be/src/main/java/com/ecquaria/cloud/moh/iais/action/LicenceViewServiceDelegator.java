@@ -1181,7 +1181,7 @@ public class LicenceViewServiceDelegator {
                     }, null);
             reSetFloorAndUnit(appGrpPremisesDto, appPremisesOperationalUnitDtos);
             reSetFloorAndUnit(oldAppGrpPremisesDto, oldAppPremisesOperationalUnitDtos);
-            // Co-Location Service
+            // Co-Location Services
             dealCoLocation(appGrpPremisesDto, oldAppGrpPremisesDto);
         }
     }

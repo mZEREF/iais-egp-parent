@@ -56,9 +56,7 @@ DOCKER_IMAGES = [
     'hcsa-licence-fe|hcsa-application',
     'payment|egov-app',
     'systemadmin|systemadmin-web',
-    'web|web',
-    'bsb-be|bsb-be',
-    'bsb-fe|bsb-fe'
+    'web|web'
 ]
 // Stores meta information about images that have been built in this pipeline (i.e docker build)
 DOCKER_IMAGES_META = []
