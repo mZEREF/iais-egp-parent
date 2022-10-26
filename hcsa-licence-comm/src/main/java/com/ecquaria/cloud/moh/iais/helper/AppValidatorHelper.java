@@ -2099,7 +2099,9 @@ public final class AppValidatorHelper {
         if ("next".equals(curAt)){
             if (IaisCommonUtils.isEmpty(appSvcOutsouredDto.getClinicalLaboratoryList()) && IaisCommonUtils.isEmpty(appSvcOutsouredDto.getRadiologicalServiceList())){
                 errMap.put("clbList", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                        "Outsourced Service Provider(s)", "field"));
+                        "Clinical Laboratory", "field"));
+                errMap.put("rdsList", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                        "Radiological Service", "field"));
             }
         }
         return errMap;

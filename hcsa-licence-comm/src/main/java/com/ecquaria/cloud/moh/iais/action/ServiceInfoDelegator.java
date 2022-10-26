@@ -630,15 +630,20 @@ public class ServiceInfoDelegator {
         AppSvcOutsouredDto appSvcOutsouredDto = currSvcInfoDto.getAppSvcOutsouredDto();
         String curAct = ParamUtil.getString(request, "btnStep");
         currSvcInfoDto.setCurAt(curAct);
+        Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
         if (isGetDataFromPage) {
             //get data from page
             appSvcOutsouredDto = AppDataHelper.genAppPremOutSourceProvidersDto(curAct,appSvcOutsouredDto,request,appSubmissionDto,appType);
             currSvcInfoDto.setAppSvcOutsouredDto(appSvcOutsouredDto);
             reSetChangesForApp(appSubmissionDto);
             setAppSvcRelatedInfoMap(request, currSvcId, currSvcInfoDto, appSubmissionDto);
-            Map<String,String> errorMap = AppValidatorHelper.doValidationOutsourced(appSvcOutsouredDto,curAct);
-            checkAction(errorMap,HcsaConsts.STEP_OUTSOURCED_PROVIDERS,appSubmissionDto,request);
+            errorMap = AppValidatorHelper.doValidationOutsourced(appSvcOutsouredDto, curAct);
         }
+
+        if ("next".equals(actionType)) {
+            errorMap = AppValidatorHelper.doValidationOutsourced(appSvcOutsouredDto, actionType);
+        }
+        checkAction(errorMap,HcsaConsts.STEP_OUTSOURCED_PROVIDERS,appSubmissionDto,request);
     }
 
     private boolean checkAction(Map<String, String> errorMap, String step, AppSubmissionDto appSubmissionDto,

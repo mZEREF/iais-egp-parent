@@ -4,6 +4,9 @@
     <div class="col-xs-12 <c:if test="${AppSubmissionDto.appLicBundleDtoList[0].svcCode eq AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES}">hidden</c:if>" style="margin-top: 20px;!important;">
         <strong>Radiological Service</strong>
     </div>
+    <div class="col-xs-12">
+        <span class="error-msg" name="iaisErrorMsg" id="error_rdsList"></span>
+    </div>
 </iais:row>
 
 <div class="col-lg-12 col-xs-12 col-md-12 <c:if test="${AppSubmissionDto.appLicBundleDtoList[0].svcCode eq AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES}">hidden</c:if>">
