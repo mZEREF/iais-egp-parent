@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="ApplicantSubmitInspectionDate" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="start" x="100" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preData" x="250" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preData_OnStepProcess_0" name="preData_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="validate" x="550" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="validate_OnStepProcess_0" name="validate_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="submit" x="550" y="400">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="submit_OnStepProcess_0" name="submit_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="submitInspectionDate" stageIndicator="" x="360" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ackPage" stageIndicator="" x="550" y="550">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preData" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/start" style="rectanular">
+   <position>{(120,120)(270,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/submitInspectionDate" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preData" style="rectanular">
+   <position>{(270,120)(380,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/validate" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/submitInspectionDate" style="rectanular">
+   <position>{(380,120)(570,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/validate" style="rectanular">
+   <position>{(570,120)(570,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/submit" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(570,270)(570,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ackPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/submit" style="rectanular">
+   <position>{(570,420)(570,570)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preData" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(570,270)(272,269)(270,120)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions/>
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch1" x="550" y="250">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/submit" value="&quot;next&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preData" value="&quot;prepare&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges/>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>

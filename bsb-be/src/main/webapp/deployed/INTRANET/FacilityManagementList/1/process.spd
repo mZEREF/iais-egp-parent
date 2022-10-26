@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="FacilityManagementList" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Start" x="100" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareData" x="230" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareData_OnStepProcess_0" name="prepareData_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Search" x="300" y="420">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="search_OnStepProcess_0" name="search_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Sort" x="380" y="420">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="sort_OnStepProcess_0" name="sort_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Page" x="460" y="420">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="page_OnStepProcess_0" name="page_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="ADHOCRfi" processname="MohBsbAdhocRfi" project="" version="-1" x="620" y="420">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="ChangeRole" x="530" y="420">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="changeRole_OnStepProcess_0" name="changeRole_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Step1" x="460" y="220">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="step1_OnStepProcess_0" name="step1_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="FacilityManagementPage" stageIndicator="" x="400" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
+   <position>{(120,120)(250,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/FacilityManagementPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareData" style="oblique">
+   <position>{(250,120)(420,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Search" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(480,330)(320,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Sort" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(480,330)(400,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Page" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(480,330)(480,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ChangeRole" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(480,330)(550,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/ADHOCRfi" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(480,330)(640,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Search" style="oblique">
+   <position>{(320,440)(480,590)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Sort" style="oblique">
+   <position>{(400,440)(480,590)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Page" style="rectanular">
+   <position>{(480,440)(480,590)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/ChangeRole" style="oblique">
+   <position>{(550,440)(480,590)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/ADHOCRfi" style="oblique">
+   <position>{(640,440)(480,590)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
+   <position>{(480,590)(266,589)(266,419)(250,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step1" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/FacilityManagementPage" style="rectanular">
+   <position>{(420,120)(480,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Step1" style="rectanular">
+   <position>{(480,240)(480,330)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions/>
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch1" x="460" y="310">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/Search" value="&quot;search&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Sort" value="&quot;sort&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Page" value="&quot;page&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/ChangeRole" value="&quot;changeRole&quot;"/>
+   <SwitchCase component="/Steps/InvokeStep/ADHOCRfi" value="&quot;adhocRfi&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="460" y="570">
+   <Description/>
+  </Merge>
+ </Merges>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>

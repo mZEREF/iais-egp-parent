@@ -44,6 +44,8 @@
         <module>hcsa-licence-be</module>
         <module>payment</module>
         <module>be-main</module>
+        <module>bsb-fe</module>
+        <module>bsb-be</module>
     </modules>
     <dependencyManagement>
         <dependencies>
@@ -235,6 +237,11 @@
                 <groupId>org.javers</groupId>
                 <artifactId>javers-core</artifactId>
                 <version>6.6.5</version>
+            </dependency>
+            <dependency>
+                <groupId>io.vavr</groupId>
+                <artifactId>vavr</artifactId>
+                <version>0.10.4</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="0" minorVersion="0" name="MohBsbAdhocInspection" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices />
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Start" x="100" y="300">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareSwitch" x="190" y="300">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareSwitch_OnStepProcess_0" name="prepareSwitch_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareList" x="440" y="300">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareList_OnStepProcess_0" name="prepareList_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleList" x="650" y="300">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleList_OnStepProcess_0" name="handleList_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Search" x="560" y="50">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="search_OnStepProcess_0" name="search_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Sort" x="560" y="130">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="sort_OnStepProcess_0" name="sort_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Page" x="560" y="220">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="page_OnStepProcess_0" name="page_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareAdhocInspection" x="380" y="410">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareAdhocInspection_OnStepProcess_0" name="prepareAdhocInspection_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleAdhocInspection" x="650" y="410">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleAdhocInspection_OnStepProcess_0" name="handleAdhocInspection_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareAck" x="430" y="520">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareAck_OnStepProcess_0" name="prepareAck_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleAck" x="670" y="520">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleAck_OnStepProcess_0" name="handleAck_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="listPage" stageIndicator="" x="560" y="300">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="adhocInspection" stageIndicator="" x="540" y="410">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ack" stageIndicator="" x="560" y="520">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+ </Pages>
+ <Forms />
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareSwitch" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Start" style="rectanular">
+   <position>{(120,320)(210,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareSwitch" style="rectanular">
+   <position>{(210,320)(340,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareList" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(340,320)(460,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/listPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareList" style="rectanular">
+   <position>{(460,320)(580,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleList" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/listPage" style="rectanular">
+   <position>{(580,320)(670,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/HandleList" style="rectanular">
+   <position>{(670,320)(860,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareSwitch" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
+   <position>{(860,320)(231,671)(210,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Page" style="oblique">
+   <position>{(580,240)(860,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Sort" style="oblique">
+   <position>{(580,150)(860,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Search" style="oblique">
+   <position>{(580,70)(860,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleAdhocInspection" style="oblique">
+   <position>{(670,430)(860,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleAck" style="oblique">
+   <position>{(690,540)(860,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleAdhocInspection" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/adhocInspection" style="rectanular">
+   <position>{(560,430)(670,430)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleAck" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/ack" style="rectanular">
+   <position>{(580,540)(690,540)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/adhocInspection" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareAdhocInspection" style="rectanular">
+   <position>{(400,430)(560,430)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ack" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareAck" style="rectanular">
+   <position>{(450,540)(580,540)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareAdhocInspection" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(340,320)(400,430)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareAck" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(340,320)(450,540)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Page" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(340,320)(580,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Sort" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(340,320)(580,150)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Search" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(340,320)(580,70)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions />
+ <Switches>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/PrepareList" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="320" y="300">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareList" value="&quot;list&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareAdhocInspection" value="&quot;inspection&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareAck" value="&quot;ack&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/Page" value="&quot;page&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/Sort" value="&quot;sort&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/Search" value="&quot;search&quot;" />
+  </Switch>
+ </Switches>
+ <Branches />
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="840" y="300">
+   <Description />
+  </Merge>
+ </Merges>
+ <StudioLabels />
+ <StageIndicator />
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
+</Application>
+
