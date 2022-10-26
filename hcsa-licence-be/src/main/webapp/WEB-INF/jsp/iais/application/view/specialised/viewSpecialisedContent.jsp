@@ -3,7 +3,7 @@
         <iais:row style="padding-bottom: 1rem;">
             <div class="col-xs-12">
                 <p class="app-title">${specialised.premName}</p>
-                <p class="font-18 bold">${specialised.premAddress}</p>
+                <p class="font-18 bold">${specialised.newPremises}</p>
             </div>
         </iais:row>
 

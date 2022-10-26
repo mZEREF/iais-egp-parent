@@ -3129,10 +3129,10 @@ public final class AppDataHelper {
                     appSvcBusinessDto = new AppSvcBusinessDto();
                     boolean getOHData = true;
                     String premisesType = appGrpPremisesDto.getPremisesType();
-                    if (ApplicationConsts.PREMISES_TYPE_MOBILE.equals(premisesType) || ApplicationConsts.PREMISES_TYPE_REMOTE.equals(
+                    /*if (ApplicationConsts.PREMISES_TYPE_MOBILE.equals(premisesType) || ApplicationConsts.PREMISES_TYPE_REMOTE.equals(
                             premisesType)) {
                         getOHData = false;
-                    }
+                    }*/
                     String serviceCode = ParamUtil.getString(request, "currService" + i);
                     if (AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL.equals(
                             serviceCode) || AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL.equals(serviceCode)) {
