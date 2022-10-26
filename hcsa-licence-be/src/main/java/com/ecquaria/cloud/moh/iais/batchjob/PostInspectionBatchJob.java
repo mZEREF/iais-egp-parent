@@ -9,23 +9,21 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfo
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicInspectionGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.PostInspectionDto;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.helper.RfcHelper;
 import com.ecquaria.cloud.moh.iais.service.AuditSystemListService;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import sop.webflow.rt.api.BaseProcessClass;
-
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @author weilu
@@ -88,6 +86,7 @@ public class PostInspectionBatchJob {
                     appSvcRelatedInfoDtoList.get(0).setServiceId(svcId);
                     appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
                     auditSystemListService.setRiskToDto(entity);
+                    RfcHelper.beforeSubmit(entity,null,grpNo,ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION,null);
                     appSubmissionDtos.add(entity);
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
