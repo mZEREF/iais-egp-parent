@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="hcsaconfig">
+    <sql key="queryChecklistItem"  remarks="use for adhoc item of inspection">
+        <![CDATA[
+                select item.id as ITEM_ID, regulation.CLAUSE_NO as CLAUSE_NO, regulation.clause as CLAUSE,
+                item.question AS CHECKLISTITEM, item.answer_type as ANSWER_TYPE, item.risk_level as RISK_LEVEL,
+                item.status as STATUS from chkl_config_hcsa_svc_item_pool item, chkl_config_hcsa_svc_regulation regulation where 1 = 1
+                and item.regulation_id = regulation.id
+                and item.status = 'CMSTAT001'
+                <#if itemId??> and charindex(:itemId, item.id) >0</#if>
+                <#if regulationClauseNo??> and charindex(:regulationClauseNo, regulation.clause_no) >0 </#if>
+                <#if regulationClause??> and charindex(:regulationClause, regulation.clause) >0 </#if>
+                <#if checklistItem??> and charindex(:checklistItem, item.question) >0</#if>
+                <#if answerType??> and item.answer_type = :answerType</#if>
+                <#if riskLevel??> and item.risk_level = :riskLevel</#if>
+                <#if status??> and item.status = :status</#if>
+                <#if adhocItemId??> and ${adhocItemId} </#if>
+                <#if selectedItemIdToConfig??> and ${selectedItemIdToConfig} </#if>
+                <#if itemStatus??> and item.status = :itemStatus </#if>
+        ]]>
+    </sql>
+</sqls>

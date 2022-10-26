@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="0" minorVersion="0" name="IncidentFollowup1BEdit" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices />
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Start" x="40" y="40">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Init" x="140" y="40">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="init_OnStepProcess_0" name="init_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareData" x="240" y="40">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareData_OnStepProcess_0" name="prepareData_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleFollowUPReport1B" x="500" y="40">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleFollowUPReport1B_OnStepProcess_0" name="handleFollowUPReport1B_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreViewReport1B" x="530" y="130">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preViewReport1B_OnStepProcess_0" name="preViewReport1B_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleViewReport1B" x="530" y="310">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleViewReport1B_OnStepProcess_0" name="handleViewReport1B_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="SubmitReport1B" x="560" y="490">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="submitReport1B_OnStepProcess_0" name="submitReport1B_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="FollowUPReport1B" stageIndicator="" x="360" y="40">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ViewReport1B" stageIndicator="" x="550" y="220">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PreAckonwledge" stageIndicator="" x="560" y="590">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+ </Pages>
+ <Forms />
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Init" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Start" style="rectanular">
+   <position>{(60,60)(160,60)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Init" style="rectanular">
+   <position>{(160,60)(260,60)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/FollowUPReport1B" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareData" style="rectanular">
+   <position>{(260,60)(380,60)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleFollowUPReport1B" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/FollowUPReport1B" style="rectanular">
+   <position>{(380,60)(520,60)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/HandleFollowUPReport1B" style="rectanular">
+   <position>{(520,60)(690,60)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreViewReport1B" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(690,60)(550,150)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ViewReport1B" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PreViewReport1B" style="rectanular">
+   <position>{(550,150)(570,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleViewReport1B" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/ViewReport1B" style="rectanular">
+   <position>{(570,240)(550,330)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/HandleViewReport1B" style="rectanular">
+   <position>{(550,330)(600,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/SubmitReport1B" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
+   <position>{(600,420)(580,510)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
+   <position>{(600,420)(275,416)(260,60)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreViewReport1B" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
+   <position>{(600,420)(695,417)(550,150)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(690,60)(276,4)(260,60)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/PreAckonwledge" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/SubmitReport1B" style="rectanular">
+   <position>{(580,510)(580,610)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions />
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="indeed_action_type" name="Switch1" x="670" y="40">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/PreViewReport1B" value="&quot;next&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareData" value="&quot;prepare&quot;" />
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="indeed_action_type" name="Switch2" x="580" y="400">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/SubmitReport1B" value="&quot;submit&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareData" value="&quot;back&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreViewReport1B" value="&quot;prepare&quot;" />
+  </Switch>
+ </Switches>
+ <Branches />
+ <Merges />
+ <StudioLabels />
+ <StageIndicator />
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
+</Application>
+

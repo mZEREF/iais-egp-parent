@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/start" dtdVersion="6.0" executable="true" majorVersion="2" minorVersion="0" name="AckOfReceiptOfTransferDraft" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices />
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="start" x="-30" y="250">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="prepareData" x="160" y="250">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareData_OnStepProcess_0" name="prepareData_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="saveAndPreConfirm" x="630" y="250">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="saveAndPreConfirm_OnStepProcess_0" name="saveAndPreConfirm_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="save" x="1190" y="250">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="save_OnStepProcess_0" name="save_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="prepareSwitch1" x="420" y="250">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareSwitch1_OnStepProcess_0" name="prepareSwitch1_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="prepareSwitch2" x="950" y="250">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareSwitch2_OnStepProcess_0" name="prepareSwitch2_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="formPageSaveDraft" x="530" y="140">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="formPageSaveDraft_OnStepProcess_0" name="formPageSaveDraft_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="confirmPageSaveDraft" x="1030" y="140">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="confirmPageSaveDraft_OnStepProcess_0" name="confirmPageSaveDraft_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Init" x="60" y="250">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="init_OnStepProcess_0" name="init_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AckOfReceiptOfTransferPage" stageIndicator="" x="250" y="250">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ConfirmPage" stageIndicator="" x="860" y="250">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ackPage" stageIndicator="" x="1320" y="250">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+ </Pages>
+ <Forms />
+ <Links>
+  <SynchronousLink destinationName="/Pages/WebPage/AckOfReceiptOfTransferPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/prepareData" style="rectanular">
+   <position>{(180,270)(270,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareSwitch1" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/AckOfReceiptOfTransferPage" style="rectanular">
+   <position>{(270,270)(440,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/saveAndPreConfirm" style="rectanular">
+   <position>{(650,270)(800,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareSwitch2" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/ConfirmPage" style="rectanular">
+   <position>{(880,270)(970,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ackPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/save" style="rectanular">
+   <position>{(1210,270)(1340,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/saveAndPreConfirm" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(570,270)(650,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ConfirmPage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(800,270)(880,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/save" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
+   <position>{(1080,270)(1210,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(800,270)(196,426)(180,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
+   <position>{(1080,270)(196,458)(180,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/prepareSwitch2" style="rectanular">
+   <position>{(970,270)(1080,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/prepareSwitch1" style="rectanular">
+   <position>{(440,270)(570,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/formPageSaveDraft" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(570,270)(550,160)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/formPageSaveDraft" style="rectanular">
+   <position>{(550,160)(197,159)(180,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/confirmPageSaveDraft" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
+   <position>{(1080,270)(1050,160)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/saveAndPreConfirm" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/confirmPageSaveDraft" style="rectanular">
+   <position>{(1050,160)(684,159)(650,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Init" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/start" style="rectanular">
+   <position>{(-10,270)(80,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Init" style="rectanular">
+   <position>{(80,270)(180,270)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/prepareData" componentIfTrue="/Pages/WebPage/ConfirmPage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="780" y="250">
+   <Description />
+  </Condition>
+ </Conditions>
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch1" x="550" y="250">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/saveAndPreConfirm" value="&quot;doConfirm&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/formPageSaveDraft" value="&quot;saveDraft&quot;" />
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch2" x="1060" y="250">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/save" value="&quot;doSave&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/prepareData" value="&quot;doBack&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/confirmPageSaveDraft" value="&quot;saveDraft&quot;" />
+  </Switch>
+ </Switches>
+ <Branches />
+ <Merges />
+ <StudioLabels />
+ <StageIndicator />
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
+</Application>
+

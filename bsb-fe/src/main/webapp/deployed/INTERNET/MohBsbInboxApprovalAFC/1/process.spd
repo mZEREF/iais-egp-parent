@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="0" minorVersion="0" name="MohBsbInboxApprovalAFC" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices />
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Start" x="240" y="96">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareData" x="400" y="100">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareData_OnStepProcess_0" name="prepareData_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Page" x="564" y="420">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="page_OnStepProcess_0" name="page_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Sort" x="408" y="444">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="sort_OnStepProcess_0" name="sort_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Search" x="276" y="420">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="search_OnStepProcess_0" name="search_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InboxApprovalAFCListPage" stageIndicator="" x="360" y="192">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+ </Pages>
+ <Forms />
+ <Links>
+  <SynchronousLink destinationName="/Pages/WebPage/InboxApprovalAFCListPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareData" style="oblique">
+   <position>{(420,120)(380,212)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Page" linkstyle="Direct" name="" sourceName="/Switches/Switch/ActionSwitch" style="oblique">
+   <position>{(428,308)(584,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Sort" linkstyle="Direct" name="" sourceName="/Switches/Switch/ActionSwitch" style="oblique">
+   <position>{(428,308)(428,464)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Search" linkstyle="Direct" name="" sourceName="/Switches/Switch/ActionSwitch" style="oblique">
+   <position>{(428,308)(296,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Sort" style="oblique">
+   <position>{(428,464)(428,620)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Search" style="oblique">
+   <position>{(296,440)(428,620)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Page" style="oblique">
+   <position>{(584,440)(428,620)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
+   <position>{(260,116)(420,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/ActionSwitch" linkstyle="Direct" name="" sourceName="/Pages/WebPage/InboxApprovalAFCListPage" style="oblique">
+   <position>{(380,212)(428,308)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
+   <position>{(428,620)(694,619)(703,124)(420,120)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions />
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="ActionSwitch" x="408" y="288">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/Page" value="&quot;page&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/Sort" value="&quot;sort&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/Search" value="&quot;search&quot;" />
+  </Switch>
+ </Switches>
+ <Branches />
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="408" y="600">
+   <Description />
+  </Merge>
+ </Merges>
+ <StudioLabels />
+ <StageIndicator />
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
+</Application>
+

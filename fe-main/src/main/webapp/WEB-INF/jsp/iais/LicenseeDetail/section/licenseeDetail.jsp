@@ -33,7 +33,7 @@
                 </iais:row>
                 <c:if test="${licensee.idType == 'IDTYPE003'}">
                 <iais:row>
-                    <iais:field width="5" value="Country of issuance"/>
+                    <iais:field width="5" value="Nationality"/>
                     <iais:value width="7" display="true">
                         <iais:code code="${licensee.nationality}" />
                     </iais:value>

@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohRfcFacilityCertifierRegistration" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Start" x="120" y="80">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="init" x="190" y="80">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="init_OnStepProcess_0" name="init_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreCompInfo" x="260" y="80">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preCompInfo_OnStepProcess_0" name="preCompInfo_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreAdministrator" x="260" y="180">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preAdministrator_OnStepProcess_0" name="preAdministrator_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreCertifyingTeam" x="260" y="260">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preCertifyingTeam_OnStepProcess_0" name="preCertifyingTeam_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreOrganisationInfo" x="270" y="360">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preOrganisationInfo_OnStepProcess_0" name="preOrganisationInfo_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareDocuments" x="260" y="440">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareDocuments_OnStepProcess_0" name="prepareDocuments_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreparePreview" x="260" y="540">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preparePreview_OnStepProcess_0" name="preparePreview_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Prepare" x="180" y="620">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepare_OnStepProcess_0" name="prepare_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doCompInfo" x="510" y="70">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doCompInfo_OnStepProcess_0" name="doCompInfo_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doAdministrator" x="510" y="170">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doAdministrator_OnStepProcess_0" name="doAdministrator_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doCertifyingTeam" x="500" y="250">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doCertifyingTeam_OnStepProcess_0" name="doCertifyingTeam_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doOriganisationProfile" x="490" y="350">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doOriganisationProfile_OnStepProcess_0" name="doOriganisationProfile_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doDocument" x="520" y="430">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doDocument_OnStepProcess_0" name="doDocument_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doPreview" x="520" y="540">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doPreview_OnStepProcess_0" name="doPreview_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="ControlSwitch" x="630" y="270">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="controlSwitch_OnStepProcess_0" name="controlSwitch_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreAcknowledge" x="850" y="260">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preAcknowledge_OnStepProcess_0" name="preAcknowledge_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="StartFacilityCertifier" stageIndicator="" x="380" y="80">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Administrator" stageIndicator="" x="410" y="170">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="CertifyingTeam" stageIndicator="" x="390" y="250">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="OrganisationProfile" stageIndicator="" x="390" y="350">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PrimaryDocuments" stageIndicator="" x="370" y="430">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Preview" stageIndicator="" x="420" y="540">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AcknowleagePage" stageIndicator="" x="980" y="250">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/init" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
+   <position>{(140,100)(210,100)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreCompInfo" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/init" style="oblique">
+   <position>{(210,100)(280,100)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/StartFacilityCertifier" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreCompInfo" style="oblique">
+   <position>{(280,100)(400,100)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doCompInfo" linkstyle="Direct" name="" sourceName="/Pages/WebPage/StartFacilityCertifier" style="oblique">
+   <position>{(400,100)(530,90)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doCompInfo" style="oblique">
+   <position>{(530,90)(650,290)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreCompInfo" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(190,330)(280,100)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreAdministrator" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(190,330)(280,200)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Administrator" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreAdministrator" style="oblique">
+   <position>{(280,200)(430,190)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doAdministrator" linkstyle="Direct" name="" sourceName="/Pages/WebPage/Administrator" style="oblique">
+   <position>{(430,190)(530,190)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doAdministrator" style="oblique">
+   <position>{(530,190)(650,290)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreCertifyingTeam" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(190,330)(280,280)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/CertifyingTeam" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreCertifyingTeam" style="oblique">
+   <position>{(280,280)(410,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doCertifyingTeam" linkstyle="Direct" name="" sourceName="/Pages/WebPage/CertifyingTeam" style="oblique">
+   <position>{(410,270)(520,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doCertifyingTeam" style="oblique">
+   <position>{(520,270)(650,290)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreOrganisationInfo" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(190,330)(290,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/OrganisationProfile" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreOrganisationInfo" style="oblique">
+   <position>{(290,380)(410,370)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doOriganisationProfile" linkstyle="Direct" name="" sourceName="/Pages/WebPage/OrganisationProfile" style="oblique">
+   <position>{(410,370)(510,370)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doOriganisationProfile" style="oblique">
+   <position>{(510,370)(650,290)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareDocuments" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(190,330)(280,460)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/PrimaryDocuments" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareDocuments" style="oblique">
+   <position>{(280,460)(390,450)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doDocument" linkstyle="Direct" name="" sourceName="/Pages/WebPage/PrimaryDocuments" style="oblique">
+   <position>{(390,450)(540,450)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doDocument" style="oblique">
+   <position>{(540,450)(650,290)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreparePreview" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(190,330)(280,560)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Preview" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreparePreview" style="oblique">
+   <position>{(280,560)(440,560)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doPreview" linkstyle="Direct" name="" sourceName="/Pages/WebPage/Preview" style="oblique">
+   <position>{(440,560)(540,560)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doPreview" style="oblique">
+   <position>{(540,560)(650,290)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Prepare" style="oblique">
+   <position>{(200,640)(190,330)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Prepare" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
+   <position>{(710,640)(200,640)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/ControlSwitch" style="oblique">
+   <position>{(650,290)(780,280)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(780,280)(710,640)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreAcknowledge" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(780,280)(870,280)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/AcknowleagePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreAcknowledge" style="oblique">
+   <position>{(870,280)(1000,270)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions/>
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="nodeRoute" name="Switch1" x="170" y="310">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/PreCompInfo" value="&quot;compInfo&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PreAdministrator" value="&quot;orgInfo_orgAdmin&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PreCertifyingTeam" value="&quot;orgInfo_orgCerTeam&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PreOrganisationInfo" value="&quot;orgInfo_orgProfile&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareDocuments" value="&quot;primaryDoc&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PreparePreview" value="&quot;previewSubmit&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="indeed_action_type" name="Switch2" x="760" y="260">
+   <Description/>
+   <SwitchCase component="/Merges/Merge/Merge1" value="&quot;jump&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PreAcknowledge" value="&quot;submit&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="690" y="620">
+   <Description/>
+  </Merge>
+ </Merges>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>

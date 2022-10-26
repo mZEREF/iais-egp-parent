@@ -23,7 +23,7 @@
             JOIN premises AS p ON p.ID = lp.PREMISES_ID
             JOIN lic_prem_business_info b ON b.LIC_PREM_ID = lp.ID
             JOIN lic_second_addr lsa ON  lsa.PREMISES_ID = lp.PREMISES_ID
-            WHERE 1=1 AND p.STATUS = 'CMSTAT001'
+            WHERE 1=1 AND l.STATUS = 'LICEST001'
             <#if dPostCode??> AND p.POSTAL_CODE IN (:dPostCode) </#if>
             <#if svcName??>AND l.SVC_NAME = :svcName </#if>
             <#if businessName??> AND b.BUSINESS_NAME = :businessName</#if>

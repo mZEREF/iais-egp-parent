@@ -188,8 +188,6 @@ public final class RfcHelper {
                 || changeServiceAutoFields || changeSpecialServiceInformation || addOrReplacePersonnel
                 || removePersonnel || changePersonnel || changeSupplementaryForm || changeOtherInfoDto
                 || changeOutsourceFields;
-
-
         appEditSelectDto.setServiceEdit(serviceIsChange);
         // set to appSubmissionDto
         appSubmissionDto.setChangeSelectDto(appEditSelectDto);

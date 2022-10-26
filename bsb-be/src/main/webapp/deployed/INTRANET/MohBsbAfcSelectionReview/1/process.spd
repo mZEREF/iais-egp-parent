@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="0" minorVersion="0" name="MohBsbAfcSelectionReview" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices />
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Start" x="10" y="120">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Init" x="120" y="120">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="init_OnStepProcess_0" name="init_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Prepare" x="250" y="120">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepare_OnStepProcess_0" name="prepare_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="BindAction" x="480" y="120">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="bindAction_OnStepProcess_0" name="bindAction_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleSubmit" x="480" y="320">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleSubmit_OnStepProcess_0" name="handleSubmit_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Accept" x="420" y="520">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="accept_OnStepProcess_0" name="accept_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Rfi" x="590" y="520">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="rfi_OnStepProcess_0" name="rfi_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page" stageIndicator="" x="380" y="120">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Acknowledge" stageIndicator="" x="490" y="640">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+ </Pages>
+ <Forms />
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Init" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Start" style="rectanular">
+   <position>{(30,140)(140,140)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Prepare" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Init" style="rectanular">
+   <position>{(140,140)(270,140)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Page" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Prepare" style="rectanular">
+   <position>{(270,140)(400,140)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/BindAction" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/Page" style="rectanular">
+   <position>{(400,140)(500,140)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/ActionSwitch" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/BindAction" style="rectanular">
+   <position>{(500,140)(500,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleSubmit" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/ActionSwitch" style="rectanular">
+   <position>{(500,240)(500,340)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/DicisionSwitch" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/HandleSubmit" style="rectanular">
+   <position>{(500,340)(500,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Accept" linkstyle="Direct" name="" sourceName="/Switches/Switch/DicisionSwitch" style="oblique">
+   <position>{(500,440)(440,540)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Rfi" linkstyle="Direct" name="" sourceName="/Switches/Switch/DicisionSwitch" style="oblique">
+   <position>{(500,440)(610,540)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Acknowledge" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Rfi" style="oblique">
+   <position>{(610,540)(510,660)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Acknowledge" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Accept" style="oblique">
+   <position>{(440,540)(510,660)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/BackMerge" linkstyle="Direct" name="" sourceName="/Switches/Switch/ActionSwitch" style="oblique">
+   <position>{(500,240)(260,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Prepare" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/BackMerge" style="rectanular">
+   <position>{(260,240)(270,140)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/BackMerge" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/DicisionSwitch" style="rectanular">
+   <position>{(500,440)(272,439)(260,240)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions />
+ <Switches>
+  <Switch defClass="" defaultComponent="/Merges/Merge/BackMerge" executor="" icon="" leftOperand="action_type" name="ActionSwitch" x="480" y="220">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/HandleSubmit" value="&quot;submit&quot;" />
+   <SwitchCase component="/Merges/Merge/BackMerge" value="" />
+  </Switch>
+  <Switch defClass="" defaultComponent="/Merges/Merge/BackMerge" executor="" icon="" leftOperand="route" name="DicisionSwitch" x="480" y="420">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/Accept" value="&quot;approve&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/Rfi" value="&quot;rfi&quot;" />
+   <SwitchCase component="/Merges/Merge/BackMerge" value="" />
+  </Switch>
+ </Switches>
+ <Branches />
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="BackMerge" type="Or" x="240" y="220">
+   <Description />
+  </Merge>
+ </Merges>
+ <StudioLabels />
+ <StageIndicator />
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
+</Application>
+
