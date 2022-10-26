@@ -382,8 +382,6 @@ public class PageDataCopyUtil {
             svcOtherInfoDto.setOtherInfoMedAmbulatorySurgicalCentre(rscMedDto);
             svcOtherInfoDto.setAscsDeclaration(appSvcOtherInfoDto.getAscsDeclaration());
             svcOtherInfoDto.setDsDeclaration(appSvcOtherInfoDto.getDsDeclaration());
-            svcOtherInfoDto.setPremisesVal(appSvcOtherInfoDto.getPremisesVal());
-            svcOtherInfoDto.setInit(appSvcOtherInfoDto.isInit());
             appSvcOtherInfoDtos.add(svcOtherInfoDto);
         }
         return appSvcOtherInfoDtos;
@@ -398,12 +396,10 @@ public class PageDataCopyUtil {
         for (AppSvcOtherInfoDto appSvcOtherInfoDto : appSvcOtherInfoDtoList) {
             AppSvcOtherInfoDto svcOtherInfoDto = new AppSvcOtherInfoDto();
             svcOtherInfoDto.setProvideTop(appSvcOtherInfoDto.getProvideTop());
-            svcOtherInfoDto.setInit(appSvcOtherInfoDto.isInit());
             svcOtherInfoDto.setProvideYfVs(appSvcOtherInfoDto.getProvideYfVs());
             svcOtherInfoDto.setDeclaration(appSvcOtherInfoDto.getDeclaration());
             svcOtherInfoDto.setYfCommencementDateStr(appSvcOtherInfoDto.getYfCommencementDateStr());
             svcOtherInfoDto.setYfCommencementDate(appSvcOtherInfoDto.getYfCommencementDate());
-            svcOtherInfoDto.setOrgUserDto(appSvcOtherInfoDto.getOrgUserDto());
             appSvcOtherInfoDtos.add(svcOtherInfoDto);
         }
         return appSvcOtherInfoDtos;
@@ -415,8 +411,6 @@ public class PageDataCopyUtil {
             return new AppSvcOtherInfoMedDto();
         }
         AppSvcOtherInfoMedDto svcOtherInfoMedDto = new AppSvcOtherInfoMedDto();
-        svcOtherInfoMedDto.setId(appSvcOtherInfoMedDto.getId());
-        svcOtherInfoMedDto.setAppPremId(appSvcOtherInfoMedDto.getAppPremId());
         svcOtherInfoMedDto.setSystemOption(appSvcOtherInfoMedDto.getSystemOption());
         svcOtherInfoMedDto.setIsMedicalTypeIt(appSvcOtherInfoMedDto.getIsMedicalTypeIt());
         svcOtherInfoMedDto.setIsMedicalTypePaper(appSvcOtherInfoMedDto.getIsMedicalTypePaper());
@@ -455,9 +449,7 @@ public class PageDataCopyUtil {
             return new AppSvcOtherInfoTopDto();
         }
         AppSvcOtherInfoTopDto svcOtherInfoTopDto = new AppSvcOtherInfoTopDto();
-        svcOtherInfoTopDto.setId(appSvcOtherInfoTopDto.getId());
         svcOtherInfoTopDto.setTopType(appSvcOtherInfoTopDto.getTopType());
-        svcOtherInfoTopDto.setAppPremId(appSvcOtherInfoTopDto.getAppPremId());
         svcOtherInfoTopDto.setIsProvideHpb(appSvcOtherInfoTopDto.getIsProvideHpb());
         svcOtherInfoTopDto.setHasConsuAttendCourse(appSvcOtherInfoTopDto.getHasConsuAttendCourse());
         svcOtherInfoTopDto.setCompCaseNum(appSvcOtherInfoTopDto.getCompCaseNum());
