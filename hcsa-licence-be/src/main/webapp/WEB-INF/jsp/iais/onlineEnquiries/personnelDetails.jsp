@@ -36,7 +36,7 @@
                                 </tr>
                                 <c:if test="${personnel.keyPersonnelDto.idType == 'IDTYPE003'}">
                                     <tr>
-                                        <td align="right">Country of issuance</td>
+                                        <td align="right">Nationality</td>
                                         <td class="col-xs-6" style="padding-left: 15px;"><iais:code code="${personnel.keyPersonnelDto.nationality}"/><c:if test="${empty personnel.keyPersonnelDto.nationality}">-</c:if></td>
                                     </tr>
                                 </c:if>
@@ -78,7 +78,7 @@
                                 </tr>
                                 <c:if test="${personnel.keyPersonnelDto.idType == 'IDTYPE003'}">
                                     <tr>
-                                        <td align="right">Country of issuance</td>
+                                        <td align="right">Nationality</td>
                                         <td class="col-xs-6" style="padding-left: 15px;"><iais:code code="${personnel.keyPersonnelDto.nationality}"/><c:if test="${empty personnel.keyPersonnelDto.nationality}">-</c:if></td>
                                     </tr>
                                 </c:if>

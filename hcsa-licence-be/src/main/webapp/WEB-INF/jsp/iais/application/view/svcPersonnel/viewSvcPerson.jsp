@@ -1,258 +1,123 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <div class="amended-service-info-gp">
-    <label class="app-title">${currStepName}</label>
-    <div class="amend-preview-info">
-        <c:forEach items="${currentPreviewSvcInfo.appSvcPersonnelDtoList}" var="appSvcPersonnelDtoList"
-                   varStatus="status">
-            <div class="form-check-gp">
-                <div class="row">
+    <c:choose>
+        <c:when test="${currentPreviewSvcInfo.svcPersonnelDto != null && currentPreviewSvcInfo.svcPersonnelDto.arPractitionerList.size()>0}">
+            <c:set var="arPractitionerCount"
+                   value="${currentPreviewSvcInfo.svcPersonnelDto.arPractitionerList.size()}"/>
+        </c:when>
+        <c:otherwise>
+            <c:set var="arPractitionerCount" value="0"/>
+        </c:otherwise>
+    </c:choose>
+    <c:choose>
+        <c:when test="${currentPreviewSvcInfo.svcPersonnelDto != null && currentPreviewSvcInfo.svcPersonnelDto.nurseList.size()>0}">
+            <c:set var="nurseCount" value="${currentPreviewSvcInfo.svcPersonnelDto.nurseList.size()}"/>
+        </c:when>
+        <c:otherwise>
+            <c:set var="nurseCount" value="0"/>
+        </c:otherwise>
+    </c:choose>
+    <c:choose>
+        <c:when test="${currentPreviewSvcInfo.svcPersonnelDto != null && currentPreviewSvcInfo.svcPersonnelDto.embryologistList.size()>0}">
+            <c:set var="embryologistMinCount"
+                   value="${currentPreviewSvcInfo.svcPersonnelDto.embryologistList.size()}"/>
+        </c:when>
+        <c:otherwise>
+            <c:set var="embryologistMinCount" value="0"/>
+        </c:otherwise>
+    </c:choose>
+    <c:choose>
+        <c:when test="${currentPreviewSvcInfo.svcPersonnelDto != null && currentPreviewSvcInfo.svcPersonnelDto.specialList.size()>0}">
+            <c:set var="specialCount" value="${currentPreviewSvcInfo.svcPersonnelDto.specialList.size()}"/>
+        </c:when>
+        <c:otherwise>
+            <c:set var="specialCount" value="0"/>
+        </c:otherwise>
+    </c:choose>
+    <c:choose>
+        <c:when test="${currentPreviewSvcInfo.svcPersonnelDto != null && currentPreviewSvcInfo.svcPersonnelDto.normalList.size()>0}">
+            <c:set var="normalCount" value="${currentPreviewSvcInfo.svcPersonnelDto.normalList.size()}"/>
+        </c:when>
+        <c:otherwise>
+            <c:set var="normalCount" value="0"/>
+        </c:otherwise>
+    </c:choose>
+    <iais:row>
+        <label class="app-title">${currStepName}</label>
+    </iais:row>
+    <div class="amend-preview-info form-horizontal min-row">
+        <c:if test="${arPractitionerCount != 0}">
+            <c:forEach begin="0" end="${arPractitionerCount - 1}" step="1" varStatus="status">
+                <c:set var="index" value="${status.index}"/>
+                <c:set var="appSvcPersonnelDto"
+                       value="${currentPreviewSvcInfo.svcPersonnelDto.arPractitionerList[index]}"/>
+                <iais:row>
                     <div class="col-xs-12">
-                        <div class="col-xs-12" style="margin-bottom: 1%;margin-top: 1%">
-                            <p><strong>Service Personnel<c:if
-                                    test="${currentPreviewSvcInfo.appSvcPersonnelDtoList.size() > 1}"> ${status.index+1}</c:if>:</strong>
-                            </p>
-                        </div>
-                        <table aria-describedby="" class="col-xs-12">
-                            <thead style="display: none">
-                            <tr><th scope="col"></th></tr>
-                            </thead>
-                            <c:choose>
-                                <c:when test="${currentPreviewSvcInfo.serviceCode=='BLB'}">
-                                    <tr>
-                                        <td class="col-xs-6">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation </p>
-                                        </td>
-                                        <td>
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.designation}</p>
-                                        </td>
-                                    </tr>
-                                    <c:if test="${'Others' == appSvcPersonnelDtoList.designation}">
-                                        <tr>
-                                            <td class="col-xs-6">
-                                            </td>
-                                            <td>
-                                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.otherDesignation}</p>
-                                            </td>
-                                        </tr>
-                                    </c:if>
-                                    <tr>
-                                        <td class="col-xs-6">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name </p>
-                                        </td>
-                                        <td>
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.name}</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-xs-6">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Regn. No.</p>
-                                        </td>
-                                        <td>
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.profRegNo}</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-xs-6">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Relevant working experience (Years) </p>
-                                        </td>
-                                        <td>
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.wrkExpYear}</p>
-                                        </td>
-                                    </tr>
-                                </c:when>
-                                <c:when test="${currentPreviewSvcInfo.serviceCode=='TSB'}">
-                                    <tr>
-                                        <td class="col-xs-6">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name </p>
-                                        </td>
-                                        <td>
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.name}</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-xs-6">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification </p>
-                                        </td>
-                                        <td>
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.qualification}</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-xs-6">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Relevant working experience (Years) </p>
-                                        </td>
-                                        <td>
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.wrkExpYear}</p>
-                                        </td>
-                                    </tr>
-
-                                </c:when>
-                                <c:when test="${appSvcPersonnelDtoList.personnelType=='SPPT001'}">
-                                    <tr>
-                                        <td class="col-xs-6">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Select Service Personnel </p>
-                                        </td>
-                                        <td>
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="SPPT001"/></p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-xs-6">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name </p>
-                                        </td>
-                                        <td>
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.name}</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-xs-6">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation </p>
-                                        </td>
-                                        <td>
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.designation}</p>
-                                        </td>
-                                    </tr>
-                                    <c:if test="${'Others' == appSvcPersonnelDtoList.designation}">
-                                        <tr>
-                                            <td class="col-xs-6">
-                                            </td>
-                                            <td>
-                                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.otherDesignation}</p>
-                                            </td>
-                                        </tr>
-                                    </c:if>
-                                    <tr>
-                                        <td class="col-xs-6">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification </p>
-                                        </td>
-                                        <td>
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.qualification}</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-xs-6">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Relevant working experience (Years) </p>
-                                        </td>
-                                        <td>
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.wrkExpYear}</p>
-                                        </td>
-                                    </tr>
-                                </c:when>
-                                <c:when test="${appSvcPersonnelDtoList.personnelType=='SPPT002'}">
-                                    <tr>
-                                        <td class="col-xs-6">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Select Service Personnel </p>
-                                        </td>
-                                        <td>
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="SPPT002"/></p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-xs-6">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name </p>
-                                        </td>
-                                        <td>
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.name}</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-xs-6">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification </p>
-                                        </td>
-                                        <td>
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.qualification}</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-xs-6">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Relevant working experience (Years) </p>
-                                        </td>
-                                        <td>
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.wrkExpYear}</p>
-                                        </td>
-                                    </tr>
-                                </c:when>
-                                <c:when test="${appSvcPersonnelDtoList.personnelType=='SPPT003'}">
-                                    <tr>
-                                        <td class="col-xs-6">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Select Service Personnel </p>
-                                        </td>
-                                        <td>
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="SPPT003"/></p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-xs-6">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name </p>
-                                        </td>
-                                        <td>
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.name}</p>
-                                        </td>
-                                    </tr>
-                                </c:when>
-                                <c:when test="${appSvcPersonnelDtoList.personnelType=='SPPT004'}">
-                                    <tr>
-                                        <td class="col-xs-6">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Select Service Personnel </p>
-                                        </td>
-                                        <td>
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="SPPT004"/></p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-xs-6">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name </p>
-                                        </td>
-                                        <td>
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.name}</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-xs-6">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Regn. No. </p>
-                                        </td>
-                                        <td>
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.profRegNo}</p>
-                                        </td>
-                                    </tr>
-                                </c:when>
-                                <c:otherwise>
-                                    <tr>
-                                        <td class="col-xs-6">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name </p>
-                                        </td>
-                                        <td>
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.name}</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-xs-6">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification </p>
-                                        </td>
-                                        <td>
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.qualification}
-                                            </p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-xs-6">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Relevant working experience (Years) </p>
-                                        </td>
-                                        <td>
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.wrkExpYear}</p>
-                                        </td>
-                                    </tr>
-                                </c:otherwise>
-                            </c:choose>
-                        </table>
+                        <p><strong>AR Practitioner<c:if test="${arPractitionerCount > 1}"> ${index+1}</c:if>:</strong>
+                        </p>
                     </div>
-                </div>
+                </iais:row>
+                <%@include file="viewServicePersonnelArDetail.jsp" %>
+            </c:forEach>
+        </c:if>
 
-            </div>
+        <c:if test="${nurseCount != 0}">
 
-        </c:forEach>
+            <c:forEach begin="0" end="${nurseCount - 1}" step="1" varStatus="status">
+                <c:set var="index" value="${status.index}"/>
+                <c:set var="appSvcPersonnelDto" value="${currentPreviewSvcInfo.svcPersonnelDto.nurseList[index]}"/>
+                <iais:row>
+                    <div class="col-xs-12">
+                        <p><strong>Nurse<c:if test="${nurseCount > 1}"> ${index+1}</c:if>:</strong></p>
+                    </div>
+                </iais:row>
+                <%@include file="viewServicePersonnelNurse.jsp" %>
+            </c:forEach>
+        </c:if>
 
+        <c:if test="${embryologistMinCount != 0}">
+            <c:forEach begin="0" end="${embryologistMinCount - 1}" step="1" varStatus="status">
+                <c:set var="index" value="${status.index}"/>
+                <c:set var="appSvcPersonnelDto"
+                       value="${currentPreviewSvcInfo.svcPersonnelDto.embryologistList[index]}"/>
+                <iais:row>
+                    <div class="col-xs-12">
+                        <p><strong>Embryologist<c:if test="${embryologistMinCount > 1}"> ${index+1}</c:if>:</strong></p>
+                    </div>
+                </iais:row>
+                <%@include file="viewServicePersonnelEmbryologist.jsp" %>
+            </c:forEach>
+        </c:if>
+
+        <c:if test="${normalCount != 0}">
+            <c:forEach begin="0" end="${normalCount - 1}" step="1" varStatus="status">
+                <c:set var="index" value="${status.index}"/>
+                <c:set var="appSvcPersonnelDto" value="${currentPreviewSvcInfo.svcPersonnelDto.normalList[index]}"/>
+                <iais:row>
+                    <div class="col-xs-12">
+                        <p><strong>Service Personnel<c:if test="${normalCount > 1}"> ${index+1}</c:if>:</strong></p>
+                    </div>
+                </iais:row>
+                <%@include file="viewServicePersonnelBlood.jsp" %>
+            </c:forEach>
+        </c:if>
+
+        <c:if test="${specialCount != 0}">
+            <c:forEach begin="0" end="${specialCount - 1}" step="1" varStatus="status">
+                <c:set var="index" value="${status.index}"/>
+                <c:set value="111" var="logo"/>
+                <c:set var="appSvcPersonnelDto"
+                       value="${currentPreviewSvcInfo.svcPersonnelDto.specialList[index]}"/>
+                <iais:row>
+                    <div class="col-xs-12">
+                        <p><strong>Service Personnel<c:if test="${specialCount > 1}"> ${index+1}</c:if>:</strong></p>
+                    </div>
+                </iais:row>
+                <%@include file="viewServicePersonnelDetail.jsp" %>
+            </c:forEach>
+        </c:if>
     </div>
-
 </div>
+
+

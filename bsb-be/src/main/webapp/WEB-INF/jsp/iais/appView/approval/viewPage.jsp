@@ -1,0 +1,106 @@
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="approvalApp" tagdir="/WEB-INF/tags/approvalApp" %>
+
+<%--@elvariable id="needCompare" type="java.lang.Boolean"--%>
+<%--@elvariable id="processType" type="java.lang.String"--%>
+<%--@elvariable id="viewType" type="java.lang.String"--%>
+<%--@elvariable id="facProfileDto" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto"--%>
+<%--@elvariable id="compareBatInfos" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.compare.CompareWrap>"--%>
+<%--@elvariable id="compareSathDto" type="sg.gov.moh.iais.egp.bsb.dto.compare.CompareWrap"--%>
+<%--@elvariable id="compareFacAuthorisers" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.compare.CompareWrap>"--%>
+<%--@elvariable id="compareWorkActivitys" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.compare.CompareWrap>"--%>
+<%--@elvariable id="docSettings" type="java.util.List<sg.gov.moh.iais.egp.bsb.entity.DocSetting>"--%>
+<%--@elvariable id="otherDocTypes" type="java.util.Collection<java.lang.String>"--%>
+<%--@elvariable id="compareDocMap" type="java.util.Map<java.lang.String, java.util.List<sg.gov.moh.iais.egp.bsb.dto.compare.CompareWrap>>"--%>
+<%--@elvariable id="savedFiles" type="java.util.Map<java.lang.String, java.util.List<sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo>>"--%>
+<%--@elvariable id="batInfo" type="java.lang.Object"--%>
+<%--@elvariable id="facAuthListWanted" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.entity.FacilityAuthoriserDto>"--%>
+<c:if test="${needCompare}">
+    <approvalApp:compare-preview facProfileDto="${facProfileDto}" compareBatInfos="${compareBatInfos}" compareSathDto="${compareSathDto}" compareFacAuthorisers="${compareFacAuthorisers}" compareWorkActivitys="${compareWorkActivitys}" processType="${processType}">
+        <jsp:attribute name="docFrag">
+            <c:forEach var="doc" items="${docSettings}">
+                <div class="form-group">
+                    <div class="col-10"><strong>${doc.typeDisplay}</strong></div>
+                    <div class="clear"></div>
+                </div>
+                <c:forEach var="compareWrap" items="${compareDocMap.get(doc.type)}" varStatus="status">
+                    <c:set var="oldFile" value="${compareWrap.oldDto}"/>
+                    <c:set var="newFile" value="${compareWrap.newDto}"/>
+                    <div class="form-group">
+                        <c:set var="oldRepoId"><iais:mask name="file" value="${oldFile.repoId}"/></c:set>
+                        <div class="col-xs-6"><p data-compare-old="${doc.type}${status.index}" data-val="${oldFile.repoId}"><a href="/bsb-web/ajax/doc/download/repo/${oldRepoId}?filename=${oldFile.filename}">${oldFile.filename}</a>(<fmt:formatNumber value="${oldFile.size/1024.0}" type="number" pattern="0.0"/>KB)</p></div>
+                        <c:set var="newRepoId"><iais:mask name="file" value="${newFile.repoId}"/></c:set>
+                        <div class="col-xs-6"><p data-compare-new="${doc.type}${status.index}" data-val="${newFile.repoId}" class="compareTdStyle" style="display: none"><a href="/bsb-web/ajax/doc/download/repo/${newRepoId}?filename=${newFile.filename}">${newFile.filename}</a>(<fmt:formatNumber value="${newFile.size/1024.0}" type="number" pattern="0.0"/>KB)</p></div>
+                        <div class="clear"></div>
+                    </div>
+                </c:forEach>
+            </c:forEach>
+            <c:if test="${not empty otherDocTypes}">
+                <div class="form-group">
+                    <div class="col-10"><strong>Others</strong></div>
+                    <div class="clear"></div>
+                </div>
+                <div>
+                    <c:forEach var="type" items="${otherDocTypes}">
+                        <c:forEach var="compareWrap" items="${compareDocMap.get(type)}" varStatus="status">
+                            <c:set var="oldFile" value="${compareWrap.oldDto}"/>
+                            <c:set var="newFile" value="${compareWrap.newDto}"/>
+                            <div class="form-group">
+                                <c:set var="oldRepoId"><iais:mask name="file" value="${oldFile.repoId}"/></c:set>
+                                <div class="col-xs-6"><p data-compare-old="${doc.type}${status.index}" data-val="${oldFile.repoId}"><a href="/bsb-web/ajax/doc/download/repo/${oldRepoId}?filename=${oldFile.filename}">${oldFile.filename}</a>(<fmt:formatNumber value="${oldFile.size/1024.0}" type="number" pattern="0.0"/>KB)</p></div>
+                                <c:set var="newRepoId"><iais:mask name="file" value="${newFile.repoId}"/></c:set>
+                                <div class="col-xs-6"><p data-compare-new="${doc.type}${status.index}" data-val="${newFile.repoId}" class="compareTdStyle" style="display: none"><a href="/bsb-web/ajax/doc/download/repo/${newRepoId}?filename=${newFile.filename}">${newFile.filename}</a>(<fmt:formatNumber value="${newFile.size/1024.0}" type="number" pattern="0.0"/>KB)</p></div>
+                                <div class="clear"></div>
+                            </div>
+                        </c:forEach>
+                    </c:forEach>
+                </div>
+            </c:if>
+        </jsp:attribute>
+    </approvalApp:compare-preview>
+</c:if>
+
+<c:if test="${!needCompare}">
+    <approvalApp:preview facProfileDto="${facProfileDto}" batInfo="${batInfo}" facAuthorisedList="${facAuthListWanted}" processType="${processType}" viewType="${viewType}">
+        <jsp:attribute name="docFrag">
+            <c:forEach var="doc" items="${docSettings}">
+                <c:set var="savedFileList" value="${savedFiles.get(doc.type)}" />
+                <c:if test="${not empty savedFileList}">
+                    <div class="form-group">
+                        <div class="col-10"><strong>${doc.typeDisplay}</strong></div>
+                        <div class="clear"></div>
+                    </div>
+                    <div>
+                        <c:forEach var="file" items="${savedFileList}">
+                            <c:set var="repoId"><iais:mask name="file" value="${file.repoId}"/></c:set>
+                            <div class="form-group">
+                                <div class="col-10"><p><a href="/bsb-web/ajax/doc/download/repo/${repoId}?filename=${file.filename}">${file.filename}</a>(<fmt:formatNumber value="${file.size/1024.0}" type="number" pattern="0.0"/>KB)</p></div>
+                                <div class="clear"></div>
+                            </div>
+                        </c:forEach>
+                    </div>
+                </c:if>
+            </c:forEach>
+            <c:if test="${not empty otherDocTypes}">
+                <div class="form-group">
+                    <div class="col-10"><strong>Others</strong></div>
+                    <div class="clear"></div>
+                </div>
+                <div>
+                    <c:forEach var="type" items="${otherDocTypes}">
+                        <c:set var="savedFileList" value="${savedFiles.get(type)}" />
+                        <c:forEach var="file" items="${savedFileList}">
+                            <c:set var="repoId"><iais:mask name="file" value="${file.repoId}"/></c:set>
+                            <div class="form-group">
+                                <div class="col-10"><p><a href="/bsb-web/ajax/doc/download/repo/${repoId}?filename=${file.filename}">${file.filename}</a>(<fmt:formatNumber value="${file.size/1024.0}" type="number" pattern="0.0"/>KB)</p></div>
+                                <div class="clear"></div>
+                            </div>
+                        </c:forEach>
+                    </c:forEach>
+                </div>
+            </c:if>
+        </jsp:attribute>
+    </approvalApp:preview>
+</c:if>
