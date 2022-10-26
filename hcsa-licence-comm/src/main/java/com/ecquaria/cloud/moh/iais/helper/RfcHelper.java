@@ -186,7 +186,8 @@ public final class RfcHelper {
         boolean changeServiceAutoFields = changeCharges || changeSvcDocs;
         boolean serviceIsChange = changeVehicles || changeBusiness
                 || changeServiceAutoFields || changeSpecialServiceInformation || addOrReplacePersonnel
-                || removePersonnel || changePersonnel || changeSupplementaryForm;
+                || removePersonnel || changePersonnel || changeSupplementaryForm || changeOtherInfoDto
+                || changeOutsourceFields;
 
 
         appEditSelectDto.setServiceEdit(serviceIsChange);
