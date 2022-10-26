@@ -1,7 +1,7 @@
 <div class="person-detail counsellors">
     <input type="hidden" name="cpsnType" value="counsellors">
     <iais:row>
-        <iais:field width="5" value="Name of certified TOP counsellors(Only Doctor/Nurse)"/>
+        <iais:field width="5" value="Name of certified TOP counsellors (Only Doctor/Nurse)"/>
         <iais:value width="3" cssClass="col-md-7" display="true">
             <c:out value="${person.name}" />
         </iais:value>

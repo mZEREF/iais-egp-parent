@@ -45,7 +45,7 @@
     </iais:row>
 
     <iais:row>
-        <iais:field width="5" cssClass="col-md-5" value="Applicant Name"/>
+        <iais:field width="5" cssClass="col-md-5" value="Applicant name"/>
         <iais:value width="7" cssClass="col-md-7" display="true">
             <c:out value="${orgUse.displayName}"/>
         </iais:value>

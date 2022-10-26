@@ -28,17 +28,17 @@
             <input type="hidden" class="topTypeVal" name="topTypeVal" value="${appSvcOtherInfoTop.topType}"/>
             <iais:value width="4" cssClass="form-check col-md-4">
                 <input class="form-check-input topType " <c:if test="${'1' == appSvcOtherInfoTop.topType}">checked="checked"</c:if>  type="radio" name="${prefix}topType" value = "1" aria-invalid="false" onclick="getTopTypeValue('${prefix}','1');">
-                <label class="form-check-label" ><span class="check-circle"></span>Termination of Pregnancy(Solely by Drug)</label>
+                <label class="form-check-label" ><span class="check-circle"></span>Termination of Pregnancy (Solely by Drug)</label>
             </iais:value>
 
             <iais:value width="4" cssClass="form-check col-md-4">
                 <input class="form-check-input topType" <c:if test="${'0' == appSvcOtherInfoTop.topType}">checked="checked"</c:if>  type="radio" name="${prefix}topType" value = "0" aria-invalid="false" onclick="getTopTypeValue('${prefix}','0');">
-                <label class="form-check-label" ><span class="check-circle"></span>Termination of Pregnancy(Solely by Surgical Procedure)</label>
+                <label class="form-check-label" ><span class="check-circle"></span>Termination of Pregnancy (Solely by Surgical Procedure)</label>
             </iais:value>
 
             <iais:value width="4" cssClass="form-check col-md-4">
                 <input class="form-check-input topType" <c:if test="${'-1' == appSvcOtherInfoTop.topType}">checked="checked"</c:if>  type="radio" name="${prefix}topType" value = "-1" aria-invalid="false" onclick="getTopTypeValue('${prefix}','-1');">
-                <label class="form-check-label" ><span class="check-circle"></span>Termination of Pregnancy(Drug and Surgical Procedure)</label>
+                <label class="form-check-label" ><span class="check-circle"></span>Termination of Pregnancy (Drug and Surgical Procedure)</label>
             </iais:value>
         </iais:row>
 

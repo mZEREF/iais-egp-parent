@@ -12,7 +12,7 @@
                         </div>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Year."/>
+                        <iais:field width="5" value="Year"/>
                         <iais:value width="3" cssClass="col-md-7" display="true">
                             <c:out value="${person.year}" />
                         </iais:value>
@@ -39,7 +39,7 @@
                         </div>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Year."/>
+                        <iais:field width="5" value="Year"/>
                         <iais:value width="3" cssClass="col-md-7" display="true">
                             <c:out value="${person.year}" />
                         </iais:value>
@@ -66,7 +66,7 @@
                         </div>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Year."/>
+                        <iais:field width="5" value="Year"/>
                         <iais:value width="3" cssClass="col-md-7" display="true">
                             <c:out value="${person.year}" />
                         </iais:value>

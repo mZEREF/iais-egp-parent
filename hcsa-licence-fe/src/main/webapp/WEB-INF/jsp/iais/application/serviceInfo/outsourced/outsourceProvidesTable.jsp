@@ -92,7 +92,7 @@
                     </td>
                     <td>
                         <input type="hidden" name="prefixVal" value="">
-                        <button type="button" class="btn btn-default btn-sm btn-add" data-prefix="${prefix}" data-group="${outsourcedIndexNo}">Add</button>
+                        <button type="button" class="btn btn-default btn-sm btn-add" data-prefix="${prefix}" data-group="${outsourcedIndexNo}">Add Another Outsourced Provider</button>
                     </td>
                 </tr>
                 </c:forEach>

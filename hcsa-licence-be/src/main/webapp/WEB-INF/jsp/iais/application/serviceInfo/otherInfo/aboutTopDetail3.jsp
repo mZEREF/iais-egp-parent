@@ -2,7 +2,7 @@
 <c:if test="${('-1' != appSvcOtherInfoTop.topType) || ('0' == provideTop) || (empty appSvcOtherInfoTop.topType)}">hidden</c:if>" data-prefix="${prefix}">
     <iais:row>
         <div class="col-xs-12 col-md-10">
-            <p class="bold">TOP (By Drug and Surgical Procedure)&nbsp;<label class="assign-psn-item" style="font-weight: bold;!important;" data-prefix="${prefix}"><c:if test="${topBySurgicalProcedure.size() > 1}">${index+1}</c:if></label></p>
+            <p class="bold">TOP (By Drug and Surgical Procedure)&nbsp;<label class="assign-psn-item" style="font-weight: bold;!important;" data-prefix="${prefix}"><c:if test="${topByAll.size() > 1}">${index+1}</c:if></label></p>
         </div>
         <div class="col-xs-12 col-md-2 text-right removeTopByAllBtn rTDiv" data-prefix="${prefix}">
             <h4 class="text-danger">
@@ -13,7 +13,7 @@
     <input type="hidden" class="isPartEditAll" name="${prefix}isPartEditAll${index}" value="0" data-prefix="${prefix}"/>
     <input type="hidden" class="topTypeAll" name="${prefix}topTypeAll${index}" value="${person.topType}" data-prefix="${prefix}"/>
     <iais:row>
-        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Year."/>
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Year"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="4" type="text" cssClass="ayear" name="${prefix}ayear${index}" value="${person.year}"/>
         </iais:value>

@@ -38,7 +38,7 @@
             <c:forEach var="person" items="${appSvcOtherInfoDto.otherInfoTopPersonNursesList}" varStatus="nstatus">
                 <iais:row>
                     <div class="col-xs-12">
-                        <p><strong>Name and Qualification of trained nurses&nbsp;<c:if test="${appSvcOtherInfoDto.otherInfoTopPersonNursesList.size()>1}">${nstatus.index+1}:</c:if></strong></p>
+                        <p><strong>Name and Qualifications of trained nurses&nbsp;<c:if test="${appSvcOtherInfoDto.otherInfoTopPersonNursesList.size()>1}">${nstatus.index+1}:</c:if></strong></p>
                     </div>
                 </iais:row>
                 <%@include file="viewNursesDetail.jsp"%>
@@ -47,7 +47,7 @@
             <c:forEach var="person" items="${appSvcOtherInfoDto.otherInfoTopPersonCounsellorsList}" varStatus="cstatus">
                 <iais:row>
                     <div class="col-xs-12">
-                        <p><strong>Name, Professional Regn. No. and Qualification of certified TOP counsellors&nbsp;<c:if test="${appSvcOtherInfoDto.otherInfoTopPersonCounsellorsList.size()>1}">${cstatus.index+1}:</c:if></strong></p>
+                        <p><strong>Name and Qualifications of certified TOP counsellors&nbsp;<c:if test="${appSvcOtherInfoDto.otherInfoTopPersonCounsellorsList.size()>1}">${cstatus.index+1}:</c:if></strong></p>
                     </div>
                 </iais:row>
                 <%@include file="viewCounsellorsDetail.jsp"%>

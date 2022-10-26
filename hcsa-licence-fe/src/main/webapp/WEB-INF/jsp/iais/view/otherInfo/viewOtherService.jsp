@@ -4,9 +4,11 @@
             <div class="">
                 <div class="app-title">Other Services</div>
             </div>
+            <div style="margin-top: 10px;!important;">
+                <span>Do you intend to provide the following services:</span>
+            </div>
             <iais:row>
                 <fieldset class="fieldset-content col-xs-12">
-                    <legend></legend>
                     <div class="form-check-gp">
                         <c:forEach var="item" items="${appSvcOtherInfoDto.allAppPremSubSvcRelDtoList}" varStatus="status">
                             <c:if test="${item.checked}">

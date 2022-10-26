@@ -54,6 +54,9 @@
     <input type="hidden" name="pIds" value="">
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+        <div class="col-xs-12 col-md-12" style="margin-top: 30px;!important;">
+
+        </div>
         <div class="col-md-12 col-xs-12" style="margin-top: 30px;!important;">
             <div class="col-xs-6 col-md-6 svcNameSel">
                 <iais:row>
@@ -83,7 +86,7 @@
                     <iais:field width="5"  value="Licence No. "/>
                     <iais:value width="7" cssClass="col-md-7">
                         <%String licNo = request.getParameter("licNo");%>
-                        <iais:input maxLength="100" type="text" cssClass="licNo" name="licNo" value="<%=licNo%>"/>
+                        <iais:input maxLength="20" type="text" cssClass="licNo" name="licNo" value="<%=licNo%>"/>
                     </iais:value>
                 </iais:row>
             </div>
@@ -93,7 +96,7 @@
                     <iais:field width="5"  value="Postal Code"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <%String postalCode = request.getParameter("postalCode");%>
-                        <iais:input maxLength="6" type="number" cssClass="postalCode" name="postalCode" value="<%=postalCode%>"/>
+                        <iais:input maxLength="6" type="text" cssClass="postalCode" name="postalCode" value="<%=postalCode%>"/>
                     </iais:value>
                 </iais:row>
             </div>

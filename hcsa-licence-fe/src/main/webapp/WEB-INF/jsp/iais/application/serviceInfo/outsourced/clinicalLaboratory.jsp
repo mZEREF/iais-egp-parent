@@ -7,11 +7,14 @@
         <div class="col-xs-12">
             <strong>Outsourced Service Provider(s)</strong>
         </div>
+        <div class="col-xs-12">
+            <span class="error-msg" name="iaisErrorMsg" id="error_clbList"></span>
+        </div>
     </iais:row>
 
     <iais:row>
         <div class="col-xs-12 <c:if test="${AppSubmissionDto.appLicBundleDtoList[0].svcCode eq AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY}">hidden</c:if>">
-            <p>Clinical Laboratory</p>
+            <strong>Clinical Laboratory</strong>
         </div>
     </iais:row>
 

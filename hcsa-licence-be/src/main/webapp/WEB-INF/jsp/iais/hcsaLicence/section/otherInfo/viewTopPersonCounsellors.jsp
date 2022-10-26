@@ -3,7 +3,7 @@
         <th scope="col" style="display: none"></th>
         <td class="col-xs-6">
             <p class="form-check-label" aria-label="premise-1-cytology">
-                <span class="check-square"></span>Name of certified TOP counsellors(Only Doctor/Nurse)
+                <span class="check-square"></span>Name of certified TOP counsellors (Only Doctor/Nurse)
             </p>
         </td>
         <td>
@@ -96,6 +96,29 @@
                 <span class=" oldVal" attr="${oldOtherInfo.appSvcOtherInfoTopDto.hasConsuAttendCourse}" style="display: none">
                     <c:if test="${true == oldOtherInfo.appSvcOtherInfoTopDto.hasConsuAttendCourse}">Yes</c:if>
                     <c:if test="${false == oldOtherInfo.appSvcOtherInfoTopDto.hasConsuAttendCourse}">No</c:if>
+                </span>
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+        <th scope="col" style="display: none"></th>
+        <td class="col-xs-6">
+            <p class="form-check-label" aria-label="premise-1-cytology">
+                <span class="check-square"></span>The service provider has the necessary counselling facilities e.g. TV set, video player, video on abortion produced by HPB in different languages and the pamphlets produced by HPB
+            </p>
+        </td>
+        <td>
+            <div class="col-xs-6 ">
+                <span class="newVal" attr="${otherInfo.appSvcOtherInfoTopDto.isProvideHpb}">
+                    <c:if test="${true == otherInfo.appSvcOtherInfoTopDto.isProvideHpb}">Yes</c:if>
+                    <c:if test="${false == otherInfo.appSvcOtherInfoTopDto.isProvideHpb}">No</c:if>
+                </span>
+            </div>
+            <div class="col-xs-6 ">
+                <span class=" oldVal" attr="${oldOtherInfo.appSvcOtherInfoTopDto.isProvideHpb}" style="display: none">
+                    <c:if test="${true == oldOtherInfo.appSvcOtherInfoTopDto.isProvideHpb}">Yes</c:if>
+                    <c:if test="${false == oldOtherInfo.appSvcOtherInfoTopDto.isProvideHpb}">No</c:if>
                 </span>
             </div>
         </td>

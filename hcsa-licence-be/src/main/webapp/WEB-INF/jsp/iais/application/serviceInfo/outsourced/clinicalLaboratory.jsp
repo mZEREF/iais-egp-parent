@@ -7,11 +7,14 @@
         <div class="col-xs-12">
             <strong>Outsourced Service Provider(s)</strong>
         </div>
+        <div class="col-xs-12">
+            <span class="error-msg" name="iaisErrorMsg" id="error_clbList"></span>
+        </div>
     </iais:row>
 
     <iais:row>
         <div class="col-xs-12 <c:if test="${AppSubmissionDto.appLicBundleDtoList[0].svcCode eq AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY}">hidden</c:if>">
-            <p>Clinical Laboratory</p>
+            <strong>Clinical Laboratory</strong>
         </div>
     </iais:row>
 
@@ -20,13 +23,83 @@
             <table aria-describedby="" class="table">
                 <thead>
                 <tr>
-                    <iais:sortableHeader needSort="true" field="LICENCE_NO" value="Licence No." style="width:15%;" customSpacing="12"/>
-                    <iais:sortableHeader needSort="true" field="BUSINESS_NAME" value="Business Name" style="width:15%;" customSpacing="12"/>
-                    <iais:sortableHeader needSort="true" field="ADDRESS" value="Address" style="width:10%;" customSpacing="12"/>
-                    <iais:sortableHeader needSort="true" field="EXPIRY_DATE" value="Licence Tenure" style="width:15%;" customSpacing="30"/>
-                    <iais:sortableHeader needSort="true" field="AGREEMENT_START_DATE" value="Date of Agreement" style="width:15%;" customSpacing="12"/>
-                    <iais:sortableHeader needSort="true" field="AGREEMENT_END_DATE" value="End Date of Agreement" style="width:15%;" customSpacing="12"/>
-                    <iais:sortableHeader needSort="true" field="OUTSTANDING_SCOPE" value="Scope of Outsourcing" style="width:15%;" customSpacing="12"/>
+                    <th class="sorting" style="width:15%;">
+                        <span class="column-sort">
+                            <a class="sort-up" href="javascript:sortCLDRecords('LICENCE_NO', 'ASC');" title="Sort up">
+                                <span class="glyphicon glyphicon-chevron-up"></span>
+                            </a>
+                            <a class="sort-down " href="javascript:sortCLDRecords('LICENCE_NO', 'DESC');" title="Sort down">
+                                <span class="glyphicon glyphicon-chevron-down" style="font-size: 10px"></span>
+                            </a>
+                        </span>
+                        <p style="margin-left:12px;">Licence No.</p>
+                    </th>
+                    <th class="sorting" style="width:15%;">
+                        <span class="column-sort">
+                            <a class="sort-up" href="javascript:sortCLDRecords('BUSINESS_NAME', 'ASC');" title="Sort up">
+                                <span class="glyphicon glyphicon-chevron-up"></span>
+                            </a>
+                            <a class="sort-down " href="javascript:sortCLDRecords('BUSINESS_NAME', 'DESC');" title="Sort down">
+                                <span class="glyphicon glyphicon-chevron-down" style="font-size: 10px"></span>
+                            </a>
+                        </span>
+                        <p style="margin-left:12px;">Business Name</p>
+                    </th>
+                    <th class="sorting" style="width:10%;">
+                        <span class="column-sort">
+                            <a class="sort-up" href="javascript:sortCLDRecords('ADDRESS', 'ASC');" title="Sort up">
+                                <span class="glyphicon glyphicon-chevron-up"></span>
+                            </a>
+                            <a class="sort-down " href="javascript:sortCLDRecords('ADDRESS', 'DESC');" title="Sort down">
+                                <span class="glyphicon glyphicon-chevron-down" style="font-size: 10px"></span>
+                            </a>
+                        </span>
+                        <p style="margin-left:12px;">Address</p>
+                    </th>
+                    <th class="sorting" style="width:15%;">
+                        <span class="column-sort">
+                            <a class="sort-up" href="javascript:sortCLDRecords('EXPIRY_DATE', 'ASC');" title="Sort up">
+                                <span class="glyphicon glyphicon-chevron-up"></span>
+                            </a>
+                            <a class="sort-down " href="javascript:sortCLDRecords('EXPIRY_DATE', 'DESC');" title="Sort down">
+                                <span class="glyphicon glyphicon-chevron-down" style="font-size: 10px"></span>
+                            </a>
+                        </span>
+                        <p style="margin-left:30px;">Licence Tenure</p>
+                    </th>
+                    <th class="sorting" style="width:15%;">
+                        <span class="column-sort">
+                            <a class="sort-up" href="javascript:sortCLDRecords('AGREEMENT_START_DATE', 'ASC');" title="Sort up">
+                                <span class="glyphicon glyphicon-chevron-up"></span>
+                            </a>
+                            <a class="sort-down " href="javascript:sortCLDRecords('AGREEMENT_START_DATE', 'DESC');" title="Sort down">
+                                <span class="glyphicon glyphicon-chevron-down" style="font-size: 10px"></span>
+                            </a>
+                        </span>
+                        <p style="margin-left:12px;">Date of Agreement</p>
+                    </th>
+                    <th class="sorting" style="width:15%;">
+                        <span class="column-sort">
+                            <a class="sort-up" href="javascript:sortCLDRecords('AGREEMENT_END_DATE', 'ASC');" title="Sort up">
+                                <span class="glyphicon glyphicon-chevron-up"></span>
+                            </a>
+                            <a class="sort-down " href="javascript:sortCLDRecords('AGREEMENT_END_DATE', 'DESC');" title="Sort down">
+                                <span class="glyphicon glyphicon-chevron-down" style="font-size: 10px"></span>
+                            </a>
+                        </span>
+                        <p style="margin-left:12px;">End Date of Agreement</p>
+                    </th>
+                    <th class="sorting" style="width:15%;">
+                        <span class="column-sort">
+                            <a class="sort-up" href="javascript:sortCLDRecords('OUTSTANDING_SCOPE', 'ASC');" title="Sort up">
+                                <span class="glyphicon glyphicon-chevron-up"></span>
+                            </a>
+                            <a class="sort-down " href="javascript:sortCLDRecords('OUTSTANDING_SCOPE', 'DESC');" title="Sort down">
+                                <span class="glyphicon glyphicon-chevron-down" style="font-size: 10px"></span>
+                            </a>
+                        </span>
+                        <p style="margin-left:12px;">Scope of Outsourcing</p>
+                    </th>
                     <th></th>
                 </tr>
                 </thead>
@@ -96,7 +169,7 @@
             };
         }
     }
-    function sortRecords(sortFieldName,sortType){
+    function sortCLDRecords(sortFieldName,sortType){
         showWaiting();
         $("input[name='btnStep']").val("sort");
         $("input[name='classSort']").val("cLDSort");

@@ -162,8 +162,8 @@
         <td class="col-xs-6">
             <p class="form-check-label" aria-label="premise-1-cytology">
                 <span class="check-square"></span>Is the medical practitioners authorised by MOH to perform Abortion
-                (if No, please upload a copy of the Obstetrics & Gynaecology certificate and
-                From 2 at the Document page)
+                (if No, please upload a copy of the Obstetrics & Gynaecology certificate
+                and TOP FORM II at the Document page)
             </p>
         </td>
         <td>

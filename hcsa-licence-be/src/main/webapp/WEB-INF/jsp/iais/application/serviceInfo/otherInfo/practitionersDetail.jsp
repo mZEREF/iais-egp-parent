@@ -1,6 +1,6 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <c:set var="psnType" value="${ApplicationConsts.OTHER_TOP_PRACTITIONERS}"/>
-<div class="practitioners person-detail <c:if test="${'1' != provideTop}">hidden</c:if>" data-prefix="${prefix}">
+<div class="practitioners person-detail  person-content <c:if test="${'1' != provideTop}">hidden</c:if>" data-prefix="${prefix}">
     <iais:row>
         <div class="col-xs-12 col-md-10">
             <p class="bold">Name, Professional Regn. No. and Qualification of medical practitioners authorised to perform Abortion
@@ -60,10 +60,10 @@
 
     <iais:row cssClass="row">
         <iais:value width="5" cssClass="col-md-5">
-            <label class="form-check-label" >Is the medical practitioners authorised by MOH to perform Abortion
-                (if No, please upload a copy of the Obstetrics & Gynaecology certificate and
-                <a href="${pageContext.request.contextPath}/co-non-hcsa-template-top" style="color:deepskyblue;cursor:pointer;text-decoration: underline;">From 2</a>
-                at the Document page)
+            <label class="form-check-label" >
+                Is the medical practitioners authorised by MOH to perform Abortion
+                (if No, please upload a copy of the Obstetrics & Gynaecology certificate
+                and <a href="${pageContext.request.contextPath}/co-non-hcsa-template-top" style="color:deepskyblue;cursor:pointer;text-decoration: underline;">TOP FORM II</a> at the Document page)
                 <span class="mandatory">*</span>
             </label>
         </iais:value>

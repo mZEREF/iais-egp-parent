@@ -152,7 +152,7 @@
                         <c:if test="${!isRfi}">
                             <div class="col-md-12 col-xs-12 addGeneralChargesDiv <c:if test="${!needAddPsn}">hidden</c:if>">
                             <span class="addGeneralChargesBtn" style="color:deepskyblue;cursor:pointer;">
-                                <span style="">+ Add Other Conveyance Related Charges</span>
+                                <span style="">+ Add other conveyance related charges</span>
                             </span>
                             </div>
                         </c:if>
@@ -306,7 +306,7 @@
                             <c:if test="${!isRfi}">
                                 <div class="col-md-12 col-xs-12 addOtherChargesDiv <c:if test="${!needAddPsn}">hidden</c:if>">
                                 <span class="addOtherChargesBtn" style="color:deepskyblue;cursor:pointer;">
-                                    <span style="">+ Add Medical Equipment And Other Charges</span>
+                                    <span style="">+ Add Medical Equipment and Other Charges</span>
                                 </span>
                                 </div>
                             </c:if>

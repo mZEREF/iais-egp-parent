@@ -38,14 +38,14 @@
 
                                     <c:forEach var="nurses" items="${otherInfo.otherInfoTopPersonNursesList}" varStatus="status">
                                         <c:set var="oldNurses" value="${oldOtherInfo.otherInfoTopPersonNursesList[status.index]}"/>
-                                        <p class="col-xs-12">Name and Qualification of trained nurses&nbsp;
+                                        <p class="col-xs-12">Name and Qualifications of trained nurses&nbsp;
                                             <c:if test="${fn:length(otherInfo.otherInfoTopPersonNursesList)>1}">${status.index+1}</c:if></p>
                                         <%@include file="viewTopPersonNurses.jsp"%>
                                     </c:forEach>
 
                                     <c:forEach var="counsellors" items="${otherInfo.otherInfoTopPersonCounsellorsList}" varStatus="status">
                                         <c:set var="oldCounsellors" value="${oldOtherInfo.otherInfoTopPersonCounsellorsList[status.index]}"/>
-                                        <p class="col-xs-12">Name, Professional Regn. No. and Qualification of certified TOP counsellors&nbsp;
+                                        <p class="col-xs-12">Name and Qualifications of certified TOP counsellors&nbsp;
                                             <c:if test="${fn:length(otherInfo.otherInfoTopPersonCounsellorsList)>1}">${status.index+1}</c:if></p>
                                         <%@include file="viewTopPersonCounsellors.jsp"%>
                                     </c:forEach>

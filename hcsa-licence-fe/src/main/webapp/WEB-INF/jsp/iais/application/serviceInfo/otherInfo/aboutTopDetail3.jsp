@@ -13,7 +13,7 @@
     <input type="hidden" class="isPartEditAll" name="${prefix}isPartEditAll${index}" value="0" data-prefix="${prefix}"/>
     <input type="hidden" class="topTypeAll" name="${prefix}topTypeAll${index}" value="${person.topType}" data-prefix="${prefix}"/>
     <iais:row>
-        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Year."/>
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Year"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="4" type="text" cssClass="ayear" name="${prefix}ayear${index}" value="${person.year}"/>
         </iais:value>

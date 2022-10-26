@@ -28,17 +28,17 @@
             <input type="hidden" class="topTypeVal" name="topTypeVal" value="${appSvcOtherInfoTop.topType}"/>
             <iais:value width="4" cssClass="form-check col-md-4">
                 <input class="form-check-input topType " <c:if test="${'1' == appSvcOtherInfoTop.topType}">checked="checked"</c:if>  type="radio" name="${prefix}topType" value = "1" aria-invalid="false" onclick="getTopTypeValue('${prefix}','1');">
-                <label class="form-check-label" ><span class="check-circle"></span>Termination of Pregnancy(Solely by Drug)</label>
+                <label class="form-check-label" ><span class="check-circle"></span>Termination of Pregnancy (Solely by Drug)</label>
             </iais:value>
 
             <iais:value width="4" cssClass="form-check col-md-4">
                 <input class="form-check-input topType" <c:if test="${'0' == appSvcOtherInfoTop.topType}">checked="checked"</c:if>  type="radio" name="${prefix}topType" value = "0" aria-invalid="false" onclick="getTopTypeValue('${prefix}','0');">
-                <label class="form-check-label" ><span class="check-circle"></span>Termination of Pregnancy(Solely by Surgical Procedure)</label>
+                <label class="form-check-label" ><span class="check-circle"></span>Termination of Pregnancy (Solely by Surgical Procedure)</label>
             </iais:value>
 
             <iais:value width="4" cssClass="form-check col-md-4">
                 <input class="form-check-input topType" <c:if test="${'-1' == appSvcOtherInfoTop.topType}">checked="checked"</c:if>  type="radio" name="${prefix}topType" value = "-1" aria-invalid="false" onclick="getTopTypeValue('${prefix}','-1');">
-                <label class="form-check-label" ><span class="check-circle"></span>Termination of Pregnancy(Drug and Surgical Procedure)</label>
+                <label class="form-check-label" ><span class="check-circle"></span>Termination of Pregnancy (Drug and Surgical Procedure)</label>
             </iais:value>
         </iais:row>
 
@@ -332,6 +332,8 @@
             $('input.cdLength[data-prefix="' + prefix + '"]').val(cdLength);
             let $currContent = $('div.practitioners[data-prefix="' + prefix + '"]').last();
             clearFields($currContent);
+            let ta = '.person-content';
+            profRegNoEvent(ta);
             removePractitioners();
             if(cdLength <= 1){
                 $('.practitioners[data-prefix="' + prefix + '"]:eq(0) .assign-psn-item').html('');
@@ -342,7 +344,7 @@
                 $(this).find('input.isPartEdit').prop('name',prefix+'isPartEdit'+k);
                 $(this).find('input.practitionersIndexNo').prop('name',prefix+'practitionersIndexNo'+k);
                 $(this).find('input.psnType').prop('name',prefix+'psnType'+k);
-                $('input.psnType[data-prefix="' + prefix + '"]').val("practitioners");
+                $('input.psnType[data-prefix="' + prefix + '"]').val("MedPra");
                 $(this).find('input.profRegNo').prop('name',prefix+'profRegNo'+k);
                 $(this).find('input.name').prop('name',prefix+'name'+k);
                 $(this).find('input.idNo').prop('name',prefix+'idNo'+k);
@@ -433,7 +435,7 @@
                 $(this).find('.assign-psn-item').html(k+1);
                 $(this).find('input.aisPartEdit').prop('name',prefix+'aisPartEdit'+k);
                 $(this).find('input.apsnType').prop('name',prefix+'apsnType'+k);
-                $('input.apsnType[data-prefix="' + prefix + '"]').val("anaesthetists");
+                $('input.apsnType[data-prefix="' + prefix + '"]').val("MedAna");
                 $(this).find('input.aprofRegNo').prop('name',prefix+'aprofRegNo'+k);
                 $(this).find('input.aname').prop('name',prefix+'aname'+k);
                 $(this).find('input.idANo').prop('name',prefix+'idANo'+k);
@@ -522,7 +524,7 @@
                 $(this).find('.assign-psn-item').html(k+1);
                 $(this).find('input.nisPartEdit').prop('name',prefix+'nisPartEdit'+k);
                 $(this).find('input.npsnType').prop('name',prefix+'npsnType'+k);
-                $('input.npsnType[data-prefix="' + prefix + '"]').val("nurses");
+                $('input.npsnType[data-prefix="' + prefix + '"]').val("MedNur");
                 $(this).find('input.nname').prop('name',prefix+'nname'+k);
                 $(this).find('input.nqualification').prop('name',prefix+'nqualification'+k);
             });
@@ -605,7 +607,7 @@
                 $(this).find('.assign-psn-item').html(k+1);
                 $(this).find('input.cisPartEdit').prop('name',prefix+'cisPartEdit'+k);
                 $(this).find('input.cpsnType').prop('name',prefix+'cpsnType'+k);
-                $('input.cpsnType[data-prefix="' + prefix + '"]').val("counsellors");
+                $('input.cpsnType[data-prefix="' + prefix + '"]').val("MedCou");
                 $(this).find('input.cname').prop('name',prefix+'cname'+k);
                 $(this).find('input.cidNo').prop('name',prefix+'cidNo'+k);
                 $(this).find('input.cqualification').prop('name',prefix+'cqualification'+k);
@@ -655,4 +657,5 @@
             $('#isEditHiddenVal').val('1');
         });
     }
+
 </script>

@@ -2,7 +2,7 @@
 <c:set var="cL" value="${currSvcInfoDto.appSvcOutsouredDto}"/>
 <iais:row>
     <div class="col-xs-12 <c:if test="${AppSubmissionDto.appLicBundleDtoList[0].svcCode eq AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES}">hidden</c:if>" style="margin-top: 20px;!important;">
-        <p>Radiological Service</p>
+        <strong>Radiological Service</strong>
     </div>
 </iais:row>
 
