@@ -1058,7 +1058,7 @@ public class AppealServiceImpl implements AppealService {
                             map.put("idTyp" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","ID No.","field"));
                         }else if("IDTYPE003".equals(idTyp)){
                             if ("-1".equals(nationality) || StringUtil.isEmpty(nationality)) {
-                                map.put("nationality" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Country of issuance","field"));
+                                map.put("nationality" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Nationality","field"));
                             }
 
                         }

@@ -2718,7 +2718,7 @@ public final class AppValidatorHelper {
         if (OrganizationConstants.ID_TYPE_PASSPORT.equals(idType)) {
             // check it only for Passport
             if (HcsaAppConst.DFT_FIRST_CODE.equals(nationality) || StringUtil.isEmpty(nationality)) {
-                errMap.put(keyNationality, MessageUtil.replaceMessage("GENERAL_ERR0006", "Country of issuance", "field"));
+                errMap.put(keyNationality, MessageUtil.replaceMessage("GENERAL_ERR0006", "Nationality", "field"));
                 isValid = false;
             }
         }

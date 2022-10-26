@@ -31,7 +31,7 @@
 
     <c:if test="${person.idType == 'IDTYPE003'}">
         <iais:row>
-            <iais:field width="5" value="Country of issuance"/>
+            <iais:field width="5" value="Nationality"/>
             <iais:value width="3" cssClass="col-md-7" display="true">
                 <iais:code code="${person.nationality}" />
             </iais:value>
