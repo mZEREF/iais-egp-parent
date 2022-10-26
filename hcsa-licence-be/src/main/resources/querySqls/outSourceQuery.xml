@@ -17,19 +17,20 @@
                 ORDER BY SEQ_NUM ASC
                 FOR XML path('')
                 ), 1, 1000)
-            ) ADDRESS,l.EXPIRY_DATE
+            ) ADDRESS,CONCAT(l.START_DATE,'-',l.EXPIRY_DATE) EXPIRY_DATE
             FROM lic_premises AS lp
             JOIN licence AS l ON l.ID = lp.LICENCE_ID
             JOIN premises AS p ON p.ID = lp.PREMISES_ID
             JOIN lic_prem_business_info b ON b.LIC_PREM_ID = lp.ID
             JOIN lic_second_addr lsa ON  lsa.PREMISES_ID = lp.PREMISES_ID
             WHERE 1=1 AND p.STATUS = 'CMSTAT001'
+            <#if dPostCode??> AND p.POSTAL_CODE IN (:dPostCode) </#if>
             <#if svcName??>AND l.SVC_NAME = :svcName </#if>
             <#if businessName??> AND b.BUSINESS_NAME = :businessName</#if>
             <#if licenceNo??> AND l.LICENCE_NO = :licenceNo</#if>
             <#if id??> AND l.ID NOT IN (:id)</#if>
             <#if ids??> AND l.ID NOT IN (:ids)</#if>
-            <#if licenceId??> AND l.LICENSEE_ID NOT IN (:licenceId)</#if>
+            <#if licenseeId??> AND l.LICENSEE_ID NOT IN (:licenseeId)</#if>
             <#if licenceNos??> AND l.LICENCE_NO IN (:licenceNos)</#if>
             <#if bundleSvcName??> AND l.SVC_NAME NOT IN (:bundleSvcName)</#if>
             <#if postalCode??> AND lsa.POSTAL_CODE LIKE CONCAT('%',(:postalCode),'%')</#if>
