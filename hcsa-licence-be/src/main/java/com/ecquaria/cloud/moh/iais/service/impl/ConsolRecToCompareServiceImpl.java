@@ -81,6 +81,8 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
     private String outSharedPath;
     @Value("${iais.sharedfolder.datacompair.rslt}")
     private String rsltSharedPath;
+    @Value("${iais.sharedfolder.datacompair.subfolder : folder}")
+    private String subFolder;
     @Autowired
     private ApplicationClient applicationClient;
     @Autowired
@@ -97,7 +99,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
 
     @Override
     public void initPath() {
-        File compress = MiscUtil.generateFile(sharedPath+File.separator+ AppServicesConsts.COMPRESS,AppServicesConsts.FILE_NAME);
+        File compress = MiscUtil.generateFile(sharedPath+File.separator+ AppServicesConsts.COMPRESS,subFolder);
         File backups=MiscUtil.generateFile(inSharedPath);
         File rslt=MiscUtil.generateFile(rsltSharedPath);
         File compressPath=MiscUtil.generateFile(sharedPath,AppServicesConsts.COMPRESS);
@@ -143,7 +145,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
         }catch (Exception e){
             log.error(e.getMessage(),e);
         }
-        File file = MiscUtil.generateFile(outFolder+ AppServicesConsts.FILE_NAME, s+AppServicesConsts.FILE_FORMAT);
+        File file = MiscUtil.generateFile(outFolder+ subFolder, s+AppServicesConsts.FILE_FORMAT);
         try (OutputStream fileOutputStream  = newOutputStream(file.toPath());) {
             if(!file.exists()){
                 boolean newFile = file.createNewFile();
@@ -156,7 +158,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
             log.error(e.getMessage(),e);
 
         }
-        saveFileToOtherNodes(str.getBytes(StandardCharsets.UTF_8),s+AppServicesConsts.FILE_FORMAT,outFolder+ AppServicesConsts.FILE_NAME);
+        saveFileToOtherNodes(str.getBytes(StandardCharsets.UTF_8),s+AppServicesConsts.FILE_FORMAT,outFolder+ subFolder);
 
     }
 
@@ -355,7 +357,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
         boolean flag=Boolean.FALSE;
 
         File file =MiscUtil.generateFile(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+
-                File.separator+groupPath+File.separator+AppServicesConsts.FILE_NAME,groupPath);
+                File.separator+groupPath+File.separator+subFolder,groupPath);
         log.info(StringUtil.changeForLog(file.getPath()+"**********************"));
         if(!file.exists()){
             file.mkdirs();
@@ -668,7 +670,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
             }catch (Exception e){
                 log.error(e.getMessage(),e);
             }
-            File file = MiscUtil.generateFile(outFolder+ AppServicesConsts.FILE_NAME, s+AppServicesConsts.FILE_FORMAT);
+            File file = MiscUtil.generateFile(outFolder+ subFolder, s+AppServicesConsts.FILE_FORMAT);
             fileInputStream= newInputStream(file.toPath());
             ByteArrayOutputStream by=new ByteArrayOutputStream();
             int count;

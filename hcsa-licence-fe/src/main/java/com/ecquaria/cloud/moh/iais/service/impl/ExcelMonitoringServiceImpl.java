@@ -53,6 +53,8 @@ public class ExcelMonitoringServiceImpl implements ExcelMonitoringService {
     private String sharedPath;
     @Value("${iais.sharedfolder.datacompair.out}")
     private String sharedOutPath;
+    @Value("${iais.sharedfolder.datacompair.subfolder : folder}")
+    private String subFolder;
 
     @Autowired
     private ApplicationFeClient applicationFeClient;
@@ -86,7 +88,7 @@ public class ExcelMonitoringServiceImpl implements ExcelMonitoringService {
         }catch (Exception e){
             log.error(e.getMessage(),e);
         }
-        File file = MiscUtil.generateFile(sharedPath+ AppServicesConsts.FILE_NAME+File.separator+uuId, s+AppServicesConsts.FILE_FORMAT);
+        File file = MiscUtil.generateFile(sharedPath+ subFolder+File.separator+uuId, s+AppServicesConsts.FILE_FORMAT);
         try (OutputStream fileOutputStream  = newOutputStream(file.toPath());) {
             if(!file.exists()){
                 boolean newFile = file.createNewFile();
@@ -126,7 +128,7 @@ public class ExcelMonitoringServiceImpl implements ExcelMonitoringService {
              ZipOutputStream zos=new ZipOutputStream(cos)) {
 
             log.info(StringUtil.changeForLog("------------zip file name is"+ outFolder + l+".zip"+"--------------------"));
-            String path = sharedPath + AppServicesConsts.FILE_NAME + File.separator + groupId;
+            String path = sharedPath + subFolder + File.separator + groupId;
             File file = MiscUtil.generateFile(path);
 
             zipFile(zos, file);
@@ -141,7 +143,7 @@ public class ExcelMonitoringServiceImpl implements ExcelMonitoringService {
     private void zipFile(ZipOutputStream zos,File file) throws IOException {
         log.info("-----------start zipFile---------------------");
         if (file.isDirectory()) {
-            zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(AppServicesConsts.FILE_NAME))+File.separator));
+            zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(subFolder))+File.separator));
             zos.closeEntry();
             for(File f: Objects.requireNonNull(file.listFiles())){
                 zipFile(zos,f);
@@ -149,7 +151,7 @@ public class ExcelMonitoringServiceImpl implements ExcelMonitoringService {
         } else {
             try (
                     BufferedInputStream bis = new BufferedInputStream( Files.newInputStream(file.toPath()))) {
-                zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(AppServicesConsts.FILE_NAME))));
+                zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(subFolder))));
                 int count ;
                 byte [] b =new byte[1024];
                 count = bis.read(b);
