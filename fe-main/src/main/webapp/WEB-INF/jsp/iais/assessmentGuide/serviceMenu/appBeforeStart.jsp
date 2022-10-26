@@ -25,7 +25,7 @@
               </div>
       </div>
       <div class="instruction-content center-content">
-        <h2>SERVICES SELECTED</h2>
+        <h2>Service Selected</h2>
         <ul class="service-list">
           <c:forEach var="baseItem" items="${baseSvcIdList}" varStatus="status">
             <li><span><iais:service value="${baseItem}"></iais:service></span> (<iais:code code="CDN002"/>)</li>
@@ -65,10 +65,10 @@
           </div>
         </div>
         --%>
-        <h3>Before You Begin</h3>
+        <h3>Before you begin</h3>
         <ul class="">
           <li>
-            <p>Please refer to <a style="text-decoration:none;" target="_blank" href="<iais:code code="MRUS022"/>"><iais:code code="MRUS022"/></a> for the list of documents needed during the licence application.</p>
+            <p>Please refer to <a style="text-decoration:none;" target="_blank" href="<iais:code code="MRUS022"/>"><iais:code code="MRUS022"/></a> for the list of documents required during the licence application.</p>
           </li>
           <li>
             <p>This form will take approximately 30 minutes to complete. You may save your progress at any time and resume your application later. </p>
@@ -77,7 +77,10 @@
             <p>Payment may be made by credit card, debit card, PayNow, GIRO or eNETS.</p>
           </li>
           <li>
-            <p>* denotes mandatory field.</p>
+            <p>If you have selected more than one licensable service, it has to be provided via the same mode of service delivery.</p>
+          </li>
+          <li>
+            <p>"<span style="color: red">*</span>" denotes mandatory field.</p>
           </li>
         </ul>
         <div class="application-tab-footer">
