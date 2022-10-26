@@ -12,7 +12,7 @@
         <iais:row>
             <div class="col-xs-12">
                 <div class="app-title">${appSvcOtherInfoDto.premName}</div>
-                <p class="font-18 bold">${appSvcOtherInfoDto.newPremises}</p>
+                <p class="font-18 bold">${appSvcOtherInfoDto.premAddress}</p>
             </div>
         </iais:row>
         <div class="amend-preview-info form-horizontal min-row">
