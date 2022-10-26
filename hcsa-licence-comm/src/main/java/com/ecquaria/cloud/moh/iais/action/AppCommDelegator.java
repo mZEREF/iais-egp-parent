@@ -2095,6 +2095,15 @@ public abstract class AppCommDelegator {
         log.info(StringUtil.changeForLog("do doPayValidate end ..."));
     }
 
+    /**
+     * Notification to Licensee (EM-LIC)
+     *
+     * MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT
+     *
+     * @param appSubmissionDtos
+     * @param pmtMethod
+     * @throws Exception
+     */
     protected abstract void sendRfcSubmittedEmail(List<AppSubmissionDto> appSubmissionDtos, String pmtMethod) throws Exception;
 
     /**
