@@ -62,7 +62,7 @@
     <c:if test="${!isRfi}">
         <div class="form-group addEventDiv <c:if test="${eventList.size() >= maxCount}">hidden</c:if>">
             <iais:value cssClass="col-xs-4 col-sm-4 col-md-4">
-                <a class="addEvent" style="text-decoration:none;">+ Add Event</a>
+                <a class="addEvent" style="text-decoration:none;">+ Add</a>
             </iais:value>
         </div>
     </c:if>
