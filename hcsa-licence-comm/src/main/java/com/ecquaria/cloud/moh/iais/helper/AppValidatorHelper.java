@@ -865,11 +865,6 @@ public final class AppValidatorHelper {
                 }
             }
 
-            // rfc, renewal
-            if (!rfi && checkOthers) {
-                validateAffectedLicences(appSubmissionDto, errorMap, appGrpPremisesDtoList);
-            }
-
             if (checkOthers && errorMap.isEmpty()) {
                 List<PremisesDto> premisesDtos =
                         getLicCommService().getPremisesDtoByHciNameAndPremType(appGrpPremisesDto.getHciName(),
@@ -1032,49 +1027,6 @@ public final class AppValidatorHelper {
             premTypes.add(ApplicationConsts.PREMISES_TYPE_MOBILE);
         }
         return premTypes;
-    }
-
-    private static void validateAffectedLicences(AppSubmissionDto appSubmissionDto, Map<String, String> errorMap,
-            List<AppGrpPremisesDto> appGrpPremisesDtoList) {
-        String appType = appSubmissionDto.getAppType();
-        if (!StringUtil.isIn(appType, new String[]{ApplicationConsts.APPLICATION_TYPE_RENEWAL,
-                ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE})) {
-            return;
-        }
-        AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(0);
-        List<LicenceDto> licenceDtos = appGrpPremisesDto.getLicenceDtos();
-        if (IaisCommonUtils.isEmpty(licenceDtos)) {
-            return;
-        }
-        // mandatory for RFC and Renewal, not RFI
-        String[] selectedLicences = appGrpPremisesDto.getSelectedLicences();
-        if (selectedLicences == null || selectedLicences.length == 0 || selectedLicences[0] == null) {
-            errorMap.put("selectedLicences", "GENERAL_ERR0006");
-        } else {
-            /*Map<String, LicenceDto> licMap = IaisCommonUtils.isEmpty(licenceDtos) ?
-                    IaisCommonUtils.genNewHashMap() : licenceDtos.stream()
-                    .collect(Collectors.toMap(LicenceDto::getId, Function.identity()));
-            String svcType = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceType();
-            List<LicBaseSpecifiedCorrelationDto> licBaseSpecifiedCorrelationDtos = getLicCommService().getLicBaseSpecifiedCorrelationDtos(
-                    svcType, appSubmissionDto.getLicenceId());
-            String licNos = null;
-            if (IaisCommonUtils.isNotEmpty(licBaseSpecifiedCorrelationDtos)) {
-                licNos = licBaseSpecifiedCorrelationDtos.stream()
-                        .map(dto -> HcsaConsts.SERVICE_TYPE_BASE.equals(svcType) ? dto.getSpecLicId() : dto.getBaseLicId())
-                        .filter(id -> !StringUtil.isIn(id, selectedLicences))
-                        .map(licMap::get)
-                        .filter(Objects::nonNull)
-                        .map(LicenceDto::getLicenceNo)
-                        .collect(Collectors.joining(", "));
-            }
-            if (StringUtil.isNotEmpty(licNos)) {
-                // RFC_ERR025 - You have to {action} {data}.
-                Map<String, String> data = new HashMap<>(2);
-                data.put("action", "check");
-                data.put("data", licNos);
-                errorMap.put("selectedLicences", MessageUtil.getMessageDesc("RFC_ERR025", data));
-            }*/
-        }
     }
 
     /**
