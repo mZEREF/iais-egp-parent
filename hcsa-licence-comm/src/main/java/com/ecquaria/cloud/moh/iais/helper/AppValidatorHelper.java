@@ -2289,7 +2289,7 @@ public final class AppValidatorHelper {
                                 MessageUtil.replaceMessage("GENERAL_ERR0006", "Is clinic open to general public?", "field"));
                     }
                     String gfaValue = String.valueOf(appSvcOtherInfoMedDto.getGfaValue());
-                    if (StringUtil.isEmpty(gfaValue)) {
+                    if ("null".equals(gfaValue)) {
                         errMap.put(prefix + "gfaValue", MessageUtil.replaceMessage("GENERAL_ERR0006", "GFA Value (in sqm)", "field"));
                     } else if (!StringUtil.isDigit(gfaValue)) {
                         errMap.put(prefix + "gfaValue", MessageUtil.replaceMessage("GENERAL_ERR0002", "GFA Value (in sqm)", "field"));
@@ -2327,7 +2327,7 @@ public final class AppValidatorHelper {
                 AppSvcOtherInfoMedDto ambulatorySurgicalCentre = svcOtherInfoDto.getOtherInfoMedAmbulatorySurgicalCentre();
                 if (!StringUtil.isEmpty(ambulatorySurgicalCentre)) {
                     String agfaValue = ambulatorySurgicalCentre.getGfaValue();
-                    if (StringUtil.isEmpty(agfaValue)) {
+                    if ("null".equals(agfaValue)) {
                         errMap.put(prefix + "agfaValue", MessageUtil.replaceMessage("GENERAL_ERR0006", "GFA Value (in sqm)", "field"));
                     } else if (!StringUtil.isDigit(agfaValue)) {
                         errMap.put(prefix + "agfaValue", MessageUtil.replaceMessage("GENERAL_ERR0002", "GFA Value (in sqm)", "field"));
@@ -2617,7 +2617,7 @@ public final class AppValidatorHelper {
                                 "field"));
                     }
                     String abortNum = String.valueOf(topByDrug.get(i).getAbortNum());
-                    if (StringUtil.isEmpty(abortNum)) {
+                    if ("null".equals(abortNum)) {
                         errMap.put(prefix + "abortNum" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
                                 "No. of abortions",
                                 "field"));
@@ -2641,7 +2641,7 @@ public final class AppValidatorHelper {
                             "field"));
                 }else {
                     String year = String.valueOf(topBySurgicalProcedure.get(i).getYear());
-                    if (StringUtil.isEmpty(year)) {
+                    if ("year".equals(year)) {
                         errMap.put(prefix + "pyear" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
                                 "Year.",
                                 "field"));
@@ -2651,7 +2651,7 @@ public final class AppValidatorHelper {
                                 "field"));
                     }
                     String abortNum = String.valueOf(topBySurgicalProcedure.get(i).getAbortNum());
-                    if (StringUtil.isEmpty(abortNum)) {
+                    if ("null".equals(abortNum)) {
                         errMap.put(prefix + "pabortNum" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
                                 "No. of abortions",
                                 "field"));
@@ -2675,7 +2675,7 @@ public final class AppValidatorHelper {
                             "field"));
                 }else {
                     String year = String.valueOf(topByAll.get(i).getYear());
-                    if (StringUtil.isEmpty(year)) {
+                    if ("null".equals(year)) {
                         errMap.put(prefix + "ayear" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
                                 "Year.",
                                 "field"));
@@ -2685,7 +2685,7 @@ public final class AppValidatorHelper {
                                 "field"));
                     }
                     String abortNum = String.valueOf(topByAll.get(i).getAbortNum());
-                    if (StringUtil.isEmpty(abortNum)) {
+                    if ("null".equals(abortNum)) {
                         errMap.put(prefix + "aabortNum" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
                                 "No. of abortions",
                                 "field"));
