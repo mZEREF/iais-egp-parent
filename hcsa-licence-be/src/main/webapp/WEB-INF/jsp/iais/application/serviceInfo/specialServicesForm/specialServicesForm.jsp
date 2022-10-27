@@ -19,9 +19,9 @@
     </c:if>
     <c:forEach var="appSvcSpecialServiceInfo" items="${appSvcSpecialServiceInfoList}" varStatus="status">
         <iais:row>
-            <div class="col-xs-12 app-title">
-                <p><c:out value="${appSvcSpecialServiceInfo.premName}"/></p>
-                <p>Address: <c:out value="${appSvcSpecialServiceInfo.premAddress}"/></p>
+            <div class="col-xs-12">
+                <div class="app-title"><c:out value="${appSvcSpecialServiceInfo.premName}"/></div>
+                <div class="font-18 bold">Address: <c:out value="${appSvcSpecialServiceInfo.premAddress}"/></div>
             </div>
         </iais:row>
         <div class="panel-group" id="specialService" role="tablist" aria-multiselectable="true">

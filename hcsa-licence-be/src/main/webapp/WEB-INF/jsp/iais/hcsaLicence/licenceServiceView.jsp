@@ -58,31 +58,34 @@
 <script type="text/javascript">
     document.title = 'HALP';
     $(document).ready(function () {
-        <c:if test="${not empty beEicGatewayClient}">
-        $('#PRS_SERVICE_DOWN').modal('show');
-        </c:if>
-        //Binding method
-        $('#previewNext').click(function () {
-          if(validateCheckBox()){
-            // var mainForm = document.getElementById("mainForm");
-            // mainForm.submit();
-            callAjaxSubmit();
-          }else{
-            $('#errorMessage').removeClass("hidden");
-          }
-          //withdrawal and cessation
-          if(${applicationDto.applicationType == 'APTY006' || applicationDto.applicationType == 'APTY008'}){
-            window.opener=null;
-            window.open('','_self');
-            window.close();
-          }
-        });
+      <c:if test="${not empty beEicGatewayClient}">
+      $('#PRS_SERVICE_DOWN').modal('show');
+      </c:if>
+      //Binding method
+      $('#previewNext').click(function () {
+        if (validateCheckBox()) {
+          // var mainForm = document.getElementById("mainForm");
+          // mainForm.submit();
+          callAjaxSubmit();
+        } else {
+          $('#errorMessage').removeClass("hidden");
+        }
+        //withdrawal and cessation
+        if (${applicationDto.applicationType == 'APTY006' || applicationDto.applicationType == 'APTY008'}) {
+          window.opener = null;
+          window.open('', '_self');
+          window.close();
+        }
+      });
 
-        $('.svc-pannel-collapse').click(function () {
-            $svcContenEle = $(this).closest('div.svc-content');
-            $svcContenEle.find('.svc-iframe').css('height', '400px');
+      $('.svc-pannel-collapse').click(function () {
+        $svcContenEle = $(this).closest('div.svc-content');
+        $svcContenEle.find('.svc-iframe').css('height', '400px');
 
-        });
+      });
+
+      hideImg('newVal', 'oldVal');
+      checkHightLightChange(document, 'newVal', 'oldVal');
     });
 
     function callAjaxSubmit(){
@@ -112,7 +115,7 @@
       }
       return flag;
     }
-    hideImg('newVal', 'oldVal');
+
     function hideImg(newValClass, oldValClass) {
         $('.' + oldValClass).each(function () {
             var oldVal = $(this).attr('attr');
@@ -128,37 +131,35 @@
         });
     }
 
-    hightLightChangeVal('newVal', 'oldVal');
-
-    function hightLightChangeVal(newValClass, oldValClass) {
-        $('.' + oldValClass).each(function () {
-            var oldVal = $(this).attr('attr');
-            var newEle = $(this).parent().children('.'+newValClass);
-            if (newEle.length <= 0) {
-                newEle = $(this).parent().prev().find('.' + newValClass);
+    function checkHightLightChange(content, newValClass, oldValClass) {
+      $(content).find('.' + oldValClass).each(function () {
+        var oldVal = $(this).attr('attr');
+        var newEle = $(this).parent().children('.'+newValClass);
+        if (newEle.length <= 0) {
+          newEle = $(this).parent().prev().find('.' + newValClass);
+        }
+        var newVal = newEle.length > 0 ? newEle.attr('attr') : '';
+        if ($('#oldAppSubmissionDto').val() == 'false') {
+          if (oldVal.length > 0 || newVal.length > 0) {
+            if (oldVal != newVal) {
+              $(this).show();
+              var newHtml = '';
+              if (newEle.length > 0) {
+                newHtml = newEle.html();
+              }
+              var oldHtml=$(this).html();
+              $(this).html(newHtml);
+              if (newEle.length > 0) {
+                newEle.html(oldHtml);
+              }
+              $(this).attr("class","newVal compareTdStyle");
+            } else {
+              $(this).hide();
             }
-            var newVal = newEle.length > 0 ? newEle.attr('attr') : '';
-            if ($('#oldAppSubmissionDto').val() == 'false') {
-                if (oldVal.length > 0 || newVal.length > 0) {
-                    if (oldVal != newVal) {
-                        $(this).show();
-                        var newHtml = '';
-                        if (newEle.length > 0) {
-                            newHtml = newEle.html();
-                        }
-                        var oldHtml=$(this).html();
-                        $(this).html(newHtml);
-                        if (newEle.length > 0) {
-                            newEle.html(oldHtml);
-                        }
-                        $(this).attr("class","newVal compareTdStyle");
-                    } else {
-                        $(this).hide();
-                    }
-                }
-            }
+          }
+        }
 
-        });
+      });
     }
 
 </script>

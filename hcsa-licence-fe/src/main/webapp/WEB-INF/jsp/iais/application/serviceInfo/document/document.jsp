@@ -60,9 +60,9 @@
 </div>
 <c:forEach var="docShowDto" items="${currSvcInfoDto.documentShowDtoList}" varStatus="stat">
     <iais:row>
-        <div class="col-xs-12 app-title">
-            <p><c:out value="${docShowDto.premName}"/></p>
-            <p>Address: <c:out value="${docShowDto.premAddress}"/></p>
+        <div class="col-xs-12 ">
+            <div class=""app-title><c:out value="${docShowDto.premName}"/></div>
+            <div class="font-18 bold"><c:out value="${docShowDto.premAddress}"/></div>
         </div>
     </iais:row>
     <div class="panel-group doc-svc-content" id="${docShowDto.premisesVal}" role="tablist" aria-multiselectable="true">
