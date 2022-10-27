@@ -1,8 +1,8 @@
-<div class="amended-service-info-gp ">
-    <div class="amend-preview-info form-horizontal min-row ">
+<div class="">
+    <div class="">
         <iais:row>
             <iais:field width="5"  value="Do you provide Termination of Pregnancy"/>
-            <iais:value width="3" cssClass="col-md-3">
+            <iais:value width="3" cssClass="col-md-7" display="true">
                 <c:if test="${'1' == appSvcOtherInfoDto.provideTop}">Yes</c:if>
                 <c:if test="${'0' == appSvcOtherInfoDto.provideTop}">No</c:if>
             </iais:value>
@@ -11,7 +11,7 @@
         <div class="personTop <c:if test="${'0' == appSvcOtherInfoDto.provideTop}">hidden</c:if>">
             <iais:row>
                 <iais:field width="5"  value="Please indicate"/>
-                <iais:value width="3" cssClass="col-md-3">
+                <iais:value width="3" cssClass="col-md-3" display="true">
                     <c:if test="${'1' == appSvcOtherInfoDto.appSvcOtherInfoTopDto.topType}">Termination of Pregnancy(Solely by Drug)</c:if>
                     <c:if test="${'0' == appSvcOtherInfoDto.appSvcOtherInfoTopDto.topType}">Termination of Pregnancy(Solely by Surgical Procedure)</c:if>
                     <c:if test="${'-1' == appSvcOtherInfoDto.appSvcOtherInfoTopDto.topType}">Termination of Pregnancy(Drug and Surgical Procedure)</c:if>

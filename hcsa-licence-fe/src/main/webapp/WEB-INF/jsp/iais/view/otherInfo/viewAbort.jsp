@@ -1,4 +1,4 @@
-<div class="amend-preview-info form-horizontal min-row <c:if test="${'0' == appSvcOtherInfoDto.provideTop}">hidden</c:if>">
+<div class="<c:if test="${'0' == appSvcOtherInfoDto.provideTop}">hidden</c:if>">
     <c:forEach var="person" items="${appSvcOtherInfoDto.otherInfoAbortDrugList}" varStatus="status">
         <c:if test="${'0' != appSvcOtherInfoDto.appSvcOtherInfoTopDto.topType}">
             <c:if test="${'1' == person.topType}">

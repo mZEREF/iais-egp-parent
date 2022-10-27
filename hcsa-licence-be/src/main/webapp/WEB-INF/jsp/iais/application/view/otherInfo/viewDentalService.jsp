@@ -1,4 +1,4 @@
-<div class="amend-preview-info form-horizontal min-row">
+<div class="">
     <iais:row>
         <iais:field width="5" value="Type of medical records"/>
         <iais:value width="3" cssClass="col-md-7" display="true">
