@@ -31,7 +31,7 @@
     </c:if>
     <c:set var="officeTelNo" value="officeTelNo"/>
     <div class="panel-group" id="Principal" role="tablist" aria-multiselectable="true">
-        <div class="panel panel-default">
+        <div class="panel panel-default po-panel">
             <div class="panel-heading" role="tab">
                 <h4 class="panel-title">
                     <a role="button" class="" data-toggle="collapse" href="#PO" aria-expanded="true" aria-controls="PO">
