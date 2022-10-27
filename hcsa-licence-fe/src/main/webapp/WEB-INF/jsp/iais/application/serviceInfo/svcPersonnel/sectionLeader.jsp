@@ -52,8 +52,8 @@
     </c:otherwise>
     </c:choose>
     <input type="hidden" name="slLength" value="${pageLength}" />
-    <h4>A Section Leader is a person appointed by the licensee who provides oversight on the day-to-day laboratory activities and laboratory personnel for a
-        particular laboratory discipline and specified test.</h4>
+<%--    <h4>A Section Leader is a person appointed by the licensee who provides oversight on the day-to-day laboratory activities and laboratory personnel for a--%>
+<%--        particular laboratory discipline and specified test.</h4>--%>
 
     <c:forEach begin="0" end="${pageLength - 1}" step="1" varStatus="slStat">
         <c:set var="index" value="${slStat.index}" />
