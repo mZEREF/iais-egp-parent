@@ -24,7 +24,7 @@
 
         checkSelectedLicenceEvent();
 
-        $("[data-toggle='tooltip']").tooltip();
+        initFormNodes();
     }
 
     function checkPremiseContent($premContent, index) {
@@ -121,6 +121,7 @@
         }
         console.info("------------doEditPremise----------------");
         $('#isEditHiddenVal').val('1');
+        $premContent.find('.isPartEdit').val('1');
         unDisableContent($premContent);
         showTag($premContent.find('.retrieveAddr'));
         showTag($premContent.find('.addOpDiv'));
@@ -128,8 +129,6 @@
         if('1' == existData) {
             if (isEmpty(isEdit) || !isEdit) {
                 checkPremDisabled($premContent, true);
-            } else {
-                $premContent.find('.isParyEdit').val('1');
             }
         }
         // Non HCSA
@@ -213,6 +212,7 @@
         // init new section
         var $premContent = $('div.premContent').last();
         initFormNodes($premContent);
+        clearFields($premContent);
         removeAdditional($premContent);
         refreshPremise($premContent, $('div.premContent').length - 1);
         $('div.premContent:first').find('.premHeader').html('1');
@@ -576,6 +576,7 @@
         $premContent.find('div.addNonHcsaSvcRow').before(src);
         var $target = $premContent.find('div.nonHcsaRow:last');
         initFormNodes($target);
+        clearFields($target);
         refreshNonHcsa($premContent.find('div.nonHcsaRowDiv'), $('div.premContent').index($premContent));
         delNonHcsaEvent($premContent);
         dismissWaiting();
@@ -646,6 +647,8 @@
             resetField(ele, i, prefix);
         });
         var length = $target.find('.operationDiv').length;
+        $target.find('.addressSize').val(length)
+        console.log(length,'=========>>>length===>>')
         $target.find('.opLength').val(length);
     }
 
@@ -653,8 +656,13 @@
         var $premContent = $(ele).closest('div.premContent');
         var src = $premContent.find('div.operationDiv:first').clone();
         initFormNodes(src);
+        clearFields(src);
         $premContent.find('div.addOpDiv').before(src);
-        refreshFloorUnit($premContent, $('div.premContent').index($premContent));
+        let index = $('div.premContent').index($premContent)
+        console.log(index,'index=====>>>')
+        let val = $premContent.find('.MMM').val() ? index-1 : index
+        console.log(val,'val=---=-=-=-=->>')
+        refreshFloorUnit($premContent, val);
         delFloorUnitEvent($premContent);
     }
 
@@ -677,8 +685,10 @@
         $target.find('.opDel').unbind('click');
         $target.find('div.operationDivGroup').find('.opDel').on('click', function () {
             var $premContent = $(this).closest('div.premContent');
+            let index = $('div.premContent').index($premContent)
+            let val = $premContent.find('.MMM').val() ? index-1 : index
             $(this).closest('div.operationDiv').remove();
-            refreshFloorUnit($premContent, $('div.premContent').index($premContent));
+            refreshFloorUnit($premContent, val);
             doEditPremise($premContent);
         });
     }

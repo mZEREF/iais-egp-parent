@@ -1,4 +1,4 @@
-<div class="amended-service-info-gp">
+<div class="">
     <div class="doucmentation <c:if test="${'0' == appSvcOtherInfoDto.provideTop}">hidden</c:if>">
         <iais:row>
             <div class="col-xs-12">

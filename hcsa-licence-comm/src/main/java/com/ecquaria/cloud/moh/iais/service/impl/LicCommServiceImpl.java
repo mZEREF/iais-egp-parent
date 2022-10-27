@@ -451,13 +451,8 @@ public class LicCommServiceImpl implements LicCommService {
             appSubmissionDtoByLicenceId.setAppEditSelectDto(appEditSelectDto);
             appSubmissionDtoByLicenceId.setChangeSelectDto(appEditSelectDto);
             if (check == 2) {
-                appSubmissionDtoByLicenceId.setPartPremise(false);
-                appSubmissionDtoByLicenceId.setGetAppInfoFromDto(true);
-                appCommService.transform(appSubmissionDtoByLicenceId, appSubmissionDto.getLicenseeId(),
-                        ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE, false);
-                appSubmissionDtoByLicenceId.setAutoRfc(true);
-                appSubmissionDtoByLicenceId.setAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
-                ApplicationHelper.reSetAdditionalFields(appSubmissionDtoByLicenceId, appEditSelectDto);
+                RfcHelper.beforeSubmit(appSubmissionDtoByLicenceId, appEditSelectDto, null,
+                        ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE, null);
             }
             appSubmissionDtoList.add(appSubmissionDtoByLicenceId);
         }

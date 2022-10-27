@@ -13,6 +13,7 @@
 <input type="hidden" class="dpo-person-content-edit" name="isEditDpo" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
 <input type="hidden" class="dpo-select-edit" name="isEditDpoSelect" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
 <div class="row form-horizontal normal-label">
+    <c:set var="officeTelNo" value="officeTelNo"/>
     <c:if test="${AppSubmissionDto.needEditController }">
         <c:if test="${(isRfc || isRenew) && !isRfi}">
             <iais:row>
@@ -27,7 +28,7 @@
     </c:if>
 
     <div class="panel-group" id="Principal" role="tablist" aria-multiselectable="true">
-        <div class="panel panel-default">
+        <div class="panel panel-default po-panel">
             <div class="panel-heading" role="tab">
                 <h4 class="panel-title">
                     <a role="button" class="" data-toggle="collapse" href="#PO" aria-expanded="true" aria-controls="PO">

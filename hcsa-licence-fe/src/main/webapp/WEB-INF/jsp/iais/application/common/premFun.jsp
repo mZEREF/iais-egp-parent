@@ -24,7 +24,7 @@
 
         checkSelectedLicenceEvent();
 
-        $("[data-toggle='tooltip']").tooltip();
+        initFormNodes();
     }
 
     function checkPremiseContent($premContent, index) {
@@ -121,15 +121,14 @@
         }
         console.info("------------doEditPremise----------------");
         $('#isEditHiddenVal').val('1');
+        $premContent.find('.isPartEdit').val('1');
         unDisableContent($premContent);
         showTag($premContent.find('.retrieveAddr'));
         showTag($premContent.find('.addOpDiv'));
         let existData = $premContent.find('.chooseExistData').val();
-        if('1' == existData) {
+        if ('1' == existData) {
             if (isEmpty(isEdit) || !isEdit) {
                 checkPremDisabled($premContent, true);
-            } else {
-                $premContent.find('.isParyEdit').val('1');
             }
         }
         // Non HCSA
@@ -142,16 +141,16 @@
         checkEditBtn($premContent, false);
     }
 
-    function hideEditBtn ($premContent) {
-        let $target= $premContent.find('.removeEditDiv');
+    function hideEditBtn($premContent) {
+        let $target = $premContent.find('.removeEditDiv');
         if (isEmptyNode($target)) {
             return true;
         }
         return $target.is(':hidden');
     }
 
-    function checkEditBtn ($premContent, show) {
-        let $target= $premContent.find('.removeEditDiv');
+    function checkEditBtn($premContent, show) {
+        let $target = $premContent.find('.removeEditDiv');
         if (isEmptyNode($target)) {
             return;
         }
@@ -168,12 +167,12 @@
         hideTag($premContent.find('.retrieveAddr'));
         hideTag($premContent.find('.opDelDiv'));
         hideTag($premContent.find('.addOpDiv'));
-        let $target= $premContent.find('.premisesEdit');
+        let $target = $premContent.find('.premisesEdit');
         if (isEmptyNode($target)) {
             hideTag($premContent.find('.opDelDiv'));
         } else {
             let existData = $premContent.find('.chooseExistData').val();
-            if('1' == existData) {
+            if ('1' == existData) {
                 checkPremDisabled($premContent, true);
             } else {
                 showTag($premContent.find('.opDelDiv:not(:first)'));
@@ -198,7 +197,7 @@
         $('#addPremBtn').on('click', addPremEventFun);
     }
 
-    function addPremEventFun () {
+    function addPremEventFun() {
         showWaiting();
         var $target = $('div.premContent:last');
         var premType = $target.find('input.premTypeRadio:checked').val();
@@ -213,6 +212,7 @@
         // init new section
         var $premContent = $('div.premContent').last();
         initFormNodes($premContent);
+        clearFields($premContent);
         removeAdditional($premContent);
         refreshPremise($premContent, $('div.premContent').length - 1);
         $('div.premContent:first').find('.premHeader').html('1');
@@ -271,11 +271,11 @@
         $premContent.find('div.uploadFileShowDiv').empty();
     }
 
-    function checkRemoveBtn ($premContent, index) {
+    function checkRemoveBtn($premContent, index) {
         if (isEmpty(index)) {
             return;
         }
-        let $target= $premContent.find('.removeEditDiv');
+        let $target = $premContent.find('.removeEditDiv');
         if (isEmptyNode($target)) {
             return;
         }
@@ -298,7 +298,7 @@
         });
     }
 
-    function premTypeEventFun ($target) {
+    function premTypeEventFun($target) {
         clearErrorMsg();
         var $premContent = $target.closest('div.premContent');
         var premType = $premContent.find('.premTypeRadio:checked').val();
@@ -317,6 +317,7 @@
         $('.premSelect').change(function () {
             showWaiting();
             clearErrorMsg();
+            checkAddPremBtn();
             var premSelectVal = $(this).val();
             var $premContent = $(this).closest('div.premContent');
             $premContent.find('.premSelValue').val(premSelectVal);
@@ -422,7 +423,7 @@
         }
         let nodeChecked = false;
         let $target = null;
-        $premType.each(function() {
+        $premType.each(function () {
             if ($(this).is(':checked')) {
                 nodeChecked = true;
             } else if (isEmptyNode($target)) {
@@ -444,7 +445,7 @@
 
     var checkSelectedLicenceEvent = function () {
         $('input[name="selectedLicence"]').unbind('click');
-        $('input[name="selectedLicence"]').on('click', function() {
+        $('input[name="selectedLicence"]').on('click', function () {
             checkSelectedLicence($(this));
         });
     }
@@ -495,7 +496,7 @@
 
     var easMtsUseOnlyEvent = function () {
         $('.useType').unbind('click');
-        $('.useType').on('click', function() {
+        $('.useType').on('click', function () {
             let $premContent = $(this).closest('div.premContent');
             checkEasMtsUseOnly($premContent);
         });
@@ -576,6 +577,7 @@
         $premContent.find('div.addNonHcsaSvcRow').before(src);
         var $target = $premContent.find('div.nonHcsaRow:last');
         initFormNodes($target);
+        clearFields($target);
         refreshNonHcsa($premContent.find('div.nonHcsaRowDiv'), $('div.premContent').index($premContent));
         delNonHcsaEvent($premContent);
         dismissWaiting();
@@ -658,6 +660,7 @@
         var $premContent = $(ele).closest('div.premContent');
         var src = $premContent.find('div.operationDiv:first').clone();
         initFormNodes(src);
+        clearFields(src);
         $premContent.find('div.addOpDiv').before(src);
         refreshFloorUnit($premContent, $('div.premContent').index($premContent));
         delFloorUnitEvent($premContent);
@@ -794,5 +797,22 @@
             $target.css('left', leftWidth + 'px');
             $target.css('right', '');
         });
+    }
+
+    // 0: hide; 1: show; 2: hide on condition
+    function checkAddPremBtn(action = 1) {
+        let $premAddBtn = $('#addPremBtn');
+        if (isEmptyNode($premAddBtn)) {
+            return;
+        }
+        if (action == 0) {
+            hideTag($premAddBtn);
+        } else if (action == 1) {
+            showTag($premAddBtn);
+        } else if (action == 2) {
+            if (isEmpty(getValue('.premTypeRadio'))) {
+                hideTag($premAddBtn);
+            }
+        }
     }
 </script>

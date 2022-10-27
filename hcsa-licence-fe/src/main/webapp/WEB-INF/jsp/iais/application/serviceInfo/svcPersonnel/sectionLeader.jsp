@@ -7,13 +7,11 @@
 <input id="isEditHiddenVal" type="hidden" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
 
 <div class="row">
-    <div class="form-group">
-        <h4><iais:message key="NEW_ACK030"/></h4>
-    </div>
+<%--    <div class="form-group">--%>
+<%--        <h4><iais:message key="NEW_ACK030"/></h4>--%>
+<%--    </div>--%>
     <div class="form-group">
         <div class="row control control-caption-horizontal">
-
-
             <div class="control-label col-md-5 col-xs-5">
                 <label  class="control-label control-set-font control-font-label">
                     <div class="app-title">
@@ -21,8 +19,6 @@
                     </div>
                 </label>
             </div>
-
-
             <div class="col-md-7 col-xs-7 text-right">
                 <c:if test="${AppSubmissionDto.needEditController }">
                     <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
@@ -56,7 +52,9 @@
     </c:otherwise>
     </c:choose>
     <input type="hidden" name="slLength" value="${pageLength}" />
-
+    <h4>A Section Leader is a person appointed by the licensee who provides oversight on the day-to-day laboratory activities and laboratory personnel for a
+        particular laboratory discipline and specified test.</h4>
+    <br>
     <c:forEach begin="0" end="${pageLength - 1}" step="1" varStatus="slStat">
         <c:set var="index" value="${slStat.index}" />
         <c:set var="sectionLeader" value="${sectionLeaderList[index]}"/>

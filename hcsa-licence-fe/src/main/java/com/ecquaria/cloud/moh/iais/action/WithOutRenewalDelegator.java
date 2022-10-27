@@ -254,6 +254,8 @@ public class WithOutRenewalDelegator {
             appSubmissionDto.setOneLicDoRenew(true);
             ParamUtil.setSessionAttr(bpc.request, SINGLE_SERVICE, "Y");
             ParamUtil.setSessionAttr(bpc.request, "renew_licence_no", appSubmissionDto.getLicenceNo());
+        } else {
+            ParamUtil.setSessionAttr(bpc.request, SINGLE_SERVICE, "N");
         }
         AppSubmissionDto appSubmissionDto = appSubmissionDtoList.get(0);
         AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();

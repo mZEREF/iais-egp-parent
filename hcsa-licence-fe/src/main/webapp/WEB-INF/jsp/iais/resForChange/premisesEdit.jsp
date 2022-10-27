@@ -121,7 +121,7 @@
   <input type="hidden" value="${not empty showOtherError ? '1' : ''}" id="showOtherErrorCheck">
   <iais:confirm msg="${RFC_ERROR_NO_CHANGE}" callBack="cancel()"  needCancel="false" popupOrder="rfc_ERROR"></iais:confirm>
   <iais:confirm msg="${SERVICE_CONFIG_CHANGE}" callBack="cancel()"  needCancel="false" popupOrder="SERVICE_CONFIG_CHANGE"></iais:confirm>
-  <iais:confirm msg="${postalCodeAckMsg}" needCancel="false" callBack="postalCodeCon()" popupOrder="postalCodePop" yesBtnDesc="" needEscapHtml="false" needFungDuoJi="false"></iais:confirm>
+  <iais:confirm msg="NEW_ACK016" needCancel="false" callBack="postalCodeCon()" popupOrder="postalCodePop" yesBtnDesc="" needEscapHtml="false" needFungDuoJi="false"></iais:confirm>
   <input type="hidden" value="${RFC_ERROR_NO_CHANGE}" id="RFC_ERROR_NO_CHANGE">
   <input type="hidden" id="SERVICE_CONFIG_HAVE_CHANGE" value="${SERVICE_CONFIG_CHANGE}">
   <input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">

@@ -58,8 +58,7 @@
 
                 <tr>
                     <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Working
-                            Experience (in terms of years)</p>
+                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Relevant working experience (Years)</p>
                     </td>
                     <td>
                         <div class="col-xs-6">

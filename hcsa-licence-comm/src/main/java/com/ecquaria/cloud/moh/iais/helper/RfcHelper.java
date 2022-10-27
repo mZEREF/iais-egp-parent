@@ -212,6 +212,7 @@ public final class RfcHelper {
         appEditSelectDto.setPersonnelEditList(autoList);
         log.info(StringUtil.changeForLog(appSubmissionDto.getLicenceNo() + " - App Edit Select Dto: "
                 + JsonUtil.parseToJson(appEditSelectDto)));
+        appEditSelectDto.initEmailSend();
         return appEditSelectDto;
     }
 
@@ -2705,6 +2706,9 @@ public final class RfcHelper {
         setRiskToDto(appSubmissionDto);
         // reSetAdditionalFields
         if (appEditSelectDto != null) {
+            if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
+                appEditSelectDto.initEmailSend();
+            }
             appSubmissionDto.setChangeSelectDto(appEditSelectDto);
         }
         ApplicationHelper.reSetAdditionalFields(appSubmissionDto, appEditSelectDto, appGrpNo);

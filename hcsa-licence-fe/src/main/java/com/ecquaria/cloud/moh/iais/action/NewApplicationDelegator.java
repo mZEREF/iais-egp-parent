@@ -477,9 +477,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
             if ("success".equals(result) && !StringUtil.isEmpty(pmtRefNo)) {
                 log.debug(StringUtil.changeForLog("online payment success ..."));
                 try {
-                    boolean isEmailSend = appSubmissionDto.getChangeSelectDto() != null && appSubmissionDto.getChangeSelectDto().isEmailSend();
-                    if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
-                            && isEmailSend) {
+                    if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
                         log.info(StringUtil.changeForLog("RFC Email Sending ..."));
                         List<AppSubmissionDto> appSubmissionDtos1 = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request,
                                 APP_SUBMISSIONS);
@@ -1009,8 +1007,9 @@ public class NewApplicationDelegator extends AppCommDelegator {
         Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request, HcsaAppConst.REQUESTINFORMATIONCONFIG);
         if ((ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
                 || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) && !isRfi) {
+            Object error = ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG);
             String crud_action_additional = ParamUtil.getString(bpc.request, "crud_action_additional");
-            if ("rfcSaveDraft".equals(crud_action_additional)) {
+            if ("rfcSaveDraft".equals(crud_action_additional) && error == null) {
                 crudActionValue = "saveDraft";
             }
         }

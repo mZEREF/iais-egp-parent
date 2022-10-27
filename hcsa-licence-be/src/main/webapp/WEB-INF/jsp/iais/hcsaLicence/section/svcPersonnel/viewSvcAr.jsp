@@ -106,7 +106,7 @@
                 <tr>
         <td class="col-xs-6">
             <p class="form-check-label" aria-label="premise-1-cytology">
-                Professional Regn. No.
+                Professional Regn No.
             </p>
         </td>
         <td>
@@ -255,11 +255,11 @@
         </tr>
 
 
-    <%--    Date when specialty was obtained--%>
+    <%--    Date when specialty was gotten--%>
         <tr>
             <td class="col-xs-6">
                 <p class="form-check-label" aria-label="premise-1-cytology">
-                    Date when specialty was obtained
+                    Date when specialty was gotten
                 </p>
             </td>
             <td>
@@ -304,7 +304,7 @@
         <tr>
             <td class="col-xs-6">
                 <p class="form-check-label" aria-label="premise-1-cytology">
-                    Relevant working experience(Years)
+                    Relevant working experience (Years)
                 </p>
             </td>
             <td>

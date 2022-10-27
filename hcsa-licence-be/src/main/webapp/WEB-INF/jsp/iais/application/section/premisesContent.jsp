@@ -16,19 +16,18 @@
 <c:set var="mobileShow" value="${ApplicationConsts.PREMISES_TYPE_MOBILE_SHOW}" />
 <c:set var="remoteShow" value="${ApplicationConsts.PREMISES_TYPE_REMOTE_SHOW}" />
 
-<input class="not-refresh" type="hidden" name="isPartEdit" value="0"/>
 <input class="not-refresh" type="hidden" id="isEditHiddenVal" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
 
 <c:forEach var="appGrpPremisesDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
     <c:set var="canEdit" value="true"/>
-    <div class="row premContent <c:if test="${!status.first}">underLine</c:if>">
+    <div class="row form-horizontal premContent <c:if test="${!status.first}">underLine</c:if>">
         <input class="not-refresh chooseExistData" type="hidden" name="chooseExistData" value="${appGrpPremisesDto.existingData}"/>
         <input class="not-refresh premIndex" type="hidden" name="premIndex" value="${status.index}"/>
         <input class="not-refresh premisesIndexNo" type="hidden" name="premisesIndexNo" value="${appGrpPremisesDto.premisesIndexNo}"/>
         <input class="not-refresh oldPremTypeValue" type="hidden" name="oldPremType" value="${appGrpPremisesDto.premisesType}"/>
         <input class="not-refresh premTypeValue" type="hidden" name="premType" value="${appGrpPremisesDto.premisesType}"/>
         <input class="not-refresh premSelValue" type="hidden" value="${appGrpPremisesDto.premisesSelect}"/>
-
+        <input class="not-refresh isPartEdit" type="hidden" name="isPartEdit" value="0"/>
         <c:set var="premValue" value="${status.index}"/>
             <%--<input hidden class="premiseIndex" value="${premValue}">--%>
         <c:choose>
@@ -234,259 +233,257 @@
             </div>
 
             <div class="new-premise-form">
-                <div class="form-horizontal">
-                    <iais:row cssClass="scdfRefNoRow">
-                        <c:set var="scdfRefNoInfo"><iais:message key="NEW_ACK006"></iais:message></c:set>
-                        <iais:field value="Fire Safety & Shelter Bureau Ref No." width="5" info="${scdfRefNoInfo}"/>
-                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 fireIssuedDateDiv">
-                            <iais:input maxLength="66" name="scdfRefNo${status.index}" type="text" value="${appGrpPremisesDto.scdfRefNo}"/>
-                        </iais:value>
-                    </iais:row>
-                    <iais:row cssClass="certIssuedDtRow">
-                        <iais:field value="Fire Safety Certificate Issued Date" width="5"/>
-                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 fireIssuedDateDiv">
-                            <iais:datePicker cssClass="certIssuedDt field-date" name="certIssuedDt${status.index}" value="${appGrpPremisesDto.certIssuedDtStr}" />
-                        </iais:value>
-                    </iais:row>
+                <iais:row cssClass="vehicleRow">
+                    <iais:field value="Vehicle No." mandatory="true" width="5"/>
+                    <iais:value width="7" cssClass="col-md-5">
+                        <iais:input maxLength="10" type="text" cssClass="vehicleNo" name="vehicleNo${status.index}" value="${appGrpPremisesDto.vehicleNo}"/>
+                    </iais:value>
+                </iais:row>
 
-                    <iais:row cssClass="vehicleRow">
-                        <iais:field value="Vehicle No." mandatory="true" width="5"/>
-                        <iais:value width="7" cssClass="col-md-5">
-                            <iais:input maxLength="10" type="text" cssClass="vehicleNo" name="vehicleNo${status.index}" value="${appGrpPremisesDto.vehicleNo}"/>
-                        </iais:value>
-                    </iais:row>
+                <iais:row>
+                    <iais:field value="Business Name" mandatory="true" width="5"/>
+                    <iais:value width="7" cssClass="col-xs-10 col-md-5 disabled">
+                        <iais:input cssClass="hciName" maxLength="100" type="text" name="hciName${status.index}" value="${appGrpPremisesDto.hciName}"/>
+                    </iais:value>
+                </iais:row>
 
-                    <iais:row>
-                        <iais:field value="Business Name" mandatory="true" width="5"/>
-                        <iais:value width="7" cssClass="col-xs-10 col-md-5 disabled">
-                            <iais:input cssClass="hciName" maxLength="100" type="text" name="hciName${status.index}" value="${appGrpPremisesDto.hciName}"/>
-                        </iais:value>
-                    </iais:row>
-
-                    <iais:row cssClass="postalCodeDiv">
-                        <iais:field value="Postal Code" mandatory="true" width="5"/>
-                        <iais:value cssClass="col-xs-10 col-md-5">
-                            <iais:input cssClass="postalCode" maxLength="6" type="text" name="postalCode${status.index}" value="${appGrpPremisesDto.postalCode}"/>
-                        </iais:value>
-                        <div class="col-xs-7 col-sm-6 col-md-3">
-                            <p><a class="retrieveAddr <c:if test="${!canEdit || readOnly}">hidden</c:if>">Retrieve your address</a></p>
-                        </div>
-                    </iais:row>
-                    <iais:row>
-                        <iais:field value="Address Type" mandatory="true" width="5"/>
-                        <iais:value width="7" cssClass="addressType">
-                            <iais:select cssClass="addrType" name="addrType${status.index}" codeCategory="CATE_ID_ADDRESS_TYPE" needSort="false"
-                                         firstOption="Please Select" value="${appGrpPremisesDto.addrType}" />
-                        </iais:value>
-                    </iais:row>
-                    <iais:row cssClass="address">
-                        <iais:field value="Block / House No." width="5" cssClass="blkNoLabel"/>
-                        <iais:value width="7">
-                            <iais:input cssClass="blkNo" maxLength="10" type="text" name="blkNo${status.index}" value="${appGrpPremisesDto.blkNo}"/>
-                        </iais:value>
-                    </iais:row>
-                    <iais:row cssClass="operationDiv">
-                        <iais:field value="Floor / Unit No." width="5" cssClass="floorUnitLabel"/>
-                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
-                            <div class="row">
-                                <iais:value cssClass="col-xs-12 col-md-5 ">
-                                    <input class="floorNo" maxlength="3" type="text" data-base="FloorNo" name="${status.index}FloorNo0" value="${appGrpPremisesDto.floorNo}"/>
-                                    <span class="error-msg" name="iaisErrorMsg" id="error_${status.index}FloorNo0"></span>
-                                </iais:value>
-                                <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
-                                <iais:value cssClass="col-xs-12 col-md-5 ">
-                                    <input class="unitNo" maxlength="5" type="text" data-base="UnitNo" name="${status.index}UnitNo0" value="${appGrpPremisesDto.unitNo}"/>
-                                    <span class="error-msg" name="iaisErrorMsg" id="error_${status.index}UnitNo0"></span>
-                                </iais:value>
-                            </div>
-                        </iais:value>
-                        <div class="operationAdlDiv hidden">
-                            <div class=" col-xs-7 col-sm-4 col-md-2 ">
-                                <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>
-                            </div>
-                            <div class=" col-xs-7 col-sm-4 col-md-1 text-center">
-                                <p class="text-danger opDel"><em class="fa fa-times-circle del-size-36"></em></p>
-                            </div>
-                        </div>
-                    </iais:row>
-                    <c:set var="hasAddFU" value="${appGrpPremisesDto.appPremisesOperationalUnitDtos.size()>0}" />
-                    <div class="operationDivGroup">
-                        <c:if test="${hasAddFU}">
-                            <c:forEach var="operationDto" items="${appGrpPremisesDto.appPremisesOperationalUnitDtos}" varStatus="opStat">
-                                <c:set var="opIndex" value="${opStat.index + 1}" />
-                                <iais:row cssClass="operationDiv">
-                                    <iais:field value="" width="5"/>
-                                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
-                                        <div class="row">
-                                            <iais:value cssClass="col-xs-12 col-md-5 ">
-                                                <input class="floorNo" maxlength="3" type="text" data-base="FloorNo" name="${premValue}FloorNo${opIndex}" value="${operationDto.floorNo}" />
-                                                <span class="error-msg" name="iaisErrorMsg" id="error_${premValue}FloorNo${opIndex}"></span>
-                                            </iais:value>
-                                            <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
-                                            <iais:value cssClass="col-xs-12 col-md-5 ">
-                                                <input class="unitNo" maxlength="5" type="text" data-base="UnitNo" name="${premValue}UnitNo${opIndex}" value="${operationDto.unitNo}"/>
-                                                <span class="error-msg" name="iaisErrorMsg" id="error_${premValue}UnitNo${opIndex}"></span>
-                                            </iais:value>
-                                        </div>
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_${premValue}FloorUnit${opIndex}"></span>
-                                    </iais:value>
-                                    <div class="operationAdlDiv">
-                                        <div class=" col-xs-7 col-sm-4 col-md-2 ">
-                                            <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>
-                                        </div>
-                                        <div class=" col-xs-7 col-sm-4 col-md-1 text-center">
-                                            <p class="text-danger opDel"><em class="fa fa-times-circle del-size-36"></em></p>
-                                        </div>
-                                    </div>
-                                </iais:row>
-                            </c:forEach>
-                        </c:if>
-                        <!--prem operational -->
-                        <iais:row cssClass="addOpDiv">
-                            <iais:field value="" width="5"/>
-                            <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
-                                <span class="addOperational"><a style="text-decoration:none;">+ Add Additional Floor/Unit No.</a></span>
-                            </iais:value>
-                        </iais:row>
+                <iais:row cssClass="postalCodeDiv">
+                    <iais:field value="Postal Code" mandatory="true" width="5"/>
+                    <iais:value cssClass="col-xs-10 col-md-5">
+                        <iais:input cssClass="postalCode" maxLength="6" type="text" name="postalCode${status.index}" value="${appGrpPremisesDto.postalCode}"/>
+                    </iais:value>
+                    <div class="col-xs-7 col-sm-6 col-md-3">
+                        <p><a class="retrieveAddr <c:if test="${!canEdit || readOnly}">hidden</c:if>">Retrieve your address</a></p>
                     </div>
-                    <iais:row cssClass="address">
-                        <iais:field value="Street Name" mandatory="true" width="5"/>
-                        <iais:value width="5" cssClass="col-md-5">
-                            <iais:input cssClass="streetName" maxLength="32" type="text" name="streetName${status.index}" value="${appGrpPremisesDto.streetName}"/>
-                        </iais:value>
-                    </iais:row>
-                    <iais:row cssClass="address">
-                        <iais:field value="Building Name" width="5"/>
-                        <iais:value width="5" cssClass="col-md-5">
-                            <iais:input cssClass="buildingName" maxLength="66" type="text" name="buildingName${status.index}" value="${appGrpPremisesDto.buildingName}"/>
-                        </iais:value>
-                    </iais:row>
-
-                    <iais:row cssClass="easMtsAddFields">
-                        <iais:field value="For public/in-house use only?" mandatory="true" width="5"/>
-                        <iais:value width="11" cssClass="col-md-7" style="margin-left:-1%;">
-                            <input type="hidden" name="easMtsUseOnlyVal" value="${appGrpPremisesDto.easMtsUseOnly}"/>
-                            <div class="form-check col-sm-4">
-                                <input <c:if test="${'UOT001'==appGrpPremisesDto.easMtsUseOnly}">checked="checked"</c:if> class="form-check-input useType public-use"  type="radio" name="easMtsUseOnly${status.index}" value = "UOT001" aria-invalid="false">
-                                <label class="form-check-label" ><span class="check-circle"></span><iais:code code="UOT001"/></label>
-                            </div>
-                            <div class="form-check col-sm-6">
-                                <input <c:if test="${'UOT002'==appGrpPremisesDto.easMtsUseOnly}">checked="checked"</c:if> class="form-check-input useType in-house-use"  type="radio" name="easMtsUseOnly${status.index}" value = "UOT002" aria-invalid="false">
-                                <label class="form-check-label" ><span class="check-circle"></span><iais:code code="UOT002"/></label>
-                            </div>
-                            <div class="col-sm-12">
-                                <span class="error-msg" name="iaisErrorMsg" id="error_easMtsUseOnly${status.index}"></span>
-                            </div>
-                        </iais:value>
-                    </iais:row>
-                    <iais:row cssClass="easMtsAddFields">
-                        <iais:field value="Public Email" mandatory="true" width="5" cssClass="pubEmailLabel"/>
-                        <iais:value width="7" cssClass="col-md-5">
-                            <iais:input maxLength="320" cssClass="easMtsPubEmail" type="text" name="easMtsPubEmail${status.index}"
-                                        value="${appGrpPremisesDto.easMtsPubEmail}"/>
-                        </iais:value>
-                    </iais:row>
-                    <iais:row cssClass="easMtsAddFields">
-                        <iais:field value="Public Hotline" mandatory="true" width="5" cssClass="pubHotlineLabel"/>
-                        <iais:value width="7" cssClass="col-md-5">
-                            <iais:input maxLength="8" cssClass="easMtsPubHotline" type="text" name="easMtsPubHotline${status.index}"
-                                        value="${appGrpPremisesDto.easMtsPubHotline}"/>
-                        </iais:value>
-                    </iais:row>
-
-                    <div class="co-location-div">
-                        <iais:row>
-                            <iais:field value="Co-Location Services" width="10" />
-                            <iais:value/>
-                        </iais:row>
-                        <iais:row>
-                            <iais:field value="Are you co-locating with a service that is licensed under HCSA?" mandatory="true" width="5" />
-                            <iais:value width="3" cssClass="col-md-3 form-check">
-                                <input <c:if test="${'1'==appGrpPremisesDto.locateWtihHcsa}">checked="checked"</c:if> class="form-check-input" type="radio" name="locateWtihHcsa${status.index}" value = "1" aria-invalid="false">
-                                <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
+                </iais:row>
+                <iais:row>
+                    <iais:field value="Address Type" mandatory="true" width="5"/>
+                    <iais:value width="7" cssClass="addressType">
+                        <iais:select cssClass="addrType" name="addrType${status.index}" codeCategory="CATE_ID_ADDRESS_TYPE" needSort="false"
+                                     firstOption="Please Select" value="${appGrpPremisesDto.addrType}" />
+                    </iais:value>
+                </iais:row>
+                <iais:row cssClass="address">
+                    <iais:field value="Block / House No." width="5" cssClass="blkNoLabel"/>
+                    <iais:value width="7">
+                        <iais:input cssClass="blkNo" maxLength="10" type="text" name="blkNo${status.index}" value="${appGrpPremisesDto.blkNo}"/>
+                    </iais:value>
+                </iais:row>
+                <iais:row cssClass="operationDiv">
+                    <iais:field value="Floor / Unit No." width="5" cssClass="floorUnitLabel"/>
+                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
+                        <div class="row">
+                            <iais:value cssClass="col-xs-12 col-md-5 ">
+                                <input class="floorNo" maxlength="3" type="text" data-base="FloorNo" name="${status.index}FloorNo0" value="${appGrpPremisesDto.floorNo}"/>
+                                <span class="error-msg" name="iaisErrorMsg" id="error_${status.index}FloorNo0"></span>
                             </iais:value>
-                            <iais:value width="4" cssClass="col-md-4 form-check">
-                                <input <c:if test="${'0'==appGrpPremisesDto.locateWtihHcsa}">checked="checked"</c:if> class="form-check-input" type="radio" name="locateWtihHcsa${status.index}" value = "0" aria-invalid="false">
-                                <label class="form-check-label" ><span class="check-circle"></span>No</label>
+                            <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
+                            <iais:value cssClass="col-xs-12 col-md-5 ">
+                                <input class="unitNo" maxlength="5" type="text" data-base="UnitNo" name="${status.index}UnitNo0" value="${appGrpPremisesDto.unitNo}"/>
+                                <span class="error-msg" name="iaisErrorMsg" id="error_${status.index}UnitNo0"></span>
                             </iais:value>
-                            <iais:value cssClass="col-md-offset-4 col-md-8 col-xs-12">
-                                <span class="error-msg " name="iaisErrorMsg" id="error_locateWtihHcsa${status.index}"></span>
-                            </iais:value>
-                        </iais:row>
-                        <iais:row cssClass="locateWtihNonHcsaRow">
-                            <iais:field value="Are you co-locating with a service that is not licensed under HCSA?" mandatory="true" width="5" />
-                            <iais:value width="3" cssClass="col-md-3 form-check">
-                                <input <c:if test="${'1'==appGrpPremisesDto.locateWtihNonHcsa}">checked="checked"</c:if> class="form-check-input locateWtihNonHcsa" type="radio" name="locateWtihNonHcsa${status.index}" value = "1" aria-invalid="false">
-                                <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
-                            </iais:value>
-                            <iais:value width="4" cssClass="col-md-4 form-check">
-                                <input <c:if test="${'0'==appGrpPremisesDto.locateWtihNonHcsa}">checked="checked"</c:if> class="form-check-input locateWtihNonHcsa" type="radio" name="locateWtihNonHcsa${status.index}" value = "0" aria-invalid="false">
-                                <label class="form-check-label" ><span class="check-circle"></span>No</label>
-                            </iais:value>
-                            <iais:value cssClass="col-md-offset-4 col-md-8 col-xs-12">
-                                <span class="error-msg " name="iaisErrorMsg" id="error_locateWtihNonHcsa${status.index}"></span>
-                            </iais:value>
-                        </iais:row>
-                        <div class="nonHcsaRowDiv">
-                            <div class="file-upload-gp" style="background-color: rgba(242, 242, 242, 1);padding: 20px;">
-                                <p>Please list down all services not licensed under HCSA in the tabs below. Alternatively, you may also submit using the
-                                    <a href="${pageContext.request.contextPath}/co-non-hcsa-template">Excel Template</a>
-                                </p>
-                                <div class="uploadFileShowDiv" id="uploadFile${status.index}ShowId"></div>
-                                <div class="col-xs-12 uploadFileErrorDiv">
-                                    <span id="error_uploadFile${status.index}Error" name="iaisErrorMsg" class="error-msg"></span>
+                        </div>
+                    </iais:value>
+                    <div class="operationAdlDiv hidden">
+                        <div class=" col-xs-7 col-sm-4 col-md-2 ">
+                            <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                        </div>
+                        <div class=" col-xs-7 col-sm-4 col-md-1 text-center">
+                            <p class="text-danger opDel"><em class="fa fa-times-circle del-size-36"></em></p>
+                        </div>
+                    </div>
+                </iais:row>
+                <c:set var="hasAddFU" value="${appGrpPremisesDto.appPremisesOperationalUnitDtos.size()>0}" />
+                <div class="operationDivGroup">
+                    <c:if test="${hasAddFU}">
+                        <c:forEach var="operationDto" items="${appGrpPremisesDto.appPremisesOperationalUnitDtos}" varStatus="opStat">
+                            <c:set var="opIndex" value="${opStat.index + 1}" />
+                            <iais:row cssClass="operationDiv">
+                                <iais:field value="" width="5"/>
+                                <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
+                                    <div class="row">
+                                        <iais:value cssClass="col-xs-12 col-md-5 ">
+                                            <input class="floorNo" maxlength="3" type="text" data-base="FloorNo" name="${premValue}FloorNo${opIndex}" value="${operationDto.floorNo}" />
+                                            <span class="error-msg" name="iaisErrorMsg" id="error_${premValue}FloorNo${opIndex}"></span>
+                                        </iais:value>
+                                        <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
+                                        <iais:value cssClass="col-xs-12 col-md-5 ">
+                                            <input class="unitNo" maxlength="5" type="text" data-base="UnitNo" name="${premValue}UnitNo${opIndex}" value="${operationDto.unitNo}"/>
+                                            <span class="error-msg" name="iaisErrorMsg" id="error_${premValue}UnitNo${opIndex}"></span>
+                                        </iais:value>
+                                    </div>
+                                    <span class="error-msg" name="iaisErrorMsg" id="error_${premValue}FloorUnit${opIndex}"></span>
+                                </iais:value>
+                                <div class="operationAdlDiv">
+                                    <div class=" col-xs-7 col-sm-4 col-md-2 ">
+                                        <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                                    </div>
+                                    <div class=" col-xs-7 col-sm-4 col-md-1 text-center">
+                                        <p class="text-danger opDel"><em class="fa fa-times-circle del-size-36"></em></p>
+                                    </div>
                                 </div>
-                                <br/>
-                                <a class="btn btn-file-upload file-upload btn-secondary">Upload</a>
-                            </div>
-                            <iais:row>
-                                <label class="col-xs-12 col-md-4 control-label">Business Name</label>
-                                <label class="col-xs-12 col-md-4 control-label">Services Provided</label>
                             </iais:row>
+                        </c:forEach>
+                    </c:if>
+                    <!--prem operational -->
+                    <iais:row cssClass="addOpDiv">
+                        <iais:field value="" width="5"/>
+                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
+                            <span class="addOperational"><a style="text-decoration:none;">+ Add Additional Floor/Unit No.</a></span>
+                        </iais:value>
+                    </iais:row>
+                </div>
+                <iais:row cssClass="address">
+                    <iais:field value="Street Name" mandatory="true" width="5"/>
+                    <iais:value width="5" cssClass="col-md-5">
+                        <iais:input cssClass="streetName" maxLength="32" type="text" name="streetName${status.index}" value="${appGrpPremisesDto.streetName}"/>
+                    </iais:value>
+                </iais:row>
+                <iais:row cssClass="address">
+                    <iais:field value="Building Name" width="5"/>
+                    <iais:value width="5" cssClass="col-md-5">
+                        <iais:input cssClass="buildingName" maxLength="66" type="text" name="buildingName${status.index}" value="${appGrpPremisesDto.buildingName}"/>
+                    </iais:value>
+                </iais:row>
 
-                            <c:set var="hasNonHcsa" value="${appGrpPremisesDto.appPremNonLicRelationDtos.size() > 0}" />
-                            <c:if test="${hasNonHcsa}">
-                                <c:forEach var="relatedDto" items="${appGrpPremisesDto.appPremNonLicRelationDtos}" varStatus="relatedStatus">
-                                    <iais:row cssClass="nonHcsaRow">
-                                        <div class="col-xs-12 col-md-4">
-                                            <input maxlength="100" class="coBusinessName" type="text" data-base="CoBusinessName" name="${premValue}CoBusinessName${relatedStatus.index}" value="${relatedDto.businessName}" />
-                                            <span class="error-msg" name="iaisErrorMsg" id="error_${premValue}CoBusinessName${relatedStatus.index}"></span>
-                                        </div>
-                                        <div class="col-xs-12 col-md-4">
-                                            <input maxlength="100" class="coSvcName" type="text" data-base="CoSvcName" name="${premValue}CoSvcName${relatedStatus.index}" value="${relatedDto.providedService}" />
-                                            <span  class="error-msg" name="iaisErrorMsg" id="error_${premValue}CoSvcName${relatedStatus.index}"></span>
-                                        </div>
-                                        <div class="col-xs-12 col-md-2 delNonHcsaSvcRow">
-                                            <div class="text-center">
-                                                <p class="text-danger nonHcsaSvcDel"><em class="fa fa-times-circle del-size-36"></em></p>
-                                            </div>
-                                        </div>
-                                    </iais:row>
-                                </c:forEach>
-                            </c:if>
-                            <c:if test="${not hasNonHcsa}">
+                <iais:row cssClass="scdfRefNoRow">
+                    <c:set var="scdfRefNoInfo"><iais:message key="NEW_ACK006"></iais:message></c:set>
+                    <iais:field value="Fire Safety & Shelter Bureau Ref No." width="5" info="${scdfRefNoInfo}"/>
+                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 fireIssuedDateDiv">
+                        <iais:input maxLength="66" name="scdfRefNo${status.index}" type="text" value="${appGrpPremisesDto.scdfRefNo}"/>
+                    </iais:value>
+                </iais:row>
+                <iais:row cssClass="certIssuedDtRow">
+                    <iais:field value="Fire Safety Certificate Issued Date" width="5"/>
+                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 fireIssuedDateDiv">
+                        <iais:datePicker cssClass="certIssuedDt field-date" name="certIssuedDt${status.index}" value="${appGrpPremisesDto.certIssuedDtStr}" />
+                    </iais:value>
+                </iais:row>
+
+                <iais:row cssClass="easMtsAddFields">
+                    <iais:field value="For public/in-house use only?" mandatory="true" width="5"/>
+                    <iais:value width="11" cssClass="col-md-7" style="margin-left:-1%;">
+                        <input type="hidden" name="easMtsUseOnlyVal" value="${appGrpPremisesDto.easMtsUseOnly}"/>
+                        <div class="form-check col-sm-4">
+                            <input <c:if test="${'UOT001'==appGrpPremisesDto.easMtsUseOnly}">checked="checked"</c:if> class="form-check-input useType public-use"  type="radio" name="easMtsUseOnly${status.index}" value = "UOT001" aria-invalid="false">
+                            <label class="form-check-label" ><span class="check-circle"></span><iais:code code="UOT001"/></label>
+                        </div>
+                        <div class="form-check col-sm-6">
+                            <input <c:if test="${'UOT002'==appGrpPremisesDto.easMtsUseOnly}">checked="checked"</c:if> class="form-check-input useType in-house-use"  type="radio" name="easMtsUseOnly${status.index}" value = "UOT002" aria-invalid="false">
+                            <label class="form-check-label" ><span class="check-circle"></span><iais:code code="UOT002"/></label>
+                        </div>
+                        <div class="col-sm-12">
+                            <span class="error-msg" name="iaisErrorMsg" id="error_easMtsUseOnly${status.index}"></span>
+                        </div>
+                    </iais:value>
+                </iais:row>
+                <iais:row cssClass="easMtsAddFields">
+                    <iais:field value="Public Email" mandatory="true" width="5" cssClass="pubEmailLabel"/>
+                    <iais:value width="7" cssClass="col-md-5">
+                        <iais:input maxLength="320" cssClass="easMtsPubEmail" type="text" name="easMtsPubEmail${status.index}"
+                                    value="${appGrpPremisesDto.easMtsPubEmail}"/>
+                    </iais:value>
+                </iais:row>
+                <iais:row cssClass="easMtsAddFields">
+                    <iais:field value="Public Hotline" mandatory="true" width="5" cssClass="pubHotlineLabel"/>
+                    <iais:value width="7" cssClass="col-md-5">
+                        <iais:input maxLength="8" cssClass="easMtsPubHotline" type="text" name="easMtsPubHotline${status.index}"
+                                    value="${appGrpPremisesDto.easMtsPubHotline}"/>
+                    </iais:value>
+                </iais:row>
+
+                <div class="co-location-div">
+                    <iais:row>
+                        <iais:field value="Co-Location Services" width="10" />
+                        <iais:value/>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field value="Are you co-locating with a service that is licensed under HCSA?" mandatory="true" width="5" />
+                        <iais:value width="3" cssClass="col-md-3 form-check">
+                            <input <c:if test="${'1'==appGrpPremisesDto.locateWtihHcsa}">checked="checked"</c:if> class="form-check-input" type="radio" name="locateWtihHcsa${status.index}" value = "1" aria-invalid="false">
+                            <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
+                        </iais:value>
+                        <iais:value width="4" cssClass="col-md-4 form-check">
+                            <input <c:if test="${'0'==appGrpPremisesDto.locateWtihHcsa}">checked="checked"</c:if> class="form-check-input" type="radio" name="locateWtihHcsa${status.index}" value = "0" aria-invalid="false">
+                            <label class="form-check-label" ><span class="check-circle"></span>No</label>
+                        </iais:value>
+                        <iais:value cssClass="col-md-offset-4 col-md-8 col-xs-12">
+                            <span class="error-msg " name="iaisErrorMsg" id="error_locateWtihHcsa${status.index}"></span>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row cssClass="locateWtihNonHcsaRow">
+                        <iais:field value="Are you co-locating with a service that is not licensed under HCSA?" mandatory="true" width="5" />
+                        <iais:value width="3" cssClass="col-md-3 form-check">
+                            <input <c:if test="${'1'==appGrpPremisesDto.locateWtihNonHcsa}">checked="checked"</c:if> class="form-check-input locateWtihNonHcsa" type="radio" name="locateWtihNonHcsa${status.index}" value = "1" aria-invalid="false">
+                            <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
+                        </iais:value>
+                        <iais:value width="4" cssClass="col-md-4 form-check">
+                            <input <c:if test="${'0'==appGrpPremisesDto.locateWtihNonHcsa}">checked="checked"</c:if> class="form-check-input locateWtihNonHcsa" type="radio" name="locateWtihNonHcsa${status.index}" value = "0" aria-invalid="false">
+                            <label class="form-check-label" ><span class="check-circle"></span>No</label>
+                        </iais:value>
+                        <iais:value cssClass="col-md-offset-4 col-md-8 col-xs-12">
+                            <span class="error-msg " name="iaisErrorMsg" id="error_locateWtihNonHcsa${status.index}"></span>
+                        </iais:value>
+                    </iais:row>
+                    <div class="nonHcsaRowDiv">
+                        <div class="file-upload-gp" style="background-color: rgba(242, 242, 242, 1);padding: 20px;">
+                            <p>Please list down all services not licensed under HCSA in the tabs below. Alternatively, you may also submit using the
+                                <a href="${pageContext.request.contextPath}/co-non-hcsa-template">Excel Template</a>
+                            </p>
+                            <div class="uploadFileShowDiv" id="uploadFile${status.index}ShowId"></div>
+                            <div class="col-xs-12 uploadFileErrorDiv">
+                                <span id="error_uploadFile${status.index}Error" name="iaisErrorMsg" class="error-msg"></span>
+                            </div>
+                            <br/>
+                            <a class="btn btn-file-upload file-upload btn-secondary">Upload</a>
+                        </div>
+                        <iais:row>
+                            <label class="col-xs-12 col-md-4 control-label">Business Name</label>
+                            <label class="col-xs-12 col-md-4 control-label">Services Provided</label>
+                        </iais:row>
+
+                        <c:set var="hasNonHcsa" value="${appGrpPremisesDto.appPremNonLicRelationDtos.size() > 0}" />
+                        <c:if test="${hasNonHcsa}">
+                            <c:forEach var="relatedDto" items="${appGrpPremisesDto.appPremNonLicRelationDtos}" varStatus="relatedStatus">
                                 <iais:row cssClass="nonHcsaRow">
                                     <div class="col-xs-12 col-md-4">
-                                        <input maxlength="100" class="coBusinessName" type="text" data-base="CoBusinessName" name="${premValue}CoBusinessName0" value="" />
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_${premValue}CoBusinessName0"></span>
+                                        <input maxlength="100" class="coBusinessName" type="text" data-base="CoBusinessName" name="${premValue}CoBusinessName${relatedStatus.index}" value="${relatedDto.businessName}" />
+                                        <span class="error-msg" name="iaisErrorMsg" id="error_${premValue}CoBusinessName${relatedStatus.index}"></span>
                                     </div>
                                     <div class="col-xs-12 col-md-4">
-                                        <input maxlength="100" class="coSvcName" type="text" data-base="CoSvcName" name="${premValue}CoSvcName0" value="" />
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_${premValue}CoSvcName0"></span>
+                                        <input maxlength="100" class="coSvcName" type="text" data-base="CoSvcName" name="${premValue}CoSvcName${relatedStatus.index}" value="${relatedDto.providedService}" />
+                                        <span  class="error-msg" name="iaisErrorMsg" id="error_${premValue}CoSvcName${relatedStatus.index}"></span>
                                     </div>
-                                    <div class="col-xs-12 col-md-2 delNonHcsaSvcRow hiden">
+                                    <div class="col-xs-12 col-md-2 delNonHcsaSvcRow">
                                         <div class="text-center">
                                             <p class="text-danger nonHcsaSvcDel"><em class="fa fa-times-circle del-size-36"></em></p>
                                         </div>
                                     </div>
                                 </iais:row>
-                            </c:if>
-                            <iais:row cssClass="addNonHcsaSvcRow">
-                                <div class="col-xs-12">
-                                    <span class="addNonHcsaSvc"><a style="text-decoration:none;">+ Add Non-Licensable Service</a></span>
+                            </c:forEach>
+                        </c:if>
+                        <c:if test="${not hasNonHcsa}">
+                            <iais:row cssClass="nonHcsaRow">
+                                <div class="col-xs-12 col-md-4">
+                                    <input maxlength="100" class="coBusinessName" type="text" data-base="CoBusinessName" name="${premValue}CoBusinessName0" value="" />
+                                    <span class="error-msg" name="iaisErrorMsg" id="error_${premValue}CoBusinessName0"></span>
+                                </div>
+                                <div class="col-xs-12 col-md-4">
+                                    <input maxlength="100" class="coSvcName" type="text" data-base="CoSvcName" name="${premValue}CoSvcName0" value="" />
+                                    <span class="error-msg" name="iaisErrorMsg" id="error_${premValue}CoSvcName0"></span>
+                                </div>
+                                <div class="col-xs-12 col-md-2 delNonHcsaSvcRow hiden">
+                                    <div class="text-center">
+                                        <p class="text-danger nonHcsaSvcDel"><em class="fa fa-times-circle del-size-36"></em></p>
+                                    </div>
                                 </div>
                             </iais:row>
-                        </div>
+                        </c:if>
+                        <iais:row cssClass="addNonHcsaSvcRow">
+                            <div class="col-xs-12">
+                                <span class="addNonHcsaSvc"><a style="text-decoration:none;">+ Add Non-Licensable Service</a></span>
+                            </div>
+                        </iais:row>
                     </div>
                 </div>
             </div>

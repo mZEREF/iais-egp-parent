@@ -1,7 +1,6 @@
 <c:set var="weeklyList" value="${businessDto.weeklyDtoList}"/>
 
 <div class="weeklyContent">
-
     <c:choose>
         <c:when test="${businessDto.weeklyDtoList != null && businessDto.weeklyDtoList.size()>1}">
             <input class="weeklyLength" type="hidden" name="weeklyLength${status.index}" value="${businessDto.weeklyDtoList.size()}"/>
@@ -12,7 +11,6 @@
             <c:set var="weeklyLength" value="1"/>
         </c:otherwise>
     </c:choose>
-
     <c:forEach begin="0" end="${weeklyLength-1}" step="1" varStatus="weeklyStat">
         <c:set var="index" value="${weeklyStat.index}"/>
         <c:set var="weekly" value="${weeklyList[index]}"/>
@@ -98,4 +96,11 @@
             </iais:row>
         </div>
     </c:forEach>
+    <c:if test="${!isRfi}">
+        <div class="form-group addWeeklyDiv <c:if test="${weeklyList.size() >= maxCount}">hidden</c:if>">
+            <iais:value cssClass="col-xs-4 col-sm-4 col-md-4">
+                <a class="addWeekly" style="text-decoration:none;">+ Add</a>
+            </iais:value>
+        </div>
+    </c:if>
 </div>

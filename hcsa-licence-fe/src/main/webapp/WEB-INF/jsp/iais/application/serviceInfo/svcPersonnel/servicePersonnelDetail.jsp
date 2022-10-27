@@ -16,7 +16,7 @@
     <iais:row cssClass="personnel-header">
         <div class="col-xs-12 col-md-6">
             <strong>
-                <c:out value="ServicePersonnel"/>
+                <c:out value="Service Personnel"/>
                 <span class="assign-psn-item">${index+1}</span>
             </strong>
         </div>
@@ -75,7 +75,7 @@
         </iais:row>
         <%--    regnNo--%>
         <iais:row cssClass="personnel-regnNo hidden ">
-            <iais:field width="5" mandatory="true" value="Professional Regn. No. " cssClass="col-md-5"/>
+            <iais:field width="5" mandatory="true" value="Professional Regn No. " cssClass="col-md-5"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="20" cssClass="profRegNo" type="text" name="${logo}profRegNo${index}"
                             value="${appSvcPersonnelDto.profRegNo}"></iais:input>

@@ -66,7 +66,7 @@
             </iais:row>
 
             <iais:row>
-                <iais:field width="5" value="Vehicle Number" cssClass="col-md-5 control-font-label"/>
+                <iais:field width="5" value="Vehicle number" cssClass="col-md-5 control-font-label"/>
                 <iais:value width="7" cssClass="col-md-7">
                     <iais:input cssClass="vehicleName" maxLength="10" type="text" name="vehicleName${vehicleStat.index}"
                                 value="${vehicleDto.dummyVehNum? '' : vehicleDto.displayName}"/>
@@ -74,7 +74,7 @@
             </iais:row>
 
             <iais:row>
-                <iais:field width="5" mandatory="true" value="Chassis Number" cssClass="col-md-5 control-font-label"/>
+                <iais:field width="5" mandatory="true" value="Chassis number" cssClass="col-md-5 control-font-label"/>
                 <iais:value width="7" cssClass="col-md-7">
                     <iais:input cssClass="chassisNum" maxLength="25" type="text" name="chassisNum${vehicleStat.index}"
                                 value="${vehicleDto.chassisNum}"/>
@@ -82,7 +82,7 @@
             </iais:row>
 
             <iais:row>
-                <iais:field width="5" mandatory="true" value="Engine Number" cssClass="col-md-5 control-font-label"/>
+                <iais:field width="5" mandatory="true" value="Engine number" cssClass="col-md-5 control-font-label"/>
                 <iais:value width="7" cssClass="col-md-7">
                     <iais:input cssClass="engineNum" maxLength="25" type="text" name="engineNum${vehicleStat.index}"
                                 value="${vehicleDto.engineNum}"/>
@@ -125,7 +125,7 @@
     <c:if test="${!isRfi}">
         <div class="col-md-12 col-xs-12 addVehicleDiv <c:if test="${!needAddPsn}">hidden</c:if>">
             <span class="addVehicleBtn" style="color:deepskyblue;cursor:pointer;">
-                <span style="">+ Add Vehicle</span>
+                <span style="">+ Add Another Vehicle</span>
             </span>
         </div>
     </c:if>

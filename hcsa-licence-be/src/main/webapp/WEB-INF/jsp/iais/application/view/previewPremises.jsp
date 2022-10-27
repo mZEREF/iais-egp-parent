@@ -27,6 +27,9 @@
                 </iais:row>
                 <div class="panel-main-content form-horizontal min-row">
                     <%@include file="premises/viewPremisesContent.jsp"%>
+                <c:forEach var="appGrpSecondAddrDto" items="${appGrpPremDto.appGrpSecondAddrDtos}" varStatus="statuss">
+                    <%@include file="premises/viewPremissSecondAddress.jsp"%>
+                </c:forEach>
                 </div>
             </c:forEach>
             <c:if test="${empty retriggerGiro && FirstView && !('APTY004' == AppSubmissionDto.appType || 'APTY005' == AppSubmissionDto.appType)}">

@@ -98,6 +98,7 @@
         $tgt.after(src);
         var $currContent = $(target).last();
         initFormNodes($currContent);
+        clearFields($currContent);
         hideTag($currContent.find('.rfc-psn-detail'));
         hideTag($currContent.find('.edit-content'));
         unDisableContent($currContent.find('.assignSelDiv'));

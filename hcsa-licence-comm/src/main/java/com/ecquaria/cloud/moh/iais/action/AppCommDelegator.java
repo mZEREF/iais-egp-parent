@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
@@ -553,9 +552,9 @@ public abstract class AppCommDelegator {
             ParamUtil.setRequestAttr(request, HcsaAppConst.SPECIALISED_NEXT_CODE, svcCode);
         }
         ApplicationHelper.setAppSubmissionDto(appSubmissionDto, request);
-        if (HcsaAppConst.ACTION_RESULT_ERROR_BLOCK != result) {
+        /*if (HcsaAppConst.ACTION_RESULT_ERROR_BLOCK != result) {
             saveDraft(bpc);
-        }
+        }*/
     }
 
     private void resolveSpecialisedCoMap(Map<String, String> coMap, int result, String svcCode) {
@@ -720,11 +719,11 @@ public abstract class AppCommDelegator {
         }
 
         // check result
-        int result = checkAction(errorMap, action, HcsaAppConst.ACTION_LICENSEE, appSubmissionDto, bpc.request);
+        checkAction(errorMap, action, HcsaAppConst.ACTION_LICENSEE, appSubmissionDto, bpc.request);
         ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
-        if (HcsaAppConst.ACTION_RESULT_ERROR_BLOCK != result) {
+        /*if (HcsaAppConst.ACTION_RESULT_ERROR_BLOCK != result) {
             saveDraft(bpc);
-        }
+        }*/
     }
 
     private SubLicenseeDto getSubLicenseeDtoFromPage(HttpServletRequest request) {
@@ -971,9 +970,9 @@ public abstract class AppCommDelegator {
             checkBundle(appSubmissionDto);
         }
         ApplicationHelper.setAppSubmissionDto(appSubmissionDto, bpc.request);
-        if (HcsaAppConst.ACTION_RESULT_ERROR_BLOCK != result) {
+        /*if (HcsaAppConst.ACTION_RESULT_ERROR_BLOCK != result) {
             saveDraft(bpc);
-        }
+        }*/
         log.info(StringUtil.changeForLog("the do doPremises end ...."));
     }
 
@@ -1165,7 +1164,7 @@ public abstract class AppCommDelegator {
         ParamUtil.setRequestAttr(bpc.request, RfcConst.SHOW_HEADING_SIGN, Boolean.TRUE);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         DealSessionUtil.initView(appSubmissionDto);
-        List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+        /*List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
         List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,
                 AppServicesConsts.HCSASERVICEDTOLIST);
         //todo:wait task complete remove this
@@ -1189,7 +1188,7 @@ public abstract class AppCommDelegator {
                 //multi prem one svc
                 ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.GROUPLICENCECONFIG, "test");
             }
-        }
+        }*/
 
         if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
             if (!ApplicationHelper.checkIsRfi(bpc.request)) {
@@ -1475,7 +1474,7 @@ public abstract class AppCommDelegator {
         log.info(StringUtil.changeForLog("the do preInvoke start ...."));
     }
 
-    private void saveDraft(BaseProcessClass bpc) {
+    /*private void saveDraft(BaseProcessClass bpc) {
         String actionAdditional = ParamUtil.getString(bpc.request, "crud_action_additional");
         if ("rfcSaveDraft".equals(actionAdditional)) {
             try {
@@ -1484,7 +1483,7 @@ public abstract class AppCommDelegator {
                 log.error("error", e);
             }
         }
-    }
+    }*/
 
     /**
      * StartStep: doSaveDraft

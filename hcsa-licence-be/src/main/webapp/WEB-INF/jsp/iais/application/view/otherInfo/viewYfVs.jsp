@@ -1,5 +1,5 @@
 <c:set var="orgUse" value="${appSvcOtherInfoDto.orgUserDto}"/>
-<div class="amended-service-info-gp">
+<div class="">
     <iais:row>
         <div class="col-xs-12">
             <p><strong>Yellow Fever Vaccination </strong></p>

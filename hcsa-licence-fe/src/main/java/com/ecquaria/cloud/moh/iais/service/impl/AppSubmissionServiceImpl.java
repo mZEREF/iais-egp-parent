@@ -928,8 +928,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
                         for (AppPremSpecialisedDto specSvc : appPremSpecialisedDtos
                         ) {
-                            if (specSvc.getBaseSvcId().equals(appSvcRelatedInfoDto.getServiceId()) && specSvc.getPremAddress().equals(
-                                    appGrpPremisesDto.getAddress())) {
+                            if (specSvc.getBaseSvcId().equals(appSvcRelatedInfoDto.getServiceId()) && specSvc.getPremisesVal().equals(
+                                    appGrpPremisesDto.getPremisesIndexNo())) {
                                 List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList = specSvc.getAppPremSubSvcRelDtoList();
                                 if (IaisCommonUtils.isNotEmpty(appPremSubSvcRelDtoList)) {
                                     for (AppPremSubSvcRelDto subSvc : appPremSubSvcRelDtoList
@@ -1157,8 +1157,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
                         for (AppPremSpecialisedDto specSvc : appPremSpecialisedDtos
                         ) {
-                            if (specSvc.getBaseSvcId().equals(appSvcRelatedInfoDto.getServiceId()) && specSvc.getPremAddress().equals(
-                                    appGrpPremisesDto.getAddress())) {
+                            if (specSvc.getBaseSvcId().equals(appSvcRelatedInfoDto.getServiceId()) && specSvc.getPremisesVal().equals(
+                                    appGrpPremisesDto.getPremisesIndexNo())) {
                                 List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList = specSvc.getAppPremSubSvcRelDtoList();
                                 if (IaisCommonUtils.isNotEmpty(appPremSubSvcRelDtoList)) {
                                     for (AppPremSubSvcRelDto subSvc : appPremSubSvcRelDtoList
