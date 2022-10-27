@@ -477,9 +477,7 @@ public class NewApplicationDelegator extends AppCommDelegator {
             if ("success".equals(result) && !StringUtil.isEmpty(pmtRefNo)) {
                 log.debug(StringUtil.changeForLog("online payment success ..."));
                 try {
-                    boolean isEmailSend = appSubmissionDto.getChangeSelectDto() != null && appSubmissionDto.getChangeSelectDto().isEmailSend();
-                    if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
-                            && isEmailSend) {
+                    if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
                         log.info(StringUtil.changeForLog("RFC Email Sending ..."));
                         List<AppSubmissionDto> appSubmissionDtos1 = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request,
                                 APP_SUBMISSIONS);
