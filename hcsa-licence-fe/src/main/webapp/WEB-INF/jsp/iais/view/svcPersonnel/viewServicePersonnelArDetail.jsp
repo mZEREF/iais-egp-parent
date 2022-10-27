@@ -22,7 +22,7 @@
     </iais:row>
 
     <iais:row>
-        <iais:field width="5" value="Professional Regn. No."/>
+        <iais:field width="5" value="Professional Regn No."/>
         <iais:value width="7" cssClass="col-md-7" display="true">
             <c:out value="${appSvcPersonnelDto.profRegNo}"/>
         </iais:value>
@@ -58,7 +58,7 @@
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="Date when specialty was obtained"/>
+        <iais:field width="5" value="Date when specialty was gotten"/>
         <iais:value width="7" cssClass="col-md-7" display="true">
             <c:out value="${appSvcPersonnelDto.specialtyGetDate}"/>
         </iais:value>
@@ -70,7 +70,7 @@
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="Relevant working experience(Years)"/>
+        <iais:field width="5" value="Relevant working experience (Years)"/>
         <iais:value width="7" cssClass="col-md-7" display="true">
             <c:out value="${appSvcPersonnelDto.wrkExpYear}"/>
         </iais:value>

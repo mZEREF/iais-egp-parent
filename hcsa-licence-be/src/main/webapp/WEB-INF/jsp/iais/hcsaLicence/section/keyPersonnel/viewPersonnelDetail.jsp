@@ -218,7 +218,7 @@
         <tr>
             <td class="col-xs-6">
                 <div class="form-check-label" aria-label="premise-1-cytology">
-                    <span class="check-square"></span>Professional Regn. No.
+                    <span class="check-square"></span>Professional Regn No.
                 </div>
             </td>
             <td>
@@ -365,7 +365,7 @@
         <tr>
             <td class="col-xs-6">
                 <div class="form-check-label" aria-label="premise-1-cytology">
-                    <span class="check-square"></span>Other Specialties
+                    <span class="check-square"></span>Other Specialities
                 </div>
             </td>
             <td>
@@ -439,6 +439,28 @@
             </td>
         </tr>
     </c:if>
+    <c:if test="${officeTelNo} == 'officeTelNo'">
+    <tr>
+        <td class="col-xs-6">
+            <div class="form-check-label" aria-label="premise-1-cytology">
+                <span class="check-square"></span>Office Telephone No.
+            </div>
+        </td>
+        <td>
+            <div class="col-xs-6">
+                <span class="newVal " attr="${person.officeTelNo}">
+                    <c:out value="${person.officeTelNo}"/>
+                </span>
+            </div>
+            <div class="col-xs-6">
+                <span class="oldVal " attr="${oldPerson.officeTelNo}" style="display: none">
+                    <c:out value="${oldPerson.officeTelNo}"/>
+                </span>
+            </div>
+        </td>
+    </tr>
+    </c:if>
+
     <tr>
         <td class="col-xs-6">
             <div class="form-check-label" aria-label="premise-1-cytology">

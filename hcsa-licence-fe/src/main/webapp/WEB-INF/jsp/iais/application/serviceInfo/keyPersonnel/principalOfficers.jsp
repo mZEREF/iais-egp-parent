@@ -29,7 +29,7 @@
         </c:if>
         <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
     </c:if>
-
+    <c:set var="officeTelNo" value="officeTelNo"/>
     <div class="panel-group" id="Principal" role="tablist" aria-multiselectable="true">
         <div class="panel panel-default">
             <div class="panel-heading" role="tab">
@@ -65,7 +65,7 @@
                             </c:otherwise>
                         </c:choose>
 
-
+                        <c:set var="prepsn" value="po"/>
                         <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="status">
                             <c:set var="index" value="${status.index}"/>
                             <c:set var="person" value="${personList[index]}"/>

@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.SpecialServiceSectionD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpSecondAddrDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremGroupOutsourcedDto;
@@ -155,90 +156,181 @@ public final class AppDataHelper {
         dto.setNationality(nationality);
         return dto;
     }
+    public static List<AppGrpSecondAddrDto> genAppGrpSecondAddrDto(AppSubmissionDto appSubmissionDto,HttpServletRequest request,String premIndexNo,String premType) {
+        List<AppGrpSecondAddrDto> list = IaisCommonUtils.genNewArrayList();
+        AppGrpPremisesDto appGrpPremisesDto = appSubmissionDto.getAppGrpPremisesDtoList().get(0);
+        if (StringUtil.isEmpty(appGrpPremisesDto)){
+            return list;
+        }
+        String appType = appSubmissionDto.getAppType();
+        boolean isRfi = ApplicationHelper.checkIsRfi(request);
+        String prefix = "address";
+        String[] count = ParamUtil.getStrings(request, prefix+"Count");
+        String[] isPartEdit = ParamUtil.getStrings(request, prefix+"isPartEdit");
+        String[] indexNos = ParamUtil.getStrings(request,  prefix+"index");
+        int size = 0;
+        if (count != null && count.length > 0){
+            size = count.length;
+        }
+        for (int i = 0; i < size; i++) {
+            boolean pageData = false;
+            boolean nonChanged = false;
+            String indexNo = getVal(indexNos,i);
+            AppGrpSecondAddrDto appGrpSecondAddrDto = new AppGrpSecondAddrDto();
+            if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+                pageData = true;
+            } else if (AppConsts.YES.equals(getVal(isPartEdit, i))) {
+                pageData = true;
+            } else if (!StringUtil.isEmpty(indexNo)) {
+                nonChanged = true;
+            }
+            if (nonChanged){
+                List<AppGrpSecondAddrDto> appGrpSecondAddrDtos = appGrpPremisesDto.getAppGrpSecondAddrDtos();
+                appGrpSecondAddrDto = appGrpSecondAddrDtos.stream().
+                        filter(dto -> Objects.equals(indexNo, dto.getIndexNo()))
+                        .findAny()
+                        .orElseGet(() -> {
+                            AppGrpSecondAddrDto dto = new AppGrpSecondAddrDto();
+                            dto.setId(indexNo);
+                            return dto;
+                        });
+            }else if (pageData){
+                appGrpSecondAddrDto = getAppGrpSecondAddrDto(prefix,String.valueOf(i),appGrpSecondAddrDto,request,premIndexNo, premType);
+            }
+            list.add(appGrpSecondAddrDto);
+        }
+        return list;
+    }
+    public static AppGrpSecondAddrDto getAppGrpSecondAddrDto(String prefix,String suffix,AppGrpSecondAddrDto appGrpSecondAddrDto,HttpServletRequest request,String premIndexNo,String premType) {
+        appGrpSecondAddrDto.setPostalCode(ParamUtil.getString(request, prefix + "postalCode" + suffix));
+        appGrpSecondAddrDto.setAddrType(ParamUtil.getString(request, prefix + "addrType" + suffix));
+        appGrpSecondAddrDto.setBlkNo(ParamUtil.getString(request, prefix + "blkNo" + suffix));
+        appGrpSecondAddrDto.setFloorNo(ParamUtil.getString(request, 0 + "FloorNos" + 0));
+        appGrpSecondAddrDto.setUnitNo(ParamUtil.getString(request, 0 + "UnitNos" + 0));
+        appGrpSecondAddrDto.setStreetName(ParamUtil.getString(request, prefix+"streetName" + suffix));
+        appGrpSecondAddrDto.setBuildingName(ParamUtil.getString(request, prefix+"buildingName" + suffix));
+        appGrpSecondAddrDto.setIndexNo(UUID.randomUUID().toString());
+        String addressSize = ParamUtil.getString(request,"addressSize");
+        List<AppPremisesOperationalUnitDto> unitDtos = IaisCommonUtils.genNewArrayList();
+        int length = 1;
+        if (StringUtil.isNotEmpty(addressSize)){
+            length = Integer.valueOf(addressSize);
+        }
+        for (int i = 1; i < length; i++) {
+            String floorNo = ParamUtil.getString(request, suffix + "FloorNos" + i);
+            String unitNo = ParamUtil.getString(request, suffix + "UnitNos" + i);
+            if (StringUtil.isEmpty(floorNo) && StringUtil.isEmpty(unitNo)) {
+                continue;
+            }
+            AppPremisesOperationalUnitDto appPremisesOperationalUnitDto = new AppPremisesOperationalUnitDto();
+            appPremisesOperationalUnitDto.setFloorNo(floorNo);
+            appPremisesOperationalUnitDto.setUnitNo(unitNo);
+            appPremisesOperationalUnitDto.setPremType(premType);
+            appPremisesOperationalUnitDto.setPremVal(premIndexNo);
+            appPremisesOperationalUnitDto.setSeqNum(i);
+            unitDtos.add(appPremisesOperationalUnitDto);
+        }
+        appGrpSecondAddrDto.setAppPremisesOperationalUnitDtos(unitDtos);
+        return appGrpSecondAddrDto;
 
-    /**
-     * @description: get data from page
-     * @author: zixian
-     * @date: 11/6/2019 5:05 PM
-     * @param: singlePrem
-     * @param: request
-     * @return: AppGrpPremisesDto
-     */
-    public static List<AppGrpPremisesDto> genAppGrpPremisesDtoList(boolean singlePrem, HttpServletRequest request) {
-        //AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
+        }
+
+
+        /**
+         * @description: get data from page
+         * @author: zixian
+         * @date: 11/6/2019 5:05 PM
+         * @param: singlePrem
+         * @param: request
+         * @return: AppGrpPremisesDto
+         */
+        public static List<AppGrpPremisesDto> genAppGrpPremisesDtoList ( boolean singlePrem, HttpServletRequest request) {
+            //AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
         /*boolean readonly = ApplicationHelper.readonlyPremises(appSubmissionDto);
         if (readonly) {
             return appSubmissionDto.getAppGrpPremisesDtoList();
         }*/
-        List<AppGrpPremisesDto> appGrpPremisesDtoList = IaisCommonUtils.genNewArrayList();
+            List<AppGrpPremisesDto> appGrpPremisesDtoList = IaisCommonUtils.genNewArrayList();
         /*List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,
                 AppServicesConsts.HCSASERVICEDTOLIST);
         boolean isMultiPremService = ApplicationHelper.isMultiPremService(hcsaServiceDtoList);*/
-        String[] premisesIndexNos = ParamUtil.getStrings(request, "premisesIndexNo");
-        String[] chooseExistData = ParamUtil.getStrings(request, "chooseExistData");
-        String[] premTypeValue = ParamUtil.getStrings(request, "premType");
-        String[] premSelValue = ParamUtil.getStrings(request, "premSelValue");
-        String[] isParyEdit = ParamUtil.getStrings(request, "isParyEdit");
-        int count = premisesIndexNos.length;
-        if (singlePrem) {
-            count = 1;
-        }
-        for (int i = 0; i < count; i++) {
-            String premType = ParamUtil.getString(request, "premType" + i);
-            if (StringUtil.isEmpty(premType)) {
-                premType = getVal(premTypeValue, i);
+            String[] premisesIndexNos = ParamUtil.getStrings(request, "premisesIndexNo");
+            String[] chooseExistData = ParamUtil.getStrings(request, "chooseExistData");
+            String[] premTypeValue = ParamUtil.getStrings(request, "premType");
+            String[] premSelValue = ParamUtil.getStrings(request, "premSelValue");
+            String[] isPartEdit = ParamUtil.getStrings(request, "isPartEdit");
+            int count = premisesIndexNos.length;
+            if (singlePrem) {
+                count = 1;
             }
-            String premisesSel = "";
-            if (ApplicationConsts.PREMISES_TYPE_PERMANENT.equals(premType)) {
-                premisesSel = ParamUtil.getString(request, "permanentSel" + i);
-            } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)) {
-                premisesSel = ParamUtil.getString(request, "conveyanceSel" + i);
-            } else if (ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premType)) {
-                premisesSel = ParamUtil.getString(request, "easMtsSel" + i);
-            } else if (ApplicationConsts.PREMISES_TYPE_MOBILE.equals(premType)) {
-                premisesSel = ParamUtil.getString(request, "mobileSel" + i);
-            } else if (ApplicationConsts.PREMISES_TYPE_REMOTE.equals(premType)) {
-                premisesSel = ParamUtil.getString(request, "remoteSel" + i);
-            }
-            if (StringUtil.isEmpty(premisesSel)) {
-                premisesSel = getVal(premSelValue, i);
-            }
-            String premIndexNo = getVal(premisesIndexNos, i);
-            if (StringUtil.isEmpty(premIndexNo)) {
-                log.info(StringUtil.changeForLog("New premise index"));
-                premIndexNo = UUID.randomUUID().toString();
-            }
-            String existingData = getVal(chooseExistData, i);
-            // data
-            AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
-            // check
-            AppGrpPremisesDto licPremise = ApplicationHelper.getPremisesFromMap(premisesSel, request);
-            if (AppConsts.YES.equals(existingData)) {
-                setDataFromExisting(appGrpPremisesDto, licPremise);
-            }
-            // edit current or edit existed data
-            if (!AppConsts.YES.equals(existingData) || AppConsts.YES.equals(getVal(isParyEdit, i))) {
-                setAppGrpPremiseNonAutoFields(appGrpPremisesDto, premIndexNo, premType, i, request);
-                if (licPremise != null) {
-                    appGrpPremisesDto.setRelatedServices(licPremise.getRelatedServices());
-                    appGrpPremisesDto.setHciCode(licPremise.getHciCode());
+            for (int i = 0; i < count; i++) {
+                String premType = ParamUtil.getString(request, "premType" + i);
+                if (StringUtil.isEmpty(premType)) {
+                    premType = getVal(premTypeValue, i);
                 }
+                String premisesSel = "";
+                if (ApplicationConsts.PREMISES_TYPE_PERMANENT.equals(premType)) {
+                    premisesSel = ParamUtil.getString(request, "permanentSel" + i);
+                } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)) {
+                    premisesSel = ParamUtil.getString(request, "conveyanceSel" + i);
+                } else if (ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premType)) {
+                    premisesSel = ParamUtil.getString(request, "easMtsSel" + i);
+                } else if (ApplicationConsts.PREMISES_TYPE_MOBILE.equals(premType)) {
+                    premisesSel = ParamUtil.getString(request, "mobileSel" + i);
+                } else if (ApplicationConsts.PREMISES_TYPE_REMOTE.equals(premType)) {
+                    premisesSel = ParamUtil.getString(request, "remoteSel" + i);
+                }
+                if (StringUtil.isEmpty(premisesSel)) {
+                    premisesSel = getVal(premSelValue, i);
+                }
+                String premIndexNo = getVal(premisesIndexNos, i);
+                if (StringUtil.isEmpty(premIndexNo)) {
+                    log.info(StringUtil.changeForLog("New premise index"));
+                    premIndexNo = UUID.randomUUID().toString();
+                }
+                String existingData = getVal(chooseExistData, i);
+                // data
+                AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
+                // check
+                AppGrpPremisesDto licPremise = ApplicationHelper.getPremisesFromMap(premisesSel, request);
+                if (AppConsts.YES.equals(existingData)) {
+                    setDataFromExisting(appGrpPremisesDto, licPremise);
+                }
+                boolean isRfi = ApplicationHelper.checkIsRfi(request);
+                AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(request);
+                String appType = appSubmissionDto.getAppType();
+                List<AppGrpSecondAddrDto> appGrpSecondAddrDtoList = genAppGrpSecondAddrDto(appSubmissionDto, request,premIndexNo, premType);
+                if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType) || AppConsts.YES.equals(getVal(isPartEdit, i))) {
+                    setAppGrpPremiseNonAutoFields(appGrpPremisesDto, premIndexNo, premType, i, request);
+                    if (licPremise != null) {
+                        appGrpPremisesDto.setRelatedServices(licPremise.getRelatedServices());
+                        appGrpPremisesDto.setHciCode(licPremise.getHciCode());
+                    }
+                } else if (StringUtil.isNotEmpty(getVal(premisesIndexNos, i))) {
+                    AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(request);
+                    appGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
+                    appGrpPremisesDtoList.get(0).setAppGrpSecondAddrDtos(appGrpSecondAddrDtoList);
+                    return appGrpPremisesDtoList;
+                }
+                // edit current or edit existed data  !AppConsts.YES.equals(existingData) ||
+                setAppGrpPremiseFromPage(appGrpPremisesDto, i, request);
+                // rfc and renewal
+                setSelectedLicences(appGrpPremisesDto, premIndexNo, request);
+                AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(request);
+                checkHciCode(appGrpPremisesDto, premIndexNo, premisesSel, oldAppSubmissionDto);
+                appGrpPremisesDto.setSeqNum(i + 1);
+                appGrpPremisesDto.setHasError(null);
+                appGrpPremisesDto.setPremisesIndexNo(premIndexNo);
+                appGrpPremisesDto.setExistingData(existingData);
+                appGrpPremisesDto.setPremisesType(premType);
+                appGrpPremisesDto.setPremisesSelect(premisesSel);
+//
+                appGrpPremisesDto.setAppGrpSecondAddrDtos(appGrpSecondAddrDtoList);
+                appGrpPremisesDtoList.add(appGrpPremisesDto);
             }
-            setAppGrpPremiseFromPage(appGrpPremisesDto, i, request);
-            // rfc and renewal
-            setSelectedLicences(appGrpPremisesDto, premIndexNo, request);
-            AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(request);
-            checkHciCode(appGrpPremisesDto, premIndexNo, premisesSel, oldAppSubmissionDto);
-            appGrpPremisesDto.setSeqNum(i + 1);
-            appGrpPremisesDto.setHasError(null);
-            appGrpPremisesDto.setPremisesIndexNo(premIndexNo);
-            appGrpPremisesDto.setExistingData(existingData);
-            appGrpPremisesDto.setPremisesType(premType);
-            appGrpPremisesDto.setPremisesSelect(premisesSel);
-            appGrpPremisesDtoList.add(appGrpPremisesDto);
+            return appGrpPremisesDtoList;
         }
-        return appGrpPremisesDtoList;
-    }
+
 
     private static void setSelectedLicences(AppGrpPremisesDto appGrpPremisesDto, String premIndexNo,
             HttpServletRequest request) {
@@ -357,6 +449,7 @@ public final class AppDataHelper {
                 dto.setSeqNum(k);
                 appPremNonLicRelationDtos.add(dto);
             }
+
             appGrpPremisesDto.setAppPremNonLicRelationDtos(appPremNonLicRelationDtos);
         }
     }
@@ -1779,7 +1872,7 @@ public final class AppDataHelper {
 
 
     public static List<AppSvcPrincipalOfficersDto> genAppSvcPrincipalOfficersDtos(HttpServletRequest request) {
-        return genKeyPersonnels(ApplicationConsts.PERSONNEL_PSN_TYPE_PO, "", request, false);
+        return genKeyPersonnels(ApplicationConsts.PERSONNEL_PSN_TYPE_PO, "po", request, false);
     }
 
     public static List<AppSvcPrincipalOfficersDto> genAppSvcNomineeDtos(HttpServletRequest request) {
@@ -2363,6 +2456,7 @@ public final class AppDataHelper {
         setPsnValue(person, appPsnEditDto, "aclsExpiryDate", prefix, suffix, true, request);
         setPsnValue(person, appPsnEditDto, "bclsExpiryDate", prefix, suffix, true, request);
         setPsnValue(person, appPsnEditDto, "relevantExperience", prefix, suffix, request);
+        setPsnValue(person, appPsnEditDto, "officeTelNo", prefix, suffix, request);
 
         if (person.getPsnEditDto() == null) {
             if (appPsnEditDto == null) {

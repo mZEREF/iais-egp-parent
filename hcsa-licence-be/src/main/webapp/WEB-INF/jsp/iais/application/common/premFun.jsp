@@ -129,7 +129,7 @@
             if (isEmpty(isEdit) || !isEdit) {
                 checkPremDisabled($premContent, true);
             } else {
-                $premContent.find('.isParyEdit').val('1');
+                $premContent.find('.isPartEdit').val('1');
             }
         }
         // Non HCSA
@@ -140,6 +140,8 @@
             showTag($premContent.find('.file-upload-gp'));
         }
         checkEditBtn($premContent, false);
+        $premContent.find('.isPartEdit').val('1')
+        console.log($premContent.find('.isPartEdit').val(),'val======>>>')
     }
 
     function hideEditBtn ($premContent) {
@@ -576,6 +578,7 @@
         $premContent.find('div.addNonHcsaSvcRow').before(src);
         var $target = $premContent.find('div.nonHcsaRow:last');
         initFormNodes($target);
+        console.log($premContent.find('.MMM').val(),'===========////>>>>')
         refreshNonHcsa($premContent.find('div.nonHcsaRowDiv'), $('div.premContent').index($premContent));
         delNonHcsaEvent($premContent);
         dismissWaiting();
@@ -646,6 +649,8 @@
             resetField(ele, i, prefix);
         });
         var length = $target.find('.operationDiv').length;
+        $target.find('.addressSize').val(length)
+        console.log(length,'=========>>>length===>>')
         $target.find('.opLength').val(length);
     }
 
@@ -654,7 +659,11 @@
         var src = $premContent.find('div.operationDiv:first').clone();
         initFormNodes(src);
         $premContent.find('div.addOpDiv').before(src);
-        refreshFloorUnit($premContent, $('div.premContent').index($premContent));
+        let index = $('div.premContent').index($premContent)
+        console.log(index,'index=====>>>')
+        let val = $premContent.find('.MMM').val() ? index-1 : index
+        console.log(val,'val=---=-=-=-=->>')
+        refreshFloorUnit($premContent, val);
         delFloorUnitEvent($premContent);
     }
 
@@ -677,8 +686,10 @@
         $target.find('.opDel').unbind('click');
         $target.find('div.operationDivGroup').find('.opDel').on('click', function () {
             var $premContent = $(this).closest('div.premContent');
+            let index = $('div.premContent').index($premContent)
+            let val = $premContent.find('.MMM').val() ? index-1 : index
             $(this).closest('div.operationDiv').remove();
-            refreshFloorUnit($premContent, $('div.premContent').index($premContent));
+            refreshFloorUnit($premContent, val);
             doEditPremise($premContent);
         });
     }

@@ -104,11 +104,11 @@
                 </tr>
 
 
-                    <%--    Working Experience(in term of years)--%>
+                    <%--    Relevant working experience (Years)--%>
                 <tr>
                     <td class="col-xs-6">
                         <p class="form-check-label" aria-label="premise-1-cytology">
-                            Working Experience(in term of years)
+                            Relevant working experience (Years)
                         </p>
                     </td>
                     <td>

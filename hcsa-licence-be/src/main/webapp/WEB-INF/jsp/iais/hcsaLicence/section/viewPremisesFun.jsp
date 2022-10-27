@@ -34,7 +34,9 @@
                 let id = $(v).find('.id').val()
                 let postalCode = $(v).find('.postalCode').val()
                 let addrType = $(v).find('.addressType').find("option:selected").val()
-                addrType = addrType=='ADDTY002' ? 'Without Apt Blk' : (addrType == 'ADDTY001' ? 'Apt Blk' : '')
+                console.log(addrType,'type==============>>>>')
+                // //
+                // addrType = addrType=='ADDTY002' ? 'Without Apt Blk' : (addrType == 'ADDTY001' ? 'Apt Blk' : '')
                 let blkNo = $(v).find('.blkNo').val()
                 let floorNo = $(v).find('.operationDiv:first').find('.floorNo').val()
                 let unitNo = $(v).find('.operationDiv:first').find('.unitNo').val()
@@ -120,7 +122,11 @@
         $('.viewPrem').addClass('hidden')
         $('.btns').addClass('hidden')
         $target.find('.postalCode').text(data.postalCode)
-        $target.find('.addrType').text(data.addrType)
+
+        let  addrType = data.addrType =='ADDTY002' ? 'Without Apt Blk' : (data.addrType == 'ADDTY001' ? 'Apt Blk' : '')
+
+        console.log(addrType,'dataType=============>>>>>>>')
+        $target.find('.addrType').text(addrType)
         $target.find('.blkNo').text(data.blkNo)
         // TODO  secondAddress id
         $target.find('.id').val(data.id)

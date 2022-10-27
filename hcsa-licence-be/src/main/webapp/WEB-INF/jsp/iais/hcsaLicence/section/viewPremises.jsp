@@ -87,40 +87,6 @@
                 </div>
               </div>
             </div>
-            <c:if test="${permanent == appGrpPremDto.premisesType || permanent == oldAppGrpPremDto.premisesType}">
-              <div class="row">
-                <div class="col-md-6">
-                  Fire Safety & Shelter Bureau Ref No.
-                </div>
-                <div class="col-md-6">
-                  <div class="col-md-12">
-                    <span class="newVal" attr="${appGrpPremDto.scdfRefNo}"><c:out value="${appGrpPremDto.scdfRefNo}"/></span>
-                    <br>
-                    <span class="oldVal" attr="${oldAppGrpPremDto.scdfRefNo}" style="display: none">
-                      <c:out value="${oldAppGrpPremDto.scdfRefNo}"/>
-                    </span>
-                  </div>
-
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6">
-                  Fire Safety Certificate Issued Date
-                </div>
-                <div class="col-md-6">
-                  <div class="col-md-6">
-                    <span class="newVal" attr="${appGrpPremDto.certIssuedDtStr}">
-                      <c:out value="${appGrpPremDto.certIssuedDtStr}"/>
-                    </span>
-                  </div>
-                  <div class="col-md-6">
-                    <span class="oldVal" attr="${oldAppGrpPremDto.certIssuedDtStr}" style="display: none">
-                      <c:out value="${oldAppGrpPremDto.certIssuedDtStr}"/>
-                      </span>
-                  </div>
-                </div>
-              </div>
-            </c:if>
             <c:if test="${conv == appGrpPremDto.premisesType || conv == oldAppGrpPremDto.premisesType}">
               <div class="row">
                 <div class="col-md-6"> Vehicle No.</div>
@@ -323,6 +289,40 @@
                 </div>
               </div>
             </div>
+            <c:if test="${permanent == appGrpPremDto.premisesType || permanent == oldAppGrpPremDto.premisesType}">
+              <div class="row">
+                <div class="col-md-6">
+                  Fire Safety & Shelter Bureau Ref No.
+                </div>
+                <div class="col-md-6">
+                  <div class="col-md-12">
+                    <span class="newVal" attr="${appGrpPremDto.scdfRefNo}"><c:out value="${appGrpPremDto.scdfRefNo}"/></span>
+                    <br>
+                    <span class="oldVal" attr="${oldAppGrpPremDto.scdfRefNo}" style="display: none">
+                      <c:out value="${oldAppGrpPremDto.scdfRefNo}"/>
+                    </span>
+                  </div>
+
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  Fire Safety Certificate Issued Date
+                </div>
+                <div class="col-md-6">
+                  <div class="col-md-6">
+                    <span class="newVal" attr="${appGrpPremDto.certIssuedDtStr}">
+                      <c:out value="${appGrpPremDto.certIssuedDtStr}"/>
+                    </span>
+                  </div>
+                  <div class="col-md-6">
+                    <span class="oldVal" attr="${oldAppGrpPremDto.certIssuedDtStr}" style="display: none">
+                      <c:out value="${oldAppGrpPremDto.certIssuedDtStr}"/>
+                      </span>
+                  </div>
+                </div>
+              </div>
+            </c:if>
             <c:if test="${appGrpPremDto.premisesType == permanent || appGrpPremDto.premisesType == conv
                 || oldAppGrpPremDto.premisesType == permanent || oldAppGrpPremDto.premisesType == conv}">
               <div class="row">
@@ -496,15 +496,17 @@
       </c:forEach>
 
       <c:forEach var="appGrpSecondAddrList" items="${appSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
+        <c:set var="oldAppGrpPremDto" value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index]}"/>
         <div class="panel-main-content postion-relative">
             <c:if test="${empty appGrpSecondAddrList.appGrpSecondAddrDtos}">
                 <div class="contents">
                     <%@include file="viewPremisesDetils.jsp" %>
                 </div>
             </c:if>
-            <c:forEach var="appGrpSecondAddr" items="${appGrpSecondAddrList.appGrpSecondAddrDtos}"
-                       varStatus="statuss">
+            <c:forEach var="appGrpSecondAddr" items="${appGrpSecondAddrList.appGrpSecondAddrDtos}" varStatus="statuss">
                 <div class="contents">
+                  <c:set var="oldAppGrpSecondAddr" value="${oldAppGrpPremDto.appGrpSecondAddrDtos[status.index]}"/>
+
                     <%@include file="viewPremisesDetils.jsp" %>
                 </div>
             </c:forEach>

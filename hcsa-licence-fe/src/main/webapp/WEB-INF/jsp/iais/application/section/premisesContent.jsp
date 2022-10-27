@@ -226,20 +226,6 @@
             </iais:row>
 
             <div class="new-premise-form">
-                <iais:row cssClass="scdfRefNoRow">
-                    <c:set var="scdfRefNoInfo"><iais:message key="NEW_ACK006"></iais:message></c:set>
-                    <iais:field value="Fire Safety & Shelter Bureau Ref No." width="5" info="${scdfRefNoInfo}"/>
-                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 fireIssuedDateDiv">
-                        <iais:input maxLength="66" name="scdfRefNo${status.index}" type="text" value="${appGrpPremisesDto.scdfRefNo}"/>
-                    </iais:value>
-                </iais:row>
-                <iais:row cssClass="certIssuedDtRow">
-                    <iais:field value="Fire Safety Certificate Issued Date" width="5"/>
-                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 fireIssuedDateDiv">
-                        <iais:datePicker cssClass="certIssuedDt field-date" name="certIssuedDt${status.index}" value="${appGrpPremisesDto.certIssuedDtStr}" />
-                    </iais:value>
-                </iais:row>
-
                 <iais:row cssClass="vehicleRow">
                     <iais:field value="Vehicle No." mandatory="true" width="5"/>
                     <iais:value width="7" cssClass="col-md-5">
@@ -350,6 +336,20 @@
                     <iais:field value="Building Name" width="5"/>
                     <iais:value width="5" cssClass="col-md-5">
                         <iais:input cssClass="buildingName" maxLength="66" type="text" name="buildingName${status.index}" value="${appGrpPremisesDto.buildingName}"/>
+                    </iais:value>
+                </iais:row>
+
+                <iais:row cssClass="scdfRefNoRow">
+                    <c:set var="scdfRefNoInfo"><iais:message key="NEW_ACK006"></iais:message></c:set>
+                    <iais:field value="Fire Safety & Shelter Bureau Ref No." width="5" info="${scdfRefNoInfo}"/>
+                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 fireIssuedDateDiv">
+                        <iais:input maxLength="66" name="scdfRefNo${status.index}" type="text" value="${appGrpPremisesDto.scdfRefNo}"/>
+                    </iais:value>
+                </iais:row>
+                <iais:row cssClass="certIssuedDtRow">
+                    <iais:field value="Fire Safety Certificate Issued Date" width="5"/>
+                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 fireIssuedDateDiv">
+                        <iais:datePicker cssClass="certIssuedDt field-date" name="certIssuedDt${status.index}" value="${appGrpPremisesDto.certIssuedDtStr}" />
                     </iais:value>
                 </iais:row>
 
