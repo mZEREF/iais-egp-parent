@@ -113,6 +113,7 @@
         initPremiseEvent();
         premTypeChangeEvent();
         checkSelectedLicence();
+        checkAddPremBtn(2);
         $('div.premContent').each(function (k, v) {
             checkPremiseContent($(v), k);
         });
