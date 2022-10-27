@@ -51,20 +51,6 @@
         </iais:value>
     </iais:row>
 
-    <c:if test="${premType == permanent}">
-        <iais:row>
-            <iais:field width="5" value="Fire Safety & Shelter Bureau Ref No."/>
-            <iais:value width="7" display="true">
-                <c:out value="${appGrpPremDto.scdfRefNo}"/>
-            </iais:value>
-        </iais:row>
-        <iais:row>
-            <iais:field width="5" value="Fire Safety Certificate Issued Date"/>
-            <iais:value width="7" display="true">
-                <c:out value="${appGrpPremDto.certIssuedDtStr}"/>
-            </iais:value>
-        </iais:row>
-    </c:if>
     <c:if test="${premType == conv}">
         <iais:row>
             <iais:field width="5" value="Vehicle No."/>
@@ -123,6 +109,20 @@
             <c:out value="${appGrpPremDto.buildingName}"/>
         </iais:value>
     </iais:row>
+    <c:if test="${premType == permanent}">
+        <iais:row>
+            <iais:field width="5" value="Fire Safety & Shelter Bureau Ref No."/>
+            <iais:value width="7" display="true">
+                <c:out value="${appGrpPremDto.scdfRefNo}"/>
+            </iais:value>
+        </iais:row>
+        <iais:row>
+            <iais:field width="5" value="Fire Safety Certificate Issued Date"/>
+            <iais:value width="7" display="true">
+                <c:out value="${appGrpPremDto.certIssuedDtStr}"/>
+            </iais:value>
+        </iais:row>
+    </c:if>
     <c:if test="${premType == easMts}">
         <iais:row>
             <iais:field width="5" value="For public/in-house use only?"/>
