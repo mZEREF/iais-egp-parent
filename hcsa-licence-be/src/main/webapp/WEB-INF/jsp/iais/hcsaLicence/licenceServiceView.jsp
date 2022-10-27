@@ -58,31 +58,34 @@
 <script type="text/javascript">
     document.title = 'HALP';
     $(document).ready(function () {
-        <c:if test="${not empty beEicGatewayClient}">
-        $('#PRS_SERVICE_DOWN').modal('show');
-        </c:if>
-        //Binding method
-        $('#previewNext').click(function () {
-          if(validateCheckBox()){
-            // var mainForm = document.getElementById("mainForm");
-            // mainForm.submit();
-            callAjaxSubmit();
-          }else{
-            $('#errorMessage').removeClass("hidden");
-          }
-          //withdrawal and cessation
-          if(${applicationDto.applicationType == 'APTY006' || applicationDto.applicationType == 'APTY008'}){
-            window.opener=null;
-            window.open('','_self');
-            window.close();
-          }
-        });
+      <c:if test="${not empty beEicGatewayClient}">
+      $('#PRS_SERVICE_DOWN').modal('show');
+      </c:if>
+      //Binding method
+      $('#previewNext').click(function () {
+        if (validateCheckBox()) {
+          // var mainForm = document.getElementById("mainForm");
+          // mainForm.submit();
+          callAjaxSubmit();
+        } else {
+          $('#errorMessage').removeClass("hidden");
+        }
+        //withdrawal and cessation
+        if (${applicationDto.applicationType == 'APTY006' || applicationDto.applicationType == 'APTY008'}) {
+          window.opener = null;
+          window.open('', '_self');
+          window.close();
+        }
+      });
 
-        $('.svc-pannel-collapse').click(function () {
-            $svcContenEle = $(this).closest('div.svc-content');
-            $svcContenEle.find('.svc-iframe').css('height', '400px');
+      $('.svc-pannel-collapse').click(function () {
+        $svcContenEle = $(this).closest('div.svc-content');
+        $svcContenEle.find('.svc-iframe').css('height', '400px');
 
-        });
+      });
+
+      hideImg('newVal', 'oldVal');
+      checkHightLightChange(document, 'newVal', 'oldVal');
     });
 
     function callAjaxSubmit(){
@@ -112,7 +115,7 @@
       }
       return flag;
     }
-    hideImg('newVal', 'oldVal');
+
     function hideImg(newValClass, oldValClass) {
         $('.' + oldValClass).each(function () {
             var oldVal = $(this).attr('attr');
@@ -127,8 +130,6 @@
             }
         });
     }
-
-    checkHightLightChange(document, 'newVal', 'oldVal');
 
     function checkHightLightChange(content, newValClass, oldValClass) {
       $(content).find('.' + oldValClass).each(function () {
