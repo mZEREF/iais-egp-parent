@@ -25,7 +25,7 @@
     <%--<c:set var="canEdit" value="true"/>--%>
     <div class="row form-horizontal premContent <c:if test="${!status.first}">underLine</c:if>">
         <input class="not-refresh chooseExistData" type="hidden" name="chooseExistData" value="${appGrpPremisesDto.existingData}"/>
-        <input class="not-refresh isParyEdit" type="hidden" name="isParyEdit" value="0"/>
+        <input class="not-refresh isPartEdit" type="hidden" name="isPartEdit" value="0"/>
         <input class="not-refresh premIndex" type="hidden" name="premIndex" value="${status.index}"/>
         <input class="not-refresh premisesIndexNo" type="hidden" name="premisesIndexNo" value="${appGrpPremisesDto.premisesIndexNo}"/>
         <input class="not-refresh oldPremTypeValue" type="hidden" name="oldPremType" value="${appGrpPremisesDto.premisesType}"/>

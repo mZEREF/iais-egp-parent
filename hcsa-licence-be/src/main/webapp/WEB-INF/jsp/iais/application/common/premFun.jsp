@@ -121,6 +121,7 @@
         }
         console.info("------------doEditPremise----------------");
         $('#isEditHiddenVal').val('1');
+        $premContent.find('.isPartEdit').val('1');
         unDisableContent($premContent);
         showTag($premContent.find('.retrieveAddr'));
         showTag($premContent.find('.addOpDiv'));
@@ -128,8 +129,6 @@
         if('1' == existData) {
             if (isEmpty(isEdit) || !isEdit) {
                 checkPremDisabled($premContent, true);
-            } else {
-                $premContent.find('.isPartEdit').val('1');
             }
         }
         // Non HCSA
@@ -140,8 +139,6 @@
             showTag($premContent.find('.file-upload-gp'));
         }
         checkEditBtn($premContent, false);
-        $premContent.find('.isPartEdit').val('1')
-        console.log($premContent.find('.isPartEdit').val(),'val======>>>')
     }
 
     function hideEditBtn ($premContent) {
