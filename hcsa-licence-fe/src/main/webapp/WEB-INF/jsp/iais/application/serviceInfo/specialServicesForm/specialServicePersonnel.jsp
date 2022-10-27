@@ -148,7 +148,7 @@
                         <c:set var="index" value="${vs.index}"/>
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
                         <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}nur"/>
-                        <c:set var="title" value="Emergency Department Nursing Director"/>
+                        <c:set var="title" value="Emergency Department Nursing-in-charge"/>
                         <%@include file="specialServiceDetail.jsp" %>
                     </c:forEach>
                 </c:when>
@@ -159,11 +159,37 @@
                     <input type="hidden" class ="MaxCount" value="${pMax.value}"/>
                     <input type="hidden" class ="Length" name="${status.index}${subSvcRelStatus.index}${psnType}Length" value="${personCount}"/>
                     <c:if test="${!isRfi}">
-                        <span class="addBtn" style="color:deepskyblue;cursor:pointer;">
-                            <span style="">Add more</span>
-                        </span>
+                        <c:if test="${psnType == ApplicationConsts.PERSONNEL_PSN_TYPE_CGO}">
+                            <span class="addBtn" style="color:deepskyblue;cursor:pointer;">
+                                <span style="">Add Another Clinical Governance Officer</span>
+                            </span>
+                        </c:if>
+                        <c:if test="${psnType == ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER}">
+                            <span class="addBtn" style="color:deepskyblue;cursor:pointer;">
+                                <span style="">Add Another Section Leader</span>
+                            </span>
+                        </c:if>
+                        <c:if test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE}">
+                            <span class="addBtn" style="color:deepskyblue;cursor:pointer;">
+                                <span style="">Add Another Nurse in Charge</span>
+                            </span>
+                        </c:if>
+                        <c:if test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER
+                                    ||psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR
+                                    ||psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST
+                                    ||psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL
+                                    ||psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM}">
+                            <span class="addBtn" style="color:deepskyblue;cursor:pointer;">
+                                <span style="">Add Another Service Personnel</span>
+                            </span>
+                        </c:if>
+                        <c:if test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR
+                                    ||psnType == ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR}">
+                            <span class="addBtn" style="color:deepskyblue;cursor:pointer;">
+                                <span style="">Add more</span>
+                            </span>
+                        </c:if>
                     </c:if>
-
                 </div>
             </iais:row>
         </div>
