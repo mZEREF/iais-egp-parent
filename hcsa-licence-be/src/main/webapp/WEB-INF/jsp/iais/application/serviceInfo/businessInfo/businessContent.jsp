@@ -86,6 +86,27 @@
 <script>
 
     $(function() {
+        $('.addWeekly').on('click', function () {
+            if (${AppSubmissionDto.needEditController }){
+                $('a.businessEdit').trigger('click');
+            }
+            addWeekly($(this).closest('div.weeklyContent'));
+        });
+
+        $('.addPubHolDay').on('click', function () {
+            if (${AppSubmissionDto.needEditController }){
+                $('a.businessEdit').trigger('click');
+            }
+            addPubHolDay($(this).closest('div.pubHolDayContent'));
+        });
+
+        $('.addEvent').on('click', function () {
+            if (${AppSubmissionDto.needEditController }){
+                $('a.businessEdit').trigger('click');
+            }
+            addEvent($(this).closest('div.eventContent'));
+        });
+
         clickAllDay();
         removeWeekly();
         removePh();
