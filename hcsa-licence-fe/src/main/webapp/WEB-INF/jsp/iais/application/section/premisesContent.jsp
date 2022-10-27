@@ -340,7 +340,7 @@
                 </iais:row>
 
                 <iais:row cssClass="scdfRefNoRow">
-                    <c:set var="scdfRefNoInfo"><iais:message key="NEW_ACK006"></iais:message></c:set>
+                    <c:set var="scdfRefNoInfo"><iais:message key="NEW_ACK006" escape="false"/></c:set>
                     <iais:field value="Fire Safety & Shelter Bureau Ref No." width="5" info="${scdfRefNoInfo}"/>
                     <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 fireIssuedDateDiv">
                         <iais:input maxLength="66" name="scdfRefNo${status.index}" type="text" value="${appGrpPremisesDto.scdfRefNo}"/>

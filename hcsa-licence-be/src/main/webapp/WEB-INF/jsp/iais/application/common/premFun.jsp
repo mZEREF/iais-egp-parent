@@ -24,7 +24,7 @@
 
         checkSelectedLicenceEvent();
 
-        $("[data-toggle='tooltip']").tooltip();
+        initFormNodes();
     }
 
     function checkPremiseContent($premContent, index) {
@@ -215,6 +215,7 @@
         // init new section
         var $premContent = $('div.premContent').last();
         initFormNodes($premContent);
+        clearFields($premContent);
         removeAdditional($premContent);
         refreshPremise($premContent, $('div.premContent').length - 1);
         $('div.premContent:first').find('.premHeader').html('1');
@@ -578,7 +579,7 @@
         $premContent.find('div.addNonHcsaSvcRow').before(src);
         var $target = $premContent.find('div.nonHcsaRow:last');
         initFormNodes($target);
-        console.log($premContent.find('.MMM').val(),'===========////>>>>')
+        clearFields($target);
         refreshNonHcsa($premContent.find('div.nonHcsaRowDiv'), $('div.premContent').index($premContent));
         delNonHcsaEvent($premContent);
         dismissWaiting();
@@ -658,6 +659,7 @@
         var $premContent = $(ele).closest('div.premContent');
         var src = $premContent.find('div.operationDiv:first').clone();
         initFormNodes(src);
+        clearFields(src);
         $premContent.find('div.addOpDiv').before(src);
         let index = $('div.premContent').index($premContent)
         console.log(index,'index=====>>>')
