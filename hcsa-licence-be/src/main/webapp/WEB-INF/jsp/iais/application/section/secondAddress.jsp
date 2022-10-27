@@ -1,6 +1,5 @@
 <div class="row form-horizontal">
     <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
-    ${AppSubmissionDto.appEditSelectDto.premisesEdit}
     <c:forEach var="appGrpSecondAddrList" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
         <div class="col-xs-12">
             <c:set value="address" var="prefix"/>
@@ -17,4 +16,7 @@
             </c:forEach>
         </div>
     </c:forEach>
+
+<%--    <iais:confirm msg="${postalCodeAckMsg}" needCancel="false" callBack="postalCodeCon()" popupOrder="postalCodePop" yesBtnDesc=""
+                  needEscapHtml="false" needFungDuoJi="false"></iais:confirm>--%>
 </div>

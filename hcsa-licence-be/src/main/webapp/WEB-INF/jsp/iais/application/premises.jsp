@@ -72,7 +72,7 @@
         <input type="hidden" value="${hciNameUsed}" name="hciNameUsedInput" id="hciNameUsedInput">
         <iais:confirm msg="${newAppPopUpMsg}" needCancel="false" callBack="Continue()" popupOrder="hciNameUsed" yesBtnDesc="Continue"
                       needEscapHtml="false"></iais:confirm>
-        <iais:confirm msg="${postalCodeAckMsg}" needCancel="false" callBack="postalCodeCon()" popupOrder="postalCodePop" yesBtnDesc=""
+        <iais:confirm msg="NEW_ACK016" needCancel="false" callBack="postalCodeCon()" popupOrder="postalCodePop" yesBtnDesc=""
                       needEscapHtml="false" needFungDuoJi="false"></iais:confirm>
         <input type="hidden" name="continueStep" id="continueStep" value="${continueStep}">
         <input type="hidden" name="crudActionTypeContinue" id="crudActionTypeContinue" value="${crudActionTypeContinue}">
@@ -150,6 +150,10 @@
                 navTabEvent('specialised');
             }
         });
+    }
+
+    function postalCodeCon(){
+        $('#postalCodePop').modal('hide');
     }
 
     function Continue() {

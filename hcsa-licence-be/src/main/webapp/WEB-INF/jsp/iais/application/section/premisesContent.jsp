@@ -61,7 +61,7 @@
             <div class="form-horizontal">
                 <div class="form-group">
                     <div class="col-xs-12 col-md-6">
-                        <p class="app-title">${mosdName} <span class="premHeader">${status.index+1}</span></p>${status.index+1}
+                        <p class="app-title">${mosdName} <span class="premHeader">${status.index+1}</span></p>
                     </div>
                     <div class="col-xs-12 col-md-4 text-right removeEditDiv <c:if test="${status.first}">hidden</c:if>">
                         <c:choose>
