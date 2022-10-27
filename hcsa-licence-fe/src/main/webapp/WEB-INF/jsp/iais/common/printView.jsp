@@ -87,7 +87,7 @@
                                                         </div>
                                                     </c:forEach>
                                                     <c:if test="${appTypeForPrintDec != 'APTY009'}">
-                                                        <%@include file="../application/declarations/declarations.jsp"%>
+                                                        <%@include file="../common/declarations/declarations.jsp"%>
                                                     </c:if>
                                                     <c:if test="${AppSubmissionDto.appType == 'APTY005'}">
                                                         <c:set var="rfc_from_renew" value="${(not empty AppSubmissionDto.appDeclarationMessageDto && AppSubmissionDto.appDeclarationMessageDto.appType == 'APTY004') ? 'Y' : 'N'}"/>
