@@ -2197,6 +2197,9 @@ public final class AppValidatorHelper {
                     errMap.put("serviceCode", MessageUtil.replaceMessage("GENERAL_ERR0006",
                             "Service", "field"));
                 }
+                if (StringUtil.isNotEmpty(appSvcOutsouredDto.getBundleSvcCode())){
+                    searchParam.addFilter("svcName",appSvcOutsouredDto.getBundleSvcCode(),true);
+                }
             } else if (searchParam == null || searchParam.getFilters().isEmpty()) {
                 errMap.put("serviceCode", MessageUtil.replaceMessage("GENERAL_ERR0006",
                         "Service", "field"));
