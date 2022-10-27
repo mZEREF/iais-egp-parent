@@ -3871,6 +3871,12 @@ public final class AppValidatorHelper {
             Map<String, List<AppSvcSuplmItemDto>> radioBatchMap,
             Map<String, String> errorMap, AppSvcSuplmItemDto appSvcSuplmItemDto, SuppleFormItemConfigDto itemConfigDto,
             String prefix) {
+        if (StringUtil.isIn(appSvcSuplmItemDto.getItemConfigDto().getItemType(), new String[]{
+                HcsaConsts.SUPFORM_ITEM_TYPE_TITLE,
+                HcsaConsts.SUPFORM_ITEM_TYPE_SUB_TITLE,
+                HcsaConsts.SUPFORM_ITEM_TYPE_LABEL})) {
+            return true;
+        }
         int mandatoryType = itemConfigDto.getMandatoryType();
         String inputValue = appSvcSuplmItemDto.getInputValue();
         if (!(2 == mandatoryType || 3 == mandatoryType || 5 == mandatoryType) || !StringUtil.isEmpty(inputValue)) {
