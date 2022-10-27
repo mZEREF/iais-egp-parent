@@ -27,6 +27,9 @@
     .cSBtn{
         margin-bottom: 55px;
     }
+    .btn-outsourced-search a:not(:last-child) {
+        margin-right: 20px;
+    }
 </style>
 <iais:row>
     <div class="col-xs-12">
@@ -102,10 +105,10 @@
             </div>
         </div>
 
-        <div class="col-xs-12 col-md-12 cSBtn">
-            <div class="col-xs-6 col-md-6"></div>
-            <div class="button-group">
-                <div class="col-xs-6 col-md-6" style="padding-left: 200px;!important;">
+        <div class="row cSBtn">
+            <div class="col-xs-12 col-sm-7"></div>
+            <div class="col-xs-12 col-sm-5" style="text-align: center;">
+                <div class="button-group">
                     <a class="btn btn-secondary btn-outsourced-clear" id="ANT_Clearn">Clear</a>
                     <a class="btn btn-primary btn-outsourced-search" id="ANT_Search">Search</a>
                 </div>
