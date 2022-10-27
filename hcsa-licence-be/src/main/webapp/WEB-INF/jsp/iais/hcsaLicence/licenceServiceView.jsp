@@ -128,37 +128,37 @@
         });
     }
 
-    hightLightChangeVal('newVal', 'oldVal');
+    checkHightLightChange(document, 'newVal', 'oldVal');
 
-    function hightLightChangeVal(newValClass, oldValClass) {
-        $('.' + oldValClass).each(function () {
-            var oldVal = $(this).attr('attr');
-            var newEle = $(this).parent().children('.'+newValClass);
-            if (newEle.length <= 0) {
-                newEle = $(this).parent().prev().find('.' + newValClass);
+    function checkHightLightChange(content, newValClass, oldValClass) {
+      $(content).find('.' + oldValClass).each(function () {
+        var oldVal = $(this).attr('attr');
+        var newEle = $(this).parent().children('.'+newValClass);
+        if (newEle.length <= 0) {
+          newEle = $(this).parent().prev().find('.' + newValClass);
+        }
+        var newVal = newEle.length > 0 ? newEle.attr('attr') : '';
+        if ($('#oldAppSubmissionDto').val() == 'false') {
+          if (oldVal.length > 0 || newVal.length > 0) {
+            if (oldVal != newVal) {
+              $(this).show();
+              var newHtml = '';
+              if (newEle.length > 0) {
+                newHtml = newEle.html();
+              }
+              var oldHtml=$(this).html();
+              $(this).html(newHtml);
+              if (newEle.length > 0) {
+                newEle.html(oldHtml);
+              }
+              $(this).attr("class","newVal compareTdStyle");
+            } else {
+              $(this).hide();
             }
-            var newVal = newEle.length > 0 ? newEle.attr('attr') : '';
-            if ($('#oldAppSubmissionDto').val() == 'false') {
-                if (oldVal.length > 0 || newVal.length > 0) {
-                    if (oldVal != newVal) {
-                        $(this).show();
-                        var newHtml = '';
-                        if (newEle.length > 0) {
-                            newHtml = newEle.html();
-                        }
-                        var oldHtml=$(this).html();
-                        $(this).html(newHtml);
-                        if (newEle.length > 0) {
-                            newEle.html(oldHtml);
-                        }
-                        $(this).attr("class","newVal compareTdStyle");
-                    } else {
-                        $(this).hide();
-                    }
-                }
-            }
+          }
+        }
 
-        });
+      });
     }
 
 </script>
