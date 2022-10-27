@@ -839,6 +839,9 @@ public final class ApplicationHelper {
                 person.setNationality(psnDto.getNationality());
                 person.setIdType(psnDto.getIdType());
                 person.setIdNo(psnDto.getIdNo());
+                if (StringUtil.isNotEmpty(psnDto.getOfficeTelNo())) {
+                    person.setOfficeTelNo(psnDto.getOfficeTelNo());
+                }
                 person.setMobileNo(psnDto.getMobileNo());
                 person.setEmailAddr(psnDto.getEmailAddr());
                 String designation = psnDto.getDesignation();
@@ -2506,6 +2509,10 @@ public final class ApplicationHelper {
         person.setIdType(source.getIdType());
         person.setIdNo(source.getIdNo());
         person.setNationality(source.getNationality());
+        String officeTelNo = source.getOfficeTelNo();
+        if (!StringUtil.isEmpty(officeTelNo)) {
+            person.setOfficeTelNo(officeTelNo);
+        }
         String mobileNo = source.getMobileNo();
         if (!StringUtil.isEmpty(mobileNo)) {
             person.setMobileNo(mobileNo);
@@ -2549,10 +2556,6 @@ public final class ApplicationHelper {
         String otherQualification = source.getOtherQualification();
         if (!StringUtil.isEmpty(otherQualification)) {
             person.setOtherQualification(otherQualification);
-        }
-        String officeTelNo = source.getOfficeTelNo();
-        if (!StringUtil.isEmpty(officeTelNo)) {
-            person.setOfficeTelNo(officeTelNo);
         }
         String professionBoard = source.getProfessionBoard();
         if (!StringUtil.isEmpty(professionBoard)) {
