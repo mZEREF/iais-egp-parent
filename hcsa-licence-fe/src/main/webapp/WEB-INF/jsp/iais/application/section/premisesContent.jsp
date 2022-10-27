@@ -18,7 +18,6 @@
 
 <c:set var="premTypeLen" value="${premisesType.size()}"/>
 
-<input class="not-refresh" type="hidden" name="isPartEdit" value="0"/>
 <input class="not-refresh" type="hidden" id="isEditHiddenVal" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
 
 <c:forEach var="appGrpPremisesDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
