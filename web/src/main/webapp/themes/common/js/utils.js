@@ -438,7 +438,6 @@ function initFormNodes(elem) {
         orientation: 'bottom'
     });
     $target.find('input[type="text"]').attr('autocomplete', 'off');
-    $target.find('.modal').modal({backdrop: 'static'});
 }
 
 function getJqueryNode(elem) {
