@@ -5,6 +5,7 @@
         <label class="app-title">${currStepName}</label>
     </iais:row>
     <div class="amend-preview-info form-horizontal min-row">
+        <c:set var="officeTelNo" value="officeTelNo"/>
         <c:forEach var="person" items="${currentPreviewSvcInfo.appSvcPrincipalOfficersDtoList}" varStatus="status">
             <iais:row>
                 <div  class="col-xs-12">

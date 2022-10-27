@@ -8,6 +8,7 @@
         <div class="form-check-gp">
             <div class="row">
                 <div class="">
+                    <c:set var="officeTelNo" value="officeTelNo"/>
                     <c:forEach var="person" items="${currentPreviewSvcInfo.appSvcPrincipalOfficersDtoList}" varStatus="status">
                         <c:set var="oldPerson" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index]}"/>
                         <p class="col-xs-12">

@@ -16,8 +16,7 @@
 <c:set var="mobileShow" value="${ApplicationConsts.PREMISES_TYPE_MOBILE_SHOW}" />
 <c:set var="remoteShow" value="${ApplicationConsts.PREMISES_TYPE_REMOTE_SHOW}" />
 
-<input class="not-refresh" type="hidden" name="isPartEdit" value="0"/>
-<input class="not-refresh" type="hidden" id="isEditHiddenVal" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
+
 
 <c:forEach var="appGrpPremisesDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
     <c:set var="canEdit" value="true"/>
@@ -28,7 +27,8 @@
         <input class="not-refresh oldPremTypeValue" type="hidden" name="oldPremType" value="${appGrpPremisesDto.premisesType}"/>
         <input class="not-refresh premTypeValue" type="hidden" name="premType" value="${appGrpPremisesDto.premisesType}"/>
         <input class="not-refresh premSelValue" type="hidden" value="${appGrpPremisesDto.premisesSelect}"/>
-
+        <input class="not-refresh isPartEdit" type="hidden" name="isPartEdit" value="0"/>
+        <input class="not-refresh" type="hidden" id="isEditHiddenVal" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
         <c:set var="premValue" value="${status.index}"/>
             <%--<input hidden class="premiseIndex" value="${premValue}">--%>
         <c:choose>
@@ -61,7 +61,7 @@
             <div class="form-horizontal">
                 <div class="form-group">
                     <div class="col-xs-12 col-md-6">
-                        <p class="app-title">${mosdName} <span class="premHeader">${status.index+1}</span></p>
+                        <p class="app-title">${mosdName} <span class="premHeader">${status.index+1}</span></p>${status.index+1}
                     </div>
                     <div class="col-xs-12 col-md-4 text-right removeEditDiv <c:if test="${status.first}">hidden</c:if>">
                         <c:choose>

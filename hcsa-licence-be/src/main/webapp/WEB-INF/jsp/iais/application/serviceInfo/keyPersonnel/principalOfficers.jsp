@@ -13,6 +13,7 @@
 <input type="hidden" class="dpo-person-content-edit" name="isEditDpo" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
 <input type="hidden" class="dpo-select-edit" name="isEditDpoSelect" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
 <div class="row form-horizontal normal-label">
+    <c:set var="officeTelNo" value="officeTelNo"/>
     <c:if test="${AppSubmissionDto.needEditController }">
         <c:if test="${(isRfc || isRenew) && !isRfi}">
             <iais:row>

@@ -82,7 +82,7 @@
 
     <%--    Professional Regn. No--%>
     <iais:row>
-        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Professional Regn. No."/>
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Professional Regn No."/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="20" type="text" cssClass="profRegNo" name="${logo}profRegNo${index}"
                         value="${appSvcPersonnelDto.profRegNo}"/>
@@ -137,9 +137,9 @@
         </iais:value>
     </iais:row>
 
-    <%--   Sub-Specialty --%>
+    <%--   Sub-specialty --%>
     <iais:row>
-        <iais:field width="5" cssClass="col-md-5" value="Sub-Specialty"/>
+        <iais:field width="5" cssClass="col-md-5" value="Sub-specialty"/>
         <iais:value width="7" cssClass="col-md-7 subSpeciality" display="true">
             <c:out value="${appSvcPersonnelDto.subSpeciality}"/>
         </iais:value>
@@ -154,9 +154,9 @@
         </iais:value>
     </iais:row>
 
-    <%--  Date when specialty was obtained  --%>
+    <%--  Date when specialty was gotten  --%>
     <iais:row>
-        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Date when specialty was obtained"/>
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Date when specialty was gotten"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:datePicker cssClass="specialtyGetDate" name="${logo}specialtyGetDate${index}"
                              value="${appSvcPersonnelDto.specialtyGetDate}"/>
@@ -175,7 +175,7 @@
 
     <%--           Relevant working experience(Years) --%>
     <iais:row>
-        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Relevant working experience(Years)"/>
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Relevant working experience (Years)"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input cssClass="wrkExpYear" maxLength="2" type="text" name="${logo}wrkExpYear${index}"
                         value="${appSvcPersonnelDto.wrkExpYear}"/>
@@ -193,9 +193,9 @@
     </iais:row>
 
 
-    <%--   Expiry Date(CPR) --%>
+    <%--   Expiry Date (CPR) --%>
     <iais:row>
-        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Expiry Date(CPR)"/>
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Expiry Date (CPR)"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:datePicker cssClass="cprExpiryDate" name="${logo}cprExpiryDate${index}"
                              value="${appSvcPersonnelDto.cprExpiryDate}"/>

@@ -47,7 +47,7 @@
     </c:if>
 
     <iais:row cssClass="assignSelDiv ${canEdit && '-1' != person.assignSelect && not empty person.assignSelect ? 'hidden':''}">
-        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Assign a ${singleName} Person"/>
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Assign a ${singleName}"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:select cssClass="assignSel" name="${prepsn}assignSelect${index}" options="personSelectOpts" value="${person.assignSelect}"/>
         </iais:value>
@@ -170,14 +170,14 @@
             </iais:row>
 
             <iais:row>
-                <iais:field width="5" cssClass="col-md-5" value="Sub-Specialty"/>
+                <iais:field width="5" cssClass="col-md-5" value="Sub-specialty"/>
                 <iais:value width="7" cssClass="col-md-7 subSpeciality" display="true">
                     <c:out value="${person.subSpeciality}"/>
                 </iais:value>
             </iais:row>
 
             <iais:row>
-                <iais:field width="5" cssClass="col-md-5" value="Other Specialties"/>
+                <iais:field width="5" cssClass="col-md-5" value="Other Specialities"/>
                 <iais:value width="7" cssClass="col-md-7">
                     <iais:input maxLength="100" type="text" cssClass="specialityOther" name="${prepsn}specialityOther${index}"
                                 value="${person.specialityOther}"/>
@@ -207,6 +207,13 @@
                 </iais:value>
             </iais:row>
         </c:if>
+
+        <iais:row cssClass="${officeTelNo == 'officeTelNo'  ? '' : 'hidden'}">
+            <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Office Telephone No."/>
+            <iais:value width="7" cssClass="col-md-7">
+                <iais:input maxLength="8" type="text" cssClass="officeTelNo" name="${prepsn}officeTelNo${index}" value="${person.officeTelNo}"/>
+            </iais:value>
+        </iais:row>
 
         <iais:row>
             <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Mobile No."/>

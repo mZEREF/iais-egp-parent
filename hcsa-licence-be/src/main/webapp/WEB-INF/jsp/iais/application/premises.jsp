@@ -47,7 +47,7 @@
                                         </c:if>
                                         <!--prem content -->
                                         <%@include file="section/premisesContent.jsp" %>
-<%--                                        <%@include file="section/secondAddress.jsp"%>--%>
+                                        <%@include file="section/secondAddress.jsp"%>
                                     </div>
                                     <%@ include file="/WEB-INF/jsp/iais/application/common/appFooter.jsp" %>
                                 </div>
@@ -113,6 +113,12 @@
         });
         if ($('div.premContent').length == 1) {
             $('div.premContent').find('.premHeader').html('');
+        }
+        if ($('div.premContent').find('.MMM').val()){
+            $('div.premContent:first').find('.premHeader').html('');
+        }
+        if ($('div.KKK').length == 1){
+            $('div.KKK').closest('.premContent').find('.premHeader').html('')
         }
         <c:if test="${AppSubmissionDto.needEditController}">
         $('div.premContent').each(function () {

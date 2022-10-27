@@ -111,14 +111,14 @@
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" value="Sub-Specialty"/>
+            <iais:field width="5" value="Sub-specialty"/>
             <iais:value width="7" cssClass="col-md-7 subSpeciality" display="true">
                 <c:out value="${person.subSpeciality}" />
             </iais:value>
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" value="Other Specialties"/>
+            <iais:field width="5" value="Other Specialities"/>
             <iais:value width="7" cssClass="col-md-7" display="true">
                 <c:out value="${person.specialityOther}" />
             </iais:value>
@@ -145,6 +145,13 @@
             </iais:value>
         </iais:row>
     </c:if>
+
+    <iais:row cssClass="${officeTelNo == 'officeTelNo'  ? '' : 'hidden'}">
+        <iais:field width="5" value="Office Telephone No."/>
+        <iais:value width="7" cssClass="col-md-7">
+            <c:out value="${person.officeTelNo}" />
+        </iais:value>
+    </iais:row>
 
     <iais:row>
         <iais:field width="5" value="Mobile No."/>

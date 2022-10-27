@@ -22,8 +22,8 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="oldVal " attr="${appGrpSecondAddr.postalCode}" style="display: none">
-                    <c:out value="${oldAppGrpPremDto.postalCode}"/>
+                <div class="oldVal " attr="${oldAppGrpSecondAddr.postalCode}" style="display: none">
+                    <c:out value="${oldAppGrpSecondAddr.postalCode}"/>
                 </div>
             </div>
         </div>
@@ -40,8 +40,8 @@
                   </div>
             </div>
             <div class="col-md-6">
-                  <div class="oldVal" attr="${oldAppGrpPremDto.addrType}" style="display: none">
-                    <iais:code code="${oldAppGrpPremDto.addrType}"/>
+                  <div class="oldVal" attr="${oldAppGrpSecondAddr.addrType}" style="display: none">
+                    <iais:code code="${oldAppGrpSecondAddr.addrType}"/>
                   </div>
             </div>
         </div>
@@ -58,8 +58,8 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="oldVal " attr="${oldAppGrpPremDto.blkNo}" style="display: none">
-                    <c:out value="${oldAppGrpPremDto.blkNo}"/>
+                <div class="oldVal " attr="${oldAppGrpSecondAddr.blkNo}" style="display: none">
+                    <c:out value="${oldAppGrpSecondAddr.blkNo}"/>
                 </div>
             </div>
         </div>
@@ -77,14 +77,15 @@
                </div>
             </div>
             <div class="col-md-6">
-               <div class="oldVal " attr="${oldAppGrpPremDto.floorNo}${oldAppGrpPremDto.unitNo}" style="display: none">
-                  <c:out value="${oldAppGrpPremDto.floorNo}-${oldAppGrpPremDto.unitNo}"/>
+               <div class="oldVal " attr="${oldAppGrpSecondAddr.floorNo}${oldAppGrpSecondAddr.unitNo}" style="display: none">
+                  <c:out value="${oldAppGrpSecondAddr.floorNo}-${oldAppGrpSecondAddr.unitNo}"/>
                </div>
             </div>
         </div>
     </div>
 
     <c:forEach var="othersUnitNo" items="${appGrpSecondAddr.appPremisesOperationalUnitDtos}" varStatus="status">
+        <c:set var="oldOthersUnitNo" value="${oldAppGrpSecondAddr.appPremisesOperationalUnitDtos[status.index]}"/>
         <div class="row addmore">
             <input type="hidden" class="othersId" value="${othersUnitNo.id}">
             <div class="col-md-6"></div>
@@ -95,8 +96,8 @@
                    </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="oldVal " attr="<c:out value="${oldAppGrpPremDto.streetName}"/>" style="display: none">
-                       <c:out value="${oldAppGrpPremDto.streetName}"/>
+                    <div class="oldVal " attr="<c:out value="${oldOthersUnitNo.floorNo}${oldOthersUnitNo.unitNo}"/>" style="display: none">
+                        <c:out value="${oldOthersUnitNo.floorNo}-${oldOthersUnitNo.unitNo}"/>
                     </div>
                 </div>
             </div>
@@ -114,8 +115,8 @@
                    </div>
             </div>
             <div class="col-md-6">
-                    <div class="oldVal " attr="<c:out value="${oldAppGrpPremDto.streetName}"/>" style="display: none">
-                        <c:out value="${oldAppGrpPremDto.streetName}"/>
+                    <div class="oldVal " attr="<c:out value="${oldAppGrpSecondAddr.streetName}"/>" style="display: none">
+                        <c:out value="${oldAppGrpSecondAddr.streetName}"/>
                     </div>
             </div>
         </div>
@@ -132,8 +133,8 @@
                   </div>
             </div>
             <div class="col-md-6">
-                <div class="oldVal " attr="<c:out value="${oldAppGrpPremDto.buildingName}"/>" style="display: none">
-                    <c:out value="${oldAppGrpPremDto.buildingName}"/>
+                <div class="oldVal " attr="<c:out value="${oldAppGrpSecondAddr.buildingName}"/>" style="display: none">
+                    <c:out value="${oldAppGrpSecondAddr.buildingName}"/>
                 </div>
             </div>
         </div>

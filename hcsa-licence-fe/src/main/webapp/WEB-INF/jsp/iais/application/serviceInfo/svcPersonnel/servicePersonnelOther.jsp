@@ -15,7 +15,7 @@
     <iais:row>
         <div class="col-xs-12 col-md-6">
             <strong>
-                <c:out value="ServicePersonnel"/>
+                <c:out value="Service Personnel"/>
                 <span class="assign-psn-item">${index+1}</span>
             </strong>
         </div>
@@ -49,7 +49,7 @@
     </iais:row>
     <%--           Relevant working experience(Years) --%>
     <iais:row>
-        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Relevant working experience(Years)"/>
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Relevant working experience (Years)"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input cssClass="wrkExpYear" maxLength="2" type="text" name="${logo}wrkExpYear${index}"
                         value="${appSvcPersonnelDto.wrkExpYear}"/>

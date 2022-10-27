@@ -20,7 +20,7 @@
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="Working Experience(in term of years)"/>
+        <iais:field width="5" value="Relevant working experience (Years)"/>
         <iais:value width="7" cssClass="col-md-7" display="true">
             <c:out value="${appSvcPersonnelDto.wrkExpYear}"/>
         </iais:value>

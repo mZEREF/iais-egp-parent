@@ -496,15 +496,17 @@
       </c:forEach>
 
       <c:forEach var="appGrpSecondAddrList" items="${appSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
+        <c:set var="oldAppGrpPremDto" value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index]}"/>
         <div class="panel-main-content postion-relative">
             <c:if test="${empty appGrpSecondAddrList.appGrpSecondAddrDtos}">
                 <div class="contents">
                     <%@include file="viewPremisesDetils.jsp" %>
                 </div>
             </c:if>
-            <c:forEach var="appGrpSecondAddr" items="${appGrpSecondAddrList.appGrpSecondAddrDtos}"
-                       varStatus="statuss">
+            <c:forEach var="appGrpSecondAddr" items="${appGrpSecondAddrList.appGrpSecondAddrDtos}" varStatus="statuss">
                 <div class="contents">
+                  <c:set var="oldAppGrpSecondAddr" value="${oldAppGrpPremDto.appGrpSecondAddrDtos[status.index]}"/>
+
                     <%@include file="viewPremisesDetils.jsp" %>
                 </div>
             </c:forEach>

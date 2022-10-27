@@ -48,7 +48,7 @@
     </iais:row>
     <%--           Relevant working experience(Years) --%>
     <iais:row>
-        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Working Experience(in term of years)"/>
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Relevant working experience (Years)"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input cssClass="wrkExpYear" maxLength="2" type="text" name="${logo}wrkExpYear${index}"
                         value="${appSvcPersonnelDto.wrkExpYear}"/>
