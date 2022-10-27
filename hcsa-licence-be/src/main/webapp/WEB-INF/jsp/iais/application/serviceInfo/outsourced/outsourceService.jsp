@@ -60,7 +60,7 @@
         <div class="col-md-12 col-xs-12" style="margin-top: 30px;!important;">
             <div class="col-xs-6 col-md-6 svcNameSel">
                 <iais:row>
-                    <iais:field width="5" value="Service" required="true"/>
+                    <iais:field width="5" value="Service" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <%String outSourceSel = request.getParameter("serviceCode");%>
                         <iais:select id="serviceCode" name="serviceCode" options="outsourcedServiceSelectOpts" firstOption="Please Select" value="<%=outSourceSel%>"/>
@@ -86,7 +86,7 @@
                     <iais:field width="5"  value="Licence No. "/>
                     <iais:value width="7" cssClass="col-md-7">
                         <%String licNo = request.getParameter("licNo");%>
-                        <iais:input maxLength="20" type="text" cssClass="licNo" name="licNo" value="<%=licNo%>"/>
+                        <iais:input maxLength="24" type="text" cssClass="licNo" name="licNo" value="<%=licNo%>"/>
                     </iais:value>
                 </iais:row>
             </div>
@@ -104,9 +104,11 @@
 
         <div class="col-xs-12 col-md-12 cSBtn">
             <div class="col-xs-6 col-md-6"></div>
-            <div class="col-xs-6 col-md-6" style="padding-left: 200px;!important;">
-                <a class="btn btn-secondary btn-outsourced-clear" id="ANT_Clearn">Clear</a>
-                <a class="btn btn-primary btn-outsourced-search" id="ANT_Search">Search</a>
+            <div class="button-group">
+                <div class="col-xs-6 col-md-6" style="padding-left: 200px;!important;">
+                    <a class="btn btn-secondary btn-outsourced-clear" id="ANT_Clearn">Clear</a>
+                    <a class="btn btn-primary btn-outsourced-search" id="ANT_Search">Search</a>
+                </div>
             </div>
         </div>
         <c:if test="${!empty outSourceParam}">
