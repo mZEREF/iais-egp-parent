@@ -25,6 +25,7 @@
     <iais:row>
         <div class="col-xs-12">
             <p class="app-title"><c:out value="${currStepName}"/></p>
+            <p><h4><iais:message key="NEW_ACK029"/></h4></p>
             <p><span class="error-msg" name="iaisErrorMSg" id="error_psnMandatory"></span></p>
         </div>
     </iais:row>
@@ -43,8 +44,6 @@
             <c:set var="personCount" value="${personList.size()}"/>
         </c:otherwise>
     </c:choose>
-    <h4>Key appointment holders are the governing body and generally the controlling mind and will of the licensee.
-        They have the authority to provide high-level management and clinical direction but do not directly influence day-to-day operations on the ground</h4>
     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="status">
         <c:set var="index" value="${status.index}"/>
         <c:set var="person" value="${personList[index]}"/>
@@ -85,5 +84,19 @@
             toggleTag('.addKeyAppointmentHolderDiv', $('div.person-content').length < maxCount);
         }
     }
+    $('div.personnel-content').each(function (k, v) {
+        if ($("#errorMapIs").val() == 'error') {
+            $(v).find('.error-msg').on('DOMNodeInserted', function () {
+                if ($(this).not(':empty')) {
+                    $(v).find('.isPartEdit').val(1);
+                    $('#isEditHiddenVal').val('1');
+                    $(v).find('a.edit').trigger('click');
+                }
+            });
+        }
+    });
+
+
+
 </script>
 

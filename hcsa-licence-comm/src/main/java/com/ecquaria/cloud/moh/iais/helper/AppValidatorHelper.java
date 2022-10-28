@@ -3601,10 +3601,11 @@ public final class AppValidatorHelper {
 
     }
 
-    private static void validateProfRegNo(Map<String, String> errMap, String profRegNo, String fieldKey) {
+    private static boolean validateProfRegNo(Map<String, String> errMap, String profRegNo, String fieldKey) {
         if (StringUtil.isEmpty(profRegNo)) {
-            return;
+            return true;
         }
+        boolean isValid = true;
         ProfessionalResponseDto professionalResponseDto = getAppCommService().retrievePrsInfo(profRegNo);
         if (professionalResponseDto != null) {
             if (professionalResponseDto.isHasException() || StringUtil.isNotEmpty(
@@ -3612,13 +3613,17 @@ public final class AppValidatorHelper {
                 log.debug(StringUtil.changeForLog("prs svc down ..."));
                 if (professionalResponseDto.isHasException()) {
                     errMap.put(HcsaAppConst.PRS_SERVICE_DOWN, HcsaAppConst.PRS_SERVICE_DOWN);
+                    isValid = false;
                 } else if ("401".equals(professionalResponseDto.getStatusCode())) {
                     errMap.put(fieldKey, MessageUtil.getMessageDesc("GENERAL_ERR0054"));
+                    isValid = false;
                 } else {
                     errMap.put(fieldKey, MessageUtil.getMessageDesc("GENERAL_ERR0042"));
+                    isValid = false;
                 }
             }
         }
+        return isValid;
     }
 
     public static Map<String, String> doValidateSpecialisedDtoList(String svcCode,
@@ -3740,9 +3745,10 @@ public final class AppValidatorHelper {
                     if (StringUtil.isEmpty(inputValue) && 1 == mandatoryType) {
                         errorMap.put(errorKey, "GENERAL_ERR0006");
                         isValid = false;
-                    }
-                    if (!validateSuplText(errorMap, itemConfigDto, inputValue, errorKey)) {
+                    }else if (!validateSuplText(errorMap, itemConfigDto, inputValue, errorKey)) {
                         isValid = false;
+                    } else if (HcsaConsts.SUPFORM_SPEC_COND_PRS.equals(appSvcSuplmItemDto.getSpecialCondition())) {
+                        isValid = validateProfRegNo(errorMap, inputValue, errorKey);
                     }
                 } else if (HcsaConsts.SUPFORM_ITEM_TYPE_RADIO.equals(itemType)) {
                     if (StringUtil.isEmpty(inputValue) && 1 == mandatoryType) {

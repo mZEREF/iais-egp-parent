@@ -197,6 +197,7 @@
 </c:forEach>
 <script type="text/javascript">
     $(function() {
+        $('.addBtn').unbind('click');
         $('.addBtn').on('click', function () {
             var type=$(this).closest('div.addDiv').find('input.psnType').val();
             var maxCount=$(this).closest('div.addDiv').find('input.MaxCount').val();
