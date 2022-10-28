@@ -38,7 +38,6 @@
             if (!isEmpty($currContent.find('.profRegNo').val())){
                 $currContent.find('.profRegNo').trigger('blur');
             }
-
         });
     }
 
@@ -62,6 +61,9 @@
                 var personnelSel = $(x).find('.personnelType').val();
                 var flag = $(x).find('input.personTypeToShow').val();
                 personnelSelFun(personnelSel, $(x),flag);
+                if (!isEmpty($(x).find('.profRegNo').val())){
+                    $(x).find('.profRegNo').trigger('blur');
+                }
             })
         });
     }
@@ -106,6 +108,7 @@
         $('#isEditHiddenVal').val('1');
         hideTag($currContent.find('.rfc-psn-detail'));
         hideTag($currContent.find('.edit-content'));
+        hideTag($currContent.find('.otheDesignationDiv'));
         showTag($currContent.find('.assignSelDiv'));
         unDisableContent($currContent);
         var length =  $target.find('div.personnel-content').length;

@@ -4160,7 +4160,7 @@ public final class AppValidatorHelper {
         String designation = appSvcPersonnelDto.getDesignation();
         if (StringUtil.isEmpty(designation)) {
             errorMap.put(prefix + "designation" + subfix, signal);
-        } else if (MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation)) {
+        } else if (MasterCodeUtil.SSI_DESIGNATION_OTHER_CODE_KEY.equals(designation)) {
             String otherDesignation = appSvcPersonnelDto.getOtherDesignation();
             if (StringUtil.isEmpty(otherDesignation)) {
                 errorMap.put(prefix + "otherDesignation" + subfix,
