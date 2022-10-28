@@ -2638,7 +2638,7 @@ public final class RfcHelper {
     public static AmendmentFeeDto getAmendmentFeeDto(AppSubmissionDto appSubmissionDto, AppEditSelectDto appEditSelectDto,
             boolean isCharity) {
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
-        amendmentFeeDto.setChangeInLicensee(Boolean.FALSE);
+        amendmentFeeDto.setChangeInLicensee(appEditSelectDto.isLicenseeEdit());
         amendmentFeeDto.setChangeInLocation(appEditSelectDto.isChangeInLocation() || appEditSelectDto.isChangeFloorUnits());
         amendmentFeeDto.setAdditionOrRemovalVehicles(appEditSelectDto.isChangeVehicle());
         amendmentFeeDto.setIsCharity(isCharity);
