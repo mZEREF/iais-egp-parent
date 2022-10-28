@@ -2644,6 +2644,7 @@ public final class RfcHelper {
         amendmentFeeDto.setIsCharity(isCharity);
         amendmentFeeDto.setChangeBusinessName(appEditSelectDto.isChangeBusinessName());
         //amendmentFeeDto.setAdditionOrRemovalSpecialisedServices(appEditSelectDto.isSpecialisedEdit());
+        amendmentFeeDto.setAdditionOrRemovalCategory(appEditSelectDto.isSpecialisedEdit());
         amendmentFeeDto.setAddress(appSubmissionDto.getAppGrpPremisesDtoList().get(0).getAddress());
         amendmentFeeDto.setServiceName(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName());
         amendmentFeeDto.setServiceCode(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceCode());
