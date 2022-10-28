@@ -1573,7 +1573,8 @@ public class ApplicationServiceImpl implements ApplicationService {
             if (StringUtil.isEmpty(curRoleId) || !StringUtil.isIn(curRoleId, new String[]{
                     RoleConsts.USER_ROLE_ASO,
                     RoleConsts.USER_ROLE_PSO,
-                    RoleConsts.USER_ROLE_INSPECTIOR})) {
+                    RoleConsts.USER_ROLE_INSPECTIOR, RoleConsts.USER_ROLE_INSPECTION_LEAD,
+                    RoleConsts.USER_ROLE_AO1})) {
                 map.put(HcsaAppConst.ERROR_TYPE, HcsaAppConst.ERROR_ROLE);
             }
             if (StringUtil.isEmpty(appType) || !StringUtil.isIn(appType, new String[]{
