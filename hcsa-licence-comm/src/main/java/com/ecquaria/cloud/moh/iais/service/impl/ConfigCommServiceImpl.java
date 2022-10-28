@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SpecicalPersonDto;
@@ -26,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.RfcHelper;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
@@ -295,9 +297,18 @@ public class ConfigCommServiceImpl implements ConfigCommService {
     @Override
     public FeeDto getGroupAmendAmount(AmendmentFeeDto amendmentFeeDto) {
         if (amendmentFeeDto == null) {
-            return null;
+            return new FeeDto();
         }
         return configCommClient.amendmentFee(amendmentFeeDto).getEntity();
+    }
+
+    @Override
+    public FeeDto getGroupAmendAmount(AppSubmissionDto appSubmissionDto, AppEditSelectDto appEditSelectDto, boolean isCharity) {
+        if (appSubmissionDto == null || appEditSelectDto == null) {
+            return new FeeDto();
+        }
+        AmendmentFeeDto amendmentFeeDto = RfcHelper.getAmendmentFeeDto(appSubmissionDto, appEditSelectDto, isCharity);
+        return getGroupAmendAmount(amendmentFeeDto);
     }
 
     @Override

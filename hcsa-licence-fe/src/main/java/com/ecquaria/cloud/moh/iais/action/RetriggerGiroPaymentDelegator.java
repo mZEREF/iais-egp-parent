@@ -386,7 +386,7 @@ public class RetriggerGiroPaymentDelegator {
                 ParamUtil.setRequestAttr(bpc.request, "feeInfoDtos", renewalAmount.getFeeInfoDtos());
 
                 renewDto.setAppSubmissionDtos(renewSubmisonDtos);
-                bpc.request.getSession().setAttribute("rfcAppSubmissionDtos", rfcAppSubmissionDtos);
+                bpc.request.getSession().setAttribute("renewAppSubmissionDtos", rfcAppSubmissionDtos);
                 ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR, renewDto);
             }
             appSubmissionDto.setAmountStr(Formatter.formatterMoney(appSubmissionDto.getAmount()));

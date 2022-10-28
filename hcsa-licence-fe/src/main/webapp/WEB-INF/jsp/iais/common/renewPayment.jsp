@@ -249,7 +249,7 @@
             </c:if>
         </c:forEach>
 
-        <c:forEach items="${rfcAppSubmissionDtos}" var="svc" varStatus="index">
+        <c:forEach items="${renewAppSubmissionDtos}" var="svc" varStatus="index">
             <c:forEach items="${svc.feeInfoDtos}" var="feeInfoDto" varStatus="feeInfoStat">
                 <c:set var="baseSvcFeeExt" value="${feeInfoDto.baseSvcFeeExt}"/>
                 <c:set var="complexSpecifiedFeeExt" value="${feeInfoDto.complexSpecifiedFeeExt}"/>
