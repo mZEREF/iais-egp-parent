@@ -923,7 +923,7 @@ public final class RfcHelper {
         List<AppSvcPrincipalOfficersDto> keyPersonnelList = IaisCommonUtils.genNewArrayList();
         appSvcSpecialServiceInfoDtoList.forEach((item) -> keyPersonnelList.addAll(item.getAppSvcCgoDtoList()));
         List<AppSvcPrincipalOfficersDto> oldKeyPersonnelList = IaisCommonUtils.genNewArrayList();
-        appSvcSpecialServiceInfoDtoList.forEach((item) -> keyPersonnelList.addAll(item.getAppSvcCgoDtoList()));
+        oldAppSvcSpecialServiceInfoDtoList.forEach((item) -> keyPersonnelList.addAll(item.getAppSvcCgoDtoList()));
         boolean changeKeyPersonnel = false;
         if (IaisCommonUtils.isNotEmpty(keyPersonnelList) && IaisCommonUtils.isNotEmpty(oldKeyPersonnelList)) {
             changeKeyPersonnel = isChangeKeyPersonnel(keyPersonnelList, oldKeyPersonnelList, false);
@@ -931,7 +931,7 @@ public final class RfcHelper {
         List<AppSvcPersonnelDto> personnelList = IaisCommonUtils.genNewArrayList();
         appSvcSpecialServiceInfoDtoList.forEach((item) -> personnelList.addAll(item.getSpecialPersonnelDtoList()));
         List<AppSvcPersonnelDto> oldPersonnelList = IaisCommonUtils.genNewArrayList();
-        appSvcSpecialServiceInfoDtoList.forEach((item) -> oldPersonnelList.addAll(item.getSpecialPersonnelDtoList()));
+        oldAppSvcSpecialServiceInfoDtoList.forEach((item) -> oldPersonnelList.addAll(item.getSpecialPersonnelDtoList()));
         boolean changePersonal = false;
         if (IaisCommonUtils.isNotEmpty(personnelList) && IaisCommonUtils.isNotEmpty(oldPersonnelList)) {
             changePersonal = isChangeServicePersonnels(personnelList, oldPersonnelList);
@@ -939,7 +939,7 @@ public final class RfcHelper {
         List<AppSvcSuplmFormDto> appSvcSuplmFormList = IaisCommonUtils.genNewArrayList();
         appSvcSpecialServiceInfoDtoList.forEach((item) -> appSvcSuplmFormList.addAll(item.getAppSvcSuplmFormDtoList()));
         List<AppSvcSuplmFormDto> oldAppSvcSuplmFormList = IaisCommonUtils.genNewArrayList();
-        appSvcSpecialServiceInfoDtoList.forEach((item) -> oldAppSvcSuplmFormList.addAll(item.getAppSvcSuplmFormDtoList()));
+        oldAppSvcSpecialServiceInfoDtoList.forEach((item) -> oldAppSvcSuplmFormList.addAll(item.getAppSvcSuplmFormDtoList()));
         boolean changeSupplementaryForm = false;
         if (IaisCommonUtils.isNotEmpty(appSvcSuplmFormList) && IaisCommonUtils.isNotEmpty(oldAppSvcSuplmFormList)) {
             changeSupplementaryForm = compareSupplementaryForm(appSvcSuplmFormList, oldAppSvcSuplmFormList, nonAutoList);
