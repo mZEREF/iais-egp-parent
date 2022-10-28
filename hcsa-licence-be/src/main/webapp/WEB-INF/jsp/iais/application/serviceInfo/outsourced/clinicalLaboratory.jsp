@@ -7,14 +7,14 @@
         <div class="col-xs-12">
             <strong>Outsourced Service Provider(s)</strong>
         </div>
-        <div class="col-xs-12">
-            <span class="error-msg" name="iaisErrorMsg" id="error_clbList"></span>
-        </div>
     </iais:row>
 
     <iais:row>
         <div class="col-xs-12 <c:if test="${AppSubmissionDto.appLicBundleDtoList[0].svcCode eq AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY}">hidden</c:if>">
             <strong>Clinical Laboratory</strong>
+        </div>
+        <div class="col-xs-12">
+            <span class="error-msg" name="iaisErrorMsg" id="error_clbList"></span>
         </div>
     </iais:row>
 
@@ -153,6 +153,9 @@
         for (let i = 0; i < allBtn.length; i++) {
             allBtn[i].onclick = function (){
                 showWaiting();
+                if (${AppSubmissionDto.needEditController }){
+                    $('a.outsourcedEdit').trigger('click');
+                }
                 let $tag = $(this);
                 let prefix = $tag.data('prefix');
                 let outsourcedIndexNo = $tag.data('group');
@@ -171,6 +174,9 @@
     }
     function sortCLDRecords(sortFieldName,sortType){
         showWaiting();
+        if (${AppSubmissionDto.needEditController }){
+            $('a.outsourcedEdit').trigger('click');
+        }
         $("input[name='btnStep']").val("sort");
         $("input[name='classSort']").val("cLDSort");
         let controlFormLi = $('#controlFormLi').val();

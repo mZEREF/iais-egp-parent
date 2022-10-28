@@ -153,6 +153,9 @@
         for (let i = 0; i < allBtn.length; i++) {
             allBtn[i].onclick = function (){
                 showWaiting();
+                if (${AppSubmissionDto.needEditController }){
+                    $('a.outsourcedEdit').trigger('click');
+                }
                 let $tag = $(this);
                 let prefix = $tag.data('prefix');
                 let outsourcedIndexNo = $tag.data('group');
@@ -171,6 +174,9 @@
     }
     function sortCLDRecords(sortFieldName,sortType){
         showWaiting();
+        if (${AppSubmissionDto.needEditController }){
+            $('a.outsourcedEdit').trigger('click');
+        }
         $("input[name='btnStep']").val("sort");
         $("input[name='classSort']").val("cLDSort");
         let controlFormLi = $('#controlFormLi').val();

@@ -30,6 +30,19 @@
     .btn-outsourced-search a:not(:last-child) {
         margin-right: 20px;
     }
+    .side-point {
+        margin-left: 3px !important;
+    }
+    .side-point:before {
+        content: "";
+        width: 4px;
+        height: 4px;
+        background-color: #333333;
+        border-radius: 3px;
+        position: absolute;
+        top: 9px;
+        left: 0;
+    }
 </style>
 <iais:row>
     <div class="col-xs-12">
@@ -57,8 +70,15 @@
     <input type="hidden" name="pIds" value="">
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-        <div class="col-xs-12 col-md-12" style="margin-top: 30px;!important;">
-
+        <div class="col-xs-12 col-md-12" style="margin-top: 30px;margin-left: 30px;!important;">
+            <div class="col-xs-8 col-md-8 side-point">
+                <span>Clinical Laboratory</span>
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-12" style="margin-top:15px;margin-left: 30px;!important;">
+            <div class="col-xs-8 col-md-8 side-point">
+                <span>Radiological Service</span>
+            </div>
         </div>
         <div class="col-md-12 col-xs-12" style="margin-top: 30px;!important;">
             <div class="col-xs-6 col-md-6 svcNameSel">
@@ -141,6 +161,9 @@
 
     $("#ANT_Search").click(function () {
         showWaiting();
+        if (${AppSubmissionDto.needEditController }){
+            $('a.outsourcedEdit').trigger('click');
+        }
         $("input[name='btnStep']").val("search");
         let controlFormLi = $('#controlFormLi').val();
         submitForms('${serviceStepDto.currentStep.stepCode}','search',null,controlFormLi);
@@ -148,6 +171,9 @@
 
     function sortRecords(sortFieldName,sortType){
         showWaiting();
+        if (${AppSubmissionDto.needEditController }){
+            $('a.outsourcedEdit').trigger('click');
+        }
         $("input[name='btnStep']").val("sort");
         let controlFormLi = $('#controlFormLi').val();
         submitForms('${serviceStepDto.currentStep.stepCode}',sortFieldName,sortType,controlFormLi);
@@ -155,6 +181,9 @@
 
     function jumpToPagechangePage(){
         showWaiting();
+        if (${AppSubmissionDto.needEditController }){
+            $('a.outsourcedEdit').trigger('click');
+        }
         $("input[name='btnStep']").val("changePage");
         let controlFormLi = $('#controlFormLi').val();
         submitForms('${serviceStepDto.currentStep.stepCode}',"changePage",null,controlFormLi);
