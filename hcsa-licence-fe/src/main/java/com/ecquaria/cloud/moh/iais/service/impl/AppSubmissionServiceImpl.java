@@ -813,7 +813,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                     find = true;
                                     if (ms[0].equals("LicBundle")) {
                                         licenceFeeDto.setBundle(4);
-                                    } else {
+                                    } else if(StringUtil.isNotEmpty(ms[0])){
                                         licenceFeeDto.setBundle(3);
                                     }
                                     break;
@@ -833,7 +833,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                     find = true;
                                     if (ms[0].equals("LicBundle")) {
                                         licenceFeeDto.setBundle(4);
-                                    } else {
+                                    } else if(StringUtil.isNotEmpty(ms[0])){
                                         licenceFeeDto.setBundle(3);
                                     }
                                     break;
