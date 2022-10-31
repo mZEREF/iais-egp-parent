@@ -1701,11 +1701,12 @@ public final class AppValidatorHelper {
                             String errorMsg = repLength("Contact No.", "8");
                             errMap.put(prefix + "officeTelNo" + i, errorMsg);
                         }
-                        if (!officeTelNo.matches("^[3|689][0-9]{7}$")) {
+                        if (!officeTelNo.matches("^[6][0-9]{7}$")) {
                             errMap.put(prefix + "officeTelNo" + i, "GENERAL_ERR0007");
                         }
                     }
                 }
+
                 if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)) {
                     if (StringUtil.isEmpty(professionType)) {
                         errMap.put(prefix + "professionType" + i,
@@ -1769,6 +1770,7 @@ public final class AppValidatorHelper {
                         errMap.put(prefix + "specialtyGetDate" + i,
                                 MessageUtil.replaceMessage("GENERAL_ERR0006", "Date when specialty was obtained", "filed"));
                     }
+
                     if (AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(svcCode)) {
                         if (StringUtil.isEmpty(bclsExpiryDate)) {
                             errMap.put(prefix + "bclsExpiryDate" + i,
@@ -1778,6 +1780,7 @@ public final class AppValidatorHelper {
                             errMap.put(prefix + "bclsExpiryDate" + i, repLength("Expiry Date (BCLS and AED)", "100"));
                         }
                     }
+
                     String holdCerByEMS = person.getHoldCerByEMS();
                     if (StringUtil.isEmpty(holdCerByEMS)) {
                         errMap.put(prefix + "holdCerByEMS" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
@@ -1790,6 +1793,7 @@ public final class AppValidatorHelper {
                         errMap.put(prefix + "aclsExpiryDate" + i, repLength("Expiry Date (ACLS)", "100"));
                     }
                 }
+
 
                 if (!StringUtil.isEmpty(professionalRegoNo)) {
                     if (professionalRegoNo.length() > 20) {
@@ -1828,26 +1832,29 @@ public final class AppValidatorHelper {
                     errMap.put(prefix + "relevantExperience" + i, repLength("Relevant Experience", "100"));
                 }
 
-                String mobileNo = person.getMobileNo();
-                if (StringUtil.isEmpty(mobileNo)) {
-                    errMap.put(prefix + "mobileNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Mobile No. ", "field"));
-                } else if (!StringUtil.isEmpty(mobileNo)) {
-                    if (mobileNo.length() > 8) {
-                        errMap.put(prefix + "mobileNo" + i, repLength("Mobile No.", "8"));
+                if (!ApplicationConsts.PERSONNEL_PSN_KAH.equals(psnType)){
+                    String mobileNo = person.getMobileNo();
+                    if (StringUtil.isEmpty(mobileNo)) {
+                        errMap.put(prefix + "mobileNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Mobile No. ", "field"));
+                    } else if (!StringUtil.isEmpty(mobileNo)) {
+                        if (mobileNo.length() > 8) {
+                            errMap.put(prefix + "mobileNo" + i, repLength("Mobile No.", "8"));
+                        }
+                        if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
+                            errMap.put(prefix + "mobileNo" + i, "GENERAL_ERR0007");
+                        }
                     }
-                    if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
-                        errMap.put(prefix + "mobileNo" + i, "GENERAL_ERR0007");
-                    }
-                }
-                String emailAddr = person.getEmailAddr();
-                if (StringUtil.isEmpty(emailAddr)) {
-                    errMap.put(prefix + "emailAddr" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Email Address", "field"));
-                } else {
-                    if (emailAddr.length() > 320) {
-                        errMap.put(prefix + "emailAddr" + i, repLength("Email Address", "320"));
-                    }
-                    if (!ValidationUtils.isEmail(emailAddr)) {
-                        errMap.put(prefix + "emailAddr" + i, "GENERAL_ERR0014");
+
+                    String emailAddr = person.getEmailAddr();
+                    if (StringUtil.isEmpty(emailAddr)) {
+                        errMap.put(prefix + "emailAddr" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Email Address", "field"));
+                    } else {
+                        if (emailAddr.length() > 320) {
+                            errMap.put(prefix + "emailAddr" + i, repLength("Email Address", "320"));
+                        }
+                        if (!ValidationUtils.isEmail(emailAddr)) {
+                            errMap.put(prefix + "emailAddr" + i, "GENERAL_ERR0014");
+                        }
                     }
                 }
             }
@@ -3863,7 +3870,7 @@ public final class AppValidatorHelper {
                 if (!CommonValidator.isDate(inputValue)) {
                     //GENERAL_ERR0033 - Invalid Date Format.
                     errorMap.put(errorKey, "GENERAL_ERR0033");
-                } else if (compareDateByDay(inputValue) <= 0) {
+                } else if (compareDateByDay(inputValue) >= 0) {
                     // DS_ERR001 - {{field} cannot be future date.
                     errorMap.put(errorKey,
                             MessageUtil.replaceMessage("DS_ERR001", itemConfigDto.getDisplayInfo(), "field"));

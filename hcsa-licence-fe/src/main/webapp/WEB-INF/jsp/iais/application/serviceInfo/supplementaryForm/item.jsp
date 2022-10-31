@@ -1,6 +1,10 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil" %>
-
+<style>
+    .font-weight{
+        font-weight:bold !important;
+    }
+</style>
 <c:set var="itemConfigDto" value="${item.itemConfigDto}"/>
 <c:set var="isCheckBox" value="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_CHECKBOX}"/>
 <c:set var="itemData">
@@ -45,6 +49,27 @@
             </div>
             </c:if>
         </c:when>
+
+        <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_LABEL_PLUS}">
+            <c:if test="${'SPECCON01' == item.specialCondition || 'SPECCON04' == item.specialCondition}" var="speLabel">
+                <iais:field width="5" cssClass="col-md-5 item-label font-weight" mandatory="${itemConfigDto.mandatoryType == 1}"
+                            value="${itemConfigDto.displayInfo}${itemConfigDto.mandatoryType == 2 ? ' ' : ''}"/>
+                <input type="hidden" name="${itemPrefix}${itemConfigDto.id}${item.seqNum}" value=""
+                       data-base="${itemPrefix}${itemConfigDto.id}" data-seq="${item.seqNum}"/>
+                <div class="col-sm-7 col-xs-7 col-md-7" ${itemData}>
+                    <p class="font-weight"></p>
+                </div>
+            </c:if>
+            <c:if test="${not speLabel}">
+                <div class="col-xs-12">
+                    <div class="item-label font-weight ${itemData}">
+                        <c:out value="${itemConfigDto.displayInfo}"/>
+                        <c:if test="${itemConfigDto.mandatoryType == 1}"><span class="mandatory">*</span></c:if>
+                    </div>
+                </div>
+            </c:if>
+        </c:when>
+
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_RADIO}">
             <iais:field width="5" cssClass="col-md-5 item-label" mandatory="${itemConfigDto.mandatoryType == 1}"
                         value="${itemConfigDto.displayInfo}${itemConfigDto.mandatoryType == 2 ? ' ' : ''}"/>
@@ -80,6 +105,7 @@
             </div>
             </c:if>
         </c:when>
+
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_TEXT}">
             <iais:field width="5" cssClass="col-md-5 item-label" mandatory="${itemConfigDto.mandatoryType == 1}"
                         data="${item.labelData}" value="${itemConfigDto.displayInfo}${itemConfigDto.mandatoryType == 2 ? ' ' : ''}"/>
@@ -94,6 +120,23 @@
                 </c:if>
             </iais:value>
         </c:when>
+
+        <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_BOLD}">
+            <iais:field width="5" cssClass="col-md-5 item-label font-weight" mandatory="${itemConfigDto.mandatoryType == 1}"
+                        data="${item.labelData}" value="${itemConfigDto.displayInfo}${itemConfigDto.mandatoryType == 2 ? ' ' : ''}"/>
+            <iais:value width="7" cssClass="col-md-7">
+                <c:if test="${item.date}">
+                    <iais:input type="text" data="${itemData} ${item.endHtml} ${item.startHtml}" cssClass="date_picker"
+                                name="${itemPrefix}${itemConfigDto.id}${item.seqNum}" value="${item.inputValue}" placeholder="dd/mm/yyyy" />
+                </c:if>
+                <c:if test="${not item.date}">
+                    <iais:input type="text" data="${itemData}" maxLength="${itemConfigDto.maxLength}"
+                                name="${itemPrefix}${itemConfigDto.id}${item.seqNum}" value="${item.inputValue}" />
+                </c:if>
+            </iais:value>
+        </c:when>
+
+
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_SELECT}">
             <iais:field width="5" cssClass="col-md-5 item-label" mandatory="${itemConfigDto.mandatoryType == 1}"
                         data="${item.labelData}" value="${itemConfigDto.displayInfo}${itemConfigDto.mandatoryType == 2 ? ' ' : ''}"/>
