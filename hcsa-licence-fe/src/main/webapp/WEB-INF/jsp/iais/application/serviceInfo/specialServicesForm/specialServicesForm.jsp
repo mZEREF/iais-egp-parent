@@ -58,6 +58,7 @@
                                                 </c:if>
                                             </iais:row>
                                             <c:set var="itemPrefix" value="${status.index}${subSvcRelStatus.index}"/>
+                                            <input type="hidden" class="isPartEdit" name="${itemPrefix}isPartEditSup" value="0"/>
                                             <c:forEach var="appSvcSuplmGroupDto" items="${appSvcSuplmFormDto.appSvcSuplmGroupDtoList}">
                                                 <c:set var="count" value="${appSvcSuplmGroupDto.count}"/>
                                                 <c:set var="baseSize" value="${appSvcSuplmGroupDto.baseSize}"/>
