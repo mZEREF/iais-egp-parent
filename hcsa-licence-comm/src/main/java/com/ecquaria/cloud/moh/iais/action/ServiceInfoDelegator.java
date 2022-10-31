@@ -777,20 +777,30 @@ public class ServiceInfoDelegator {
                 ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
         List<HcsaSvcPersonnelDto> deputyPrincipalOfficerConfig = configCommService.getHcsaSvcPersonnel(currentSvcId,
                 ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
-
+        AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currentSvcId);
         if (principalOfficerConfig != null && !principalOfficerConfig.isEmpty()) {
             HcsaSvcPersonnelDto hcsaSvcPersonnelDto = principalOfficerConfig.get(0);
             ParamUtil.setRequestAttr(bpc.request, CURR_STEP_CONFIG, hcsaSvcPersonnelDto);
         }
-
+        HcsaSvcPersonnelDto personnelDto = deputyPrincipalOfficerConfig.get(0);
+        Integer minCount = personnelDto.getMandatoryCount();
+        Integer maximumCount = personnelDto.getMaximumCount();
+        List<AppSvcPrincipalOfficersDto> dpoList = currSvcInfoDto.getAppSvcNomineeDtoList();
+        boolean flag = minCount == 0 && maximumCount > 0;
         if (deputyPrincipalOfficerConfig != null && !deputyPrincipalOfficerConfig.isEmpty()) {
             HcsaSvcPersonnelDto hcsaSvcPersonnelDto = deputyPrincipalOfficerConfig.get(0);
             ParamUtil.setRequestAttr(bpc.request, "dpoHcsaSvcPersonnelDto", hcsaSvcPersonnelDto);
         }
+        if (minCount > 0 && maximumCount > 0){
+            currSvcInfoDto.setDeputyPoFlag(AppConsts.YES);
+        }
+        if (flag){
+            currSvcInfoDto.setDeputyPoFlag(IaisCommonUtils.isEmpty(dpoList) ? AppConsts.NO : AppConsts.YES);
+        }
 
-        AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currentSvcId);
+
+
         if (StringUtil.isEmpty(currSvcInfoDto.getDeputyPoFlag())) {
-            List<AppSvcPrincipalOfficersDto> dpoList = currSvcInfoDto.getAppSvcNomineeDtoList();
             currSvcInfoDto.setDeputyPoFlag(IaisCommonUtils.isEmpty(dpoList) ? AppConsts.NO : AppConsts.YES);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currSvcInfoDto);
         }
@@ -1004,7 +1014,7 @@ public class ServiceInfoDelegator {
             deputySelect = ParamUtil.getString(bpc.request, "deputyPrincipalOfficer");
             currSvcInfoDto.setDeputyPoFlag(deputySelect);
         }
-        if (isGetDataFromPageDpo) {
+        if (isGetDataFromPageDpo) {       //   0 - 4
             if (AppConsts.NO.equals(deputySelect)) {
                 dpoList = IaisCommonUtils.genNewArrayList();
             } else {

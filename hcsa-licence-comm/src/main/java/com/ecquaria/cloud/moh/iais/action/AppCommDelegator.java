@@ -1665,12 +1665,14 @@ public abstract class AppCommDelegator {
         int isAutoPremises = -1;
         // check app submissions affected by premises+
         if (appEditSelectDto.isPremisesEdit()) {
+            List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             AppEditSelectDto changeSelectDto = new AppEditSelectDto();
             changeSelectDto.setPremisesEdit(true);
             changeSelectDto.setPremisesListEdit(true);
             changeSelectDto.setChangeHciName(appEditSelectDto.isChangeHciName());
             changeSelectDto.setChangeInLocation(appEditSelectDto.isChangeInLocation());
             changeSelectDto.setChangeFloorUnits(appEditSelectDto.isChangeFloorUnits());
+            changeSelectDto.setPremType(appGrpPremisesDtoList.get(0).getPremisesType());
             String groupNo;
             if (changeSelectDto.isAutoRfc()) {
                 autoGroupNo = getRfcGroupNo(autoGroupNo);
@@ -1679,7 +1681,6 @@ public abstract class AppCommDelegator {
                 appGroupNo = getRfcGroupNo(appGroupNo);
                 groupNo = appGroupNo;
             }
-            List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             List<AppSubmissionDto> appSubmissionDtos = IaisCommonUtils.genNewArrayList();
             boolean isValid = checkAffectedAppSubmissions(appGrpPremisesDtoList, draftNo, groupNo, changeSelectDto,
                     appSubmissionDtos, bpc.request);
@@ -1764,8 +1765,6 @@ public abstract class AppCommDelegator {
                 autoChangeSelectDto.setSpecialisedEdit(true);
                 autoChangeSelectDto.setChangeSpecialisedAutoFields(true);
                 appEditSelectDto.setChangeSpecialisedAutoFields(false);
-            } else if (!appEditSelectDto.isChangeSpecialisedNonAutoFields()) {
-                RfcHelper.resolveSpecialisedRfc(appSubmissionDto, oldAppSubmissionDto, true);
             }
         }
         // check app submissions affected by personnel (service info)

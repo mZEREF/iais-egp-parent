@@ -5,6 +5,7 @@ import com.ecquaria.cloud.job.executor.util.SpringHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocSecDetailDto;
@@ -64,17 +65,12 @@ import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.AppDeclarationDocShowPageDto;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.client.ComSystemAdminClient;
-import lombok.extern.slf4j.Slf4j;
-import sop.iwe.SessionManager;
-import sop.rbac.user.User;
-import sop.util.DateUtil;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.sql.Time;
 import java.text.ParseException;
@@ -91,6 +87,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import sop.iwe.SessionManager;
+import sop.rbac.user.User;
+import sop.util.DateUtil;
 
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURRENTSERVICEID;
 
@@ -697,7 +698,15 @@ public final class AppDataHelper {
                     dummyVehNum = oldAppSvcVehicleDto.getVehicleName();
                     appSvcVehicleDto.setStatus(oldAppSvcVehicleDto.getStatus());
                 } else {
-                    appSvcVehicleDto.setStatus(ApplicationConsts.VEHICLE_STATUS_SUBMIT);
+                    LoginContext loginContext = AccessUtil.getLoginUser(request);
+                    if (RoleConsts.USER_ROLE_AO1.equals(loginContext.getCurRoleId())
+                            || RoleConsts.USER_ROLE_AO2.equals(loginContext.getCurRoleId())
+                            || RoleConsts.USER_ROLE_AO3.equals(loginContext.getCurRoleId())
+                            || RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(loginContext.getCurRoleId())) {
+                        appSvcVehicleDto.setStatus(ApplicationConsts.VEHICLE_STATUS_APPROVE);
+                    } else {
+                        appSvcVehicleDto.setStatus(ApplicationConsts.VEHICLE_STATUS_SUBMIT);
+                    }
                 }
                 if (StringUtil.isEmpty(dummyVehNum)) {
                     dummyVehNum = IaisEGPHelper.generateDummyVehicleNum(i);

@@ -47,7 +47,14 @@
     </c:if>
 
     <iais:row cssClass="assignSelDiv ${canEdit && '-1' != person.assignSelect && not empty person.assignSelect ? 'hidden':''}">
-        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Assign a ${singleName}"/>
+            <c:choose>
+                <c:when test="${CGO == 'CGO'}">
+                    <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Add/Assign a ${singleName}"/>
+                </c:when>
+                <c:otherwise>
+                    <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Assign a ${singleName}"/>
+                </c:otherwise>
+            </c:choose>
         <iais:value width="7" cssClass="col-md-7">
             <iais:select cssClass="assignSel" name="${prepsn}assignSelect${index}" options="personSelectOpts" value="${person.assignSelect}"/>
         </iais:value>
@@ -216,19 +223,22 @@
         </iais:row>
 
 
-        <iais:row>
-            <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Mobile No."/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="8" type="text" cssClass="mobileNo" name="${prepsn}mobileNo${index}" value="${person.mobileNo}"/>
-            </iais:value>
-        </iais:row>
+        <c:if test="${keyPerson != 'keyPerson'}">
+            <iais:row>
+                <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Mobile No."/>
+                <iais:value width="7" cssClass="col-md-7">
+                    <iais:input maxLength="8" type="text" cssClass="mobileNo" name="${prepsn}mobileNo${index}" value="${person.mobileNo}"/>
+                </iais:value>
+            </iais:row>
 
-        <iais:row>
-            <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Email Address"/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="320" type="text" cssClass="emailAddr" name="${prepsn}emailAddr${index}" value="${person.emailAddr}"/>
-            </iais:value>
-        </iais:row>
+            <iais:row>
+                <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Email Address"/>
+                <iais:value width="7" cssClass="col-md-7">
+                    <iais:input maxLength="320" type="text" cssClass="emailAddr" name="${prepsn}emailAddr${index}" value="${person.emailAddr}"/>
+                </iais:value>
+            </iais:row>
+        </c:if>
+
     </div>
     <hr/>
 </div>
