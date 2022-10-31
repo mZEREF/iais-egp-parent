@@ -106,7 +106,7 @@
     .lic-title h2 {
       font-size: 20pt;
       font-weight: 700;
-      text-transform: uppercase;
+      /*text-transform: uppercase;*/
       border: none;
       margin-bottom: 4px;
       padding-bottom: 0px;
