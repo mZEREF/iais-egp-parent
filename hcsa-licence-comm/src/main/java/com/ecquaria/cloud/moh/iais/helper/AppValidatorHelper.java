@@ -2234,7 +2234,7 @@ public final class AppValidatorHelper {
                 if (StringUtil.isNotEmpty(startDate) && StringUtil.isNotEmpty(endDate)) {
                     try {
                         if (Formatter.parseDate(startDate).after(Formatter.parseDate(endDate))) {
-                            errMap.put(prefix + "agreementStartDate", MessageUtil.replaceMessage("NEW_ERR0020",
+                            errMap.put(prefix + "agreementStartDate", MessageUtil.replaceMessage("NEW_ERR0037",
                                     "Date of Agreement", "field"));
                         }
                     } catch (ParseException e) {

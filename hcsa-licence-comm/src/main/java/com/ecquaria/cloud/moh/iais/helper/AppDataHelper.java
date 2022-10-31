@@ -914,7 +914,7 @@ public final class AppDataHelper {
                     if (AppServicesConsts.SERVICE_NAME_RADIOLOGICAL_SERVICES.equals(row.getSvcName())) {
                         resolveAppPremGroupOutsourcedList(appSvcOutsouredDto, radiologicalServiceList, row, startDate, endDate,
                                 scpoing);
-                        appSvcOutsouredDto.setClinicalLaboratoryList(radiologicalServiceList);
+                        appSvcOutsouredDto.setRadiologicalServiceList(radiologicalServiceList);
                     }
                 }
             }

@@ -4,11 +4,8 @@
         <![CDATA[
           SELECT l.ID ,l.SVC_NAME , b.BUSINESS_NAME ,l.LICENCE_NO ,
             CONCAT(CASE p.BLK_NO WHEN NULL THEN NULL ELSE ' '+p.BLK_NO END,
-            CASE p.ADDR_TYPE WHEN NULL THEN NULL ELSE ' '+p.PREMISES_TYPE END,
-            CASE p.PREMISES_TYPE WHEN NULL THEN NULL ELSE ' '+p.PREMISES_TYPE END,
             CASE p.STREET_NAME WHEN NULL THEN NULL ELSE ' '+p.STREET_NAME END,
             CASE p.BUILDING_NAME WHEN NULL THEN NULL ELSE ' '+p.BUILDING_NAME  END,
-            CASE p.POSTAL_CODE WHEN NULL THEN NULL ELSE ','+p.POSTAL_CODE  END,
             CASE p.FLOOR_NO WHEN NULL THEN NULL ELSE '#'+p.FLOOR_NO END,
             CASE p.UNIT_NO WHEN NULL THEN NULL ELSE '-'+p.UNIT_NO END,
             SUBSTRING ((SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
@@ -17,7 +14,8 @@
                 ORDER BY SEQ_NUM ASC
                 FOR XML path('')
                 ), 1, 1000)
-            ) ADDRESS,CONCAT(l.START_DATE,'-',l.EXPIRY_DATE) EXPIRY_DATE
+            ) ADDRESS,CONCAT(SUBSTRING(REPLACE(l.START_DATE,'-','/'),9,2),'/',SUBSTRING(REPLACE(l.START_DATE,'-','/'),6,2),'/',SUBSTRING(REPLACE(l.START_DATE,'-','/'),1,4)
+            ,'-',SUBSTRING(REPLACE(l.EXPIRY_DATE ,'-','/'),9,2),'/',SUBSTRING(REPLACE(l.EXPIRY_DATE,'-','/'),6,2),'/',SUBSTRING(REPLACE(l.EXPIRY_DATE,'-','/'),1,4)) EXPIRY_DATE
             FROM lic_premises AS lp
             JOIN licence AS l ON l.ID = lp.LICENCE_ID
             JOIN premises AS p ON p.ID = lp.PREMISES_ID
