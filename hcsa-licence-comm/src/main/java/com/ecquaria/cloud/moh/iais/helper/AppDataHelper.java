@@ -2586,6 +2586,7 @@ public final class AppDataHelper {
 
     public static List<AppSvcSpecialServiceInfoDto> getAppSvcSpecialServiceInfoList(HttpServletRequest request,
             List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoDtoList, String appType) {
+
         if (!IaisCommonUtils.isEmpty(appSvcSpecialServiceInfoDtoList)) {
             String prefix = "";
             int i = 0;
