@@ -21,7 +21,7 @@
     <iais:row cssClass="row control control-caption-horizontal">
         <iais:field width="5" cssClass="col-md-5" mandatory="" value=""/>
         <iais:value width="7" cssClass="col-md-7 col-xs-12">
-            <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}isOutcomeProcRecordVal"></span>
+            <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}outcomeProcRecordVal"></span>
         </iais:value>
     </iais:row>
 
