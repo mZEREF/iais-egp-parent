@@ -13,7 +13,7 @@
                         <div class="newVal " attr="${docShowDto.premName}<c:out value="${docShowDto.premAddress}"/>">
                             <c:if test="${not empty docShowDto.premAddress}">
                             <div class="app-title"><c:out value="${docShowDto.premName}"/></div>
-                            <div class="font-18 bold"><c:out value="${docShowDto.premAddress}"/></div>
+                            <div class="font-18 bold">Address: <c:out value="${docShowDto.premAddress}"/></div>
                             </c:if>
                         </div>
                     </div>
@@ -21,7 +21,7 @@
                         <div class="oldVal" attr="${oldDocShowDto.premName}<c:out value="${oldDocShowDto.premAddress}"/>">
                             <c:if test="${not empty oldDocShowDto.premAddress}">
                             <div class="app-title"><c:out value="${oldDocShowDto.premName}"/></div>
-                            <div class="font-18 bold"><c:out value="${oldDocShowDto.premAddress}"/></div>
+                            <div class="font-18 bold">Address: <c:out value="${oldDocShowDto.premAddress}"/></div>
                             </c:if>
                         </div>
                     </div>

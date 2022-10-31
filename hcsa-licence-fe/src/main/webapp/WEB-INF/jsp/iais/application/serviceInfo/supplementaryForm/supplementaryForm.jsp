@@ -31,7 +31,7 @@
         <iais:row>
             <div class="col-xs-12">
                 <div class="app-title">${appSvcSuplmFormDto.premName}</div>
-                <p class="font-18 bold">${appSvcSuplmFormDto.premAddress}</p>
+                <p class="font-18 bold">Address: ${appSvcSuplmFormDto.premAddress}</p>
             </div>
         </iais:row>
 

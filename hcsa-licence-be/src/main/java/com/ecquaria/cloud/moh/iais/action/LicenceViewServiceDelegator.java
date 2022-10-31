@@ -2065,7 +2065,7 @@ public class LicenceViewServiceDelegator {
         int size = documentShowDtoList.size();
         for (int i = 0; i < size; i++) {
             DocumentShowDto documentShowDto = documentShowDtoList.get(i);
-            DocumentShowDto oldDocumentShowDto = documentShowDtoList.get(i);
+            DocumentShowDto oldDocumentShowDto = oldDocumentShowDtoList.get(i);
             List<DocSectionDto> docSectionList = IaisCommonUtils.getList(documentShowDto.getDocSectionList());
             List<DocSectionDto> oldDocSectionList = IaisCommonUtils.getList(oldDocumentShowDto.getDocSectionList());
             dealDocSectionDtos(docSectionList, oldDocSectionList);

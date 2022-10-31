@@ -11,7 +11,7 @@
             <c:set var="oldOtherInfo"  value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcOtherInfoList[status.index]}" />
             <iais:row>
                 <div class="app-title">${otherInfo.premName}</div>
-                <p class="font-18 bold">${otherInfo.premAddress}</p>
+                <p class="font-18 bold">Address: ${otherInfo.premAddress}</p>
             </iais:row>
             <div class="row">
                 <div class="">

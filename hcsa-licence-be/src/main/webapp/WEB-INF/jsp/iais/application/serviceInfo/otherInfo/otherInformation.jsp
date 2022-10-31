@@ -48,7 +48,7 @@
         <iais:row>
             <div class="col-xs-12">
                 <div class="app-title">${appSvcOtherInfoDto.premName}</div>
-                <p class="font-18 bold">${appSvcOtherInfoDto.premAddress}</p>
+                <p class="font-18 bold">Address: ${appSvcOtherInfoDto.premAddress}</p>
             </div>
         </iais:row>
         <c:choose>
