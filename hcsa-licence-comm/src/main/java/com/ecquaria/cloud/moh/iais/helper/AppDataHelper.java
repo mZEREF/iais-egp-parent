@@ -2476,7 +2476,7 @@ public final class AppDataHelper {
 
         if (appPsnEditDto == null || appPsnEditDto.isOtherDesignation()) {
             if (MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(person.getDesignation())) {
-                String otherDesignation = ParamUtil.getString(request, "otherDesignation" + suffix);
+                String otherDesignation = ParamUtil.getString(request, prefix + "otherDesignation" + suffix);
                 person.setOtherDesignation(otherDesignation);
             } else {
                 person.setOtherDesignation(null);
@@ -2683,7 +2683,7 @@ public final class AppDataHelper {
                     }
                     if (!IaisCommonUtils.isEmpty(specialServiceSectionDto.getAppSvcSuplmFormDto().getAppSvcSuplmGroupDtoList())) {
                         String isPartEdit = ParamUtil.getString(request, prefix + i + j + "isPartEdit" + "Sup");
-                        if (AppConsts.YES.equals(isPartEdit)) {
+                        if (AppConsts.YES.equals(isPartEdit)||ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
                             setAppSvcSuplmFormDto(specialServiceSectionDto.getAppSvcSuplmFormDto(), prefix + i + j, request);
                         }
                     }

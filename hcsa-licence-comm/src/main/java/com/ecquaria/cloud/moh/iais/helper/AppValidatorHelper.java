@@ -186,41 +186,6 @@ public final class AppValidatorHelper {
         return errorMsg;
     }
 
-    public static Map<String, String> doComChange(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto) {
-        Map<String, String> result = IaisCommonUtils.genNewHashMap();
-        AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
-
-        /*if (appEditSelectDto != null) {
-            if (!appEditSelectDto.isPremisesEdit()) {
-                List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-                for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
-                    appGrpPremisesDto.setLicenceDtos(null);
-                }
-                boolean eqGrpPremises = RfcHelper.isChangeGrpPremises(appSubmissionDto.getAppGrpPremisesDtoList(),
-                        oldAppSubmissionDto.getAppGrpPremisesDtoList());
-                if (eqGrpPremises) {
-                    log.info(StringUtil.changeForLog(
-                            "appGrpPremisesDto" + JsonUtil.parseToJson(appSubmissionDto.getAppGrpPremisesDtoList())));
-                    log.info(StringUtil.changeForLog(
-                            "oldappGrpPremisesDto" + JsonUtil.parseToJson(oldAppSubmissionDto.getAppGrpPremisesDtoList())));
-                    result.put("premiss", MessageUtil.replaceMessage("GENERAL_ERR0006", "premiss", "field"));
-                }
-            }
-            if (!appEditSelectDto.isServiceEdit()) {
-                boolean b = RfcHelper.isChangeServiceInfo(appSubmissionDto.getAppSvcRelatedInfoDtoList(),
-                        oldAppSubmissionDto.getAppSvcRelatedInfoDtoList());
-                if (b) {
-                    log.info(StringUtil.changeForLog(
-                            "AppSvcRelatedInfoDtoList" + JsonUtil.parseToJson(appSubmissionDto.getAppSvcRelatedInfoDtoList())));
-                    log.info(StringUtil.changeForLog(
-                            "oldAppSvcRelatedInfoDtoList" + JsonUtil.parseToJson(oldAppSubmissionDto.getAppSvcRelatedInfoDtoList())));
-                    result.put("serviceId", MessageUtil.replaceMessage("GENERAL_ERR0006", "serviceId", "field"));
-                }
-            }
-        }*/
-        return result;
-    }
-
     /**
      * validate the all submission data
      *
@@ -295,7 +260,7 @@ public final class AppValidatorHelper {
         if (appPremSpecialisedDtoList != null) {
             List<String> svcCodes = appPremSpecialisedDtoList.stream()
                     .map(AppPremSpecialisedDto::getBaseSvcCode)
-                    .filter(StringUtil::isEmpty)
+                    .filter(StringUtil::isNotEmpty)
                     .collect(Collectors.toList());
             StringJoiner joiner = new StringJoiner(AppConsts.DFT_DELIMITER);
             for (String svcCode : svcCodes) {
@@ -1607,9 +1572,11 @@ public final class AppValidatorHelper {
             AppSvcPrincipalOfficersDto person = personList.get(i);
             psnType = person.getPsnType();
             String assignSelect = person.getAssignSelect();
-            if (HcsaAppConst.DFT_FIRST_CODE.equals(assignSelect) || StringUtil.isEmpty(assignSelect)) {
+            if ("".equals(assignSelect)) {
+                errMap.put("deputyPrincipalOfficer", "GENERAL_ERR0006");
+            } else if ( HcsaAppConst.DFT_FIRST_CODE.equals(assignSelect) || StringUtil.isEmpty(assignSelect)){
                 errMap.put(prefix + "assignSelect" + i, "GENERAL_ERR0006");
-            } else {
+            }else {
                 String idTyp = person.getIdType();
                 String idNo = person.getIdNo();
                 String nationality = person.getNationality();
@@ -1701,8 +1668,8 @@ public final class AppValidatorHelper {
                             String errorMsg = repLength("Contact No.", "8");
                             errMap.put(prefix + "officeTelNo" + i, errorMsg);
                         }
-                        if (!officeTelNo.matches("^[6][0-9]{7}$")) {
-                            errMap.put(prefix + "officeTelNo" + i, "GENERAL_ERR0007");
+                        if (!CommonValidator.isTelephoneNo(officeTelNo)) {
+                            errMap.put(prefix + "officeTelNo" + i, "GENERAL_ERR0015");
                         }
                     }
                 }
@@ -3147,28 +3114,6 @@ public final class AppValidatorHelper {
             }
             doValidateYears(wrkExpYear, errorMap, svcCode, i);
         }
-    }
-
-    public static Map<String, String> validateSectionLeaders(List<AppSvcPersonnelDto> appSvcSectionLeaderList, String svcCode) {
-        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        if (appSvcSectionLeaderList == null || appSvcSectionLeaderList.isEmpty()) {
-            return errorMap;
-        }
-        HttpServletRequest request = MiscUtil.getCurrentRequest();
-        if (request != null) {
-            request.setAttribute(HcsaAppConst.SECTION_LEADER_LIST, appSvcSectionLeaderList);
-            request.setAttribute(HcsaAppConst.CURRENT_SVC_CODE, svcCode);
-        }
-        for (int i = 0, len = appSvcSectionLeaderList.size(); i < len; i++) {
-            ValidationResult result = WebValidationHelper.validateProperty(appSvcSectionLeaderList.get(i),
-                    ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER);
-            if (result != null) {
-                int index = i;
-                Map<String, String> map = result.retrieveAll();
-                map.forEach((k, v) -> errorMap.put(k + index, v));
-            }
-        }
-        return errorMap;
     }
 
     public static void doValidateSvcDocuments(List<DocumentShowDto> documentShowDtoList, Map<String, String> errorMap) {
