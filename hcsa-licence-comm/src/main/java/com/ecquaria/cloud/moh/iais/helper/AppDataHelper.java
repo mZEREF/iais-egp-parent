@@ -2586,7 +2586,6 @@ public final class AppDataHelper {
 
     public static List<AppSvcSpecialServiceInfoDto> getAppSvcSpecialServiceInfoList(HttpServletRequest request,
             List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoDtoList, String appType) {
-
         if (!IaisCommonUtils.isEmpty(appSvcSpecialServiceInfoDtoList)) {
             String prefix = "";
             int i = 0;
@@ -2684,7 +2683,7 @@ public final class AppDataHelper {
                     }
                     if (!IaisCommonUtils.isEmpty(specialServiceSectionDto.getAppSvcSuplmFormDto().getAppSvcSuplmGroupDtoList())) {
                         String isPartEdit = ParamUtil.getString(request, prefix + i + j + "isPartEdit" + "Sup");
-                        if (AppConsts.YES.equals(isPartEdit)) {
+                        if (AppConsts.YES.equals(isPartEdit)||ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
                             setAppSvcSuplmFormDto(specialServiceSectionDto.getAppSvcSuplmFormDto(), prefix + i + j, request);
                         }
                     }
