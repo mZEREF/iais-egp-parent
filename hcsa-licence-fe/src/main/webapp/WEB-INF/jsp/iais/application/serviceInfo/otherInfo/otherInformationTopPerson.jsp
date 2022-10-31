@@ -179,21 +179,21 @@
                     <span class="mandatory">*</span>
                 </label>
             </iais:value>
-            <input type="hidden" class="isProvideHpbVal" name="${prefix}isProvideHpbVal" value="${appSvcOtherInfoTop.isProvideHpb}"/>
+            <input type="hidden" class="provideHpbVal" name="${prefix}provideHpbVal" value="${appSvcOtherInfoTop.provideHpb}"/>
             <iais:value width="3" cssClass="form-check col-md-3">
-                <input class="form-check-input isProvideHpb" <c:if test="${'1' == appSvcOtherInfoTop.isProvideHpb}">checked="checked"</c:if>  type="radio" name="${prefix}isProvideHpb" value = "1" aria-invalid="false">
+                <input class="form-check-input provideHpb" <c:if test="${'1' == appSvcOtherInfoTop.provideHpb}">checked="checked"</c:if>  type="radio" name="${prefix}provideHpb" value = "1" aria-invalid="false">
                 <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
             </iais:value>
 
             <iais:value width="3" cssClass="form-check col-md-3">
-                <input class="form-check-input isProvideHpb" <c:if test="${'0' == appSvcOtherInfoTop.isProvideHpb}">checked="checked"</c:if>  type="radio" name="${prefix}isProvideHpb" value = "0" aria-invalid="false">
+                <input class="form-check-input provideHpb" <c:if test="${'0' == appSvcOtherInfoTop.provideHpb}">checked="checked"</c:if>  type="radio" name="${prefix}provideHpb" value = "0" aria-invalid="false">
                 <label class="form-check-label" ><span class="check-circle"></span>No</label>
             </iais:value>
         </iais:row>
         <iais:row cssClass="row control control-caption-horizontal">
             <iais:field width="5" cssClass="col-md-5" mandatory="" value=""/>
             <iais:value width="7" cssClass="col-md-7 col-xs-12">
-                <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}isProvideHpb"></span>
+                <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}provideHpb"></span>
             </iais:value>
         </iais:row>
     </div>
@@ -262,6 +262,7 @@
             $('div.addTopByDrugDiv[data-prefix="' + prefix + '"]').removeClass("hidden");
             $('div.addTopBySurgicalProcedureDiv[data-prefix="' + prefix + '"]').addClass("hidden");
             $('div.addTopAllDiv[data-prefix="' + prefix + '"]').addClass("hidden");
+            $('div.de[data-prefix="' + prefix + '"]').removeClass("hidden");
         }else if (value == 0){
             $('div.topByDrug').addClass("hidden");
             $('div.topBySurgicalProcedure[data-prefix="' + prefix + '"]').removeClass("hidden");
@@ -269,6 +270,7 @@
             $('div.addTopByDrugDiv[data-prefix="' + prefix + '"]').addClass("hidden");
             $('div.addTopBySurgicalProcedureDiv[data-prefix="' + prefix + '"]').removeClass("hidden");
             $('div.addTopAllDiv[data-prefix="' + prefix + '"]').addClass("hidden");
+            $('div.de[data-prefix="' + prefix + '"]').removeClass("hidden");
         }else if (value == -1){
             $('div.topByDrug[data-prefix="' + prefix + '"]').removeClass("hidden");
             $('div.topBySurgicalProcedure[data-prefix="' + prefix + '"]').removeClass("hidden");
@@ -276,6 +278,7 @@
             $('div.addTopByDrugDiv[data-prefix="' + prefix + '"]').removeClass("hidden");
             $('div.addTopBySurgicalProcedureDiv[data-prefix="' + prefix + '"]').removeClass("hidden");
             $('div.addTopAllDiv[data-prefix="' + prefix + '"]').removeClass("hidden");
+            $('div.de[data-prefix="' + prefix + '"]').removeClass("hidden");
         }else {
             $('div.topByDrug[data-prefix="' + prefix + '"]').addClass("hidden");
             $('div.topBySurgicalProcedure[data-prefix="' + prefix + '"]').addClass("hidden");
@@ -283,6 +286,7 @@
             $('div.addTopByDrugDiv[data-prefix="' + prefix + '"]').addClass("hidden");
             $('div.addTopBySurgicalProcedureDiv[data-prefix="' + prefix + '"]').addClass("hidden");
             $('div.addTopAllDiv[data-prefix="' + prefix + '"]').addClass("hidden");
+            $('div.de[data-prefix="' + prefix + '"]').addClass("hidden");
         }
     }
 

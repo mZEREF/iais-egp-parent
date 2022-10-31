@@ -1391,16 +1391,16 @@ public final class AppDataHelper {
                 appSvcOtherInfoMedDto = svcOtherInfoMedDto;
             }
         } else if (getPageData) {
-            String isMedicalTypeIt = ParamUtil.getString(request, prefix + "isMedicalTypeIt");
-            String isMedicalTypePaper = ParamUtil.getString(request, prefix + "isMedicalTypePaper");
+            String isMedicalTypeIt = ParamUtil.getString(request, prefix + "medicalTypeIt");
+            String isMedicalTypePaper = ParamUtil.getString(request, prefix + "medicalTypePaper");
             String systemOption = ParamUtil.getString(request, prefix + "systemOption");
-            String isOpenToPublic = ParamUtil.getString(request, prefix + "isOpenToPublic");
+            String isOpenToPublic = ParamUtil.getString(request, prefix + "openToPublic");
             String gfaValue = ParamUtil.getString(request, prefix + "gfaValue");
             appSvcOtherInfoMedDto.setGfaValue(gfaValue);
-            appSvcOtherInfoMedDto.setIsOpenToPublic(isOpenToPublic);
+            appSvcOtherInfoMedDto.setOpenToPublic(isOpenToPublic);
             appSvcOtherInfoMedDto.setSystemOption(systemOption);
-            appSvcOtherInfoMedDto.setIsMedicalTypeIt(isMedicalTypeIt);
-            appSvcOtherInfoMedDto.setIsMedicalTypePaper(isMedicalTypePaper);
+            appSvcOtherInfoMedDto.setMedicalTypeIt(isMedicalTypeIt);
+            appSvcOtherInfoMedDto.setMedicalTypePaper(isMedicalTypePaper);
             if ("MED06".equals(systemOption)) {
                 String otherSystemOption = ParamUtil.getString(request, prefix + "otherSystemOption");
                 appSvcOtherInfoMedDto.setOtherSystemOption(otherSystemOption);
@@ -1462,7 +1462,7 @@ public final class AppDataHelper {
             String helpBStationNum = ParamUtil.getString(request, prefix + "helpBStationNum");
             String nisOpenToPublic = ParamUtil.getString(request, prefix + "nisOpenToPublic");
             appSvcOtherInfoNurseDto.setHelpBStationNum(helpBStationNum);
-            appSvcOtherInfoNurseDto.setIsOpenToPublic(nisOpenToPublic);
+            appSvcOtherInfoNurseDto.setOpenToPublic(nisOpenToPublic);
             appSvcOtherInfoNurseDto.setPerShiftNum(perShiftNum);
             appSvcOtherInfoNurseDto.setDialysisStationsNum(dialysisStationsNum);
         }
@@ -1503,13 +1503,13 @@ public final class AppDataHelper {
         } else if (getPageData) {
             String topType = ParamUtil.getString(request, prefix + "topType");
             String hasConsuAttendCourse = ParamUtil.getString(request, prefix + "hasConsuAttendCourse");
-            String isProvideHpb = ParamUtil.getString(request, prefix + "isProvideHpb");
-            String isOutcomeProcRecord = ParamUtil.getString(request, prefix + "isOutcomeProcRecord");
+            String isProvideHpb = ParamUtil.getString(request, prefix + "provideHpb");
+            String isOutcomeProcRecord = ParamUtil.getString(request, prefix + "outcomeProcRecord");
             String compCaseNum = ParamUtil.getString(request, prefix + "compCaseNum");
             appSvcOtherInfoTopDto.setTopType(topType);
             appSvcOtherInfoTopDto.setHasConsuAttendCourse(hasConsuAttendCourse);
-            appSvcOtherInfoTopDto.setIsProvideHpb(isProvideHpb);
-            appSvcOtherInfoTopDto.setIsOutcomeProcRecord(isOutcomeProcRecord);
+            appSvcOtherInfoTopDto.setProvideHpb(isProvideHpb);
+            appSvcOtherInfoTopDto.setOutcomeProcRecord(isOutcomeProcRecord);
             appSvcOtherInfoTopDto.setCompCaseNum(compCaseNum);
         }
 

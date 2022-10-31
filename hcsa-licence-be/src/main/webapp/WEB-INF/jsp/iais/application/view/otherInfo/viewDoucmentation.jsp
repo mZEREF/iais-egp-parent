@@ -8,8 +8,8 @@
         <iais:row cssClass="row control control-caption-horizontal">
             <iais:field width="5" value="Outcome of procedures are recorded "/>
             <iais:value width="3" cssClass="col-md-7">
-                <c:if test="${true == appSvcOtherInfoDto.appSvcOtherInfoTopDto.isOutcomeProcRecord}">Yes</c:if>
-                <c:if test="${false == appSvcOtherInfoDto.appSvcOtherInfoTopDto.isOutcomeProcRecord}">No</c:if>
+                <c:if test="${true == appSvcOtherInfoDto.appSvcOtherInfoTopDto.outcomeProcRecord}">Yes</c:if>
+                <c:if test="${false == appSvcOtherInfoDto.appSvcOtherInfoTopDto.outcomeProcRecord}">No</c:if>
             </iais:value>
 
         </iais:row>

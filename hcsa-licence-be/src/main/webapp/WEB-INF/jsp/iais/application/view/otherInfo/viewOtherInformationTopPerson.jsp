@@ -62,8 +62,8 @@
     <iais:row cssClass="row control control-caption-horizontal">
         <iais:field width="5" value="The service provider has the necessary counselling facilities e.g. TV set, video player, video on abortion produced by HPB in different languages and the pamphlets produced by HPB"/>
         <iais:value width="3" cssClass="col-md-7">
-            <c:if test="${true == appSvcOtherInfoDto.appSvcOtherInfoTopDto.isProvideHpb}">Yes</c:if>
-            <c:if test="${false == appSvcOtherInfoDto.appSvcOtherInfoTopDto.isProvideHpb}">No</c:if>
+            <c:if test="${true == appSvcOtherInfoDto.appSvcOtherInfoTopDto.provideHpb}">Yes</c:if>
+            <c:if test="${false == appSvcOtherInfoDto.appSvcOtherInfoTopDto.provideHpb}">No</c:if>
         </iais:value>
     </iais:row>
 </c:if>

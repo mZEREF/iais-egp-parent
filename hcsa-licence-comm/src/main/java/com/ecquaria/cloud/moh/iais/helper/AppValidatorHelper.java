@@ -2274,9 +2274,9 @@ public final class AppValidatorHelper {
                     AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE})) {
                 AppSvcOtherInfoMedDto appSvcOtherInfoMedDto = svcOtherInfoDto.getAppSvcOtherInfoMedDto();
                 if (!StringUtil.isEmpty(appSvcOtherInfoMedDto)) {
-                    if (StringUtil.isEmpty(appSvcOtherInfoMedDto.getIsMedicalTypeIt()) && StringUtil.isEmpty(
-                            appSvcOtherInfoMedDto.getIsMedicalTypePaper())) {
-                        errMap.put(prefix + "isMedicalTypeIt",
+                    if (StringUtil.isEmpty(appSvcOtherInfoMedDto.getMedicalTypeIt()) && StringUtil.isEmpty(
+                            appSvcOtherInfoMedDto.getMedicalTypePaper())) {
+                        errMap.put(prefix + "medicalTypeIt",
                                 MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of medical records", "field"));
                     }
                     String systemOption = appSvcOtherInfoMedDto.getSystemOption();
@@ -2291,8 +2291,8 @@ public final class AppValidatorHelper {
                                     MessageUtil.replaceMessage("GENERAL_ERR0006", "Please specify", "field"));
                         }
                     }
-                    if (StringUtil.isEmpty(appSvcOtherInfoMedDto.getIsOpenToPublic())) {
-                        errMap.put(prefix + "isOpenToPublic",
+                    if (StringUtil.isEmpty(appSvcOtherInfoMedDto.getOpenToPublic())) {
+                        errMap.put(prefix + "openToPublic",
                                 MessageUtil.replaceMessage("GENERAL_ERR0006", "Is clinic open to general public?", "field"));
                     }
                     String gfaValue = String.valueOf(appSvcOtherInfoMedDto.getGfaValue());
@@ -2302,13 +2302,13 @@ public final class AppValidatorHelper {
                         errMap.put(prefix + "gfaValue", MessageUtil.replaceMessage("GENERAL_ERR0002", "GFA Value (in sqm)", "field"));
                     }
                 }else {
-                    errMap.put(prefix + "isMedicalTypeIt",
+                    errMap.put(prefix + "medicalTypeIt",
                             MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of medical records", "field"));
 
                     errMap.put(prefix + "gfaValue", MessageUtil.replaceMessage("GENERAL_ERR0006", "GFA Value (in sqm)", "field"));
                     errMap.put(prefix + "systemOption", MessageUtil.replaceMessage("GENERAL_ERR0006",
                             "List of options for IT system and paper cards / IT system only", "field"));
-                    errMap.put(prefix + "isOpenToPublic",
+                    errMap.put(prefix + "openToPublic",
                             MessageUtil.replaceMessage("GENERAL_ERR0006", "Is clinic open to general public?", "field"));
                 }
                 if (StringUtil.isEmpty(svcOtherInfoDto.getDsDeclaration())) {
@@ -2320,7 +2320,7 @@ public final class AppValidatorHelper {
             if (AppServicesConsts.SERVICE_CODE_RENAL_DIALYSIS_CENTRE.equals(currCode)) {
                 AppSvcOtherInfoNurseDto appSvcOtherInfoNurseDto = svcOtherInfoDto.getAppSvcOtherInfoNurseDto();
                 if (!StringUtil.isEmpty(appSvcOtherInfoNurseDto)) {
-                    String nisOpenToPublic = String.valueOf(appSvcOtherInfoNurseDto.getIsOpenToPublic());
+                    String nisOpenToPublic = String.valueOf(appSvcOtherInfoNurseDto.getOpenToPublic());
                     if (StringUtil.isEmpty(nisOpenToPublic)) {
                         errMap.put(prefix + "nisOpenToPublic",
                                 MessageUtil.replaceMessage("GENERAL_ERR0006", "Is the clinic open to general public?", "field"));
@@ -2366,15 +2366,15 @@ public final class AppValidatorHelper {
                                     "My counsellor(s) has attended the TOP counselling refresher course (Please upload the certificates in the document page)",
                                     "field"));
                         }
-                        String isProvideHpb = svcOtherInfoDto.getAppSvcOtherInfoTopDto().getIsProvideHpb();
+                        String isProvideHpb = svcOtherInfoDto.getAppSvcOtherInfoTopDto().getProvideHpb();
                         if (StringUtil.isEmpty(isProvideHpb)) {
-                            errMap.put(prefix + "isProvideHpb", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                            errMap.put(prefix + "provideHpb", MessageUtil.replaceMessage("GENERAL_ERR0006",
                                     "The service provider has the necessary counselling facilities e.g. TV set, video player, video on abortion produced by HPB in different languages and the pamphlets produced by HPB",
                                     "field"));
                         }
-                        String isOutcomeProcRecord = svcOtherInfoDto.getAppSvcOtherInfoTopDto().getIsOutcomeProcRecord();
+                        String isOutcomeProcRecord = svcOtherInfoDto.getAppSvcOtherInfoTopDto().getOutcomeProcRecord();
                         if (StringUtil.isEmpty(isOutcomeProcRecord)) {
-                            errMap.put(prefix + "isOutcomeProcRecord", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                            errMap.put(prefix + "outcomeProcRecord", MessageUtil.replaceMessage("GENERAL_ERR0006",
                                     "Outcome of procedures are recorded",
                                     "field"));
                         }
@@ -2391,10 +2391,10 @@ public final class AppValidatorHelper {
                         errMap.put(prefix + "hasConsuAttendCourse", MessageUtil.replaceMessage("GENERAL_ERR0006",
                                 "My counsellor(s) has attended the TOP counselling refresher course (Please upload the certificates in the document page)",
                                 "field"));
-                        errMap.put(prefix + "isProvideHpb", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                        errMap.put(prefix + "provideHpb", MessageUtil.replaceMessage("GENERAL_ERR0006",
                                 "The service provider has the necessary counselling facilities e.g. TV set, video player, video on abortion produced by HPB in different languages and the pamphlets produced by HPB",
                                 "field"));
-                        errMap.put(prefix + "isOutcomeProcRecord", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                        errMap.put(prefix + "outcomeProcRecord", MessageUtil.replaceMessage("GENERAL_ERR0006",
                                 "Outcome of procedures are recorded",
                                 "field"));
                         errMap.put(prefix + "compCaseNum", MessageUtil.replaceMessage("GENERAL_ERR0006",
@@ -2607,7 +2607,7 @@ public final class AppValidatorHelper {
             for (int i = 0; i < topByDrug.size(); i++) {
                 if (topByDrug.get(i) == null){
                     errMap.put(prefix + "year" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
-                            "Year.",
+                            "Year",
                             "field"));
                     errMap.put(prefix + "abortNum" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
                             "No. of abortions",
@@ -2616,12 +2616,15 @@ public final class AppValidatorHelper {
                     String year = String.valueOf(topByDrug.get(i).getYear());
                     if ("null".equals(year)) {
                         errMap.put(prefix + "year" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
-                                "Year.",
+                                "Year",
                                 "field"));
                     } else if (!StringUtil.isDigit(year)) {
                         errMap.put(prefix + "year" + i, MessageUtil.replaceMessage("GENERAL_ERR0002",
-                                "Year.",
+                                "Year",
                                 "field"));
+                    } else if (year.length() > 4){
+                        String errorMsg = repLength("Year", "4");
+                        errMap.put(prefix + "year" + i, errorMsg);
                     }
                     String abortNum = String.valueOf(topByDrug.get(i).getAbortNum());
                     if ("null".equals(abortNum)) {
@@ -2632,6 +2635,9 @@ public final class AppValidatorHelper {
                         errMap.put(prefix + "abortNum" + i, MessageUtil.replaceMessage("GENERAL_ERR0002",
                                 "No. of abortions",
                                 "field"));
+                    } else if (abortNum.length() > 7){
+                        String errorMsg = repLength("No. of abortions", "7");
+                        errMap.put(prefix + "abortNum" + i, errorMsg);
                     }
                 }
             }
@@ -2641,7 +2647,7 @@ public final class AppValidatorHelper {
             for (int i = 0; i < topBySurgicalProcedure.size(); i++) {
                 if (topBySurgicalProcedure.get(i) == null){
                     errMap.put(prefix + "pyear" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
-                            "Year.",
+                            "Year",
                             "field"));
                     errMap.put(prefix + "pabortNum" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
                             "No. of abortions",
@@ -2650,12 +2656,15 @@ public final class AppValidatorHelper {
                     String year = String.valueOf(topBySurgicalProcedure.get(i).getYear());
                     if ("year".equals(year)) {
                         errMap.put(prefix + "pyear" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
-                                "Year.",
+                                "Year",
                                 "field"));
                     } else if (!StringUtil.isDigit(year)) {
                         errMap.put(prefix + "pyear" + i, MessageUtil.replaceMessage("GENERAL_ERR0002",
-                                "Year.",
+                                "Year",
                                 "field"));
+                    } else if (year.length() > 4){
+                        String errorMsg = repLength("Year", "4");
+                        errMap.put(prefix + "pyear" + i, errorMsg);
                     }
                     String abortNum = String.valueOf(topBySurgicalProcedure.get(i).getAbortNum());
                     if ("null".equals(abortNum)) {
@@ -2666,6 +2675,9 @@ public final class AppValidatorHelper {
                         errMap.put(prefix + "pabortNum" + i, MessageUtil.replaceMessage("GENERAL_ERR0002",
                                 "No. of abortions",
                                 "field"));
+                    } else if (abortNum.length() > 7){
+                        String errorMsg = repLength("No. of abortions", "7");
+                        errMap.put(prefix + "abortNum" + i, errorMsg);
                     }
                 }
             }
@@ -2675,7 +2687,7 @@ public final class AppValidatorHelper {
             for (int i = 0; i < topByAll.size(); i++) {
                 if (topByAll.get(i) == null){
                     errMap.put(prefix + "ayear" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
-                            "Year.",
+                            "Year",
                             "field"));
                     errMap.put(prefix + "aabortNum" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
                             "No. of abortions",
@@ -2684,12 +2696,15 @@ public final class AppValidatorHelper {
                     String year = String.valueOf(topByAll.get(i).getYear());
                     if ("null".equals(year)) {
                         errMap.put(prefix + "ayear" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
-                                "Year.",
+                                "Year",
                                 "field"));
                     } else if (!StringUtil.isDigit(year)) {
                         errMap.put(prefix + "ayear" + i, MessageUtil.replaceMessage("GENERAL_ERR0002",
-                                "Year.",
+                                "Year",
                                 "field"));
+                    } else if (year.length() > 4){
+                        String errorMsg = repLength("Year", "4");
+                        errMap.put(prefix + "ayear" + i, errorMsg);
                     }
                     String abortNum = String.valueOf(topByAll.get(i).getAbortNum());
                     if ("null".equals(abortNum)) {
@@ -2700,6 +2715,9 @@ public final class AppValidatorHelper {
                         errMap.put(prefix + "aabortNum" + i, MessageUtil.replaceMessage("GENERAL_ERR0002",
                                 "No. of abortions",
                                 "field"));
+                    } else if (abortNum.length() > 7){
+                        String errorMsg = repLength("No. of abortions", "7");
+                        errMap.put(prefix + "abortNum" + i, errorMsg);
                     }
                 }
             }

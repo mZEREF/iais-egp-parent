@@ -110,15 +110,15 @@
         </td>
         <td>
             <div class="col-xs-6 ">
-                <span class="newVal" attr="${otherInfo.appSvcOtherInfoTopDto.isProvideHpb}">
-                    <c:if test="${true == otherInfo.appSvcOtherInfoTopDto.isProvideHpb}">Yes</c:if>
-                    <c:if test="${false == otherInfo.appSvcOtherInfoTopDto.isProvideHpb}">No</c:if>
+                <span class="newVal" attr="${otherInfo.appSvcOtherInfoTopDto.provideHpb}">
+                    <c:if test="${true == otherInfo.appSvcOtherInfoTopDto.provideHpb}">Yes</c:if>
+                    <c:if test="${false == otherInfo.appSvcOtherInfoTopDto.provideHpb}">No</c:if>
                 </span>
             </div>
             <div class="col-xs-6 ">
-                <span class=" oldVal" attr="${oldOtherInfo.appSvcOtherInfoTopDto.isProvideHpb}" style="display: none">
-                    <c:if test="${true == oldOtherInfo.appSvcOtherInfoTopDto.isProvideHpb}">Yes</c:if>
-                    <c:if test="${false == oldOtherInfo.appSvcOtherInfoTopDto.isProvideHpb}">No</c:if>
+                <span class=" oldVal" attr="${oldOtherInfo.appSvcOtherInfoTopDto.provideHpb}" style="display: none">
+                    <c:if test="${true == oldOtherInfo.appSvcOtherInfoTopDto.provideHpb}">Yes</c:if>
+                    <c:if test="${false == oldOtherInfo.appSvcOtherInfoTopDto.provideHpb}">No</c:if>
                 </span>
             </div>
         </td>

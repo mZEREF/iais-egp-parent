@@ -40,7 +40,7 @@
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" value="Address"/>
         <iais:value width="7" cssClass="col-md-7" display="true">
-            <c:out value="${orgUse.email}"/>
+            <c:out value="${appSvcOtherInfoDto.premAddress}"/>
         </iais:value>
     </iais:row>
 

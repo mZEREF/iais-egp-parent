@@ -9,15 +9,15 @@
         </td>
         <td>
             <div class="col-xs-6 ">
-                <span class="newVal" attr="${otherInfo.appSvcOtherInfoTopDto.isOutcomeProcRecord}">
-                    <c:if test="${true == otherInfo.appSvcOtherInfoTopDto.isOutcomeProcRecord}">Yes</c:if>
-                    <c:if test="${false == otherInfo.appSvcOtherInfoTopDto.isOutcomeProcRecord}">No</c:if>
+                <span class="newVal" attr="${otherInfo.appSvcOtherInfoTopDto.outcomeProcRecord}">
+                    <c:if test="${true == otherInfo.appSvcOtherInfoTopDto.outcomeProcRecord}">Yes</c:if>
+                    <c:if test="${false == otherInfo.appSvcOtherInfoTopDto.outcomeProcRecord}">No</c:if>
                 </span>
             </div>
             <div class="col-xs-6 ">
-                <span class=" oldVal" attr="${oldOtherInfo.appSvcOtherInfoTopDto.isOutcomeProcRecord}" style="display: none">
-                    <c:if test="${true == oldOtherInfo.appSvcOtherInfoTopDto.isOutcomeProcRecord}">Yes</c:if>
-                    <c:if test="${false == oldOtherInfo.appSvcOtherInfoTopDto.isOutcomeProcRecord}">No</c:if>
+                <span class=" oldVal" attr="${oldOtherInfo.appSvcOtherInfoTopDto.outcomeProcRecord}" style="display: none">
+                    <c:if test="${true == oldOtherInfo.appSvcOtherInfoTopDto.outcomeProcRecord}">Yes</c:if>
+                    <c:if test="${false == oldOtherInfo.appSvcOtherInfoTopDto.outcomeProcRecord}">No</c:if>
                 </span>
             </div>
         </td>

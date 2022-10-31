@@ -875,7 +875,6 @@ public class DealSessionUtil {
         currSvcInfoDto.setAppSvcOtherInfoList(newList);
         return true;
     }
-
     public static boolean initSvcOutsourcedProvider(HttpServletRequest request, AppSvcRelatedInfoDto currSvcInfoDto,
             boolean forceInit) {
         AppSvcOutsouredDto appSvcOutsouredDto = currSvcInfoDto.getAppSvcOutsouredDto();
