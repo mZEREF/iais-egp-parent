@@ -2476,7 +2476,7 @@ public final class AppDataHelper {
 
         if (appPsnEditDto == null || appPsnEditDto.isOtherDesignation()) {
             if (MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(person.getDesignation())) {
-                String otherDesignation = ParamUtil.getString(request, "otherDesignation" + suffix);
+                String otherDesignation = ParamUtil.getString(request, prefix + "otherDesignation" + suffix);
                 person.setOtherDesignation(otherDesignation);
             } else {
                 person.setOtherDesignation(null);
