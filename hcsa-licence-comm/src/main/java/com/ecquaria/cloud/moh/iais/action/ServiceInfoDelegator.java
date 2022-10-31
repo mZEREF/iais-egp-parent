@@ -1053,8 +1053,7 @@ public class ServiceInfoDelegator {
         boolean isValid = checkAction(map, HcsaConsts.STEP_PRINCIPAL_OFFICERS, appSubmissionDto, bpc.request);
         if (isValid && (isGetDataFromPagePo)) {
             String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
-            syncDropDownAndPsn(appSubmissionDto, dpoList, svcCode, bpc.request);
-            syncDropDownAndPsn(appSubmissionDto, poList, svcCode, bpc.request);
+            syncDropDownAndPsn(appSubmissionDto, IaisCommonUtils.combineList(poList, dpoList), svcCode, bpc.request);
         }
         log.debug(StringUtil.changeForLog("the do doPrincipalOfficers end ...."));
     }
