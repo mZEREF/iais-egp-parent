@@ -11,6 +11,7 @@
                     <p><strong>Key Appointment Holder<c:if test="${currentPreviewSvcInfo.appSvcKeyAppointmentHolderDtoList.size() > 1}"> ${status.index+1}</c:if>:</strong></p>
                 </div>
             </iais:row>
+            <c:set var="keyPerson" value="keyPerson"/>
             <%@include file="viewPersonnelDetail.jsp"%>
         </c:forEach>
     </div>

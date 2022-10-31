@@ -1607,9 +1607,11 @@ public final class AppValidatorHelper {
             AppSvcPrincipalOfficersDto person = personList.get(i);
             psnType = person.getPsnType();
             String assignSelect = person.getAssignSelect();
-            if (HcsaAppConst.DFT_FIRST_CODE.equals(assignSelect) || StringUtil.isEmpty(assignSelect)) {
+            if ("".equals(assignSelect)) {
+                errMap.put("deputyPrincipalOfficer", "GENERAL_ERR0006");
+            } else if ( HcsaAppConst.DFT_FIRST_CODE.equals(assignSelect) || StringUtil.isEmpty(assignSelect)){
                 errMap.put(prefix + "assignSelect" + i, "GENERAL_ERR0006");
-            } else {
+            }else {
                 String idTyp = person.getIdType();
                 String idNo = person.getIdNo();
                 String nationality = person.getNationality();
@@ -1701,8 +1703,8 @@ public final class AppValidatorHelper {
                             String errorMsg = repLength("Contact No.", "8");
                             errMap.put(prefix + "officeTelNo" + i, errorMsg);
                         }
-                        if (!officeTelNo.matches("^[6][0-9]{7}$")) {
-                            errMap.put(prefix + "officeTelNo" + i, "GENERAL_ERR0007");
+                        if (!CommonValidator.isTelephoneNo(officeTelNo)) {
+                            errMap.put(prefix + "officeTelNo" + i, "GENERAL_ERR0015");
                         }
                     }
                 }

@@ -786,7 +786,7 @@ public class ServiceInfoDelegator {
         Integer minCount = personnelDto.getMandatoryCount();
         Integer maximumCount = personnelDto.getMaximumCount();
         List<AppSvcPrincipalOfficersDto> dpoList = currSvcInfoDto.getAppSvcNomineeDtoList();
-        boolean flag = minCount == 0 && maximumCount > 0;
+//        boolean flag = minCount == 0 && maximumCount > 0;
         if (deputyPrincipalOfficerConfig != null && !deputyPrincipalOfficerConfig.isEmpty()) {
             HcsaSvcPersonnelDto hcsaSvcPersonnelDto = deputyPrincipalOfficerConfig.get(0);
             ParamUtil.setRequestAttr(bpc.request, "dpoHcsaSvcPersonnelDto", hcsaSvcPersonnelDto);
@@ -794,12 +794,9 @@ public class ServiceInfoDelegator {
         if (minCount > 0 && maximumCount > 0){
             currSvcInfoDto.setDeputyPoFlag(AppConsts.YES);
         }
-        if (flag){
-            currSvcInfoDto.setDeputyPoFlag(IaisCommonUtils.isEmpty(dpoList) ? AppConsts.NO : AppConsts.YES);
-        }
-
-
-
+//        if (flag){
+//            currSvcInfoDto.setDeputyPoFlag(IaisCommonUtils.isEmpty(dpoList) ? AppConsts.NO : AppConsts.YES);
+//        }
         if (StringUtil.isEmpty(currSvcInfoDto.getDeputyPoFlag())) {
             currSvcInfoDto.setDeputyPoFlag(IaisCommonUtils.isEmpty(dpoList) ? AppConsts.NO : AppConsts.YES);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currSvcInfoDto);

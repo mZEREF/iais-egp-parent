@@ -125,7 +125,7 @@
                             </c:if>
                         </c:if>
 
-                        <c:if test="${dpoHcsaSvcPersonnelDto.maximumCount > 0}">
+                        <c:if test="${dpoHcsaSvcPersonnelDto.mandatoryCount  == 0 && dpoHcsaSvcPersonnelDto.maximumCount > 0}">
                             <iais:row cssClass="dpoDropDownDiv">
                                 <c:set var="toolMsg"><iais:message  key="NEW_ACK025"/></c:set>
                                 <iais:field width="5" cssClass="col-md-5" value="${currStepName2}" info="${toolMsg}"/>
@@ -143,7 +143,9 @@
         <c:set var="prepsn" value="dpo"/>
         <c:set var="psnContent" value="dpo-person-content"/>
         <c:set var="singleName" value="${singleName2}"/>
-        <div class="panel panel-default deputy-panel ${currSvcInfoDto.deputyPoFlag == '1' ? '' : 'hidden'}">
+        <c:set var="flag" value="${dpoHcsaSvcPersonnelDto.mandatoryCount == 0 && dpoHcsaSvcPersonnelDto.maximumCount == 0} "/>
+        <c:if test="${!flag}">
+            <div class="panel panel-default deputy-panel ${currSvcInfoDto.deputyPoFlag == '1' ? '' : 'hidden'}">
             <div class="panel-heading" role="tab">
                 <h4 class="panel-title">
                     <a role="button" class="" data-toggle="collapse" href="#DPO" aria-expanded="true" aria-controls="DPO">
@@ -179,6 +181,7 @@
                 </div>
             </div>
         </div>
+        </c:if>
     </div>
 </div>
 
@@ -219,6 +222,19 @@
         });
         </c:if>
         initPerson(dpoContent);
+
+        $('div.personnel-content').each(function (k, v) {
+            if ($("#errorMapIs").val() == 'error') {
+                $(v).find('.error-msg').on('DOMNodeInserted', function () {
+                    if ($(this).not(':empty')) {
+                        $(v).find('.isPartEdit').val(1);
+                        $('#isEditHiddenVal').val('1');
+                        $(v).find('a.edit').trigger('click');
+                    }
+                });
+            }
+        });
+
     });
 
     function refreshPersonOthers($target, action) {

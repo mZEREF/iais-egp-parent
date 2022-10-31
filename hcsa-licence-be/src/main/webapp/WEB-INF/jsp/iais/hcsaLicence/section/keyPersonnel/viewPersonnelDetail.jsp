@@ -461,43 +461,45 @@
     </tr>
     </c:if>
 
-    <tr>
-        <td class="col-xs-6">
-            <div class="form-check-label" aria-label="premise-1-cytology">
-                <span class="check-square"></span>Mobile No.
-            </div>
-        </td>
-        <td>
-            <div class="col-xs-6">
-                <span class="newVal " attr="${person.mobileNo}">
-                    <c:out value="${person.mobileNo}"/>
-                </span>
-            </div>
-            <div class="col-xs-6">
-                <span class="oldVal " attr="${oldPerson.mobileNo}" style="display: none">
-                    <c:out value="${oldPerson.mobileNo}"/>
-                </span>
-            </div>
-        </td>
-    </tr>
+    <c:if test="${keyPerson != 'keyPerson'}">
+        <tr>
+            <td class="col-xs-6">
+                <div class="form-check-label" aria-label="premise-1-cytology">
+                    <span class="check-square"></span>Mobile No.
+                </div>
+            </td>
+            <td>
+                <div class="col-xs-6">
+                    <div class="newVal " attr="${person.mobileNo}">
+                        <c:out value="${person.mobileNo}"/>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="oldVal " attr="${oldPerson.mobileNo}" style="display: none">
+                        <c:out value="${oldPerson.mobileNo}"/>
+                    </div>
+                </div>
+            </td>
+        </tr>
 
-    <tr>
-        <td class="col-xs-6">
-            <div class="form-check-label" aria-label="premise-1-cytology">
-                <span class="check-square"></span>Email Address
-            </div>
-        </td>
-        <td>
-            <div class="col-xs-6">
-                <div class="newVal " attr="${person.emailAddr}">
-                    <c:out value="${person.emailAddr}"/>
+        <tr>
+            <td class="col-xs-6">
+                <div class="form-check-label" aria-label="premise-1-cytology">
+                    <span class="check-square"></span>Email Address
                 </div>
-            </div>
-            <div class="col-xs-6">
-                <div class="oldVal " attr="${oldPerson.emailAddr}" style="display: none">
-                    <c:out value="${oldPerson.emailAddr}"/>
+            </td>
+            <td>
+                <div class="col-xs-6">
+                    <div class="newVal " attr="${person.emailAddr}">
+                        <c:out value="${person.emailAddr}"/>
+                    </div>
                 </div>
-            </div>
-        </td>
-    </tr>
+                <div class="col-xs-6">
+                    <div class="oldVal " attr="${oldPerson.emailAddr}" style="display: none">
+                        <c:out value="${oldPerson.emailAddr}"/>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </c:if>
 </table>
