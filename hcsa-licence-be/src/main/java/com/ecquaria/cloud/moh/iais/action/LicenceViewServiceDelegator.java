@@ -3,8 +3,8 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewHciNameDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.DocSecDetailDto;
@@ -2087,7 +2087,7 @@ public class LicenceViewServiceDelegator {
         int size = docSectionList.size();
         for (int i = 0; i < size; i++) {
             DocSectionDto docSectionDto = docSectionList.get(i);
-            DocSectionDto oldDocSectionDto = docSectionList.get(i);
+            DocSectionDto oldDocSectionDto = oldDocSectionList.get(i);
             List<DocSecDetailDto> docSecDetailList = IaisCommonUtils.getList(docSectionDto.getDocSecDetailList());
             List<DocSecDetailDto> oldDocSecDetailList = IaisCommonUtils.getList(oldDocSectionDto.getDocSecDetailList());
             dealDocSecDetailDtos(docSecDetailList, oldDocSecDetailList);
@@ -2120,7 +2120,7 @@ public class LicenceViewServiceDelegator {
         for (int i = 0; i < size; i++) {
             DocSecDetailDto docSecDetailDto = docSecDetailList.get(i);
             DocSecDetailDto oldDocSecDetailDto = oldDocSecDetailList.get(i);
-            Integer count = psnMap.computeIfPresent(docSecDetailDto.getPsnType(), (key, oldValue) -> oldValue++);
+            Integer count = psnMap.computeIfPresent(docSecDetailDto.getPsnType(), (key, oldValue) -> ++oldValue);
             docSecDetailDto.setPsnTypeIndex(count);
             docSecDetailDto.setBackend(true);
             docSecDetailDto.initDisplayTitle();
