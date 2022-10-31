@@ -328,6 +328,9 @@
 
     function doActionAfterUploading(data, fileAppendId) {
         fillNurse($("#" + fileAppendId + "ShowId").closest('div.contents'), data.appSvcPersonnelDto);
+        if (data.msgType == 'Y') {
+            $('#' + fileAppendId + 'ShowId').empty();
+        }
     }
 
     function fillNurse($premContent, data) {

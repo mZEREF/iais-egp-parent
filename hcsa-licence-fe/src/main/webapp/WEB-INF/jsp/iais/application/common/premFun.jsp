@@ -784,6 +784,9 @@
 
     function doActionAfterUploading(data, fileAppendId) {
         fillNonHcsa($("#" + fileAppendId + "ShowId").closest('div.premContent'), data.appPremNonLicRelationDtos);
+        if (data.msgType == 'Y') {
+            $('#' + fileAppendId + 'ShowId').empty();
+        }
     }
 
     function reSetPremTypeTooltip($currContent) {
