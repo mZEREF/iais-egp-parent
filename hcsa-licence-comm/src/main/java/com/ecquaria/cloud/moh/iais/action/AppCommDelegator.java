@@ -1765,8 +1765,6 @@ public abstract class AppCommDelegator {
                 autoChangeSelectDto.setSpecialisedEdit(true);
                 autoChangeSelectDto.setChangeSpecialisedAutoFields(true);
                 appEditSelectDto.setChangeSpecialisedAutoFields(false);
-            } else if (!appEditSelectDto.isChangeSpecialisedNonAutoFields()) {
-                RfcHelper.resolveSpecialisedRfc(appSubmissionDto, oldAppSubmissionDto, true);
             }
         }
         // check app submissions affected by personnel (service info)
