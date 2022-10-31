@@ -19,7 +19,7 @@
         <c:when test="${'BLB' ==currentSvcCode}">
             <h4>The blood donation centre and/or mobile donation drive is/are under the supervision of</h4>
         </c:when>
-        <c:when test="${'TSB' ==currentSvcCode}">
+        <c:when test="${'CBB' ==currentSvcCode}">
             <strong style="font-size: 20px;">Laboratory Director (Cord Blood Banking Service)</strong>
             <h4><iais:message key="NEW_ACK023"/></h4>
         </c:when>

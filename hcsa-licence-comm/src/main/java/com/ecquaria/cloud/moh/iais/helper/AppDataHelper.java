@@ -71,6 +71,12 @@ import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.client.ComSystemAdminClient;
+import lombok.extern.slf4j.Slf4j;
+import sop.iwe.SessionManager;
+import sop.rbac.user.User;
+import sop.util.DateUtil;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.sql.Time;
 import java.text.ParseException;
@@ -87,11 +93,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import sop.iwe.SessionManager;
-import sop.rbac.user.User;
-import sop.util.DateUtil;
 
 import static com.ecquaria.cloud.moh.iais.constant.HcsaAppConst.CURRENTSERVICEID;
 
@@ -2681,7 +2682,10 @@ public final class AppDataHelper {
                         }
                     }
                     if (!IaisCommonUtils.isEmpty(specialServiceSectionDto.getAppSvcSuplmFormDto().getAppSvcSuplmGroupDtoList())) {
-                        setAppSvcSuplmFormDto(specialServiceSectionDto.getAppSvcSuplmFormDto(), prefix + i + j, request);
+                        String isPartEdit = ParamUtil.getString(request, prefix + i + j + "isPartEdit" + "Sup");
+                        if (AppConsts.YES.equals(isPartEdit)) {
+                            setAppSvcSuplmFormDto(specialServiceSectionDto.getAppSvcSuplmFormDto(), prefix + i + j, request);
+                        }
                     }
                     j++;
                 }

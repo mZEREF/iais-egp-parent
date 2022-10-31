@@ -138,7 +138,7 @@
                             </iais:row>
                         </c:if>
                         <c:if test="${!MMM}">
-                            <input type="hidden" name="deputyPrincipalOfficer" value="${currSvcInfoDto.deputyPoFlag}"/>${currSvcInfoDto.deputyPoFlag}===
+                            <input type="hidden" name="deputyPrincipalOfficer" value="${currSvcInfoDto.deputyPoFlag}"/>
                         </c:if>
 
                     </div>
