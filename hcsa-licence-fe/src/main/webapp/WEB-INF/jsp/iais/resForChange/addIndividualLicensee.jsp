@@ -28,7 +28,7 @@
                       <p class="app-title">Licensee Details:</p>
                     </iais:value>
                   </iais:row>
-                <%@ include file="/WEB-INF/jsp/iais/common/licenseeDetailContent.jsp" %>
+                <%@ include file="/WEB-INF/jsp/iais/application/section/licenseeDetailContent.jsp" %>
                 </div>
               </div>
             </div>
