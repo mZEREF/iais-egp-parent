@@ -2198,7 +2198,11 @@ public final class AppValidatorHelper {
                 if (StringUtil.isEmpty(outstandingScope)) {
                     errMap.put(prefix + "outstandingScope", MessageUtil.replaceMessage("GENERAL_ERR0006",
                             "Scope of Outsourcing", "field"));
+                } else if (outstandingScope.length() > 3000){
+                    String errorMsg = repLength("Scope of Outsourcing", "3000");
+                    errMap.put(prefix + "outstandingScope", errorMsg);
                 }
+
                 if (StringUtil.isNotEmpty(startDate) && StringUtil.isNotEmpty(endDate)) {
                     try {
                         if (Formatter.parseDate(startDate).after(Formatter.parseDate(endDate))) {
@@ -2268,6 +2272,9 @@ public final class AppValidatorHelper {
                         errMap.put(prefix + "gfaValue", MessageUtil.replaceMessage("GENERAL_ERR0006", "GFA Value (in sqm)", "field"));
                     } else if (!StringUtil.isDigit(gfaValue)) {
                         errMap.put(prefix + "gfaValue", MessageUtil.replaceMessage("GENERAL_ERR0002", "GFA Value (in sqm)", "field"));
+                    } else if (gfaValue.length() > 7 && gfaValue.length() <= 3000){
+                        String errorMsg = repLength("GFA Value (in sqm)", "7");
+                        errMap.put(prefix + "gfaValue" , errorMsg);
                     }
                 }else {
                     errMap.put(prefix + "medicalTypeIt",
@@ -2306,6 +2313,9 @@ public final class AppValidatorHelper {
                         errMap.put(prefix + "agfaValue", MessageUtil.replaceMessage("GENERAL_ERR0006", "GFA Value (in sqm)", "field"));
                     } else if (!StringUtil.isDigit(agfaValue)) {
                         errMap.put(prefix + "agfaValue", MessageUtil.replaceMessage("GENERAL_ERR0002", "GFA Value (in sqm)", "field"));
+                    } else if (agfaValue.length() > 7 && agfaValue.length() <= 3000){
+                        String errorMsg = repLength("GFA Value (in sqm)", "7");
+                        errMap.put(prefix + "agfaValue" , errorMsg);
                     }
                 }else {
                     errMap.put(prefix + "agfaValue", MessageUtil.replaceMessage("GENERAL_ERR0006", "GFA Value (in sqm)", "field"));
