@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <div class="otherInfoRDCPageContent">
     <input type="hidden" class ="isPartEdit" name="isPartEdit" value="0"/>
     <input type="hidden" class="otherInfoNurseId" name="otherInfoNurseId" value="${n.id}"/>
@@ -48,7 +50,7 @@
     <iais:row cssClass="row control control-caption-horizontal">
         <iais:field width="5" cssClass="col-md-5" mandatory="" value=""/>
         <iais:value width="7" cssClass="col-md-7 col-xs-12">
-            <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}nOpenToPublic"></span>
+            <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}nisOpenToPublic"></span>
         </iais:value>
     </iais:row>
 </div>

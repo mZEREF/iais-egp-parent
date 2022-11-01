@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <iais:row>
     <div class="col-xs-12 col-md-6">
         <p class="bold">Yellow Fever Vaccination </p>
@@ -40,7 +42,7 @@
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" value="Address"/>
         <iais:value width="7" cssClass="col-md-7" display="true">
-            <c:out value="${orgUse.email}"/>
+            <c:out value="${appSvcOtherInfoDto.premAddress}"/>
         </iais:value>
     </iais:row>
 

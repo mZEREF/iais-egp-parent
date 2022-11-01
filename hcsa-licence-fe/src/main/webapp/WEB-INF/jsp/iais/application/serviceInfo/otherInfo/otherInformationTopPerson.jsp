@@ -51,6 +51,9 @@
     </div>
 
     <%--TODO...practitioners--%>
+    <div class="prTitle <c:if test="${'1' != provideTop}">hidden</c:if>" data-prefix="${prefix}">
+        <p class="bold">Name, Professional Regn. No. and Qualification of medical practitioners authorised to perform Abortion</p>
+    </div>
     <c:choose>
         <c:when test="${empty practitioners}">
             <c:set var="personCount" value="1"/>
@@ -76,6 +79,9 @@
 
 
     <%--TODO...anaesthetists--%>
+    <div class="anTitle <c:if test="${'1' != provideTop}">hidden</c:if>" data-prefix="${prefix}">
+        <p class="bold">Name, Professional Regn. No. and Qualification of anaesthetists</p>
+    </div>
     <c:choose>
         <c:when test="${empty anaesthetists}">
             <c:set var="aCount" value="1"/>
@@ -100,6 +106,9 @@
     </c:if>
 
     <%--TODO...nurses--%>
+    <div class="nuTitle <c:if test="${'1' != provideTop}">hidden</c:if>" data-prefix="${prefix}">
+        <p class="bold">Name and Qualifications of trained nurses</p>
+    </div>
     <c:choose>
         <c:when test="${empty nurses}">
             <c:set var="nCount" value="1"/>
@@ -124,6 +133,9 @@
     </c:if>
 
     <%--TODO...counsellors--%>
+    <div class="csTitle <c:if test="${'1' != provideTop}">hidden</c:if>" data-prefix="${prefix}">
+        <p class="bold">Name and Qualifications of certified TOP counsellors</p>
+    </div>
     <c:choose>
         <c:when test="${empty counsellors}">
             <c:set var="cCount" value="1"/>
@@ -232,6 +244,10 @@
             $('div.docTop[data-prefix="' + prefix + '"]').removeClass("hidden");
             $('div.de[data-prefix="' + prefix + '"]').removeClass("hidden");
             $('div.oitem[data-prefix="' + prefix + '"]').removeClass("hidden");
+            $('div.prTitle[data-prefix="' + prefix + '"]').removeClass("hidden");
+            $('div.anTitle[data-prefix="' + prefix + '"]').removeClass("hidden");
+            $('div.nuTitle[data-prefix="' + prefix + '"]').removeClass("hidden");
+            $('div.csTitle[data-prefix="' + prefix + '"]').removeClass("hidden");
             topAboutHAS(prefix);
         }else {
             $('input[name="t"]').val(0);
@@ -249,6 +265,10 @@
             $('div.de[data-prefix="' + prefix + '"]').addClass("hidden");
             $('div.oitem[data-prefix="' + prefix + '"]').addClass("hidden");
             $('div.docTop[data-prefix="' + prefix + '"]').addClass("hidden");
+            $('div.prTitle[data-prefix="' + prefix + '"]').addClass("hidden");
+            $('div.anTitle[data-prefix="' + prefix + '"]').addClass("hidden");
+            $('div.nuTitle[data-prefix="' + prefix + '"]').addClass("hidden");
+            $('div.csTitle[data-prefix="' + prefix + '"]').addClass("hidden");
             topAboutHAS(prefix);
         }
 
@@ -263,14 +283,16 @@
             $('div.addTopBySurgicalProcedureDiv[data-prefix="' + prefix + '"]').addClass("hidden");
             $('div.addTopAllDiv[data-prefix="' + prefix + '"]').addClass("hidden");
             $('div.de[data-prefix="' + prefix + '"]').removeClass("hidden");
+            titleDiv(prefix,value);
         }else if (value == 0){
-            $('div.topByDrug').addClass("hidden");
+            $('div.topByDrug[data-prefix="' + prefix + '"]').addClass("hidden");
             $('div.topBySurgicalProcedure[data-prefix="' + prefix + '"]').removeClass("hidden");
             $('div.topByDrugandSurgicalProcedure[data-prefix="' + prefix + '"]').addClass("hidden");
             $('div.addTopByDrugDiv[data-prefix="' + prefix + '"]').addClass("hidden");
             $('div.addTopBySurgicalProcedureDiv[data-prefix="' + prefix + '"]').removeClass("hidden");
             $('div.addTopAllDiv[data-prefix="' + prefix + '"]').addClass("hidden");
             $('div.de[data-prefix="' + prefix + '"]').removeClass("hidden");
+            titleDiv(prefix,value);
         }else if (value == -1){
             $('div.topByDrug[data-prefix="' + prefix + '"]').removeClass("hidden");
             $('div.topBySurgicalProcedure[data-prefix="' + prefix + '"]').removeClass("hidden");
@@ -279,6 +301,7 @@
             $('div.addTopBySurgicalProcedureDiv[data-prefix="' + prefix + '"]').removeClass("hidden");
             $('div.addTopAllDiv[data-prefix="' + prefix + '"]').removeClass("hidden");
             $('div.de[data-prefix="' + prefix + '"]').removeClass("hidden");
+            titleDiv(prefix,value);
         }else {
             $('div.topByDrug[data-prefix="' + prefix + '"]').addClass("hidden");
             $('div.topBySurgicalProcedure[data-prefix="' + prefix + '"]').addClass("hidden");
@@ -287,6 +310,7 @@
             $('div.addTopBySurgicalProcedureDiv[data-prefix="' + prefix + '"]').addClass("hidden");
             $('div.addTopAllDiv[data-prefix="' + prefix + '"]').addClass("hidden");
             $('div.de[data-prefix="' + prefix + '"]').addClass("hidden");
+            titleDiv(prefix,value);
         }
     }
 
@@ -299,11 +323,33 @@
             $('div.addTopByDrugDiv[data-prefix="' + prefix + '"]').addClass("hidden");
             $('div.addTopBySurgicalProcedureDiv[data-prefix="' + prefix + '"]').addClass("hidden");
             $('div.addTopAllDiv[data-prefix="' + prefix + '"]').addClass("hidden");
+            $('div.topByDrug1[data-prefix="' + prefix + '"]').addClass("hidden");
+            $('div.topBySurgicalProcedure1[data-prefix="' + prefix + '"]').addClass("hidden");
+            $('div.topByDrugandSurgicalProcedure1[data-prefix="' + prefix + '"]').addClass("hidden");
         }else {
             getTopTypeValue(prefix,m);
         }
     }
 
+    function titleDiv(prefix, value){
+        if (value == 1){
+            $('div.topByDrug1[data-prefix="' + prefix + '"]').removeClass("hidden");
+            $('div.topBySurgicalProcedure1[data-prefix="' + prefix + '"]').addClass("hidden");
+            $('div.topByDrugandSurgicalProcedure1[data-prefix="' + prefix + '"]').addClass("hidden");
+        }else if (value == 0){
+            $('div.topByDrug1[data-prefix="' + prefix + '"]').addClass("hidden");
+            $('div.topBySurgicalProcedure1[data-prefix="' + prefix + '"]').removeClass("hidden");
+            $('div.topByDrugandSurgicalProcedure1[data-prefix="' + prefix + '"]').addClass("hidden");
+        }else if (value == -1){
+            $('div.topByDrug1[data-prefix="' + prefix + '"]').removeClass("hidden");
+            $('div.topBySurgicalProcedure1[data-prefix="' + prefix + '"]').removeClass("hidden");
+            $('div.topByDrugandSurgicalProcedure1[data-prefix="' + prefix + '"]').removeClass("hidden");
+        }else {
+            $('div.topByDrug1[data-prefix="' + prefix + '"]').addClass("hidden");
+            $('div.topBySurgicalProcedure1[data-prefix="' + prefix + '"]').addClass("hidden");
+            $('div.topByDrugandSurgicalProcedure1[data-prefix="' + prefix + '"]').addClass("hidden");
+        }
+    }
 
     let medAuthByMoh = function() {
         $('.medAuthByMoh').unbind('click');
@@ -337,12 +383,8 @@
             let $currContent = $('div.practitioners[data-prefix="' + prefix + '"]').last();
             clearFields($currContent);
             removePractitioners();
-            if(cdLength <= 1){
-                $('.practitioners[data-prefix="' + prefix + '"]:eq(0) .assign-psn-item').html('');
-            }
             $('.practitioners[data-prefix="' + prefix + '"]').each(function (k,v) {
                 toggleTag($(this).find('div.removePractitionersBtn[data-prefix="' + prefix + '"]'), k != 0);
-                $(this).find('.assign-psn-item').html(k+1);
                 $(this).find('input.isPartEdit').prop('name',prefix+'isPartEdit'+k);
                 $(this).find('input.practitionersIndexNo').prop('name',prefix+'practitionersIndexNo'+k);
                 $(this).find('input.psnType').prop('name',prefix+'psnType'+k);
@@ -387,7 +429,6 @@
             $('input.cdLength[data-prefix="' + prefix + '"]').val(cdLength);
             //reset number
             $('div.practitioners[data-prefix="' + prefix + '"]').each(function (k,v) {
-                $(this).find('.assign-psn-item').html(k+1);
                 $(this).find('input.isPartEdit').prop('name',prefix+'isPartEdit'+k);
                 $(this).find('input.practitionersIndexNo').prop('name',prefix+'practitionersIndexNo'+k);
                 $(this).find('input.psnType').prop('name',prefix+'psnType'+k);
@@ -399,10 +440,6 @@
                 $(this).find('input.speciality').prop('name',prefix+'speciality'+k);
                 $(this).find('input.medAuthByMoh').prop('name',prefix+'medAuthByMoh'+k);
             });
-            //display add more
-            if(cdLength <= 1){
-                $('.practitioners[data-prefix="' + prefix + '"]:eq(0) .assign-psn-item').html('');
-            }
             $('#isEditHiddenVal').val('1');
         });
     }
@@ -429,12 +466,8 @@
             let $currContent = $('div.anaesthetists[data-prefix="' + prefix + '"]').last();
             clearFields($currContent);
             removeAnaesthetists();
-            if(anaLength <= 1){
-                $('.anaesthetists[data-prefix="' + prefix + '"]:eq(0) .assign-psn-item').html('');
-            }
             $('.anaesthetists[data-prefix="' + prefix + '"]').each(function (k,v) {
                 toggleTag($(this).find('div.removeAnaesthetistsBtn[data-prefix="' + prefix + '"]'), k != 0);
-                $(this).find('.assign-psn-item').html(k+1);
                 $(this).find('input.aisPartEdit').prop('name',prefix+'aisPartEdit'+k);
                 $(this).find('input.apsnType').prop('name',prefix+'apsnType'+k);
                 $('input.apsnType[data-prefix="' + prefix + '"]').val("MedAna");
@@ -475,7 +508,6 @@
             $('input.anaLength[data-prefix="' + prefix + '"]').val(anaLength);
             //reset number
             $('div.anaesthetists[data-prefix="' + prefix + '"]').each(function (k,v) {
-                $(this).find('.assign-psn-item').html(k+1);
                 $(this).find('input.aisPartEdit').prop('name',prefix+'aisPartEdit'+k);
                 $(this).find('input.apsnType').prop('name',prefix+'apsnType'+k);
                 $(this).find('input.aprofRegNo').prop('aname',prefix+'aprofRegNo'+k);
@@ -484,10 +516,6 @@
                 $(this).find('input.aregType').prop('name',prefix+'aregType'+k);
                 $(this).find('input.aqualification').prop('name',prefix+'aqualification'+k);
             });
-            //display add more
-            if(anaLength <= 1){
-                $('.anaesthetists[data-prefix="' + prefix + '"]:eq(0) .assign-psn-item').html('');
-            }
             $('#isEditHiddenVal').val('1');
         });
     }
@@ -516,14 +544,9 @@
             let $currContent = $('div.nurses[data-prefix="' + prefix + '"]').last();
             clearFields($currContent);
             removeNurses();
-            if(nLength <= 1){
-                console.log("init.........")
-                $('.nurses[data-prefix="' + prefix + '"]:eq(0) .assign-psn-item').html('');
-            }
             $('.nurses[data-prefix="' + prefix + '"]').each(function (k,v) {
                 toggleTag($(this).find('div.removeNursesBtn[data-prefix="' + prefix + '"]'), k != 0);
                 console.log("k...."+k);
-                $(this).find('.assign-psn-item').html(k+1);
                 $(this).find('input.nisPartEdit').prop('name',prefix+'nisPartEdit'+k);
                 $(this).find('input.npsnType').prop('name',prefix+'npsnType'+k);
                 $('input.npsnType[data-prefix="' + prefix + '"]').val("MedNur");
@@ -568,9 +591,6 @@
                 $(this).find('input.nname').prop('name',prefix+'nname'+k);
                 $(this).find('input.nqualification').prop('name',prefix+'nqualification'+k);
             });
-            if(nLength <= 1){
-                $('.nurses[data-prefix="' + prefix + '"]:eq(0) .assign-psn-item').html('');
-            }
             $('#isEditHiddenVal').val('1');
         });
     }
@@ -599,14 +619,9 @@
             let $currContent = $('div.counsellors[data-prefix="' + prefix + '"]').last();
             clearFields($currContent);
             removeCounsellors();
-            if(cLength <= 1){
-                console.log("init.........")
-                $('.counsellors[data-prefix="' + prefix + '"]:eq(0) .assign-psn-item').html('');
-            }
             $('.counsellors[data-prefix="' + prefix + '"]').each(function (k,v) {
                 toggleTag($(this).find('div.removeBtn[data-prefix="' + prefix + '"]'), k != 0);
                 console.log("k...."+k);
-                $(this).find('.assign-psn-item').html(k+1);
                 $(this).find('input.cisPartEdit').prop('name',prefix+'cisPartEdit'+k);
                 $(this).find('input.cpsnType').prop('name',prefix+'cpsnType'+k);
                 $('input.cpsnType[data-prefix="' + prefix + '"]').val("MedCou");
@@ -645,7 +660,6 @@
             //reset number
             $('div.counsellors[data-prefix="' + prefix + '"]').each(function (k,v) {
                 console.log("k....."+k)
-                $(this).find('.assign-psn-item').html(k+1);
                 $(this).find('input.cisPartEdit').prop('name',prefix+'cisPartEdit'+k);
                 $(this).find('input.cpsnType').prop('name',prefix+'cpsnType'+k);
                 $(this).find('input.cprofRegNo').prop('name',prefix+'cprofRegNo'+k);
@@ -653,9 +667,6 @@
                 $(this).find('input.cname').prop('name',prefix+'cname'+k);
                 $(this).find('input.cqualification').prop('name',prefix+'cqualification'+k);
             });
-            if(cLength <= 1){
-                $('.counsellors[data-prefix="' + prefix + '"]:eq(0) .assign-psn-item').html('');
-            }
             $('#isEditHiddenVal').val('1');
         });
     }

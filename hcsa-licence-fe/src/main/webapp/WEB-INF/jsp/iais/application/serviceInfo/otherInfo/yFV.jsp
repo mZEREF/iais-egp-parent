@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <iais:row>
     <div class="col-xs-12 col-md-6">
         <p class="bold">Yellow Fever Vaccination </p>

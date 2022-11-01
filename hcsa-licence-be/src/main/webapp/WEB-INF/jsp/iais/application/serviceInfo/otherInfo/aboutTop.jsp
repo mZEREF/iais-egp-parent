@@ -1,5 +1,11 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <input type="hidden" name="t" value="${t}">
 <div class="topTypeAbout">
+    <div class="topByDrug1
+<c:if test="${('0' == appSvcOtherInfoTop.topType) || ('0' == provideTop) || (empty appSvcOtherInfoTop.topType)}">hidden</c:if>" data-prefix="${prefix}">
+        <p class="bold">TOP (By Drug)</p>
+    </div>
     <c:choose>
         <c:when test="${empty topByDrug}">
             <c:set var="dCount" value="1"/>
@@ -23,6 +29,10 @@
         </div>
     </c:if>
 
+    <div class="topBySurgicalProcedure1
+<c:if test="${('1' == appSvcOtherInfoTop.topType) || ('0' == provideTop) || (empty appSvcOtherInfoTop.topType)}">hidden</c:if>" data-prefix="${prefix}">
+        <p class="bold">TOP (By Surgical Procedure)</p>
+    </div>
     <c:choose>
         <c:when test="${empty topBySurgicalProcedure}">
             <c:set var="pCount" value="1"/>
@@ -47,6 +57,10 @@
         </div>
     </c:if>
 
+    <div class="topByDrugandSurgicalProcedure1
+<c:if test="${('-1' != appSvcOtherInfoTop.topType) || ('0' == provideTop) || (empty appSvcOtherInfoTop.topType)}">hidden</c:if>" data-prefix="${prefix}">
+        <p class="bold">TOP (By Drug and Surgical Procedure)</p>
+    </div>
     <c:choose>
         <c:when test="${empty topByAll}">
             <c:set var="aCount" value="1"/>
@@ -129,12 +143,8 @@
             let $c = $('div.topByDrug[data-prefix="' + prefix + '"]').last();
             clearFields($c);
             removeTopDrug();
-            if (atdLength <= 1){
-                $('.topByDrug[data-prefix="' + prefix + '"]:eq(0) .assign-psn-item').html('');
-            }
             $('.topByDrug[data-prefix="' + prefix + '"]').each(function (k,v) {
                 toggleTag($(this).find('div.removeTopByDrugBtn[data-prefix="' + prefix + '"]'), k != 0);
-                $(this).find('.assign-psn-item').html(k+1);
                 $(this).find('input.isPartEditDrug').prop('name',prefix+'isPartEditDrug'+k);
                 $(this).find('input.DrugId').prop('name',prefix+'DrugId'+k);
                 $(this).find('input.year').prop('name',prefix +'year'+k);
@@ -171,16 +181,11 @@
             //reset number
             $('div.topByDrug[data-prefix="' + prefix + '"]').each(function (k,v) {
                 toggleTag($(this).find('div.removeTopByDrugBtn[data-prefix="' + prefix + '"]'), k != 0);
-                $(this).find('.assign-psn-item').html(k+1);
                 $(this).find('input.isPartEditDrug').prop('name',prefix+'isPartEditDrug'+k);
                 $(this).find('input.DrugId').prop('name',prefix+'DrugId'+k);
                 $(this).find('input.year').prop('name',prefix +'year'+k);
                 $(this).find('input.abortNum').prop('name',prefix +'abortNum'+k);
             });
-            //display add more
-            if(atdLength <= 1){
-                $('.topByDrug[data-prefix="' + prefix + '"]:eq(0) .assign-psn-item').html('');
-            }
             $('#isEditHiddenVal').val('1');
         });
     }
@@ -207,12 +212,8 @@
             let $c = $('div.topBySurgicalProcedure[data-prefix="' + prefix + '"]').last();
             clearFields($c);
             removeTopP();
-            if (pLength <= 1){
-                $('.topBySurgicalProcedure[data-prefix="' + prefix + '"]:eq(0) .assign-psn-item').html('');
-            }
             $('.topBySurgicalProcedure[data-prefix="' + prefix + '"]').each(function (k,v) {
                 toggleTag($(this).find('div.removeTopBySurgicalProcedureBtn[data-prefix="' + prefix + '"]'), k != 0);
-                $(this).find('.assign-psn-item').html(k+1);
                 $(this).find('input.isPartEditSurgical').prop('name',prefix+'isPartEditSurgical'+k);
                 $(this).find('input.SurgicalId').prop('name',prefix+'SurgicalId'+k);
                 $(this).find('input.pyear').prop('name',prefix +'pyear'+k);
@@ -249,16 +250,11 @@
             //reset number
             $('.topBySurgicalProcedure[data-prefix="' + prefix + '"]').each(function (k,v) {
                 toggleTag($(this).find('div.removeTopBySurgicalProcedureBtn[data-prefix="' + prefix + '"]'), k != 0);
-                $(this).find('.assign-psn-item').html(k+1);
                 $(this).find('input.isPartEditSurgical').prop('name',prefix+'isPartEditSurgical'+k);
                 $(this).find('input.SurgicalId').prop('name',prefix+'SurgicalId'+k);
                 $(this).find('input.pyear').prop('name',prefix +'pyear'+k);
                 $(this).find('input.pabortNum').prop('name',prefix +'pabortNum'+k);
             });
-            //display add more
-            if(pLength <= 1){
-                $('.topBySurgicalProcedure[data-prefix="' + prefix + '"]:eq(0) .assign-psn-item').html('');
-            }
             $('#isEditHiddenVal').val('1');
         });
     }
@@ -285,12 +281,8 @@
             let $c = $('div.topByDrugandSurgicalProcedure[data-prefix="' + prefix + '"]').last();
             clearFields($c);
             removeTopAll();
-            if (aLength <= 1){
-                $('.topByDrugandSurgicalProcedure[data-prefix="' + prefix + '"]:eq(0) .assign-psn-item').html('');
-            }
             $('.topByDrugandSurgicalProcedure[data-prefix="' + prefix + '"]').each(function (k,v) {
                 toggleTag($(this).find('div.removeTopByAllBtn[data-prefix="' + prefix + '"]'), k != 0);
-                $(this).find('.assign-psn-item').html(k+1);
                 $(this).find('input.isPartEditAll').prop('name',prefix+'isPartEditAll'+k);
                 $(this).find('input.AllId').prop('name',prefix+'AllId'+k);
                 $(this).find('input.ayear').prop('name',prefix +'ayear'+k);
@@ -327,16 +319,11 @@
             //reset number
             $('.topByDrugandSurgicalProcedure[data-prefix="' + prefix + '"]').each(function (k,v) {
                 toggleTag($(this).find('div.removeTopByAllBtn[data-prefix="' + prefix + '"]'), k != 0);
-                $(this).find('.assign-psn-item').html(k+1);
                 $(this).find('input.isPartEditAll').prop('name',prefix+'isPartEditAll'+k);
                 $(this).find('input.AllId').prop('name',prefix+'AllId'+k);
                 $(this).find('input.ayear').prop('name',prefix +'ayear'+k);
                 $(this).find('input.aabortNum').prop('name',prefix +'aabortNum'+k);
             });
-            //display add more
-            if(aLength <= 1){
-                $('.topByDrugandSurgicalProcedure[data-prefix="' + prefix + '"]:eq(0) .assign-psn-item').html('');
-            }
             $('#isEditHiddenVal').val('1');
         });
     }

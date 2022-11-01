@@ -51,113 +51,57 @@
                 <p class="font-18 bold">Address: ${appSvcOtherInfoDto.premAddress}</p>
             </div>
         </iais:row>
-        <c:choose>
-            <c:when test="${(currSvcInfoDto.serviceCode == AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE) || (currSvcInfoDto.serviceCode == AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE)}">
-                <input type="hidden" name="otherInfoServiceCode" value="${currSvcInfoDto.serviceCode}">
-                <%@include file="dentalService.jsp" %>
-                <c:if test="${currSvcInfoDto.serviceCode == AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE}">
-                    <div class="otherInfoTopContent" data-prefix="${prefix}" data-group="${appSvcOtherInfoTop.topType}" ata-seq="${provideTop}">
-                        <input type="hidden" class ="isPartEditTop" name="isPartEditTop" value="0"/>
-                        <input type="hidden" class="otherInfoIndexNo" name="otherInfoIndexNo" value="${appSvcOtherInfoDto.premiseIndex}"/>
-                        <div class="col-md-12 col-xs-12">
-                            <div class="edit-content">
-                                <c:if test="${canEdit}">
-                                    <div class="text-right app-font-size-16">
-                                        <a class="edit otherInfoTopEdit" href="javascript:void(0);">
-                                            <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
-                                        </a>
-                                    </div>
-                                </c:if>
+
+        <c:if test="${currSvcInfoDto.serviceCode eq AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE
+        || currSvcInfoDto.serviceCode == AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE}">
+            <input type="hidden" name="otherInfoServiceCode" value="${currSvcInfoDto.serviceCode}">
+            <%@ include file="dentalService.jsp"%>
+        </c:if>
+
+        <c:if test="${currSvcInfoDto.serviceCode eq AppServicesConsts.SERVICE_CODE_RENAL_DIALYSIS_CENTRE}">
+            <input type="hidden" name="otherInfoServiceCode" value="${currSvcInfoDto.serviceCode}">
+            <%@include file="renalDialysisCentreService.jsp" %>
+        </c:if>
+
+        <c:if test="${currSvcInfoDto.serviceCode eq AppServicesConsts.SERVICE_CODE_AMBULATORY_SURGICAL_CENTRE}">
+            <input type="hidden" name="otherInfoServiceCode" value="${currSvcInfoDto.serviceCode}">
+            <%@include file="ambulatorySurgicalCentreService.jsp"%>
+        </c:if>
+
+        <c:if test="${currSvcInfoDto.serviceCode eq AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE
+        || currSvcInfoDto.serviceCode eq AppServicesConsts.SERVICE_CODE_AMBULATORY_SURGICAL_CENTRE
+        || currSvcInfoDto.serviceCode eq AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL
+        || currSvcInfoDto.serviceCode == AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL}">
+            <input type="hidden" name="otherInfoServiceCode" value="${currSvcInfoDto.serviceCode}">
+            <div class="otherInfoTopContent" data-prefix="${prefix}" data-group="${appSvcOtherInfoTop.topType}" ata-seq="${provideTop}">
+                <input type="hidden" class ="isPartEditTop" name="isPartEditTop" value="0"/>
+                <input type="hidden" class="otherInfoIndexNo" name="otherInfoIndexNo" value="${appSvcOtherInfoDto.premiseIndex}"/>
+                <div class="col-md-12 col-xs-12">
+                    <div class="edit-content">
+                        <c:if test="${canEdit}">
+                            <div class="text-right app-font-size-16">
+                                <a class="edit otherInfoTopEdit" href="javascript:void(0);">
+                                    <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
+                                </a>
                             </div>
-                        </div>
-                        <%@include file="otherInformationTopPerson.jsp" %>
-                        <%@include file="otherInfoItemForm.jsp" %>
-                        <%@include file="documentation.jsp" %>
-                        <%@include file="aboutTop.jsp" %>
-                        <%@include file="yFV.jsp" %>
+                        </c:if>
                     </div>
+                </div>
+                <c:if test="${currSvcInfoDto.serviceCode != AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL}">
+                    <%@include file="otherInformationTopPerson.jsp"%>
+                    <%@include file="otherInfoItemForm.jsp"%>
+                    <%@include file="documentation.jsp"%>
+                    <%@include file="aboutTop.jsp"%>
                 </c:if>
-            </c:when>
-            <c:when test="${currSvcInfoDto.serviceCode == AppServicesConsts.SERVICE_CODE_RENAL_DIALYSIS_CENTRE}">
-                <input type="hidden" name="otherInfoServiceCode" value="${currSvcInfoDto.serviceCode}">
-                <%@include file="renalDialysisCentreService.jsp" %>
-            </c:when>
-            <c:when test="${currSvcInfoDto.serviceCode == AppServicesConsts.SERVICE_CODE_AMBULATORY_SURGICAL_CENTRE}">
-                <input type="hidden" name="otherInfoServiceCode" value="${currSvcInfoDto.serviceCode}">
-                <%@include file="ambulatorySurgicalCentreService.jsp" %>
-                <div class="otherInfoTopContent" data-prefix="${prefix}">
-                    <input type="hidden" class ="isPartEditTop" name="isPartEditTop" value="0"/>
-                    <input type="hidden" class="otherInfoPremisesVal" name="otherInfoPremisesVal" value="${appSvcOtherInfoDto.premisesVal}"/>
-                    <div class="col-md-12 col-xs-12">
-                        <div class="edit-content">
-                            <c:if test="${canEdit}">
-                                <div class="text-right app-font-size-16">
-                                    <a class="edit otherInfoTopEdit" href="javascript:void(0);">
-                                        <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
-                                    </a>
-                                </div>
-                            </c:if>
-                        </div>
-                    </div>
-                    <%@include file="otherInformationTopPerson.jsp" %>
-                    <%@include file="otherInfoItemForm.jsp" %>
-                    <%@include file="documentation.jsp" %>
-                    <%@include file="aboutTop.jsp" %>
-                </div>
-            </c:when>
-            <c:when test="${currSvcInfoDto.serviceCode == AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL}">
-                <input type="hidden" name="otherInfoServiceCode" value="${currSvcInfoDto.serviceCode}">
-                <div class="otherInfoTopContent" data-prefix="${prefix}">
-                    <input type="hidden" class ="isPartEditTop" name="isPartEditTop" value="0"/>
-                    <input type="hidden" class="otherInfoIndexNo" name="otherInfoIndexNo" value="${appSvcOtherInfoDto.premiseIndex}"/>
-                    <div class="col-md-12 col-xs-12">
-                        <div class="edit-content">
-                            <c:if test="${canEdit}">
-                                <div class="text-right app-font-size-16">
-                                    <a class="edit otherInfoTopEdit" href="javascript:void(0);">
-                                        <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
-                                    </a>
-                                </div>
-                            </c:if>
-                        </div>
-                    </div>
-                    <%@include file="otherInformationTopPerson.jsp" %>
-                    <%@include file="otherInfoItemForm.jsp" %>
-                    <%@include file="documentation.jsp" %>
-                    <%@include file="aboutTop.jsp" %>
-                    <%@include file="yFV.jsp" %>
-                </div>
-            </c:when>
-            <c:when test="${currSvcInfoDto.serviceCode == AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL}">
-                <input type="hidden" name="otherInfoServiceCode" value="${currSvcInfoDto.serviceCode}">
-                <div class="otherInfoTopContent" data-prefix="${prefix}">
-                    <input type="hidden" class ="isPartEditTop" name="isPartEditTop" value="0"/>
-                    <input type="hidden" class="otherInfoIndexNo" name="otherInfoIndexNo" value="${appSvcOtherInfoDto.premiseIndex}"/>
-                    <div class="col-md-12 col-xs-12">
-                        <div class="edit-content">
-                            <c:if test="${canEdit}">
-                                <div class="text-right app-font-size-16">
-                                    <a class="edit otherInfoTopEdit" href="javascript:void(0);">
-                                        <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
-                                    </a>
-                                </div>
-                            </c:if>
-                        </div>
-                    </div>
-                    <%@include file="yFV.jsp" %>
-                </div>
-            </c:when>
-            <c:otherwise>
-
-            </c:otherwise>
-        </c:choose>
-
+                <c:if test="${currSvcInfoDto.serviceCode != AppServicesConsts.SERVICE_CODE_AMBULATORY_SURGICAL_CENTRE}">
+                    <%@ include file="yFV.jsp"%>
+                </c:if>
+            </div>
+        </c:if>
         <%@include file="otherService.jsp" %>
     </c:forEach>
 </div>
-<%@include file="/WEB-INF/jsp/iais/application/common/personFun.jsp" %>
 <script>
-
     $(function (){
         $('div.otherInfoPageContent').each(function (k, v) {
             if ($("#errorMapIs").val() == 'error') {
@@ -218,6 +162,8 @@
             disableOtherInfoContent();
         </c:if>
     })
+
+
 
     let doEditOtherInfoDentalServiceEvent = function () {
         $('a.otherInfoDSEdit').click(function () {
@@ -446,4 +392,6 @@
         $('div.rdDiv[data-prefix="' + prefix + '"]').prop('disabled',false).css('pointer-events','').css('border-color', '').css('color', '');
         $('div.rTDiv[data-prefix="' + prefix + '"]').prop('disabled',false).css('pointer-events','').css('border-color', '').css('color', '');
     }
+
+
 </script>
