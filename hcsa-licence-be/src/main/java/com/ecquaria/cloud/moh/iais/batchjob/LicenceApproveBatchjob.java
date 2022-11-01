@@ -1784,6 +1784,7 @@ public class LicenceApproveBatchjob {
                 licenseeId =  applicationGroupDto.getNewLicenseeId();
                 log.info(StringUtil.changeForLog("The  getLicenceDto  newlicenseeId is " + licenseeId));
             }
+            licenceDto.setApplicantId(applicationGroupDto.getSubmitBy());
         }
 
         if (applicationDto != null && originLicenceDto != null && ((ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase(applicationDto.getApplicationType())) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equalsIgnoreCase(applicationDto.getApplicationType()))) {
