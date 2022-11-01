@@ -56,10 +56,8 @@
                                                      aria-labelledby="headingServiceInfo0">
                                                     <div class="panel-body">
                                                         <p class="text-right">
-                                                            <c:if test="${appEdit.serviceEdit}">
-                                                                <c:if test="${rfi=='rfi'}">
-                                                                    <input class="form-check-input" <c:if test="${pageEdit.serviceEdit}">checked</c:if> id="serviceCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="service">
-                                                                </c:if>
+                                                            <c:if test="${appEdit.serviceEdit && rfi == 'rfi'}">
+                                                                <input class="form-check-input" <c:if test="${pageEdit.serviceEdit}">checked</c:if> id="serviceCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="service">
                                                             </c:if>
                                                         </p>
                                                         <%@include file="section/viewServiceInfo.jsp" %>
@@ -109,17 +107,52 @@
         $('#licenseeCheckbox').closest("div.panel-body").attr("style","");
         </c:if>
 
-        $('input[name="editCheckbox"]').click(changeSectionStyle);
+        editCheckboxClickEvent();
     });
 
-    function changeSectionStyle() {
-        let $this = $(this);
-        let target = $this.closest("div.panel-body");
-        if ($this.is(":checked")) {
-            target.attr("style", "");
-        } else {
-            target.attr("style", "background-color: #999999;");
+    function editCheckboxClickEvent() {
+        let $target = $('input[name="editCheckbox"]');
+        if (isEmptyNode($target)) {
+            return;
         }
+        $target.unbind('click');
+        $target.on('click', function () {
+            changeSectionStyle($(this));
+            autoTicked($(this));
+        });
+    }
+
+    function changeSectionStyle($source) {
+        if (isEmptyNode($source)) {
+            return;
+        }
+        let $target = $source.closest("div.panel-body");
+        if ($source.is(":checked")) {
+            $target.attr("style", "");
+        } else {
+            $target.attr("style", "background-color: #999999;");
+        }
+    }
+
+    function autoTicked($source) {
+        if (isEmptyNode($source)) {
+            return;
+        }
+        if (!$source.is(':checked')) {
+            return;
+        }
+        let val = $source.val();
+        let $target = null;
+        if ('specialised' === val) {
+            $target = $('input[name="editCheckbox"][value="service"]');
+        } else if ('service' === val) {
+            $target = $('input[name="editCheckbox"][value="specialised"]');
+        }
+        if (isEmptyNode($target)) {
+            return;
+        }
+        $target.prop('checked', true);
+        changeSectionStyle($target);
     }
 
     function showThisTableNew(obj) {

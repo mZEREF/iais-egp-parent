@@ -12,11 +12,9 @@
         <div id="previewSpecialised${vs.index}" class="panel-collapse collapse <c:if test="${!empty printFlag}">in</c:if>">
             <div class="panel-body">
                 <p class="text-right">
-                    <c:if test="${rfi == 'rfi'}">
-                        <c:if test="${appEdit.specialisedEdit}">
-                            <input class="form-check-input" id="specialisedCheckbox" type="checkbox" name="editCheckbox"
-                                   <c:if test="${pageEdit.specialisedEdit}">checked</c:if> aria-invalid="false" value="specialised">
-                        </c:if>
+                    <c:if test="${appEdit.specialisedEdit && rfi == 'rfi'}">
+                        <input class="form-check-input" id="specialisedCheckbox" type="checkbox" name="editCheckbox"
+                               <c:if test="${pageEdit.specialisedEdit}">checked</c:if> aria-invalid="false" value="specialised">
                     </c:if>
                 </p>
                 <div class="panel-main-content form-horizontal min-row">
