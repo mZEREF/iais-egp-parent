@@ -4,10 +4,15 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
@@ -15,8 +20,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
@@ -31,9 +38,12 @@ import com.ecquaria.cloud.moh.iais.service.OrganizationService;
 import com.ecquaria.cloud.moh.iais.service.client.AppCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.EmailSmsClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
+import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DateFormatUtils;
@@ -45,6 +55,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @Author weilu
@@ -61,18 +72,8 @@ public class LicenceExpiredBatchJob {
     ApplicationClient applicationClient;
     @Autowired
     private BeEicGatewayClient gatewayClient;
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
     @Autowired
     SystemParamConfig systemParamConfig;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
     @Autowired
     InspEmailService inspEmailService;
     @Autowired
@@ -87,6 +88,13 @@ public class LicenceExpiredBatchJob {
     private AppCommClient appCommClient;
     @Autowired
     protected OrganizationService organizationService;
+    @Autowired
+    private TaskOrganizationClient taskOrganizationClient;
+    @Value("${iais.email.sender}")
+    private String mailSender;
+
+    @Autowired
+    private EmailSmsClient emailSmsClient;
 
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("The licenceExpiredBatchJob is start ..."));
@@ -237,6 +245,68 @@ public class LicenceExpiredBatchJob {
                 msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                 msgParam.setRefId(licenceDto.getId());
                 notificationHelper.sendNotification(msgParam);
+                try {
+                    Date expiryDate=licenceDto.getExpiryDate();
+                    int days= MiscUtil.daysBetween(new Date(),expiryDate);
+                    if(days<=30){
+                        AppSubmissionDto appSubmissionDto = licCommService.viewAppSubmissionDto(licenceDto.getId());
+                        DealSessionUtil.initView(appSubmissionDto);
+                        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+                        boolean hasTopYf=false;
+                        if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
+                            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos
+                            ) {
+                                if(IaisCommonUtils.isNotEmpty(appSvcRelatedInfoDto.getAppSvcOtherInfoList())){
+                                    for (AppSvcOtherInfoDto otherInfo :appSvcRelatedInfoDto.getAppSvcOtherInfoList()
+                                    ) {
+                                        if(otherInfo.getProvideTop().equals("1")||otherInfo.getProvideYfVs().equals("1")){
+                                            hasTopYf=true;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if(hasTopYf){
+                            List<OrgUserDto> orgUserDtos = taskOrganizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_ASO).getEntity();
+                            MsgTemplateDto msgTemplateDto = notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED_TOP_YF);
+
+                            for (OrgUserDto aso:orgUserDtos
+                            ) {
+                                Map<String, Object> emailMap1 = IaisCommonUtils.genNewHashMap();
+                                emailMap1.put("aso_officer_name", aso.getDisplayName());
+                                emailMap1.put("licenceNumber", licenceNo);
+                                emailMap1.put("LicenseeName", orgLicensee.getLicenseeName());
+                                emailMap1.put("LicenceStartDateEndDate", DateFormatUtils.format(licenceDto.getStartDate(), "dd/MM/yyyy")+" - "+DateFormatUtils.format(expiryDate, "dd/MM/yyyy"));
+                                emailMap1.put("MOSD", appSubmissionDto.getAppGrpPremisesDtoList().get(0).getAddress());
+                                emailMap1.put("BusinessName", "-");
+                                if(IaisCommonUtils.isNotEmpty(appSvcBusinessDtoList)){
+                                    emailMap1.put("BusinessName", appSvcBusinessDtoList.get(0).getBusinessName());
+                                }
+                                emailMap1.put("ServiceName", svcName);
+                                emailMap1.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
+                                //email
+                                EmailDto emailDto = new EmailDto();
+                                List<String> receiptEmail=IaisCommonUtils.genNewArrayList();
+                                receiptEmail.add(aso.getEmail());
+                                Set<String> set = IaisCommonUtils.genNewHashSet();
+                                set.addAll(receiptEmail);
+                                receiptEmail.clear();
+                                receiptEmail.addAll(set);
+                                emailDto.setReceipts(receiptEmail);
+                                String mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), emailMap1);
+                                emailDto.setContent(mesContext);
+                                emailDto.setSubject(msgTemplateDto.getTemplateName());
+                                emailDto.setSender(this.mailSender);
+                                emailDto.setClientQueryCode(licenceNo);
+                                emailDto.setReqRefNum(licenceNo);
+                                emailSmsClient.sendEmail(emailDto, null);
+                            }
+                        }
+                    }
+                }catch (Exception e ){
+                    log.info(e.getMessage(),e);
+                }
             } catch (Exception e) {
                 log.error(StringUtil.changeForLog("The error LicenceNo -->:"+licenceDto.getLicenceNo()));
                 log.error(e.getMessage(), e);

@@ -628,4 +628,41 @@
         return result;
     }
 
+    function refreshGroupIndex() {
+        let $groupTitle = $('.item-record .app-title');
+        let indexGroupAry = {};
+        $groupTitle.each(function () {
+            let group = $(this).data('group');
+            let prefix = $(this).data('prefix');
+            let spanClass = 'span.' + prefix + '-' + group;
+            if ($(this).find('span.' + spanClass).length > 0) {
+                indexGroupAry.push(spanClass);
+            }
+        });
+        if (indexGroupAry.length <= 0) {
+            return;
+        }
+        let i = 0;
+        let target = indexGroupAry[0];
+        for (let x of indexGroupAry) {
+            if (x != target) {
+                refreshItemGroupIndex(target, i);
+                i = 1;
+            } else {
+                i++;
+            }
+        }
+        refreshItemGroupIndex(target, i);
+    }
+
+    function refreshItemGroupIndex(target, max) {
+        if (max <= 1) {
+            $(target).html('');
+        } else {
+            let i = 1;
+            $(target).each(function () {
+                $(this).html(i++);
+            });
+        }
+    }
 </script>

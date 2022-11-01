@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremGroupOutso
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
@@ -2370,8 +2371,8 @@ public final class AppValidatorHelper {
 
                     }
                     errMap.putAll(getValidateAppSvcOtherInfoTopPerson(svcOtherInfoDto, prefix));
-                    errMap.putAll(
-                            doValidateSupplementaryForm(svcOtherInfoDto.getAppSvcSuplmFormDto(), svcOtherInfoDto.getPremisesVal()));
+                    errMap.putAll(doValidateSupplementaryForm(svcOtherInfoDto.getAppSvcSuplmFormDto(),
+                            svcOtherInfoDto.getPremisesVal()));
                 }
             }
             if (StringUtil.isIn(currCode, new String[]{AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL,
@@ -3614,10 +3615,12 @@ public final class AppValidatorHelper {
                 continue;
             }
             String premisesVal = specialisedDto.getPremisesVal();
+            String baseSvcCode = specialisedDto.getBaseSvcCode();
             /*
-             * 84698
-             * 1. There should be at least 1 Category selected if configured
-             * 2. Specified Service is not mandatory for all LHSes
+             * 84698 & 84864
+             * 1. If nothing configured, must be able to proceed to next page
+             * 2. If specified service configured, it is mandatory for CLB, RDS and NMS. all other LHS  are optional
+             * 3. If category /discipline configured, it is mandatory for all
              */
             List<AppPremScopeDto> appPremScopeDtoList = specialisedDto.getAppPremScopeDtoList();
             if (appPremScopeDtoList != null && !appPremScopeDtoList.isEmpty()) {
@@ -3626,27 +3629,17 @@ public final class AppValidatorHelper {
                     errorMap.put(premisesVal + "_sub_type", "GENERAL_ERR0006");
                 }
             }
-            /*String baseSvcCode = specialisedDto.getBaseSvcCode();
-            if (StringUtil.isIn(baseSvcCode, new String[]{AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL,
-                    AppServicesConsts.SERVICE_CODE_RENAL_DIALYSIS_CENTRE,
-                    AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY})) {
-                List<AppPremScopeDto> appPremScopeDtoList = specialisedDto.getAppPremScopeDtoList();
-                List<AppPremScopeDto> checkedAppPremScopeDtoList = specialisedDto.getCheckedAppPremScopeDtoList();
-                if (appPremScopeDtoList == null || appPremScopeDtoList.isEmpty()) {
-                    //NEW_ERR0035 - The system must configure one item at least for {data}.
-                    errorMap.put(premisesVal + "_mandatory", MessageUtil.replaceMessage("NEW_ERR0035",
-                            specialisedDto.getCategorySectionName(), "data"));
-                } else if (checkedAppPremScopeDtoList == null || checkedAppPremScopeDtoList.isEmpty()) {
-                    errorMap.put(premisesVal + "_sub_type", "GENERAL_ERR0006");
+            if (StringUtil.isIn(baseSvcCode, new String[]{AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY,
+                    AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES,
+                    AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_SERVICE})) {
+                List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList = specialisedDto.getAppPremSubSvcRelDtoList();
+                if (appPremSubSvcRelDtoList != null && !appPremSubSvcRelDtoList.isEmpty()) {
+                    List<AppPremSubSvcRelDto> checkedAppPremSubSvcRelDtoList = specialisedDto.getCheckedAppPremSubSvcRelDtoList();
+                    if (checkedAppPremSubSvcRelDtoList == null || checkedAppPremSubSvcRelDtoList.isEmpty()) {
+                        errorMap.put(premisesVal + "_service", "GENERAL_ERR0006");
+                    }
                 }
             }
-            List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList = specialisedDto.getAppPremSubSvcRelDtoList();
-            if (appPremSubSvcRelDtoList != null && !appPremSubSvcRelDtoList.isEmpty()) {
-                List<AppPremSubSvcRelDto> checkedAppPremSubSvcRelDtoList = specialisedDto.getCheckedAppPremSubSvcRelDtoList();
-                if (checkedAppPremSubSvcRelDtoList == null || checkedAppPremSubSvcRelDtoList.isEmpty()) {
-                    errorMap.put(premisesVal + "_service", "GENERAL_ERR0006");
-                }
-            }*/
         }
         return errorMap;
     }

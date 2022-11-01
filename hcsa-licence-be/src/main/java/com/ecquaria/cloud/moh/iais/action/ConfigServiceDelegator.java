@@ -101,11 +101,11 @@ public class ConfigServiceDelegator {
         AjaxResDto ajaxResDto = new AjaxResDto();
         String serviceType = ParamUtil.getString(request, "serviceType");
         String serviceCode = ParamUtil.getString(request, "serviceCode");
-        String suppFormSelect = ParamUtil.getString(request, "suppFormSelect");
+        //String suppFormSelect = ParamUtil.getString(request, "suppFormSelect");
         log.info(StringUtil.changeForLog("the getSelectOptionForServiceDocPersonnelAjx serviceType is -->:"+serviceType));
         log.info(StringUtil.changeForLog("the getSelectOptionForServiceDocPersonnelAjx serviceCode is -->:"+serviceCode));
-        log.info(StringUtil.changeForLog("the getSelectOptionForServiceDocPersonnelAjx suppFormSelect is -->:"+suppFormSelect));
-        List<SelectOption> selectOptions = getSelectOptionForServiceDocPersonnel(serviceType,serviceCode,"1".endsWith(suppFormSelect)?true:false);
+        //log.info(StringUtil.changeForLog("the getSelectOptionForServiceDocPersonnelAjx suppFormSelect is -->:"+suppFormSelect));
+        List<SelectOption> selectOptions = getSelectOptionForServiceDocPersonnel(serviceType,serviceCode,false);
         ajaxResDto.setResCode(AppConsts.AJAX_RES_CODE_SUCCESS);
         Map<String, String> chargesTypeAttr = IaisCommonUtils.genNewHashMap();
         chargesTypeAttr.put("name", "selectDocPerson");

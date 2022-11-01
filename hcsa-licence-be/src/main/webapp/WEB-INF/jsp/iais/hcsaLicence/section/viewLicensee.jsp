@@ -29,12 +29,10 @@
     <div id="previewLicensee" class="panel-collapse collapse">
         <div class="panel-body">
             <p class="text-right">
-                <c:if test="${rfi == 'rfi'}">
-                    <c:if test="${appEdit.licenseeEdit}">
-                        <input class="form-check-input" id="licenseeCheckbox" type="checkbox" name="editCheckbox"
-                               <c:if test="${pageEdit.licenseeEdit}">checked</c:if> aria-invalid="false"
-                               value="licensee" />
-                    </c:if>
+                <c:if test="${appEdit.licenseeEdit && rfi == 'rfi'}">
+                    <input class="form-check-input" id="licenseeCheckbox" type="checkbox" name="editCheckbox"
+                           <c:if test="${pageEdit.licenseeEdit}">checked</c:if> aria-invalid="false"
+                           value="licensee" />
                 </c:if>
             </p>
             <div class="panel-main-content postion-relative">

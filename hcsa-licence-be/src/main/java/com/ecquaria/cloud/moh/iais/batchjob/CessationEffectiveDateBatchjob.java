@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
@@ -386,7 +387,7 @@ public class CessationEffectiveDateBatchjob {
                 if(hasTopYf){
                     List<OrgUserDto> orgUserDtos = taskOrganizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_ASO).getEntity();
                     SubLicenseeDto orgLicensee = organizationService.getSubLicenseeByLicenseeId(licenceDto.getLicenseeId());
-                    InspectionEmailTemplateDto msgTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_EMAIL_005_TOP_YF);
+                    MsgTemplateDto msgTemplateDto = notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_EMAIL_005_TOP_YF);
 
                     for (OrgUserDto aso:orgUserDtos
                          ) {
@@ -414,7 +415,7 @@ public class CessationEffectiveDateBatchjob {
                         emailDto.setReceipts(receiptEmail);
                         String mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), emailMap1);
                         emailDto.setContent(mesContext);
-                        emailDto.setSubject(msgTemplateDto.getSubject());
+                        emailDto.setSubject(msgTemplateDto.getTemplateName());
                         emailDto.setSender(this.mailSender);
                         emailDto.setClientQueryCode(licenceNo);
                         emailDto.setReqRefNum(licenceNo);

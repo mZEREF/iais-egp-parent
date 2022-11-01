@@ -204,8 +204,9 @@
             <iais:value width="10">
               <p>
               <c:forEach items="${pageShowFileDtos}" var="pageShowFileDto">
-                  <a href="/hcsa-licence-web/download-session-file?fileAppendIdDown=selectedFile&fileIndexDown=${pageShowFileDto.index}" title="Download" class="downloadFile" style="text-decoration:none;">
-                     <c:out value="${pageShowFileDto.fileName}"></c:out></a>
+                <div>
+                  <a href="/hcsa-licence-web/file/download-session-file?fileAppendIdDown=selectedFile&fileIndexDown=${pageShowFileDto.index}" title="Download" class="downloadFile" style="text-decoration:none;">
+                     <c:out value="${pageShowFileDto.fileName}"></c:out></a></div>
               </c:forEach>
               </p>
             </iais:value>

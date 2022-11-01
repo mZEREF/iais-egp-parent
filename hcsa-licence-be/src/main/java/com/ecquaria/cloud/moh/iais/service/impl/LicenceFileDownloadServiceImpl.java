@@ -24,12 +24,17 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationNewAndRequstDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GobalRiskAccpetDto;
@@ -58,7 +63,9 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
+import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
+import com.ecquaria.cloud.moh.iais.service.OrganizationService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -71,12 +78,15 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
+import com.ecquaria.cloud.moh.iais.util.DealSessionUtil;
 import com.ecquaria.cloud.systeminfo.ServicesSysteminfo;
 import com.ecquaria.kafka.model.Submission;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -103,6 +113,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
@@ -154,7 +165,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
     @Autowired
     private AppCommService appCommService;
-
+    @Autowired
+    private LicCommService licCommService;
     @Autowired
     HcsaApplicationDelegator newApplicationDelegator;
 
@@ -172,7 +184,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
-
+    @Autowired
+    protected OrganizationService organizationService;
+    @Autowired
+    private TaskOrganizationClient taskOrganizationClient;
 
 
     @Override
@@ -1330,6 +1345,74 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         if(!autoRfc){
                             list.addAll(applicationDtoList);
                         }
+                    }
+
+                    try {
+                        LicenceDto licenceDto=hcsaLicenceClient.getLicenceDtoById(application.getOriginLicenceId()).getEntity();
+                        Date expiryDate=licenceDto.getExpiryDate();
+                        int days=MiscUtil.daysBetween(new Date(),expiryDate);
+                        if(days<=30){
+                            AppSubmissionDto appSubmissionDto = licCommService.viewAppSubmissionDto(application.getOriginLicenceId());
+                            DealSessionUtil.initView(appSubmissionDto);
+                            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+                            boolean hasTopYf=false;
+                            if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
+                                for (AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos
+                                ) {
+                                    if(IaisCommonUtils.isNotEmpty(appSvcRelatedInfoDto.getAppSvcOtherInfoList())){
+                                        for (AppSvcOtherInfoDto otherInfo :appSvcRelatedInfoDto.getAppSvcOtherInfoList()
+                                        ) {
+                                            if(otherInfo.getProvideTop().equals("1")||otherInfo.getProvideYfVs().equals("1")){
+                                                hasTopYf=true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            if(hasTopYf){
+                                List<OrgUserDto> orgUserDtos = taskOrganizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_ASO).getEntity();
+                                SubLicenseeDto orgLicensee = organizationService.getSubLicenseeByLicenseeId(licenceDto.getLicenseeId());
+                                MsgTemplateDto msgTemplateDto = notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED_TOP_YF);
+                                String svcName = licenceDto.getSvcName();
+                                String licenceNo = licenceDto.getLicenceNo();
+
+                                for (OrgUserDto aso:orgUserDtos
+                                ) {
+                                    List<AppSvcBusinessDto> appSvcBusinessDtoList=appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcBusinessDtoList();
+                                    Map<String, Object> emailMap1 = IaisCommonUtils.genNewHashMap();
+                                    emailMap1.put("aso_officer_name", aso.getDisplayName());
+                                    emailMap1.put("licenceNumber", licenceNo);
+                                    emailMap1.put("LicenseeName", orgLicensee.getLicenseeName());
+                                    emailMap1.put("LicenceStartDateEndDate", DateFormatUtils.format(licenceDto.getStartDate(), "dd/MM/yyyy")+" - "+DateFormatUtils.format(expiryDate, "dd/MM/yyyy"));
+                                    emailMap1.put("MOSD", appSubmissionDto.getAppGrpPremisesDtoList().get(0).getAddress());
+                                    emailMap1.put("BusinessName", "-");
+                                    if(IaisCommonUtils.isNotEmpty(appSvcBusinessDtoList)){
+                                        emailMap1.put("BusinessName", appSvcBusinessDtoList.get(0).getBusinessName());
+                                    }
+                                    emailMap1.put("ServiceName", svcName);
+                                    emailMap1.put("MOH_AGENCY_NAME", "<b>" + AppConsts.MOH_AGENCY_NAME + "</b>");
+                                    //email
+                                    EmailDto emailDto = new EmailDto();
+                                    List<String> receiptEmail=IaisCommonUtils.genNewArrayList();
+                                    receiptEmail.add(aso.getEmail());
+                                    Set<String> set = IaisCommonUtils.genNewHashSet();
+                                    set.addAll(receiptEmail);
+                                    receiptEmail.clear();
+                                    receiptEmail.addAll(set);
+                                    emailDto.setReceipts(receiptEmail);
+                                    String mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), emailMap1);
+                                    emailDto.setContent(mesContext);
+                                    emailDto.setSubject(msgTemplateDto.getTemplateName());
+                                    emailDto.setSender(this.mailSender);
+                                    emailDto.setClientQueryCode(licenceNo);
+                                    emailDto.setReqRefNum(licenceNo);
+                                    emailSmsClient.sendEmail(emailDto, null);
+                                }
+                            }
+                        }
+                    }catch (Exception e ){
+                        log.info(e.getMessage(),e);
                     }
                 }
 

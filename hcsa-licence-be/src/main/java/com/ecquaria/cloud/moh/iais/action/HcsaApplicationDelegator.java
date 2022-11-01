@@ -3751,23 +3751,21 @@ public class HcsaApplicationDelegator {
 
     private void initApplicationViewDtoSubSvc(ApplicationViewDto applicationViewDto) {
         List<AppPremSubSvcRelDto> appPremSpecialSubSvcRelDtoList = applicationViewDto.getAppPremSpecialSubSvcRelDtoList();
-        if (IaisCommonUtils.isEmpty(appPremSpecialSubSvcRelDtoList)){
-            return;
-        }
-        for (AppPremSubSvcRelDto appPremSubSvcRelDto : appPremSpecialSubSvcRelDtoList) {
-            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(appPremSubSvcRelDto.getSvcId());
-            if (hcsaServiceDto!=null){
-                appPremSubSvcRelDto.setSvcConfigDto(hcsaServiceDto);
+        if (IaisCommonUtils.isNotEmpty(appPremSpecialSubSvcRelDtoList)){
+            for (AppPremSubSvcRelDto appPremSubSvcRelDto : appPremSpecialSubSvcRelDtoList) {
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(appPremSubSvcRelDto.getSvcId());
+                if (hcsaServiceDto!=null){
+                    appPremSubSvcRelDto.setSvcConfigDto(hcsaServiceDto);
+                }
             }
         }
         List<AppPremSubSvcRelDto> appPremOthersSubSvcRelDtoList = applicationViewDto.getAppPremOthersSubSvcRelDtoList();
-        if (IaisCommonUtils.isEmpty(appPremOthersSubSvcRelDtoList)){
-            return;
-        }
-        for (AppPremSubSvcRelDto appPremSubSvcRelDto : appPremOthersSubSvcRelDtoList) {
-            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(appPremSubSvcRelDto.getSvcId());
-            if (hcsaServiceDto!=null){
-                appPremSubSvcRelDto.setSvcConfigDto(hcsaServiceDto);
+        if (IaisCommonUtils.isNotEmpty(appPremOthersSubSvcRelDtoList)){
+            for (AppPremSubSvcRelDto appPremSubSvcRelDto : appPremOthersSubSvcRelDtoList) {
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(appPremSubSvcRelDto.getSvcId());
+                if (hcsaServiceDto!=null){
+                    appPremSubSvcRelDto.setSvcConfigDto(hcsaServiceDto);
+                }
             }
         }
     }

@@ -25,11 +25,9 @@
        aria-labelledby="headingPremise">
     <div class="panel-body">
       <p class="text-right">
-        <c:if test="${rfi=='rfi'}">
-          <c:if test="${(appEdit.premisesEdit || appEdit.premisesListEdit)&& canEidtPremise }">
-            <input class="form-check-input" id="premisesCheckbox" type="checkbox"
-                   name="editCheckbox" <c:if test="${pageEdit.premisesEdit}">checked</c:if> aria-invalid="false" value="premises">
-          </c:if>
+        <c:if test="${rfi=='rfi' && (appEdit.premisesEdit || appEdit.premisesListEdit)&& canEidtPremise }">
+          <input class="form-check-input" id="premisesCheckbox" type="checkbox"
+                 name="editCheckbox" <c:if test="${pageEdit.premisesEdit}">checked</c:if> aria-invalid="false" value="premises">
         </c:if>
       </p>
       <c:forEach var="appGrpPremDto" items="${appSubmissionDto.appGrpPremisesDtoList}"
