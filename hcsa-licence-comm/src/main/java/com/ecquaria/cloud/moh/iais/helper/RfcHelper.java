@@ -1516,7 +1516,7 @@ public final class RfcHelper {
 
     public static int isChangeAppSvcOtherInfoDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList,
             List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList, List<String> nonAutoList, List<String> autoList) {
-        if (IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList) || IaisCommonUtils.isEmpty(oldAppSvcRelatedInfoDtoList)) {
+        if (appSvcRelatedInfoDtoList == null || oldAppSvcRelatedInfoDtoList == null) {
             return RfcConst.RFC_AMENDMENT;
         }
         if (appSvcRelatedInfoDtoList.size() != oldAppSvcRelatedInfoDtoList.size()) {
@@ -1524,9 +1524,12 @@ public final class RfcHelper {
         }
         int result = RfcConst.RFC_UNCHANGED;
         List<AppSvcOtherInfoDto> appSvcOtherInfoDtoList = IaisCommonUtils.genNewArrayList();
-        appSvcRelatedInfoDtoList.forEach((item) -> appSvcOtherInfoDtoList.addAll(item.getAppSvcOtherInfoList()));
+        appSvcRelatedInfoDtoList.stream()
+                .filter(dto -> dto.getAppSvcOtherInfoList() != null)
+                .forEach((item) -> appSvcOtherInfoDtoList.addAll(item.getAppSvcOtherInfoList()));
         List<AppSvcOtherInfoDto> oldAppSvcOtherInfoDtoList = IaisCommonUtils.genNewArrayList();
-        oldAppSvcRelatedInfoDtoList.forEach((item) -> oldAppSvcOtherInfoDtoList.addAll(item.getAppSvcOtherInfoList()));
+        oldAppSvcRelatedInfoDtoList.stream()
+                .filter(dto -> dto.getAppSvcOtherInfoList() != null).forEach((item) -> oldAppSvcOtherInfoDtoList.addAll(item.getAppSvcOtherInfoList()));
         boolean changeOtherInfo = isChangeOtherInfoDto(appSvcOtherInfoDtoList, oldAppSvcOtherInfoDtoList);
         if (changeOtherInfo) {
             nonAutoList.add(HcsaConsts.STEP_OTHER_INFORMATION);
