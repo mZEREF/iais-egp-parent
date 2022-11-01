@@ -705,9 +705,9 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                     if(monitoringSheetsDto.getAppProcessFileTrackExcelDtoMap().containsKey(entry.getKey())){
                         AppProcessFileTrackExcelDto excelDto=monitoringSheetsDto.getAppProcessFileTrackExcelDtoMap().get(entry.getKey());
 
-                        if(excelDto.getStatus().equals("PFT005")||excelDto.getStatusFe().equals("PFT005")){
+                        if ("PFT005".equals(excelDto.getStatus()) || "PFT005".equals(excelDto.getStatusFe())) {
                             excelDto.setResult("Match");
-                        }else {
+                        } else {
                             excelDto.setResult("Not Match");
                             hasNotMatch=true;
                         }
