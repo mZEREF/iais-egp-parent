@@ -1549,12 +1549,18 @@ public final class RfcHelper {
 
     private static boolean isChangeOtherInfoDto(List<AppSvcOtherInfoDto> appSvcOtherInfoDtoList,
             List<AppSvcOtherInfoDto> oldAppSvcOtherInfoDtoList) {
+        if (appSvcOtherInfoDtoList == null || oldAppSvcOtherInfoDtoList == null){
+            return false;
+        }
         return !isSame(appSvcOtherInfoDtoList, oldAppSvcOtherInfoDtoList, PageDataCopyUtil::copyAppSvcOtherInfoList);
     }
 
     public static boolean isChangeAppSvcOtherInfoTop(List<AppSvcOtherInfoDto> appSvcOtherInfoDtoList,
             List<AppSvcOtherInfoDto> oldAppSvcOtherInfoDtoList
             , List<String> nonAutoList) {
+        if (appSvcOtherInfoDtoList == null || oldAppSvcOtherInfoDtoList == null){
+            return false;
+        }
         boolean result = false;
         boolean changeOtherInfoTop = isChangeOtherInfoTopList(appSvcOtherInfoDtoList, oldAppSvcOtherInfoDtoList);
         boolean changeOtherInfoPersonPractitioners = isChangeOtherInfoPersonPractitionersList(appSvcOtherInfoDtoList,
@@ -1610,6 +1616,9 @@ public final class RfcHelper {
 
     private static boolean isChangeOtherInfoPersonPractitionersList(List<AppSvcOtherInfoDto> appSvcOtherInfoDtoList,
             List<AppSvcOtherInfoDto> oldAppSvcOtherInfoDtoList, List<String> nonAutoList) {
+        if (appSvcOtherInfoDtoList == null || oldAppSvcOtherInfoDtoList == null){
+            return false;
+        }
         boolean result = false;
         for (int i = 0; i < appSvcOtherInfoDtoList.size(); i++) {
             if (AppConsts.YES.equals(appSvcOtherInfoDtoList.get(i).getProvideTop())) {
@@ -1763,6 +1772,9 @@ public final class RfcHelper {
 
     private static boolean isChangeCheckOtherService(List<AppSvcOtherInfoDto> appSvcOtherInfoDtoList,
             List<AppSvcOtherInfoDto> oldAppSvcOtherInfoDtoList) {
+        if (appSvcOtherInfoDtoList == null || oldAppSvcOtherInfoDtoList == null){
+            return false;
+        }
         boolean result = false;
         List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList = IaisCommonUtils.genNewArrayList();
         appSvcOtherInfoDtoList.stream().filter(dto -> IaisCommonUtils.isNotEmpty(dto.getAppPremSubSvcRelDtoList())).forEach((item) -> {
