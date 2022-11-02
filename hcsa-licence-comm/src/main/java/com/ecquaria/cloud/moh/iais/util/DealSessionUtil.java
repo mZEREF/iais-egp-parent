@@ -865,8 +865,10 @@ public class DealSessionUtil {
             appSvcOtherInfoDto.setAppGrpPremisesDto(appGrpPremisesDto);
             appSvcOtherInfoDto.setSvcSpecifiedCorrelationList(svcSpecifiedCorrelationDtoList);
             appSvcOtherInfoDto.setAppSvcSuplmFormDto(appSvcSuplmFormDto);
-            if (appSvcOtherInfoDto.getOrgUserDto() == null) {
-                appSvcOtherInfoDto.setOrgUserDto(getOtherInfoYfVs(request));
+            if (appSvcOtherInfoDto.getApplicantId() == null) {
+                appSvcOtherInfoDto.setOrgUserDto(getOtherInfoYfVs(request, appSvcOtherInfoDto));
+            }else {
+                appSvcOtherInfoDto.setOrgUserDto(getOrganizationService().retrieveOrgUserAccountById(appSvcOtherInfoDto.getApplicantId()));
             }
             appSvcOtherInfoDto.setInit(true);
             newList.add(appSvcOtherInfoDto);
@@ -973,7 +975,7 @@ public class DealSessionUtil {
     /**
      * Yellow Fever Vaccination
      */
-    public static OrgUserDto getOtherInfoYfVs(HttpServletRequest request) {
+    public static OrgUserDto getOtherInfoYfVs(HttpServletRequest request, AppSvcOtherInfoDto appSvcOtherInfoDto) {
         if (request == null) {
             request = MiscUtil.getCurrentRequest();
         }
@@ -981,8 +983,9 @@ public class DealSessionUtil {
             return null;
         }
         User user = SessionManager.getInstance(request).getCurrentUser();
+        appSvcOtherInfoDto.setApplicantId(user.getId());
         ComSystemAdminClient client = SpringContextHelper.getContext().getBean(ComSystemAdminClient.class);
-        return client.retrieveOrgUserAccount(user.getId()).getEntity();
+        return client.retrieveOrgUserAccount(appSvcOtherInfoDto.getApplicantId()).getEntity();
     }
 
     private static AppSvcSuplmFormDto initAppSvcSuplmFormDto(String code, boolean forceInit, String type,

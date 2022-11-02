@@ -475,8 +475,9 @@ public class ServiceInfoDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId,null);
-        DealSessionUtil.initAppSvcOtherInfoList(currSvcInfoDto,appSubmissionDto.getAppGrpPremisesDtoList(),false, bpc.request);
-        ParamUtil.setRequestAttr(bpc.request, "orgUserDto",AppDataHelper.getOtherInfoYfVs(bpc.request));
+        if (DealSessionUtil.initAppSvcOtherInfoList(currSvcInfoDto,appSubmissionDto.getAppGrpPremisesDtoList(),false, bpc.request)){
+            setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
+        }
     }
 
     /**

@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeIndividualDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -80,6 +81,14 @@ public class OrganizationServiceImpl implements OrganizationService {
             result = true;
         }
         return result;
+    }
+
+    @Override
+    public OrgUserDto retrieveOrgUserAccountById(String id) {
+        if (StringUtil.isEmpty(id)){
+            return null;
+        }
+        return orgCommClient.retrieveOrgUserAccountById(id).getEntity();
     }
 
 }
