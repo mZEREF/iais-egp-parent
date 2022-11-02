@@ -242,7 +242,7 @@ public class WithOutRenewalDelegator {
             List<HcsaServiceDto> hcsaServiceDtoList = DealSessionUtil.getLatestServiceConfigsFormApp(appSubmissionDto);
             appSubmissionDto.setAppType(appType);
             appSubmissionDto.setDraftNo(draftNo);
-            DealSessionUtil.init(appSubmissionDto, hcsaServiceDtoList, false, null);
+            DealSessionUtil.init(appSubmissionDto, hcsaServiceDtoList, true, null);
             for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtoList) {
                 serviceNameList.add(hcsaServiceDto.getSvcName());
                 serviceNameTitleList.add(hcsaServiceDto.getSvcName());

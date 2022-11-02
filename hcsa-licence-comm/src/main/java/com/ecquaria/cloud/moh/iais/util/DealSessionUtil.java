@@ -510,13 +510,7 @@ public class DealSessionUtil {
         }
         Map<String, HcsaSvcSpePremisesTypeDto> map = premisesTypeList.stream()
                 .collect(Collectors.toMap(HcsaSvcSpePremisesTypeDto::getPremisesType, Function.identity(), (u, v) -> v));
-        Iterator<String> iterator = premisesType.iterator();
-        while (iterator.hasNext()) {
-            String next = iterator.next();
-            if (map.get(next) == null) {
-                iterator.remove();
-            }
-        }
+        premisesType.removeIf(next -> map.get(next) == null);
         return premisesType;
     }
 
@@ -676,6 +670,7 @@ public class DealSessionUtil {
         }
         Map<String, HcsaServiceStepSchemeDto> stepMap = hcsaServiceStepSchemes.stream()
                 .collect(Collectors.toMap(HcsaServiceStepSchemeDto::getStepCode, Function.identity()));
+        // Supplementary Form
         HcsaServiceStepSchemeDto hcsaServiceStepScheme = stepMap.get(HcsaConsts.STEP_SUPPLEMENTARY_FORM);
         if (hcsaServiceStepScheme != null) {
             initSupplementoryForm(currSvcInfoDto, appGrpPremisesDtos, forceInit);
@@ -688,6 +683,7 @@ public class DealSessionUtil {
         } else {
             currSvcInfoDto.setAppSvcSuplmFormList(null);
         }
+        // Other information
         hcsaServiceStepScheme = stepMap.get(HcsaConsts.STEP_OTHER_INFORMATION);
         if (hcsaServiceStepScheme != null) {
             initAppSvcOtherInfoList(currSvcInfoDto, appGrpPremisesDtos, forceInit, request);
@@ -705,6 +701,7 @@ public class DealSessionUtil {
         } else {
             currSvcInfoDto.setAppSvcOtherInfoList(null);
         }
+        // Special services information
         hcsaServiceStepScheme = stepMap.get(HcsaConsts.STEP_SPECIAL_SERVICES_FORM);
         if (hcsaServiceStepScheme != null) {
             initAppSvcSpecialServiceInfoDtoList(currSvcInfoDto, appPremSpecialisedDtoList);
@@ -722,6 +719,7 @@ public class DealSessionUtil {
         } else {
             currSvcInfoDto.setAppSvcSpecialServiceInfoList(null);
         }
+        // Doucuments
         hcsaServiceStepScheme = stepMap.get(HcsaConsts.STEP_DOCUMENTS);
         if (hcsaServiceStepScheme != null) {
             List<DocumentShowDto> documentShowDtos = initDocumentShowList(currSvcInfoDto,
@@ -731,6 +729,7 @@ public class DealSessionUtil {
             currSvcInfoDto.setAppSvcDocDtoLit(null);
             currSvcInfoDto.setDocumentShowDtoList(null);
         }
+        // outsourced providers
         hcsaServiceStepScheme = stepMap.get(HcsaConsts.STEP_OUTSOURCED_PROVIDERS);
         if (hcsaServiceStepScheme != null) {
             initSvcOutsourcedProvider(request, currSvcInfoDto, forceInit);
