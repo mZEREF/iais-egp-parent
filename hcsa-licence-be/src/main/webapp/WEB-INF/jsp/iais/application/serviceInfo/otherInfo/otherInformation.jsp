@@ -43,7 +43,7 @@
         <c:set var="n" value="${appSvcOtherInfoDto.appSvcOtherInfoNurseDto}"/>
         <c:set var="dsDeclaration" value="${appSvcOtherInfoDto.dsDeclaration}"/>
         <c:set var="ascsDeclaration" value="${appSvcOtherInfoDto.ascsDeclaration}"/>
-        <c:set var="orgUse" value="${orgUserDto}"/>
+        <c:set var="orgUse" value="${appSvcOtherInfoDto.orgUserDto}"/>
         <c:set var="prefix" value="${appSvcOtherInfoDto.premisesVal}"/>
         <iais:row>
             <div class="col-xs-12">
