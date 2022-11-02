@@ -331,6 +331,10 @@ public class ServiceMenuDelegator {
         if (!noExistBaseLic){
             for (HcsaServiceDto hcsaServiceDto : notContainedSvc) {
                 PaginationHandler<AppAlignLicQueryDto> paginationHandler = (PaginationHandler<AppAlignLicQueryDto>) ParamUtil.getSessionAttr(bpc.request,hcsaServiceDto.getSvcCode()+"licPagDiv__SessionAttr");
+                if (paginationHandler==null){
+                    ParamUtil.setRequestAttr(bpc.request, "notShow"+hcsaServiceDto.getSvcCode(),AppConsts.YES);
+                    continue;
+                }
                 AppSelectSvcDto appSelectSvcDto = getAppSelectSvcDto(bpc);
                 if(appSelectSvcDto.isInitPagHandler()){
                     List<AppAlignLicQueryDto> appAlignLicQueryDtos = IaisCommonUtils.genNewArrayList();
@@ -342,6 +346,10 @@ public class ServiceMenuDelegator {
         }else if (!noExistBaseApp){
             for (HcsaServiceDto hcsaServiceDto : notContainedSvc) {
                 PaginationHandler<AppAlignAppQueryDto> paginationHandler = (PaginationHandler<AppAlignAppQueryDto>) ParamUtil.getSessionAttr(bpc.request,hcsaServiceDto.getSvcCode()+"appPagDiv__SessionAttr");
+                if (paginationHandler==null){
+                    ParamUtil.setRequestAttr(bpc.request, "notShow"+hcsaServiceDto.getSvcCode(),AppConsts.YES);
+                    continue;
+                }
                 AppSelectSvcDto appSelectSvcDto = getAppSelectSvcDto(bpc);
                 if(appSelectSvcDto.isInitPagHandler()){
                     List<AppAlignAppQueryDto> appAlignAppQueryDtoList = IaisCommonUtils.genNewArrayList();
@@ -616,9 +624,11 @@ public class ServiceMenuDelegator {
                 if (IaisCommonUtils.isNotEmpty(appAlignLicQueryDtos)){
                     appAlignLicQueryDtoList.addAll(appAlignLicQueryDtos);
                 }
-                initBundlePaginationHandler(appAlignLicQueryDtoList,hcsaServiceDto.getSvcCode());
+                if (appAlignLicQueryDtoList.size()>1){
+                    initBundlePaginationHandler(appAlignLicQueryDtoList,hcsaServiceDto.getSvcCode());
+                }
             }
-        }else if (IaisCommonUtils.isNotEmpty(bundleApp)&&bundleApp.size()>1){
+        }else if (IaisCommonUtils.isNotEmpty(bundleApp)){
             noExistBaseApp=false;
             for (HcsaServiceDto hcsaServiceDto : notContainedSvc) {
                 List<AppAlignAppQueryDto> appAlignAppQueryDtoList=IaisCommonUtils.genNewArrayList();
@@ -629,7 +639,9 @@ public class ServiceMenuDelegator {
                 if (IaisCommonUtils.isNotEmpty(appAlignAppQueryDtos)){
                     appAlignAppQueryDtoList.addAll(appAlignAppQueryDtos);
                 }
-                initBundleAppPaginationHandler(appAlignAppQueryDtoList,hcsaServiceDto.getSvcCode());
+                if (appAlignAppQueryDtoList.size()>1){
+                    initBundleAppPaginationHandler(appAlignAppQueryDtoList,hcsaServiceDto.getSvcCode());
+                }
             }
         }
         if((!bundleAchOrMs &&noExistBaseLic) || (noExistBaseApp&&noExistBaseLic)){
@@ -656,6 +668,9 @@ public class ServiceMenuDelegator {
         if (!noExistBaseLic){
             for (HcsaServiceDto hcsaServiceDto : notContainedSvc) {
                 PaginationHandler<AppAlignLicQueryDto> paginationHandler = (PaginationHandler<AppAlignLicQueryDto>) ParamUtil.getSessionAttr(bpc.request,hcsaServiceDto.getSvcCode()+"licPagDiv__SessionAttr");
+                if (paginationHandler==null){
+                    continue;
+                }
                 paginationHandler.keepCurrentPageChecked();
                 List<AppAlignLicQueryDto> allCheckedData = paginationHandler.getAllCheckedData();
                 AppAlignLicQueryDto checkData = new AppAlignLicQueryDto();
@@ -683,6 +698,9 @@ public class ServiceMenuDelegator {
         }else if(!noExistBaseApp){
             for (HcsaServiceDto hcsaServiceDto : notContainedSvc) {
                 PaginationHandler<AppAlignAppQueryDto> paginationHandler = (PaginationHandler<AppAlignAppQueryDto>) ParamUtil.getSessionAttr(bpc.request,hcsaServiceDto.getSvcCode()+"appPagDiv__SessionAttr");
+                if (paginationHandler==null){
+                    continue;
+                }
                 paginationHandler.keepCurrentPageChecked();
                 List<AppAlignAppQueryDto> allCheckedData = paginationHandler.getAllCheckedData();
                 AppAlignAppQueryDto checkData = new AppAlignAppQueryDto();

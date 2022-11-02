@@ -182,7 +182,7 @@
 <%--                    >i</a></div>--%>
             </div>
             </c:if>
-            <c:if test="${dataSubARTPrivilege == 1 ||dataSubDPPrivilege == 1 ||dataSubTOPPrivilege == 1 ||dataSubLDTPrivilege == 1 ||dataSubVSSPrivilege == 1 }">
+            <%--<c:if test="${dataSubARTPrivilege == 1 ||dataSubDPPrivilege == 1 ||dataSubTOPPrivilege == 1 ||dataSubLDTPrivilege == 1 ||dataSubVSSPrivilege == 1 }">
             <div class="form-check progress-step-check" style="width: 70%;margin-bottom: 0;">
                 <input class="form-check-input" style="position: relative;" id="submitDataMoh"
                        type="radio" name="selfAssessmentType"
@@ -193,7 +193,7 @@
                     <span class="right-content">${self_ack006}</span>
                 </label>
             </div>
-            </c:if>
+            </c:if>--%>
             <c:if test="${hcsaPrivilege == 1}">
             <div class="form-check progress-step-check" style="width: 70%;margin-bottom: 0;">
                 <input class="form-check-input" style="position: relative;" id="withdrawApplication"

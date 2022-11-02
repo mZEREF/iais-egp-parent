@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageSearchDto;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -46,6 +47,8 @@ public interface InboxService {
     Map<String, String> checkRenewalStatus(String licenceId);
 
     Map<String, String> checkRenewalStatus(LicenceDto licenceDto);
+
+    boolean checkRenewalStatus(List<String> licenceIds, HttpServletRequest request);
 
     void updateMsgStatusTo(String msgId,String msgStatus);
     Boolean checkEligibility(String appId);

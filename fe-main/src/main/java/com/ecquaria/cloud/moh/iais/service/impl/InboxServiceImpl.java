@@ -1,8 +1,11 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
+import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -29,8 +32,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageSearchDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HalpSearchResultHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
@@ -49,10 +54,16 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringJoiner;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -327,6 +338,132 @@ public class InboxServiceImpl implements InboxService {
         }
         log.info(StringUtil.changeForLog(" ----------checkRenewalStatus errorMap :" + JsonUtil.parseToJson(errorMap)));
         return errorMap;
+    }
+
+    @Override
+    public boolean checkRenewalStatus(List<String> licenceIds, HttpServletRequest request) {
+        if (IaisCommonUtils.isNotEmpty(licenceIds)) {
+            return true;
+        }
+        if (licenceIds.size() == 1 && !checkRenewDraft(licenceIds.get(0), request)) {
+            return false;
+        }
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        StringJoiner joiner = new StringJoiner(", ");
+        boolean result = true;
+        for (String licId : licenceIds) {
+            errorMap.putAll(checkRenewalStatus(licId));
+            if (!(errorMap.isEmpty())) {
+                String licenseNo = errorMap.get("errorMessage");
+                if (!StringUtil.isEmpty(licenseNo)) {
+                    joiner.add(licenseNo);
+                }
+                result = false;
+            }
+        }
+        if (!result) {
+            String errorMessage = joiner.toString();
+            if (StringUtil.isEmpty(errorMessage)) {
+                errorMessage = errorMap.get("errorMessage2");
+                if (StringUtil.isEmpty(errorMessage)) {
+                    errorMessage = MessageUtil.getMessageDesc("RFC_ERR011");
+                }
+            } else {
+                errorMessage = MessageUtil.getMessageDesc("INBOX_ACK015") + errorMessage;
+            }
+            ParamUtil.setRequestAttr(request, "licIsRenewed", Boolean.TRUE);
+            ParamUtil.setRequestAttr(request, InboxConst.LIC_ACTION_ERR_MSG, errorMessage);
+            return false;
+        }
+        boolean toRenewal = true;
+        // check bundle
+        String bundle = request.getParameter("bundle");
+        if ("yes".equals(bundle)) {
+            List<LicenceDto> bundleLicenceDtos = (List<LicenceDto>) request.getSession().getAttribute("bundleLicenceDtos");
+            if (bundleLicenceDtos != null) {
+                for (LicenceDto v : bundleLicenceDtos) {
+                    licenceIds.add(v.getId());
+                }
+            }
+        } else {
+            StringJoiner data = new StringJoiner(", ");
+            joiner = new StringJoiner(", ");
+            List<HcsaServiceDto> entity = HcsaServiceCacheHelper.receiveAllHcsaService();
+            Map<String, HcsaServiceDto> svcMap = entity.stream()
+                    .collect(Collectors.toMap(HcsaServiceDto::getSvcName, Function.identity(), (u, v) -> v));
+            List<LicenceDto> dtoList = IaisCommonUtils.genNewArrayList();
+            List<LicenceDto> licences = getAllBundleLicences(licenceIds);
+            if (!licences.isEmpty()) {
+                for (LicenceDto licenceDto : licences) {
+                    if (svcMap.get(licenceDto.getSvcName()) == null) {
+                        continue;
+                    }
+                    if (!licenceIds.contains(licenceDto.getId())) {
+                        Map<String, String> map = checkRenewalStatus(licenceDto);
+                        if (!map.isEmpty()) {
+                            joiner.add(licenceDto.getLicenceNo());
+                        }
+                        data.add(licenceDto.getLicenceNo());
+                        dtoList.add(licenceDto);
+                    }
+                }
+
+            }
+
+            if (joiner.length() != 0) {
+                //INBOX_ERR013 - The following bundled licence(s) is/are not eligible for {action}: {data}.
+                Map<String, String> param = new HashMap<>(2);
+                param.put("action", "renewal");
+                param.put("data", joiner.toString());
+                ParamUtil.setRequestAttr(request, InboxConst.LIC_ACTION_ERR_MSG,
+                        MessageUtil.getMessageDesc("INBOX_ERR013", param));
+                ParamUtil.setRequestAttr(request, "licIsRenewed", Boolean.TRUE);
+                ParamUtil.setSessionAttr(request, "bundleLicenceDtos", null);
+                toRenewal = false;
+            } else if (!dtoList.isEmpty()) {
+                //INBOX_ACK026 - This following licence(s) is/are bundled with selected licence(s). Would you like to renew them
+                // as well: {data}.
+                Map<String, String> param = new HashMap<>(2);
+                param.put("data", data.toString());
+                ParamUtil.setRequestAttr(request, "draftByLicAppId",
+                        MessageUtil.getMessageDesc("INBOX_ACK026", param));
+                ParamUtil.setRequestAttr(request, "isBundleShow", "1");
+                ParamUtil.setSessionAttr(request, "bundleLicenceDtos", (Serializable) dtoList);
+                toRenewal = false;
+            }
+        }
+
+        return toRenewal;
+    }
+
+    private boolean checkRenewDraft(String licId, HttpServletRequest request) {
+        List<ApplicationSubDraftDto> draftByLicAppId = getDraftByLicAppId(licId);
+        String isNeedDelete = ParamUtil.getString(request, "isNeedDelete");
+        if (!draftByLicAppId.isEmpty()) {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId) {
+                stringBuilder.append(applicationSubDraftDto.getDraftNo()).append(' ');
+            }
+            if ("delete".equals(isNeedDelete)) {
+                for (ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId) {
+                    deleteDraftByNo(applicationSubDraftDto.getDraftNo());
+                }
+            } else {
+                String ack030 = MessageUtil.getMessageDesc("GENERAL_ACK030");
+                String replace = ack030.replace("{draft application no}", stringBuilder.toString());
+                ParamUtil.setRequestAttr(request, "draftByLicAppId", replace);
+                ParamUtil.setRequestAttr(request, "isRenewShow", "1");
+//                ParamUtil.setSessionAttr(request, "licence_err_list", IaisCommonUtils.genNewArrayListWithData(licId));
+                return false;
+            }
+        }
+        List<ApplicationSubDraftDto> applicationSubDraftDtos = getDraftByLicAppIdAndStatus(licId,
+                ApplicationConsts.DRAFT_STATUS_PENDING_PAYMENT);
+        if (!IaisCommonUtils.isEmpty(applicationSubDraftDtos)) {
+            ParamUtil.setRequestAttr(request, InboxConst.LIC_ACTION_ERR_MSG, MessageUtil.getMessageDesc("NEW_ERR0023"));
+            return false;
+        }
+        return true;
     }
 
     @Override
