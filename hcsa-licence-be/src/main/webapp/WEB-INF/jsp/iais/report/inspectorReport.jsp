@@ -110,12 +110,25 @@
                     </tr>
                     <tr>
                         <td class="col-xs-4">
-                            <p>Subsumed Services</p>
+                            <p>Specified Service</p>
                         </td>
                         <td class="col-xs-4">
-                            <c:if test="${insRepDto.subsumedServices != null && not empty insRepDto.subsumedServices}">
-                                <c:forEach var="service" items="${insRepDto.subsumedServices}">
-                                    <p><c:out value="${service}"></c:out></p>
+                            <c:if test="${insRepDto.appPremSpecialSubSvcRelDtoList != null && not empty insRepDto.appPremSpecialSubSvcRelDtoList}">
+                                <c:forEach var="service" items="${insRepDto.appPremSpecialSubSvcRelDtoList}">
+                                    <p><c:out value="${service.svcName}"></c:out></p>
+                                </c:forEach>
+                            </c:if>
+                        </td>
+                        <td class="col-xs-4"/>
+                    </tr>
+                    <tr>
+                        <td class="col-xs-4">
+                            <p>Other Service</p>
+                        </td>
+                        <td class="col-xs-4">
+                            <c:if test="${insRepDto.appPremOthersSubSvcRelDtoList != null && not empty insRepDto.appPremOthersSubSvcRelDtoList}">
+                                <c:forEach var="service" items="${insRepDto.appPremOthersSubSvcRelDtoList}">
+                                    <p><c:out value="${service.svcName}"></c:out></p>
                                 </c:forEach>
                             </c:if>
                         </td>
@@ -519,6 +532,8 @@
                                 <td class="col-xs-4"></td>
                             </tr>
                         </c:if>
+                        <%@include file="/WEB-INF/jsp/iais/report/reportSpecialServiceShow.jsp"%>
+                        <%@include file="/WEB-INF/jsp/iais/report/reportOtherServiceShow.jsp"%>
                         <%@include file="/WEB-INF/jsp/iais/report/reportSvcVehicleShow.jsp"%>
                     </table>
                 </div>

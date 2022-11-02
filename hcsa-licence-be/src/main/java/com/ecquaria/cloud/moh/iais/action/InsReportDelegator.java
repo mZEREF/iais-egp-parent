@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseCo
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -32,20 +33,23 @@ import com.ecquaria.cloud.moh.iais.helper.InspectionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
+import java.util.stream.Collectors;
 
 /**
  * @author weilu
@@ -67,6 +71,8 @@ public class InsReportDelegator {
     private FillupChklistService fillupChklistService;
     @Autowired
     private VehicleCommonController vehicleCommonController;
+    @Autowired
+    private ApplicationService applicationService;
     @Autowired
     private InspectionService inspectionService;
     private final static String RECOMMENDATION_DTO = "appPremisesRecommendationDto";
@@ -117,6 +123,12 @@ public class InsReportDelegator {
             InspectionReportDto inspectorUser = insRepService.getInspectorUser(taskDto, loginContext);
             insRepDto.setInspectors(inspectorUser.getInspectors());
         }
+        insRepDto.setAppPremSpecialSubSvcRelDtoList(applicationViewDto.getAppPremSpecialSubSvcRelDtoList().stream()
+                .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
+                .collect(Collectors.toList()));
+        insRepDto.setAppPremOthersSubSvcRelDtoList(applicationViewDto.getAppPremOthersSubSvcRelDtoList().stream()
+                .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
+                .collect(Collectors.toList()));
         String appStatus = applicationViewDto.getApplicationDto().getStatus();
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
         AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
@@ -164,6 +176,10 @@ public class InsReportDelegator {
         ParamUtil.setSessionAttr(request, "insRepDto", insRepDto);
         ParamUtil.setSessionAttr(request, "applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(request, "riskLevelForSave", riskLevelForSave);
+        ParamUtil.setSessionAttr(bpc.request, HcsaLicenceBeConstant.APP_SPECIAL_FLAG,
+                applicationService.getSubSvcFlagToShowOrEdit(taskDto,applicationViewDto));
+        ParamUtil.setSessionAttr(bpc.request, HcsaLicenceBeConstant.APP_OTHER_FLAG,
+                applicationService.getSubSvcFlagToShowOrEdit(taskDto,applicationViewDto));
         vehicleCommonController.setVehicleInformation(request,taskDto,applicationViewDto);
     }
 
@@ -174,6 +190,24 @@ public class InsReportDelegator {
         ParamUtil.setSessionAttr(bpc.request, "appType", applicationType);
         //Can edit application
         InspectionHelper.checkForEditingApplication(bpc.request);
+        List<AppPremSubSvcRelDto> specialServiceList;
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
+            specialServiceList=applicationViewDto.getSpecialRfcShowDtos();
+        }else {
+            specialServiceList=applicationViewDto.getAppPremSpecialSubSvcRelDtoList();
+        }
+        ParamUtil.setRequestAttr(bpc.request, "changedSpecialServiceList", specialServiceList.stream()
+                .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE.equals(dto.getActCode()))
+                .collect(Collectors.toList()));
+        List<AppPremSubSvcRelDto> otherServiceList;
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
+            otherServiceList=applicationViewDto.getOthersRfcShowDtos();
+        }else {
+            otherServiceList=applicationViewDto.getAppPremOthersSubSvcRelDtoList();
+        }
+        ParamUtil.setRequestAttr(bpc.request, "changedOtherServiceList", otherServiceList.stream()
+                .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE.equals(dto.getActCode()))
+                .collect(Collectors.toList()));
     }
 
     public void inspectorReportSave(BaseProcessClass bpc) throws Exception {
