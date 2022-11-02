@@ -40,7 +40,21 @@
             <br/>
             <div>
                 <c:forEach items="${notContainedSvc}" var="service" varStatus="status">
-                    <%@include file="comm/chooseBaseSvcContent.jsp"%>
+                    <c:choose>
+                        <c:when test="${service.svcCode==AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY}">
+                            <c:if test="${notShowCLB!=1}">
+                                <%@include file="comm/chooseBaseSvcContent.jsp"%>
+                            </c:if>
+                        </c:when>
+                        <c:when test="${service.svcCode==AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES}">
+                            <c:if test="${notShowRDS!=1}">
+                                <%@include file="comm/chooseBaseSvcContent.jsp"%>
+                            </c:if>
+                        </c:when>
+                        <c:otherwise>
+                            <%@include file="comm/chooseBaseSvcContent.jsp"%>
+                        </c:otherwise>
+                    </c:choose>
                     <c:if test="${!status.last}">
                         <br>
                     </c:if>
