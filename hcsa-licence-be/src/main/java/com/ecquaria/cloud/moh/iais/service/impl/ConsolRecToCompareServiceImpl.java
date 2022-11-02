@@ -378,24 +378,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                             by.write(size,0,count);
                             count= fileInputStream.read(size);
                         }
-                        MonitoringSheetsDto sheetsDto = fileToDto(by.toString());
-                        Date date = new Date();
-                        String dateStr = Formatter.formatDateTime(date, Formatter.DATE_ELIS);
-                        String inputFileName =  "CompareResults_"+dateStr;
-                        File path = MiscUtil.generateFile(rsltSharedPath+File.separator+inputFileName+".xlsx" );
-                        path.createNewFile();
-                        List<ExcelSheetDto> excelSheetDtos = getExcelSheetDtos(sheetsDto);
-                        File configInfoTemplate = ResourceUtils.getFile("classpath:template/ConsolRecToCompare_Template.xlsx");
-                        File writerToExcel= ExcelWriter.writerToExcel(excelSheetDtos, configInfoTemplate,inputFileName);
-                        byte[] bytes = FileUtils.readFileToByteArray(writerToExcel);
-                        try (OutputStream fileOutputStream  = newOutputStream(path.toPath());) {
-                            fileOutputStream.write(bytes);
-                            flag=true;
-                        } catch (Exception e) {
-                            log.error(e.getMessage(),e);
-                            return null;
-                        }
-
+                        flag=fileToDto(by.toString());
 
                     }catch (Exception e){
                         log.error(e.getMessage(),e);
@@ -648,9 +631,10 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
         return widthMap;
     }
 
-    private MonitoringSheetsDto fileToDto(String str) throws Exception
+    private boolean fileToDto(String str) throws Exception
     {
         boolean hasNotMatch=false;
+        boolean flag=Boolean.FALSE;
         //fe
         MonitoringSheetsDto monitoringSheetsDto = JsonUtil.parseToObject(str, MonitoringSheetsDto.class);
         MonitoringSheetsDto monitoringAppSheetsDto=null;
@@ -857,30 +841,48 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                     }
                 }
             }
-            if(hasNotMatch){
-                log.info("start send email start");
-                EmailDto emailDto = new EmailDto();
-                List<String> receiptEmail= Arrays.asList(this.mailRecipient.split(","));
-
-                emailDto.setReceipts(receiptEmail);
-                String emailContent = "CompareFEBE Not Match";
-                emailDto.setContent(emailContent);
-                emailDto.setSubject("CompareFEBE Not Match");
-                emailDto.setSender(this.mailSender);
-                emailDto.setReqRefNum(UUID.randomUUID().toString());
-                emailDto.setClientQueryCode(UUID.randomUUID().toString());
-
-                try {
-                    emailSmsClient.sendEmail(emailDto, null);
-                } catch (IOException e) {
-                    log.error(e.getMessage());
-                }
-
-                log.info("start send email end");
-            }
         }
 
-        return monitoringSheetsDto;
+        Date date = new Date();
+        String dateStr = Formatter.formatDateTime(date, Formatter.DATE_ELIS);
+        String inputFileName =  "CompareResults_"+dateStr;
+        File path = MiscUtil.generateFile(rsltSharedPath+File.separator+inputFileName+".xlsx" );
+        path.createNewFile();
+        List<ExcelSheetDto> excelSheetDtos = getExcelSheetDtos(monitoringSheetsDto);
+        File configInfoTemplate = ResourceUtils.getFile("classpath:template/ConsolRecToCompare_Template.xlsx");
+        File writerToExcel= ExcelWriter.writerToExcel(excelSheetDtos, configInfoTemplate,inputFileName);
+        byte[] bytes = FileUtils.readFileToByteArray(writerToExcel);
+
+        try (OutputStream fileOutputStream  = newOutputStream(path.toPath());) {
+            fileOutputStream.write(bytes);
+            flag=true;
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+        }
+        if(hasNotMatch){
+            log.info("start send email start");
+            EmailDto emailDto = new EmailDto();
+            List<String> receiptEmail= Arrays.asList(this.mailRecipient.split(","));
+
+            emailDto.setReceipts(receiptEmail);
+            String emailContent = "CompareFEBE Not Match";
+            emailDto.setContent(emailContent);
+            emailDto.setSubject("CompareFEBE Not Match");
+            emailDto.setSender(this.mailSender);
+            emailDto.setReqRefNum(UUID.randomUUID().toString());
+            emailDto.setClientQueryCode(UUID.randomUUID().toString());
+
+            try {
+                Map<String, byte[]> attachments =IaisCommonUtils.genNewHashMap();
+                attachments.put(inputFileName+".xlsx",bytes);
+                emailSmsClient.sendEmail(emailDto, attachments);
+            } catch (IOException e) {
+                log.error(e.getMessage());
+            }
+
+            log.info("start send email end");
+        }
+        return flag;
 
     }
 
