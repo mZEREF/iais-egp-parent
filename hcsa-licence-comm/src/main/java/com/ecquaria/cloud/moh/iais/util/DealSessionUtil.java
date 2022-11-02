@@ -868,7 +868,9 @@ public class DealSessionUtil {
             if (appSvcOtherInfoDto.getApplicantId() == null) {
                 appSvcOtherInfoDto.setOrgUserDto(getOtherInfoYfVs(request, appSvcOtherInfoDto));
             }else {
-                appSvcOtherInfoDto.setOrgUserDto(getOrganizationService().retrieveOrgUserAccountById(appSvcOtherInfoDto.getApplicantId()));
+//                appSvcOtherInfoDto.setOrgUserDto(getOrganizationService().retrieveOrgUserAccountById(appSvcOtherInfoDto.getApplicantId()));
+                ComSystemAdminClient client = SpringContextHelper.getContext().getBean(ComSystemAdminClient.class);
+                appSvcOtherInfoDto.setOrgUserDto(client.retrieveOrgUserAccount(appSvcOtherInfoDto.getApplicantId()).getEntity());
             }
             appSvcOtherInfoDto.setInit(true);
             newList.add(appSvcOtherInfoDto);
