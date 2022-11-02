@@ -162,6 +162,8 @@
                                                                                     code="${appPremisesRecommendationDto.period}"/></p>
                                                                         </iais:value>
                                                                     </iais:row>
+                                                                    <%@include file="/WEB-INF/jsp/iais/hcsaLicence/appFlowSvcSpecialShow.jsp"%>
+                                                                    <%@include file="/WEB-INF/jsp/iais/hcsaLicence/appFlowSvcOtherShow.jsp"%>
                                                                     <%@include file="/WEB-INF/jsp/iais/hcsaLicence/appFlowSvcVehicleShow.jsp"%>
                                                                 </c:if>
                                                                 <div class="fastTrack">
