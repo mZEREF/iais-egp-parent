@@ -16,41 +16,32 @@
             </div>
         </iais:row>
         <div class="amend-preview-info form-horizontal min-row">
-            <c:choose>
-                <c:when test="${(currentPreviewSvcInfo.serviceName == AppServicesConsts.SERVICE_NAME_DENTAL_SERVICE) || (currentPreviewSvcInfo.serviceName == AppServicesConsts.SERVICE_NAME_MEDICAL_SERVICE)}">
-                    <%@include file="viewDentalService.jsp"%>
-                    <c:if test="${currentPreviewSvcInfo.serviceName == AppServicesConsts.SERVICE_NAME_MEDICAL_SERVICE}">
-                        <%@include file="viewOtherInformationTopPerson.jsp"%>
-                        <%@include file="viewOtherForm.jsp"%>
-                        <%@include file="viewDoucmentation.jsp"%>
-                        <%@include file="viewAbort.jsp"%>
-                        <%@include file="viewYfVs.jsp"%>
-                    </c:if>
-                </c:when>
-                <c:when test="${currentPreviewSvcInfo.serviceName == AppServicesConsts.SERVICE_NAME_RENAL_DIALYSIS_CENTRE}">
-                    <%@include file="viewRenalDialysisCentreService.jsp"%>
-                </c:when>
-                <c:when test="${currentPreviewSvcInfo.serviceName == AppServicesConsts.SERVICE_NAME_AMBULATORY_SURGICAL_CENTRE}">
-                    <%@include file="viewAmbulatorySurgicalCentreService.jsp"%>
-                    <%@include file="viewOtherInformationTopPerson.jsp"%>
-                    <%@include file="viewOtherForm.jsp"%>
-                    <%@include file="viewDoucmentation.jsp"%>
-                    <%@include file="viewAbort.jsp"%>
-                </c:when>
-                <c:when test="${currentPreviewSvcInfo.serviceName == AppServicesConsts.SERVICE_NAME_ACUTE_HOSPITAL}">
-                    <%@include file="viewOtherInformationTopPerson.jsp"%>
-                    <%@include file="viewOtherForm.jsp"%>
-                    <%@include file="viewDoucmentation.jsp"%>
-                    <%@include file="viewAbort.jsp"%>
-                    <%@include file="viewYfVs.jsp"%>
-                </c:when>
-                <c:when test="${currentPreviewSvcInfo.serviceName == AppServicesConsts.SERVICE_NAME_COMMUNITY_HOSPITAL}">
-                    <%@include file="viewYfVs.jsp"%>
-                </c:when>
-                <c:otherwise>
+            <c:if test="${currentPreviewSvcInfo.serviceCode eq AppServicesConsts.SERVICE_CODE_DENTAL_SERVICE
+        || currentPreviewSvcInfo.serviceCode == AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE}">
+                <%@ include file="viewDentalService.jsp"%>
+            </c:if>
 
-                </c:otherwise>
-            </c:choose>
+            <c:if test="${currentPreviewSvcInfo.serviceCode eq AppServicesConsts.SERVICE_CODE_RENAL_DIALYSIS_CENTRE}">
+                <%@include file="viewRenalDialysisCentreService.jsp" %>
+            </c:if>
+
+            <c:if test="${currentPreviewSvcInfo.serviceCode eq AppServicesConsts.SERVICE_CODE_AMBULATORY_SURGICAL_CENTRE}">
+                <%@include file="viewAmbulatorySurgicalCentreService.jsp"%>
+            </c:if>
+            <c:if test="${currentPreviewSvcInfo.serviceCode eq AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE
+        || currentPreviewSvcInfo.serviceCode eq AppServicesConsts.SERVICE_CODE_AMBULATORY_SURGICAL_CENTRE
+        || currentPreviewSvcInfo.serviceCode eq AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL
+        || currentPreviewSvcInfo.serviceCode == AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL}">
+                <c:if test="${currentPreviewSvcInfo.serviceCode != AppServicesConsts.SERVICE_CODE_COMMUNITY_HOSPITAL}">
+                    <%@include file="viewOtherInformationTopPerson.jsp"%>
+                    <%@include file="viewOtherForm.jsp"%>
+                    <%@include file="viewDoucmentation.jsp"%>
+                    <%@include file="viewAbort.jsp"%>
+                </c:if>
+                <c:if test="${currentPreviewSvcInfo.serviceCode != AppServicesConsts.SERVICE_CODE_AMBULATORY_SURGICAL_CENTRE}">
+                    <%@include file="viewYfVs.jsp"%>
+                </c:if>
+            </c:if>
             <%@include file="viewOtherService.jsp"%>
         </div>
     </c:forEach>
