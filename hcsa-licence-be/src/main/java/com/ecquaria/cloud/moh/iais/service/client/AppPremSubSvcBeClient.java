@@ -7,12 +7,17 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
 @FeignClient(name = "hcsa-application", configuration = FeignConfiguration.class,
         fallback = AppPremSubSvcBeClientFallBack.class)
 public interface AppPremSubSvcBeClient {
+
+    @PostMapping(value = "/hcsa-be-svc-subSvcRel", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremSubSvcRelDto>> saveSubServiceDtoList(@RequestBody List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList);
 
     @GetMapping(value = "/hcsa-be-svc-subSvcRel/svc-subSvcRel/{appPremCorrId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremSubSvcRelDto>> getAppPremSubSvcRelDtoListByCorrId(@PathVariable(name = "appPremCorrId") String appPremCorrId);

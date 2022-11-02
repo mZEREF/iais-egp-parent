@@ -3738,6 +3738,11 @@ public final class AppValidatorHelper {
                         errorMap.put(errorKey, "GENERAL_ERR0006");
                         isValid = false;
                     }
+                } else if (HcsaConsts.SUPFORM_ITEM_TYPE_BOLD.equals(itemType)){
+                    if (StringUtil.isEmpty(inputValue) && 1 == mandatoryType) {
+                        errorMap.put(errorKey, "GENERAL_ERR0006");
+                        isValid = false;
+                    }
                 }
                 if (!checkConditonMandatory(itemMap, radioBatchMap, errorMap, appSvcSuplmItemDto, itemConfigDto, prefix)) {
                     isValid = false;
@@ -4279,13 +4284,13 @@ public final class AppValidatorHelper {
             errorMap.put("addrType" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Address Type", "field"));
         }
         boolean empty1 = StringUtil.isEmpty(blkNo);
-        if (empty1 && "Apt Blk".equals(addrType)) {
+        if (empty1 && ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType)) {
             errorMap.put(blkNoKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Block / House No.", "field"));
         } else if (!empty1 && blkNo.length() > 10) {
             String errorMsg = repLength("Block / House No.", "10");
             errorMap.put(blkNoKey, errorMsg);
         }
-        if ("Apt Blk".equals(addrType)) {
+        if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType)) {
             if (StringUtil.isEmpty(floorNo)) {
                 errorMap.put(i + "FloorNo" + 0, MessageUtil.replaceMessage("GENERAL_ERR0006", "Floor No.", "field"));
             } else if (floorNo.length() > 3) {
@@ -4322,7 +4327,7 @@ public final class AppValidatorHelper {
     private static void validateOperaionUnits(AppGrpSecondAddrDto appGrpSecondAddrDto, Map<String, String> errorMap, int index) {
         if (IaisCommonUtils.isNotEmpty(appGrpSecondAddrDto.getAppPremisesOperationalUnitDtos())) {
             List<AppPremisesOperationalUnitDto> dtos = appGrpSecondAddrDto.getAppPremisesOperationalUnitDtos();
-            if ("Apt Blk".equals(appGrpSecondAddrDto.getAddrType())) {
+            if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(appGrpSecondAddrDto.getAddrType())) {
                 for (int i = 0; i < dtos.size(); i++) {
                     AppPremisesOperationalUnitDto unitDto = dtos.get(i);
                     String floorNo = unitDto.getFloorNo();

@@ -10,6 +10,14 @@ import java.util.List;
 public class AppPremSubSvcBeClientFallBack implements AppPremSubSvcBeClient {
 
     @Override
+    public FeignResponseEntity<List<AppPremSubSvcRelDto>> saveSubServiceDtoList(List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<List<AppPremSubSvcRelDto>> getAppPremSubSvcRelDtoListByCorrId(String appPremCorrId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
