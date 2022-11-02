@@ -927,7 +927,7 @@ public final class AppDataHelper {
         }
         if (IaisCommonUtils.isNotEmpty(appSvcOutsouredDto.getRadiologicalServiceList())) {
             searchParam.addFilter("ids", getOutSourceIds(appSvcOutsouredDto.getRadiologicalServiceList()), true);
-            searchParam.addFilter("sLicenceNo", getOutSourcedLicenceNos(appSvcOutsouredDto.getClinicalLaboratoryList()), true);
+            searchParam.addFilter("sLicenceNo", getOutSourcedLicenceNos(appSvcOutsouredDto.getRadiologicalServiceList()), true);
         }
         return appSvcOutsouredDto;
     }

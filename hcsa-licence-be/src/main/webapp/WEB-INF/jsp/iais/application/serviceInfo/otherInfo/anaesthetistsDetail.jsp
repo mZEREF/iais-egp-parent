@@ -1,18 +1,11 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <c:set var="psnType" value="${ApplicationConsts.OTHER_TOP_ANAESTHETISTS}"/>
-<div class="person-detail anaesthetists  <c:if test="${'1' != provideTop}">hidden</c:if>" data-prefix="${prefix}" data-prefix="${prefix}">
-    <iais:row>
-        <div class="col-xs-12 col-md-10" style="padding-top: 25px;">
-            <p class="bold">Name, Professional Regn. No. and Qualification of anaesthetists&nbsp;
-                <label class="assign-psn-item" style="font-weight: bold;!important;" data-prefix="${prefix}"><c:if test="${anaesthetists.size() > 1}">${index+1}</c:if></label>
-            </p>
-        </div>
-        <div class="col-xs-12 col-md-2 text-right removeADiv removeAnaesthetistsBtn" data-prefix="${prefix}">
-            <h4 class="text-danger text-right ">
-                <em class="fa fa-times-circle text-right  text del-size-36 removeAnaesthetistsBtn cursorPointer"></em>
-            </h4>
-        </div>
-    </iais:row>
+<div class="person-detail anaesthetists  aperson-content  <c:if test="${'1' != provideTop}">hidden</c:if>" data-prefix="${prefix}" data-prefix="${prefix}">
+    <div class="col-xs-12 col-md-12 text-right removeADiv removeAnaesthetistsBtn" data-prefix="${prefix}">
+        <h4 class="text-danger text-right ">
+            <em class="fa fa-times-circle text-right  text del-size-36 removeAnaesthetistsBtn cursorPointer"></em>
+        </h4>
+    </div>
     <input type="hidden" class="aisPartEdit" name="${prefix}aisPartEdit${index}" value="0" data-prefix="${prefix}"/>
     <input type="hidden" class="anaesthetistsIndexNo" name="${prefix}anaesthetistsIndexNo${index}" value="${person.idNo}"/>
     <input type="hidden" class="apsnType" name="${prefix}apsnType${index}" value="${psnType}" data-prefix="${prefix}">

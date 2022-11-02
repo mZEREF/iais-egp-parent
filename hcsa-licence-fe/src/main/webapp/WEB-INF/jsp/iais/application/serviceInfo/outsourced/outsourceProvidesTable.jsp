@@ -83,10 +83,10 @@
                     <td>
                         <p class="visible-xs visible-sm table-row-title">Scope of Outsourcing</p>
                         <c:if test="${currSvcInfoDto.appSvcOutsouredDto.prefixVal eq prefix}">
-                            <iais:input maxLength="300" type="text" cssClass="outstandingScope" name="${prefix}outstandingScope" value="${currSvcInfoDto.appSvcOutsouredDto.searchOutsourced.appPremOutSourceLicenceDto.outstandingScope}"/>
+                            <iais:input maxLength="3000" type="text" cssClass="outstandingScope" name="${prefix}outstandingScope" value="${currSvcInfoDto.appSvcOutsouredDto.searchOutsourced.appPremOutSourceLicenceDto.outstandingScope}"/>
                         </c:if>
                         <c:if test="${currSvcInfoDto.appSvcOutsouredDto.prefixVal != prefix}">
-                            <iais:input maxLength="300" type="text" cssClass="outstandingScope" name="${prefix}outstandingScope" value=""/>
+                            <iais:input maxLength="3000" type="text" cssClass="outstandingScope" name="${prefix}outstandingScope" value=""/>
                         </c:if>
                         <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}OutstandingScope"></span>
                     </td>

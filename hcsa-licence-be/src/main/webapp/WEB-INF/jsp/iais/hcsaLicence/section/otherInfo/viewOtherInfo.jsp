@@ -22,31 +22,30 @@
                             <c:if test="${currentPreviewSvcInfo.serviceCode == AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE}">
                                 <%@include file="viewTop.jsp"%>
                                 <c:if test="${otherInfo.provideTop eq '1'}">
+                                    <p class="col-xs-12" style="font-weight: bold;!important;">Name, Professional Regn. No. and Qualification of medical practitioners authorised to perform Abortion&nbsp;
+                                        </p>
                                     <c:forEach var="practitioners" items="${otherInfo.otherInfoTopPersonPractitionersList}" varStatus="status">
                                         <c:set var="oldPractitioners" value="${oldOtherInfo.otherInfoTopPersonPractitionersList[status.index]}"/>
-                                        <p class="col-xs-12" style="font-weight: bold;!important;">Name, Professional Regn. No. and Qualification of medical practitioners authorised to perform Abortion&nbsp;
-                                            <c:if test="${fn:length(otherInfo.otherInfoTopPersonPractitionersList)>1}">${status.index+1}</c:if></p>
                                         <%@include file="viewTopPersonPractitioners.jsp"%>
                                     </c:forEach>
 
+                                    <p class="col-xs-12" style="font-weight: bold;!important;">Name, Professional Regn. No. and Qualification of anaesthetists&nbsp;</p>
                                     <c:forEach var="anaesthetists" items="${otherInfo.otherInfoTopPersonAnaesthetistsList}" varStatus="status">
                                         <c:set var="oldAnaesthetists" value="${oldOtherInfo.otherInfoTopPersonAnaesthetistsList[status.index]}"/>
-                                        <p class="col-xs-12" style="font-weight: bold;!important;">Name, Professional Regn. No. and Qualification of anaesthetists&nbsp;
-                                            <c:if test="${fn:length(otherInfo.otherInfoTopPersonAnaesthetistsList)>1}">${status.index+1}</c:if></p>
+
                                         <%@include file="viewTopPresonAnaesthetists.jsp"%>
                                     </c:forEach>
-
+                                    <p class="col-xs-12" style="font-weight: bold;!important;">Name and Qualifications of trained nurses&nbsp;</p>
                                     <c:forEach var="nurses" items="${otherInfo.otherInfoTopPersonNursesList}" varStatus="status">
                                         <c:set var="oldNurses" value="${oldOtherInfo.otherInfoTopPersonNursesList[status.index]}"/>
-                                        <p class="col-xs-12" style="font-weight: bold;!important;">Name and Qualifications of trained nurses&nbsp;
-                                            <c:if test="${fn:length(otherInfo.otherInfoTopPersonNursesList)>1}">${status.index+1}</c:if></p>
+
                                         <%@include file="viewTopPersonNurses.jsp"%>
                                     </c:forEach>
 
+                                    <p class="col-xs-12" style="font-weight: bold;!important;">Name and Qualifications of certified TOP counsellors&nbsp;</p>
                                     <c:forEach var="counsellors" items="${otherInfo.otherInfoTopPersonCounsellorsList}" varStatus="status">
                                         <c:set var="oldCounsellors" value="${oldOtherInfo.otherInfoTopPersonCounsellorsList[status.index]}"/>
-                                        <p class="col-xs-12" style="font-weight: bold;!important;">Name and Qualifications of certified TOP counsellors&nbsp;
-                                            <c:if test="${fn:length(otherInfo.otherInfoTopPersonCounsellorsList)>1}">${status.index+1}</c:if></p>
+
                                         <%@include file="viewTopPersonCounsellors.jsp"%>
                                     </c:forEach>
 
