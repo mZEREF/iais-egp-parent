@@ -151,6 +151,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * HcsaApplicationDelegator
@@ -473,6 +474,25 @@ public class HcsaApplicationDelegator {
         if(hasEmailAttaDoc){
             ParamUtil.setRequestAttr(bpc.request, "hasEmailAttaDoc", hasEmailAttaDoc);
         }
+        String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
+        List<AppPremSubSvcRelDto> specialServiceList;
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
+            specialServiceList=applicationViewDto.getSpecialRfcShowDtos();
+        }else {
+            specialServiceList=applicationViewDto.getAppPremSpecialSubSvcRelDtoList();
+        }
+        ParamUtil.setRequestAttr(bpc.request, "changedSpecialServiceList", specialServiceList.stream()
+                .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE.equals(dto.getActCode()))
+                .collect(Collectors.toList()));
+        List<AppPremSubSvcRelDto> otherServiceList;
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
+            otherServiceList=applicationViewDto.getOthersRfcShowDtos();
+        }else {
+            otherServiceList=applicationViewDto.getAppPremOthersSubSvcRelDtoList();
+        }
+        ParamUtil.setRequestAttr(bpc.request, "changedOtherServiceList", otherServiceList.stream()
+                .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE.equals(dto.getActCode()))
+                .collect(Collectors.toList()));
         log.debug(StringUtil.changeForLog("the do prepareData end ...."));
     }
 
