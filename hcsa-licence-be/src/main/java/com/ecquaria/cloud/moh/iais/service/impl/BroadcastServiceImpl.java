@@ -123,7 +123,12 @@ public class BroadcastServiceImpl implements BroadcastService {
     public BroadcastApplicationDto setAppPremSubSvcDtoByAppView(BroadcastApplicationDto broadcastApplicationDto, ApplicationViewDto applicationViewDto,
                                                                 String appStatus, String appType) {
         if(applicationViewDto != null) {
-            List<AppPremSubSvcRelDto> appPremSpecialSubSvcRelDtoList = applicationViewDto.getAppPremSpecialSubSvcRelDtoList();
+            List<AppPremSubSvcRelDto> appPremSpecialSubSvcRelDtoList;
+            if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) && InspectionConstants.SWITCH_ACTION_YES.equals(vehicleOpenFlag)) {
+                appPremSpecialSubSvcRelDtoList = applicationViewDto.getSpecialRfcShowDtos();
+            } else {
+                appPremSpecialSubSvcRelDtoList = applicationViewDto.getAppPremSpecialSubSvcRelDtoList();
+            }
             if (!IaisCommonUtils.isEmpty(appPremSpecialSubSvcRelDtoList)) {
                 //get db data
                 List<AppPremSubSvcRelDto> appPremSubSvcRelDtos = appPremSubSvcBeClient.getAppPremSubSvcRelDtoListByCorrIdAndType(
@@ -139,7 +144,12 @@ public class BroadcastServiceImpl implements BroadcastService {
                 //set db data for roll back
                 broadcastApplicationDto.setRollBackSpecialSubSvcRelDtos(appPremSubSvcRelDtos);
             }
-            List<AppPremSubSvcRelDto> appPremOthersSubSvcRelDtoList = applicationViewDto.getAppPremOthersSubSvcRelDtoList();
+            List<AppPremSubSvcRelDto> appPremOthersSubSvcRelDtoList;
+            if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) && InspectionConstants.SWITCH_ACTION_YES.equals(vehicleOpenFlag)) {
+                appPremOthersSubSvcRelDtoList = applicationViewDto.getOthersRfcShowDtos();
+            } else {
+                appPremOthersSubSvcRelDtoList = applicationViewDto.getAppPremOthersSubSvcRelDtoList();
+            }
             if (!IaisCommonUtils.isEmpty(appPremOthersSubSvcRelDtoList)) {
                 //get db data
                 List<AppPremSubSvcRelDto> appPremSubSvcRelDtos = appPremSubSvcBeClient.getAppPremSubSvcRelDtoListByCorrIdAndType(
