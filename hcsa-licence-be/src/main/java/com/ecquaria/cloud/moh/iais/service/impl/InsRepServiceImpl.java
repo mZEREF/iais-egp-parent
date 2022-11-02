@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspecti
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryExtDto;
@@ -61,6 +62,7 @@ import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremSubSvcBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppSvcVehicleBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -75,16 +77,17 @@ import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.cloudfeign.FeignException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author weilu
@@ -138,6 +141,8 @@ public class InsRepServiceImpl implements InsRepService {
     private BeEicGatewayClient beEicGatewayClient;
     @Autowired
     private AppSvcVehicleBeClient appSvcVehicleBeClient;
+    @Autowired
+    private AppPremSubSvcBeClient appPremSubSvcBeClient;
 
     @Autowired
     private FillupChklistService fillupChklistService;
@@ -1377,6 +1382,14 @@ public class InsRepServiceImpl implements InsRepService {
         log.info("---------------saveAppVehs--------------------");
         if(HcsaLicenceBeConstant.EDIT_VEHICLE_FLAG.equalsIgnoreCase(flag) && IaisCommonUtils.isNotEmpty(appSvcVehicleDtos)){
             appSvcVehicleBeClient.createAppSvcVehicleDtoList(appSvcVehicleDtos);
+        }
+    }
+
+    @Override
+    public void saveSubService(String flag, List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList) {
+        log.info("---------------saveSubService--------------------");
+        if(HcsaLicenceBeConstant.EDIT_VEHICLE_FLAG.equalsIgnoreCase(flag) && IaisCommonUtils.isNotEmpty(appPremSubSvcRelDtoList)){
+            appPremSubSvcBeClient.saveSubServiceDtoList(appPremSubSvcRelDtoList);
         }
     }
 }

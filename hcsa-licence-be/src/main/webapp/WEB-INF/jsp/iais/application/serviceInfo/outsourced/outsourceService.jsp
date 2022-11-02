@@ -43,6 +43,10 @@
         top: 9px;
         left: 0;
     }
+
+    .weghitBold{
+        font-weight: bold !important;
+    }
 </style>
 <iais:row>
     <div class="col-xs-12">
@@ -82,8 +86,8 @@
         </div>
         <div class="col-md-12 col-xs-12" style="margin-top: 30px;!important;">
             <div class="col-xs-6 col-md-6 svcNameSel">
-                <iais:row>
-                    <iais:field width="5" value="Service" mandatory="true"/>
+                <iais:row cssClass="form-horizontal">
+                    <iais:field width="5" value="Service" mandatory="true" cssClass="weghitBold"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <%String outSourceSel = request.getParameter("serviceCode");%>
                         <iais:select id="serviceCode" name="serviceCode" options="outsourcedServiceSelectOpts" firstOption="Please Select" value="<%=outSourceSel%>"/>
@@ -93,8 +97,8 @@
             </div>
 
             <div class="col-xs-6 col-md-6">
-                <iais:row>
-                    <iais:field width="5"  value="Business Name"/>
+                <iais:row cssClass="form-horizontal">
+                    <iais:field width="5"  value="Business Name" cssClass="weghitBold"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <%String businessName = request.getParameter("businessName");%>
                         <iais:input maxLength="100" type="text" cssClass="businessName" name="businessName" value="<%=businessName%>"/>
@@ -105,8 +109,8 @@
 
         <div class="col-md-12 col-xs-12">
             <div class="col-xs-6 col-md-6">
-                <iais:row>
-                    <iais:field width="5"  value="Licence No. "/>
+                <iais:row cssClass="form-horizontal">
+                    <iais:field width="5"  value="Licence No. " cssClass="weghitBold"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <%String licNo = request.getParameter("licNo");%>
                         <iais:input maxLength="24" type="text" cssClass="licNo" name="licNo" value="<%=licNo%>"/>
@@ -115,8 +119,8 @@
             </div>
 
             <div class="col-xs-6 col-md-6">
-                <iais:row>
-                    <iais:field width="5"  value="Postal Code"/>
+                <iais:row cssClass="form-horizontal">
+                    <iais:field width="5"  value="Postal Code" cssClass="weghitBold"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <%String postalCode = request.getParameter("postalCode");%>
                         <iais:input maxLength="6" type="text" cssClass="postalCode" name="postalCode" value="<%=postalCode%>"/>

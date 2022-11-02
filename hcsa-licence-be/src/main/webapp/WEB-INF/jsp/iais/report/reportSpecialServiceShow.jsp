@@ -1,5 +1,5 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
-<c:if test="${('RETYPE007_edit' eq appSpecialFlag || 'RETYPE007_view' eq appSpecialFlag) && (not empty changedSpecialServiceList)}">
+<c:if test="${('RETYPE007_edit' eq appSpecialFlag || 'view' eq appSpecialFlag) && (not empty changedSpecialServiceList)}">
   <c:forEach var="appPremSpecialSubSvcRelDto" items="${changedSpecialServiceList}" varStatus="status">
     <tr>
       <c:if test="${appPremSpecialSubSvcRelDto.actCode==ApplicationConsts.RECORD_ACTION_CODE_ADD}">
@@ -40,7 +40,7 @@
                   </td>
                 </tr>
               </c:if>
-              <c:if test="${'RETYPE007_view' eq appSpecialFlag}">
+              <c:if test="${'view' eq appSpecialFlag}">
                 <tr>
                   <td><c:out value="${status.count}"></c:out></td>
                   <td><c:out value="${appPremSpecialSubSvcRelDto.svcName}"/></td>

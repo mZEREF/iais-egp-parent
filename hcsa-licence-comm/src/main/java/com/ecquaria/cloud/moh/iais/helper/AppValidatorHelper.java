@@ -2270,7 +2270,7 @@ public final class AppValidatorHelper {
                     String gfaValue = String.valueOf(appSvcOtherInfoMedDto.getGfaValue());
                     if ("null".equals(gfaValue)) {
                         errMap.put(prefix + "gfaValue", MessageUtil.replaceMessage("GENERAL_ERR0006", "GFA Value (in sqm)", "field"));
-                    } else if (!StringUtil.isDigit(gfaValue)) {
+                    } else if (!StringUtil.isDigit(gfaValue) || gfaValue.matches("^((-\\d+)|(0+))$")) {
                         errMap.put(prefix + "gfaValue", MessageUtil.replaceMessage("GENERAL_ERR0002", "GFA Value (in sqm)", "field"));
                     } else if (gfaValue.length() > 7 && gfaValue.length() <= 3000){
                         String errorMsg = repLength("GFA Value (in sqm)", "7");
@@ -2311,7 +2311,7 @@ public final class AppValidatorHelper {
                     String agfaValue = ambulatorySurgicalCentre.getGfaValue();
                     if ("null".equals(agfaValue)) {
                         errMap.put(prefix + "agfaValue", MessageUtil.replaceMessage("GENERAL_ERR0006", "GFA Value (in sqm)", "field"));
-                    } else if (!StringUtil.isDigit(agfaValue)) {
+                    } else if (!StringUtil.isDigit(agfaValue) || agfaValue.matches("^((-\\d+)|(0+))$")) {
                         errMap.put(prefix + "agfaValue", MessageUtil.replaceMessage("GENERAL_ERR0002", "GFA Value (in sqm)", "field"));
                     } else if (agfaValue.length() > 7 && agfaValue.length() <= 3000){
                         String errorMsg = repLength("GFA Value (in sqm)", "7");
@@ -2596,7 +2596,7 @@ public final class AppValidatorHelper {
                         errMap.put(prefix + "year" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
                                 "Year",
                                 "field"));
-                    } else if (!StringUtil.isDigit(year)) {
+                    } else if (!StringUtil.isDigit(year) || year.matches("^-[0-9]*[1-9][0-9]*$")) {
                         errMap.put(prefix + "year" + i, MessageUtil.replaceMessage("GENERAL_ERR0002",
                                 "Year",
                                 "field"));
@@ -2609,7 +2609,7 @@ public final class AppValidatorHelper {
                         errMap.put(prefix + "abortNum" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
                                 "No. of abortions",
                                 "field"));
-                    } else if (!StringUtil.isDigit(abortNum)) {
+                    } else if (!StringUtil.isDigit(abortNum) || abortNum.matches("^-[0-9]*[1-9][0-9]*$")) {
                         errMap.put(prefix + "abortNum" + i, MessageUtil.replaceMessage("GENERAL_ERR0002",
                                 "No. of abortions",
                                 "field"));
@@ -2636,7 +2636,7 @@ public final class AppValidatorHelper {
                         errMap.put(prefix + "pyear" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
                                 "Year",
                                 "field"));
-                    } else if (!StringUtil.isDigit(year)) {
+                    } else if (!StringUtil.isDigit(year) || year.matches("^-[0-9]*[1-9][0-9]*$")) {
                         errMap.put(prefix + "pyear" + i, MessageUtil.replaceMessage("GENERAL_ERR0002",
                                 "Year",
                                 "field"));
@@ -2649,7 +2649,7 @@ public final class AppValidatorHelper {
                         errMap.put(prefix + "pabortNum" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
                                 "No. of abortions",
                                 "field"));
-                    } else if (!StringUtil.isDigit(abortNum)) {
+                    } else if (!StringUtil.isDigit(abortNum) || abortNum.matches("^-[0-9]*[1-9][0-9]*$")) {
                         errMap.put(prefix + "pabortNum" + i, MessageUtil.replaceMessage("GENERAL_ERR0002",
                                 "No. of abortions",
                                 "field"));
@@ -2676,7 +2676,7 @@ public final class AppValidatorHelper {
                         errMap.put(prefix + "ayear" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
                                 "Year",
                                 "field"));
-                    } else if (!StringUtil.isDigit(year)) {
+                    } else if (!StringUtil.isDigit(year) || year.matches("^-[0-9]*[1-9][0-9]*$")) {
                         errMap.put(prefix + "ayear" + i, MessageUtil.replaceMessage("GENERAL_ERR0002",
                                 "Year",
                                 "field"));
@@ -2689,7 +2689,7 @@ public final class AppValidatorHelper {
                         errMap.put(prefix + "aabortNum" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
                                 "No. of abortions",
                                 "field"));
-                    } else if (!StringUtil.isDigit(abortNum)) {
+                    } else if (!StringUtil.isDigit(abortNum) || abortNum.matches("^-[0-9]*[1-9][0-9]*$")) {
                         errMap.put(prefix + "aabortNum" + i, MessageUtil.replaceMessage("GENERAL_ERR0002",
                                 "No. of abortions",
                                 "field"));
@@ -3738,6 +3738,11 @@ public final class AppValidatorHelper {
                         errorMap.put(errorKey, "GENERAL_ERR0006");
                         isValid = false;
                     }
+                } else if (HcsaConsts.SUPFORM_ITEM_TYPE_BOLD.equals(itemType)){
+                    if (StringUtil.isEmpty(inputValue) && 1 == mandatoryType) {
+                        errorMap.put(errorKey, "GENERAL_ERR0006");
+                        isValid = false;
+                    }
                 }
                 if (!checkConditonMandatory(itemMap, radioBatchMap, errorMap, appSvcSuplmItemDto, itemConfigDto, prefix)) {
                     isValid = false;
@@ -4279,13 +4284,13 @@ public final class AppValidatorHelper {
             errorMap.put("addrType" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Address Type", "field"));
         }
         boolean empty1 = StringUtil.isEmpty(blkNo);
-        if (empty1 && "Apt Blk".equals(addrType)) {
+        if (empty1 && ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType)) {
             errorMap.put(blkNoKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Block / House No.", "field"));
         } else if (!empty1 && blkNo.length() > 10) {
             String errorMsg = repLength("Block / House No.", "10");
             errorMap.put(blkNoKey, errorMsg);
         }
-        if ("Apt Blk".equals(addrType)) {
+        if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType)) {
             if (StringUtil.isEmpty(floorNo)) {
                 errorMap.put(i + "FloorNo" + 0, MessageUtil.replaceMessage("GENERAL_ERR0006", "Floor No.", "field"));
             } else if (floorNo.length() > 3) {
@@ -4322,7 +4327,7 @@ public final class AppValidatorHelper {
     private static void validateOperaionUnits(AppGrpSecondAddrDto appGrpSecondAddrDto, Map<String, String> errorMap, int index) {
         if (IaisCommonUtils.isNotEmpty(appGrpSecondAddrDto.getAppPremisesOperationalUnitDtos())) {
             List<AppPremisesOperationalUnitDto> dtos = appGrpSecondAddrDto.getAppPremisesOperationalUnitDtos();
-            if ("Apt Blk".equals(appGrpSecondAddrDto.getAddrType())) {
+            if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(appGrpSecondAddrDto.getAddrType())) {
                 for (int i = 0; i < dtos.size(); i++) {
                     AppPremisesOperationalUnitDto unitDto = dtos.get(i);
                     String floorNo = unitDto.getFloorNo();

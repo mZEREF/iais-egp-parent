@@ -20,7 +20,7 @@
             JOIN licence AS l ON l.ID = lp.LICENCE_ID
             JOIN premises AS p ON p.ID = lp.PREMISES_ID
             JOIN lic_prem_business_info b ON b.LIC_PREM_ID = lp.ID
-            WHERE 1=1 AND l.STATUS = 'LICEST001'
+            WHERE 1=1 AND DATEDIFF(Month,l.START_DATE ,l.EXPIRY_DATE) >= 6 AND l.STATUS = 'LICEST001'
             <#if dPostCode??> AND p.POSTAL_CODE = :dPostCode</#if>
             <#if svcName??>AND l.SVC_NAME = :svcName </#if>
             <#if businessName??> AND b.BUSINESS_NAME = :businessName</#if>
@@ -30,7 +30,7 @@
             <#if licenseeId??> AND l.LICENSEE_ID NOT IN (:licenseeId)</#if>
             <#if licenceNos??> AND l.LICENCE_NO IN (:licenceNos)</#if>
             <#if bundleSvcName??> AND l.SVC_NAME NOT IN (:bundleSvcName)</#if>
-            <#if postalCode??> AND p.POSTAL_CODE IN (SELECT lsa.POSTAL_CODE FROM lic_second_addr lsa WHERE 1=1 AND lsa.POSTAL_CODE LIKE CONCAT('%',(:postalCode),'%')) </#if>
+            <#if postalCode??> OR p.POSTAL_CODE IN (SELECT lsa.POSTAL_CODE FROM lic_second_addr lsa WHERE 1=1 AND lsa.POSTAL_CODE LIKE CONCAT('%',(:postalCode),'%')) </#if>
             <#if addId??> AND l.ID = :addId</#if>
             <#if sLicenceNo??> AND l.LICENCE_NO NOT IN (:sLicenceNo)</#if>
 
