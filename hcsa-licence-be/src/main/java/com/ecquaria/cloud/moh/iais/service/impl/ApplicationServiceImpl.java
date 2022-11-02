@@ -1196,10 +1196,9 @@ public class ApplicationServiceImpl implements ApplicationService {
     public String getSubSvcFlagToShowOrEdit(TaskDto taskDto,ApplicationViewDto applicationViewDto) {
         String subSvcFlag = AppConsts.FALSE;
         //filter appType
-        boolean vehicleAppTypeFlag = getVehicleAppTypeFlag(applicationViewDto);
-        //filter vehicleOpenFlag
-        if(vehicleAppTypeFlag && taskDto != null) {
-            boolean actionVehicleFlag = false;
+        boolean subSvcTypeFlag = getVehicleAppTypeFlag(applicationViewDto);
+        if(subSvcTypeFlag && taskDto != null) {
+            boolean actionSubSvcFlag = false;
             //filter stage
             List<AppPremSubSvcRelDto> list = IaisCommonUtils.genNewArrayList();
             list.addAll(applicationViewDto.getAppPremSpecialSubSvcRelDtoList());
@@ -1213,10 +1212,10 @@ public class ApplicationServiceImpl implements ApplicationService {
                     //filter DM data
                     if(!StringUtil.isEmpty(newLicenseeId) && newLicenseeId.equals(licenseeId)) {
                         subSvcFlag = InspectionConstants.SWITCH_ACTION_VIEW;
-                        actionVehicleFlag = true;
+                        actionSubSvcFlag = true;
                     }
                 }
-                if(!actionVehicleFlag){
+                if(!actionSubSvcFlag){
                     if (HcsaConsts.ROUTING_STAGE_ASO.equals(stageId) || HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)) {
                         subSvcFlag = InspectionConstants.SWITCH_ACTION_EDIT;
                     } else if (HcsaConsts.ROUTING_STAGE_AO1.equals(stageId) ||
@@ -1242,8 +1241,6 @@ public class ApplicationServiceImpl implements ApplicationService {
                         }
                      }
                 }
-            } else {
-                log.info(StringUtil.changeForLog("EAS / MTS ===>Application No" + taskDto.getApplicationNo() + "======>AppSvcVehicleDtos is NULL"));
             }
         }
         return subSvcFlag;
