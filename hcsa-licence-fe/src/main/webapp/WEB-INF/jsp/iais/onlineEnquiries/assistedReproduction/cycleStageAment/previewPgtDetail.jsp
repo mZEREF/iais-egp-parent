@@ -52,6 +52,41 @@
                     <iais:row>
                         <iais:field width="4" value="PGT-M" style="font-size: 2.0rem;" />
                     </iais:row>
+                    <div id="pgtMcomStage" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMCom !=1 && arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtMCom !=1}">style="display: none"</c:if>>
+                        <iais:row>
+                            <iais:field width="4" value="Please check all PGT-M (Common) stages done in current cycle" />
+                            <iais:value width="4" cssClass="col-md-4" display="true">
+                                <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.workUpCom == 1}"><iais:code code="PGT001"/><br></c:if>
+                                <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.ebtCom == 1}"><iais:code code="PGT002"/><br></c:if>
+                            </iais:value>
+                            <iais:value width="4" cssClass="col-md-4" display="true">
+                                <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.workUpCom == 1}"><iais:code code="PGT001"/><br></c:if>
+                                <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.ebtCom == 1}"><iais:code code="PGT002"/><br></c:if>
+                            </iais:value>
+                        </iais:row>
+                    </div>
+                    <div id="pgtMRareStage" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMRare !=1 && arSuperDataSubmissionDtoVersion.pgtStageDto.isPgtMRare !=1}">style="display: none"</c:if>>
+                        <iais:row>
+                            <iais:field width="4" value="Please check all PGT-M (Rare) stages done in current cycle" />
+                            <iais:value width="4" cssClass="col-md-4" display="true">
+                                <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.workUpRare == 1}"><iais:code code="PGT001"/><br></c:if>
+                                <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.ebtRare == 1}"><iais:code code="PGT002"/><br></c:if>
+                            </iais:value>
+                            <iais:value width="4" cssClass="col-md-4" display="true">
+                                <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.workUpRare == 1}"><iais:code code="PGT001"/><br></c:if>
+                                <c:if test="${ arSuperDataSubmissionDtoVersion.pgtStageDto.ebtRare == 1}"><iais:code code="PGT002"/><br></c:if>
+                            </iais:value>
+                        </iais:row>
+                    </div>
+                    <iais:row>
+                        <iais:field width="4" value="Date Started for PGT-M" info="${MessageUtil.getMessageDesc('DS_MSG039')}"/>
+                        <iais:value width="4" cssClass="col-md-4" display="true">
+                            <fmt:formatDate value='${arSuperDataSubmissionDto.pgtStageDto.pgtMDate}' pattern='dd/MM/yyyy' />
+                        </iais:value>
+                        <iais:value width="4" cssClass="col-md-4" display="true">
+                            <fmt:formatDate value='${arSuperDataSubmissionDtoVersion.pgtStageDto.pgtMDate}' pattern='dd/MM/yyyy' />
+                        </iais:value>
+                    </iais:row>
                     <iais:row>
                         <iais:field width="4" value="PGT-M Performed" />
                         <iais:value width="4" cssClass="col-md-4" display="true">
@@ -79,7 +114,7 @@
                         </iais:row>
                     </div>
                     <iais:row>
-                        <iais:field width="4" value="What Condition and Gene was PGT-M Performed to Detect For?"/>
+                        <iais:field width="4" value="What Condition and Gene was PGT-M Performed to Detect?"/>
                         <iais:value width="4" cssClass="col-md-4" display="true">
                             <c:out value="${arSuperDataSubmissionDto.pgtStageDto.pgtMCondition}"/>
                         </iais:value>
@@ -147,7 +182,25 @@
                         <iais:field width="4" value="PGT-SR" style="font-size: 2.0rem;" />
                     </iais:row>
                     <iais:row>
-                        <iais:field width="4" value="What Condition and Structural Rearrangement was PGT-SR Performed For?"/>
+                        <iais:field width="4" value="Date Started for PGT-SR"/>
+                        <iais:value width="4" cssClass="col-md-4" display="true">
+                            <fmt:formatDate value='${arSuperDataSubmissionDto.pgtStageDto.pgtSrDate}' pattern='dd/MM/yyyy' />
+                        </iais:value>
+                        <iais:value width="4" cssClass="col-md-4" display="true">
+                            <fmt:formatDate value='${arSuperDataSubmissionDtoVersion.pgtStageDto.pgtSrDate}' pattern='dd/MM/yyyy' />
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field width="4" value="PGT-SR Appeal Reference No. (If Applicable)"/>
+                        <iais:value width="4" cssClass="col-md-4" display="true">
+                            <c:out value="${arSuperDataSubmissionDto.pgtStageDto.pgtSrRefNo}"/>
+                        </iais:value>
+                        <iais:value width="4" cssClass="col-md-4" display="true">
+                            <c:out value="${arSuperDataSubmissionDtoVersion.pgtStageDto.pgtSrRefNo}"/>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field width="4" value="What was PGT-SR Performed For?"/>
                         <iais:value width="4" cssClass="col-md-4" display="true">
                             <c:out value="${arSuperDataSubmissionDto.pgtStageDto.pgtSrCondition}"/>
                         </iais:value>

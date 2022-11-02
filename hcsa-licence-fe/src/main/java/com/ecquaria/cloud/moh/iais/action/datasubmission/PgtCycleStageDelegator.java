@@ -6,8 +6,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -111,7 +113,10 @@ public class PgtCycleStageDelegator extends CommonDelegator{
         pgtStageDto.setIsPgtAAma(0);
         pgtStageDto.setIsPgtATomrif(0);
         pgtStageDto.setIsPgtATomrpl(0);
-
+        pgtStageDto.setWorkUpCom(0);
+        pgtStageDto.setEbtCom(0);
+        pgtStageDto.setWorkUpRare(0);
+        pgtStageDto.setEbtRare(0);
 
         HttpServletRequest request=bpc.request;
         String isPgtMCom =  ParamUtil.getString(request, "isPgtMCom");
@@ -129,6 +134,16 @@ public class PgtCycleStageDelegator extends CommonDelegator{
 
 
         if( "on".equals(isPgtMCom)||"on".equals(isPgtMRare)){
+            String pgtMDateStr = ParamUtil.getRequestString(request,"pgtMDate");
+            if(!StringUtil.isEmpty(pgtMDateStr)) {
+                try{
+                    Date date = Formatter.parseDate(pgtMDateStr);
+                    pgtStageDto.setPgtMDate(date);
+                }catch (Exception e) {
+                    pgtStageDto.setPgtMDate(null);
+                    log.info("PGT Stage invalid pgtMDate");
+                }
+            }
 
             String isPgtMDsld =  ParamUtil.getString(request, "isPgtMDsld");
             if("on".equals(isPgtMDsld)){
@@ -159,6 +174,14 @@ public class PgtCycleStageDelegator extends CommonDelegator{
             } else if ("NA".equals(isPgtCoFunding)) {
                 pgtStageDto.setIsPgtCoFunding("NA");
             }
+            String mComWork = ParamUtil.getString(request, "mComWork");
+            String mComEBT = ParamUtil.getString(request, "mComEBT");
+            if ("on".equals(mComWork)){
+                pgtStageDto.setWorkUpCom(1);
+            }
+            if ("on".equals(mComEBT)){
+                pgtStageDto.setEbtCom(1);
+            }
         }
         if ("on".equals(isPgtMRare)) {
             String isPgtMRareCoFunding = ParamUtil.getString(request, "isPgtMRareCoFunding");
@@ -169,10 +192,32 @@ public class PgtCycleStageDelegator extends CommonDelegator{
             } else if("NA".equals(isPgtMRareCoFunding)) {
                 pgtStageDto.setIsPgtMRareCoFunding("NA");
             }
+            String mRareWork = ParamUtil.getString(request, "mRareWork");
+            String mRareEBT = ParamUtil.getString(request, "mRareEBT");
+            if ("on".equals(mRareWork)){
+                pgtStageDto.setWorkUpRare(1);
+            }
+            if ("on".equals(mRareEBT)){
+                pgtStageDto.setEbtRare(1);
+            }
         }
 
         if("on".equals(isPgtSr)){
             pgtStageDto.setIsPgtSr(1);
+            String pgtSrDateStr = ParamUtil.getRequestString(request,"pgtSrDate");
+            if(!StringUtil.isEmpty(pgtSrDateStr)) {
+                try{
+                    Date date = Formatter.parseDate(pgtSrDateStr);
+                    pgtStageDto.setPgtSrDate(date);
+                }catch (Exception e) {
+                    pgtStageDto.setPgtSrDate(null);
+                    log.info("PGT Stage invalid pgtSrDate");
+                }
+            }
+            String pgtSrRefNo = ParamUtil.getString(request, "pgtSrRefNo");
+            if(!StringUtil.isEmpty(pgtSrRefNo)){
+                pgtStageDto.setPgtSrRefNo(pgtSrRefNo);
+            }
             String pgtSrCondition = ParamUtil.getString(request, "pgtSrCondition");
             String isPgtSrCoFunding = ParamUtil.getString(request, "isPgtSrCoFunding");
             if("N".equals(isPgtSrCoFunding)){

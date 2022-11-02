@@ -45,6 +45,10 @@ public class PgtStageDtoValidator implements CustomizeValidator {
         }
 
         if( pgtStageDto.getIsPgtMCom()+pgtStageDto.getIsPgtMRare()>0){
+            if(StringUtil.isEmpty(pgtStageDto.getPgtMDate())){
+                errorMap.put("pgtMDate",errMsgErr006);
+            }
+
             if(pgtStageDto.getIsPgtMWithHla()+pgtStageDto.getIsPgtMDsld()+pgtStageDto.getIsPgtMNon()==0){
                 errorMap.put("pgt_m_performed", errMsgErr006);
             }
@@ -83,14 +87,23 @@ public class PgtStageDtoValidator implements CustomizeValidator {
             if (StringUtil.isEmpty(pgtStageDto.getIsPgtCoFunding())) {
                 errorMap.put("isPgtMComCoFunding",errMsgErr006);
             }
+            if (pgtStageDto.getWorkUpCom() != 1 && pgtStageDto.getEbtCom() != 1){
+                errorMap.put("checkMCom",errMsgErr006);
+            }
         }
         if (pgtStageDto.getIsPgtMRare() == 1) {
             if (StringUtil.isEmpty(pgtStageDto.getIsPgtMRareCoFunding())) {
                 errorMap.put("isPgtMRareCoFunding",errMsgErr006);
             }
+            if (pgtStageDto.getWorkUpRare() != 1 && pgtStageDto.getEbtRare() != 1){
+                errorMap.put("checkMRare",errMsgErr006);
+            }
         }
 
         if(pgtStageDto.getIsPgtSr()==1){
+            if(StringUtil.isEmpty(pgtStageDto.getPgtSrDate())){
+                errorMap.put("pgtSrDate",errMsgErr006);
+            }
             if(StringUtil.isEmpty(pgtStageDto.getPgtSrCondition())){
                 errorMap.put("PgtSrCondition", errMsgErr006);
             }else  if(pgtStageDto.getPgtSrCondition().length()>100){

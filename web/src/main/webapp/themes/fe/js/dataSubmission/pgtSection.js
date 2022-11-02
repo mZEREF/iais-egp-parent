@@ -15,8 +15,10 @@ $(document).ready(function () {
         }
         if ($('#isPgtMCom').is(':checked')) {
             $('#pgtMComSubsidies').attr("style","display: block");
+            $('#checkMComStage').attr("style","display: block");
         } else {
             $('#pgtMComSubsidies').attr("style","display: none");
+            $('#checkMComStage').attr("style","display: none");
         }
         isThereAppealDisplay();
     });
@@ -28,8 +30,10 @@ $(document).ready(function () {
         }
         if ($('#isPgtMRare').is(':checked')) {
             $('#pgtMRareSubsidies').attr("style","display: block");
+            $('#checkMRareStage').attr("style","display: block");
         } else {
             $('#pgtMRareSubsidies').attr("style","display: none");
+            $('#checkMRareStage').attr("style","display: none");
         }
         isThereAppealDisplay();
     });

@@ -1,5 +1,5 @@
 <input type="hidden" name="pgtCount" id="pgtCount" value="${count}"/>
-
+<%@ page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
 <div class="panel panel-default">
     <div class="panel-heading" style="padding-left: 90px;">
         <h4 class="panel-title">
@@ -112,6 +112,77 @@
                     <iais:row>
                         <iais:field width="5" value="PGT-M" style="font-size: 2.0rem;" />
                     </iais:row>
+                    <div id="checkMComStage" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMCom !=1 }">style="display: none"</c:if>>
+                        <iais:row>
+                            <iais:field width="5" value="Please check all PGT-M (Common) stages done in current cycle" mandatory="true"/>
+                            <iais:value width="3" cssClass="col-md-3" style="padding-right: 0;padding-left: 0;">
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           name="mComWork"
+                                           id="mComWork"
+                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.workUpCom == 1}">checked</c:if>
+                                           aria-invalid="false">
+                                    <label class="form-check-label"
+                                           for="mComWork"><span
+                                            class="check-square"></span><iais:code code="PGT001"/></label>
+                                </div>
+                                <span class="error-msg" name="iaisErrorMsg" id="error_checkMCom" style="padding-right: 15px;padding-left: 15px;"></span>
+                            </iais:value>
+                            <iais:value width="3" cssClass="col-md-3" style="padding-right: 0;padding-left: 0;">
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           name="mComEBT"
+                                           id="mComEBT"
+                                           <c:if test="${  arSuperDataSubmissionDto.pgtStageDto.ebtCom == 1}">checked</c:if>
+                                           aria-invalid="false">
+                                    <label class="form-check-label"
+                                           for="mComEBT"><span
+                                            class="check-square"></span><iais:code code="PGT002"/></label>
+                                </div>
+                            </iais:value>
+                        </iais:row>
+                    </div>
+                    <div id="checkMRareStage" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMRare !=1 }">style="display: none"</c:if>>
+                        <iais:row>
+                            <iais:field width="5" value="Please check all PGT-M (Rare) stages done in current cycle" mandatory="true"/>
+                            <iais:value width="3" cssClass="col-md-3" style="padding-right: 0;padding-left: 0;">
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           name="mRareWork"
+                                           id="mRareWork"
+                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.workUpRare == 1}">checked</c:if>
+                                           aria-invalid="false">
+                                    <label class="form-check-label"
+                                           for="mRareWork"><span
+                                            class="check-square"></span><iais:code code="PGT001"/></label>
+                                </div>
+                                <span class="error-msg" name="iaisErrorMsg" id="error_checkMRare" style="padding-right: 15px;padding-left: 15px;"></span>
+                            </iais:value>
+                            <iais:value width="3" cssClass="col-md-3" style="padding-right: 0;padding-left: 0;">
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           name="mRareEBT"
+                                           id="mRareEBT"
+                                           <c:if test="${  arSuperDataSubmissionDto.pgtStageDto.ebtRare == 1}">checked</c:if>
+                                           aria-invalid="false">
+                                    <label class="form-check-label"
+                                           for="mRareEBT"><span
+                                            class="check-square"></span><iais:code code="PGT002"/></label>
+                                </div>
+                            </iais:value>
+                        </iais:row>
+                    </div>
+                    <iais:row>
+                        <iais:field width="5" value="Date Started for PGT-M" info="${MessageUtil.getMessageDesc('DS_MSG039')}" mandatory="true"/>
+                        <iais:value width="7" cssClass="col-md-7">
+                            <iais:datePicker id="pgtMDate" name="pgtMDate" dateVal="${arSuperDataSubmissionDto.pgtStageDto.pgtMDate}"/>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_pgtMDate" style="padding-right: 15px;padding-left: 15px;"></span>
+                        </iais:value>
+                    </iais:row>
                     <iais:row>
                         <iais:field width="5" value="PGT-M Performed" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7" style="padding-right: 0;padding-left: 0;">
@@ -162,7 +233,7 @@
                     </div>
 
                     <iais:row>
-                        <iais:field width="5" value="What Condition and Gene was PGT-M Performed to Detect For?" mandatory="true"/>
+                        <iais:field width="5" value="What Condition and Gene was PGT-M Performed to Detect?" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <input type="text" maxlength="100"   name="pgtMCondition" value="${arSuperDataSubmissionDto.pgtStageDto.pgtMCondition}" >
                             <span class="error-msg" name="iaisErrorMsg" id="error_PgtMCondition"></span>
@@ -263,7 +334,21 @@
                         <iais:field width="5" value="PGT-SR" style="font-size: 2.0rem;" />
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="What Condition and Structural Rearrangement was PGT-SR Performed For?" mandatory="true"/>
+                        <iais:field width="5" value="Date Started for PGT-SR" mandatory="true"/>
+                        <iais:value width="7" cssClass="col-md-7">
+                            <iais:datePicker id="pgtSrDate" name="pgtSrDate" dateVal="${arSuperDataSubmissionDto.pgtStageDto.pgtSrDate}"/>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_pgtSrDate" style="padding-right: 15px;padding-left: 15px;"></span>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field width="5" value="PGT-SR Appeal Reference No. (If Applicable)" />
+                        <iais:value width="7" cssClass="col-md-7">
+                            <input type="text" maxlength="100"   name="pgtSrRefNo" value="${arSuperDataSubmissionDto.pgtStageDto.pgtSrRefNo}" >
+                            <span class="error-msg" name="iaisErrorMsg" id="error_pgtSrRefNo"></span>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field width="5" value="What was PGT-SR Performed For?" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <input type="text" maxlength="100"   name="pgtSrCondition" value="${arSuperDataSubmissionDto.pgtStageDto.pgtSrCondition}" >
                             <span class="error-msg" name="iaisErrorMsg" id="error_PgtSrCondition"></span>
