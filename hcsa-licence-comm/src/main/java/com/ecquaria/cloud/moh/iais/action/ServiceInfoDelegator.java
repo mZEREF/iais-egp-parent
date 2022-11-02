@@ -532,7 +532,7 @@ public class ServiceInfoDelegator {
         if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
             for (AppSvcOtherInfoDto appSvcOtherInfoDto : appSvcOtherInfoDtos) {
                 RfcHelper.resolveSvcActionCode(appSvcOtherInfoDto.getAppPremSubSvcRelDtoList(),
-                        IaisCommonUtils.genNewHashMap());
+                        IaisCommonUtils.genNewHashMap(), appType);
                 appSvcOtherInfoDto.initAllAppPremSubSvcRelDtoList();
             }
             return;
@@ -547,7 +547,7 @@ public class ServiceInfoDelegator {
                         .collect(Collectors.toMap(AppPremSubSvcRelDto::getSvcCode, Function.identity(), (v1, v2) -> v2)))
                 .orElseGet(IaisCommonUtils::genNewHashMap);
         AppSvcOtherInfoDto appSvcOtherInfoDto = appSvcOtherInfoDtos.get(0);
-        RfcHelper.resolveSvcActionCode(appSvcOtherInfoDto.getAppPremSubSvcRelDtoList(), oldRelMap);
+        RfcHelper.resolveSvcActionCode(appSvcOtherInfoDto.getAppPremSubSvcRelDtoList(), oldRelMap, appType);
         appSvcOtherInfoDto.initAllAppPremSubSvcRelDtoList();
     }
 

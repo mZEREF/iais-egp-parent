@@ -584,7 +584,7 @@ public abstract class AppCommDelegator {
         if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
             for (AppPremSpecialisedDto appPremSpecialisedDto : specialisedList) {
                 RfcHelper.resolveSvcActionCode(appPremSpecialisedDto.getAppPremSubSvcRelDtoList(),
-                        IaisCommonUtils.genNewHashMap());
+                        IaisCommonUtils.genNewHashMap(), appType);
                 appPremSpecialisedDto.initAllAppPremSubSvcRelDtoList();
             }
             return;
@@ -599,7 +599,7 @@ public abstract class AppCommDelegator {
                         .collect(Collectors.toMap(AppPremSubSvcRelDto::getSvcCode, Function.identity(), (v1, v2) -> v2)))
                 .orElseGet(IaisCommonUtils::genNewHashMap);
         AppPremSpecialisedDto specialisedDto = specialisedList.get(0);
-        RfcHelper.resolveSvcActionCode(specialisedDto.getAppPremSubSvcRelDtoList(), oldRelMap);
+        RfcHelper.resolveSvcActionCode(specialisedDto.getAppPremSubSvcRelDtoList(), oldRelMap, appType);
         specialisedDto.initAllAppPremSubSvcRelDtoList();
     }
 
