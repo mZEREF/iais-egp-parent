@@ -934,7 +934,7 @@ public final class RfcHelper {
         oldAppSvcSpecialServiceInfoDtoList.forEach((item) -> oldPersonnelList.addAll(item.getSpecialPersonnelDtoList()));
         boolean changePersonal = false;
         if (IaisCommonUtils.isNotEmpty(personnelList) && IaisCommonUtils.isNotEmpty(oldPersonnelList)) {
-            changePersonal = isChangeServicePersonnels(personnelList, oldPersonnelList);
+            changePersonal = !isChangeServicePersonnels(personnelList, oldPersonnelList);
         }
         List<AppSvcSuplmFormDto> appSvcSuplmFormList = IaisCommonUtils.genNewArrayList();
         appSvcSpecialServiceInfoDtoList.forEach((item) -> appSvcSuplmFormList.addAll(item.getAppSvcSuplmFormDtoList()));
@@ -2614,7 +2614,7 @@ public final class RfcHelper {
         }
     }
 
-    public static void resolveSvcActionCode(List<AppPremSubSvcRelDto> relList, Map<String, AppPremSubSvcRelDto> oldDtaMap) {
+    public static void resolveSvcActionCode(List<AppPremSubSvcRelDto> relList, Map<String, AppPremSubSvcRelDto> oldDtaMap,String appType) {
         if (IaisCommonUtils.isEmpty(relList)) {
             return;
         }
@@ -2626,7 +2626,11 @@ public final class RfcHelper {
             if (HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(relDto.getSvcType())) {
                 relDto.setStatus(ApplicationConsts.RECORD_STATUS_SUBMIT_CODE);
             } else {
-                relDto.setStatus(ApplicationConsts.RECORD_STATUS_APPROVE_CODE);
+                if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
+                    relDto.setStatus(ApplicationConsts.RECORD_STATUS_APPROVE_CODE);
+                }else {
+                    relDto.setStatus(ApplicationConsts.RECORD_STATUS_SUBMIT_CODE);
+                }
             }
             if (oldRelDto == null && relDto.isChecked()) {
                 relDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_ADD);
@@ -2646,7 +2650,7 @@ public final class RfcHelper {
                     relDto.setActCode(ApplicationConsts.RECORD_ACTION_CODE_ADD);
                 }
             }
-            resolveSvcActionCode(relDto.getAppPremSubSvcRelDtos(), oldDtaMap);
+            resolveSvcActionCode(relDto.getAppPremSubSvcRelDtos(), oldDtaMap, appType);
         }
     }
 
