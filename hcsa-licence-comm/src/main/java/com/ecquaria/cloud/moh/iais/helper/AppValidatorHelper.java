@@ -1830,6 +1830,16 @@ public final class AppValidatorHelper {
         return errMap;
     }
 
+    public static boolean check(String s) {
+        boolean b = false;
+        String tmp = s;
+        tmp = tmp.replaceAll("\\p{P}", "");
+        if (s.length() != tmp.length()) {
+            b = true;
+        }
+        return b;
+    }
+
     /*
      * @parameter file
      * @parameter fileTypes
