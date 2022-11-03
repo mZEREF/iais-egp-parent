@@ -1009,6 +1009,8 @@ public abstract class AppCommDelegator {
                     bundleStatus = AppConsts.NO;
                 }
             }
+        }
+        if (AppConsts.NO.equals(bundleStatus)){
             if (hasAch && appSubmissionDto.getAppSvcRelatedInfoDtoList().stream().anyMatch(dto ->
                     AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(dto.getServiceCode())
                             || AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(dto.getServiceCode()))) {
