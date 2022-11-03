@@ -26,6 +26,7 @@
         removeBtnEvent();
         addMoreEvent();
         checkItemEvent();
+        refreshGroupIndex();
         $('.item-record [data-curr]').each(function () {
             let $target = $(this);
             checkItemMandatory($target);
@@ -124,6 +125,7 @@
             unDisableContent($('.person-content'))
             $('.person-content').find('.isPartEdit').val('1')
             $('#isEditHiddenVal').val('1')
+            refreshGroupIndex();
         });
     }
 
@@ -224,6 +226,7 @@
             $('.item-record [data-curr][data-prefix="' + prefix + '"]').each(function () {
                 checkItemMandatory($(this));
             });
+            refreshGroupIndex();
         });
     }
 
@@ -473,7 +476,7 @@
             let seq = $tag.data('seq');
             let curr = $tag.data('curr');
             let group = $tag.data('condition');
-            let total = $('input[name="' + prefix + group + '"]').val()-1;
+            let total = $('input[name="' + prefix + group + '"]').val();
             if ($tag.is(':input')) {
                 fillValue($tag, total);
             } else {
@@ -597,6 +600,45 @@
             result = result.toLowerCase();
         }
         return result;
+    }
+
+    function refreshGroupIndex() {
+        let $groupTitle = $('.item-record .app-title');
+        let indexGroupAry = [];
+        $groupTitle.each(function () {
+            let group = $(this).data('group');
+            let prefix = $(this).data('prefix');
+            let spanClass = 'span.' + prefix + '-' + group;
+            if ($(this).find(spanClass).length > 0) {
+                indexGroupAry.push(spanClass);
+            }
+        });
+        if (indexGroupAry.length <= 0) {
+            return;
+        }
+        console.log(indexGroupAry,'=========indexGroupAry=========>>>>')
+        let i = 0;
+        let target = indexGroupAry[0];
+        for (let x of indexGroupAry) {
+            if (x != target) {
+                refreshItemGroupIndex(target, i);
+                i = 1;
+            } else {
+                i++;
+            }
+        }
+        refreshItemGroupIndex(target, i);
+    }
+
+    function refreshItemGroupIndex(target, max) {
+        if (max <= 1) {
+            $(target).html('');
+        } else {
+            let i = 1;
+            $(target).each(function () {
+                $(this).html(i++);
+            });
+        }
     }
 
 </script>
