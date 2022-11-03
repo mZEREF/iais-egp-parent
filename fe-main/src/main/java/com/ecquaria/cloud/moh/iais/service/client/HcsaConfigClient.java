@@ -31,6 +31,7 @@ public interface HcsaConfigClient {
     @GetMapping(path = "/iais-hcsa-service/servicedto-by-name/{svcName}")
     FeignResponseEntity<HcsaServiceDto> getServiceDtoByName(@PathVariable(name = "svcName") String svcName);
 
-    @PostMapping(value = "/iais-hcsa-service/hcsaSvcSpecifiedCorrelationDtos", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<HcsaSvcSpecifiedCorrelationDto>> getHcsaSvcSpecifiedCorrelationDtos(@RequestBody String svcCode,String premisesType);
+    @GetMapping(value = "/iais-hcsa-service/hcsaSvcSpecifiedCorrelationDtos/{svcCode}/{premisesType}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaSvcSpecifiedCorrelationDto>> getHcsaSvcSpecifiedCorrelationDtos(@PathVariable(name = "svcCode") String svcCode,
+                                                                                                 @PathVariable(name = "premisesType")String premisesType);
 }
