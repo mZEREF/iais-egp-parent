@@ -849,13 +849,15 @@ public final class AppDataHelper {
             }
             if (IaisCommonUtils.isNotEmpty(appSvcOutsouredDto.getRadiologicalServiceList())) {
                 searchParam.addFilter("ids", getOutSourceIds(appSvcOutsouredDto.getRadiologicalServiceList()), true);
-                searchParam.addFilter("sLicenceNo", getOutSourcedLicenceNos(appSvcOutsouredDto.getClinicalLaboratoryList()), true);
+                searchParam.addFilter("rLicenceNo", getOutSourcedLicenceNos(appSvcOutsouredDto.getRadiologicalServiceList()), true);
             }
             List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
             if (IaisCommonUtils.isNotEmpty(appGrpPremisesDtos)) {
                 searchParam.addFilter("dPostCode", getPostalCode(appGrpPremisesDtos), true);
             }
             if (StringUtil.isNotEmpty(postalCode)) {
+                searchParam.removeParam("dPostCode");
+                searchParam.removeFilter("dPostCode");
                 searchParam.addFilter("postalCode", postalCode, true);
             }
             if (StringUtil.isNotEmpty(appSubmissionDto.getLicenseeId())) {

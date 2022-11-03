@@ -30,10 +30,10 @@
             <#if licenseeId??> AND l.LICENSEE_ID NOT IN (:licenseeId)</#if>
             <#if licenceNos??> AND l.LICENCE_NO IN (:licenceNos)</#if>
             <#if bundleSvcName??> AND l.SVC_NAME NOT IN (:bundleSvcName)</#if>
-            <#if postalCode??> OR p.POSTAL_CODE IN (SELECT lsa.POSTAL_CODE FROM lic_second_addr lsa WHERE 1=1 AND lsa.POSTAL_CODE LIKE CONCAT('%',(:postalCode),'%')) </#if>
+            <#if postalCode??> AND p.POSTAL_CODE IN (SELECT lsa.POSTAL_CODE FROM lic_second_addr lsa WHERE 1=1 AND lsa.POSTAL_CODE LIKE CONCAT('%',(:postalCode),'%')) </#if>
             <#if addId??> AND l.ID = :addId</#if>
             <#if sLicenceNo??> AND l.LICENCE_NO NOT IN (:sLicenceNo)</#if>
-
+            <#if rLicenceNo??> AND l.LICENCE_NO NOT IN (:rLicenceNo)</#if>
         ]]>
     </sql>
 </sqls>
