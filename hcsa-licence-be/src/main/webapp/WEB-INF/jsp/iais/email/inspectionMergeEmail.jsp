@@ -94,7 +94,7 @@
                                                         <iais:row>
                                                             <label class="col-xs-0 col-md-2 control-label col-sm-2">Internal Remarks <span style="color: red" id="internalRemarkStar"> *</span></label>
                                                             <iais:value width="4000">
-                                                            <textarea name="Remarks" cols="60" rows="7"
+                                                            <textarea name="Remarks" id="Remarks" cols="60" rows="7"
                                                                       maxlength="300" class="internalRemarks"
                                                             >${insEmailDto.remarks}</textarea>
                                                             <br/><span id="error_internalRemarks1" class="error-msg" style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
@@ -115,6 +115,10 @@
                                                             </span>
                                                             </iais:value>
                                                         </iais:row>
+                                                        <div id="laterallySelectRow" style="display: none">
+                                                            <c:set var="roleId" value="${taskDto.roleId}"/>
+                                                            <%@include file="../hcsaLicence/laterallySelect.jsp" %>
+                                                        </div>
                                                         <jsp:include page="/WEB-INF/jsp/iais/inspectionPreTask/rollBackPart.jsp"/>
                                                         <iais:row style="display: none" id="selectReviseNc">
                                                             <label class="col-xs-0 col-md-2  col-sm-2">Need Revise<span
@@ -185,6 +189,8 @@
         showRollBackTo();
         $('#rollBackToLabel').removeClass();
         $('#rollBackToLabel').addClass('col-xs-0 col-md-2 control-label col-sm-2');
+        $('#laterallyField').removeClass();
+        $('#laterallyField').addClass('col-xs-0 col-md-2 control-label col-sm-2');
     });
 
     function doPreview() {
@@ -196,11 +202,27 @@
         $('#err_rollBackTo').hide();
         $('#selectDecisionMsgRevise').hide();
         $('#selectDecisionMsg').hide();
+        $("#error_internalRemarks1").hide();
+        $("#laterallyMsg").hide();
         if (f == null || f === "") {
             $("#selectDecisionMsg").show();
             $("#selectDecisionMsgRevise").hide();
         } else if ('REDECI027' === f) {
             submitRollBack(rollBackSubmit)
+        } else if ('PROCRLR'=== f){
+            var remark = $('#Remarks').val();
+            var route = $('#lrSelect').val();
+            if(remark == null || remark == "" || route === null || route===""){
+                if(remark == null || remark == ""){
+                    $("#error_internalRemarks1").show();
+                }
+                if(route === null || route===""){
+                    $("#laterallyMsg").show();
+                }
+            } else {
+                showWaiting();
+                SOP.Crud.cfxSubmit("mainForm", "send");
+            }
         } else {
             $("#selectDecisionMsg").hide();
             if ($('#decision_merge_email option:selected').val() === "REDECI005") {
@@ -228,10 +250,13 @@
     }
 
     function thisTime() {
-        if ($('#decision_merge_email option:selected').val() === "REDECI005") {
+        var opt = $('#decision_merge_email option:selected').val();
+        $("#selectReviseNc").hide();
+        $('#laterallySelectRow').hide();
+        if (opt === "REDECI005") {
             $("#selectReviseNc").show();
-        } else {
-            $("#selectReviseNc").hide();
+        } else if(opt === 'PROCRLR'){
+            $('#laterallySelectRow').show();
         }
         showRollBackTo();
     }

@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.AdhocChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
@@ -34,7 +35,9 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.InspectionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.ApptInspectionDateService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
+import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListItemValidate;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
 import lombok.extern.slf4j.Slf4j;
@@ -47,8 +50,16 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sop.servlet.webflow.HttpHandler;
+import sop.util.CopyUtil;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @Author: jiahao
@@ -57,6 +68,12 @@ import java.util.Map;
 @Delegator(value = "inspectionNcCheckListDelegator")
 @Slf4j
 public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMethodDelegator {
+
+    @Autowired
+    InspEmailService inspEmailService;
+
+    @Autowired
+    private ApptInspectionDateService apptInspectionDateService;
 
     private static final String SERLISTDTO = "serListDto";
     private static final String COMMONDTO = "commonDto";
@@ -127,10 +144,10 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
         setCheckListUnFinishedTask(request,taskDto);
 
         ApplicationViewDto appViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(request, APPLICATIONVIEWDTO);
-        String[] processDess = new String[]{InspectionConstants.PROCESS_DECI_PROCEED_WITH_INSPECTION};
+        String[] processDess = new String[]{InspectionConstants.PROCESS_DECI_PROCEED_WITH_INSPECTION, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY};
         String appType = appViewDto.getApplicationDto().getApplicationType();
         if(!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType))){
-            processDess = new String[]{InspectionConstants.PROCESS_DECI_PROCEED_WITH_INSPECTION, InspectionConstants.PROCESS_DECI_ROLL_BACK};
+            processDess = new String[]{InspectionConstants.PROCESS_DECI_PROCEED_WITH_INSPECTION, InspectionConstants.PROCESS_DECI_ROLL_BACK, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY};
         }
         ParamUtil.setSessionAttr(request, PROCESS_DEC_OPTIONS, (Serializable) MasterCodeUtil.retrieveOptionsByCodes(processDess));
 
@@ -340,6 +357,47 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
                 // SAVE OTHER TASKS
                 fillupChklistService.saveOtherTasks((List<TaskDto>)ParamUtil.getSessionAttr(request,TASKDTOLIST),taskDto);
                 fillupChklistService.routingTask(taskDto,serListDto.getRemarksForHistory(),loginContext,flag);
+            }
+        } else if(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY.equals(processDec)){
+            ApplicationViewDto applicationViewDto= (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+            TaskDto taskDto= (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
+            serListDto = getOtherInfo(mulReq);
+            serListDto.setProcessDec(processDec);
+            ParamUtil.setSessionAttr(mulReq,SERLISTDTO,serListDto);
+            ParamUtil.setSessionAttr(bpc.request, "lrSelect", null);
+            String lrSelect = ParamUtil.getRequestString(bpc.request, "lrSelect");
+            ParamUtil.setSessionAttr(bpc.request, "lrSelect", lrSelect);
+            log.info(StringUtil.changeForLog("The lrSelect is -->:"+lrSelect));
+            Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+            if (ParamUtil.getString(request,"RemarksForHistory") == null) {
+                errMap.put("internalRemarks1", "GENERAL_ERR0006");
+            }
+            if (lrSelect == null) {
+                errMap.put("lrSelectIns", "GENERAL_ERR0006");
+            }
+            if(errMap.isEmpty()) {
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+                String[] lrSelects = lrSelect.split("_");
+                String workGroupId = lrSelects[0];
+                String userId = lrSelects[1];
+                inspEmailService.completedTask(taskDto);
+                List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
+                taskDto.setUserId(userId);
+                taskDto.setDateAssigned(new Date());
+                taskDto.setId(null);
+                taskDto.setWkGrpId(workGroupId);
+                taskDto.setSlaDateCompleted(null);
+                taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+                taskDtos.add(taskDto);
+                taskService.createTasks(taskDtos);
+                apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY, taskDto, userId, serListDto.getRemarksForHistory(), HcsaConsts.ROUTING_STAGE_INS);
+                apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, taskDto, userId, "", HcsaConsts.ROUTING_STAGE_INS);
+                ParamUtil.setRequestAttr(bpc.request, "LATERALLY", AppConsts.TRUE);
+            } else {
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+                serListDto.setCheckListTab("process");
+                ParamUtil.setSessionAttr(mulReq, SERLISTDTO, serListDto);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
             }
        }else {
             Map<String, String> errMap = IaisCommonUtils.genNewHashMap();

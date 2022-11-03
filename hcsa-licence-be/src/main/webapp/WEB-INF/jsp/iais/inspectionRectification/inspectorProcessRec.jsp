@@ -219,6 +219,10 @@
                                 <iais:select name="selectValue" options="processDecOption" cssClass="nextStage" firstOption="Please Select" value="${inspectionPreTaskDto.selectValue}" onchange="javascript:doInspectorProRecChange(this.value)"/>
                               </iais:value>
                             </iais:row>
+                            <div id="laterallySelectRow" style="display:none;">
+                              <c:set var="roleId" value="${taskDto.roleId}"/>
+                              <%@include file="../hcsaLicence/laterallySelect.jsp" %>
+                            </div>
                             <jsp:include page="/WEB-INF/jsp/iais/inspectionPreTask/rollBackPart.jsp"/>
                             <iais:row id="indicateCondRemarks">
                               <div class="col-md-4" style="padding-right: 0px;">
@@ -281,8 +285,11 @@
         var value = $("#processDec").val();
         if("REDECI007" == value){
             $("#indicateCondRemarks").show();
-        } else if ("REDECI007" != value){
+        } else if("PROCRLR" == value){
+          $("#laterallySelectRow").show();
+        } else if ("REDECI007" != value  && "PROCRLR" != value){
             $("#indicateCondRemarks").hide();
+          $("#laterallySelectRow").hide();
         }
         if ("REDECI001" == value){
             $("#processRec").hide();
@@ -355,6 +362,7 @@
 
     function doInspectorProRecChange(value) {
         $("#processDec").val(value);
+      $("#laterallySelectRow").hide();
         if("REDECI006" == value){
             $("#indicateCondRemarks").hide();
             $("#processRec").show();
@@ -367,6 +375,11 @@
             $("#indicateCondRemarks").show();
             $("#processRec").show();
             $("#processRecRfi").hide();
+        } else if("PROCRLR" == value){
+          $("#laterallySelectRow").show();
+          $("#indicateCondRemarks").hide();
+          $("#processRec").hide();
+          $("#processRecRfi").hide();
         } else {
             $("#indicateCondRemarks").hide();
             $("#processRec").show();
@@ -398,6 +411,9 @@
         } else if('REDECI027' === processDec){
           $("#actionValue").val('rollBack');
           submitRollBack(()=>inspectorProRecSubmit('rollBack'));
+        } else if("PROCRLR" === processDec){
+          $("#actionValue").val('routeLaterally');
+          inspectorProRecSubmit("routeLaterally");
         } else {
             var errMsg = '<iais:message key="GENERAL_ERR0006"/>';
             $("#error_selectValue").text(errMsg);

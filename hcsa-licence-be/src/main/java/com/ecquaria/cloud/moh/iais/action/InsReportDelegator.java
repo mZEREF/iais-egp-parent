@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
@@ -36,6 +37,7 @@ import com.ecquaria.cloud.moh.iais.helper.InspectionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.*;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApptInspectionDateService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
@@ -108,6 +110,7 @@ public class InsReportDelegator {
         ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,null);
         ParamUtil.setSessionAttr(request,"rollBackOptions",null);
         ParamUtil.setSessionAttr(request,"rollBackToValueMap",null);
+        ParamUtil.setSessionAttr(request, "lrSelect", null);
         vehicleCommonController.clearVehicleInformationSession(request);
     }
 
@@ -277,6 +280,49 @@ public class InsReportDelegator {
             hcsaApplicationDelegator.requestForInformation(bpc);
             ParamUtil.setSessionAttr(bpc.request,HcsaLicenceBeConstant.REPORT_ACK_CLARIFICATION_FLAG,ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+            return;
+        } else if("route".equals(appPremisesRecommendationDto.getProcessingDecision())) {
+            ParamUtil.setSessionAttr(request, "lrSelect", null);
+            String lrSelect = ParamUtil.getRequestString(request, "lrSelect");
+            ParamUtil.setSessionAttr(request, "lrSelect", lrSelect);
+            if (StringUtil.isEmpty(appPremisesRecommendationDto.getProcessRemarks())) {
+                errorMap.put("internalRemarks1", "GENERAL_ERR0006");
+            }
+            if (StringUtil.isEmpty(lrSelect)) {
+                errorMap.put("lrSelectIns", "GENERAL_ERR0006");
+            }
+            if (errorMap.isEmpty()){
+                log.info(StringUtil.changeForLog("The lrSelect is -->:"+lrSelect));
+                String[] lrSelects =  lrSelect.split("_");
+                String workGroupId = lrSelects[0];
+                String userId = lrSelects[1];
+                inspEmailService.completedTask(taskDto);
+                List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
+                taskDto.setUserId(userId);
+                taskDto.setDateAssigned(new Date());
+                taskDto.setId(null);
+                taskDto.setWkGrpId(workGroupId);
+                taskDto.setSlaDateCompleted(null);
+                taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+                taskDtos.add(taskDto);
+                taskService.createTasks(taskDtos);
+                apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY,taskDto,userId,appPremisesRecommendationDto.getProcessRemarks(), HcsaConsts.ROUTING_STAGE_INS);
+                apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, taskDto,userId,"",HcsaConsts.ROUTING_STAGE_INS);
+                ParamUtil.setSessionAttr(bpc.request,HcsaLicenceBeConstant.REPORT_ACK_CLARIFICATION_FLAG,"route");
+                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+            } else {
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                WebValidationHelper.saveAuditTrailForNoUseResult(applicationDto,errorMap);
+                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+                ParamUtil.setSessionAttr(bpc.request, "lrSelect", lrSelect);
+                ParamUtil.setSessionAttr(bpc.request, "infoClassTop", null);
+                ParamUtil.setSessionAttr(bpc.request, "reportClassTop", null);
+                ParamUtil.setSessionAttr(bpc.request, "processClassTop", "active");
+                ParamUtil.setSessionAttr(bpc.request, "infoClassBelow", "tab-pane");
+                ParamUtil.setSessionAttr(bpc.request, "reportClassBelow", "tab-pane");
+                ParamUtil.setSessionAttr(bpc.request, "processClassBelow", "tab-pane active");
+            }
             return;
         }
         ValidationResult validationResult = WebValidationHelper.validateProperty(appPremisesRecommendationDto, "save");
@@ -486,6 +532,8 @@ public class InsReportDelegator {
         if (!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType))) {
             riskLevelResult.add(new SelectOption("rollBack",  MasterCodeUtil.getCodeDesc(InspectionConstants.PROCESS_DECI_ROLL_BACK)));
         }
+        route = new SelectOption("route",MasterCodeUtil.getCodeDesc(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY));
+        riskLevelResult.add(route);
         return riskLevelResult;
     }
 

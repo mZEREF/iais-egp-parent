@@ -94,7 +94,7 @@
                                                         <iais:value width="4000">
                                                             <textarea id="Remarks" name="Remarks" cols="60" rows="7"
                                                                       maxlength="300" class="internalRemarks"
-                                                                      >${insEmailDto.remarks}</textarea>
+                                                                      ><c:out value="${insEmailDto.remarks}"/></textarea>
                                                             <span style="font-size: 1.6rem; color: #D22727; display: none" id="remarksMsg" >Remarks should not be more than 300 characters.</span>
                                                             <br/><span id="error_internalRemarks1" class="error-msg" style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
                                                         </iais:value>
@@ -102,10 +102,14 @@
                                                     <iais:row>
                                                         <iais:field value="Processing Decision" required="true"/>
                                                         <iais:value width="7">
-                                                            <iais:select id="decision_email" name="decision" cssClass="nice-select nextStage" options="appTypeOption" firstOption="Please select"  />
+                                                            <iais:select id="decision_email" name="decision" cssClass="nice-select nextStage" options="appTypeOption" firstOption="Please select"  value="${decision}"/>
                                                             <span style="font-size: 1.6rem; color: #D22727; display: none" id="selectDecisionMsg" ><iais:message key="GENERAL_ERR0006"/></span>
                                                         </iais:value>
                                                     </iais:row>
+                                                    <div id="laterallySelectRow" style="display: none">
+                                                        <c:set var="roleId" value="${taskDto.roleId}"/>
+                                                        <%@include file="../hcsaLicence/laterallySelect.jsp" %>
+                                                    </div>
                                                     <jsp:include page="/WEB-INF/jsp/iais/inspectionPreTask/rollBackPart.jsp"/>
                                                     <iais:row id="ao1SelectRow">
                                                         <iais:field value="Select Approving Officer" required="false"/>
@@ -154,6 +158,7 @@
 </form>
 </div>
 <%@include file="/WEB-INF/jsp/iais/inspectionncList/uploadFile.jsp" %>
+<%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 
 <script type="text/javascript">
     <c:if test="${'Y' eq backFromEdit}">
@@ -168,6 +173,7 @@
         $("#decision_email").change(function () {
             var fv = $('#decision_email option:selected').val();
             if (fv == 'REDECI003') {
+                $('#laterallySelectRow').hide();
                 showWaiting();
                 var data = {
                     'verified':fv
@@ -197,14 +203,24 @@
                     }
                 });
                 dismissWaiting();
+            } else if(fv == 'PROCRLR') {
+                $('#laterallySelectRow').show();
+                $("#ao1SelectRow").hide();
             } else {
                 $("#ao1SelectRow").hide();
+                $('#laterallySelectRow').hide();
             }
             showRollBackTo();
         });
         showRollBackTo();
     });
 
+    $(document).ready(function () {
+        var fv = $('#decision_email option:selected').val();
+        if ('PROCRLR' === fv){
+            $('#laterallySelectRow').show();
+        }
+    })
     function doPreview() {
         showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "preview");
