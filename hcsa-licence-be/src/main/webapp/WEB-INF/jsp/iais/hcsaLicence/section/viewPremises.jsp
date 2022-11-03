@@ -504,11 +504,9 @@
             <c:forEach var="appGrpSecondAddr" items="${appGrpSecondAddrList.appGrpSecondAddrDtos}" varStatus="statuss">
                 <div class="contents">
                   <c:set var="oldAppGrpSecondAddr" value="${oldAppGrpPremDto.appGrpSecondAddrDtos[status.index]}"/>
-
                     <%@include file="viewPremisesDetils.jsp" %>
                 </div>
             </c:forEach>
-                    <c:set var="MMM" value="logo"></c:set>
             <%@include file="viewPremisesDetilEdit.jsp" %>
             <div class="adds"></div>
         </div>

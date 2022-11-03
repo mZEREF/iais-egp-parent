@@ -22,7 +22,7 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="oldVal " attr="${oldAppGrpSecondAddr.postalCode}" style="display: none">
+                <div class="oldVal" attr="${oldAppGrpSecondAddr.postalCode}" style="display: none">
                     <c:out value="${oldAppGrpSecondAddr.postalCode}"/>
                 </div>
             </div>
@@ -58,7 +58,7 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="oldVal " attr="${oldAppGrpSecondAddr.blkNo}" style="display: none">
+                <div class="oldVal" attr="${oldAppGrpSecondAddr.blkNo}" style="display: none">
                     <c:out value="${oldAppGrpSecondAddr.blkNo}"/>
                 </div>
             </div>
@@ -77,7 +77,7 @@
                </div>
             </div>
             <div class="col-md-6">
-               <div class="oldVal " attr="${oldAppGrpSecondAddr.floorNo}${oldAppGrpSecondAddr.unitNo}" style="display: none">
+               <div class="oldVal" attr="${oldAppGrpSecondAddr.floorNo}${oldAppGrpSecondAddr.unitNo}" style="display: none">
                   <c:out value="${oldAppGrpSecondAddr.floorNo}-${oldAppGrpSecondAddr.unitNo}"/>
                </div>
             </div>
@@ -89,17 +89,20 @@
         <div class="row addmore">
             <input type="hidden" class="othersId" value="${othersUnitNo.id}">
             <div class="col-md-6"></div>
+
             <div class="col-md-6">
-                <div class="col-md-6">
+                <div class="col-md-6 target">
                    <div class="newVal addmorecontent" attr="${othersUnitNo.floorNo}${othersUnitNo.unitNo}">
                      <c:out value="${othersUnitNo.floorNo}-${othersUnitNo.unitNo}"/>
                    </div>
                 </div>
+
                 <div class="col-md-6">
                     <div class="oldVal " attr="<c:out value="${oldOthersUnitNo.floorNo}${oldOthersUnitNo.unitNo}"/>" style="display: none">
                         <c:out value="${oldOthersUnitNo.floorNo}-${oldOthersUnitNo.unitNo}"/>
                     </div>
                 </div>
+
             </div>
         </div>
     </c:forEach>
@@ -115,7 +118,7 @@
                    </div>
             </div>
             <div class="col-md-6">
-                    <div class="oldVal " attr="<c:out value="${oldAppGrpSecondAddr.streetName}"/>" style="display: none">
+                    <div class="oldVal" attr="<c:out value="${oldAppGrpSecondAddr.streetName}"/>" style="display: none">
                         <c:out value="${oldAppGrpSecondAddr.streetName}"/>
                     </div>
             </div>
@@ -133,7 +136,7 @@
                   </div>
             </div>
             <div class="col-md-6">
-                <div class="oldVal " attr="<c:out value="${oldAppGrpSecondAddr.buildingName}"/>" style="display: none">
+                <div class="oldVal" attr="<c:out value="${oldAppGrpSecondAddr.buildingName}"/>" style="display: none">
                     <c:out value="${oldAppGrpSecondAddr.buildingName}"/>
                 </div>
             </div>
