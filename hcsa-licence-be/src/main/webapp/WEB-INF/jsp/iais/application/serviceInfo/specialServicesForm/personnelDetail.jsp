@@ -77,7 +77,7 @@
             <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Nationality"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:select firstOption="Please Select" name="${prepsn}nationality${index}" codeCategory="CATE_ID_NATIONALITY"
-                             cssClass="nationality" value="${clinicalDirectorDto.nationality}"/>
+                             cssClass="nationality" value="${person.nationality}"/>
             </iais:value>
         </iais:row>
 

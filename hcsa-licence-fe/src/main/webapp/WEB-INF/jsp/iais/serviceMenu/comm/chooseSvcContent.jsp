@@ -5,6 +5,7 @@
         <h3>
             Select the service(s) for which you wish to make this licence application
         </h3>
+        <p><h4><iais:message key="NEW_ACK045"/></h4></p>
     </div>
 </div>
 <c:forEach var="errMSg" items="${errList}" varStatus="stat" >

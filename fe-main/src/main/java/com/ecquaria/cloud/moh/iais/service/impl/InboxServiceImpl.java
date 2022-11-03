@@ -1,11 +1,9 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
-import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -24,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxMsgMaskDto;
@@ -47,14 +46,6 @@ import com.ecquaria.cloud.moh.iais.service.client.FeUserClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
@@ -64,6 +55,13 @@ import java.util.Map;
 import java.util.StringJoiner;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
@@ -690,8 +688,21 @@ public class InboxServiceImpl implements InboxService {
         return result;
     }
 
+    private boolean isLever0(List<HcsaSvcSpecifiedCorrelationDto> hcsaSvcSpecifiedCorrelationDtos, String svcCode){
+         boolean result = false;
+         if(IaisCommonUtils.isNotEmpty(hcsaSvcSpecifiedCorrelationDtos) && StringUtil.isNotEmpty(svcCode)){
+             for(HcsaSvcSpecifiedCorrelationDto hcsaSvcSpecifiedCorrelationDto : hcsaSvcSpecifiedCorrelationDtos){
+                 if(svcCode.equals(hcsaSvcSpecifiedCorrelationDto.getSpecifiedSvcId())){
+                     result = true;
+                     break;
+                 }
+             }
+         }
+         return result;
+    }
+
     private List<InnerLicenceViewData> tidyInnerLicenceViewData(List<LicPremisesScopeDto> licPremisesScopeDtos,
-            List<LicPremSubSvcRelDto> licPremSubSvcRelDtos) {
+            List<LicPremSubSvcRelDto> licPremSubSvcRelDtos,List<HcsaSvcSpecifiedCorrelationDto> hcsaSvcSpecifiedCorrelationDtos ) {
         List<InnerLicenceViewData> result = IaisCommonUtils.genNewArrayList();
         if (IaisCommonUtils.isNotEmpty(licPremisesScopeDtos)) {
             List<String> ids = IaisCommonUtils.genNewArrayList();
@@ -715,7 +726,7 @@ public class InboxServiceImpl implements InboxService {
             InnerLicenceViewData innerLicenceViewData;
             List<String> innerLicenceViewDataList = IaisCommonUtils.genNewArrayList();
             for (LicPremSubSvcRelDto licPremSubSvcRelDto : licPremSubSvcRelDtos) {
-                if (licPremSubSvcRelDto.getLevel() == 0) {
+                if (isLever0(hcsaSvcSpecifiedCorrelationDtos,licPremSubSvcRelDto.getSvcCode())) {
                     innerLicenceViewData = new InnerLicenceViewData();
                     innerLicenceViewData.setValue(getHcsaServiceDtoDisplayName(hcsaServiceDtos, licPremSubSvcRelDto.getSvcCode()));
                     innerLicenceViewDataList = IaisCommonUtils.genNewArrayList();
@@ -734,7 +745,8 @@ public class InboxServiceImpl implements InboxService {
         LicenceViewDto licenceViewDto = licenceInboxClient.getAllStatusLicenceByLicenceId(licenceId).getEntity();
         List<LicPremisesScopeDto> licPremisesScopeDtos = licenceViewDto.getLicPremisesScopeDtos();
         List<LicPremSubSvcRelDto> licPremSubSvcRelDtos = licenceViewDto.getLicPremSubSvcRelDtos();
-        List<InnerLicenceViewData> innerLicenceViewDataList = tidyInnerLicenceViewData(licPremisesScopeDtos, licPremSubSvcRelDtos);
+        List<HcsaSvcSpecifiedCorrelationDto> hcsaSvcSpecifiedCorrelationDtos = hcsaConfigClient.getHcsaSvcSpecifiedCorrelationDtos(licenceViewDto.getLicenceDto().getSvcCode(),licenceViewDto.getPremisesType()).getEntity();
+        List<InnerLicenceViewData> innerLicenceViewDataList = tidyInnerLicenceViewData(licPremisesScopeDtos, licPremSubSvcRelDtos,hcsaSvcSpecifiedCorrelationDtos);
         List<String> disciplinesSpecifieds = IaisCommonUtils.genNewArrayList();
         if (IaisCommonUtils.isNotEmpty(innerLicenceViewDataList)) {
             StringBuilder str = new StringBuilder();

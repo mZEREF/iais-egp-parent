@@ -152,6 +152,7 @@
             return;
         }
         $target.prop('checked', true);
+        $target.closest('.panel-collapse').collapse('show');
         changeSectionStyle($target);
     }
 
