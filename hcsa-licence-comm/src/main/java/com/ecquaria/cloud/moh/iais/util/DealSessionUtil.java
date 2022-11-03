@@ -728,7 +728,7 @@ public class DealSessionUtil {
         // outsourced providers
         hcsaServiceStepScheme = stepMap.get(HcsaConsts.STEP_OUTSOURCED_PROVIDERS);
         if (hcsaServiceStepScheme != null) {
-            initSvcOutsourcedProvider(request, currSvcInfoDto, forceInit);
+            initSvcOutsourcedProvider(request, currSvcInfoDto, forceInit ,hcsaServiceDtos);
         } else {
             currSvcInfoDto.setAppSvcOutsouredDto(null);
         }
@@ -874,7 +874,7 @@ public class DealSessionUtil {
         return true;
     }
     public static boolean initSvcOutsourcedProvider(HttpServletRequest request, AppSvcRelatedInfoDto currSvcInfoDto,
-            boolean forceInit) {
+            boolean forceInit, List<HcsaServiceDto> hcsaServiceDtos) {
         AppSvcOutsouredDto appSvcOutsouredDto = currSvcInfoDto.getAppSvcOutsouredDto();
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         if (!forceInit && appSvcOutsouredDto != null && appSvcOutsouredDto.isInit()) {
@@ -886,15 +886,36 @@ public class DealSessionUtil {
         // check bundle
         List<AppLicBundleDto> appLicBundleDtoList = appSubmissionDto.getAppLicBundleDtoList();
         if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
+            List<String> bundleSvcCodeList = IaisCommonUtils.genNewArrayList();
             for (AppLicBundleDto appLicBundleDto : appLicBundleDtoList) {
                 String bundleSvcCode = appLicBundleDto.getSvcCode();
-                appSvcOutsouredDto.setBundleSvcCode(bundleSvcCode);
+                bundleSvcCodeList.add(bundleSvcCode);
+                appSvcOutsouredDto.setBundleSvcCode(bundleSvcCodeList);
                 if (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(bundleSvcCode) && IaisCommonUtils.isNotEmpty(
                         appSvcOutsouredDto.getClinicalLaboratoryList())) {
                     removeBundleAppPremOutsourced(appSvcOutsouredDto.getClinicalLaboratoryList(),
                             AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY);
                 }
                 if (AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(bundleSvcCode) && IaisCommonUtils.isNotEmpty(
+                        appSvcOutsouredDto.getRadiologicalServiceList())) {
+                    removeBundleAppPremOutsourced(appSvcOutsouredDto.getRadiologicalServiceList(),
+                            AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES);
+                }
+            }
+        }
+        //hcsaServiceDtos
+        if (IaisCommonUtils.isNotEmpty(hcsaServiceDtos)){
+            List<String> hcsaSvcCodeList = IaisCommonUtils.genNewArrayList();
+            for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
+                String hcsaSvcCode = hcsaServiceDto.getSvcCode();
+                hcsaSvcCodeList.add(hcsaSvcCode);
+                appSvcOutsouredDto.setHcsaSvcCode(hcsaSvcCodeList);
+                if (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(hcsaSvcCode) && IaisCommonUtils.isNotEmpty(
+                        appSvcOutsouredDto.getClinicalLaboratoryList())){
+                    removeBundleAppPremOutsourced(appSvcOutsouredDto.getClinicalLaboratoryList(),
+                            AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY);
+                }
+                if (AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(hcsaSvcCode) && IaisCommonUtils.isNotEmpty(
                         appSvcOutsouredDto.getRadiologicalServiceList())) {
                     removeBundleAppPremOutsourced(appSvcOutsouredDto.getRadiologicalServiceList(),
                             AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES);

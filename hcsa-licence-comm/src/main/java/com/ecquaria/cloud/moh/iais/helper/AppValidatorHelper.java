@@ -2164,6 +2164,9 @@ public final class AppValidatorHelper {
     }
 
     public static Map<String, String> doValidationOutsourced(AppSvcOutsouredDto appSvcOutsouredDto, String curAt) {
+        if (appSvcOutsouredDto == null) {
+            return new HashMap<>(1);
+        }
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         SearchParam searchParam = appSvcOutsouredDto.getSearchParam();
         if ("search".equals(curAt)) {
@@ -2172,8 +2175,8 @@ public final class AppValidatorHelper {
                     errMap.put("serviceCode", MessageUtil.replaceMessage("GENERAL_ERR0006",
                             "Service", "field"));
                 }
-                if (StringUtil.isNotEmpty(appSvcOutsouredDto.getBundleSvcCode())){
-                    searchParam.addFilter("svcName",appSvcOutsouredDto.getBundleSvcCode(),true);
+                if (StringUtil.isNotEmpty(appSvcOutsouredDto.getSearchSvcName())){
+                    searchParam.addFilter("svcName",appSvcOutsouredDto.getSearchSvcName(),true);
                 }
             } else if (searchParam == null || searchParam.getFilters().isEmpty()) {
                 errMap.put("serviceCode", MessageUtil.replaceMessage("GENERAL_ERR0006",
@@ -2213,22 +2216,47 @@ public final class AppValidatorHelper {
                 }
             }
         }else {
-            if (!StringUtil.isIn(curAt, new String[]{"delete","sort","changePage"})){
-                if (IaisCommonUtils.isEmpty(appSvcOutsouredDto.getClinicalLaboratoryList()) && IaisCommonUtils.isEmpty(appSvcOutsouredDto.getRadiologicalServiceList())){
-                    errMap.put("clbList", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                            "Clinical Laboratory", "field"));
-                    errMap.put("rdsList", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                            "Radiological Service", "field"));
-                    if (searchParam == null){
-                        errMap.put("initOutsource", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                                "", "field"));
+            List<String> bundleSvcCodeList = appSvcOutsouredDto.getBundleSvcCode();
+            List<String> hcsaSvcCodeList = appSvcOutsouredDto.getHcsaSvcCode();
+            if (IaisCommonUtils.isNotEmpty(bundleSvcCodeList)){
+                for (String bundleSvcCode : bundleSvcCodeList) {
+                    if (!StringUtil.isIn(bundleSvcCode , new String[]{AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY,
+                    AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES})){
+                        doValidateAppSvcOutsource(curAt, appSvcOutsouredDto, searchParam);
                     }
                 }
+            }
+            if (IaisCommonUtils.isNotEmpty(hcsaSvcCodeList)){
+                for (String hcsaSvcCode : hcsaSvcCodeList) {
+                    if (!StringUtil.isIn(hcsaSvcCode , new String[]{AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY,
+                            AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES})){
+                        doValidateAppSvcOutsource(curAt, appSvcOutsouredDto, searchParam);
+                    }
+                }
+            }
+            if (IaisCommonUtils.isEmpty(bundleSvcCodeList) && IaisCommonUtils.isEmpty(hcsaSvcCodeList)){
+                doValidateAppSvcOutsource(curAt, appSvcOutsouredDto, searchParam);
             }
         }
         return errMap;
     }
 
+    private static Map<String, String> doValidateAppSvcOutsource(String curAt, AppSvcOutsouredDto appSvcOutsouredDto ,SearchParam searchParam){
+        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+        if (!StringUtil.isIn(curAt, new String[]{"delete","sort","changePage"})){
+            if (IaisCommonUtils.isEmpty(appSvcOutsouredDto.getClinicalLaboratoryList()) && IaisCommonUtils.isEmpty(appSvcOutsouredDto.getRadiologicalServiceList())){
+                errMap.put("clbList", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                        "Clinical Laboratory", "field"));
+                errMap.put("rdsList", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                        "Radiological Service", "field"));
+                if (searchParam == null){
+                    errMap.put("initOutsource", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                            "", "field"));
+                }
+            }
+        }
+        return errMap;
+    }
 
     public static Map<String, String> doValidateOtherInformation(List<AppSvcOtherInfoDto> appSvcOtherInfoDto, String currCode) {
         if (appSvcOtherInfoDto == null) {
@@ -2239,9 +2267,6 @@ public final class AppValidatorHelper {
 
 
     public static Map<String, String> doValidateAppSvcOtherInfoTop(List<AppSvcOtherInfoDto> appSvcOtherInfoDto, String currCode) {
-        if (appSvcOtherInfoDto == null) {
-            return IaisCommonUtils.genNewHashMap();
-        }
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         for (AppSvcOtherInfoDto svcOtherInfoDto : appSvcOtherInfoDto) {
             String prefix = svcOtherInfoDto.getPremisesVal();
@@ -2273,7 +2298,7 @@ public final class AppValidatorHelper {
                     String gfaValue = String.valueOf(appSvcOtherInfoMedDto.getGfaValue());
                     if ("null".equals(gfaValue)) {
                         errMap.put(prefix + "gfaValue", MessageUtil.replaceMessage("GENERAL_ERR0006", "GFA Value (in sqm)", "field"));
-                    } else if (!StringUtil.isDigit(gfaValue) || gfaValue.matches("^((-\\d+)|(0+))$")) {
+                    } else if (!StringUtil.isDigit(gfaValue) || gfaValue.matches("^-[0-9]*[1-9][0-9]*$")) {
                         errMap.put(prefix + "gfaValue", MessageUtil.replaceMessage("GENERAL_ERR0002", "GFA Value (in sqm)", "field"));
                     } else if (gfaValue.length() > 7 && gfaValue.length() <= 3000){
                         String errorMsg = repLength("GFA Value (in sqm)", "7");
@@ -2314,7 +2339,7 @@ public final class AppValidatorHelper {
                     String agfaValue = ambulatorySurgicalCentre.getGfaValue();
                     if ("null".equals(agfaValue)) {
                         errMap.put(prefix + "agfaValue", MessageUtil.replaceMessage("GENERAL_ERR0006", "GFA Value (in sqm)", "field"));
-                    } else if (!StringUtil.isDigit(agfaValue) || agfaValue.matches("^((-\\d+)|(0+))$")) {
+                    } else if (!StringUtil.isDigit(agfaValue) || agfaValue.matches("^-[0-9]*[1-9][0-9]*$")) {
                         errMap.put(prefix + "agfaValue", MessageUtil.replaceMessage("GENERAL_ERR0002", "GFA Value (in sqm)", "field"));
                     } else if (agfaValue.length() > 7 && agfaValue.length() <= 3000){
                         String errorMsg = repLength("GFA Value (in sqm)", "7");
