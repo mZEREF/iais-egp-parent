@@ -1421,12 +1421,12 @@ public abstract class AppCommDelegator {
                     AppValidatorHelper.validateEffectiveDate("effectiveDt", effectiveDateStr, errorMap);
                 }
             }
-            ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }
         if ("doSubmit".equals(action) && !errorMap.isEmpty()) {
             initErrorAction(ACTION_PREVIEW, errorMap, appSubmissionDto, bpc.request);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, "test");
         }
+        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         log.info(StringUtil.changeForLog("the do doPreview end ...."));
     }
 
