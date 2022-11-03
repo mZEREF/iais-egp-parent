@@ -2216,25 +2216,15 @@ public final class AppValidatorHelper {
                 }
             }
         }else {
-            List<String> bundleSvcCodeList = appSvcOutsouredDto.getBundleSvcCode();
-            List<String> hcsaSvcCodeList = appSvcOutsouredDto.getHcsaSvcCode();
-            if (IaisCommonUtils.isNotEmpty(bundleSvcCodeList)){
-                for (String bundleSvcCode : bundleSvcCodeList) {
-                    if (!StringUtil.isIn(bundleSvcCode , new String[]{AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY,
+            List<String> svcCodeList = appSvcOutsouredDto.getSvcCodeList();
+            if (IaisCommonUtils.isNotEmpty(svcCodeList)){
+                for (String svcCode : svcCodeList) {
+                    if (!StringUtil.isIn(svcCode , new String[]{AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY,
                     AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES})){
                         doValidateAppSvcOutsource(curAt, appSvcOutsouredDto, searchParam);
                     }
                 }
-            }
-            if (IaisCommonUtils.isNotEmpty(hcsaSvcCodeList)){
-                for (String hcsaSvcCode : hcsaSvcCodeList) {
-                    if (!StringUtil.isIn(hcsaSvcCode , new String[]{AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY,
-                            AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES})){
-                        doValidateAppSvcOutsource(curAt, appSvcOutsouredDto, searchParam);
-                    }
-                }
-            }
-            if (IaisCommonUtils.isEmpty(bundleSvcCodeList) && IaisCommonUtils.isEmpty(hcsaSvcCodeList)){
+            }else {
                 doValidateAppSvcOutsource(curAt, appSvcOutsouredDto, searchParam);
             }
         }
