@@ -63,7 +63,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -1882,26 +1881,32 @@ public class ServiceInfoDelegator {
         return serviceStepDto;
     }
 
-    private boolean skipStep(String stepCode, AppSubmissionDto appSubmissionDto) {
+    private boolean skipStep(List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos, int i, AppSubmissionDto appSubmissionDto) {
+        if (i > hcsaServiceStepSchemeDtos.size()) {
+            return false;
+        }
+        String stepCode = hcsaServiceStepSchemeDtos.get(i).getStepCode();
         String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,
                 HcsaConsts.STEP_DISCIPLINE_ALLOCATION};
         if (StringUtil.isIn(stepCode, skipList)) {
             return true;
         }
         if (HcsaConsts.STEP_OUTSOURCED_PROVIDERS.equals(stepCode)) {
-            List<String> checkCodeList=IaisCommonUtils.genNewArrayList();
+            List<String> checkCodeList = IaisCommonUtils.genNewArrayList();
             checkCodeList.add(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES);
             checkCodeList.add(AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL);
             checkCodeList.add(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY);
             boolean match = appSubmissionDto.getAppSvcRelatedInfoDtoList()
                     .stream().anyMatch(s -> AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL.equals(s.getServiceCode()));
-            if (match){
-                List<String> collect = appSubmissionDto.getAppSvcRelatedInfoDtoList().stream().map(AppSvcRelatedInfoDto::getServiceCode).collect(Collectors.toList());
+            if (match) {
+                List<String> collect = appSubmissionDto.getAppSvcRelatedInfoDtoList().stream().map(
+                        AppSvcRelatedInfoDto::getServiceCode).collect(Collectors.toList());
                 checkCodeList.removeAll(collect);
-                if (IaisCommonUtils.isNotEmpty(appSubmissionDto.getAppLicBundleDtoList())){
-                    List<String> collect1 = appSubmissionDto.getAppLicBundleDtoList().stream().map(AppLicBundleDto::getSvcCode).collect(Collectors.toList());
+                if (IaisCommonUtils.isNotEmpty(appSubmissionDto.getAppLicBundleDtoList())) {
+                    List<String> collect1 = appSubmissionDto.getAppLicBundleDtoList().stream().map(
+                            AppLicBundleDto::getSvcCode).collect(Collectors.toList());
                     checkCodeList.removeAll(collect1);
-                    if (checkCodeList.size()==0){
+                    if (checkCodeList.size() == 0) {
                         return true;
                     }
                 }
@@ -1909,6 +1914,46 @@ public class ServiceInfoDelegator {
         }
         return false;
     }
+
+
+    /*private boolean skipStep(List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos, int i, AppSubmissionDto appSubmissionDto) {
+        if (i>hcsaServiceStepSchemeDtos.size()){
+            return false;
+        }
+        String stepCode=hcsaServiceStepSchemeDtos.get(i).getStepCode();
+        String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,
+                HcsaConsts.STEP_DISCIPLINE_ALLOCATION};
+        List<String> checkCodeList=IaisCommonUtils.genNewArrayList();
+        checkCodeList.add(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES);
+        checkCodeList.add(AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL);
+        checkCodeList.add(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY);
+        boolean match = appSubmissionDto.getAppSvcRelatedInfoDtoList()
+                .stream().anyMatch(s -> AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL.equals(s.getServiceCode()));
+        if (match){
+            List<String> collect = appSubmissionDto.getAppSvcRelatedInfoDtoList().stream().map(AppSvcRelatedInfoDto::getServiceCode).collect(Collectors.toList());
+            checkCodeList.removeAll(collect);
+            if (IaisCommonUtils.isNotEmpty(appSubmissionDto.getAppLicBundleDtoList())){
+                List<String> collect1 = appSubmissionDto.getAppLicBundleDtoList().stream().map(AppLicBundleDto::getSvcCode).collect(Collectors.toList());
+                checkCodeList.removeAll(collect1);
+                if (checkCodeList.size()==0){
+                    List<String> list = Arrays.asList(skipList);
+                    list.add(HcsaConsts.STEP_OUTSOURCED_PROVIDERS);
+                    skipList = (String[]) list.toArray();
+                }
+            }
+        }
+        if (StringUtil.isIn(stepCode, skipList)) {
+            return true;
+        }
+        if (HcsaConsts.STEP_SPECIAL_SERVICES_FORM.equals(stepCode)) {
+            List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
+            if (appPremSpecialisedDtoList == null || appPremSpecialisedDtoList.isEmpty() || appPremSpecialisedDtoList.stream()
+                    .noneMatch(AppPremSpecialisedDto::isExistCheckedRels)) {
+                return true;
+            }
+        }
+        return false;
+    }*/
 
     public static AppSubmissionDto getAppSubmissionDto(HttpServletRequest request) {
         return ApplicationHelper.getAppSubmissionDto(request);
