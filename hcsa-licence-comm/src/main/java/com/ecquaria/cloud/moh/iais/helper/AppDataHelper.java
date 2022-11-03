@@ -834,7 +834,7 @@ public final class AppDataHelper {
             if (searchParam == null) {
                 searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
             }
-            appSvcOutsouredDto.setBundleSvcCode(svcName);
+            appSvcOutsouredDto.setSearchSvcName(svcName);
             clearOldSearchParam(searchParam);
             searchParam.addFilter("svcName", svcName, true);
             if (StringUtil.isNotEmpty(licNo)) {
