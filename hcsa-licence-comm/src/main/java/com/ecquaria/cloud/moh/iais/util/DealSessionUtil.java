@@ -66,7 +66,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -905,7 +904,12 @@ public class DealSessionUtil {
                 svcCodeList.add(hcsaSvcCode);
             }
         }
-        appSvcOutsourceBySvcCodeList(svcCodeList, appSvcOutsouredDto);
+        if (svcCodeList.contains(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY)){
+            appSvcOutsouredDto.setClinicalLaboratoryList(null);
+        }
+        if (svcCodeList.contains(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES)){
+            appSvcOutsouredDto.setRadiologicalServiceList(null);
+        }
         appSvcOutsouredDto.setSvcCodeList(svcCodeList);
         // licence numbers
         List<String> licenceNos = IaisCommonUtils.genNewArrayList();
@@ -943,22 +947,6 @@ public class DealSessionUtil {
         return true;
     }
 
-    private static void appSvcOutsourceBySvcCodeList(List<String> svcCodeList,AppSvcOutsouredDto appSvcOutsouredDto){
-        if (IaisCommonUtils.isNotEmpty(svcCodeList)){
-            for (String svcCode : svcCodeList) {
-                if (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(svcCode) && IaisCommonUtils.isNotEmpty(
-                        appSvcOutsouredDto.getClinicalLaboratoryList())) {
-                    removeBundleAppPremOutsourced(appSvcOutsouredDto.getClinicalLaboratoryList(),
-                            AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY);
-                }
-                if (AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(svcCode) && IaisCommonUtils.isNotEmpty(
-                        appSvcOutsouredDto.getRadiologicalServiceList())) {
-                    removeBundleAppPremOutsourced(appSvcOutsouredDto.getRadiologicalServiceList(),
-                            AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES);
-                }
-            }
-        }
-    }
 
     private static void resolveAppPremGroupOutsourcedList(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtoList,
             AppPremOutSourceProvidersQueryDto row) {
@@ -972,24 +960,6 @@ public class DealSessionUtil {
                     dto.setBusinessName(row.getBusinessName());
                     dto.setExpiryDate(row.getExpiryDate());
                 });
-    }
-
-    private static void removeBundleAppPremOutsourced(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtoList, String svcCode) {
-        Iterator<AppPremGroupOutsourcedDto> outsourcedDtoIterator = appPremGroupOutsourcedDtoList.iterator();
-        while (outsourcedDtoIterator.hasNext()) {
-            AppPremGroupOutsourcedDto appPremGroupOutsourcedDto = outsourcedDtoIterator.next();
-            if (appPremGroupOutsourcedDto != null && appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto() != null) {
-                String serviceCode = appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getServiceCode();
-                if (svcCode.equals(serviceCode)) {
-                    appPremGroupOutsourcedDto.setEndDateStr(null);
-                    appPremGroupOutsourcedDto.setStartDateStr(null);
-                    appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().setOutstandingScope("");
-                    appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().setAgreementEndDate(null);
-                    appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().setAgreementStartDate(null);
-                    outsourcedDtoIterator.remove();
-                }
-            }
-        }
     }
 
     /**
