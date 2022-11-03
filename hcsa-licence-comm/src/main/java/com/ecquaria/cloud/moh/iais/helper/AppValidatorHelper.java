@@ -2165,8 +2165,8 @@ public final class AppValidatorHelper {
 
     public static Map<String, String> doValidationOutsourced(AppSvcOutsouredDto appSvcOutsouredDto, String curAt) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+        SearchParam searchParam = appSvcOutsouredDto.getSearchParam();
         if ("search".equals(curAt)) {
-            SearchParam searchParam = appSvcOutsouredDto.getSearchParam();
             if (searchParam != null && !searchParam.getFilters().isEmpty()) {
                 if (searchParam.getFilters().get("svcName") == null) {
                     errMap.put("serviceCode", MessageUtil.replaceMessage("GENERAL_ERR0006",
@@ -2179,8 +2179,7 @@ public final class AppValidatorHelper {
                 errMap.put("serviceCode", MessageUtil.replaceMessage("GENERAL_ERR0006",
                         "Service", "field"));
             }
-        }
-        if ("add".equals(curAt)) {
+        }else if ("add".equals(curAt)) {
             AppPremGroupOutsourcedDto appPremGroupOutsourcedDto = appSvcOutsouredDto.getSearchOutsourced();
             if (appPremGroupOutsourcedDto != null) {
                 String prefix = appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getId();
@@ -2202,7 +2201,6 @@ public final class AppValidatorHelper {
                     String errorMsg = repLength("Scope of Outsourcing", "3000");
                     errMap.put(prefix + "outstandingScope", errorMsg);
                 }
-
                 if (StringUtil.isNotEmpty(startDate) && StringUtil.isNotEmpty(endDate)) {
                     try {
                         if (Formatter.parseDate(startDate).after(Formatter.parseDate(endDate))) {
@@ -2214,13 +2212,18 @@ public final class AppValidatorHelper {
                     }
                 }
             }
-        }
-        if ("next".equals(curAt)){
-            if (IaisCommonUtils.isEmpty(appSvcOutsouredDto.getClinicalLaboratoryList()) && IaisCommonUtils.isEmpty(appSvcOutsouredDto.getRadiologicalServiceList())){
-                errMap.put("clbList", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                        "Clinical Laboratory", "field"));
-                errMap.put("rdsList", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                        "Radiological Service", "field"));
+        }else {
+            if (!StringUtil.isIn(curAt, new String[]{"delete","sort","changePage"})){
+                if (IaisCommonUtils.isEmpty(appSvcOutsouredDto.getClinicalLaboratoryList()) && IaisCommonUtils.isEmpty(appSvcOutsouredDto.getRadiologicalServiceList())){
+                    errMap.put("clbList", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                            "Clinical Laboratory", "field"));
+                    errMap.put("rdsList", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                            "Radiological Service", "field"));
+                    if (searchParam == null){
+                        errMap.put("initOutsource", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                "", "field"));
+                    }
+                }
             }
         }
         return errMap;
