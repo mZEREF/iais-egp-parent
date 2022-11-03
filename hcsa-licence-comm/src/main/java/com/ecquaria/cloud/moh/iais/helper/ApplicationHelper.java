@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoTopPersonDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOutsouredDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
@@ -3696,6 +3697,11 @@ public final class ApplicationHelper {
                 }));
                 return specialServiceInfoDto;
             }));
+            AppSvcOutsouredDto appSvcOutsouredDto = appSvcRelatedInfoDto.getAppSvcOutsouredDto();
+            if (appSvcOutsouredDto != null) {
+                appSvcOutsouredDto.setSearchParam(null);
+                appSvcOutsouredDto.setSearchOutsourced(null);
+            }
         }
         return newDto;
     }
