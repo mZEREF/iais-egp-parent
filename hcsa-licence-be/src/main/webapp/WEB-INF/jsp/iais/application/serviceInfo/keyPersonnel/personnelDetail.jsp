@@ -126,7 +126,7 @@
             </iais:row>
 
             <iais:row>
-                <iais:field width="5" cssClass="col-md-5" mandatory="${isCgo ? 'true' : 'false'}" value="Professional Regn No."/>
+                <iais:field width="5" cssClass="col-md-5" mandatory="${isCgo ? 'true' : 'false'}" value="Professional Regn. No."/>
                 <iais:value width="7" cssClass="col-md-7">
                     <iais:input maxLength="20" type="text" cssClass="profRegNo" name="${prepsn}profRegNo${index}" value="${person.profRegNo}"/>
                 </iais:value>
