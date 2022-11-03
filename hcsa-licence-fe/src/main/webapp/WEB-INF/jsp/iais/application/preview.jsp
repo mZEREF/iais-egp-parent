@@ -235,8 +235,9 @@
         });
         $('.specialisedEdit').click(function(){
             showWaiting();
+            var svcCode = $(this).next().val();
+            $("[name='specialised_next_code']").val(svcCode);
             submit('specialised',null,null);
-            $("[name='specialised_svc_code']").val(action);
         });
         $('#Back').click(function(){
             showWaiting();

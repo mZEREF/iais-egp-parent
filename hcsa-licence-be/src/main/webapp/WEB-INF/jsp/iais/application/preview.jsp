@@ -224,6 +224,8 @@
         });
         $('.specialisedEdit').click(function(){
             showWaiting();
+            var svcCode = $(this).next().val();
+            $("[name='specialised_next_code']").val(svcCode);
             submit('specialised',null,null);
         });
         $('#Back').click(function(){
