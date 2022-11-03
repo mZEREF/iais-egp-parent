@@ -2,7 +2,6 @@
     $(function () {
         init()
     })
-
     function init() {
         addrTypeEvent()
         addOperationalEvnet();
@@ -12,6 +11,8 @@
         retrieveAddrEvent();
         editEvent()
         changeCount()
+        removeMandary();
+        checkHightLightChange('.premisesContent', 'newVal', 'oldVal');
     }
 
 
@@ -102,7 +103,7 @@
             dismissWaiting();
             return;
         }
-        fillInfoMation(data[0],$target)
+        fillInfoMation(data[0],$target,$('#oldAppSubmissionDto').val() == 'true')
         let length = data.length;
         // TODO
         if (length > 1){
@@ -111,55 +112,95 @@
                 console.log("enter==================>",items)
                 clearFields($targets)
                 $('.premisesContent').last().after($targets)
-                fillInfoMation(items,$('.premisesContent').last())
+                fillInfoMation(items,$('.premisesContent').last(),$('#oldAppSubmissionDto').val() == 'true')
                 editEvent()
             })
         }
     }
 
-    function fillInfoMation(data,$target){
+    function fillInfoMation(data,$target,flag){
+        // showTag($('.contents'))
+        // hideTag($('.viewPrem'))
+        // hideTag($('.btns'))
         $('.contents').removeClass('hidden')
         $('.viewPrem').addClass('hidden')
         $('.btns').addClass('hidden')
-        $target.find('.postalCode').text(data.postalCode)
-
         let  addrType = data.addrType =='ADDTY002' ? 'Without Apt Blk' : (data.addrType == 'ADDTY001' ? 'Apt Blk' : '')
-
-        console.log(addrType,'dataType=============>>>>>>>')
-        $target.find('.addrType').text(addrType)
-        $target.find('.blkNo').text(data.blkNo)
-        // TODO  secondAddress id
-        $target.find('.id').val(data.id)
         let mm = data.floorNo + "-" + data.unitNo
-        $target.find('.floorNo-unitNo').text(mm)
-        $target.find('.streetName').text(data.streetName)
-        $target.find('.buildingName').text(data.buildingName)
-        let content  = `<div class="row addmore">
+        let $postalCode
+        let $addrTypes
+        let $blkNo
+        let $floorNoUnitNo
+        let $streetName
+        let $buildingName
+        let contentHtml
+        if (flag){
+             $postalCode = $target.find('.postalCode')
+             $addrTypes = $target.find('.addrType')
+             $blkNo = $target.find('.blkNo')
+             $floorNoUnitNo = $target.find('.floorNo-unitNo')
+             $streetName = $target.find('.streetName')
+             $buildingName = $target.find('.buildingName')
+            contentHtml  = `<div class="row addmore">
              <input type="hidden" class="othersId" value="">
+            <div class="col-md-6"></div>
             <div class="col-md-6">
-            </div>
-        <div class="col-md-6">
-            <div class="col-md-6">
-                   <span class="newVal addmorecontent" attr="">
-                   </span>
-            </div>
-        </div>
-    </div>`
+               <div class="col-md-6 target">
 
+               </div>
+               <div class="col-md-6">
+
+               </div>
+            </div>
+            </div>`
+        }else {
+            $postalCode = $target.find('.postalCode').parent().next().children(":first")
+            $addrTypes = $target.find('.addrType').parent().next().children(":first")
+            $blkNo = $target.find('.blkNo').parent().next().children(":first")
+            $floorNoUnitNo = $target.find('.floorNo-unitNo').parent().next().children(":first")
+            $streetName = $target.find('.streetName').parent().next().children(":first")
+            $buildingName = $target.find('.buildingName').parent().next().children(":first")
+            contentHtml  = `<div class="row addmore">
+             <input type="hidden" class="othersId" value="">
+            <div class="col-md-6"></div>
+            <div class="col-md-6">
+            <div class="col-md-6 target">
+
+            </div>
+            <div class="col-md-6">
+
+            </div>
+            </div>
+            </div>`
+        }
+        $postalCode.text(data.postalCode)
+        $addrTypes.text(addrType)
+        $blkNo.text(data.blkNo)
+        $floorNoUnitNo.text(mm)
+        $streetName.text(data.streetName)
+        $buildingName.text(data.buildingName)
+        $target.find('.id').val(data.id)
         $('.addmore').remove()
-
         $.each(data.appPremisesOperationalUnitDtos,function (index,value){
             if (index == 0){
-                $target.find('.appendContent').after(content)
+                $target.find('.appendContent').after(contentHtml)
             }else {
-                $('.addmore').last().after(content)
+                $('.addmore').last().after(contentHtml)
             }
             // TODO
             $target.find('.addmore').eq(index).find('.othersId').val(value.id)
             let numbere = value.floorNo + "-" + value.unitNo
-            $target.find('.addmore').eq(index).find('.addmorecontent').text(numbere)
+            let html
+            if (flag){
+                html = '<span class="newVal addmorecontent" attr="">'+numbere+'</span>'
+                $target.find('.addmore').eq(index).find('.target').html(html)
+            }else {
+                html = '<span class=" newVal compareTdStyle" attr="">'+numbere+'</span>'
+                $target.find('.addmore').eq(index).find('.target').next().html(html)
+            }
         })
         changeCount()
+        checkHightLightChange('.premisesContent', 'newVal', 'oldVal');
         dismissWaiting();
     }
     function retrieveAddr(postalCode, target) {
@@ -349,6 +390,7 @@
         $('.viewPremisesEdit').click(function () {
             let target = $(this).closest('div.premisesContent');
             $('.viewPrem').removeClass('hidden');
+            removeMandary();
             $('.btns').removeClass('hidden')
             $('.save').removeClass('hidden')
             //all hide
@@ -357,7 +399,7 @@
             clearFields($('.viewPrem'))
             $('.viewPrem').find('.premHeader').html('')
             //    TODO
-            getEditInformationAndFill(target)
+            getEditInformationAndFill(target,$('#oldAppSubmissionDto').val() == 'true')
             saveEvent(target)
         })
     }
@@ -372,53 +414,91 @@
             }
         })
     }
-    let getEditInformationAndFill = function (target) {
-        let postalCode = target.find('.postalCode').text()
-        let addrType = target.find('.addrType').text()
-        let blkNo = target.find('.blkNo').text()
-        let others = target.find('.floorNo-unitNo').text().split("-")
-        let floorNo = others[0]
-        let unitNo = others[1]
-        let streetName = target.find('.streetName').text()
-        let buildingName = target.find('.buildingName').text()
-        let id = target.find('.id').val()
-        let appPremisesOperationalUnitDtos = new Array()
-        target.find('.addmore').each(function (index, item) {
-            let otherId = $(item).find('.othersId').val()
-            let others =  $(item).find('.addmorecontent').text().split("-")
+    let getEditInformationAndFill = function ($target,flag) {
+        let $postalCode
+        let $addrTypes
+        let $blkNo
+        let $floorNoUnitNo
+        let $streetName
+        let $buildingName
+        if (flag){
+            $postalCode = $target.find('.postalCode')
+            $addrTypes = $target.find('.addrType')
+            $blkNo = $target.find('.blkNo')
+            $floorNoUnitNo = $target.find('.floorNo-unitNo')
+            $streetName = $target.find('.streetName')
+            $buildingName = $target.find('.buildingName')
+        }else {
+            $postalCode = $target.find('.postalCode').parent().next().children(":first")
+            $addrTypes = $target.find('.addrType').parent().next().children(":first")
+            $blkNo = $target.find('.blkNo').parent().next().children(":first")
+            $floorNoUnitNo = $target.find('.floorNo-unitNo').parent().next().children(":first")
+            $streetName = $target.find('.streetName').parent().next().children(":first")
+            $buildingName = $target.find('.buildingName').parent().next().children(":first")
+        }
+            let postalCode = $postalCode.text()
+            let addrType = $addrTypes.text()
+            let blkNo = $blkNo.text()
+            let others =$floorNoUnitNo.text().split("-")
+            let streetName = $streetName.text()
+            let buildingName = $buildingName.text()
+            let id = $target.find('.id').val()
             let floorNo = others[0]
             let unitNo = others[1]
-            appPremisesOperationalUnitDtos.push({"id":otherId,"floorNo":floorNo,"unitNo":unitNo})
-        })
-        let data = {
-            'id' : id,
-            'postalCode': postalCode,
-            'addrType': addrType,
-            'blkNo': blkNo,
-            'floorNo': floorNo,
-            'unitNo': unitNo,
-            'appPremisesOperationalUnitDtos': appPremisesOperationalUnitDtos,
-            'streetName': streetName,
-            'buildingName': buildingName
-        }
-        console.log('editData==============>',data)
-        let $premContent = $('.viewPrem')
-        fillValue($premContent.find('.postalCode'), data.postalCode.trim());
-        fillValue($premContent.find('.blkNo'), data.blkNo.trim());
-        fillValue($premContent.find('.operationDiv:first').find('.floorNo'), data.floorNo.trim());
-        fillValue($premContent.find('.operationDiv:first').find('.unitNo'), data.unitNo.trim());
-        fillValue($premContent.find('.streetName'), data.streetName.trim());
-        fillValue($premContent.find('.buildingName'), data.buildingName.trim());
-        fillValue($premContent.find('.id'), data.id.trim());
-        let code = data.addrType.trim() == 'Without Apt Blk' ? 'ADDTY002' : (data.addrType.trim() == 'Apt Blk' ? 'ADDTY001' : '')
-        fillValue($premContent.find('.addrType'), code);
-        $premContent.find('.addrType').trigger('change')
-        let ele = $('.viewPrem')
-        let flag = true
-        ele.find('div.operationDivGroup .operationDiv').remove();
-        $.each(appPremisesOperationalUnitDtos,function (index, value) {
-            addFloorUnit(ele,flag,value)
-        })
+            if (!unitNo){
+                unitNo = ''
+            }
+            if (!floorNo){
+                floorNo = ''
+            }
+            let appPremisesOperationalUnitDtos = new Array()
+        $target.find('.addmore').each(function (index, item) {
+                let otherId = $(item).find('.othersId').val()
+                let others
+                if (flag){
+                    others =  $(item).find('.target').text().split("-")
+                }else {
+                    others =  $(item).find('.target').next().text().split("-")
+                }
+                let floorNos = others[0].trim();
+                let unitNos = others[1].trim();
+                if (!floorNos){
+                    floorNos = '';
+                }
+                if (!unitNos) {
+                    floorNos = '';
+                }
+                appPremisesOperationalUnitDtos.push({"id":otherId,"floorNo":floorNos,"unitNo":unitNos})
+            })
+            let data = {
+                'id' : id,
+                'postalCode': postalCode.trim(),
+                'addrType': addrType.trim(),
+                'blkNo': blkNo.trim(),
+                'floorNo': floorNo.trim(),
+                'unitNo': unitNo.trim(),
+                'appPremisesOperationalUnitDtos': appPremisesOperationalUnitDtos,
+                'streetName': streetName.trim(),
+                'buildingName': buildingName.trim()
+            }
+            console.log('editData==============>',data)
+            let $premContent = $('.viewPrem')
+            fillValue($premContent.find('.postalCode'), data.postalCode.trim());
+            fillValue($premContent.find('.blkNo'), data.blkNo.trim());
+            fillValue($premContent.find('.operationDiv:first').find('.floorNo'), data.floorNo.trim());
+            fillValue($premContent.find('.operationDiv:first').find('.unitNo'), data.unitNo.trim());
+            fillValue($premContent.find('.streetName'), data.streetName.trim());
+            fillValue($premContent.find('.buildingName'), data.buildingName.trim());
+            fillValue($premContent.find('.id'), data.id.trim());
+            let code = data.addrType.trim() == 'Without Apt Blk' ? 'ADDTY002' : (data.addrType.trim() == 'Apt Blk' ? 'ADDTY001' : '')
+            fillValue($premContent.find('.addrType'), code);
+            $premContent.find('.addrType').trigger('change')
+            let ele = $('.viewPrem')
+            let flags = true
+            ele.find('div.operationDivGroup .operationDiv').remove();
+            $.each(appPremisesOperationalUnitDtos,function (index, value) {
+                addFloorUnit(ele,flags,value)
+            })
     }
     $('#hciNameClick').click(function () {
         var jQuery = $('#hciNameShowOrHidden').attr('style');
@@ -436,6 +516,10 @@
             $('#hciNameShowOrHidden').hide();
         }
     });
+
+    let removeMandary = function () {
+        $('.mandatory').removeAttr("style","")
+    }
 
 
 </script>
