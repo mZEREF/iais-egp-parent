@@ -47,7 +47,7 @@
                                 <c:otherwise>
                                     <%@include file="specialServicePersonnel.jsp" %>
                                     <c:if test="${not empty appSvcSuplmFormDto.appSvcSuplmGroupDtoList}">
-                                        <div class="panel-main-content">
+                                        <div class="panel-main-content normal-label">
                                             <iais:row cssClass="edit-content">
                                                 <c:if test="${canEdit}">
                                                     <div class="text-right app-font-size-16">
