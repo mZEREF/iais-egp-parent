@@ -26,6 +26,7 @@
         removeBtnEvent();
         addMoreEvent();
         checkItemEvent();
+        refreshGroupIndex();
         $('.item-record [data-curr]').each(function () {
             let $target = $(this);
             checkItemMandatory($target);
@@ -152,7 +153,8 @@
             }
             unDisableContent($('.person-content'))
             $('.person-content').find('.isPartEdit').val('1')
-            $('#isEditHiddenVal').val('1')
+            $('#isEditHiddenVal').val('1');
+            refreshGroupIndex();
         });
     }
 
@@ -253,6 +255,7 @@
             $('.item-record [data-curr][data-prefix="' + prefix + '"]').each(function () {
                 checkItemMandatory($(this));
             });
+            refreshGroupIndex();
         });
     }
 
