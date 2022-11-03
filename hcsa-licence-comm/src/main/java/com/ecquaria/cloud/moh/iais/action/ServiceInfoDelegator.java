@@ -1816,9 +1816,19 @@ public class ServiceInfoDelegator {
             if (number == 0) {
                 stepFirst = true;
             }
-            if (number + 1 == hcsaServiceStepSchemeDtos.size()) {
+            if (number + 1 >= hcsaServiceStepSchemeDtos.size()) {
                 stepEnd = true;
             }
+            if (!stepEnd) {
+                int i = number + 1;
+                while (skipStep(hcsaServiceStepSchemeDtos,i, appSubmissionDto)){
+                    i++;
+                }
+                if (i >= hcsaServiceStepSchemeDtos.size()) {
+                    stepEnd = true;
+                }
+            }
+
             serviceStepDto.setStepFirst(stepFirst);
             serviceStepDto.setStepEnd(stepEnd);
             if (number > -1) {
