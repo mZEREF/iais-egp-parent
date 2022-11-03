@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.util;
 
-import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.job.executor.util.SpringHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -56,10 +55,7 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.OrganizationService;
-import com.ecquaria.cloud.moh.iais.service.client.ComSystemAdminClient;
 import lombok.extern.slf4j.Slf4j;
-import sop.iwe.SessionManager;
-import sop.rbac.user.User;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -868,9 +864,8 @@ public class DealSessionUtil {
             if (appSvcOtherInfoDto.getApplicantId() == null) {
                 appSvcOtherInfoDto.setOrgUserDto(getOtherInfoYfVs(request, appSvcOtherInfoDto));
             }else {
-//                appSvcOtherInfoDto.setOrgUserDto(getOrganizationService().retrieveOrgUserAccountById(appSvcOtherInfoDto.getApplicantId()));
-                ComSystemAdminClient client = SpringContextHelper.getContext().getBean(ComSystemAdminClient.class);
-                appSvcOtherInfoDto.setOrgUserDto(client.retrieveOrgUserAccount(appSvcOtherInfoDto.getApplicantId()).getEntity());
+                OrganizationService organizationService = getOrganizationService();
+                appSvcOtherInfoDto.setOrgUserDto(organizationService.retrieveOrgUserAccountById(appSvcOtherInfoDto.getApplicantId()));
             }
             appSvcOtherInfoDto.setInit(true);
             newList.add(appSvcOtherInfoDto);
@@ -979,15 +974,15 @@ public class DealSessionUtil {
      */
     public static OrgUserDto getOtherInfoYfVs(HttpServletRequest request, AppSvcOtherInfoDto appSvcOtherInfoDto) {
         if (request == null) {
-            request = MiscUtil.getCurrentRequest();
-        }
-        if (request == null) {
             return null;
         }
-        User user = SessionManager.getInstance(request).getCurrentUser();
-        appSvcOtherInfoDto.setApplicantId(user.getId());
-        ComSystemAdminClient client = SpringContextHelper.getContext().getBean(ComSystemAdminClient.class);
-        return client.retrieveOrgUserAccount(appSvcOtherInfoDto.getApplicantId()).getEntity();
+        String userId = ApplicationHelper.getLoginContext(request).getUserId();
+        if (StringUtil.isEmpty(userId)){
+            return null;
+        }
+        appSvcOtherInfoDto.setApplicantId(userId);
+        OrganizationService organizationService = getOrganizationService();
+        return organizationService.retrieveOrgUserAccountById(userId);
     }
 
     private static AppSvcSuplmFormDto initAppSvcSuplmFormDto(String code, boolean forceInit, String type,

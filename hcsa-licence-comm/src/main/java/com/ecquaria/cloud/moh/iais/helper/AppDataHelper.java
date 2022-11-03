@@ -856,8 +856,6 @@ public final class AppDataHelper {
                 searchParam.addFilter("dPostCode", getPostalCode(appGrpPremisesDtos), true);
             }
             if (StringUtil.isNotEmpty(postalCode)) {
-                searchParam.removeParam("dPostCode");
-                searchParam.removeFilter("dPostCode");
                 searchParam.addFilter("postalCode", postalCode, true);
             }
             if (StringUtil.isNotEmpty(appSubmissionDto.getLicenseeId())) {
