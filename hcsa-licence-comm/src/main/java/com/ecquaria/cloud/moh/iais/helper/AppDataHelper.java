@@ -954,7 +954,13 @@ public final class AppDataHelper {
         appPremGroupOutsourcedDto.setStartDateStr(startDate);
         appPremGroupOutsourcedDto.setEndDateStr(endDate);
         if (StringUtil.isNotEmpty(scoping) && StringUtil.isNotEmpty(startDate) && StringUtil.isNotEmpty(endDate)) {
-            appPremGroupOutsourcedDtoList.add(appPremGroupOutsourcedDto);
+            try {
+                if (Formatter.parseDate(startDate).before(Formatter.parseDate(endDate))){
+                    appPremGroupOutsourcedDtoList.add(appPremGroupOutsourcedDto);
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
         appSvcOutsouredDto.setSearchOutsourced(appPremGroupOutsourcedDto);
         appSvcOutsouredDto.setPrefixVal(row.getId());
