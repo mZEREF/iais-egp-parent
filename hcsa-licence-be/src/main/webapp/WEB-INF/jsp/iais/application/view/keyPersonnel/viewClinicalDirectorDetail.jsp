@@ -7,9 +7,16 @@
     </iais:row>
 
     <iais:row>
-        <iais:field width="5" value="Professional Regn No."/>
+        <iais:field width="5" value="Professional Regn. No."/>
         <iais:value width="3" cssClass="col-md-7" display="true">
             <c:out value="${person.profRegNo}" />
+        </iais:value>
+    </iais:row>
+
+    <iais:row>
+        <iais:field width="5" value="Salutation"/>
+        <iais:value width="3" cssClass="col-md-7" display="true">
+            <iais:code code="${person.salutation}" />
         </iais:value>
     </iais:row>
 
@@ -19,6 +26,14 @@
             <c:out value="${person.name}" />
         </iais:value>
     </iais:row>
+
+    <iais:row>
+        <iais:field width="5" value="ID Type"/>
+        <iais:value width="3" cssClass="col-md-7" display="true">
+            <iais:code code="${person.idType}" />
+        </iais:value>
+    </iais:row>
+
 
     <iais:row>
         <iais:field width="5" value="ID No."/>
@@ -51,7 +66,7 @@
     <iais:row>
         <iais:field width="5" value="Type of Current Registration"/>
         <iais:value width="3" cssClass="col-md-7" display="true">
-            <c:out value="${person.typeOfRegister}" />
+            <c:out value="${person.typeOfCurrRegi}" />
         </iais:value>
     </iais:row>
 
@@ -73,6 +88,13 @@
         <iais:field width="5" value="Type of Register"/>
         <iais:value width="3" cssClass="col-md-7" display="true">
             <c:out value="${person.typeOfRegister}" />
+        </iais:value>
+    </iais:row>
+
+    <iais:row>
+        <iais:field width="5" value="Relevant Experience"/>
+        <iais:value width="7" cssClass="col-md-7" display="true">
+            <c:out value="${person.relevantExperience}"/>
         </iais:value>
     </iais:row>
 

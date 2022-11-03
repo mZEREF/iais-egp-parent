@@ -57,7 +57,7 @@
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Professional Regn No."/>
+            <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Professional Regn. No."/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:input maxLength="20" type="text" cssClass="profRegNo" name="${prepsn}profRegNo${index}" value="${person.profRegNo}"/>
             </iais:value>
@@ -156,7 +156,7 @@
         <iais:row>
             <iais:field width="5" cssClass="col-md-5 relevantExperienceLabel" mandatory="false" value="Relevant Experience"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="180" type="text" cssClass="relevantExperience" name="${perfix}relevantExperience${index}" value="${person.typeOfRegister}"/>
+                <iais:input maxLength="180" type="text" cssClass="relevantExperience" name="${perfix}relevantExperience${index}" value="${person.relevantExperience}"/>
             </iais:value>
         </iais:row>
 
