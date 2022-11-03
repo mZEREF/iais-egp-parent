@@ -15,6 +15,9 @@
             <div class="col-xs-12">
                 <div class="app-title item-label" ${itemData}>
                     <c:out value="${itemConfigDto.displayInfo}"/>
+                    <c:if test="${not empty groupId}">
+                        <span class="${itemPrefix}-${groupId}"></span>
+                    </c:if>
                 </div>
             </div>
         </c:when>

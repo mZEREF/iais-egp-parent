@@ -1,18 +1,11 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <c:set var="psnType" value="${ApplicationConsts.OTHER_TOP_PRACTITIONERS}"/>
 <div class="practitioners person-detail  person-content <c:if test="${'1' != provideTop}">hidden</c:if>" data-prefix="${prefix}">
-    <iais:row>
-        <div class="col-xs-12 col-md-10">
-            <p class="bold">Name, Professional Regn. No. and Qualification of medical practitioners authorised to perform Abortion
-                &nbsp;<label class="assign-psn-item" style="font-weight: bold;!important;"  data-prefix="${prefix}"><c:if test="${practitioners.size() > 1}">${index+1}</c:if></label>
-            </p>
-        </div>
-        <div class="col-xs-12 col-md-2 text-right removePractitionersBtn removePDiv" data-prefix="${prefix}">
-            <h4 class="text-danger">
-                <em class="fa fa-times-circle del-size-36 text-right removePractitionersBtn cursorPointer"></em>
-            </h4>
-        </div>
-    </iais:row>
+    <div class="col-xs-12 col-md-12 text-right removePractitionersBtn removePDiv" data-prefix="${prefix}">
+        <h4 class="text-danger">
+            <em class="fa fa-times-circle del-size-36 text-right removePractitionersBtn cursorPointer"></em>
+        </h4>
+    </div>
     <input type="hidden" class="isPartEdit" name="${prefix}isPartEdit${index}" value="0" data-prefix="${prefix}"/>
     <input type="hidden" class="practitionersIndexNo" name="${prefix}practitionersIndexNo${index}" value="${person.idNo}"/>
     <input type="hidden" class="psnType" name="${prefix}psnType${index}" value="${psnType}" data-prefix="${prefix}">

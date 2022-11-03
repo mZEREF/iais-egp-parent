@@ -69,6 +69,8 @@ public class InsRepRecValidate implements CustomizeValidator {
             recommendation  = ParamUtil.getRequestString(httpServletRequest, "recommendationRfc");
         }
         verifyVehicleEasMtsReport( httpServletRequest,errorMap,applicationViewDto,recommendation);
+        verifySpecialServiceReport( httpServletRequest,errorMap,applicationViewDto,recommendation);
+        verifyOtherServiceReport( httpServletRequest,errorMap,applicationViewDto,recommendation);
             return errorMap;
     }
 
@@ -78,6 +80,22 @@ public class InsRepRecValidate implements CustomizeValidator {
             rejectCode.add(InspectionReportConstants.REJECTED);
             rejectCode.add(InspectionReportConstants.RFC_REJECTED);
             HcsaApplicationViewValidate.valiVehicleEasMtsCommon(request,errorMap,applicationViewDto,StringUtil.getNonNull(recommendation),rejectCode, null);
+        }
+    }
+    private void verifySpecialServiceReport(HttpServletRequest request, Map<String, String> errorMap, ApplicationViewDto applicationViewDto,String recommendation){
+        if(HcsaLicenceBeConstant.EDIT_VEHICLE_FLAG.equalsIgnoreCase((String)ParamUtil.getSessionAttr(request, HcsaLicenceBeConstant.APP_SPECIAL_FLAG))){
+            List<String> rejectCode = IaisCommonUtils.genNewArrayList(2);
+            rejectCode.add(InspectionReportConstants.REJECTED);
+            rejectCode.add(InspectionReportConstants.RFC_REJECTED);
+            HcsaApplicationViewValidate.valiSpecialServiceCommon(request,errorMap,applicationViewDto,StringUtil.getNonNull(recommendation),rejectCode, null);
+        }
+    }
+    private void verifyOtherServiceReport(HttpServletRequest request, Map<String, String> errorMap, ApplicationViewDto applicationViewDto,String recommendation){
+        if(HcsaLicenceBeConstant.EDIT_VEHICLE_FLAG.equalsIgnoreCase((String)ParamUtil.getSessionAttr(request, HcsaLicenceBeConstant.APP_OTHER_FLAG))){
+            List<String> rejectCode = IaisCommonUtils.genNewArrayList(2);
+            rejectCode.add(InspectionReportConstants.REJECTED);
+            rejectCode.add(InspectionReportConstants.RFC_REJECTED);
+            HcsaApplicationViewValidate.valiOtherServiceCommon(request,errorMap,applicationViewDto,StringUtil.getNonNull(recommendation),rejectCode, null);
         }
     }
 }

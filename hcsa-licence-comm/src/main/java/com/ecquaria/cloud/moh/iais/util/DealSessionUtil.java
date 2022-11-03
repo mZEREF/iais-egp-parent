@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.util;
 
-import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.job.executor.util.SpringHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -56,10 +55,7 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.service.ConfigCommService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.OrganizationService;
-import com.ecquaria.cloud.moh.iais.service.client.ComSystemAdminClient;
 import lombok.extern.slf4j.Slf4j;
-import sop.iwe.SessionManager;
-import sop.rbac.user.User;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -510,13 +506,7 @@ public class DealSessionUtil {
         }
         Map<String, HcsaSvcSpePremisesTypeDto> map = premisesTypeList.stream()
                 .collect(Collectors.toMap(HcsaSvcSpePremisesTypeDto::getPremisesType, Function.identity(), (u, v) -> v));
-        Iterator<String> iterator = premisesType.iterator();
-        while (iterator.hasNext()) {
-            String next = iterator.next();
-            if (map.get(next) == null) {
-                iterator.remove();
-            }
-        }
+        premisesType.removeIf(next -> map.get(next) == null);
         return premisesType;
     }
 
@@ -676,6 +666,7 @@ public class DealSessionUtil {
         }
         Map<String, HcsaServiceStepSchemeDto> stepMap = hcsaServiceStepSchemes.stream()
                 .collect(Collectors.toMap(HcsaServiceStepSchemeDto::getStepCode, Function.identity()));
+        // Supplementary Form
         HcsaServiceStepSchemeDto hcsaServiceStepScheme = stepMap.get(HcsaConsts.STEP_SUPPLEMENTARY_FORM);
         if (hcsaServiceStepScheme != null) {
             initSupplementoryForm(currSvcInfoDto, appGrpPremisesDtos, forceInit);
@@ -688,6 +679,7 @@ public class DealSessionUtil {
         } else {
             currSvcInfoDto.setAppSvcSuplmFormList(null);
         }
+        // Other information
         hcsaServiceStepScheme = stepMap.get(HcsaConsts.STEP_OTHER_INFORMATION);
         if (hcsaServiceStepScheme != null) {
             initAppSvcOtherInfoList(currSvcInfoDto, appGrpPremisesDtos, forceInit, request);
@@ -705,6 +697,7 @@ public class DealSessionUtil {
         } else {
             currSvcInfoDto.setAppSvcOtherInfoList(null);
         }
+        // Special services information
         hcsaServiceStepScheme = stepMap.get(HcsaConsts.STEP_SPECIAL_SERVICES_FORM);
         if (hcsaServiceStepScheme != null) {
             initAppSvcSpecialServiceInfoDtoList(currSvcInfoDto, appPremSpecialisedDtoList);
@@ -722,6 +715,7 @@ public class DealSessionUtil {
         } else {
             currSvcInfoDto.setAppSvcSpecialServiceInfoList(null);
         }
+        // Doucuments
         hcsaServiceStepScheme = stepMap.get(HcsaConsts.STEP_DOCUMENTS);
         if (hcsaServiceStepScheme != null) {
             List<DocumentShowDto> documentShowDtos = initDocumentShowList(currSvcInfoDto,
@@ -731,6 +725,7 @@ public class DealSessionUtil {
             currSvcInfoDto.setAppSvcDocDtoLit(null);
             currSvcInfoDto.setDocumentShowDtoList(null);
         }
+        // outsourced providers
         hcsaServiceStepScheme = stepMap.get(HcsaConsts.STEP_OUTSOURCED_PROVIDERS);
         if (hcsaServiceStepScheme != null) {
             initSvcOutsourcedProvider(request, currSvcInfoDto, forceInit);
@@ -866,8 +861,11 @@ public class DealSessionUtil {
             appSvcOtherInfoDto.setAppGrpPremisesDto(appGrpPremisesDto);
             appSvcOtherInfoDto.setSvcSpecifiedCorrelationList(svcSpecifiedCorrelationDtoList);
             appSvcOtherInfoDto.setAppSvcSuplmFormDto(appSvcSuplmFormDto);
-            if (appSvcOtherInfoDto.getOrgUserDto() == null) {
-                appSvcOtherInfoDto.setOrgUserDto(getOtherInfoYfVs(request));
+            if (appSvcOtherInfoDto.getApplicantId() == null) {
+                appSvcOtherInfoDto.setOrgUserDto(getOtherInfoYfVs(request, appSvcOtherInfoDto));
+            }else {
+                OrganizationService organizationService = getOrganizationService();
+                appSvcOtherInfoDto.setOrgUserDto(organizationService.retrieveOrgUserAccountById(appSvcOtherInfoDto.getApplicantId()));
             }
             appSvcOtherInfoDto.setInit(true);
             newList.add(appSvcOtherInfoDto);
@@ -875,7 +873,6 @@ public class DealSessionUtil {
         currSvcInfoDto.setAppSvcOtherInfoList(newList);
         return true;
     }
-
     public static boolean initSvcOutsourcedProvider(HttpServletRequest request, AppSvcRelatedInfoDto currSvcInfoDto,
             boolean forceInit) {
         AppSvcOutsouredDto appSvcOutsouredDto = currSvcInfoDto.getAppSvcOutsouredDto();
@@ -975,16 +972,17 @@ public class DealSessionUtil {
     /**
      * Yellow Fever Vaccination
      */
-    public static OrgUserDto getOtherInfoYfVs(HttpServletRequest request) {
-        if (request == null) {
-            request = MiscUtil.getCurrentRequest();
-        }
+    public static OrgUserDto getOtherInfoYfVs(HttpServletRequest request, AppSvcOtherInfoDto appSvcOtherInfoDto) {
         if (request == null) {
             return null;
         }
-        User user = SessionManager.getInstance(request).getCurrentUser();
-        ComSystemAdminClient client = SpringContextHelper.getContext().getBean(ComSystemAdminClient.class);
-        return client.retrieveOrgUserAccount(user.getId()).getEntity();
+        String userId = ApplicationHelper.getLoginContext(request).getUserId();
+        if (StringUtil.isEmpty(userId)){
+            return null;
+        }
+        appSvcOtherInfoDto.setApplicantId(userId);
+        OrganizationService organizationService = getOrganizationService();
+        return organizationService.retrieveOrgUserAccountById(userId);
     }
 
     private static AppSvcSuplmFormDto initAppSvcSuplmFormDto(String code, boolean forceInit, String type,

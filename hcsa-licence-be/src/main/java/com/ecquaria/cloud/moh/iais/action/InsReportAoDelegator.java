@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -26,10 +27,12 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.InspectionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
@@ -46,6 +49,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author weilu
@@ -69,6 +73,8 @@ public class InsReportAoDelegator  {
     private VehicleCommonController vehicleCommonController;
     @Autowired
     private InspectionService inspectionService;
+    @Autowired
+    private ApplicationService applicationService;
 
     private final static String APPROVAL="Approval";
     private final static String REJECT="Reject";
@@ -116,6 +122,12 @@ public class InsReportAoDelegator  {
         InspectionReportDto insRepDto = insRepService.getInsRepDto(taskDto,applicationViewDto,loginContext);
         InspectionReportDto inspectorAo = insRepService.getInspectorAo(taskDto, applicationViewDto);
         insRepDto.setInspectors(inspectorAo.getInspectors());
+        insRepDto.setAppPremSpecialSubSvcRelDtoList(applicationViewDto.getAppPremSpecialSubSvcRelDtoList().stream()
+                .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
+                .collect(Collectors.toList()));
+        insRepDto.setAppPremOthersSubSvcRelDtoList(applicationViewDto.getAppPremOthersSubSvcRelDtoList().stream()
+                .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
+                .collect(Collectors.toList()));
         vehicleCommonController.initAoRecommendation(correlationId,bpc,applicationViewDto.getApplicationDto().getApplicationType());
         Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = IaisCommonUtils.genNewHashMap();
         List<SelectOption> rollBackStage = inspectionService.getRollBackSelectOptions(applicationViewDto.getRollBackHistroyList(), rollBackValueMap, taskDto.getRoleId(), Collections.singletonList(RoleConsts.USER_ROLE_INSPECTIOR));
@@ -139,6 +151,10 @@ public class InsReportAoDelegator  {
         ParamUtil.setSessionAttr(request,"backSearchParamFromHcsaApplication",searchParamGroup);
         ParamUtil.setSessionAttr(request, ROLLBACK_OPTIONS, (Serializable) rollBackStage);
         ParamUtil.setSessionAttr(request, ROLLBACK_VALUE_MAP, (Serializable) rollBackValueMap);
+        ParamUtil.setSessionAttr(bpc.request, HcsaLicenceBeConstant.APP_SPECIAL_FLAG,
+                applicationService.getSubSvcFlagToShowOrEdit(taskDto,applicationViewDto));
+        ParamUtil.setSessionAttr(bpc.request, HcsaLicenceBeConstant.APP_OTHER_FLAG,
+                applicationService.getSubSvcFlagToShowOrEdit(taskDto,applicationViewDto));
         vehicleCommonController.setVehicleInformation(request,taskDto,applicationViewDto);
     }
 
@@ -147,6 +163,26 @@ public class InsReportAoDelegator  {
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, APPLICATIONVIEWDTO);
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
         ParamUtil.setSessionAttr(bpc.request,"appType",applicationType);
+        //Can edit application
+        InspectionHelper.checkForEditingApplication(bpc.request);
+        List<AppPremSubSvcRelDto> specialServiceList;
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
+            specialServiceList=applicationViewDto.getSpecialRfcShowDtos();
+        }else {
+            specialServiceList=applicationViewDto.getAppPremSpecialSubSvcRelDtoList();
+        }
+        ParamUtil.setRequestAttr(bpc.request, "changedSpecialServiceList", specialServiceList.stream()
+                .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE.equals(dto.getActCode()))
+                .collect(Collectors.toList()));
+        List<AppPremSubSvcRelDto> otherServiceList;
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
+            otherServiceList=applicationViewDto.getOthersRfcShowDtos();
+        }else {
+            otherServiceList=applicationViewDto.getAppPremOthersSubSvcRelDtoList();
+        }
+        ParamUtil.setRequestAttr(bpc.request, "changedOtherServiceList", otherServiceList.stream()
+                .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE.equals(dto.getActCode()))
+                .collect(Collectors.toList()));
     }
 
     public void action(BaseProcessClass bpc){

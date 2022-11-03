@@ -19,6 +19,7 @@
                             </strong>
                         </p>
                         <c:set var="isMap" value="${person.psnType == ApplicationConsts.PERSONNEL_PSN_TYPE_MAP}"/>
+                        <c:set var="keyPerson" value="keyPerson"/>
                         <%@include file="viewPersonnelDetail.jsp" %>
                     </c:forEach>
                 </div>

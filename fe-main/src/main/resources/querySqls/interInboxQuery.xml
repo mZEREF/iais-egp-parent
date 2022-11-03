@@ -10,8 +10,8 @@
                 inbox.ref_no,
                 CASE  when inbox.service_codes is null
                 or inbox.service_codes in ('ART','LDT','TOP','VSS','DRP','ART@','LDT@','TOP@','VSS@','DRP@','ASUP','LSUP','TSUP','DSUP','ASNE','LSNE','TSNE','DSNE') then 'N/A'
-                when   CHARINDEX( 'TSB',inbox.service_codes) >0
-                then REPLACE(inbox.service_codes,'TSB','Cord Blood Banking Service')
+                when   CHARINDEX( 'CBB',inbox.service_codes) >0
+                then REPLACE(inbox.service_codes,'CBB','Cord Blood Banking Service')
                 else
                     inbox.service_codes end sort_service_codes,
                 inbox.service_codes,
@@ -261,9 +261,10 @@
     </sql>
     <sql key="getLicenceBySerName" remarks="getLicenceBySerName">
         <![CDATA[
-        select ID,LICENCE_NO,SVC_NAME,START_DATE,POSTAL_CODE,BLK_NO,FLOOR_NO,UNIT_NO,STREET_NAME,BUILDING_NAME,EXPIRY_DATE,HCI_NAME,VEHICLE_NO,PREMISES_TYPE,ORDER_INDEX from (
+        select ID,LICENCE_NO,LICENCE_ID,SVC_NAME,START_DATE,POSTAL_CODE,BLK_NO,FLOOR_NO,UNIT_NO,STREET_NAME,BUILDING_NAME,EXPIRY_DATE,HCI_NAME,VEHICLE_NO,PREMISES_TYPE,ORDER_INDEX from (
             SELECT  top(1) ID,
                     '' as LICENCE_NO,
+                    null as LICENCE_ID,
                     'first' as SVC_NAME,
                     '' as START_DATE,
                     '' as POSTAL_CODE,
@@ -281,6 +282,7 @@
             UNION
             SELECT  T3.ID,
                     T1.LICENCE_NO,
+                    T1.ID LICENCE_ID,
                     T1.SVC_NAME,
                     T1.START_DATE,
                     T3.POSTAL_CODE,
@@ -301,7 +303,7 @@
               <#if serName??> and T1.SVC_NAME IN ${serName} </#if>
               <#if licenseeId??> AND T1.LICENSEE_ID = :licenseeId</#if>
               <#if premTypeList??>AND T3.PREMISES_TYPE IN ${premTypeList}</#if>
-              <#if alignMinExpiryMonth??>AND DATEDIFF(MONTH ,getDate(),T1.EXPIRY_DATE) >= :alignMinExpiryMonth</#if>
+              <#if alignMinExpiryMonth??>AND DATEDIFF(DAY, DATEADD(MONTH, :alignMinExpiryMonth, GETDATE()), T1.EXPIRY_DATE) >= 0</#if>
              )tab1 order by tab1.ORDER_INDEX ASC
         ]]>
     </sql>

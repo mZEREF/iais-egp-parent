@@ -45,7 +45,6 @@ import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
 import com.ecquaria.cloud.moh.iais.helper.AppDataHelper;
 import com.ecquaria.cloud.moh.iais.helper.AppValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.RfcHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
@@ -389,42 +388,7 @@ public class ServiceInfoDelegator {
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
         List<SelectOption> personList = ApplicationHelper.genAssignPersonSel(request, true);
         ParamUtil.setRequestAttr(request, CURR_STEP_PSN_OPTS, personList);
-        List<SelectOption> personnelTypeSel = IaisCommonUtils.genNewArrayList();
-        //Radiation Safety Officer
-        SelectOption personnelTypeOp1 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER,
-                MasterCodeUtil.getCodeDesc(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER));
-        //Diagnostic Radiographer
-        SelectOption personnelTypeOp2 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR,
-                ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_DIAGNOSTIC_RADIOGRAPHER);
-        //Medical Physicist
-        SelectOption personnelTypeOp3 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST,
-                ApplicationConsts.SERVICE_PERSONNEL_TYPE_STR_MEDICAL_PHYSICIST);
-        //Radiation Physicist
-        SelectOption personnelTypeOp4 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL,
-                MasterCodeUtil.getCodeDesc(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL));
-        //NM Technologist
-        SelectOption personnelTypeOp5 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM,
-                ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_NUCLEAR_MEDICINE_TECHNOLOGIST);
-        personnelTypeSel.add(personnelTypeOp1);
-        personnelTypeSel.add(personnelTypeOp2);
-        personnelTypeSel.add(personnelTypeOp3);
-        personnelTypeSel.add(personnelTypeOp4);
-        personnelTypeSel.add(personnelTypeOp5);
-        ParamUtil.setRequestAttr(request,"rsoSel", personnelTypeSel.stream()
-                .filter(s->ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER.equals(s.getValue()))
-                .collect(Collectors.toList()));
-        ParamUtil.setRequestAttr(request,"drSel", personnelTypeSel.stream()
-                .filter(s->ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR.equals(s.getValue()))
-                .collect(Collectors.toList()));
-        ParamUtil.setRequestAttr(request,"mpSel", personnelTypeSel.stream()
-                .filter(s->ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(s.getValue()))
-                .collect(Collectors.toList()));
-        ParamUtil.setRequestAttr(request,"rpSel", personnelTypeSel.stream()
-                .filter(s->ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(s.getValue()))
-                .collect(Collectors.toList()));
-        ParamUtil.setRequestAttr(request,"nmSel", personnelTypeSel.stream()
-                .filter(s->ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM.equals(s.getValue()))
-                .collect(Collectors.toList()));
+        ApplicationHelper.genSpecialServiceInforamtionPersonsel(request);
         ParamUtil.setRequestAttr(request, "isRfi", isRfi);
         ParamUtil.setRequestAttr(request, "appSvcSpecialServiceInfoList", appSvcSpecialServiceInfoList);
         log.debug(StringUtil.changeForLog("prepare SpecialServicesInformation end ..."));
@@ -511,8 +475,9 @@ public class ServiceInfoDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currSvcId,null);
-        DealSessionUtil.initAppSvcOtherInfoList(currSvcInfoDto,appSubmissionDto.getAppGrpPremisesDtoList(),false, bpc.request);
-        ParamUtil.setRequestAttr(bpc.request, "orgUserDto",AppDataHelper.getOtherInfoYfVs(bpc.request));
+        if (DealSessionUtil.initAppSvcOtherInfoList(currSvcInfoDto,appSubmissionDto.getAppGrpPremisesDtoList(),false, bpc.request)){
+            setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
+        }
     }
 
     /**
@@ -568,7 +533,7 @@ public class ServiceInfoDelegator {
         if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
             for (AppSvcOtherInfoDto appSvcOtherInfoDto : appSvcOtherInfoDtos) {
                 RfcHelper.resolveSvcActionCode(appSvcOtherInfoDto.getAppPremSubSvcRelDtoList(),
-                        IaisCommonUtils.genNewHashMap());
+                        IaisCommonUtils.genNewHashMap(), appType);
                 appSvcOtherInfoDto.initAllAppPremSubSvcRelDtoList();
             }
             return;
@@ -583,7 +548,7 @@ public class ServiceInfoDelegator {
                         .collect(Collectors.toMap(AppPremSubSvcRelDto::getSvcCode, Function.identity(), (v1, v2) -> v2)))
                 .orElseGet(IaisCommonUtils::genNewHashMap);
         AppSvcOtherInfoDto appSvcOtherInfoDto = appSvcOtherInfoDtos.get(0);
-        RfcHelper.resolveSvcActionCode(appSvcOtherInfoDto.getAppPremSubSvcRelDtoList(), oldRelMap);
+        RfcHelper.resolveSvcActionCode(appSvcOtherInfoDto.getAppPremSubSvcRelDtoList(), oldRelMap, appType);
         appSvcOtherInfoDto.initAllAppPremSubSvcRelDtoList();
     }
 
@@ -813,20 +778,27 @@ public class ServiceInfoDelegator {
                 ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
         List<HcsaSvcPersonnelDto> deputyPrincipalOfficerConfig = configCommService.getHcsaSvcPersonnel(currentSvcId,
                 ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
-
+        AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currentSvcId);
         if (principalOfficerConfig != null && !principalOfficerConfig.isEmpty()) {
             HcsaSvcPersonnelDto hcsaSvcPersonnelDto = principalOfficerConfig.get(0);
             ParamUtil.setRequestAttr(bpc.request, CURR_STEP_CONFIG, hcsaSvcPersonnelDto);
         }
-
+        HcsaSvcPersonnelDto personnelDto = deputyPrincipalOfficerConfig.get(0);
+        Integer minCount = personnelDto.getMandatoryCount();
+        Integer maximumCount = personnelDto.getMaximumCount();
+        List<AppSvcPrincipalOfficersDto> dpoList = currSvcInfoDto.getAppSvcNomineeDtoList();
+//        boolean flag = minCount == 0 && maximumCount > 0;
         if (deputyPrincipalOfficerConfig != null && !deputyPrincipalOfficerConfig.isEmpty()) {
             HcsaSvcPersonnelDto hcsaSvcPersonnelDto = deputyPrincipalOfficerConfig.get(0);
             ParamUtil.setRequestAttr(bpc.request, "dpoHcsaSvcPersonnelDto", hcsaSvcPersonnelDto);
         }
-
-        AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currentSvcId);
+        if (minCount > 0 && maximumCount > 0){
+            currSvcInfoDto.setDeputyPoFlag(AppConsts.YES);
+        }
+//        if (flag){
+//            currSvcInfoDto.setDeputyPoFlag(IaisCommonUtils.isEmpty(dpoList) ? AppConsts.NO : AppConsts.YES);
+//        }
         if (StringUtil.isEmpty(currSvcInfoDto.getDeputyPoFlag())) {
-            List<AppSvcPrincipalOfficersDto> dpoList = currSvcInfoDto.getAppSvcNomineeDtoList();
             currSvcInfoDto.setDeputyPoFlag(IaisCommonUtils.isEmpty(dpoList) ? AppConsts.NO : AppConsts.YES);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currSvcInfoDto);
         }
@@ -1040,7 +1012,7 @@ public class ServiceInfoDelegator {
             deputySelect = ParamUtil.getString(bpc.request, "deputyPrincipalOfficer");
             currSvcInfoDto.setDeputyPoFlag(deputySelect);
         }
-        if (isGetDataFromPageDpo) {
+        if (isGetDataFromPageDpo) {       //   0 - 4
             if (AppConsts.NO.equals(deputySelect)) {
                 dpoList = IaisCommonUtils.genNewArrayList();
             } else {
@@ -1079,8 +1051,7 @@ public class ServiceInfoDelegator {
         boolean isValid = checkAction(map, HcsaConsts.STEP_PRINCIPAL_OFFICERS, appSubmissionDto, bpc.request);
         if (isValid && (isGetDataFromPagePo)) {
             String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
-            syncDropDownAndPsn(appSubmissionDto, dpoList, svcCode, bpc.request);
-            syncDropDownAndPsn(appSubmissionDto, poList, svcCode, bpc.request);
+            syncDropDownAndPsn(appSubmissionDto, IaisCommonUtils.combineList(poList, dpoList), svcCode, bpc.request);
         }
         log.debug(StringUtil.changeForLog("the do doPrincipalOfficers end ...."));
     }

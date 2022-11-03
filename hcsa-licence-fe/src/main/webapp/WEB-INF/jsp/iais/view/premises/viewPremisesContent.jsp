@@ -1,19 +1,5 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
-<style>
-    .table td.non-hcsa-1 {
-        width: 32%;
-        padding-left: 0;
-        padding-right: 15px;
-    }
-    .table td.non-hcsa-2 {
-        width: 30%;
-        padding: 5px 0;
-    }
-    .table td.non-hcsa-3 {
-        width: 30%;
-        padding: 5px 0;
-    }
-</style>
+
 <c:set var="permanent" value="${ApplicationConsts.PREMISES_TYPE_PERMANENT}" />
 <c:set var="conv" value="${ApplicationConsts.PREMISES_TYPE_CONVEYANCE}" />
 <c:set var="easMts" value="${ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE}" />

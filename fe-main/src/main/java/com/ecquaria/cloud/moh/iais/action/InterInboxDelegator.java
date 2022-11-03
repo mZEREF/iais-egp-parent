@@ -76,13 +76,10 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.StringJoiner;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -700,112 +697,22 @@ public class InterInboxDelegator {
      *
      */
     public void licDoRenew(BaseProcessClass bpc) throws IOException {
-        boolean result = true;
         String[] licIds = ParamUtil.getStrings(bpc.request, "licenceNo");
-        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        StringJoiner joiner = new StringJoiner(", ");
         if (licIds != null) {
-            List<String> licIdValue = IaisCommonUtils.genNewArrayList();
+            List<String> licenceIds = IaisCommonUtils.genNewArrayList();
             for (String item : licIds) {
-                licIdValue.add(ParamUtil.getMaskedString(bpc.request, item));
+                licenceIds.add(ParamUtil.getMaskedString(bpc.request, item));
             }
-            if (licIdValue.size() == 1 && !checkRenewDraft(licIdValue.get(0), bpc.request)) {
-                return;
-            }
-            ParamUtil.setSessionAttr(bpc.request, "licence_err_list", (Serializable) licIdValue);
-            for (String licId : licIdValue) {
-                errorMap.putAll(inboxService.checkRenewalStatus(licId));
-                if (!(errorMap.isEmpty())) {
-                    String licenseNo = errorMap.get("errorMessage");
-                    if (!StringUtil.isEmpty(licenseNo)) {
-                        joiner.add(licenseNo);
-                    }
-                    result = false;
-                }
-            }
-
-            if (!result) {
-                String errorMessage = joiner.toString();
-                if (StringUtil.isEmpty(errorMessage)) {
-                    errorMessage = errorMap.get("errorMessage2");
-                    if (StringUtil.isEmpty(errorMessage)) {
-                        errorMessage = MessageUtil.getMessageDesc("RFC_ERR011");
-                    }
-                } else {
-                    errorMessage = MessageUtil.getMessageDesc("INBOX_ACK015") + errorMessage;
-                }
-                ParamUtil.setRequestAttr(bpc.request, "licIsRenewed", Boolean.TRUE);
-                ParamUtil.setRequestAttr(bpc.request, InboxConst.LIC_ACTION_ERR_MSG, errorMessage);
-                ParamUtil.setSessionAttr(bpc.request, "licence_err_list", (Serializable) licIdValue);
-                return;
-            }
-            boolean toRenewal = true;
-            // check bundle
-            String bundle = bpc.request.getParameter("bundle");
-            if ("yes".equals(bundle)) {
-                List<LicenceDto> bundleLicenceDtos = (List<LicenceDto>) bpc.request.getSession().getAttribute("bundleLicenceDtos");
-                if (bundleLicenceDtos != null) {
-                    for (LicenceDto v : bundleLicenceDtos) {
-                        licIdValue.add(v.getId());
-                    }
-                }
-            /*} else if ("no".equals(bundle)) {
-                toRenewal = false;*/
-            } else {
-                StringJoiner data = new StringJoiner(", ");
-                joiner = new StringJoiner(", ");
-                List<HcsaServiceDto> entity = HcsaServiceCacheHelper.receiveAllHcsaService();
-                Map<String, HcsaServiceDto> svcMap = entity.stream()
-                        .collect(Collectors.toMap(HcsaServiceDto::getSvcName, Function.identity(), (u, v) -> v));
-                List<LicenceDto> dtoList = IaisCommonUtils.genNewArrayList();
-                List<LicenceDto> licences = inboxService.getAllBundleLicences(licIdValue);
-                if (!licences.isEmpty()) {
-                    for (LicenceDto licenceDto : licences) {
-                        if (svcMap.get(licenceDto.getSvcName()) == null) {
-                            continue;
-                        }
-                        if (!licIdValue.contains(licenceDto.getId())) {
-                            Map<String, String> map = inboxService.checkRenewalStatus(licenceDto);
-                            if (!map.isEmpty()) {
-                                joiner.add(licenceDto.getLicenceNo());
-                            }
-                            data.add(licenceDto.getLicenceNo());
-                            dtoList.add(licenceDto);
-                        }
-                    }
-
-                }
-
-                if (joiner.length() != 0) {
-                    //INBOX_ERR013 - The following bundled licence(s) is/are not eligible for {action}: {data}.
-                    Map<String, String> param = new HashMap<>(2);
-                    param.put("action", "renewal");
-                    param.put("data", joiner.toString());
-                    ParamUtil.setRequestAttr(bpc.request, InboxConst.LIC_ACTION_ERR_MSG,
-                            MessageUtil.getMessageDesc("INBOX_ERR013", param));
-                    ParamUtil.setRequestAttr(bpc.request, "licIsRenewed", Boolean.TRUE);
-                    toRenewal = false;
-                } else if (!dtoList.isEmpty()) {
-                    //INBOX_ACK026 - This following licence(s) is/are bundled with selected licence(s). Would you like to renew them
-                    // as well: {data}.
-                    Map<String, String> param = new HashMap<>(2);
-                    param.put("data", data.toString());
-                    ParamUtil.setRequestAttr(bpc.request, "draftByLicAppId",
-                            MessageUtil.getMessageDesc("INBOX_ACK026", param));
-                    bpc.request.setAttribute("isBundleShow", "1");
-                    bpc.request.getSession().setAttribute("bundleLicenceDtos", dtoList);
-                    toRenewal = false;
-                }
-            }
-
-            if (toRenewal) {
-                ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR, (Serializable) licIdValue);
+            boolean result = inboxService.checkRenewalStatus(licenceIds, bpc.request);
+            log.info(StringUtil.changeForLog("Check Renewal Status Result: " + result));
+            if (result) {
+                ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR, (Serializable) licenceIds);
                 String url = InboxConst.URL_HTTPS + bpc.request.getServerName() +
                         InboxConst.URL_LICENCE_WEB_MODULE + "MohWithOutRenewal";
                 String tokenUrl = RedirectUtil.appendCsrfGuardToken(url, bpc.request);
                 IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
             } else {
-                ParamUtil.setSessionAttr(bpc.request, "licence_err_list", (Serializable) licIdValue);
+                ParamUtil.setSessionAttr(bpc.request, "licence_err_list", (Serializable) licenceIds);
             }
         }
     }

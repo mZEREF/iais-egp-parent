@@ -136,6 +136,7 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_FREE_RENEW_HCI_CODES                             = "C8D460B4-A20F-EC11-8B7E-000C293F0C99";
 
     public static final String DESIGNATION_OTHER_CODE_KEY                               = "DES999";
+    public static final String SSI_DESIGNATION_OTHER_CODE_KEY                           = "SSI999";
 
     //ApplicationInfo
     public static final String CATE_ID_BSB_APP_TYPE = "FF506BE0-75EF-EB11-8B7D-000C293F0C99";
@@ -278,6 +279,8 @@ public final class MasterCodeUtil {
 
     //Trained Dental Hygienist/ Dental Therapist/ Oral Health Therapist Type
     public static final String CATE_TDO_TYPE                             = "5E60874E-6C2B-ED11-BE6D-000C29FAAE4D";
+    //SSI
+    public static final String SSI_CATE_ID_DESIGNATION                   = "FC457BCA-B555-ED11-BE78-000C298D317C";
 
 
 

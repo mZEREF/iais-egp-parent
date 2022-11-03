@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <div class="docTop <c:if test="${'1' != provideTop}">hidden</c:if> " data-prefix="${prefix}">
     <iais:row>
         <div class="col-xs-12 col-md-6">
@@ -6,14 +8,14 @@
     </iais:row>
     <iais:row cssClass="row control control-caption-horizontal">
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Outcome of procedures are recorded"/>
-        <input type="hidden" class="isOutcomeProcRecordVal" name="${prefix}isOutcomeProcRecordVal" value="${appSvcOtherInfoTop.isOutcomeProcRecord}"/>
+        <input type="hidden" class="outcomeProcRecordVal" name="${prefix}outcomeProcRecordVal" value="${appSvcOtherInfoTop.outcomeProcRecord}"/>
         <iais:value width="3" cssClass="form-check col-md-3">
-            <input class="form-check-input isOutcomeProcRecord" <c:if test="${'1' == appSvcOtherInfoTop.isOutcomeProcRecord}">checked="checked"</c:if>  type="radio" name="${prefix}isOutcomeProcRecord" value = "1" aria-invalid="false">
+            <input class="form-check-input outcomeProcRecord" <c:if test="${'1' == appSvcOtherInfoTop.outcomeProcRecord}">checked="checked"</c:if>  type="radio" name="${prefix}outcomeProcRecord" value = "1" aria-invalid="false">
             <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
         </iais:value>
 
         <iais:value width="3" cssClass="form-check col-md-3">
-            <input class="form-check-input isOutcomeProcRecord" <c:if test="${'0' == appSvcOtherInfoTop.isOutcomeProcRecord}">checked="checked"</c:if>  type="radio" name="${prefix}isOutcomeProcRecord" value = "0" aria-invalid="false">
+            <input class="form-check-input outcomeProcRecord" <c:if test="${'0' == appSvcOtherInfoTop.outcomeProcRecord}">checked="checked"</c:if>  type="radio" name="${prefix}outcomeProcRecord" value = "0" aria-invalid="false">
             <label class="form-check-label" ><span class="check-circle"></span>No</label>
         </iais:value>
     </iais:row>
@@ -21,7 +23,7 @@
     <iais:row cssClass="row control control-caption-horizontal">
         <iais:field width="5" cssClass="col-md-5" mandatory="" value=""/>
         <iais:value width="7" cssClass="col-md-7 col-xs-12">
-            <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}isOutcomeProcRecordVal"></span>
+            <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}outcomeProcRecord"></span>
         </iais:value>
     </iais:row>
 

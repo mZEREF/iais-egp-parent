@@ -417,9 +417,9 @@ public class PageDataCopyUtil {
         AppSvcOtherInfoMedDto svcOtherInfoMedDto = new AppSvcOtherInfoMedDto();
         svcOtherInfoMedDto.setAppPremId(appSvcOtherInfoMedDto.getAppPremId());
         svcOtherInfoMedDto.setSystemOption(appSvcOtherInfoMedDto.getSystemOption());
-        svcOtherInfoMedDto.setIsMedicalTypeIt(appSvcOtherInfoMedDto.getIsMedicalTypeIt());
-        svcOtherInfoMedDto.setIsMedicalTypePaper(appSvcOtherInfoMedDto.getIsMedicalTypePaper());
-        svcOtherInfoMedDto.setIsOpenToPublic(appSvcOtherInfoMedDto.getIsOpenToPublic());
+        svcOtherInfoMedDto.setMedicalTypeIt(appSvcOtherInfoMedDto.getMedicalTypeIt());
+        svcOtherInfoMedDto.setMedicalTypePaper(appSvcOtherInfoMedDto.getMedicalTypePaper());
+        svcOtherInfoMedDto.setOpenToPublic(appSvcOtherInfoMedDto.getOpenToPublic());
         svcOtherInfoMedDto.setOtherSystemOption(appSvcOtherInfoMedDto.getOtherSystemOption());
 
         return svcOtherInfoMedDto;
@@ -435,7 +435,7 @@ public class PageDataCopyUtil {
         svcOtherInfoNurseDto.setPerShiftNum(appSvcOtherInfoNurseDto.getPerShiftNum());
         svcOtherInfoNurseDto.setAppPremId(appSvcOtherInfoNurseDto.getAppPremId());
         svcOtherInfoNurseDto.setHelpBStationNum(appSvcOtherInfoNurseDto.getHelpBStationNum());
-        svcOtherInfoNurseDto.setIsOpenToPublic(appSvcOtherInfoNurseDto.getIsOpenToPublic());
+        svcOtherInfoNurseDto.setOpenToPublic(appSvcOtherInfoNurseDto.getOpenToPublic());
         return svcOtherInfoNurseDto;
     }
 
@@ -457,10 +457,10 @@ public class PageDataCopyUtil {
         AppSvcOtherInfoTopDto svcOtherInfoTopDto = new AppSvcOtherInfoTopDto();
         svcOtherInfoTopDto.setAppPremId(appSvcOtherInfoTopDto.getAppPremId());
         svcOtherInfoTopDto.setTopType(appSvcOtherInfoTopDto.getTopType());
-        svcOtherInfoTopDto.setIsProvideHpb(appSvcOtherInfoTopDto.getIsProvideHpb());
+        svcOtherInfoTopDto.setProvideHpb(appSvcOtherInfoTopDto.getProvideHpb());
         svcOtherInfoTopDto.setHasConsuAttendCourse(appSvcOtherInfoTopDto.getHasConsuAttendCourse());
         svcOtherInfoTopDto.setCompCaseNum(appSvcOtherInfoTopDto.getCompCaseNum());
-        svcOtherInfoTopDto.setIsOutcomeProcRecord(appSvcOtherInfoTopDto.getIsOutcomeProcRecord());
+        svcOtherInfoTopDto.setOutcomeProcRecord(appSvcOtherInfoTopDto.getOutcomeProcRecord());
         return svcOtherInfoTopDto;
     }
     public static List<AppSvcOtherInfoAbortDto> copyAppSvcOtherInfoAbortDto(List<AppSvcOtherInfoAbortDto> abortDtoList){

@@ -179,7 +179,6 @@
 <iais:confirm msg="${RFC_ERROR_NO_CHANGE}" callBack="cancel()"  needCancel="false" popupOrder="rfc_ERROR"></iais:confirm>
 <iais:confirm msg="${SERVICE_CONFIG_CHANGE}" callBack="cancel()"  needCancel="false" popupOrder="SERVICE_CONFIG_CHANGE"></iais:confirm>
 <input type="hidden" value="${RFC_ERROR_NO_CHANGE}" id="RFC_ERROR_NO_CHANGE">
-<input type="hidden" value="${RFC_ERR004}" id="RFC_ERR004">
 <input type="hidden" id="SERVICE_CONFIG_HAVE_CHANGE" value="${SERVICE_CONFIG_CHANGE}">
 <input type="hidden" value="${RFC_eqHciNameChange}" id="RFC_eqHciNameChange">
 <input type="hidden" value="${not empty showOtherError ? '1' : ''}" id="showOtherErrorCheck">
@@ -240,7 +239,7 @@
             var canSubmit = true;
             let jQuery = $('#verifyInfoCheckbox').prop("checked");
             if(!jQuery){
-                $('#error_fieldMandatory').html($('#RFC_ERR004').val());
+                $('#error_fieldMandatory').html('<iais:message key="RFC_ERR004" escape="false" />');
                 return;
             }else{
                 $('#error_fieldMandatory').html("");

@@ -29,12 +29,10 @@
     <div id="previewLicensee" class="panel-collapse collapse">
         <div class="panel-body">
             <p class="text-right">
-                <c:if test="${rfi == 'rfi'}">
-                    <c:if test="${appEdit.licenseeEdit}">
-                        <input class="form-check-input" id="licenseeCheckbox" type="checkbox" name="editCheckbox"
-                               <c:if test="${pageEdit.licenseeEdit}">checked</c:if> aria-invalid="false"
-                               value="licensee" />
-                    </c:if>
+                <c:if test="${appEdit.licenseeEdit && rfi == 'rfi'}">
+                    <input class="form-check-input" id="licenseeCheckbox" type="checkbox" name="editCheckbox"
+                           <c:if test="${pageEdit.licenseeEdit}">checked</c:if> aria-invalid="false"
+                           value="licensee" />
                 </c:if>
             </p>
             <div class="panel-main-content postion-relative">
@@ -60,11 +58,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row img-show ${curDto.licenseeType == companyType || oldDto.licenseeType == companyType ?
-                                '' : 'hidden'}">
-                        <div class="col-md-6">UEN No.</div>
-                        <div class="col-md-6">
+                    <c:if test="${curDto.licenseeType == companyType || oldDto.licenseeType == companyType}">
+                        <div class="row img-show">
+                            <div class="col-md-6">UEN No.</div>
                             <div class="col-md-6">
+                                <div class="col-md-6">
                                 <span class="newVal" attr="${curDto.uenNo}">
                                     <c:out value="${curDto.uenNo}" />
                                     <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
@@ -72,8 +70,8 @@
                                         <jsp:param name="methodName" value="showThisTableNew"/>
                                     </jsp:include>
                                 </span>
-                            </div>
-                            <div class="col-md-6">
+                                </div>
+                                <div class="col-md-6">
                                 <span class="oldVal" attr="${oldDto.uenNo}">
                                     <c:out value="${oldDto.uenNo}" />
                                     <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
@@ -81,17 +79,18 @@
                                         <jsp:param name="methodName" value="showThisTableOld"/>
                                     </jsp:include>
                                 </span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
-                        <jsp:param name="idNo" value="${curDto.uenNo}"/>
-                        <jsp:param name="cssClass" value="new-img-show"/>
-                    </jsp:include>
-                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
-                        <jsp:param name="idNo" value="${oldDto.uenNo}"/>
-                        <jsp:param name="cssClass" value="old-img-show"/>
-                    </jsp:include>
+                        <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
+                            <jsp:param name="idNo" value="${curDto.uenNo}"/>
+                            <jsp:param name="cssClass" value="new-img-show"/>
+                        </jsp:include>
+                        <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
+                            <jsp:param name="idNo" value="${oldDto.uenNo}"/>
+                            <jsp:param name="cssClass" value="old-img-show"/>
+                        </jsp:include>
+                    </c:if>
                     <c:if test="${curDto.licenseeType == individualType || oldDto.licenseeType == individualType}">
                         <div class="row">
                             <div class="col-md-6">ID Type</div>

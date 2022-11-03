@@ -51,15 +51,10 @@
                 </p>
             </td>
             <td>
-                <div class="col-xs-6 ">
-                    <span class="newVal" attr="${otherInfo.orgUserDto.email}">
-                        <c:out value="${otherInfo.orgUserDto.email}"/>
+                <div class="col-xs-12 ">
+                    <span class="newVal" attr="${otherInfo.premAddress}">
+                        <c:out value="${otherInfo.premAddress}"/>
                     </span>
-                </div>
-                <div class="col-xs-6 ">
-                <span class=" oldVal" attr="${oldOtherInfo.orgUserDto.email}" style="display: none">
-                    <c:out value="${oldOtherInfo.orgUserDto.email}"/>
-                </span>
                 </div>
             </td>
         </tr>

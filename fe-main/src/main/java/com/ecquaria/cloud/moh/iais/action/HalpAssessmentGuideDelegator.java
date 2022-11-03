@@ -1562,83 +1562,41 @@ public class HalpAssessmentGuideDelegator {
     }
 
     public void doRenewStep(BaseProcessClass bpc) throws IOException {
-        String actionType = ParamUtil.getString(bpc.request,"guide_action_type");
-        String [] licIds = ParamUtil.getStrings(bpc.request, "renewLicenId");
-        Map<String, String> renewErrorMap = IaisCommonUtils.genNewHashMap();
-        String tmp = MessageUtil.getMessageDesc("INBOX_ACK015");
-        StringBuilder renewErrorMessage = new StringBuilder();
-        boolean result = true;
-        if(licIds != null){
-            List<String> licIdValue = IaisCommonUtils.genNewArrayList();
-            for(String item:licIds){
-                licIdValue.add(ParamUtil.getMaskedString(bpc.request,item));
+        String actionType = ParamUtil.getString(bpc.request, "guide_action_type");
+        String[] licIds = ParamUtil.getStrings(bpc.request, "renewLicenId");
+        if (licIds != null) {
+            List<String> licenceIds = IaisCommonUtils.genNewArrayList();
+            for (String item : licIds) {
+                licenceIds.add(ParamUtil.getMaskedString(bpc.request, item));
             }
-            ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
-            for (String licId:licIdValue) {
-                renewErrorMap = inboxService.checkRenewalStatus(licId);
-                if(!(renewErrorMap.isEmpty())){
-                    String licenseNo = renewErrorMap.get("errorMessage");
-                    if(!StringUtil.isEmpty(licenseNo)){
-                        if(StringUtil.isEmpty(renewErrorMessage.toString())){
-                            renewErrorMessage.append(tmp).append(licenseNo);
-                        }else{
-                            renewErrorMessage.append(", ").append(licenseNo);
-                        }
-                    }
-                    result = false;
+            boolean result = inboxService.checkRenewalStatus(licenceIds, bpc.request);
+            log.info(StringUtil.changeForLog("Check Renewal Status Result: " + result));
+            if (result) {
+                ParamUtil.setRequestAttr(bpc.request, "guide_back_action", "redirect");
+                ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR, (Serializable) licenceIds);
+            } else {
+                if ("renew".equals(actionType)) {
+                    ParamUtil.setRequestAttr(bpc.request, "guide_back_action", "backRenewUpdate");
+                } else {
+                    ParamUtil.setRequestAttr(bpc.request, "guide_back_action", "backRenew");
                 }
-            }
-            List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licIdValue.get(0));
-            String isNeedDelete = bpc.request.getParameter("isNeedDelete");
-            if(!draftByLicAppId.isEmpty()){
-                StringBuilder stringBuilder=new StringBuilder();
-                for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
-                    stringBuilder.append(applicationSubDraftDto.getDraftNo()).append(' ');
-                }
-                if("delete".equals(isNeedDelete)){
-                    for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
-                        inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
-                    }
-                }else {
-                    String ack030 = MessageUtil.getMessageDesc("GENERAL_ACK030");
-                    String replace = ack030.replace("{draft application no}", stringBuilder.toString());
-                    bpc.request.setAttribute("draftByLicAppId",replace);
-                    bpc.request.setAttribute("isAppealShow","1");
-                    bpc.request.setAttribute("appealApplication",licIdValue.get(0));
-                    ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
-                    if ("renew".equals(actionType)){
-                        ParamUtil.setRequestAttr(bpc.request,"guide_back_action","backRenewUpdate");
-                    }else{
-                        ParamUtil.setRequestAttr(bpc.request,"guide_back_action","backRenew");
-                    }
-                    return;
-                }
-            }
-            if (result){
-                StringBuilder url = new StringBuilder();
-                url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
-                        .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohWithOutRenewal");
-                ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR, (Serializable) licIdValue);
-                String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-                IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
-            }else{
-                ParamUtil.setRequestAttr(bpc.request,"licIsRenewed",result);
-                if(StringUtil.isEmpty(renewErrorMessage.toString())){
-                    String errorMessage2 = renewErrorMap.get("errorMessage2");
-                    if(StringUtil.isEmpty(errorMessage2)){
-                        renewErrorMessage.append(MessageUtil.getMessageDesc("RFC_ERR011"));
-                    }else{
-                        renewErrorMessage.append(errorMessage2);
-                    }
-                }
-                ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,renewErrorMessage.toString());
-                if ("renew".equals(actionType)){
-                    ParamUtil.setRequestAttr(bpc.request,"guide_back_action","backRenewUpdate");
-                }else{
-                    ParamUtil.setRequestAttr(bpc.request,"guide_back_action","backRenew");
-                }
+                ParamUtil.setSessionAttr(bpc.request, "licence_err_list", (Serializable) licenceIds);
             }
         }
+    }
+
+    /**
+     * Step: RedirectToAmend
+     *
+     * @param bpc
+     * @throws Exception
+     */
+    public void redirectToRenewal(BaseProcessClass bpc) throws Exception {
+        StringBuilder url = new StringBuilder();
+        url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohWithOutRenewal");
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+        IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }
 
     public void showLicensee(BaseProcessClass bpc) {
@@ -2232,7 +2190,7 @@ public class HalpAssessmentGuideDelegator {
         HalpSearchResultHelper.doSort(bpc.request,searchParam);
     }
 
-    public void doAmenfLicStep(BaseProcessClass bpc) throws IOException {
+    public void doAmendLicStep(BaseProcessClass bpc) throws IOException {
         String action = ParamUtil.getString(bpc.request, "guide_action_type");
         String licId = ParamUtil.getString(bpc.request, "amendLicenseId");
         String idNoPersonnal = ParamUtil.getString(bpc.request, "personnelOptions");
@@ -2248,14 +2206,14 @@ public class HalpAssessmentGuideDelegator {
             List<PersonnelListDto> personnelListDtoList = requestForChangeService.getPersonnelListAssessment(idNos,getOrgId(bpc.request));
             ParamUtil.setSessionAttr(bpc.request, "personnelListDtos", (Serializable) personnelListDtoList);
             if("amendLic7".equals(action)) {
-                StringBuilder url2 = new StringBuilder();
-                url2.append(InboxConst.URL_HTTPS)
+                StringBuilder url = new StringBuilder();
+                url.append(InboxConst.URL_HTTPS)
                         .append(bpc.request.getServerName())
                         .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohRfcPersonnelList/initPsnEditInfo")
                         .append("?personnelNo=")
                         .append(MaskUtil.maskValue("personnelNo", id));
-                String tokenUrl2 = RedirectUtil.appendCsrfGuardToken(url2.toString(), bpc.request);
-                IaisEGPHelper.redirectUrl(bpc.response, tokenUrl2);
+                ParamUtil.setRequestAttr(bpc.request, "url", url.toString());
+                ParamUtil.setRequestAttr(bpc.request, "amend_action_type", "redirect");
             }
         }
         if(licIdValue != null){
@@ -2283,8 +2241,8 @@ public class HalpAssessmentGuideDelegator {
             }
             if(errorMap.isEmpty()){
                 if ("amendLic2".equals(action)){
-                    StringBuilder url3 = new StringBuilder();
-                    url3.append(InboxConst.URL_HTTPS)
+                    StringBuilder url = new StringBuilder();
+                    url.append(InboxConst.URL_HTTPS)
                             .append(bpc.request.getServerName())
                             .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohRfcPermisesList/doPremisesList")
                             .append("?hiddenIndex=")
@@ -2299,18 +2257,17 @@ public class HalpAssessmentGuideDelegator {
                             .append(hiddenIndex)
                             .append('=')
                             .append(MaskUtil.maskValue("licId"+hiddenIndex, licIdValue));
-                    String tokenUrl2 = RedirectUtil.appendCsrfGuardToken(url3.toString(), bpc.request);
-                    IaisEGPHelper.redirectUrl(bpc.response, tokenUrl2);
-                }
-                else{
+                    ParamUtil.setRequestAttr(bpc.request, "url", url.toString());
+                    ParamUtil.setRequestAttr(bpc.request, "amend_action_type", "redirect");
+                } else {
                     StringBuilder url = new StringBuilder();
                     url.append(InboxConst.URL_HTTPS)
                             .append(bpc.request.getServerName())
                             .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohRequestForChange")
                             .append("?licenceId=")
                             .append(MaskUtil.maskValue("licenceId",licIdValue));
-                    String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-                    IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
+                    ParamUtil.setRequestAttr(bpc.request, "url", url.toString());
+                    ParamUtil.setRequestAttr(bpc.request, "amend_action_type", "redirect");
                 }
             }else{
                 if ("amendLic2".equals(action)){
@@ -2341,6 +2298,20 @@ public class HalpAssessmentGuideDelegator {
                 }
             }
         }
+    }
+
+    /**
+     * Step: RedirectToAmend
+     *
+     * @param bpc
+     * @throws IOException
+     */
+    public void redirectToAmend(BaseProcessClass bpc) throws IOException {
+        HttpServletRequest request = bpc.request;
+        String url = (String) ParamUtil.getRequestAttr(request, "url");
+        log.info(StringUtil.changeForLog("URL: " + url));
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url, request);
+        IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }
 
     public void updateAdminPers(BaseProcessClass bpc) throws IOException {

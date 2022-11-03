@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.service.callback.OrgCommClientFallback;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -29,4 +30,6 @@ public interface OrgCommClient {
     @GetMapping(value = "/iais-internet-user/giro-account-info")
     FeignResponseEntity<List<OrgGiroAccountInfoDto>> getGiroAccByLicenseeId(@RequestParam(value = "licenseeId") String licenseeId);
 
+    @GetMapping(value = "/iais-orgUserRole/users-account/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<OrgUserDto> retrieveOrgUserAccountById(@PathVariable("id") String id);
 }

@@ -6,7 +6,7 @@
                 <iais:row>
                     <div class="col-xs-12">
                         <div class="app-title">${specialised.premName}</div>
-                        <p class="font-18 bold">${specialised.premAddress}</p>
+                        <p class="font-18 bold">Address: ${specialised.premAddress}</p>
                         <p><span class="error-msg" name="iaisErrorMSg" id="error_${specialised.premisesVal}_mandatory"></span></p>
                     </div>
                 </iais:row>

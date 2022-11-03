@@ -1,13 +1,12 @@
-<c:forEach var="person" items="${otherInfo.otherInfoAbortDrugList}" varStatus="status">
+<c:if test="${'0' != otherInfo.appSvcOtherInfoTopDto.topType}">
+    <p class="col-xs-12">
+        <strong>
+            TOP (By Drug)
+        </strong>
+    </p>
+    <c:forEach var="person" items="${otherInfo.otherInfoAbortDrugList}" varStatus="status">
     <c:set var="oldPerson" value="${oldOtherInfo.otherInfoAbortDrugList[status.index]}"/>
-    <c:if test="${'0' != otherInfo.appSvcOtherInfoTopDto.topType}">
         <c:if test="${'1' == person.topType}">
-            <p class="col-xs-12">
-                <strong>
-                    TOP (By Drug)
-                    <c:if test="${fn:length(otherInfo.otherInfoAbortDrugList)>1}">${status.index+1}</c:if>
-                </strong>
-            </p>
             <table aria-describedby="" class="col-xs-12 <c:if test="${'0' == otherInfo.appSvcOtherInfoTopDto.topType}">hidden</c:if>">
                 <tr>
                     <th scope="col" style="display: none"></th>
@@ -52,18 +51,18 @@
                 </tr>
             </table>
         </c:if>
-    </c:if>
-</c:forEach>
+    </c:forEach>
+</c:if>
 
-<c:forEach var="person" items="${otherInfo.otherInfoAbortSurgicalProcedureList}" varStatus="pstatus">
+<c:if test="${'1' != otherInfo.appSvcOtherInfoTopDto.topType}">
+    <p class="col-xs-12">
+        <strong>
+            TOP (By Surgical Procedure)
+        </strong>
+    </p>
+    <c:forEach var="person" items="${otherInfo.otherInfoAbortSurgicalProcedureList}" varStatus="pstatus">
     <c:set var="oldPerson" value="${oldOtherInfo.otherInfoAbortDrugList[pstatus.index]}"/>
-    <c:if test="${'1' != otherInfo.appSvcOtherInfoTopDto.topType}">
         <c:if test="${'0' == person.topType}">
-            <p class="col-xs-12">
-                <strong>
-                    TOP (By Surgical Procedure)&nbsp;<c:if test="${otherInfo.otherInfoAbortSurgicalProcedureList.size() > 1}">${pstatus.index+1}</c:if>
-                </strong>
-            </p>
             <table aria-describedby="" class="col-xs-12 <c:if test="${'1' == otherInfo.appSvcOtherInfoTopDto.topType}">hidden</c:if>">
                 <tr>
                     <th scope="col" style="display: none"></th>
@@ -108,18 +107,18 @@
                 </tr>
             </table>
         </c:if>
-    </c:if>
-</c:forEach>
+    </c:forEach>
+</c:if>
 
-<c:forEach var="person" items="${otherInfo.otherInfoAbortDrugAndSurgicalList}" varStatus="astatus">
+<c:if test="${'-1' == otherInfo.appSvcOtherInfoTopDto.topType}">
+    <p class="col-xs-12">
+        <strong>
+            TOP (By Drug and Surgical Procedure)
+        </strong>
+    </p>
+    <c:forEach var="person" items="${otherInfo.otherInfoAbortDrugAndSurgicalList}" varStatus="astatus">
     <c:set var="oldPerson" value="${oldOtherInfo.otherInfoAbortDrugList[astatus.index]}"/>
-    <c:if test="${'-1' == otherInfo.appSvcOtherInfoTopDto.topType}">
         <c:if test="${'-1' == person.topType}">
-            <p class="col-xs-12">
-                <strong>
-                    TOP (By Drug and Surgical Procedure)&nbsp;&nbsp;<c:if test="${otherInfo.otherInfoAbortDrugAndSurgicalList.size() > 1}">${astatus.index+1}</c:if>
-                </strong>
-            </p>
             <table aria-describedby="" class="col-xs-12">
                 <tr>
                     <th scope="col" style="display: none"></th>
@@ -164,8 +163,8 @@
                 </tr>
             </table>
         </c:if>
-    </c:if>
-</c:forEach>
+    </c:forEach>
+</c:if>
 <c:if test="${'0' == otherInfo.provideTop}">
     <p class="bold">Declaration</p>
     <table aria-describedby="" class="col-xs-12">

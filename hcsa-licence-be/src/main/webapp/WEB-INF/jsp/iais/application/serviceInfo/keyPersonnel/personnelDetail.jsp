@@ -81,7 +81,7 @@
             <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Nationality"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:select firstOption="Please Select" name="${prepsn}nationality${index}" codeCategory="CATE_ID_NATIONALITY"
-                             cssClass="nationality" value="${clinicalDirectorDto.nationality}"/>
+                             cssClass="nationality" value="${person.nationality}"/>
             </iais:value>
         </iais:row>
 
@@ -215,19 +215,23 @@
             </iais:value>
         </iais:row>
 
-        <iais:row>
-            <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Mobile No."/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="8" type="text" cssClass="mobileNo" name="${prepsn}mobileNo${index}" value="${person.mobileNo}"/>
-            </iais:value>
-        </iais:row>
+        <c:if test="${keyPerson != 'keyPerson'}">
+            <iais:row>
+                <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Mobile No."/>
+                <iais:value width="7" cssClass="col-md-7">
+                    <iais:input maxLength="8" type="text" cssClass="mobileNo" name="${prepsn}mobileNo${index}"
+                                value="${person.mobileNo}"/>
+                </iais:value>
+            </iais:row>
 
-        <iais:row>
-            <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Email Address"/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="320" type="text" cssClass="emailAddr" name="${prepsn}emailAddr${index}" value="${person.emailAddr}"/>
-            </iais:value>
-        </iais:row>
+            <iais:row>
+                <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Email Address"/>
+                <iais:value width="7" cssClass="col-md-7">
+                    <iais:input maxLength="320" type="text" cssClass="emailAddr" name="${prepsn}emailAddr${index}"
+                                value="${person.emailAddr}"/>
+                </iais:value>
+            </iais:row>
+        </c:if>
     </div>
     <hr/>
 </div>

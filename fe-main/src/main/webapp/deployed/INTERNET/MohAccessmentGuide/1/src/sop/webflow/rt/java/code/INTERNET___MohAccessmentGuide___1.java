@@ -107,7 +107,7 @@ public class INTERNET___MohAccessmentGuide___1 extends BaseProcessClass {
 	}
 
 	public void doAmenfLicStep_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "doAmenfLicStep", this);
+		EngineHelper.delegate(DELEGATOR, "doAmendLicStep", this);
 	}
 
 	public void resumeDraftAppStep_OnStepProcess_0() throws Exception {
@@ -294,6 +294,16 @@ public class INTERNET___MohAccessmentGuide___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "amendUpdateVehiclesPage", this);
 // 		amendUpdateVehiclesPage->OnStepProcess
 	}
+
+    public void redirectToRenewal_OnStepProcess_0() throws Exception {
+    // 		RedirectToRenewal->OnStepProcess redirect
+        EngineHelper.delegate(DELEGATOR, "redirectToRenewal", this);
+    }
+
+    public void redirectToAmend_OnStepProcess_0() throws Exception {
+    // 		RedirectToAmend->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "redirectToAmend", this);
+    }
 	
 
 }

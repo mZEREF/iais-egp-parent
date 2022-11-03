@@ -30,4 +30,8 @@ public interface HcsaConfigClient {
     FeignResponseEntity<List<HcsaFeeBundleItemDto>> getActiveBundleDtoList();
     @GetMapping(path = "/iais-hcsa-service/servicedto-by-name/{svcName}")
     FeignResponseEntity<HcsaServiceDto> getServiceDtoByName(@PathVariable(name = "svcName") String svcName);
+
+    @GetMapping(value = "/iais-hcsa-service/hcsaSvcSpecifiedCorrelationDtos/{svcName}/{premisesType}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaSvcSpecifiedCorrelationDto>> getHcsaSvcSpecifiedCorrelationDtos(@PathVariable(name = "svcName") String svcName,
+                                                                                                 @PathVariable(name = "premisesType") String premisesType);
 }

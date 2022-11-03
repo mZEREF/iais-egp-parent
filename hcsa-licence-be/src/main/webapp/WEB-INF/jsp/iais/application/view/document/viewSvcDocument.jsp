@@ -10,7 +10,7 @@
                 <iais:row>
                     <div class="col-xs-12">
                         <div class="app-title"><c:out value="${docShowDto.premName}"/></div>
-                        <div class="font-18 bold"><c:out value="${docShowDto.premAddress}"/></div>
+                        <div class="font-18 bold">Address: <c:out value="${docShowDto.premAddress}"/></div>
                     </div>
                 </iais:row>
                 <br/>

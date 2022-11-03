@@ -193,6 +193,11 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                 apst.setSvcName(HcsaServiceCacheHelper.getServiceNameById(apst.getSvcId()));
             }
         }
+        if (IaisCommonUtils.isNotEmpty(applicationViewDto.getAppPremOthersSubSvcRelDtoList())) {
+            for (AppPremSubSvcRelDto apst : applicationViewDto.getAppPremOthersSubSvcRelDtoList()) {
+                apst.setSvcName(HcsaServiceCacheHelper.getServiceNameById(apst.getSvcId()));
+            }
+        }
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         Map<String,Integer> map1=new HashMap<>();
         if(applicationDto!=null){

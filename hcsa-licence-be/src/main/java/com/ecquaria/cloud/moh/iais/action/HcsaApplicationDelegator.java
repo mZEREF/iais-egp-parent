@@ -151,6 +151,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * HcsaApplicationDelegator
@@ -473,6 +474,25 @@ public class HcsaApplicationDelegator {
         if(hasEmailAttaDoc){
             ParamUtil.setRequestAttr(bpc.request, "hasEmailAttaDoc", hasEmailAttaDoc);
         }
+        String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
+        List<AppPremSubSvcRelDto> specialServiceList;
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
+            specialServiceList=applicationViewDto.getSpecialRfcShowDtos();
+        }else {
+            specialServiceList=applicationViewDto.getAppPremSpecialSubSvcRelDtoList();
+        }
+        ParamUtil.setRequestAttr(bpc.request, "changedSpecialServiceList", specialServiceList.stream()
+                .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE.equals(dto.getActCode()))
+                .collect(Collectors.toList()));
+        List<AppPremSubSvcRelDto> otherServiceList;
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
+            otherServiceList=applicationViewDto.getOthersRfcShowDtos();
+        }else {
+            otherServiceList=applicationViewDto.getAppPremOthersSubSvcRelDtoList();
+        }
+        ParamUtil.setRequestAttr(bpc.request, "changedOtherServiceList", otherServiceList.stream()
+                .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE.equals(dto.getActCode()))
+                .collect(Collectors.toList()));
         log.debug(StringUtil.changeForLog("the do prepareData end ...."));
     }
 
@@ -482,16 +502,7 @@ public class HcsaApplicationDelegator {
         if (StringUtil.isNotEmpty(appError)) {
             ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_APP, StringUtil.clarify(appError));
         }
-        // show edit application
-        boolean showBtn = true;
-        List<SelectOption> nextStageList = (List<SelectOption>) ParamUtil.getSessionAttr(request, "nextStages");
-        if (nextStageList != null) {
-            showBtn = nextStageList.stream()
-                    .map(SelectOption::getValue)
-                    .anyMatch(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION::equals);
-        }
-        ParamUtil.setRequestAttr(request, HcsaAppConst.SHOW_EDIT_BTN, showBtn
-                && SpringHelper.getBean(ApplicationDelegator.class).checkData(HcsaAppConst.CHECKED_BTN_SHOW, request));
+        ParamUtil.setRequestAttr(request, HcsaAppConst.SHOW_EDIT_BTN, SpringHelper.getBean(ApplicationDelegator.class).checkData(HcsaAppConst.CHECKED_BTN_SHOW, request));
     }
 
     /**
@@ -3760,23 +3771,21 @@ public class HcsaApplicationDelegator {
 
     private void initApplicationViewDtoSubSvc(ApplicationViewDto applicationViewDto) {
         List<AppPremSubSvcRelDto> appPremSpecialSubSvcRelDtoList = applicationViewDto.getAppPremSpecialSubSvcRelDtoList();
-        if (IaisCommonUtils.isEmpty(appPremSpecialSubSvcRelDtoList)){
-            return;
-        }
-        for (AppPremSubSvcRelDto appPremSubSvcRelDto : appPremSpecialSubSvcRelDtoList) {
-            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(appPremSubSvcRelDto.getSvcId());
-            if (hcsaServiceDto!=null){
-                appPremSubSvcRelDto.setSvcConfigDto(hcsaServiceDto);
+        if (IaisCommonUtils.isNotEmpty(appPremSpecialSubSvcRelDtoList)){
+            for (AppPremSubSvcRelDto appPremSubSvcRelDto : appPremSpecialSubSvcRelDtoList) {
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(appPremSubSvcRelDto.getSvcId());
+                if (hcsaServiceDto!=null){
+                    appPremSubSvcRelDto.setSvcConfigDto(hcsaServiceDto);
+                }
             }
         }
         List<AppPremSubSvcRelDto> appPremOthersSubSvcRelDtoList = applicationViewDto.getAppPremOthersSubSvcRelDtoList();
-        if (IaisCommonUtils.isEmpty(appPremOthersSubSvcRelDtoList)){
-            return;
-        }
-        for (AppPremSubSvcRelDto appPremSubSvcRelDto : appPremOthersSubSvcRelDtoList) {
-            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(appPremSubSvcRelDto.getSvcId());
-            if (hcsaServiceDto!=null){
-                appPremSubSvcRelDto.setSvcConfigDto(hcsaServiceDto);
+        if (IaisCommonUtils.isNotEmpty(appPremOthersSubSvcRelDtoList)){
+            for (AppPremSubSvcRelDto appPremSubSvcRelDto : appPremOthersSubSvcRelDtoList) {
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(appPremSubSvcRelDto.getSvcId());
+                if (hcsaServiceDto!=null){
+                    appPremSubSvcRelDto.setSvcConfigDto(hcsaServiceDto);
+                }
             }
         }
     }

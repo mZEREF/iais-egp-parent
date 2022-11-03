@@ -959,52 +959,35 @@ public class RequestForChangeDelegator {
         log.info(StringUtil.changeForLog("The prepareCond  end..."));
     }
 
-    private void loadingDraft(BaseProcessClass bpc,String draftNo){
+    private void loadingDraft(BaseProcessClass bpc,String draftNo) {
         log.info(StringUtil.changeForLog("the do loadingDraft start ...."));
         //draftNo = "DQ2003030005426";
         String action = "doAmend";
-        if(!StringUtil.isEmpty(draftNo)){
+        if (!StringUtil.isEmpty(draftNo)) {
             log.info(StringUtil.changeForLog("draftNo is not empty"));
-            bpc.request.setAttribute("RFC_DRAFT_NO",draftNo);
+            bpc.request.setAttribute("RFC_DRAFT_NO", draftNo);
             AppSubmissionDto appSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
-//            if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
-//                AppDataHelper.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),appSubmissionDto.getAppType(),bpc.request);
-//            }
-            if(appSubmissionDto.getAppGrpPremisesDtoList() != null && appSubmissionDto.getAppGrpPremisesDtoList().size() >0){
-                /*List<AppDeclarationDocDto> appDeclarationDocDtos = appSubmissionDto.getAppDeclarationDocDtos();
-                if(appDeclarationDocDtos!=null){
-                    List<PageShowFileDto> pageShowFileDtos =new ArrayList<>(5);
-                    for (AppDeclarationDocDto v : appDeclarationDocDtos) {
-                        PageShowFileDto pageShowFileDto=new PageShowFileDto();
-                        pageShowFileDto.setSize(v.getDocSize());
-                        pageShowFileDto.setFileName(v.getDocName());
-                        pageShowFileDto.setVersion(v.getVersion());
-                        pageShowFileDto.setFileMapId("selectedFileDiv"+v.getSeqNum());
-                        pageShowFileDto.setMd5Code(v.getMd5Code());
-                        pageShowFileDto.setFileUploadUrl(v.getFileRepoId());
-                        pageShowFileDto.setIndex(String.valueOf(v.getSeqNum()));
-                        pageShowFileDtos.add(pageShowFileDto);
-                    }
-                    bpc.request.getSession().setAttribute("pageShowFileDtos",pageShowFileDtos);
-                }*/
+            if (appSubmissionDto.getAppGrpPremisesDtoList() != null && appSubmissionDto.getAppGrpPremisesDtoList().size() > 0) {
+                List<HcsaServiceDto> hcsaServiceDtos = DealSessionUtil.getLatestServiceConfigsFormApp(appSubmissionDto);
+                DealSessionUtil.init(appSubmissionDto, hcsaServiceDtos, true, bpc.request);
                 ParamUtil.setSessionAttr(bpc.request, RfcConst.RFCAPPSUBMISSIONDTO, appSubmissionDto);
-            }else{
+            } else {
                 ParamUtil.setSessionAttr(bpc.request, RfcConst.RFCAPPSUBMISSIONDTO, null);
             }
-            ParamUtil.setSessionAttr(bpc.request, RfcConst.DODRAFTCONFIG,"test");
+            ParamUtil.setSessionAttr(bpc.request, RfcConst.DODRAFTCONFIG, "test");
             //set max file index into session
             Integer maxFileIndex = appSubmissionDto.getMaxFileIndex();
-            if(maxFileIndex == null){
+            if (maxFileIndex == null) {
                 maxFileIndex = 0;
-            }else{
-                maxFileIndex ++;
+            } else {
+                maxFileIndex++;
             }
             String svcName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
-            ParamUtil.setSessionAttr(bpc.request,"SvcName",svcName);
-            ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR,maxFileIndex);
-        }else{
+            ParamUtil.setSessionAttr(bpc.request, "SvcName", svcName);
+            ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.GLOBAL_MAX_INDEX_SESSION_ATTR, maxFileIndex);
+        } else {
             action = "error";
-            ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.ACKMESSAGE,"error !!!");
+            ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.ACKMESSAGE, "error !!!");
         }
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM, action);
         log.info(StringUtil.changeForLog("the do loadingDraft end ...."));

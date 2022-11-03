@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
@@ -67,6 +68,9 @@ public interface ConfigCommService {
     List<RiskResultDto> getRiskResult(List<RiskAcceptiionDto> riskAcceptiionDtoList);
 
     FeeDto getGroupAmendAmount(AmendmentFeeDto amendmentFeeDto);
+
+    FeeDto getGroupAmendAmount(AppSubmissionDto appSubmissionDto, AppEditSelectDto appEditSelectDto,
+            boolean isCharity);
 
     List<HcsaSvcSubtypeOrSubsumedDto> getSvcSubtypeOrSubsumedByIdList(List<String> idList);
 

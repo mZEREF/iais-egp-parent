@@ -111,7 +111,7 @@ public class ApplicationDelegator extends AppCommDelegator {
                 }
                 // check current application status
                 ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-                if (IaisCommonUtils.getNonDoRFIStatus().contains(applicationDto.getStatus())) {
+                if (IaisCommonUtils.getNonDoBeEditStatus().contains(applicationDto.getStatus())) {
                     isValid = false;
                     if (check == HcsaAppConst.CHECKED_ALL) {
                         ParamUtil.setRequestAttr(request, HcsaAppConst.ERROR_APP, MessageUtil.replaceMessage("GENERAL_ERR0061",
@@ -349,7 +349,9 @@ public class ApplicationDelegator extends AppCommDelegator {
             url.append(InboxConst.URL_HTTPS)
                     .append(bpc.request.getServerName());
             LoginContext loginContext = ApplicationHelper.getLoginContext(bpc.request);
-            if (RoleConsts.USER_ROLE_INSPECTIOR.equals(loginContext.getCurRoleId())) {
+            if (RoleConsts.USER_ROLE_INSPECTIOR.equals(loginContext.getCurRoleId())
+                    || RoleConsts.USER_ROLE_AO1.equals(loginContext.getCurRoleId())
+                    || RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(loginContext.getCurRoleId())) {
                 TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
                 if (taskDto != null) {
                     url.append(taskDto.getProcessUrl()).append("?taskId=").append(MaskUtil.maskValue("taskId",taskDto.getId()));

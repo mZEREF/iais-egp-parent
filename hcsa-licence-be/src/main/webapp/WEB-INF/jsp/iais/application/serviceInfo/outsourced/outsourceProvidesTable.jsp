@@ -13,18 +13,18 @@
                     <iais:sortableHeader needSort="true" field="ADDRESS" value="Address" style="width:10%;" customSpacing="12"/>
                     <iais:sortableHeader needSort="true" field="EXPIRY_DATE" value="Licence Tenure" style="width:15%;" customSpacing="30"/>
                     <th style="width: 18%;">
-                        <p style="margin-left: 16px;">
-                            Date of Agreement<span class="mandatory">*</span>
+                        <p style="margin-left: 16px;width: 100%;">
+                            Date of Agreement <span class="mandatory">*</span>
                         </p>
                     </th>
                     <th style="width: 18%;">
-                        <p style="margin-left: 16px;">
-                            End Date of Agreement<span class="mandatory">*</span>
+                        <p style="margin-left: 16px;width: 100%;">
+                            End Date of Agreement <span class="mandatory">*</span>
                         </p>
                     </th>
                     <th style="width: 10%;">
-                        <p style="margin-left: 12px;">
-                            Scope of Outsourcing<span class="mandatory">*</span>
+                        <p style="margin-left: 16px;width: 100%;">
+                            Scope of Outsourcing <span class="mandatory">*</span>
                         </p>
                     </th>
                     <th></th>
@@ -83,10 +83,10 @@
                     <td>
                         <p class="visible-xs visible-sm table-row-title">Scope of Outsourcing</p>
                         <c:if test="${currSvcInfoDto.appSvcOutsouredDto.prefixVal eq prefix}">
-                            <iais:input maxLength="300" type="text" cssClass="outstandingScope" name="${prefix}outstandingScope" value="${currSvcInfoDto.appSvcOutsouredDto.searchOutsourced.appPremOutSourceLicenceDto.outstandingScope}"/>
+                            <iais:input maxLength="3000" type="text" cssClass="outstandingScope" name="${prefix}outstandingScope" value="${currSvcInfoDto.appSvcOutsouredDto.searchOutsourced.appPremOutSourceLicenceDto.outstandingScope}"/>
                         </c:if>
                         <c:if test="${currSvcInfoDto.appSvcOutsouredDto.prefixVal != prefix}">
-                            <iais:input maxLength="300" type="text" cssClass="outstandingScope" name="${prefix}outstandingScope" value=""/>
+                            <iais:input maxLength="3000" type="text" cssClass="outstandingScope" name="${prefix}outstandingScope" value=""/>
                         </c:if>
                         <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}OutstandingScope"></span>
                     </td>

@@ -21,6 +21,7 @@
         if ($target.length == 1) {
             $target.find('.psnHeader').html('');
         }
+        initNationality(target, 'select.idType', '.nationalityDiv');
     }
 
     var psnEditEvent = function (target) {
@@ -112,6 +113,7 @@
         checkPersonContent($currContent, true);
         $currContent.find('.isPartEdit').val('1');
         $(target + '-edit').val('1');
+        clearFields($currContent);
     }
 
     var removePersonEvent = function (target) {
@@ -274,5 +276,15 @@
 
     function toggleOnVal(sel, val, elem) {
         toggleOnSelect(sel, val, $(sel).closest('.form-group').siblings(elem));
+    }
+
+    function initNationality(parent, idTypeTag, nationalityDiv) {
+        $(parent).find(idTypeTag).on('change', function () {
+            var $content = $(this).closest(parent.replace(':last', ''));
+            toggleOnSelect(this, 'IDTYPE003', $content.find(nationalityDiv));
+        });
+        $(parent).each(function (index, ele) {
+            toggleOnSelect($(ele).find(idTypeTag), 'IDTYPE003', $(ele).find(nationalityDiv));
+        });
     }
 </script>

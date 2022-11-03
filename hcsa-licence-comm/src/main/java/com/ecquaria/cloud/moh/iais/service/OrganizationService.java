@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 
 import java.util.List;
 
@@ -15,5 +16,7 @@ public interface OrganizationService {
     SubLicenseeDto getSubLicenseeByLicenseeId(String licenseeId);
 
     boolean isGiroAccount(String licenseeId);
+
+    OrgUserDto retrieveOrgUserAccountById(String id);
 
 }
