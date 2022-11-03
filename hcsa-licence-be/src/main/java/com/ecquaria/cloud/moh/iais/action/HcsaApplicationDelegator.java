@@ -1162,6 +1162,15 @@ public class HcsaApplicationDelegator {
                 appPremisesRoutingHistoryDto = activeHistory
                         .stream()
                         .filter(it->appNo.equals(it.getApplicationNo())
+                                &&HcsaConsts.ROUTING_STAGE_PSO.equals(it.getStageId())
+                                &&RoleConsts.USER_ROLE_PSO.equals(it.getRoleId())
+                                &&ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(it.getAppStatus()))
+                        .findFirst().orElse(null);
+            }
+            if (appPremisesRoutingHistoryDto == null) {
+                appPremisesRoutingHistoryDto = activeHistory
+                        .stream()
+                        .filter(it->appNo.equals(it.getApplicationNo())
                                 &&HcsaConsts.ROUTING_STAGE_ASO.equals(it.getStageId())
                                 &&RoleConsts.USER_ROLE_ASO.equals(it.getRoleId())
                                 &&ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(it.getAppStatus()))
