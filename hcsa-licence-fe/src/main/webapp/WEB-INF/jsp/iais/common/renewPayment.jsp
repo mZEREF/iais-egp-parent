@@ -42,7 +42,10 @@
                             </c:choose>
                         </td>
                         <td>
-                            <p><c:out value="${svc.appGrpNo}-0${index.index+1}"/></p>
+                            <c:forEach var="svcIndex" items="${baseSvcFeeExt.svcIndexList}">
+                                <p><c:out value="${baseSvcFeeExt.appGroupNo}-0${svcIndex}"/></p>
+                                <p>&nbsp;&nbsp;</p>
+                            </c:forEach>
                         </td>
                         <td>
                             <p>
@@ -85,9 +88,14 @@
                                 </c:choose>
                             </td>
                             <td>
-                                <p>
-                                    <c:out value="${svc.appGrpNo}"/>
-                                </p>
+                                <c:forEach var="svcIndex" items="${baseSvcFeeExt.svcIndexList}">
+                                    <p><c:out value="${baseSvcFeeExt.appGroupNo}-0${svcIndex}"/></p>
+                                    <p>&nbsp;&nbsp;</p>
+                                </c:forEach>
+                                <c:forEach var="svcIndex" items="${includedSvcFeeExtRoot.svcIndexList}">
+                                    <p><c:out value="${includedSvcFeeExtRoot.appGroupNo}-0${svcIndex}"/></p>
+                                    <p>&nbsp;&nbsp;</p>
+                                </c:forEach>
                             </td>
                             <td>
                                 <p>

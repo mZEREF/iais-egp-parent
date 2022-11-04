@@ -171,9 +171,10 @@
                             </p>
                         </td>
                         <td>
-                            <p>
-                                <c:out value="${AppSubmissionDto.appGrpNo}-0${feeInfoStat.index+1}"/>
-                            </p>
+                            <c:forEach var="svcIndex" items="${baseSvcFeeExt.svcIndexList}">
+                                <p><c:out value="${baseSvcFeeExt.appGroupNo}-0${svcIndex}"/></p>
+                                <p>&nbsp;&nbsp;</p>
+                            </c:forEach>
                         </td>
                         <td>
                             <p>
@@ -211,9 +212,14 @@
                                 </p>
                             </td>
                             <td>
-                                <p>
-                                    <c:out value="${AppSubmissionDto.appGrpNo}"/>
-                                </p>
+                                <c:forEach var="svcIndex" items="${baseSvcFeeExt.svcIndexList}">
+                                    <p><c:out value="${baseSvcFeeExt.appGroupNo}-0${svcIndex}"/></p>
+                                    <p>&nbsp;&nbsp;</p>
+                                </c:forEach>
+                                <c:forEach var="svcIndex" items="${includedSvcFeeExtRoot.svcIndexList}">
+                                    <p><c:out value="${includedSvcFeeExtRoot.appGroupNo}-0${svcIndex}"/></p>
+                                    <p>&nbsp;&nbsp;</p>
+                                </c:forEach>
                             </td>
                             <td>
                                 <p>
@@ -296,9 +302,10 @@
                             <p>New Licence</p>
                         </td>
                         <td>
-                            <p>
-                                <c:out value="${AppSubmissionDto.appGrpNo}"/>
-                            </p>
+                            <c:forEach var="svcIndex" items="${bundleSvcFeeExt.svcIndexList}">
+                                <p><c:out value="${bundleSvcFeeExt.appGroupNo}-0${svcIndex}"/></p>
+                                <p>&nbsp;&nbsp;</p>
+                            </c:forEach>
                         </td>
                         <td>
                             <p >

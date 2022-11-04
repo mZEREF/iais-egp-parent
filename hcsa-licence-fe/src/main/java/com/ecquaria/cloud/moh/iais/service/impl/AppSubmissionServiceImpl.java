@@ -769,6 +769,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
                     LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
                     licenceFeeDto.setBundle(0);
+                    licenceFeeDto.setAppGrpNo(appSubmissionDto.getAppGrpNo());
                     String serviceCode = appSvcRelatedInfoDto.getServiceCode();
                     licenceFeeDto.setBaseService(serviceCode);
                     licenceFeeDto.setServiceCode(serviceCode);
@@ -1043,6 +1044,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 List<LicenceFeeDto> achLicenceFeeDtoList = IaisCommonUtils.genNewArrayList();
                 for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
                     LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
+                    licenceFeeDto.setAppGrpNo(appSubmissionDto.getAppGrpNo());
                     licenceFeeDto.setBundle(0);
                     licenceFeeDto.setHciCode(appGrpPremisesDtos.get(0).getOldHciCode());
                     HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(appSvcRelatedInfoDto.getServiceCode());
@@ -1237,6 +1239,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
                 for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
                     LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
+                    licenceFeeDto.setAppGrpNo(appSubmissionDto.getAppGrpNo());
                     licenceFeeDto.setBundle(0);
                     licenceFeeDto.setHciCode(appSubmissionDto.getAppGrpPremisesDtoList().get(0).getOldHciCode());
                     HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(appSvcRelatedInfoDto.getServiceCode());
