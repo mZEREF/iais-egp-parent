@@ -1,3 +1,4 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
@@ -18,6 +19,7 @@
                                 <c:when test="${askType == 'rollBack'}"><iais:message key="INSPE_ACK002"/></c:when>
                                 <c:when test="${askType == 'Y'}"><iais:message key="UC_INSP_ACK005"/></c:when>
                                 <c:when test="${askType == 'laterally'}"><iais:message key="LOLEV_ACK057"/></c:when>
+                                <c:when test="${askType == 'PROCRFI'}"><%= MessageUtil.dateIntoMessage("RFI_ACK001")%></c:when>
                                 <c:otherwise><iais:message key="LOLEV_ACK036"/></c:otherwise>
                             </c:choose>
                         </h2>

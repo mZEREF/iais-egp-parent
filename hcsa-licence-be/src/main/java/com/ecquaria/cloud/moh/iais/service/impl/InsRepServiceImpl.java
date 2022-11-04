@@ -4,7 +4,10 @@ import com.ecquaria.cloud.moh.iais.action.HcsaApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -1391,5 +1394,118 @@ public class InsRepServiceImpl implements InsRepService {
         if(HcsaLicenceBeConstant.EDIT_VEHICLE_FLAG.equalsIgnoreCase(flag) && IaisCommonUtils.isNotEmpty(appPremSubSvcRelDtoList)){
             appPremSubSvcBeClient.saveSubServiceDtoList(appPremSubSvcRelDtoList);
         }
+    }
+
+
+    @Override
+    public void saveRecommendations(List<AppPremisesRecommendationDto> appPremisesRecommendationDtoList) {
+        AppPremisesRecommendationDto appPremisesRecommendationDto1 = appPremisesRecommendationDtoList.get(0);
+        AppPremisesRecommendationDto appPremisesRecommendationDto2 = appPremisesRecommendationDtoList.get(1);
+        AppPremisesRecommendationDto appPremisesRecommendationDto3 = appPremisesRecommendationDtoList.get(2);
+        AppPremisesRecommendationDto appPremisesRecommendationDto4 = appPremisesRecommendationDtoList.get(3);
+
+        if (!StringUtil.isEmpty(appPremisesRecommendationDto1.getRecommendation())) {
+            updateRecommendation(appPremisesRecommendationDto1);
+        }
+        String engageEnforcementRemarks = appPremisesRecommendationDto2.getRemarks();
+        if (!StringUtil.isEmpty(engageEnforcementRemarks)) {
+            appPremisesRecommendationDto2.setRemarks(engageEnforcementRemarks);
+        } else {
+            appPremisesRecommendationDto2.setRemarks(null);
+        }
+        updateengageRecommendation(appPremisesRecommendationDto2);
+        String followRemarks = appPremisesRecommendationDto3.getRemarks();
+        if (!StringUtil.isEmpty(followRemarks)) {
+            appPremisesRecommendationDto3.setRemarks(followRemarks);
+        }else {
+            appPremisesRecommendationDto3.setRemarks(null);
+        }
+        updateFollowRecommendation(appPremisesRecommendationDto3);
+        String remarks = appPremisesRecommendationDto4.getRemarks();
+        if(!StringUtil.isEmpty(remarks)) {
+            updateRiskLevelRecommendation(appPremisesRecommendationDto4);
+        }
+
+    }
+
+    @Override
+    public List<SelectOption> getChronoOption() {
+        List<SelectOption> ChronoResult = IaisCommonUtils.genNewArrayList();
+        SelectOption so1 = new SelectOption(RiskConsts.YEAR, "Year(s)");
+        SelectOption so2 = new SelectOption(RiskConsts.MONTH, "Month(s)");
+        ChronoResult.add(so1);
+        ChronoResult.add(so2);
+        return ChronoResult;
+    }
+
+    @Override
+    public List<SelectOption> getRecommendationOption(String appType) {
+        List<SelectOption> recommendationResult = IaisCommonUtils.genNewArrayList();
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) ||
+                ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(appType) ||
+                ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(appType) ||
+                ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType)) {
+            SelectOption so1 = new SelectOption(InspectionReportConstants.RFC_APPROVED, "Approve");
+            SelectOption so3 = new SelectOption(InspectionReportConstants.RFC_REJECTED, "Reject");
+            recommendationResult.add(so1);
+            recommendationResult.add(so3);
+        } else {
+            SelectOption so1 = new SelectOption(InspectionReportConstants.APPROVED, "Proceed with Licence Issuance");
+            SelectOption so2 = new SelectOption(InspectionReportConstants.APPROVEDLTC, "Proceed with Licence Issuance (with LTCs)");
+            SelectOption so3 = new SelectOption(InspectionReportConstants.REJECTED, "Reject Licence");
+            recommendationResult.add(so1);
+            recommendationResult.add(so2);
+            recommendationResult.add(so3);
+        }
+        return recommendationResult;
+    }
+
+    @Override
+    public AppPremisesRecommendationDto initRecommendation(String correlationId, ApplicationViewDto applicationViewDto) {
+        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
+        AppPremisesRecommendationDto engageRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_ENGAGE).getEntity();
+        AppPremisesRecommendationDto followRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION).getEntity();
+
+        AppPremisesRecommendationDto initRecommendationDto = new AppPremisesRecommendationDto();
+        if (appPremisesRecommendationDto != null) {
+            String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
+            Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
+            String recomDecision = appPremisesRecommendationDto.getRecomDecision();
+            String period = recomInNumber + " " + chronoUnit;
+            List<String> periods = getPeriods(applicationViewDto);
+            if (periods != null && !periods.isEmpty() && !InspectionReportConstants.REJECTED.equals(recomDecision)) {
+                if (periods.contains(period)) {
+                    initRecommendationDto.setPeriod(period);
+                } else {
+                    initRecommendationDto.setPeriod("Others");
+                    initRecommendationDto.setRecomInNumber(recomInNumber);
+                    initRecommendationDto.setChronoUnit(chronoUnit);
+                    if(AppointmentConstants.RECURRENCE_YEAR.equalsIgnoreCase(appPremisesRecommendationDto.getBestPractice())){
+                        initRecommendationDto.setRecomInNumber(recomInNumber/12);
+                        initRecommendationDto.setChronoUnit(AppointmentConstants.RECURRENCE_YEAR);
+                    }
+                }
+            }
+            if (InspectionReportConstants.REJECTED.equals(recomDecision)) {
+                initRecommendationDto.setPeriod(null);
+            }
+            initRecommendationDto.setRecommendation(recomDecision);
+        }
+
+        if (appPremisesRecommendationDto != null) {
+            String reportRemarks = appPremisesRecommendationDto.getRemarks();
+            initRecommendationDto.setRemarks(reportRemarks);
+        }
+        if (engageRecommendationDto != null) {
+            String remarks = engageRecommendationDto.getRemarks();
+            String engage = "on";
+            initRecommendationDto.setEngageEnforcement(engage);
+            initRecommendationDto.setEngageEnforcementRemarks(remarks);
+        }
+        if (followRecommendationDto != null) {
+            String followRemarks = followRecommendationDto.getRemarks();
+            initRecommendationDto.setFollowUpAction(followRemarks);
+        }
+        return initRecommendationDto;
     }
 }

@@ -912,15 +912,16 @@ public class NewApplicationDelegator extends AppCommDelegator {
                             appPremisesRoutingHistoryDto.getProcessDecision())) {
                         continue;
                     }
-                    if (ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(
-                            appPremisesRoutingHistoryDto.getAppStatus())) {
-                        status = ApplicationConsts.PENDING_ASO_REPLY;
-                    } else if (ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(
-                            appPremisesRoutingHistoryDto.getAppStatus())) {
-                        status = ApplicationConsts.PENDING_PSO_REPLY;
-                    } else if (ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS.equals(
-                            appPremisesRoutingHistoryDto.getAppStatus())) {
-                        status = ApplicationConsts.PENDING_INP_REPLY;
+                    switch (appPremisesRoutingHistoryDto.getAppStatus()){
+                        case ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING:
+                        case ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_ASO:status = ApplicationConsts.PENDING_ASO_REPLY;break;
+                        case ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING:
+                        case ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_PSO:status = ApplicationConsts.PENDING_PSO_REPLY;break;
+                        case ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS:
+                        case ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR:status = ApplicationConsts.PENDING_INP_REPLY;break;
+                        case ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01:
+                        case ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO:status = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01;break;
+                        default:
                     }
                 }
             }

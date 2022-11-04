@@ -147,11 +147,11 @@
         <div class="col-xs-12">
             <div class="table-gp">
                 <table aria-describedby="" class="table">
-                        <thead style="display: none">
-                        <tr>
-                            <th scope="col"></th>
-                        </tr>
-                        </thead>
+                    <thead style="display: none">
+                    <tr>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
                     <tr>
                         <td class="col-xs-4">
                             <p>Date of Inspection</p>
@@ -239,11 +239,11 @@
                     <p><h4><strong><span>Part I: Inspection Checklist</span></strong></h4></p>
                 </div>
                 <table aria-describedby="" class="table">
-                        <thead style="display: none">
-                        <tr>
-                            <th scope="col"></th>
-                        </tr>
-                        </thead>
+                    <thead style="display: none">
+                    <tr>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
                     <tr>
                         <td class="col-xs-4">
                             <p>Checklist Used</p>
@@ -379,11 +379,11 @@
         <div class="col-xs-12">
             <div class="table-gp">
                 <table aria-describedby="" class="table">
-                        <thead style="display: none">
-                        <tr>
-                            <th scope="col"></th>
-                        </tr>
-                        </thead>
+                    <thead style="display: none">
+                    <tr>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
                     <tr>
                         <td class="col-xs-4">
                             <p>Rectified</p>
@@ -652,7 +652,6 @@
         </div>
     </c:if>
 </div>
-<a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em class="fa fa-angle-left"></em> Back</a>
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 
 <script type="text/javascript">

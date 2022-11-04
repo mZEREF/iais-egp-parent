@@ -177,6 +177,55 @@
     <JavaCode defClass="" executor="" methodName="asoEmail_OnStepProcess_0" name="asoEmail_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preCheckList" x="430" y="370">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preCheckList_OnStepProcess_0" name="preCheckList_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="setMulAction" x="480" y="220">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="setMulAction_OnStepProcess_0" name="setMulAction_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doChecklist" x="670" y="110">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doChecklist_OnStepProcess_0" name="doChecklist_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="checkListNext" x="420" y="120">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="checkListNext_OnStepProcess_0" name="checkListNext_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="saveChecklist" x="580" y="290">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="saveChecklist_OnStepProcess_0" name="saveChecklist_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectorReportPre" x="740" y="440">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectorReportPre_OnStepProcess_0" name="inspectorReportPre_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectorReportSave" x="890" y="60">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectorReportSave_OnStepProcess_0" name="inspectorReportSave_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ViewPage" stageIndicator="" x="310" y="140">
@@ -191,7 +240,25 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="preViewPage" stageIndicator="" x="470" y="250">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="preViewPage" stageIndicator="" x="190" y="280">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="checkListpage" stageIndicator="" x="470" y="300">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ViewCheckList" stageIndicator="" x="670" y="200">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspectorReportPage" stageIndicator="" x="890" y="440">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -344,13 +411,86 @@
    <position>{(1050,670)(330,840)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/preViewPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(330,460)(515,300)}</position>
+   <position>{(330,460)(210,300)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Direct" name="" sourceName="/Pages/WebPage/preViewPage" style="oblique">
-   <position>{(515,300)(320,80)}</position>
+   <position>{(210,300)(320,80)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preCheckList" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(330,460)(450,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/checkListpage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preCheckList" style="oblique">
+   <position>{(450,390)(490,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/setMulAction" linkstyle="Direct" name="" sourceName="/Pages/WebPage/checkListpage" style="oblique">
+   <position>{(490,320)(500,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/setMulAction" style="oblique">
+   <position>{(500,240)(560,130)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doChecklist" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(560,130)(690,130)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ViewCheckList" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doChecklist" style="oblique">
+   <position>{(690,130)(690,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/checkListNext" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(560,130)(440,140)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch3" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ViewCheckList" style="oblique">
+   <position>{(690,220)(600,210)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/saveChecklist" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(600,210)(600,310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/saveChecklist" style="oblique">
+   <position>{(600,310)(700,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preCheckList" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(700,380)(450,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ViewCheckList" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(700,380)(690,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorReportPre" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(330,460)(760,460)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/InspectorReportPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspectorReportPre" style="oblique">
+   <position>{(760,460)(910,460)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorReportSave" linkstyle="Direct" name="" sourceName="/Pages/WebPage/InspectorReportPage" style="oblique">
+   <position>{(910,460)(910,80)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspectorReportSave" style="oblique">
+   <position>{(910,80)(820,80)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doDocument" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
+   <position>{(820,80)(384,78)(330,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/InspectorReportPage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
+   <position>{(820,80)(910,460)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond3" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/checkListNext" style="oblique">
+   <position>{(440,140)(450,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preCheckList" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond3" style="rectanular">
+   <position>{(450,260)(450,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doDocument" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond3" style="rectanular">
+   <position>{(450,260)(330,260)}</position>
   </SynchronousLink>
  </Links>
- <Conditions/>
+ <Conditions>
+  <Condition componentIfFalse="/Pages/WebPage/ViewCheckList" componentIfTrue="/Steps/AutomaticStep/preCheckList" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="680" y="360">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Pages/WebPage/InspectorReportPage" componentIfTrue="/Steps/AutomaticStep/doDocument" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;true&quot;" x="800" y="60">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Steps/AutomaticStep/preCheckList" componentIfTrue="/Steps/AutomaticStep/doDocument" defClass="" executor="" icon="" leftOperand="isValid" name="Cond3" operator="=" rightOperand="&quot;Y&quot;" x="430" y="240">
+   <Description/>
+  </Condition>
+ </Conditions>
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="310" y="440">
    <Description/>
@@ -376,6 +516,17 @@
    <SwitchCase component="/Steps/AutomaticStep/RollBack" value="&quot;RollBack&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/AsoEmail" value="&quot;PROCEMAIL&quot;"/>
    <SwitchCase component="/Pages/WebPage/preViewPage" value="&quot;PREVIEW&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preCheckList" value="&quot;editChecklist&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspectorReportPre" value="&quot;editInspectorReport&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/checkListNext" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="540" y="110">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/doChecklist" value="&quot;doChecklist&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/checkListNext" value="&quot;save&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="580" y="190">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/saveChecklist" value="&quot;back&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

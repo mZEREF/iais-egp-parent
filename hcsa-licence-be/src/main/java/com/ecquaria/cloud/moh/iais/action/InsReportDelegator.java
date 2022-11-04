@@ -5,11 +5,11 @@ import com.ecquaria.cloud.helper.EngineHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
-import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSubSvcRelD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
@@ -25,7 +26,9 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.constant.HcsaAppConst;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -34,11 +37,14 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
+import com.ecquaria.cloud.moh.iais.service.ApptInspectionDateService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
+import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
+import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListItemValidate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -74,7 +80,15 @@ public class InsReportDelegator {
     @Autowired
     private ApplicationService applicationService;
     @Autowired
+    private HcsaApplicationDelegator hcsaApplicationDelegator;
+    @Autowired
+    private InspectReviseNcEmailDelegator inspectReviseNcEmailDelegator;
+    @Autowired
     private InspectionService inspectionService;
+    @Autowired
+    InspEmailService inspEmailService;
+    @Autowired
+    private ApptInspectionDateService apptInspectionDateService;
     private final static String RECOMMENDATION_DTO = "appPremisesRecommendationDto";
     private final static String RECOMMENDATION = "recommendation";
     private final static String CHRONO = "chrono";
@@ -133,7 +147,7 @@ public class InsReportDelegator {
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
         AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
         if (ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW.equals(appStatus) || ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(appStatus)|| ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(appStatus) || ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION.equals(appStatus)) {
-            appPremisesRecommendationDto = initRecommendation(correlationId, applicationViewDto, bpc);
+            appPremisesRecommendationDto = insRepService.initRecommendation(correlationId, applicationViewDto);
         }
         String recommendation = appPremisesRecommendationDto.getRecommendation();
         if(StringUtil.isEmpty(recommendation)){
@@ -153,9 +167,9 @@ public class InsReportDelegator {
         ParamUtil.setSessionAttr(request,"rollBackValueMap", (Serializable) historyDtoMap);
         String riskLevelForSave = appPremisesRecommendationDto.getRiskLevel();
         List<SelectOption> riskOption = insRepService.getRiskOption(applicationViewDto);
-        List<SelectOption> chronoOption = getChronoOption();
-        List<SelectOption> recommendationOption = getRecommendationOption(applicationType);
-        List<SelectOption> processingDe = getProcessingDecision(applicationViewDto.getApplicationDto());
+        List<SelectOption> chronoOption = insRepService.getChronoOption();
+        List<SelectOption> recommendationOption = insRepService.getRecommendationOption(applicationType);
+        List<SelectOption> processingDe = getProcessingDecision(applicationViewDto);
         String infoClassTop = "active";
         String infoClassBelow = "tab-pane active";
         String reportClassBelow = "tab-pane";
@@ -263,6 +277,14 @@ public class InsReportDelegator {
             }
             return;
         }
+
+        if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(appPremisesRecommendationDto.getProcessingDecision())){
+            apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(),applicationViewDto.getApplicationDto().getStatus(), ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,taskDto,taskDto.getUserId(),appPremisesRecommendationDto.getProcessRemarks(), HcsaConsts.ROUTING_STAGE_INS);
+            hcsaApplicationDelegator.requestForInformation(bpc);
+            ParamUtil.setSessionAttr(bpc.request,HcsaLicenceBeConstant.REPORT_ACK_CLARIFICATION_FLAG,ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION);
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+            return;
+        }
         ValidationResult validationResult = WebValidationHelper.validateProperty(appPremisesRecommendationDto, "save");
         if(appTypes.contains(applicationType)){
             String recommendationRfc = ParamUtil.getRequestString(bpc.request, "recommendationRfc");
@@ -290,7 +312,7 @@ public class InsReportDelegator {
             return;
         }
         List<AppPremisesRecommendationDto> appPremisesRecommendationDtoList = prepareForSave(bpc, appPremisesCorrelationId, recomLiceStartDate, applicationType);
-        saveRecommendations(appPremisesRecommendationDtoList);
+        insRepService.saveRecommendations(appPremisesRecommendationDtoList);
         String[] fastTracking = ParamUtil.getStrings(bpc.request, "fastTracking");
         if (fastTracking != null) {
             applicationDto.setFastTracking(true);
@@ -318,7 +340,7 @@ public class InsReportDelegator {
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
     }
 
-    private AppPremisesRecommendationDto prepareRecommendation(BaseProcessClass bpc,String appType,List<String> appTypes) {
+    public AppPremisesRecommendationDto prepareRecommendation(BaseProcessClass bpc,String appType,List<String> appTypes) {
         String recommendation = ParamUtil.getRequestString(bpc.request, RECOMMENDATION);
         String recommendationRfc = ParamUtil.getRequestString(bpc.request, "recommendationRfc");
         String periods = ParamUtil.getRequestString(bpc.request, "periods");
@@ -353,7 +375,7 @@ public class InsReportDelegator {
         return appPremisesRecommendationDto;
     }
 
-    private List<AppPremisesRecommendationDto> prepareForSave(BaseProcessClass bpc, String appPremisesCorrelationId, Date licDate, String appType) {
+    public List<AppPremisesRecommendationDto> prepareForSave(BaseProcessClass bpc, String appPremisesCorrelationId, Date licDate, String appType) {
         List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = IaisCommonUtils.genNewArrayList();
         String remarks = ParamUtil.getRequestString(bpc.request, "remarks");
         String recommendation = ParamUtil.getRequestString(bpc.request, RECOMMENDATION);
@@ -380,38 +402,38 @@ public class InsReportDelegator {
            appPremisesRecommendationDto.setPeriod(AppointmentConstants.RECURRENCE_MONTH);
            appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
         } else {
-            appPremisesRecommendationDto.setRemarks(remarks);
-            appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
-            appPremisesRecommendationDto.setRecomInDate(licDate);
-            if(InspectionReportConstants.APPROVED.equals(recommendation)||InspectionReportConstants.APPROVEDLTC.equals(recommendation)){
-                appPremisesRecommendationDto.setRecomDecision(recommendation);
-                if (OTHERS.equals(periods) && !StringUtil.isEmpty(chrono) && !StringUtil.isEmpty(number)) {
-                    appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
-                    Integer num = Integer.valueOf(number);
-                    if(AppointmentConstants.RECURRENCE_YEAR.equals(chrono)){
-                        chrono = AppointmentConstants.RECURRENCE_MONTH ;
-                        num = Integer.valueOf(Integer.parseInt(number) * 12);
-                        //BestPractice = RECURRENCE_YEAR, Determine that user Other has selected the year
-                        appPremisesRecommendationDto.setBestPractice(AppointmentConstants.RECURRENCE_YEAR);
-                    }
-                    appPremisesRecommendationDto.setChronoUnit(chrono);
-                    appPremisesRecommendationDto.setRecomInNumber(num);
-                    appPremisesRecommendationDto.setRecommendation(recommendation);
-                } else if (!StringUtil.isEmpty(periods) && !OTHERS.equals(periods) && InspectionReportConstants.APPROVEDLTC.equals(recommendation) || InspectionReportConstants.APPROVED.equals(recommendation)) {
-                    String[] splitPeriods = periods.split("\\s+");
-                    String count = splitPeriods[0];
-                    String dateType = splitPeriods[1];
-                    appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
-                    appPremisesRecommendationDto.setChronoUnit(dateType);
-                    appPremisesRecommendationDto.setRecomInNumber(Integer.valueOf(count));
-                    appPremisesRecommendationDto.setRecommendation(recommendation);
-                }
-            }else {
-                appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
-                appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.REJECTED);
-                appPremisesRecommendationDto.setRecomInNumber(0);
-                appPremisesRecommendationDto.setRecommendation(recommendation);
-            }
+           appPremisesRecommendationDto.setRemarks(remarks);
+           appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
+           appPremisesRecommendationDto.setRecomInDate(licDate);
+           if (InspectionReportConstants.APPROVED.equals(recommendation) || InspectionReportConstants.APPROVEDLTC.equals(recommendation)) {
+               appPremisesRecommendationDto.setRecomDecision(recommendation);
+               if (OTHERS.equals(periods) && !StringUtil.isEmpty(chrono) && !StringUtil.isEmpty(number)) {
+                   appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
+                   Integer num = Integer.valueOf(number);
+                   if (AppointmentConstants.RECURRENCE_YEAR.equals(chrono)) {
+                       chrono = AppointmentConstants.RECURRENCE_MONTH;
+                       num = Integer.valueOf(Integer.parseInt(number) * 12);
+                       //BestPractice = RECURRENCE_YEAR, Determine that user Other has selected the year
+                       appPremisesRecommendationDto.setBestPractice(AppointmentConstants.RECURRENCE_YEAR);
+                   }
+                   appPremisesRecommendationDto.setChronoUnit(chrono);
+                   appPremisesRecommendationDto.setRecomInNumber(num);
+                   appPremisesRecommendationDto.setRecommendation(recommendation);
+               } else if (!StringUtil.isEmpty(periods) && !OTHERS.equals(periods) && InspectionReportConstants.APPROVEDLTC.equals(recommendation) || InspectionReportConstants.APPROVED.equals(recommendation)) {
+                   String[] splitPeriods = periods.split("\\s+");
+                   String count = splitPeriods[0];
+                   String dateType = splitPeriods[1];
+                   appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
+                   appPremisesRecommendationDto.setChronoUnit(dateType);
+                   appPremisesRecommendationDto.setRecomInNumber(Integer.valueOf(count));
+                   appPremisesRecommendationDto.setRecommendation(recommendation);
+               }
+           } else {
+               appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
+               appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.REJECTED);
+               appPremisesRecommendationDto.setRecomInNumber(0);
+               appPremisesRecommendationDto.setRecommendation(recommendation);
+           }
         }
         AppPremisesRecommendationDto engageEnforcementAppPremisesRecommendationDto = new AppPremisesRecommendationDto();
         engageEnforcementAppPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSPCTION_ENGAGE);
@@ -440,129 +462,94 @@ public class InsReportDelegator {
         return appPremisesRecommendationDtos;
     }
 
-    private AppPremisesRecommendationDto initRecommendation(String correlationId, ApplicationViewDto applicationViewDto, BaseProcessClass bpc) {
-        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
-        AppPremisesRecommendationDto engageRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_ENGAGE).getEntity();
-        AppPremisesRecommendationDto followRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION).getEntity();
 
-        AppPremisesRecommendationDto initRecommendationDto = new AppPremisesRecommendationDto();
-        if (appPremisesRecommendationDto != null) {
-            String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
-            Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
-            String recomDecision = appPremisesRecommendationDto.getRecomDecision();
-            String period = recomInNumber + " " + chronoUnit;
-            List<String> periods = insRepService.getPeriods(applicationViewDto);
-            if (periods != null && !periods.isEmpty() && !InspectionReportConstants.REJECTED.equals(recomDecision)) {
-                if (periods.contains(period)) {
-                    initRecommendationDto.setPeriod(period);
-                } else {
-                    initRecommendationDto.setPeriod("Others");
-                    initRecommendationDto.setRecomInNumber(recomInNumber);
-                    initRecommendationDto.setChronoUnit(chronoUnit);
-                    if(AppointmentConstants.RECURRENCE_YEAR.equalsIgnoreCase(appPremisesRecommendationDto.getBestPractice())){
-                        initRecommendationDto.setRecomInNumber(recomInNumber/12);
-                        initRecommendationDto.setChronoUnit(AppointmentConstants.RECURRENCE_YEAR);
-                    }
-                }
-            }
-            if (InspectionReportConstants.REJECTED.equals(recomDecision)) {
-                initRecommendationDto.setPeriod(null);
-            }
-            initRecommendationDto.setRecommendation(recomDecision);
-        }
-
-        if (appPremisesRecommendationDto != null) {
-            String reportRemarks = appPremisesRecommendationDto.getRemarks();
-            initRecommendationDto.setRemarks(reportRemarks);
-        }
-        if (engageRecommendationDto != null) {
-            String remarks = engageRecommendationDto.getRemarks();
-            String engage = "on";
-            initRecommendationDto.setEngageEnforcement(engage);
-            initRecommendationDto.setEngageEnforcementRemarks(remarks);
-        }
-        if (followRecommendationDto != null) {
-            String followRemarks = followRecommendationDto.getRemarks();
-            initRecommendationDto.setFollowUpAction(followRemarks);
-        }
-        return initRecommendationDto;
-    }
-
-    private void saveRecommendations(List<AppPremisesRecommendationDto> appPremisesRecommendationDtoList) {
-        AppPremisesRecommendationDto appPremisesRecommendationDto1 = appPremisesRecommendationDtoList.get(0);
-        AppPremisesRecommendationDto appPremisesRecommendationDto2 = appPremisesRecommendationDtoList.get(1);
-        AppPremisesRecommendationDto appPremisesRecommendationDto3 = appPremisesRecommendationDtoList.get(2);
-        AppPremisesRecommendationDto appPremisesRecommendationDto4 = appPremisesRecommendationDtoList.get(3);
-
-        if (!StringUtil.isEmpty(appPremisesRecommendationDto1.getRecommendation())) {
-            insRepService.updateRecommendation(appPremisesRecommendationDto1);
-        }
-        String engageEnforcementRemarks = appPremisesRecommendationDto2.getRemarks();
-        if (!StringUtil.isEmpty(engageEnforcementRemarks)) {
-            appPremisesRecommendationDto2.setRemarks(engageEnforcementRemarks);
-        } else {
-            appPremisesRecommendationDto2.setRemarks(null);
-        }
-        insRepService.updateengageRecommendation(appPremisesRecommendationDto2);
-        String followRemarks = appPremisesRecommendationDto3.getRemarks();
-        if (!StringUtil.isEmpty(followRemarks)) {
-            appPremisesRecommendationDto3.setRemarks(followRemarks);
-        }else {
-            appPremisesRecommendationDto3.setRemarks(null);
-        }
-        insRepService.updateFollowRecommendation(appPremisesRecommendationDto3);
-        String remarks = appPremisesRecommendationDto4.getRemarks();
-        if(!StringUtil.isEmpty(remarks)) {
-            insRepService.updateRiskLevelRecommendation(appPremisesRecommendationDto4);
-        }
-
-    }
-
-    private List<SelectOption> getChronoOption() {
-        List<SelectOption> ChronoResult = IaisCommonUtils.genNewArrayList();
-        SelectOption so1 = new SelectOption(RiskConsts.YEAR, "Year(s)");
-        SelectOption so2 = new SelectOption(RiskConsts.MONTH, "Month(s)");
-        ChronoResult.add(so1);
-        ChronoResult.add(so2);
-        return ChronoResult;
-    }
-
-    private List<SelectOption> getRecommendationOption(String appType) {
-        List<SelectOption> recommendationResult = IaisCommonUtils.genNewArrayList();
-        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) ||
-            ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(appType) ||
-            ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(appType) ||
-            ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType)) {
-            SelectOption so1 = new SelectOption(InspectionReportConstants.RFC_APPROVED, "Approve");
-            SelectOption so3 = new SelectOption(InspectionReportConstants.RFC_REJECTED, "Reject");
-            recommendationResult.add(so1);
-            recommendationResult.add(so3);
-        } else {
-            SelectOption so1 = new SelectOption(InspectionReportConstants.APPROVED, "Proceed with Licence Issuance");
-            SelectOption so2 = new SelectOption(InspectionReportConstants.APPROVEDLTC, "Proceed with Licence Issuance (with LTCs)");
-            SelectOption so3 = new SelectOption(InspectionReportConstants.REJECTED, "Reject Licence");
-            recommendationResult.add(so1);
-            recommendationResult.add(so2);
-            recommendationResult.add(so3);
-        }
-        return recommendationResult;
-    }
-
-    private List<SelectOption> getProcessingDecision(ApplicationDto applicationDto) {
-        String status = applicationDto.getStatus();
+    private List<SelectOption> getProcessingDecision(ApplicationViewDto applicationViewDto) {
+        String status = applicationViewDto.getApplicationDto().getStatus();
         if (ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(status)||ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)) {
             List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
             SelectOption so1 = new SelectOption("submit", MasterCodeUtil.getCodeDesc(ApplicationConsts.PROCESSING_DECISION_REPLY));
             riskLevelResult.add(so1);
+            if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(status)){
+                String applicationGroupId = applicationViewDto.getApplicationDto().getAppGrpId();
+                Integer rfiCount = applicationService.getAppBYGroupIdAndStatus(applicationGroupId,
+                        ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
+                log.info(StringUtil.changeForLog("The rfiCount is -->:" + rfiCount));
+                Map<String, String> map = applicationService.checkApplicationByAppGrpNo(
+                        applicationViewDto.getApplicationGroupDto().getGroupNo());
+                String canEdit = map.get(HcsaAppConst.CAN_RFI);
+                if (AppConsts.YES.equals(canEdit) && rfiCount == 0) {
+                    riskLevelResult.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,
+                            "Request For Information"));
+                }
+            }
             return riskLevelResult;
         }
         List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption("submit", MasterCodeUtil.getCodeDesc(InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT));
         riskLevelResult.add(so1);
-        String appType = applicationDto.getApplicationType();
+        String appType = applicationViewDto.getApplicationDto().getApplicationType();
         if (!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType))) {
             riskLevelResult.add(new SelectOption("rollBack",  MasterCodeUtil.getCodeDesc(InspectionConstants.PROCESS_DECI_ROLL_BACK)));
         }
+        SelectOption route = new SelectOption("route",MasterCodeUtil.getCodeDesc(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY));
+        riskLevelResult.add(route);
         return riskLevelResult;
+    }
+
+
+    public void preCheckList(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        String doCheckList=ParamUtil.getRequestString(request,"doCheckList");
+        if(!IaisEGPConstant.YES.equals(doCheckList)){
+            TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
+            inspectReviseNcEmailDelegator.setCheckDataHaveFinished(request,taskDto);
+            inspectReviseNcEmailDelegator.setSelectionsForDDMMAndAuditRiskSelect(request);
+            inspectReviseNcEmailDelegator.preCheckList(bpc);
+        }
+
+    }
+
+    public void checkListNext(BaseProcessClass bpc)  {
+        inspectReviseNcEmailDelegator.checkListNext(bpc);
+        String actionAdditional = ParamUtil.getString(bpc.request, "crud_action_additional");
+        if("editInspectorReport".equals(actionAdditional)){
+            ParamUtil.setRequestAttr(bpc.request, "crud_action_type", actionAdditional);
+            return;
+        }
+        if("processing".equals(actionAdditional)){
+            ParamUtil.setRequestAttr(bpc.request, "crud_action_type", actionAdditional);
+            return;
+        }
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+
+    }
+
+    public void doCheckList(BaseProcessClass bpc){
+        log.info("=======>>>>>doCheckList>>>>>>>>>>>>>>>>doCheckList");
+        HttpServletRequest request = bpc.request;
+        inspectReviseNcEmailDelegator.setCheckListData(request);
+        InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
+        InspectionCheckListItemValidate inspectionCheckListItemValidate = new InspectionCheckListItemValidate();
+        Map errMap = inspectionCheckListItemValidate.validate(request);
+        if (!errMap.isEmpty()) {
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+            serListDto.setCheckListTab("chkList");
+            ParamUtil.setSessionAttr(request, "serListDto", serListDto);
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
+        } else {
+            serListDto.setCheckListTab("chkList");
+            ParamUtil.setSessionAttr(request, "serListDto", serListDto);
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+        }
+        inspectReviseNcEmailDelegator.setChangeTabForChecklist(request);
+        ParamUtil.setRequestAttr(request, "doCheckList", IaisEGPConstant.YES);
+
+    }
+
+    public void preViewCheckList(BaseProcessClass bpc) throws IOException{
+
+
+        inspectReviseNcEmailDelegator.preViewCheckList(bpc);
+
     }
 }

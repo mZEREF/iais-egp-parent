@@ -15,11 +15,17 @@
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-        <input type="hidden" name="crud_action_type" value="">
-        <input type="hidden" name="crud_action_value" value="">
-        <input type="hidden" name="crud_action_additional" value="">
+        <input type="hidden" name="crud_action_type" id="crud_action_type"/>
+        <input type="hidden" name="crud_action_value" id="crud_action_value"/>
+        <input type="hidden" name="crud_action_additional" id="crud_action_additional"/>
         <input type="hidden" name="readRecom" value="">
         <input type="hidden" name="appType" value="${appType}">
+        <input type="hidden" name="rfiCheckErrorMsg" id="rfiCheckErrorMsg" value="<iais:message key="PRF_ERR012" escape="true"/>"/>
+        <input type="hidden" name="errorMsgGENERAL_ERR0006" id="errorMsgGENERAL_ERR0006" value="<iais:message key="GENERAL_ERR0006"/>"/>
+        <c:set var="isAoRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST062' || applicationViewDto.applicationDto.status == 'APST065' || applicationViewDto.applicationDto.status == 'APST066' || applicationViewDto.applicationDto.status == 'APST067'}"/>
+        <c:set var="isPsoRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST063'}"/>
+        <c:set var="isInspectorRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST064'}"/>
+        <c:set var="isRouteBackStatus" value="${isInspectorRouteBackStatus || isAoRouteBackStatus || isPsoRouteBackStatus}"/>
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
@@ -40,14 +46,18 @@
                                                                                             role="tab"
                                                                                             data-toggle="tab">Documents</a>
                                                 </li>
+                                                <li id="inspectionEditCheckList" class="complete" role="presentation" style="display: none">
+                                                    <a  onclick="checkInspectionCheckListTab()"
+                                                        aria-controls="tabInspectionCheckList" role="tab"
+                                                        data-toggle="tab">CheckList</a></li>
                                                 <li id="report" class="${reportClassTop}" role="presentation"><a
                                                         id="reportClink" href="#tabInspectionReport"
                                                         aria-controls="tabProcessing" role="tab"
                                                         data-toggle="tab">Inspection Report</a></li>
-                                                <li onclick="changePeriod()" class="${processClassTop}" role="presentation"><a href="#tabProcessing"
-                                                                                            aria-controls="tabProcessing"
-                                                                                            role="tab"
-                                                                                            data-toggle="tab">Processing</a>
+                                                <li id="process" onclick="changePeriod()" class="${processClassTop}" role="presentation"><a href="#tabProcessing"
+                                                                                                                                            aria-controls="tabProcessing"
+                                                                                                                                            role="tab"
+                                                                                                                                            data-toggle="tab">Processing</a>
                                                 </li>
 
                                             </ul>
@@ -59,11 +69,11 @@
                                                     <div class="swiper-slide"><a href="#tabDocuments"
                                                                                  aria-controls="tabDocuments" role="tab"
                                                                                  data-toggle="tab">Documents</a></div>
-                                                    <div class="swiper-slide"><a href="#tabInspectionReport"
+                                                    <div class="swiper-slide"><a href="#tabInspectionReport" id="doReport"
                                                                                  aria-controls="tabInspectionReport"
                                                                                  role="tab" data-toggle="tab">Inspection
                                                         Report</a></div>
-                                                    <div class="swiper-slide"><a href="#tabProcessing"
+                                                    <div class="swiper-slide"><a href="#tabProcessing" id="doProcess"
                                                                                  aria-controls="tabProcessing"
                                                                                  role="tab"
                                                                                  data-toggle="tab">Processing</a></div>
@@ -79,8 +89,16 @@
                                                     <%@include
                                                             file="/WEB-INF/jsp/iais/inspectionncList/tabDocuments.jsp" %>
                                                 </div>
+                                                <div class="tab-pane" id="tabInspectionCheckList" role="tabpanel">
+
+                                                </div>
                                                 <div class="${reportClassBelow}" id="tabInspectionReport" role="tabpanel">
                                                     <jsp:include page="/WEB-INF/jsp/iais/report/inspectorReport.jsp"/>
+                                                    <div class="row">
+                                                        <div class="col-xs-12">
+                                                            <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em class="fa fa-angle-left"></em> Back</a>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div class="${processClassBelow}" id="tabProcessing" role="tabpanel">
                                                     <div class="col-xs-12">
@@ -104,12 +122,12 @@
                                                                     <iais:row>
                                                                         <label class="col-md-4 control-label">Internal Remarks <span style="color: red" id="internalRemarkStar"> *</span></label>
                                                                         <iais:value width="6">
-                                                                        <textarea style="resize:none"
-                                                                                  name="processRemarks" cols="65"
-                                                                                  rows="6" title="content"
-                                                                                  class="internalRemarks"
-                                                                                  MAXLENGTH="300"><c:out
-                                                                                value="${appPremisesRecommendationDto.processRemarks}"/></textarea>
+                                                                            <textarea style="resize:none"
+                                                                                      name="processRemarks" cols="65"
+                                                                                      rows="6" title="content"
+                                                                                      class="internalRemarks"
+                                                                                      MAXLENGTH="300"><c:out
+                                                                                    value="${appPremisesRecommendationDto.processRemarks}"/></textarea>
                                                                             <br/><span id="error_internalRemarks1" class="error-msg" style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
                                                                         </iais:value>
                                                                     </iais:row>
@@ -127,14 +145,14 @@
                                                                                   style="display: none;"><iais:message key="GENERAL_ERR0006"/></span>
                                                                         </iais:value>
                                                                     </iais:row>
-                                                                  <c:if test = "${applicationViewDto.applicationDto.status eq 'APST037' || applicationViewDto.applicationDto.status eq 'APST020'}">
-                                                                    <iais:row id="ao1SelectRow">
-                                                                        <iais:field value="Select Approving Officer" required="false"/>
-                                                                        <iais:value width="7" id = "showAoDiv">
-                                                                            <iais:select name="aoSelect" firstOption="By System" value="${aoSelectVal}"/>
-                                                                        </iais:value>
-                                                                    </iais:row>
-                                                                  </c:if>
+                                                                    <c:if test = "${applicationViewDto.applicationDto.status eq 'APST037' || applicationViewDto.applicationDto.status eq 'APST020'}">
+                                                                        <iais:row id="ao1SelectRow">
+                                                                            <iais:field value="Select Approving Officer" required="false"/>
+                                                                            <iais:value width="7" id = "showAoDiv">
+                                                                                <iais:select name="aoSelect" firstOption="By System" value="${aoSelectVal}"/>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </c:if>
                                                                     <jsp:include page="/WEB-INF/jsp/iais/inspectionPreTask/rollBackPart.jsp"/>
                                                                     <c:if test="${applicationViewDto.applicationDto.applicationType=='APTY002'}">
                                                                         <iais:row>
@@ -153,13 +171,13 @@
                                                                         </iais:row>
                                                                     </c:if>
                                                                     <c:if test="${appType!='APTY007'&&appType!='APTY009'}">
-                                                                    <iais:row>
-                                                                        <iais:field value="Recommendation"
-                                                                                    required="false"/>
-                                                                        <iais:value width="10">
-                                                                            <p id="periodValue"></p>
-                                                                        </iais:value>
-                                                                    </iais:row>
+                                                                        <iais:row>
+                                                                            <iais:field value="Recommendation"
+                                                                                        required="false"/>
+                                                                            <iais:value width="10">
+                                                                                <p id="periodValue"></p>
+                                                                            </iais:value>
+                                                                        </iais:row>
                                                                     </c:if>
                                                                     <div class="fastTrack">
                                                                         <iais:row>
@@ -202,6 +220,16 @@
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
+                                                                    <div id="rfiSelect">
+                                                                        <iais:row>
+                                                                            <iais:field value="Sections Allowed for Change"
+                                                                                        required="false"/>
+                                                                            <iais:value width="10">
+                                                                                <p id="selectDetail"></p>
+                                                                                <input type="hidden" id="rfiSelectValue" name="rfiSelectValue" value="" />
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
                                                                 </iais:section>
                                                                 <iais:action style="text-align:right;">
                                                                     <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em class="fa fa-angle-left"></em> Back</a>
@@ -215,7 +243,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                </div>
                             </iais:body>
                         </div>
                     </div>
@@ -228,12 +256,25 @@
 
 <script>
     $(document).ready(function () {
+        $('#rfiSelect').hide();
+        if(${isRouteBackStatus}){
+            $('#inspectionEditCheckList').css('display', 'block');
+        }
+        if("processing"=='${crud_action_type}'){
+            $('#info').removeClass("active");
+            $('#doProcess').click();
+            $('#process').addClass("active");
+        }else if("editInspectorReport" == '${crud_action_type}'){
+            $('#info').removeClass("active");
+            $('#report').addClass("active");
+            $('#doReport').click();
+        }
+        changeAoSelect();
         <c:if test = "${applicationViewDto.applicationDto.status eq 'APST037' || applicationViewDto.applicationDto.status eq 'APST020'}">
+        $("#processSubmit").change(function () {
             changeAoSelect();
-            $("#processSubmit").change(function () {
-                changeAoSelect();
-                showRollBackTo("rollBack");
-            })
+            showRollBackTo("rollBack");
+        })
         </c:if>
         showRollBackTo("rollBack");
     });
@@ -251,6 +292,7 @@
                 'data':data,
                 'type':'POST',
                 'success':function (data) {
+                    $("#laterallySelectRow").hide();
                     if('<%=AppConsts.AJAX_RES_CODE_SUCCESS%>' == data.resCode){
                         $("#error_aoSelect").html('');
                         $("#showAoDiv").html(data.resultJson + '');
@@ -271,8 +313,12 @@
                     dismissWaiting();
                 }
             });
-        } else {
+        } else if (fv == 'route'){
+            $("#laterallySelectRow").show();
             $("#ao1SelectRow").hide();
+        }else {
+            $("#ao1SelectRow").hide();
+            $("#laterallySelectRow").hide();
         }
     }
 
@@ -281,8 +327,12 @@
         $("#error_rollBackTo1").hide();
         const s = $("#processSubmit").val();
         if (s === "" || s == null) {
+            let errorMsg = $("#errorMsgGENERAL_ERR0006").val();
+            $('#error_submit').html(errorMsg);
             $("#error_submit").show();
         } else if ("submit" === s) {
+            mysubmit();
+        } else if ("PROCRFI" === s && rfiValidate()) {
             mysubmit();
         }
         submitRollBack(mysubmit, "rollBack");
@@ -291,7 +341,42 @@
     function mysubmit(){
         $("#error_submit").hide();
         showWaiting();
+        $('#crud_action_type').val('submit');
         $("#mainForm").submit();
+    }
+
+    $("[name='processingDecision']").change(function selectChange() {
+        var selectValue = $("[name='processingDecision']").val();
+        if (selectValue == "PROCRFI") {
+            showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?rfi=rfi');
+        } else {
+            $('#rfiSelect').hide();
+        }
+    });
+
+    function checkInspectionCheckListTab(){
+        showWaiting();
+        $('#crud_action_type').val('editCheckList');
+        document.getElementById('mainForm').submit();
+    }
+
+    //request for information validate
+    function rfiValidate(){
+        //error_nextStage
+        var selectValue = $("[name='processingDecision']").val();
+        if (selectValue == "PROCRFI" ) {
+            var rfiSelectValue = $('#rfiSelectValue').val();
+            if(rfiSelectValue == null || rfiSelectValue == ''){
+                let rfiCheckErrorMsg = $("#rfiCheckErrorMsg").val();
+                $('#error_submit').html(rfiCheckErrorMsg);
+                return false;
+            }else{
+                $('#error_submit').html("");
+                return true;
+            }
+        }else{
+            return true;
+        }
     }
 </script>
 
