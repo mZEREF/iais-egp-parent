@@ -35,7 +35,7 @@
             <iais:select cssClass="salutation" name="${prefix}salutation${index}" firstOption="Please Select" codeCategory="CATE_ID_SALUTATION" value="${appSvcPersonnelDto.salutation}"/>
         </iais:value>
         <iais:value width="4" cssClass="col-md-4">
-            <iais:input maxLength="66" type="text" cssClass="name" name="${prefix}name${index}" value="${appSvcPersonnelDto.name}"/>
+            <iais:input maxLength="100" type="text" cssClass="name" name="${prefix}name${index}" value="${appSvcPersonnelDto.name}"/>
         </iais:value>
     </iais:row>
 

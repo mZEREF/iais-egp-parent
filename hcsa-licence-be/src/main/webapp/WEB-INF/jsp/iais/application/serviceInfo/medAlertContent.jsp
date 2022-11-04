@@ -137,7 +137,7 @@
                                 </div>
 
                                 <div class="col-sm-4 col-xs-12">
-                                    <iais:input maxLength="66" type="text" name="name" value="${medAlertPsn.name}"></iais:input>
+                                    <iais:input maxLength="100" type="text" name="name" value="${medAlertPsn.name}"></iais:input>
                                     <span class="error-msg" id="error_name${status.index}" name="iaisErrorMsg"></span>
                                 </div>
                             </div>
@@ -221,20 +221,6 @@
                             </div>
                         </div>
                     </div>
-                   <%-- <div class="row">
-                        <div class="control control-caption-horizontal">
-                            <div class=" form-group form-horizontal formgap">
-                                <div class="col-sm-3 control-label formtext col-md-5">
-                                    <label  class="control-label control-set-font control-font-label">Description</label>
-                                    <span class="mandatory">*</span>
-                                </div>
-                                <div class="col-sm-4 col-md-7">
-                                    <iais:input maxLength="66" type="text" name="description" value="${medAlertPsn.description}"></iais:input>
-                                    <span class="error-msg" id="error_descriptionModeVal${status.index}" name="iaisErrorMsg"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>--%>
                 </div>
                 <br/>
             </div>

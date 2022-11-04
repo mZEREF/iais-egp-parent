@@ -58,7 +58,7 @@
                              codeCategory="CATE_ID_SALUTATION" value="${person.salutation}"/>
             </iais:value>
             <iais:value width="4" cssClass="col-md-4">
-                <iais:input maxLength="66" type="text" cssClass="name" name="${prepsn}name${index}" value="${person.name}"/>
+                <iais:input maxLength="100" type="text" cssClass="name" name="${prepsn}name${index}" value="${person.name}"/>
             </iais:value>
         </iais:row>
 

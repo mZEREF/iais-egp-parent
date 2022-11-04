@@ -1506,8 +1506,8 @@ public final class AppValidatorHelper {
                 if (StringUtil.isEmpty(name)) {
                     errMap.put("name" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name", "field"));
                 } else {
-                    if (name.length() > 110) {
-                        String errorMsg = repLength("Name", "110");
+                    if (name.length() > 100) {
+                        String errorMsg = repLength("Name", "100");
                         errMap.put("name" + i, errorMsg);
                     }
                 }
@@ -1626,8 +1626,8 @@ public final class AppValidatorHelper {
                 if (StringUtil.isEmpty(name)) {
                     errMap.put(prefix + "name" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name", "field"));
                 } else {
-                    if (name.length() > 110) {
-                        String errorMsg = repLength("Name", "110");
+                    if (name.length() > 100) {
+                        String errorMsg = repLength("Name", "100");
                         errMap.put(prefix + "name" + i, errorMsg);
                     }
                 }
@@ -2979,7 +2979,7 @@ public final class AppValidatorHelper {
         if (StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNo) || StringUtil.isEmpty(name)) {
             isValid = false;
         } else {
-            if (name.length() > 110) {
+            if (name.length() > 100) {
                 isValid = false;
             } else if (!SgNoValidator.validateMaxLength(idType, idNo)) {
                 isValid = false;
@@ -3125,7 +3125,7 @@ public final class AppValidatorHelper {
             }
             if (StringUtil.isEmpty(name)) {
                 errorMap.put("name" + i, signal);
-            } else if (name.length() > 66) {
+            } else if (name.length() > 100) {
                 errorMap.put("name" + i, signal);
             } else {
                 String target = salutation + name;
@@ -3245,7 +3245,7 @@ public final class AppValidatorHelper {
         String name = appSvcPersonnelDto.getName();
         if (StringUtil.isEmpty(name)) {
             errorMap.put(prefix + "name" + i, signal);
-        } else if (name.length() > 110) {
+        } else if (name.length() > 100) {
             errorMap.put(prefix + "name" + i, signal);
         }
         String wrkExpYear = appSvcPersonnelDto.getWrkExpYear();
@@ -3414,7 +3414,7 @@ public final class AppValidatorHelper {
         }
         if (StringUtil.isEmpty(name)) {
             errorMap.put(prefix + "name" + i, signal);
-        } else if (name.length() > 110) {
+        } else if (name.length() > 100) {
             errorMap.put(prefix + "name" + i, signal);
         }
         String target = personnelSel + name + salutation;
@@ -4112,8 +4112,8 @@ public final class AppValidatorHelper {
             String name = appSvcPersonnelDto.getName();
             if (StringUtil.isEmpty(name)) {
                 errorMap.put(prefix + "name" + subfix, signal);
-            } else if (name.length() > 110) {
-                String errorMsg = repLength("Name", "110");
+            } else if (name.length() > 100) {
+                String errorMsg = repLength("Name", "100");
                 errorMap.put(prefix + "name" + subfix, errorMsg);
             } else {
                 String target = StringUtil.toUpperCase(salutation + name);
@@ -4157,8 +4157,8 @@ public final class AppValidatorHelper {
         String name = appSvcPersonnelDto.getName();
         if (StringUtil.isEmpty(name)) {
             errorMap.put(prefix + "name" + subfix, signal);
-        } else if (name.length() > 110) {
-            String errorMsg = repLength("Name", "110");
+        } else if (name.length() > 100) {
+            String errorMsg = repLength("Name", "100");
             errorMap.put(prefix + "name" + subfix, errorMsg);
         } else {
             String target = StringUtil.toUpperCase(salutation + name);

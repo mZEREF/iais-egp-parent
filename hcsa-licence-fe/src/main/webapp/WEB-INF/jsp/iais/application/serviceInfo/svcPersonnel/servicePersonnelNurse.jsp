@@ -34,7 +34,7 @@
                          codeCategory="CATE_ID_SALUTATION" value="${appSvcPersonnelDto.salutation}"/>
         </iais:value>
         <iais:value width="4" cssClass="col-md-4">
-            <iais:input maxLength="66" type="text" cssClass="name" name="${logo}name${index}"
+            <iais:input maxLength="100" type="text" cssClass="name" name="${logo}name${index}"
                         value="${appSvcPersonnelDto.name}"/>
         </iais:value>
     </iais:row>

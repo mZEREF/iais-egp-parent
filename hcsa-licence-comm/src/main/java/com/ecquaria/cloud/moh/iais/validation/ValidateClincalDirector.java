@@ -89,8 +89,8 @@ public class ValidateClincalDirector {
                 if (StringUtil.isEmpty(name)) {
                     map.put("name" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name", "field"));
                 } else {
-                    if (name.length() > 110) {
-                        String general_err0041 = AppValidatorHelper.repLength("Name", "110");
+                    if (name.length() > 100) {
+                        String general_err0041 = AppValidatorHelper.repLength("Name", "100");
                         map.put("name" + i, general_err0041);
                     }
                 }
