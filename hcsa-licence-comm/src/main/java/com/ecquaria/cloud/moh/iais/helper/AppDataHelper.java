@@ -2711,6 +2711,7 @@ public final class AppDataHelper {
             boolean getDataByOld = false;
             boolean getPageData = false;
             String isPartEdit = ParamUtil.getString(request, prefix + personTypeAbbr + "isPartEdit" + x);
+            String indexNo = ParamUtil.getString(request, prefix + personTypeAbbr + "indexNo" + x);
             if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
                 getPageData = true;
             } else if (AppConsts.YES.equals(isPartEdit)) {
@@ -2718,12 +2719,13 @@ public final class AppDataHelper {
             } else {
                 getDataByOld = true;
             }
-            if (getDataByOld && IaisCommonUtils.isNotEmpty(originalPersonnelList) && x < originalPersonnelList.size()) {
-                appSvcPersonnelDto = originalPersonnelList.get(x);
+            if (getDataByOld && IaisCommonUtils.isNotEmpty(originalPersonnelList) && indexNo!=null) {
+                appSvcPersonnelDto = originalPersonnelList.stream().filter(dto->indexNo.equals(dto.getIndexNo())).findAny().get();
+                personnelDtoList.add(appSvcPersonnelDto);
             } else if (getPageData) {
                 appSvcPersonnelDto = getAppSvcPersonnelParam(null, request, prefix + personTypeAbbr, "" + x, personType);
+                personnelDtoList.add(appSvcPersonnelDto);
             }
-            personnelDtoList.add(appSvcPersonnelDto);
         }
         return personnelDtoList;
     }

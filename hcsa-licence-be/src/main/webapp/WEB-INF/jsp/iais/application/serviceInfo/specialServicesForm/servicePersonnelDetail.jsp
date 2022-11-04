@@ -1,6 +1,7 @@
 <div class="personnel-content normal-label">
     <input type="hidden"  class="personTypeToShow not-clear" name="${prefix}personTypeToShow${index}" value="${personTypeToShow}"/>
     <input type="hidden" class="isPartEdit" name="${prefix}isPartEdit${index}" value="0"/>
+    <input type="hidden" class="indexNo" name="${prefix}indexNo${index}" value="${appSvcPersonnelDto.indexNo}"/>
     <iais:row>
         <div class="col-md-12 col-xs-12 edit-content">
             <c:if test="${'true' == canEdit}">

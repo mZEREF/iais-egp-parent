@@ -2,6 +2,7 @@
     <c:set var="isNIC" value="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE}"/>
     <input type="hidden" class="not-refresh prepsn" name="${psnContent}" value="${prefix}"/>
     <input type="hidden" class="not-refresh specialPerson" value="1"/>
+    <input type="hidden" class="indexNo" name="${prefix}indexNo${index}" value="${appSvcPersonnelDto.indexNo}"/>
     <input type="hidden" class="isPartEdit" name="${prefix}isPartEdit${index}" value="0"/>
     <iais:row>
         <div class="col-md-12 col-xs-12 edit-content">
