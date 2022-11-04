@@ -1490,7 +1490,7 @@ public final class RfcHelper {
             }
         });
         List<OperationHoursReloadDto> o = PageDataCopyUtil.copyOperationHoursReloadDto(oldAppSvcBusinessOperationHoursList);
-        if (!n.equals(o)) {
+        if (!compareOperationHoursReloadDto(n,o)){
             isChange = true;
         }
         List<AppPremEventPeriodDto> event = IaisCommonUtils.genNewArrayList();
@@ -1506,12 +1506,59 @@ public final class RfcHelper {
                 oldevent.addAll(v.getEventDtoList());
             }
         });
-        List<AppPremEventPeriodDto> copyOldEvent = PageDataCopyUtil.copyEvent(event);
+        List<AppPremEventPeriodDto> copyOldEvent = PageDataCopyUtil.copyEvent(oldevent);
         if (!copyEvent.equals(copyOldEvent)) {
             isChange = true;
         }
         return isChange;
 
+    }
+
+    public static boolean compareOperationHoursReloadDto(List<OperationHoursReloadDto> n, List<OperationHoursReloadDto> o) {
+        if (n.size()!=o.size()){
+            return false;
+        }
+        for (int i = 0; i < n.size(); i++) {
+            OperationHoursReloadDto operationHoursReloadDto = n.get(i);
+            OperationHoursReloadDto oldOperationHoursReloadDto = o.get(i);
+
+            List<String> selectValList = operationHoursReloadDto.getSelectValList();
+            List<String> oldSelectValList = oldOperationHoursReloadDto.getSelectValList();
+            if (IaisCommonUtils.isEmpty(selectValList)) {
+                if (IaisCommonUtils.isNotEmpty(oldSelectValList)) {
+                    return false;
+                }
+            } else if (IaisCommonUtils.isEmpty(oldSelectValList)) {
+                if (IaisCommonUtils.isNotEmpty(selectValList)) {
+                    return false;
+                }
+            }else{
+                if (selectValList.size()!= oldSelectValList.size()){
+                    return false;
+                }
+                if (!(selectValList.containsAll(oldSelectValList)&&oldSelectValList.containsAll(selectValList))){
+                    return false;
+                }
+            }
+            if (operationHoursReloadDto.getStartFrom() == null) {
+                if (oldOperationHoursReloadDto.getStartFrom() != null) {
+                    return false;
+                }
+            } else if (!operationHoursReloadDto.getStartFrom().equals(oldOperationHoursReloadDto.getStartFrom())) {
+                return false;
+            }
+            if (operationHoursReloadDto.getEndTo() == null) {
+                if (oldOperationHoursReloadDto.getEndTo() != null) {
+                    return false;
+                }
+            } else if (!operationHoursReloadDto.getEndTo().equals(oldOperationHoursReloadDto.getEndTo())) {
+                return false;
+            }
+            if (operationHoursReloadDto.isSelectAllDay() != oldOperationHoursReloadDto.isSelectAllDay()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public static int isChangeAppSvcOtherInfoDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList,
