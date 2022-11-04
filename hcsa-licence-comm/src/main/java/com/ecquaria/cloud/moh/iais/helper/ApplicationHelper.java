@@ -1350,26 +1350,26 @@ public final class ApplicationHelper {
         personnelTypeSel.add(personnelTypeOp3);
         personnelTypeSel.add(personnelTypeOp4);
         personnelTypeSel.add(personnelTypeOp5);
-        ParamUtil.setRequestAttr(request,"rsoSel", personnelTypeSel.stream()
-                .filter(s->ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER.equals(s.getValue()))
+        ParamUtil.setRequestAttr(request, "rsoSel", personnelTypeSel.stream()
+                .filter(s -> ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER.equals(s.getValue()))
                 .collect(Collectors.toList()));
-        ParamUtil.setRequestAttr(request,"drSel", personnelTypeSel.stream()
-                .filter(s->ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR.equals(s.getValue()))
+        ParamUtil.setRequestAttr(request, "drSel", personnelTypeSel.stream()
+                .filter(s -> ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR.equals(s.getValue()))
                 .collect(Collectors.toList()));
-        ParamUtil.setRequestAttr(request,"mpSel", personnelTypeSel.stream()
-                .filter(s->ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(s.getValue()))
+        ParamUtil.setRequestAttr(request, "mpSel", personnelTypeSel.stream()
+                .filter(s -> ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(s.getValue()))
                 .collect(Collectors.toList()));
-        ParamUtil.setRequestAttr(request,"rpSel", personnelTypeSel.stream()
-                .filter(s->ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(s.getValue()))
+        ParamUtil.setRequestAttr(request, "rpSel", personnelTypeSel.stream()
+                .filter(s -> ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(s.getValue()))
                 .collect(Collectors.toList()));
-        ParamUtil.setRequestAttr(request,"nmSel", personnelTypeSel.stream()
-                .filter(s->ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM.equals(s.getValue()))
+        ParamUtil.setRequestAttr(request, "nmSel", personnelTypeSel.stream()
+                .filter(s -> ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM.equals(s.getValue()))
                 .collect(Collectors.toList()));
 
         List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.SSI_CATE_ID_DESIGNATION);
         List<SelectOption> nicSel = selectOptions.stream().filter(s -> !"SSI001".equals(s.getValue())).collect(Collectors.toList());
-        ParamUtil.setRequestAttr(request,"nicSel", nicSel);
-        ParamUtil.setRequestAttr(request,"edSel", selectOptions);
+        ParamUtil.setRequestAttr(request, "nicSel", nicSel);
+        ParamUtil.setRequestAttr(request, "edSel", selectOptions);
     }
 
     public static void setTimeList(HttpServletRequest request) {
@@ -2367,7 +2367,7 @@ public final class ApplicationHelper {
         return flag;
     }
 
-    public static boolean hasMedicalService(List<HcsaServiceDto> hcsaServiceDtos) {
+    /*public static boolean hasMedicalService(List<HcsaServiceDto> hcsaServiceDtos) {
         boolean flag = true;
         if (!IaisCommonUtils.isEmpty(hcsaServiceDtos)) {
             flag = hcsaServiceDtos.stream()
@@ -2375,7 +2375,7 @@ public final class ApplicationHelper {
                             new String[]{AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE}));
         }
         return flag;
-    }
+    }*/
 
     public static List<HcsaServiceDto> sortHcsaServiceDto(List<HcsaServiceDto> hcsaServiceDtoList) {
         List<HcsaServiceDto> baseList = new ArrayList<>();
@@ -2482,6 +2482,10 @@ public final class ApplicationHelper {
         selectOptionList.add(cps1);
         if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
             SelectOption cps2 = new SelectOption(HcsaAppConst.NEW_PREMISES, "Moving to a new address");
+            selectOptionList.add(cps2);
+        } else if (ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premiseType)) {
+            SelectOption cps2 = new SelectOption(HcsaAppConst.NEW_PREMISES,
+                    "Add a new " + StringUtil.toLowerCase(ApplicationConsts.MODE_OF_SVC_DELIVERY));
             selectOptionList.add(cps2);
         } else {
             SelectOption cps2 = new SelectOption(HcsaAppConst.NEW_PREMISES,

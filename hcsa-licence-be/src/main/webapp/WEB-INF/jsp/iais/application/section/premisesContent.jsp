@@ -202,7 +202,7 @@
                 </c:if>
                 <c:if test="${StringUtil.isIn(easMts, premisesType)}">
                     <iais:row cssClass="easMtsSelect hidden">
-                        <iais:field value="Add or select a ${convShow} from the list :" width="5" mandatory="true"/>
+                        <iais:field value="Add or select a ${StringUtil.toLowerCase(mosdName)} from the list :" width="5" mandatory="true"/>
                         <iais:value id="easMtsSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
                             <iais:select cssClass="premSelect easMtsSel" name="easMtsSel${status.index}" options="easMtsPremSel" needSort="false"  value="${appGrpPremisesDto.premisesSelect}"/>
                         </iais:value>
