@@ -50,7 +50,7 @@
                 <c:set var="personCount" value="${personList.size()}"/>
             </c:otherwise>
         </c:choose>
-        <div class="panel-main-content">
+        <div class="panel-main-content normal-label">
             <c:choose>
                 <c:when test="${psnType == ApplicationConsts.PERSONNEL_PSN_TYPE_CGO}">
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
