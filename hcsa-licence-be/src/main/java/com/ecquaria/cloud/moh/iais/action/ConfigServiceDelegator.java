@@ -903,10 +903,21 @@ public class ConfigServiceDelegator {
         HcsaSvcPersonnelDto ednd = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR, request);
         HcsaSvcPersonnelDto nurseInCharge = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE, request);
         HcsaSvcPersonnelDto rso = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER, request);
-        HcsaSvcPersonnelDto diagnosticRadiographer  = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR, request);
+       // HcsaSvcPersonnelDto diagnosticRadiographer  = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR, request);
         HcsaSvcPersonnelDto medicalPhysicist = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST, request);
-        HcsaSvcPersonnelDto radiationPhysicist = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL, request);
-        HcsaSvcPersonnelDto nMTechnologist = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM, request);
+       // HcsaSvcPersonnelDto radiationPhysicist = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL, request);
+        //HcsaSvcPersonnelDto nMTechnologist = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM, request);
+        HcsaSvcPersonnelDto sppt007 = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_COMBINE, request);
+        HcsaSvcPersonnelDto sppt008 = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_ONCOLOGIST, request);
+        HcsaSvcPersonnelDto sppt009 = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_CQMP, request);
+        HcsaSvcPersonnelDto sppt010 = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_DOSIMETRIST, request);
+        HcsaSvcPersonnelDto sppt011 = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST, request);
+        HcsaSvcPersonnelDto sppt012 = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_CREDENTIALING_COMMITTEE, request);
+        HcsaSvcPersonnelDto sppt013 = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_SERVICE_REVIEW_COMMITTEE, request);
+        HcsaSvcPersonnelDto sppt014 = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_CPP, request);
+        HcsaSvcPersonnelDto sppt015 = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MAIN_COLLABORATING_MP, request);
+        HcsaSvcPersonnelDto sppt016 = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_PERSON_DOCTOR_LIPOSUCTION, request);
+        HcsaSvcPersonnelDto sppt017 = getHcsaSvcPersonnelDto(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE_MONITOR, request);
 
 
 //        if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(serviceCode) || AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(serviceCode)){
@@ -951,10 +962,22 @@ public class ConfigServiceDelegator {
             hcsaSvcPersonnelDtos.add(ednd);//Emergency Department Nursing Director
             hcsaSvcPersonnelDtos.add(nurseInCharge);//Nurse In Charge
             hcsaSvcPersonnelDtos.add(rso);//Radiation Safety Officer (RSO)
-            hcsaSvcPersonnelDtos.add(diagnosticRadiographer);//Diagnostic Radiographer
+           // hcsaSvcPersonnelDtos.add(diagnosticRadiographer);//Diagnostic Radiographer
             hcsaSvcPersonnelDtos.add(medicalPhysicist);//Medical Physicist
-            hcsaSvcPersonnelDtos.add(radiationPhysicist);//Radiation Physicist
-            hcsaSvcPersonnelDtos.add(nMTechnologist);//NM Technologist
+           // hcsaSvcPersonnelDtos.add(radiationPhysicist);//Radiation Physicist
+            //hcsaSvcPersonnelDtos.add(nMTechnologist);//NM Technologist
+
+            hcsaSvcPersonnelDtos.add(sppt007);//Diagnostic Radiographer, Radiation Therapist or NM Technologist
+            hcsaSvcPersonnelDtos.add(sppt008); //Radiation Oncologist (RO)
+            hcsaSvcPersonnelDtos.add(sppt009); //Clinically Qualified Medical Physicist (CQMP)
+            hcsaSvcPersonnelDtos.add(sppt010); //Medical Dosimetrist
+            hcsaSvcPersonnelDtos.add(sppt011); //Radiation Therapist (RT)
+            hcsaSvcPersonnelDtos.add(sppt012); //Credentialing Committee
+            hcsaSvcPersonnelDtos.add(sppt013); //Service Review Committee
+            hcsaSvcPersonnelDtos.add(sppt014); //Collaborative Prescribing Practitioners
+            hcsaSvcPersonnelDtos.add(sppt015); //Main collaborating medical practitioner
+            hcsaSvcPersonnelDtos.add(sppt016); //Person(s) on site to assist the doctor in liposuction
+            hcsaSvcPersonnelDtos.add(sppt017); //Registered nurse(s) or doctor(s) to monitor sedated patient
         }
 
         List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = IaisCommonUtils.genNewArrayList();
