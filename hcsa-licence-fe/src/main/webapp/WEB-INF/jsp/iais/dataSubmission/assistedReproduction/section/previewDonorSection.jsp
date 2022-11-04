@@ -90,7 +90,7 @@
                          <iais:field width="5" value="Donor Sample Used" />
                          <iais:value width="7" cssClass="col-md-7" display="true">
                              <c:forEach items="${donorDto.donorSampleAgeDtos}" var="donorSampleAgedonorDto">
-                                 <c:if test="${donorSampleAgedonorDto.sampleType eq 'DONTY004'}">Donor's Sperm(s) used</c:if>
+                                 <c:if test="${donorSampleAgedonorDto.sampleType eq 'DONTY004' || donorSampleAgedonorDto.sampleType eq 'DONTY005'}">Donor's Sperm(s) used</c:if>
                              </c:forEach>
                          </iais:value>
                      </iais:row>

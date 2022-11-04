@@ -840,7 +840,8 @@ public class ArIUIDataSubmissionDelegator {
         }
         if (Arrays.asList(
                 DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM,
-                DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO
+                DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO,
+                DataSubmissionConsts.DONATED_TYPE_FRESH_SPERM
         ).contains(sampleType)) {
             donorSampleDto.setSampleKeyMale(generateIdClient.getSeqId().getEntity());
         }

@@ -550,6 +550,14 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
+    public List<String> getDonorSampleTypeKey(String idType, String idNo, String donorSampleType) {
+        if (StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNo) || StringUtil.isEmpty(donorSampleType)) {
+            return null;
+        }
+        return arFeClient.getDonorSampleTypeKey(idType, idNo, donorSampleType).getEntity();
+    }
+
+    @Override
     public List<String> saveFileRepo(List<File> files) {
         if (IaisCommonUtils.isEmpty(files)) {
             log.info(StringUtil.changeForLog("------ No file to be saved to file report server -----"));

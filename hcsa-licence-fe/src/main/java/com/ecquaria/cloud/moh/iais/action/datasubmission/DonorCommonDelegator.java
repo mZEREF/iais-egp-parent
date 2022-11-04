@@ -116,7 +116,7 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
             if (!arDonorDto.isDirectedDonation()){
                 idNumber = arDonorDto.getDonorSampleCode();
             }
-            String donorSampleKey = arDataSubmissionService.getDonorSampleKey(arDonorDto.getIdType(), idNumber);
+            String donorSampleKey = arDataSubmissionService.getDonorSampleTypeKey(arDonorDto.getIdType(), idNumber, DataSubmissionConsts.DONOR_SAMPLE_TYPE_SPERM).get(0);
             List<DonorSampleAgeDto> donorSampleAgeDtos = arDataSubmissionService.getDonorSampleAgeDtoBySampleKey(donorSampleKey);
             //TODO, from ages
             int donorUseSize = 0;
