@@ -15,7 +15,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
@@ -25,7 +24,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnlAssessQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
@@ -1834,7 +1832,8 @@ public class HalpAssessmentGuideDelegator {
     }
 
     public void amendLic4_2(BaseProcessClass bpc) {
-        log.info("****start ******");
+        amendLic4_1(bpc);
+        /*log.info("****start ******");
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
         List<PersonnelListQueryDto> persons = requestForChangeService.getLicencePersonnelListQueryDto(getLicenseeId(bpc.request));
         if (!IaisCommonUtils.isEmpty(persons)) {
@@ -1874,7 +1873,7 @@ public class HalpAssessmentGuideDelegator {
         }
         QueryHelp.setMainSql("interInboxQuery", "appPersonnelQuery", amendDetailsSearchParam);
         ParamUtil.setSessionAttr(bpc.request, "personnelOptions", (Serializable) selectOptions);
-        log.info("****end ******");
+        log.info("****end ******");*/
     }
 
     public void searchByIdNo(BaseProcessClass bpc) {
