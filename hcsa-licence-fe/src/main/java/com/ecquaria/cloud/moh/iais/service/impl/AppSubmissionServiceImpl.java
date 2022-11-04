@@ -791,7 +791,13 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                     ms[0] = appGrpPremisesDto.getPremisesType();
                                     find = true;
                                     if (ms[1].equals("LicBundle") || ms[2].equals("LicBundle")) {
+                                        licenceFeeDto.setBundle(3);
+
+                                        if(ms[1].equals("LicBundle")&&ms[2].equals(""))
                                         licenceFeeDto.setBundle(4);
+                                        if(ms[2].equals("LicBundle")&&ms[1].equals(""))
+                                            licenceFeeDto.setBundle(4);
+
                                     } else {
                                         licenceFeeDto.setBundle(0);
                                     }
@@ -811,9 +817,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 if (StringUtil.isEmpty(ms[1])) {
                                     ms[1] = appGrpPremisesDto.getPremisesType();
                                     find = true;
-                                    if (ms[0].equals("LicBundle")) {
-                                        licenceFeeDto.setBundle(4);
-                                    } else if(StringUtil.isNotEmpty(ms[0])){
+                                    if (ms[0].equals("LicBundle") || ms[2].equals("LicBundle")) {
+                                        licenceFeeDto.setBundle(3);
+                                        if (ms[0].equals("") || ms[2].equals("")) {
+                                            licenceFeeDto.setBundle(4);
+                                        }
+                                    } else if(!ms[0].equals("") || !ms[2].equals("")){
                                         licenceFeeDto.setBundle(3);
                                     }
                                     break;
@@ -831,9 +840,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 if (StringUtil.isEmpty(ms[2])) {
                                     ms[2] = appGrpPremisesDto.getPremisesType();
                                     find = true;
-                                    if (ms[0].equals("LicBundle")) {
-                                        licenceFeeDto.setBundle(4);
-                                    } else if(StringUtil.isNotEmpty(ms[0])){
+                                    if (ms[0].equals("LicBundle") || ms[1].equals("LicBundle")) {
+                                        licenceFeeDto.setBundle(3);
+                                        if (ms[0].equals("") || ms[1].equals("")) {
+                                            licenceFeeDto.setBundle(4);
+                                        }
+                                    } else if(!ms[0].equals("") || !ms[1].equals("")){
                                         licenceFeeDto.setBundle(3);
                                     }
                                     break;

@@ -65,7 +65,7 @@
                     <c:if test="${not empty simpleSpecifiedFeeExt or not empty complexSpecifiedFeeExt }">
                         <tr>
                             <td>
-                                <p>&nbsp;&nbsp;With Specialised Service(s)</p>
+                                <p>&nbsp;&nbsp;With Specified Service(s) / Discipline(s)</p>
                                 <c:if test="${not empty simpleSpecifiedFeeExt }">
                                     <c:forEach var="svcNameSs" items="${simpleSpecifiedFeeExt.svcNames}">
                                         <p>&nbsp;&nbsp;<strong><c:out value="${svcNameSs}"/></strong></p>
@@ -118,7 +118,7 @@
                     <c:if test="${not empty thbSpecifiedFeeExt }">
                         <tr>
                             <td>
-                                <p>&nbsp;&nbsp;With Specialised Service(s)</p>
+                                <p>&nbsp;&nbsp;With Specified Service(s) / Discipline(s)</p>
                                 <c:forEach var="svcName" items="${thbSpecifiedFeeExt.svcNames}">
                                     <p>&nbsp;&nbsp;<strong><c:out value="${svcName}"/></strong></p>
                                 </c:forEach>
@@ -231,7 +231,7 @@
                         <c:if test="${not empty includedSvcFeeExt.includeSsFeeExtDto or not empty includedSvcFeeExt.includeCsFeeExtDto }">
                             <tr>
                                 <td>
-                                    <p>&nbsp;&nbsp;With Specialised Service(s)</p>
+                                    <p>&nbsp;&nbsp;With Specified Service(s) / Discipline(s)</p>
                                     <c:if test="${not empty includedSvcFeeExt.includeSsFeeExtDto }">
                                         <c:forEach var="svcNameSs" items="${includedSvcFeeExt.includeSsFeeExtDto.svcNames}">
                                             <p>&nbsp;&nbsp;<strong><c:out value="${svcNameSs}"/></strong></p>
@@ -314,7 +314,7 @@
                 <c:if test="${not empty simpleSpecifiedFeeExt or not empty complexSpecifiedFeeExt }">
                     <tr>
                         <td>
-                            <p>&nbsp;&nbsp;With Specialised Service(s)</p>
+                            <p>&nbsp;&nbsp;With Specified Service(s) / Discipline(s)</p>
                             <c:if test="${not empty simpleSpecifiedFeeExt }">
                                 <c:forEach var="svcNameSs" items="${simpleSpecifiedFeeExt.svcNames}">
                                     <p>&nbsp;&nbsp;<strong><c:out value="${svcNameSs}"/></strong></p>
@@ -367,7 +367,7 @@
                 <c:if test="${not empty thbSpecifiedFeeExt }">
                     <tr>
                         <td>
-                            <p>&nbsp;&nbsp;With Specialised Service(s)</p>
+                            <p>&nbsp;&nbsp;With Specified Service(s) / Discipline(s)</p>
                             <c:forEach var="svcName" items="${thbSpecifiedFeeExt.svcNames}">
                                 <p>&nbsp;&nbsp;<strong><c:out value="${svcName}"/></strong></p>
                             </c:forEach>
