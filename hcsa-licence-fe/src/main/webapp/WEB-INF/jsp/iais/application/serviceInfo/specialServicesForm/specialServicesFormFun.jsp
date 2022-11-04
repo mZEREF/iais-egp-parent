@@ -91,10 +91,10 @@
             orientation:'bottom'
         });
         clearFields($currContent);
-        $currContent.find('.speciality').html('');
-        $currContent.find('.subSpeciality').html('');
-        $currContent.find('.othersubSpeciality').html('');
-        $currContent.find('.qualification').html('');
+        $currContent.find('.speciality p').html('');
+        $currContent.find('.subSpeciality p').html('');
+        $currContent.find('.othersubSpeciality p').html('');
+        $currContent.find('.qualification p').html('');
         refreshPerson($currContent, $(target).find('div.personnel-content').length - 1);
         disablePrsInfo($currContent, false,true);
         $(target).find('div.personnel-content').first().find('.assign-psn-item').html('1');
