@@ -19,7 +19,7 @@
                         <div class="panel-heading " role="tab">
                             <h4 class="panel-title">
                                 <a role="button" class="collapsed" data-toggle="collapse" href="#${status.index}${subSvcRelStatus.index}SSI" aria-expanded="true" aria-controls="${status.index}${subSvcRelStatus.index}SSI">
-                                    <strong><c:out value="${specialServiceSectionDto.svcName}"/></strong>
+                                    <strong><c:out value="${specialServiceSectionDto.newSvcName}"/></strong>
                                 </a>
                             </h4>
                         </div>
@@ -107,7 +107,7 @@
                                             <c:set var="index" value="${nurStatus.index}"/>
                                             <c:set var="NurseDtoListLength" value="${specialServiceSectionDto.appSvcNurseDirectorDtoList.size()}"/>
                                             <c:set var="isShowMore" value="0"/>
-                                            <c:set var="title" value="Emergency Department Nurse Director ${NurseDtoListLength > 1?index+1:''}"/>
+                                            <c:set var="title" value="Emergency Department Nursing-in-charge ${NurseDtoListLength > 1?index+1:''}"/>
                                             <%@include file="viewSpecialServicesFromDetail.jsp"%>
                                         </c:forEach>
                                         <c:set var="appSvcSuplmFormDto" value="${specialServiceSectionDto.appSvcSuplmFormDto}"/>
