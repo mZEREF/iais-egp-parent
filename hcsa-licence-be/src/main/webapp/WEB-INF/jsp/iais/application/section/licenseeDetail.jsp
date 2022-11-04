@@ -2,7 +2,7 @@
 <c:set var="individualType" value="LICTSUB002" />
 <c:set var="soloType" value="LICT002" />
 
-<div class="form-horizontal licenseeContent">
+<div class="form-horizontal licenseeContent normal-label">
     <iais:row>
         <iais:value width="6" cssClass="col-md-6">
             <p class="app-title">Licensee Details</p>

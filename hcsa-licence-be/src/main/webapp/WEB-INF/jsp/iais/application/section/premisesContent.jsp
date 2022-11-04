@@ -20,7 +20,7 @@
 
 <c:forEach var="appGrpPremisesDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
     <c:set var="canEdit" value="true"/>
-    <div class="row form-horizontal premContent <c:if test="${!status.first}">underLine</c:if>">
+    <div class="row form-horizontal normal-label premContent <c:if test="${!status.first}">underLine</c:if>">
         <input class="not-refresh chooseExistData" type="hidden" name="chooseExistData" value="${appGrpPremisesDto.existingData}"/>
         <input class="not-refresh premIndex" type="hidden" name="premIndex" value="${status.index}"/>
         <input class="not-refresh premisesIndexNo" type="hidden" name="premisesIndexNo" value="${appGrpPremisesDto.premisesIndexNo}"/>
