@@ -27,7 +27,9 @@
                     <div class="panel panel-default svc-content">
                         <div class="panel-heading " role="tab">
                             <h4 class="panel-title">
-                                <c:out value="${specialServiceSectionDto.svcName}"/>
+                                <a role="button" class="collapsed" data-toggle="collapse" href="#${status.index}${subSvcRelStatus.index}SSI" aria-expanded="true" aria-controls="${status.index}${subSvcRelStatus.index}SSI">
+                                    <strong><c:out value="${specialServiceSectionDto.svcName}"/></strong>
+                                </a>
                             </h4>
                         </div>
                         <div class="panel-collapse collapse in " role="tabpanel">

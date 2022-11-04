@@ -29,13 +29,13 @@
                 <div class="panel panel-default">
                     <div class="panel-heading " role="tab">
                         <h4 class="panel-title">
-                            <a role="button" class="" data-toggle="collapse" href="#${status.index}${subSvcRelStatus.index}SSI" aria-expanded="true" aria-controls="${status.index}${subSvcRelStatus.index}SSI">
+                            <a role="button" class="collapsed" data-toggle="collapse" href="#${status.index}${subSvcRelStatus.index}SSI" aria-expanded="true" aria-controls="${status.index}${subSvcRelStatus.index}SSI">
                                 <strong><c:out value="${specialServiceSectionDto.svcName}"/></strong>
                             </a>
                         </h4>
                         <c:set var="appSvcSuplmFormDto" value="${specialServiceSectionDto.appSvcSuplmFormDto}"/>
                     </div>
-                    <div id="${status.index}${subSvcRelStatus.index}SSI" class="panel-collapse collapse in">
+                    <div id="${status.index}${subSvcRelStatus.index}SSI" class="panel-collapse collapse">
                         <input type="hidden" class ="isPartEdit" name="isPartEdit${status.index}" value="0"/>
                         <div class="panel-body">
                             <c:choose>

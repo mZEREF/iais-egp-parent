@@ -17,13 +17,13 @@
                 <c:forEach var="specialServiceSectionDto" items="${appSvcSpecialServiceInfo.specialServiceSectionDtoList}" varStatus="subSvcRelStatus">
                     <div class="panel panel-default">
                         <div class="panel-heading " role="tab">
-                            <iais:row>
-                                <div  class="col-xs-12" style="margin-bottom: 1%;margin-top: 1%">
-                                    <p><strong><c:out value="${specialServiceSectionDto.svcName}"/></strong></p>
-                                </div>
-                            </iais:row>
+                            <h4 class="panel-title">
+                                <a role="button" class="collapsed" data-toggle="collapse" href="#${status.index}${subSvcRelStatus.index}SSI" aria-expanded="true" aria-controls="${status.index}${subSvcRelStatus.index}SSI">
+                                    <strong><c:out value="${specialServiceSectionDto.svcName}"/></strong>
+                                </a>
+                            </h4>
                         </div>
-                        <div id="${status.index}${subSvcRelStatus.index}SSI" class="panel-collapse collapse in">
+                        <div id="${status.index}${subSvcRelStatus.index}SSI" class="panel-collapse collapse">
                             <input type="hidden" class ="isPartEdit" name="isPartEdit${status.index}" value="0"/>
                             <div class="panel-body">
                                 <c:choose>
