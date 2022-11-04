@@ -10,6 +10,9 @@ public class DonorValidator {
      public static void validateDonors(List<DonorDto> arDonorDtos, Map<String, String> errorMap,boolean usedDonorOocyte ){
          arDonorDtos.forEach( arDonorDto -> {
                      valCommonField(errorMap,arDonorDto,false);
+                     if(!errorMap.isEmpty()) {
+                         return;
+                     }
                      if(usedDonorOocyte && StringUtil.isEmpty(arDonorDto.getAge())){
                          errorMap.put("age"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");
                      }

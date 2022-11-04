@@ -113,7 +113,7 @@
                      </iais:value>
                  </iais:row>
 
-                 <c:if test="${not empty donorDto.ageList}">
+                 <c:if test="${not empty donorDto.donorSampleKey}">
                  <iais:row id="age${arDonorIndex}Row">
                      <iais:field width="6" cssClass="col-md-6" value="Donor's Age at Donation" mandatory="true"/>
                      <iais:value width="4" cssClass="col-md-4">
@@ -129,7 +129,7 @@
                          <iais:value width="6" cssClass="col-md-6">
                              <c:forEach items="${donorUsedTypes}" var="donorUsedType">
                                  <c:set var="donorUsedTypeCode" value="${donorUsedType.code}"/>
-                                 <div class="form-check col-xs-7"  style="padding-left: 0px;">
+                                 <div class="form-check col-xs-12"  style="padding-left: 0px;">
                                      <input class="form-check-input" type="checkbox"
                                             name="pleaseIndicate${arDonorIndex}"
                                             value="${donorUsedTypeCode}"
