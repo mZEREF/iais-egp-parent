@@ -171,18 +171,22 @@ public class InsReportAoDelegator  {
         }else {
             specialServiceList=applicationViewDto.getAppPremSpecialSubSvcRelDtoList();
         }
-        ParamUtil.setRequestAttr(bpc.request, "changedSpecialServiceList", specialServiceList.stream()
-                .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE.equals(dto.getActCode()))
-                .collect(Collectors.toList()));
+        if (IaisCommonUtils.isNotEmpty(specialServiceList)){
+            ParamUtil.setRequestAttr(bpc.request, "changedSpecialServiceList", specialServiceList.stream()
+                    .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE.equals(dto.getActCode()))
+                    .collect(Collectors.toList()));
+        }
         List<AppPremSubSvcRelDto> otherServiceList;
         if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
             otherServiceList=applicationViewDto.getOthersRfcShowDtos();
         }else {
             otherServiceList=applicationViewDto.getAppPremOthersSubSvcRelDtoList();
         }
-        ParamUtil.setRequestAttr(bpc.request, "changedOtherServiceList", otherServiceList.stream()
-                .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE.equals(dto.getActCode()))
-                .collect(Collectors.toList()));
+        if (IaisCommonUtils.isNotEmpty(otherServiceList)){
+            ParamUtil.setRequestAttr(bpc.request, "changedOtherServiceList", otherServiceList.stream()
+                    .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE.equals(dto.getActCode()))
+                    .collect(Collectors.toList()));
+        }
     }
 
     public void action(BaseProcessClass bpc){
