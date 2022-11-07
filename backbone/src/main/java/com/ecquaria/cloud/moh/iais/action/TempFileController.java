@@ -41,13 +41,15 @@ public class TempFileController {
         File folder = MiscUtil.generateFolderInTempFolder(folderName);
         fileName = StringUtil.clarify(fileName);
         File file = MiscUtil.generateFile(folder, fileName);
-        try (OutputStream fos = Files.newOutputStream(file.toPath())) {
-            log.info(StringUtil.changeForLog("The file pathName ==> " + file.getCanonicalPath()));
-            fos.write(selectedFile.getBytes());
-            fos.flush();
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new IaisRuntimeException(e);
+        if (!file.exists()) {
+            try (OutputStream fos = Files.newOutputStream(file.toPath())) {
+                log.info(StringUtil.changeForLog("The file pathName ==> " + file.getCanonicalPath()));
+                fos.write(selectedFile.getBytes());
+                fos.flush();
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+                throw new IaisRuntimeException(e);
+            }
         }
 
         return ResponseEntity.ok().body("success");
