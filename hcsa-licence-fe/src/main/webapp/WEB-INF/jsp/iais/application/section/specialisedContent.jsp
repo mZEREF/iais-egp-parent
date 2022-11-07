@@ -106,11 +106,23 @@
     }
 
     function checkspecialisedCheckbox($input) {
+        if (isEmptyNode($input)) {
+            return;
+        }
+        if (!$input.is(':input')) {
+            $input = $input.find(':input');
+        }
+        if (isEmptyNode($input)) {
+            return;
+        }
         let data = $input.data('prem') + '-' + $input.val();
+        let $childNode = $('div[data-parent="' + data + '"]');
         if ($input.is(':checked')) {
-            showTag($('div[data-parent="' + data + '"]'));
+            unDisableContent($childNode);
         } else {
-            hideTag($('div[data-parent="' + data + '"]'));
+            clearFields($childNode);
+            disableContent($childNode);
+            checkspecialisedCheckbox($childNode);
         }
     }
 
