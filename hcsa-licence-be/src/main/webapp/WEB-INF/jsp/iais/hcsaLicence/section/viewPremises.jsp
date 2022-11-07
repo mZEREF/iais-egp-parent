@@ -112,9 +112,9 @@
                 <br>
                 <table aria-describedby="" border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;text-align: center;background-color: #ffffff;width: 100%">
                   <tr>
-                    <th scope="col"  class="col-md-4">Name of Licensee</th>
-                    <th scope="col"  class="col-md-4">HCI Name</th>
-                    <th scope="col"  class="col-md-4">Service Name</th>
+                    <th scope="col" class="col-md-4">Name of Licensee</th>
+                    <th scope="col" class="col-md-4">Business Name</th>
+                    <th scope="col" class="col-md-4">Service Name</th>
                   </tr>
                   <c:forEach items="${appGrpPremDto.applicationViewHciNameDtos}" var="applicationViewHciNameDtos">
                     <tr>
