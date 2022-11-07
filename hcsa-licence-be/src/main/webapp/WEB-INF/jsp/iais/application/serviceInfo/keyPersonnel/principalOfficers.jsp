@@ -125,6 +125,7 @@
                             </c:if>
                         </c:if>
 
+                        <c:set var="MMM" value="${dpoHcsaSvcPersonnelDto.mandatoryCount  == 0 && dpoHcsaSvcPersonnelDto.maximumCount > 0}"/>
                         <c:if test="${dpoHcsaSvcPersonnelDto.mandatoryCount  == 0 && dpoHcsaSvcPersonnelDto.maximumCount > 0}">
                             <iais:row cssClass="dpoDropDownDiv">
                                 <c:set var="toolMsg"><iais:message  key="NEW_ACK025"/></c:set>
@@ -133,6 +134,9 @@
                                     <iais:select cssClass="deputySelect" name="deputyPrincipalOfficer" options="DeputyFlagSelect" value="${currSvcInfoDto.deputyPoFlag}" />
                                 </iais:value>
                             </iais:row>
+                        </c:if>
+                        <c:if test="${!MMM}">
+                            <input type="hidden" name="deputyPrincipalOfficer" value="${currSvcInfoDto.deputyPoFlag}"/>
                         </c:if>
 
                     </div>
