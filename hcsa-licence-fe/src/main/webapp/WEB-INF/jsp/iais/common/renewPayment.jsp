@@ -32,14 +32,17 @@
                             </c:forEach>
                         </td>
                         <td>
-                            <c:choose>
-                                <c:when test="${'APTY005' ==svc.appType}">
-                                    <p>Amendment</p>
-                                </c:when>
-                                <c:otherwise>
-                                    <p>Renewal</p>
-                                </c:otherwise>
-                            </c:choose>
+                            <c:forEach var="svcIndex" items="${baseSvcFeeExt.svcIndexList}">
+                                <c:choose>
+                                    <c:when test="${'APTY005' ==svc.appType}">
+                                        <p>Amendment</p>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <p>Renewal</p>
+                                    </c:otherwise>
+                                </c:choose>
+                                <p>&nbsp;&nbsp;</p>
+                            </c:forEach>
                         </td>
                         <td>
                             <c:forEach var="svcIndex" items="${baseSvcFeeExt.svcIndexList}">
@@ -78,14 +81,28 @@
                                 </c:forEach>
                             </td>
                             <td>
-                                <c:choose>
-                                    <c:when test="${'APTY005' ==svc.appType}">
-                                        <p>Amendment</p>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <p>Renewal</p>
-                                    </c:otherwise>
-                                </c:choose>
+                                <c:forEach var="svcIndex" items="${baseSvcFeeExt.svcIndexList}">
+                                    <c:choose>
+                                        <c:when test="${'APTY005' ==svc.appType}">
+                                            <p>Amendment</p>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <p>Renewal</p>
+                                        </c:otherwise>
+                                    </c:choose>
+                                    <p>&nbsp;&nbsp;</p>
+                                </c:forEach>
+                                <c:forEach var="svcIndex" items="${includedSvcFeeExtRoot.svcIndexList}">
+                                    <c:choose>
+                                        <c:when test="${'APTY005' ==svc.appType}">
+                                            <p>Amendment</p>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <p>Renewal</p>
+                                        </c:otherwise>
+                                    </c:choose>
+                                    <p>&nbsp;&nbsp;</p>
+                                </c:forEach>
                             </td>
                             <td>
                                 <c:forEach var="svcIndex" items="${baseSvcFeeExt.svcIndexList}">
