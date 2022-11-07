@@ -272,6 +272,9 @@ function confirmChangeMemoryPage(res) {
         checkAllObj.checked = true;
     }
     $('div#' + res.pageDivId + ' select').niceSelect();
+    if (typeof doAfterInitMemoryPage === 'function') {
+        doAfterInitMemoryPage(res);
+    }
 }
 
 function checkAllMemoryheck(paginationDiv) {
