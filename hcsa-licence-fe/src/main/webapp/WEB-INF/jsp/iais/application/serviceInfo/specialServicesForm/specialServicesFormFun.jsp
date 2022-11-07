@@ -50,6 +50,7 @@
             if ($("#errorMapIs").val() == 'error') {
                 if ($(v).find('.error-msg:not(:empty)').length > 0) {
                     $(v).find('.psnEdit').trigger("click");
+                    $(v).find('.error-msg:not(:empty)').closest('.panel-collapse').collapse('show');
                 }
             }
             if ($(v).find('div.personnel-content').length == 1) {
