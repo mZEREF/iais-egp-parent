@@ -2468,11 +2468,12 @@ public final class RfcHelper {
 
     public static <T> boolean isChangedList(List<T> source, List<T> oldSource, Function<List<T>, List<T>> newFun,
             BiPredicate<T, List<T>> check) {
-        if (source == null && oldSource == null) {
+        if (IaisCommonUtils.isEmpty(source) && IaisCommonUtils.isEmpty(oldSource)) {
             return false;
         } else if (source == null ^ oldSource == null) {
             return true;
         }
+        int size = source.size();
         if (source.size() != oldSource.size()) {
             return true;
         }
