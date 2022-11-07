@@ -2146,6 +2146,7 @@ public abstract class AppCommDelegator {
 //        //clear appGrpId
 //        appSubmissionDto.setAppGrpId(null);
         //get Amount
+        appSubmissionDto.setAppGrpNo(appGroupNo);
         FeeDto feeDto = getNewAppAmount(appSubmissionDto, ApplicationHelper.isCharity(bpc.request));
         appSubmissionDto.setFeeInfoDtos(feeDto.getFeeInfoDtos());
         Double amount = feeDto.getTotal();
