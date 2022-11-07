@@ -299,7 +299,7 @@ public final class DataSubmissionHelper {
         if (DataSubmissionConsts.DS_CYCLE_AR.equals(lastCycle) && DsHelper.isSpecialStage(lastStage)) {
             lastStage = selectionDto.getAdditionalStage();
         }
-        if (DataSubmissionConsts.DS_CYCLE_NON.equals(selectionDto.getCycle())) {
+        if (DataSubmissionConsts.DS_CYCLE_NON.equals(selectionDto.getCycle()) && !DataSubmissionHelper.startNewCycle(lastStatus)) {
             List<String> result = IaisCommonUtils.genNewArrayList(1);
             result.add(selectionDto.getStage());
             return result;
@@ -348,7 +348,7 @@ public final class DataSubmissionHelper {
                 result.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED);
             } else if (DataSubmissionConsts.AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED.equals(lastStage)) {
                 if (!undergoingCycle && DsHelper.isSpecialFinalStatus(lastStatus)) {
-                    addStartStages(result);
+//                    addStartStages(result);
                 }
                 result.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY);
             } else if (DataSubmissionConsts.AR_STAGE_FREEZING.equals(lastStage)) {
@@ -370,7 +370,7 @@ public final class DataSubmissionHelper {
                 result.add(DataSubmissionConsts.AR_STAGE_OUTCOME);
             } else if (DataSubmissionConsts.AR_STAGE_OUTCOME.equals(lastStage)) {
                 if (!undergoingCycle && DsHelper.isSpecialFinalStatus(lastStatus)) {
-                    addStartStages(result);
+//                    addStartStages(result);
                 }
                 result.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY);
                 result.add(DataSubmissionConsts.AR_STAGE_IUI_TREATMENT_SUBSIDIES);
