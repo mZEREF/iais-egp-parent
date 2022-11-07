@@ -1036,10 +1036,18 @@ public class ServiceInfoDelegator {
                     ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
             List<HcsaSvcPersonnelDto> dpoPsnConfig = configCommService.getHcsaSvcPersonnel(currentSvcId,
                     ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
-            AppValidatorHelper.psnMandatoryValidate(poPsnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_PO, map, poList.size(),
+            int poSize = 0;
+            if (poList != null) {
+                poSize = poList.size();
+            }
+            AppValidatorHelper.psnMandatoryValidate(poPsnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_PO, map, poSize,
                     "poPsnMandatory", HcsaConsts.PRINCIPAL_OFFICER);
+            int dpoSize = 0;
+            if (dpoList != null) {
+                dpoSize = dpoList.size();
+            }
             AppValidatorHelper.psnMandatoryValidate(dpoPsnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, map,
-                    dpoList.size(), "dpoPsnMandatory", HcsaConsts.NOMINEE);
+                    dpoSize, "dpoPsnMandatory", HcsaConsts.NOMINEE);
             if (map.containsKey("dpoPsnMandatory") && !AppConsts.YES.equals(deputySelect)) {
                 map.remove("dpoPsnMandatory");
                 if (AppConsts.NO.equals(deputySelect)) {
