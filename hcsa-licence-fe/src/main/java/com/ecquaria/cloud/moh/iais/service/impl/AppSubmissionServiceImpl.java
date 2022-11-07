@@ -811,7 +811,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             }
                         }
 
-                        if (appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_REMOTE)) {
+                        if (appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_MOBILE)) {
                             boolean find = false;
                             for (String[] ms : msList
                             ) {
@@ -834,7 +834,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 msList.add(newArray);
                             }
                         }
-                        if (appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_MOBILE)) {
+                        if (appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_REMOTE)) {
                             boolean find = false;
                             for (String[] ms : msList
                             ) {
