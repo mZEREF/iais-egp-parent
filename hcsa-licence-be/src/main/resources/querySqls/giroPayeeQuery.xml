@@ -38,7 +38,7 @@
             join application as app on app.APP_GRP_ID=ag.ID
             where app.STATUS not in ('APST006','APST009','APST045')
             ) t1
-        where 1=1 and PMT_STATUS in ('PMT09','PMT010','PMT03')
+        where 1=1 and PMT_STATUS in ('PMT09','PMT10','PMT03')
         <#if groupNo??> and charindex  (:groupNo,APP_GROUP_NO)>0 </#if>
         <#if acctNo??>and charindex  (:acctNo,ACCT_NO) >0</#if>
         <#if amount??>and charindex  (:amount,AMOUNT) >0 </#if>

@@ -2609,6 +2609,9 @@ public final class AppDataHelper {
                     int nmMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM);
                     int diMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR);
                     int nuMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR);
+                    int roMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_ONCOLOGIST);
+                    int mdMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_DOSIMETRIST);
+                    int rtMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST);
                     if (cgomaxCount != 0) {
                         List<AppSvcPrincipalOfficersDto> dtos = genKeyPersonnels(
                                 appSvcSpecialServiceInfoDto.getNewPsnKey(specialServiceSectionDto.getSvcCode(),
@@ -2692,6 +2695,21 @@ public final class AppDataHelper {
                         if (AppConsts.YES.equals(isPartEdit)||ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
                             setAppSvcSuplmFormDto(specialServiceSectionDto.getAppSvcSuplmFormDto(), prefix + i + j, request);
                         }
+                    }
+                    if (roMaxCount != 0) {
+                        List<AppSvcPersonnelDto> appSvcRadiationOncologist = getSpecialServiceInforamtionPerson(request, prefix + i + j,
+                                ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_ONCOLOGIST, "ro", specialServiceSectionDto.getAppSvcRadiationOncologist(), appType);
+                        specialServiceSectionDto.setAppSvcRadiationOncologist(appSvcRadiationOncologist);
+                    }
+                    if (mdMaxCount != 0) {
+                        List<AppSvcPersonnelDto> appSvcMedicalDosimetrist = getSpecialServiceInforamtionPerson(request, prefix + i + j,
+                                ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_DOSIMETRIST, "md", specialServiceSectionDto.getAppSvcMedicalDosimetrist(), appType);
+                        specialServiceSectionDto.setAppSvcMedicalDosimetrist(appSvcMedicalDosimetrist);
+                    }
+                    if (rtMaxCount != 0) {
+                        List<AppSvcPersonnelDto> appSvcRadiationTherapist = getSpecialServiceInforamtionPerson(request, prefix + i + j,
+                                ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST, "rt", specialServiceSectionDto.getAppSvcRadiationTherapist(), appType);
+                        specialServiceSectionDto.setAppSvcRadiationTherapist(appSvcRadiationTherapist);
                     }
                     j++;
                 }

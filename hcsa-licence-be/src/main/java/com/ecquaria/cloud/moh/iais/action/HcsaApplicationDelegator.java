@@ -44,7 +44,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicat
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppSpecifiedLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
@@ -2798,6 +2797,14 @@ public class HcsaApplicationDelegator {
                 CopyUtil.copyMutableObjectList(applicationDtoList, saveApplicationDtoList);
                 applicationDtoList = removeFastTrackingAndTransfer(applicationDtoList);
                 String ao1Ao2Approve = (String) ParamUtil.getSessionAttr(bpc.request, "Ao1Ao2Approve");
+                if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)){
+                    List<ApplicationDto> applicationDtos=IaisCommonUtils.genNewArrayList();
+                    applicationDtos.add(applicationDto);
+                    //get and set return fee
+                    applicationDtos = hcsaConfigClient.returnFee(applicationDtos).getEntity();
+                    //save return fee
+                    saveRejectReturnFee(applicationDtos, broadcastApplicationDto);
+                }
                 boolean isAo1Ao2Approve = "Y".equals(ao1Ao2Approve);
                 boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList, applicationDto.getApplicationNo(),
                         ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
@@ -2828,14 +2835,6 @@ public class HcsaApplicationDelegator {
                         broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
 
                         if (needUpdateGroupStatus) {
-                            if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)){
-                                List<ApplicationDto> applicationDtos=IaisCommonUtils.genNewArrayList();
-                                applicationDtos.add(applicationDto);
-                                //get and set return fee
-                                applicationDtos = hcsaConfigClient.returnFee(applicationDtos).getEntity();
-                                //save return fee
-                                saveRejectReturnFee(applicationDtos, broadcastApplicationDto);
-                            }
                             //clearApprovedHclCodeByExistRejectApp
                             applicationViewService.clearApprovedHclCodeByExistRejectApp(saveApplicationDtoList, applicationGroupDto.getAppType(), broadcastApplicationDto.getApplicationDto());
                         }
@@ -3209,13 +3208,15 @@ public class HcsaApplicationDelegator {
             if ( !ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationDto.getApplicationType()) && !ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())) {
                 AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
                 Double returnFee = applicationDto.getReturnFee();
-                if (returnFee == null || MiscUtil.doubleEquals(returnFee, 0d)) {
-                    continue;
-                }
                 appReturnFeeDto.setStatus("paying");
+                if (returnFee == null || MiscUtil.doubleEquals(returnFee, 0.0d)) {
+                    appReturnFeeDto.setReturnAmount(0.0d);
+                    appReturnFeeDto.setStatus("success");
+                }else {
+                    appReturnFeeDto.setReturnAmount(returnFee);
+                }
                 appReturnFeeDto.setTriggerCount(0);
                 appReturnFeeDto.setApplicationNo(applicationDto.getApplicationNo());
-                appReturnFeeDto.setReturnAmount(returnFee);
                 appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_REJECT);
                 saveReturnFeeDtos.add(appReturnFeeDto);
 //                applicationService.saveAppReturnFee(appReturnFeeDto);

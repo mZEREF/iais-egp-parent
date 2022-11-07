@@ -140,13 +140,15 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
             if ( !ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationDto.getApplicationType()) && !ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())) {
                 AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
                 Double returnFee = applicationDto.getReturnFee();
-                if(returnFee==null || MiscUtil.doubleEquals(returnFee, 0d)){
-                    continue;
+                appReturnFeeDto.setStatus("paying");
+                if (returnFee == null || MiscUtil.doubleEquals(returnFee, 0.0d)) {
+                    appReturnFeeDto.setReturnAmount(0.0d);
+                    appReturnFeeDto.setStatus("success");
+                }else {
+                    appReturnFeeDto.setReturnAmount(returnFee);
                 }
-                appReturnFeeDto.setReturnAmount(returnFee);
                 appReturnFeeDto.setApplicationNo(applicationDto.getApplicationNo());
                 appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_REJECT);
-                appReturnFeeDto.setStatus("paying");
                 appReturnFeeDto.setTriggerCount(0);
                 saveReturnFeeDtos.add(appReturnFeeDto);
                 try {

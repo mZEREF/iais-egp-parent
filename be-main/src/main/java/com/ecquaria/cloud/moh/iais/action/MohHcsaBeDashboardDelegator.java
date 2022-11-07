@@ -1366,6 +1366,14 @@ public class MohHcsaBeDashboardDelegator {
 
                 boolean needUpdateGroup = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList, applicationDtoIds,
                         ApplicationConsts.APPLICATION_STATUS_APPROVED, ApplicationConsts.APPLICATION_STATUS_REJECTED);
+                if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)){
+                    List<ApplicationDto> applicationDtos=IaisCommonUtils.genNewArrayList();
+                    applicationDtos.add(applicationDto);
+                    //get and set return fee
+                    applicationDtos = hcsaConfigMainClient.returnFee(applicationDtos).getEntity();
+                    //save return fee
+                    beDashboardSupportService.saveRejectReturnFee(applicationDtos, broadcastApplicationDto);
+                }
                 if(needUpdateGroup || applicationDto.isFastTracking()){
                     //update application Group status
                     ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
@@ -1395,15 +1403,6 @@ public class MohHcsaBeDashboardDelegator {
                         log.info(StringUtil.changeForLog("****viewitem ***** " + viewitem.getApplicationNo()));
                     }
                     if(needUpdateGroup){
-
-                        if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)){
-                            List<ApplicationDto> applicationDtos=IaisCommonUtils.genNewArrayList();
-                            applicationDtos.add(applicationDto);
-                            //get and set return fee
-                            applicationDtos = hcsaConfigMainClient.returnFee(applicationDtos).getEntity();
-                            //save return fee
-                            beDashboardSupportService.saveRejectReturnFee(applicationDtos,broadcastApplicationDto);
-                        }
                         //clearApprovedHclCodeByExistRejectApp
                         applicationViewService.clearApprovedHclCodeByExistRejectApp(saveApplicationDtoList,applicationGroupDto.getAppType(), broadcastApplicationDto.getApplicationDto());
                     }
