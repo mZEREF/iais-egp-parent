@@ -4176,7 +4176,7 @@ public class HcsaApplicationDelegator {
                         String organizationId = licenseeDto.getOrganizationId();
                         OrganizationDto organizationDto = organizationClient.getOrganizationById(organizationId).getEntity();
 
-                        emailParam=sendNewAppApproveNotification(applicantName,applicationTypeShow,applicationNo,licenceNo,organizationDto,inspectionRecommendation,appDate);
+                       // emailParam=sendNewAppApproveNotification(applicantName,applicationTypeShow,applicationNo,licenceNo,organizationDto,inspectionRecommendation,appDate);
                     }
                     if(applicationDto.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_RENEWAL)){
                         emailParam=sendRenewalAppApproveNotification(applicantName,applicationTypeShow,applicationNo,licenceNo,inspectionRecommendation,appDate);
