@@ -2449,7 +2449,7 @@ public final class RfcHelper {
     }
 
     public static <T, R> boolean isSame(List<T> source, List<T> target, Function<List<T>, List<R>> newList) {
-        if (source == null && target == null) {
+        if (IaisCommonUtils.isEmpty(source) && IaisCommonUtils.isEmpty(target)) {
             return false;
         } else if (source == null ^ target == null) {
             return true;
@@ -2500,7 +2500,7 @@ public final class RfcHelper {
     public static <T> int isChangedList(List<T> source, List<T> oldSource, Function<List<T>, List<T>> newFun,
             BiFunction<T, List<T>, T> target, BiPredicate<T, T> check) {
         int status = RfcConst.STATUS_UNCHANGED;
-        if (source == null && oldSource == null) {
+        if (IaisCommonUtils.isEmpty(source) && IaisCommonUtils.isEmpty(oldSource)) {
             return status;
         }
         if (source == null) {
