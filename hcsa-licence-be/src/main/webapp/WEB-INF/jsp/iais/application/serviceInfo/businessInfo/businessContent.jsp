@@ -73,6 +73,12 @@
                                     <iais:input cssClass="emailAddr" maxLength="100" type="text" name="emailAddr${status.index}" value="${businessDto.emailAddr}"></iais:input>
                                 </iais:value>
                             </iais:row>
+                            <iais:row>
+                                <iais:field width="4" cssClass="col-md-4" mandatory="false" value="Corporate Website"/>
+                                <iais:value width="8" cssClass="col-md-8">
+                                    <iais:input cssClass="corporateWebsite" maxLength="200" type="text" name="corporateWebsite${status.index}" value="${businessDto.corporateWebsite}"></iais:input>
+                                </iais:value>
+                            </iais:row>
                             <%@include file="operatingHours.jsp"%>
                         </div>
                     </div>

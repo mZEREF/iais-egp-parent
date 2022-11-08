@@ -79,6 +79,23 @@
                                 </div>
                             </td>
                         </tr>
+                        <tr>
+                            <td class="col-xs-6">
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Corporate Website</p>
+                            </td>
+                            <td>
+                                <div class="col-xs-6">
+                                    <div class="newVal" attr="${businessDto.corporateWebsite}">
+                                        <c:out value="${businessDto.corporateWebsite}"></c:out>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="oldVal" style="display: none" attr="${oldBusiness.corporateWebsite}">
+                                        <c:out value="${oldBusiness.corporateWebsite}"></c:out>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
                     </table>
                     <c:if test="${!isSpecialService}">
                         <tr>

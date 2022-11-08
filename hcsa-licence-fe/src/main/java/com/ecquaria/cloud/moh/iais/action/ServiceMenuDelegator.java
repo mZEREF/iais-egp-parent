@@ -590,6 +590,7 @@ public class ServiceMenuDelegator {
         }
         List<String> svcNameList = IaisCommonUtils.genNewArrayList();
         List<String> svcIdList = IaisCommonUtils.genNewArrayList();
+        ParamUtil.clearSession(bpc.request,"notContained"+AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY,"notContained"+AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES);
         for(HcsaServiceDto hcsaServiceDto:notContainedSvc){
             svcNameList.add(hcsaServiceDto.getSvcName());
             svcIdList.add(hcsaServiceDto.getId());

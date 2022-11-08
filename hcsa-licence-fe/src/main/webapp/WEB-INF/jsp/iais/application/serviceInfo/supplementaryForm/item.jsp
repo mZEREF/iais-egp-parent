@@ -1,10 +1,5 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil" %>
-<style>
-    .font-weight{
-        font-weight:bold !important;
-    }
-</style>
 <c:set var="itemConfigDto" value="${item.itemConfigDto}"/>
 <c:set var="isCheckBox" value="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_CHECKBOX}"/>
 <c:set var="itemData">
