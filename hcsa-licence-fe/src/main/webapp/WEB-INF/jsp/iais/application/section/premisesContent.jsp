@@ -30,6 +30,7 @@
         <input class="not-refresh oldPremTypeValue" type="hidden" name="oldPremType" value="${appGrpPremisesDto.premisesType}"/>
         <input class="not-refresh premTypeValue" type="hidden" name="premType" value="${appGrpPremisesDto.premisesType}"/>
         <input class="not-refresh premSelValue" type="hidden" name="premSelValue" value="${appGrpPremisesDto.premisesSelect}"/>
+        <input class="not-refresh retrieveflag" type="hidden" name="retrieveflag" value="${appGrpPremisesDto.clickRetrieve ? 1 : 0}"/>
 
         <c:set var="premValue" value="${status.index}"/>
         <%--<input hidden class="premiseIndex" value="${premValue}">--%>
@@ -47,15 +48,6 @@
             </c:when>
             <c:otherwise>
                 <input class="not-refresh nonHcsaLength" type="hidden" name="nonHcsaLength" value="1"/>
-            </c:otherwise>
-        </c:choose>
-
-        <c:choose>
-            <c:when test="${appGrpPremisesDto.clickRetrieve}">
-                <input class="not-refresh retrieveflag" type="hidden" name="retrieveflag" value="1"/>
-            </c:when>
-            <c:otherwise>
-                <input class="not-refresh retrieveflag" type="hidden" name="retrieveflag" value="0"/>
             </c:otherwise>
         </c:choose>
 

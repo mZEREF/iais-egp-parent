@@ -110,16 +110,7 @@
             submit('premises', 'saveDraft', $('#selectDraftNo').val());
         });
         // init page
-        initPremiseEvent();
-        premTypeChangeEvent();
-        checkSelectedLicence();
-        checkAddPremBtn(2);
-        $('div.premContent').each(function (k, v) {
-            checkPremiseContent($(v), k);
-        });
-        if ($('div.premContent').length == 1) {
-            $('div.premContent').find('.premHeader').html('');
-        }
+        initPremisePage();
         <c:if test="${AppSubmissionDto.needEditController}">
         $('div.premContent').each(function () {
             disablePremiseContent($(this));
