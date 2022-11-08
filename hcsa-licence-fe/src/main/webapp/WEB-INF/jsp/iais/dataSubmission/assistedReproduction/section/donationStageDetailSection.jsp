@@ -206,6 +206,46 @@
                 </div>
                 <div id="treatmentDisplay" <c:if test="${ arSuperDataSubmissionDto.donationStageDto.donatedForTreatment !=1 }">style="display: none"</c:if>>
                     <iais:row>
+                        <iais:field width="6" cssClass="col-md-6" value="Is the Sample from a Directed Donation?" mandatory="true"/>
+                        <iais:value cssClass="col-md-3" >
+                            <div class="form-check" style="padding-left: 0;">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       name="directedDonation"
+                                       value="1"
+                                       id="directedYes"
+                                       <c:if test="${arSuperDataSubmissionDto.donationStageDto.isDirectedDonation eq 1}">checked</c:if>
+                                       aria-invalid="false">
+                                <label class="form-check-label"
+                                       for="directedYes"><span
+                                        class="check-circle"></span>Yes</label>
+                            </div>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_directedDonation"></span>
+                        </iais:value>
+                        <iais:value cssClass="col-md-3" >
+                            <div class="form-check" style="padding-left: 0;">
+                                <input class="form-check-input" type="radio"
+                                       name="directedDonation"
+                                       value="0"
+                                       id="directedNo"
+                                       <c:if test="${arSuperDataSubmissionDto.donationStageDto.isDirectedDonation eq 0}">checked</c:if>
+                                       aria-invalid="false">
+                                <label class="form-check-label"
+                                       for="directedNo"><span
+                                        class="check-circle"></span>No</label>
+                            </div>
+                        </iais:value>
+                    </iais:row>
+                    <div id="recipientNoDisplay" <c:if test="${ arSuperDataSubmissionDto.donationStageDto.isDirectedDonation !=1 }">style="display: none"</c:if>>
+                        <iais:row>
+                            <iais:field width="6" cssClass="col-md-6" value="ID No. of Donation Recipient" mandatory="true"/>
+                            <iais:value width="6" cssClass="col-md-6">
+                                <iais:input maxLength="20" type="text"  id="recipientNo" name="recipientNo" value="${arSuperDataSubmissionDto.donationStageDto.recipientNo}" />
+                                <span class="error-msg" name="iaisErrorMsg" id="error_recipientNo"></span>
+                            </iais:value>
+                        </iais:row>
+                    </div>
+                    <iais:row>
                         <iais:field width="6" cssClass="col-md-6" value="No. Donated For Treatment" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
                             <iais:input maxLength="2" type="text"  id="treatNum" name="treatNum" value="${arSuperDataSubmissionDto.donationStageDto.treatNumStr==null?arSuperDataSubmissionDto.donationStageDto.treatNum:arSuperDataSubmissionDto.donationStageDto.treatNumStr}" />

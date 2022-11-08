@@ -24,9 +24,15 @@ $(document).ready(function () {
 
     });
 
+    $('input[type=radio][name=directedDonation]').change(function () {
+        if($(directedYes).is(':checked')){
+            $('#recipientNoDisplay').attr("style","display: block");
+        }else {
+            $('#recipientNoDisplay').attr("style","display: none");
+        }
+    })
 
-
-    $('#donatedForResearch').change(function () {
+    $('#directedDonation').change(function () {
         if($(this).is(':checked')){
             $('#researchDisplay').attr("style","display: block");
         }else {

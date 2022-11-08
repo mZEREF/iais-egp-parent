@@ -179,6 +179,14 @@ public class DonationStageDelegator extends CommonDelegator{
         if("on".equals(donatedForTreatment)){
             donationStageDto.setDonatedForTreatment(1);
             Integer treatNum = null;
+            String isDirectedDonationStr = ParamUtil.getString(request,"directedDonation");
+            String recipientNo = ParamUtil.getString(request,"recipientNo");
+            if (StringUtil.isNotEmpty(isDirectedDonationStr)) {
+                donationStageDto.setIsDirectedDonation(Integer.parseInt(isDirectedDonationStr));
+            }
+            if (StringUtil.isNotEmpty(recipientNo)) {
+                donationStageDto.setRecipientNo(recipientNo);
+            }
             try {
                 String treatNumString=ParamUtil.getString(request, "treatNum");
                 donationStageDto.setTreatNumStr(treatNumString);
