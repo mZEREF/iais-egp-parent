@@ -3,6 +3,7 @@
     <c:set var="msgTemplateResult" value="${cL.clinicalLaboratoryList[index]}"/>
     <c:set var="appPremOutSourceLicenceDto" value="${msgTemplateResult.appPremOutSourceLicenceDto}"/>
     <c:set var="outsourcedIndexNo" value="${appPremOutSourceLicenceDto.licenceNo}"/>
+    <c:if test="${!empty appPremOutSourceLicenceDto}">
         <tr>
             <td>
                 <p class="visible-xs visible-sm table-row-title">Licence No.</p>
@@ -22,10 +23,12 @@
             </td>
             <td>
                 <p class="visible-xs visible-sm table-row-title">Date of Agreement</p>
-                <p>${appPremOutSourceLicenceDto.agreementStartDate}</p>
+                    <%--                <fmt:formatDate value="${appPremOutSourceLicenceDto.agreementStartDate}" pattern="dd/MM/yyyy"/>--%>
+                <p>${appPremOutSourceLicenceDto.agreementStartDate}"</p>
             </td>
             <td>
                 <p class="visible-xs visible-sm table-row-title">End Date of Agreement</p>
+                    <%--                <fmt:formatDate value="${appPremOutSourceLicenceDto.agreementEndDate}"/>--%>
                 <p>${appPremOutSourceLicenceDto.agreementEndDate}</p>
             </td>
             <td>
@@ -38,4 +41,5 @@
                 <button type="button" class="btn btn-default btn-sm btn-cldBtn" data-prefix="${prefix}" data-group="${outsourcedIndexNo}">DELETE</button>
             </td>
         </tr>
+    </c:if>
 </c:forEach>

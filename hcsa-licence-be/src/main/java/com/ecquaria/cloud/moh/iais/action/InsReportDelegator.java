@@ -204,23 +204,13 @@ public class InsReportDelegator {
         ParamUtil.setSessionAttr(bpc.request, "appType", applicationType);
         //Can edit application
         InspectionHelper.checkForEditingApplication(bpc.request);
-        List<AppPremSubSvcRelDto> specialServiceList;
-        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
-            specialServiceList=applicationViewDto.getSpecialRfcShowDtos();
-        }else {
-            specialServiceList=applicationViewDto.getAppPremSpecialSubSvcRelDtoList();
-        }
+        List<AppPremSubSvcRelDto> specialServiceList=applicationViewDto.getAppPremSpecialSubSvcRelDtoList();
         if (IaisCommonUtils.isNotEmpty(specialServiceList)){
             ParamUtil.setRequestAttr(bpc.request, "changedSpecialServiceList", specialServiceList.stream()
                     .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE.equals(dto.getActCode()))
                     .collect(Collectors.toList()));
         }
-        List<AppPremSubSvcRelDto> otherServiceList;
-        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
-            otherServiceList=applicationViewDto.getOthersRfcShowDtos();
-        }else {
-            otherServiceList=applicationViewDto.getAppPremOthersSubSvcRelDtoList();
-        }
+        List<AppPremSubSvcRelDto> otherServiceList=applicationViewDto.getAppPremOthersSubSvcRelDtoList();
         if (IaisCommonUtils.isNotEmpty(otherServiceList)){
             ParamUtil.setRequestAttr(bpc.request, "changedOtherServiceList", otherServiceList.stream()
                     .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE.equals(dto.getActCode()))
@@ -324,8 +314,8 @@ public class InsReportDelegator {
         // save veh inf
         insRepService.saveAppVehs((String)ParamUtil.getSessionAttr(request, HcsaLicenceBeConstant.APP_VEHICLE_FLAG),ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase(applicationType) ? applicationViewDto.getVehicleRfcShowDtos():applicationViewDto.getAppSvcVehicleDtos());
         // save SubService
-        insRepService.saveSubService((String)ParamUtil.getSessionAttr(request, HcsaLicenceBeConstant.APP_SPECIAL_FLAG),ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase(applicationType) ? applicationViewDto.getSpecialRfcShowDtos():applicationViewDto.getAppPremSpecialSubSvcRelDtoList());
-        insRepService.saveSubService((String)ParamUtil.getSessionAttr(request, HcsaLicenceBeConstant.APP_OTHER_FLAG),ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase(applicationType) ? applicationViewDto.getOthersRfcShowDtos():applicationViewDto.getAppPremOthersSubSvcRelDtoList());
+        insRepService.saveSubService((String)ParamUtil.getSessionAttr(request, HcsaLicenceBeConstant.APP_SPECIAL_FLAG),applicationViewDto.getAppPremSpecialSubSvcRelDtoList());
+        insRepService.saveSubService((String)ParamUtil.getSessionAttr(request, HcsaLicenceBeConstant.APP_OTHER_FLAG),applicationViewDto.getAppPremOthersSubSvcRelDtoList());
         if (ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(status)) {
             insRepService.routTaskToRoutBack(bpc, taskDto, applicationDto, appPremisesCorrelationId, appPremisesRecommendationDto.getProcessRemarks());
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);

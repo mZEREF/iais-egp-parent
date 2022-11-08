@@ -2185,6 +2185,9 @@ public final class AppValidatorHelper {
             return new HashMap<>(1);
         }
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+        SystemParamConfig systemParamConfig = getSystemParamConfig();
+        int clbMaxCount = systemParamConfig.getOutsourceAddClbMaxCount();
+        int rdsMaxCount = systemParamConfig.getOutsourceAddRlbMaxCount();
         SearchParam searchParam = appSvcOutsouredDto.getSearchParam();
         if ("search".equals(curAt)) {
             if (searchParam != null && !searchParam.getFilters().isEmpty()) {
@@ -2213,13 +2216,15 @@ public final class AppValidatorHelper {
                     errMap.put(prefix + "agreementEndDate", MessageUtil.replaceMessage("GENERAL_ERR0006",
                             "End Date of Agreement", "field"));
                 }
-                String outstandingScope = appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getOutstandingScope();
-                if (StringUtil.isEmpty(outstandingScope)) {
-                    errMap.put(prefix + "outstandingScope", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                            "Scope of Outsourcing", "field"));
-                } else if (outstandingScope.length() > 3000){
-                    String errorMsg = repLength("Scope of Outsourcing", "3000");
-                    errMap.put(prefix + "outstandingScope", errorMsg);
+                if (appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto() != null){
+                    String outstandingScope = appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getOutstandingScope();
+                    if (StringUtil.isEmpty(outstandingScope)) {
+                        errMap.put(prefix + "outstandingScope", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                "Scope of Outsourcing", "field"));
+                    } else if (outstandingScope.length() > 3000){
+                        String errorMsg = repLength("Scope of Outsourcing", "3000");
+                        errMap.put(prefix + "outstandingScope", errorMsg);
+                    }
                 }
                 if (StringUtil.isNotEmpty(startDate) && StringUtil.isNotEmpty(endDate)) {
                     try {
@@ -2235,16 +2240,15 @@ public final class AppValidatorHelper {
         }else {
             List<String> svcCodeList = appSvcOutsouredDto.getSvcCodeList();
             if (IaisCommonUtils.isNotEmpty(svcCodeList)){
-                for (String svcCode : svcCodeList) {
-                    if (!StringUtil.isIn(svcCode , new String[]{AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY,
-                    AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES})){
-                        doValidateAppSvcOutsource(curAt, appSvcOutsouredDto, searchParam);
-                    }
+                if(svcCodeList.contains(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY) || svcCodeList.contains(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES)){
+                    doValidateAppSvcOutsource(curAt, appSvcOutsouredDto, searchParam);
                 }
             }else {
                 doValidateAppSvcOutsource(curAt, appSvcOutsouredDto, searchParam);
             }
         }
+        errMap.putAll(doValidateAppSvcOutsourceAddMaxCount(appSvcOutsouredDto.getClinicalLaboratoryList(), clbMaxCount , AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY));
+        errMap.putAll(doValidateAppSvcOutsourceAddMaxCount(appSvcOutsouredDto.getRadiologicalServiceList(), rdsMaxCount, AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES));
         return errMap;
     }
 
@@ -2265,6 +2269,33 @@ public final class AppValidatorHelper {
         return errMap;
     }
 
+    private static Map<String, String> doValidateAppSvcOutsourceAddMaxCount(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtoList, int maxCount, String type){
+        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+        if (IaisCommonUtils.isNotEmpty(appPremGroupOutsourcedDtoList)){
+            if (appPremGroupOutsourcedDtoList.size() > maxCount){
+                if (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(type)){
+                    errMap.put("clbList", replaceOutsourceMaxMsg("GENERAL_ERR0078","Clinical Laboratory","data","5","count"));
+                }
+                if (AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(type)){
+                    errMap.put("rdsList", replaceOutsourceMaxMsg("GENERAL_ERR0078","Radiological Service","data","5","count"));
+                }
+            }
+        }
+        return errMap;
+    }
+
+    private static String replaceOutsourceMaxMsg(String codeKey,String replaceDataString,String replaceDataPart,String replaceCountString,String replaceCountPart){
+        String msg = MessageUtil.getMessageDesc(codeKey);
+        if (StringUtil.isEmpty(msg)){
+            return codeKey;
+        }else if (msg.contains("{"+replaceDataPart+"}") && msg.contains("{"+replaceCountPart+"}")){
+            msg = msg.replace("{"+replaceDataPart+"}",replaceDataString);
+            msg = msg.replace("{"+replaceCountPart+"}",replaceCountString);
+            return msg;
+        }else {
+            return msg;
+        }
+    }
     public static Map<String, String> doValidateOtherInformation(List<AppSvcOtherInfoDto> appSvcOtherInfoDto, String currCode) {
         if (appSvcOtherInfoDto == null) {
             return new HashMap<>(1);

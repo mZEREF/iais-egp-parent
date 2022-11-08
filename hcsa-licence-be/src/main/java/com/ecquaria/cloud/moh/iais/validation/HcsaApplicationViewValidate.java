@@ -331,132 +331,107 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
 
     public static void valiSpecialServiceCommon(HttpServletRequest request, Map<String, String> errMap, ApplicationViewDto applicationViewDto,
                                                 String recommendationStr, List<String> rejectCode, String decisionValue){
-        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        if(applicationDto != null) {
-            List<AppPremSubSvcRelDto> subSvcRelDtoList;
-            if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())) {
-                subSvcRelDtoList = applicationViewDto.getSpecialRfcShowDtos();
-            } else {
-                subSvcRelDtoList = applicationViewDto.getAppPremSpecialSubSvcRelDtoList();
-            }
-            if (!IaisCommonUtils.isEmpty(subSvcRelDtoList)) {
-                boolean appSpecial = !rejectCode.contains(StringUtil.getNonNull(recommendationStr)) && !rejectCode.contains(StringUtil.getNonNull(decisionValue));
-                for (int i = 0; i < subSvcRelDtoList.size(); i++) {
-                    if (ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE.equals(subSvcRelDtoList.get(i).getActCode())){
-                        continue;
-                    }
-                    String svcId = subSvcRelDtoList.get(i).getSvcId();
-                    String[] specialSubSvcRadios = ParamUtil.getStrings(request, "specialSubSvcRadio" + svcId);
-                    String specialSubSvcRemarks = ParamUtil.getRequestString(request, "specialSubSvcRemarks" + svcId);
-                    //status not empty
-                    if(appSpecial){
-                        if (specialSubSvcRadios == null || specialSubSvcRadios.length == 0) {
+        List<AppPremSubSvcRelDto> subSvcRelDtoList= applicationViewDto.getAppPremSpecialSubSvcRelDtoList();
+        if (!IaisCommonUtils.isEmpty(subSvcRelDtoList)) {
+            boolean appSpecial = !rejectCode.contains(StringUtil.getNonNull(recommendationStr)) && !rejectCode.contains(StringUtil.getNonNull(decisionValue));
+            for (int i = 0; i < subSvcRelDtoList.size(); i++) {
+                if (ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE.equals(subSvcRelDtoList.get(i).getActCode())){
+                    continue;
+                }
+                String svcId = subSvcRelDtoList.get(i).getSvcId();
+                String[] specialSubSvcRadios = ParamUtil.getStrings(request, "specialSubSvcRadio" + svcId);
+                String specialSubSvcRemarks = ParamUtil.getRequestString(request, "specialSubSvcRemarks" + svcId);
+                //status not empty
+                if(appSpecial){
+                    if (specialSubSvcRadios == null || specialSubSvcRadios.length == 0) {
+                        errMap.put("specialSubSvcRadioError" + svcId, ERROR_CODE_GENERAL_ERR0006);
+                        subSvcRelDtoList.get(i).setStatus(null);
+                    } else {
+                        String specialSubSvcRadio = specialSubSvcRadios[0];
+                        if (StringUtil.isEmpty(specialSubSvcRadio)) {
                             errMap.put("specialSubSvcRadioError" + svcId, ERROR_CODE_GENERAL_ERR0006);
                             subSvcRelDtoList.get(i).setStatus(null);
                         } else {
-                            String specialSubSvcRadio = specialSubSvcRadios[0];
-                            if (StringUtil.isEmpty(specialSubSvcRadio)) {
-                                errMap.put("specialSubSvcRadioError" + svcId, ERROR_CODE_GENERAL_ERR0006);
-                                subSvcRelDtoList.get(i).setStatus(null);
+                            String specialSubSvcStatusCode;
+                            if(BeDashboardConstant.SWITCH_ACTION_APPROVE.equals(specialSubSvcRadio)) {
+                                specialSubSvcStatusCode = ApplicationConsts.RECORD_STATUS_APPROVE_CODE;
                             } else {
-                                String specialSubSvcStatusCode;
-                                if(BeDashboardConstant.SWITCH_ACTION_APPROVE.equals(specialSubSvcRadio)) {
-                                    specialSubSvcStatusCode = ApplicationConsts.RECORD_STATUS_APPROVE_CODE;
-                                } else {
-                                    specialSubSvcStatusCode = ApplicationConsts.RECORD_STATUS_REJECT_CODE;
-                                }
-                                subSvcRelDtoList.get(i).setStatus(specialSubSvcStatusCode);
+                                specialSubSvcStatusCode = ApplicationConsts.RECORD_STATUS_REJECT_CODE;
                             }
+                            subSvcRelDtoList.get(i).setStatus(specialSubSvcStatusCode);
                         }
-                    }else {
-                        subSvcRelDtoList.get(i).setStatus(ApplicationConsts.RECORD_STATUS_REJECT_CODE);
                     }
-                    //remark length vali
-                    if (StringUtil.isEmpty(specialSubSvcRemarks)) {
+                }else {
+                    subSvcRelDtoList.get(i).setStatus(ApplicationConsts.RECORD_STATUS_REJECT_CODE);
+                }
+                //remark length vali
+                if (StringUtil.isEmpty(specialSubSvcRemarks)) {
+                    subSvcRelDtoList.get(i).setRemarks(specialSubSvcRemarks);
+                } else {
+                    if (specialSubSvcRemarks.length() <= 400) {
                         subSvcRelDtoList.get(i).setRemarks(specialSubSvcRemarks);
                     } else {
-                        if (specialSubSvcRemarks.length() <= 400) {
-                            subSvcRelDtoList.get(i).setRemarks(specialSubSvcRemarks);
-                        } else {
-                            Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
-                            repMap.put("number", "400");
-                            repMap.put("fieldNo", "Remarks");
-                            errMap.put("specialSubSvcRemarksError" + svcId, MessageUtil.getMessageDesc("GENERAL_ERR0036", repMap));
-                        }
+                        Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
+                        repMap.put("number", "400");
+                        repMap.put("fieldNo", "Remarks");
+                        errMap.put("specialSubSvcRemarksError" + svcId, MessageUtil.getMessageDesc("GENERAL_ERR0036", repMap));
                     }
                 }
-                if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())) {
-                    applicationViewDto.setSpecialRfcShowDtos(subSvcRelDtoList);
-                } else {
-                    applicationViewDto.setAppPremSpecialSubSvcRelDtoList(subSvcRelDtoList);
-                }
             }
+            applicationViewDto.setAppPremSpecialSubSvcRelDtoList(subSvcRelDtoList);
         }
     }
 
     public static void valiOtherServiceCommon(HttpServletRequest request, Map<String, String> errMap, ApplicationViewDto applicationViewDto,
                                               String recommendationStr, List<String> rejectCode, String decisionValue){
-        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        if(applicationDto != null) {
-            List<AppPremSubSvcRelDto> subSvcRelDtoList;
-            if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())) {
-                subSvcRelDtoList = applicationViewDto.getOthersRfcShowDtos();
-            } else {
-                subSvcRelDtoList = applicationViewDto.getAppPremOthersSubSvcRelDtoList();
-            }
-            if (!IaisCommonUtils.isEmpty(subSvcRelDtoList)) {
-                boolean appOther = !rejectCode.contains(StringUtil.getNonNull(recommendationStr)) && !rejectCode.contains(StringUtil.getNonNull(decisionValue));
-                for (int i = 0; i < subSvcRelDtoList.size(); i++) {
-                    if (ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE.equals(subSvcRelDtoList.get(i).getActCode())){
-                        continue;
-                    }
-                    String svcId = subSvcRelDtoList.get(i).getSvcId();
-                    String[] specialSubSvcRadios = ParamUtil.getStrings(request, "otherSubSvcRadio" + svcId);
-                    String specialSubSvcRemarks = ParamUtil.getRequestString(request, "otherSubSvcRemarks" + svcId);
-                    //status not empty
-                    if(appOther){
-                        if (specialSubSvcRadios == null || specialSubSvcRadios.length == 0) {
-                            errMap.put("specialSubSvcRadioError" + svcId, ERROR_CODE_GENERAL_ERR0006);
+        List<AppPremSubSvcRelDto> subSvcRelDtoList = applicationViewDto.getAppPremOthersSubSvcRelDtoList();
+        if (!IaisCommonUtils.isEmpty(subSvcRelDtoList)) {
+            boolean appOther = !rejectCode.contains(StringUtil.getNonNull(recommendationStr)) && !rejectCode.contains(StringUtil.getNonNull(decisionValue));
+            for (int i = 0; i < subSvcRelDtoList.size(); i++) {
+                if (ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE.equals(subSvcRelDtoList.get(i).getActCode())){
+                    continue;
+                }
+                String svcId = subSvcRelDtoList.get(i).getSvcId();
+                String[] specialSubSvcRadios = ParamUtil.getStrings(request, "otherSubSvcRadio" + svcId);
+                String specialSubSvcRemarks = ParamUtil.getRequestString(request, "otherSubSvcRemarks" + svcId);
+                //status not empty
+                if(appOther){
+                    if (specialSubSvcRadios == null || specialSubSvcRadios.length == 0) {
+                        errMap.put("specialSubSvcRadioError" + svcId, ERROR_CODE_GENERAL_ERR0006);
+                        subSvcRelDtoList.get(i).setStatus(null);
+                    } else {
+                        String specialSubSvcRadio = specialSubSvcRadios[0];
+                        if (StringUtil.isEmpty(specialSubSvcRadio)) {
+                            errMap.put("otherSubSvcRadioError" + svcId, ERROR_CODE_GENERAL_ERR0006);
                             subSvcRelDtoList.get(i).setStatus(null);
                         } else {
-                            String specialSubSvcRadio = specialSubSvcRadios[0];
-                            if (StringUtil.isEmpty(specialSubSvcRadio)) {
-                                errMap.put("otherSubSvcRadioError" + svcId, ERROR_CODE_GENERAL_ERR0006);
-                                subSvcRelDtoList.get(i).setStatus(null);
+                            String specialSubSvcStatusCode;
+                            if(BeDashboardConstant.SWITCH_ACTION_APPROVE.equals(specialSubSvcRadio)) {
+                                specialSubSvcStatusCode = ApplicationConsts.RECORD_STATUS_APPROVE_CODE;
                             } else {
-                                String specialSubSvcStatusCode;
-                                if(BeDashboardConstant.SWITCH_ACTION_APPROVE.equals(specialSubSvcRadio)) {
-                                    specialSubSvcStatusCode = ApplicationConsts.RECORD_STATUS_APPROVE_CODE;
-                                } else {
-                                    specialSubSvcStatusCode = ApplicationConsts.RECORD_STATUS_REJECT_CODE;
-                                }
-                                subSvcRelDtoList.get(i).setStatus(specialSubSvcStatusCode);
+                                specialSubSvcStatusCode = ApplicationConsts.RECORD_STATUS_REJECT_CODE;
                             }
+                            subSvcRelDtoList.get(i).setStatus(specialSubSvcStatusCode);
                         }
-                    }else {
-                        subSvcRelDtoList.get(i).setStatus(ApplicationConsts.RECORD_STATUS_REJECT_CODE);
                     }
-                    //remark length vali
-                    if (StringUtil.isEmpty(specialSubSvcRemarks)) {
+                }else {
+                    subSvcRelDtoList.get(i).setStatus(ApplicationConsts.RECORD_STATUS_REJECT_CODE);
+                }
+                //remark length vali
+                if (StringUtil.isEmpty(specialSubSvcRemarks)) {
+                    subSvcRelDtoList.get(i).setRemarks(specialSubSvcRemarks);
+                } else {
+                    if (specialSubSvcRemarks.length() <= 400) {
                         subSvcRelDtoList.get(i).setRemarks(specialSubSvcRemarks);
                     } else {
-                        if (specialSubSvcRemarks.length() <= 400) {
-                            subSvcRelDtoList.get(i).setRemarks(specialSubSvcRemarks);
-                        } else {
-                            Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
-                            repMap.put("number", "400");
-                            repMap.put("fieldNo", "Remarks");
-                            errMap.put("otherSubSvcRemarksError" + svcId, MessageUtil.getMessageDesc("GENERAL_ERR0036", repMap));
-                        }
+                        Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
+                        repMap.put("number", "400");
+                        repMap.put("fieldNo", "Remarks");
+                        errMap.put("otherSubSvcRemarksError" + svcId, MessageUtil.getMessageDesc("GENERAL_ERR0036", repMap));
                     }
                 }
-                if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())) {
-                    applicationViewDto.setOthersRfcShowDtos(subSvcRelDtoList);
-                } else {
-                    applicationViewDto.setAppPremOthersSubSvcRelDtoList(subSvcRelDtoList);
-                }
-
             }
+            applicationViewDto.setAppPremOthersSubSvcRelDtoList(subSvcRelDtoList);
         }
     }
     /**

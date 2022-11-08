@@ -499,24 +499,13 @@ public class HcsaApplicationDelegator {
         if(hasEmailAttaDoc){
             ParamUtil.setRequestAttr(bpc.request, "hasEmailAttaDoc", hasEmailAttaDoc);
         }
-        String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
-        List<AppPremSubSvcRelDto> specialServiceList;
-        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
-            specialServiceList=applicationViewDto.getSpecialRfcShowDtos();
-        }else {
-            specialServiceList=applicationViewDto.getAppPremSpecialSubSvcRelDtoList();
-        }
+        List<AppPremSubSvcRelDto> specialServiceList=applicationViewDto.getAppPremSpecialSubSvcRelDtoList();
         if (IaisCommonUtils.isNotEmpty(specialServiceList)){
             ParamUtil.setRequestAttr(bpc.request, "changedSpecialServiceList", specialServiceList.stream()
                     .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE.equals(dto.getActCode()))
                     .collect(Collectors.toList()));
         }
-        List<AppPremSubSvcRelDto> otherServiceList;
-        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
-            otherServiceList=applicationViewDto.getOthersRfcShowDtos();
-        }else {
-            otherServiceList=applicationViewDto.getAppPremOthersSubSvcRelDtoList();
-        }
+        List<AppPremSubSvcRelDto> otherServiceList=applicationViewDto.getAppPremOthersSubSvcRelDtoList();
         if (IaisCommonUtils.isNotEmpty(otherServiceList)){
             ParamUtil.setRequestAttr(bpc.request, "changedOtherServiceList", otherServiceList.stream()
                     .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE.equals(dto.getActCode()))
@@ -4910,7 +4899,7 @@ public class HcsaApplicationDelegator {
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         String corpPassUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + "/main-web/eservice/INTERNET/FE_Landing";
         ApplicationDto applicationDto =applicationViewDto.getApplicationDto();
-        HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getBaseServiceId());
+        HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
         String applicationNo=applicationDto.getApplicationNo();
         String applicationTypeShow = MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType());
 

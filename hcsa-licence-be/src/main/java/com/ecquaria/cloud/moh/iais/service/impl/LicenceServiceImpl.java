@@ -1118,7 +1118,7 @@ public class LicenceServiceImpl implements LicenceService {
                                                AppPremisesRecommendationDto inspectionRecommendation,AppPremisesCorrelationDto appPremisesCorrelationDto){
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         ApplicationDto applicationDto = applicationClient.getApplicationById(appPremisesCorrelationDto.getApplicationId()).getEntity();
-        HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getBaseServiceId());
+        HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
         AppGrpPremisesDto appGrpPremisesDto=appCommClient.getAppGrpPremisesById(appPremisesCorrelationDto.getAppGrpPremId()).getEntity();
         map.put("ApplicantName", applicantName);
         map.put("ApplicationType", applicationTypeShow);

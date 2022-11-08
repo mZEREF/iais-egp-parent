@@ -215,7 +215,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     templateContent.put("ApplicationType", applicationType);
                     templateContent.put("ApplicationNumber", applicationNumber);
                     templateContent.put("applicationDate", Formatter.formatDateTime(new Date()));
-                    HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getBaseServiceId());
+                    HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
                     templateContent.put("svcNameMOSD", baseServiceDto.getSvcName()+"("+appSubmissionDto1.getAppGrpPremisesDtoList().get(0).getAddress()+")");
                     templateContent.put("BusinessName", appSubmissionDto1.getAppGrpPremisesDtoList().get(0).getHciName());
                     templateContent.put("LicenseeName",  appSubmissionDto1.getSubLicenseeDto().getDisplayName());

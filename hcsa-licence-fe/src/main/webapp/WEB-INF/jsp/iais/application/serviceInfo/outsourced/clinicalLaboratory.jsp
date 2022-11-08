@@ -146,7 +146,9 @@
 <script>
     $(document).ready(function () {
         delCLDBtn();
+
     });
+
     function delCLDBtn(){
         console.log("del....")
         let allBtn = document.getElementsByClassName("btn-cldBtn");
@@ -159,7 +161,7 @@
                 let $tag = $(this);
                 let prefix = $tag.data('prefix');
                 let outsourcedIndexNo = $tag.data('group');
-                console.log("prefix:"+prefix);
+                console.log("del-prefix:"+prefix);
                 console.log("outsourcedIndexNo:"+outsourcedIndexNo);
                 $('input[name="btnStep"]').val("delete");
                 $('input[name="pIds"]').val(prefix);
