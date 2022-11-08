@@ -16,7 +16,7 @@
         <div class="">
             <div class="app-title">Other Services</div>
         </div>
-        <div style="margin-top: 10px;!important;">
+        <div class="col-xs-12" style="margin-top: 10px;!important;">
             <span>Do you intend to provide the following services:</span>
         </div>
         <iais:row>

@@ -1,3 +1,4 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts" %>
 <%@include file="outSourceContent.jsp"%>
 <br><br>
 <iais:pagination  param="outSourceParam" result="outSourceResult"/>
@@ -37,7 +38,7 @@
                 <tr>
                     <td>
                         <p class="visible-xs visible-sm table-row-title" style="width: 30px;!important;">Service</p>
-                        <input name="${prefix}svcName" value="${outSourceResult.svcName}" type="hidden">
+                        <input name="${prefix}svcName" class="svcName" value="${outSourceResult.svcName}" type="hidden" data-prefix="${prefix}">
                         <p style="width: 200px;">${outSourceResult.svcName}</p>
                     </td>
                     <td>
@@ -91,13 +92,40 @@
                         <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}OutstandingScope"></span>
                     </td>
                     <td>
-                        <input type="hidden" name="prefixVal" value="">
-                        <button type="button" class="btn btn-default btn-sm btn-add" data-prefix="${prefix}" data-group="${outsourcedIndexNo}">Add Another Outsourced Provider</button>
+                        <c:if test="${outSourceResult.svcName eq AppServicesConsts.SERVICE_NAME_CLINICAL_LABORATORY}">
+                            <input type="hidden" name="prefixVal" value="${prefix}">
+                            <c:if test="${!empty currSvcInfoDto.appSvcOutsouredDto.clinicalLaboratoryList}">
+                                <button type="button" class="btn btn-default btn-sm btn-add
+                                    <c:if test="${currSvcInfoDto.appSvcOutsouredDto.clinicalLaboratoryList.size() >= 5}">hidden</c:if> "
+                                        data-prefix="${prefix}" data-group="${outsourcedIndexNo}">Add Another Outsourced Provider</button>
+                            </c:if>
+                            <c:if test="${empty currSvcInfoDto.appSvcOutsouredDto.clinicalLaboratoryList}">
+                                <button type="button" class="btn btn-default btn-sm btn-add"
+                                    data-prefix="${prefix}" data-group="${outsourcedIndexNo}">Add Another Outsourced Provider</button>
+                            </c:if>
+                        </c:if>
+                        <c:if test="${outSourceResult.svcName eq AppServicesConsts.SERVICE_NAME_RADIOLOGICAL_SERVICES}">
+                            <input type="hidden" name="prefixVal" value="${prefix}">
+                            <c:if test="${!empty currSvcInfoDto.appSvcOutsouredDto.radiologicalServiceList}">
+                                <button type="button" class="btn btn-default btn-sm btn-add
+                                    <c:if test="${currSvcInfoDto.appSvcOutsouredDto.radiologicalServiceList.size() >= 5}">hidden</c:if> "
+                                        data-prefix="${prefix}" data-group="${outsourcedIndexNo}">Add Another Outsourced Provider</button>
+                            </c:if>
+                            <c:if test="${empty currSvcInfoDto.appSvcOutsouredDto.radiologicalServiceList}">
+                                <button type="button" class="btn btn-default btn-sm btn-add"
+                                    data-prefix="${prefix}" data-group="${outsourcedIndexNo}">Add Another Outsourced Provider</button>
+                            </c:if>
+                        </c:if>
                     </td>
                 </tr>
                 </c:forEach>
                 </tbody>
             </table>
+        </div>
+        <div>
+            <c:if test="${outSourceResult.rows.size() eq 0 || empty outSourceResult.rows}">
+                <span id="noRecord" name="noRecord">No record found.</span>
+            </c:if>
         </div>
     </div>
 </div>
@@ -115,7 +143,7 @@
                 let $tag = $(this);
                 let prefix = $tag.data('prefix');
                 let outsourcedIndexNo = $tag.data('group');
-                console.log("prefix:"+prefix);
+                console.log("add-prefix:"+prefix);
                 console.log("outsourcedIndexNo:"+outsourcedIndexNo);
                 $('input[name="btnStep"]').val("add");
                 $('input[name="pIds"]').val(prefix);
@@ -128,5 +156,4 @@
             };
         }
     }
-
 </script>

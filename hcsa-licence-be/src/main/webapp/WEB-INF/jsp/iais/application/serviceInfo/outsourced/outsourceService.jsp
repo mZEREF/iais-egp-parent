@@ -138,15 +138,10 @@
                 </div>
             </div>
         </div>
-        <c:if test="${!empty outSourceParam}">
+        <div class="col-xs-12">
+            <span class="error-msg" name="iaisErrorMsg" id="error_initOutsource"></span>
+        </div>
             <%@include file="outsourceProvidesTable.jsp"%>
-            <c:if test="${outSourceResult.rows.size() eq 0}">
-                <span id="noRecord" name="noRecord" class="error-msg">No record found.</span>
-            </c:if>
-        </c:if>
-
-
-
     </form>
 
 </div>
