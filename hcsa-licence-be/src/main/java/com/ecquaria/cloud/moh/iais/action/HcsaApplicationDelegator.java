@@ -4936,7 +4936,7 @@ public class HcsaApplicationDelegator {
                 HcsaServiceDto specServiceDto = HcsaServiceCacheHelper.getServiceById(specSvc.getSvcId());
                 String svcName1 = specServiceDto.getSvcName();
                 String index=ALPHABET_ARRAY_PROTOTYPE[i++];
-                svcNameLicNo.append("<p>&nbsp;&nbsp;").append(index).append(svcName1).append("</p>");
+                svcNameLicNo.append("<p>").append(index).append(svcName1).append("</p>");
 
             }
             map.put("isSpecial", "Y");
