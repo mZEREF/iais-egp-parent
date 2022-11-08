@@ -12,6 +12,14 @@
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
     String webroot = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.BE_CSS_ROOT;
 %>
+
+<style>
+    .min-row .form-group .form-check {
+        margin-top: 5px;
+        padding-top: 0px;
+    }
+</style>
+
 <webui:setLayout name="iais-internet"/>
 
 <%@ include file="/WEB-INF/jsp/iais/application/common/dashboard.jsp" %>
