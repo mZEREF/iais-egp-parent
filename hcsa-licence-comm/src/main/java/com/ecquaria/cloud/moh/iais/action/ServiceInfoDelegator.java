@@ -1036,10 +1036,18 @@ public class ServiceInfoDelegator {
                     ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
             List<HcsaSvcPersonnelDto> dpoPsnConfig = configCommService.getHcsaSvcPersonnel(currentSvcId,
                     ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
-            AppValidatorHelper.psnMandatoryValidate(poPsnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_PO, map, poList.size(),
+            int poSize = 0;
+            if (poList != null) {
+                poSize = poList.size();
+            }
+            AppValidatorHelper.psnMandatoryValidate(poPsnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_PO, map, poSize,
                     "poPsnMandatory", HcsaConsts.PRINCIPAL_OFFICER);
+            int dpoSize = 0;
+            if (dpoList != null) {
+                dpoSize = dpoList.size();
+            }
             AppValidatorHelper.psnMandatoryValidate(dpoPsnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, map,
-                    dpoList.size(), "dpoPsnMandatory", HcsaConsts.NOMINEE);
+                    dpoSize, "dpoPsnMandatory", HcsaConsts.NOMINEE);
             if (map.containsKey("dpoPsnMandatory") && !AppConsts.YES.equals(deputySelect)) {
                 map.remove("dpoPsnMandatory");
                 if (AppConsts.NO.equals(deputySelect)) {
@@ -1913,16 +1921,16 @@ public class ServiceInfoDelegator {
                     return true;
                 }
             }
-            if (StringUtil.isIn(stepCode, skipList)) {
+        }
+        if (StringUtil.isIn(stepCode, skipList)) {
+            return true;
+        }
+        //no special service,skip special_service_information
+        if (HcsaConsts.STEP_SPECIAL_SERVICES_FORM.equals(stepCode)) {
+            List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
+            if (appPremSpecialisedDtoList == null || appPremSpecialisedDtoList.isEmpty() || appPremSpecialisedDtoList.stream()
+                    .noneMatch(AppPremSpecialisedDto::isExistCheckedRels)) {
                 return true;
-            }
-            //no special service,skip special_service_information
-            if (HcsaConsts.STEP_SPECIAL_SERVICES_FORM.equals(stepCode)) {
-                List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
-                if (appPremSpecialisedDtoList == null || appPremSpecialisedDtoList.isEmpty() || appPremSpecialisedDtoList.stream()
-                        .noneMatch(AppPremSpecialisedDto::isExistCheckedRels)) {
-                    return true;
-                }
             }
         }
         return false;

@@ -166,9 +166,10 @@
                             </c:forEach>
                         </td>
                         <td>
-                            <p>
-                                New Licence
-                            </p>
+                            <c:forEach var="svcIndex" items="${baseSvcFeeExt.svcIndexList}">
+                                <p>New Licence</p>
+                                <p>&nbsp;&nbsp;</p>
+                            </c:forEach>
                         </td>
                         <td>
                             <c:forEach var="svcIndex" items="${baseSvcFeeExt.svcIndexList}">
@@ -207,11 +208,18 @@
                                 </c:forEach>
                             </td>
                             <td>
-                                <p>
-                                    New Licence
-                                </p>
+                                <p>&nbsp;&nbsp;</p>
+                                <c:forEach var="svcIndex" items="${baseSvcFeeExt.svcIndexList}">
+                                    <p>New Licence</p>
+                                    <p>&nbsp;&nbsp;</p>
+                                </c:forEach>
+                                <c:forEach var="svcIndex" items="${includedSvcFeeExtRoot.svcIndexList}">
+                                    <p>New Licence</p>
+                                    <p>&nbsp;&nbsp;</p>
+                                </c:forEach>
                             </td>
                             <td>
+                                <p>&nbsp;&nbsp;</p>
                                 <c:forEach var="svcIndex" items="${baseSvcFeeExt.svcIndexList}">
                                     <p><c:out value="${baseSvcFeeExt.appGroupNo}-0${svcIndex}"/></p>
                                     <p>&nbsp;&nbsp;</p>
@@ -299,7 +307,10 @@
 
                         </td>
                         <td>
-                            <p>New Licence</p>
+                            <c:forEach var="svcIndex" items="${bundleSvcFeeExt.svcIndexList}">
+                                <p>New Licence</p>
+                                <p>&nbsp;&nbsp;</p>
+                            </c:forEach>
                         </td>
                         <td>
                             <c:forEach var="svcIndex" items="${bundleSvcFeeExt.svcIndexList}">

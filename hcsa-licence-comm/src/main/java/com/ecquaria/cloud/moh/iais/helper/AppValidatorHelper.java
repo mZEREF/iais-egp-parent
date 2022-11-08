@@ -838,30 +838,7 @@ public final class AppValidatorHelper {
             }
 
             if (checkOthers && errorMap.isEmpty()) {
-                List<PremisesDto> premisesDtos =
-                        getLicCommService().getPremisesDtoByHciNameAndPremType(appGrpPremisesDto.getHciName(),
-                                appGrpPremisesDto.getPremisesType(), licenseeId);
-                if (!IaisCommonUtils.isEmpty(premisesDtos)) {
-                    // NEW_ACK011 - The business name you have keyed in is currently in used.
-                    errorMap.put("hciNameUsed", MessageUtil.getMessageDesc("NEW_ACK011"));
-                }
-                String premisesSelect = ApplicationHelper.getPremisesKey(appGrpPremisesDto);
-                if (appGrpPremisesDtoList.stream().anyMatch(dto -> !Objects.equals(appGrpPremisesDto.getPremisesIndexNo(),
-                        dto.getPremisesIndexNo()) && Objects.equals(premisesSelect, ApplicationHelper.getPremisesKey(dto)))) {
-                    // NEW_ERR0012 - This is a repeated entry
-                    errorMap.put("premisesHci" + i, "NEW_ERR0012");
-                } else {
-                    HttpServletRequest request = MiscUtil.getCurrentRequest();
-                    AppGrpPremisesDto premises = null;
-                    if (request != null) {
-                        premises = ApplicationHelper.getPremisesFromMap(premisesSelect, request);
-                    }
-                    if (premises != null && (ApplicationConsts.NEW_PREMISES.equals(appGrpPremisesDto.getPremisesSelect())
-                            || !Objects.equals(appGrpPremisesDto.getPremisesSelect(), premisesSelect))) {
-                        errorMap.put("premisesHci" + i,
-                                MessageUtil.replaceMessage("GENERAL_ERR0050", HcsaConsts.MODE_OF_SVC_DELIVERY, "field"));
-                    }
-                }
+                checkOthers(appGrpPremisesDto, i, licenseeId, appGrpPremisesDtoList, errorMap);
                 //65116
                 if (hciFlag) {
                     CheckCoLocationDto checkCoLocationDto = new CheckCoLocationDto();
@@ -874,73 +851,13 @@ public final class AppValidatorHelper {
                 }
 
                 if (checkMs) {
-                    boolean hasError = false;
                     if (boundCode != 0) {
                         List<PremisesDto> bundledPremises = getLicCommService().getBundledLicPremises(boundCode);
                         if (IaisCommonUtils.isNotEmpty(bundledPremises)) {
                             bundledPremises.forEach(dto -> bundleTypes.add(dto.getPremisesType()));
                         }
                     }
-                    if (bundleTypes.contains(premiseType)) {
-                        // GENERAL_ERR0060 - Invalid {data}.
-                        errorMap.put("premisesType" + i, MessageUtil.replaceMessage("GENERAL_ERR0060",
-                                "Mode of Service Delivery type", "data"));
-                        hasError = true;
-                    } else if (bundleTypes.contains(ApplicationConsts.PREMISES_TYPE_PERMANENT)
-                            || bundleTypes.contains(ApplicationConsts.PREMISES_TYPE_CONVEYANCE)) {
-                        if (ApplicationConsts.PREMISES_TYPE_PERMANENT.equals(premiseType)
-                                || ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
-                            errorMap.put("premisesType" + i, MessageUtil.replaceMessage("GENERAL_ERR0060",
-                                    "Mode of Service Delivery type", "data"));
-                            hasError = true;
-                        }
-                    } else if (bundleTypes.isEmpty()) {
-                        List<String> targetType = getMsBundlePremType(typeList, premiseType);
-                        List<LicenceDto> licenceList = getLicCommService().getPendingBundledMsLicences(licenseeId,
-                                targetType, premiseType);
-                        if (!IaisCommonUtils.isEmpty(licenceList)) {
-                            // NEW_ERR0036 - There is {data} need to be bundled to current application(s).
-                            String data;
-                            if (licenceList.size() == 1) {
-                                data = "a licence (" + licenceList.get(0).getLicenceNo() + ")";
-                            } else {
-                                data = "one of licences (" + licenceList.stream().map(LicenceDto::getLicenceNo)
-                                        .collect(Collectors.joining(", ")) + ")";
-                            }
-                            errorMap.put("premisesType" + i, MessageUtil.replaceMessage("NEW_ERR0036",
-                                    data, "data"));
-                            hasError = true;
-                        }
-                    }
-                    if (typeList.size() > 0) {
-                        if (!bundleTypes.isEmpty() && bundleTypes.stream().anyMatch(typeList::contains)) {
-                            hasError = true;
-                        } else if (ApplicationConsts.PREMISES_TYPE_PERMANENT.equals(premiseType)
-                                || ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
-                            if (typeList.contains(ApplicationConsts.PREMISES_TYPE_PERMANENT)
-                                    || typeList.contains(ApplicationConsts.PREMISES_TYPE_CONVEYANCE)) {
-                                if (!bundleTypes.isEmpty() || typeList.contains(ApplicationConsts.PREMISES_TYPE_REMOTE)
-                                        || typeList.contains(ApplicationConsts.PREMISES_TYPE_MOBILE)) {
-                                    hasError = true;
-                                }
-                            }
-                        } else if (ApplicationConsts.PREMISES_TYPE_REMOTE.equals(premiseType)) {
-                            if (!bundleTypes.isEmpty() && typeList.contains(ApplicationConsts.PREMISES_TYPE_REMOTE)) {
-                                hasError = true;
-                            }
-                        } else if (ApplicationConsts.PREMISES_TYPE_MOBILE.equals(premiseType)) {
-                            if (!bundleTypes.isEmpty() && typeList.contains(ApplicationConsts.PREMISES_TYPE_MOBILE)) {
-                                hasError = true;
-                            }
-                        }
-                        if (hasError) {
-                            errorMap.put("premisesType" + i, MessageUtil.replaceMessage("GENERAL_ERR0060",
-                                    "Mode of Service Delivery type", "data"));
-                        }
-                    }
-                    if (!hasError) {
-                        typeList.add(premiseType);
-                    }
+                    checkMsBundle(premiseType, "premisesType" + i, bundleTypes, licenseeId, typeList, errorMap);
                 }
             }
             if (!errorMap.isEmpty()) {
@@ -967,6 +884,99 @@ public final class AppValidatorHelper {
         }
         log.info(StringUtil.changeForLog("the do doValidatePremiss end ...."));
         return errMap;
+    }
+
+    private static void checkOthers(AppGrpPremisesDto appGrpPremisesDto, int i, String licenseeId,
+            List<AppGrpPremisesDto> appGrpPremisesDtoList, Map<String, String> errorMap) {
+        List<PremisesDto> premisesDtos =
+                getLicCommService().getPremisesDtoByHciNameAndPremType(appGrpPremisesDto.getHciName(),
+                        appGrpPremisesDto.getPremisesType(), licenseeId);
+        if (!IaisCommonUtils.isEmpty(premisesDtos)) {
+            // NEW_ACK011 - The business name you have keyed in is currently in used.
+            errorMap.put("hciNameUsed", MessageUtil.getMessageDesc("NEW_ACK011"));
+        }
+        String premisesSelect = ApplicationHelper.getPremisesKey(appGrpPremisesDto);
+        if (appGrpPremisesDtoList.stream().anyMatch(dto -> !Objects.equals(appGrpPremisesDto.getPremisesIndexNo(),
+                dto.getPremisesIndexNo()) && Objects.equals(premisesSelect, ApplicationHelper.getPremisesKey(dto)))) {
+            // NEW_ERR0012 - This is a repeated entry
+            errorMap.put("premisesHci" + i, "NEW_ERR0012");
+        } else {
+            HttpServletRequest request = MiscUtil.getCurrentRequest();
+            AppGrpPremisesDto premises = null;
+            if (request != null) {
+                premises = ApplicationHelper.getPremisesFromMap(premisesSelect, request);
+            }
+            if (premises != null && (ApplicationConsts.NEW_PREMISES.equals(appGrpPremisesDto.getPremisesSelect())
+                    || !Objects.equals(appGrpPremisesDto.getPremisesSelect(), premisesSelect))) {
+                errorMap.put("premisesHci" + i,
+                        MessageUtil.replaceMessage("GENERAL_ERR0050", HcsaConsts.MODE_OF_SVC_DELIVERY, "field"));
+            }
+        }
+    }
+
+    private static void checkMsBundle(String premiseType, String errorKey, List<String> bundleTypes, String licenseeId,
+            List<String> typeList, Map<String, String> errorMap) {
+        boolean hasError = false;
+        boolean isPermanentOrConveyance = ApplicationConsts.PREMISES_TYPE_PERMANENT.equals(premiseType)
+                || ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType);
+        if (bundleTypes.contains(premiseType)) {
+            // GENERAL_ERR0060 - Invalid {data}.
+            errorMap.put(errorKey, MessageUtil.replaceMessage("GENERAL_ERR0060",
+                    "Mode of Service Delivery type", "data"));
+            hasError = true;
+        } else if (bundleTypes.contains(ApplicationConsts.PREMISES_TYPE_PERMANENT)
+                || bundleTypes.contains(ApplicationConsts.PREMISES_TYPE_CONVEYANCE)) {
+            if (isPermanentOrConveyance) {
+                errorMap.put(errorKey, MessageUtil.replaceMessage("GENERAL_ERR0060",
+                        "Mode of Service Delivery type", "data"));
+                hasError = true;
+            }
+        } else if (bundleTypes.isEmpty()) {
+            List<String> targetType = getMsBundlePremType(typeList, premiseType);
+            List<LicenceDto> licenceList = getLicCommService().getPendingBundledMsLicences(licenseeId,
+                    targetType, premiseType);
+            if (!IaisCommonUtils.isEmpty(licenceList)) {
+                // NEW_ERR0036 - There is {data} need to be bundled to current application(s).
+                String data;
+                if (licenceList.size() == 1) {
+                    data = "a licence (" + licenceList.get(0).getLicenceNo() + ")";
+                } else {
+                    data = "one of licences (" + licenceList.stream().map(LicenceDto::getLicenceNo)
+                            .collect(Collectors.joining(", ")) + ")";
+                }
+                errorMap.put(errorKey, MessageUtil.replaceMessage("NEW_ERR0036",
+                        data, "data"));
+                hasError = true;
+            }
+        }
+        if (typeList.size() > 0) {
+            if (!bundleTypes.isEmpty() && bundleTypes.stream().anyMatch(typeList::contains)) {
+                hasError = true;
+            } else if (isPermanentOrConveyance) {
+                if (typeList.contains(ApplicationConsts.PREMISES_TYPE_PERMANENT)
+                        || typeList.contains(ApplicationConsts.PREMISES_TYPE_CONVEYANCE)) {
+                    if (!bundleTypes.isEmpty() || typeList.contains(ApplicationConsts.PREMISES_TYPE_REMOTE)
+                            || typeList.contains(ApplicationConsts.PREMISES_TYPE_MOBILE)) {
+                        hasError = true;
+                    }
+                }
+            } else if (ApplicationConsts.PREMISES_TYPE_REMOTE.equals(premiseType)) {
+                if (!bundleTypes.isEmpty() && typeList.contains(ApplicationConsts.PREMISES_TYPE_REMOTE)) {
+                    hasError = true;
+                }
+            } else if (ApplicationConsts.PREMISES_TYPE_MOBILE.equals(premiseType)) {
+                if (!bundleTypes.isEmpty() && typeList.contains(ApplicationConsts.PREMISES_TYPE_MOBILE)) {
+                    hasError = true;
+                }
+            }
+            if (hasError) {
+                errorMap.put(errorKey, MessageUtil.replaceMessage("GENERAL_ERR0060",
+                        "Mode of Service Delivery type", "data"));
+            }
+        }
+        if (!hasError) {
+            typeList.add(premiseType);
+        }
     }
 
     private static List<String> getMsBundlePremType(List<String> typeList, String premiseType) {
@@ -1537,7 +1547,6 @@ public final class AppValidatorHelper {
                         errMap.put("emailAddr" + i, "GENERAL_ERR0014");
                     }
                 }
-
             }
         }
         WebValidationHelper.saveAuditTrailForNoUseResult(errMap);
@@ -1573,7 +1582,7 @@ public final class AppValidatorHelper {
             AppSvcPrincipalOfficersDto person = personList.get(i);
             psnType = person.getPsnType();
             String assignSelect = person.getAssignSelect();
-            if ("".equals(assignSelect)) {
+            if ("".equals(assignSelect) && ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnType)) {
                 errMap.put("deputyPrincipalOfficer", "GENERAL_ERR0006");
             } else if ( HcsaAppConst.DFT_FIRST_CODE.equals(assignSelect) || StringUtil.isEmpty(assignSelect)){
                 errMap.put(prefix + "assignSelect" + i, "GENERAL_ERR0006");
@@ -1647,7 +1656,7 @@ public final class AppValidatorHelper {
 
                 }
 
-                String professionType = person.getProfessionType();
+//                String professionType = person.getProfessionType();
                 String professionalRegoNo = person.getProfRegNo();
                 String typeOfCurrRegi = person.getTypeOfCurrRegi();
                 String currRegiDate = person.getCurrRegiDateStr();
@@ -1675,7 +1684,7 @@ public final class AppValidatorHelper {
                     }
                 }
 
-                if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)) {
+                /*if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)) {
                     if (StringUtil.isEmpty(professionType)) {
                         errMap.put(prefix + "professionType" + i,
                                 MessageUtil.replaceMessage("GENERAL_ERR0006", "Professional Type", "field"));
@@ -1702,7 +1711,7 @@ public final class AppValidatorHelper {
                     if (StringUtil.isEmpty(otherQualification)) {
                         errMap.put(prefix + "otherQualification" + i, "GENERAL_ERR0006");
                     }
-                }
+                }*/
 
                 if (ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType)) {
                     if (StringUtil.isEmpty(professionBoard)) {
@@ -1748,7 +1757,6 @@ public final class AppValidatorHelper {
                             errMap.put(prefix + "bclsExpiryDate" + i, repLength("Expiry Date (BCLS and AED)", "100"));
                         }
                     }
-
                     String holdCerByEMS = person.getHoldCerByEMS();
                     if (StringUtil.isEmpty(holdCerByEMS)) {
                         errMap.put(prefix + "holdCerByEMS" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
@@ -1812,7 +1820,6 @@ public final class AppValidatorHelper {
                             errMap.put(prefix + "mobileNo" + i, "GENERAL_ERR0007");
                         }
                     }
-
                     String emailAddr = person.getEmailAddr();
                     if (StringUtil.isEmpty(emailAddr)) {
                         errMap.put(prefix + "emailAddr" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Email Address", "field"));
@@ -3253,21 +3260,23 @@ public final class AppValidatorHelper {
         }
     }
 
-    public static boolean isEarly(String bclsExpiryDateStr, String currRegiDate) {
+    public static boolean isEarly(String bclsExpiryDateStr) {
         SimpleDateFormat sdf = new SimpleDateFormat(AppConstants.DEFAULT_DATE_FORMAT);
-        if (StringUtil.isEmpty(bclsExpiryDateStr) || StringUtil.isEmpty(currRegiDate)) {
+        Date date = new Date();
+        String source = sdf.format(date);
+        if (StringUtil.isEmpty(bclsExpiryDateStr)) {
             return false;
         }
         Date date1 = null;
         Date date2 = null;
         try {
             date1 = sdf.parse(bclsExpiryDateStr);
-            date2 = sdf.parse(currRegiDate);
+            date2 = sdf.parse(source);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        return date1.compareTo(date2) > 0;
+        return date1.compareTo(date2) >= 0;
     }
 
     public static void paramValidate(Map<String, String> errorMap, AppSvcPersonnelDto appSvcPersonnelDto, String prefix, int i,
@@ -3318,6 +3327,8 @@ public final class AppValidatorHelper {
                 errorMap.put(prefix + "profRegNo" + i, signal);
             } else if (profRegNo.length() > 20) {
                 errorMap.put(prefix + "profRegNo" + i, signal);
+            } else if (true){
+                validateProfRegNo(errorMap, profRegNo, prefix+ "profRegNo" + i);
             }
             //                typeOfCurrRegi
             String typeOfCurrRegi = appSvcPersonnelDto.getTypeOfCurrRegi();
@@ -3368,8 +3379,8 @@ public final class AppValidatorHelper {
             } else if (!CommonValidator.isDate(bclsExpiryDateStr)) {
                 errorMap.put(prefix + "bclsExpiryDate" + i, "GENERAL_ERR0033");
             } else {
-                if (!isEarly(bclsExpiryDateStr, currRegiDate)) {
-                    errorMap.put(prefix + "bclsExpiryDate" + i, "SC_ERR009");
+                if (!isEarly(bclsExpiryDateStr)) {
+                    errorMap.put(prefix + "bclsExpiryDate" + i, "PRF_ERR007");
                 }
             }
 //             nurse special
@@ -3387,6 +3398,8 @@ public final class AppValidatorHelper {
                     errorMap.put(prefix + "cprExpiryDate" + i, signal);
                 } else if (!CommonValidator.isDate(cprExpiryDate)) {
                     errorMap.put(prefix + "cprExpiryDate" + i, "GENERAL_ERR0033");
+                }else if (!isEarly(cprExpiryDate)){
+                    errorMap.put(prefix + "cprExpiryDate" + i, "PRF_ERR007");
                 }
 
             }
@@ -4015,6 +4028,9 @@ public final class AppValidatorHelper {
             List<String> nmNames = IaisCommonUtils.genNewArrayList();
             List<String> dirNames = IaisCommonUtils.genNewArrayList();
             List<String> nurNames = IaisCommonUtils.genNewArrayList();
+            List<String> roNames = IaisCommonUtils.genNewArrayList();
+            List<String> mdNames = IaisCommonUtils.genNewArrayList();
+            List<String> rtNames = IaisCommonUtils.genNewArrayList();
             for (int j = 0; j < specialServiceSectionDtoList.size(); j++) {
                 SpecialServiceSectionDto specialServiceSectionDto = specialServiceSectionDtoList.get(j);
                 Map<String, Integer> minCount = specialServiceSectionDto.getMinCount();
@@ -4028,6 +4044,9 @@ public final class AppValidatorHelper {
                 int nmMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM);
                 int diMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR);
                 int nuMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR);
+                int roMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_ONCOLOGIST);
+                int mdMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_DOSIMETRIST);
+                int rtMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST);
                 List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = specialServiceSectionDto.getAppSvcCgoDtoList();
                 if (appSvcCgoDtoList == null) {
                     if (cgoMandatoryCount > 0) {
@@ -4079,6 +4098,13 @@ public final class AppValidatorHelper {
                         diMandatoryCount,prefix + i + j + "dir", errorMap, dirNames,ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR);
                 validateSpecialServicePersonMandatory(specialServiceSectionDto.getAppSvcNurseDirectorDtoList(),
                         nuMandatoryCount,prefix + i + j + "nur", errorMap, nurNames,ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR);
+
+                validateSpecialPersonMandatory(specialServiceSectionDto.getAppSvcRadiationOncologist(),
+                        roMandatoryCount,prefix + i + j + "ro", errorMap, roNames,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_ONCOLOGIST);
+                validateSpecialPersonMandatory(specialServiceSectionDto.getAppSvcMedicalDosimetrist(),
+                        mdMandatoryCount,prefix + i + j + "md", errorMap, mdNames,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_DOSIMETRIST);
+                validateSpecialPersonMandatory(specialServiceSectionDto.getAppSvcRadiationTherapist(),
+                        rtMandatoryCount,prefix + i + j + "rt", errorMap, rtNames,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST);
                 if (!IaisCommonUtils.isEmpty(specialServiceSectionDto.getAppSvcSuplmFormDto().getAppSvcSuplmGroupDtoList())) {
                     errorMap.putAll(doValidateSupplementaryForm(specialServiceSectionDto.getAppSvcSuplmFormDto(), prefix + i + j));
                 }
@@ -4126,6 +4152,27 @@ public final class AppValidatorHelper {
         }
     }
 
+    private static void validateSpecialPersonMandatory(List<AppSvcPersonnelDto> appSvcPersonnelDto, int mandatoryCount,
+                                                       String prefix, Map<String, String> errorMap, List<String> usedNames, String psnType) {
+        if (appSvcPersonnelDto == null) {
+            if (mandatoryCount > 0) {
+                errorMap.put(prefix + "personError" + 0, "No related Personnel found!");
+            }
+        } else if (appSvcPersonnelDto.size() < mandatoryCount) {
+            String mandatoryErrMsg = MessageUtil.getMessageDesc("NEW_ERR0025");
+            mandatoryErrMsg = mandatoryErrMsg.replace("{psnType}",
+                    IaisCommonUtils.getPersonName(psnType, ApplicationHelper.isBackend()));
+            mandatoryErrMsg = mandatoryErrMsg.replace("{mandatoryCount}", String.valueOf(mandatoryCount));
+            errorMap.put(prefix + "personError" + 0, mandatoryErrMsg);
+        } else {
+            for (int x = 0; x < appSvcPersonnelDto.size(); x++) {
+                validateSpecialPersonDetail(appSvcPersonnelDto.get(x),
+                        prefix, "" + x, errorMap, usedNames, psnType);
+            }
+       }
+    }
+
+
     private static void validateSpecialServiceOtherPersonDetail(AppSvcPersonnelDto appSvcPersonnelDto, String prefix, String subfix,
             Map<String, String> errorMap,
             List<String> names, boolean checkOthers) {
@@ -4172,6 +4219,76 @@ public final class AppValidatorHelper {
                     }
                 }
             }
+        }
+    }
+
+    private static void validateSpecialPersonDetail(AppSvcPersonnelDto appSvcPersonnelDto, String prefix, String subfix,
+                                                           Map<String, String> errorMap, List<String> names,String psnType) {
+        String signal = "GENERAL_ERR0006";
+        String salutation = appSvcPersonnelDto.getSalutation();
+        if (StringUtil.isEmpty(salutation)) {
+            errorMap.put(prefix + "salutation" + subfix, signal);
+        }
+        String name = appSvcPersonnelDto.getName();
+        if (StringUtil.isEmpty(name)) {
+            errorMap.put(prefix + "name" + subfix, signal);
+        } else if (name.length() > 100) {
+            String errorMsg = repLength("Name", "100");
+            errorMap.put(prefix + "name" + subfix, errorMsg);
+        } else {
+            String target = StringUtil.toUpperCase(salutation + name);
+            if (names.contains(target)) {
+                errorMap.put(prefix + "name" + subfix, "Cannot use duplicate names");
+            } else {
+                names.add(target);
+            }
+        }
+
+        if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_ONCOLOGIST.equals(psnType)) {
+            String roEmployedBasis = appSvcPersonnelDto.getRoEmployedBasis();
+            if (StringUtil.isEmpty(roEmployedBasis)) {
+                errorMap.put(prefix + "roEmployedBasis" + subfix, signal);
+            }
+            String wrkExpYear = appSvcPersonnelDto.getWrkExpYear();
+            if (StringUtil.isEmpty(wrkExpYear)) {
+                errorMap.put(prefix + "wrkExpYear" + subfix, signal);
+            } else {
+                if (wrkExpYear.length() > 2) {
+                    errorMap.put(prefix + "wrkExpYear" + subfix, signal);
+                }
+                if (!wrkExpYear.matches("^[0-9]*$")) {
+                    errorMap.put(prefix + "wrkExpYear" + subfix, "GENERAL_ERR0002");
+                }
+            }
+            String smRegNo = appSvcPersonnelDto.getSmRegNo();
+            if (StringUtil.isEmpty(smRegNo)) {
+                errorMap.put(prefix + "smRegNo" + subfix, signal);
+            } else {
+                if (smRegNo.length() > 20) {
+                    errorMap.put(prefix + "smRegNo" + subfix, signal);
+                }
+            }
+        }
+        if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_DOSIMETRIST.equals(psnType)){
+            String mdEmployedBasis = appSvcPersonnelDto.getMdEmployedBasis();
+            if (StringUtil.isEmpty(mdEmployedBasis)) {
+                errorMap.put(prefix + "mdEmployedBasis" + subfix, signal);
+            }
+        }
+        if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST.equals(psnType)){
+            String rtEmployedBasis = appSvcPersonnelDto.getRtEmployedBasis();
+            if (StringUtil.isEmpty(rtEmployedBasis)) {
+                errorMap.put(prefix + "rtEmployedBasis" + subfix, signal);
+            }
+            String ahpcReNo = appSvcPersonnelDto.getAhpcReNo();
+            if (StringUtil.isEmpty(ahpcReNo)) {
+                errorMap.put(prefix + "ahpcReNo" + subfix, signal);
+            } else {
+                if (ahpcReNo.length() > 20) {
+                    errorMap.put(prefix + "ahpcReNo" + subfix, signal);
+                }
+            }
+
         }
     }
 
@@ -4283,7 +4400,7 @@ public final class AppValidatorHelper {
             if (StringUtil.isEmpty(bclsExpiryDateStr)) {
                 errorMap.put(prefix + "bclsExpiryDate" + subfix, signal);
             } else {
-                if (!isEarly(bclsExpiryDateStr, currRegiDate)) {
+                if (!isEarly(bclsExpiryDateStr)) {
                     errorMap.put(prefix + "bclsExpiryDate" + subfix, "SC_ERR009");
                 }
             }

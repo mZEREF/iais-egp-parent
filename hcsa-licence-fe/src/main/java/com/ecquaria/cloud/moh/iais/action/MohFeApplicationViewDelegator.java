@@ -4,7 +4,6 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -34,12 +33,14 @@ public class MohFeApplicationViewDelegator {
         newApplicationDelegator.inboxToPreview(bpc);
         ParamUtil.setSessionAttr(bpc.request, "isPopApplicationView", Boolean.TRUE);
         ParamUtil.setRequestAttr(bpc.request, "cessationForm", "Application Details");
+        ParamUtil.setRequestAttr(bpc.request, "DashboardTitle", "Application Details");
     }
 
     public void toAppealStep(BaseProcessClass bpc){
         AppealDelegator appealDelegator = SpringContextHelper.getContext().getBean(AppealDelegator.class);
         appealDelegator.inbox(bpc);
         ParamUtil.setSessionAttr(bpc.request, "isPopApplicationView", Boolean.TRUE);
+        ParamUtil.setRequestAttr(bpc.request, "DashboardTitle", "Application Details");
     }
 
 }

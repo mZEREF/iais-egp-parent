@@ -9,6 +9,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
@@ -39,6 +40,7 @@
             </div>
             <br/>
             <div>
+                <input type="hidden" name="MSNoteShow" value="${bundleAchOrMs?1:0}"/>
                 <c:forEach items="${notContainedSvc}" var="service" varStatus="status">
                     <c:choose>
                         <c:when test="${service.svcCode==AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY}">
@@ -59,6 +61,41 @@
                         <br>
                     </c:if>
                 </c:forEach>
+                <br>
+                <c:if test="${bundleAchOrMs}">
+                    <div class="row svcNote">
+                        <div class="col-xs-12 col-md-3">
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <div class="self-assessment-checkbox-gp gradient-light-grey">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-12">
+                                        <strong>The minimum suite of services for Acute Hospital are</strong>
+                                    </div>
+                                    <div class="col-xs-12 col-md-12">
+                                        <ul style="padding-left: 20px">
+                                            <li>${AppServicesConsts.SERVICE_NAME_CLINICAL_LABORATORY}</li>
+                                            <li>${AppServicesConsts.SERVICE_NAME_RADIOLOGICAL_SERVICES}</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-xs-12 col-md-12">
+                                        <p><strong><iais:message key="NEW_ACK046"/></strong></p>
+                                    </div>
+                                    <div class="col-xs-12 col-md-12">
+                                        <div class="form-check clbNote <c:if test="${notContainedCLB!=1}">hidden</c:if>">
+                                            <input class="form-check-input" disabled checked="checked" type="checkbox" aria-invalid="false">
+                                            <label class="form-check-label"><span class="check-square"></span>${AppServicesConsts.SERVICE_NAME_CLINICAL_LABORATORY}</label>
+                                        </div>
+                                        <div class="form-check rdsNote <c:if test="${notContainedRDS!=1}">hidden</c:if>">
+                                            <input class="form-check-input" disabled checked="checked" type="checkbox" aria-invalid="false">
+                                            <label class="form-check-label"><span class="check-square"></span>${AppServicesConsts.SERVICE_NAME_RADIOLOGICAL_SERVICES}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </c:if>
                 <div class="row">
                     <div class="col-xs-12 col-md-3">
                     </div>
@@ -91,7 +128,7 @@
                 <iais:confirm msg="${new_ack001}" callBack="cancelSaveDraft()" popupOrder="saveDraft"  yesBtnDesc="Resume from draft" cancelBtnDesc="Continue" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="saveDraft()"></iais:confirm>
             </c:if>
 
-            <iais:confirm msg="NEW_ACK44" popupOrder="saveApplicationAddress" cancelBtnDesc="cancel" yesBtnDesc="continue" cancelBtnCls="btn btn-secondary" yesBtnCls="btn btn-primary" callBack="baseContinue()" cancelFunc="cancel()"></iais:confirm>
+            <iais:confirm msg="NEW_ACK047" popupOrder="saveApplicationAddress" needCancel="false" yesBtnDesc="OK" yesBtnCls="btn btn-primary" callBack="baseContinue()"></iais:confirm>
             <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
         </div>
     </div>
@@ -112,49 +149,19 @@
             submit('chooseSvc',null,'back');
         });
         $('#baseContinue').click(function () {
-            showWaiting();
-            submit('chooseAlign',null,'next');
+            var flag = $('input[name="MSNoteShow"]').val();
+            if (flag==1){
+                showWaiting();
+                submit('chooseAlign',null,'next');
+            }else {
+                $('#saveApplicationAddress').modal('show');
+            }
         });
 
         if( $('#draftsave').val()!=null|| $('#draftsave').val()!=''){
             $('#saveDraft').modal('show');
         }
-
-        $('.existing-base-content input[type="radio"]').prop('disabled',true);
-        //reload default choose the first
-        if(${empty reloadBaseSvcSelected}){
-            $('.speSvcContent').each(function (v,k) {
-                $(this).find('.firstStep:eq(0)').prop('checked',true);
-                if($(this).find('.firstStep:eq(0)').is('.existing-base')){
-                    $(this).find('.base-svc-content:eq(0) .exist-base-lic-content .existing-base-content input[type="radio"]:eq(0)').prop('checked',true);
-                }
-                $(this).find('.base-svc-content:eq(0) .exist-base-lic-content .existing-base-content input[type="radio"]').prop('disabled',false);
-            });
-        }else{
-            console.log('reload ...');
-            $('.firstStep:checked').each(function () {
-                if($(this).hasClass('existing-base')){
-                    $(this).closest('div.exist-base-lic-content').find('div.existing-base-content input[type="radio"]').prop('disabled',false);
-                }
-            });
-        }
-
-        /*$('.firstStep').change(function () {
-            var $currSpecContent = $(this).closest('div.speSvcContent');
-            var $baseLicContent = $(this).closest('div.exist-base-lic-content');
-            //clear select when click other base
-            if($(this).hasClass('existing-base')){
-                $currSpecContent.find('input.isNewOrBase').val('base');
-                $currSpecContent.find('div.exist-base-lic-content div.existing-base-content input[type="radio"]').prop('checked',false);
-                $currSpecContent.find('div.exist-base-lic-content div.existing-base-content input[type="radio"]').prop('disabled',true);
-                $baseLicContent.find('div.existing-base-content input[type="radio"]').prop('disabled',false);
-                $baseLicContent.find('div.existing-base-content input[type="radio"]:eq(0)').prop('checked',true);
-            }else if($(this).hasClass('diff-base')){
-                $currSpecContent.find('input.isNewOrBase').val('new');
-                $currSpecContent.find('div.exist-base-lic-content input[type="radio"]').prop('checked',false);
-                $currSpecContent.find('div.exist-base-lic-content div.existing-base-content input[type="radio"]').prop('disabled',true);
-            }
-        });*/
+        svcNoteFunction();
     });
 
     function jumpToPagechangePage () {
@@ -176,12 +183,53 @@
         $('#mainForm').submit();
     }
 
-    function cancel() {
-        $('#saveApplicationAddress').modal('hide');
-    }
 
     function baseContinue() {
-        showWaiting();
-        submit('chooseAlign',null,'next');
+        $('#saveApplicationAddress').modal('hide');
+        $('input[name="MSNoteShow"]').val('1');
+    }
+
+    function svcNoteFunction() {
+        $('input[type="radio"]').on('click', function (){
+            checkSvcNoteSelect();
+        });
+    }
+    function checkSvcNoteSelect() {
+        var maxCount=${notContainedSvcSize};
+        var checkedCount=0;
+        $("input[type=radio]:checked").each(function() {
+            var attr = $(this).attr("id");
+            var svcCode= attr.substring(0,3);
+            var index= attr.substring(attr.length-1,attr.length);
+            if (index!=0){
+                checkedCount+=1;
+            }
+            if (svcCode=="CLB"){
+                toggleTag($('div.clbNote'),index==0)
+            }
+            if (svcCode=="RDS"){
+                toggleTag($('div.rdsNote'),index==0)
+            }
+        })
+        toggleTag($('div.svcNote'),checkedCount<maxCount)
+    }
+
+    function doAfterInitMemoryPage(){
+        svcNoteFunction();
+        checkSvcNoteSelect();
+    }
+
+    function toggleTag(ele, show) {
+        var $ele = getJqueryNode(ele);
+        if (isEmptyNode($ele)) {
+            return;
+        }
+        if (show) {
+            $ele.show();
+            $ele.removeClass('hidden');
+        } else {
+            $ele.hide();
+            $ele.addClass('hidden');
+        }
     }
 </script>

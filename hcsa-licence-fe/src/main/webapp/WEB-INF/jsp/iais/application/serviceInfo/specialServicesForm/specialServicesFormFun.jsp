@@ -50,6 +50,7 @@
             if ($("#errorMapIs").val() == 'error') {
                 if ($(v).find('.error-msg:not(:empty)').length > 0) {
                     $(v).find('.psnEdit').trigger("click");
+                    $(v).find('.error-msg:not(:empty)').closest('.panel-collapse').collapse('show');
                 }
             }
             if ($(v).find('div.personnel-content').length == 1) {
@@ -81,6 +82,7 @@
         }
         showWaiting();
         var $tgt = $(target).find('div.personnel-content').last();
+        var ROMDRT = $tgt.find('input.ROMDRT:checked').val();
         var src = $tgt.clone();
         $tgt.after(src);
         var $currContent = $(target).find('div.personnel-content').last();
@@ -95,6 +97,7 @@
         $currContent.find('.subSpeciality p').html('');
         $currContent.find('.othersubSpeciality p').html('');
         $currContent.find('.qualification p').html('');
+        fillValue($tgt.find('input.ROMDRT'), ROMDRT);
         refreshPerson($currContent, $(target).find('div.personnel-content').length - 1);
         disablePrsInfo($currContent, false,true);
         $(target).find('div.personnel-content').first().find('.assign-psn-item').html('1');

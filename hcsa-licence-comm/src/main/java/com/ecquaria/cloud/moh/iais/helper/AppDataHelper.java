@@ -2640,6 +2640,9 @@ public final class AppDataHelper {
                     int nmMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM);
                     int diMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR);
                     int nuMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR);
+                    int roMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_ONCOLOGIST);
+                    int mdMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_DOSIMETRIST);
+                    int rtMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST);
                     if (cgomaxCount != 0) {
                         List<AppSvcPrincipalOfficersDto> dtos = genKeyPersonnels(
                                 appSvcSpecialServiceInfoDto.getNewPsnKey(specialServiceSectionDto.getSvcCode(),
@@ -2723,6 +2726,21 @@ public final class AppDataHelper {
                         if (AppConsts.YES.equals(isPartEdit)||ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
                             setAppSvcSuplmFormDto(specialServiceSectionDto.getAppSvcSuplmFormDto(), prefix + i + j, request);
                         }
+                    }
+                    if (roMaxCount != 0) {
+                        List<AppSvcPersonnelDto> appSvcRadiationOncologist = getSpecialServiceInforamtionPerson(request, prefix + i + j,
+                                ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_ONCOLOGIST, "ro", specialServiceSectionDto.getAppSvcRadiationOncologist(), appType);
+                        specialServiceSectionDto.setAppSvcRadiationOncologist(appSvcRadiationOncologist);
+                    }
+                    if (mdMaxCount != 0) {
+                        List<AppSvcPersonnelDto> appSvcMedicalDosimetrist = getSpecialServiceInforamtionPerson(request, prefix + i + j,
+                                ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_DOSIMETRIST, "md", specialServiceSectionDto.getAppSvcMedicalDosimetrist(), appType);
+                        specialServiceSectionDto.setAppSvcMedicalDosimetrist(appSvcMedicalDosimetrist);
+                    }
+                    if (rtMaxCount != 0) {
+                        List<AppSvcPersonnelDto> appSvcRadiationTherapist = getSpecialServiceInforamtionPerson(request, prefix + i + j,
+                                ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST, "rt", specialServiceSectionDto.getAppSvcRadiationTherapist(), appType);
+                        specialServiceSectionDto.setAppSvcRadiationTherapist(appSvcRadiationTherapist);
                     }
                     j++;
                 }
@@ -3351,8 +3369,8 @@ public final class AppDataHelper {
                 } else if (getPageData) {
                     appSvcBusinessDto = new AppSvcBusinessDto();
                     boolean getOHData = true;
-                    String premisesType = appGrpPremisesDto.getPremisesType();
-                    /*if (ApplicationConsts.PREMISES_TYPE_MOBILE.equals(premisesType) || ApplicationConsts.PREMISES_TYPE_REMOTE.equals(
+                    /*String premisesType = appGrpPremisesDto.getPremisesType();
+                    if (ApplicationConsts.PREMISES_TYPE_MOBILE.equals(premisesType) || ApplicationConsts.PREMISES_TYPE_REMOTE.equals(
                             premisesType)) {
                         getOHData = false;
                     }*/
@@ -3369,6 +3387,7 @@ public final class AppDataHelper {
                     String businessName = ParamUtil.getString(request, "businessName" + i);
                     String contactNo = ParamUtil.getString(request, "contactNo" + i);
                     String emailAddr = ParamUtil.getString(request, "emailAddr" + i);
+                    String corporateWebsite = ParamUtil.getString(request, "corporateWebsite" + i);
 
                     if (getOHData) {
                         int weeklyLength = ParamUtil.getInt(request, "weeklyLength" + i);
@@ -3492,6 +3511,7 @@ public final class AppDataHelper {
                     appSvcBusinessDto.setBusinessName(businessName);
                     appSvcBusinessDto.setContactNo(contactNo);
                     appSvcBusinessDto.setEmailAddr(emailAddr);
+                    appSvcBusinessDto.setCorporateWebsite(corporateWebsite);
 
                     if (getOHData) {
                         appSvcBusinessDto.setWeeklyDtoList(weeklyDtoList);

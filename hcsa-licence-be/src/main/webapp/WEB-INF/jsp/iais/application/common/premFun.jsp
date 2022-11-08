@@ -126,7 +126,7 @@
         showTag($premContent.find('.retrieveAddr'));
         showTag($premContent.find('.addOpDiv'));
         let existData = $premContent.find('.chooseExistData').val();
-        if('1' == existData) {
+        if ('1' == existData) {
             if (isEmpty(isEdit) || !isEdit) {
                 checkPremDisabled($premContent, true);
             }
@@ -141,16 +141,16 @@
         checkEditBtn($premContent, false);
     }
 
-    function hideEditBtn ($premContent) {
-        let $target= $premContent.find('.removeEditDiv');
+    function hideEditBtn($premContent) {
+        let $target = $premContent.find('.removeEditDiv');
         if (isEmptyNode($target)) {
             return true;
         }
         return $target.is(':hidden');
     }
 
-    function checkEditBtn ($premContent, show) {
-        let $target= $premContent.find('.removeEditDiv');
+    function checkEditBtn($premContent, show) {
+        let $target = $premContent.find('.removeEditDiv');
         if (isEmptyNode($target)) {
             return;
         }
@@ -167,12 +167,12 @@
         hideTag($premContent.find('.retrieveAddr'));
         hideTag($premContent.find('.opDelDiv'));
         hideTag($premContent.find('.addOpDiv'));
-        let $target= $premContent.find('.premisesEdit');
+        let $target = $premContent.find('.premisesEdit');
         if (isEmptyNode($target)) {
             hideTag($premContent.find('.opDelDiv'));
         } else {
             let existData = $premContent.find('.chooseExistData').val();
-            if('1' == existData) {
+            if ('1' == existData) {
                 checkPremDisabled($premContent, true);
             } else {
                 showTag($premContent.find('.opDelDiv:not(:first)'));
@@ -197,7 +197,7 @@
         $('#addPremBtn').on('click', addPremEventFun);
     }
 
-    function addPremEventFun () {
+    function addPremEventFun() {
         showWaiting();
         var $target = $('div.premContent:last');
         var premType = $target.find('input.premTypeRadio:checked').val();
@@ -271,11 +271,11 @@
         $premContent.find('div.uploadFileShowDiv').empty();
     }
 
-    function checkRemoveBtn ($premContent, index) {
+    function checkRemoveBtn($premContent, index) {
         if (isEmpty(index)) {
             return;
         }
-        let $target= $premContent.find('.removeEditDiv');
+        let $target = $premContent.find('.removeEditDiv');
         if (isEmptyNode($target)) {
             return;
         }
@@ -288,6 +288,7 @@
     }
 
     var premTypeEvent = function () {
+        $('.premTypeRadio').unbind('click');
         $('.premTypeRadio').on('click', function () {
             premTypeEventFun($(this));
             let premType = getValue($(this));
@@ -298,7 +299,7 @@
         });
     }
 
-    function premTypeEventFun ($target) {
+    function premTypeEventFun($target) {
         clearErrorMsg();
         var $premContent = $target.closest('div.premContent');
         var premType = $premContent.find('.premTypeRadio:checked').val();
@@ -314,9 +315,11 @@
     }
 
     var premSelectEvent = function () {
-        $('.premSelect').change(function () {
+        $('.premSelect').unbind('change');
+        $('.premSelect').on('change', function () {
             showWaiting();
             clearErrorMsg();
+            //checkAddPremBtn();
             var premSelectVal = $(this).val();
             var $premContent = $(this).closest('div.premContent');
             $premContent.find('.premSelValue').val(premSelectVal);
@@ -416,16 +419,17 @@
 
     function autoCheckPremiseType(premType) {
         //const premType = 'REMOTE';
-        let $premType = $('input[value="' + premType + '"');
+        let $premType = $('input.premTypeRadio[value="' + premType + '"');
         if (isEmptyNode($premType) || isChecked($premType)) {
             return;
         }
         let nodeChecked = false;
         let $target = null;
-        $premType.each(function() {
+        $premType.each(function () {
             if ($(this).is(':checked')) {
                 nodeChecked = true;
             } else if (isEmptyNode($target)) {
+                // check the prem type at the same level
                 let name = $(this).attr('name');
                 if (!isChecked($('input[name="' + name + '"'))) {
                     $target = $(this);
@@ -444,7 +448,7 @@
 
     var checkSelectedLicenceEvent = function () {
         $('input[name="selectedLicence"]').unbind('click');
-        $('input[name="selectedLicence"]').on('click', function() {
+        $('input[name="selectedLicence"]').on('click', function () {
             checkSelectedLicence($(this));
         });
     }
@@ -495,7 +499,7 @@
 
     var easMtsUseOnlyEvent = function () {
         $('.useType').unbind('click');
-        $('.useType').on('click', function() {
+        $('.useType').on('click', function () {
             let $premContent = $(this).closest('div.premContent');
             checkEasMtsUseOnly($premContent);
         });
@@ -648,7 +652,7 @@
         });
         var length = $target.find('.operationDiv').length;
         $target.find('.addressSize').val(length)
-        console.log(length,'=========>>>length===>>')
+        console.log(length, '=========>>>length===>>')
         $target.find('.opLength').val(length);
     }
 
@@ -659,9 +663,9 @@
         clearFields(src);
         $premContent.find('div.addOpDiv').before(src);
         let index = $('div.premContent').index($premContent)
-        console.log(index,'index=====>>>')
-        let val = $premContent.find('.MMM').val() ? index-1 : index
-        console.log(val,'val=---=-=-=-=->>')
+        console.log(index, 'index=====>>>')
+        let val = $premContent.find('.MMM').val() ? index - 1 : index
+        console.log(val, 'val=---=-=-=-=->>')
         refreshFloorUnit($premContent, val);
         delFloorUnitEvent($premContent);
     }
@@ -686,7 +690,7 @@
         $target.find('div.operationDivGroup').find('.opDel').on('click', function () {
             var $premContent = $(this).closest('div.premContent');
             let index = $('div.premContent').index($premContent)
-            let val = $premContent.find('.MMM').val() ? index-1 : index
+            let val = $premContent.find('.MMM').val() ? index - 1 : index
             $(this).closest('div.operationDiv').remove();
             refreshFloorUnit($premContent, val);
             doEditPremise($premContent);

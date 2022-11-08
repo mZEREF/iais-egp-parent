@@ -288,6 +288,7 @@
     }
 
     var premTypeEvent = function () {
+        $('.premTypeRadio').unbind('click');
         $('.premTypeRadio').on('click', function () {
             premTypeEventFun($(this));
             let premType = getValue($(this));
@@ -314,7 +315,8 @@
     }
 
     var premSelectEvent = function () {
-        $('.premSelect').change(function () {
+        $('.premSelect').unbind('change');
+        $('.premSelect').on('change', function () {
             showWaiting();
             clearErrorMsg();
             checkAddPremBtn();
@@ -417,7 +419,7 @@
 
     function autoCheckPremiseType(premType) {
         //const premType = 'REMOTE';
-        let $premType = $('input[value="' + premType + '"');
+        let $premType = $('input.premTypeRadio[value="' + premType + '"');
         if (isEmptyNode($premType) || isChecked($premType)) {
             return;
         }
@@ -427,6 +429,7 @@
             if ($(this).is(':checked')) {
                 nodeChecked = true;
             } else if (isEmptyNode($target)) {
+                // check the prem type at the same level
                 let name = $(this).attr('name');
                 if (!isChecked($('input[name="' + name + '"'))) {
                     $target = $(this);

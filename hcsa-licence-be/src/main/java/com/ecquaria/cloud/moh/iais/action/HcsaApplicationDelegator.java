@@ -44,7 +44,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicat
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppSpecifiedLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
@@ -500,25 +499,18 @@ public class HcsaApplicationDelegator {
         if(hasEmailAttaDoc){
             ParamUtil.setRequestAttr(bpc.request, "hasEmailAttaDoc", hasEmailAttaDoc);
         }
-        String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
-        List<AppPremSubSvcRelDto> specialServiceList;
-        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
-            specialServiceList=applicationViewDto.getSpecialRfcShowDtos();
-        }else {
-            specialServiceList=applicationViewDto.getAppPremSpecialSubSvcRelDtoList();
+        List<AppPremSubSvcRelDto> specialServiceList=applicationViewDto.getAppPremSpecialSubSvcRelDtoList();
+        if (IaisCommonUtils.isNotEmpty(specialServiceList)){
+            ParamUtil.setRequestAttr(bpc.request, "changedSpecialServiceList", specialServiceList.stream()
+                    .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE.equals(dto.getActCode()))
+                    .collect(Collectors.toList()));
         }
-        ParamUtil.setRequestAttr(bpc.request, "changedSpecialServiceList", specialServiceList.stream()
-                .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE.equals(dto.getActCode()))
-                .collect(Collectors.toList()));
-        List<AppPremSubSvcRelDto> otherServiceList;
-        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
-            otherServiceList=applicationViewDto.getOthersRfcShowDtos();
-        }else {
-            otherServiceList=applicationViewDto.getAppPremOthersSubSvcRelDtoList();
+        List<AppPremSubSvcRelDto> otherServiceList=applicationViewDto.getAppPremOthersSubSvcRelDtoList();
+        if (IaisCommonUtils.isNotEmpty(otherServiceList)){
+            ParamUtil.setRequestAttr(bpc.request, "changedOtherServiceList", otherServiceList.stream()
+                    .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE.equals(dto.getActCode()))
+                    .collect(Collectors.toList()));
         }
-        ParamUtil.setRequestAttr(bpc.request, "changedOtherServiceList", otherServiceList.stream()
-                .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE.equals(dto.getActCode()))
-                .collect(Collectors.toList()));
         log.debug(StringUtil.changeForLog("the do prepareData end ...."));
     }
 
@@ -2794,6 +2786,14 @@ public class HcsaApplicationDelegator {
                 CopyUtil.copyMutableObjectList(applicationDtoList, saveApplicationDtoList);
                 applicationDtoList = removeFastTrackingAndTransfer(applicationDtoList);
                 String ao1Ao2Approve = (String) ParamUtil.getSessionAttr(bpc.request, "Ao1Ao2Approve");
+                if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)){
+                    List<ApplicationDto> applicationDtos=IaisCommonUtils.genNewArrayList();
+                    applicationDtos.add(applicationDto);
+                    //get and set return fee
+                    applicationDtos = hcsaConfigClient.returnFee(applicationDtos).getEntity();
+                    //save return fee
+                    saveRejectReturnFee(applicationDtos, broadcastApplicationDto);
+                }
                 boolean isAo1Ao2Approve = "Y".equals(ao1Ao2Approve);
                 boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList, applicationDto.getApplicationNo(),
                         ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
@@ -2824,14 +2824,6 @@ public class HcsaApplicationDelegator {
                         broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
 
                         if (needUpdateGroupStatus) {
-                            if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)){
-                                List<ApplicationDto> applicationDtos=IaisCommonUtils.genNewArrayList();
-                                applicationDtos.add(applicationDto);
-                                //get and set return fee
-                                applicationDtos = hcsaConfigClient.returnFee(applicationDtos).getEntity();
-                                //save return fee
-                                saveRejectReturnFee(applicationDtos, broadcastApplicationDto);
-                            }
                             //clearApprovedHclCodeByExistRejectApp
                             applicationViewService.clearApprovedHclCodeByExistRejectApp(saveApplicationDtoList, applicationGroupDto.getAppType(), broadcastApplicationDto.getApplicationDto());
                         }
@@ -3205,13 +3197,15 @@ public class HcsaApplicationDelegator {
             if ( !ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationDto.getApplicationType()) && !ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())) {
                 AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
                 Double returnFee = applicationDto.getReturnFee();
-                if (returnFee == null || MiscUtil.doubleEquals(returnFee, 0d)) {
-                    continue;
-                }
                 appReturnFeeDto.setStatus("paying");
+                if (returnFee == null || MiscUtil.doubleEquals(returnFee, 0.0d)) {
+                    appReturnFeeDto.setReturnAmount(0.0d);
+                    appReturnFeeDto.setStatus("success");
+                }else {
+                    appReturnFeeDto.setReturnAmount(returnFee);
+                }
                 appReturnFeeDto.setTriggerCount(0);
                 appReturnFeeDto.setApplicationNo(applicationDto.getApplicationNo());
-                appReturnFeeDto.setReturnAmount(returnFee);
                 appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_REJECT);
                 saveReturnFeeDtos.add(appReturnFeeDto);
 //                applicationService.saveAppReturnFee(appReturnFeeDto);
@@ -4905,7 +4899,7 @@ public class HcsaApplicationDelegator {
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         String corpPassUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + "/main-web/eservice/INTERNET/FE_Landing";
         ApplicationDto applicationDto =applicationViewDto.getApplicationDto();
-        HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getBaseServiceId());
+        HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
         String applicationNo=applicationDto.getApplicationNo();
         String applicationTypeShow = MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType());
 
@@ -4923,11 +4917,15 @@ public class HcsaApplicationDelegator {
                         applicationViewDto.getAppPremisesCorrelationId(), HcsaConsts.SERVICE_TYPE_SPECIFIED)
                 .getEntity();
         if (!IaisCommonUtils.isEmpty(appPremSubSvcRelDtos)) {
+            String[] ALPHABET_ARRAY_PROTOTYPE = new String[]{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n",
+                    "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
+            int i=0;
             StringBuilder svcNameLicNo = new StringBuilder();
             for (AppPremSubSvcRelDto specSvc : appPremSubSvcRelDtos) {
                 HcsaServiceDto specServiceDto = HcsaServiceCacheHelper.getServiceById(specSvc.getSvcId());
                 String svcName1 = specServiceDto.getSvcName();
-                svcNameLicNo.append("<p>    ").append(svcName1).append("</p>");
+                String index=ALPHABET_ARRAY_PROTOTYPE[i++];
+                svcNameLicNo.append("<p>").append(index).append(")&nbsp;&nbsp;").append(svcName1).append("</p>");
 
             }
             map.put("isSpecial", "Y");

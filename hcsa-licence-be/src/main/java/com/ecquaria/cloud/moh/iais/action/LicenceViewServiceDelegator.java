@@ -255,6 +255,13 @@ public class LicenceViewServiceDelegator {
         if (appGrpPremisesDtoList != null) {
             String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
+                /*
+                 * 5.2.3 (4). If the address of the Mode of Service Delivery keyed in by applicant is currently used by a different
+                 * licensee, the System will indicate the following information of another licensee to the ASO:
+                 * a.	Name of licensee
+                 * b.	Business Name (Mode of Service Delivery)
+                 * c.	Service Nam
+                 */
                 String premisesType = appGrpPremisesDto.getPremisesType();
                 String checkhciName = appGrpPremisesDto.getHciName();
                 if (checkhciName != null) {

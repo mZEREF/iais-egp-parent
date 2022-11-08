@@ -11,7 +11,7 @@
         </div>
         <div class="col-xs-12 col-md-6">
             <h3>
-                You may choose to align to one of following licences.
+                You may choose to align to one of the following licences.
             </h3>
         </div>
     </div>
@@ -48,7 +48,7 @@
         </div>
         <div class="col-xs-12 col-md-6">
             <h3>
-                You may choose to align to one of following applications.
+                You may choose to align to one of the following applications.
             </h3>
         </div>
     </div>

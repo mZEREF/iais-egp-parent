@@ -276,7 +276,10 @@
         let $conNodes = $('[data-parent*="' + curr + '"][data-seq="' + seq + '"][data-prefix="' + prefix + '"]');
         let currVal = getValue($tag);
         if (!isEmptyNode($conNodes)) {
-            if ($tag.is(':hidden')) {
+            // only check hidden class
+            // if use is(':hidden') to check it, and the target node is under collapsed pannel,
+            // the behavior is wrong
+            if ($tag.hasClass('hidden')) {
                 $conNodes.each(function () {
                     let $v = $(this);
                     let $target = $v.closest('.item-record');

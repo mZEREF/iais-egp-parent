@@ -590,9 +590,11 @@ public class ServiceMenuDelegator {
         }
         List<String> svcNameList = IaisCommonUtils.genNewArrayList();
         List<String> svcIdList = IaisCommonUtils.genNewArrayList();
+        ParamUtil.clearSession(bpc.request,"notContained"+AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY,"notContained"+AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES);
         for(HcsaServiceDto hcsaServiceDto:notContainedSvc){
             svcNameList.add(hcsaServiceDto.getSvcName());
             svcIdList.add(hcsaServiceDto.getId());
+            ParamUtil.setSessionAttr(bpc.request,"notContained"+hcsaServiceDto.getSvcCode(), AppConsts.YES);
         }
         Set<String> premisesTypeList=IaisCommonUtils.genNewHashSet();
         premisesTypeList.add(ApplicationConsts.PREMISES_TYPE_PERMANENT);
@@ -650,6 +652,7 @@ public class ServiceMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request,NO_EXIST_BASE_LIC, noExistBaseLic);
         ParamUtil.setSessionAttr(bpc.request, NO_EXIST_BASE_APP, noExistBaseApp);
         ParamUtil.setSessionAttr(bpc.request, "notContainedSvc", (Serializable) notContainedSvc);
+        ParamUtil.setSessionAttr(bpc.request, "notContainedSvcSize",notContainedSvc.size());
     }
 
     public void doChooseBaseSvc(BaseProcessClass bpc){

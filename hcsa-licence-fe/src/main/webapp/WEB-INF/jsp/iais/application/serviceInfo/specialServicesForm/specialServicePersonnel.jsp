@@ -37,6 +37,15 @@
             <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR}">
                 <c:set var="personList" value="${specialServiceSectionDto.appSvcNurseDirectorDtoList}" />
             </c:when>
+            <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_ONCOLOGIST}">
+                <c:set var="personList" value="${specialServiceSectionDto.appSvcRadiationOncologist}" />
+            </c:when>
+            <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_DOSIMETRIST}">
+                <c:set var="personList" value="${specialServiceSectionDto.appSvcMedicalDosimetrist}" />
+            </c:when>
+            <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST}">
+                <c:set var="personList" value="${specialServiceSectionDto.appSvcRadiationTherapist}" />
+            </c:when>
         </c:choose>
 
         <c:choose>
@@ -152,6 +161,52 @@
                         <%@include file="specialServiceDetail.jsp" %>
                     </c:forEach>
                 </c:when>
+                <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_ONCOLOGIST}">
+                    <c:set var="title" value="Radiation Oncologist"/>
+                    <label class="control-label control-set-font control-font-label">
+                        <div class="app-title">
+                            <c:out value="${title}"/>
+                        </div>
+                    </label>
+                    <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="ro">
+                        <c:set var="index" value="${ro.index}"/>
+                        <c:set value="ro" var="type"/>
+                        <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
+                        <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}ro"/>
+                        <%@include file="specialServicesPersonnels.jsp" %>
+                    </c:forEach>
+                </c:when>
+                <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_DOSIMETRIST}">
+                    <c:set var="title" value="Medical Dosimetrist"/>
+                    <label class="control-label control-set-font control-font-label">
+                        <div class="app-title">
+                            <c:out value="${title}"/>
+                        </div>
+                    </label>
+                    <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="md">
+                        <c:set var="index" value="${md.index}"/>
+                        <c:set value="md" var="type"/>
+                        <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
+                        <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}md"/>
+                        <%@include file="specialServicesPersonnels.jsp" %>
+                    </c:forEach>
+                </c:when>
+
+                <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST}">
+                    <c:set var="title" value="Radiation Therapist"/>
+                    <label class="control-label control-set-font control-font-label">
+                        <div class="app-title">
+                            <c:out value="${title}"/>
+                        </div>
+                    </label>
+                    <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="rt">
+                        <c:set var="index" value="${rt.index}"/>
+                        <c:set value="rt" var="type"/>
+                        <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
+                        <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}rt"/>
+                        <%@include file="specialServicesPersonnels.jsp" %>
+                    </c:forEach>
+                </c:when>
             </c:choose>
             <iais:row>
                 <div class="col-md-12 col-xs-12 addDiv <c:if test="${personCount >= pMax.value}">hidden</c:if>">
@@ -189,6 +244,15 @@
                                 <span style="">Add more</span>
                             </span>
                         </c:if>
+
+                        <c:if test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_ONCOLOGIST
+                                    ||psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_DOSIMETRIST
+                                    ||psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST}">
+                            <span class="addBtn" style="color:deepskyblue;cursor:pointer;">
+                                <span style="">+ Add Another ${title}</span>
+                            </span>
+                        </c:if>
+
                     </c:if>
                 </div>
             </iais:row>
