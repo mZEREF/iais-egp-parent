@@ -4899,7 +4899,7 @@ public class HcsaApplicationDelegator {
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
         String corpPassUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + "/main-web/eservice/INTERNET/FE_Landing";
         ApplicationDto applicationDto =applicationViewDto.getApplicationDto();
-        HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getBaseServiceId());
+        HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
         String applicationNo=applicationDto.getApplicationNo();
         String applicationTypeShow = MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType());
 
