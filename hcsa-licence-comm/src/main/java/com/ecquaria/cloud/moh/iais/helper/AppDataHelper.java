@@ -3338,8 +3338,8 @@ public final class AppDataHelper {
                 } else if (getPageData) {
                     appSvcBusinessDto = new AppSvcBusinessDto();
                     boolean getOHData = true;
-                    String premisesType = appGrpPremisesDto.getPremisesType();
-                    /*if (ApplicationConsts.PREMISES_TYPE_MOBILE.equals(premisesType) || ApplicationConsts.PREMISES_TYPE_REMOTE.equals(
+                    /*String premisesType = appGrpPremisesDto.getPremisesType();
+                    if (ApplicationConsts.PREMISES_TYPE_MOBILE.equals(premisesType) || ApplicationConsts.PREMISES_TYPE_REMOTE.equals(
                             premisesType)) {
                         getOHData = false;
                     }*/
@@ -3356,6 +3356,7 @@ public final class AppDataHelper {
                     String businessName = ParamUtil.getString(request, "businessName" + i);
                     String contactNo = ParamUtil.getString(request, "contactNo" + i);
                     String emailAddr = ParamUtil.getString(request, "emailAddr" + i);
+                    String corporateWebsite = ParamUtil.getString(request, "corporateWebsite" + i);
 
                     if (getOHData) {
                         int weeklyLength = ParamUtil.getInt(request, "weeklyLength" + i);
@@ -3479,6 +3480,7 @@ public final class AppDataHelper {
                     appSvcBusinessDto.setBusinessName(businessName);
                     appSvcBusinessDto.setContactNo(contactNo);
                     appSvcBusinessDto.setEmailAddr(emailAddr);
+                    appSvcBusinessDto.setCorporateWebsite(corporateWebsite);
 
                     if (getOHData) {
                         appSvcBusinessDto.setWeeklyDtoList(weeklyDtoList);

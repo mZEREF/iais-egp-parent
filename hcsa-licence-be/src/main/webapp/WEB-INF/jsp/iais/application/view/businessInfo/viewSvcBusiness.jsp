@@ -31,7 +31,12 @@
                     <c:out value="${businessDto.emailAddr}"/>
                 </iais:value>
             </iais:row>
-
+            <iais:row>
+                <iais:field width="5" value="Corporate Website"/>
+                <iais:value width="7" cssClass="col-md-7" display="true">
+                    <c:out value="${businessDto.corporateWebsite}"/>
+                </iais:value>
+            </iais:row>
 
             <c:if test="${!isSpecialService}">
                 <iais:row>
