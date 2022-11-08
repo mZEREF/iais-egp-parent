@@ -1133,15 +1133,15 @@ public class LicenceServiceImpl implements LicenceService {
                         appPremisesCorrelationDto.getId(), HcsaConsts.SERVICE_TYPE_SPECIFIED)
                 .getEntity();
         if (!IaisCommonUtils.isEmpty(appPremSubSvcRelDtos)) {
-            String[] ALPHABET_ARRAY_PROTOTYPE = new String[]{"a)", "b)", "c)", "d)", "e)", "f)", "g)", "h)", "i)", "j)", "k)", "l)", "m)", "n)",
-                    "o)", "p)", "q)", "r)", "s)", "t)", "u)", "v)", "w)", "x)", "y)", "z)"};
+            String[] ALPHABET_ARRAY_PROTOTYPE = new String[]{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n",
+                    "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
             int i=0;
             StringBuilder svcNameLicNo = new StringBuilder();
             for (AppPremSubSvcRelDto specSvc : appPremSubSvcRelDtos) {
                 HcsaServiceDto specServiceDto = HcsaServiceCacheHelper.getServiceById(specSvc.getSvcId());
                 String svcName1 = specServiceDto.getSvcName();
                 String index=ALPHABET_ARRAY_PROTOTYPE[i++];
-                svcNameLicNo.append("<p>").append(index).append(svcName1).append("</p>");
+                svcNameLicNo.append("<p>").append(index).append(")&nbsp;&nbsp;").append(svcName1).append("</p>");
             }
             map.put("isSpecial", "Y");
             map.put("ss1ss2", svcNameLicNo.toString());
