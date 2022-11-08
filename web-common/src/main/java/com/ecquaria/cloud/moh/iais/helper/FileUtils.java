@@ -184,9 +184,8 @@ public final class FileUtils {
         if (file.exists()) {
             log.info("Start to copy ===>");
             String srcName = file.getName();
-            String path = dst + srcName;
-            log.info("path: {}",path);
-            File dstFile = MiscUtil.generateFile(path);
+            log.info("path: {}",dst);
+            File dstFile = MiscUtil.generateFile(dst, srcName);
             MiscUtil.deleteFile(dstFile);
             if (dstFile.createNewFile()) {
                 org.apache.commons.io.FileUtils.copyFile(file, dstFile);
