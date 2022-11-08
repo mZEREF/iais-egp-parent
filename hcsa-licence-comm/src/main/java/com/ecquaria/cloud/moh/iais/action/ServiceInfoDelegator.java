@@ -1921,16 +1921,16 @@ public class ServiceInfoDelegator {
                     return true;
                 }
             }
-            if (StringUtil.isIn(stepCode, skipList)) {
+        }
+        if (StringUtil.isIn(stepCode, skipList)) {
+            return true;
+        }
+        //no special service,skip special_service_information
+        if (HcsaConsts.STEP_SPECIAL_SERVICES_FORM.equals(stepCode)) {
+            List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
+            if (appPremSpecialisedDtoList == null || appPremSpecialisedDtoList.isEmpty() || appPremSpecialisedDtoList.stream()
+                    .noneMatch(AppPremSpecialisedDto::isExistCheckedRels)) {
                 return true;
-            }
-            //no special service,skip special_service_information
-            if (HcsaConsts.STEP_SPECIAL_SERVICES_FORM.equals(stepCode)) {
-                List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
-                if (appPremSpecialisedDtoList == null || appPremSpecialisedDtoList.isEmpty() || appPremSpecialisedDtoList.stream()
-                        .noneMatch(AppPremSpecialisedDto::isExistCheckedRels)) {
-                    return true;
-                }
             }
         }
         return false;
