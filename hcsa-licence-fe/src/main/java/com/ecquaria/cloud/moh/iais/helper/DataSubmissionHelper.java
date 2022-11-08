@@ -299,9 +299,11 @@ public final class DataSubmissionHelper {
         if (DataSubmissionConsts.DS_CYCLE_AR.equals(lastCycle) && DsHelper.isSpecialStage(lastStage)) {
             lastStage = selectionDto.getAdditionalStage();
         }
-        if (DataSubmissionConsts.DS_CYCLE_NON.equals(selectionDto.getCycle()) && !DataSubmissionHelper.startNewCycle(lastStatus)) {
+        if (DataSubmissionConsts.DS_CYCLE_NON.equals(selectionDto.getCycle())) {
             List<String> result = IaisCommonUtils.genNewArrayList(1);
-            result.add(selectionDto.getStage());
+            if (StringUtil.isNotEmpty(selectionDto.getStage())) {
+                result.add(selectionDto.getStage());
+            }
             return result;
         }
         List<String> result = getNextStagesForAr(lastCycle, lastStage, lastStatus, undergoingCycle, frozenOocyte, frozenEmbryo, freshNatural, freshStimulated);

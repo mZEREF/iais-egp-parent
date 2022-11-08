@@ -900,7 +900,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         List<ARCycleStageDto> arCycleStageDtos = new ArrayList<>();
         List<String> options = new ArrayList<>();
         if(selectionDto != null) {
-            String cycle = selectionDto.getCycle();
+            String cycle = selectionDto.getNavCurrentCycle();
             if (DataSubmissionConsts.DS_CYCLE_AR.equals(cycle)) {
                 options = DataSubmissionHelper.getAllARCycleStages();
             } else if (DataSubmissionConsts.DS_CYCLE_IUI.equals(cycle)) {
@@ -967,9 +967,10 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             dataSubmissionDto.setAmendReasonOther(null);
             if (arSuper.getSelectionDto() != null) {
                 CycleStageSelectionDto selectionDto = arSuper.getSelectionDto();
-                if (StringUtil.isEmpty(selectionDto.getStage()) || StringUtil.isEmpty(selectionDto.getCycle())) {
+                if (StringUtil.isEmpty(selectionDto.getStage()) || StringUtil.isEmpty(selectionDto.getCycle()) || StringUtil.isEmpty(selectionDto.getNavCurrentCycle())) {
                     selectionDto.setStage(dataSubmissionDto.getCycleStage());
                     selectionDto.setCycle(arSuper.getCycleDto().getCycleType());
+                    selectionDto.setNavCurrentCycle(arSuper.getCycleDto().getCycleType());
                 }
             }
         }

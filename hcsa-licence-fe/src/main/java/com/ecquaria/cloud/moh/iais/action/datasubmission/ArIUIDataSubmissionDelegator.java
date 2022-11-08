@@ -170,7 +170,7 @@ public class ArIUIDataSubmissionDelegator {
                 ParamUtil.setRequestAttr(request, CYCLE_SELECT, cycleRadio);
                 String hasCycle = ParamUtil.getString(request, HAS_CYCLE);
                 currentSuper.getDataSubmissionDto().setCycleStage(nextStage);
-                startNewCycle = start==true;
+                startNewCycle = start==true && ("newCycle".equals(cycleRadio) || cycleRadio == null);
                 startNunCycle = start==false && "newCycle".equals(cycleRadio);
                 if (startNewCycle && StringUtil.isEmpty(nextStage)) {
                     errorMap.put("nextStage", "GENERAL_ERR0006");
