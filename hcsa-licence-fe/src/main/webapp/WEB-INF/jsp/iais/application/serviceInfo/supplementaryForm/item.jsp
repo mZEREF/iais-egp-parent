@@ -28,6 +28,15 @@
                 </div>
             </div>
         </c:when>
+        <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_GROUP_TITLE}">
+            <div class="col-xs-12">
+                <div class="bold item-label group-title" ${itemData}>
+                    <c:out value="${itemConfigDto.displayInfo}"/>
+                    <c:if test="${itemConfigDto.mandatoryType == 1}"><span class="mandatory">*</span></c:if>
+                    <span class="group-index"></span>
+                </div>
+            </div>
+        </c:when>
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_LABEL}">
             <c:if test="${'SPECCON01' == item.specialCondition || 'SPECCON04' == item.specialCondition}" var="speLabel">
                 <iais:field width="5" cssClass="col-md-5 item-label" mandatory="${itemConfigDto.mandatoryType == 1}"

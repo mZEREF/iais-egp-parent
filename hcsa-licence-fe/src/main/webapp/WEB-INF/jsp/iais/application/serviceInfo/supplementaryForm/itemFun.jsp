@@ -61,7 +61,7 @@
             let visibled = false;
             if (!isEmptyNode($target)) {
                 $target.each(function () {
-                    if ($(this).is(':visible')) {
+                    if (!$(this).hasClass('hidden')) {
                         visibled = true;
                     }
                 });
@@ -287,7 +287,7 @@
                     // check add more button
                     let group = $v.data('group');
                     if (!isEmpty(group)) {
-                        checkAddMore(group, prefix, false);
+                        checkAddMore(group, prefix);
                     }
                     checkItemMandatory($v);
                 });
@@ -336,7 +336,7 @@
                     toggleTag($target, isIncluded);
                     // check add more button
                     let group = $v.data('group');
-                    checkAddMore(group,prefix,isIncluded)
+                    //checkAddMore(group,prefix,isIncluded)
                     checkItemMandatory($v);
                 } else if ('4' == mandatory) {
                     let $target = $v.closest('.item-record');
@@ -382,17 +382,28 @@
                             $targetLabel.append('<span class="mandatory">*</span>');
                         }
                         toggleTag($target, isIncluded);
-                        checkAddMore(group,prefix,isIncluded)
+                        //checkAddMore(group,prefix,isIncluded)
                         checkItemMandatory($newV);
                     }
                     // check add more button
-                    toggleTag($('.addMoreDiv[data-group="' + group + '"][data-prefix="' + prefix + '"]'), isIncluded);
+                    //toggleTag($('.addMoreDiv[data-group="' + group + '"][data-prefix="' + prefix + '"]'), isIncluded);
+                    checkAddMore(group, prefix);
                 }
             });
         }
     }
 
-    function checkAddMore(group, prefix, show) {
+    function checkAddMore(group, prefix) {
+        let $items = $('[data-group="' + group + '"][data-prefix="' + prefix + '"]').closest('.item-record');
+        if (isEmptyNode($items)) {
+            return;
+        }
+        let show = false;
+        $items.each(function (idx, ele) {
+            if (!$(ele).hasClass('hidden')) {
+                show = true;
+            }
+        });
         if (!show) {
             hideTag($('.addMoreDiv[data-group="' + group + '"][data-prefix="' + prefix + '"]'));
             $('.removeEditRow [data-group="' + group + '"][data-prefix="' + prefix + '"]:not([data-seq="0"])').closest('.removeEditRow').remove();
