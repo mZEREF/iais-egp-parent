@@ -2631,20 +2631,20 @@ public final class AppDataHelper {
                 int j = 0;
                 for (SpecialServiceSectionDto specialServiceSectionDto : appSvcSpecialServiceInfoDto.getSpecialServiceSectionDtoList()) {
                     LinkedHashMap<String, Integer> maxCount = specialServiceSectionDto.getMaxCount();
-                    int cgomaxCount = maxCount.get(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
-                    int slMaxCount = maxCount.get(ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER);
-                    int nicMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE);
-                    int rsoMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER);
-                    int drMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR);
-                    int mpMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST);
-                    int rpMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL);
-                    int nmMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM);
-                    int diMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR);
-                    int nuMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR);
-                    int roMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_ONCOLOGIST);
-                    int mdMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_DOSIMETRIST);
-                    int rtMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST);
-                    int cqmpMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_CQMP);
+                    int cgomaxCount = maxCount.getOrDefault(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO,0);
+                    int slMaxCount = maxCount.getOrDefault(ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER,0);
+                    int nicMaxCount = maxCount.getOrDefault(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE,0);
+                    int rsoMaxCount = maxCount.getOrDefault(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER,0);
+                    int drMaxCount = maxCount.getOrDefault(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR,0);
+                    int mpMaxCount = maxCount.getOrDefault(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST,0);
+                    int rpMaxCount = maxCount.getOrDefault(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL,0);
+                    int nmMaxCount = maxCount.getOrDefault(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM,0);
+                    int diMaxCount = maxCount.getOrDefault(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR,0);
+                    int nuMaxCount = maxCount.getOrDefault(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR,0);
+                    int roMaxCount = maxCount.getOrDefault(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_ONCOLOGIST,0);
+                    int mdMaxCount = maxCount.getOrDefault(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_DOSIMETRIST,0);
+                    int rtMaxCount = maxCount.getOrDefault(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST,0);
+                    int cqmpMaxCount = maxCount.getOrDefault(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_CQMP,0);
                     if (cgomaxCount != 0) {
                         List<AppSvcPrincipalOfficersDto> dtos = genKeyPersonnels(
                                 appSvcSpecialServiceInfoDto.getNewPsnKey(specialServiceSectionDto.getSvcCode(),
