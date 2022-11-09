@@ -207,6 +207,23 @@
                         <%@include file="specialServicesPersonnels.jsp" %>
                     </c:forEach>
                 </c:when>
+
+                <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_CQMP}">
+                    <c:set var="title" value="Clinically Qualified Medical Physicist"/>
+                    <label class="control-label control-set-font control-font-label">
+                        <div class="app-title">
+                            <c:out value="${title}"/>
+                        </div>
+                    </label>
+                    <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="cqmp">
+                        <c:set var="index" value="${cqmp.index}"/>
+                        <c:set value="cqmp" var="type"/>
+                        <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
+                        <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}cqmp"/>
+                        <%@include file="specialServicesPersonnels.jsp" %>
+                    </c:forEach>
+                </c:when>
+
             </c:choose>
             <iais:row>
                 <div class="col-md-12 col-xs-12 addDiv <c:if test="${personCount >= pMax.value}">hidden</c:if>">
@@ -247,7 +264,8 @@
 
                         <c:if test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_ONCOLOGIST
                                     ||psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_DOSIMETRIST
-                                    ||psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST}">
+                                    ||psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST
+                                    ||psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_CQMP}">
                             <span class="addBtn" style="color:deepskyblue;cursor:pointer;">
                                 <span style="">+ Add Another ${title}</span>
                             </span>

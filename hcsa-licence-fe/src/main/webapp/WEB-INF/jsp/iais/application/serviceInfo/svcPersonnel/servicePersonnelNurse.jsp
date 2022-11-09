@@ -3,6 +3,10 @@
     <input type="hidden" class="not-refresh " name="${logo}nuCount" value="size"/>
     <input type="hidden" class="not-refresh indexNo" name="${logo}indexNo" value="${appSvcPersonnelDto.indexNo}"/>
     <input type="hidden" class="not-refresh isPartEdit" name="${logo}isPartEdit" value="0"/>
+    <input type="hidden" class="not-refresh not-clear nurse" value="0"/>
+    <c:set var="isSpeciality" value="${not empty appSvcPersonnelDto.speciality}"/>
+    <c:set var="isSubSpeciality" value="${not empty appSvcPersonnelDto.subSpeciality}"/>
+    <c:set var="isSpecialityOther" value="${not empty appSvcPersonnelDto.specialityOther}"/>
     <iais:row cssClass="edit-content">
         <c:if test="${canEdit}">
             <div class="text-right app-font-size-16">
@@ -149,14 +153,14 @@
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" value="Other Specialties"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="100" type="text" cssClass="specialityOther" name="${logo}specialityOther${index}"
+            <iais:input maxLength="100" type="text" cssClass="specialityOther nurseSpecial" name="${logo}specialityOther${index}"
                         value="${appSvcPersonnelDto.specialityOther}"/>
         </iais:value>
     </iais:row>
 
     <%--  Date when specialty was gotten  --%>
     <iais:row>
-        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Date when specialty was gotten"/>
+        <iais:field width="5" cssClass="col-md-5 SpecialtyGetDate" mandatory="${isSpeciality || isSubSpeciality || isSpecialityOther ? 'true' : 'false'}" value="Date when specialty was obtained"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:datePicker cssClass="specialtyGetDate" name="${logo}specialtyGetDate${index}"
                              value="${appSvcPersonnelDto.specialtyGetDate}"/>

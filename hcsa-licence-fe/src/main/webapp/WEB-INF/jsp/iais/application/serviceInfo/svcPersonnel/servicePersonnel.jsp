@@ -51,7 +51,7 @@
     <c:set var="normalCount" value="${svcPersonnelDto.normalCount}"/>
     <input type="hidden" name="prsFlag" value="${prsFlag}"/>
     <c:if test="${arPractitionerCount != 0}">
-        <div class="contents" id="arContent">
+        <div class="contents">
             <iais:row>
                 <div class="col-xs-12">
                     <p class="app-title" ><c:out value="Service Personnel"/></p>
@@ -72,9 +72,8 @@
 <%--             TODO --%>
             <iais:row>
                 <iais:field width="5" cssClass="col-md-5" value="Total Number of AR Practitioner"/>
-                <iais:value width="7" cssClass="col-md-7" display="true">
-                <c:out value="0"/>
-<%--                    <span id="arNumber">0<span>--%>
+                <iais:value width="7" cssClass="col-md-7 AR" display="true">
+                <c:out value="${arPractitionerCount}"/>
                 </iais:value>
             </iais:row>
         </div>
