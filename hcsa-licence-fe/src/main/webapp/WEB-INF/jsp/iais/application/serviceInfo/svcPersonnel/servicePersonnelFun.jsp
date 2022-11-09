@@ -233,7 +233,7 @@
 
         unDisableContent($currContent)
         let length = $(target).find('div.personnel-content').length;
-        $(target).find('.AR').html(length)
+        $(target).find('.AR p').html(length)
         //
         refreshIndex($currContent, length - 1);
         $(target).find('div.personnel-content').first().find('.assign-psn-item').html('1');
@@ -268,6 +268,9 @@
             var $Content = $(this).closest('div.contents');
             $(this).closest('div.personnel-content').remove();
             controlCountEvent($Content)
+            let length = $Content.find('div.personnel-content').length;
+            $Content.find('.AR p').html(length)
+
             let $currContent = $Content.find('div.personnel-content');
             $currContent.each(function (k, v) {
                 refreshIndex($(v), k);
