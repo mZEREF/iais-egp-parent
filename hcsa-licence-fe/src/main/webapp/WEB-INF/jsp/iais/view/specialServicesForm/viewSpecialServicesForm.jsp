@@ -53,7 +53,8 @@
                                             <c:set var="NurseDtoListLength" value="${specialServiceSectionDto.appSvcNurseDtoList.size()}"/>
                                             <c:set var="isShowMore" value="1"/>
                                             <c:set var="title" value="Nurse in Charge ${NurseDtoListLength > 1?index+1:''}"/>
-                                            <%@include file="viewSpecialServicesFromDetail.jsp"%>
+                                            <c:set value="nic" var="type"/>
+                                            <%@include file="viewSsiPersonnelDetail.jsp" %>
                                         </c:forEach>
 
                                         <c:forEach var="person" items="${specialServiceSectionDto.appSvcRadiationSafetyOfficerDtoList}" varStatus="rsoStatus">

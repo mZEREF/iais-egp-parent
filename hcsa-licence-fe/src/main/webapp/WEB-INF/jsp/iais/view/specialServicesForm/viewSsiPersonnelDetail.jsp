@@ -96,4 +96,13 @@
             </iais:value>
         </iais:row>
     </c:if>
+
+    <c:if test="${type == 'nic'}">
+        <iais:row>
+            <iais:field width="5" value="Professional Regn. No."/>
+            <iais:value width="3" cssClass="col-md-7" display="true">
+                <c:out value="${appSvcPersonnelDto.profRegNo}" />
+            </iais:value>
+        </iais:row>
+    </c:if>
 </div>
