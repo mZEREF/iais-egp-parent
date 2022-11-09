@@ -9,8 +9,18 @@
         </div>
     </iais:row>
 
+    <c:set var="svcCodeItem" value="0"/>
+    <c:if test="${!empty outsourceDto.svcCodeList}">
+        <c:set var="svcCodeList" value="${outsourceDto.svcCodeList}"/>
+        <c:forEach var="svcCode" items="${svcCodeList}">
+            <c:if test="${svcCode eq AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY}">
+                <c:set var="svcCodeItem" value="1" />
+            </c:if>
+        </c:forEach>
+    </c:if>
+    <input name="svc" value="${svcCodeItem}" type="hidden">
     <iais:row>
-        <div class="col-xs-12 <c:if test="${AppSubmissionDto.appLicBundleDtoList[0].svcCode eq AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY}">hidden</c:if>">
+        <div class="col-xs-12 <c:if test="${svcCodeItem eq 1}">hidden</c:if>">
             <strong>Clinical Laboratory</strong>
         </div>
         <div class="col-xs-12">
@@ -18,7 +28,7 @@
         </div>
     </iais:row>
 
-    <div class="col-lg-12 col-xs-12 col-md-12 <c:if test="${AppSubmissionDto.appLicBundleDtoList[0].svcCode eq AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY}">hidden</c:if>">
+    <div class="col-lg-12 col-xs-12 col-md-12 <c:if test="${svcCodeItem eq 1}">hidden</c:if>">
         <div class="intranet-content">
             <table aria-describedby="" class="table">
                 <thead>
