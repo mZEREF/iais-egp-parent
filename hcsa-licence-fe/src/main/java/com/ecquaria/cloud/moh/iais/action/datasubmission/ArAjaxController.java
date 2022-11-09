@@ -3,13 +3,12 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsCycleRadioDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.HusbandDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -27,7 +26,13 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
+import com.ecquaria.cloud.usersession.UserSession;
+import com.ecquaria.cloud.usersession.UserSessionUtil;
 import com.google.common.collect.Maps;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
@@ -36,11 +41,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import sop.webflow.process5.ProcessCacheHelper;
 
 /**
  * @Description Ajax
@@ -60,6 +61,11 @@ public class ArAjaxController {
     @PostMapping(value = "/retrieve-identification")
     @ResponseBody
     public Map<String, Object> retrieveIdentification(HttpServletRequest request) {
+        String sessionId = UserSessionUtil.getLoginSessionID(request.getSession());
+        UserSession userSession = ProcessCacheHelper.getUserSessionFromCache(sessionId);
+        if (userSession == null || !"Active".equals(userSession.getStatus())) {
+            throw new IaisRuntimeException("User session invalid");
+        }
         String idType = ParamUtil.getString(request, "idType");
         String idNo = ParamUtil.getString(request, "idNo");
         String nationality = ParamUtil.getString(request, "nationality");
