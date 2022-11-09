@@ -28,6 +28,15 @@
             <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL}">
                 <c:set var="personList" value="${specialServiceSectionDto.appSvcRadiationPhysicistDtoList}" />
             </c:when>
+            <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_ONCOLOGIST}">
+                <c:set var="personList" value="${specialServiceSectionDto.appSvcRadiationOncologist}" />
+            </c:when>
+            <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_DOSIMETRIST}">
+                <c:set var="personList" value="${specialServiceSectionDto.appSvcMedicalDosimetrist}" />
+            </c:when>
+            <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST}">
+                <c:set var="personList" value="${specialServiceSectionDto.appSvcRadiationTherapist}" />
+            </c:when>
             <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM}">
                 <c:set var="personList" value="${specialServiceSectionDto.appSvcNMTechnologistDtoList}" />
             </c:when>
@@ -37,14 +46,8 @@
             <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR}">
                 <c:set var="personList" value="${specialServiceSectionDto.appSvcNurseDirectorDtoList}" />
             </c:when>
-            <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_ONCOLOGIST}">
-                <c:set var="personList" value="${specialServiceSectionDto.appSvcRadiationOncologist}" />
-            </c:when>
-            <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_DOSIMETRIST}">
-                <c:set var="personList" value="${specialServiceSectionDto.appSvcMedicalDosimetrist}" />
-            </c:when>
-            <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST}">
-                <c:set var="personList" value="${specialServiceSectionDto.appSvcRadiationTherapist}" />
+            <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_CQMP}">
+                <c:set var="personList" value="${specialServiceSectionDto.appSvcRadiationCqmp}" />
             </c:when>
         </c:choose>
 

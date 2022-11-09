@@ -110,7 +110,7 @@
 
     <c:if test="${type == 'rt'}">
         <iais:row>
-            <iais:field value="Is the RT employed on a full-time basis?" cssClass="col-md-5" mandatory="true"/>
+            <iais:field value=" Is the RT employed on a full-time basis?" cssClass="col-md-5" mandatory="true"/>
             <iais:value width="3" cssClass="col-md-3 form-check">
                 <input
                         <c:if test="${'1'==appSvcPersonnelDto.ssiEmployedBasis}">checked="checked"</c:if>

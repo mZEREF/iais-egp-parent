@@ -82,6 +82,7 @@
         }
         showWaiting();
         var $tgt = $(target).find('div.personnel-content').last();
+        var ROMDRT = $tgt.find('input.ROMDRT:checked').val();
         var src = $tgt.clone();
         $tgt.after(src);
         var $currContent = $(target).find('div.personnel-content').last();
@@ -96,6 +97,7 @@
         $currContent.find('.subSpeciality p').html('');
         $currContent.find('.othersubSpeciality p').html('');
         $currContent.find('.qualification p').html('');
+        fillValue($tgt.find('input.ROMDRT'), ROMDRT);
         refreshPerson($currContent, $(target).find('div.personnel-content').length - 1);
         disablePrsInfo($currContent, false,true);
         $(target).find('div.personnel-content').first().find('.assign-psn-item').html('1');
@@ -257,7 +259,7 @@
             return;
         }
         var prefix = $currContent.find('.prepsn').val();
-        var subfix=$currContent.index();
+        var subfix=$currContent.find('.index').val();
         fillFormData($content, data, prefix, subfix, ['psnEditDto']);
         $currContent.find('.speciality p').html(data.speciality);
         $currContent.find('.subSpeciality p').html(data.subSpeciality);
