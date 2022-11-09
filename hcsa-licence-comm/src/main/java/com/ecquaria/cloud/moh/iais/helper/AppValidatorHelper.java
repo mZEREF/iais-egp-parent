@@ -3952,7 +3952,7 @@ public final class AppValidatorHelper {
         }
         int mandatoryType = itemConfigDto.getMandatoryType();
         String inputValue = appSvcSuplmItemDto.getInputValue();
-        if (!(2 == mandatoryType || 3 == mandatoryType || 5 == mandatoryType) || !StringUtil.isEmpty(inputValue)) {
+        if (!(2 == mandatoryType || 3 == mandatoryType || 5 == mandatoryType || 6 == mandatoryType) || !StringUtil.isEmpty(inputValue)) {
             return true;
         }
         int seqNum = appSvcSuplmItemDto.getSeqNum();
