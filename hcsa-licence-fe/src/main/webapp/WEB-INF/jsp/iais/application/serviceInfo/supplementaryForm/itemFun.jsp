@@ -387,6 +387,12 @@
                     }
                     // check add more button
                     checkAddMore(group, prefix);
+                } else if ('6' == mandatory && $tag.is('select')) {
+                    // selection others
+                    let $target = $v.closest('.item-record');
+                    let parentVal = $tag.val();
+                    let conVal = $v.data('mandatory-cond');
+                    toggleTag($target, parentVal == conVal);
                 }
             });
         }
