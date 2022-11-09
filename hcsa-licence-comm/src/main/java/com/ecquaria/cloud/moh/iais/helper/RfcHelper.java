@@ -915,10 +915,17 @@ public final class RfcHelper {
             return false;
         }
         List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoDtoList = IaisCommonUtils.genNewArrayList();
-        appSvcRelatedInfoDtoList.forEach((item) -> appSvcSpecialServiceInfoDtoList.addAll(item.getAppSvcSpecialServiceInfoList()));
+        appSvcRelatedInfoDtoList.forEach((item) -> {
+            if (IaisCommonUtils.isNotEmpty(item.getAppSvcSpecialServiceInfoList())){
+                appSvcSpecialServiceInfoDtoList.addAll(item.getAppSvcSpecialServiceInfoList());
+            }
+        });
         List<AppSvcSpecialServiceInfoDto> oldAppSvcSpecialServiceInfoDtoList = IaisCommonUtils.genNewArrayList();
-        oldAppSvcRelatedInfoDtoList.forEach(
-                (item) -> oldAppSvcSpecialServiceInfoDtoList.addAll(item.getAppSvcSpecialServiceInfoList()));
+        oldAppSvcRelatedInfoDtoList.forEach((item) -> {
+            if (IaisCommonUtils.isNotEmpty(item.getAppSvcSpecialServiceInfoList())){
+                oldAppSvcSpecialServiceInfoDtoList.addAll(item.getAppSvcSpecialServiceInfoList());
+            }
+        });
         boolean result = false;
         List<AppSvcPrincipalOfficersDto> keyPersonnelList = IaisCommonUtils.genNewArrayList();
         appSvcSpecialServiceInfoDtoList.forEach((item) -> keyPersonnelList.addAll(item.getAppSvcCgoDtoList()));
@@ -1471,9 +1478,17 @@ public final class RfcHelper {
             isChange = true;
         }
         List<String> appSvcBusinessWebSite = IaisCommonUtils.genNewArrayList();
-        appSvcBusinessDtoList.forEach((v) -> appSvcBusinessWebSite.add(v.getCorporateWebsite()));
+        appSvcBusinessDtoList.forEach((v) -> {
+            if (StringUtil.isNotEmpty(v.getCorporateWebsite())){
+                appSvcBusinessWebSite.add(v.getCorporateWebsite());
+            }
+        });
         List<String> oldAppSvcBusinessWebSite = IaisCommonUtils.genNewArrayList();
-        oldAppSvcBusinessDtoList.forEach((v) -> oldAppSvcBusinessWebSite.add(v.getCorporateWebsite()));
+        oldAppSvcBusinessDtoList.forEach((v) -> {
+            if (StringUtil.isNotEmpty(v.getCorporateWebsite())){
+                oldAppSvcBusinessWebSite.add(v.getCorporateWebsite());
+            }
+        });
         if (!appSvcBusinessWebSite.equals(oldAppSvcBusinessWebSite)) {
             isChange = true;
         }
