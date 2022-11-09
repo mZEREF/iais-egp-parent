@@ -1780,6 +1780,17 @@ public final class AppValidatorHelper {
                 }
                 if (StringUtil.isNotEmpty(typeOfCurrRegi) && typeOfCurrRegi.length() > 50) {
                     errMap.put(prefix + "typeOfCurrRegi" + i, repLength("Type of Registration Date", "50"));
+                }else{
+                    if (StringUtil.isNotEmpty(typeOfCurrRegi)){
+                        typeOfCurrRegi = typeOfCurrRegi.toUpperCase(AppConsts.DFT_LOCALE);
+                        String[] target = typeOfCurrRegi.split("[^A-Z0-9]+");
+                        if (IaisCommonUtils.isEmpty(target) || !Arrays.asList(target).contains("FULL")){
+                            errMap.put(prefix + "typeOfCurrRegi" + i,   "GENERAL_ERR0006");
+                        }else if (check(typeOfCurrRegi)){
+                            errMap.put(prefix + "typeOfCurrRegi" + i,   "GENERAL_ERR0006");
+                        }
+
+                    }
                 }
                 //Current Registration Date
                 if (StringUtil.isNotEmpty(currRegiDate) && !CommonValidator.isDate(currRegiDate)) {
@@ -3363,14 +3374,21 @@ public final class AppValidatorHelper {
             } else if (typeOfRegister.length() > 100) {
                 errorMap.put(prefix + "typeOfRegister" + i, signal);
             }
+            String subSpeciality = appSvcPersonnelDto.getSubSpeciality();
+            String speciality = appSvcPersonnelDto.getSpeciality();
+            String specialityOther = appSvcPersonnelDto.getSpecialityOther();
 //                specialtyGetDate
-            String specialtyGetDateStr = appSvcPersonnelDto.getSpecialtyGetDate();
-            if (StringUtil.isEmpty(specialtyGetDateStr)) {
-                errorMap.put(prefix + "specialtyGetDate" + i, signal);
-            } else if (!CommonValidator.isDate(specialtyGetDateStr)) {
-                errorMap.put(prefix + "specialtyGetDate" + i, "GENERAL_ERR0033");
-            } else if (specialtyGetDateStr.length() > 15) {
-                errorMap.put(prefix + "specialtyGetDate" + i, signal);
+            if ((StringUtil.isNotEmpty(speciality) && ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER.equals(prefix)) ||
+                    ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES.equals(prefix) && (StringUtil.isNotEmpty(speciality) || StringUtil.isNotEmpty(subSpeciality)
+                    || StringUtil.isNotEmpty(specialityOther))) {
+                String specialtyGetDateStr = appSvcPersonnelDto.getSpecialtyGetDate();
+                if (StringUtil.isEmpty(specialtyGetDateStr)) {
+                    errorMap.put(prefix + "specialtyGetDate" + i, signal);
+                } else if (!CommonValidator.isDate(specialtyGetDateStr)) {
+                    errorMap.put(prefix + "specialtyGetDate" + i, "GENERAL_ERR0033");
+                } else if (specialtyGetDateStr.length() > 15) {
+                    errorMap.put(prefix + "specialtyGetDate" + i, signal);
+                }
             }
 //                bclsExpiryDate
             String bclsExpiryDateStr = appSvcPersonnelDto.getBclsExpiryDate();
@@ -3401,7 +3419,6 @@ public final class AppValidatorHelper {
                 }else if (!isEarly(cprExpiryDate)){
                     errorMap.put(prefix + "cprExpiryDate" + i, "PRF_ERR007");
                 }
-
             }
         }
         if (ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS.equals(prefix)) {
@@ -4031,6 +4048,7 @@ public final class AppValidatorHelper {
             List<String> roNames = IaisCommonUtils.genNewArrayList();
             List<String> mdNames = IaisCommonUtils.genNewArrayList();
             List<String> rtNames = IaisCommonUtils.genNewArrayList();
+            List<String> cqmpNames = IaisCommonUtils.genNewArrayList();
             for (int j = 0; j < specialServiceSectionDtoList.size(); j++) {
                 SpecialServiceSectionDto specialServiceSectionDto = specialServiceSectionDtoList.get(j);
                 Map<String, Integer> minCount = specialServiceSectionDto.getMinCount();
@@ -4047,6 +4065,7 @@ public final class AppValidatorHelper {
                 int roMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_ONCOLOGIST);
                 int mdMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_DOSIMETRIST);
                 int rtMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST);
+                int cqmpMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_CQMP);
                 List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = specialServiceSectionDto.getAppSvcCgoDtoList();
                 if (appSvcCgoDtoList == null) {
                     if (cgoMandatoryCount > 0) {
@@ -4105,6 +4124,8 @@ public final class AppValidatorHelper {
                         mdMandatoryCount,prefix + i + j + "md", errorMap, mdNames,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_DOSIMETRIST);
                 validateSpecialPersonMandatory(specialServiceSectionDto.getAppSvcRadiationTherapist(),
                         rtMandatoryCount,prefix + i + j + "rt", errorMap, rtNames,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST);
+                validateSpecialPersonMandatory(specialServiceSectionDto.getAppSvcRadiationTherapist(),
+                        cqmpMandatoryCount,prefix + i + j + "cqmp", errorMap, rtNames,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_CQMP);
                 if (!IaisCommonUtils.isEmpty(specialServiceSectionDto.getAppSvcSuplmFormDto().getAppSvcSuplmGroupDtoList())) {
                     errorMap.putAll(doValidateSupplementaryForm(specialServiceSectionDto.getAppSvcSuplmFormDto(), prefix + i + j));
                 }
@@ -4243,11 +4264,12 @@ public final class AppValidatorHelper {
                 names.add(target);
             }
         }
+        String ssiEmployedBasis = appSvcPersonnelDto.getSsiEmployedBasis();
+        String ssiRegnNo = appSvcPersonnelDto.getSsiRegnNo();
 
         if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_ONCOLOGIST.equals(psnType)) {
-            String roEmployedBasis = appSvcPersonnelDto.getRoEmployedBasis();
-            if (StringUtil.isEmpty(roEmployedBasis)) {
-                errorMap.put(prefix + "roEmployedBasis" + subfix, signal);
+            if (StringUtil.isEmpty(ssiEmployedBasis)) {
+                errorMap.put(prefix + "ssiEmployedBasis" + subfix, signal);
             }
             String wrkExpYear = appSvcPersonnelDto.getWrkExpYear();
             if (StringUtil.isEmpty(wrkExpYear)) {
@@ -4260,32 +4282,28 @@ public final class AppValidatorHelper {
                     errorMap.put(prefix + "wrkExpYear" + subfix, "GENERAL_ERR0002");
                 }
             }
-            String smRegNo = appSvcPersonnelDto.getSmRegNo();
-            if (StringUtil.isEmpty(smRegNo)) {
-                errorMap.put(prefix + "smRegNo" + subfix, signal);
+            if (StringUtil.isEmpty(ssiRegnNo)) {
+                errorMap.put(prefix + "ssiRegnNo" + subfix, signal);
             } else {
-                if (smRegNo.length() > 20) {
-                    errorMap.put(prefix + "smRegNo" + subfix, signal);
+                if (ssiRegnNo.length() > 20) {
+                    errorMap.put(prefix + "ssiRegnNo" + subfix, signal);
                 }
             }
         }
         if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_DOSIMETRIST.equals(psnType)){
-            String mdEmployedBasis = appSvcPersonnelDto.getMdEmployedBasis();
-            if (StringUtil.isEmpty(mdEmployedBasis)) {
-                errorMap.put(prefix + "mdEmployedBasis" + subfix, signal);
+            if (StringUtil.isEmpty(ssiEmployedBasis)) {
+                errorMap.put(prefix + "ssiEmployedBasis" + subfix, signal);
             }
         }
         if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST.equals(psnType)){
-            String rtEmployedBasis = appSvcPersonnelDto.getRtEmployedBasis();
-            if (StringUtil.isEmpty(rtEmployedBasis)) {
-                errorMap.put(prefix + "rtEmployedBasis" + subfix, signal);
+            if (StringUtil.isEmpty(ssiEmployedBasis)) {
+                errorMap.put(prefix + "ssiEmployedBasis" + subfix, signal);
             }
-            String ahpcReNo = appSvcPersonnelDto.getAhpcReNo();
-            if (StringUtil.isEmpty(ahpcReNo)) {
-                errorMap.put(prefix + "ahpcReNo" + subfix, signal);
+            if (StringUtil.isEmpty(ssiRegnNo)) {
+                errorMap.put(prefix + "ssiRegnNo" + subfix, signal);
             } else {
-                if (ahpcReNo.length() > 20) {
-                    errorMap.put(prefix + "ahpcReNo" + subfix, signal);
+                if (ssiRegnNo.length() > 20) {
+                    errorMap.put(prefix + "ssiRegnNo" + subfix, signal);
                 }
             }
 
