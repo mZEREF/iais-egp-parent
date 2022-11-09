@@ -2643,6 +2643,7 @@ public final class AppDataHelper {
                     int roMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_ONCOLOGIST);
                     int mdMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_DOSIMETRIST);
                     int rtMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST);
+                    int cqmpMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_CQMP);
                     if (cgomaxCount != 0) {
                         List<AppSvcPrincipalOfficersDto> dtos = genKeyPersonnels(
                                 appSvcSpecialServiceInfoDto.getNewPsnKey(specialServiceSectionDto.getSvcCode(),
@@ -2741,6 +2742,11 @@ public final class AppDataHelper {
                         List<AppSvcPersonnelDto> appSvcRadiationTherapist = getSpecialServiceInforamtionPerson(request, prefix + i + j,
                                 ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST, "rt", specialServiceSectionDto.getAppSvcRadiationTherapist(), appType);
                         specialServiceSectionDto.setAppSvcRadiationTherapist(appSvcRadiationTherapist);
+                    }
+                    if (cqmpMaxCount != 0) {
+                        List<AppSvcPersonnelDto> appSvcRadiationCqmp = getSpecialServiceInforamtionPerson(request, prefix + i + j,
+                                ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_CQMP, "cqmp", specialServiceSectionDto.getAppSvcRadiationCqmp(), appType);
+                        specialServiceSectionDto.setAppSvcRadiationCqmp(appSvcRadiationCqmp);
                     }
                     j++;
                 }
