@@ -4306,7 +4306,11 @@ public final class AppValidatorHelper {
                     errorMap.put(prefix + "ssiRegnNo" + subfix, signal);
                 }
             }
-
+        }
+        if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_CQMP.equals(psnType)){
+            if (StringUtil.isEmpty(ssiEmployedBasis)) {
+                errorMap.put(prefix + "ssiEmployedBasis" + subfix, signal);
+            }
         }
         if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE.equals(psnType)){
             String profRegNo = appSvcPersonnelDto.getProfRegNo();
