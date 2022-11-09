@@ -701,7 +701,7 @@ public class DealSessionUtil {
         // Special services information
         hcsaServiceStepScheme = stepMap.get(HcsaConsts.STEP_SPECIAL_SERVICES_FORM);
         if (hcsaServiceStepScheme != null) {
-            initAppSvcSpecialServiceInfoDtoList(currSvcInfoDto, appPremSpecialisedDtoList);
+            initAppSvcSpecialServiceInfoDtoList(currSvcInfoDto, appPremSpecialisedDtoList, forceInit);
             if (!forceInit) {
                 List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = currSvcInfoDto.getAppSvcSpecialServiceInfoList();
                 if (IaisCommonUtils.isNotEmpty(appSvcSpecialServiceInfoList)) {
@@ -999,11 +999,6 @@ public class DealSessionUtil {
         });
         appSvcSuplmFormDto.setInit(true);
         return appSvcSuplmFormDto;
-    }
-
-    public static List<AppSvcSpecialServiceInfoDto> initAppSvcSpecialServiceInfoDtoList(AppSvcRelatedInfoDto currSvcInfoDto,
-            List<AppPremSpecialisedDto> appPremSpecialisedDtoList) {
-        return initAppSvcSpecialServiceInfoDtoList(currSvcInfoDto, appPremSpecialisedDtoList, false);
     }
 
     public static List<AppSvcSpecialServiceInfoDto> initAppSvcSpecialServiceInfoDtoList(AppSvcRelatedInfoDto currSvcInfoDto,
