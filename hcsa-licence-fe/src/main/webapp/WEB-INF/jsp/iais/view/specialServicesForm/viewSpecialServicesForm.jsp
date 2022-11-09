@@ -110,6 +110,34 @@
                                             <c:set var="title" value="Emergency Department Nursing-in-charge ${NurseDtoListLength > 1?index+1:''}"/>
                                             <%@include file="viewSpecialServicesFromDetail.jsp"%>
                                         </c:forEach>
+                                        <c:forEach var="appSvcPersonnelDto" items="${specialServiceSectionDto.appSvcRadiationOncologist}" varStatus="roStatus">
+                                            <c:set var="index" value="${roStatus.index}"/>
+                                            <c:set var="roDtoListLength" value="${specialServiceSectionDto.appSvcRadiationOncologist.size()}"/>
+                                            <c:set var="title" value="Radiation Oncologist ${roDtoListLength > 1?index+1:''}"/>
+                                            <c:set value="ro" var="type"/>
+                                            <%@include file="viewSsiPersonnelDetail.jsp" %>
+                                        </c:forEach>
+                                        <c:forEach var="appSvcPersonnelDto" items="${specialServiceSectionDto.appSvcRadiationTherapist}" varStatus="rtStatus">
+                                            <c:set var="index" value="${rtStatus.index}"/>
+                                            <c:set var="rtDtoListLength" value="${specialServiceSectionDto.appSvcRadiationTherapist.size()}"/>
+                                            <c:set var="title" value="Radiation Therapist ${rtDtoListLength > 1?index+1:''}"/>
+                                            <c:set value="rt" var="type"/>
+                                            <%@include file="viewSsiPersonnelDetail.jsp" %>
+                                        </c:forEach>
+                                        <c:forEach var="appSvcPersonnelDto" items="${specialServiceSectionDto.appSvcRadiationCqmp}" varStatus="cqmpStatus">
+                                            <c:set var="index" value="${cqmpStatus.index}"/>
+                                            <c:set var="cqmpDtoListLength" value="${specialServiceSectionDto.appSvcRadiationCqmp.size()}"/>
+                                            <c:set var="title" value="Clinically Qualified Medical Physicist ${cqmpDtoListLength > 1?index+1:''}"/>
+                                            <c:set value="cqmp" var="type"/>
+                                            <%@include file="viewSsiPersonnelDetail.jsp" %>
+                                        </c:forEach>
+                                        <c:forEach var="appSvcPersonnelDto" items="${specialServiceSectionDto.appSvcMedicalDosimetrist}" varStatus="mdStatus">
+                                            <c:set var="index" value="${mdStatus.index}"/>
+                                            <c:set var="mdDtoListLength" value="${specialServiceSectionDto.appSvcMedicalDosimetrist.size()}"/>
+                                            <c:set var="title" value="Medical Dosimetrist ${mdDtoListLength > 1?index+1:''}"/>
+                                            <c:set value="md" var="type"/>
+                                            <%@include file="viewSsiPersonnelDetail.jsp" %>
+                                        </c:forEach>
                                         <c:set var="appSvcSuplmFormDto" value="${specialServiceSectionDto.appSvcSuplmFormDto}"/>
                                         <c:forEach var="appSvcSuplmGroupDto" items="${appSvcSuplmFormDto.appSvcSuplmGroupDtoList}" varStatus="status">
                                             <c:set var="batchSize" value="${appSvcSuplmGroupDto.count}"/>
