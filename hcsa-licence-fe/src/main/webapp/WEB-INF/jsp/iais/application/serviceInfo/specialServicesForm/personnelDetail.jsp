@@ -5,6 +5,7 @@
     <input type="hidden" class="not-refresh licPerson" name="${prepsn}licPerson" value="${person.licPerson ? 1 : 0}"/>
     <input type="hidden" class="not-refresh isPartEdit" name="${prepsn}isPartEdit" value="0"/>
     <input type="hidden" class="not-refresh indexNo" name="${prepsn}indexNo" value="${person.indexNo}"/>
+    <input type="hidden" class="index" value="${index}"/>
     <input type="hidden" class="not-refresh psnEditField" name="${prepsn}psnEditField" value="<c:out value="${person.psnEditFieldStr}" />"/>
     <iais:row>
         <div class="col-md-12 col-xs-12 edit-content">

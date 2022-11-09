@@ -259,7 +259,7 @@
             return;
         }
         var prefix = $currContent.find('.prepsn').val();
-        var subfix=$currContent.index();
+        var subfix=$currContent.find('.index').val();
         fillFormData($content, data, prefix, subfix, ['psnEditDto']);
         $currContent.find('.speciality p').html(data.speciality);
         $currContent.find('.subSpeciality p').html(data.subSpeciality);

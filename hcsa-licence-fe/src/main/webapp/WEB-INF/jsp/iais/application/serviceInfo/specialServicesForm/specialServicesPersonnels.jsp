@@ -16,7 +16,7 @@
     </iais:row>
     <iais:row>
         <div class="col-xs-12 col-md-6">
-            <p class="bold">${title}<label class="assign-psn-item">${index+1}</label></p>
+            <p class="bold">${title} <label class="assign-psn-item"><strong>${index+1}</strong></label></p>
             <p><span class="error-msg" name="iaisErrorMSg" id="error_${prefix}personError${index}"></span></p>
         </div>
         <div class="col-xs-12 col-md-6 text-right removeEditDiv <c:if test="${index == 0}">hidden</c:if>">
@@ -162,6 +162,17 @@
             </iais:value>
             <iais:value cssClass="col-md-offset-5 col-md-8 col-xs-12">
                 <span class="error-msg " name="iaisErrorMsg" id="error_${prefix}ssiEmployedBasis${index}"></span>
+            </iais:value>
+        </iais:row>
+    </c:if>
+
+    <c:if test="${type == 'nic'}">
+        <%--    Professional Regn. No--%>
+        <iais:row>
+            <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Professional Regn. No."/>
+            <iais:value width="7" cssClass="col-md-7">
+                <iais:input maxLength="20" type="text" cssClass="profRegNo" name="${prefix}profRegNo${index}"
+                            value="${appSvcPersonnelDto.profRegNo}"/>
             </iais:value>
         </iais:row>
     </c:if>
