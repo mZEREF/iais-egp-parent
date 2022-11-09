@@ -1470,6 +1470,13 @@ public final class RfcHelper {
         if (!appSvcBusinessEmailList.equals(oldAppSvcBusinessEmailList)) {
             isChange = true;
         }
+        List<String> appSvcBusinessWebSite = IaisCommonUtils.genNewArrayList();
+        appSvcBusinessDtoList.forEach((v) -> appSvcBusinessWebSite.add(v.getCorporateWebsite()));
+        List<String> oldAppSvcBusinessWebSite = IaisCommonUtils.genNewArrayList();
+        oldAppSvcBusinessDtoList.forEach((v) -> oldAppSvcBusinessWebSite.add(v.getCorporateWebsite()));
+        if (!appSvcBusinessWebSite.equals(oldAppSvcBusinessWebSite)) {
+            isChange = true;
+        }
         List<OperationHoursReloadDto> appSvcBusinessOperationHoursList = IaisCommonUtils.genNewArrayList();
         appSvcBusinessDtoList.forEach((v) -> {
             if (IaisCommonUtils.isNotEmpty(v.getWeeklyDtoList())) {
