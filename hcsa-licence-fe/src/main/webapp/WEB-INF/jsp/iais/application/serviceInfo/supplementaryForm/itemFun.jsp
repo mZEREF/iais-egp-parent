@@ -336,7 +336,7 @@
                     toggleTag($target, isIncluded);
                     // check add more button
                     let group = $v.data('group');
-                    //checkAddMore(group,prefix,isIncluded)
+                    checkAddMore(group, prefix);
                     checkItemMandatory($v);
                 } else if ('4' == mandatory) {
                     let $target = $v.closest('.item-record');
@@ -382,11 +382,10 @@
                             $targetLabel.append('<span class="mandatory">*</span>');
                         }
                         toggleTag($target, isIncluded);
-                        //checkAddMore(group,prefix,isIncluded)
+                        checkAddMore(group, prefix);
                         checkItemMandatory($newV);
                     }
                     // check add more button
-                    //toggleTag($('.addMoreDiv[data-group="' + group + '"][data-prefix="' + prefix + '"]'), isIncluded);
                     checkAddMore(group, prefix);
                 }
             });
@@ -617,7 +616,10 @@
     }
 
     function refreshGroupIndex() {
-        let $groupTitle = $('.item-record .app-title');
+        let $groupTitle = $('.item-record .group-title');
+        if (isEmptyNode($groupTitle)) {
+            return;
+        }
         let indexGroupAry = [];
         $groupTitle.each(function () {
             let group = $(this).data('group');
