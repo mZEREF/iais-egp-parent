@@ -4117,14 +4117,13 @@ public final class AppValidatorHelper {
                         diMandatoryCount,prefix + i + j + "dir", errorMap, dirNames,ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR);
                 validateSpecialServicePersonMandatory(specialServiceSectionDto.getAppSvcNurseDirectorDtoList(),
                         nuMandatoryCount,prefix + i + j + "nur", errorMap, nurNames,ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR);
-
                 validateSpecialPersonMandatory(specialServiceSectionDto.getAppSvcRadiationOncologist(),
                         roMandatoryCount,prefix + i + j + "ro", errorMap, roNames,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_ONCOLOGIST);
                 validateSpecialPersonMandatory(specialServiceSectionDto.getAppSvcMedicalDosimetrist(),
                         mdMandatoryCount,prefix + i + j + "md", errorMap, mdNames,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_DOSIMETRIST);
                 validateSpecialPersonMandatory(specialServiceSectionDto.getAppSvcRadiationTherapist(),
                         rtMandatoryCount,prefix + i + j + "rt", errorMap, rtNames,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST);
-                validateSpecialPersonMandatory(specialServiceSectionDto.getAppSvcRadiationTherapist(),
+                validateSpecialPersonMandatory(specialServiceSectionDto.getAppSvcRadiationCqmp(),
                         cqmpMandatoryCount,prefix + i + j + "cqmp", errorMap, cqmpNames,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_CQMP);
                 if (!IaisCommonUtils.isEmpty(specialServiceSectionDto.getAppSvcSuplmFormDto().getAppSvcSuplmGroupDtoList())) {
                     errorMap.putAll(doValidateSupplementaryForm(specialServiceSectionDto.getAppSvcSuplmFormDto(), prefix + i + j));

@@ -52,7 +52,7 @@
                                             <c:set var="index" value="${nicStatus.index}"/>
                                             <c:set var="NurseDtoListLength" value="${specialServiceSectionDto.appSvcNurseDtoList.size()}"/>
                                             <c:set var="isShowMore" value="1"/>
-                                            <c:set var="title" value="Nurse in Charge ${NurseDtoListLength > 1?index+1:''}"/>
+                                            <c:set var="title" value="Registered Nurse ${NurseDtoListLength > 1?index+1:''}"/>
                                             <c:set value="nic" var="type"/>
                                             <%@include file="viewSsiPersonnelDetail.jsp" %>
                                         </c:forEach>
