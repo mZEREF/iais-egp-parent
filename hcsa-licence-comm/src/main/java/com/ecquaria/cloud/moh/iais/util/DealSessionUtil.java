@@ -66,6 +66,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -1067,8 +1068,8 @@ public class DealSessionUtil {
                     .filter(dto -> Objects.equals(dto.getSvcCode(), appPremSubSvcRelDto.getSvcCode()))
                     .findAny()
                     .orElseGet(SpecialServiceSectionDto::new);
-            Map<String, Integer> minCount = AppSvcSpecialServiceInfoDto.getInitPersonnelMap(null);
-            Map<String, Integer> maxCount = AppSvcSpecialServiceInfoDto.getInitPersonnelMap(null);
+            LinkedHashMap<String, Integer> minCount = (LinkedHashMap<String, Integer>) AppSvcSpecialServiceInfoDto.getInitPersonnelMap(null);
+            LinkedHashMap<String, Integer> maxCount = (LinkedHashMap<String, Integer>) AppSvcSpecialServiceInfoDto.getInitPersonnelMap(null);
             specialServiceSectionDto.setAppPremSubSvcRelDto(appPremSubSvcRelDto);
             AppSvcSuplmFormDto appSvcSuplmFormDto = specialServiceSectionDto.getAppSvcSuplmFormDto();
             appSvcSuplmFormDto = initAppSvcSuplmFormDto(specialServiceSectionDto.getSvcCode(), forceInit,

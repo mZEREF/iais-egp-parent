@@ -422,6 +422,7 @@ public class ServiceInfoDelegator {
             List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorList=IaisCommonUtils.genNewArrayList();
             appSvcSpecialServiceInfoList.forEach((item)->appSvcClinicalDirectorList.addAll(item.getAppSvcCgoDtoList()));
             syncDropDownAndPsn(appSubmissionDto,appSvcClinicalDirectorList, currSvcCode, request);
+            DealSessionUtil.reSetInit(appSubmissionDto, HcsaAppConst.SECTION_SVCINFO);
         }
         checkAction(errorMap, HcsaConsts.STEP_SPECIAL_SERVICES_FORM, appSubmissionDto, request);
         log.debug(StringUtil.changeForLog("do SpecialServicesInformation end ..."));

@@ -4101,7 +4101,7 @@ public final class AppValidatorHelper {
                                 x, sectionLeaderNames, true);
                     }
                 }
-                validateSpecialServicePersonMandatory(specialServiceSectionDto.getAppSvcNurseDtoList(),
+                validateSpecialPersonMandatory(specialServiceSectionDto.getAppSvcNurseDtoList(),
                         nicMandatoryCount,prefix + i + j + "nic", errorMap, nurseNames,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE);
                 validateSpecialServiceOtherPersonMandatory(specialServiceSectionDto.getAppSvcRadiationSafetyOfficerDtoList(),
                         rsoMandatoryCount,prefix + i + j + "rso",errorMap,rsoNames,false,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER);
@@ -4308,12 +4308,19 @@ public final class AppValidatorHelper {
             }
 
         }
+        if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE.equals(psnType)){
+            String profRegNo = appSvcPersonnelDto.getProfRegNo();
+            if (StringUtil.isEmpty(profRegNo)) {
+                errorMap.put(prefix + "profRegNo" + subfix, signal);
+            } else if (profRegNo.length() > 20) {
+                errorMap.put(prefix + "profRegNo" + subfix, signal);
+            }
+        }
     }
 
     private static void validateSpecialServicePersonDetail(AppSvcPersonnelDto appSvcPersonnelDto, String prefix, String subfix,
             Map<String, String> errorMap, List<String> names) {
         String signal = "GENERAL_ERR0006";
-        String personnelType = appSvcPersonnelDto.getPersonnelType();
 
         String salutation = appSvcPersonnelDto.getSalutation();
         if (StringUtil.isEmpty(salutation)) {
@@ -4410,17 +4417,6 @@ public final class AppValidatorHelper {
             }
             if (!wrkExpYear.matches("^[0-9]*$")) {
                 errorMap.put(prefix + "wrkExpYear" + subfix, "GENERAL_ERR0002");
-            }
-        }
-
-        if (ApplicationConsts.SUPPLEMENTARY_FORM_TYPE_NURSE_IN_CHARGE.equals(personnelType)) {
-            String bclsExpiryDateStr = appSvcPersonnelDto.getBclsExpiryDate();
-            if (StringUtil.isEmpty(bclsExpiryDateStr)) {
-                errorMap.put(prefix + "bclsExpiryDate" + subfix, signal);
-            } else {
-                if (!isEarly(bclsExpiryDateStr)) {
-                    errorMap.put(prefix + "bclsExpiryDate" + subfix, "SC_ERR009");
-                }
             }
         }
     }
