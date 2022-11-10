@@ -440,12 +440,9 @@ public class DataSubmissionInboxDelegator {
 
     private  boolean showMessage(HttpServletRequest request,HttpServletResponse response,String actionValue){
 		 String sizeString = ParamUtil.getString(request,NEED_VALIDATOR_SIZE);
-		 List<String> submissionNos = ParamUtil.getListStrings(request,"submissionNo");
+		 String[] submissionNos = ParamUtil.getMaskedStrings(request,"submissionNo");
 		 String crudActionType = ParamUtil.getString(request, "crud_action_type");
 		 String crudType = ParamUtil.getString(request, "crud_type");
-		 if ("rfc".equals(crudActionType) && (StringUtils.isEmpty(crudType) || !"delete".equals(crudType))) {
-			 ParamUtil.setRequestAttr(request, "rfcSubmissionNo", submissionNos.get(0));
-		 }
 		 int size = -1;
 		 if(StringUtil.isNotEmpty(sizeString)){
 			 try {
@@ -457,7 +454,10 @@ public class DataSubmissionInboxDelegator {
 		if(size <= 0){
 			return true;
 		}
-		 if( IaisCommonUtils.isNotEmpty(submissionNos)){
+		 if(submissionNos != null && submissionNos.length > 0){
+			 if ("rfc".equals(crudActionType) && (StringUtils.isEmpty(crudType) || !"delete".equals(crudType))) {
+				 ParamUtil.setRequestAttr(request, "rfcSubmissionNo", submissionNos[0]);
+			 }
 			 SearchResult<InboxDataSubmissionQueryDto> submissionQueryDtoSearchResult =(SearchResult<InboxDataSubmissionQueryDto>)ParamUtil.getSessionAttr(request, InboxConst.DS_RESULT);
 			 if(submissionQueryDtoSearchResult != null && IaisCommonUtils.isNotEmpty(submissionQueryDtoSearchResult.getRows())){
 			 	List<InboxDataSubmissionQueryDto> inboxDataSubmissionQueryDtos = submissionQueryDtoSearchResult.getRows();
