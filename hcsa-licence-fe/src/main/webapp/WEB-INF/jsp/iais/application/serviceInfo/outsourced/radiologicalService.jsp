@@ -1,14 +1,14 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts" %>
 <c:set var="svcCodeRds" value="0"/>
-<c:if test="${!empty outsourceDto.svcCodeList}">
-    <c:set var="svcCodeList" value="${outsourceDto.svcCodeList}"/>
+<c:set var="cL" value="${currSvcInfoDto.appSvcOutsouredDto}"/>
+<c:if test="${!empty cL.svcCodeList}">
+    <c:set var="svcCodeList" value="${cL.svcCodeList}"/>
     <c:forEach var="svcCode" items="${svcCodeList}">
         <c:if test="${svcCode eq AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES}">
             <c:set var="svcCodeRds" value="1" />
         </c:if>
     </c:forEach>
 </c:if>
-<c:set var="cL" value="${currSvcInfoDto.appSvcOutsouredDto}"/>
 <iais:row>
     <div class="col-xs-12 <c:if test="${svcCodeRds eq 1}">hidden</c:if>" style="margin-top: 20px;!important;">
         <strong>Radiological Service</strong>
