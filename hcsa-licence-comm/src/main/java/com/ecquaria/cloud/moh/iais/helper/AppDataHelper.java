@@ -802,8 +802,8 @@ public final class AppDataHelper {
             if (IaisCommonUtils.isEmpty(radiologicalServiceList)) {
                 radiologicalServiceList = IaisCommonUtils.genNewArrayList();
             }
-            clearAppSvcOutsourceListIsNull(appSvcOutsouredDto.getClinicalLaboratoryList());
-            clearAppSvcOutsourceListIsNull(appSvcOutsouredDto.getRadiologicalServiceList());
+            clearAppSvcOutsourceListIsNull(clinicalLaboratoryList);
+            clearAppSvcOutsourceListIsNull(radiologicalServiceList);
             if ("search".equals(curAct)) {
                 appSvcOutsouredDto = getSerchAppPremOutSourceLicenceDto(request, appSvcOutsouredDto, appSubmissionDto);
             }
