@@ -1625,10 +1625,10 @@ public final class RfcHelper {
 
     private static boolean isChangeOtherInfoDto(List<AppSvcOtherInfoDto> appSvcOtherInfoDtoList,
             List<AppSvcOtherInfoDto> oldAppSvcOtherInfoDtoList) {
-        if (IaisCommonUtils.isEmpty(appSvcOtherInfoDtoList) && IaisCommonUtils.isEmpty(appSvcOtherInfoDtoList)) {
+        if (IaisCommonUtils.isEmpty(appSvcOtherInfoDtoList) && IaisCommonUtils.isEmpty(oldAppSvcOtherInfoDtoList)) {
             return false;
         }
-        if (IaisCommonUtils.isEmpty(appSvcOtherInfoDtoList) || IaisCommonUtils.isEmpty(appSvcOtherInfoDtoList)) {
+        if (IaisCommonUtils.isEmpty(appSvcOtherInfoDtoList) || IaisCommonUtils.isEmpty(oldAppSvcOtherInfoDtoList)) {
             return true;
         }
         return !isSame(appSvcOtherInfoDtoList, oldAppSvcOtherInfoDtoList, PageDataCopyUtil::copyAppSvcOtherInfoList);
@@ -1636,10 +1636,10 @@ public final class RfcHelper {
 
     public static boolean isChangeAppSvcOtherInfoTop(List<AppSvcOtherInfoDto> appSvcOtherInfoDtoList,
             List<AppSvcOtherInfoDto> oldAppSvcOtherInfoDtoList, List<String> nonAutoList) {
-        if (IaisCommonUtils.isEmpty(appSvcOtherInfoDtoList) && IaisCommonUtils.isEmpty(appSvcOtherInfoDtoList)) {
+        if (IaisCommonUtils.isEmpty(appSvcOtherInfoDtoList) && IaisCommonUtils.isEmpty(oldAppSvcOtherInfoDtoList)) {
             return false;
         }
-        if (IaisCommonUtils.isEmpty(appSvcOtherInfoDtoList) || IaisCommonUtils.isEmpty(appSvcOtherInfoDtoList)) {
+        if (IaisCommonUtils.isEmpty(appSvcOtherInfoDtoList) || IaisCommonUtils.isEmpty(oldAppSvcOtherInfoDtoList)) {
             return true;
         }
         boolean result = false;
