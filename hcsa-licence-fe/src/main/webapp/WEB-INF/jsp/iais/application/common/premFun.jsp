@@ -785,6 +785,7 @@
                 $('#postalCodePop').modal('show');
                 clearFields($addressSelectors.find(':input'));
                 unReadlyContent($addressSelectors);
+                let $currContent = $addressSelectors.closest('div.premContent');
                 $currContent.find('input[name="retrieveflag"]').val('0');
                 dismissWaiting();
             }
