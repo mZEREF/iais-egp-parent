@@ -893,12 +893,14 @@ public final class AppDataHelper {
     }
 
     private static void clearAppSvcOutsourceListIsNull(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtoList){
-        if (appPremGroupOutsourcedDtoList.size() > 5){
-            Iterator<AppPremGroupOutsourcedDto> outsourcedDtoIterator = appPremGroupOutsourcedDtoList.iterator();
-            while (outsourcedDtoIterator.hasNext()) {
-                AppPremGroupOutsourcedDto appPremGroupOutsourcedDto = outsourcedDtoIterator.next();
-                if (appPremGroupOutsourcedDto != null && appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto() == null) {
-                    outsourcedDtoIterator.remove();
+        if(IaisCommonUtils.isNotEmpty(appPremGroupOutsourcedDtoList)){
+            if (appPremGroupOutsourcedDtoList.size() > 5){
+                Iterator<AppPremGroupOutsourcedDto> outsourcedDtoIterator = appPremGroupOutsourcedDtoList.iterator();
+                while (outsourcedDtoIterator.hasNext()) {
+                    AppPremGroupOutsourcedDto appPremGroupOutsourcedDto = outsourcedDtoIterator.next();
+                    if (appPremGroupOutsourcedDto != null && appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto() == null) {
+                        outsourcedDtoIterator.remove();
+                    }
                 }
             }
         }
