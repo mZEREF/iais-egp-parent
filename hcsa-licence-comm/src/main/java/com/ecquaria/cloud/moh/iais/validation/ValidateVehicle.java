@@ -109,6 +109,9 @@ public class ValidateVehicle {
             return;
         }
         String value = getValue(currentDto, name);
+        if (StringUtil.isEmpty(value)){
+            return;
+        }
         if (oldAppSvcVehicleDto.stream().anyMatch(asv -> value.equalsIgnoreCase(getValue(asv, name)))) {
             map.put(name + index, MessageUtil.getMessageDesc("NEW_ERR0012"));
         }
@@ -117,6 +120,9 @@ public class ValidateVehicle {
     private void validateCurrentVehicle(Map<String, String> map, String name, AppSvcVehicleDto currentDto, int index,
             List<AppSvcVehicleDto> appSvcVehicleDtoAlls) {
         String value = getValue(currentDto, name);
+        if (StringUtil.isEmpty(value)){
+            return;
+        }
         long count = appSvcVehicleDtoAlls.stream().filter(asv -> value.equalsIgnoreCase(getValue(asv, name))).count();
         if (count >= 1) {
             map.put(name + index, MessageUtil.getMessageDesc("NEW_ERR0012"));
