@@ -2,10 +2,9 @@
     <div class="col-xs-12 col-md-3">
     </div>
     <div class="col-xs-12 col-md-6">
-        <h3>
-            Select the service(s) for which you wish to make this licence application
-        </h3>
+        <p class="bold" style="font-size: 20px">Select the service(s) for which you wish to make this licence application</p>
         <p><h4><iais:message key="NEW_ACK045"/></h4></p>
+        <hr style="margin-bottom: 20px;margin-top: 20px">
     </div>
 </div>
 <c:forEach var="errMSg" items="${errList}" varStatus="stat" >
