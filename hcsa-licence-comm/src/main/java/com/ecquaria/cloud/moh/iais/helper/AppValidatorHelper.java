@@ -4263,12 +4263,12 @@ public final class AppValidatorHelper {
                 names.add(target);
             }
         }
-        String ssiEmployedBasis = appSvcPersonnelDto.getSsiEmployedBasis();
-        String ssiRegnNo = appSvcPersonnelDto.getSsiRegnNo();
+        String employedBasis = appSvcPersonnelDto.getEmployedBasis();
+        String regnNo = appSvcPersonnelDto.getRegnNo();
 
         if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_ONCOLOGIST.equals(psnType)) {
-            if (StringUtil.isEmpty(ssiEmployedBasis)) {
-                errorMap.put(prefix + "ssiEmployedBasis" + subfix, signal);
+            if (StringUtil.isEmpty(employedBasis)) {
+                errorMap.put(prefix + "employedBasis" + subfix, signal);
             }
             String wrkExpYear = appSvcPersonnelDto.getWrkExpYear();
             if (StringUtil.isEmpty(wrkExpYear)) {
@@ -4281,34 +4281,34 @@ public final class AppValidatorHelper {
                     errorMap.put(prefix + "wrkExpYear" + subfix, "GENERAL_ERR0002");
                 }
             }
-            if (StringUtil.isEmpty(ssiRegnNo)) {
-                errorMap.put(prefix + "ssiRegnNo" + subfix, signal);
+            if (StringUtil.isEmpty(regnNo)) {
+                errorMap.put(prefix + "regnNo" + subfix, signal);
             } else {
-                if (ssiRegnNo.length() > 20) {
-                    errorMap.put(prefix + "ssiRegnNo" + subfix, signal);
+                if (regnNo.length() > 20) {
+                    errorMap.put(prefix + "regnNo" + subfix, signal);
                 }
             }
         }
         if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_DOSIMETRIST.equals(psnType)){
-            if (StringUtil.isEmpty(ssiEmployedBasis)) {
-                errorMap.put(prefix + "ssiEmployedBasis" + subfix, signal);
+            if (StringUtil.isEmpty(employedBasis)) {
+                errorMap.put(prefix + "employedBasis" + subfix, signal);
             }
         }
         if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST.equals(psnType)){
-            if (StringUtil.isEmpty(ssiEmployedBasis)) {
-                errorMap.put(prefix + "ssiEmployedBasis" + subfix, signal);
+            if (StringUtil.isEmpty(employedBasis)) {
+                errorMap.put(prefix + "employedBasis" + subfix, signal);
             }
-            if (StringUtil.isEmpty(ssiRegnNo)) {
-                errorMap.put(prefix + "ssiRegnNo" + subfix, signal);
+            if (StringUtil.isEmpty(regnNo)) {
+                errorMap.put(prefix + "regnNo" + subfix, signal);
             } else {
-                if (ssiRegnNo.length() > 20) {
-                    errorMap.put(prefix + "ssiRegnNo" + subfix, signal);
+                if (regnNo.length() > 20) {
+                    errorMap.put(prefix + "regnNo" + subfix, signal);
                 }
             }
         }
         if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_CQMP.equals(psnType)){
-            if (StringUtil.isEmpty(ssiEmployedBasis)) {
-                errorMap.put(prefix + "ssiEmployedBasis" + subfix, signal);
+            if (StringUtil.isEmpty(employedBasis)) {
+                errorMap.put(prefix + "employedBasis" + subfix, signal);
             }
         }
         if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE.equals(psnType)){
