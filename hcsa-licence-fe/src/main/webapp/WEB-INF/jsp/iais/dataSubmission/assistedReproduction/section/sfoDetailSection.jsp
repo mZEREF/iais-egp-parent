@@ -13,6 +13,8 @@
     <div id="efoDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
+                <input type="hidden" id="startYear"  name="startYear">
+                <input type="hidden" id="startMonth" name="startMonth">
                 <h3>
                     <label ><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label>
                     <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
@@ -34,8 +36,7 @@
                 <iais:row>
                     <iais:field width="6" cssClass="col-md-6" value="Patient's Age at Date of Freezing" mandatory="false"/>
                     <iais:value width="6" cssClass="col-md-6" display="true">
-                        <%ArSuperDataSubmissionDto arSuperDataSubmissionDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(request,"arSuperDataSubmissionDto");%>
-                        <%=IaisCommonUtils.getYearsAndMonths(arSuperDataSubmissionDto.getEfoCycleStageDto().getYearNum(), arSuperDataSubmissionDto.getEfoCycleStageDto().getMonthNum())%>
+                        <span style="display: block"><span id="freezingYear">${arSuperDataSubmissionDto.efoCycleStageDto.yearNum}</span> Years and <span id="freezingMonth">${arSuperDataSubmissionDto.efoCycleStageDto.monthNum}</span> Month</span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
