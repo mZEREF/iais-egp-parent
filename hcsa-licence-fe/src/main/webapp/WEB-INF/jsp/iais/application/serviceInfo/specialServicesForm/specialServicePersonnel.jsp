@@ -278,6 +278,7 @@
                             <c:out value="${title}"/>
                         </div>
                     </label>
+                    <p><h4>Please indicate at least 1 Clinically Qualified Medical Physicist.</h4></p>
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="cqmp">
                         <c:set var="index" value="${cqmp.index}"/>
                         <c:set value="cqmp" var="type"/>
