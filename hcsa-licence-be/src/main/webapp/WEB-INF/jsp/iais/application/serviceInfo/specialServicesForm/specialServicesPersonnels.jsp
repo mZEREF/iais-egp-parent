@@ -44,22 +44,22 @@
             <iais:field value="Is the RO employed on a full-time basis?" cssClass="col-md-5" mandatory="true"/>
             <iais:value width="3" cssClass="col-md-3 form-check">
                 <input
-                        <c:if test="${'1'==appSvcPersonnelDto.ssiEmployedBasis}">checked="checked"</c:if>
-                        class="form-check-input ROMDRT" type="radio" name="${prefix}ssiEmployedBasis${index}"
+                        <c:if test="${'1'==appSvcPersonnelDto.employedBasis}">checked="checked"</c:if>
+                        class="form-check-input ROMDRT" type="radio" name="${prefix}employedBasis${index}"
                         value="1"
                         aria-invalid="false">
                 <label class="form-check-label"><span class="check-circle"></span>Yes</label>
             </iais:value>
             <iais:value width="4" cssClass="col-md-4 form-check">
                 <input
-                        <c:if test="${'0'==appSvcPersonnelDto.ssiEmployedBasis}">checked="checked"</c:if>
-                        class="form-check-input ROMDRT" type="radio" name="${prefix}ssiEmployedBasis${index}"
+                        <c:if test="${'0'==appSvcPersonnelDto.employedBasis}">checked="checked"</c:if>
+                        class="form-check-input ROMDRT" type="radio" name="${prefix}employedBasis${index}"
                         value="0"
                         aria-invalid="false">
                 <label class="form-check-label"><span class="check-circle"></span>No</label>
             </iais:value>
             <iais:value cssClass="col-md-offset-5 col-md-8 col-xs-12">
-                <span class="error-msg " name="iaisErrorMsg" id="error_${prefix}ssiEmployedBasis${index}"></span>
+                <span class="error-msg " name="iaisErrorMsg" id="error_${prefix}employedBasis${index}"></span>
             </iais:value>
         </iais:row>
 
@@ -76,8 +76,8 @@
         <iais:row>
             <iais:field width="5" cssClass="col-md-5" mandatory="true" value="SMC Registration No."/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input cssClass="ssiRegnNo" maxLength="20" type="text" name="${prefix}ssiRegnNo${index}"
-                            value="${appSvcPersonnelDto.ssiRegnNo}"/>
+                <iais:input cssClass="regnNo" maxLength="20" type="text" name="${prefix}regnNo${index}"
+                            value="${appSvcPersonnelDto.regnNo}"/>
             </iais:value>
         </iais:row>
 
@@ -88,22 +88,22 @@
             <iais:field value="Is the Medical Dosimetrist employed on a full-time basis?" cssClass="col-md-5" mandatory="true"/>
             <iais:value width="3" cssClass="col-md-3 form-check">
                 <input
-                        <c:if test="${'1'==appSvcPersonnelDto.ssiEmployedBasis}">checked="checked"</c:if>
-                        class="form-check-input ROMDRT" type="radio" name="${prefix}ssiEmployedBasis${index}"
+                        <c:if test="${'1'==appSvcPersonnelDto.employedBasis}">checked="checked"</c:if>
+                        class="form-check-input ROMDRT" type="radio" name="${prefix}employedBasis${index}"
                         value="1"
                         aria-invalid="false">
                 <label class="form-check-label"><span class="check-circle"></span>Yes</label>
             </iais:value>
             <iais:value width="4" cssClass="col-md-4 form-check">
                 <input
-                        <c:if test="${'0'==appSvcPersonnelDto.ssiEmployedBasis}">checked="checked"</c:if>
-                        class="form-check-input ROMDRT" type="radio" name="${prefix}ssiEmployedBasis${index}"
+                        <c:if test="${'0'==appSvcPersonnelDto.employedBasis}">checked="checked"</c:if>
+                        class="form-check-input ROMDRT" type="radio" name="${prefix}employedBasis${index}"
                         value="0"
                         aria-invalid="false">
                 <label class="form-check-label"><span class="check-circle"></span>No</label>
             </iais:value>
             <iais:value cssClass="col-md-offset-5 col-md-8 col-xs-12">
-                <span class="error-msg " name="iaisErrorMsg" id="error_${prefix}ssiEmployedBasis${index}"></span>
+                <span class="error-msg " name="iaisErrorMsg" id="error_${prefix}employedBasis${index}"></span>
             </iais:value>
         </iais:row>
     </c:if>
@@ -113,22 +113,22 @@
             <iais:field value=" Is the RT employed on a full-time basis?" cssClass="col-md-5" mandatory="true"/>
             <iais:value width="3" cssClass="col-md-3 form-check">
                 <input
-                        <c:if test="${'1'==appSvcPersonnelDto.ssiEmployedBasis}">checked="checked"</c:if>
-                        class="form-check-input ROMDRT" type="radio" name="${prefix}ssiEmployedBasis${index}"
+                        <c:if test="${'1'==appSvcPersonnelDto.employedBasis}">checked="checked"</c:if>
+                        class="form-check-input ROMDRT" type="radio" name="${prefix}employedBasis${index}"
                         value="1"
                         aria-invalid="false">
                 <label class="form-check-label"><span class="check-circle"></span>Yes</label>
             </iais:value>
             <iais:value width="4" cssClass="col-md-4 form-check">
                 <input
-                        <c:if test="${'0'==appSvcPersonnelDto.ssiEmployedBasis}">checked="checked"</c:if>
-                        class="form-check-input ROMDRT" type="radio" name="${prefix}ssiEmployedBasis${index}"
+                        <c:if test="${'0'==appSvcPersonnelDto.employedBasis}">checked="checked"</c:if>
+                        class="form-check-input ROMDRT" type="radio" name="${prefix}employedBasis${index}"
                         value="0"
                         aria-invalid="false">
                 <label class="form-check-label"><span class="check-circle"></span>No</label>
             </iais:value>
             <iais:value cssClass="col-md-offset-5 col-md-8 col-xs-12">
-                <span class="error-msg " name="iaisErrorMsg" id="error_${prefix}ssiEmployedBasis${index}"></span>
+                <span class="error-msg " name="iaisErrorMsg" id="error_${prefix}employedBasis${index}"></span>
             </iais:value>
         </iais:row>
 
@@ -136,8 +136,8 @@
         <iais:row>
             <iais:field width="5" cssClass="col-md-5" mandatory="true" value="AHPC Registration No."/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input cssClass="ssiRegnNo" maxLength="20" type="text" name="${prefix}ssiRegnNo${index}"
-                            value="${appSvcPersonnelDto.ssiRegnNo}"/>
+                <iais:input cssClass="regnNo" maxLength="20" type="text" name="${prefix}regnNo${index}"
+                            value="${appSvcPersonnelDto.regnNo}"/>
             </iais:value>
         </iais:row>
     </c:if>
@@ -147,22 +147,22 @@
             <iais:field value="Is the CQMP employed on a full-time basis?" cssClass="col-md-5" mandatory="true"/>
             <iais:value width="3" cssClass="col-md-3 form-check">
                 <input
-                        <c:if test="${'1'==appSvcPersonnelDto.ssiEmployedBasis}">checked="checked"</c:if>
-                        class="form-check-input ROMDRT" type="radio" name="${prefix}ssiEmployedBasis${index}"
+                        <c:if test="${'1'==appSvcPersonnelDto.employedBasis}">checked="checked"</c:if>
+                        class="form-check-input ROMDRT" type="radio" name="${prefix}employedBasis${index}"
                         value="1"
                         aria-invalid="false">
                 <label class="form-check-label"><span class="check-circle"></span>Yes</label>
             </iais:value>
             <iais:value width="4" cssClass="col-md-4 form-check">
                 <input
-                        <c:if test="${'0'==appSvcPersonnelDto.ssiEmployedBasis}">checked="checked"</c:if>
-                        class="form-check-input ROMDRT" type="radio" name="${prefix}ssiEmployedBasis${index}"
+                        <c:if test="${'0'==appSvcPersonnelDto.employedBasis}">checked="checked"</c:if>
+                        class="form-check-input ROMDRT" type="radio" name="${prefix}employedBasis${index}"
                         value="0"
                         aria-invalid="false">
                 <label class="form-check-label"><span class="check-circle"></span>No</label>
             </iais:value>
             <iais:value cssClass="col-md-offset-5 col-md-8 col-xs-12">
-                <span class="error-msg " name="iaisErrorMsg" id="error_${prefix}ssiEmployedBasis${index}"></span>
+                <span class="error-msg " name="iaisErrorMsg" id="error_${prefix}employedBasis${index}"></span>
             </iais:value>
         </iais:row>
     </c:if>
