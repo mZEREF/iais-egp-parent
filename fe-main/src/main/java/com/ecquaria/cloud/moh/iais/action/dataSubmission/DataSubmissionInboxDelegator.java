@@ -341,7 +341,7 @@ public class DataSubmissionInboxDelegator {
 		setLog("view");
 		HttpServletRequest request = bpc.request;
 		HttpServletResponse response = bpc.response;
-        String submissionNo = ParamUtil.getString(request,"crud_type_action_submission_no");
+        String submissionNo = ParamUtil.getMaskedString(request,"crud_type_action_submission_no");
 		InboxDataSubmissionQueryDto inboxDataSubmissionQueryDto =  getInboxDataSubmissionQueryDtoBySubmissionNo(request,submissionNo);
 		if(inboxDataSubmissionQueryDto == null){
 			return;

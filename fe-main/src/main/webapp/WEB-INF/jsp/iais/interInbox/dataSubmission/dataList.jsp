@@ -163,7 +163,7 @@
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Submission ID</p>
-                                        <a href="#" class="licToView word-wrap" style="font-size: 16px" onclick="doViewData('${submissionNo}')">${submissionNo}</a>
+                                        <a href="#" class="licToView word-wrap" style="font-size: 16px" onclick="doViewData('<iais:mask name="crud_type_action_submission_no" value="${submissionNo}"/>')">${submissionNo}</a>
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Patient Name</p>
