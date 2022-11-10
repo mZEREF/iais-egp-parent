@@ -154,7 +154,7 @@
                                         <p class="visible-xs visible-sm table-row-title"></p>
                                         <div class="form-check">
                                             <c:set  var="typeForWithdraw" value="${inboxDataSubmissionQuery.type}"/>
-                                            <input class="form-check-input licenceCheck<c:if test="${inboxDataSubmissionQuery.status eq 'Draft'}"> draft</c:if>" id="dataSubmission${submissionNo}" type="checkbox"
+                                            <input class="form-check-input licenceCheck<c:if test="${inboxDataSubmissionQuery.status eq 'DS010'}"> draft</c:if>" id="dataSubmission${submissionNo}" type="checkbox"
                                                    name="submissionNo" value="<iais:mask name="submissionNo" value="${submissionNo}"/>" aria-invalid="false" <c:if test="${inboxDataSubmissionQuery.submissionSelect}">checked</c:if> onclick="doCheckBoxSelect('${submissionNo}','${typeForWithdraw}')">
                                             <label class="form-check-label" for="dataSubmission${submissionNo}"><span
                                                     class="check-square"></span>
