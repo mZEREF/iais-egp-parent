@@ -1853,8 +1853,11 @@ public final class RfcHelper {
 
     private static boolean isChangeCheckOtherService(List<AppSvcOtherInfoDto> appSvcOtherInfoDtoList,
             List<AppSvcOtherInfoDto> oldAppSvcOtherInfoDtoList) {
-        if (appSvcOtherInfoDtoList == null || oldAppSvcOtherInfoDtoList == null) {
+        if (IaisCommonUtils.isEmpty(appSvcOtherInfoDtoList) && IaisCommonUtils.isEmpty(oldAppSvcOtherInfoDtoList)) {
             return false;
+        }
+        if (IaisCommonUtils.isEmpty(appSvcOtherInfoDtoList) || IaisCommonUtils.isEmpty(oldAppSvcOtherInfoDtoList)) {
+            return true;
         }
         boolean result = false;
         List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList = IaisCommonUtils.genNewArrayList();
