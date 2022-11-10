@@ -1780,17 +1780,17 @@ public final class AppValidatorHelper {
                 }
                 if (StringUtil.isNotEmpty(typeOfCurrRegi) && typeOfCurrRegi.length() > 50) {
                     errMap.put(prefix + "typeOfCurrRegi" + i, repLength("Type of Registration Date", "50"));
-                }else{
-                    if (StringUtil.isNotEmpty(typeOfCurrRegi)){
-                        typeOfCurrRegi = typeOfCurrRegi.toUpperCase(AppConsts.DFT_LOCALE);
-                        String[] target = typeOfCurrRegi.split("[^A-Z0-9]+");
-                        if (IaisCommonUtils.isEmpty(target) || !Arrays.asList(target).contains("FULL")){
-                            errMap.put(prefix + "typeOfCurrRegi" + i,   "GENERAL_ERR0006");
-                        }else if (check(typeOfCurrRegi)){
-                            errMap.put(prefix + "typeOfCurrRegi" + i,   "GENERAL_ERR0006");
-                        }
-
-                    }
+//                }else{
+//                    if (StringUtil.isNotEmpty(typeOfCurrRegi)){
+//                        typeOfCurrRegi = typeOfCurrRegi.toUpperCase(AppConsts.DFT_LOCALE);
+//                        String[] target = typeOfCurrRegi.split("[^A-Z0-9]+");
+//                        if (IaisCommonUtils.isEmpty(target) || !Arrays.asList(target).contains("FULL")){
+//                            errMap.put(prefix + "typeOfCurrRegi" + i,   "GENERAL_ERR0006");
+//                        }else if (check(typeOfCurrRegi)){
+//                            errMap.put(prefix + "typeOfCurrRegi" + i,   "GENERAL_ERR0006");
+//                        }
+//
+//                    }
                 }
                 //Current Registration Date
                 if (StringUtil.isNotEmpty(currRegiDate) && !CommonValidator.isDate(currRegiDate)) {
