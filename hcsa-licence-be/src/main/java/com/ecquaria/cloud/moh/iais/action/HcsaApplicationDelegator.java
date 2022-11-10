@@ -115,7 +115,6 @@ import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.AppCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremSubSvcBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
@@ -241,13 +240,8 @@ public class HcsaApplicationDelegator {
     @Autowired
     private AppPremSubSvcBeClient appPremSubSvcBeClient;
 
-
-    @Autowired
-    private AppCommClient appCommClient;
     @Autowired
     private AppCommService appCommService;
-    @Value("${iais.email.sender}")
-    private String mailSender;
 
     @Value("${iais.system.one.address}")
     private String systemAddressOne;
@@ -916,6 +910,10 @@ public class HcsaApplicationDelegator {
                 }
             }
             log.info(StringUtil.changeForLog("the do chooseStage end ...."));
+        }
+        String easMtsUseOnly = ParamUtil.getString(bpc.request, "easMtsUseOnly");
+        if(StringUtil.isNotEmpty(easMtsUseOnly)){
+            applicationViewDto.getAppGrpPremisesDto().setEasMtsUseOnly(easMtsUseOnly);
         }
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
     }
@@ -2455,6 +2453,12 @@ public class HcsaApplicationDelegator {
         String processDecision = ParamUtil.getString(bpc.request, "nextStage");
         String nextStageReplys = ParamUtil.getString(bpc.request, "nextStageReplys");
         String decisionValues = ParamUtil.getString(bpc.request, "decisionValues");
+        String easMtsUseOnly = ParamUtil.getString(bpc.request, "easMtsUseOnly");
+        if(StringUtil.isNotEmpty(easMtsUseOnly)){
+            applicationViewDto.getAppGrpPremisesDto().setEasMtsUseOnly(easMtsUseOnly);
+            broadcastApplicationDto.setAppGrpPremisesDto(applicationViewDto.getAppGrpPremisesDto());
+        }
+
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         if (!StringUtil.isEmpty(nextStageReplys) && StringUtil.isEmpty(processDecision)) {
             processDecision = nextStageReplys;
