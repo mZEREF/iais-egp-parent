@@ -72,6 +72,7 @@
     function refreshPerson($target, k) {
         toggleTag($target.find('.removeEditDiv'), k != 0);
         $target.find('.assign-psn-item strong').html(k + 1);
+        $target.find('input.index').val(k);
         resetIndex($target, k);
     }
 
