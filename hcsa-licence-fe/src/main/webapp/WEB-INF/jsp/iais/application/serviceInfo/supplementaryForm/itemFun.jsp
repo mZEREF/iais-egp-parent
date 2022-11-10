@@ -644,7 +644,9 @@
         for (let x of indexGroupAry) {
             if (x != target) {
                 refreshItemGroupIndex(target, i);
+                // init
                 i = 1;
+                target = x;
             } else {
                 i++;
             }

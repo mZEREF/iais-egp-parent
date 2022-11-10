@@ -2252,10 +2252,10 @@ public final class AppValidatorHelper {
             List<String> svcCodeList = appSvcOutsouredDto.getSvcCodeList();
             if (IaisCommonUtils.isNotEmpty(svcCodeList)){
                 if(svcCodeList.contains(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY) || svcCodeList.contains(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES)){
-                    doValidateAppSvcOutsource(curAt, appSvcOutsouredDto, searchParam);
+                    errMap.putAll(doValidateAppSvcOutsource(curAt, appSvcOutsouredDto, searchParam));
+                }else {
+                    errMap.putAll(doValidateAppSvcOutsource(curAt, appSvcOutsouredDto, searchParam));
                 }
-            }else {
-                doValidateAppSvcOutsource(curAt, appSvcOutsouredDto, searchParam);
             }
         }
         errMap.putAll(doValidateAppSvcOutsourceAddMaxCount(appSvcOutsouredDto.getClinicalLaboratoryList(), clbMaxCount , AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY));

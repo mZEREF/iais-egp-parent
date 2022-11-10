@@ -15,6 +15,13 @@
             <div class="col-xs-12">
                 <div class="app-title item-label ${not empty groupId ? 'group-title' : ''}" ${itemData}>
                     <c:out value="${itemConfigDto.displayInfo}"/>
+                </div>
+            </div>
+        </c:when>
+        <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_GROUP_TITLE}">
+            <div class="col-xs-12">
+                <div class="app-title item-label ${not empty groupId ? 'group-title' : ''}" ${itemData}>
+                    <c:out value="${itemConfigDto.displayInfo}"/>
                     <c:if test="${not empty groupId}">
                         <span class="${itemPrefix}-${groupId}"></span>
                     </c:if>
@@ -23,12 +30,20 @@
         </c:when>
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_SUB_TITLE}">
             <div class="col-xs-12">
-                <div class="bold item-label ${not empty groupId ? 'group-title' : ''}" ${itemData}>
+                <div class="bold item-label" ${itemData}>
                     <c:out value="${itemConfigDto.displayInfo}"/>
                     <c:if test="${itemConfigDto.mandatoryType == 1}"><span class="mandatory">*</span></c:if>
                     <c:if test="${not empty groupId}">
                         <span class="${itemPrefix}-${groupId}"></span>
                     </c:if>
+                </div>
+            </div>
+        </c:when>
+        <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_GROUP_SUB_TITLE}">
+            <div class="col-xs-12">
+                <div class="bold item-label ${not empty groupId ? 'group-title' : ''}" ${itemData}>
+                    <c:out value="${itemConfigDto.displayInfo}"/>
+                    <c:if test="${itemConfigDto.mandatoryType == 1}"><span class="mandatory">*</span></c:if>
                 </div>
             </div>
         </c:when>
