@@ -354,7 +354,7 @@ public class DataSubmissionInboxDelegator {
 		}else {
 			params.put("dsType",inboxDataSubmissionQueryDto.getDsType());
 			params.put("type","preview");
-			params.put("submissionNo", MaskUtil.maskValue("submissionNo", MaskUtil.maskValue("submissionNo", submissionNo)));
+			params.put("submissionNo", MaskUtil.maskValue("submissionNo", submissionNo));
 			IaisEGPHelper.redirectUrl(response,request, "MohDsAction",InboxConst.URL_LICENCE_WEB_MODULE,params);
 		}
 		setLog("view",false);
