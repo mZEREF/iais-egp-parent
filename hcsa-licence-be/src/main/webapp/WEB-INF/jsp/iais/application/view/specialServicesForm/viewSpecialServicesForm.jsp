@@ -17,13 +17,13 @@
                 <c:forEach var="specialServiceSectionDto" items="${appSvcSpecialServiceInfo.specialServiceSectionDtoList}" varStatus="subSvcRelStatus">
                     <div class="panel panel-default">
                         <div class="panel-heading " role="tab">
-                            <iais:row>
-                                <div  class="col-xs-12" style="margin-bottom: 1%;margin-top: 1%">
-                                    <p><strong><c:out value="${specialServiceSectionDto.svcName}"/></strong></p>
-                                </div>
-                            </iais:row>
+                            <h4 class="panel-title">
+                                <a role="button" class="collapsed" data-toggle="collapse" href="#${status.index}${subSvcRelStatus.index}SSI" aria-expanded="true" aria-controls="${status.index}${subSvcRelStatus.index}SSI">
+                                    <strong><c:out value="${specialServiceSectionDto.newSvcName}"/></strong>
+                                </a>
+                            </h4>
                         </div>
-                        <div id="${status.index}${subSvcRelStatus.index}SSI" class="panel-collapse collapse in">
+                        <div id="${status.index}${subSvcRelStatus.index}SSI" class="panel-collapse collapse">
                             <input type="hidden" class ="isPartEdit" name="isPartEdit${status.index}" value="0"/>
                             <div class="panel-body">
                                 <c:choose>
@@ -52,8 +52,9 @@
                                             <c:set var="index" value="${nicStatus.index}"/>
                                             <c:set var="NurseDtoListLength" value="${specialServiceSectionDto.appSvcNurseDtoList.size()}"/>
                                             <c:set var="isShowMore" value="1"/>
-                                            <c:set var="title" value="Nurse in Charge ${NurseDtoListLength > 1?index+1:''}"/>
-                                            <%@include file="viewSpecialServicesFromDetail.jsp"%>
+                                            <c:set var="title" value="Registered Nurse ${NurseDtoListLength > 1?index+1:''}"/>
+                                            <c:set value="nic" var="type"/>
+                                            <%@include file="viewSsiPersonnelDetail.jsp" %>
                                         </c:forEach>
 
                                         <c:forEach var="person" items="${specialServiceSectionDto.appSvcRadiationSafetyOfficerDtoList}" varStatus="rsoStatus">
@@ -107,8 +108,36 @@
                                             <c:set var="index" value="${nurStatus.index}"/>
                                             <c:set var="NurseDtoListLength" value="${specialServiceSectionDto.appSvcNurseDirectorDtoList.size()}"/>
                                             <c:set var="isShowMore" value="0"/>
-                                            <c:set var="title" value="Emergency Department Nurse Director ${NurseDtoListLength > 1?index+1:''}"/>
+                                            <c:set var="title" value="Emergency Department Nursing-in-charge ${NurseDtoListLength > 1?index+1:''}"/>
                                             <%@include file="viewSpecialServicesFromDetail.jsp"%>
+                                        </c:forEach>
+                                        <c:forEach var="appSvcPersonnelDto" items="${specialServiceSectionDto.appSvcRadiationOncologist}" varStatus="roStatus">
+                                            <c:set var="index" value="${roStatus.index}"/>
+                                            <c:set var="roDtoListLength" value="${specialServiceSectionDto.appSvcRadiationOncologist.size()}"/>
+                                            <c:set var="title" value="Radiation Oncologist ${roDtoListLength > 1?index+1:''}"/>
+                                            <c:set value="ro" var="type"/>
+                                            <%@include file="viewSsiPersonnelDetail.jsp" %>
+                                        </c:forEach>
+                                        <c:forEach var="appSvcPersonnelDto" items="${specialServiceSectionDto.appSvcRadiationTherapist}" varStatus="rtStatus">
+                                            <c:set var="index" value="${rtStatus.index}"/>
+                                            <c:set var="rtDtoListLength" value="${specialServiceSectionDto.appSvcRadiationTherapist.size()}"/>
+                                            <c:set var="title" value="Radiation Therapist ${rtDtoListLength > 1?index+1:''}"/>
+                                            <c:set value="rt" var="type"/>
+                                            <%@include file="viewSsiPersonnelDetail.jsp" %>
+                                        </c:forEach>
+                                        <c:forEach var="appSvcPersonnelDto" items="${specialServiceSectionDto.appSvcRadiationCqmp}" varStatus="cqmpStatus">
+                                            <c:set var="index" value="${cqmpStatus.index}"/>
+                                            <c:set var="cqmpDtoListLength" value="${specialServiceSectionDto.appSvcRadiationCqmp.size()}"/>
+                                            <c:set var="title" value="Clinically Qualified Medical Physicist ${cqmpDtoListLength > 1?index+1:''}"/>
+                                            <c:set value="cqmp" var="type"/>
+                                            <%@include file="viewSsiPersonnelDetail.jsp" %>
+                                        </c:forEach>
+                                        <c:forEach var="appSvcPersonnelDto" items="${specialServiceSectionDto.appSvcMedicalDosimetrist}" varStatus="mdStatus">
+                                            <c:set var="index" value="${mdStatus.index}"/>
+                                            <c:set var="mdDtoListLength" value="${specialServiceSectionDto.appSvcMedicalDosimetrist.size()}"/>
+                                            <c:set var="title" value="Medical Dosimetrist ${mdDtoListLength > 1?index+1:''}"/>
+                                            <c:set value="md" var="type"/>
+                                            <%@include file="viewSsiPersonnelDetail.jsp" %>
                                         </c:forEach>
                                         <c:set var="appSvcSuplmFormDto" value="${specialServiceSectionDto.appSvcSuplmFormDto}"/>
                                         <c:forEach var="appSvcSuplmGroupDto" items="${appSvcSuplmFormDto.appSvcSuplmGroupDtoList}" varStatus="status">

@@ -112,9 +112,9 @@
                 <br>
                 <table aria-describedby="" border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;text-align: center;background-color: #ffffff;width: 100%">
                   <tr>
-                    <th scope="col"  class="col-md-4">Name of Licensee</th>
-                    <th scope="col"  class="col-md-4">HCI Name</th>
-                    <th scope="col"  class="col-md-4">Service Name</th>
+                    <th scope="col" class="col-md-4">Name of Licensee</th>
+                    <th scope="col" class="col-md-4">Business Name</th>
+                    <th scope="col" class="col-md-4">Service Name</th>
                   </tr>
                   <c:forEach items="${appGrpPremDto.applicationViewHciNameDtos}" var="applicationViewHciNameDtos">
                     <tr>
@@ -146,7 +146,7 @@
                     <table aria-describedby="" border="1px" style="border-collapse: collapse;border-top: 0 solid #000000;padding: 8px;text-align: center;background-color: #ffffff;width: 100%">
                       <tr>
                         <th scope="col"  class="col-md-4">Name of Licensee</th>
-                        <th scope="col"  class="col-md-4">HCI Name</th>
+                        <th scope="col"  class="col-md-4">Business Name</th>
                         <th scope="col"  class="col-md-4">Service Name</th>
                       </tr>
                       <c:forEach items="${appGrpPremDto.applicationViewAddress}" var="applicationViewAddress">
@@ -504,11 +504,9 @@
             <c:forEach var="appGrpSecondAddr" items="${appGrpSecondAddrList.appGrpSecondAddrDtos}" varStatus="statuss">
                 <div class="contents">
                   <c:set var="oldAppGrpSecondAddr" value="${oldAppGrpPremDto.appGrpSecondAddrDtos[status.index]}"/>
-
                     <%@include file="viewPremisesDetils.jsp" %>
                 </div>
             </c:forEach>
-                    <c:set var="MMM" value="logo"></c:set>
             <%@include file="viewPremisesDetilEdit.jsp" %>
             <div class="adds"></div>
         </div>

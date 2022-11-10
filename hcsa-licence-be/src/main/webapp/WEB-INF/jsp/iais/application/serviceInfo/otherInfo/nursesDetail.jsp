@@ -12,7 +12,7 @@
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Name of trained nurses"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="66" type="text" cssClass="nname" name="${prefix}nname${index}" value="${person.name}"/>
+            <iais:input maxLength="100" type="text" cssClass="nname" name="${prefix}nname${index}" value="${person.name}"/>
         </iais:value>
     </iais:row>
 

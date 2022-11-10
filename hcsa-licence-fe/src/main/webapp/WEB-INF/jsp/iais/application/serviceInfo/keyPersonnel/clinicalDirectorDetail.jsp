@@ -84,7 +84,7 @@
                              codeCategory="CATE_ID_SALUTATION" value="${person.salutation}"/>
             </iais:value>
             <iais:value width="4" cssClass="col-md-4">
-                <iais:input maxLength="66" type="text" cssClass="name" name="${prepsn}name${index}" value="${person.name}"/>
+                <iais:input maxLength="100" type="text" cssClass="name" name="${prepsn}name${index}" value="${person.name}"/>
             </iais:value>
         </iais:row>
 
@@ -148,15 +148,14 @@
         <iais:row>
             <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Type of Register"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="50" type="text" cssClass="typeOfRegister" name="${prepsn}typeOfRegister${index}"
-                            value="${person.typeOfRegister}"/>
+                <iais:input maxLength="50" type="text" cssClass="typeOfRegister" name="${prepsn}typeOfRegister${index}" value="${person.typeOfRegister}"/>
             </iais:value>
         </iais:row>
 
         <iais:row>
             <iais:field width="5" cssClass="col-md-5 relevantExperienceLabel" mandatory="false" value="Relevant Experience"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="180" type="text" cssClass="relevantExperience" name="${perfix}relevantExperience${index}" value="${person.typeOfRegister}"/>
+                <iais:input maxLength="180" type="text" cssClass="relevantExperience" name="${perfix}relevantExperience${index}" value="${person.relevantExperience}"/>
             </iais:value>
         </iais:row>
 

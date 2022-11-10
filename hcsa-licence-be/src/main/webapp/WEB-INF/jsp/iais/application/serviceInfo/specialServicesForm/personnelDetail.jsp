@@ -5,6 +5,7 @@
     <input type="hidden" class="not-refresh licPerson" name="${prepsn}licPerson" value="${person.licPerson ? 1 : 0}"/>
     <input type="hidden" class="not-refresh isPartEdit" name="${prepsn}isPartEdit" value="0"/>
     <input type="hidden" class="not-refresh indexNo" name="${prepsn}indexNo" value="${person.indexNo}"/>
+    <input type="hidden" class="index" value="${index}"/>
     <input type="hidden" class="not-refresh psnEditField" name="${prepsn}psnEditField" value="<c:out value="${person.psnEditFieldStr}" />"/>
     <iais:row>
         <div class="col-md-12 col-xs-12 edit-content">
@@ -58,7 +59,7 @@
                              codeCategory="CATE_ID_SALUTATION" value="${person.salutation}"/>
             </iais:value>
             <iais:value width="4" cssClass="col-md-4">
-                <iais:input maxLength="66" type="text" cssClass="name" name="${prepsn}name${index}" value="${person.name}"/>
+                <iais:input maxLength="100" type="text" cssClass="name" name="${prepsn}name${index}" value="${person.name}"/>
             </iais:value>
         </iais:row>
 

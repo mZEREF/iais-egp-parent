@@ -195,98 +195,105 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     applicationDtos = appCommService.getApplicationsByGroupNo(appSubmissionDto.getAppGrpNo());
                     appSubmissionDto.setApplicationDtos(applicationDtos);
                 }
-                ApplicationDto applicationDto = applicationDtos.get(0);
-                String applicationType = MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType());
-                int index = 0;
-                StringBuilder stringBuilderAPPNum = new StringBuilder();
-                String temp = "have";
-                if (appSubmissionDto.getApplicationDtos().size() == 1) {
-                    temp = "has";
-                }
-                for (ApplicationDto applicationDtoApp : appSubmissionDto.getApplicationDtos()) {
-                    if (index == 0) {
-                        stringBuilderAPPNum.append(applicationDtoApp.getApplicationNo());
-                    } else {
-                        stringBuilderAPPNum.append(" and ");
-                        stringBuilderAPPNum.append(applicationDtoApp.getApplicationNo());
-                    }
-                    index++;
-                }
-                String applicationNumber = stringBuilderAPPNum.toString();
-                Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
-                subMap.put("ApplicationType", applicationType);
-                subMap.put("ApplicationNumber", applicationNumber);
-                subMap.put("temp", temp);
-                String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_EMAIL, subMap);
-                String smsSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_SMS, subMap);
-                String messageSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_MSG, subMap);
-                log.debug(StringUtil.changeForLog("emailSubject : " + emailSubject));
-                log.debug(StringUtil.changeForLog("smsSubject : " + smsSubject));
-                log.debug(StringUtil.changeForLog("messageSubject : " + messageSubject));
-                Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
-                templateContent.put("ApplicantName", applicantName);
-                templateContent.put("ApplicationType", applicationType);
-                templateContent.put("ApplicationNumber", applicationNumber);
-                templateContent.put("ApplicationDate", Formatter.formatDateTime(new Date()));
-                templateContent.put("isSelfAssessment", "No");
-                String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
-                templateContent.put("systemLink", loginUrl);
-                String paymentMethodName = "noNeedPayment";
-                String payMethod = appSubmissionDto.getPaymentMethod();
-                if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)) {
-                    paymentMethodName = "GIRO";
-                    templateContent.put("usualDeduction", "next 7 working days");
-                    templateContent.put("accountNumber", appSubmissionDto.getGiroAcctNum());
-                    //need change giro
-                } else if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
-                        || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
-                        || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payMethod)) {
-                    paymentMethodName = "onlinePayment";
-                }
-                templateContent.put("emailAddress", systemParamConfig.getSystemAddressOne());
-                templateContent.put("paymentMethod", paymentMethodName);
-                templateContent.put("paymentAmount",
-                        appSubmissionDto.getTotalAmountGroup() == null ? appSubmissionDto.getAmountStr() : String.valueOf(
-                                appSubmissionDto.getTotalAmountGroup()));
-                String syName = "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "<br/>" + AppConsts.MOH_AGENCY_NAME + "</b>";
-                templateContent.put("MOH_AGENCY_NAME", syName);
-                EmailParam emailParam = new EmailParam();
-                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_EMAIL);
-                emailParam.setTemplateContent(templateContent);
-                emailParam.setSubject(emailSubject);
-                emailParam.setQueryCode(applicationDto.getApplicationNo());
-                emailParam.setReqRefNum(applicationDto.getApplicationNo());
-                emailParam.setRefId(applicationDto.getApplicationNo());
-                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-                notificationHelper.sendNotification(emailParam);
+                for (ApplicationDto applicationDto:applicationDtos
+                     ) {
+                    AppSubmissionDto appSubmissionDto1 =getAppSubmissionDto(applicationDto.getApplicationNo());
+                    String applicationType = MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType());
+                    String applicationNumber = applicationDto.getApplicationNo();
+                    Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
+                    subMap.put("ApplicationType", applicationType);
+                    subMap.put("ApplicationNumber", applicationNumber);
+                    subMap.put("temp", "has");
+                    String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_EMAIL, subMap);
+                    String smsSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_SMS, subMap);
+                    String messageSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_MSG, subMap);
+                    log.debug(StringUtil.changeForLog("emailSubject : " + emailSubject));
+                    log.debug(StringUtil.changeForLog("smsSubject : " + smsSubject));
+                    log.debug(StringUtil.changeForLog("messageSubject : " + messageSubject));
+                    Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
+                    templateContent.put("ApplicantName", applicantName);
+                    templateContent.put("ApplicationType", applicationType);
+                    templateContent.put("ApplicationNumber", applicationNumber);
+                    templateContent.put("applicationDate", Formatter.formatDateTime(new Date()));
+                    HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
+                    templateContent.put("svcNameMOSD", baseServiceDto.getSvcName()+"("+appSubmissionDto1.getAppGrpPremisesDtoList().get(0).getAddress()+")");
+                    templateContent.put("BusinessName", appSubmissionDto1.getAppGrpPremisesDtoList().get(0).getHciName());
+                    templateContent.put("LicenseeName",  appSubmissionDto1.getSubLicenseeDto().getDisplayName());
+                    templateContent.put("isSpecial", "N");
+                    List<AppPremSubSvcRelDto> appPremSubSvcRelDtos=appSubmissionDto1.getAppPremSpecialisedDtoList().get(0).getFlatAppPremSubSvcRelList(dto -> HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(dto.getSvcType()));
 
-                EmailParam smsParam = new EmailParam();
-                smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_SMS);
-                smsParam.setSubject(smsSubject);
-                smsParam.setQueryCode(applicationDto.getApplicationNo());
-                smsParam.setReqRefNum(applicationDto.getApplicationNo());
-                smsParam.setRefId(applicationDto.getApplicationNo());
-                smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-                notificationHelper.sendNotification(smsParam);
+                    if (!IaisCommonUtils.isEmpty(appPremSubSvcRelDtos)) {
+                        String[] ALPHABET_ARRAY_PROTOTYPE = new String[]{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n",
+                                "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
+                        int i=0;
+                        StringBuilder svcNameLicNo = new StringBuilder();
+                        for (AppPremSubSvcRelDto specSvc : appPremSubSvcRelDtos) {
+                            HcsaServiceDto specServiceDto = HcsaServiceCacheHelper.getServiceById(specSvc.getSvcId());
+                            String svcName1 = specServiceDto.getSvcName();
+                            String index=ALPHABET_ARRAY_PROTOTYPE[i++];
+                            svcNameLicNo.append("<p>").append(index).append(")&nbsp;&nbsp;").append(svcName1).append("</p>");
 
-                EmailParam msgParam = new EmailParam();
-                msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_MSG);
-                msgParam.setTemplateContent(templateContent);
-                msgParam.setSubject(messageSubject);
-                msgParam.setQueryCode(applicationDto.getApplicationNo());
-                msgParam.setReqRefNum(applicationDto.getApplicationNo());
-                msgParam.setRefId(applicationDto.getApplicationNo());
-                List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-                List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
-                for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList) {
-                    if (!svcCodeList.contains(appSvcRelatedInfoDto.getServiceCode())) {
-                        svcCodeList.add(appSvcRelatedInfoDto.getServiceCode());
+                        }
+                        templateContent.put("isSpecial", "Y");
+                        templateContent.put("ss1ss2", svcNameLicNo.toString());
+
                     }
+
+                    templateContent.put("isSelfAssessment", "No");
+                    String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
+                    templateContent.put("systemLink", loginUrl);
+                    String paymentMethodName = "noNeedPayment";
+                    String payMethod = appSubmissionDto.getPaymentMethod();
+                    if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)) {
+                        paymentMethodName = "GIRO";
+                        templateContent.put("usualDeduction", "next 7 working days");
+                        templateContent.put("accountNumber", appSubmissionDto.getGiroAcctNum());
+                        //need change giro
+                    } else if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
+                            || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
+                            || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payMethod)) {
+                        paymentMethodName = "onlinePayment";
+                    }
+                    templateContent.put("emailAddress", systemParamConfig.getSystemAddressOne());
+                    templateContent.put("paymentMethod", paymentMethodName);
+                    templateContent.put("paymentAmount",
+                            appSubmissionDto.getTotalAmountGroup() == null ? appSubmissionDto.getAmountStr() : String.valueOf(
+                                    appSubmissionDto.getTotalAmountGroup()));
+                    String syName = "<b>" + AppConsts.MOH_AGENCY_NAM_GROUP + "<br/>" + AppConsts.MOH_AGENCY_NAME + "</b>";
+                    templateContent.put("MOH_AGENCY_NAME", syName);
+                    EmailParam emailParam = new EmailParam();
+                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_EMAIL);
+                    emailParam.setTemplateContent(templateContent);
+                    emailParam.setSubject(emailSubject);
+                    emailParam.setQueryCode(applicationDto.getApplicationNo());
+                    emailParam.setReqRefNum(applicationDto.getApplicationNo());
+                    emailParam.setRefId(applicationDto.getApplicationNo());
+                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+                    notificationHelper.sendNotification(emailParam);
+
+                    EmailParam smsParam = new EmailParam();
+                    smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_SMS);
+                    smsParam.setSubject(smsSubject);
+                    smsParam.setQueryCode(applicationDto.getApplicationNo());
+                    smsParam.setReqRefNum(applicationDto.getApplicationNo());
+                    smsParam.setRefId(applicationDto.getApplicationNo());
+                    smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                    notificationHelper.sendNotification(smsParam);
+
+                    EmailParam msgParam = new EmailParam();
+                    msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_NAP_001_MSG);
+                    msgParam.setTemplateContent(templateContent);
+                    msgParam.setSubject(messageSubject);
+                    msgParam.setQueryCode(applicationDto.getApplicationNo());
+                    msgParam.setReqRefNum(applicationDto.getApplicationNo());
+                    msgParam.setRefId(applicationDto.getApplicationNo());
+                    List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
+                    svcCodeList.add(baseServiceDto.getSvcCode());
+                    msgParam.setSvcCodeList(svcCodeList);
+                    msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                    notificationHelper.sendNotification(msgParam);
+                    log.info("end send email sms and msg");
                 }
-                msgParam.setSvcCodeList(svcCodeList);
-                msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-                notificationHelper.sendNotification(msgParam);
-                log.info("end send email sms and msg");
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
                 log.info("send app sumbit email fail");
@@ -769,6 +776,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
                     LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
                     licenceFeeDto.setBundle(0);
+                    licenceFeeDto.setAppGrpNo(appSubmissionDto.getAppGrpNo());
                     String serviceCode = appSvcRelatedInfoDto.getServiceCode();
                     licenceFeeDto.setBaseService(serviceCode);
                     licenceFeeDto.setServiceCode(serviceCode);
@@ -791,7 +799,13 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                     ms[0] = appGrpPremisesDto.getPremisesType();
                                     find = true;
                                     if (ms[1].equals("LicBundle") || ms[2].equals("LicBundle")) {
+                                        licenceFeeDto.setBundle(3);
+
+                                        if(ms[1].equals("LicBundle")&&ms[2].equals(""))
                                         licenceFeeDto.setBundle(4);
+                                        if(ms[2].equals("LicBundle")&&ms[1].equals(""))
+                                            licenceFeeDto.setBundle(4);
+
                                     } else {
                                         licenceFeeDto.setBundle(0);
                                     }
@@ -804,16 +818,19 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             }
                         }
 
-                        if (appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_REMOTE)) {
+                        if (appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_MOBILE)) {
                             boolean find = false;
                             for (String[] ms : msList
                             ) {
                                 if (StringUtil.isEmpty(ms[1])) {
                                     ms[1] = appGrpPremisesDto.getPremisesType();
                                     find = true;
-                                    if (ms[0].equals("LicBundle")) {
-                                        licenceFeeDto.setBundle(4);
-                                    } else if(StringUtil.isNotEmpty(ms[0])){
+                                    if (ms[0].equals("LicBundle") || ms[2].equals("LicBundle")) {
+                                        licenceFeeDto.setBundle(3);
+                                        if (ms[0].equals("") || ms[2].equals("")) {
+                                            licenceFeeDto.setBundle(4);
+                                        }
+                                    } else if(!ms[0].equals("") || !ms[2].equals("")){
                                         licenceFeeDto.setBundle(3);
                                     }
                                     break;
@@ -824,16 +841,19 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 msList.add(newArray);
                             }
                         }
-                        if (appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_MOBILE)) {
+                        if (appGrpPremisesDto.getPremisesType().equals(ApplicationConsts.PREMISES_TYPE_REMOTE)) {
                             boolean find = false;
                             for (String[] ms : msList
                             ) {
                                 if (StringUtil.isEmpty(ms[2])) {
                                     ms[2] = appGrpPremisesDto.getPremisesType();
                                     find = true;
-                                    if (ms[0].equals("LicBundle")) {
-                                        licenceFeeDto.setBundle(4);
-                                    } else if(StringUtil.isNotEmpty(ms[0])){
+                                    if (ms[0].equals("LicBundle") || ms[1].equals("LicBundle")) {
+                                        licenceFeeDto.setBundle(3);
+                                        if (ms[0].equals("") || ms[1].equals("")) {
+                                            licenceFeeDto.setBundle(4);
+                                        }
+                                    } else if(!ms[0].equals("") || !ms[1].equals("")){
                                         licenceFeeDto.setBundle(3);
                                     }
                                     break;
@@ -905,18 +925,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 if (alb.getSvcCode().equals(
                                         AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY) || alb.getSvcCode().equals(
                                         AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES)) {
-                                    licenceFeeDto.setBundle(4);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    if (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(
-                            serviceCode) || AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(serviceCode)) {
-                        if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
-                            for (AppLicBundleDto alb : appLicBundleDtoList
-                            ) {
-                                if (alb.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL)) {
                                     licenceFeeDto.setBundle(4);
                                     break;
                                 }
@@ -1031,6 +1039,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 List<LicenceFeeDto> achLicenceFeeDtoList = IaisCommonUtils.genNewArrayList();
                 for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
                     LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
+                    licenceFeeDto.setAppGrpNo(appSubmissionDto.getAppGrpNo());
                     licenceFeeDto.setBundle(0);
                     licenceFeeDto.setHciCode(appGrpPremisesDtos.get(0).getOldHciCode());
                     HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(appSvcRelatedInfoDto.getServiceCode());
@@ -1225,6 +1234,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
                 for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
                     LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
+                    licenceFeeDto.setAppGrpNo(appSubmissionDto.getAppGrpNo());
                     licenceFeeDto.setBundle(0);
                     licenceFeeDto.setHciCode(appSubmissionDto.getAppGrpPremisesDtoList().get(0).getOldHciCode());
                     HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(appSvcRelatedInfoDto.getServiceCode());

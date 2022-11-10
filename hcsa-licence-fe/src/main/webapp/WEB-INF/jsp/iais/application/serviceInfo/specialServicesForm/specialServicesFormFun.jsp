@@ -50,10 +50,11 @@
             if ($("#errorMapIs").val() == 'error') {
                 if ($(v).find('.error-msg:not(:empty)').length > 0) {
                     $(v).find('.psnEdit').trigger("click");
+                    $(v).find('.error-msg:not(:empty)').closest('.panel-collapse').collapse('show');
                 }
             }
             if ($(v).find('div.personnel-content').length == 1) {
-                $(v).find('.assign-psn-item').html('');
+                $(v).find('.assign-psn-item strong').html('');
             }
             $(v).find('div.personnel-content').each(function (i, x) {
                 checkPersonContent($(x), true);
@@ -70,7 +71,8 @@
 
     function refreshPerson($target, k) {
         toggleTag($target.find('.removeEditDiv'), k != 0);
-        $target.find('.assign-psn-item').html(k + 1);
+        $target.find('.assign-psn-item strong').html(k + 1);
+        $target.find('input.index').val(k);
         resetIndex($target, k);
     }
 
@@ -81,6 +83,7 @@
         }
         showWaiting();
         var $tgt = $(target).find('div.personnel-content').last();
+        var ROMDRT = $tgt.find('input.ROMDRT:checked').val();
         var src = $tgt.clone();
         $tgt.after(src);
         var $currContent = $(target).find('div.personnel-content').last();
@@ -91,13 +94,14 @@
             orientation:'bottom'
         });
         clearFields($currContent);
-        $currContent.find('.speciality').html('');
-        $currContent.find('.subSpeciality').html('');
-        $currContent.find('.othersubSpeciality').html('');
-        $currContent.find('.qualification').html('');
+        $currContent.find('.speciality p').html('');
+        $currContent.find('.subSpeciality p').html('');
+        $currContent.find('.othersubSpeciality p').html('');
+        $currContent.find('.qualification p').html('');
+        fillValue($tgt.find('input.ROMDRT'), ROMDRT);
         refreshPerson($currContent, $(target).find('div.personnel-content').length - 1);
         disablePrsInfo($currContent, false,true);
-        $(target).find('div.personnel-content').first().find('.assign-psn-item').html('1');
+        $(target).find('div.personnel-content').first().find('.assign-psn-item strong').html('1');
         removePersonnelEvent();
         profRegNoEvent($currContent);
         assignSelectEvent($currContent);
@@ -135,7 +139,7 @@
             });
             $('#isEditHiddenVal').val('1');
             if ($currContent.length == 1) {
-                $currContent.find('.assign-psn-item').html('');
+                $currContent.find('.assign-psn-item strong').html('');
             }
             var len =  $Content.find('div.personnel-content').length;
             $Content.find('input.Length').val(len);
@@ -256,7 +260,7 @@
             return;
         }
         var prefix = $currContent.find('.prepsn').val();
-        var subfix=$currContent.index();
+        var subfix=$currContent.find('.index').val();
         fillFormData($content, data, prefix, subfix, ['psnEditDto']);
         $currContent.find('.speciality p').html(data.speciality);
         $currContent.find('.subSpeciality p').html(data.subSpeciality);

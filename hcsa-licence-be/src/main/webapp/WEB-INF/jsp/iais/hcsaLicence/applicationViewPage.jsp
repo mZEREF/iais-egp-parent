@@ -66,6 +66,15 @@
                                                 style="display: block"><a href="#tabInspection"
                                                                           aria-controls="tabInspection" role="tab"
                                                                           data-toggle="tab">Inspection${!isAso && !isPso || isAoRouteBackStatus || isBroadcastStatus ? ' Report' : ''}</a></li>
+
+                                            <li id="inspectionEditCheckList" class="complete" role="presentation"
+                                                style="display: none"><a href="#" onclick="checkInspectionCheckListTab()"
+                                                                         aria-controls="tabInspectionCheckList" role="tab"
+                                                                         data-toggle="tab">CheckList</a></li>
+                                            <li id="inspectionEditReport" class="complete" role="presentation"
+                                                style="display: none"><a href="#" onclick="checkInspectionReportTab()"
+                                                                         aria-controls="tabInspectionReport" role="tab"
+                                                                         data-toggle="tab">Inspection Report</a></li>
                                             <li class="incomplete" id="process" role="presentation"><a href="#tabProcessing"
                                                                                                        aria-controls="tabProcessing" role="tab"
                                                                                                        data-toggle="tab">Processing</a></li>
@@ -567,7 +576,7 @@
         }
     }
     function checkInspectionShow(){
-        if('${isShowInspection}' == 'N'){
+        if('${isShowInspection}' == 'N' || ${isRouteBackStatus}){
             $('#ApplicationViewInspection').css('display', 'none');
             <%--            ${'#applicationSlidInspection'}.css('display', 'none');--%>
         }
@@ -576,6 +585,24 @@
             $('#ApplicationViewInspection').css('display', 'none');
             <%--            ${'#applicationSlidInspection'}.css('display', 'none');--%>
         }
+
+
+        if('${isShowInspection}' == 'Y' && ${isRouteBackStatus}){
+            $('#inspectionEditCheckList').css('display', 'block');
+            $('#inspectionEditReport').css('display', 'block');
+            <%--            ${'#applicationSlidInspection'}.css('display', 'none');--%>
+        }
+    }
+
+    function checkInspectionCheckListTab(){
+        showWaiting();
+        $('#crud_action_additional').val('editChecklist');
+        document.getElementById('mainForm').submit();
+    }
+    function checkInspectionReportTab() {
+        showWaiting();
+        $('#crud_action_additional').val('editInspectorReport');
+        document.getElementById('mainForm').submit();
     }
 
     $("[name='chooseInspection']").click(function () {
@@ -1060,6 +1087,15 @@
     $("[name='verified']").change(function selectChange() {
         var selectValue = $("[name='verified']").val();
         checkVerifiedField();
+        if (selectValue == "PROCRFI") {
+            showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?rfi=rfi');
+        } else {
+            $('#rfiSelect').hide();
+        }
+    });
+
+    $("[name='nextStageReplys']").change(function selectChange() {
+        var selectValue = $("[name='nextStageReplys']").val();
         if (selectValue == "PROCRFI") {
             showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?rfi=rfi');
         } else {

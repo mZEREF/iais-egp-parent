@@ -1118,7 +1118,7 @@ public class LicenceServiceImpl implements LicenceService {
                                                AppPremisesRecommendationDto inspectionRecommendation,AppPremisesCorrelationDto appPremisesCorrelationDto){
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         ApplicationDto applicationDto = applicationClient.getApplicationById(appPremisesCorrelationDto.getApplicationId()).getEntity();
-        HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getBaseServiceId());
+        HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
         AppGrpPremisesDto appGrpPremisesDto=appCommClient.getAppGrpPremisesById(appPremisesCorrelationDto.getAppGrpPremId()).getEntity();
         map.put("ApplicantName", applicantName);
         map.put("ApplicationType", applicationTypeShow);
@@ -1133,11 +1133,15 @@ public class LicenceServiceImpl implements LicenceService {
                         appPremisesCorrelationDto.getId(), HcsaConsts.SERVICE_TYPE_SPECIFIED)
                 .getEntity();
         if (!IaisCommonUtils.isEmpty(appPremSubSvcRelDtos)) {
+            String[] ALPHABET_ARRAY_PROTOTYPE = new String[]{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n",
+                    "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
+            int i=0;
             StringBuilder svcNameLicNo = new StringBuilder();
             for (AppPremSubSvcRelDto specSvc : appPremSubSvcRelDtos) {
                 HcsaServiceDto specServiceDto = HcsaServiceCacheHelper.getServiceById(specSvc.getSvcId());
                 String svcName1 = specServiceDto.getSvcName();
-                svcNameLicNo.append("<p>    ").append(svcName1).append("</p>");
+                String index=ALPHABET_ARRAY_PROTOTYPE[i++];
+                svcNameLicNo.append("<p>").append(index).append(")&nbsp;&nbsp;").append(svcName1).append("</p>");
             }
             map.put("isSpecial", "Y");
             map.put("ss1ss2", svcNameLicNo.toString());

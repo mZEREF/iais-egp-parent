@@ -17,7 +17,27 @@
             </tr>
         </c:when>
 
+        <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_GROUP_TITLE}">
+            <tr>
+                <td class="col-xs-12">
+                    <div class="app-title item-label">
+                        <c:out value="${itemConfigDto.displayInfo}"/>
+                    </div>
+                </td>
+            </tr>
+        </c:when>
+
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_SUB_TITLE}">
+            <tr>
+                <td class="col-xs-12">
+                    <div class="app-title item-label">
+                        <c:out value="${itemConfigDto.displayInfo}"/>
+                    </div>
+                </td>
+            </tr>
+        </c:when>
+
+        <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_GROUP_SUB_TITLE}">
             <tr>
                 <td class="col-xs-12">
                     <div class="app-title item-label">
@@ -111,24 +131,50 @@
 
 
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_TEXT || oldItemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_TEXT}">
-            <tr>
-                <td class="col-xs-6">
-                    <div class="form-check-label" aria-label="premise-1-cytology">
-                            ${itemConfigDto.displayInfo}
-                    </div>
-                </td>
+            <c:if test="${!empty item.inputValue}">
+                <tr>
+                    <td class="col-xs-6">
+                        <div class="form-check-label" aria-label="premise-1-cytology">
+                                ${itemConfigDto.displayInfo}
+                        </div>
+                    </td>
 
-                <td>
-                    <div class="col-xs-6">
+                    <td>
+                        <div class="col-xs-6">
                         <span class="newVal " attr="${item.inputValue}">
                               <c:out value="${item.inputValue}"/>
                         </span>
-                    </div>
-                    <div class="col-xs-6">
+                        </div>
+                        <div class="col-xs-6">
                         <span class="oldVal " attr="${oldItem.inputValue}" style="display: none">
                              <iais:code code="${oldItem.inputValue}"/>
                         </span>
+                        </div>
+                    </td>
+                </tr>
+            </c:if>
+        </c:when>
+
+        <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_SELECT || oldItemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_SELECT}">
+            <tr>
+                <td>
+                    <div class="col-xs-6">
+                        <div class="newVal form-check active" attr="${item.inputValue}">
+                            <div class="form-check-label" aria-label="premise-1-cytology">
+                                <span class="check-square"></span>
+                                <c:out value="${itemConfigDto.displayInfo}" escapeXml="false"/>
+                            </div>
+                        </div>
                     </div>
+                    <div class="col-xs-6">
+                        <div class="oldVal form-check active" attr="${oldItem.inputValue}">
+                            <div class="form-check-label" aria-label="premise-1-cytology" style="display: none">
+                                <span class="check-square"></span>
+                                <c:out value="${oldItemConfigDto.displayInfo}" escapeXml="false"/>
+                            </div>
+                        </div>
+                    </div>
+
                 </td>
             </tr>
         </c:when>

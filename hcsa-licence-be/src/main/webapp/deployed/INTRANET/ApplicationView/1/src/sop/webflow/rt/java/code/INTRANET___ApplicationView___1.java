@@ -143,6 +143,42 @@ public class INTRANET___ApplicationView___1 extends BaseProcessClass {
 // 		AsoEmail->OnStepProcess
 	}
 
+	public void preCheckList_OnStepProcess_0() throws Exception {
+	// 		preCheckList->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preCheckList", this);
+	}
+
+	public void checkListNext_OnStepProcess_0() throws Exception {
+	// 		checkListNext->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "checkListNext", this);
+	}
+
+	public void saveChecklist_OnStepProcess_0() throws Exception {
+	// 		saveChecklist->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doCheckList", this);
+	}
+
+	public void setMulAction_OnStepProcess_0() throws Exception {
+	// 		setMulAction->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preViewCheckList", this);
+	}
+
+	public void doChecklist_OnStepProcess_0() throws Exception {
+	// 		doChecklist->OnStepProcess
+	}
+
+	public void inspectorReportPre_OnStepProcess_0() throws Exception {
+	// 		InspectorReportPre->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "inspectionReportPre", this);
+
+	}
+
+	public void inspectorReportSave_OnStepProcess_0() throws Exception {
+	// 		InspectorReportSave->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "inspectorReportSave", this);
+
+	}
+
 
 
 

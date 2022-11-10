@@ -218,7 +218,7 @@
         <tr>
             <td class="col-xs-6">
                 <div class="form-check-label" aria-label="premise-1-cytology">
-                    <span class="check-square"></span>Professional Regn No.
+                    <span class="check-square"></span>Professional Regn. No.
                 </div>
             </td>
             <td>

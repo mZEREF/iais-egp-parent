@@ -24,7 +24,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-xs-12">
-                    <div class="tab-gp steps-tab tab-be">
+                    <div class="tab-gp steps-tab">
                         <%@ include file="/WEB-INF/jsp/iais/application/common/navTabs.jsp" %>
                         <div class="tab-content  ">
                             <div class="tab-pane active" id="premisesTab" role="tabpanel">
@@ -110,16 +110,7 @@
             submit('premises', 'saveDraft', $('#selectDraftNo').val());
         });
         // init page
-        initPremiseEvent();
-        premTypeChangeEvent();
-        checkSelectedLicence();
-        checkAddPremBtn(2);
-        $('div.premContent').each(function (k, v) {
-            checkPremiseContent($(v), k);
-        });
-        if ($('div.premContent').length == 1) {
-            $('div.premContent').find('.premHeader').html('');
-        }
+        initPremisePage();
         <c:if test="${AppSubmissionDto.needEditController}">
         $('div.premContent').each(function () {
             disablePremiseContent($(this));

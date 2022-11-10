@@ -11,7 +11,21 @@
                 </div>
             </div>
         </c:when>
+        <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_GROUP_TITLE}">
+            <div class="col-xs-12">
+                <div class="app-title item-label">
+                    <c:out value="${itemConfigDto.displayInfo}"/>
+                </div>
+            </div>
+        </c:when>
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_SUB_TITLE}">
+            <div class="col-xs-12">
+                <div class="bold item-label">
+                    <c:out value="${itemConfigDto.displayInfo}"/>
+                </div>
+            </div>
+        </c:when>
+        <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_GROUP_SUB_TITLE}">
             <div class="col-xs-12">
                 <div class="bold item-label">
                     <c:out value="${itemConfigDto.displayInfo}"/>
@@ -42,8 +56,16 @@
             </c:if>
         </c:when>
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_TEXT}">
+            <c:if test="${!empty item.inputValue}">
+                <iais:field width="5" cssClass="col-md-5" value="${itemConfigDto.displayInfo}"/>
+                <iais:value width="7" cssClass="col-md-7" display="true">
+                    <c:out value="${item.inputValue}"/>
+                </iais:value>
+            </c:if>
+        </c:when>
+        <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_SELECT}">
             <iais:field width="5" cssClass="col-md-5" value="${itemConfigDto.displayInfo}"/>
-            <iais:value width="7" cssClass="col-md-7" display="true">
+            <iais:value width="7" cssClass="col-md-7">
                 <c:out value="${item.inputValue}"/>
             </iais:value>
         </c:when>

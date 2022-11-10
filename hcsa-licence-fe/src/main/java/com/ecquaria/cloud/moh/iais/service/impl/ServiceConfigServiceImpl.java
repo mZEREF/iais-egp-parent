@@ -40,6 +40,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.XmlBindUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -48,22 +49,17 @@ import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.LicCommService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
-import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPaymentStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
+import com.ecquaria.cloud.moh.iais.service.client.ConfigCommClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
+import com.ecquaria.cloud.systeminfo.ServicesSysteminfo;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.Calculator;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpStatus;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -72,6 +68,19 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * ServiceConfigServiceImpl
@@ -821,6 +830,64 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         }catch (Exception e){
             log.error(e.getMessage(),e);
             return  false;
+        }
+    }
+
+    @Override
+    public void sendGiroXmlToOtherServer() {
+        String downloadfilefolder = ConfigHelper.getString("giro.sftp.downloadfilefolder",ApplicationConsts.GIRO_DOWN_FILE_PATH);
+        File folder = MiscUtil.generateFile(downloadfilefolder);
+        File[] files = folder.listFiles();
+        if (files == null || files.length == 0) {
+            return;
+        }
+
+        List<String> ipAddrs = ServicesSysteminfo.getInstance().getAddressesByServiceName("hcsa-licence-web");
+        if (ipAddrs != null && ipAddrs.size() > 1) {
+            String localIp = MiscUtil.getLocalHostExactAddress();
+            log.info(StringUtil.changeForLog("Local Ip is ==>" + localIp));
+            RestTemplate restTemplate = new RestTemplate();
+            for (String ip : ipAddrs) {
+                if (localIp.equals(ip)) {
+                    continue;
+                }
+
+                String port = ConfigHelper.getString("server.port", "8080");
+                StringBuilder apiUrl = new StringBuilder("http://");
+                apiUrl.append(ip).append(':').append(port).append("/hcsa-licence-web/tempFile-handler");
+                log.info("Request URL ==> {}", apiUrl);
+
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+                for (File selectedFile : files) {
+                    try {
+                        MultiValueMap<String, Object> multipartRequest = new LinkedMultiValueMap<>();
+                        HttpHeaders fileHeader = new HttpHeaders();
+                        byte[] content = FileUtil.readBytesFromFile(selectedFile);
+                        String fileName = StringUtil.obscured(selectedFile.getName());
+                        ByteArrayResource fileContentAsResource = new ByteArrayResource(content) {
+                            @Override
+                            public String getFilename() {
+                                return fileName;
+                            }
+                        };
+                        HttpEntity<ByteArrayResource> fileEnt = new HttpEntity<>(fileContentAsResource, fileHeader);
+                        multipartRequest.add("selectedFile", fileEnt);
+                        HttpHeaders jsonHeader = new HttpHeaders();
+                        jsonHeader.setContentType(MediaType.APPLICATION_JSON);
+                        HttpEntity<String> jsonPart = new HttpEntity<>(fileName, jsonHeader);
+                        multipartRequest.add("fileName", jsonPart);
+                        jsonHeader = new HttpHeaders();
+                        jsonHeader.setContentType(MediaType.APPLICATION_JSON);
+                        jsonPart = new HttpEntity<>(downloadfilefolder, jsonHeader);
+                        multipartRequest.add("folderName", jsonPart);
+                        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(multipartRequest, headers);
+                        restTemplate.postForObject(apiUrl.toString(), requestEntity, String.class);
+                    } catch (Throwable t) {
+                        log.error(t.getMessage(), t);
+                    }
+                }
+            }
         }
     }
 

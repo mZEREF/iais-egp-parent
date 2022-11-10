@@ -29,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOf
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSpecialServiceInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSuplmFormDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcSuplmItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -66,7 +67,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -700,7 +701,7 @@ public class DealSessionUtil {
         // Special services information
         hcsaServiceStepScheme = stepMap.get(HcsaConsts.STEP_SPECIAL_SERVICES_FORM);
         if (hcsaServiceStepScheme != null) {
-            initAppSvcSpecialServiceInfoDtoList(currSvcInfoDto, appPremSpecialisedDtoList);
+            initAppSvcSpecialServiceInfoDtoList(currSvcInfoDto, appPremSpecialisedDtoList, forceInit);
             if (!forceInit) {
                 List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = currSvcInfoDto.getAppSvcSpecialServiceInfoList();
                 if (IaisCommonUtils.isNotEmpty(appSvcSpecialServiceInfoList)) {
@@ -728,7 +729,7 @@ public class DealSessionUtil {
         // outsourced providers
         hcsaServiceStepScheme = stepMap.get(HcsaConsts.STEP_OUTSOURCED_PROVIDERS);
         if (hcsaServiceStepScheme != null) {
-            initSvcOutsourcedProvider(request, currSvcInfoDto, forceInit);
+            initSvcOutsourcedProvider(request, currSvcInfoDto, forceInit ,hcsaServiceDtos);
         } else {
             currSvcInfoDto.setAppSvcOutsouredDto(null);
         }
@@ -874,7 +875,7 @@ public class DealSessionUtil {
         return true;
     }
     public static boolean initSvcOutsourcedProvider(HttpServletRequest request, AppSvcRelatedInfoDto currSvcInfoDto,
-            boolean forceInit) {
+            boolean forceInit, List<HcsaServiceDto> hcsaServiceDtos) {
         AppSvcOutsouredDto appSvcOutsouredDto = currSvcInfoDto.getAppSvcOutsouredDto();
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         if (!forceInit && appSvcOutsouredDto != null && appSvcOutsouredDto.isInit()) {
@@ -883,24 +884,35 @@ public class DealSessionUtil {
         if (appSvcOutsouredDto == null) {
             appSvcOutsouredDto = new AppSvcOutsouredDto();
         }
+        List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
         // check bundle
         List<AppLicBundleDto> appLicBundleDtoList = appSubmissionDto.getAppLicBundleDtoList();
         if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
             for (AppLicBundleDto appLicBundleDto : appLicBundleDtoList) {
-                String bundleSvcCode = appLicBundleDto.getSvcCode();
-                appSvcOutsouredDto.setBundleSvcCode(bundleSvcCode);
-                if (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(bundleSvcCode) && IaisCommonUtils.isNotEmpty(
-                        appSvcOutsouredDto.getClinicalLaboratoryList())) {
-                    removeBundleAppPremOutsourced(appSvcOutsouredDto.getClinicalLaboratoryList(),
-                            AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY);
+                String bundleSvcCode;
+                if (StringUtil.isEmpty(appLicBundleDto.getSvcCode())){
+                    String svcName = appLicBundleDto.getSvcName();
+                    bundleSvcCode = HcsaServiceCacheHelper.getServiceByServiceName(svcName).getSvcCode();
+                }else {
+                    bundleSvcCode = appLicBundleDto.getSvcCode();
                 }
-                if (AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(bundleSvcCode) && IaisCommonUtils.isNotEmpty(
-                        appSvcOutsouredDto.getRadiologicalServiceList())) {
-                    removeBundleAppPremOutsourced(appSvcOutsouredDto.getRadiologicalServiceList(),
-                            AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES);
-                }
+                svcCodeList.add(bundleSvcCode);
             }
         }
+        //hcsaServiceDtos
+        if (IaisCommonUtils.isNotEmpty(hcsaServiceDtos)){
+            for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
+                String hcsaSvcCode = hcsaServiceDto.getSvcCode();
+                svcCodeList.add(hcsaSvcCode);
+            }
+        }
+        if (svcCodeList.contains(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY)){
+            appSvcOutsouredDto.setClinicalLaboratoryList(null);
+        }
+        if (svcCodeList.contains(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES)){
+            appSvcOutsouredDto.setRadiologicalServiceList(null);
+        }
+        appSvcOutsouredDto.setSvcCodeList(svcCodeList);
         // licence numbers
         List<String> licenceNos = IaisCommonUtils.genNewArrayList();
         List<AppPremGroupOutsourcedDto> outsourcedDtoList = appSvcOutsouredDto.getClinicalLaboratoryList();
@@ -937,6 +949,7 @@ public class DealSessionUtil {
         return true;
     }
 
+
     private static void resolveAppPremGroupOutsourcedList(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtoList,
             AppPremOutSourceProvidersQueryDto row) {
         if (IaisCommonUtils.isEmpty(appPremGroupOutsourcedDtoList) || row == null) {
@@ -949,24 +962,6 @@ public class DealSessionUtil {
                     dto.setBusinessName(row.getBusinessName());
                     dto.setExpiryDate(row.getExpiryDate());
                 });
-    }
-
-    private static void removeBundleAppPremOutsourced(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtoList, String svcCode) {
-        Iterator<AppPremGroupOutsourcedDto> outsourcedDtoIterator = appPremGroupOutsourcedDtoList.iterator();
-        while (outsourcedDtoIterator.hasNext()) {
-            AppPremGroupOutsourcedDto appPremGroupOutsourcedDto = outsourcedDtoIterator.next();
-            if (appPremGroupOutsourcedDto != null && appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto() != null) {
-                String serviceCode = appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getServiceCode();
-                if (svcCode.equals(serviceCode)) {
-                    appPremGroupOutsourcedDto.setEndDateStr(null);
-                    appPremGroupOutsourcedDto.setStartDateStr(null);
-                    appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().setOutstandingScope("");
-                    appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().setAgreementEndDate(null);
-                    appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().setAgreementStartDate(null);
-                    outsourcedDtoIterator.remove();
-                }
-            }
-        }
     }
 
     /**
@@ -1004,11 +999,6 @@ public class DealSessionUtil {
         });
         appSvcSuplmFormDto.setInit(true);
         return appSvcSuplmFormDto;
-    }
-
-    public static List<AppSvcSpecialServiceInfoDto> initAppSvcSpecialServiceInfoDtoList(AppSvcRelatedInfoDto currSvcInfoDto,
-            List<AppPremSpecialisedDto> appPremSpecialisedDtoList) {
-        return initAppSvcSpecialServiceInfoDtoList(currSvcInfoDto, appPremSpecialisedDtoList, false);
     }
 
     public static List<AppSvcSpecialServiceInfoDto> initAppSvcSpecialServiceInfoDtoList(AppSvcRelatedInfoDto currSvcInfoDto,
@@ -1074,8 +1064,8 @@ public class DealSessionUtil {
                     .filter(dto -> Objects.equals(dto.getSvcCode(), appPremSubSvcRelDto.getSvcCode()))
                     .findAny()
                     .orElseGet(SpecialServiceSectionDto::new);
-            Map<String, Integer> minCount = AppSvcSpecialServiceInfoDto.getInitPersonnelMap(null);
-            Map<String, Integer> maxCount = AppSvcSpecialServiceInfoDto.getInitPersonnelMap(null);
+            LinkedHashMap<String, Integer> minCount = (LinkedHashMap<String, Integer>) AppSvcSpecialServiceInfoDto.getInitPersonnelMap(null);
+            LinkedHashMap<String, Integer> maxCount = (LinkedHashMap<String, Integer>) AppSvcSpecialServiceInfoDto.getInitPersonnelMap(null);
             specialServiceSectionDto.setAppPremSubSvcRelDto(appPremSubSvcRelDto);
             AppSvcSuplmFormDto appSvcSuplmFormDto = specialServiceSectionDto.getAppSvcSuplmFormDto();
             appSvcSuplmFormDto = initAppSvcSuplmFormDto(specialServiceSectionDto.getSvcCode(), forceInit,
@@ -1223,14 +1213,19 @@ public class DealSessionUtil {
         List<AppSvcDocDto> appSvcDocDtos = currSvcInfoDto.getAppSvcDocDtoLit();
         for (HcsaSvcDocConfigDto svcDocConfig : svcDocConfigDtos) {
             String dupForPerson = svcDocConfig.getDupForPerson();
-            String configId = svcDocConfig.getId();
+            //String configId = svcDocConfig.getId();
             boolean isBaseSvc = HcsaConsts.SERVICE_TYPE_BASE.equals(appPremSubSvcRelDto.getSvcType());
             if (StringUtil.isEmpty(dupForPerson)) {
-                DocSecDetailDto dto = new DocSecDetailDto();
+                /*DocSecDetailDto dto = new DocSecDetailDto();
                 dto.setDocConfigDto(svcDocConfig, ApplicationHelper.isBackend());
                 List<AppSvcDocDto> appSvcDocDtoList = getAppSvcDocDtoByConfigId(appSvcDocDtos, configId, premisesVal, "",
                         currSvcInfoDto.getServiceId(), appPremSubSvcRelDto.getSvcId(), isBaseSvc);
                 dto.setAppSvcDocDtoList(appSvcDocDtoList);
+                if (!dto.isMandatory()) {
+                    checkDocMandatory(dto, appPremSubSvcRelDto.getSvcCode(), premisesVal, currSvcInfoDto);
+                }*/
+                DocSecDetailDto dto = genDocSecDetailDto(null, premisesVal, svcDocConfig, appPremSubSvcRelDto.getSvcId(),
+                        appPremSubSvcRelDto, appSvcDocDtos, currSvcInfoDto);
                 result.add(dto);
             } else {
                 List<AppSvcPrincipalOfficersDto> psnList;
@@ -1246,13 +1241,8 @@ public class DealSessionUtil {
                     int i = 1;
                     boolean needPsnTypeIndex = psnList.size() > 1;
                     for (AppSvcPrincipalOfficersDto psn : psnList) {
-                        List<AppSvcDocDto> appSvcDocDtoList = getAppSvcDocDtoByConfigId(appSvcDocDtos, configId, premisesVal,
-                                psn.getIndexNo(), currSvcInfoDto.getServiceId(), specialSvcId, isBaseSvc);
-                        DocSecDetailDto dto = new DocSecDetailDto();
-                        dto.setDocConfigDto(svcDocConfig, ApplicationHelper.isBackend());
-                        dto.setAppSvcDocDtoList(appSvcDocDtoList);
-                        dto.setPsnIndexNo(psn.getIndexNo());
-                        dto.setPersonnelKey(psn.getAssignSelect());
+                        DocSecDetailDto dto = genDocSecDetailDto(psn, premisesVal, svcDocConfig, specialSvcId, appPremSubSvcRelDto,
+                                appSvcDocDtos, currSvcInfoDto);
                         if (needPsnTypeIndex) {
                             dto.setPsnTypeIndex(i++);
                             dto.initDisplayTitle();
@@ -1271,6 +1261,68 @@ public class DealSessionUtil {
                     }
                 })
                 .collect(Collectors.toList());
+    }
+
+    private static DocSecDetailDto genDocSecDetailDto(AppSvcPrincipalOfficersDto psn, String premisesVal,
+            HcsaSvcDocConfigDto svcDocConfig, String specialSvcId, AppPremSubSvcRelDto appPremSubSvcRelDto,
+            List<AppSvcDocDto> appSvcDocDtos, AppSvcRelatedInfoDto currSvcInfoDto) {
+        String configId = svcDocConfig.getId();
+        boolean isBaseSvc = HcsaConsts.SERVICE_TYPE_BASE.equals(appPremSubSvcRelDto.getSvcType());
+        String psnIndex = psn != null ? psn.getIndexNo() : null;
+        List<AppSvcDocDto> appSvcDocDtoList = getAppSvcDocDtoByConfigId(appSvcDocDtos, configId, premisesVal,
+                psnIndex, currSvcInfoDto.getServiceId(), specialSvcId, isBaseSvc);
+        DocSecDetailDto dto = new DocSecDetailDto();
+        dto.setDocConfigDto(svcDocConfig, ApplicationHelper.isBackend());
+        dto.setAppSvcDocDtoList(appSvcDocDtoList);
+        if (psn != null) {
+            dto.setPsnIndexNo(psn.getIndexNo());
+            dto.setPersonnelKey(psn.getAssignSelect());
+        }
+        if (!dto.isMandatory()) {
+            checkDocMandatory(dto, appPremSubSvcRelDto.getSvcCode(), premisesVal, currSvcInfoDto);
+        }
+        return dto;
+    }
+
+    private static void checkDocMandatory(DocSecDetailDto docSecDetailDto, String svcCode, String premisesVal,
+            AppSvcRelatedInfoDto currSvcInfoDto) {
+        if (!HcsaConsts.DOCUMENT_TYPE_NEA.equals(docSecDetailDto.getDocTitle())
+                || !StringUtil.isIn(svcCode, new String[]{AppServicesConsts.SERVICE_CODE_ONCOLOGY_THERAPY,
+                AppServicesConsts.SERVICE_CODE_PROTON_BEAM_THERAPY})) {
+            return;
+        }
+        List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = currSvcInfoDto.getAppSvcSpecialServiceInfoList();
+        if (IaisCommonUtils.isEmpty(appSvcSpecialServiceInfoList)) {
+            return;
+        }
+        AppSvcSpecialServiceInfoDto appSvcSpecialServiceInfoDto = null;
+        for (AppSvcSpecialServiceInfoDto dto : appSvcSpecialServiceInfoList) {
+            if (Objects.equals(premisesVal, dto.getPremisesVal())) {
+                appSvcSpecialServiceInfoDto = dto;
+                break;
+            }
+        }
+        if (appSvcSpecialServiceInfoDto == null) {
+            return;
+        }
+        List<AppSvcSuplmFormDto> appSvcSuplmFormDtoList = appSvcSpecialServiceInfoDto.getAppSvcSuplmFormDtoList();
+        if (IaisCommonUtils.isEmpty(appSvcSuplmFormDtoList)) {
+            return;
+        }
+        String configItemId = AppServicesConsts.SERVICE_CODE_ONCOLOGY_THERAPY.equals(svcCode) ? HcsaConsts.RORT_CHECK_DOCUMENTS :
+                HcsaConsts.PBT_CHECK_DOCUMENTS;
+        List<AppSvcSuplmItemDto> appSvcSuplmItemDtos = null;
+        for (AppSvcSuplmFormDto appSvcSuplmFormDto : appSvcSuplmFormDtoList) {
+            appSvcSuplmItemDtos = appSvcSuplmFormDto.getAppSvcSuplmItemListByCon(
+                    dto -> configItemId.equals(dto.getItemConfigId()));
+            if (IaisCommonUtils.isNotEmpty(appSvcSuplmItemDtos)) {
+                break;
+            }
+        }
+        if (IaisCommonUtils.isEmpty(appSvcSuplmItemDtos)) {
+            return;
+        }
+        docSecDetailDto.setMandatory(appSvcSuplmItemDtos.stream().anyMatch(dto -> "YES".equals(dto.getInputValue())));
     }
 
     private static List<AppSvcDocDto> getAppSvcDocDtoByConfigId(List<AppSvcDocDto> appSvcDocDtos, String docConfigId, String premIndex,

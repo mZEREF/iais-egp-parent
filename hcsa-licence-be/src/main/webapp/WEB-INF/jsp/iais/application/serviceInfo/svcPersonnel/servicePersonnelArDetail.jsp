@@ -38,7 +38,7 @@
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Name"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="66" type="text" cssClass="name" name="${logo}name${index}"
+            <iais:input maxLength="100" type="text" cssClass="name" name="${logo}name${index}"
                         value="${appSvcPersonnelDto.name}"/>
         </iais:value>
     </iais:row>
@@ -53,7 +53,7 @@
     </iais:row>
 
     <iais:row cssClass="${appSvcPersonnelDto.designation=='DES999' ? '' : 'hidden'} otherDesignationDiv">
-        <iais:field width="5" value="OtherDesignation" cssClass="col-md-5" mandatory="true"/>
+        <iais:field width="5" cssClass="col-md-5" value=""/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="100" type="text" cssClass="otherDesignation" name="${logo}otherDesignation${index}"
                         value="${appSvcPersonnelDto.otherDesignation}"/>

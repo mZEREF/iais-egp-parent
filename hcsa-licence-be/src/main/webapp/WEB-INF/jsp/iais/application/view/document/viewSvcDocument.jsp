@@ -16,7 +16,7 @@
                 <br/>
                 <div class="panel-group" id="${docShowDto.premisesVal}" role="tablist" aria-multiselectable="true">
                     <c:forEach var="secDto" items="${docShowDto.docSectionList}" varStatus="secStat">
-                        <c:if test="${secDto.existDoc}">
+                        <c:if test="${secDto.existDoc}"  var="existDoc">
                             <c:set var="panelKey">${docShowDto.premisesVal}-${secDto.svcId}</c:set>
                             <div class="panel panel-default deputy-panel">
                                 <div class="panel-heading" role="tab">
@@ -35,6 +35,22 @@
                                                     <%@include file="viewSvcDocContent.jsp"%>
                                                 </c:if>
                                             </c:forEach>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </c:if>
+                        <c:if test="${not existDoc && empty secDto.docSecDetailList}">
+                            <div class="panel panel-default deputy-panel">
+                                <div class="panel-heading" role="tab">
+                                    <h4 class="panel-title">
+                                        <c:out value="${secDto.sectionName}"/>
+                                    </h4>
+                                </div>
+                                <div id="${panelKey}" class="panel-collapse collapse in">
+                                    <div class="panel-body">
+                                        <div class="panel-main-content">
+                                            <p><h4><iais:message key="NEW_ACK039"/></h4></p>
                                         </div>
                                     </div>
                                 </div>

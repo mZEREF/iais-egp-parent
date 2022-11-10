@@ -794,8 +794,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             ApplicationDto next = applicationDtoListIterator.next();
             String status = next.getStatus();
             if(!ApplicationConsts.PENDING_ASO_REPLY.equals(status)&&
-               !ApplicationConsts.PENDING_PSO_REPLY.equals(status)&&
-               !ApplicationConsts.PENDING_INP_REPLY.equals(status)){
+                    !ApplicationConsts.PENDING_PSO_REPLY.equals(status)&&
+                    !ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01.equals(status)&&
+                    !ApplicationConsts.PENDING_INP_REPLY.equals(status)){
                 List<AppPremiseMiscDto> entity = applicationClient.getAppPremiseMiscDtoRelateId(next.getId()).getEntity();
                 if(!entity.isEmpty()){
                     Iterator<AppPremiseMiscDto> iterator = entity.iterator();
@@ -1194,8 +1195,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         map.forEach((k,v)->{
             boolean flag=false;
             for(ApplicationDto application :v){
-                if(application.getStatus().equals(ApplicationConsts.PENDING_ASO_REPLY)||application.getStatus().equals(ApplicationConsts.PENDING_PSO_REPLY)
-                ||application.getStatus().equals(ApplicationConsts.PENDING_INP_REPLY)){
+                if(application.getStatus().equals(ApplicationConsts.PENDING_ASO_REPLY)
+                        ||application.getStatus().equals(ApplicationConsts.PENDING_PSO_REPLY)
+                        ||application.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01)
+                        ||application.getStatus().equals(ApplicationConsts.PENDING_INP_REPLY)){
                     requestForInforList.add(application);
                     flag=true;
                 }
@@ -1274,7 +1277,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         applicationDtoList.add(application);
                     }else if(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(application.getStatus())||ApplicationConsts.APPLICATION_STATUS_CESSATION_NEED_LICENCE.equals(application.getStatus())){
                         cession++;
-                    }else if(ApplicationConsts.PENDING_ASO_REPLY.equals(application.getStatus())||ApplicationConsts.PENDING_PSO_REPLY.equals(application.getStatus())
+                    }else if(ApplicationConsts.PENDING_ASO_REPLY.equals(application.getStatus())
+                            ||ApplicationConsts.PENDING_PSO_REPLY.equals(application.getStatus())
+                            ||ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01.equals(application.getStatus())
                             ||ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
                         cession--;
                     }
@@ -1304,8 +1309,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         applicationDtoList.add(application);
                     }else if(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(application.getStatus())){
                         requestForChange++;
-                    }else if(ApplicationConsts.PENDING_ASO_REPLY.equals(application.getStatus())||ApplicationConsts.PENDING_PSO_REPLY.equals(application.getStatus())
-                    ||ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
+                    }else if(ApplicationConsts.PENDING_ASO_REPLY.equals(application.getStatus())
+                            ||ApplicationConsts.PENDING_PSO_REPLY.equals(application.getStatus())
+                            ||ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01.equals(application.getStatus())
+                            ||ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
                         requestForChange--;
                     }
                     if(requestForChange==i){
@@ -1336,8 +1343,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     }else if(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(application.getStatus())){
                         reNew++;
                     }else if(ApplicationConsts.PENDING_ASO_REPLY.equals(application.getStatus())
-                    ||ApplicationConsts.PENDING_PSO_REPLY.equals(application.getStatus())
-                    ||ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
+                            ||ApplicationConsts.PENDING_PSO_REPLY.equals(application.getStatus())
+                            ||ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01.equals(application.getStatus())
+                            ||ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
                         reNew--;
                     }
 

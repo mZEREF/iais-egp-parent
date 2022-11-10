@@ -271,18 +271,34 @@ public class FileUtil {
 		}
 		return target.exists();
 	}
-	
+
 	/**
 	 * get the byte array from the given file
 	 * @param fileName
 	 * @return
 	 * @throws IOException
 	 */
-	public static byte[] readBytesFromFile(String fileName) throws IOException{
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
+	public static byte[] readBytesFromFile(String fileName) {
+		byte[] content = null;
 		if(fileName != null){
 			File inFile = MiscUtil.generateFile(fileName);
-			try(InputStream fis = newInputStream(inFile.toPath())) {
+			content = readBytesFromFile(inFile);
+		}
+
+		return content;
+	}
+
+	/**
+	 * @description: Get the byte array from the given file
+	 *
+	 * @author: Jinhua on 2022/11/7 14:15
+	 * @param: [file]
+	 * @return: byte[]
+	 */
+	public static byte[] readBytesFromFile(File file) {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		if(file != null && file.exists()){
+			try(InputStream fis = newInputStream(file.toPath())) {
 				byte[] b = new byte[1024];
 				int n = fis.read(b);
 				while(n != -1){
@@ -295,15 +311,13 @@ public class FileUtil {
 			} finally {
 				try {
 					out.close();
-				} catch (IOException e1) {					
+				} catch (IOException e1) {
 					log.error(e1.getMessage(), e1);
 				}
-								
 			}
-						
 		}
-				
-		return out.toByteArray();		
+
+		return out.toByteArray();
 	}
 
 	private FileUtil() {

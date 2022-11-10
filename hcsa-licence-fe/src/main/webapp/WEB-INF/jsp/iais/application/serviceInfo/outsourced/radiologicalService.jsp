@@ -1,7 +1,16 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts" %>
+<c:set var="svcCodeRds" value="0"/>
+<c:if test="${!empty outsourceDto.svcCodeList}">
+    <c:set var="svcCodeList" value="${outsourceDto.svcCodeList}"/>
+    <c:forEach var="svcCode" items="${svcCodeList}">
+        <c:if test="${svcCode eq AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES}">
+            <c:set var="svcCodeRds" value="1" />
+        </c:if>
+    </c:forEach>
+</c:if>
 <c:set var="cL" value="${currSvcInfoDto.appSvcOutsouredDto}"/>
 <iais:row>
-    <div class="col-xs-12 <c:if test="${AppSubmissionDto.appLicBundleDtoList[0].svcCode eq AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES}">hidden</c:if>" style="margin-top: 20px;!important;">
+    <div class="col-xs-12 <c:if test="${svcCodeRds eq 1}">hidden</c:if>" style="margin-top: 20px;!important;">
         <strong>Radiological Service</strong>
     </div>
     <div class="col-xs-12">
@@ -9,7 +18,7 @@
     </div>
 </iais:row>
 
-<div class="col-lg-12 col-xs-12 col-md-12 <c:if test="${AppSubmissionDto.appLicBundleDtoList[0].svcCode eq AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES}">hidden</c:if>">
+<div class="col-lg-12 col-xs-12 col-md-12 <c:if test="${svcCodeRds eq 1}">hidden</c:if>">
     <div class="intranet-content">
         <table aria-describedby="" class="table">
             <thead>

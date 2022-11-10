@@ -1009,6 +1009,8 @@ public abstract class AppCommDelegator {
                     bundleStatus = AppConsts.NO;
                 }
             }
+        }
+        if (AppConsts.NO.equals(bundleStatus)){
             if (hasAch && appSubmissionDto.getAppSvcRelatedInfoDtoList().stream().anyMatch(dto ->
                     AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(dto.getServiceCode())
                             || AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(dto.getServiceCode()))) {
@@ -1419,12 +1421,12 @@ public abstract class AppCommDelegator {
                     AppValidatorHelper.validateEffectiveDate("effectiveDt", effectiveDateStr, errorMap);
                 }
             }
-            ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }
         if ("doSubmit".equals(action) && !errorMap.isEmpty()) {
             initErrorAction(ACTION_PREVIEW, errorMap, appSubmissionDto, bpc.request);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, "test");
         }
+        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         log.info(StringUtil.changeForLog("the do doPreview end ...."));
     }
 
@@ -2144,6 +2146,7 @@ public abstract class AppCommDelegator {
 //        //clear appGrpId
 //        appSubmissionDto.setAppGrpId(null);
         //get Amount
+        appSubmissionDto.setAppGrpNo(appGroupNo);
         FeeDto feeDto = getNewAppAmount(appSubmissionDto, ApplicationHelper.isCharity(bpc.request));
         appSubmissionDto.setFeeInfoDtos(feeDto.getFeeInfoDtos());
         Double amount = feeDto.getTotal();

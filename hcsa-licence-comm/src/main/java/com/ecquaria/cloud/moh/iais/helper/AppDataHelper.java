@@ -86,6 +86,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -801,6 +802,8 @@ public final class AppDataHelper {
             if (IaisCommonUtils.isEmpty(radiologicalServiceList)) {
                 radiologicalServiceList = IaisCommonUtils.genNewArrayList();
             }
+            clearAppSvcOutsourceListIsNull(clinicalLaboratoryList);
+            clearAppSvcOutsourceListIsNull(radiologicalServiceList);
             if ("search".equals(curAct)) {
                 appSvcOutsouredDto = getSerchAppPremOutSourceLicenceDto(request, appSvcOutsouredDto, appSubmissionDto);
             }
@@ -834,7 +837,7 @@ public final class AppDataHelper {
             if (searchParam == null) {
                 searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
             }
-            appSvcOutsouredDto.setBundleSvcCode(svcName);
+            appSvcOutsouredDto.setSearchSvcName(svcName);
             clearOldSearchParam(searchParam);
             searchParam.addFilter("svcName", svcName, true);
             if (StringUtil.isNotEmpty(licNo)) {
@@ -889,6 +892,20 @@ public final class AppDataHelper {
         searchParam.removeFilter("postalCode");
     }
 
+    private static void clearAppSvcOutsourceListIsNull(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtoList){
+        if(IaisCommonUtils.isNotEmpty(appPremGroupOutsourcedDtoList)){
+            if (appPremGroupOutsourcedDtoList.size() > 5){
+                Iterator<AppPremGroupOutsourcedDto> outsourcedDtoIterator = appPremGroupOutsourcedDtoList.iterator();
+                while (outsourcedDtoIterator.hasNext()) {
+                    AppPremGroupOutsourcedDto appPremGroupOutsourcedDto = outsourcedDtoIterator.next();
+                    if (appPremGroupOutsourcedDto != null && appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto() == null) {
+                        outsourcedDtoIterator.remove();
+                    }
+                }
+            }
+        }
+    }
+
     private static AppSvcOutsouredDto getAddAppPremOutSourceLicenceDto(HttpServletRequest request,
             AppSvcOutsouredDto appSvcOutsouredDto,
             List<AppPremGroupOutsourcedDto> clinicalLaboratoryList,
@@ -927,7 +944,7 @@ public final class AppDataHelper {
         }
         if (IaisCommonUtils.isNotEmpty(appSvcOutsouredDto.getRadiologicalServiceList())) {
             searchParam.addFilter("ids", getOutSourceIds(appSvcOutsouredDto.getRadiologicalServiceList()), true);
-            searchParam.addFilter("sLicenceNo", getOutSourcedLicenceNos(appSvcOutsouredDto.getRadiologicalServiceList()), true);
+            searchParam.addFilter("rLicenceNo", getOutSourcedLicenceNos(appSvcOutsouredDto.getRadiologicalServiceList()), true);
         }
         return appSvcOutsouredDto;
     }
@@ -953,8 +970,19 @@ public final class AppDataHelper {
         appPremGroupOutsourcedDto.setAppPremOutSourceLicenceDto(appPremOutSourceLicenceDto);
         appPremGroupOutsourcedDto.setStartDateStr(startDate);
         appPremGroupOutsourcedDto.setEndDateStr(endDate);
-        if (StringUtil.isNotEmpty(scoping) && StringUtil.isNotEmpty(startDate) && StringUtil.isNotEmpty(endDate)) {
-            appPremGroupOutsourcedDtoList.add(appPremGroupOutsourcedDto);
+        if (appPremGroupOutsourcedDtoList.size() < 5){
+            if (StringUtil.isNotEmpty(scoping) && StringUtil.isNotEmpty(startDate) && StringUtil.isNotEmpty(endDate)) {
+                try {
+                    if (Formatter.parseDate(startDate).before(Formatter.parseDate(endDate))){
+                        appPremGroupOutsourcedDtoList.add(appPremGroupOutsourcedDto);
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }else {
+            appPremGroupOutsourcedDtoList.add(new AppPremGroupOutsourcedDto());
         }
         appSvcOutsouredDto.setSearchOutsourced(appPremGroupOutsourcedDto);
         appSvcOutsouredDto.setPrefixVal(row.getId());
@@ -1064,10 +1092,13 @@ public final class AppDataHelper {
             if (appSvcOutsouredDto.getClinicalLaboratoryList().size() > 1) {
                 if (IaisCommonUtils.isNotEmpty(appSvcOutsouredDto.getClinicalLaboratoryList())) {
                     searchParam.addFilter("id", getOutSourceIds(appSvcOutsouredDto.getClinicalLaboratoryList()), true);
+                    searchParam.addFilter("sLicenceNo", getOutSourcedLicenceNos(appSvcOutsouredDto.getClinicalLaboratoryList()), true);
                 }
             } else {
                 searchParam.removeParam("id");
                 searchParam.removeFilter("id");
+                searchParam.removeParam("sLicenceNo");
+                searchParam.removeFilter("sLicenceNo");
             }
         }
         if (IaisCommonUtils.isNotEmpty(radiologicalServiceList)) {
@@ -1075,10 +1106,13 @@ public final class AppDataHelper {
             if (appSvcOutsouredDto.getRadiologicalServiceList().size() > 1) {
                 if (IaisCommonUtils.isNotEmpty(appSvcOutsouredDto.getRadiologicalServiceList())) {
                     searchParam.addFilter("ids", getOutSourceIds(appSvcOutsouredDto.getRadiologicalServiceList()), true);
+                    searchParam.addFilter("rLicenceNo", getOutSourcedLicenceNos(appSvcOutsouredDto.getRadiologicalServiceList()), true);
                 }
             } else {
                 searchParam.removeParam("ids");
                 searchParam.removeFilter("ids");
+                searchParam.removeParam("rLicenceNo");
+                searchParam.removeFilter("rLicenceNo");
             }
         }
         appSvcOutsouredDto.setPrefixVal(null);
@@ -1100,6 +1134,8 @@ public final class AppDataHelper {
                     appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().setAgreementStartDate(null);
                     outsourcedDtoIterator.remove();
                 }
+            }else {
+                outsourcedDtoIterator.remove();
             }
         }
     }
@@ -1115,7 +1151,9 @@ public final class AppDataHelper {
     private static List<String> getOutSourceIds(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtoList) {
         List<String> ids = IaisCommonUtils.genNewArrayList();
         for (AppPremGroupOutsourcedDto appPremGroupOutsourcedDto : appPremGroupOutsourcedDtoList) {
-            ids.add(appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getId());
+            if (appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto() != null){
+                ids.add(appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getId());
+            }
         }
         return ids;
     }
@@ -1123,7 +1161,9 @@ public final class AppDataHelper {
     private static List<String> getOutSourcedLicenceNos(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtoList) {
         List<String> licenceNo = IaisCommonUtils.genNewArrayList();
         for (AppPremGroupOutsourcedDto appPremGroupOutsourcedDto : appPremGroupOutsourcedDtoList) {
-            licenceNo.add(appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getLicenceNo());
+            if (appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto() != null){
+                licenceNo.add(appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getLicenceNo());
+            }
         }
         return licenceNo;
     }
@@ -2592,17 +2632,21 @@ public final class AppDataHelper {
             for (AppSvcSpecialServiceInfoDto appSvcSpecialServiceInfoDto : appSvcSpecialServiceInfoDtoList) {
                 int j = 0;
                 for (SpecialServiceSectionDto specialServiceSectionDto : appSvcSpecialServiceInfoDto.getSpecialServiceSectionDtoList()) {
-                    Map<String, Integer> maxCount = specialServiceSectionDto.getMaxCount();
-                    int cgomaxCount = maxCount.get(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
-                    int nicMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE);
-                    int slMaxCount = maxCount.get(ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER);
-                    int rsoMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER);
-                    int drMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR);
-                    int mpMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST);
-                    int rpMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL);
-                    int nmMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM);
-                    int diMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR);
-                    int nuMaxCount = maxCount.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR);
+                    LinkedHashMap<String, Integer> maxCount = specialServiceSectionDto.getMaxCount();
+                    int cgomaxCount = maxCount.getOrDefault(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO,0);
+                    int slMaxCount = maxCount.getOrDefault(ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER,0);
+                    int nicMaxCount = maxCount.getOrDefault(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE,0);
+                    int rsoMaxCount = maxCount.getOrDefault(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER,0);
+                    int drMaxCount = maxCount.getOrDefault(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR,0);
+                    int mpMaxCount = maxCount.getOrDefault(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST,0);
+                    int rpMaxCount = maxCount.getOrDefault(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL,0);
+                    int nmMaxCount = maxCount.getOrDefault(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM,0);
+                    int diMaxCount = maxCount.getOrDefault(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR,0);
+                    int nuMaxCount = maxCount.getOrDefault(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR,0);
+                    int roMaxCount = maxCount.getOrDefault(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_ONCOLOGIST,0);
+                    int mdMaxCount = maxCount.getOrDefault(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_DOSIMETRIST,0);
+                    int rtMaxCount = maxCount.getOrDefault(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST,0);
+                    int cqmpMaxCount = maxCount.getOrDefault(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_CQMP,0);
                     if (cgomaxCount != 0) {
                         List<AppSvcPrincipalOfficersDto> dtos = genKeyPersonnels(
                                 appSvcSpecialServiceInfoDto.getNewPsnKey(specialServiceSectionDto.getSvcCode(),
@@ -2687,6 +2731,26 @@ public final class AppDataHelper {
                             setAppSvcSuplmFormDto(specialServiceSectionDto.getAppSvcSuplmFormDto(), prefix + i + j, request);
                         }
                     }
+                    if (roMaxCount != 0) {
+                        List<AppSvcPersonnelDto> appSvcRadiationOncologist = getSpecialServiceInforamtionPerson(request, prefix + i + j,
+                                ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_ONCOLOGIST, "ro", specialServiceSectionDto.getAppSvcRadiationOncologist(), appType);
+                        specialServiceSectionDto.setAppSvcRadiationOncologist(appSvcRadiationOncologist);
+                    }
+                    if (mdMaxCount != 0) {
+                        List<AppSvcPersonnelDto> appSvcMedicalDosimetrist = getSpecialServiceInforamtionPerson(request, prefix + i + j,
+                                ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_DOSIMETRIST, "md", specialServiceSectionDto.getAppSvcMedicalDosimetrist(), appType);
+                        specialServiceSectionDto.setAppSvcMedicalDosimetrist(appSvcMedicalDosimetrist);
+                    }
+                    if (rtMaxCount != 0) {
+                        List<AppSvcPersonnelDto> appSvcRadiationTherapist = getSpecialServiceInforamtionPerson(request, prefix + i + j,
+                                ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST, "rt", specialServiceSectionDto.getAppSvcRadiationTherapist(), appType);
+                        specialServiceSectionDto.setAppSvcRadiationTherapist(appSvcRadiationTherapist);
+                    }
+                    if (cqmpMaxCount != 0) {
+                        List<AppSvcPersonnelDto> appSvcRadiationCqmp = getSpecialServiceInforamtionPerson(request, prefix + i + j,
+                                ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_CQMP, "cqmp", specialServiceSectionDto.getAppSvcRadiationCqmp(), appType);
+                        specialServiceSectionDto.setAppSvcRadiationCqmp(appSvcRadiationCqmp);
+                    }
                     j++;
                 }
                 i++;
@@ -2705,6 +2769,7 @@ public final class AppDataHelper {
             boolean getDataByOld = false;
             boolean getPageData = false;
             String isPartEdit = ParamUtil.getString(request, prefix + personTypeAbbr + "isPartEdit" + x);
+            String indexNo = ParamUtil.getString(request, prefix + personTypeAbbr + "indexNo" + x);
             if (!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
                 getPageData = true;
             } else if (AppConsts.YES.equals(isPartEdit)) {
@@ -2712,12 +2777,13 @@ public final class AppDataHelper {
             } else {
                 getDataByOld = true;
             }
-            if (getDataByOld && IaisCommonUtils.isNotEmpty(originalPersonnelList) && x < originalPersonnelList.size()) {
-                appSvcPersonnelDto = originalPersonnelList.get(x);
+            if (getDataByOld && IaisCommonUtils.isNotEmpty(originalPersonnelList) && indexNo!=null) {
+                appSvcPersonnelDto = originalPersonnelList.stream().filter(dto->indexNo.equals(dto.getIndexNo())).findAny().get();
+                personnelDtoList.add(appSvcPersonnelDto);
             } else if (getPageData) {
                 appSvcPersonnelDto = getAppSvcPersonnelParam(null, request, prefix + personTypeAbbr, "" + x, personType);
+                personnelDtoList.add(appSvcPersonnelDto);
             }
-            personnelDtoList.add(appSvcPersonnelDto);
         }
         return personnelDtoList;
     }
@@ -3312,8 +3378,8 @@ public final class AppDataHelper {
                 } else if (getPageData) {
                     appSvcBusinessDto = new AppSvcBusinessDto();
                     boolean getOHData = true;
-                    String premisesType = appGrpPremisesDto.getPremisesType();
-                    /*if (ApplicationConsts.PREMISES_TYPE_MOBILE.equals(premisesType) || ApplicationConsts.PREMISES_TYPE_REMOTE.equals(
+                    /*String premisesType = appGrpPremisesDto.getPremisesType();
+                    if (ApplicationConsts.PREMISES_TYPE_MOBILE.equals(premisesType) || ApplicationConsts.PREMISES_TYPE_REMOTE.equals(
                             premisesType)) {
                         getOHData = false;
                     }*/
@@ -3330,6 +3396,7 @@ public final class AppDataHelper {
                     String businessName = ParamUtil.getString(request, "businessName" + i);
                     String contactNo = ParamUtil.getString(request, "contactNo" + i);
                     String emailAddr = ParamUtil.getString(request, "emailAddr" + i);
+                    String corporateWebsite = ParamUtil.getString(request, "corporateWebsite" + i);
 
                     if (getOHData) {
                         int weeklyLength = ParamUtil.getInt(request, "weeklyLength" + i);
@@ -3453,6 +3520,7 @@ public final class AppDataHelper {
                     appSvcBusinessDto.setBusinessName(businessName);
                     appSvcBusinessDto.setContactNo(contactNo);
                     appSvcBusinessDto.setEmailAddr(emailAddr);
+                    appSvcBusinessDto.setCorporateWebsite(corporateWebsite);
 
                     if (getOHData) {
                         appSvcBusinessDto.setWeeklyDtoList(weeklyDtoList);

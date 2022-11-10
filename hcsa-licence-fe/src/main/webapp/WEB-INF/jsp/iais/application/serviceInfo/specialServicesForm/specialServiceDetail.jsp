@@ -2,6 +2,7 @@
     <c:set var="isNIC" value="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE}"/>
     <input type="hidden" class="not-refresh prepsn" name="${psnContent}" value="${prefix}"/>
     <input type="hidden" class="not-refresh specialPerson" value="1"/>
+    <input type="hidden" class="indexNo" name="${prefix}indexNo${index}" value="${appSvcPersonnelDto.indexNo}"/>
     <input type="hidden" class="isPartEdit" name="${prefix}isPartEdit${index}" value="0"/>
     <iais:row>
         <div class="col-md-12 col-xs-12 edit-content">
@@ -17,7 +18,7 @@
     </iais:row>
     <iais:row>
         <div class="col-xs-12 col-md-6">
-            <p class="bold">${title} <label class="assign-psn-item">${index+1}</label></p>
+            <p class="bold">${title} <label class="assign-psn-item"><strong>${index+1}</strong></label></p>
             <p><span class="error-msg" name="iaisErrorMSg" id="error_${prefix}personError${index}"></span></p>
         </div>
         <div class="col-xs-12 col-md-6 text-right removeEditDiv <c:if test="${index == 0}">hidden</c:if>">
@@ -35,32 +36,19 @@
             <iais:select cssClass="salutation" name="${prefix}salutation${index}" firstOption="Please Select" codeCategory="CATE_ID_SALUTATION" value="${appSvcPersonnelDto.salutation}"/>
         </iais:value>
         <iais:value width="4" cssClass="col-md-4">
-            <iais:input maxLength="66" type="text" cssClass="name" name="${prefix}name${index}" value="${appSvcPersonnelDto.name}"/>
+            <iais:input maxLength="100" type="text" cssClass="name" name="${prefix}name${index}" value="${appSvcPersonnelDto.name}"/>
         </iais:value>
     </iais:row>
 
-    <c:if test="${isNIC}">
-        <%--   Designation --%>
-        <iais:row>
-            <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Designation"/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:select cssClass="designation" name="${prefix}designation${index}" value="${appSvcPersonnelDto.designation}"
-                             options="nicSel" firstOption="Please Select"
-                             onchange="toggleOther(this, 'SSI999', '.otheDesignationDiv');"/>
-            </iais:value>
-        </iais:row>
-    </c:if>
-    <c:if test="${!isNIC}">
-        <%--   Designation --%>
-        <iais:row>
-            <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Designation"/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:select cssClass="designation" name="${prefix}designation${index}" value="${appSvcPersonnelDto.designation}"
-                             options="edSel" firstOption="Please Select"
-                             onchange="toggleOther(this, 'SSI999', '.otheDesignationDiv');"/>
-            </iais:value>
-        </iais:row>
-    </c:if>
+    <%--   Designation --%>
+    <iais:row>
+        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Designation"/>
+        <iais:value width="7" cssClass="col-md-7">
+            <iais:select cssClass="designation" name="${prefix}designation${index}" value="${appSvcPersonnelDto.designation}"
+                         options="edSel" firstOption="Please Select"
+                         onchange="toggleOther(this, 'SSI999', '.otheDesignationDiv');"/>
+        </iais:value>
+    </iais:row>
 
     <iais:row cssClass="${appSvcPersonnelDto.designation=='SSI999' ? '' : 'hidden'} otheDesignationDiv">
         <iais:field width="5" cssClass="col-md-5" value=""/>
@@ -185,16 +173,5 @@
                         value="${appSvcPersonnelDto.wrkExpYear}"/>
         </iais:value>
     </iais:row>
-
-    <c:if test="${isNIC}">
-        <%--          Expiry Date (BCLS and AED)  --%>
-        <iais:row>
-            <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Expiry Date (BCLS and AED)"/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:datePicker cssClass="bclsExpiryDate" name="${prefix}bclsExpiryDate${index}"
-                                 value="${appSvcPersonnelDto.bclsExpiryDate}"/>
-            </iais:value>
-        </iais:row>
-    </c:if>
     <hr/>
 </div>

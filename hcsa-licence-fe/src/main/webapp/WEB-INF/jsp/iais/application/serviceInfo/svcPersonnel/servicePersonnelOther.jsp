@@ -35,7 +35,7 @@
     <iais:row>
         <iais:field width="5"  mandatory="true" value="Name" cssClass="col-md-5"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="66" type="text" name="${logo}name${index}"
+            <iais:input maxLength="100" type="text" name="${logo}name${index}"
                         value="${appSvcPersonnelDto.name}"></iais:input>
         </iais:value>
     </iais:row>

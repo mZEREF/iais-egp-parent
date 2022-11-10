@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.service;
 
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
@@ -62,6 +61,7 @@ public interface ServiceConfigService {
     AppSubmissionDto giroPaymentXmlUpdateByGrpNo(AppSubmissionDto appGrp);
 
     void sendGiroXmlToSftp();
+    void sendGiroXmlToOtherServer();
     void getGiroXmlFromSftpAndSaveXml();
     HcsaServiceDto getServiceDtoById(String id);
     void sysnSaveGroupToBe();

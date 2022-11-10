@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts" %>
 
 <div class="row form-horizontal normal-label person-content">
     <input type="hidden" class="not-refresh isPartEdit" name="isPartEdit" value="0"/>
@@ -25,7 +26,6 @@
         </div>
     </iais:row>
     <c:set var="appSvcSuplmFormList" value="${currSvcInfoDto.appSvcSuplmFormList}"/>
-
     <c:forEach var="appSvcSuplmFormDto" items="${appSvcSuplmFormList}">
 
         <iais:row>
@@ -72,7 +72,14 @@
                         <input class="not-clear" type="hidden" value="${count}" name="${itemPrefix}${groupId}"/>
                         <input class="not-clear" type="hidden" value="${appSvcSuplmGroupDto.maxCount}" name="${itemPrefix}${groupId}-max"/>
                         <span class="addMoreBtn" style="color:deepskyblue;cursor:pointer;">
-                                <span style="">+ Add more</span>
+                            <c:choose>
+                                <c:when test="${AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE == currentSvcCode}">
+                                    <span style="">Add more</span>
+                                </c:when>
+                                <c:otherwise>
+                                    <span style="">+ Add more</span>
+                                </c:otherwise>
+                            </c:choose>
                             </span>
                     </div>
                 </c:if>

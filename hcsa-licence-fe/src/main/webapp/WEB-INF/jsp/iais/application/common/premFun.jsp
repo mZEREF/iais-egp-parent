@@ -1,4 +1,24 @@
 <script type="text/javascript">
+    function initPremisePage() {
+        initPremiseEvent();
+        premTypeChangeEvent();
+        checkSelectedLicence();
+        checkAddPremBtn(2);
+        $('div.premContent').each(function (k, v) {
+            let $target = $(v);
+            checkPremiseContent($target, k);
+            let retrieveflag = $target.find('input[name="retrieveflag"]').val();
+            if (retrieveflag == '1') {
+                readonlyContent($target.find('div.address'));
+            } else {
+                unReadlyContent($target.find('div.address'));
+            }
+        });
+        if ($('div.premContent').length == 1) {
+            $('div.premContent').find('.premHeader').html('');
+        }
+    }
+
     function initPremiseEvent() {
         editPremEvent();
 
@@ -217,6 +237,7 @@
         refreshPremise($premContent, $('div.premContent').length - 1);
         $('div.premContent:first').find('.premHeader').html('1');
         $premContent.find('.chooseExistData').val('0');
+        $premContent.find('.retrieveflag').val('0');
         initPremiseEvent();
         dismissWaiting();
     }
@@ -288,6 +309,7 @@
     }
 
     var premTypeEvent = function () {
+        $('.premTypeRadio').unbind('click');
         $('.premTypeRadio').on('click', function () {
             premTypeEventFun($(this));
             let premType = getValue($(this));
@@ -314,7 +336,8 @@
     }
 
     var premSelectEvent = function () {
-        $('.premSelect').change(function () {
+        $('.premSelect').unbind('change');
+        $('.premSelect').on('change', function () {
             showWaiting();
             clearErrorMsg();
             checkAddPremBtn();
@@ -417,7 +440,7 @@
 
     function autoCheckPremiseType(premType) {
         //const premType = 'REMOTE';
-        let $premType = $('input[value="' + premType + '"');
+        let $premType = $('input.premTypeRadio[value="' + premType + '"');
         if (isEmptyNode($premType) || isChecked($premType)) {
             return;
         }
@@ -427,6 +450,7 @@
             if ($(this).is(':checked')) {
                 nodeChecked = true;
             } else if (isEmptyNode($target)) {
+                // check the prem type at the same level
                 let name = $(this).attr('name');
                 if (!isChecked($('input[name="' + name + '"'))) {
                     $target = $(this);
@@ -653,6 +677,7 @@
             resetField(ele, i, prefix);
         });
         var length = $target.find('.operationDiv').length;
+        //$target.find('.addressSize').val(length);//BE secondary address
         $target.find('.opLength').val(length);
     }
 
@@ -738,19 +763,20 @@
             'data': data,
             'type': 'GET',
             'success': function (data) {
+                let $currContent = $addressSelectors.closest('div.premContent');
                 if (data == null) {
-                    // $postalCodeEle.find('.postalCodeMsg').html("the postal code information could not be found");
                     //show pop
                     $('#postalCodePop').modal('show');
                     //handleVal($addressSelectors.find(':input'), '', false);
                     clearFields($addressSelectors.find(':input'));
                     unReadlyContent($addressSelectors);
-                    //$premContent.find('input[name="retrieveflag"]').val('0');
+                    $currContent.find('input[name="retrieveflag"]').val('0');
                 } else {
                     fillValue($addressSelectors.find('.blkNo'), data.blkHseNo);
                     fillValue($addressSelectors.find('.streetName'), data.streetName);
                     fillValue($addressSelectors.find('.buildingName'), data.buildingName);
-                    //readonlyContent($addressSelectors);
+                    readonlyContent($addressSelectors);
+                    $currContent.find('input[name="retrieveflag"]').val('1');
                 }
                 dismissWaiting();
             },
@@ -759,6 +785,7 @@
                 $('#postalCodePop').modal('show');
                 clearFields($addressSelectors.find(':input'));
                 unReadlyContent($addressSelectors);
+                $currContent.find('input[name="retrieveflag"]').val('0');
                 dismissWaiting();
             }
         });

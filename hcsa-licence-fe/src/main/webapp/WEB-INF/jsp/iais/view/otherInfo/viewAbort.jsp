@@ -1,6 +1,6 @@
 <c:if test="${'1' == appSvcOtherInfoDto.provideTop}">
     <c:if test="${'1' == appSvcOtherInfoDto.appSvcOtherInfoTopDto.topType || '-1' == appSvcOtherInfoDto.appSvcOtherInfoTopDto.topType}">
-        <div class="col-xs-12 col-md-12">
+        <div class="">
             <p class="bold">
                 TOP (By Drug)
             </p>
@@ -29,7 +29,7 @@
     </c:if>
 
     <c:if test="${'0' == appSvcOtherInfoDto.appSvcOtherInfoTopDto.topType || '-1' == appSvcOtherInfoDto.appSvcOtherInfoTopDto.topType}">
-        <div class="col-xs-12 col-md-12">
+        <div class="">
             <p class="bold">TOP (By Surgical Procedure)</p>
         </div>
         <c:forEach var="person" items="${appSvcOtherInfoDto.otherInfoAbortSurgicalProcedureList}" varStatus="pstatus">
@@ -57,7 +57,7 @@
 
 
     <c:if test="${'-1' == appSvcOtherInfoDto.appSvcOtherInfoTopDto.topType}">
-        <div class="col-xs-12 col-md-10">
+        <div class="">
             <p class="bold">TOP (By Drug and Surgical Procedure)</p>
         </div>
         <c:forEach var="person" items="${appSvcOtherInfoDto.otherInfoAbortDrugAndSurgicalList}" varStatus="astatus">

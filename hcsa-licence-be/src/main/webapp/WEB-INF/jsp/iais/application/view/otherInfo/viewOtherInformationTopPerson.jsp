@@ -15,26 +15,26 @@
             <c:if test="${'-1' == appSvcOtherInfoDto.appSvcOtherInfoTopDto.topType}">Termination of Pregnancy(Drug and Surgical Procedure)</c:if>
         </iais:value>
     </iais:row>
-    <div class="col-xs-12">
+    <div class="">
         <p><strong>Name, Professional Regn. No. and Qualification of medical practitioners authorised to perform Abortion</strong></p>
     </div>
     <c:forEach var="person" items="${appSvcOtherInfoDto.otherInfoTopPersonPractitionersList}" varStatus="status">
         <%@include file="viewPractitionersDetail.jsp"%>
     </c:forEach>
-    <div class="col-xs-12">
+    <div class="">
         <p><strong>Name, Professional Regn. No. and Qualification of anaesthetists</strong></p>
     </div>
     <c:forEach var="person" items="${appSvcOtherInfoDto.otherInfoTopPersonAnaesthetistsList}" varStatus="astatus">
         <%@include file="viewAnaesthetistsDetail.jsp"%>
     </c:forEach>
 
-    <div class="col-xs-12">
+    <div class="">
         <p><strong>Name and Qualifications of trained nurses</strong></p>
     </div>
     <c:forEach var="person" items="${appSvcOtherInfoDto.otherInfoTopPersonNursesList}" varStatus="nstatus">
         <%@include file="viewNursesDetail.jsp"%>
     </c:forEach>
-    <div class="col-xs-12">
+    <div class="">
         <p><strong>Name and Qualifications of certified TOP counsellors</strong></p>
     </div>
     <c:forEach var="person" items="${appSvcOtherInfoDto.otherInfoTopPersonCounsellorsList}" varStatus="cstatus">

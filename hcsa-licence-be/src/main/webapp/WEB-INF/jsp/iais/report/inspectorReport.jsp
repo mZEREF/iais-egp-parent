@@ -1,15 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
-<%
-    //handle to the Engine APIs
-    sop.webflow.rt.api.BaseProcessClass process =
-            (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
-%>
-<%
-    String webroot = IaisEGPConstant.BE_CSS_ROOT;
-%>
 <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
 <input type="hidden" name="confirmAction" value="">
 <div class="tab-pane" id="tabInspection" role="tabpanel">
@@ -147,11 +138,11 @@
         <div class="col-xs-12">
             <div class="table-gp">
                 <table aria-describedby="" class="table">
-                        <thead style="display: none">
-                        <tr>
-                            <th scope="col"></th>
-                        </tr>
-                        </thead>
+                    <thead style="display: none">
+                    <tr>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
                     <tr>
                         <td class="col-xs-4">
                             <p>Date of Inspection</p>
@@ -239,11 +230,11 @@
                     <p><h4><strong><span>Part I: Inspection Checklist</span></strong></h4></p>
                 </div>
                 <table aria-describedby="" class="table">
-                        <thead style="display: none">
-                        <tr>
-                            <th scope="col"></th>
-                        </tr>
-                        </thead>
+                    <thead style="display: none">
+                    <tr>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
                     <tr>
                         <td class="col-xs-4">
                             <p>Checklist Used</p>
@@ -379,11 +370,11 @@
         <div class="col-xs-12">
             <div class="table-gp">
                 <table aria-describedby="" class="table">
-                        <thead style="display: none">
-                        <tr>
-                            <th scope="col"></th>
-                        </tr>
-                        </thead>
+                    <thead style="display: none">
+                    <tr>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
                     <tr>
                         <td class="col-xs-4">
                             <p>Rectified</p>
@@ -652,7 +643,6 @@
         </div>
     </c:if>
 </div>
-<a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em class="fa fa-angle-left"></em> Back</a>
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 
 <script type="text/javascript">

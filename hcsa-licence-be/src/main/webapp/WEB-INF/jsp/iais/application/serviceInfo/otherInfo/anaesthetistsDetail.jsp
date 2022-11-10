@@ -33,7 +33,7 @@
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Name of anaesthetists"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="66" type="text" cssClass="aname" name="${prefix}aname${index}" value="${person.name}"/>
+            <iais:input maxLength="100" type="text" cssClass="aname" name="${prefix}aname${index}" value="${person.name}"/>
         </iais:value>
     </iais:row>
 

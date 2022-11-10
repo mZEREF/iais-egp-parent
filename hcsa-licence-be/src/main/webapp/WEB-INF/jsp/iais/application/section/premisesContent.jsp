@@ -20,7 +20,7 @@
 
 <c:forEach var="appGrpPremisesDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
     <c:set var="canEdit" value="true"/>
-    <div class="row form-horizontal premContent <c:if test="${!status.first}">underLine</c:if>">
+    <div class="row form-horizontal normal-label premContent <c:if test="${!status.first}">underLine</c:if>">
         <input class="not-refresh chooseExistData" type="hidden" name="chooseExistData" value="${appGrpPremisesDto.existingData}"/>
         <input class="not-refresh premIndex" type="hidden" name="premIndex" value="${status.index}"/>
         <input class="not-refresh premisesIndexNo" type="hidden" name="premisesIndexNo" value="${appGrpPremisesDto.premisesIndexNo}"/>
@@ -28,6 +28,8 @@
         <input class="not-refresh premTypeValue" type="hidden" name="premType" value="${appGrpPremisesDto.premisesType}"/>
         <input class="not-refresh premSelValue" type="hidden" value="${appGrpPremisesDto.premisesSelect}"/>
         <input class="not-refresh isPartEdit" type="hidden" name="isPartEdit" value="0"/>
+        <input class="not-refresh retrieveflag" type="hidden" name="retrieveflag" value="${appGrpPremisesDto.clickRetrieve ? 1 : 0}"/>
+
         <c:set var="premValue" value="${status.index}"/>
             <%--<input hidden class="premiseIndex" value="${premValue}">--%>
         <c:choose>
@@ -44,15 +46,6 @@
             </c:when>
             <c:otherwise>
                 <input class="not-refresh nonHcsaLength" type="hidden" name="nonHcsaLength" value="1"/>
-            </c:otherwise>
-        </c:choose>
-
-        <c:choose>
-            <c:when test="${appGrpPremisesDto.clickRetrieve}">
-                <input class="not-refresh retrieveflag" type="hidden" name="retrieveflag" value="1"/>
-            </c:when>
-            <c:otherwise>
-                <input class="not-refresh retrieveflag" type="hidden" name="retrieveflag" value="0"/>
             </c:otherwise>
         </c:choose>
 
@@ -202,7 +195,7 @@
                 </c:if>
                 <c:if test="${StringUtil.isIn(easMts, premisesType)}">
                     <iais:row cssClass="easMtsSelect hidden">
-                        <iais:field value="Add or select a ${convShow} from the list :" width="5" mandatory="true"/>
+                        <iais:field value="Add or select a ${StringUtil.toLowerCase(mosdName)} from the list :" width="5" mandatory="true"/>
                         <iais:value id="easMtsSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
                             <iais:select cssClass="premSelect easMtsSel" name="easMtsSel${status.index}" options="easMtsPremSel" needSort="false"  value="${appGrpPremisesDto.premisesSelect}"/>
                         </iais:value>

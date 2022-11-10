@@ -871,6 +871,14 @@ public class BackendInboxDelegator {
 
                 boolean needUpdateGroup = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList, applicationDtoIds,
                         ApplicationConsts.APPLICATION_STATUS_APPROVED, ApplicationConsts.APPLICATION_STATUS_REJECTED);
+                if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)){
+                    List<ApplicationDto> applicationDtos=IaisCommonUtils.genNewArrayList();
+                    applicationDtos.add(applicationDto);
+                    //get and set return fee
+                    applicationDtos = hcsaConfigMainClient.returnFee(applicationDtos).getEntity();
+                    //save return fee
+                    saveRejectReturnFee(applicationDtos, broadcastApplicationDto);
+                }
                 if(needUpdateGroup || applicationDto.isFastTracking()){
                     //update application Group status
                     ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
@@ -895,10 +903,6 @@ public class BackendInboxDelegator {
                         log.info(StringUtil.changeForLog("****viewitem ***** " + viewitem.getApplicationNo()));
                     }
                     if(needUpdateGroup){
-                        //get and set return fee
-                        saveApplicationDtoList = hcsaConfigMainClient.returnFee(saveApplicationDtoList).getEntity();
-                        //save return fee
-                        saveRejectReturnFee(saveApplicationDtoList,broadcastApplicationDto);
                         //clearApprovedHclCodeByExistRejectApp
                         applicationViewService.clearApprovedHclCodeByExistRejectApp(saveApplicationDtoList,applicationGroupDto.getAppType(), broadcastApplicationDto.getApplicationDto());
                     }
@@ -1132,13 +1136,15 @@ public class BackendInboxDelegator {
             if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(applicationDto.getStatus())){
                 AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
                 Double returnFee = applicationDto.getReturnFee();
-                if(returnFee==null || MiscUtil.doubleEquals(returnFee, 0d)){
-                    continue;
+                appReturnFeeDto.setStatus("paying");
+                if (returnFee == null || MiscUtil.doubleEquals(returnFee, 0.0d)) {
+                    appReturnFeeDto.setReturnAmount(0.0d);
+                    appReturnFeeDto.setStatus("success");
+                }else {
+                    appReturnFeeDto.setReturnAmount(returnFee);
                 }
-                appReturnFeeDto.setReturnAmount(returnFee);
                 appReturnFeeDto.setApplicationNo(applicationDto.getApplicationNo());
                 appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_REJECT);
-                appReturnFeeDto.setStatus("paying");
                 appReturnFeeDto.setTriggerCount(0);
                 saveReturnFeeDtos.add(appReturnFeeDto);
                 try {

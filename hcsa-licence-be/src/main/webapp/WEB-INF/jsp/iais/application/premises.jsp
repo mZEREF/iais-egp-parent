@@ -105,15 +105,7 @@
             submit('premises', 'saveDraft', $('#selectDraftNo').val());
         });
         // init page
-        initPremiseEvent();
-        premTypeChangeEvent();
-        checkSelectedLicence();
-        $('div.premContent').each(function (k, v) {
-            checkPremiseContent($(v), k);
-        });
-        if ($('div.premContent').length == 1) {
-            $('div.premContent').find('.premHeader').html('');
-        }
+        initPremisePage();
         if ($('div.premContent').find('.MMM').val()){
             $('div.premContent:first').find('.premHeader').html('');
         }

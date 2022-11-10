@@ -45,4 +45,11 @@ public interface InsRepService {
     AppPremisesRoutingHistoryDto getAppPremisesRoutingHistorySubStage(String corrId, String stageId);
     void saveAppVehs(String flag, List<AppSvcVehicleDto> appSvcVehicleDtos);
     void saveSubService(String flag, List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList);
+    void saveRecommendations(List<AppPremisesRecommendationDto> appPremisesRecommendationDtoList);
+
+    List<SelectOption> getChronoOption();
+
+    List<SelectOption> getRecommendationOption(String applicationType);
+
+    AppPremisesRecommendationDto initRecommendation(String correlationId, ApplicationViewDto applicationViewDto);
 }

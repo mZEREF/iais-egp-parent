@@ -31,11 +31,14 @@ import com.ecquaria.cloud.systeminfo.ServicesSysteminfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.client.RestTemplate;
 
@@ -78,6 +81,8 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
     private String outSharedPath;
     @Value("${iais.sharedfolder.datacompair.rslt}")
     private String rsltSharedPath;
+    @Value("${iais.sharedfolder.datacompair.subfolder:folder}")
+    private String subFolder;
     @Autowired
     private ApplicationClient applicationClient;
     @Autowired
@@ -94,7 +99,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
 
     @Override
     public void initPath() {
-        File compress = MiscUtil.generateFile(sharedPath+File.separator+ AppServicesConsts.COMPRESS,AppServicesConsts.FILE_NAME);
+        File compress = MiscUtil.generateFile(sharedPath+File.separator+ AppServicesConsts.COMPRESS,subFolder);
         File backups=MiscUtil.generateFile(inSharedPath);
         File rslt=MiscUtil.generateFile(rsltSharedPath);
         File compressPath=MiscUtil.generateFile(sharedPath,AppServicesConsts.COMPRESS);
@@ -140,7 +145,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
         }catch (Exception e){
             log.error(e.getMessage(),e);
         }
-        File file = MiscUtil.generateFile(outFolder+ AppServicesConsts.FILE_NAME, s+AppServicesConsts.FILE_FORMAT);
+        File file = MiscUtil.generateFile(outFolder+ subFolder, s+AppServicesConsts.FILE_FORMAT);
         try (OutputStream fileOutputStream  = newOutputStream(file.toPath());) {
             if(!file.exists()){
                 boolean newFile = file.createNewFile();
@@ -153,6 +158,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
             log.error(e.getMessage(),e);
 
         }
+        saveFileToOtherNodes(str.getBytes(StandardCharsets.UTF_8),s+AppServicesConsts.FILE_FORMAT,outFolder+ subFolder);
 
     }
 
@@ -351,7 +357,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
         boolean flag=Boolean.FALSE;
 
         File file =MiscUtil.generateFile(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+
-                File.separator+groupPath+File.separator+AppServicesConsts.FILE_NAME,groupPath);
+                File.separator+groupPath+File.separator+subFolder,groupPath);
         log.info(StringUtil.changeForLog(file.getPath()+"**********************"));
         if(!file.exists()){
             file.mkdirs();
@@ -372,24 +378,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                             by.write(size,0,count);
                             count= fileInputStream.read(size);
                         }
-                        MonitoringSheetsDto sheetsDto = fileToDto(by.toString());
-                        Date date = new Date();
-                        String dateStr = Formatter.formatDateTime(date, Formatter.DATE_ELIS);
-                        String inputFileName =  "CompareResults_"+dateStr;
-                        File path = MiscUtil.generateFile(rsltSharedPath+File.separator+inputFileName+".xlsx" );
-                        path.createNewFile();
-                        List<ExcelSheetDto> excelSheetDtos = getExcelSheetDtos(sheetsDto);
-                        File configInfoTemplate = ResourceUtils.getFile("classpath:template/ConsolRecToCompare_Template.xlsx");
-                        File writerToExcel= ExcelWriter.writerToExcel(excelSheetDtos, configInfoTemplate,inputFileName);
-                        byte[] bytes = FileUtils.readFileToByteArray(writerToExcel);
-                        try (OutputStream fileOutputStream  = newOutputStream(path.toPath());) {
-                            fileOutputStream.write(bytes);
-                            flag=true;
-                        } catch (Exception e) {
-                            log.error(e.getMessage(),e);
-                            return null;
-                        }
-
+                        flag=fileToDto(by.toString());
 
                     }catch (Exception e){
                         log.error(e.getMessage(),e);
@@ -642,9 +631,10 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
         return widthMap;
     }
 
-    private MonitoringSheetsDto fileToDto(String str) throws Exception
+    private boolean fileToDto(String str) throws Exception
     {
         boolean hasNotMatch=false;
+        boolean flag=Boolean.FALSE;
         //fe
         MonitoringSheetsDto monitoringSheetsDto = JsonUtil.parseToObject(str, MonitoringSheetsDto.class);
         MonitoringSheetsDto monitoringAppSheetsDto=null;
@@ -664,7 +654,7 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
             }catch (Exception e){
                 log.error(e.getMessage(),e);
             }
-            File file = MiscUtil.generateFile(outFolder+ AppServicesConsts.FILE_NAME, s+AppServicesConsts.FILE_FORMAT);
+            File file = MiscUtil.generateFile(outFolder+ subFolder, s+AppServicesConsts.FILE_FORMAT);
             fileInputStream= newInputStream(file.toPath());
             ByteArrayOutputStream by=new ByteArrayOutputStream();
             int count;
@@ -699,9 +689,9 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                     if(monitoringSheetsDto.getAppProcessFileTrackExcelDtoMap().containsKey(entry.getKey())){
                         AppProcessFileTrackExcelDto excelDto=monitoringSheetsDto.getAppProcessFileTrackExcelDtoMap().get(entry.getKey());
 
-                        if(excelDto.getStatus().equals("PFT005")||excelDto.getStatusFe().equals("PFT005")){
+                        if ("PFT005".equals(excelDto.getStatus()) || "PFT005".equals(excelDto.getStatusFe())) {
                             excelDto.setResult("Match");
-                        }else {
+                        } else {
                             excelDto.setResult("Not Match");
                             hasNotMatch=true;
                         }
@@ -851,30 +841,95 @@ public class ConsolRecToCompareServiceImpl implements ConsolRecToCompareService 
                     }
                 }
             }
-            if(hasNotMatch){
-                log.info("start send email start");
-                EmailDto emailDto = new EmailDto();
-                List<String> receiptEmail= Arrays.asList(this.mailRecipient.split(","));
-
-                emailDto.setReceipts(receiptEmail);
-                String emailContent = "CompareFEBE Not Match";
-                emailDto.setContent(emailContent);
-                emailDto.setSubject("CompareFEBE Not Match");
-                emailDto.setSender(this.mailSender);
-                emailDto.setReqRefNum(UUID.randomUUID().toString());
-                emailDto.setClientQueryCode(UUID.randomUUID().toString());
-
-                try {
-                    emailSmsClient.sendEmail(emailDto, null);
-                } catch (IOException e) {
-                    log.error(e.getMessage());
-                }
-
-                log.info("start send email end");
-            }
         }
 
-        return monitoringSheetsDto;
+        Date date = new Date();
+        String dateStr = Formatter.formatDateTime(date, Formatter.DATE_ELIS);
+        String inputFileName =  "CompareResults_"+dateStr;
+        File path = MiscUtil.generateFile(rsltSharedPath+File.separator+inputFileName+".xlsx" );
+        path.createNewFile();
+        List<ExcelSheetDto> excelSheetDtos = getExcelSheetDtos(monitoringSheetsDto);
+        File configInfoTemplate = ResourceUtils.getFile("classpath:template/ConsolRecToCompare_Template.xlsx");
+        File writerToExcel= ExcelWriter.writerToExcel(excelSheetDtos, configInfoTemplate,inputFileName);
+        byte[] bytes = FileUtils.readFileToByteArray(writerToExcel);
+
+        try (OutputStream fileOutputStream  = newOutputStream(path.toPath());) {
+            fileOutputStream.write(bytes);
+            flag=true;
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+        }
+        if(hasNotMatch){
+            log.info("start send email start");
+            EmailDto emailDto = new EmailDto();
+            List<String> receiptEmail= Arrays.asList(this.mailRecipient.split(","));
+
+            emailDto.setReceipts(receiptEmail);
+            String emailContent = "CompareFEBE Not Match";
+            emailDto.setContent(emailContent);
+            emailDto.setSubject("CompareFEBE Not Match");
+            emailDto.setSender(this.mailSender);
+            emailDto.setReqRefNum(UUID.randomUUID().toString());
+            emailDto.setClientQueryCode(UUID.randomUUID().toString());
+
+            try {
+                Map<String, byte[]> attachments =IaisCommonUtils.genNewHashMap();
+                attachments.put(inputFileName+".xlsx",bytes);
+                emailSmsClient.sendEmail(emailDto, attachments);
+            } catch (IOException e) {
+                log.error(e.getMessage());
+            }
+
+            log.info("start send email end");
+        }
+        return flag;
 
     }
+
+    private void saveFileToOtherNodes(byte[] content, String fileName, String tempFolder) {
+        List<String> ipAddrs = ServicesSysteminfo.getInstance().getAddressesByServiceName("hcsa-licence-web");
+        if (ipAddrs != null && ipAddrs.size() > 1 && fileName != null) {
+            String localIp = MiscUtil.getLocalHostExactAddress();
+            log.info(StringUtil.changeForLog("Local Ip is ==>" + localIp));
+            RestTemplate restTemplate = new RestTemplate();
+            for (String ip : ipAddrs) {
+                if (localIp.equals(ip)) {
+                    continue;
+                }
+                try {
+                    String port = ConfigHelper.getString("server.port", "8080");
+                    StringBuilder apiUrl = new StringBuilder("http://");
+                    apiUrl.append(ip).append(':').append(port).append("/hcsa-licence-web/tempFile-handler");
+                    log.info("Request URL ==> {}", apiUrl);
+
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+                    MultiValueMap<String, Object> multipartRequest = new LinkedMultiValueMap<>();
+                    HttpHeaders fileHeader = new HttpHeaders();
+                    ByteArrayResource fileContentAsResource = new ByteArrayResource(content) {
+                        @Override
+                        public String getFilename() {
+                            return fileName;
+                        }
+                    };
+                    HttpEntity<ByteArrayResource> fileEnt = new HttpEntity<>(fileContentAsResource, fileHeader);
+                    multipartRequest.add("selectedFile", fileEnt);
+                    HttpHeaders jsonHeader = new HttpHeaders();
+                    jsonHeader.setContentType(MediaType.APPLICATION_JSON);
+                    HttpEntity<String> jsonPart = new HttpEntity<>(fileName, jsonHeader);
+                    multipartRequest.add("fileName", jsonPart);
+                    jsonHeader = new HttpHeaders();
+                    jsonHeader.setContentType(MediaType.APPLICATION_JSON);
+                    jsonPart = new HttpEntity<>("ajaxUpload" + tempFolder, jsonHeader);
+                    multipartRequest.add("folderName", jsonPart);
+                    HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(multipartRequest, headers);
+                    restTemplate.postForObject(apiUrl.toString(), requestEntity, String.class);
+                } catch (Throwable e) {
+                    log.error(e.getMessage(), e);
+                }
+            }
+        }
+    }
+
 }

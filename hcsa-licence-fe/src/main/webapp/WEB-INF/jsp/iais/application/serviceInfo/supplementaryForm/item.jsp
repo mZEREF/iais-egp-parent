@@ -1,10 +1,5 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil" %>
-<style>
-    .font-weight{
-        font-weight:bold !important;
-    }
-</style>
 <c:set var="itemConfigDto" value="${item.itemConfigDto}"/>
 <c:set var="isCheckBox" value="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_CHECKBOX}"/>
 <c:set var="itemData">
@@ -17,8 +12,18 @@
     <c:choose>
         <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_TITLE}">
             <div class="col-xs-12">
-                <div class="app-title item-label" ${itemData}>
+                <div class="app-title item-label ${not empty groupId ? 'group-title' : ''}" ${itemData}>
                     <c:out value="${itemConfigDto.displayInfo}"/>
+                </div>
+            </div>
+        </c:when>
+        <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_GROUP_TITLE}">
+            <div class="col-xs-12">
+                <div class="app-title item-label ${not empty groupId ? 'group-title' : ''}" ${itemData}>
+                    <c:out value="${itemConfigDto.displayInfo}"/>
+                    <c:if test="${not empty groupId}">
+                        <span class="${itemPrefix}-${groupId}"></span>
+                    </c:if>
                 </div>
             </div>
         </c:when>
@@ -27,6 +32,17 @@
                 <div class="bold item-label" ${itemData}>
                     <c:out value="${itemConfigDto.displayInfo}"/>
                     <c:if test="${itemConfigDto.mandatoryType == 1}"><span class="mandatory">*</span></c:if>
+                </div>
+            </div>
+        </c:when>
+        <c:when test="${itemConfigDto.itemType == HcsaConsts.SUPFORM_ITEM_TYPE_GROUP_SUB_TITLE}">
+            <div class="col-xs-12">
+                <div class="bold item-label ${not empty groupId ? 'group-title' : ''}" ${itemData}>
+                    <c:out value="${itemConfigDto.displayInfo}"/>
+                    <c:if test="${itemConfigDto.mandatoryType == 1}"><span class="mandatory">*</span></c:if>
+                    <c:if test="${not empty groupId}">
+                        <span class="${itemPrefix}-${groupId}"></span>
+                    </c:if>
                 </div>
             </div>
         </c:when>
@@ -141,7 +157,7 @@
             <iais:field width="5" cssClass="col-md-5 item-label" mandatory="${itemConfigDto.mandatoryType == 1}"
                         data="${item.labelData}" value="${itemConfigDto.displayInfo}${itemConfigDto.mandatoryType == 2 ? ' ' : ''}"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:select data="${itemData}" name="${itemPrefix}${itemConfigDto.id}${item.seqNum}" codeCategory="${MasterCodeUtil.CATE_TDO_TYPE}" value="${item.inputValue}" firstOption="Please Select"/>
+                <iais:select data="${itemData}" name="${itemPrefix}${itemConfigDto.id}${item.seqNum}" codeCategory="${itemConfigDto.radioLabels}" value="${item.inputValue}" firstOption="Please Select"/>
             </iais:value>
         </c:when>
     </c:choose>

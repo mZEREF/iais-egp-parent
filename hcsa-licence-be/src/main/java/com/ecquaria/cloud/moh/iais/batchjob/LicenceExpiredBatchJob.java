@@ -247,8 +247,6 @@ public class LicenceExpiredBatchJob {
                 notificationHelper.sendNotification(msgParam);
                 try {
                     Date expiryDate=licenceDto.getExpiryDate();
-                    int days= MiscUtil.daysBetween(new Date(),expiryDate);
-                    if(days<=30){
                         AppSubmissionDto appSubmissionDto = licCommService.viewAppSubmissionDto(licenceDto.getId());
                         DealSessionUtil.initView(appSubmissionDto);
                         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -303,7 +301,7 @@ public class LicenceExpiredBatchJob {
                                 emailSmsClient.sendEmail(emailDto, null);
                             }
                         }
-                    }
+
                 }catch (Exception e ){
                     log.info(e.getMessage(),e);
                 }

@@ -34,4 +34,28 @@ public class INTRANET___MohInspectionReport___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "inspectorReportSave", this);
 	}
 
+	public void preCheckList_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "preCheckList", this);
+// 		preCheckList->OnStepProcess
+	}
+
+	public void checkListNext_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "checkListNext", this);
+// 		checkListNext->OnStepProcess
+	}
+
+	public void setMulAction_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "preViewCheckList", this);
+	// 		setMulAction->OnStepProcess
+	}
+
+	public void doChecklist_OnStepProcess_0() throws Exception {
+	// 		doChecklist->OnStepProcess
+	}
+
+	public void saveChecklist_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doCheckList", this);
+// 		saveChecklist->OnStepProcess
+	}
+
 }

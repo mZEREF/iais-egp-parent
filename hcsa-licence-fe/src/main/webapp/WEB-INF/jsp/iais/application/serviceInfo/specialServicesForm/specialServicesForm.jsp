@@ -29,13 +29,13 @@
                 <div class="panel panel-default">
                     <div class="panel-heading " role="tab">
                         <h4 class="panel-title">
-                            <a role="button" class="" data-toggle="collapse" href="#${status.index}${subSvcRelStatus.index}SSI" aria-expanded="true" aria-controls="${status.index}${subSvcRelStatus.index}SSI">
-                                <strong><c:out value="${specialServiceSectionDto.svcName}"/></strong>
+                            <a role="button" class="collapsed" data-toggle="collapse" href="#${status.index}${subSvcRelStatus.index}SSI" aria-expanded="true" aria-controls="${status.index}${subSvcRelStatus.index}SSI">
+                                <strong><c:out value="${specialServiceSectionDto.newSvcName}"/></strong>
                             </a>
                         </h4>
                         <c:set var="appSvcSuplmFormDto" value="${specialServiceSectionDto.appSvcSuplmFormDto}"/>
                     </div>
-                    <div id="${status.index}${subSvcRelStatus.index}SSI" class="panel-collapse collapse in">
+                    <div id="${status.index}${subSvcRelStatus.index}SSI" class="panel-collapse collapse">
                         <input type="hidden" class ="isPartEdit" name="isPartEdit${status.index}" value="0"/>
                         <div class="panel-body">
                             <c:choose>
@@ -47,7 +47,7 @@
                                 <c:otherwise>
                                     <%@include file="specialServicePersonnel.jsp" %>
                                     <c:if test="${not empty appSvcSuplmFormDto.appSvcSuplmGroupDtoList}">
-                                        <div class="panel-main-content">
+                                        <div class="panel-main-content normal-label">
                                             <iais:row cssClass="edit-content">
                                                 <c:if test="${canEdit}">
                                                     <div class="text-right app-font-size-16">

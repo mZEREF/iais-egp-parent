@@ -1,4 +1,24 @@
 <script type="text/javascript">
+    function initPremisePage() {
+        initPremiseEvent();
+        premTypeChangeEvent();
+        checkSelectedLicence();
+        checkAddPremBtn(2);
+        $('div.premContent').each(function (k, v) {
+            let $target = $(v);
+            checkPremiseContent($target, k);
+            let retrieveflag = $target.find('input[name="retrieveflag"]').val();
+            if (retrieveflag == '1') {
+                readonlyContent($target.find('div.address'));
+            } else {
+                unReadlyContent($target.find('div.address'));
+            }
+        });
+        if ($('div.premContent').length == 1) {
+            $('div.premContent').find('.premHeader').html('');
+        }
+    }
+
     function initPremiseEvent() {
         editPremEvent();
 
@@ -126,7 +146,7 @@
         showTag($premContent.find('.retrieveAddr'));
         showTag($premContent.find('.addOpDiv'));
         let existData = $premContent.find('.chooseExistData').val();
-        if('1' == existData) {
+        if ('1' == existData) {
             if (isEmpty(isEdit) || !isEdit) {
                 checkPremDisabled($premContent, true);
             }
@@ -141,16 +161,16 @@
         checkEditBtn($premContent, false);
     }
 
-    function hideEditBtn ($premContent) {
-        let $target= $premContent.find('.removeEditDiv');
+    function hideEditBtn($premContent) {
+        let $target = $premContent.find('.removeEditDiv');
         if (isEmptyNode($target)) {
             return true;
         }
         return $target.is(':hidden');
     }
 
-    function checkEditBtn ($premContent, show) {
-        let $target= $premContent.find('.removeEditDiv');
+    function checkEditBtn($premContent, show) {
+        let $target = $premContent.find('.removeEditDiv');
         if (isEmptyNode($target)) {
             return;
         }
@@ -167,12 +187,12 @@
         hideTag($premContent.find('.retrieveAddr'));
         hideTag($premContent.find('.opDelDiv'));
         hideTag($premContent.find('.addOpDiv'));
-        let $target= $premContent.find('.premisesEdit');
+        let $target = $premContent.find('.premisesEdit');
         if (isEmptyNode($target)) {
             hideTag($premContent.find('.opDelDiv'));
         } else {
             let existData = $premContent.find('.chooseExistData').val();
-            if('1' == existData) {
+            if ('1' == existData) {
                 checkPremDisabled($premContent, true);
             } else {
                 showTag($premContent.find('.opDelDiv:not(:first)'));
@@ -197,7 +217,7 @@
         $('#addPremBtn').on('click', addPremEventFun);
     }
 
-    function addPremEventFun () {
+    function addPremEventFun() {
         showWaiting();
         var $target = $('div.premContent:last');
         var premType = $target.find('input.premTypeRadio:checked').val();
@@ -217,6 +237,7 @@
         refreshPremise($premContent, $('div.premContent').length - 1);
         $('div.premContent:first').find('.premHeader').html('1');
         $premContent.find('.chooseExistData').val('0');
+        $premContent.find('.retrieveflag').val('0');
         initPremiseEvent();
         dismissWaiting();
     }
@@ -271,11 +292,11 @@
         $premContent.find('div.uploadFileShowDiv').empty();
     }
 
-    function checkRemoveBtn ($premContent, index) {
+    function checkRemoveBtn($premContent, index) {
         if (isEmpty(index)) {
             return;
         }
-        let $target= $premContent.find('.removeEditDiv');
+        let $target = $premContent.find('.removeEditDiv');
         if (isEmptyNode($target)) {
             return;
         }
@@ -288,6 +309,7 @@
     }
 
     var premTypeEvent = function () {
+        $('.premTypeRadio').unbind('click');
         $('.premTypeRadio').on('click', function () {
             premTypeEventFun($(this));
             let premType = getValue($(this));
@@ -298,7 +320,7 @@
         });
     }
 
-    function premTypeEventFun ($target) {
+    function premTypeEventFun($target) {
         clearErrorMsg();
         var $premContent = $target.closest('div.premContent');
         var premType = $premContent.find('.premTypeRadio:checked').val();
@@ -314,9 +336,11 @@
     }
 
     var premSelectEvent = function () {
-        $('.premSelect').change(function () {
+        $('.premSelect').unbind('change');
+        $('.premSelect').on('change', function () {
             showWaiting();
             clearErrorMsg();
+            //checkAddPremBtn();
             var premSelectVal = $(this).val();
             var $premContent = $(this).closest('div.premContent');
             $premContent.find('.premSelValue').val(premSelectVal);
@@ -416,16 +440,17 @@
 
     function autoCheckPremiseType(premType) {
         //const premType = 'REMOTE';
-        let $premType = $('input[value="' + premType + '"');
+        let $premType = $('input.premTypeRadio[value="' + premType + '"');
         if (isEmptyNode($premType) || isChecked($premType)) {
             return;
         }
         let nodeChecked = false;
         let $target = null;
-        $premType.each(function() {
+        $premType.each(function () {
             if ($(this).is(':checked')) {
                 nodeChecked = true;
             } else if (isEmptyNode($target)) {
+                // check the prem type at the same level
                 let name = $(this).attr('name');
                 if (!isChecked($('input[name="' + name + '"'))) {
                     $target = $(this);
@@ -444,7 +469,7 @@
 
     var checkSelectedLicenceEvent = function () {
         $('input[name="selectedLicence"]').unbind('click');
-        $('input[name="selectedLicence"]').on('click', function() {
+        $('input[name="selectedLicence"]').on('click', function () {
             checkSelectedLicence($(this));
         });
     }
@@ -495,7 +520,7 @@
 
     var easMtsUseOnlyEvent = function () {
         $('.useType').unbind('click');
-        $('.useType').on('click', function() {
+        $('.useType').on('click', function () {
             let $premContent = $(this).closest('div.premContent');
             checkEasMtsUseOnly($premContent);
         });
@@ -608,27 +633,31 @@
         });
     }
 
-    function fillFloorUnit($premContent, data) {
+    function fillFloorUnit($currContent, data) {
         if (isEmpty(data)) {
             return;
         }
         // base
-        var $firstFU = $premContent.find('.operationDiv:first');
+        var $firstFU = $currContent.find('.operationDiv:first');
         fillValue($firstFU.find('input.floorNo'), data.floorNo);
         fillValue($firstFU.find('input.unitNo'), data.unitNo);
         // additional
-        $premContent.find('div.operationDivGroup .operationDiv').remove();
+        $currContent.find('div.operationDivGroup .operationDiv').remove();
         var floorUnits = data.appPremisesOperationalUnitDtos;
-        var $parent = $premContent.find('div.operationDivGroup');
-        var len = floorUnits.length;
-        for (var i = 0; i < len; i++) {
-            var $target = $parent.find('.operationDiv').eq(i);
-            if ($target.length === 0) {
-                addFloorUnit($parent);
-                $target = $parent.find('.operationDiv').eq(i);
+        if (isEmpty(floorUnits)) {
+            $currContent.find('div.operationDivGroup .operationDiv').remove();
+        } else {
+            var $parent = $currContent.find('div.operationDivGroup');
+            var len = floorUnits.length;
+            for (var i = 0; i < len; i++) {
+                var $target = $parent.find('.operationDiv').eq(i);
+                if ($target.length === 0) {
+                    addFloorUnit($parent);
+                    $target = $parent.find('.operationDiv').eq(i);
+                }
+                fillValue($target.find('input.floorNo'), floorUnits[i].floorNo);
+                fillValue($target.find('input.unitNo'), floorUnits[i].unitNo);
             }
-            fillValue($target.find('input.floorNo'), floorUnits[i].floorNo);
-            fillValue($target.find('input.unitNo'), floorUnits[i].unitNo);
         }
     }
 
@@ -642,13 +671,13 @@
                 hideTag($(ele).find('.operationAdlDiv'));
             } else {
                 showTag($(ele).find('.operationAdlDiv'));
+                showTag($(ele).find('.opDelDiv'));
                 $(ele).find('.floorUnitLabel').html('');
             }
             resetField(ele, i, prefix);
         });
         var length = $target.find('.operationDiv').length;
-        $target.find('.addressSize').val(length)
-        console.log(length,'=========>>>length===>>')
+        $target.find('.addressSize').val(length);
         $target.find('.opLength').val(length);
     }
 
@@ -659,9 +688,9 @@
         clearFields(src);
         $premContent.find('div.addOpDiv').before(src);
         let index = $('div.premContent').index($premContent)
-        console.log(index,'index=====>>>')
-        let val = $premContent.find('.MMM').val() ? index-1 : index
-        console.log(val,'val=---=-=-=-=->>')
+        console.log(index, 'index=====>>>')
+        let val = $premContent.find('.MMM').val() ? index - 1 : index
+        console.log(val, 'val=---=-=-=-=->>')
         refreshFloorUnit($premContent, val);
         delFloorUnitEvent($premContent);
     }
@@ -686,7 +715,7 @@
         $target.find('div.operationDivGroup').find('.opDel').on('click', function () {
             var $premContent = $(this).closest('div.premContent');
             let index = $('div.premContent').index($premContent)
-            let val = $premContent.find('.MMM').val() ? index-1 : index
+            let val = $premContent.find('.MMM').val() ? index - 1 : index
             $(this).closest('div.operationDiv').remove();
             refreshFloorUnit($premContent, val);
             doEditPremise($premContent);
@@ -740,19 +769,20 @@
             'data': data,
             'type': 'GET',
             'success': function (data) {
+                let $currContent = $addressSelectors.closest('div.premContent');
                 if (data == null) {
-                    // $postalCodeEle.find('.postalCodeMsg').html("the postal code information could not be found");
                     //show pop
                     $('#postalCodePop').modal('show');
                     //handleVal($addressSelectors.find(':input'), '', false);
                     clearFields($addressSelectors.find(':input'));
                     unReadlyContent($addressSelectors);
-                    //$premContent.find('input[name="retrieveflag"]').val('0');
+                    $currContent.find('input[name="retrieveflag"]').val('0');
                 } else {
                     fillValue($addressSelectors.find('.blkNo'), data.blkHseNo);
                     fillValue($addressSelectors.find('.streetName'), data.streetName);
                     fillValue($addressSelectors.find('.buildingName'), data.buildingName);
-                    //readonlyContent($addressSelectors);
+                    readonlyContent($addressSelectors);
+                    $currContent.find('input[name="retrieveflag"]').val('1');
                 }
                 dismissWaiting();
             },
@@ -761,6 +791,7 @@
                 $('#postalCodePop').modal('show');
                 clearFields($addressSelectors.find(':input'));
                 unReadlyContent($addressSelectors);
+                $currContent.find('input[name="retrieveflag"]').val('0');
                 dismissWaiting();
             }
         });

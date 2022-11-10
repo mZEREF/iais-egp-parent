@@ -28,6 +28,15 @@
             <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL}">
                 <c:set var="personList" value="${specialServiceSectionDto.appSvcRadiationPhysicistDtoList}" />
             </c:when>
+            <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_ONCOLOGIST}">
+                <c:set var="personList" value="${specialServiceSectionDto.appSvcRadiationOncologist}" />
+            </c:when>
+            <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_DOSIMETRIST}">
+                <c:set var="personList" value="${specialServiceSectionDto.appSvcMedicalDosimetrist}" />
+            </c:when>
+            <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST}">
+                <c:set var="personList" value="${specialServiceSectionDto.appSvcRadiationTherapist}" />
+            </c:when>
             <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM}">
                 <c:set var="personList" value="${specialServiceSectionDto.appSvcNMTechnologistDtoList}" />
             </c:when>
@@ -36,6 +45,9 @@
             </c:when>
             <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR}">
                 <c:set var="personList" value="${specialServiceSectionDto.appSvcNurseDirectorDtoList}" />
+            </c:when>
+            <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_CQMP}">
+                <c:set var="personList" value="${specialServiceSectionDto.appSvcRadiationCqmp}" />
             </c:when>
         </c:choose>
 
@@ -50,9 +62,15 @@
                 <c:set var="personCount" value="${personList.size()}"/>
             </c:otherwise>
         </c:choose>
-        <div class="panel-main-content">
+        <div class="panel-main-content normal-label">
             <c:choose>
                 <c:when test="${psnType == ApplicationConsts.PERSONNEL_PSN_TYPE_CGO}">
+                    <c:set var="title" value="${HcsaConsts.CLINICAL_GOVERNANCE_OFFICER}"/>
+                    <label class="control-label control-set-font control-font-label">
+                        <div class="app-title">
+                            <c:out value="${title}"/>
+                        </div>
+                    </label>
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
                         <c:set var="index" value="${vs.index}" />
                         <c:set var="person" value="${personList[index]}"/>
@@ -62,6 +80,12 @@
                     </c:forEach>
                 </c:when>
                 <c:when test="${psnType == ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER}">
+                    <c:set var="title" value="${HcsaConsts.SECTION_LEADER}"/>
+                    <label class="control-label control-set-font control-font-label">
+                        <div class="app-title">
+                            <c:out value="${title}"/>
+                        </div>
+                    </label>
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
                         <c:set var="index" value="${vs.index}" />
                         <c:set var="sectionLeader" value="${personList[index]}"/>
@@ -71,15 +95,28 @@
                     </c:forEach>
                 </c:when>
                 <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE}">
+                    <c:set var="title" value="${ApplicationConsts.SERVICE_PERSONNEL_TYPE_STR_REGISTERED_NURSE}"/>
+                    <label class="control-label control-set-font control-font-label">
+                        <div class="app-title">
+                            <c:out value="${title}"/>
+                        </div>
+                    </label>
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
                         <c:set var="index" value="${vs.index}"/>
+                        <c:set var="type" value="nic"/>
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
                         <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}nic"/>
                         <c:set var="title" value="${ApplicationConsts.SERVICE_PERSONNEL_TYPE_STR_REGISTERED_NURSE}"/>
-                        <%@include file="specialServiceDetail.jsp" %>
+                        <%@include file="specialServicesPersonnels.jsp" %>
                     </c:forEach>
                 </c:when>
                 <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER}">
+                    <c:set var="title" value="${ApplicationConsts.SERVICE_PERSONNEL_TYPE_STR_RADIATION_SAFETY_OFFICER}"/>
+                    <label class="control-label control-set-font control-font-label">
+                        <div class="app-title">
+                            <c:out value="${title}"/>
+                        </div>
+                    </label>
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
                         <c:set var="index" value="${vs.index}" />
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
@@ -91,6 +128,12 @@
                     </c:forEach>
                 </c:when>
                 <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR}">
+                    <c:set var="title" value="${ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_DIAGNOSTIC_RADIOGRAPHER}"/>
+                    <label class="control-label control-set-font control-font-label">
+                        <div class="app-title">
+                            <c:out value="${title}"/>
+                        </div>
+                    </label>
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
                         <c:set var="index" value="${vs.index}" />
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
@@ -102,6 +145,12 @@
                     </c:forEach>
                 </c:when>
                 <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST}">
+                    <c:set var="title" value="${ApplicationConsts.SERVICE_PERSONNEL_TYPE_STR_MEDICAL_PHYSICIST}"/>
+                    <label class="control-label control-set-font control-font-label">
+                        <div class="app-title">
+                            <c:out value="${title}"/>
+                        </div>
+                    </label>
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
                         <c:set var="index" value="${vs.index}" />
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
@@ -113,6 +162,12 @@
                     </c:forEach>
                 </c:when>
                 <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL}">
+                    <c:set var="title" value="${ApplicationConsts.SERVICE_PERSONNEL_TYPE_STR_RADIOLOGY_PROFESSIONAL}"/>
+                    <label class="control-label control-set-font control-font-label">
+                        <div class="app-title">
+                            <c:out value="${title}"/>
+                        </div>
+                    </label>
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
                         <c:set var="index" value="${vs.index}" />
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
@@ -124,6 +179,12 @@
                     </c:forEach>
                 </c:when>
                 <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM}">
+                    <c:set var="title" value="${ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_NUCLEAR_MEDICINE_TECHNOLOGIST}"/>
+                    <label class="control-label control-set-font control-font-label">
+                        <div class="app-title">
+                            <c:out value="${title}"/>
+                        </div>
+                    </label>
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
                         <c:set var="index" value="${vs.index}" />
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
@@ -135,6 +196,12 @@
                     </c:forEach>
                 </c:when>
                 <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR}">
+                    <c:set var="title" value="Emergency Department Director"/>
+                    <label class="control-label control-set-font control-font-label">
+                        <div class="app-title">
+                            <c:out value="${title}"/>
+                        </div>
+                    </label>
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
                         <c:set var="index" value="${vs.index}"/>
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
@@ -144,12 +211,80 @@
                     </c:forEach>
                 </c:when>
                 <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR}">
+                    <c:set var="title" value="Emergency Department Nursing-in-charge"/>
+                    <label class="control-label control-set-font control-font-label">
+                        <div class="app-title">
+                            <c:out value="${title}"/>
+                        </div>
+                    </label>
                     <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="vs">
                         <c:set var="index" value="${vs.index}"/>
                         <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
                         <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}nur"/>
                         <c:set var="title" value="Emergency Department Nursing-in-charge"/>
                         <%@include file="specialServiceDetail.jsp" %>
+                    </c:forEach>
+                </c:when>
+                <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_ONCOLOGIST}">
+                    <c:set var="title" value="Radiation Oncologist"/>
+                    <label class="control-label control-set-font control-font-label">
+                        <div class="app-title">
+                            <c:out value="${title}"/>
+                        </div>
+                    </label>
+                    <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="ro">
+                        <c:set var="index" value="${ro.index}"/>
+                        <c:set value="ro" var="type"/>
+                        <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
+                        <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}ro"/>
+                        <%@include file="specialServicesPersonnels.jsp" %>
+                    </c:forEach>
+                </c:when>
+                <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_DOSIMETRIST}">
+                    <c:set var="title" value="Medical Dosimetrist"/>
+                    <label class="control-label control-set-font control-font-label">
+                        <div class="app-title">
+                            <c:out value="${title}"/>
+                        </div>
+                    </label>
+                    <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="md">
+                        <c:set var="index" value="${md.index}"/>
+                        <c:set value="md" var="type"/>
+                        <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
+                        <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}md"/>
+                        <%@include file="specialServicesPersonnels.jsp" %>
+                    </c:forEach>
+                </c:when>
+
+                <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST}">
+                    <c:set var="title" value="Radiation Therapist"/>
+                    <label class="control-label control-set-font control-font-label">
+                        <div class="app-title">
+                            <c:out value="${title}"/>
+                        </div>
+                    </label>
+                    <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="rt">
+                        <c:set var="index" value="${rt.index}"/>
+                        <c:set value="rt" var="type"/>
+                        <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
+                        <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}rt"/>
+                        <%@include file="specialServicesPersonnels.jsp" %>
+                    </c:forEach>
+                </c:when>
+                <c:when test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_CQMP}">
+                    <c:set var="title" value="Clinically Qualified Medical Physicist"/>
+                    <label class="control-label control-set-font control-font-label">
+                        <div class="app-title">
+                            <c:out value="${title}"/>
+                        </div>
+                    </label>
+                    <p><h4>Please indicate at least 1 Clinically Qualified Medical Physicist.</h4></p>
+                    <c:forEach begin="0" end="${personCount - 1}" step="1" varStatus="cqmp">
+                        <c:set var="index" value="${cqmp.index}"/>
+                        <c:set value="cqmp" var="type"/>
+                        <c:set var="appSvcPersonnelDto" value="${personList[index]}"/>
+                        <c:set var="prefix" value="${status.index}${subSvcRelStatus.index}cqmp"/>
+                        <%@include file="specialServicesPersonnels.jsp" %>
                     </c:forEach>
                 </c:when>
             </c:choose>
@@ -159,36 +294,9 @@
                     <input type="hidden" class ="MaxCount" value="${pMax.value}"/>
                     <input type="hidden" class ="Length" name="${status.index}${subSvcRelStatus.index}${psnType}Length" value="${personCount}"/>
                     <c:if test="${!isRfi}">
-                        <c:if test="${psnType == ApplicationConsts.PERSONNEL_PSN_TYPE_CGO}">
-                            <span class="addBtn" style="color:deepskyblue;cursor:pointer;">
-                                <span style="">Add Another Clinical Governance Officer</span>
-                            </span>
-                        </c:if>
-                        <c:if test="${psnType == ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER}">
-                            <span class="addBtn" style="color:deepskyblue;cursor:pointer;">
-                                <span style="">Add Another Section Leader</span>
-                            </span>
-                        </c:if>
-                        <c:if test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE}">
-                            <span class="addBtn" style="color:deepskyblue;cursor:pointer;">
-                                <span style="">Add Another Nurse in Charge</span>
-                            </span>
-                        </c:if>
-                        <c:if test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER
-                                    ||psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR
-                                    ||psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST
-                                    ||psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL
-                                    ||psnType == ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM}">
-                            <span class="addBtn" style="color:deepskyblue;cursor:pointer;">
-                                <span style="">Add Another Service Personnel</span>
-                            </span>
-                        </c:if>
-                        <c:if test="${psnType == ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR
-                                    ||psnType == ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR}">
-                            <span class="addBtn" style="color:deepskyblue;cursor:pointer;">
-                                <span style="">Add more</span>
-                            </span>
-                        </c:if>
+                        <span class="addBtn" style="color:deepskyblue;cursor:pointer;">
+                            <span style="">+ Add Another ${title}</span>
+                        </span>
                     </c:if>
                 </div>
             </iais:row>

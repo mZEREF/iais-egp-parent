@@ -33,7 +33,7 @@
                          codeCategory="CATE_ID_SALUTATION" value="${sectionLeader.salutation}" />
         </iais:value>
         <iais:value width="4" cssClass="col-md-4">
-            <iais:input cssClass="name" maxLength="66" type="text" name="${prepsn}name${index}" value="${sectionLeader.name}" />
+            <iais:input cssClass="name" maxLength="100" type="text" name="${prepsn}name${index}" value="${sectionLeader.name}" />
         </iais:value>
     </iais:row>
     <iais:row>

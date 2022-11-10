@@ -63,7 +63,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -383,7 +382,7 @@ public class ServiceInfoDelegator {
             }
         }
         List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = DealSessionUtil.initAppSvcSpecialServiceInfoDtoList(
-                currSvcInfoDto, appPremSpecialisedDtos);
+                currSvcInfoDto, appPremSpecialisedDtos, false);
         currSvcInfoDto.setAppSvcSpecialServiceInfoList(appSvcSpecialServiceInfoList);
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
         List<SelectOption> personList = ApplicationHelper.genAssignPersonSel(request, true);
@@ -423,6 +422,7 @@ public class ServiceInfoDelegator {
             List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorList=IaisCommonUtils.genNewArrayList();
             appSvcSpecialServiceInfoList.forEach((item)->appSvcClinicalDirectorList.addAll(item.getAppSvcCgoDtoList()));
             syncDropDownAndPsn(appSubmissionDto,appSvcClinicalDirectorList, currSvcCode, request);
+            DealSessionUtil.reSetInit(appSubmissionDto, HcsaAppConst.SECTION_SVCINFO);
         }
         checkAction(errorMap, HcsaConsts.STEP_SPECIAL_SERVICES_FORM, appSubmissionDto, request);
         log.debug(StringUtil.changeForLog("do SpecialServicesInformation end ..."));
@@ -554,9 +554,11 @@ public class ServiceInfoDelegator {
 
     private void prepareOutsourcedProviders(HttpServletRequest request) {
         String currSvcId = (String) ParamUtil.getSessionAttr(request, CURRENTSERVICEID);
+        List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,
+                AppServicesConsts.HCSASERVICEDTOLIST);
         AppSvcRelatedInfoDto currSvcInfoDto = ApplicationHelper.getAppSvcRelatedInfo(request, currSvcId,null);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
-        if (DealSessionUtil.initSvcOutsourcedProvider(request,currSvcInfoDto, false)) {
+        if (DealSessionUtil.initSvcOutsourcedProvider(request,currSvcInfoDto, false, hcsaServiceDtoList)) {
             setAppSvcRelatedInfoMap(request, currSvcId, currSvcInfoDto);
         }
         AppSvcOutsouredDto appSvcOutsouredDto = currSvcInfoDto.getAppSvcOutsouredDto();
@@ -602,7 +604,9 @@ public class ServiceInfoDelegator {
             currSvcInfoDto.setAppSvcOutsouredDto(appSvcOutsouredDto);
             reSetChangesForApp(appSubmissionDto);
             setAppSvcRelatedInfoMap(request, currSvcId, currSvcInfoDto, appSubmissionDto);
-            errorMap = AppValidatorHelper.doValidationOutsourced(appSvcOutsouredDto, curAct);
+            if (StringUtil.isIn(curAct,new String[]{"search","add"})){
+                errorMap = AppValidatorHelper.doValidationOutsourced(appSvcOutsouredDto, curAct);
+            }
         }
 
         if ("next".equals(actionType)) {
@@ -1033,10 +1037,18 @@ public class ServiceInfoDelegator {
                     ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
             List<HcsaSvcPersonnelDto> dpoPsnConfig = configCommService.getHcsaSvcPersonnel(currentSvcId,
                     ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
-            AppValidatorHelper.psnMandatoryValidate(poPsnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_PO, map, poList.size(),
+            int poSize = 0;
+            if (poList != null) {
+                poSize = poList.size();
+            }
+            AppValidatorHelper.psnMandatoryValidate(poPsnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_PO, map, poSize,
                     "poPsnMandatory", HcsaConsts.PRINCIPAL_OFFICER);
+            int dpoSize = 0;
+            if (dpoList != null) {
+                dpoSize = dpoList.size();
+            }
             AppValidatorHelper.psnMandatoryValidate(dpoPsnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, map,
-                    dpoList.size(), "dpoPsnMandatory", HcsaConsts.NOMINEE);
+                    dpoSize, "dpoPsnMandatory", HcsaConsts.NOMINEE);
             if (map.containsKey("dpoPsnMandatory") && !AppConsts.YES.equals(deputySelect)) {
                 map.remove("dpoPsnMandatory");
                 if (AppConsts.NO.equals(deputySelect)) {
@@ -1814,9 +1826,19 @@ public class ServiceInfoDelegator {
             if (number == 0) {
                 stepFirst = true;
             }
-            if (number + 1 == hcsaServiceStepSchemeDtos.size()) {
+            if (number + 1 >= hcsaServiceStepSchemeDtos.size()) {
                 stepEnd = true;
             }
+            if (!stepEnd) {
+                int i = number + 1;
+                while (skipStep(hcsaServiceStepSchemeDtos,i, appSubmissionDto)){
+                    i++;
+                }
+                if (i >= hcsaServiceStepSchemeDtos.size()) {
+                    stepEnd = true;
+                }
+            }
+
             serviceStepDto.setStepFirst(stepFirst);
             serviceStepDto.setStepEnd(stepEnd);
             if (number > -1) {
@@ -1871,34 +1893,40 @@ public class ServiceInfoDelegator {
     }
 
     private boolean skipStep(List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos, int i, AppSubmissionDto appSubmissionDto) {
-        if (i>hcsaServiceStepSchemeDtos.size()){
+        if (i >= hcsaServiceStepSchemeDtos.size()) {
             return false;
         }
-        String stepCode=hcsaServiceStepSchemeDtos.get(i).getStepCode();
+        String stepCode = hcsaServiceStepSchemeDtos.get(i).getStepCode();
         String[] skipList = new String[]{HcsaConsts.STEP_LABORATORY_DISCIPLINES,
                 HcsaConsts.STEP_DISCIPLINE_ALLOCATION};
-        List<String> checkCodeList=IaisCommonUtils.genNewArrayList();
-        checkCodeList.add(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES);
-        checkCodeList.add(AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL);
-        checkCodeList.add(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY);
-        boolean match = appSubmissionDto.getAppSvcRelatedInfoDtoList()
-                .stream().anyMatch(s -> AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL.equals(s.getServiceCode()));
-        if (match){
-            List<String> collect = appSubmissionDto.getAppSvcRelatedInfoDtoList().stream().map(AppSvcRelatedInfoDto::getServiceCode).collect(Collectors.toList());
-            checkCodeList.removeAll(collect);
-            if (IaisCommonUtils.isNotEmpty(appSubmissionDto.getAppLicBundleDtoList())){
-                List<String> collect1 = appSubmissionDto.getAppLicBundleDtoList().stream().map(AppLicBundleDto::getSvcCode).collect(Collectors.toList());
-                checkCodeList.removeAll(collect1);
-                if (checkCodeList.size()==0){
-                    List<String> list = Arrays.asList(skipList);
-                    list.add(HcsaConsts.STEP_OUTSOURCED_PROVIDERS);
-                    skipList = (String[]) list.toArray();
+        if (StringUtil.isIn(stepCode, skipList)) {
+            return true;
+        }
+        if (HcsaConsts.STEP_OUTSOURCED_PROVIDERS.equals(stepCode)) {
+            List<String> checkCodeList = IaisCommonUtils.genNewArrayList();
+            checkCodeList.add(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES);
+            checkCodeList.add(AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL);
+            checkCodeList.add(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY);
+            boolean match = appSubmissionDto.getAppSvcRelatedInfoDtoList()
+                    .stream().anyMatch(s -> AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL.equals(s.getServiceCode()));
+            if (match) {
+                List<String> collect = appSubmissionDto.getAppSvcRelatedInfoDtoList().stream().map(
+                        AppSvcRelatedInfoDto::getServiceCode).collect(Collectors.toList());
+                checkCodeList.removeAll(collect);
+                if (IaisCommonUtils.isNotEmpty(appSubmissionDto.getAppLicBundleDtoList())) {
+                    List<String> collect1 = appSubmissionDto.getAppLicBundleDtoList().stream().map(
+                            AppLicBundleDto::getSvcCode).collect(Collectors.toList());
+                    checkCodeList.removeAll(collect1);
+                }
+                if (checkCodeList.size() == 0) {
+                    return true;
                 }
             }
         }
         if (StringUtil.isIn(stepCode, skipList)) {
             return true;
         }
+        //no special service,skip special_service_information
         if (HcsaConsts.STEP_SPECIAL_SERVICES_FORM.equals(stepCode)) {
             List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList();
             if (appPremSpecialisedDtoList == null || appPremSpecialisedDtoList.isEmpty() || appPremSpecialisedDtoList.stream()

@@ -181,7 +181,6 @@ public class DataSubmissionElisInterfaceServiceImpl implements DataSubmissionEli
                 try {
                     String path = licenceFile.getAbsolutePath();
                     log.info("licenceFile path: {}", path);
-                    log.info("The expected new licenceFile path: {}",movePath + licenceFile.getName());
                     FileUtils.copyFileToOtherPosition(path,movePath);
                     FileUtils.deleteTempFile(licenceFile);
                 } catch (IOException e) {

@@ -26,6 +26,7 @@
         removeBtnEvent();
         addMoreEvent();
         checkItemEvent();
+        refreshGroupIndex();
         $('.item-record [data-curr]').each(function () {
             let $target = $(this);
             checkItemMandatory($target);
@@ -60,7 +61,7 @@
             let visibled = false;
             if (!isEmptyNode($target)) {
                 $target.each(function () {
-                    if ($(this).is(':visible')) {
+                    if (!$(this).hasClass('hidden')) {
                         visibled = true;
                     }
                 });
@@ -124,6 +125,7 @@
             unDisableContent($('.person-content'))
             $('.person-content').find('.isPartEdit').val('1')
             $('#isEditHiddenVal').val('1')
+            refreshGroupIndex();
         });
     }
 
@@ -224,6 +226,7 @@
             $('.item-record [data-curr][data-prefix="' + prefix + '"]').each(function () {
                 checkItemMandatory($(this));
             });
+            refreshGroupIndex();
         });
     }
 
@@ -273,7 +276,10 @@
         let $conNodes = $('[data-parent*="' + curr + '"][data-seq="' + seq + '"][data-prefix="' + prefix + '"]');
         let currVal = getValue($tag);
         if (!isEmptyNode($conNodes)) {
-            if ($tag.is(':hidden')) {
+            // only check hidden class
+            // if use is(':hidden') to check it, and the target node is under collapsed pannel,
+            // the behavior is wrong
+            if ($tag.hasClass('hidden')) {
                 $conNodes.each(function () {
                     let $v = $(this);
                     let $target = $v.closest('.item-record');
@@ -281,7 +287,7 @@
                     // check add more button
                     let group = $v.data('group');
                     if (!isEmpty(group)) {
-                        checkAddMore(group, prefix, false);
+                        checkAddMore(group, prefix);
                     }
                     checkItemMandatory($v);
                 });
@@ -330,7 +336,7 @@
                     toggleTag($target, isIncluded);
                     // check add more button
                     let group = $v.data('group');
-                    checkAddMore(group,prefix,isIncluded)
+                    checkAddMore(group, prefix);
                     checkItemMandatory($v);
                 } else if ('4' == mandatory) {
                     let $target = $v.closest('.item-record');
@@ -376,17 +382,33 @@
                             $targetLabel.append('<span class="mandatory">*</span>');
                         }
                         toggleTag($target, isIncluded);
-                        checkAddMore(group,prefix,isIncluded)
+                        checkAddMore(group, prefix);
                         checkItemMandatory($newV);
                     }
                     // check add more button
-                    toggleTag($('.addMoreDiv[data-group="' + group + '"][data-prefix="' + prefix + '"]'), isIncluded);
+                    checkAddMore(group, prefix);
+                } else if ('6' == mandatory && $tag.is('select')) {
+                    // selection others
+                    let $target = $v.closest('.item-record');
+                    let parentVal = $tag.val();
+                    let conVal = $v.data('mandatory-cond');
+                    toggleTag($target, parentVal == conVal);
                 }
             });
         }
     }
 
-    function checkAddMore(group, prefix, show) {
+    function checkAddMore(group, prefix) {
+        let $items = $('[data-group="' + group + '"][data-prefix="' + prefix + '"]').closest('.item-record');
+        if (isEmptyNode($items)) {
+            return;
+        }
+        let show = false;
+        $items.each(function (idx, ele) {
+            if (!$(ele).hasClass('hidden')) {
+                show = true;
+            }
+        });
         if (!show) {
             hideTag($('.addMoreDiv[data-group="' + group + '"][data-prefix="' + prefix + '"]'));
             $('.removeEditRow [data-group="' + group + '"][data-prefix="' + prefix + '"]:not([data-seq="0"])').closest('.removeEditRow').remove();
@@ -473,7 +495,7 @@
             let seq = $tag.data('seq');
             let curr = $tag.data('curr');
             let group = $tag.data('condition');
-            let total = $('input[name="' + prefix + group + '"]').val()-1;
+            let total = $('input[name="' + prefix + group + '"]').val();
             if ($tag.is(':input')) {
                 fillValue($tag, total);
             } else {
@@ -597,6 +619,50 @@
             result = result.toLowerCase();
         }
         return result;
+    }
+
+    function refreshGroupIndex() {
+        let $groupTitle = $('.item-record .group-title');
+        if (isEmptyNode($groupTitle)) {
+            return;
+        }
+        let indexGroupAry = [];
+        $groupTitle.each(function () {
+            let group = $(this).data('group');
+            let prefix = $(this).data('prefix');
+            let spanClass = 'span.' + prefix + '-' + group;
+            if ($(this).find(spanClass).length > 0) {
+                indexGroupAry.push(spanClass);
+            }
+        });
+        if (indexGroupAry.length <= 0) {
+            return;
+        }
+        console.log(indexGroupAry,'=========indexGroupAry=========>>>>')
+        let i = 0;
+        let target = indexGroupAry[0];
+        for (let x of indexGroupAry) {
+            if (x != target) {
+                refreshItemGroupIndex(target, i);
+                // init
+                i = 1;
+                target = x;
+            } else {
+                i++;
+            }
+        }
+        refreshItemGroupIndex(target, i);
+    }
+
+    function refreshItemGroupIndex(target, max) {
+        if (max <= 1) {
+            $(target).html('');
+        } else {
+            let i = 1;
+            $(target).each(function () {
+                $(this).html(i++);
+            });
+        }
     }
 
 </script>
