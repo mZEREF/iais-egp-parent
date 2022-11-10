@@ -54,7 +54,7 @@
                 }
             }
             if ($(v).find('div.personnel-content').length == 1) {
-                $(v).find('.assign-psn-item').html('');
+                $(v).find('.assign-psn-item strong').html('');
             }
             $(v).find('div.personnel-content').each(function (i, x) {
                 checkPersonContent($(x), true);
@@ -71,7 +71,7 @@
 
     function refreshPerson($target, k) {
         toggleTag($target.find('.removeEditDiv'), k != 0);
-        $target.find('.assign-psn-item').html(k + 1);
+        $target.find('.assign-psn-item strong').html(k + 1);
         resetIndex($target, k);
     }
 
@@ -100,7 +100,7 @@
         fillValue($tgt.find('input.ROMDRT'), ROMDRT);
         refreshPerson($currContent, $(target).find('div.personnel-content').length - 1);
         disablePrsInfo($currContent, false,true);
-        $(target).find('div.personnel-content').first().find('.assign-psn-item').html('1');
+        $(target).find('div.personnel-content').first().find('.assign-psn-item strong').html('1');
         removePersonnelEvent();
         profRegNoEvent($currContent);
         assignSelectEvent($currContent);
@@ -138,7 +138,7 @@
             });
             $('#isEditHiddenVal').val('1');
             if ($currContent.length == 1) {
-                $currContent.find('.assign-psn-item').html('');
+                $currContent.find('.assign-psn-item strong').html('');
             }
             var len =  $Content.find('div.personnel-content').length;
             $Content.find('input.Length').val(len);
