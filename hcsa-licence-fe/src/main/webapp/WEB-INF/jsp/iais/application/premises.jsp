@@ -24,7 +24,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-xs-12">
-                    <div class="tab-gp steps-tab tab-be">
+                    <div class="tab-gp steps-tab">
                         <%@ include file="/WEB-INF/jsp/iais/application/common/navTabs.jsp" %>
                         <div class="tab-content  ">
                             <div class="tab-pane active" id="premisesTab" role="tabpanel">

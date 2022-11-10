@@ -22,20 +22,17 @@
 
 <webui:setLayout name="iais-internet"/>
 
-<%@ include file="/WEB-INF/jsp/iais/application/common/dashboard.jsp" %>
-
 <c:set var="isHciNameChange" value="${RFC_eqHciNameChange == 'RFC_eqHciNameChange'}"/>
 
 <c:set var="specialSubLic" value="${subLicenseeDto.licenseeType eq 'LICT002' || subLicenseeDto.licenseeType eq 'LICTSUB002'}" />
-
-<div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
+<%@ include file="/WEB-INF/jsp/iais/application/common/dashboard.jsp" %>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="crud_action_type_tab" value="">
     <div class="main-content">
-        <div class="center-content">
+        <div class="container">
             <div class="row">
-                <div class="col-xs-12 intranet-content">
-                    <div class="tab-gp steps-tab tab-be">
+                <div class="col-xs-12">
+                    <div class="tab-gp steps-tab">
                         <%@ include file="/WEB-INF/jsp/iais/application/common/navTabs.jsp" %>
                         <div class="tab-content">
                             <div class="tab-pane active" id="previewTab" role="tabpanel">
