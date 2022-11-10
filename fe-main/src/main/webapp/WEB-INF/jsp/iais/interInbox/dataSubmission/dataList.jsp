@@ -154,7 +154,7 @@
                                         <p class="visible-xs visible-sm table-row-title"></p>
                                         <div class="form-check">
                                             <c:set  var="typeForWithdraw" value="${inboxDataSubmissionQuery.type}"/>
-                                            <input class="form-check-input licenceCheck" id="dataSubmission${submissionNo}" type="checkbox"
+                                            <input class="form-check-input licenceCheck<c:if test="${inboxDataSubmissionQuery.status eq 'Draft'}"> draft</c:if>" id="dataSubmission${submissionNo}" type="checkbox"
                                                    name="submissionNo" value="<iais:mask name="submissionNo" value="${submissionNo}"/>" aria-invalid="false" <c:if test="${inboxDataSubmissionQuery.submissionSelect}">checked</c:if> onclick="doCheckBoxSelect('${submissionNo}','${typeForWithdraw}')">
                                             <label class="form-check-label" for="dataSubmission${submissionNo}"><span
                                                     class="check-square"></span>
@@ -407,7 +407,7 @@
        if($("[name='submissionNo']:checked").val() != null){
            let canDraft = true;
            $.each($("[name='submissionNo']:checked"),function(){
-             if(canDraft && $(this).val().indexOf('DS') <0){
+             if(canDraft && $(this).attr('class').indexOf('draft') <0){
                  canDraft = false;
              }
            })
