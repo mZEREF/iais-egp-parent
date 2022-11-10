@@ -56,6 +56,16 @@ public class DonationStageDtoValidator implements CustomizeValidator {
         if(donationStageDto.getDonatedForResearch()+donationStageDto.getDonatedForTraining()+donationStageDto.getDonatedForTreatment()==0){
             errorMap.put("donatedFor", errMsgErr006);
         }
+        if (DataSubmissionConsts.DONATED_TYPE_FRESH_OOCYTE.equals(donationStageDto.getDonatedType())
+                || DataSubmissionConsts.DONATED_TYPE_FROZEN_OOCYTE.equals(donationStageDto.getDonatedType())) {
+            validateFemaleDonor(request, donationStageDto, errorMap, errMsgErr006,errMsgErr008);
+        } else if (DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM.equals(donationStageDto.getDonatedType())){
+            validateMaleDonor(request, donationStageDto, errorMap, errMsgErr006,errMsgErr008);
+        } else if(DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO.equals(donationStageDto.getDonatedType())){
+            validateFemaleDonor(request, donationStageDto, errorMap, errMsgErr006,errMsgErr008);
+            validateMaleDonor(request, donationStageDto, errorMap, errMsgErr006,errMsgErr008);
+        }
+
         if(donationStageDto.getDonatedForResearch()==1){
             if(donationStageDto.getDonResForTreatNum()!=null){
                 if(donationStageDto.getDonResForTreatNum()>99||donationStageDto.getDonResForTreatNum()<0){
@@ -205,4 +215,63 @@ public class DonationStageDtoValidator implements CustomizeValidator {
         return errorMap;
     }
 
+    private void validateFemaleDonor(HttpServletRequest request, DonationStageDto donationStageDto, Map<String, String> errorMap, String errMsgErr006, String errMsgErr008){
+        if (donationStageDto.getIsOocyteDonorPatient() == null){
+            errorMap.put("oocyteDonorPatient",errMsgErr006);
+        } else if (donationStageDto.getIsOocyteDonorPatient() == 1){
+            if (donationStageDto.getIsFemaleIdentityKnown() == null) {
+                errorMap.put("isFemaleIdentityKnown",errMsgErr006);
+            } else if(donationStageDto.getIsFemaleIdentityKnown() == 1){
+                if (donationStageDto.getFemaleIdType() == null){
+                    errorMap.put("femaleIdType",errMsgErr006);
+                }
+            }
+
+        }
+        if(donationStageDto.getFemaleDonorSampleCode() == null) {
+            errorMap.put("femaleDonorSampleCode",errMsgErr006);
+        }
+        if(donationStageDto.getFemaleDonorAgeStr() != null) {
+            errorMap.put("femaleDonorAge",errMsgErr008);
+        } else if(donationStageDto.getFemaleDonorAge() == null) {
+            errorMap.put("femaleDonorAge",errMsgErr006);
+        }
+        if(donationStageDto.getFemaleIdNumber() == null && donationStageDto.getFemaleIdType() != null) {
+            if(donationStageDto.getFemaleIdType() == 1) {
+                errorMap.put("femaleIdNumber",errMsgErr006);
+            } else if(donationStageDto.getFemaleIdType() == 0){
+                errorMap.put("femaleIdNumberPassport",errMsgErr006);
+            }
+        }
+    }
+
+    private void validateMaleDonor(HttpServletRequest request, DonationStageDto donationStageDto, Map<String, String> errorMap, String errMsgErr006, String errMsgErr008){
+        if (donationStageDto.getIsSpermDonorPatient() == null){
+            errorMap.put("spermDonorPatient",errMsgErr006);
+        } else if (donationStageDto.getIsSpermDonorPatient() == 1){
+            if (donationStageDto.getIsMaleIdentityKnown() == null) {
+                errorMap.put("isMaleIdentityKnown",errMsgErr006);
+            } else if(donationStageDto.getIsMaleIdentityKnown() == 1){
+                if (donationStageDto.getMaleIdType() == null){
+                    errorMap.put("maleIdType",errMsgErr006);
+                }
+            }
+
+        }
+        if(donationStageDto.getMaleDonorSampleCode() == null) {
+            errorMap.put("maleDonorSampleCode",errMsgErr006);
+        }
+        if(donationStageDto.getMaleDonorAgeStr() != null) {
+            errorMap.put("maleDonorAge",errMsgErr008);
+        } else if(donationStageDto.getMaleDonorAge() == null) {
+            errorMap.put("maleDonorAge",errMsgErr006);
+        }
+        if(donationStageDto.getMaleIdNumber() == null && donationStageDto.getMaleIdType() != null) {
+            if(donationStageDto.getMaleIdType() == 1) {
+                errorMap.put("maleIdNumber",errMsgErr006);
+            } else if(donationStageDto.getMaleIdType() == 0){
+                errorMap.put("maleIdNumberPassport",errMsgErr006);
+            }
+        }
+    }
 }

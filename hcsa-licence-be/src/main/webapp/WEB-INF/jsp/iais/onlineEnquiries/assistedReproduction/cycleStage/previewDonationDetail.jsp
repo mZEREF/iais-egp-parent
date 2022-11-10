@@ -28,6 +28,118 @@
                         <iais:code code="${arSuperDataSubmissionDto.donationStageDto.donatedType}"/>
                     </iais:value>
                 </iais:row>
+                <c:set var="donatedType" value="${arSuperDataSubmissionDto.donationStageDto.donatedType}"/>
+                <div id="displayOocyteDonorPatient" <c:if test="${donatedType != 'DONTY001' && donatedType != 'DONTY002' && donatedType != 'DONTY003'}">style="display: none"</c:if>>
+                    <iais:row>
+                        <iais:field width="5" value="Is the Oocyte Donor the Patient?" mandatory="false"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true">
+                            <c:if test="${arSuperDataSubmissionDto.donationStageDto.isOocyteDonorPatient == 1}">Yes</c:if>
+                            <c:if test="${arSuperDataSubmissionDto.donationStageDto.isOocyteDonorPatient == 0}">No</c:if>
+                        </iais:value>
+                    </iais:row>
+                    <div id="displayIsFemaleIdentityKnown" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isOocyteDonorPatient != 1}">style="display: none"</c:if>>
+                        <iais:row>
+                            <iais:field width="5"  value="Is the Female Donor's Identity Known" mandatory="false"/>
+                            <iais:value width="7" cssClass="col-md-7" display="true">
+                                <c:if test="${arSuperDataSubmissionDto.donationStageDto.isFemaleIdentityKnown == 1}">Yes</c:if>
+                                <c:if test="${arSuperDataSubmissionDto.donationStageDto.isFemaleIdentityKnown == 0}">No</c:if>
+                            </iais:value>
+                        </iais:row>
+                    </div>
+                    <div id="displayFemaleHaveNricFin" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isFemaleIdentityKnown != 1}">style="display: none"</c:if>>
+                        <iais:row>
+                            <iais:field width="5" value="Does the Female Donor have a NRIC/FIN number?" mandatory="false"/>
+                            <iais:value width="7" cssClass="col-md-7" display="true">
+                                <c:if test="${arSuperDataSubmissionDto.donationStageDto.femaleIdType == 1}">Yes</c:if>
+                                <c:if test="${arSuperDataSubmissionDto.donationStageDto.femaleIdType == 0}">No</c:if>
+                            </iais:value>
+                        </iais:row>
+                    </div>
+                    <div id="displayFemaleNricFinNumber" <c:if test="${arSuperDataSubmissionDto.donationStageDto.femaleIdType != 1}">style="display: none"</c:if>>
+                        <iais:row>
+                            <iais:field width="5" value="Female Donor's NRIC/FIN Number" mandatory="false"/>
+                            <iais:value width="7" cssClass="col-md-7" display="true">
+                                <c:out value="${arSuperDataSubmissionDto.donationStageDto.femaleIdNumber}"/>
+                            </iais:value>
+                        </iais:row>
+                    </div>
+                    <div id="displayPassportNumber" <c:if test="${arSuperDataSubmissionDto.donationStageDto.femaleIdType != 0}">style="display: none"</c:if>>
+                        <iais:row>
+                            <iais:field width="5" value="Female Donor's Passport Number" mandatory="false"/>
+                            <iais:value width="7" cssClass="col-md-7" display="true">
+                                <c:out value="${arSuperDataSubmissionDto.donationStageDto.femaleIdNumber}"/>
+                            </iais:value>
+                        </iais:row>
+                    </div>
+                    <iais:row>
+                        <iais:field width="5" value="Female Donor Sample Code" mandatory="false"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true">
+                            <c:out value="${arSuperDataSubmissionDto.donationStageDto.femaleDonorSampleCode}"/>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field width="5"  value="Age of Female Donor at the Point of Donation" mandatory="false"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true">
+                            <c:out value="${arSuperDataSubmissionDto.donationStageDto.femaleDonorAge}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
+
+                <div id="displaySpermDonorPatient" <c:if test="${donatedType != 'DONTY003' && donatedType != 'DONTY004' && donatedType != 'DONTY005'}">style="display: none"</c:if>>
+                    <iais:row>
+                        <iais:field width="5" value="Is the Sperm Donor the Patient?" mandatory="false"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true">
+                            <c:if test="${arSuperDataSubmissionDto.donationStageDto.isSpermDonorPatient == 1}">Yes</c:if>
+                            <c:if test="${arSuperDataSubmissionDto.donationStageDto.isSpermDonorPatient == 0}">No</c:if>
+                        </iais:value>
+                    </iais:row>
+                    <div id="displayIsMaleIdentityKnown" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isSpermDonorPatient != 1}">style="display: none"</c:if>>
+                        <iais:row>
+                            <iais:field width="5"  value="Is the Male Donor's Identity Known" mandatory="false"/>
+                            <iais:value width="7" cssClass="col-md-7" display="true">
+                                <c:if test="${arSuperDataSubmissionDto.donationStageDto.isMaleIdentityKnown == 1}">Yes</c:if>
+                                <c:if test="${arSuperDataSubmissionDto.donationStageDto.isMaleIdentityKnown == 0}">No</c:if>
+                            </iais:value>
+                        </iais:row>
+                    </div>
+                    <div id="displayMaleHaveNricFin" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isMaleIdentityKnown != 1}">style="display: none"</c:if>>
+                        <iais:row>
+                            <iais:field width="5" value="Does the Male Donor have a NRIC/FIN number?" mandatory="false"/>
+                            <iais:value width="7" cssClass="col-md-7" display="true">
+                                <c:if test="${arSuperDataSubmissionDto.donationStageDto.maleIdType == 1}">Yes</c:if>
+                                <c:if test="${arSuperDataSubmissionDto.donationStageDto.maleIdType == 0}">No</c:if>
+                            </iais:value>
+                        </iais:row>
+                    </div>
+                    <div id="displayMaleNricFinNumber" <c:if test="${arSuperDataSubmissionDto.donationStageDto.maleIdType != 1}">style="display: none"</c:if>>
+                        <iais:row>
+                            <iais:field width="5" value="Male Donor's NRIC/FIN Number" mandatory="false"/>
+                            <iais:value width="7" cssClass="col-md-7" display="true">
+                                <c:out value="${arSuperDataSubmissionDto.donationStageDto.maleIdNumber}"/>
+                            </iais:value>
+                        </iais:row>
+                    </div>
+                    <div id="displayMalePassportNumber" <c:if test="${arSuperDataSubmissionDto.donationStageDto.maleIdType != 0}">style="display: none"</c:if>>
+                        <iais:row>
+                            <iais:field width="5" value="Male Donor's Passport Number" mandatory="false"/>
+                            <iais:value width="7" cssClass="col-md-7" display="true">
+                                <c:out value="${arSuperDataSubmissionDto.donationStageDto.maleIdNumber}"/>
+                            </iais:value>
+                        </iais:row>
+                    </div>
+                    <iais:row>
+                        <iais:field width="5" value="Male Donor Sample Code" mandatory="false"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true">
+                            <c:out value="${arSuperDataSubmissionDto.donationStageDto.maleDonorSampleCode}"/>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field width="5"  value="Age of Male Donor at the Point of Donation" mandatory="false"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true">
+                            <c:out value="${arSuperDataSubmissionDto.donationStageDto.maleDonorAge}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
                 <iais:row>
                     <iais:field width="5" value="Which AR Centre was Gamete(s)/Embryo(s) Donated to?" id="donatedCentreField" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">
