@@ -557,7 +557,7 @@ public class DataSubmissionInboxDelegator {
 				AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_DATA_SUBMISSION, AuditTrailConsts.FUNCTION_REQUEST_FOR_CHANGE);
 				params.put("dsType",inboxDataSubmissionQueryDto.getDsType());
 				params.put("type","rfc");
-				params.put("submissionNo",inboxDataSubmissionQueryDto.getSubmissionNo());
+				params.put("submissionNo",MaskUtil.maskValue("submissionNo", inboxDataSubmissionQueryDto.getSubmissionNo()));
 				IaisEGPHelper.redirectUrl(response,request, "MohDsAction",InboxConst.URL_LICENCE_WEB_MODULE,params);
 			}else if(UNLOCK.equals(actionValue)){
 				actionInboxDataSubmissionQueryDtos.stream().forEach(obj->{
