@@ -382,7 +382,7 @@ public class ServiceInfoDelegator {
             }
         }
         List<AppSvcSpecialServiceInfoDto> appSvcSpecialServiceInfoList = DealSessionUtil.initAppSvcSpecialServiceInfoDtoList(
-                currSvcInfoDto, appPremSpecialisedDtos);
+                currSvcInfoDto, appPremSpecialisedDtos, false);
         currSvcInfoDto.setAppSvcSpecialServiceInfoList(appSvcSpecialServiceInfoList);
         boolean isRfi = ApplicationHelper.checkIsRfi(request);
         List<SelectOption> personList = ApplicationHelper.genAssignPersonSel(request, true);
