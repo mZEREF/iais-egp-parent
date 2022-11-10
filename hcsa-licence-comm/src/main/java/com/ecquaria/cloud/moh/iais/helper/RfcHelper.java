@@ -1865,10 +1865,8 @@ public final class RfcHelper {
             appPremSubSvcRelDtoList.addAll(item.getAppPremSubSvcRelDtoList());
         });
         List<AppPremSubSvcRelDto> oldAppPremSubSvcRelDtoList = IaisCommonUtils.genNewArrayList();
-        oldAppSvcOtherInfoDtoList.stream().filter(dto -> IaisCommonUtils.isNotEmpty(dto.getAppPremSubSvcRelDtoList())).forEach(
-                (item) -> {
-                    oldAppPremSubSvcRelDtoList.addAll(item.getAppPremSubSvcRelDtoList());
-                });
+        oldAppSvcOtherInfoDtoList.stream().filter(dto -> IaisCommonUtils.isNotEmpty(dto.getAppPremSubSvcRelDtoList()))
+                .forEach((item) -> oldAppPremSubSvcRelDtoList.addAll(item.getAppPremSubSvcRelDtoList()));
         if (IaisCommonUtils.isEmpty(appPremSubSvcRelDtoList) && IaisCommonUtils.isEmpty(oldAppPremSubSvcRelDtoList)) {
             return result;
         }
