@@ -74,7 +74,7 @@ public class MohDsDraftDelegator {
     public void prepareData(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("------ PrepareData -----" ));
         String dsType = ParamUtil.getString(bpc.request, "dsType");
-        String draftNo = ParamUtil.getString(bpc.request, "draftNo");
+        String draftNo = ParamUtil.getMaskedString(bpc.request, "draftNo");
         log.info(StringUtil.changeForLog("------DS Type: " + dsType + " --- Draft No: " + draftNo + " -----"));
         String uri = "";
         if (StringUtil.isEmpty(dsType) || StringUtil.isEmpty(draftNo)) {

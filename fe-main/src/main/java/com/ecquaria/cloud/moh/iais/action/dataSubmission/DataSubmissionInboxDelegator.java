@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxDataSubmissionQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -348,12 +349,12 @@ public class DataSubmissionInboxDelegator {
 		Map<String,String> params = IaisCommonUtils.genNewHashMap(2);
 		if(checkDataPassBySubmissionNo(submissionNo,DELETE_DRAFT)){
 			params.put("dsType",inboxDataSubmissionQueryDto.getDsType());
-			params.put("draftNo",submissionNo);
+			params.put("draftNo", MaskUtil.maskValue("draftNo", submissionNo));
 			IaisEGPHelper.redirectUrl(response,request, "MohDsDraft",InboxConst.URL_LICENCE_WEB_MODULE,params);
 		}else {
 			params.put("dsType",inboxDataSubmissionQueryDto.getDsType());
 			params.put("type","preview");
-			params.put("submissionNo",submissionNo);
+			params.put("submissionNo", MaskUtil.maskValue("submissionNo", submissionNo));
 			IaisEGPHelper.redirectUrl(response,request, "MohDsAction",InboxConst.URL_LICENCE_WEB_MODULE,params);
 		}
 		setLog("view",false);
