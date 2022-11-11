@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxDataSubmissionQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -340,7 +341,7 @@ public class DataSubmissionInboxDelegator {
 		setLog("view");
 		HttpServletRequest request = bpc.request;
 		HttpServletResponse response = bpc.response;
-        String submissionNo = ParamUtil.getString(request,"crud_type_action_submission_no");
+        String submissionNo = ParamUtil.getMaskedString(request,"crud_type_action_submission_no");
 		InboxDataSubmissionQueryDto inboxDataSubmissionQueryDto =  getInboxDataSubmissionQueryDtoBySubmissionNo(request,submissionNo);
 		if(inboxDataSubmissionQueryDto == null){
 			return;
@@ -348,12 +349,12 @@ public class DataSubmissionInboxDelegator {
 		Map<String,String> params = IaisCommonUtils.genNewHashMap(2);
 		if(checkDataPassBySubmissionNo(submissionNo,DELETE_DRAFT)){
 			params.put("dsType",inboxDataSubmissionQueryDto.getDsType());
-			params.put("draftNo",submissionNo);
+			params.put("draftNo", MaskUtil.maskValue("draftNo", submissionNo));
 			IaisEGPHelper.redirectUrl(response,request, "MohDsDraft",InboxConst.URL_LICENCE_WEB_MODULE,params);
 		}else {
 			params.put("dsType",inboxDataSubmissionQueryDto.getDsType());
 			params.put("type","preview");
-			params.put("submissionNo",submissionNo);
+			params.put("submissionNo", MaskUtil.maskValue("submissionNo", submissionNo));
 			IaisEGPHelper.redirectUrl(response,request, "MohDsAction",InboxConst.URL_LICENCE_WEB_MODULE,params);
 		}
 		setLog("view",false);
@@ -439,12 +440,9 @@ public class DataSubmissionInboxDelegator {
 
     private  boolean showMessage(HttpServletRequest request,HttpServletResponse response,String actionValue){
 		 String sizeString = ParamUtil.getString(request,NEED_VALIDATOR_SIZE);
-		 List<String> submissionNos = ParamUtil.getListStrings(request,"submissionNo");
+		 String[] submissionNos = ParamUtil.getMaskedStrings(request,"submissionNo");
 		 String crudActionType = ParamUtil.getString(request, "crud_action_type");
 		 String crudType = ParamUtil.getString(request, "crud_type");
-		 if ("rfc".equals(crudActionType) && (StringUtils.isEmpty(crudType) || !"delete".equals(crudType))) {
-			 ParamUtil.setRequestAttr(request, "rfcSubmissionNo", submissionNos.get(0));
-		 }
 		 int size = -1;
 		 if(StringUtil.isNotEmpty(sizeString)){
 			 try {
@@ -456,7 +454,10 @@ public class DataSubmissionInboxDelegator {
 		if(size <= 0){
 			return true;
 		}
-		 if( IaisCommonUtils.isNotEmpty(submissionNos)){
+		 if(submissionNos != null && submissionNos.length > 0){
+			 if ("rfc".equals(crudActionType) && (StringUtils.isEmpty(crudType) || !"delete".equals(crudType))) {
+				 ParamUtil.setRequestAttr(request, "rfcSubmissionNo", submissionNos[0]);
+			 }
 			 SearchResult<InboxDataSubmissionQueryDto> submissionQueryDtoSearchResult =(SearchResult<InboxDataSubmissionQueryDto>)ParamUtil.getSessionAttr(request, InboxConst.DS_RESULT);
 			 if(submissionQueryDtoSearchResult != null && IaisCommonUtils.isNotEmpty(submissionQueryDtoSearchResult.getRows())){
 			 	List<InboxDataSubmissionQueryDto> inboxDataSubmissionQueryDtos = submissionQueryDtoSearchResult.getRows();
@@ -556,7 +557,7 @@ public class DataSubmissionInboxDelegator {
 				AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_DATA_SUBMISSION, AuditTrailConsts.FUNCTION_REQUEST_FOR_CHANGE);
 				params.put("dsType",inboxDataSubmissionQueryDto.getDsType());
 				params.put("type","rfc");
-				params.put("submissionNo",inboxDataSubmissionQueryDto.getSubmissionNo());
+				params.put("submissionNo",MaskUtil.maskValue("submissionNo", inboxDataSubmissionQueryDto.getSubmissionNo()));
 				IaisEGPHelper.redirectUrl(response,request, "MohDsAction",InboxConst.URL_LICENCE_WEB_MODULE,params);
 			}else if(UNLOCK.equals(actionValue)){
 				actionInboxDataSubmissionQueryDtos.stream().forEach(obj->{

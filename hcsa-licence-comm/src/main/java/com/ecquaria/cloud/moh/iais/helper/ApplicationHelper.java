@@ -1325,42 +1325,19 @@ public final class ApplicationHelper {
 
     public static void genSpecialServiceInforamtionPersonsel(HttpServletRequest request) {
         List<SelectOption> personnelTypeSel = IaisCommonUtils.genNewArrayList();
-        //Radiation Safety Officer
-        SelectOption personnelTypeOp1 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER,
-                MasterCodeUtil.getCodeDesc(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER));
         //Diagnostic Radiographer
-        SelectOption personnelTypeOp2 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR,
+        SelectOption personnelTypeOp1 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR,
                 ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_DIAGNOSTIC_RADIOGRAPHER);
-        //Medical Physicist
-        SelectOption personnelTypeOp3 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST,
-                ApplicationConsts.SERVICE_PERSONNEL_TYPE_STR_MEDICAL_PHYSICIST);
-        //Radiation Physicist
-        SelectOption personnelTypeOp4 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL,
-                MasterCodeUtil.getCodeDesc(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL));
+        //Radiation Therapist
+        SelectOption personnelTypeOp2 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST_COMBINE,
+                ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_RADIATION_THERAPIST);
         //NM Technologist
-        SelectOption personnelTypeOp5 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM,
+        SelectOption personnelTypeOp3 = new SelectOption(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM,
                 ApplicationConsts.SERVICE_PERSONNEL_DESIGNATION_NUCLEAR_MEDICINE_TECHNOLOGIST);
         personnelTypeSel.add(personnelTypeOp1);
         personnelTypeSel.add(personnelTypeOp2);
         personnelTypeSel.add(personnelTypeOp3);
-        personnelTypeSel.add(personnelTypeOp4);
-        personnelTypeSel.add(personnelTypeOp5);
-        ParamUtil.setRequestAttr(request, "rsoSel", personnelTypeSel.stream()
-                .filter(s -> ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER.equals(s.getValue()))
-                .collect(Collectors.toList()));
-        ParamUtil.setRequestAttr(request, "drSel", personnelTypeSel.stream()
-                .filter(s -> ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR.equals(s.getValue()))
-                .collect(Collectors.toList()));
-        ParamUtil.setRequestAttr(request, "mpSel", personnelTypeSel.stream()
-                .filter(s -> ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(s.getValue()))
-                .collect(Collectors.toList()));
-        ParamUtil.setRequestAttr(request, "rpSel", personnelTypeSel.stream()
-                .filter(s -> ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(s.getValue()))
-                .collect(Collectors.toList()));
-        ParamUtil.setRequestAttr(request, "nmSel", personnelTypeSel.stream()
-                .filter(s -> ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM.equals(s.getValue()))
-                .collect(Collectors.toList()));
-
+        ParamUtil.setRequestAttr(request, "svSel",personnelTypeSel);
         List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.SSI_CATE_ID_DESIGNATION);
         List<SelectOption> nicSel = selectOptions.stream().filter(s -> !"SSI001".equals(s.getValue())).collect(Collectors.toList());
         ParamUtil.setRequestAttr(request, "nicSel", nicSel);

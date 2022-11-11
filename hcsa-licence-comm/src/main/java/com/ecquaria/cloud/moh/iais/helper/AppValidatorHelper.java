@@ -4039,10 +4039,11 @@ public final class AppValidatorHelper {
             List<String> sectionLeaderNames = IaisCommonUtils.genNewArrayList();
             List<String> nurseNames = IaisCommonUtils.genNewArrayList();
             List<String> rsoNames = IaisCommonUtils.genNewArrayList();
-            List<String> drNames = IaisCommonUtils.genNewArrayList();
+            List<String> svNames = IaisCommonUtils.genNewArrayList();
+//            List<String> drNames = IaisCommonUtils.genNewArrayList();
             List<String> mpNames = IaisCommonUtils.genNewArrayList();
             List<String> rpNames = IaisCommonUtils.genNewArrayList();
-            List<String> nmNames = IaisCommonUtils.genNewArrayList();
+//            List<String> nmNames = IaisCommonUtils.genNewArrayList();
             List<String> dirNames = IaisCommonUtils.genNewArrayList();
             List<String> nurNames = IaisCommonUtils.genNewArrayList();
             List<String> roNames = IaisCommonUtils.genNewArrayList();
@@ -4056,10 +4057,11 @@ public final class AppValidatorHelper {
                 int slMandatoryCount = minCount.get(ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER);
                 int nicMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE);
                 int rsoMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER);
-                int drMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR);
+                int svMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_COMBINE);
+//                int drMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR);
                 int mpMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST);
                 int rpMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL);
-                int nmMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM);
+//                int nmMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM);
                 int diMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR);
                 int nuMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR);
                 int roMandatoryCount = minCount.get(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_ONCOLOGIST);
@@ -4104,25 +4106,27 @@ public final class AppValidatorHelper {
                 validateSpecialPersonMandatory(specialServiceSectionDto.getAppSvcNurseDtoList(),
                         nicMandatoryCount,prefix + i + j + "nic", errorMap, nurseNames,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE);
                 validateSpecialServiceOtherPersonMandatory(specialServiceSectionDto.getAppSvcRadiationSafetyOfficerDtoList(),
-                        rsoMandatoryCount,prefix + i + j + "rso",errorMap,rsoNames,false,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER);
-                validateSpecialServiceOtherPersonMandatory(specialServiceSectionDto.getAppSvcDiagnosticRadiographerDtoList(),
-                        drMandatoryCount,prefix + i + j + "dr",errorMap,drNames,false,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR);
+                        rsoMandatoryCount,prefix + i + j + "rso",errorMap,rsoNames, ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER);
+                validateSpecialServiceOtherPersonMandatory(specialServiceSectionDto.getAppSvcPersonnelDtoList(),
+                        svMandatoryCount,prefix + i + j + "sv",errorMap,svNames, ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_COMBINE);
+                /*validateSpecialServiceOtherPersonMandatory(specialServiceSectionDto.getAppSvcDiagnosticRadiographerDtoList(),
+                        drMandatoryCount,prefix + i + j + "dr",errorMap,drNames,false,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_DR);*/
                 validateSpecialServiceOtherPersonMandatory(specialServiceSectionDto.getAppSvcMedicalPhysicistDtoList(),
-                        mpMandatoryCount,prefix + i + j + "mp",errorMap,mpNames,true,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST);
+                        mpMandatoryCount,prefix + i + j + "mp",errorMap,mpNames, ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST);
                 validateSpecialServiceOtherPersonMandatory(specialServiceSectionDto.getAppSvcRadiationPhysicistDtoList(),
-                        rpMandatoryCount,prefix + i + j + "rp",errorMap,rpNames,true,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL);
-                validateSpecialServiceOtherPersonMandatory(specialServiceSectionDto.getAppSvcNMTechnologistDtoList(),
-                        nmMandatoryCount,prefix + i + j + "nm",errorMap,nmNames,true,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM);
-                validateSpecialServicePersonMandatory(specialServiceSectionDto.getAppSvcDirectorDtoList(),
-                        diMandatoryCount,prefix + i + j + "dir", errorMap, dirNames,ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR);
-                validateSpecialServicePersonMandatory(specialServiceSectionDto.getAppSvcNurseDirectorDtoList(),
-                        nuMandatoryCount,prefix + i + j + "nur", errorMap, nurNames,ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR);
+                        rpMandatoryCount,prefix + i + j + "rp",errorMap,rpNames, ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL);
+                /*validateSpecialServiceOtherPersonMandatory(specialServiceSectionDto.getAppSvcNMTechnologistDtoList(),
+                        nmMandatoryCount,prefix + i + j + "nm",errorMap,nmNames,true,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NM);*/
                 validateSpecialPersonMandatory(specialServiceSectionDto.getAppSvcRadiationOncologist(),
                         roMandatoryCount,prefix + i + j + "ro", errorMap, roNames,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_ONCOLOGIST);
                 validateSpecialPersonMandatory(specialServiceSectionDto.getAppSvcMedicalDosimetrist(),
                         mdMandatoryCount,prefix + i + j + "md", errorMap, mdNames,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_DOSIMETRIST);
                 validateSpecialPersonMandatory(specialServiceSectionDto.getAppSvcRadiationTherapist(),
                         rtMandatoryCount,prefix + i + j + "rt", errorMap, rtNames,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_THERAPIST);
+                validateSpecialServicePersonMandatory(specialServiceSectionDto.getAppSvcDirectorDtoList(),
+                        diMandatoryCount,prefix + i + j + "dir", errorMap, dirNames,ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_DIRECTOR);
+                validateSpecialServicePersonMandatory(specialServiceSectionDto.getAppSvcNurseDirectorDtoList(),
+                        nuMandatoryCount,prefix + i + j + "nur", errorMap, nurNames,ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMERGENCY_DEPARTMENT_NURSING_DIRECTOR);
                 validateSpecialPersonMandatory(specialServiceSectionDto.getAppSvcRadiationCqmp(),
                         cqmpMandatoryCount,prefix + i + j + "cqmp", errorMap, cqmpNames,ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_CQMP);
                 if (!IaisCommonUtils.isEmpty(specialServiceSectionDto.getAppSvcSuplmFormDto().getAppSvcSuplmGroupDtoList())) {
@@ -4133,7 +4137,7 @@ public final class AppValidatorHelper {
     }
 
     private static void validateSpecialServiceOtherPersonMandatory(List<AppSvcPersonnelDto> appSvcPersonnelDto, int mandatoryCount,
-            String prefix, Map<String, String> errorMap, List<String> usedNames, boolean checkOthers,String psnType) {
+            String prefix, Map<String, String> errorMap, List<String> usedNames,String psnType) {
         if (appSvcPersonnelDto == null) {
             if (mandatoryCount > 0) {
                 errorMap.put(prefix+"personError"+0, "No related Personnel found!");
@@ -4147,7 +4151,7 @@ public final class AppValidatorHelper {
         }else {
             for (int x = 0; x < appSvcPersonnelDto.size(); x++) {
                 validateSpecialServiceOtherPersonDetail(appSvcPersonnelDto.get(x),
-                        prefix, "" + x, errorMap, usedNames, checkOthers);
+                        prefix, "" + x, errorMap, usedNames, psnType);
             }
         }
     }
@@ -4192,51 +4196,53 @@ public final class AppValidatorHelper {
        }
     }
 
-
     private static void validateSpecialServiceOtherPersonDetail(AppSvcPersonnelDto appSvcPersonnelDto, String prefix, String subfix,
-            Map<String, String> errorMap,
-            List<String> names, boolean checkOthers) {
+            Map<String, String> errorMap, List<String> names, String psnType) {
         String signal = "GENERAL_ERR0006";
 
-        String personnelSel = appSvcPersonnelDto.getPersonnelType();
-        if (StringUtils.isEmpty(personnelSel)) {
-            errorMap.put(prefix + "personnelType" + subfix, signal);
-        } else {
-            String salutation = appSvcPersonnelDto.getSalutation();
+        if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_COMBINE.equals(psnType)){
+            String personnelSel = appSvcPersonnelDto.getPersonnelType();
+            if (StringUtil.isEmpty(personnelSel)){
+                errorMap.put(prefix + "personnelType" + subfix, signal);
+            }
+        }
+
+        String salutation = appSvcPersonnelDto.getSalutation();
+        if (!ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(psnType)){
             if (StringUtil.isEmpty(salutation)) {
                 errorMap.put(prefix + "salutation" + subfix, signal);
             }
+        }
 
-            String name = appSvcPersonnelDto.getName();
-            if (StringUtil.isEmpty(name)) {
-                errorMap.put(prefix + "name" + subfix, signal);
-            } else if (name.length() > 100) {
-                String errorMsg = repLength("Name", "100");
-                errorMap.put(prefix + "name" + subfix, errorMsg);
+        String name = appSvcPersonnelDto.getName();
+        if (StringUtil.isEmpty(name)) {
+            errorMap.put(prefix + "name" + subfix, signal);
+        } else if (name.length() > 100) {
+            String errorMsg = repLength("Name", "100");
+            errorMap.put(prefix + "name" + subfix, errorMsg);
+        } else {
+            String target = StringUtil.toUpperCase(salutation + name);
+            if (names.contains(target)) {
+                errorMap.put(prefix + "name" + subfix, "Cannot use duplicate names");
             } else {
-                String target = StringUtil.toUpperCase(salutation + name);
-                if (names.contains(target)) {
-                    errorMap.put(prefix + "name" + subfix, "Cannot use duplicate names");
-                } else {
-                    names.add(target);
-                }
+                names.add(target);
             }
+        }
 
-            if (checkOthers) {
-                String qualification = appSvcPersonnelDto.getQualification();
-                if (StringUtil.isEmpty(qualification)) {
-                    errorMap.put(prefix + "qualification" + subfix, signal);
-                }
-                String wrkExpYear = appSvcPersonnelDto.getWrkExpYear();
-                if (StringUtil.isEmpty(wrkExpYear)) {
+        if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(psnType)||ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(psnType)) {
+            String qualification = appSvcPersonnelDto.getQualification();
+            if (StringUtil.isEmpty(qualification)) {
+                errorMap.put(prefix + "qualification" + subfix, signal);
+            }
+            String wrkExpYear = appSvcPersonnelDto.getWrkExpYear();
+            if (StringUtil.isEmpty(wrkExpYear)) {
+                errorMap.put(prefix + "wrkExpYear" + subfix, signal);
+            } else {
+                if (wrkExpYear.length() > 2) {
                     errorMap.put(prefix + "wrkExpYear" + subfix, signal);
-                } else {
-                    if (wrkExpYear.length() > 2) {
-                        errorMap.put(prefix + "wrkExpYear" + subfix, signal);
-                    }
-                    if (!wrkExpYear.matches("^[0-9]*$")) {
-                        errorMap.put(prefix + "wrkExpYear" + subfix, "GENERAL_ERR0002");
-                    }
+                }
+                if (!wrkExpYear.matches("^[0-9]*$")) {
+                    errorMap.put(prefix + "wrkExpYear" + subfix, "GENERAL_ERR0002");
                 }
             }
         }

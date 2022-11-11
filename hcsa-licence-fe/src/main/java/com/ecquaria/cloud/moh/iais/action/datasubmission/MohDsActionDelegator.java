@@ -137,7 +137,7 @@ public class MohDsActionDelegator {
     public void prepareSwitch(BaseProcessClass bpc) {
         String dsType = ParamUtil.getString(bpc.request, "dsType");
         String type = ParamUtil.getString(bpc.request, "type"); // rfc / preview
-        String submissionNo = ParamUtil.getString(bpc.request, "submissionNo");
+        String submissionNo = ParamUtil.getMaskedString(bpc.request, "submissionNo");
         log.info(StringUtil.changeForLog("------DS Type: " + dsType + " --- Submission No: " + submissionNo
                 + " --- Type: " + type + " -----"));
         ParamUtil.setRequestAttr(bpc.request, ACTION, type);
@@ -152,7 +152,7 @@ public class MohDsActionDelegator {
         log.info(StringUtil.changeForLog("------ PreparePreview -----" ));
         ParamUtil.setRequestAttr(bpc.request, "isValid", "Y");
         String dsType = ParamUtil.getString(bpc.request, "dsType");
-        String submissionNo = ParamUtil.getString(bpc.request, "submissionNo");
+        String submissionNo = ParamUtil.getMaskedString(bpc.request, "submissionNo");
         String submissionType = ParamUtil.getString(bpc.request, "submissionType");
         if(StringUtil.isEmpty(submissionType)){
             bpc.getSession().removeAttribute(HcsaAppConst.DASHBOARDTITLE);
@@ -361,7 +361,7 @@ public class MohDsActionDelegator {
     public void prepareRfc(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("------ PrepareRfc -----" ));
         String dsType = ParamUtil.getString(bpc.request, "dsType");
-        String submissionNo = ParamUtil.getString(bpc.request, "submissionNo");
+        String submissionNo = ParamUtil.getMaskedString(bpc.request, "submissionNo");
         List<String> privilegeIds = AccessUtil.getLoginUser(bpc.request).getPrivileges().stream().map(Privilege::getId).collect(Collectors.toList());
         String uri = "";
         if (StringUtil.isEmpty(dsType) || StringUtil.isEmpty(submissionNo)) {

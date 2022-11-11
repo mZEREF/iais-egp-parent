@@ -1,4 +1,4 @@
-<div class="personnel-content normal-label">
+<div class="personnel-content">
     <input type="hidden"  class="personTypeToShow not-clear" name="${prefix}personTypeToShow${index}" value="${personTypeToShow}"/>
     <input type="hidden" class="isPartEdit" name="${prefix}isPartEdit${index}" value="0"/>
     <input type="hidden" class="indexNo" name="${prefix}indexNo${index}" value="${appSvcPersonnelDto.indexNo}"/>
@@ -25,45 +25,28 @@
             </h4>
         </div>
     </iais:row>
-    <input type="hidden" name="isPartEdit" value="0"/>
-    <iais:row cssClass="control  svcPsnSel">
-        <div class="personnel-sel">
-            <iais:field width="5" mandatory="true" value="Select Service Personnel" cssClass="col-sm-5 col-md-5"/>
-            <iais:value width="7" cssClass="col-sm-5 col-md-7">
-                <iais:select cssClass="personnelType" name="${prefix}personnelType${index}" options="${personSelect}"
-                             value="${appSvcPersonnelDto.personnelType}" firstOption="Please Select"></iais:select>
-            </iais:value>
-        </div>
+    <c:if test="${personTypeToShow==1}">
+        <iais:row cssClass="control  svcPsnSel">
+            <div class="personnel-sel">
+                <iais:field width="5" mandatory="true" value="Select Service Personnel" cssClass="col-sm-5 col-md-5"/>
+                <iais:value width="7" cssClass="col-sm-5 col-md-7">
+                    <iais:select cssClass="personnelType" name="${prefix}personnelType${index}" options="svSel"
+                                 value="${appSvcPersonnelDto.personnelType}" firstOption="Please Select"></iais:select>
+                </iais:value>
+            </div>
+        </iais:row>
+    </c:if>
+    <%--        name--%>
+    <iais:row cssClass="personnel-name">
+        <iais:field width="5" cssClass="col-sm-5 col-md-5" mandatory="true" value="Name"/>
+        <iais:value width="3" cssClass="col-md-3">
+            <iais:select cssClass="salutation" name="${prefix}salutation${index}" firstOption="Please Select"
+                         codeCategory="CATE_ID_SALUTATION" value="${appSvcPersonnelDto.salutation}"/>
+        </iais:value>
+        <iais:value width="4" cssClass="col-md-4">
+            <iais:input cssClass="name" maxLength="100" type="text" name="${prefix}name${index}"
+                        value="${appSvcPersonnelDto.name}"/>
+        </iais:value>
     </iais:row>
-    <div class="new-svc-personnel-form">
-        <%--        name--%>
-        <iais:row cssClass="personnel-name hidden">
-            <iais:field width="5" cssClass="col-sm-5 col-md-5" mandatory="true" value="Name"/>
-            <iais:value width="3" cssClass="col-md-3">
-                <iais:select cssClass="salutation" name="${prefix}salutation${index}" firstOption="Please Select"
-                             codeCategory="CATE_ID_SALUTATION" value="${appSvcPersonnelDto.salutation}"/>
-            </iais:value>
-            <iais:value width="4" cssClass="col-md-4">
-                <iais:input cssClass="name" maxLength="100" type="text" name="${prefix}name${index}"
-                            value="${appSvcPersonnelDto.name}"/>
-            </iais:value>
-        </iais:row>
 
-        <%--    qualification--%>
-        <iais:row cssClass="personnel-qualification hidden">
-            <iais:field width="5" mandatory="true" value="Qualification" cssClass="col-sm-5 col-md-5"/>
-            <iais:value width="7" cssClass="col-sm-5 col-md-7">
-                <iais:input maxLength="100" cssClass="qualification" type="text" name="${prefix}qualification${index}"
-                            value="${appSvcPersonnelDto.qualification}"></iais:input>
-            </iais:value>
-        </iais:row>
-        <%--    years--%>
-        <iais:row cssClass="personnel-wrkExpYear hidden">
-            <iais:field width="5" mandatory="true" value="Relevant working experience (Years)" cssClass="col-sm-5 col-md-5"/>
-            <iais:value width="7" cssClass="col-sm-5 col-md-7">
-                <iais:input maxLength="2" cssClass="wrkExpYear" type="text" name="${prefix}wrkExpYear${index}"
-                            value="${appSvcPersonnelDto.wrkExpYear}"></iais:input>
-            </iais:value>
-        </iais:row>
-    </div>
 </div>
