@@ -613,7 +613,7 @@ public class DealSessionUtil {
                 currSvcInfoDto.setLicenceId(appSubmissionDto.getLicenceId());
             }
             init(currSvcInfoDto, appGrpPremisesDtoList, appSubmissionDto.getAppPremSpecialisedDtoList(), hcsaServiceDtos,
-                    forceInit, request);
+                    forceInit, request, appType);
         }
         // preview
         List<AppDeclarationDocDto> appDeclarationDocDtos = appSubmissionDto.getAppDeclarationDocDtos();
@@ -630,7 +630,7 @@ public class DealSessionUtil {
 
     public static AppSvcRelatedInfoDto init(AppSvcRelatedInfoDto currSvcInfoDto, List<AppGrpPremisesDto> appGrpPremisesDtos,
             List<AppPremSpecialisedDto> appPremSpecialisedDtoList, List<HcsaServiceDto> hcsaServiceDtos,
-            boolean forceInit, HttpServletRequest request) {
+            boolean forceInit, HttpServletRequest request, String appType) {
         if (currSvcInfoDto == null || IaisCommonUtils.isEmpty(hcsaServiceDtos)) {
             return null;
         }
@@ -683,7 +683,7 @@ public class DealSessionUtil {
         // Other information
         hcsaServiceStepScheme = stepMap.get(HcsaConsts.STEP_OTHER_INFORMATION);
         if (hcsaServiceStepScheme != null) {
-            initAppSvcOtherInfoList(currSvcInfoDto, appGrpPremisesDtos, forceInit, request);
+            initAppSvcOtherInfoList(currSvcInfoDto, appGrpPremisesDtos, forceInit, request, appType);
             if (!forceInit) {
                 List<AppSvcOtherInfoDto> appSvcOtherInfoList = currSvcInfoDto.getAppSvcOtherInfoList();
                 if (IaisCommonUtils.isNotEmpty(appSvcOtherInfoList)) {
@@ -832,7 +832,11 @@ public class DealSessionUtil {
     }
 
     public static boolean initAppSvcOtherInfoList(AppSvcRelatedInfoDto currSvcInfoDto, List<AppGrpPremisesDto> appGrpPremisesDtos,
-            boolean forceInit, HttpServletRequest request) {
+            boolean forceInit, HttpServletRequest request, String appType) {
+        if (request == null) {
+            return false;
+        }
+        boolean isRfi = ApplicationHelper.checkIsRfi(request);
         List<AppSvcOtherInfoDto> appSvcOtherInfoList = currSvcInfoDto.getAppSvcOtherInfoList();
         if (!forceInit && appSvcOtherInfoList != null &&
                 appSvcOtherInfoList.stream().allMatch(AppSvcOtherInfoDto::isInit)) {
@@ -862,7 +866,7 @@ public class DealSessionUtil {
             appSvcOtherInfoDto.setAppGrpPremisesDto(appGrpPremisesDto);
             appSvcOtherInfoDto.setSvcSpecifiedCorrelationList(svcSpecifiedCorrelationDtoList);
             appSvcOtherInfoDto.setAppSvcSuplmFormDto(appSvcSuplmFormDto);
-            if (appSvcOtherInfoDto.getApplicantId() == null) {
+            if (!isRfi || appSvcOtherInfoDto.getApplicantId() == null) {
                 appSvcOtherInfoDto.setOrgUserDto(getOtherInfoYfVs(request, appSvcOtherInfoDto));
             }else {
                 OrganizationService organizationService = getOrganizationService();
