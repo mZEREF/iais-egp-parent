@@ -119,7 +119,7 @@
 
                 <div id="displaySpermDonorPatient" <c:if test="${donatedType != 'DONTY003'&& donatedType != 'DONTY004'&& donatedTypeVersion != 'DONTY003'&& donatedTypeVersion != 'DONTY004'}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="4" value="Is the Sperm Donor the Patient?" mandatory="false"/>
+                        <iais:field width="4" value="Is the Sperm Donor the Patient's Husband?" mandatory="false"/>
                         <iais:value width="4" cssClass="col-md-4" display="true">
                             <c:if test="${arSuperDataSubmissionDto.donationStageDto.isSpermDonorPatient == 1}">Yes</c:if>
                             <c:if test="${arSuperDataSubmissionDto.donationStageDto.isSpermDonorPatient == 0}">No</c:if>

@@ -36,7 +36,7 @@ function maleOrFemaleDonorShow () {
         displaySpermDonorPatient.hide();
         clearFields(displaySpermDonorPatient);
         maleKnownIdentityShow ();
-    } else if(donatedType == 'DONTY004' || donatedType == 'DONTY005'){
+    } else if(donatedType == 'DONTY004'){
         displaySpermDonorPatient.show();
         displayOocyteDonorPatient.hide();
         clearFields(displayOocyteDonorPatient);
