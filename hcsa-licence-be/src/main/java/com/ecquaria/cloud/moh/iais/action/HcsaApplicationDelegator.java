@@ -5292,7 +5292,7 @@ public class HcsaApplicationDelegator {
 
     public void routeLaterally(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, STR_TASK_DTO);
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
         String internalRemarks = ParamUtil.getString(bpc.request, "internalRemarks");
 
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
