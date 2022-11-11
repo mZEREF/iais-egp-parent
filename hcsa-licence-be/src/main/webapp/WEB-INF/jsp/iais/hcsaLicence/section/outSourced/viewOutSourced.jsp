@@ -20,3 +20,8 @@
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function (){
+        $('textarea.scopeOutsource').attr('disabled','true');
+    })
+</script>

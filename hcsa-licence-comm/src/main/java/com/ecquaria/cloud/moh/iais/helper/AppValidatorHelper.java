@@ -2349,8 +2349,11 @@ public final class AppValidatorHelper {
                         errMap.put(prefix + "gfaValue", MessageUtil.replaceMessage("GENERAL_ERR0006", "GFA Value (in sqm)", "field"));
                     } else if (!StringUtil.isDigit(gfaValue) || gfaValue.matches("^-[0-9]*[1-9][0-9]*$")) {
                         errMap.put(prefix + "gfaValue", MessageUtil.replaceMessage("GENERAL_ERR0002", "GFA Value (in sqm)", "field"));
-                    } else if (gfaValue.length() > 7 && gfaValue.length() <= 3000){
+                    } else if (gfaValue.length() > 7){
                         String errorMsg = repLength("GFA Value (in sqm)", "7");
+                        errMap.put(prefix + "gfaValue" , errorMsg);
+                    } else if (Integer.parseInt(gfaValue) > 3000){
+                        String errorMsg = repLength("GFA Value (in sqm) Value", "3000");
                         errMap.put(prefix + "gfaValue" , errorMsg);
                     }
                 }else {
@@ -2372,12 +2375,42 @@ public final class AppValidatorHelper {
             if (AppServicesConsts.SERVICE_CODE_RENAL_DIALYSIS_CENTRE.equals(currCode)) {
                 AppSvcOtherInfoNurseDto appSvcOtherInfoNurseDto = svcOtherInfoDto.getAppSvcOtherInfoNurseDto();
                 if (!StringUtil.isEmpty(appSvcOtherInfoNurseDto)) {
-                    String nisOpenToPublic = String.valueOf(appSvcOtherInfoNurseDto.getOpenToPublic());
+                    String perShiftNum = appSvcOtherInfoNurseDto.getPerShiftNum();
+                    if (StringUtil.isEmpty(perShiftNum)){
+                        errMap.put(prefix + "perShiftNum",MessageUtil.replaceMessage("GENERAL_ERR0006", "Nurses per Shift", "field"));
+                    }else if (perShiftNum.length() > 2){
+                        String errorMsg = repLength("Nurses per Shift", "2");
+                        errMap.put(prefix + "perShiftNum" , errorMsg);
+                    }else if (!StringUtil.isDigit(perShiftNum)){
+                        errMap.put(prefix + "perShiftNum", MessageUtil.replaceMessage("GENERAL_ERR0002", "Nurses per Shift", "field"));
+                    }
+                    String dialysisStationsNum = appSvcOtherInfoNurseDto.getDialysisStationsNum();
+                    if (StringUtil.isEmpty(dialysisStationsNum)){
+                        errMap.put(prefix + "dialysisStationsNum",MessageUtil.replaceMessage("GENERAL_ERR0006", "Total number of dialysis stations", "field"));
+                    }else if (dialysisStationsNum.length() > 2){
+                        String errorMsg = repLength("Total number of dialysis stations", "2");
+                        errMap.put(prefix + "dialysisStationsNum" , errorMsg);
+                    }else if (!StringUtil.isDigit(dialysisStationsNum)){
+                        errMap.put(prefix + "dialysisStationsNum", MessageUtil.replaceMessage("GENERAL_ERR0002", "Total number of dialysis stations", "field"));
+                    }
+                    String helpBStationNum = appSvcOtherInfoNurseDto.getHelpBStationNum();
+                    if (StringUtil.isEmpty(helpBStationNum)){
+                        errMap.put(prefix + "helpBStationNum",MessageUtil.replaceMessage("GENERAL_ERR0006", "Number of Hep B stations", "field"));
+                    }else if (helpBStationNum.length() > 2){
+                        String errorMsg = repLength("Number of Hep B stations", "2");
+                        errMap.put(prefix + "helpBStationNum" , errorMsg);
+                    }else if (!StringUtil.isDigit(helpBStationNum)){
+                        errMap.put(prefix + "helpBStationNum", MessageUtil.replaceMessage("GENERAL_ERR0002", "Number of Hep B stations", "field"));
+                    }
+                    String nisOpenToPublic = appSvcOtherInfoNurseDto.getOpenToPublic();
                     if (StringUtil.isEmpty(nisOpenToPublic)) {
                         errMap.put(prefix + "nisOpenToPublic",
                                 MessageUtil.replaceMessage("GENERAL_ERR0006", "Is the clinic open to general public?", "field"));
                     }
                 }else {
+                    errMap.put(prefix + "perShiftNum",MessageUtil.replaceMessage("GENERAL_ERR0006", "Nurses per Shift", "field"));
+                    errMap.put(prefix + "helpBStationNum",MessageUtil.replaceMessage("GENERAL_ERR0006", "Number of Hep B stations", "field"));
+                    errMap.put(prefix + "dialysisStationsNum",MessageUtil.replaceMessage("GENERAL_ERR0006", "Total number of dialysis stations", "field"));
                     errMap.put(prefix + "nisOpenToPublic",
                             MessageUtil.replaceMessage("GENERAL_ERR0006", "Is the clinic open to general public?", "field"));
                 }
@@ -2390,9 +2423,12 @@ public final class AppValidatorHelper {
                         errMap.put(prefix + "agfaValue", MessageUtil.replaceMessage("GENERAL_ERR0006", "GFA Value (in sqm)", "field"));
                     } else if (!StringUtil.isDigit(agfaValue) || agfaValue.matches("^-[0-9]*[1-9][0-9]*$")) {
                         errMap.put(prefix + "agfaValue", MessageUtil.replaceMessage("GENERAL_ERR0002", "GFA Value (in sqm)", "field"));
-                    } else if (agfaValue.length() > 7 && agfaValue.length() <= 3000){
+                    } else if (agfaValue.length() > 7 ){
                         String errorMsg = repLength("GFA Value (in sqm)", "7");
                         errMap.put(prefix + "agfaValue" , errorMsg);
+                    } else if (Integer.parseInt(agfaValue) > 3000){
+                        String errorMsg = repLength("GFA Value (in sqm) Value", "3000");
+                        errMap.put(prefix + "gfaValue" , errorMsg);
                     }
                 }else {
                     errMap.put(prefix + "agfaValue", MessageUtil.replaceMessage("GENERAL_ERR0006", "GFA Value (in sqm)", "field"));
