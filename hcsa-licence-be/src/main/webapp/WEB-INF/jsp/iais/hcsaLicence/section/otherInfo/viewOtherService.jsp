@@ -1,9 +1,9 @@
 <c:if test="${otherInfo.existCheckedRels || oldOtherInfo.existCheckedRels}">
     <div class="col-xs-12">
         <div class="app-title">Other Service</div>
-    </div>
-    <div style="margin-top: 10px;!important;">
-        <span>Do you intend to provide the following services:</span>
+        <div style="margin-top: 10px;!important;">
+            <span>Do you intend to provide the following services:</span>
+        </div>
     </div>
     <c:forEach var="item" items="${otherInfo.allAppPremSubSvcRelDtoList}" varStatus="status">
         <c:set var="olditem" value="${oldOtherInfo.allAppPremSubSvcRelDtoList[status.index]}"/>
