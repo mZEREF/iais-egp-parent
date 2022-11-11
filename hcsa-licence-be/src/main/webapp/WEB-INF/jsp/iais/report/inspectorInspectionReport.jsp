@@ -154,6 +154,20 @@
                                                                         </iais:row>
                                                                     </c:if>
                                                                     <jsp:include page="/WEB-INF/jsp/iais/inspectionPreTask/rollBackPart.jsp"/>
+                                                                    <div id="comments" class="hidden">
+                                                                        <%String commentsValue = request.getParameter("comments");%>
+                                                                        <iais:row>
+                                                                            <iais:field value="Comments to applicant" required="false"  width="12"/>
+                                                                            <iais:value width="10">
+                                                                                <div class="input-group">
+                                                                                    <div class="ax_default text_area">
+                                                                                <textarea name="comments" cols="70"
+                                                                                          rows="7" maxlength="300"><%=commentsValue == null ? "" : commentsValue%></textarea>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
                                                                     <c:if test="${applicationViewDto.applicationDto.applicationType=='APTY002'}">
                                                                         <iais:row>
                                                                             <iais:field value="Licence Start Date"
@@ -270,14 +284,13 @@
             $('#doReport').click();
         }
         changeAoSelect();
-        <c:if test = "${applicationViewDto.applicationDto.status eq 'APST037' || applicationViewDto.applicationDto.status eq 'APST020'}">
-        $("#processSubmit").change(function () {
-            changeAoSelect();
-            showRollBackTo("rollBack");
-        })
-        </c:if>
         showRollBackTo("rollBack");
     });
+
+    $("#processSubmit").change(function () {
+        changeAoSelect();
+        showRollBackTo("rollBack");
+    })
 
     function changeAoSelect() {
         var fv = $('#processSubmit option:selected').val();
@@ -349,8 +362,10 @@
         var selectValue = $("[name='processingDecision']").val();
         if (selectValue == "PROCRFI") {
             showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?rfi=rfi');
+            $('#comments').removeClass('hidden');
         } else {
             $('#rfiSelect').hide();
+            $('#comments').hide();
         }
     });
 

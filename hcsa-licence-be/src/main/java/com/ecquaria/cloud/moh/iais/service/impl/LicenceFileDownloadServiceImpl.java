@@ -26,7 +26,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -1367,14 +1366,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
                                 for (AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos
                                 ) {
-                                    if(IaisCommonUtils.isNotEmpty(appSvcRelatedInfoDto.getAppSvcOtherInfoList())){
-                                        for (AppSvcOtherInfoDto otherInfo :appSvcRelatedInfoDto.getAppSvcOtherInfoList()
-                                        ) {
-                                            if(otherInfo.getProvideTop().equals("1")||otherInfo.getProvideYfVs().equals("1")){
-                                                hasTopYf=true;
-                                                break;
-                                            }
-                                        }
+                                    if("O02".equals(appSvcRelatedInfoDto.getServiceCode())||"O03".equals(appSvcRelatedInfoDto.getServiceCode())||"O07".equals(appSvcRelatedInfoDto.getServiceCode())){
+                                        hasTopYf=true;
+                                        break;
                                     }
                                 }
                             }

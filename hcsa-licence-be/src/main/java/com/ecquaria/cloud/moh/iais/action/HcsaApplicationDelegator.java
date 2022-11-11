@@ -1035,6 +1035,10 @@ public class HcsaApplicationDelegator {
         if (StringUtil.isEmpty(nextStage) && ApplicationConsts.PROCESSING_DECISION_REPLY.equals(nextStageReplys) && !"isDMS".equals(isDMS)) {
             successInfo = "LOLEV_ACK028";
         }
+        //CR 2022-23
+        if (StringUtil.isEmpty(nextStage) && ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY.equals(nextStageReplys) && !"isDMS".equals(isDMS)) {
+            successInfo = "LOLEV_ACK057";
+        }
         //request for information CR22
         if (StringUtil.isEmpty(nextStage) && ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStageReplys) && !"isDMS".equals(isDMS)) {
             successInfo = MessageUtil.dateIntoMessage("RFI_ACK001");
@@ -4567,6 +4571,7 @@ public class HcsaApplicationDelegator {
         if (!ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())) {
             nextStageReplyList.add(new SelectOption("", "Please Select"));
         }
+        nextStageReplyList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY, "Route Laterally"));
         nextStageReplyList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_REPLY, "Give Clarification"));
         String applicationGroupId = applicationViewDto.getApplicationDto().getAppGrpId();
         String taskRole = taskDto.getRoleId();
@@ -5285,4 +5290,32 @@ public class HcsaApplicationDelegator {
 
     }
 
+    public void routeLaterally(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
+        String internalRemarks = ParamUtil.getString(bpc.request, "internalRemarks");
+
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
+        String lrSelect = ParamUtil.getRequestString(bpc.request, "lrSelect");
+        log.info(StringUtil.changeForLog("The lrSelect is -->:"+lrSelect));
+        if(StringUtil.isNotEmpty(lrSelect)){
+            String[] lrSelects =  lrSelect.split("_");
+            String aoWorkGroupId = lrSelects[0];
+            String aoUserId = lrSelects[1];
+            inspEmailService.completedTask(taskDto);
+            List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
+            taskDto.setUserId(aoUserId);
+            taskDto.setDateAssigned(new Date());
+            taskDto.setId(null);
+            taskDto.setWkGrpId(aoWorkGroupId);
+            taskDto.setSlaDateCompleted(null);
+            taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+            taskDtos.add(taskDto);
+            taskService.createTasks(taskDtos);
+            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = getAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(),
+                    applicationViewDto.getApplicationDto().getStatus(), taskDto.getTaskKey(), null, taskDto.getWkGrpId(), internalRemarks, null, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY, taskDto.getRoleId());
+            appPremisesRoutingHistoryDto.setActionby(aoUserId);
+            appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
+        }
+    }
 }

@@ -710,15 +710,29 @@
     function rfiValidate(){
         //error_nextStage
         var selectValue = $("[name='nextStage']").val();
-        if (selectValue == "PROCRFI" && ${!isAppealType && !isWithDrawal &&!isCessation}) {
+        var selectValueReply = $("[name='nextStageReplys']").val();
+
+        if ((selectValue == "PROCRFI" || selectValueReply == "PROCRFI") && ${!isAppealType && !isWithDrawal &&!isCessation}) {
             var rfiSelectValue = $('#rfiSelectValue').val();
-            if(rfiSelectValue == null || rfiSelectValue == ''){
-                let rfiCheckErrorMsg = $("#rfiCheckErrorMsg").val();
-                $('#error_nextStage').html(rfiCheckErrorMsg);
-                return false;
-            }else{
-                $('#error_nextStage').html("");
-                return true;
+            if(selectValue == "PROCRFI"){
+                if(rfiSelectValue == null || rfiSelectValue == ''){
+                    let rfiCheckErrorMsg = $("#rfiCheckErrorMsg").val();
+                    $('#error_nextStage').html(rfiCheckErrorMsg);
+                    return false;
+                }else{
+                    $('#error_nextStage').html("");
+                    return true;
+                }
+            }
+            if(selectValueReply == "PROCRFI"){
+                if(rfiSelectValue == null || rfiSelectValue == ''){
+                    let rfiCheckErrorMsg = $("#rfiCheckErrorMsg").val();
+                    $('#error_nextStageReplys').html(rfiCheckErrorMsg);
+                    return false;
+                }else{
+                    $('#error_nextStageReplys').html("");
+                    return true;
+                }
             }
         }else{
             return true;
@@ -730,10 +744,12 @@
         //error_nextStage
         var selectValue = $("[name='nextStage']").val();
         var selectValueDms = $("[name='decisionValues']").val();
+        var selectValueBack = $("[name='nextStageReplys']").val();
+
         var remark = $('#internalRemarksId').val();
         var lrSelect = $('[name="lrSelect"] option:selected').val();
 
-        if (selectValue == "PROCRLR" || selectValueDms == "PROCRLR" ) {
+        if (selectValue == "PROCRLR" || selectValueDms == "PROCRLR" || selectValueBack == "PROCRLR" ) {
 
             if(lrSelect ==null || lrSelect == ""){
                 $("#error_lrSelect").html('This is a mandatory field.');
@@ -1110,8 +1126,20 @@
         var selectValue = $("[name='nextStageReplys']").val();
         if (selectValue == "PROCRFI") {
             showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?rfi=rfi');
+            $('#comments').removeClass('hidden');
         } else {
             $('#rfiSelect').hide();
+            $('#comments').hide();
+        }
+
+        if (selectValue == "PROCRLR") {
+            $('#internalRemarksFalse').addClass('hidden');
+            $('#internalRemarksTrue').removeClass('hidden');
+            $('#laterallyDropdown').removeClass('hidden');
+        } else {
+            $('#internalRemarksFalse').removeClass('hidden');
+            $('#internalRemarksTrue').addClass('hidden');
+            $('#laterallyDropdown').addClass('hidden');
         }
     });
 

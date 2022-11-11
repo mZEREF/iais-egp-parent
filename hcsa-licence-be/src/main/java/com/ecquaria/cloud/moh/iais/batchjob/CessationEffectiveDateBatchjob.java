@@ -373,14 +373,9 @@ public class CessationEffectiveDateBatchjob {
                 if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
                     for (AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos
                     ) {
-                        if(IaisCommonUtils.isNotEmpty(appSvcRelatedInfoDto.getAppSvcOtherInfoList())){
-                            for (AppSvcOtherInfoDto otherInfo :appSvcRelatedInfoDto.getAppSvcOtherInfoList()
-                            ) {
-                                if(otherInfo.getProvideTop().equals("1")||otherInfo.getProvideYfVs().equals("1")){
-                                    hasTopYf=true;
-                                    break;
-                                }
-                            }
+                        if("O02".equals(appSvcRelatedInfoDto.getServiceCode())||"O03".equals(appSvcRelatedInfoDto.getServiceCode())||"O07".equals(appSvcRelatedInfoDto.getServiceCode())){
+                            hasTopYf=true;
+                            break;
                         }
                     }
                 }

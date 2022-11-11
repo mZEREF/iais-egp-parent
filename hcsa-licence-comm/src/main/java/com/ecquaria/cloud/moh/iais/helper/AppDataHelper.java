@@ -2756,7 +2756,8 @@ public final class AppDataHelper {
                     }
                     if (!IaisCommonUtils.isEmpty(specialServiceSectionDto.getAppSvcSuplmFormDto().getAppSvcSuplmGroupDtoList())) {
                         String isPartEdit = ParamUtil.getString(request, prefix + i + j + "isPartEdit" + "Sup");
-                        if (AppConsts.YES.equals(isPartEdit)||ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+                        boolean isRfi = ApplicationHelper.checkIsRfi(request);
+                        if (AppConsts.YES.equals(isPartEdit)||(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)&&!isRfi)) {
                             setAppSvcSuplmFormDto(specialServiceSectionDto.getAppSvcSuplmFormDto(), prefix + i + j, request);
                         }
                     }

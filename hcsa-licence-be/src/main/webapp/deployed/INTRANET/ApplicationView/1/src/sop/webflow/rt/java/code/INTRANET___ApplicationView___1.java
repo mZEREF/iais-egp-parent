@@ -179,6 +179,12 @@ public class INTRANET___ApplicationView___1 extends BaseProcessClass {
 
 	}
 
+	public void routeLaterally_OnStepProcess_0() throws Exception {
+	// 		RouteLaterally->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "routeLaterally", this);
+
+	}
+
 
 
 
