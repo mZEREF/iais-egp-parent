@@ -16,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDoc
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpSecondAddrDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppLicBundleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremGroupOutsourcedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
@@ -864,11 +863,12 @@ public final class AppDataHelper {
             if (StringUtil.isNotEmpty(appSubmissionDto.getLicenseeId())) {
                 searchParam.addFilter("licenseeId", appSubmissionDto.getLicenseeId(), true);
             }
-            List<AppLicBundleDto> appLicBundleDtoList = appSubmissionDto.getAppLicBundleDtoList();
-            if (IaisCommonUtils.isNotEmpty(appLicBundleDtoList)) {
-                for (AppLicBundleDto appLicBundleDto : appLicBundleDtoList) {
-                    String svcCode = appLicBundleDto.getSvcCode();
-                    searchParam.addFilter("bundleSvcName", HcsaServiceCacheHelper.getServiceByCode(svcCode).getSvcName(), true);
+            List<String> svcCodeList = appSvcOutsouredDto.getSvcCodeList();
+            if (IaisCommonUtils.isNotEmpty(svcCodeList)) {
+                for (String svcCode : svcCodeList) {
+                    if (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(svcCode) || AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(svcCode)){
+                        searchParam.addFilter("bundleSvcName", HcsaServiceCacheHelper.getServiceByCode(svcCode).getSvcName(), true);
+                    }
                 }
             }
             appSvcOutsouredDto.setSearchParam(searchParam);
