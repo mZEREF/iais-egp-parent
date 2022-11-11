@@ -1,5 +1,5 @@
 <div class="personnel-content">
-    <input type="hidden" class="indexNo" name="${prefix}indexNo${index}" value="${sectionLeader.indexNo}"/>
+    <input type="hidden" class="indexNo" name="${prefix}indexNo${index}" value="${appSvcPersonnelDto.indexNo}"/>
     <input type="hidden" class="isPartEdit" name="${prefix}isPartEdit${index}" value="0"/>
     <iais:row>
         <div class="col-md-12 col-xs-12 edit-content">
@@ -24,27 +24,37 @@
             </h4>
         </div>
     </iais:row>
+    <c:if test="${personTypeToShow==1}">
+        <iais:row>
+            <iais:field width="5" mandatory="true" value="Name" cssClass="col-md-5 control-font-label"/>
+            <iais:value width="3" cssClass="col-md-3">
+                <iais:select cssClass="salutation" name="${prefix}salutation${index}" firstOption="Please Select"
+                             codeCategory="CATE_ID_SALUTATION" value="${appSvcPersonnelDto.salutation}" />
+            </iais:value>
+            <iais:value width="4" cssClass="col-md-4">
+                <iais:input cssClass="name" maxLength="100" type="text" name="${prefix}name${index}" value="${appSvcPersonnelDto.name}" />
+            </iais:value>
+        </iais:row>
+    </c:if>
+    <c:if test="${personTypeToShow!=1}">
+        <iais:row>
+            <iais:field width="5" mandatory="true" value="Name" cssClass="col-md-5 control-font-label"/>
+            <iais:value width="4" cssClass="col-md-7">
+                <iais:input cssClass="name" maxLength="100" type="text" name="${prefix}name${index}" value="${appSvcPersonnelDto.name}" />
+            </iais:value>
+        </iais:row>
+    </c:if>
 
-    <iais:row>
-        <iais:field width="5" mandatory="true" value="Name" cssClass="col-md-5 control-font-label"/>
-        <iais:value width="3" cssClass="col-md-3">
-            <iais:select cssClass="salutation" name="${prefix}salutation${index}" firstOption="Please Select"
-                         codeCategory="CATE_ID_SALUTATION" value="${sectionLeader.salutation}" />
-        </iais:value>
-        <iais:value width="4" cssClass="col-md-4">
-            <iais:input cssClass="name" maxLength="100" type="text" name="${prefix}name${index}" value="${sectionLeader.name}" />
-        </iais:value>
-    </iais:row>
     <iais:row>
         <iais:field width="5" mandatory="true" value="Qualification" cssClass="col-md-5 control-font-label"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input cssClass="qualification" maxLength="100" type="text" name="${prefix}qualification${index}" value="${sectionLeader.qualification}" />
+            <iais:input cssClass="qualification" maxLength="100" type="text" name="${prefix}qualification${index}" value="${appSvcPersonnelDto.qualification}" />
         </iais:value>
     </iais:row>
     <iais:row>
         <iais:field width="5" mandatory="true" value="Working Experience (in terms of years)" cssClass="col-md-5 control-font-label"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input cssClass="wrkExpYear" maxLength="2" type="text" name="${prefix}wrkExpYear${index}" value="${sectionLeader.wrkExpYear}" />
+            <iais:input cssClass="wrkExpYear" maxLength="2" type="text" name="${prefix}wrkExpYear${index}" value="${appSvcPersonnelDto.wrkExpYear}" />
         </iais:value>
     </iais:row>
 </div>
