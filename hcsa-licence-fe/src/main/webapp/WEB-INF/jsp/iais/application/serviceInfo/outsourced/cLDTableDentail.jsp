@@ -33,7 +33,8 @@
             </td>
             <td>
                 <p class="visible-xs visible-sm table-row-title">Scope of Outsourcing</p>
-                <p>${appPremOutSourceLicenceDto.outstandingScope}</p>
+                <p><textarea style="border:none;background-color: transparent;resize: none;" class="scopeOutsource">${appPremOutSourceLicenceDto.outstandingScope}</textarea>
+                </p>
             </td>
             <td>
                 <input type="hidden" name="prefixVal" value="${appPremOutSourceLicenceDto.id}">
@@ -43,3 +44,8 @@
         </tr>
     </c:if>
 </c:forEach>
+<script>
+    $(document).ready(function (){
+        $('textarea.scopeOutsource').attr('disabled','true');
+    })
+</script>

@@ -13,3 +13,8 @@
         </div>
     </iais:row>
 </div>
+<script>
+    $(document).ready(function (){
+        $('textarea.scopeOutsource').attr('disabled','true');
+    })
+</script>
