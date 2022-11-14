@@ -2878,6 +2878,8 @@ public final class RfcHelper {
         for (AppPremSubSvcRelDto relDto : relList) {
             AppPremSubSvcRelDto oldRelDto = oldDtaMap.get(relDto.getSvcCode());
             if (oldRelDto == null && !relDto.isChecked()) {
+                relDto.setStatus(null);
+                relDto.setActCode(null);
                 continue;
             }
             if (HcsaConsts.SERVICE_TYPE_SPECIFIED.equals(relDto.getSvcType())) {
