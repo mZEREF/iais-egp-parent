@@ -6,8 +6,8 @@
     <iais:value width="6" cssClass="col-md-6">
         <iais:value width="6" cssClass="col-md-6" style="padding-left:0">
             <div class="form-check" style="padding: 0;">
-                <input class="form-check-input" id="localDonate" type="radio" name="directedDonation"
-                       <c:if test="${donorSampleDto.directedDonation}">checked</c:if>
+                <input class="form-check-input" id="localDonate" type="radio" name="localOrOversea"
+                       <c:if test="${donorSampleDto.localOrOversea}">checked</c:if>
                        value="1"/>
                 <label class="form-check-label" for="localDonate">
                     <span class="check-circle"></span>Local
@@ -16,15 +16,15 @@
         </iais:value>
         <iais:value width="6" cssClass="col-md-6">
             <div class="form-check">
-                <input class="form-check-input" id="overseasDonate" type="radio" name="directedDonation"
-                       <c:if test="${donorSampleDto.directedDonation eq false}">checked</c:if>
+                <input class="form-check-input" id="overseasDonate" type="radio" name="localOrOversea"
+                       <c:if test="${donorSampleDto.localOrOversea eq false}">checked</c:if>
                        value="0"/>
                 <label class="form-check-label" for="overseasDonate">
                     <span class="check-circle"></span>Overseas
                 </label>
             </div>
         </iais:value>
-        <span class="error-msg" name="iaisErrorMsg" id="error_directedDonation"></span>
+        <span class="error-msg" name="iaisErrorMsg" id="error_localOrOversea"></span>
     </iais:value>
 </iais:row>
 
@@ -368,13 +368,43 @@
     </iais:value>
 </iais:row>
 
-<iais:row id="treatmentNumRow">
-    <iais:field style="padding-left:0" width="6" value="No. Donated for Treatment " mandatory="true"
-                cssClass="col-md-6"/>
-    <iais:value width="6" cssClass="col-md-6">
-        <iais:input maxLength="3" type="text" name="treatNum" value="${donorSampleDto.treatNum}"/>
-    </iais:value>
-</iais:row>
+<div id="treatmentNumRow">
+    <iais:row>
+        <iais:field style="padding-left:0" width="6" value="Is the sample from a directed donation?"
+                    cssClass="col-md-6" mandatory="true"/>
+        <iais:value width="6" cssClass="col-md-6">
+            <iais:value width="6" cssClass="col-md-6" style="padding-left:0">
+                <div class="form-check" style="padding: 0;">
+                    <input class="form-check-input" id="directedDonationY" type="radio" name="directedDonation"
+                           <c:if test="${donorSampleDto.directedDonation}">checked</c:if>
+                           value="1"/>
+                    <label class="form-check-label" for="directedDonationY">
+                        <span class="check-circle"></span>Yes
+                    </label>
+                </div>
+            </iais:value>
+            <iais:value width="6" cssClass="col-md-6">
+                <div class="form-check">
+                    <input class="form-check-input" id="directedDonationN" type="radio" name="directedDonation"
+                           <c:if test="${donorSampleDto.directedDonation eq false}">checked</c:if>
+                           value="0"/>
+                    <label class="form-check-label" for="directedDonationN">
+                        <span class="check-circle"></span>No
+                    </label>
+                </div>
+            </iais:value>
+            <span class="error-msg" name="iaisErrorMsg" id="error_directedDonation"></span>
+        </iais:value>
+    </iais:row>
+
+    <iais:row>
+        <iais:field style="padding-left:0" width="6" value="No. Donated for Treatment " mandatory="true"
+                    cssClass="col-md-6"/>
+        <iais:value width="6" cssClass="col-md-6">
+            <iais:input maxLength="3" type="text" name="treatNum" value="${donorSampleDto.treatNum}"/>
+        </iais:value>
+    </iais:row>
+</div>
 
 <iais:row>
     <iais:field style="padding-left:0" width="6" value="Total No. Donated " mandatory="true"

@@ -179,9 +179,9 @@
                 <iais:row>
                     <iais:field width="6" value="Purpose of Donation" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6" display="true">
-                        <c:if test="${donorSampleDto.donatedForResearch}"><p>Research</p></c:if>
-                        <c:if test="${donorSampleDto.donatedForTraining}"><p>Training</p></c:if>
-                        <c:if test="${donorSampleDto.donatedForTreatment}"><p>Treatment</p></c:if>
+                        <c:if test="${donorSampleDto.donatedForResearch}">Research</c:if>
+                        <c:if test="${donorSampleDto.donatedForTraining}">Training</c:if>
+                        <c:if test="${donorSampleDto.donatedForTreatment}">Treatment</c:if>
                     </iais:value>
                 </iais:row>
 
@@ -206,11 +206,9 @@
                         <iais:field width="6" value="Type of Research for Which Gamete(s) Was Donated"
                                     cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6" display="true">
-                            <c:if test="${donorSampleDto.donatedForResearchHescr}"><p>Human Embryonic Stem Cell
-                                Research</p></c:if>
-                            <c:if test="${donorSampleDto.donatedForResearchRrar}"><p>Research Related to Assisted
-                                Reproduction</p></c:if>
-                            <c:if test="${donorSampleDto.donatedForResearchOther}"><p>Other Type of Research</p></c:if>
+                            <c:if test="${donorSampleDto.donatedForResearchHescr}">Human Embryonic Stem Cell Research</c:if>
+                            <c:if test="${donorSampleDto.donatedForResearchRrar}">Research Related to Assisted Reproduction</c:if>
+                            <c:if test="${donorSampleDto.donatedForResearchOther}">Other Type of Research</c:if>
                         </iais:value>
                     </iais:row>
 
@@ -230,13 +228,21 @@
                     </iais:value>
                 </iais:row>
 
-                <iais:row>
-                    <iais:field width="6" value="No. Donated for Treatment " cssClass="col-md-6"
-                                style="${donorSampleDto.donatedForTreatment?'':'display: none;'}"/>
-                    <iais:value width="6" cssClass="col-md-6" display="true">
-                        <iais:code code="${donorSampleDto.treatNum}"/>
-                    </iais:value>
-                </iais:row>
+                <div style="${donorSampleDto.donatedForTreatment?'':'display: none;'}">
+                    <iais:row>
+                        <iais:field width="6" value="Is the sample from a directed donation?" cssClass="col-md-6"/>
+                        <iais:value width="6" cssClass="col-md-6" display="true">
+                            <c:if test="${donorSampleDto.directedDonation}">Yes</c:if>
+                            <c:if test="${not donorSampleDto.directedDonation}">No</c:if>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field width="6" value="No. Donated for Treatment " cssClass="col-md-6"/>
+                        <iais:value width="6" cssClass="col-md-6" display="true">
+                            <iais:code code="${donorSampleDto.treatNum}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
 
                 <iais:row>
                     <iais:field width="6" value="Total No. Donated " cssClass="col-md-6"/>

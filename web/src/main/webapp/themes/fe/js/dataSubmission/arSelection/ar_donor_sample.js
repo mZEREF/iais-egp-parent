@@ -18,7 +18,7 @@ function bindAllEvent() {
     $('input[name="maleDonorIdentityKnow"]').change(knowMIdDivShow).trigger('change');
     $('input[name="hasIdNumberM"]').change(maleNumberShow).trigger('change');
 
-    $('input[name="directedDonation"]').change(sampleFromRowShow).trigger('change');
+    $('input[name="localOrOversea"]').change(sampleFromRowShow).trigger('change');
     $('#sampleFromHciCode').change(sampleFromOtherDivShow).trigger('change')
     $('#donationReason').change(reasonOtherDivShow).trigger('change')
     $('#donatedForResearch').change(researchDivShow).trigger('change');
@@ -123,19 +123,19 @@ function maleNumberShow() {
 }
 
 function sampleFromRowShow() {
-    const sampleLocallyVal = $('input[name="directedDonation"]:checked').val();
+    const localOrOverseaVal = $('input[name="localOrOversea"]:checked').val();
     const sampleFromRow = $('#sampleFromRow');
     const sampleFromSel = $('#sampleFromSel');
     const sampleFromText = $('#sampleFromText');
     disableContent()
-    if (sampleLocallyVal === '1') {
+    if (localOrOverseaVal === '1') {
         sampleFromRow.show();
         sampleFromSel.show();
         sampleFromText.hide();
         // sampleFromText&sampleFromOtherRow's disabled is control input[name=sampleFromOthers] only one.
         sampleFromText.find('input').attr("disabled", true);
         clearFields(sampleFromText);
-    } else if (sampleLocallyVal === '0') {
+    } else if (localOrOverseaVal === '0') {
         sampleFromRow.show();
         sampleFromText.show();
         sampleFromText.find('input').attr("disabled", false);
