@@ -26,7 +26,7 @@ import java.util.UUID;
  */
 @Controller
 @Slf4j
-public class WriteMessageAjaxController {
+public class WriteMessageAjaxController implements LoginAccessCheck {
 
 
     //upload file

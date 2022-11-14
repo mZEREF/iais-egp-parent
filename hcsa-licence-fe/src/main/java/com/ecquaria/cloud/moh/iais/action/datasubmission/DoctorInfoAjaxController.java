@@ -1,16 +1,14 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
+import com.ecquaria.cloud.moh.iais.action.LoginAccessCheck;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DoctorInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
-import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.AppCommService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DocInfoService;
-import com.ecquaria.cloud.usersession.UserSession;
-import com.ecquaria.cloud.usersession.UserSessionUtil;
 import java.util.Collections;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import sop.webflow.process5.ProcessCacheHelper;
 
 /**
  * @Description Ajax
@@ -29,7 +26,7 @@ import sop.webflow.process5.ProcessCacheHelper;
 @RequestMapping(value = "/doc")
 @RestController
 @Slf4j
-public class DoctorInfoAjaxController {
+public class DoctorInfoAjaxController implements LoginAccessCheck {
 
     @Autowired
     private AppCommService appSubmissionService;
@@ -40,11 +37,6 @@ public class DoctorInfoAjaxController {
     @GetMapping(value = "/prg-input-info")
     public @ResponseBody
     Map<String, Object> getPrgNoInfo(HttpServletRequest request) {
-        String sessionId = UserSessionUtil.getLoginSessionID(request.getSession());
-        UserSession userSession = ProcessCacheHelper.getUserSessionFromCache(sessionId);
-        if (userSession == null || !"Active".equals(userSession.getStatus())) {
-            throw new IaisRuntimeException("User session invalid");
-        }
         log.debug(StringUtil.changeForLog("the prgNo start ...."));
         String professionRegoNo = ParamUtil.getString(request, "prgNo");
         String doctorSource = convertSource(ParamUtil.getString(request, "docSource"));

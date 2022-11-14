@@ -147,8 +147,9 @@
         <c:set var="prepsn" value="dpo"/>
         <c:set var="psnContent" value="dpo-person-content"/>
         <c:set var="singleName" value="${singleName2}"/>
-        <c:set var="flag" value="${dpoHcsaSvcPersonnelDto.mandatoryCount == 0 && dpoHcsaSvcPersonnelDto.maximumCount == 0} "/>
-        <c:if test="${!flag}">
+        <c:remove var="flag"/>
+        <c:set var="flag" value="${dpoHcsaSvcPersonnelDto.mandatoryCount == 0 && dpoHcsaSvcPersonnelDto.maximumCount == 0 ? '' : 'true'}"/>
+        <c:if test="${not empty flag}">
             <div class="panel panel-default deputy-panel ${currSvcInfoDto.deputyPoFlag == '1' ? '' : 'hidden'}">
             <div class="panel-heading" role="tab">
                 <h4 class="panel-title">

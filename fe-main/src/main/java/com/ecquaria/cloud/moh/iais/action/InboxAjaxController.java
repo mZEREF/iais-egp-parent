@@ -26,7 +26,7 @@ import java.util.Map;
 @Slf4j
 @Controller
 @RequestMapping("/inbox")
-public class InboxAjaxController {
+public class InboxAjaxController implements LoginAccessCheck {
 
     @Autowired
     private InboxServiceImpl inboxService;

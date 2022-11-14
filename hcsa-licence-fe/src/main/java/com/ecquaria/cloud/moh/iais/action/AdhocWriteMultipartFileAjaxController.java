@@ -41,7 +41,7 @@ import java.util.UUID;
  */
 @Controller
 @Slf4j
-public class AdhocWriteMultipartFileAjaxController {
+public class AdhocWriteMultipartFileAjaxController implements LoginAccessCheck {
 
     @Autowired
     private SystemParamConfig systemParamConfig;

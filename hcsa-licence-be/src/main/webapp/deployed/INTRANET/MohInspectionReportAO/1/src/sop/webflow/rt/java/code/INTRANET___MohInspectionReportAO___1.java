@@ -16,7 +16,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTRANET___MohInspectionReportAO___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="insReportAo";
-	
+
 	public void step1_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
@@ -36,18 +36,20 @@ public class INTRANET___MohInspectionReportAO___1 extends BaseProcessClass {
 	public void approve_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "approve", this);
 	}
-	
+
 	public void inspectorReportAction_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "action", this);
 	}
 
 	public void verified_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "laterally", this);
+		EngineHelper.delegate(DELEGATOR, "verified", this);
 
-	// 		Verified->OnStepProcess
+		// 		Verified->OnStepProcess
 	}
 
-
-	
+	public void step2_OnStepProcess_0() throws Exception {
+		// 		Step2->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "rollBack", this);
+	}
 
 }

@@ -1582,9 +1582,11 @@ public final class AppValidatorHelper {
             AppSvcPrincipalOfficersDto person = personList.get(i);
             psnType = person.getPsnType();
             String assignSelect = person.getAssignSelect();
-            if ("".equals(assignSelect) && ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnType)) {
+            String deputyPrincipalOfficer = person.getDeputyPrincipalOfficer();      //  -1  0  1
+            if ("-1".equals(deputyPrincipalOfficer)){
                 errMap.put("deputyPrincipalOfficer", "GENERAL_ERR0006");
-            } else if ( HcsaAppConst.DFT_FIRST_CODE.equals(assignSelect) || StringUtil.isEmpty(assignSelect)){
+            }
+            else if (HcsaAppConst.DFT_FIRST_CODE.equals(assignSelect) || StringUtil.isEmpty(assignSelect)){
                 errMap.put(prefix + "assignSelect" + i, "GENERAL_ERR0006");
             }else {
                 String idTyp = person.getIdType();
@@ -1780,17 +1782,20 @@ public final class AppValidatorHelper {
                 }
                 if (StringUtil.isNotEmpty(typeOfCurrRegi) && typeOfCurrRegi.length() > 50) {
                     errMap.put(prefix + "typeOfCurrRegi" + i, repLength("Type of Registration Date", "50"));
-//                }else{
-//                    if (StringUtil.isNotEmpty(typeOfCurrRegi)){
-//                        typeOfCurrRegi = typeOfCurrRegi.toUpperCase(AppConsts.DFT_LOCALE);
-//                        String[] target = typeOfCurrRegi.split("[^A-Z0-9]+");
-//                        if (IaisCommonUtils.isEmpty(target) || !Arrays.asList(target).contains("FULL")){
-//                            errMap.put(prefix + "typeOfCurrRegi" + i,   "GENERAL_ERR0006");
-//                        }else if (check(typeOfCurrRegi)){
-//                            errMap.put(prefix + "typeOfCurrRegi" + i,   "GENERAL_ERR0006");
-//                        }
-//
-//                    }
+                }else{
+                    if (StringUtil.isNotEmpty(typeOfCurrRegi)){
+                        typeOfCurrRegi = typeOfCurrRegi.toUpperCase(AppConsts.DFT_LOCALE);
+                        String[] target = typeOfCurrRegi.split("[^A-Z0-9]+");
+                        if (IaisCommonUtils.isEmpty(target)){
+                            errMap.put(prefix + "typeOfCurrRegi" + i,   "GENERAL_ERR0006");
+                        }else if (!Arrays.asList(target).contains("FULL")){
+                            errMap.put(prefix + "typeOfCurrRegi" + i,   "The value doesn't contain the word \"Full\"");
+                        }
+                        else if (check(typeOfCurrRegi)){
+                            errMap.put(prefix + "typeOfCurrRegi" + i,   "Invalid content format");
+                        }
+
+                    }
                 }
                 //Current Registration Date
                 if (StringUtil.isNotEmpty(currRegiDate) && !CommonValidator.isDate(currRegiDate)) {
@@ -4390,7 +4395,7 @@ public final class AppValidatorHelper {
         String designation = appSvcPersonnelDto.getDesignation();
         if (StringUtil.isEmpty(designation)) {
             errorMap.put(prefix + "designation" + subfix, signal);
-        } else if (MasterCodeUtil.SSI_DESIGNATION_OTHER_CODE_KEY.equals(designation)) {
+        } else if (MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation)) {
             String otherDesignation = appSvcPersonnelDto.getOtherDesignation();
             if (StringUtil.isEmpty(otherDesignation)) {
                 errorMap.put(prefix + "otherDesignation" + subfix,

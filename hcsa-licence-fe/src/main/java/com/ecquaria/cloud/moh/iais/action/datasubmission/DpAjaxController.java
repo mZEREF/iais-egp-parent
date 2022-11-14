@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
+import com.ecquaria.cloud.moh.iais.action.LoginAccessCheck;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
@@ -37,7 +38,7 @@ import sop.webflow.process5.ProcessCacheHelper;
 @RequestMapping(value = "/dp")
 @RestController
 @Slf4j
-public class DpAjaxController {
+public class DpAjaxController implements LoginAccessCheck {
 
     @Autowired
     private PatientService patientService;

@@ -40,7 +40,7 @@ import java.util.Map;
 @Slf4j
 @Controller
 @RequestMapping("/emailAjax")
-public class EmailAjaxController {
+public class EmailAjaxController implements LoginAccessCheck {
 
     @Autowired
     private DistributionListService distributionListService;

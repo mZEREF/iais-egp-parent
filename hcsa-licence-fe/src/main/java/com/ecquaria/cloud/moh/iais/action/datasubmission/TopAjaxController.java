@@ -1,11 +1,11 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
+import com.ecquaria.cloud.moh.iais.action.LoginAccessCheck;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PreTerminationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TopSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -19,8 +19,6 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.TopDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.validation.dataSubmission.PreTerminationValidator;
-import com.ecquaria.cloud.usersession.UserSession;
-import com.ecquaria.cloud.usersession.UserSessionUtil;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -31,7 +29,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import sop.webflow.process5.ProcessCacheHelper;
 
 /**
  * @Description Ajax
@@ -41,7 +38,7 @@ import sop.webflow.process5.ProcessCacheHelper;
 @RequestMapping(value = "/top")
 @RestController
 @Slf4j
-public class TopAjaxController {
+public class TopAjaxController implements LoginAccessCheck {
 
     protected final static String  CONSULTING_CENTER = "Health Promotion Board Counselling Centre";
     @Autowired
@@ -53,12 +50,6 @@ public class TopAjaxController {
     @PostMapping(value = "/retrieve-identification")
     public @ResponseBody
     Map<String, Object> retrieveIdentification(HttpServletRequest request) {
-        String sessionId = UserSessionUtil.getLoginSessionID(request.getSession());
-        UserSession userSession = ProcessCacheHelper.getUserSessionFromCache(sessionId);
-        if (userSession == null || !"Active".equals(userSession.getStatus())) {
-            throw new IaisRuntimeException("User session invalid");
-        }
-
         String idType = ParamUtil.getString(request, "idType");
         String idNo = ParamUtil.getString(request, "idNo");
         PatientInformationDto patientInformation = new PatientInformationDto();
