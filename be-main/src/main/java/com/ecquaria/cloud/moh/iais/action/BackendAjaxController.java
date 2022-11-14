@@ -50,7 +50,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Slf4j
 @Controller
 @RequestMapping("/backend")
-public class BackendAjaxController {
+public class BackendAjaxController implements LoginAccessCheck {
 
     @Autowired
     private InspectionMainService inspectionService;
