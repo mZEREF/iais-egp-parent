@@ -1,4 +1,5 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts" %>
 <c:set var="isCd" value="${pcdType == ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR}"/>
 <div class="person-content">
     <input type="hidden" class="not-refresh prepsn" name="${psnContent}" value="${prepsn}"/>
@@ -62,8 +63,7 @@
                 <iais:input maxLength="20" type="text" cssClass="profRegNo" name="${prepsn}profRegNo${index}" value="${person.profRegNo}"/>
             </iais:value>
         </iais:row>
-
-        <c:if test="${'MTS' == currentSvcCode}">
+        <c:if test="${AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE == currentSvcCode}">
             <iais:row>
                 <iais:field width="5" cssClass="col-md-5" mandatory="false" value="Not registered with a Professional Board"/>
                 <div class="form-check col-md-3">
@@ -99,12 +99,28 @@
             </iais:value>
         </iais:row>
 
+        <iais:row cssClass="nationalityDiv">
+            <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Nationality"/>
+            <iais:value width="7" cssClass="col-md-7">
+                <iais:select firstOption="Please Select" name="${prepsn}nationality${index}" codeCategory="CATE_ID_NATIONALITY"
+                             cssClass="nationality" value="${clinicalDirectorDto.nationality}"/>
+            </iais:value>
+        </iais:row>
+
         <iais:row>
             <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Designation"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:select cssClass="designation" name="${prepsn}designation${index}" value="${person.designation}"
                              options="designationOpList" firstOption="Please Select"
                              onchange="toggleOnVal(this, 'DES999', '.otheDesignationDiv');"/>
+            </iais:value>
+        </iais:row>
+
+        <iais:row cssClass="${person.designation=='DES999' ? '' : 'hidden'} otheDesignationDiv">
+            <iais:field width="5" cssClass="col-md-5" value=""/>
+            <iais:value width="7" cssClass="col-md-7">
+                <iais:input maxLength="100" type="text" cssClass="otherDesignation" name="${prepsn}otherDesignation${index}"
+                            value="${person.otherDesignation}"/>
             </iais:value>
         </iais:row>
 
