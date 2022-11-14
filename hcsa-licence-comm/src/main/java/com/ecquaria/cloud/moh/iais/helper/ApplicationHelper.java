@@ -839,8 +839,13 @@ public final class ApplicationHelper {
                 person.setNationality(psnDto.getNationality());
                 person.setIdType(psnDto.getIdType());
                 person.setIdNo(psnDto.getIdNo());
-                if (StringUtil.isNotEmpty(psnDto.getOfficeTelNo())) {
+                if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnDto.getPsnType()) ||
+                        ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnDto.getPsnType())){
                     person.setOfficeTelNo(psnDto.getOfficeTelNo());
+                }else {
+                    if (StringUtil.isNotEmpty(psnDto.getOfficeTelNo())) {
+                        person.setOfficeTelNo(psnDto.getOfficeTelNo());
+                    }
                 }
                 person.setMobileNo(psnDto.getMobileNo());
                 person.setEmailAddr(psnDto.getEmailAddr());

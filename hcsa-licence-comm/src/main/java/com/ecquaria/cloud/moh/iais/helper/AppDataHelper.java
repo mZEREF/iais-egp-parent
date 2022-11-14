@@ -2543,7 +2543,10 @@ public final class AppDataHelper {
         setPsnValue(person, appPsnEditDto, "bclsExpiryDate", prefix, suffix, true, request);
         setPsnValue(person, appPsnEditDto, "relevantExperience", prefix, suffix, request);
         setPsnValue(person, appPsnEditDto, "officeTelNo", prefix, suffix, request);
-
+        if(StringUtil.isNotEmpty(prefix) && prefix.equals("dpo")){
+            String deputyPrincipalOfficer = ParamUtil.getString(request, "deputyPrincipalOfficer");
+            person.setDeputyPrincipalOfficer(deputyPrincipalOfficer);
+        }
         if (person.getPsnEditDto() == null) {
             if (appPsnEditDto == null) {
                 appPsnEditDto = ApplicationHelper.setNeedEditField(person);
