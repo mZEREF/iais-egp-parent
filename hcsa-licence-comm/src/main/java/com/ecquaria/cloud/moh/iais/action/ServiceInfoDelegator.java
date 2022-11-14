@@ -1029,8 +1029,7 @@ public class ServiceInfoDelegator {
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
         if ("next".equals(action)) {
             Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(
-                    bpc.request,
-                    LICPERSONSELECTMAP);
+                    bpc.request, LICPERSONSELECTMAP);
             map.putAll(AppValidatorHelper.doValidatePoAndDpo(poList, dpoList, deputySelect, licPersonMap,
                     appSubmissionDto.getSubLicenseeDto(), true));
             //validate mandatory count
@@ -1468,8 +1467,7 @@ public class ServiceInfoDelegator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if ("next".equals(action)) {
             Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(
-                    bpc.request,
-                    LICPERSONSELECTMAP);
+                    bpc.request, LICPERSONSELECTMAP);
             List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = currentSvcRelatedDto.getAppSvcMedAlertPersonList();
             errorMap = AppValidatorHelper.doValidateMedAlertPsn(appSvcMedAlertPersonList, licPersonMap, svcCode);
             //validate mandatory count
@@ -1614,8 +1612,7 @@ public class ServiceInfoDelegator {
         String currSvcCode = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSVCCODE);
         if ("next".equals(actionType)) {
             Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(
-                    bpc.request,
-                    LICPERSONSELECTMAP);
+                    bpc.request, LICPERSONSELECTMAP);
             errorMap = AppValidatorHelper.doValidateClincalDirector(appSvcClinicalDirectorList,
                     licPersonMap, true, currSvcCode);
             int psnLength = 0;
