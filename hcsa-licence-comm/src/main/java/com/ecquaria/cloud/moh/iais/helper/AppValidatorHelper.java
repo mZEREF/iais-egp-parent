@@ -2381,7 +2381,7 @@ public final class AppValidatorHelper {
                     }else if (perShiftNum.length() > 2){
                         String errorMsg = repLength("Nurses per Shift", "2");
                         errMap.put(prefix + "perShiftNum" , errorMsg);
-                    }else if (!StringUtil.isDigit(perShiftNum)){
+                    }else if (!StringUtil.isDigit(perShiftNum) || perShiftNum.matches("^-[0-9]*[1-9][0-9]*$")){
                         errMap.put(prefix + "perShiftNum", MessageUtil.replaceMessage("GENERAL_ERR0002", "Nurses per Shift", "field"));
                     }
                     String dialysisStationsNum = appSvcOtherInfoNurseDto.getDialysisStationsNum();
@@ -2390,7 +2390,7 @@ public final class AppValidatorHelper {
                     }else if (dialysisStationsNum.length() > 2){
                         String errorMsg = repLength("Total number of dialysis stations", "2");
                         errMap.put(prefix + "dialysisStationsNum" , errorMsg);
-                    }else if (!StringUtil.isDigit(dialysisStationsNum)){
+                    }else if (!StringUtil.isDigit(dialysisStationsNum) || dialysisStationsNum.matches("^-[0-9]*[1-9][0-9]*$")){
                         errMap.put(prefix + "dialysisStationsNum", MessageUtil.replaceMessage("GENERAL_ERR0002", "Total number of dialysis stations", "field"));
                     }
                     String helpBStationNum = appSvcOtherInfoNurseDto.getHelpBStationNum();
@@ -2399,7 +2399,7 @@ public final class AppValidatorHelper {
                     }else if (helpBStationNum.length() > 2){
                         String errorMsg = repLength("Number of Hep B stations", "2");
                         errMap.put(prefix + "helpBStationNum" , errorMsg);
-                    }else if (!StringUtil.isDigit(helpBStationNum)){
+                    }else if (!StringUtil.isDigit(helpBStationNum) || helpBStationNum.matches("^-[0-9]*[1-9][0-9]*$")){
                         errMap.put(prefix + "helpBStationNum", MessageUtil.replaceMessage("GENERAL_ERR0002", "Number of Hep B stations", "field"));
                     }
                     String nisOpenToPublic = appSvcOtherInfoNurseDto.getOpenToPublic();
