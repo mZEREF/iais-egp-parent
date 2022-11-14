@@ -24,11 +24,11 @@
 <link href="<%=webRootCommon%>css/bootstrap-datepicker-1.9.0-dist/bootstrap-datepicker3.min.css" rel="stylesheet">
 <link href="<%=webRootCommon%>css/bootstrap-datepicker-1.9.0-dist/bootstrap-datepicker3.standalone.min.css" rel="stylesheet">
 <link href="<%=webRootCommon%>css/comm_style.css" rel="stylesheet">
+<link rel="stylesheet" href="<%=webRootCommon%>css/select2.css">
 <link rel="stylesheet" href="<%=webroot%>css/cpl_style.css">
 <link rel="stylesheet" href="<%=webroot%>css/cpl_intranet_style.css">
 <link rel="stylesheet" href="<%=webroot%>css/multipleSelect.css">
 <link rel="stylesheet" href="<%=webroot%>css/multiselectdropdown-styles.css">
-<link rel="stylesheet" href="<%=webroot%>css/select2.css">
 
 <script type="text/javascript" src="<%=webroot%>js/bootstrap.min.js"></script>
 <script type="text/javascript" src="<%=webroot%>js/particles.js"></script>
