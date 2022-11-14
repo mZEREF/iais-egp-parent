@@ -1474,6 +1474,12 @@ public final class RfcHelper {
     public static boolean isChangeAppSvcBusinessDtoOtherInfo(List<AppSvcBusinessDto> appSvcBusinessDtoList,
             List<AppSvcBusinessDto> oldAppSvcBusinessDtoList) {
         boolean isChange = false;
+        if (IaisCommonUtils.isEmpty(appSvcBusinessDtoList)|| IaisCommonUtils.isEmpty(oldAppSvcBusinessDtoList)) {
+            return true;
+        }
+        if (appSvcBusinessDtoList.size() != oldAppSvcBusinessDtoList.size()) {
+            return true;
+        }
         List<String> appSvcBusinessContactList = IaisCommonUtils.genNewArrayList();
         appSvcBusinessDtoList.forEach((v) -> appSvcBusinessContactList.add(v.getContactNo()));
         List<String> oldAppSvcBusinessContactList = IaisCommonUtils.genNewArrayList();
