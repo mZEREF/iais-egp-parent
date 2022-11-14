@@ -29,7 +29,7 @@
     </iais:row>
 
     <iais:row>
-        <iais:field width="5" cssClass="col-md-5" value="Number of Hep B stations" mandatory="trtue"/>
+        <iais:field width="5" cssClass="col-md-5" value="Number of Hep B stations" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
             <iais:input maxLength="2" type="text" cssClass="helpBStationNum" name="${prefix}helpBStationNum" value="${n.helpBStationNum}"/>
         </iais:value>
