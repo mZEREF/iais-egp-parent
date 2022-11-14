@@ -80,13 +80,13 @@
                                             <p>${rds.expiryDate}</p>
                                         </td>
                                         <td>
-
-                                            <p>${appPremOutSourceLicenceDto.agreementStartDate}</p>
+                                            <p>${rds.startDateStr}</p>
+<%--                                            <p>${appPremOutSourceLicenceDto.agreementStartDate}</p>--%>
                                                 <%--                                    <p><fmt:formatDate value="${appPremOutSourceLicenceDto.agreementStartDate}" pattern="dd/MM/yyyy"/></p>--%>
                                         </td>
                                         <td>
-
-                                            <p>${appPremOutSourceLicenceDto.agreementEndDate}</p>
+                                            <p>${rds.endDateStr}</p>
+<%--                                            <p>${appPremOutSourceLicenceDto.agreementEndDate}</p>--%>
                                                 <%--                                    <p><fmt:formatDate value="${appPremOutSourceLicenceDto.agreementEndDate}" pattern="dd/MM/yyyy"/></p>--%>
                                         </td>
                                         <td>

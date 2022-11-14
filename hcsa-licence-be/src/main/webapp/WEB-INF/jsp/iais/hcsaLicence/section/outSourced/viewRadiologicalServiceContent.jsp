@@ -85,19 +85,19 @@
                         </div>
                     </td>
                     <td>
-                        <div class="newVal" attr="${appPremOutSourceLicenceDto.agreementStartDate}">
-                            <c:out value="${appPremOutSourceLicenceDto.agreementStartDate}"/>
+                        <div class="newVal" attr="${msgTemplateResult.startDateStr}">
+                            <c:out value="${msgTemplateResult.startDateStr}"/>
                         </div>
-                        <div class=" oldVal" attr="${oldAppPremOutSourceLicenceDto.agreementStartDate}" style="display: none">
-                            <c:out value="${oldAppPremOutSourceLicenceDto.agreementStartDate}"/>
+                        <div class="oldVal" attr="${oldMsgTemplateResult.startDateStr}" style="display: none">
+                            <c:out value="${oldMsgTemplateResult.startDateStr}"/>
                         </div>
                     </td>
                     <td>
-                        <div class="newVal" attr="${appPremOutSourceLicenceDto.agreementEndDate}">
-                            <c:out value="${appPremOutSourceLicenceDto.agreementEndDate}"/>
+                        <div class="newVal" attr="${msgTemplateResult.endDateStr}">
+                            <c:out value="${msgTemplateResult.endDateStr}"/>
                         </div>
-                        <div class=" oldVal" attr="${oldAppPremOutSourceLicenceDto.agreementEndDate}" style="display: none">
-                            <c:out value="${oldAppPremOutSourceLicenceDto.agreementEndDate}"/>
+                        <div class="oldVal" attr="${oldMsgTemplateResult.endDateStr}" style="display: none">
+                            <c:out value="${oldMsgTemplateResult.endDateStr}"/>
                         </div>
                     </td>
                     <td>

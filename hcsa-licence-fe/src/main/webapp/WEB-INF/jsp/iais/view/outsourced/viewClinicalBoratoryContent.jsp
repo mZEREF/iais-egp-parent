@@ -37,7 +37,7 @@
                                     </div>
                                 </th>
                                 <th style="width: 15%;">
-                                    <div style="margin-left: 12px;">
+                                    <div style="margin-left: 49px;">
                                         Licence Tenure
                                     </div>
                                 </th>
@@ -64,7 +64,6 @@
                                 <c:if test="${!empty appPremOutSourceLicenceDto}">
                                     <tr>
                                         <td>
-
                                             <p>${appPremOutSourceLicenceDto.licenceNo}</p>
                                         </td>
                                         <td>
@@ -76,17 +75,16 @@
                                             <p>${clb.address}</p>
                                         </td>
                                         <td>
-                                            <
                                             <p>${clb.expiryDate}</p>
                                         </td>
                                         <td>
-
-                                            <p>${appPremOutSourceLicenceDto.agreementStartDate}</p>
+                                            <p>${clb.startDateStr}</p>
+<%--                                            <p>${appPremOutSourceLicenceDto.agreementStartDate}</p>--%>
                                                 <%--                                    <p><fmt:formatDate value="${appPremOutSourceLicenceDto.agreementStartDate}" pattern="dd/MM/yyyy"/></p>--%>
                                         </td>
                                         <td>
-
-                                            <p>${appPremOutSourceLicenceDto.agreementEndDate}</p>
+                                            <p>${clb.endDateStr}</p>
+<%--                                            <p>${appPremOutSourceLicenceDto.agreementEndDate}</p>--%>
                                                 <%--                                    <p><fmt:formatDate value="${appPremOutSourceLicenceDto.agreementEndDate}" pattern="dd/MM/yyyy"/></p>--%>
                                         </td>
                                         <td>

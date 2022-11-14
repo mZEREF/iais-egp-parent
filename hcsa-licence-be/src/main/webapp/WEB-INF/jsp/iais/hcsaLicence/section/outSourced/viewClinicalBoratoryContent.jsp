@@ -86,29 +86,32 @@
                         </div>
                     </td>
                     <td>
-                        <div class="newVal" attr="${appPremOutSourceLicenceDto.agreementStartDate}">
-                            <c:out value="${appPremOutSourceLicenceDto.agreementStartDate}"/>
+                        <div class="newVal" attr="${msgTemplateResult.startDateStr}">
+                            <c:out value="${msgTemplateResult.startDateStr}"/>
                         </div>
-                        <div class="oldVal" attr="${oldAppPremOutSourceLicenceDto.agreementStartDate}" style="display: none">
-                            <c:out value="${oldAppPremOutSourceLicenceDto.agreementStartDate}"/>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="newVal" attr="${appPremOutSourceLicenceDto.agreementEndDate}">
-                            <c:out value="${appPremOutSourceLicenceDto.agreementEndDate}"/>
-                        </div>
-                        <div class="oldVal" attr="${oldAppPremOutSourceLicenceDto.agreementEndDate}" style="display: none">
-                            <c:out value="${oldAppPremOutSourceLicenceDto.agreementEndDate}"/>
+                        <div class="oldVal" attr="${oldMsgTemplateResult.startDateStr}" style="display: none">
+                            <c:out value="${oldMsgTemplateResult.startDateStr}"/>
                         </div>
                     </td>
                     <td>
-                        <div class="newVal" attr="${appPremOutSourceLicenceDto.outstandingScope}">
-                            <textarea style="border:none;background-color: transparent;resize: none;" class="scopeOutsource">
-                                    <c:out value="${appPremOutSourceLicenceDto.outstandingScope}"/></textarea>
+                        <div class="newVal" attr="${msgTemplateResult.endDateStr}">
+                            <c:out value="${msgTemplateResult.endDateStr}"/>
                         </div>
-                        <div class=" oldVal" attr="${oldAppPremOutSourceLicenceDto.outstandingScope}" style="display: none">
-                            <textarea style="border:none;background-color: transparent;resize: none;" class="scopeOutsource">
-                                    <c:out value="${oldAppPremOutSourceLicenceDto.outstandingScope}"/></textarea>
+
+                        <div class="oldVal" attr="${oldMsgTemplateResult.endDateStr}" style="display: none">
+                            <c:out value="${oldMsgTemplateResult.endDateStr}"/>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="col-xs-6">
+                            <div class="newVal" attr="${appPremOutSourceLicenceDto.outstandingScope}">
+                                <textarea style="border:none;background-color: transparent;resize: none;" class="scopeOutsource"><c:out value="${appPremOutSourceLicenceDto.outstandingScope}"/></textarea>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class=" oldVal" attr="${oldAppPremOutSourceLicenceDto.outstandingScope}" style="display: none">
+                                <textarea style="border:none;background-color: transparent;resize: none;" class="scopeOutsource"><c:out value="${oldAppPremOutSourceLicenceDto.outstandingScope}"/></textarea>
+                            </div>
                         </div>
                     </td>
                 </tr>

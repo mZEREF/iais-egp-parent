@@ -23,12 +23,14 @@
             </td>
             <td>
                 <p class="visible-xs visible-sm table-row-title">Date of Agreement</p>
-                <p>${appPremOutSourceLicenceDto.agreementStartDate}</p>
+                <p>${msgTemplateResult.startDateStr}</p>
+<%--                <p>${appPremOutSourceLicenceDto.agreementStartDate}</p>--%>
                     <%--                <p><fmt:formatDate value="${appPremOutSourceLicenceDto.agreementStartDate}" pattern="dd/MM/yyyy" /></p>--%>
             </td>
             <td>
                 <p class="visible-xs visible-sm table-row-title">End Date of Agreement</p>
-                <p>${appPremOutSourceLicenceDto.agreementEndDate}</p>
+                <p>${msgTemplateResult.endDateStr}</p>
+<%--                <p>${appPremOutSourceLicenceDto.agreementEndDate}</p>--%>
                     <%--                <p><fmt:formatDate value="${appPremOutSourceLicenceDto.agreementEndDate}" pattern="dd/MM/yyyy"/></p>--%>
             </td>
             <td>
