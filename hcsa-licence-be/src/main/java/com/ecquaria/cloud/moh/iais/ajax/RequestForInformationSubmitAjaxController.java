@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.ajax;
 
+import com.ecquaria.cloud.moh.iais.action.LoginAccessCheck;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
@@ -13,15 +14,12 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
-import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,39 +27,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * @author zhilin
  * @date 2020/03/30
  */
 @Controller
 @Slf4j
-public class RequestForInformationSubmitAjaxController {
+public class RequestForInformationSubmitAjaxController implements LoginAccessCheck {
     private static final String APPSUBMISSIONDTO = "appSubmissionDto";
 
     @Autowired
     private LicenceViewService licenceViewService;
     @Autowired
-    private ApplicationClient applicationClient;
-    @Autowired
     private ApplicationViewService applicationViewService;
-    @Autowired
-    private OrganizationClient organizationClient;
-    @Autowired
-    private HcsaConfigClient hcsaConfigClient;
-    @Autowired
-    private AppointmentClient appointmentClient;
-    @Autowired
-    private HcsaLicenceClient hcsaLicenceClient;
-    @Autowired
-    private CessationClient cessationClient;
-
-    @Autowired
-    private ApplicationService applicationService;
 
     @RequestMapping(value = "/callRfiSubmit",method = RequestMethod.POST)
     public @ResponseBody String callRfiSubmit(HttpServletRequest request){

@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
+import com.ecquaria.cloud.moh.iais.action.LoginAccessCheck;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
@@ -50,7 +51,7 @@ import sop.webflow.process5.ProcessCacheHelper;
 @RequestMapping(value = "/ar")
 @RestController
 @Slf4j
-public class ArAjaxController {
+public class ArAjaxController implements LoginAccessCheck {
 
     @Autowired
     private PatientService patientService;
