@@ -51,6 +51,13 @@
     <JavaCode defClass="" executor="" methodName="verified_OnStepProcess_0" name="verified_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="CrRollBack" x="680" y="20">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="step2_OnStepProcess_0" name="step2_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AOReportPage" stageIndicator="" x="200" y="100">
@@ -120,16 +127,22 @@
    <position>{(910,120)(240,36)(220,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Verified" linkstyle="Direct" name="" sourceName="/Switches/Switch/action" style="oblique">
-   <position>{(640,120)(865,270)}</position>
+   <position>{(640,120)(840,240)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond3" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Verified" style="oblique">
-   <position>{(865,270)(775,370)}</position>
+   <position>{(840,240)(750,340)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/Page2" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond3" style="rectanular">
-   <position>{(775,370)(930,340)}</position>
+   <position>{(750,340)(930,340)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/AOReportPage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond3" style="rectanular">
-   <position>{(775,370)(241,13)(220,120)}</position>
+   <position>{(750,340)(241,13)(220,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/CrRollBack" linkstyle="Direct" name="" sourceName="/Switches/Switch/action" style="oblique">
+   <position>{(640,120)(700,40)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/CrRollBack" style="rectanular">
+   <position>{(700,40)(917,39)(910,120)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
@@ -149,6 +162,7 @@
    <SwitchCase component="/Steps/AutomaticStep/Roback" value="&quot;back&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/Approve" value="&quot;approve&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/Verified" value="&quot;PROCVER&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/CrRollBack" value="&quot;rollBack&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
