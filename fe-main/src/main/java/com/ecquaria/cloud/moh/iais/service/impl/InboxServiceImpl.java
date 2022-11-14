@@ -711,10 +711,12 @@ public class InboxServiceImpl implements InboxService {
             }
             List<HcsaServiceSubTypeDto> hcsaServiceSubTypeDtos = configInboxClient.getHcsaServiceSubTypeDtosByIds(ids).getEntity();
             for (LicPremisesScopeDto licPremisesScopeDto : licPremisesScopeDtos) {
-                InnerLicenceViewData innerLicenceViewData = new InnerLicenceViewData();
-                innerLicenceViewData.setValue(
-                        getHcsaServiceSubTypeDisplayName(hcsaServiceSubTypeDtos, licPremisesScopeDto.getSubTypeId()));
-                result.add(innerLicenceViewData);
+                String subTypeDisplayName =  getHcsaServiceSubTypeDisplayName(hcsaServiceSubTypeDtos, licPremisesScopeDto.getSubTypeId());
+                if(StringUtil.isNotEmpty(subTypeDisplayName)){
+                    InnerLicenceViewData innerLicenceViewData = new InnerLicenceViewData();
+                    innerLicenceViewData.setValue(subTypeDisplayName );
+                    result.add(innerLicenceViewData);
+                }
             }
         }
         if (IaisCommonUtils.isNotEmpty(licPremSubSvcRelDtos)) {
