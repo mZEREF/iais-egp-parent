@@ -353,9 +353,9 @@
                                          <thead>
                                          <tr>
                                            <th></th>
-                                           <th><span style="font-style: italic;"> Business Name</span></th>
-                                           <th><span style="font-style: italic;"> Mode of Service Delivery</span></th>
-                                           <th><span style="font-style: italic;"> ${lable}</span></th>
+                                           <th style=" width: 30%; "><span style="font-style: italic;"> Business Name</span></th>
+                                           <th style=" width: 30%; "><span style="font-style: italic;"> Mode of Service Delivery</span></th>
+                                           <th style=" width: 30%; "><span style="font-style: italic;"> ${lable}</span></th>
                                          </tr>
                                          </thead>
                                          <tbody>
@@ -411,9 +411,9 @@
                   <thead>
                   <tr>
                     <th></th>
-                    <th><span style="font-style: italic;"> Business Name</span></th>
-                    <th><span style="font-style: italic;"> Mode of Service Delivery</span></th>
-                    <th><span style="font-style: italic;"> ${lable}</span></th>
+                    <th style=" width: 30%; "><span style="font-style: italic;"> Business Name</span></th>
+                    <th style=" width: 30%; "><span style="font-style: italic;"> Mode of Service Delivery</span></th>
+                    <th style=" width: 30%; "><span style="font-style: italic;"> ${lable}</span></th>
                   </tr>
                   </thead>
                   <tbody>
