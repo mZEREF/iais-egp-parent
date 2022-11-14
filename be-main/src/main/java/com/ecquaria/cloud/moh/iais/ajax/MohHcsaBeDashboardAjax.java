@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.ajax;
 
 import com.ecquaria.cloud.RedirectUtil;
+import com.ecquaria.cloud.moh.iais.action.LoginAccessCheck;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
@@ -51,6 +52,14 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -59,15 +68,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * @author Shicheng
  * @date 2021/4/14 13:02
@@ -75,7 +75,7 @@ import java.util.Set;
 @Slf4j
 @Controller
 @RequestMapping("/hcsa/intranet/dashboard")
-public class MohHcsaBeDashboardAjax {
+public class MohHcsaBeDashboardAjax implements LoginAccessCheck {
 
     @Autowired
     private InspectionMainAssignTaskService inspectionAssignTaskService;

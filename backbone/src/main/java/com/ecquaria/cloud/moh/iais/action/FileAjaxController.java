@@ -268,6 +268,11 @@ public class FileAjaxController {
 
     @RequestMapping(value = "/deleteFeCallFile", method = RequestMethod.POST)
     public String deleteFeCallFile(HttpServletRequest request) {
+        String sessionId = UserSessionUtil.getLoginSessionID(request.getSession());
+        UserSession userSession = ProcessCacheHelper.getUserSessionFromCache(sessionId);
+        if (userSession == null || !"Active".equals(userSession.getStatus())) {
+            throw new IaisRuntimeException("User session invalid");
+        }
         log.info("-----------deleteFeCallFile start------------");
         String fileAppendId = ParamUtil.getString(request, "fileAppendId");
         String index = ParamUtil.getString(request, "fileIndex");
