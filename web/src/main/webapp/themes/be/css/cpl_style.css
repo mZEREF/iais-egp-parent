@@ -5631,3 +5631,6 @@ table.control-grid > tbody > tr .repeatable-section-control-button button:active
   margin-top: 7px;
 }
 
+.partial-search-container .nice-select {
+  display: none !important;
+}

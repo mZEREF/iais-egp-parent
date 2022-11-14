@@ -47,8 +47,8 @@
 <script type="text/javascript" src="<%=webroot%>js/jquery.multi-select.min.js"></script>
 <script type="text/javascript" src="<%=webRootCommon%>js/bootstrap-datepicker-1.9.0-dist/js/bootstrap-datepicker.min.js"></script>
 <script type="text/javascript" src="<%=webRootCommon%>js/jquery.blockUI.js"></script>
-<script type="text/javascript" src="<%=webRootCommon%>js/utils.js"></script>
 <script type="text/javascript" src="<%=webroot%>js/select2.js"></script>
+<script type="text/javascript" src="<%=webRootCommon%>js/utils.js"></script>
 
 
 <script type="text/javascript">
