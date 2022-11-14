@@ -1436,9 +1436,17 @@ public final class RfcHelper {
             return RfcConst.RFC_AMENDMENT;
         }
         List<AppSvcBusinessDto> appSvcBusinessDtoList = IaisCommonUtils.genNewArrayList();
-        appSvcRelatedInfoDtoList.forEach((item) -> appSvcBusinessDtoList.addAll(item.getAppSvcBusinessDtoList()));
+        appSvcRelatedInfoDtoList.forEach((item) -> {
+            if (IaisCommonUtils.isNotEmpty(item.getAppSvcBusinessDtoList())){
+                appSvcBusinessDtoList.addAll(item.getAppSvcBusinessDtoList());
+            }
+        });
         List<AppSvcBusinessDto> oldAppSvcBusinessDtoList = IaisCommonUtils.genNewArrayList();
-        oldAppSvcRelatedInfoDtoList.forEach((item) -> oldAppSvcBusinessDtoList.addAll(item.getAppSvcBusinessDtoList()));
+        oldAppSvcRelatedInfoDtoList.forEach((item) -> {
+            if (IaisCommonUtils.isNotEmpty(item.getAppSvcBusinessDtoList())){
+                oldAppSvcBusinessDtoList.addAll(item.getAppSvcBusinessDtoList());
+            }
+        });
         int result = RfcConst.RFC_UNCHANGED;
         boolean changeAppSvcBusinessDto = isChangeAppSvcBusinessDto(appSvcBusinessDtoList, oldAppSvcBusinessDtoList);
         if (changeAppSvcBusinessDto) {
