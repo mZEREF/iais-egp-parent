@@ -170,7 +170,7 @@
                 <tr>
                     <td class="col-xs-6">
                         <p class="form-check-label" aria-label="premise-1-cytology">
-                            Professional Regn No.
+                            Professional Regn. No.
                         </p>
                     </td>
                     <td>

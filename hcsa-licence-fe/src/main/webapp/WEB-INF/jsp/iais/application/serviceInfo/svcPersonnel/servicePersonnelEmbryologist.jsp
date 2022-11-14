@@ -81,7 +81,7 @@
                     aria-invalid="false">
             <label class="form-check-label"><span class="check-circle"></span>No</label>
         </iais:value>
-        <iais:value cssClass="col-md-offset-4 col-md-8 col-xs-12">
+        <iais:value cssClass="col-md-offset-5 col-md-8 col-xs-12">
             <span class="error-msg " name="iaisErrorMsg" id="error_${logo}embryologistAuthorized${status.index}"></span>
         </iais:value>
     </iais:row>

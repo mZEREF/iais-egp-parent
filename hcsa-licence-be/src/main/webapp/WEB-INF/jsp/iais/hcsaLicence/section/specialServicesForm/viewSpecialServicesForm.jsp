@@ -96,12 +96,28 @@
                                             <%@include file="viewSectionLeaderDetail.jsp"%>
                                         </c:forEach>
 
-                                        <c:forEach var="person" items="${specialServiceSectionDto.appSvcNMTechnologistDtoList}" varStatus="nmStatus">
-                                            <c:set var="oldPerson" value="${oldspecialServiceSectionDto.appSvcNMTechnologistDtoList[nmStatus.index]}"/>
-                                            <c:set var="nmDtoListLength" value="${specialServiceSectionDto.appSvcNMTechnologistDtoList.size()}"/>
-                                            <c:set var="isShowMore" value="1"/>
-                                            <c:set var="title" value="Nuclear Medicine Technologist ${nmDtoListLength > 1?index+1:''}"/>
-                                            <%@include file="viewSectionLeaderDetail.jsp"%>
+                                        <c:forEach var="person" items="${specialServiceSectionDto.appSvcRadiationOncologist}" varStatus="roStatus">
+                                            <c:set var="oldPerson" value="${oldspecialServiceSectionDto.appSvcRadiationOncologist[roStatus.index]}"/>
+                                            <c:set var="roDtoListLength" value="${specialServiceSectionDto.appSvcRadiationOncologist.size()}"/>
+                                            <c:set var="type" value="ro"/>
+                                            <c:set var="title" value="Radiation Oncologist ${roDtoListLength > 1?index+1:''}"/>
+                                            <%@include file="viewSpecialServicesSsiPersonnel.jsp"%>
+                                        </c:forEach>
+
+                                        <c:forEach var="person" items="${specialServiceSectionDto.appSvcMedicalDosimetrist}" varStatus="mdStatus">
+                                            <c:set var="oldPerson" value="${oldspecialServiceSectionDto.appSvcMedicalDosimetrist[mdStatus.index]}"/>
+                                            <c:set var="mdDtoListLength" value="${specialServiceSectionDto.appSvcMedicalDosimetrist.size()}"/>
+                                            <c:set var="type" value="md"/>
+                                            <c:set var="title" value="Medical Dosimetrist ${mdDtoListLength > 1?index+1:''}"/>
+                                            <%@include file="viewSpecialServicesSsiPersonnel.jsp"%>
+                                        </c:forEach>
+
+                                        <c:forEach var="person" items="${specialServiceSectionDto.appSvcRadiationTherapist}" varStatus="rtStatus">
+                                            <c:set var="oldPerson" value="${oldspecialServiceSectionDto.appSvcRadiationTherapist[rtStatus.index]}"/>
+                                            <c:set var="rtDtoListLength" value="${specialServiceSectionDto.appSvcRadiationTherapist.size()}"/>
+                                            <c:set var="type" value="rt"/>
+                                            <c:set var="title" value="Radiation Therapist ${rtDtoListLength > 1?index+1:''}"/>
+                                            <%@include file="viewSpecialServicesSsiPersonnel.jsp"%>
                                         </c:forEach>
 
                                         <c:forEach var="person" items="${specialServiceSectionDto.appSvcDirectorDtoList}" varStatus="direStatus">
@@ -119,6 +135,24 @@
                                             <c:set var="title" value="Emergency Department Nursing-in-charge ${NurseDtoListLength > 1?index+1:''}"/>
                                             <%@include file="viewSpecialServicesFromDetail.jsp"%>
                                         </c:forEach>
+
+
+                                        <c:forEach var="person" items="${specialServiceSectionDto.appSvcNMTechnologistDtoList}" varStatus="nmStatus">
+                                            <c:set var="oldPerson" value="${oldspecialServiceSectionDto.appSvcNMTechnologistDtoList[nmStatus.index]}"/>
+                                            <c:set var="nmDtoListLength" value="${specialServiceSectionDto.appSvcNMTechnologistDtoList.size()}"/>
+                                            <c:set var="isShowMore" value="1"/>
+                                            <c:set var="title" value="Nuclear Medicine Technologist ${nmDtoListLength > 1?index+1:''}"/>
+                                            <%@include file="viewSectionLeaderDetail.jsp"%>
+                                        </c:forEach>
+
+                                        <c:forEach var="person" items="${specialServiceSectionDto.appSvcRadiationCqmp}" varStatus="cqpmStatus">
+                                            <c:set var="oldPerson" value="${oldspecialServiceSectionDto.appSvcRadiationCqmp[cqpmStatus.index]}"/>
+                                            <c:set var="cqpmDtoListLength" value="${specialServiceSectionDto.appSvcRadiationCqmp.size()}"/>
+                                            <c:set var="type" value="cqpm"/>
+                                            <c:set var="title" value="Clinically Qualified Medical Physicist ${cqpmDtoListLength > 1?index+1:''}"/>
+                                            <%@include file="viewSpecialServicesSsiPersonnel.jsp"%>
+                                        </c:forEach>
+
                                         <c:set var="appSvcSuplmFormDto" value="${specialServiceSectionDto.appSvcSuplmFormDto}"/>
                                         <c:set var="oldAppSvcSuplmFormDto" value="${oldspecialServiceSectionDto.appSvcSuplmFormDto}"/>
                                         <c:forEach var="appSvcSuplmGroupDto" items="${appSvcSuplmFormDto.appSvcSuplmGroupDtoList}" varStatus="status">
