@@ -12,7 +12,7 @@
                     <iais:sortableHeader needSort="true" field="LICENCE_NO" value="Licence No." style="width:15%;" customSpacing="12"/>
                     <iais:sortableHeader needSort="true" field="BUSINESS_NAME" value="Business Name" style="width:15%;" customSpacing="12"/>
                     <iais:sortableHeader needSort="true" field="ADDRESS" value="Address" style="width:10%;" customSpacing="12"/>
-                    <iais:sortableHeader needSort="true" field="EXPIRY_DATE" value="Licence Tenure" style="width:15%;" customSpacing="30"/>
+                    <iais:sortableHeader needSort="true" field="EXPIRY_DATE" value="Licence Tenure" style="width:15%;" customSpacing="42"/>
                     <th style="width: 18%;">
                         <p style="margin-left: 16px;width: 100%;">
                             Date of Agreement <span class="mandatory">*</span>
@@ -24,7 +24,7 @@
                         </p>
                     </th>
                     <th style="width: 10%;">
-                        <p style="margin-left: 16px;width: 100%;">
+                        <p style="margin-left: 16px;width: 90%;">
                             Scope of Outsourcing <span class="mandatory">*</span>
                         </p>
                     </th>

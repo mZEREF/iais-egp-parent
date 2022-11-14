@@ -65,7 +65,7 @@
                                 <span class="glyphicon glyphicon-chevron-down" style="font-size: 10px"></span>
                             </a>
                         </span>
-                    <p style="margin-left:30px;">Licence Tenure</p>
+                    <p style="margin-left:42px;">Licence Tenure</p>
                 </th>
                 <th class="sorting" style="width:15%;">
                         <span class="column-sort">

@@ -6,16 +6,16 @@
             CONCAT(CASE p.BLK_NO WHEN NULL THEN NULL ELSE ' '+p.BLK_NO END,
             CASE p.STREET_NAME WHEN NULL THEN NULL ELSE ' '+p.STREET_NAME END,
             CASE p.BUILDING_NAME WHEN NULL THEN NULL ELSE ' '+p.BUILDING_NAME  END,
-            CASE p.FLOOR_NO WHEN NULL THEN NULL ELSE '#'+p.FLOOR_NO END,
+            CASE p.FLOOR_NO WHEN NULL THEN NULL ELSE ' #'+p.FLOOR_NO END,
             CASE p.UNIT_NO WHEN NULL THEN NULL ELSE '-'+p.UNIT_NO END,
             SUBSTRING ((SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
                 FROM premises_operational_unit pou
                 WHERE pou.PREMISES_ID =p.ID
                 ORDER BY SEQ_NUM ASC
                 FOR XML path('')
-                ), 1, 1000)
+                ), 1, 1000),',',CASE p.POSTAL_CODE WHEN NULL THEN NULL ELSE ' '+p.POSTAL_CODE  END
             ) ADDRESS,CONCAT(SUBSTRING(REPLACE(l.START_DATE,'-','/'),9,2),'/',SUBSTRING(REPLACE(l.START_DATE,'-','/'),6,2),'/',SUBSTRING(REPLACE(l.START_DATE,'-','/'),1,4)
-            ,'-',SUBSTRING(REPLACE(l.EXPIRY_DATE ,'-','/'),9,2),'/',SUBSTRING(REPLACE(l.EXPIRY_DATE,'-','/'),6,2),'/',SUBSTRING(REPLACE(l.EXPIRY_DATE,'-','/'),1,4)) EXPIRY_DATE
+            ,' ','-',' ',SUBSTRING(REPLACE(l.EXPIRY_DATE ,'-','/'),9,2),'/',SUBSTRING(REPLACE(l.EXPIRY_DATE,'-','/'),6,2),'/',SUBSTRING(REPLACE(l.EXPIRY_DATE,'-','/'),1,4)) EXPIRY_DATE
             FROM lic_premises AS lp
             JOIN licence AS l ON l.ID = lp.LICENCE_ID
             JOIN premises AS p ON p.ID = lp.PREMISES_ID
