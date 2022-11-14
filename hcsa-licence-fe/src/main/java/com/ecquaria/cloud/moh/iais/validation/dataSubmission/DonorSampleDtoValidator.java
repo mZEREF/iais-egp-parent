@@ -252,10 +252,9 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
     }
 
     private boolean validateFrom(DonorSampleDto donorSampleDto, Map<String, String> errorMap) {
-        Boolean directedDonation = donorSampleDto.getDirectedDonation();
+        Boolean localOrOversea = donorSampleDto.getLocalOrOversea();
         String fromHciCode = donorSampleDto.getSampleFromHciCode();
-        final String GENERAL_ERR0006 = "GENERAL_ERR0006";
-        if (Boolean.FALSE.equals(directedDonation) || DataSubmissionConsts.AR_SOURCE_OTHER.equals(fromHciCode)) {
+        if (Boolean.FALSE.equals(localOrOversea) || DataSubmissionConsts.AR_SOURCE_OTHER.equals(fromHciCode)) {
             if (StringUtil.isEmpty(donorSampleDto.getSampleFromOthers())) {
                 errorMap.put(DataSubmissionConsts.AR_SOURCE_OTHER.equals(fromHciCode) ? "sampleFromOthersFromHci" : "sampleFromOthers",GENERAL_ERR0006);
                 return false;

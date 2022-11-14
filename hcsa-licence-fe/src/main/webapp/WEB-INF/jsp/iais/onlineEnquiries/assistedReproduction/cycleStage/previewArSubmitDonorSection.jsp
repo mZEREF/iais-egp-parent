@@ -13,8 +13,8 @@
                 <iais:row>
                     <iais:field width="6" value="Is the sample donated from overseas or locally? " cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6" display="true">
-                        <c:if test="${donorSampleDto.directedDonation}">Local</c:if>
-                        <c:if test="${not donorSampleDto.directedDonation}">Overseas</c:if>
+                        <c:if test="${donorSampleDto.localOrOversea}">Local</c:if>
+                        <c:if test="${not donorSampleDto.localOrOversea}">Overseas</c:if>
                     </iais:value>
                 </iais:row>
 
@@ -188,11 +188,11 @@
                 <iais:row>
                     <iais:field width="6" value="Which Institution was the Sample Donated From? " cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6" display="true"
-                                style="${donorSampleDto.directedDonation?'':'display: none;'}">
+                                style="${donorSampleDto.localOrOversea?'':'display: none;'}">
                         <iais:code code="${donorSampleDto.sampleFromHciCode}"/>
                     </iais:value>
                     <iais:value width="6" cssClass="col-md-6" display="true"
-                                style="${donorSampleDto.directedDonation?'display: none;':''}">
+                                style="${donorSampleDto.localOrOversea?'display: none;':''}">
                         <c:out value="${donorSampleDto.sampleFromOthers}"/>
                     </iais:value>
                 </iais:row>
