@@ -2002,11 +2002,20 @@ public final class AppValidatorHelper {
         if (appSvcBusinessDtos == null || appSvcBusinessDtos.isEmpty()) {
             return;
         }
+        HttpServletRequest request = MiscUtil.getCurrentRequest();
+        AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(request);
+        String currentServiceId = ApplicationHelper.getCurrentServiceId(request);
+        List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList().stream()
+                .filter(item -> currentServiceId.equals(item.getBaseSvcId()))
+                .collect(Collectors.toList());
         for (int i = 0; i < appSvcBusinessDtos.size(); i++) {
-
             String subfix = "" + i;
-
             String serviceCode = appSvcBusinessDtos.get(i).getCurrService();
+            String premIndexNo = appSvcBusinessDtos.get(i).getPremIndexNo();
+            AppPremSpecialisedDto appPremSpecialisedDto = appPremSpecialisedDtoList.stream().filter(item -> premIndexNo.equals(item.getPremisesVal())).findFirst().get();
+            boolean match = appPremSpecialisedDto.getCheckedAppPremSubSvcRelDtoList().stream()
+                    .map(AppPremSubSvcRelDto::getSvcCode)
+                    .anyMatch(s -> AppServicesConsts.SERVICE_CODE_Emergency_Department.equals(s));
             String businessName = appSvcBusinessDtos.get(i).getBusinessName();
             if (StringUtil.isEmpty(businessName)) {
                 errorMap.put("businessName" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Business Name", "field"));
@@ -2027,7 +2036,7 @@ public final class AppValidatorHelper {
                     }
                 }
                 if (AppServicesConsts.SERVICE_CODE_ACUTE_HOSPITAL.equals(serviceCode) && businessName.toUpperCase().contains(
-                        "GENERAL")) {
+                        "GENERAL")&&!match) {
                     errorMap.put("businessName" + i, MessageUtil.getMessageDesc("GENERAL_ERR0073"));
                 }
             }
