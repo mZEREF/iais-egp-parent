@@ -1298,7 +1298,7 @@ public class ServiceInfoDelegator {
         Map<String, Integer> minPersonnle = IaisCommonUtils.genNewHashMap();
         Map<String, Integer> maxPersonnle = IaisCommonUtils.genNewHashMap();
         String[] personType = new String[]{ApplicationConsts.SERVICE_PERSONNEL_TYPE_EMBRYOLOGIST, ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER,
-                ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES, ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS, ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS};
+                ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES, ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS/*, ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS*/};
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = ApplicationHelper.getAppSvcRelatedInfo(bpc.request, currentSvcId);
         List<HcsaSvcPersonnelDto> typeConfigs = configCommService.getHcsaSvcPersonnel(currentSvcId, personType);
         if (IaisCommonUtils.isNotEmpty(typeConfigs)) {
@@ -1315,7 +1315,7 @@ public class ServiceInfoDelegator {
         int nuCount = 0;
         int arCount = 0;
         int speCount = 0;
-        int norCount = 0;
+//        int norCount = 0;
         int number = 0;
         if (currentSvcCode != null) {
             number = StringUtil.isEmpty(
@@ -1346,14 +1346,15 @@ public class ServiceInfoDelegator {
                         .map(List::size)
                         .orElse(number);
                 svcPersonnelDto.setSpecialCount(speCount);
-            } else {
+            }
+            /*else {
                 number = StringUtil.isEmpty(minPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS)) ? 0 : minPersonnle.get(
                         ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS);
                 norCount = Optional.ofNullable(svcPersonnelDto.getNormalList())
                         .map(List::size)
                         .orElse(number);
                 svcPersonnelDto.setNormalCount(norCount);
-            }
+            }*/
         }
         ParamUtil.setRequestAttr(bpc.request, "svcPersonnelDto", svcPersonnelDto);
         ParamUtil.setRequestAttr(bpc.request, "emPersonnelMax",
@@ -1362,7 +1363,7 @@ public class ServiceInfoDelegator {
                 maxPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER));
         ParamUtil.setRequestAttr(bpc.request, "nuPersonnelMax", maxPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES));
         ParamUtil.setRequestAttr(bpc.request, "spePersonnelMax", maxPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS));
-        ParamUtil.setRequestAttr(bpc.request, "othersPersonnelMax", maxPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS));
+//        ParamUtil.setRequestAttr(bpc.request, "othersPersonnelMax", maxPersonnle.get(ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS));
         List<SelectOption> personnelTypeSel = ApplicationHelper.genPersonnelTypeSel(currentSvcCode);
         ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.SERVICEPERSONNELTYPE, personnelTypeSel);
         List<SelectOption> designation = genPersonnelDesignSel(currentSvcCode);
