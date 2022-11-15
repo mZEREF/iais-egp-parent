@@ -99,7 +99,7 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         String yearNum = ParamUtil.getRequestString(request,"startYear");
         String monthNum = ParamUtil.getRequestString(request,"startMonth");
         Date startDate = DateUtil.parseDate(startDateStr, AppConsts.DEFAULT_DATE_FORMAT);
-        String cryopresNum = ParamUtil.getString(request,"cryopresNum");
+        String cryopresNumStr = ParamUtil.getString(request,"cryopresNum");
         if(yearNum != null && StringUtil.isNumber(yearNum)){
             efoCycleStageDto.setYearNum(Integer.parseInt(yearNum));
         }
@@ -107,18 +107,22 @@ public class EfoCycleStageDelegator extends CommonDelegator{
             efoCycleStageDto.setMonthNum(Integer.parseInt(monthNum));
         }
         ArChangeInventoryDto arChangeInventoryDto = arSuperDataSubmissionDto.getArChangeInventoryDto();
-        if (cryopresNum != null && StringUtil.isNumber(cryopresNum)) {
-            efoCycleStageDto.setCryopresNum(Integer.parseInt(cryopresNum));
-             if (DataSubmissionConsts.DS_CYCLE_EFO.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle())) {
+
+        efoCycleStageDto.setCryopresNumStr(cryopresNumStr);
+        if (StringUtil.isNumber(cryopresNumStr)) {
+            efoCycleStageDto.setCryopresNum(Integer.parseInt(cryopresNumStr));
+            efoCycleStageDto.setCryopresNumStr(null);
+
+            if (DataSubmissionConsts.DS_CYCLE_EFO.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle())) {
                  if (efoCycleStageDto.getCryopresNum() == 0) {
                      String others = ParamUtil.getRequestString(request, "others");
                      efoCycleStageDto.setOthers(others);
                  }
                  arChangeInventoryDto.setFrozenSpermNum(0);
-                 arChangeInventoryDto.setFrozenOocyteNum(Integer.parseInt(cryopresNum));
+                 arChangeInventoryDto.setFrozenOocyteNum(Integer.parseInt(cryopresNumStr));
             }
             if (DataSubmissionConsts.DS_CYCLE_SFO.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle())) {
-                arChangeInventoryDto.setFrozenSpermNum(Integer.parseInt(cryopresNum));
+                arChangeInventoryDto.setFrozenSpermNum(Integer.parseInt(cryopresNumStr));
                 arChangeInventoryDto.setFrozenOocyteNum(0);
             }
         }

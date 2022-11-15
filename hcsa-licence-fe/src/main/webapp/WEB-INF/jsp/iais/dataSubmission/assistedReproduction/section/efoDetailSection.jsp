@@ -92,7 +92,7 @@
                 <iais:row id="cryopresNum">
                     <iais:field width="6" cssClass="col-md-6" value="No.Cryopreserved" mandatory="true"/>
                     <iais:value width="6" cssClass="col-md-6">
-                        <iais:input type="text" maxLength="50" value="${arSuperDataSubmissionDto.efoCycleStageDto.cryopresNum}" id="cryopresNum" name="cryopresNum" />
+                        <iais:input type="text" maxLength="50" value="${arSuperDataSubmissionDto.efoCycleStageDto.cryopresNumStr==null?arSuperDataSubmissionDto.efoCycleStageDto.cryopresNum:arSuperDataSubmissionDto.efoCycleStageDto.cryopresNumStr}" id="cryopresNum" name="cryopresNum" />
                         <span class="error-msg" name="iaisErrorMsg" id="error_cryopresNum"></span>
                     </iais:value>
                 </iais:row>

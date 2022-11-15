@@ -33,8 +33,9 @@ public class EfoDtoValidator implements CustomizeValidator {
         Date sDate = efoCycleStageDto.getStartDate();
         String reason = efoCycleStageDto.getReason();
         String othersReason = efoCycleStageDto.getOtherReason();
-        String cryopresNum = ParamUtil.getString(httpServletRequest,"cryopresNum");
-        String others = ParamUtil.getString(httpServletRequest, "others");
+        int cryopresNum = efoCycleStageDto.getCryopresNum();
+        String cryopresNumStr = efoCycleStageDto.getCryopresNumStr();
+        String others = efoCycleStageDto.getOthers();
 
 
         if (!StringUtil.isEmpty(sDate) ) {
@@ -44,18 +45,19 @@ public class EfoDtoValidator implements CustomizeValidator {
             }
         }
 
-        if (StringUtil.isEmpty(cryopresNum)) {
+        if (StringUtil.isEmpty(cryopresNum) && StringUtil.isEmpty(cryopresNumStr)) {
             String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","No.Cryopreserved", "field");
             errorMap.put("cryopresNum", errMsg);
-        } else if (!StringUtil.isNumber(cryopresNum)) {
+        } else if (StringUtil.isNotEmpty(cryopresNumStr)) {
             String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0002","No.Cryopreserved", "field");
             errorMap.put("cryopresNum", errMsg);
         }
 
-        if (DataSubmissionConsts.DS_CYCLE_EFO.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle())
-                && "0".equals(cryopresNum) && StringUtil.isEmpty(others)) {
-            String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","others", "field");
-            errorMap.put("others", errMsg);
+        if (DataSubmissionConsts.DS_CYCLE_EFO.equals(arSuperDataSubmissionDto.getSelectionDto().getCycle()) && cryopresNum == 0) {
+            if (StringUtil.isEmpty(others)) {
+                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","others", "field");
+                errorMap.put("others", errMsg);
+            }
         }
 
         if(efoCycleStageDto.getIsMedicallyIndicated()==1){
