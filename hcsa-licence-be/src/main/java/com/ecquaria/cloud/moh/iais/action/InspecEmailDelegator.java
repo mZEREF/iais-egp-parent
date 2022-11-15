@@ -44,19 +44,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.InspectionHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
-import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
-import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
-import com.ecquaria.cloud.moh.iais.service.InspEmailService;
-import com.ecquaria.cloud.moh.iais.service.InspectionService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.service.*;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
@@ -122,6 +111,8 @@ public class InspecEmailDelegator {
     ApplicationClient applicationClient;
     @Autowired
     InspectionTaskClient inspectionTaskClient;
+    @Autowired
+    ApptInspectionDateService apptInspectionDateService;
     @Value("${easmts.vehicle.sperate.flag}")
     private String vehicleOpenFlag;
     private static final String TASK_DTO="taskDto";
@@ -163,6 +154,8 @@ public class InspecEmailDelegator {
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, null);
         ParamUtil.setSessionAttr(request,ROLL_BACK_OPTIONS, null);
         ParamUtil.setSessionAttr(request,ROLL_BACK_VALUE_MAP, null);
+        ParamUtil.setSessionAttr(request, "lrSelect", null);
+        ParamUtil.setSessionAttr(request, "decision", null);
         SearchParam searchParamGroup = (SearchParam)ParamUtil.getSessionAttr(bpc.request, "backendinboxSearchParam");
         ParamUtil.setSessionAttr(bpc.request,"backSearchParamFromHcsaApplication",searchParamGroup);
     }
@@ -355,10 +348,10 @@ public class InspecEmailDelegator {
         }
         inspectionEmailTemplateDto.setMessageContent(mesContext);
 
-        String[] processDess = new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW, InspectionConstants.PROCESS_DECI_ROTE_EMAIL_INSPECTION_LEAD_REVIEW};
+        String[] processDess = new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW, InspectionConstants.PROCESS_DECI_ROTE_EMAIL_INSPECTION_LEAD_REVIEW, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY};
         String appType = applicationViewDto.getApplicationDto().getApplicationType();
         if (!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType))) {
-            processDess = new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW, InspectionConstants.PROCESS_DECI_ROTE_EMAIL_INSPECTION_LEAD_REVIEW, InspectionConstants.PROCESS_DECI_ROLL_BACK};
+            processDess = new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW, InspectionConstants.PROCESS_DECI_ROTE_EMAIL_INSPECTION_LEAD_REVIEW, InspectionConstants.PROCESS_DECI_ROLL_BACK, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY};
         }
         List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(processDess);
         List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppNo(applicationViewDto.getApplicationDto().getApplicationNo());
@@ -384,10 +377,10 @@ public class InspecEmailDelegator {
         inspectionEmailTemplateDto.setAppStatus(MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationViewDto.getApplicationDto().getStatus()}).get(0).getText());
         ParamUtil.setSessionAttr(bpc.request, TASK_DTO, taskDto);
         ParamUtil.setSessionAttr(request,"appPremCorrId", correlationId);
-        ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
+        ParamUtil.setSessionAttr(request,"appTypeOption", (Serializable)(appTypeOption));
         ParamUtil.setSessionAttr(request,MSG_CON, mesContext);
         ParamUtil.setSessionAttr(request,APP_VIEW_DTO,applicationViewDto);
-        ParamUtil.setRequestAttr(request,"appPremisesRoutingHistoryDtos", appPremisesRoutingHistoryDtos);
+        ParamUtil.setSessionAttr(request,"appPremisesRoutingHistoryDtos", (Serializable)(appPremisesRoutingHistoryDtos));
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
         //init roll back
         Map<String, AppPremisesRoutingHistoryDto> historyDtoMap = IaisCommonUtils.genNewHashMap();
@@ -424,6 +417,7 @@ public class InspecEmailDelegator {
     public void sendEmail(BaseProcessClass bpc) throws FeignException {
 
         log.info("=======>>>>>sendEmail>>>>>>>>>>>>>>>>emailRequest");
+        ParamUtil.setRequestAttr(bpc.request,  IaisEGPConstant.ISVALID,  IaisEGPConstant.YES);
         HttpServletRequest request = bpc.request;
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String userId = loginContext.getUserId();
@@ -437,11 +431,11 @@ public class InspecEmailDelegator {
         }
 
         String decision=ParamUtil.getString(request,"decision");
-
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,INS_EMAIL_DTO);
         inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,SUBJECT));
         inspectionEmailTemplateDto.setMessageContent(ParamUtil.getString(request,MSG_CON));
-        inspectionEmailTemplateDto.setRemarks(ParamUtil.getString(request, "Remarks"));
+        String remarks = ParamUtil.getString(request, "Remarks");
+        inspectionEmailTemplateDto.setRemarks(remarks);
         if (inspectionEmailTemplateDto.getSubject().isEmpty()){
             Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
             ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
@@ -524,6 +518,39 @@ public class InspecEmailDelegator {
                 inspectionService.rollBack(bpc, taskDto, applicationViewDto, historyDtoMap.get(rollBackTo), inspectionEmailTemplateDto.getRemarks());
                 ParamUtil.setRequestAttr(bpc.request,"isRollBack",true);
             }
+        } else if(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY.equals(decision)) {
+            ParamUtil.setSessionAttr(request, "lrSelect", null);
+            String lrSelect = ParamUtil.getRequestString(request, "lrSelect");
+            ParamUtil.setSessionAttr(request, "lrSelect", lrSelect);
+            log.info(StringUtil.changeForLog("The lrSelect is -->:"+lrSelect));
+            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+            if (remarks == null) {
+                errorMap.put("internalRemarks1", "GENERAL_ERR0006");
+            }
+            if (lrSelect == null) {
+                errorMap.put("lrSelectIns", "GENERAL_ERR0006");
+            }
+            if(errorMap.isEmpty()) {
+                String[] lrSelects = lrSelect.split("_");
+                String workGroupId = lrSelects[0];
+                String userId1 = lrSelects[1];
+                inspEmailService.completedTask(taskDto);
+                List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
+                taskDto.setUserId(userId1);
+                taskDto.setDateAssigned(new Date());
+                taskDto.setId(null);
+                taskDto.setWkGrpId(workGroupId);
+                taskDto.setSlaDateCompleted(null);
+                taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+                taskDtos.add(taskDto);
+                taskService.createTasks(taskDtos);
+                apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY, taskDto, userId, inspectionEmailTemplateDto.getRemarks(), HcsaConsts.ROUTING_STAGE_INS);
+                apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, taskDto, userId, "", HcsaConsts.ROUTING_STAGE_INS);
+            } else {
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+
+            }
         }
         else {
             applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING);
@@ -549,6 +576,7 @@ public class InspecEmailDelegator {
             inspEmailService.insertEmailDraft(inspectionEmailTemplateDto);
         }
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
+        ParamUtil.setRequestAttr(bpc.request, "decision", decision);
 
     }
     public void doRecallEmail(BaseProcessClass bpc) {

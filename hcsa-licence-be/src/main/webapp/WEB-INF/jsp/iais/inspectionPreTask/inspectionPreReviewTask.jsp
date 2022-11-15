@@ -194,6 +194,10 @@
                                 <span class="error-msg" name="iaisErrorMsg" id="error_nextStage"></span>
                               </iais:value>
                             </iais:row>
+                            <div id="laterallySelectRow">
+                              <c:set var="roleId" value="${taskDto.roleId}"/>
+                              <%@include file="../hcsaLicence/laterallySelect.jsp" %>
+                            </div>
                             <iais:row id="rbCheckStage">
                               <iais:field value="Route Back To" required="true"/>
                               <iais:value width="7">
@@ -305,7 +309,7 @@
     var actionValue = $("#actionValue").val();
     if (actionValue == "edit") {
       inspectionPreTaskJump("edit");
-    } else if (actionValue == "request" || actionValue == "routeB") {
+    } else if (actionValue == "request" || actionValue == "routeB" || actionValue == "PROCRLR") {
       inspectionPreTaskJump("process");
     }
 
@@ -374,6 +378,7 @@
     $("#rfiSelect").addClass('hidden');
     $("#rfiCheckBox").hide();
     $("#rbCheckStage").hide();
+    $("#laterallySelectRow").hide();
     $('#rollBackToRow').hide();
 
     if ("REDECI001" == value) {
@@ -385,6 +390,8 @@
       }
     } else if ("REDECI021" == value) {
       $("#rbCheckStage").show();
+    } else if ('PROCRLR' == value) {
+      $("#laterallySelectRow").show();
     }
     showRollBackTo();
   }
@@ -410,6 +417,10 @@
         $("#actionValue").val('routeB');
         inspectionPreTaskSubmit('rollBack');
       })
+    } else if ('PROCRLR' == actionValue) {
+
+      $("#actionValue").val('PROCRLR');
+      inspectionPreTaskSubmit('routeLater');
     } else {
       var errMsg = '<iais:message key="GENERAL_ERR0006"/>';
       $("#error_selectValue").text(errMsg);

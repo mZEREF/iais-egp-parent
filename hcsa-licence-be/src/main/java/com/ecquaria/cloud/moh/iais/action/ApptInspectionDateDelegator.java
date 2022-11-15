@@ -4,7 +4,9 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
@@ -24,10 +26,8 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.InspectionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.ApptInspectionDateService;
-import com.ecquaria.cloud.moh.iais.service.InspectionService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.*;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -61,6 +61,8 @@ public class ApptInspectionDateDelegator {
     @Autowired
     private InspectionService inspectionService;
 
+    @Autowired
+    InspEmailService inspEmailService;
     /**
      * StartStep: apptInspectionDateStart
      *
@@ -104,6 +106,7 @@ public class ApptInspectionDateDelegator {
         ParamUtil.setSessionAttr(bpc.request, "scheduledInspApptDraftDtos", null);
         ParamUtil.setSessionAttr(bpc.request, "rollBackOptions", null);
         ParamUtil.setSessionAttr(bpc.request, "rollBackValueMap", null);
+        ParamUtil.setSessionAttr(bpc.request, "lrSelect", null);
     }
 
     /**
@@ -154,6 +157,7 @@ public class ApptInspectionDateDelegator {
         if(!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType))){
             processDecValues.add(InspectionConstants.PROCESS_DECI_ROLL_BACK);
         }
+        processDecValues.add(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY);
         ParamUtil.setRequestAttr(bpc.request, "nextStages", MasterCodeUtil.retrieveOptionsByCodes(processDecValues.toArray(new String[0])));
 
         //set rollback options
@@ -179,12 +183,42 @@ public class ApptInspectionDateDelegator {
         apptInspectionDateDto.setProcessDec(processDec);
         apptInspectionDateDto.setRemarks(remarks);
         ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", apptInspectionDateDto);
-
+        ApplicationViewDto applicationViewDto= (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+        TaskDto taskDto= (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if (InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE.equals(processDec)) {
             validateSpecificDate(bpc, errorMap, apptInspectionDateDto);
         } else if (InspectionConstants.PROCESS_DECI_ROLL_BACK.equals(processDec)) {
             validateRollBack(bpc, errorMap, apptInspectionDateDto);
+        } else if(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY.equals(processDec)){
+            ParamUtil.setSessionAttr(bpc.request, "lrSelect", null);
+            String lrSelect = ParamUtil.getRequestString(bpc.request, "lrSelect");
+            ParamUtil.setSessionAttr(bpc.request, "lrSelect", lrSelect);
+            log.info(StringUtil.changeForLog("The lrSelect is -->:"+lrSelect));
+            if (remarks == null) {
+                errorMap.put("internalRemarks1", "GENERAL_ERR0006");
+            }
+            if (lrSelect == null) {
+                errorMap.put("lrSelectIns", "GENERAL_ERR0006");
+            }
+            if(errorMap.isEmpty()){
+                String[] lrSelects =  lrSelect.split("_");
+                String workGroupId = lrSelects[0];
+                String userId = lrSelects[1];
+                inspEmailService.completedTask(taskDto);
+                List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
+                taskDto.setUserId(userId);
+                taskDto.setDateAssigned(new Date());
+                taskDto.setId(null);
+                taskDto.setWkGrpId(workGroupId);
+                taskDto.setSlaDateCompleted(null);
+                taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+                taskDtos.add(taskDto);
+                taskService.createTasks(taskDtos);
+                apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY,taskDto,userId,apptInspectionDateDto.getRemarks(), HcsaConsts.ROUTING_STAGE_INS);
+                apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, taskDto,userId,"",HcsaConsts.ROUTING_STAGE_INS);
+                ParamUtil.setRequestAttr(bpc.request,"LATERALLY",AppConsts.TRUE);
+            }
         }else if (StringUtil.isEmpty(processDec)){
             errorMap.put("nextStage", "GENERAL_ERR0006");
         }
