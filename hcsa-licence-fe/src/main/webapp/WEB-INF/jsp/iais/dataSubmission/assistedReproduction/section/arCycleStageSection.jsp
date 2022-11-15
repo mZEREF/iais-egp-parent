@@ -11,6 +11,8 @@
             <div class="panel-main-content form-horizontal">
                 <%--@elvariable id="arSuperDataSubmissionDto" type="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto"--%>
                 <c:set var="arCycleStageDto" value="${arSuperDataSubmissionDto.arCycleStageDto}" />
+                <input type="hidden" id="startYear"  name="startYear" value="${arCycleStageDto.cycleAgeYear}">
+                <input type="hidden" id="startMonth" name="startMonth" value="${arCycleStageDto.cycleAgeMonth}">
                 <c:set var="enhancedCounsellingMandatory" value="${(arCycleStageDto.cycleAgeYear > 45 || arCycleStageDto.cycleAgeYear ==45 && arCycleStageDto.cycleAgeMonth>0 ) ? 'true' : 'false'}" />
                 <%@include file="patientCommon.jsp"%>
                 <iais:row>
@@ -28,7 +30,7 @@
                 <iais:row>
                     <iais:field width="6" cssClass="col-md-6" value="Patient's Age as of This Cycle" mandatory="false"/>
                     <iais:value width="6" cssClass="col-md-6" display="true">
-                        <c:out value="${arCycleStageDto.cycleAge}"/>
+                        <span style="display: block"><span id="cycleAgeYear" name="cycleAgeYear">${arCycleStageDto.cycleAgeYear}</span> Years and <span id="cycleAgeMonth" name="cycleAgeYear">${arCycleStageDto.cycleAgeMonth}</span> Month</span>
                     </iais:value>
                 </iais:row>
 

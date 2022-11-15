@@ -13,8 +13,8 @@
     <div id="efoDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
-                <input type="hidden" id="startYear"  name="startYear">
-                <input type="hidden" id="startMonth" name="startMonth">
+                <input type="hidden" id="startYear"  name="startYear" value="${arSuperDataSubmissionDto.efoCycleStageDto.yearNum}">
+                <input type="hidden" id="startMonth" name="startMonth" value="${arSuperDataSubmissionDto.efoCycleStageDto.monthNum}">
                 <h3>
                     <label ><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label>
                     <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>

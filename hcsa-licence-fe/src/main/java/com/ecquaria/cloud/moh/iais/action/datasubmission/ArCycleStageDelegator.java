@@ -13,7 +13,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -153,14 +152,14 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
     public void setCycleAgeByPatientInfoDtoAndHcicode(ArCycleStageDto arCycleStageDto, PatientInfoDto patientInfoDto,String hciCode){
         if(patientInfoDto != null && patientInfoDto.getPatient() !=null){
             PatientDto patientDto = patientInfoDto.getPatient();
-            List<Integer> integers = Formatter.getYearsAndDays(patientDto.getBirthDate());
-            if(IaisCommonUtils.isNotEmpty(integers)){
-                int year = integers.get(0);
-                int month = integers.get(integers.size()-1);
-                arCycleStageDto.setCycleAgeYear(year);
-                arCycleStageDto.setCycleAgeMonth(month);
-                arCycleStageDto.setCycleAge(IaisCommonUtils.getYearsAndMonths(year,month));
-            }
+//            List<Integer> integers = Formatter.getYearsAndDays(patientDto.getBirthDate());
+//            if(IaisCommonUtils.isNotEmpty(integers)){
+//                int year = integers.get(0);
+//                int month = integers.get(integers.size()-1);
+//                arCycleStageDto.setCycleAgeYear(year);
+//                arCycleStageDto.setCycleAgeMonth(month);
+//                arCycleStageDto.setCycleAge(IaisCommonUtils.getYearsAndMonths(year,month));
+//            }
             List<CycleDto> cycleDtos = arDataSubmissionService.getByPatientCodeAndHciCodeAndCycleTypeAndStatuses(patientDto.getPatientCode(),hciCode, DataSubmissionConsts.AR_CYCLE_AR);
             arCycleStageDto.setNumberOfCyclesUndergoneLocally(IaisCommonUtils.isNotEmpty(cycleDtos) ? cycleDtos.size() : 0);
             //set ar count for EnhancedCounselling
@@ -202,6 +201,15 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
 
     private void setArCycleStageDtoByPage(HttpServletRequest request,ArCycleStageDto arCycleStageDto){
         ControllerHelper.get(request,arCycleStageDto);
+        String yearNumStr = ParamUtil.getRequestString(request,"startYear");
+        String monthNumStr = ParamUtil.getRequestString(request,"startMonth");
+        if(StringUtil.isNotEmpty(yearNumStr) && StringUtil.isNumber(yearNumStr)) {
+            arCycleStageDto.setCycleAgeYear(Integer.parseInt(yearNumStr));
+        }
+        if(StringUtil.isNotEmpty(monthNumStr) && StringUtil.isNumber(monthNumStr)) {
+            arCycleStageDto.setCycleAgeMonth(Integer.parseInt(monthNumStr));
+        }
+        arCycleStageDto.setCycleAge(IaisCommonUtils.getYearsAndMonths(Integer.parseInt(yearNumStr), Integer.parseInt(monthNumStr)));
         arCycleStageDto.setCurrentArTreatment(ParamUtil.getStringsToString(request,"currentArTreatment"));
         arCycleStageDto.setCurrentArTreatmentValues(ParamUtil.getListStrings(request,"currentArTreatment"));
         arCycleStageDto.setOtherIndication(ParamUtil.getStringsToString(request,"otherIndication"));

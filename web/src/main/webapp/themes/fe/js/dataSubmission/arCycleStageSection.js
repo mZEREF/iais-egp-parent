@@ -7,6 +7,10 @@ $(document).ready(function (){
         hideUsedDonorOocyteControlClass(0);
     }
 
+    $('input[name="startDate"]').change( function (){
+        calculateAge($("#startDate").val());
+    });
+
     showPopCommon('#DSERR019TipShow','#DSERR019Tip',1);
     showPopCommon('#donorMessageTipShow','#donorMessageTip',1);
     mutualExclusionCheckBox('#currentArTreatmentCheckAR_CAT_001','#currentArTreatmentCheckAR_CAT_002');
@@ -62,6 +66,23 @@ function toggleOnSelectNoSelect(sel, value, area){
     }else {
         toggleOnSelect(sel,'-1',area);
     }
+}
+
+function calculateAge(freezingDate) {
+    $.ajax({
+        url: $('#_contextPath').val() + '/ar/calculate-age',
+        dataType: 'json',
+        data: {
+            "efoDateStarted": freezingDate,
+        },
+        type: 'POST',
+        success: function (data) {
+            $("#startYear").val(data.freezingYear);
+            $("#startMonth").val(data.freezingMonth);
+            $('#cycleAgeYear').html(data.freezingYear);
+            $('#cycleAgeMonth').html(data.freezingMonth);
+        }
+    });
 }
 
 
