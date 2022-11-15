@@ -1721,6 +1721,7 @@ public class ServiceInfoDelegator {
     public void prepareBusiness(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("prepare business start ..."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        int serviceCount = appSubmissionDto.getAppSvcRelatedInfoDtoList().size();
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, CURRENTSERVICEID);
         ParamUtil.setRequestAttr(bpc.request, "maxCount", 3);
@@ -1742,6 +1743,7 @@ public class ServiceInfoDelegator {
         ApplicationHelper.setTimeList(bpc.request);
         boolean isRfi = ApplicationHelper.checkIsRfi(bpc.request);
         ParamUtil.setRequestAttr(bpc.request, "isRfi", isRfi);
+        ParamUtil.setRequestAttr(bpc.request, "serviceCount", serviceCount);
         ParamUtil.setRequestAttr(bpc.request, HcsaAppConst.PREMALIGNBUSINESSMAP, premAlignBusinessMap);
         ParamUtil.setRequestAttr(bpc.request, "newBusiness", new AppSvcBusinessDto());
         log.debug(StringUtil.changeForLog("prepare business end ..."));
@@ -1791,7 +1793,7 @@ public class ServiceInfoDelegator {
             for (int i = 0; i < hcsaServiceDtoList.size(); i++) {
                 if (svcId.equals(hcsaServiceDtoList.get(i).getId())) {
                     serviceNum = i;
-                    svcCode = hcsaServiceDtoList.get(0).getSvcCode();
+                    svcCode = hcsaServiceDtoList.get(i).getSvcCode();
                     break;
                 }
             }
