@@ -2264,30 +2264,50 @@ public final class AppValidatorHelper {
             }
         }else {
             List<String> svcCodeList = appSvcOutsouredDto.getSvcCodeList();
-            if (IaisCommonUtils.isNotEmpty(svcCodeList)){
-                if(svcCodeList.contains(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY) || svcCodeList.contains(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES)){
-                    errMap.putAll(doValidateAppSvcOutsource(curAt, appSvcOutsouredDto, searchParam));
-                }else {
-                    errMap.putAll(doValidateAppSvcOutsource(curAt, appSvcOutsouredDto, searchParam));
-                }
-            }
+            errMap.putAll(doValidateAppSvcOutsource(curAt, appSvcOutsouredDto, searchParam, svcCodeList));
         }
         errMap.putAll(doValidateAppSvcOutsourceAddMaxCount(appSvcOutsouredDto.getClinicalLaboratoryList(), clbMaxCount , AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY));
         errMap.putAll(doValidateAppSvcOutsourceAddMaxCount(appSvcOutsouredDto.getRadiologicalServiceList(), rdsMaxCount, AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES));
         return errMap;
     }
 
-    private static Map<String, String> doValidateAppSvcOutsource(String curAt, AppSvcOutsouredDto appSvcOutsouredDto ,SearchParam searchParam){
+    private static Map<String, String> doValidateAppSvcOutsource(String curAt, AppSvcOutsouredDto appSvcOutsouredDto ,SearchParam searchParam, List<String> svcCodeList){
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
-        if (!StringUtil.isIn(curAt, new String[]{"delete","sort","changePage"})){
-            if (IaisCommonUtils.isEmpty(appSvcOutsouredDto.getClinicalLaboratoryList()) || IaisCommonUtils.isEmpty(appSvcOutsouredDto.getRadiologicalServiceList())){
-                errMap.put("clbList", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                        "Clinical Laboratory", "field"));
-                errMap.put("rdsList", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                        "Radiological Service", "field"));
-                if (searchParam == null){
-                    errMap.put("initOutsource", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                            "", "field"));
+        if (IaisCommonUtils.isNotEmpty(svcCodeList)){
+            if (!StringUtil.isIn(curAt, new String[]{"delete","sort","changePage"})){
+                if (svcCodeList.contains(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY)
+                        && !svcCodeList.contains(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES)){
+                    if (IaisCommonUtils.isEmpty(appSvcOutsouredDto.getRadiologicalServiceList())){
+                        errMap.put("rdsList", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                "Radiological Service", "field"));
+                        if (searchParam == null){
+                            errMap.put("initOutsource", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                    "", "field"));
+                        }
+                    }
+                } else if (svcCodeList.contains(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES)
+                        && !svcCodeList.contains(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY)){
+                    if (IaisCommonUtils.isEmpty(appSvcOutsouredDto.getClinicalLaboratoryList())){
+                        errMap.put("clbList", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                "Clinical Laboratory", "field"));
+                        if (searchParam == null){
+                            errMap.put("initOutsource", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                    "", "field"));
+                        }
+                    }
+                } else if (!svcCodeList.contains(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY)
+                        && !svcCodeList.contains(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES)){
+                    if (IaisCommonUtils.isEmpty(appSvcOutsouredDto.getRadiologicalServiceList())
+                            || IaisCommonUtils.isEmpty(appSvcOutsouredDto.getClinicalLaboratoryList())){
+                        errMap.put("rdsList", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                "Radiological Service", "field"));
+                        errMap.put("clbList", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                "Clinical Laboratory", "field"));
+                        if (searchParam == null){
+                            errMap.put("initOutsource", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                    "", "field"));
+                        }
+                    }
                 }
             }
         }
