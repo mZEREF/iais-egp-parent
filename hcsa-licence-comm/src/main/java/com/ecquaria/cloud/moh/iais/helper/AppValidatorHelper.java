@@ -2271,7 +2271,7 @@ public final class AppValidatorHelper {
     private static Map<String, String> doValidateAppSvcOutsource(String curAt, AppSvcOutsouredDto appSvcOutsouredDto ,SearchParam searchParam){
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         if (!StringUtil.isIn(curAt, new String[]{"delete","sort","changePage"})){
-            if (IaisCommonUtils.isEmpty(appSvcOutsouredDto.getClinicalLaboratoryList()) && IaisCommonUtils.isEmpty(appSvcOutsouredDto.getRadiologicalServiceList())){
+            if (IaisCommonUtils.isEmpty(appSvcOutsouredDto.getClinicalLaboratoryList()) || IaisCommonUtils.isEmpty(appSvcOutsouredDto.getRadiologicalServiceList())){
                 errMap.put("clbList", MessageUtil.replaceMessage("GENERAL_ERR0006",
                         "Clinical Laboratory", "field"));
                 errMap.put("rdsList", MessageUtil.replaceMessage("GENERAL_ERR0006",
@@ -3914,7 +3914,11 @@ public final class AppValidatorHelper {
         int size = errorMap.size();
         int maxLength = itemConfigDto.getMaxLength();
         if (maxLength > 0 && inputValue.length() > maxLength) {
-            errorMap.put(errorKey, repLength(itemConfigDto.getDisplayInfo(), String.valueOf(maxLength)));
+            if (StringUtil.isEmpty(itemConfigDto.getDisplayInfo())){
+                errorMap.put(errorKey, repLength(itemConfigDto.getDisplayInfo(), String.valueOf(maxLength)));
+            }else {
+                errorMap.put(errorKey, repLength(itemConfigDto.getRadioLabels(), String.valueOf(maxLength)));
+            }
         }
         String dataType = Optional.ofNullable(itemConfigDto.getDataType()).orElse("");
         switch (dataType) {
