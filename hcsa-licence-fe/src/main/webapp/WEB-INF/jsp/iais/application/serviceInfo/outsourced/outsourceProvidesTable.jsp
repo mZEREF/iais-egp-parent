@@ -91,7 +91,7 @@
                         <c:if test="${currSvcInfoDto.appSvcOutsouredDto.prefixVal != prefix}">
                              <textarea maxlength="3000" name="${prefix}outstandingScope" style="resize: none;"></textarea>
                         </c:if>
-                        <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}OutstandingScope"></span>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}outstandingScope"></span>
                     </td>
                     <td>
                         <c:if test="${outSourceResult.svcName eq AppServicesConsts.SERVICE_NAME_CLINICAL_LABORATORY}">

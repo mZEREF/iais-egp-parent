@@ -2221,18 +2221,18 @@ public final class AppValidatorHelper {
         }else if ("add".equals(curAt)) {
             AppPremGroupOutsourcedDto appPremGroupOutsourcedDto = appSvcOutsouredDto.getSearchOutsourced();
             if (appPremGroupOutsourcedDto != null) {
-                String prefix = appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getId();
-                String startDate = appPremGroupOutsourcedDto.getStartDateStr();
-                if (StringUtil.isEmpty(startDate)) {
-                    errMap.put(prefix + "agreementStartDate", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                            "Date of Agreement", "field"));
-                }
-                String endDate = appPremGroupOutsourcedDto.getEndDateStr();
-                if (StringUtil.isEmpty(endDate)) {
-                    errMap.put(prefix + "agreementEndDate", MessageUtil.replaceMessage("GENERAL_ERR0006",
-                            "End Date of Agreement", "field"));
-                }
                 if (appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto() != null){
+                    String prefix = appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getId();
+                    String startDate = appPremGroupOutsourcedDto.getStartDateStr();
+                    if (StringUtil.isEmpty(startDate)) {
+                        errMap.put(prefix + "agreementStartDate", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                "Date of Agreement", "field"));
+                    }
+                    String endDate = appPremGroupOutsourcedDto.getEndDateStr();
+                    if (StringUtil.isEmpty(endDate)) {
+                        errMap.put(prefix + "agreementEndDate", MessageUtil.replaceMessage("GENERAL_ERR0006",
+                                "End Date of Agreement", "field"));
+                    }
                     String outstandingScope = appPremGroupOutsourcedDto.getAppPremOutSourceLicenceDto().getOutstandingScope();
                     if (StringUtil.isEmpty(outstandingScope)) {
                         errMap.put(prefix + "outstandingScope", MessageUtil.replaceMessage("GENERAL_ERR0006",
@@ -2241,15 +2241,15 @@ public final class AppValidatorHelper {
                         String errorMsg = repLength("Scope of Outsourcing", "3000");
                         errMap.put(prefix + "outstandingScope", errorMsg);
                     }
-                }
-                if (StringUtil.isNotEmpty(startDate) && StringUtil.isNotEmpty(endDate)) {
-                    try {
-                        if (Formatter.parseDate(startDate).after(Formatter.parseDate(endDate))) {
-                            errMap.put(prefix + "agreementStartDate", MessageUtil.replaceMessage("NEW_ERR0037",
-                                    "Date of Agreement", "field"));
+                    if (StringUtil.isNotEmpty(startDate) && StringUtil.isNotEmpty(endDate)) {
+                        try {
+                            if (Formatter.parseDate(startDate).after(Formatter.parseDate(endDate))) {
+                                errMap.put(prefix + "agreementStartDate", MessageUtil.replaceMessage("NEW_ERR0037",
+                                        "Date of Agreement", "field"));
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
                         }
-                    } catch (ParseException e) {
-                        e.printStackTrace();
                     }
                 }
             }
