@@ -73,9 +73,9 @@ public class EfoDtoValidator implements CustomizeValidator {
             }
         }
         if(efoCycleStageDto.getIsMedicallyIndicated()==0){
-            if(!StringUtil.isEmpty(reason)&&reason.length()>66){
+            if(!StringUtil.isEmpty(reason)&&reason.length()>100){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                repMap.put("number","66");
+                repMap.put("number","100");
                 repMap.put("fieldNo","Reason");
                 String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
                 errorMap.put("reason", errMsg);

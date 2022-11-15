@@ -75,7 +75,7 @@
                             <iais:select cssClass="reasonSelect"  name="reasonSelect" firstOption="Please Select" options="efoReasonSelectOption" value="${arSuperDataSubmissionDto.efoCycleStageDto.reason}"></iais:select>
                         </div>
                         <div id="reasonDisplay0" <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.isMedicallyIndicated == 1}">style="display: none"</c:if> >
-                            <input type="text" maxlength="66" name="textReason" value="${arSuperDataSubmissionDto.efoCycleStageDto.reason}" >
+                            <input type="text" maxlength="100" name="textReason" value="${arSuperDataSubmissionDto.efoCycleStageDto.reason}" >
                         </div>
                         <span class="error-msg" name="iaisErrorMsg" id="error_reason"></span>
                     </iais:value>
