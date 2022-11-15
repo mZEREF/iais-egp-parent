@@ -2,7 +2,20 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
 <input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
+<c:if test="${serviceCount!=1}">
+    <style>
+        .input-padding .nice-select:after{
+            margin-right: -10px;
+        }
 
+        .label-padding {
+            padding-left: 0px;
+            padding-top: 14px;
+            margin-left: -4px;
+            margin-right: 4px;
+        }
+    </style>
+</c:if>
 <div class="row form-horizontal">
 
     <c:if test="${AppSubmissionDto.needEditController }">
