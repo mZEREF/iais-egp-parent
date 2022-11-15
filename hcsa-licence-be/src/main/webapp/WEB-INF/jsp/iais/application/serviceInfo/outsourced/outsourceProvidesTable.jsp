@@ -8,7 +8,7 @@
             <table aria-describedby="" class="table">
                 <thead>
                 <tr>
-                    <iais:sortableHeader needSort="true" field="SVC_NAME" value="Serivce" style="width:15%;" customSpacing="12"/>
+                    <iais:sortableHeader needSort="true" field="SVC_NAME" value="Service" style="width:15%;" customSpacing="12"/>
                     <iais:sortableHeader needSort="true" field="LICENCE_NO" value="Licence No." style="width:15%;" customSpacing="12"/>
                     <iais:sortableHeader needSort="true" field="BUSINESS_NAME" value="Business Name" style="width:15%;" customSpacing="12"/>
                     <iais:sortableHeader needSort="true" field="ADDRESS" value="Address" style="width:10%;" customSpacing="12"/>
