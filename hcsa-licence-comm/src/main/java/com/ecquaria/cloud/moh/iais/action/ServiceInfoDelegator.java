@@ -1793,7 +1793,7 @@ public class ServiceInfoDelegator {
             for (int i = 0; i < hcsaServiceDtoList.size(); i++) {
                 if (svcId.equals(hcsaServiceDtoList.get(i).getId())) {
                     serviceNum = i;
-                    svcCode = hcsaServiceDtoList.get(0).getSvcCode();
+                    svcCode = hcsaServiceDtoList.get(i).getSvcCode();
                     break;
                 }
             }
