@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremGroupOutsourcedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremNonLicRelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremSpecialisedDto;
@@ -27,7 +28,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoAbortDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOtherInfoTopPersonDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcOutsouredDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
@@ -1014,6 +1018,10 @@ public class LicenceViewServiceDelegator {
         dealCharges(appSvcChargesPageDto, oldAppSvcChargesPageDto);
         appSvcRelatedInfoDto.setAppSvcChargesPageDto(appSvcChargesPageDto);
         oldAppSvcRelatedInfoDto.setAppSvcChargesPageDto(oldAppSvcChargesPageDto);
+        // Other Info
+        List<AppSvcOtherInfoDto> appSvcOtherInfoDtoList = IaisCommonUtils.getList(appSvcRelatedInfoDto.getAppSvcOtherInfoList());
+        List<AppSvcOtherInfoDto> oldAppSvcOtherInfoDtoList = IaisCommonUtils.getList(oldAppSvcRelatedInfoDto.getAppSvcOtherInfoList());
+        dealAppSvcOtherInfoDtoList(appSvcOtherInfoDtoList,oldAppSvcOtherInfoDtoList);
         // Supplementary Form
         List<AppSvcSuplmFormDto> appSvcSuplmFormList = IaisCommonUtils.getList(appSvcRelatedInfoDto.getAppSvcSuplmFormList());
         List<AppSvcSuplmFormDto> oldAppSvcSuplmFormList = IaisCommonUtils.getList(oldAppSvcRelatedInfoDto.getAppSvcSuplmFormList());
@@ -1024,6 +1032,169 @@ public class LicenceViewServiceDelegator {
         dealDocuments(documentShowDtoList, oldDocumentShowDtoList);
         appSvcRelatedInfoDto.setDocumentShowDtoList(documentShowDtoList);
         oldAppSvcRelatedInfoDto.setDocumentShowDtoList(oldDocumentShowDtoList);
+        // Outsource
+        AppSvcOutsouredDto appSvcOutsouredDto = appSvcRelatedInfoDto.getAppSvcOutsouredDto();
+        if (appSvcOutsouredDto == null){
+            appSvcOutsouredDto = new AppSvcOutsouredDto();
+        }
+        AppSvcOutsouredDto oldAppSvcOutsouredDto = oldAppSvcRelatedInfoDto.getAppSvcOutsouredDto();
+        if (oldAppSvcOutsouredDto == null){
+            oldAppSvcOutsouredDto = new AppSvcOutsouredDto();
+        }
+        dealAppSvcOutsource(appSvcOutsouredDto, oldAppSvcOutsouredDto);
+    }
+
+    private void dealAppSvcOutsource(AppSvcOutsouredDto appSvcOutsouredDto, AppSvcOutsouredDto oldAppSvcOutsouredDto){
+        // clb
+        List<AppPremGroupOutsourcedDto> clbList = IaisCommonUtils.getList(appSvcOutsouredDto.getClinicalLaboratoryList());
+        List<AppPremGroupOutsourcedDto> oldClbList = IaisCommonUtils.getList(oldAppSvcOutsouredDto.getClinicalLaboratoryList());
+        int maxSize = Math.max(clbList.size(), oldClbList.size());
+        for (int i = 0, len = maxSize - clbList.size(); i < len; i++) {
+            clbList.add(new AppPremGroupOutsourcedDto());
+        }
+        for (int i = 0, len = maxSize -oldClbList.size(); i < len; i++) {
+            oldClbList.add(new AppPremGroupOutsourcedDto());
+        }
+        appSvcOutsouredDto.setClinicalLaboratoryList(clbList);
+        oldAppSvcOutsouredDto.setClinicalLaboratoryList(oldClbList);
+        // rds
+        List<AppPremGroupOutsourcedDto> rdsList = IaisCommonUtils.getList(appSvcOutsouredDto.getRadiologicalServiceList());
+        List<AppPremGroupOutsourcedDto> oldRdsList = IaisCommonUtils.getList(oldAppSvcOutsouredDto.getRadiologicalServiceList());
+        maxSize = Math.max(rdsList.size(), oldRdsList.size());
+        for (int i = 0, len = maxSize - rdsList.size(); i < len; i++) {
+            rdsList.add(new AppPremGroupOutsourcedDto());
+        }
+        for (int i = 0, len = maxSize -oldRdsList.size(); i < len; i++) {
+            oldRdsList.add(new AppPremGroupOutsourcedDto());
+        }
+        appSvcOutsouredDto.setRadiologicalServiceList(rdsList);
+        oldAppSvcOutsouredDto.setRadiologicalServiceList(oldRdsList);
+    }
+
+    private void dealAppSvcOtherInfoDtoList(List<AppSvcOtherInfoDto> appSvcOtherInfoDtoList,
+                                         List<AppSvcOtherInfoDto> oldAppSvcOtherInfoDtoList){
+        if (IaisCommonUtils.isEmpty(appSvcOtherInfoDtoList) || IaisCommonUtils.isEmpty(oldAppSvcOtherInfoDtoList)){
+            return;
+        }
+        /**
+         * Comparison of List in other info:
+         * 1. topPerson
+         * 2. abort
+         * 3. suplmForm
+         * 4. otherService
+         */
+        for (int i = 0; i < appSvcOtherInfoDtoList.size(); i++) {
+            // topPerson
+            dealAppSvcOtherInfoTopPerson(appSvcOtherInfoDtoList.get(i), oldAppSvcOtherInfoDtoList.get(i));
+            // abort
+            dealAppSvcOtherInfoAbort(appSvcOtherInfoDtoList.get(i), oldAppSvcOtherInfoDtoList.get(i));
+            // suplmForm
+            dealAppSvcSuplmForm(appSvcOtherInfoDtoList.get(i).getAppSvcSuplmFormDto(), oldAppSvcOtherInfoDtoList.get(i).getAppSvcSuplmFormDto());
+            // otherService
+            dealAppSvcOtherService(appSvcOtherInfoDtoList.get(i), oldAppSvcOtherInfoDtoList.get(i));
+        }
+    }
+
+    private void dealAppSvcOtherService(AppSvcOtherInfoDto appSvcOtherInfoDto, AppSvcOtherInfoDto oldAppSvcOtherInfoDto){
+        List<AppPremSubSvcRelDto> appPremSubSvcRelDtoList = IaisCommonUtils.getList(
+                appSvcOtherInfoDto.getAllAppPremSubSvcRelDtoList());
+        List<AppPremSubSvcRelDto> oldAppPremSubSvcRelDtoList = IaisCommonUtils.getList(
+                oldAppSvcOtherInfoDto.getAllAppPremSubSvcRelDtoList());
+        oldAppPremSubSvcRelDtoList = dealList(appPremSubSvcRelDtoList, oldAppPremSubSvcRelDtoList,
+                (newDto, oldDto) -> Objects.equals(newDto.getSvcCode(), oldDto.getSvcCode()), dto -> new AppPremSubSvcRelDto(),
+                null);
+        appSvcOtherInfoDto.setAllAppPremSubSvcRelDtoList(appPremSubSvcRelDtoList);
+        oldAppSvcOtherInfoDto.setAllAppPremSubSvcRelDtoList(oldAppPremSubSvcRelDtoList);
+    }
+
+    private void dealAppSvcOtherInfoAbort(AppSvcOtherInfoDto appSvcOtherInfoDto, AppSvcOtherInfoDto oldAppSvcOtherInfoDto){
+        // abortDrug
+        List<AppSvcOtherInfoAbortDto> abortDrugList = IaisCommonUtils.getList(appSvcOtherInfoDto.getOtherInfoAbortDrugList());
+        List<AppSvcOtherInfoAbortDto> oldAbortDrugList = IaisCommonUtils.getList(oldAppSvcOtherInfoDto.getOtherInfoAbortDrugList());
+        int maxSize = Math.max(abortDrugList.size(), oldAbortDrugList.size());
+        for (int i = 0, len = maxSize - abortDrugList.size(); i < len; i++) {
+            abortDrugList.add(new AppSvcOtherInfoAbortDto());
+        }
+        for (int i = 0, len = maxSize - oldAbortDrugList.size(); i < len; i++) {
+            oldAbortDrugList.add(new AppSvcOtherInfoAbortDto());
+        }
+        appSvcOtherInfoDto.setOtherInfoAbortDrugList(abortDrugList);
+        oldAppSvcOtherInfoDto.setOtherInfoAbortDrugList(oldAbortDrugList);
+        // surgicalProcedure
+        List<AppSvcOtherInfoAbortDto> surgicalProcedureList = IaisCommonUtils.getList(appSvcOtherInfoDto.getOtherInfoAbortSurgicalProcedureList());
+        List<AppSvcOtherInfoAbortDto> oldSurgicalProcedureList = IaisCommonUtils.getList(oldAppSvcOtherInfoDto.getOtherInfoAbortSurgicalProcedureList());
+        maxSize = Math.max(surgicalProcedureList.size(), oldSurgicalProcedureList.size());
+        for (int i = 0, len = maxSize - surgicalProcedureList.size(); i < len; i++) {
+            surgicalProcedureList.add(new AppSvcOtherInfoAbortDto());
+        }
+        for (int i = 0, len = maxSize - oldSurgicalProcedureList.size(); i < len; i++) {
+            oldSurgicalProcedureList.add(new AppSvcOtherInfoAbortDto());
+        }
+        appSvcOtherInfoDto.setOtherInfoAbortSurgicalProcedureList(surgicalProcedureList);
+        oldAppSvcOtherInfoDto.setOtherInfoAbortSurgicalProcedureList(oldSurgicalProcedureList);
+        // drugAndSurgical
+        List<AppSvcOtherInfoAbortDto> drugAndSurgicalList = IaisCommonUtils.getList(appSvcOtherInfoDto.getOtherInfoAbortDrugAndSurgicalList());
+        List<AppSvcOtherInfoAbortDto> oldDrugAndSurgicalList = IaisCommonUtils.getList(oldAppSvcOtherInfoDto.getOtherInfoAbortDrugAndSurgicalList());
+        maxSize = Math.max(drugAndSurgicalList.size(), oldDrugAndSurgicalList.size());
+        for (int i = 0, len = maxSize - drugAndSurgicalList.size(); i < len; i++) {
+            drugAndSurgicalList.add(new AppSvcOtherInfoAbortDto());
+        }
+        for (int i = 0, len = maxSize - oldDrugAndSurgicalList.size(); i < len; i++) {
+            oldDrugAndSurgicalList.add(new AppSvcOtherInfoAbortDto());
+        }
+        appSvcOtherInfoDto.setOtherInfoAbortDrugAndSurgicalList(drugAndSurgicalList);
+        oldAppSvcOtherInfoDto.setOtherInfoAbortDrugAndSurgicalList(oldDrugAndSurgicalList);
+    }
+
+    private void dealAppSvcOtherInfoTopPerson(AppSvcOtherInfoDto appSvcOtherInfoDto, AppSvcOtherInfoDto oldAppSvcOtherInfoDto){
+        // practitioners
+        List<AppSvcOtherInfoTopPersonDto> practitionersList = IaisCommonUtils.getList(appSvcOtherInfoDto.getOtherInfoTopPersonPractitionersList());
+        List<AppSvcOtherInfoTopPersonDto> oldPractitionersList = IaisCommonUtils.getList(oldAppSvcOtherInfoDto.getOtherInfoTopPersonPractitionersList());
+        int maxSize = Math.max(practitionersList.size(), oldPractitionersList.size());
+        for (int i = 0, len = maxSize - practitionersList.size(); i < len; i++) {
+            practitionersList.add(new AppSvcOtherInfoTopPersonDto());
+        }
+        for (int i = 0, len = maxSize - oldPractitionersList.size(); i < len; i++) {
+            oldPractitionersList.add(new AppSvcOtherInfoTopPersonDto());
+        }
+        appSvcOtherInfoDto.setOtherInfoTopPersonPractitionersList(practitionersList);
+        oldAppSvcOtherInfoDto.setOtherInfoTopPersonPractitionersList(oldPractitionersList);
+        // anaesthetists
+        List<AppSvcOtherInfoTopPersonDto> anaesthetistsList = IaisCommonUtils.getList(appSvcOtherInfoDto.getOtherInfoTopPersonAnaesthetistsList());
+        List<AppSvcOtherInfoTopPersonDto> oldAnaesthetistsList = IaisCommonUtils.getList(oldAppSvcOtherInfoDto.getOtherInfoTopPersonAnaesthetistsList());
+        maxSize = Math.max(anaesthetistsList.size(), oldAnaesthetistsList.size());
+        for (int i = 0, len = maxSize - anaesthetistsList.size(); i < len; i++) {
+            anaesthetistsList.add(new AppSvcOtherInfoTopPersonDto());
+        }
+        for (int i = 0, len = maxSize - oldAnaesthetistsList.size(); i < len; i++) {
+            oldAnaesthetistsList.add(new AppSvcOtherInfoTopPersonDto());
+        }
+        appSvcOtherInfoDto.setOtherInfoTopPersonAnaesthetistsList(anaesthetistsList);
+        oldAppSvcOtherInfoDto.setOtherInfoTopPersonAnaesthetistsList(oldAnaesthetistsList);
+        // nurses
+        List<AppSvcOtherInfoTopPersonDto> nursesList = IaisCommonUtils.getList(appSvcOtherInfoDto.getOtherInfoTopPersonNursesList());
+        List<AppSvcOtherInfoTopPersonDto> oldNursesList = IaisCommonUtils.getList(oldAppSvcOtherInfoDto.getOtherInfoTopPersonNursesList());
+        maxSize = Math.max(nursesList.size(), oldNursesList.size());
+        for (int i = 0, len = maxSize - nursesList.size(); i < len; i++) {
+            nursesList.add(new AppSvcOtherInfoTopPersonDto());
+        }
+        for (int i = 0, len = maxSize - oldNursesList.size(); i < len; i++) {
+            oldNursesList.add(new AppSvcOtherInfoTopPersonDto());
+        }
+        appSvcOtherInfoDto.setOtherInfoTopPersonNursesList(nursesList);
+        oldAppSvcOtherInfoDto.setOtherInfoTopPersonNursesList(oldNursesList);
+        // counsellors
+        List<AppSvcOtherInfoTopPersonDto> counsellorsList = IaisCommonUtils.getList(appSvcOtherInfoDto.getOtherInfoTopPersonCounsellorsList());
+        List<AppSvcOtherInfoTopPersonDto> oldCounsellorsList = IaisCommonUtils.getList(oldAppSvcOtherInfoDto.getOtherInfoTopPersonCounsellorsList());
+        maxSize = Math.max(counsellorsList.size(), oldCounsellorsList.size());
+        for (int i = 0, len = maxSize - counsellorsList.size(); i < len; i++) {
+            counsellorsList.add(new AppSvcOtherInfoTopPersonDto());
+        }
+        for (int i = 0, len = maxSize - oldCounsellorsList.size(); i < len; i++) {
+            oldCounsellorsList.add(new AppSvcOtherInfoTopPersonDto());
+        }
+        appSvcOtherInfoDto.setOtherInfoTopPersonCounsellorsList(counsellorsList);
+        oldAppSvcOtherInfoDto.setOtherInfoTopPersonCounsellorsList(oldCounsellorsList);
     }
 
     private void dealAppSvcSuplmFormList(List<AppSvcSuplmFormDto> appSvcSuplmFormList,

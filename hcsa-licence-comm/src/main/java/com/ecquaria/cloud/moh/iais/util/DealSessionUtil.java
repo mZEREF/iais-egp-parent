@@ -833,10 +833,6 @@ public class DealSessionUtil {
 
     public static boolean initAppSvcOtherInfoList(AppSvcRelatedInfoDto currSvcInfoDto, List<AppGrpPremisesDto> appGrpPremisesDtos,
             boolean forceInit, HttpServletRequest request, String appType) {
-        if (request == null) {
-            return false;
-        }
-        boolean isRfi = ApplicationHelper.checkIsRfi(request);
         List<AppSvcOtherInfoDto> appSvcOtherInfoList = currSvcInfoDto.getAppSvcOtherInfoList();
         if (!forceInit && appSvcOtherInfoList != null &&
                 appSvcOtherInfoList.stream().allMatch(AppSvcOtherInfoDto::isInit)) {
@@ -866,6 +862,7 @@ public class DealSessionUtil {
             appSvcOtherInfoDto.setAppGrpPremisesDto(appGrpPremisesDto);
             appSvcOtherInfoDto.setSvcSpecifiedCorrelationList(svcSpecifiedCorrelationDtoList);
             appSvcOtherInfoDto.setAppSvcSuplmFormDto(appSvcSuplmFormDto);
+            boolean isRfi = ApplicationHelper.checkIsRfi(request);
             if (!isRfi || appSvcOtherInfoDto.getApplicantId() == null) {
                 appSvcOtherInfoDto.setOrgUserDto(getOtherInfoYfVs(request, appSvcOtherInfoDto));
             }else {

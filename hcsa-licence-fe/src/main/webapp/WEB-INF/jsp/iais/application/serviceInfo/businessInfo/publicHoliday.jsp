@@ -35,60 +35,62 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3 col-xs-3 start-div">
-                        <div class="row d-flex">
-                            <div class="col-sm-12 visible-xs visible-sm">
-                                <label class="control-label">Start</label>
-                            </div>
-                            <div class="col-md-10 col-lg-5 col-9 input-padding">
-                                <iais:select cssClass="PhStartHH" name="${status.index}onSitePhStartHH${index}" options="premiseHours" value="${ph.startFromHH}" firstOption="--"></iais:select>
-                            </div>
-                            <div class="col-md-2 col-lg-1 col-3 label-padding">
-                                (HH)
-                            </div>
-                            <div class="col-md-10 col-lg-5 col-9 input-padding">
-                                <iais:select cssClass="PhStartMM" name="${status.index}onSitePhStartMM${index}" options="premiseMinute" value="${ph.startFromMM}" firstOption="--"></iais:select>
-                            </div>
-                            <div class="col-md-2 col-lg-1 col-3 label-padding">
-                                (MM)
-                            </div>
-                            <div class="col-md-12 col-xs-12">
-                                <span class="error-msg " name="iaisErrorMsg" id="error_${status.index}onSitePhStart${index}"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-xs-3 end-div">
-                        <div class="row d-flex">
-                            <div class="col-sm-12 visible-xs visible-sm">
-                                <label class="control-label">End</label>
-                            </div>
-                            <div class="col-md-10 col-lg-5 col-9 input-padding">
-                                <iais:select cssClass="PhEndHH" name="${status.index}onSitePhEndHH${index}" options="premiseHours" value="${ph.endToHH}" firstOption="--"></iais:select>
-                            </div>
-                            <div class="col-md-2 col-lg-1 col-3 label-padding">
-                                (HH)
-                            </div>
-                            <div class="col-md-10 col-lg-5 col-9 input-padding">
-                                <iais:select cssClass="PhEndMM" name="${status.index}onSitePhEndMM${index}" options="premiseMinute" value="${ph.endToMM}" firstOption="--"></iais:select>
-                            </div>
-                            <div class="col-md-2 col-lg-1 col-3 label-padding">
-                                (MM)
-                            </div>
-                            <div class="col-md-12 col-xs-12">
-                                <span class="error-msg " name="iaisErrorMsg" id="error_${status.index}onSitePhEnd${index}"></span>
+                    <div class="col-md-8 col-xs-8 multi-sel-padding">
+                        <div class="col-md-5 col-xs-5 start-div">
+                            <div class="row d-flex">
+                                <div class="col-sm-12 visible-xs visible-sm">
+                                    <label class="control-label">Start</label>
+                                </div>
+                                <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                    <iais:select cssClass="PhStartHH" name="${status.index}onSitePhStartHH${index}" options="premiseHours" value="${ph.startFromHH}" firstOption="--"></iais:select>
+                                </div>
+                                <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                    (HH)
+                                </div>
+                                <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                    <iais:select cssClass="PhStartMM" name="${status.index}onSitePhStartMM${index}" options="premiseMinute" value="${ph.startFromMM}" firstOption="--"></iais:select>
+                                </div>
+                                <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                    (MM)
+                                </div>
+                                <div class="col-md-12 col-xs-12">
+                                    <span class="error-msg " name="iaisErrorMsg" id="error_${status.index}onSitePhStart${index}"></span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-2 col-xs-2 all-day-div">
-                        <div class="row d-flex">
-                            <div class="col-sm-12 visible-xs visible-sm">
-                                <label class="control-label">24 Hours</label>
+                        <div class="col-md-5 col-xs-5 end-div">
+                            <div class="row d-flex">
+                                <div class="col-sm-12 visible-xs visible-sm">
+                                    <label class="control-label">End</label>
+                                </div>
+                                <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                    <iais:select cssClass="PhEndHH" name="${status.index}onSitePhEndHH${index}" options="premiseHours" value="${ph.endToHH}" firstOption="--"></iais:select>
+                                </div>
+                                <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                    (HH)
+                                </div>
+                                <div class="col-md-10 col-lg-5 col-9 input-padding">
+                                    <iais:select cssClass="PhEndMM" name="${status.index}onSitePhEndMM${index}" options="premiseMinute" value="${ph.endToMM}" firstOption="--"></iais:select>
+                                </div>
+                                <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                    (MM)
+                                </div>
+                                <div class="col-md-12 col-xs-12">
+                                    <span class="error-msg " name="iaisErrorMsg" id="error_${status.index}onSitePhEnd${index}"></span>
+                                </div>
                             </div>
-                            <div class="col-md-5 col-xs-5 text-center all-day-position">
-                                <input class="form-check-input allDay" name="${status.index}onSitePhAllDay${index}"  type="checkbox" aria-invalid="false" value="true" <c:if test="${ph.selectAllDay}">checked="checked"</c:if> >
-                            </div>
-                            <div class="col-md-4 col-xs-4 delpubHolidayDiv <c:if test="${index == 0}">hidden</c:if>">
-                                <div class="fa fa-times-circle del-size-36 text-danger pubHolidayDel"></div>
+                        </div>
+                        <div class="col-md-2 col-xs-2 all-day-div">
+                            <div class="row d-flex">
+                                <div class="col-sm-12 visible-xs visible-sm">
+                                    <label class="control-label">24 Hours</label>
+                                </div>
+                                <div class="col-md-5 col-xs-5 text-center all-day-position">
+                                    <input class="form-check-input allDay" name="${status.index}onSitePhAllDay${index}"  type="checkbox" aria-invalid="false" value="true" <c:if test="${ph.selectAllDay}">checked="checked"</c:if> >
+                                </div>
+                                <div class="col-md-4 col-xs-4 delpubHolidayDiv <c:if test="${index == 0}">hidden</c:if>">
+                                    <div class="fa fa-times-circle del-size-36 text-danger pubHolidayDel"></div>
+                                </div>
                             </div>
                         </div>
                     </div>

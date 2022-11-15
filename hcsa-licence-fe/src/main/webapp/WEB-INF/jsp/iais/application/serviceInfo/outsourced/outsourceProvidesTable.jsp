@@ -8,7 +8,7 @@
             <table aria-describedby="" class="table">
                 <thead>
                 <tr>
-                    <iais:sortableHeader needSort="true" field="SVC_NAME" value="Serivce" style="width:15%;"/>
+                    <iais:sortableHeader needSort="true" field="SVC_NAME" value="Service" style="width:15%;"/>
                     <iais:sortableHeader needSort="true" field="LICENCE_NO" value="Licence No." style="width:15%;" customSpacing="12"/>
                     <iais:sortableHeader needSort="true" field="BUSINESS_NAME" value="Business Name" style="width:15%;" customSpacing="12"/>
                     <iais:sortableHeader needSort="true" field="ADDRESS" value="Address" style="width:10%;" customSpacing="12"/>
@@ -91,7 +91,7 @@
                         <c:if test="${currSvcInfoDto.appSvcOutsouredDto.prefixVal != prefix}">
                              <textarea maxlength="3000" name="${prefix}outstandingScope" style="resize: none;"></textarea>
                         </c:if>
-                        <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}OutstandingScope"></span>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}outstandingScope"></span>
                     </td>
                     <td>
                         <c:if test="${outSourceResult.svcName eq AppServicesConsts.SERVICE_NAME_CLINICAL_LABORATORY}">

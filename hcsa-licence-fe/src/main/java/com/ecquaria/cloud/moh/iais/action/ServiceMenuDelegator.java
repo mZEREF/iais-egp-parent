@@ -646,7 +646,7 @@ public class ServiceMenuDelegator {
                 }
             }
         }
-        if((!bundleAchOrMs &&noExistBaseLic) || (noExistBaseApp&&noExistBaseLic)){
+        if((!bundleAchOrMs &&noExistBaseLic) ){
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
         }
         ParamUtil.setSessionAttr(bpc.request,NO_EXIST_BASE_LIC, noExistBaseLic);
@@ -668,6 +668,8 @@ public class ServiceMenuDelegator {
         List<String> addressList=IaisCommonUtils.genNewArrayList();
         Map<String,String> licenceIdMap=IaisCommonUtils.genNewHashMap();
         Map<String,String> applicationNoMap=IaisCommonUtils.genNewHashMap();
+        String erroMsg = "";
+        String subErrorMsg = "";
         if (!noExistBaseLic){
             for (HcsaServiceDto hcsaServiceDto : notContainedSvc) {
                 PaginationHandler<AppAlignLicQueryDto> paginationHandler = (PaginationHandler<AppAlignLicQueryDto>) ParamUtil.getSessionAttr(bpc.request,hcsaServiceDto.getSvcCode()+"licPagDiv__SessionAttr");
@@ -679,6 +681,11 @@ public class ServiceMenuDelegator {
                 AppAlignLicQueryDto checkData = new AppAlignLicQueryDto();
                 if(allCheckedData != null && allCheckedData.size() > 0){
                     checkData = allCheckedData.get(0);
+                }
+                if (checkData.getSvcName()==null){
+                    subErrorMsg=MessageUtil.getMessageDesc("GENERAL_ERR0006");
+                    ParamUtil.setRequestAttr(bpc.request,hcsaServiceDto.getSvcCode()+"chooseBaseErr",subErrorMsg);
+                    continue;
                 }
                 if (!"first".equals(checkData.getSvcName())){
                     HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(checkData.getSvcName());
@@ -709,6 +716,11 @@ public class ServiceMenuDelegator {
                 AppAlignAppQueryDto checkData = new AppAlignAppQueryDto();
                 if(allCheckedData != null && allCheckedData.size() > 0){
                     checkData = allCheckedData.get(0);
+                }
+                if (checkData.getSvcName()==null){
+                    subErrorMsg=MessageUtil.getMessageDesc("GENERAL_ERR0006");
+                    ParamUtil.setRequestAttr(bpc.request,hcsaServiceDto.getSvcCode()+"chooseBaseErr",subErrorMsg);
+                    continue;
                 }
                 if (!"first".equals(checkData.getSvcName())){
                     HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(checkData.getSvcName());
@@ -755,8 +767,6 @@ public class ServiceMenuDelegator {
             return;
         }
         //validate
-        String erroMsg = "";
-        String subErrorMsg = "";
         int bundleMsCount=0;
         if(addressList.size() > 1){
             boolean isdifferent=false;
@@ -770,7 +780,7 @@ public class ServiceMenuDelegator {
                 erroMsg = MessageUtil.getMessageDesc("NEW_ERR0007");
             }
         }
-        if(StringUtil.isEmpty(erroMsg)){
+        if(StringUtil.isEmpty(erroMsg)&&StringUtil.isEmpty(subErrorMsg)){
             if(bundleAchOrMs){
                 if (!noExistBaseLic){
                     for (HcsaServiceDto hcsaServiceDto : notContainedSvc) {
