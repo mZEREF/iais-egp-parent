@@ -535,7 +535,9 @@ public final class AppDataHelper {
             appDeclarationMessageDto.setCriminalRecordsRemark(criminalRecordsRemark);
             String generalAccuracyItem1 = request.getParameter("generalAccuracyItem1");
             appDeclarationMessageDto.setGeneralAccuracyItem1(generalAccuracyItem1);
-
+            // Co-Location Declaration
+            appDeclarationMessageDto.setCoLocationItem1(ParamUtil.getString(request, "coLocationItem1"));
+            appDeclarationMessageDto.setCoLocationItem2(ParamUtil.getString(request, "coLocationItem2"));
         } else if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(type)) {
             // Preliminary Question
             String preliminaryQuestionKindly = request.getParameter("preliminaryQuestionKindly");
@@ -559,6 +561,9 @@ public final class AppDataHelper {
             appDeclarationMessageDto.setCriminalRecordsRemark(ParamUtil.getString(request, "criminalRecordsRemark"));
             // General Accuracy Declaration
             appDeclarationMessageDto.setGeneralAccuracyItem1(ParamUtil.getString(request, "generalAccuracyItem1"));
+            // Co-Location Declaration
+            appDeclarationMessageDto.setCoLocationItem1(ParamUtil.getString(request, "coLocationItem1"));
+            appDeclarationMessageDto.setCoLocationItem2(ParamUtil.getString(request, "coLocationItem2"));
         }
         appDeclarationMessageDto.setAppType(type);
         appDeclarationMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);

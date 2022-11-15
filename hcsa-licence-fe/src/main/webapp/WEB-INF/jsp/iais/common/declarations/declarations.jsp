@@ -40,6 +40,7 @@
             <%@include file="competencies.jsp"%>
             <%@include file="crimAndPassApp.jsp"%>
             <%@include file="generalAccuracy.jsp"%>
+            <%@include file="coLocation.jsp"%>
           </c:if>
               <c:set var="rfc_from_renew" value="${AppSubmissionDto.appGroupAppType == 'APTY005' && (not empty AppSubmissionDto.appDeclarationMessageDto && AppSubmissionDto.appDeclarationMessageDto.appType == 'APTY004') ? 'Y' : 'N'}"/>
           <c:if test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange=='RFC_eqHciNameChange' && rfc_from_renew != 'Y'}">
@@ -58,6 +59,7 @@
                 <%@include file="competencies.jsp"%>
                 <%@include file="crimAndPassApp.jsp"%>
                 <%@include file="generalAccuracy.jsp"%>
+                <%@include file="coLocation.jsp"%>
               </c:if>
               <c:if test="${group_renewal_app_rfc != '1'}">
                <%@include file="statements.jsp"%>
@@ -78,6 +80,7 @@
                 <%@include file="competencies.jsp"%>
                 <%@include file="crimAndPassApp.jsp"%>
                 <%@include file="generalAccuracy.jsp"%>
+                <%@include file="coLocation.jsp"%>
               </c:if>
           <c:if test="${renewDto.appSubmissionDtos.size()>=1 && renewDto.appSubmissionDtos[0].appType=='APTY004'}">
             <c:set value="${renewDto.appSubmissionDtos[0]}" var="AppSubmissionDto"></c:set>
@@ -94,6 +97,7 @@
             <%@include file="competencies.jsp"%>
             <%@include file="crimAndPassApp.jsp"%>
             <%@include file="generalAccuracy.jsp"%>
+            <%@include file="coLocation.jsp"%>
           </c:if>
           <c:if test="${declaration_page_is == 'cessation' }">
             <c:set value="${appCessationDtos[0]}" var="AppSubmissionDto" scope="request"></c:set>

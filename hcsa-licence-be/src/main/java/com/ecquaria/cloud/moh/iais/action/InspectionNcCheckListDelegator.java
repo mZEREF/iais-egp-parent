@@ -37,17 +37,18 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListItemValidate;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sop.servlet.webflow.HttpHandler;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: jiahao
@@ -499,7 +500,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
                 adhocCheckListConifgDtoOld.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                 adhocChecklistService.saveAdhocChecklist(adhocCheckListConifgDtoOld);
             }
-            List<TaskDto> taskDtos = (List<TaskDto>) ParamUtil.getSessionAttr(request,TASKDTOLIST);
+            List<TaskDto> taskDtos = fillupChklistService.getCurrTaskByRefNo(taskDto);
             String appPremCorrId = taskDto.getRefNo();
             AdCheckListShowDto adchklDto = fillupChklistService.getAdhocDraftByappCorrId(appPremCorrId);
             if(adchklDto==null){

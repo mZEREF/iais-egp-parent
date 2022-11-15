@@ -49,14 +49,10 @@
                                                             <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em class="fa fa-angle-left"></em> Back</a>
                                                             <input type="hidden" name="viewchk" id = "viewchk">
                                                             <div align="right">
+                                                                <button type="button" class="btn btn-primary" onclick="javascript: doListAhoc();">List Adhoc</button>
                                                                 <button type="button" class="btn btn-primary" onclick="javascript: doViewCheckList();">
                                                                     View CheckList
                                                                 </button>
-                                                                <c:if test="${applicationViewDto.applicationDto.status != ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}">
-                                                                    <button type="button" class="btn btn-primary" onclick="javascript: doNext();">
-                                                                        Save
-                                                                    </button>
-                                                                </c:if>
                                                                 <br/>
                                                                 <span class="error-msg" id="error_fillchkl" name="iaisErrorMsg"></span>
                                                             </div>
@@ -79,11 +75,6 @@
 
 
 <script type="text/javascript">
-    function doNext(){
-        showWaiting();
-        $("#saveflag").val("save");
-        SOP.Crud.cfxSubmit("mainForm", "save");
-    }
 
     function doViewCheckList() {
         SOP.Crud.cfxSubmit("mainForm", "doChecklist");
@@ -111,12 +102,19 @@
     function checkInspectionReportTab(){
         showWaiting();
         $('#crud_action_additional').val('editInspectorReport');
+        $("#saveflag").val("save");
         document.getElementById('mainForm').submit();
     }
 
     function checkProcessingTab(){
         showWaiting();
         $('#crud_action_additional').val('processing');
+        $("#saveflag").val("save");
         document.getElementById('mainForm').submit();
+    }
+
+    function doListAhoc(){
+        $("#viewchk").val("");
+        SOP.Crud.cfxSubmit("mainForm", "listAhoc");
     }
 </script>

@@ -88,10 +88,11 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
 
         if(!StringUtil.isEmpty(recommendationStr)){
             ParamUtil.setRequestAttr(request,"recommendationStr",recommendationStr);
+            ParamUtil.setSessionAttr(request,"recommendationOnlyShow",null);
         }else{
             //recommendationShow
             recommendationStr = ParamUtil.getString(request,"recommendationShow");
-            ParamUtil.setRequestAttr(request,"recommendationOnlyShow",recommendationStr);
+            ParamUtil.setSessionAttr(request,"recommendationOnlyShow",recommendationStr);
         }
 
         //route back review filling back
