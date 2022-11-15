@@ -1767,6 +1767,9 @@ public abstract class AppCommDelegator {
                 autoChangeSelectDto.setSpecialisedEdit(true);
                 autoChangeSelectDto.setChangeSpecialisedAutoFields(true);
                 appEditSelectDto.setChangeSpecialisedAutoFields(false);
+            } else if(autoAppSubmissionDto != null){
+                autoChangeSelectDto.setSpecialisedEdit(true);
+                autoChangeSelectDto.setChangeSpecialisedAutoFields(true);
             }
         }
         // check app submissions affected by personnel (service info)
