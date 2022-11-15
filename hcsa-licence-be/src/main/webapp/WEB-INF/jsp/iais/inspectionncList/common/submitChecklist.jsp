@@ -1,3 +1,7 @@
+<c:set var="isAoRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST062' || applicationViewDto.applicationDto.status == 'APST065' || applicationViewDto.applicationDto.status == 'APST066' || applicationViewDto.applicationDto.status == 'APST067'}"/>
+<c:set var="isPsoRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST063'}"/>
+<c:set var="isInspectorRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST064'}"/>
+<c:set var="isRouteBackStatus" value="${isInspectorRouteBackStatus || isAoRouteBackStatus || isPsoRouteBackStatus}"/>
 <div class="row">
     <div class="col-xs-12">
         <c:if test="${applicationViewDto.applicationDto.status ==  ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW}">
@@ -5,6 +9,12 @@
         </c:if>
         <c:if test="${applicationViewDto.applicationDto.status !=  ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW}">
             <a href="#" style="float:left;padding-top: 1.1%;" class="back" onclick="javascript:doBackToMain()"><em class="fa fa-angle-left"></em> Back</a>
+        </c:if>
+        <c:if test="${isRouteBackStatus}">
+            <div style="float:right">
+                <button class="btn btn-primary next" type="button" onclick="javascript:doBack()">Submit</button>
+                <button class="btn btn-primary next" type="button" onclick="javascript:doBack();">Save Draft</button>
+            </div>
         </c:if>
         <c:if test="${inspectionNcCheckListDelegator_before_finish_check_list != '1'}">
             <div style="float:right">

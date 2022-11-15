@@ -185,6 +185,21 @@ public class INTRANET___ApplicationView___1 extends BaseProcessClass {
 
 	}
 
+	public void listAhocs_OnStepProcess_0() throws Exception {
+	// 		listAhocs->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "listAhocs", this);
+	}
+
+	public void addAhoc_OnStepProcess_0() throws Exception {
+	// 		addAhoc->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "addAhocs", this);
+	}
+
+	public void saveAhoc_OnStepProcess_0() throws Exception {
+	// 		saveAhoc->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "saveAhocs", this);
+	}
+
 
 
 
