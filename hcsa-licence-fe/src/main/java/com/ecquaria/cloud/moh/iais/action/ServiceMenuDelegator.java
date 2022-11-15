@@ -646,7 +646,7 @@ public class ServiceMenuDelegator {
                 }
             }
         }
-        if((!bundleAchOrMs &&noExistBaseLic) || (noExistBaseApp&&noExistBaseLic)){
+        if((!bundleAchOrMs &&noExistBaseLic) ){
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
         }
         ParamUtil.setSessionAttr(bpc.request,NO_EXIST_BASE_LIC, noExistBaseLic);
