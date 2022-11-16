@@ -12,7 +12,7 @@
 
     <c:choose>
         <c:when test="${'APTY005' ==AppSubmissionDto.appType}">
-            <c:forEach items="${appSubmissionDtos}" var="appDto" >
+            <c:forEach items="${appSubmissionDtos}" var="appDto" varStatus="grpStat" >
                 <c:forEach items="${appDto.feeInfoDtos}" var="feeInfoDto" varStatus="feeInfoStat">
                     <c:set var="baseSvcFeeExt" value="${feeInfoDto.baseSvcFeeExt}"/>
                     <c:set var="complexSpecifiedFeeExt" value="${feeInfoDto.complexSpecifiedFeeExt}"/>
@@ -34,7 +34,7 @@
                                 <p>Amendment</p>
                             </td>
                             <td>
-                                <p><c:out value="${baseSvcFeeExt.appGroupNo}-0${feeInfoStat.index+1}"/></p>
+                                <p><c:out value="${baseSvcFeeExt.appGroupNo}-0${appDto.appGrpNo== baseSvcFeeExt.appGroupNo? (grpStat.index+1): (feeInfoStat.index+1)}"/></p>
                             </td>
                             <td>
                                 <p>
