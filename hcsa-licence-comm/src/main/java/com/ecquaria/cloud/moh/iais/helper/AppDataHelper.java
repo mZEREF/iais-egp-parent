@@ -337,6 +337,9 @@ public final class AppDataHelper {
             appGrpPremisesDto.setAppGrpSecondAddrDtos(appGrpSecondAddrDtoList);
             appGrpPremisesDtoList.add(appGrpPremisesDto);
         }
+        if (appGrpPremisesDtoList.size() == 1) {
+            appGrpPremisesDtoList.get(0).setSeqNum(null);
+        }
         return appGrpPremisesDtoList;
     }
 
