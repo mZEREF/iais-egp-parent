@@ -107,6 +107,43 @@
                 </td>
             </tr>
         </c:if>
+        <c:if test="${type=='nic'}">
+            <tr>
+                <td class="col-xs-6">
+                    <div class="form-check-label" aria-label="premise-1-cytology">
+                        <span class="check-square"></span>Professional Regn. No.
+                    </div>
+                </td>
+                <td>
+                    <div class="col-xs-6 img-show">
+                        <div class="newVal " attr="${person.profRegNo}">
+                            <c:out value="${person.profRegNo}"/>
+                            <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
+                                <jsp:param name="profRegNo" value="${person.profRegNo}"/>
+                                <jsp:param name="methodName" value="showThisTableNewService"/>
+                            </jsp:include>
+                        </div>
+                    </div>
+                    <div class="col-xs-6 img-show">
+                        <div class="oldVal " attr="${oldPerson.profRegNo}" style="display: none">
+                            <c:out value="${oldPerson.profRegNo}"/>
+                            <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
+                                <jsp:param name="profRegNo" value="${oldPerson.profRegNo}"/>
+                                <jsp:param name="methodName" value="showThisTableOldService"/>
+                            </jsp:include>
+                        </div>
+                    </div>
+                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecords.jsp">
+                        <jsp:param name="profRegNo" value="${person.profRegNo}"/>
+                        <jsp:param name="cssClass" value="new-img-show"/>
+                    </jsp:include>
+                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecords.jsp">
+                        <jsp:param name="profRegNo" value="${oldPerson.profRegNo}"/>
+                        <jsp:param name="cssClass" value="old-img-show"/>
+                    </jsp:include>
+                </td>
+            </tr>
+        </c:if>
     </table>
 </div>
 
