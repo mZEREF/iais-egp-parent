@@ -119,6 +119,10 @@
                                                         <span style="font-size: 1.6rem; color: #D22727; display: none" id="selectDecisionMsg" ><iais:message key="GENERAL_ERR0006"/></span>
                                                     </iais:value>
                                                 </iais:row>
+                                                <div id="laterallySelectRow">
+                                                    <c:set var="roleId" value="${taskDto.roleId}"/>
+                                                    <%@include file="../hcsaLicence/laterallySelect.jsp" %>
+                                                </div>
                                                 <jsp:include page="/WEB-INF/jsp/iais/inspectionPreTask/rollBackPart.jsp"/>
                                                 <iais:row id="ao1SelectRow">
                                                     <iais:field value="Select Approving Officer" required="false"/>
@@ -172,7 +176,9 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#ao1SelectRow").hide();
+        $("#laterallySelectRow").hide();
         $("#decision-revise-email").change(function () {
+            $("#laterallySelectRow").hide();
             var fv = $('#decision-revise-email option:selected').val();
             if (fv == 'REDECI003') {
                 showWaiting();
@@ -204,6 +210,9 @@
                     }
                 });
                 dismissWaiting();
+            } else if (fv == 'PROCRLR'){
+                $("#laterallySelectRow").show();
+                $("#ao1SelectRow").hide();
             } else {
                 $("#ao1SelectRow").hide();
             }
@@ -215,8 +224,11 @@
     function doSend() {
         var f = $('#decision-revise-email option:selected').val();
         var remark = $('#Remarks').val();
+        var lrSelect = $('#lrSelect').val();
         clearErrorMsg();
         $('#selectDecisionMsg').hide();
+        $("#laterallyMsg").hide();
+        $("#error_internalRemarks1").hide();
         if (f == null || f == ""  ) {
             $("#selectDecisionMsg").show();
         }
@@ -226,6 +238,20 @@
         }
         if('REDECI027' === f){
             submitRollBack(rollBackSubmit);
+        }else if("PROCRLR" === f){
+            var remarkNull = (remark == null || remark == "");
+            var lrSelectNull = (lrSelect == null || lrSelect == "");
+            if(remarkNull || lrSelectNull){
+                if(remarkNull){
+                    $("#error_internalRemarks1").show();
+                }
+                if(lrSelectNull){
+                    $("#laterallyMsg").show();
+                }
+            } else {
+                showWaiting();
+                SOP.Crud.cfxSubmit("mainForm", "send");
+            }
         }else if(f != null && f != ""  &&remark.length<=300){
             showWaiting();
             SOP.Crud.cfxSubmit("mainForm", "send");
