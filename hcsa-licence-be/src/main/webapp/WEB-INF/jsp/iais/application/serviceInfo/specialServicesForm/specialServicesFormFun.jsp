@@ -255,7 +255,7 @@
         $currContent.find('.speciality p').html(data.speciality);
         $currContent.find('.subSpeciality p').html(data.subSpeciality);
         $currContent.find('.qualification p').html(data.qualification);
-        $currContent.find('input.licPerson').val(data.licPerson ? 1 : 0);
+        $currContent.find('input.licPerson').val(1);
         $currContent.find('input.isPartEdit').val(1);
         $currContent.find('input.indexNo').val(data.indexNo);
         $currContent.find('input.psnEditField').val(data.psnEditFieldStr);

@@ -616,6 +616,7 @@ public class AppCommServiceImpl implements AppCommService {
                 .map(licence -> {
                     AppSubmissionDto appSubmissionDtoByLicenceId = licCommService.getAppSubmissionDtoByLicenceId(licence.getId());
                     // Premises
+                    appSubmissionDtoByLicenceId.setAppGrpNo(appGroupNo);
                     ApplicationHelper.reSetPremeses(appSubmissionDtoByLicenceId, appGrpPremisesDto);
                     AmendmentFeeDto amendmentFeeDto = RfcHelper.getAmendmentFeeDto(appSubmissionDtoByLicenceId, appEditSelectDto,
                             isCharity);

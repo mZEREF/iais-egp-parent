@@ -655,6 +655,11 @@ public class ServiceMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request, "notContainedSvcSize",notContainedSvc.size());
     }
 
+    /**
+     * Do the bundle
+     *
+     * @param bpc
+     */
     public void doChooseBaseSvc(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("do choose base svc start ..."));
         AppSelectSvcDto appSelectSvcDto = getAppSelectSvcDto(bpc);
