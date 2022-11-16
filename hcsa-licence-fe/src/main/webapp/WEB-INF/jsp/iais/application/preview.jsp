@@ -57,7 +57,7 @@
                                                         <input type="hidden" name="maskId" value="<iais:mask name="svc${status.index}" value="${hcsaServiceDto.id}"/>"/>
                                                         <input type="hidden" name="maskName" value="svc${status.index}"/>
                                                         <c:if test="${showHeadingSign}">
-                                                            <c:set var="headingSign" value="${StringUtil.isIn(hcsaServiceDto.id, coMap.multiSvc) ? 'incompleted' : 'completed'}" />
+                                                            <c:set var="headingSign" value="${StringUtil.isIn(hcsaServiceDto.svcCode, coMap.multiSvcInfo) ? 'incompleted' : 'completed'}" />
                                                         </c:if>
                                                         <div class="panel-heading  ${headingSign}" id="headingServiceInfo${status.index}" role="tab">
                                                             <h4 class="panel-title svcTitle">
