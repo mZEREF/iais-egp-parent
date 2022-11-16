@@ -81,7 +81,7 @@
                     </tr>
                     <tr>
                         <td class="col-xs-4">
-                            <p>Specified Service</p>
+                            <p>Specified Services</p>
                         </td>
                         <td class="col-xs-4">
                             <c:if test="${insRepDto.appPremSpecialSubSvcRelDtoList != null && not empty insRepDto.appPremSpecialSubSvcRelDtoList}">
