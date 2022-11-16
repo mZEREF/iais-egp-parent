@@ -2370,8 +2370,7 @@ public final class AppValidatorHelper {
                     AppServicesConsts.SERVICE_CODE_MEDICAL_SERVICE})) {
                 AppSvcOtherInfoMedDto appSvcOtherInfoMedDto = svcOtherInfoDto.getAppSvcOtherInfoMedDto();
                 if (!StringUtil.isEmpty(appSvcOtherInfoMedDto)) {
-                    if (StringUtil.isEmpty(appSvcOtherInfoMedDto.getMedicalTypeIt()) && StringUtil.isEmpty(
-                            appSvcOtherInfoMedDto.getMedicalTypePaper())) {
+                    if (!appSvcOtherInfoMedDto.getMedicalTypeIt() && !appSvcOtherInfoMedDto.getMedicalTypePaper()) {
                         errMap.put(prefix + "medicalTypeIt",
                                 MessageUtil.replaceMessage("GENERAL_ERR0006", "Type of medical records", "field"));
                     }
@@ -2387,7 +2386,7 @@ public final class AppValidatorHelper {
                                     MessageUtil.replaceMessage("GENERAL_ERR0006", "Please specify", "field"));
                         }
                     }
-                    if (StringUtil.isEmpty(appSvcOtherInfoMedDto.getOpenToPublic())) {
+                    if (appSvcOtherInfoMedDto.getOpenToPublic() == null) {
                         errMap.put(prefix + "openToPublic",
                                 MessageUtil.replaceMessage("GENERAL_ERR0006", "Is clinic open to general public?", "field"));
                     }
@@ -2449,8 +2448,7 @@ public final class AppValidatorHelper {
                     }else if (!StringUtil.isDigit(helpBStationNum) || helpBStationNum.matches("^-[0-9]*[1-9][0-9]*$")){
                         errMap.put(prefix + "helpBStationNum", MessageUtil.replaceMessage("GENERAL_ERR0002", "Number of Hep B stations", "field"));
                     }
-                    String nisOpenToPublic = appSvcOtherInfoNurseDto.getOpenToPublic();
-                    if (StringUtil.isEmpty(nisOpenToPublic)) {
+                    if (appSvcOtherInfoNurseDto.getOpenToPublic() == null) {
                         errMap.put(prefix + "nisOpenToPublic",
                                 MessageUtil.replaceMessage("GENERAL_ERR0006", "Is the clinic open to general public?", "field"));
                     }
@@ -2498,20 +2496,17 @@ public final class AppValidatorHelper {
                             errMap.put(prefix + "topType",
                                     MessageUtil.replaceMessage("GENERAL_ERR0006", "Please indicate&nbsp;", "field"));
                         }
-                        String hasConsuAttendCourse = svcOtherInfoDto.getAppSvcOtherInfoTopDto().getHasConsuAttendCourse();
-                        if (StringUtil.isEmpty(hasConsuAttendCourse)) {
+                        if (appSvcOtherInfoTopDto.getHasConsuAttendCourse() == null) {
                             errMap.put(prefix + "hasConsuAttendCourse", MessageUtil.replaceMessage("GENERAL_ERR0006",
                                     "My counsellor(s) has attended the TOP counselling refresher course (Please upload the certificates in the document page)",
                                     "field"));
                         }
-                        String isProvideHpb = svcOtherInfoDto.getAppSvcOtherInfoTopDto().getProvideHpb();
-                        if (StringUtil.isEmpty(isProvideHpb)) {
+                        if (appSvcOtherInfoTopDto.getProvideHpb() == null) {
                             errMap.put(prefix + "provideHpb", MessageUtil.replaceMessage("GENERAL_ERR0006",
                                     "The service provider has the necessary counselling facilities e.g. TV set, video player, video on abortion produced by HPB in different languages and the pamphlets produced by HPB",
                                     "field"));
                         }
-                        String isOutcomeProcRecord = svcOtherInfoDto.getAppSvcOtherInfoTopDto().getOutcomeProcRecord();
-                        if (StringUtil.isEmpty(isOutcomeProcRecord)) {
+                        if (appSvcOtherInfoTopDto.getOutcomeProcRecord() == null) {
                             errMap.put(prefix + "outcomeProcRecord", MessageUtil.replaceMessage("GENERAL_ERR0006",
                                     "Outcome of procedures are recorded",
                                     "field"));
@@ -2604,9 +2599,8 @@ public final class AppValidatorHelper {
                 String regType = practitioners.get(i).getRegType();
                 String qualification = practitioners.get(i).getQualification();
                 String specialties = practitioners.get(i).getSpeciality();
-                String medAuthByMoh = practitioners.get(i).getMedAuthByMoh();
 
-                if (StringUtil.isEmpty(medAuthByMoh)) {
+                if (practitioners.get(i).getMedAuthByMoh() == null) {
                     errMap.put(prefix + "medAuthByMoh" + i, MessageUtil.replaceMessage("GENERAL_ERR0006",
                             "Is the medical practitioners authorised by MOH to perform Abortion\n" +
                                     "                (if No, please upload a copy of the Obstetrics & Gynaecology certificate and From 2 at the Document page)",

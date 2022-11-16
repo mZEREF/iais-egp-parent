@@ -10,12 +10,12 @@
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Outcome of procedures are recorded"/>
         <input type="hidden" class="outcomeProcRecordVal" name="${prefix}outcomeProcRecordVal" value="${appSvcOtherInfoTop.outcomeProcRecord}"/>
         <iais:value width="3" cssClass="form-check col-md-3">
-            <input class="form-check-input outcomeProcRecord" <c:if test="${'1' == appSvcOtherInfoTop.outcomeProcRecord}">checked="checked"</c:if>  type="radio" name="${prefix}outcomeProcRecord" value = "1" aria-invalid="false">
+            <input class="form-check-input outcomeProcRecord" <c:if test="${true eq appSvcOtherInfoTop.outcomeProcRecord}">checked="checked"</c:if>  type="radio" name="${prefix}outcomeProcRecord" value = "1" aria-invalid="false">
             <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
         </iais:value>
 
         <iais:value width="3" cssClass="form-check col-md-3">
-            <input class="form-check-input outcomeProcRecord" <c:if test="${'0' == appSvcOtherInfoTop.outcomeProcRecord}">checked="checked"</c:if>  type="radio" name="${prefix}outcomeProcRecord" value = "0" aria-invalid="false">
+            <input class="form-check-input outcomeProcRecord" <c:if test="${false eq appSvcOtherInfoTop.outcomeProcRecord}">checked="checked"</c:if>  type="radio" name="${prefix}outcomeProcRecord" value = "0" aria-invalid="false">
             <label class="form-check-label" ><span class="check-circle"></span>No</label>
         </iais:value>
     </iais:row>

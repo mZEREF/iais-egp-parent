@@ -72,14 +72,14 @@
         <td>
             <div class="col-xs-6 ">
                 <span class="newVal" attr="${otherInfo.appSvcOtherInfoNurseDto.openToPublic}">
-                    <c:if test="${otherInfo.appSvcOtherInfoNurseDto.openToPublic eq '1'}">Yes</c:if>
-                    <c:if test="${otherInfo.appSvcOtherInfoNurseDto.openToPublic eq'0'}">No</c:if>
+                    <c:if test="${otherInfo.appSvcOtherInfoNurseDto.openToPublic eq true}">Yes</c:if>
+                    <c:if test="${otherInfo.appSvcOtherInfoNurseDto.openToPublic eq false}">No</c:if>
                 </span>
             </div>
             <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldOtherInfo.appSvcOtherInfoNurseDto.openToPublic}" style="display: none">
-                    <c:if test="${oldOtherInfo.appSvcOtherInfoNurseDto.openToPublic eq '1'}">Yes</c:if>
-                    <c:if test="${oldOtherInfo.appSvcOtherInfoNurseDto.openToPublic eq'0'}">No</c:if>
+                    <c:if test="${oldOtherInfo.appSvcOtherInfoNurseDto.openToPublic eq true}">Yes</c:if>
+                    <c:if test="${oldOtherInfo.appSvcOtherInfoNurseDto.openToPublic eq false}">No</c:if>
                 </span>
             </div>
         </td>

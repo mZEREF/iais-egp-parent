@@ -809,8 +809,8 @@ public final class AppDataHelper {
             if (IaisCommonUtils.isEmpty(radiologicalServiceList)) {
                 radiologicalServiceList = IaisCommonUtils.genNewArrayList();
             }
-            clearAppSvcOutsourceListIsNull(clinicalLaboratoryList);
-            clearAppSvcOutsourceListIsNull(radiologicalServiceList);
+            removeAppSvcOutsourceListIsNull(clinicalLaboratoryList);
+            removeAppSvcOutsourceListIsNull(radiologicalServiceList);
             if ("search".equals(curAct)) {
                 appSvcOutsouredDto = getSerchAppPremOutSourceLicenceDto(request, appSvcOutsouredDto, appSubmissionDto);
             }
@@ -900,7 +900,7 @@ public final class AppDataHelper {
         searchParam.removeFilter("postalCode");
     }
 
-    private static void clearAppSvcOutsourceListIsNull(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtoList){
+    private static void removeAppSvcOutsourceListIsNull(List<AppPremGroupOutsourcedDto> appPremGroupOutsourcedDtoList){
         if(IaisCommonUtils.isNotEmpty(appPremGroupOutsourcedDtoList)){
             if (appPremGroupOutsourcedDtoList.size() > 5){
                 Iterator<AppPremGroupOutsourcedDto> outsourcedDtoIterator = appPremGroupOutsourcedDtoList.iterator();
@@ -1445,10 +1445,14 @@ public final class AppDataHelper {
             String isOpenToPublic = ParamUtil.getString(request, prefix + "openToPublic");
             String gfaValue = ParamUtil.getString(request, prefix + "gfaValue");
             appSvcOtherInfoMedDto.setGfaValue(gfaValue);
-            appSvcOtherInfoMedDto.setOpenToPublic(isOpenToPublic);
+            if (StringUtil.isNotEmpty(isOpenToPublic)){
+                appSvcOtherInfoMedDto.setOpenToPublic(AppConsts.YES.equals(isOpenToPublic));
+            }else {
+                appSvcOtherInfoMedDto.setOpenToPublic(null);
+            }
             appSvcOtherInfoMedDto.setSystemOption(systemOption);
-            appSvcOtherInfoMedDto.setMedicalTypeIt(isMedicalTypeIt);
-            appSvcOtherInfoMedDto.setMedicalTypePaper(isMedicalTypePaper);
+            appSvcOtherInfoMedDto.setMedicalTypeIt(AppConsts.YES.equals(isMedicalTypeIt));
+            appSvcOtherInfoMedDto.setMedicalTypePaper(AppConsts.YES.equals(isMedicalTypePaper));
             if ("MED06".equals(systemOption)) {
                 String otherSystemOption = ParamUtil.getString(request, prefix + "otherSystemOption");
                 appSvcOtherInfoMedDto.setOtherSystemOption(otherSystemOption);
@@ -1510,7 +1514,11 @@ public final class AppDataHelper {
             String helpBStationNum = ParamUtil.getString(request, prefix + "helpBStationNum");
             String nisOpenToPublic = ParamUtil.getString(request, prefix + "nisOpenToPublic");
             appSvcOtherInfoNurseDto.setHelpBStationNum(helpBStationNum);
-            appSvcOtherInfoNurseDto.setOpenToPublic(nisOpenToPublic);
+            if (StringUtil.isNotEmpty(nisOpenToPublic)){
+                appSvcOtherInfoNurseDto.setOpenToPublic(AppConsts.YES.equals(nisOpenToPublic));
+            }else {
+                appSvcOtherInfoNurseDto.setOpenToPublic(null);
+            }
             appSvcOtherInfoNurseDto.setPerShiftNum(perShiftNum);
             appSvcOtherInfoNurseDto.setDialysisStationsNum(dialysisStationsNum);
         }
@@ -1555,9 +1563,21 @@ public final class AppDataHelper {
             String isOutcomeProcRecord = ParamUtil.getString(request, prefix + "outcomeProcRecord");
             String compCaseNum = ParamUtil.getString(request, prefix + "compCaseNum");
             appSvcOtherInfoTopDto.setTopType(topType);
-            appSvcOtherInfoTopDto.setHasConsuAttendCourse(hasConsuAttendCourse);
-            appSvcOtherInfoTopDto.setProvideHpb(isProvideHpb);
-            appSvcOtherInfoTopDto.setOutcomeProcRecord(isOutcomeProcRecord);
+            if (StringUtil.isNotEmpty(hasConsuAttendCourse)){
+                appSvcOtherInfoTopDto.setHasConsuAttendCourse(AppConsts.YES.equals(hasConsuAttendCourse));
+            }else {
+                appSvcOtherInfoTopDto.setHasConsuAttendCourse(null);
+            }
+            if (StringUtil.isNotEmpty(isProvideHpb)){
+                appSvcOtherInfoTopDto.setProvideHpb(AppConsts.YES.equals(isProvideHpb));
+            }else {
+                appSvcOtherInfoTopDto.setProvideHpb(null);
+            }
+            if (StringUtil.isNotEmpty(isOutcomeProcRecord)){
+                appSvcOtherInfoTopDto.setOutcomeProcRecord(AppConsts.YES.equals(isOutcomeProcRecord));
+            }else {
+                appSvcOtherInfoTopDto.setOutcomeProcRecord(null);
+            }
             appSvcOtherInfoTopDto.setCompCaseNum(compCaseNum);
         }
 
@@ -1606,7 +1626,11 @@ public final class AppDataHelper {
                     appSvcOtherInfoTopPersonDto.setProfRegNo(profRegNo);
                     appSvcOtherInfoTopPersonDto.setPsnType(psnType);
                     appSvcOtherInfoTopPersonDto.setRegType(regType);
-                    appSvcOtherInfoTopPersonDto.setMedAuthByMoh(isMedAuthByMoh);
+                    if (StringUtil.isNotEmpty(isMedAuthByMoh)){
+                        appSvcOtherInfoTopPersonDto.setMedAuthByMoh(AppConsts.YES.equals(isMedAuthByMoh));
+                    }else {
+                        appSvcOtherInfoTopPersonDto.setMedAuthByMoh(null);
+                    }
                     appSvcOtherInfoTopPersonDto.setSeqNum(i);
                     appSvcOtherInfoTopPersonDto.setIdNo(idNo);
                     result.add(appSvcOtherInfoTopPersonDto);

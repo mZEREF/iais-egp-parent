@@ -38,12 +38,12 @@
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Is the clinic open to general public?"/>
         <iais:value width="3" cssClass="form-check col-md-3">
-            <input class="form-check-input nisOpenToPublic" <c:if test="${'1' == n.openToPublic}">checked="checked"</c:if>  type="radio" name="${prefix}nisOpenToPublic" value = "1" aria-invalid="false">
+            <input class="form-check-input nisOpenToPublic" <c:if test="${true eq n.openToPublic}">checked="checked"</c:if>  type="radio" name="${prefix}nisOpenToPublic" value = "1" aria-invalid="false">
             <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
         </iais:value>
 
         <iais:value width="3" cssClass="form-check col-md-3">
-            <input class="form-check-input nisOpenToPublic" <c:if test="${'0' == n.openToPublic}">checked="checked"</c:if> type="radio" name="${prefix}nisOpenToPublic" value = "0" aria-invalid="false">
+            <input class="form-check-input nisOpenToPublic" <c:if test="${false eq n.openToPublic}">checked="checked"</c:if> type="radio" name="${prefix}nisOpenToPublic" value = "0" aria-invalid="false">
             <label class="form-check-label" ><span class="check-circle"></span>No</label>
         </iais:value>
     </iais:row>

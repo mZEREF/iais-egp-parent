@@ -17,17 +17,17 @@
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Type of medical records"/>
         <div class="form-check col-md-3">
-            <input class="form-check-input" name="${prefix}medicalTypeIt" value="0"
+            <input class="form-check-input" name="${prefix}medicalTypeIt" value="1"
                    type="checkbox" aria-invalid="false"
-                   <c:if test="${'0' == med.medicalTypeIt}">checked="checked"</c:if> />
+                   <c:if test="${med.medicalTypeIt eq true}">checked="checked"</c:if> />
             <label class="form-check-label">
                 <span class="check-square"></span><c:out value="IT System"/>
             </label>
         </div>
         <div class="form-check col-md-3">
-            <input class="form-check-input" name="${prefix}medicalTypePaper" value="0"
+            <input class="form-check-input" name="${prefix}medicalTypePaper" value="1"
                    type="checkbox" aria-invalid="false"
-                   <c:if test="${'0' == med.medicalTypePaper}">checked="checked"</c:if> />
+                   <c:if test="${med.medicalTypePaper eq true}">checked="checked"</c:if> />
             <label class="form-check-label">
                 <span class="check-square"></span><c:out value="Paper cards"/>
             </label>
@@ -62,12 +62,12 @@
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Is clinic open to general public?"/>
         <iais:value width="3" cssClass="form-check col-md-3">
-            <input class="form-check-input openToPublic" <c:if test="${true == med.openToPublic}">checked="checked"</c:if>  type="radio" name="${prefix}openToPublic" value = "1" aria-invalid="false">
+            <input class="form-check-input openToPublic" <c:if test="${true eq med.openToPublic}">checked="checked"</c:if>  type="radio" name="${prefix}openToPublic" value = "1" aria-invalid="false">
             <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
         </iais:value>
 
         <iais:value width="3" cssClass="form-check col-md-3">
-            <input class="form-check-input openToPublic" <c:if test="${false == med.openToPublic}">checked="checked"</c:if>  type="radio" name="${prefix}openToPublic" value = "0" aria-invalid="false">
+            <input class="form-check-input openToPublic" <c:if test="${false eq med.openToPublic}">checked="checked"</c:if>  type="radio" name="${prefix}openToPublic" value = "0" aria-invalid="false">
             <label class="form-check-label" ><span class="check-circle"></span>No</label>
         </iais:value>
     </iais:row>
@@ -90,7 +90,7 @@
         <div class="form-check col-md-3">
             <input class="form-check-input" name="${prefix}dsDeclaration" value="0"
                    type="checkbox" aria-invalid="false"
-                   <c:if test="${'0' == dsDeclaration}">checked="checked"</c:if> />
+                   <c:if test="${'0' eq dsDeclaration}">checked="checked"</c:if> />
             <label class="form-check-label">
                 <span class="check-square"></span><c:out value=""/>
             </label>

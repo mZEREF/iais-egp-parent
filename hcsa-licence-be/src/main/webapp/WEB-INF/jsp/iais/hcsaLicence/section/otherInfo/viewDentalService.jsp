@@ -9,24 +9,24 @@
         <td>
             <div class="col-xs-6">
                 <span class="newVal" attr="${otherInfo.appSvcOtherInfoMedDto.medicalTypeIt}">
-                   <c:if test="${otherInfo.appSvcOtherInfoMedDto.medicalTypeIt eq '0'}">IT System</c:if>
+                   <c:if test="${otherInfo.appSvcOtherInfoMedDto.medicalTypeIt eq true}">IT System</c:if>
                 </span>
             </div>
             <div class="col-xs-6">
                 <span class="oldVal" attr="${oldOtherInfo.appSvcOtherInfoMedDto.medicalTypeIt}" style="display: none">
-                   <c:if test="${oldOtherInfo.appSvcOtherInfoMedDto.medicalTypeIt eq '0'}">IT System</c:if>
+                   <c:if test="${oldOtherInfo.appSvcOtherInfoMedDto.medicalTypeIt eq true}">IT System</c:if>
                 </span>
             </div>
         </td>
         <td>
             <div class="col-xs-6">
                 <span class="newVal" attr="${otherInfo.appSvcOtherInfoMedDto.medicalTypePaper}">
-                    <c:if test="${otherInfo.appSvcOtherInfoMedDto.medicalTypePaper eq '0'}">Paper cards</c:if>
+                    <c:if test="${otherInfo.appSvcOtherInfoMedDto.medicalTypePaper eq true}">Paper cards</c:if>
                 </span>
             </div>
             <div class="col-xs-6">
                 <span class="oldVal" attr="${oldOtherInfo.appSvcOtherInfoMedDto.medicalTypePaper}" style="display: none">
-                    <c:if test="${oldOtherInfo.appSvcOtherInfoMedDto.medicalTypePaper eq '0'}">Paper cards</c:if>
+                    <c:if test="${oldOtherInfo.appSvcOtherInfoMedDto.medicalTypePaper eq true}">Paper cards</c:if>
                 </span>
             </div>
         </td>
@@ -96,14 +96,14 @@
         <td>
             <div class="col-xs-6 ">
                 <span class="newVal" attr="${otherInfo.appSvcOtherInfoMedDto.openToPublic}">
-                    <c:if test="${otherInfo.appSvcOtherInfoMedDto.openToPublic eq 1}">Yes</c:if>
-                    <c:if test="${otherInfo.appSvcOtherInfoMedDto.openToPublic eq 0}">No</c:if>
+                    <c:if test="${otherInfo.appSvcOtherInfoMedDto.openToPublic eq true}">Yes</c:if>
+                    <c:if test="${otherInfo.appSvcOtherInfoMedDto.openToPublic eq false}">No</c:if>
                 </span>
             </div>
             <div class="col-xs-6 ">
                 <span class="oldVal" attr="${oldOtherInfo.appSvcOtherInfoMedDto.openToPublic}" style="display: none">
-                     <c:if test="${oldOtherInfo.appSvcOtherInfoMedDto.openToPublic eq 1}">Yes</c:if>
-                    <c:if test="${oldOtherInfo.appSvcOtherInfoMedDto.openToPublic eq 0}">No</c:if>
+                     <c:if test="${oldOtherInfo.appSvcOtherInfoMedDto.openToPublic eq true}">Yes</c:if>
+                    <c:if test="${oldOtherInfo.appSvcOtherInfoMedDto.openToPublic eq false}">No</c:if>
                 </span>
             </div>
         </td>
