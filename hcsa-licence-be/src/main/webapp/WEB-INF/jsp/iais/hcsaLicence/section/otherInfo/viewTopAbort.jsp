@@ -165,7 +165,7 @@
         </c:if>
     </c:forEach>
 </c:if>
-<c:if test="${'0' == otherInfo.provideTop}">
+<c:if test="${'1' == otherInfo.provideTop}">
     <p class="bold">Declaration</p>
     <table aria-describedby="" class="col-xs-12">
         <tr>

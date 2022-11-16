@@ -169,14 +169,14 @@
         <td>
             <div class="col-xs-6 ">
                 <span class="newVal" attr="${practitioners.medAuthByMoh}">
-                    <c:if test="${'1' == practitioners.medAuthByMoh}">Yes</c:if>
-                    <c:if test="${'0' == practitioners.medAuthByMoh}">No</c:if>
+                    <c:if test="${'1' eq practitioners.medAuthByMoh}">Yes</c:if>
+                    <c:if test="${'0' eq practitioners.medAuthByMoh}">No</c:if>
                 </span>
             </div>
             <div class="col-xs-6 ">
                 <span class=" oldVal" attr="${oldPractitioners.medAuthByMoh}" style="display: none">
-                     <c:if test="${'1' == oldPractitioners.medAuthByMoh}">Yes</c:if>
-                    <c:if test="${'0' == oldPractitioners.medAuthByMoh}">No</c:if>
+                     <c:if test="${'1' eq oldPractitioners.medAuthByMoh}">Yes</c:if>
+                    <c:if test="${'0' eq oldPractitioners.medAuthByMoh}">No</c:if>
                 </span>
             </div>
         </td>
