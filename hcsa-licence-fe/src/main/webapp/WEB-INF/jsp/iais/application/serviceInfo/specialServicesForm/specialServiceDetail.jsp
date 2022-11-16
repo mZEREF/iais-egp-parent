@@ -143,8 +143,9 @@
     <%--   Other Specialties --%>
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" value="Other Specialties"/>
-        <iais:value width="7" cssClass="col-md-7 othersubSpeciality">
-            <c:out value="${appSvcPersonnelDto.specialityOther}"/>
+        <iais:value width="7" cssClass="col-md-7">
+            <iais:input maxLength="100" type="text" cssClass="specialityOther" name="${prefix}specialityOther${index}"
+                        value="${appSvcPersonnelDto.specialityOther}"/>
         </iais:value>
     </iais:row>
 
