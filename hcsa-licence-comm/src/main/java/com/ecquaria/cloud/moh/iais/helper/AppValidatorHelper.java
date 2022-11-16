@@ -367,7 +367,7 @@ public final class AppValidatorHelper {
                 case HcsaConsts.STEP_BUSINESS_NAME:
                     // business name
                     List<AppSvcBusinessDto> appSvcBusinessDtoList = dto.getAppSvcBusinessDtoList();
-                    doValidateBusiness(appSvcBusinessDtoList, dto.getApplicationType(), dto.getLicenceId(), errorMap);
+                    doValidateBusiness(appSvcBusinessDtoList, dto.getApplicationType(), dto.getLicenceId(), dto.getServiceId(),errorMap);
                     addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
                     break;
                 case HcsaConsts.STEP_VEHICLES:
@@ -1998,13 +1998,12 @@ public final class AppValidatorHelper {
     }
 
     public static void doValidateBusiness(List<AppSvcBusinessDto> appSvcBusinessDtos, String appType,
-            String licenceId, Map<String, String> errorMap) {
+            String licenceId,String currentServiceId, Map<String, String> errorMap) {
         if (appSvcBusinessDtos == null || appSvcBusinessDtos.isEmpty()) {
             return;
         }
         HttpServletRequest request = MiscUtil.getCurrentRequest();
         AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(request);
-        String currentServiceId = ApplicationHelper.getCurrentServiceId(request);
         List<AppPremSpecialisedDto> appPremSpecialisedDtoList = appSubmissionDto.getAppPremSpecialisedDtoList().stream()
                 .filter(item -> currentServiceId.equals(item.getBaseSvcId()))
                 .collect(Collectors.toList());
