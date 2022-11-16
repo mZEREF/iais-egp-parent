@@ -26,7 +26,7 @@
             </#if>
             <#if svcName??>AND l.SVC_NAME = :svcName </#if>
             <#if businessName??> AND b.BUSINESS_NAME = :businessName</#if>
-            <#if licenceNo??> AND l.LICENCE_NO = :licenceNo</#if>
+            <#if licenceNo??> AND l.LICENCE_NO LIKE CONCAT('%',(:licenceNo),'%')</#if>
             <#if id??> AND l.ID NOT IN (:id)</#if>
             <#if ids??> AND l.ID NOT IN (:ids)</#if>
             <#if licenseeId??> AND l.LICENSEE_ID NOT IN (:licenseeId)</#if>
