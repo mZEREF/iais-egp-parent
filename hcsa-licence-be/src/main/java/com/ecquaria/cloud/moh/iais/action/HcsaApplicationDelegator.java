@@ -4656,9 +4656,7 @@ public class HcsaApplicationDelegator {
             }
         }
         decisionValues.add(new SelectOption("decisionReject", "Reject"));
-        if(taskDto.getRoleId().equals(RoleConsts.USER_ROLE_ASO)||taskDto.getRoleId().equals(RoleConsts.USER_ROLE_AO1)||taskDto.getRoleId().equals(RoleConsts.USER_ROLE_AO2)){
-            decisionValues.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY,"Route Laterally"));
-        }
+        decisionValues.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY,"Route Laterally"));
         ParamUtil.setSessionAttr(request, "decisionValues", (Serializable) decisionValues);
     }
 
