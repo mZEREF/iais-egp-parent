@@ -1190,6 +1190,9 @@ public final class RfcHelper {
         if (isChangeFloorUnit(appGrpPremisesDto, oldAppGrpPremisesDto)) {
             return true;
         }
+        if (!Objects.equals(appGrpPremisesDto.getSeqNum(), oldAppGrpPremisesDto.getSeqNum())) {
+            return true;
+        }
         return !Objects.equals(appGrpPremisesDto.getBuildingName(), oldAppGrpPremisesDto.getBuildingName());
     }
 
