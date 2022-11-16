@@ -28,8 +28,8 @@
         const internalRemarkStar = $('#internalRemarkStar');
         const rollBackToRow = $('#rollBackToRow');
 
-        if ('<%=InspectionConstants.PROCESS_DECI_ROLL_BACK%>' === nextStageValue ||'PROCRLR' === nextStageValue || (customValue && customValue=== nextStageValue)) {
-            if('PROCRLR' !== nextStageValue){
+        if ('<%=InspectionConstants.PROCESS_DECI_ROLL_BACK%>' === nextStageValue ||'PROCRLR' === nextStageValue || 'route' === nextStageValue || (customValue && customValue=== nextStageValue)) {
+            if('PROCRLR' !== nextStageValue &&  'route' !== nextStageValue){
                 rollBackToRow.show();
             }else{
                 rollBackToRow.hide();
