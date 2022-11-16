@@ -88,7 +88,7 @@
                         </div>
                     </div>
                 </c:if>
-                <c:if test="${person.embryologistAuthorized == '0' || oldPerson.employedBasis == '0'}">
+                <c:if test="${person.employedBasis == '0' || oldPerson.employedBasis == '0'}">
                     <div class="col-xs-6">
                         <div class="newVal" attr="${person.employedBasis}">
                             <c:out value="No"/>
@@ -123,7 +123,7 @@
                             </div>
                         </div>
                     </c:if>
-                    <c:if test="${person.embryologistAuthorized == '0' || oldPerson.employedBasis == '0'}">
+                    <c:if test="${person.employedBasis == '0' || oldPerson.employedBasis == '0'}">
                         <div class="col-xs-6">
                             <div class="newVal" attr="${person.employedBasis}">
                                 <c:out value="No"/>
@@ -199,7 +199,7 @@
                             </div>
                         </div>
                     </c:if>
-                    <c:if test="${person.embryologistAuthorized == '0' || oldPerson.employedBasis == '0'}">
+                    <c:if test="${person.employedBasis == '0' || oldPerson.employedBasis == '0'}">
                         <div class="col-xs-6">
                             <div class="newVal" attr="${person.employedBasis}">
                                 <c:out value="No"/>
@@ -235,7 +235,7 @@
                             </div>
                         </div>
                     </c:if>
-                    <c:if test="${person.embryologistAuthorized == '0' || oldPerson.employedBasis == '0'}">
+                    <c:if test="${person.employedBasis == '0' || oldPerson.employedBasis == '0'}">
                         <div class="col-xs-6">
                             <div class="newVal" attr="${person.employedBasis}">
                                 <c:out value="No"/>
@@ -291,7 +291,7 @@
                             </div>
                         </div>
                     </c:if>
-                    <c:if test="${person.embryologistAuthorized == '0' || oldPerson.employedBasis == '0'}">
+                    <c:if test="${person.employedBasis == '0' || oldPerson.employedBasis == '0'}">
                         <div class="col-xs-6">
                             <div class="newVal" attr="${person.employedBasis}">
                                 <c:out value="No"/>
