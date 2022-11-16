@@ -56,7 +56,7 @@
 
         <c:choose>
             <c:when test="${empty personList}">
-                <c:set var="personCount" value="1"/>
+                <c:set var="personCount" value="${min[psnType]}"/>
             </c:when>
             <c:when test="${min[psnType] > personList.size() }">
                 <c:set var="personCount" value="${min[psnType]}"/>
