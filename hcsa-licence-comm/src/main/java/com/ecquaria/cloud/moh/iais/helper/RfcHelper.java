@@ -128,18 +128,20 @@ public final class RfcHelper {
         List<String> nonAutoList = IaisCommonUtils.genNewArrayList();
         int changeVehiclesFields = isChangeAppSvcVehicleDtos(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, autoList, nonAutoList);
         boolean changeVehicles = changeVehiclesFields != RfcConst.RFC_UNCHANGED;
+        boolean changeVehicleAutoFields = false;
         if (changeVehicles) {
             boolean changeVehicleNonAutoFields = (changeVehiclesFields & RfcConst.RFC_AMENDMENT) != 0;
-            boolean changeVehicleAutoFields = (changeVehiclesFields & RfcConst.RFC_NOTIFICATION) != 0;
+            changeVehicleAutoFields = (changeVehiclesFields & RfcConst.RFC_NOTIFICATION) != 0;
             appEditSelectDto.setChangeVehicleAutoFields(changeVehicleAutoFields);
             appEditSelectDto.setChangeVehicleNonAutoFields(changeVehicleNonAutoFields);
         }
         appEditSelectDto.setChangeVehicle(changeVehicles);
         int changeBusinessFields = isChangeAppSvcBusinessDtos(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, autoList, nonAutoList);
         boolean changeBusiness = changeBusinessFields != RfcConst.RFC_UNCHANGED;
+        boolean changeBusinessAutoFields = false;
         if (changeBusiness) {
             boolean changeBusinessNonAutoFields = (changeBusinessFields & RfcConst.RFC_AMENDMENT) != 0;
-            boolean changeBusinessAutoFields = (changeBusinessFields & RfcConst.RFC_NOTIFICATION) != 0;
+            changeBusinessAutoFields = (changeBusinessFields & RfcConst.RFC_NOTIFICATION) != 0;
             appEditSelectDto.setChangeBusinessName(changeBusinessNonAutoFields);
             appEditSelectDto.setChangeBusinessAutoFields(changeBusinessAutoFields);
         }
@@ -157,9 +159,10 @@ public final class RfcHelper {
         //other info
         int changeOtherInfoFields = isChangeAppSvcOtherInfoDto(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos, nonAutoList, autoList);
         boolean changeOtherInfoDto = changeOtherInfoFields != RfcConst.RFC_UNCHANGED;
+        boolean changeOtherService = false;
         if (changeOtherInfoDto) {
             boolean changeOtherInfoNonAutoFields = (changeOtherInfoFields & RfcConst.RFC_AMENDMENT) != 0;
-            boolean changeOtherService = (changeOtherInfoFields & RfcConst.RFC_NOTIFICATION) != 0;
+            changeOtherService = (changeOtherInfoFields & RfcConst.RFC_NOTIFICATION) != 0;
             appEditSelectDto.setChangeOtherInfoTop(changeOtherInfoNonAutoFields);
             appEditSelectDto.setChangeOtherService(changeOtherService);
         }
@@ -183,11 +186,15 @@ public final class RfcHelper {
         if (changeSvcDocs) {
             autoList.add(HcsaConsts.STEP_DOCUMENTS);
         }
-        boolean changeServiceAutoFields = changeCharges || changeSvcDocs;
+        boolean changeServiceAutoFields = changeCharges || changeSvcDocs
+                || changeBusinessAutoFields || changeOtherService
+                || changeVehicleAutoFields || changePersonnel || removePersonnel;
+
         boolean serviceIsChange = changeVehicles || changeBusiness
                 || changeServiceAutoFields || changeSpecialServiceInformation || addOrReplacePersonnel
-                || removePersonnel || changePersonnel || changeSupplementaryForm || changeOtherInfoDto
+                || changeSupplementaryForm || changeOtherInfoDto
                 || changeOutsourceFields;
+        appEditSelectDto.setChangeServiceAutoFields(changeServiceAutoFields);
         appEditSelectDto.setServiceEdit(serviceIsChange);
         // set to appSubmissionDto
         appSubmissionDto.setChangeSelectDto(appEditSelectDto);
