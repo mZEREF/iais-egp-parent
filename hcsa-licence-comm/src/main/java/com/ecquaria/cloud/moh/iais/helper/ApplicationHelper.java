@@ -1328,6 +1328,16 @@ public final class ApplicationHelper {
         return personList;
     }
 
+    public static List<SelectOption> genPersonnelBoard() {
+        List<SelectOption> personnelBoard = IaisCommonUtils.genNewArrayList();
+        SelectOption personnelBoard1 = new SelectOption(ApplicationConsts.PROFESSIONAL_BOARD_SMC, ApplicationConsts.PROFESSIONAL_BOARD_SMC);
+        SelectOption personnelBoard2 = new SelectOption(ApplicationConsts.PROFESSIONAL_BOARD_SNB, ApplicationConsts.PROFESSIONAL_BOARD_SNB);
+        personnelBoard.add(personnelBoard1);
+        personnelBoard.add(personnelBoard2);
+        personnelBoard.sort(Comparator.comparing(SelectOption::getText));
+        return personnelBoard;
+    }
+
     public static void genSpecialServiceInforamtionPersonsel(HttpServletRequest request) {
         List<SelectOption> personnelTypeSel = IaisCommonUtils.genNewArrayList();
         //Diagnostic Radiographer
@@ -2529,13 +2539,52 @@ public final class ApplicationHelper {
         if (source == null || person == null) {
             return;
         }
+//        common
+        String psnType = person.getPsnType();
         person.setAssignSelect(getPersonKey(source.getNationality(), source.getIdType(), source.getIdNo()));
         person.setSalutation(source.getSalutation());
         person.setName(source.getName());
         person.setIdType(source.getIdType());
         person.setIdNo(source.getIdNo());
         person.setNationality(source.getNationality());
-        String officeTelNo = source.getOfficeTelNo();
+        person.setProfessionBoard(source.getProfessionBoard());
+        person.setPsnType(psnType);
+        person.setProfRegNo(source.getProfRegNo());
+        person.setTypeOfCurrRegi(source.getTypeOfCurrRegi());
+        Date currRegiDate = source.getCurrRegiDate();
+        person.setCurrRegiDate(currRegiDate);
+        person.setCurrRegiDateStr(Formatter.formatDate(currRegiDate));
+        Date praCerEndDate = source.getPraCerEndDate();
+        person.setPraCerEndDate(praCerEndDate);
+        person.setPraCerEndDateStr(Formatter.formatDate(praCerEndDate));
+        person.setTypeOfRegister(source.getTypeOfRegister());
+        person.setSpeciality(source.getSpeciality());
+        person.setSubSpeciality(source.getSubSpeciality());
+        person.setSpecialityOther(source.getSpecialityOther());
+        Date specialtyGetDate = source.getSpecialtyGetDate();
+        person.setSpecialtyGetDate(specialtyGetDate);
+        person.setSpecialtyGetDateStr(Formatter.formatDate(specialtyGetDate));
+        person.setQualification(source.getQualification());
+        person.setDesignation(source.getDesignation());
+        person.setOtherDesignation(source.getOtherDesignation());
+        if (!ApplicationConsts.PERSONNEL_PSN_KAH.equals(psnType)){
+            person.setMobileNo(source.getMobileNo());
+            person.setEmailAddr(source.getEmailAddr());
+        }
+        if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType) || ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnType)){
+            person.setOfficeTelNo(source.getOfficeTelNo());
+        }
+        if (ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType)){
+            person.setRelevantExperience(source.getRelevantExperience());
+            person.setHoldCerByEMS(source.getHoldCerByEMS());
+            Date aclsExpiryDate = source.getAclsExpiryDate();
+            person.setAclsExpiryDate(aclsExpiryDate);
+            person.setAclsExpiryDateStr(Formatter.formatDate(aclsExpiryDate));
+            Date bclsExpiryDate = source.getBclsExpiryDate();
+            person.setBclsExpiryDate(bclsExpiryDate);
+            person.setBclsExpiryDateStr(Formatter.formatDate(bclsExpiryDate));
+        }
+        /*String officeTelNo = source.getOfficeTelNo();
         if (!StringUtil.isEmpty(officeTelNo)) {
             person.setOfficeTelNo(officeTelNo);
         }
@@ -2610,6 +2659,8 @@ public final class ApplicationHelper {
         if (!StringUtil.isEmpty(typeOfRegister)) {
             person.setTypeOfRegister(typeOfRegister);
         }
+
+//
         String relevantExperience = source.getRelevantExperience();
         if (!StringUtil.isEmpty(relevantExperience)) {
             person.setRelevantExperience(relevantExperience);
@@ -2627,7 +2678,7 @@ public final class ApplicationHelper {
         if (bclsExpiryDate != null) {
             person.setBclsExpiryDate(bclsExpiryDate);
             person.setBclsExpiryDateStr(Formatter.formatDate(bclsExpiryDate));
-        }
+        }*/
     }
 
     private static String getTextByValue(List<SelectOption> selectOptions, String value) {

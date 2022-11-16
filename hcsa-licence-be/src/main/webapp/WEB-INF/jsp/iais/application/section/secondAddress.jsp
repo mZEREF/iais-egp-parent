@@ -16,7 +16,4 @@
             </c:forEach>
         </div>
     </c:forEach>
-
-<%--    <iais:confirm msg="${postalCodeAckMsg}" needCancel="false" callBack="postalCodeCon()" popupOrder="postalCodePop" yesBtnDesc=""
-                  needEscapHtml="false" needFungDuoJi="false"></iais:confirm>--%>
 </div>

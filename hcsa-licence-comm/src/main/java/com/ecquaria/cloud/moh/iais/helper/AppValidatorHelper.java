@@ -571,12 +571,12 @@ public final class AppValidatorHelper {
             AppValidatorHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES, errorMap,
                     value, "psnSvcPersonnel", HcsaConsts.SERVICE_PERSONNEL);
         }
-        if ("no".equals(param) && value != -1) {
+        /*if ("no".equals(param) && value != -1) {
             List<HcsaSvcPersonnelDto> psnConfig = config.getHcsaSvcPersonnel(serviceId,
                     ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS);
             AppValidatorHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS, errorMap,
                     value, "psnSvcPersonnel", HcsaConsts.SERVICE_PERSONNEL);
-        }
+        }*/
         if ("spe".equals(param) && value != -1) {
             List<HcsaSvcPersonnelDto> psnConfig = config.getHcsaSvcPersonnel(serviceId,
                     ApplicationConsts.SERVICE_PERSONNEL_TYPE_SPECIALS);
@@ -596,26 +596,30 @@ public final class AppValidatorHelper {
             arCount = svcPersonnelDto.getArPractitionerList().size();
         }
         map.put("ar", arCount);
+
         int emCount = -1;
         if (!IaisCommonUtils.isEmpty(svcPersonnelDto.getEmbryologistList())) {
             emCount = svcPersonnelDto.getEmbryologistList().size();
         }
         map.put("em", emCount);
+
         int nurCount = -1;
         if (!IaisCommonUtils.isEmpty(svcPersonnelDto.getNurseList())) {
             nurCount = svcPersonnelDto.getNurseList().size();
         }
         map.put("nu", nurCount);
+
         int speCount = -1;
         if (!IaisCommonUtils.isEmpty(svcPersonnelDto.getSpecialList())) {
             speCount = svcPersonnelDto.getSpecialList().size();
         }
         map.put("spe", speCount);
-        int norCount = -1;
+
+        /*int norCount = -1;
         if (!IaisCommonUtils.isEmpty(svcPersonnelDto.getNormalList())) {
             norCount = svcPersonnelDto.getNormalList().size();
         }
-        map.put("no", norCount);
+        map.put("no", norCount);*/
         return map;
 
     }
@@ -1786,15 +1790,9 @@ public final class AppValidatorHelper {
                     if (StringUtil.isNotEmpty(typeOfCurrRegi)){
                         typeOfCurrRegi = typeOfCurrRegi.toUpperCase(AppConsts.DFT_LOCALE);
                         String[] target = typeOfCurrRegi.split("[^A-Z0-9]+");
-                        if (IaisCommonUtils.isEmpty(target)){
-                            errMap.put(prefix + "typeOfCurrRegi" + i,   "GENERAL_ERR0006");
-                        }else if (!Arrays.asList(target).contains("FULL")){
+                        if (IaisCommonUtils.isEmpty(target) || !Arrays.asList(target).contains("FULL")){
                             errMap.put(prefix + "typeOfCurrRegi" + i,   "The value doesn't contain the word \"Full\"");
                         }
-                        else if (check(typeOfCurrRegi)){
-                            errMap.put(prefix + "typeOfCurrRegi" + i,   "Invalid content format");
-                        }
-
                     }
                 }
                 //Current Registration Date
@@ -3374,15 +3372,15 @@ public final class AppValidatorHelper {
 
         return date1.compareTo(date2) >= 0;
     }
-
     public static void paramValidate(Map<String, String> errorMap, AppSvcPersonnelDto appSvcPersonnelDto, String prefix, int i,
             List<String> personnelNames) {
         String signal = "GENERAL_ERR0006";
         String name = appSvcPersonnelDto.getName();
         if (StringUtil.isEmpty(name)) {
             errorMap.put(prefix + "name" + i, signal);
-        } else if (name.length() > 100) {
-            errorMap.put(prefix + "name" + i, signal);
+        } else if (name.length() > 66) {
+            String errorMsg = repLength("Name", "66");
+            errorMap.put(prefix + "name" + i, errorMsg);
         }
         String wrkExpYear = appSvcPersonnelDto.getWrkExpYear();
         if (StringUtil.isEmpty(wrkExpYear)) {
@@ -3414,7 +3412,8 @@ public final class AppValidatorHelper {
                 if (StringUtil.isEmpty(otherDesignation)) {
                     errorMap.put(prefix + "otherDesignation" + i, signal);
                 } else if (otherDesignation.length() > 100) {
-                    errorMap.put(prefix + "otherDesignation" + i, signal);
+                    String errorMsg = repLength("Others Designation", "100");
+                    errorMap.put(prefix + "otherDesignation" + i, errorMsg);
                 }
             }
             //              profRegNo
@@ -3422,7 +3421,8 @@ public final class AppValidatorHelper {
             if (StringUtil.isEmpty(profRegNo)) {
                 errorMap.put(prefix + "profRegNo" + i, signal);
             } else if (profRegNo.length() > 20) {
-                errorMap.put(prefix + "profRegNo" + i, signal);
+                String errorMsg = repLength("Professional Regn. No.", "20");
+                errorMap.put(prefix + "profRegNo" + i, errorMsg);
             } else if (true){
                 validateProfRegNo(errorMap, profRegNo, prefix+ "profRegNo" + i);
             }
@@ -3430,8 +3430,9 @@ public final class AppValidatorHelper {
             String typeOfCurrRegi = appSvcPersonnelDto.getTypeOfCurrRegi();
             if (StringUtil.isEmpty(typeOfCurrRegi)) {
                 errorMap.put(prefix + "typeOfCurrRegi" + i, signal);
-            } else if (typeOfCurrRegi.length() > 100) {
-                errorMap.put(prefix + "typeOfCurrRegi" + i, signal);
+            } else if (typeOfCurrRegi.length() > 50) {
+                String errorMsg = repLength("Type of Current Registration", "50");
+                errorMap.put(prefix + "typeOfCurrRegi" + i, errorMsg);
             }
 //                currRegiDate
             String currRegiDate = appSvcPersonnelDto.getCurrRegiDate();
@@ -3439,8 +3440,6 @@ public final class AppValidatorHelper {
                 errorMap.put(prefix + "currRegiDate" + i, signal);
             } else if (!CommonValidator.isDate(currRegiDate)) {
                 errorMap.put(prefix + "currRegiDate" + i, "GENERAL_ERR0033");
-            } else if (currRegiDate.length() > 15) {
-                errorMap.put(prefix + "currRegiDate" + i, signal);
             }
 //                praCerEndDate
             String praCerEndDateStr = appSvcPersonnelDto.getPraCerEndDate();
@@ -3448,20 +3447,19 @@ public final class AppValidatorHelper {
                 errorMap.put(prefix + "praCerEndDate" + i, signal);
             } else if (!CommonValidator.isDate(praCerEndDateStr)) {
                 errorMap.put(prefix + "praCerEndDate" + i, "GENERAL_ERR0033");
-            } else if (praCerEndDateStr.length() > 15) {
-                errorMap.put(prefix + "praCerEndDate" + i, signal);
             }
 
 //                typeOfRegister
             String typeOfRegister = appSvcPersonnelDto.getTypeOfRegister();
             if (StringUtil.isEmpty(typeOfRegister)) {
                 errorMap.put(prefix + "typeOfRegister" + i, signal);
-            } else if (typeOfRegister.length() > 100) {
-                errorMap.put(prefix + "typeOfRegister" + i, signal);
+            } else if (typeOfRegister.length() > 50) {
+                errorMap.put(prefix + "typeOfRegister" + i, repLength("Type of Register", "50"));
             }
             String subSpeciality = appSvcPersonnelDto.getSubSpeciality();
             String speciality = appSvcPersonnelDto.getSpeciality();
             String specialityOther = appSvcPersonnelDto.getSpecialityOther();
+
 //                specialtyGetDate
             if ((StringUtil.isNotEmpty(speciality) && ApplicationConsts.SERVICE_PERSONNEL_TYPE_AR_PRACTITIONER.equals(prefix)) ||
                     ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES.equals(prefix) && (StringUtil.isNotEmpty(speciality) || StringUtil.isNotEmpty(subSpeciality)
@@ -3471,8 +3469,6 @@ public final class AppValidatorHelper {
                     errorMap.put(prefix + "specialtyGetDate" + i, signal);
                 } else if (!CommonValidator.isDate(specialtyGetDateStr)) {
                     errorMap.put(prefix + "specialtyGetDate" + i, "GENERAL_ERR0033");
-                } else if (specialtyGetDateStr.length() > 15) {
-                    errorMap.put(prefix + "specialtyGetDate" + i, signal);
                 }
             }
 //                bclsExpiryDate
@@ -3496,6 +3492,11 @@ public final class AppValidatorHelper {
                 if (StringUtil.isEmpty(professionBoard)) {
                     errorMap.put(prefix + "professionBoard" + i, signal);
                 }
+                String specialityOthers = appSvcPersonnelDto.getSpecialityOther();
+                if (StringUtil.isNotEmpty(specialityOthers) && specialityOthers.length() > 100) {
+                    errorMap.put(prefix + "specialityOther" + i, repLength("Other Specialties", "100"));
+                }
+
                 String cprExpiryDate = appSvcPersonnelDto.getCprExpiryDate();
                 if (StringUtil.isEmpty(cprExpiryDate)) {
                     errorMap.put(prefix + "cprExpiryDate" + i, signal);
@@ -3505,13 +3506,14 @@ public final class AppValidatorHelper {
                     errorMap.put(prefix + "cprExpiryDate" + i, "PRF_ERR007");
                 }
             }
+
         }
         if (ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS.equals(prefix)) {
             String qualification = appSvcPersonnelDto.getQualification();
             if (StringUtil.isEmpty(qualification)) {
                 errorMap.put(prefix + "qualification" + i, signal);
             } else if (qualification.length() > 100) {
-                errorMap.put(prefix + "qualification" + i, signal);
+                errorMap.put(prefix + "qualification" + i, repLength("Qualification", "100"));
             }
         }
         if (ApplicationConsts.SERVICE_PERSONNEL_TYPE_NURSES.equals(
@@ -3534,9 +3536,12 @@ public final class AppValidatorHelper {
                 errorMap.put(prefix + "embryologistAuthorized" + i, signal);
             }
             String numberSupervision = appSvcPersonnelDto.getNumberSupervision();
-            if (StringUtil.isEmpty(numberSupervision) || numberSupervision.length() > 110) {
-                errorMap.put(prefix + "numberSupervision" + i, signal);
-            } else if (!numberSupervision.matches("^[0-9]*$")) {
+            if (StringUtil.isEmpty(numberSupervision)) {
+                errorMap.put(prefix + "numberSupervision" + i,signal);
+            }else if (numberSupervision.length() > 2){
+                errorMap.put(prefix + "numberSupervision" + i, repLength("Number of AR procedures done under supervision", "2"));
+            }
+            else if (!numberSupervision.matches("^[0-9]*$")) {
                 errorMap.put(prefix + "numberSupervision" + i, "GENERAL_ERR0002");
             }
         }
@@ -3561,7 +3566,7 @@ public final class AppValidatorHelper {
         if (StringUtil.isEmpty(name)) {
             errorMap.put(prefix + "name" + i, signal);
         } else if (name.length() > 100) {
-            errorMap.put(prefix + "name" + i, signal);
+            errorMap.put(prefix + "name" + i,  repLength("Name", "100"));
         }
         String target = personnelSel + name + salutation;
         boolean flags = errorName.stream().anyMatch(target::equalsIgnoreCase);
@@ -3576,7 +3581,7 @@ public final class AppValidatorHelper {
             if (StringUtil.isEmpty(profRegNo)) {
                 errorMap.put(prefix + "profRegNo" + i, signal);
             } else if (profRegNo.length() > 20) {
-                errorMap.put(prefix + "profRegNo" + i, signal);
+                errorMap.put(prefix + "profRegNo" + i,  repLength("Number of AR procedures done under supervision", "2"));
             }//SPPT001
         }
         if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(
@@ -3588,7 +3593,7 @@ public final class AppValidatorHelper {
                 errorMap.put(prefix + "wrkExpYear" + i, signal);
             } else {
                 if (wrkExpYear.length() > 2) {
-                    errorMap.put(prefix + "wrkExpYear" + i, signal);
+                    errorMap.put(prefix + "wrkExpYear" + i, repLength("Relevant working experience (Years) ", "2"));
                 }
                 if (!wrkExpYear.matches("^[0-9]*$")) {
                     errorMap.put(prefix + "wrkExpYear" + i, "GENERAL_ERR0002");
@@ -3597,7 +3602,7 @@ public final class AppValidatorHelper {
             if (StringUtil.isEmpty(qualification)) {
                 errorMap.put(prefix + "qualification" + i, signal);
             } else if (qualification.length() > 100) {
-                errorMap.put(prefix + "qualification" + i, signal);
+                errorMap.put(prefix + "qualification" + i, repLength("Qualification", "100"));
             }
         }
         if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(personnelSel)) {
@@ -3609,7 +3614,7 @@ public final class AppValidatorHelper {
                 if (StringUtil.isEmpty(otherDesignation)) {
                     errorMap.put(prefix + "otherDesignation" + i, signal);
                 } else if (otherDesignation.length() > 100) {
-                    errorMap.put(prefix + "otherDesignation" + i, signal);
+                    errorMap.put(prefix + "otherDesignation" + i, repLength("Others Designation", "100"));
                 }
             }
         }
@@ -3620,7 +3625,7 @@ public final class AppValidatorHelper {
         if (StringUtil.isEmpty(svcPersonnelDto)) {
             return;
         }
-        List<AppSvcPersonnelDto> normalList = svcPersonnelDto.getNormalList();
+//        List<AppSvcPersonnelDto> normalList = svcPersonnelDto.getNormalList();
         List<AppSvcPersonnelDto> nurseList = svcPersonnelDto.getNurseList();
         List<AppSvcPersonnelDto> specialList = svcPersonnelDto.getSpecialList();
         List<AppSvcPersonnelDto> embryologistList = svcPersonnelDto.getEmbryologistList();
@@ -3646,12 +3651,12 @@ public final class AppValidatorHelper {
                         personnelNames);
             }
         }
-        if (!StringUtil.isEmpty(normalList) && normalList.size() > 0) {
-            int count = normalList.size();
-            for (int i = 0; i < count; i++) {
-                paramValidate(errorMap, normalList.get(i), ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS, i, personnelNames);
-            }
-        }
+//        if (!StringUtil.isEmpty(normalList) && normalList.size() > 0) {
+//            int count = normalList.size();
+//            for (int i = 0; i < count; i++) {
+//                paramValidate(errorMap, normalList.get(i), ApplicationConsts.SERVICE_PERSONNEL_TYPE_OTHERS, i, personnelNames);
+//            }
+//        }
         if (!StringUtil.isEmpty(specialList) && specialList.size() > 0) {
             int count = specialList.size();
             for (int i = 0; i < count; i++) {
@@ -4555,8 +4560,6 @@ public final class AppValidatorHelper {
         String streetName = appGrpSecondAddrDto.getStreetName();
         String addrType = appGrpSecondAddrDto.getAddrType();
         String blkNo = appGrpSecondAddrDto.getBlkNo();
-        String floorNo = appGrpSecondAddrDto.getFloorNo();
-        String unitNo = appGrpSecondAddrDto.getUnitNo();
         String blkNoKey = "blkNo" + i;
         if (!StringUtil.isEmpty(buildingName) && buildingName.length() > 66) {
             String errorMsg = repLength("Building Name", "66");
@@ -4571,6 +4574,7 @@ public final class AppValidatorHelper {
         if (StringUtil.isEmpty(addrType)) {
             errorMap.put("addrType" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Address Type", "field"));
         }
+
         boolean empty1 = StringUtil.isEmpty(blkNo);
         if (empty1 && ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType)) {
             errorMap.put(blkNoKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Block / House No.", "field"));
@@ -4578,18 +4582,8 @@ public final class AppValidatorHelper {
             String errorMsg = repLength("Block / House No.", "10");
             errorMap.put(blkNoKey, errorMsg);
         }
-        if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType)) {
-            if (StringUtil.isEmpty(floorNo)) {
-                errorMap.put(i + "FloorNo" + 0, MessageUtil.replaceMessage("GENERAL_ERR0006", "Floor No.", "field"));
-            } else if (floorNo.length() > 3) {
-                errorMap.put(i + "FloorNo" + 0, repLength("Floor No.", "3"));
-            }
-            if (StringUtil.isEmpty(unitNo)) {
-                errorMap.put(i + "UnitNo" + 0, MessageUtil.replaceMessage("GENERAL_ERR0006", "Unit No.", "field"));
-            } else if (unitNo.length() > 5) {
-                errorMap.put(i + "UnitNo" + 0, repLength("Unit No.", "5"));
-            }
-        }
+        List<String> floorUnitList = IaisCommonUtils.genNewArrayList();
+        validateOperaionUnits(appGrpSecondAddrDto, errorMap, i,floorUnitList);
         String postalCodeKey = "postalCode" + i;
         if (!StringUtil.isEmpty(postalCode)) {
             if (postalCode.length() > 6) {
@@ -4607,35 +4601,97 @@ public final class AppValidatorHelper {
         } else {
             errorMap.put(postalCodeKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Postal Code ", "field"));
         }
-        // validate floor and units
-        validateOperaionUnits(appGrpSecondAddrDto, errorMap, i);
         return errorMap;
     }
 
-    private static void validateOperaionUnits(AppGrpSecondAddrDto appGrpSecondAddrDto, Map<String, String> errorMap, int index) {
-        if (IaisCommonUtils.isNotEmpty(appGrpSecondAddrDto.getAppPremisesOperationalUnitDtos())) {
-            List<AppPremisesOperationalUnitDto> dtos = appGrpSecondAddrDto.getAppPremisesOperationalUnitDtos();
-            if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(appGrpSecondAddrDto.getAddrType())) {
-                for (int i = 0; i < dtos.size(); i++) {
-                    AppPremisesOperationalUnitDto unitDto = dtos.get(i);
-                    String floorNo = unitDto.getFloorNo();
-                    String unitNo = unitDto.getUnitNo();
-                    boolean floorNoFlag = StringUtil.isEmpty(floorNo);
-                    boolean unitNoFlag = StringUtil.isEmpty(unitNo);
+    private static void validateOperaionUnits(AppGrpSecondAddrDto appGrpSecondAddrDto, Map<String, String> errorMap, int i,List<String> floorUnitList) {
+        boolean addrTypeFlag = true;
+        String floorNo = appGrpSecondAddrDto.getFloorNo();
+        String unitNo = appGrpSecondAddrDto.getUnitNo();
+        String blkNo = appGrpSecondAddrDto.getBlkNo();
+        String addrType = appGrpSecondAddrDto.getAddrType();
+        String floorNoKey = ApplicationHelper.getParamName(String.valueOf(i), "floorNo0");
+        String unitNoKey = ApplicationHelper.getParamName(String.valueOf(i), "unitNo0");
+        boolean empty = StringUtil.isEmpty(floorNo);
+        boolean empty2 = StringUtil.isEmpty(unitNo);
+        boolean isAptBlkType = ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType);
+        if ((isAptBlkType || !empty2) && empty) {
+            addrTypeFlag = false;
+            errorMap.put(floorNoKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Floor No.", "field"));
+        }
+        if (!empty && floorNo.length() > 3) {
+            addrTypeFlag = false;
+            errorMap.put(floorNoKey, repLength("Floor No.", "3"));
+        }
+        if ((isAptBlkType || !empty) && empty2) {
+            addrTypeFlag = false;
+            errorMap.put(unitNoKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Unit No.", "field"));
+        }
+        if (!empty2 && unitNo.length() > 5) {
+            addrTypeFlag = false;
+            errorMap.put(unitNoKey, repLength("Unit No.", "5"));
+        }
+        if (addrTypeFlag) {
+            String sb = StringUtil.getNonNull(floorNo) + AppConsts.DFT_DELIMITER3 +
+                    StringUtil.getNonNull(blkNo) + AppConsts.DFT_DELIMITER3 + unitNo;
+            floorUnitList.add(sb);
+        }
+
+        String floorErrName = i + "FloorNo";
+        String unitErrName = i + "UnitNo";
+        String floorUnitErrName = i + "FloorUnit";
+        checkOperaionUnit(appGrpSecondAddrDto.getAppPremisesOperationalUnitDtos(), errorMap, floorErrName, unitErrName,
+                floorUnitErrName, floorUnitList, appGrpSecondAddrDto);
+    }
+
+    private static void checkOperaionUnit(List<AppPremisesOperationalUnitDto> operationalUnitDtos, Map<String, String> errorMap,
+                                          String floorErrName, String unitErrName, String floorUnitErrName, List<String> floorUnitList,
+                                          AppGrpSecondAddrDto appGrpPremisesDto) {
+        if (!IaisCommonUtils.isEmpty(operationalUnitDtos)) {
+            int opIndex = 1;
+            for (AppPremisesOperationalUnitDto operationalUnitDto : operationalUnitDtos) {
+                boolean flag = true;
+                String floorNo = operationalUnitDto.getFloorNo();
+                String unitNo = operationalUnitDto.getUnitNo();
+                boolean floorNoFlag = StringUtil.isEmpty(floorNo);
+                boolean unitNoFlag = StringUtil.isEmpty(unitNo);
+                if (!(floorNoFlag && unitNoFlag)) {
                     if (floorNoFlag) {
-                        errorMap.put(index + "FloorNo" + (i + 1), MessageUtil.replaceMessage("GENERAL_ERR0006", "Floor No.", "field"));
-                    } else if (floorNo.length() > 3) {
-                        errorMap.put(index + "FloorNo" + (i + 1), repLength("Floor No.", "3"));
-                    }
-                    if (unitNoFlag) {
-                        errorMap.put(index + "UnitNo" + (i + 1), MessageUtil.replaceMessage("GENERAL_ERR0006", "Unit No.", "field"));
-                    } else if (unitNo.length() > 5) {
-                        errorMap.put(index + "UnitNo" + (i + 1), repLength("Unit No.", "5"));
+                        flag = false;
+                        errorMap.put(floorErrName + opIndex, MessageUtil.replaceMessage("GENERAL_ERR0006", "Floor No.", "field"));
+                    } else if (unitNoFlag) {
+                        flag = false;
+                        errorMap.put(unitErrName + opIndex, MessageUtil.replaceMessage("GENERAL_ERR0006", "Unit No.", "field"));
                     }
                 }
+
+                if (!floorNoFlag && floorNo.length() > 3) {
+                    flag = false;
+                    errorMap.put(floorErrName + opIndex, repLength("Floor No.", "3"));
+                }
+
+                if (!unitNoFlag && unitNo.length() > 5) {
+                    flag = false;
+                    errorMap.put(unitErrName + opIndex, repLength("Unit No.", "5"));
+                }
+                if (flag) {
+                    if (!StringUtil.isEmpty(floorNo) && !StringUtil.isEmpty(unitNo)) {
+                        String blkNo = appGrpPremisesDto.getBlkNo();
+                        String floorUnitStr = floorNo + AppConsts.DFT_DELIMITER3 +
+                                StringUtil.getNonNull(blkNo) + AppConsts.DFT_DELIMITER3 + unitNo;
+                        if (floorUnitList.contains(floorUnitStr)) {
+                            errorMap.put(floorUnitErrName + opIndex, "NEW_ERR0017");
+                        } else {
+                            floorUnitList.add(floorUnitStr);
+                        }
+                    }
+                }
+                opIndex++;
             }
         }
     }
+
+
 
     public static Map<String, String> doValidateRfi(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto,
             HttpServletRequest request) {

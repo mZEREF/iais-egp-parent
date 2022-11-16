@@ -137,7 +137,7 @@
 
 
 
-    <c:if test="${normalCount != 0}">
+<%--    <c:if test="${normalCount != 0}">
         <div class="contents">
             <input type="hidden" class="maxCount" value="${othersPersonnelMax}"/>
             <c:forEach begin="0" end="${normalCount - 1}" step="1" varStatus="status">
@@ -154,7 +154,7 @@
             </div>
         </c:if>
         </div>
-    </c:if>
+    </c:if>--%>
 
 
 
