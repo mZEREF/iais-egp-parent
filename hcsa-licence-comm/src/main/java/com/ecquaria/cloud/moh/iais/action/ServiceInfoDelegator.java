@@ -1778,7 +1778,7 @@ public class ServiceInfoDelegator {
         String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
         if ("next".equals(crud_action_type)) {
             AppValidatorHelper.doValidateBusiness(appSvcBusinessDtos, appSubmissionDto.getAppType(),
-                    appSubmissionDto.getLicenceId(), errorMap);
+                    appSubmissionDto.getLicenceId(),currSvcId, errorMap);
         }
         checkAction(errorMap, HcsaConsts.STEP_BUSINESS_NAME, appSubmissionDto, bpc.request);
         log.debug(StringUtil.changeForLog("do Business end ..."));
