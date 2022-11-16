@@ -2066,6 +2066,14 @@ public final class AppValidatorHelper {
                 }
             }
 
+            String corporateWebsite = appSvcBusinessDtos.get(i).getCorporateWebsite();
+            if (!StringUtil.isEmpty(corporateWebsite)) {
+                if (corporateWebsite.length() > 200) {
+                    String errorMsg = repLength("Corporate Website", "200");
+                    errorMap.put("corporateWebsite" + i, errorMsg);
+                }
+            }
+
             if (IaisCommonUtils.isNotEmpty(appSvcBusinessDtos.get(i).getWeeklyDtoList())) {
                 validateWeek(appSvcBusinessDtos.get(i), subfix, errorMap);
             }
