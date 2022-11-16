@@ -907,7 +907,6 @@ public class ServiceInfoDelegator {
     }
 
     private Map<String, String> isAllChecked(BaseProcessClass bpc, AppSubmissionDto appSubmissionDto) {
-        StringBuilder errorSvcConfig = new StringBuilder();
         List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         Map<String, String> errorMap = new HashMap<>();
         Map<String, AppSvcPersonAndExtDto> licPersonMap = null;
@@ -920,8 +919,7 @@ public class ServiceInfoDelegator {
             Map<String, String> map = AppValidatorHelper.doCheckBox(currSvcInfoDto, appSubmissionDto, licPersonMap);
             if (!map.isEmpty()) {
                 errorMap.putAll(map);
-                errorSvcConfig.append(currSvcInfoDto.getServiceId());
-                joiner.add(currSvcInfoDto.getServiceId());
+                joiner.add(currSvcInfoDto.getServiceCode());
             }
         }
         String sign = joiner.toString();

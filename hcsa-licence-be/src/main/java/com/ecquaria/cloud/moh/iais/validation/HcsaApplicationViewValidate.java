@@ -398,7 +398,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                 //status not empty
                 if(appOther){
                     if (specialSubSvcRadios == null || specialSubSvcRadios.length == 0) {
-                        errMap.put("specialSubSvcRadioError" + svcId, ERROR_CODE_GENERAL_ERR0006);
+                        errMap.put("otherSubSvcRadioError" + svcId, ERROR_CODE_GENERAL_ERR0006);
                         subSvcRelDtoList.get(i).setStatus(null);
                     } else {
                         String specialSubSvcRadio = specialSubSvcRadios[0];

@@ -92,7 +92,7 @@
                                                                         <c:set var="currentPreviewSvcInfo" value="${AppSubmissionDto.appSvcRelatedInfoDtoList.get(0)}" scope="request"/>
                                                                         <c:if test="${showHeadingSign}">
                                                                             <%--<c:set var="headingSign" value="${coMap.information == 'information' ? 'completed' : 'incompleted'}"/>--%>
-                                                                            <c:set var="headingSign" value="${StringUtil.isIn(currentPreviewSvcInfo.serviceId, coMap.multiSvc) ? 'incompleted' : 'completed'}" />
+                                                                            <c:set var="headingSign" value="${StringUtil.isIn(currentPreviewSvcInfo.serviceCode, coMap.multiSvcInfo) ? 'incompleted' : 'completed'}" />
                                                                         </c:if>
                                                                         <div class="panel panel-default svc-content">
                                                                             <div class="panel-heading ${headingSign}" id="headingServiceInfo${status.index}"

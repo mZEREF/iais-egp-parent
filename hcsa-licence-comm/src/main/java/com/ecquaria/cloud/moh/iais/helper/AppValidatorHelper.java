@@ -289,7 +289,7 @@ public final class AppValidatorHelper {
             if (!map.isEmpty()) {
                 errorMap.putAll(map);
                 IaisCommonUtils.addToList(HcsaAppConst.SECTION_SVCINFO, errorList);
-                joiner.add(currSvcInfoDto.getServiceId());
+                joiner.add(currSvcInfoDto.getServiceCode());
             }
         }
         String sign = joiner.toString();
@@ -1904,29 +1904,6 @@ public final class AppValidatorHelper {
         return validateFile(file, list, size);
     }
 
-    public static void validatePH(Map<String, String> errorMap, AppSubmissionDto appSubmissionDto) {
-        /*List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-        if (appGrpPremisesDtoList != null) {
-            for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
-                String premisesType = appGrpPremisesDtoList.get(i).getPremisesType();
-                String s = "";
-                if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType)) {
-                    s = "conveyance";
-                } else if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType)) {
-                    s = "onSite";
-                } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesType)) {
-                    s = "offSite";
-                }
-                List<OperationHoursReloadDto> weeklyDtoList = appGrpPremisesDtoList.get(i).getWeeklyDtoList();
-                List<OperationHoursReloadDto> phDtoList = appGrpPremisesDtoList.get(i).getPhDtoList();
-                List<AppPremEventPeriodDto> eventDtoList = appGrpPremisesDtoList.get(i).getEventDtoList();
-                validate(phDtoList, errorMap, i, s + "PubHoliday");
-                validate(weeklyDtoList, errorMap, i, s + "Weekly");
-                validateEvent(eventDtoList, errorMap, i, s + "Event");
-            }
-        }*/
-    }
-
     public static void validate(List<OperationHoursReloadDto> list, Map<String, String> errorMap, int index, String errorId) {
         if (list == null) {
             return;
@@ -2012,7 +1989,7 @@ public final class AppValidatorHelper {
             AppPremSpecialisedDto appPremSpecialisedDto = appPremSpecialisedDtoList.stream().filter(item -> premIndexNo.equals(item.getPremisesVal())).findFirst().get();
             boolean match = appPremSpecialisedDto.getCheckedAppPremSubSvcRelDtoList().stream()
                     .map(AppPremSubSvcRelDto::getSvcCode)
-                    .anyMatch(s -> AppServicesConsts.SERVICE_CODE_Emergency_Department.equals(s));
+                    .anyMatch(AppServicesConsts.SERVICE_CODE_Emergency_Department::equals);
             String businessName = appSvcBusinessDtos.get(i).getBusinessName();
             if (StringUtil.isEmpty(businessName)) {
                 errorMap.put("businessName" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Business Name", "field"));
@@ -3417,7 +3394,7 @@ public final class AppValidatorHelper {
             } else if (profRegNo.length() > 20) {
                 String errorMsg = repLength("Professional Regn. No.", "20");
                 errorMap.put(prefix + "profRegNo" + i, errorMsg);
-            } else if (true){
+            } else {
                 validateProfRegNo(errorMap, profRegNo, prefix+ "profRegNo" + i);
             }
             //                typeOfCurrRegi
