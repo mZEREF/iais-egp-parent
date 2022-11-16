@@ -733,9 +733,6 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         insRepDto.setAppPremSpecialSubSvcRelDtoList(applicationViewDto.getAppPremSpecialSubSvcRelDtoList().stream()
                 .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
                 .collect(Collectors.toList()));
-        insRepDto.setAppPremOthersSubSvcRelDtoList(applicationViewDto.getAppPremOthersSubSvcRelDtoList().stream()
-                .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
-                .collect(Collectors.toList()));
         ParamUtil.setRequestAttr(request, "appType", appType);
         ParamUtil.setRequestAttr(request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
         ParamUtil.setRequestAttr(request, "insRepDto", insRepDto);

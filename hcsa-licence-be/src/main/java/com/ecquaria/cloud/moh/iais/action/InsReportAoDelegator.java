@@ -125,9 +125,6 @@ public class InsReportAoDelegator  {
         insRepDto.setAppPremSpecialSubSvcRelDtoList(applicationViewDto.getAppPremSpecialSubSvcRelDtoList().stream()
                 .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
                 .collect(Collectors.toList()));
-        insRepDto.setAppPremOthersSubSvcRelDtoList(applicationViewDto.getAppPremOthersSubSvcRelDtoList().stream()
-                .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
-                .collect(Collectors.toList()));
         vehicleCommonController.initAoRecommendation(correlationId,bpc,applicationViewDto.getApplicationDto().getApplicationType());
         Map<String, AppPremisesRoutingHistoryDto> rollBackValueMap = IaisCommonUtils.genNewHashMap();
         List<SelectOption> rollBackStage = inspectionService.getRollBackSelectOptions(applicationViewDto.getRollBackHistroyList(), rollBackValueMap, taskDto.getRoleId(), Collections.singletonList(RoleConsts.USER_ROLE_INSPECTIOR));
@@ -167,14 +164,20 @@ public class InsReportAoDelegator  {
         InspectionHelper.checkForEditingApplication(bpc.request);
         List<AppPremSubSvcRelDto> specialServiceList=applicationViewDto.getAppPremSpecialSubSvcRelDtoList();
         if (IaisCommonUtils.isNotEmpty(specialServiceList)){
-            ParamUtil.setRequestAttr(bpc.request, "changedSpecialServiceList", specialServiceList.stream()
-                    .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE.equals(dto.getActCode()))
+            ParamUtil.setRequestAttr(bpc.request, "addSpecialServiceList", specialServiceList.stream()
+                    .filter(dto->ApplicationConsts.RECORD_ACTION_CODE_ADD.equals(dto.getActCode()))
+                    .collect(Collectors.toList()));
+            ParamUtil.setRequestAttr(bpc.request, "removeSpecialServiceList", specialServiceList.stream()
+                    .filter(dto->ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
                     .collect(Collectors.toList()));
         }
         List<AppPremSubSvcRelDto> otherServiceList=applicationViewDto.getAppPremOthersSubSvcRelDtoList();
         if (IaisCommonUtils.isNotEmpty(otherServiceList)){
-            ParamUtil.setRequestAttr(bpc.request, "changedOtherServiceList", otherServiceList.stream()
-                    .filter(dto->!ApplicationConsts.RECORD_ACTION_CODE_UNCHANGE.equals(dto.getActCode()))
+            ParamUtil.setRequestAttr(bpc.request, "addOtherServiceList", otherServiceList.stream()
+                    .filter(dto->ApplicationConsts.RECORD_ACTION_CODE_ADD.equals(dto.getActCode()))
+                    .collect(Collectors.toList()));
+            ParamUtil.setRequestAttr(bpc.request, "removeOtherServiceList", otherServiceList.stream()
+                    .filter(dto->ApplicationConsts.RECORD_ACTION_CODE_REMOVE.equals(dto.getActCode()))
                     .collect(Collectors.toList()));
         }
     }
