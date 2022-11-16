@@ -86,7 +86,7 @@
                                                             <input class="not-clear" type="hidden" value="${count}" name="${itemPrefix}${groupId}"/>
                                                             <input class="not-clear" type="hidden" value="${appSvcSuplmGroupDto.maxCount}" name="${itemPrefix}${groupId}-max"/>
                                                             <span class="addMoreBtn" style="color:deepskyblue;cursor:pointer;">
-                                                                <span style="">+ Add more</span>
+                                                                <span style=""><c:out value="${appSvcSuplmGroupDto.addMoreName}"/></span>
                                                             </span>
                                                         </div>
                                                     </c:if>
