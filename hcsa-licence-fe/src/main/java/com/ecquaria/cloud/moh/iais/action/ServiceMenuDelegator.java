@@ -931,6 +931,8 @@ public class ServiceMenuDelegator {
                     AppLicBundleDto appLicBundleDto = new AppLicBundleDto();
                     appLicBundleDto.setLicenceId(licenceId);
                     appLicBundleDto.setPremisesId(licPremiseId);
+                    appLicBundleDto.setSvcCode(hcsaServiceDto.getSvcCode());
+                    appLicBundleDto.setPremisesType(menuLicenceDto.getPremisesType());
                     appLicBundleDto.setLicOrApp(true);
                     appLicBundleDtoList.add(appLicBundleDto);
                 }
