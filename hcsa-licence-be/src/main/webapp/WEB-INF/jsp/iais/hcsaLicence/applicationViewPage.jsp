@@ -960,15 +960,31 @@
             $('#recommendationOtherDropdown').removeClass('hidden');
             $('.vehicle-approve').removeAttr("disabled","disabled");
             $('.vehicle-reject').removeAttr("disabled","disabled");
+            $('.specialSubSvc-approve').removeAttr("disabled","disabled");
+            $('.specialSubSvc-reject').removeAttr("disabled","disabled");
+            $('.otherSubSvc-approve').removeAttr("disabled","disabled");
+            $('.otherSubSvc-reject').removeAttr("disabled","disabled");
         } else if('reject' == recommendation) {
             $('.vehicle-approve').attr("disabled","disabled");
             $('.vehicle-reject').attr("disabled","disabled");
+            $('.specialSubSvc-approve').attr("disabled","disabled");
+            $('.specialSubSvc-reject').attr("disabled","disabled");
+            $('.otherSubSvc-approve').attr("disabled","disabled");
+            $('.otherSubSvc-reject').attr("disabled","disabled");
             $('.vehicle-approve').prop('checked', false);
             $('.vehicle-reject').prop('checked', true);
+            $('.specialSubSvc-approve').prop('checked', false);
+            $('.specialSubSvc-reject').prop('checked', true);
+            $('.otherSubSvc-approve').prop('checked', false);
+            $('.otherSubSvc-reject').prop('checked', true);
             $('#recommendationOtherDropdown').addClass('hidden');
         }else{
             $('.vehicle-approve').removeAttr("disabled","disabled");
             $('.vehicle-reject').removeAttr("disabled","disabled");
+            $('.specialSubSvc-approve').removeAttr("disabled","disabled");
+            $('.specialSubSvc-reject').removeAttr("disabled","disabled");
+            $('.otherSubSvc-approve').removeAttr("disabled","disabled");
+            $('.otherSubSvc-reject').removeAttr("disabled","disabled");
             $('#recommendationOtherDropdown').addClass('hidden');
         }
     }
