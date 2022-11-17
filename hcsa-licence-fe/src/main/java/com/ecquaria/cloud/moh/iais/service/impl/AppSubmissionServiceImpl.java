@@ -809,11 +809,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                     if ("LicBundle".equals(ms[1]) || "LicBundle".equals(ms[2])) {
                                         licenceFeeDto.setBundle(3);
 
-                                        if("LicBundle".equals(ms[1])&& "".equals(ms[2]))
-                                        licenceFeeDto.setBundle(4);
-                                        if("LicBundle".equals(ms[2])&& "".equals(ms[1]))
+                                        if("LicBundle".equals(ms[1])&& "".equals(ms[2])) {
                                             licenceFeeDto.setBundle(4);
-
+                                        }
+                                        if("LicBundle".equals(ms[2])&& "".equals(ms[1])) {
+                                            licenceFeeDto.setBundle(4);
+                                        }
                                     } else {
                                         licenceFeeDto.setBundle(0);
                                     }
