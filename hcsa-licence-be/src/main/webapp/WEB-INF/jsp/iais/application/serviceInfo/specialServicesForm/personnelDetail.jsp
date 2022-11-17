@@ -108,8 +108,8 @@
         <iais:row>
             <iais:field width="5" cssClass="col-md-5" mandatory="false" value="Professional Board"/>
             <iais:value width="7" cssClass="col-md-7">
-                <iais:select cssClass="professionBoard" name="${prepsn}professionBoard${index}" options="PERSONBOARD"
-                             value="${person.professionBoard}" firstOption="Please Select"></iais:select>
+                <iais:select cssClass="professionBoard" name="${prepsn}professionBoard${index}" codeCategory="CATE_ID_PROFESSION_BOARD"
+                             value="${person.professionBoard}" firstOption="Please Select"/>
             </iais:value>
         </iais:row>
 

@@ -1676,6 +1676,11 @@ public final class AppValidatorHelper {
                 String bclsExpiryDate = person.getBclsExpiryDateStr();
                 String professionBoard = person.getProfessionBoard();
                 String officeTelNo = person.getOfficeTelNo();
+                if (StringUtils.isNotEmpty(specialityOther)) {
+                    if (StringUtils.isEmpty(specialtyGetDate)) {
+                        errMap.put(prefix + "specialtyGetDate" + i, "GENERAL_ERR0006");
+                    }
+                }
                 if ("po".equals(prefix) || "dpo".equals(prefix)){
                     if (StringUtil.isEmpty(officeTelNo)) {
                         errMap.put(prefix + "officeTelNo" + i, "GENERAL_ERR0006");
