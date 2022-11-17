@@ -846,8 +846,7 @@ public abstract class AppCommDelegator {
                 continue;
             }
             String premisesSelect = appGrpPremisesDto.getPremisesSelect();
-            if (!StringUtil.isEmpty(premisesSelect) && !HcsaAppConst.DFT_FIRST_CODE.equals(premisesSelect)
-                    && !HcsaAppConst.NEW_PREMISES.equals(premisesSelect)) {
+            if (ApplicationHelper.isSpecialValue(premisesSelect)) {
                 // re-set premise select for error record
                 if (premisesMap.get(premisesSelect) == null) {
                     appGrpPremisesDto.setExistingData(AppConsts.NO);

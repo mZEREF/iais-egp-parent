@@ -840,9 +840,9 @@ public final class ApplicationHelper {
                 person.setIdType(psnDto.getIdType());
                 person.setIdNo(psnDto.getIdNo());
                 if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnDto.getPsnType()) ||
-                        ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnDto.getPsnType())){
+                        ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnDto.getPsnType())) {
                     person.setOfficeTelNo(psnDto.getOfficeTelNo());
-                }else {
+                } else {
                     if (StringUtil.isNotEmpty(psnDto.getOfficeTelNo())) {
                         person.setOfficeTelNo(psnDto.getOfficeTelNo());
                     }
@@ -1296,13 +1296,13 @@ public final class ApplicationHelper {
 
     public static List<SelectOption> genOutsourcedServiceSel(AppSvcOutsouredDto appSvcOutsouredDto) {
         List<SelectOption> options = IaisCommonUtils.genNewArrayList();
-        List<String> svcCodeList =appSvcOutsouredDto.getSvcCodeList();
+        List<String> svcCodeList = appSvcOutsouredDto.getSvcCodeList();
         if (IaisCommonUtils.isNotEmpty(svcCodeList)) {
-            if (svcCodeList.contains(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY)){
+            if (svcCodeList.contains(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY)) {
                 options.add(new SelectOption(HcsaAppConst.RADIOLOGICALSERVICE, HcsaAppConst.RADIOLOGICALSERVICE));
-            }else if (svcCodeList.contains(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES)){
+            } else if (svcCodeList.contains(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES)) {
                 options.add(new SelectOption(HcsaAppConst.CLINICALLABORATOYY, HcsaAppConst.CLINICALLABORATOYY));
-            }else {
+            } else {
                 options.add(new SelectOption(HcsaAppConst.CLINICALLABORATOYY, HcsaAppConst.CLINICALLABORATOYY));
                 options.add(new SelectOption(HcsaAppConst.RADIOLOGICALSERVICE, HcsaAppConst.RADIOLOGICALSERVICE));
             }
@@ -1330,8 +1330,10 @@ public final class ApplicationHelper {
 
     public static List<SelectOption> genPersonnelBoard() {
         List<SelectOption> personnelBoard = IaisCommonUtils.genNewArrayList();
-        SelectOption personnelBoard1 = new SelectOption(ApplicationConsts.PROFESSIONAL_BOARD_SMC, MasterCodeUtil.getCodeDesc(ApplicationConsts.PROFESSIONAL_BOARD_SMC));
-        SelectOption personnelBoard2 = new SelectOption(ApplicationConsts.PROFESSIONAL_BOARD_SNB, MasterCodeUtil.getCodeDesc(ApplicationConsts.PROFESSIONAL_BOARD_SNB));
+        SelectOption personnelBoard1 = new SelectOption(ApplicationConsts.PROFESSIONAL_BOARD_SMC,
+                MasterCodeUtil.getCodeDesc(ApplicationConsts.PROFESSIONAL_BOARD_SMC));
+        SelectOption personnelBoard2 = new SelectOption(ApplicationConsts.PROFESSIONAL_BOARD_SNB,
+                MasterCodeUtil.getCodeDesc(ApplicationConsts.PROFESSIONAL_BOARD_SNB));
         personnelBoard.add(personnelBoard1);
         personnelBoard.add(personnelBoard2);
         personnelBoard.sort(Comparator.comparing(SelectOption::getText));
@@ -1352,7 +1354,7 @@ public final class ApplicationHelper {
         personnelTypeSel.add(personnelTypeOp1);
         personnelTypeSel.add(personnelTypeOp2);
         personnelTypeSel.add(personnelTypeOp3);
-        ParamUtil.setRequestAttr(request, "svSel",personnelTypeSel);
+        ParamUtil.setRequestAttr(request, "svSel", personnelTypeSel);
         List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.SSI_CATE_ID_DESIGNATION);
         List<SelectOption> nicSel = selectOptions.stream().filter(s -> !"SSI001".equals(s.getValue())).collect(Collectors.toList());
         ParamUtil.setRequestAttr(request, "nicSel", nicSel);
@@ -2567,14 +2569,14 @@ public final class ApplicationHelper {
         person.setQualification(source.getQualification());
         person.setDesignation(source.getDesignation());
         person.setOtherDesignation(source.getOtherDesignation());
-        if (!ApplicationConsts.PERSONNEL_PSN_KAH.equals(psnType)){
+        if (!ApplicationConsts.PERSONNEL_PSN_KAH.equals(psnType)) {
             person.setMobileNo(source.getMobileNo());
             person.setEmailAddr(source.getEmailAddr());
         }
-        if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType) || ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnType)){
+        if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType) || ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnType)) {
             person.setOfficeTelNo(source.getOfficeTelNo());
         }
-        if (ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType)){
+        if (ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType)) {
             person.setRelevantExperience(source.getRelevantExperience());
             person.setHoldCerByEMS(source.getHoldCerByEMS());
             Date aclsExpiryDate = source.getAclsExpiryDate();
@@ -3132,7 +3134,7 @@ public final class ApplicationHelper {
 
     public static Map<String, AppGrpPremisesDto> checkPremisesMap(boolean reSetCurrent, boolean reSetSesstion,
             HttpServletRequest request) {
-        List<AppGrpPremisesDto> appGrpPremisesDtoList = Optional.ofNullable(getOldAppSubmissionDto(request))
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = Optional.ofNullable(getAppSubmissionDto(request))
                 .map(AppSubmissionDto::getAppGrpPremisesDtoList)
                 .orElse(null);
         return checkPremisesMap(appGrpPremisesDtoList, reSetCurrent, reSetSesstion, request);
@@ -3151,16 +3153,18 @@ public final class ApplicationHelper {
                 licAppGrpPremisesDtoMap = IaisCommonUtils.genNewHashMap();
             } else {
                 licAppGrpPremisesDtoMap = licencePremisesDtoList.stream()
-                        .peek(premisesDto -> {
+                        .map(premisesDto -> {
                             if (handleExisted) {
                                 for (AppGrpPremisesDto dto : appGrpPremisesDtoList) {
-                                    if (Objects.equals(premisesDto.getPremisesIndexNo(), dto.getPremisesIndexNo())) {
-                                        premisesDto.setExistingData(AppConsts.NO);
+                                    if (Objects.equals(premisesDto.getPremisesIndexNo(), dto.getPremisesIndexNo())
+                                            && isSpecialValue(dto.getPremisesSelect())) {
+                                        premisesDto = CopyUtil.copyMutableObject(dto);
                                     } else if (Objects.equals(premisesDto.getPremisesSelect(), dto.getPremisesSelect())) {
                                         premisesDto.setExistingData(dto.getExistingData());
                                     }
                                 }
                             }
+                            return premisesDto;
                         })
                         .collect(Collectors.toMap(AppGrpPremisesDto::getPremisesSelect, Function.identity(), (v1, v2) -> {
                             if (AppConsts.NO.equals(v2.getExistingData())) {
@@ -3181,16 +3185,18 @@ public final class ApplicationHelper {
                 appPremisesMap = IaisCommonUtils.genNewHashMap();
             } else {
                 appPremisesMap = activePendingPremiseList.stream()
-                        .peek(premisesDto -> {
+                        .map(premisesDto -> {
                             if (handleExisted) {
                                 for (AppGrpPremisesDto dto : appGrpPremisesDtoList) {
-                                    if (Objects.equals(premisesDto.getPremisesIndexNo(), dto.getPremisesIndexNo())) {
-                                        premisesDto.setExistingData(AppConsts.NO);
+                                    if (Objects.equals(premisesDto.getPremisesIndexNo(), dto.getPremisesIndexNo())
+                                            && isSpecialValue(dto.getPremisesSelect())) {
+                                        premisesDto = CopyUtil.copyMutableObject(dto);
                                     } else if (Objects.equals(premisesDto.getPremisesSelect(), dto.getPremisesSelect())) {
                                         premisesDto.setExistingData(dto.getExistingData());
                                     }
                                 }
                             }
+                            return premisesDto;
                         })
                         .collect(Collectors.toMap(AppGrpPremisesDto::getPremisesSelect, Function.identity(), (v1, v2) -> {
                             v1.setRelatedServices(IaisCommonUtils.combineList(v1.getRelatedServices(), v2.getRelatedServices()));
@@ -3314,12 +3320,16 @@ public final class ApplicationHelper {
     }
 
     public static AppGrpPremisesDto getPremisesFromMap(String premSelectVal, HttpServletRequest request) {
-        if (StringUtil.isEmpty(premSelectVal)) {
+        if (!isSpecialValue(premSelectVal)) {
             return null;
         }
         log.info(StringUtil.changeForLog("##### Prem select val: " + StringUtil.clarify(premSelectVal)));
         Map<String, AppGrpPremisesDto> premisesDtoMap = checkPremisesMap(false, request);
         return CopyUtil.copyMutableObject(premisesDtoMap.get(premSelectVal));
+    }
+
+    public static boolean isSpecialValue(String value) {
+        return !HcsaAppConst.DFT_FIRST_CODE.equals(value) && !HcsaAppConst.NEW_PREMISES.equals(value) && !StringUtil.isEmpty(value);
     }
 
     public static String getParamName(String prefix, String name) {

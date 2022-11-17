@@ -316,7 +316,7 @@ public final class AppDataHelper {
                 }
                 if (licPremise != null) {
                     appGrpPremisesDto.setRelatedServices(licPremise.getRelatedServices());
-                    appGrpPremisesDto.setHciCode(licPremise.getHciCode());
+                    //appGrpPremisesDto.setHciCode(licPremise.getHciCode());
                 }
             } else if (StringUtil.isNotEmpty(premIndexNo)) {
                 appGrpPremisesDto = oldAppGrpPremisesDto;
@@ -324,6 +324,9 @@ public final class AppDataHelper {
                 continue;
             }
             setAppGrpPremiseFromPage(appGrpPremisesDto, i, request);
+            if (!AppConsts.YES.equals(existingData) && ApplicationHelper.isSpecialValue(premisesSel)) {
+                premisesSel = ApplicationHelper.getPremisesKey(appGrpPremisesDto);
+            }
             // rfc and renewal
             setSelectedLicences(appGrpPremisesDto, premIndexNo, request);
             AppSubmissionDto oldAppSubmissionDto = ApplicationHelper.getOldAppSubmissionDto(request);
@@ -343,7 +346,6 @@ public final class AppDataHelper {
         return appGrpPremisesDtoList;
     }
 
-
     private static void setSelectedLicences(AppGrpPremisesDto appGrpPremisesDto, String premIndexNo,
             HttpServletRequest request) {
         AppSubmissionDto appSubmissionDto = ApplicationHelper.getAppSubmissionDto(request);
@@ -362,20 +364,23 @@ public final class AppDataHelper {
 
     private static void checkHciCode(AppGrpPremisesDto appGrpPremisesDto, String premisesIndexNo, String premisesSel,
             AppSubmissionDto oldAppSubmissionDto) {
-        if (oldAppSubmissionDto == null || HcsaAppConst.DFT_FIRST_CODE.equals(premisesSel)
-                || HcsaAppConst.NEW_PREMISES.equals(premisesSel) || StringUtil.isEmpty(premisesSel)) {
+        if (oldAppSubmissionDto == null) {
+            appGrpPremisesDto.setHciCode(null);
+            return;
+        }
+        for (AppGrpPremisesDto grpPremisesDto : oldAppSubmissionDto.getAppGrpPremisesDtoList()) {
+            if (Objects.equals(premisesIndexNo, grpPremisesDto.getPremisesIndexNo())) {
+                appGrpPremisesDto.setOldHciCode(grpPremisesDto.getHciCode());
+                break;
+            }
+        }
+        if (!ApplicationHelper.isSpecialValue(premisesSel)) {
             appGrpPremisesDto.setHciCode(null);
             return;
         }
         for (AppGrpPremisesDto grpPremisesDto : oldAppSubmissionDto.getAppGrpPremisesDtoList()) {
             if (Objects.equals(premisesSel, ApplicationHelper.getPremisesKey(grpPremisesDto))) {
                 appGrpPremisesDto.setHciCode(grpPremisesDto.getHciCode());
-                break;
-            }
-        }
-        for (AppGrpPremisesDto grpPremisesDto : oldAppSubmissionDto.getAppGrpPremisesDtoList()) {
-            if (Objects.equals(premisesIndexNo, grpPremisesDto.getPremisesIndexNo())) {
-                appGrpPremisesDto.setOldHciCode(grpPremisesDto.getHciCode());
                 break;
             }
         }
@@ -418,6 +423,7 @@ public final class AppDataHelper {
         appGrpPremisesDto.setAppPremisesOperationalUnitDtos(appPremisesOperationalUnitDtos);
         appGrpPremisesDto.setStreetName(ParamUtil.getString(request, "streetName" + i));
         appGrpPremisesDto.setBuildingName(ParamUtil.getString(request, "buildingName" + i));
+        appGrpPremisesDto.setHciCode(null);
     }
 
     private static void setAppGrpPremiseFromPage(AppGrpPremisesDto appGrpPremisesDto, int i, HttpServletRequest request) {

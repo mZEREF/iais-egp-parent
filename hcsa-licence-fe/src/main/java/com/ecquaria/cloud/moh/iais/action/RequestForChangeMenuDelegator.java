@@ -1662,10 +1662,10 @@ public class RequestForChangeMenuDelegator {
             appSubmissionDto.setAppGrpNo(null);
             appSubmissionDto.setId(null);
             appSubmissionDto.setAppGrpId(null);
-            List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+            /*List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             if(appGrpPremisesDtoList!=null&&!appGrpPremisesDtoList.isEmpty()){
                 appGrpPremisesDtoList.get(0).setExistingData(AppConsts.NO);
-            }
+            }*/
             String eqHciCode = bpc.request.getParameter("eqHciCode");
             bpc.request.setAttribute("eqHciCode",eqHciCode);
         }
