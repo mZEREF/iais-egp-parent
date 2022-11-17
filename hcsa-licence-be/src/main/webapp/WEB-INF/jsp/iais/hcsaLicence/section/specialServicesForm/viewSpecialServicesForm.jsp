@@ -77,14 +77,23 @@
                                             <%@include file="viewSectionLeaderDetail.jsp"%>
                                         </c:forEach>
 
-                                        <c:forEach var="person" items="${specialServiceSectionDto.appSvcDiagnosticRadiographerDtoList}" varStatus="drStatus">
+                                        <c:forEach var="person" items="${specialServiceSectionDto.appSvcPersonnelDtoList}" varStatus="svStatus">
+                                            <c:set var="oldPerson" value="${oldspecialServiceSectionDto.appSvcPersonnelDtoList[svStatus.index]}"/>
+                                            <c:set var="index" value="${svStatus.index}"/>
+                                            <c:set var="svDtoListLength" value="${specialServiceSectionDto.appSvcPersonnelDtoList.size()}"/>
+                                            <c:set var="isShowMore" value="0"/>
+                                            <c:set var="title" value="Service Personnel  ${svDtoListLength > 1?index+1:''}"/>
+                                            <%@include file="viewSectionLeaderDetail.jsp"%>
+                                        </c:forEach>
+
+                                        <%--<c:forEach var="person" items="${specialServiceSectionDto.appSvcDiagnosticRadiographerDtoList}" varStatus="drStatus">
                                             <c:set var="oldPerson" value="${oldspecialServiceSectionDto.appSvcDiagnosticRadiographerDtoList[drStatus.index]}"/>
                                             <c:set var="index" value="${drStatus.index}"/>
                                             <c:set var="drDtoListLength" value="${specialServiceSectionDto.appSvcDiagnosticRadiographerDtoList.size()}"/>
                                             <c:set var="isShowMore" value="0"/>
                                             <c:set var="title" value="Diagnostic Radiographer ${drDtoListLength > 1?index+1:''}"/>
                                             <%@include file="viewSectionLeaderDetail.jsp"%>
-                                        </c:forEach>
+                                        </c:forEach>--%>
 
                                         <c:forEach var="person" items="${specialServiceSectionDto.appSvcMedicalPhysicistDtoList}" varStatus="mpStatus">
                                             <c:set var="oldPerson" value="${oldspecialServiceSectionDto.appSvcMedicalPhysicistDtoList[mpStatus.index]}"/>
@@ -110,6 +119,15 @@
                                             <c:set var="roDtoListLength" value="${specialServiceSectionDto.appSvcRadiationOncologist.size()}"/>
                                             <c:set var="type" value="ro"/>
                                             <c:set var="title" value="Radiation Oncologist ${roDtoListLength > 1?index+1:''}"/>
+                                            <%@include file="viewSpecialServicesSsiPersonnel.jsp"%>
+                                        </c:forEach>
+
+                                        <c:forEach var="person" items="${specialServiceSectionDto.appSvcRadiationCqmp}" varStatus="cqpmStatus">
+                                            <c:set var="oldPerson" value="${oldspecialServiceSectionDto.appSvcRadiationCqmp[cqpmStatus.index]}"/>
+                                            <c:set var="index" value="${cqpmStatus.index}"/>
+                                            <c:set var="cqpmDtoListLength" value="${specialServiceSectionDto.appSvcRadiationCqmp.size()}"/>
+                                            <c:set var="type" value="cqpm"/>
+                                            <c:set var="title" value="Clinically Qualified Medical Physicist ${cqpmDtoListLength > 1?index+1:''}"/>
                                             <%@include file="viewSpecialServicesSsiPersonnel.jsp"%>
                                         </c:forEach>
 
@@ -149,24 +167,14 @@
                                             <%@include file="viewSpecialServicesFromDetail.jsp"%>
                                         </c:forEach>
 
-
-                                        <c:forEach var="person" items="${specialServiceSectionDto.appSvcNMTechnologistDtoList}" varStatus="nmStatus">
+                                        <%--<c:forEach var="person" items="${specialServiceSectionDto.appSvcNMTechnologistDtoList}" varStatus="nmStatus">
                                             <c:set var="oldPerson" value="${oldspecialServiceSectionDto.appSvcNMTechnologistDtoList[nmStatus.index]}"/>
                                             <c:set var="nmDtoListLength" value="${specialServiceSectionDto.appSvcNMTechnologistDtoList.size()}"/>
                                             <c:set var="index" value="${nmStatus.index}"/>
                                             <c:set var="isShowMore" value="1"/>
                                             <c:set var="title" value="Nuclear Medicine Technologist ${nmDtoListLength > 1?index+1:''}"/>
                                             <%@include file="viewSectionLeaderDetail.jsp"%>
-                                        </c:forEach>
-
-                                        <c:forEach var="person" items="${specialServiceSectionDto.appSvcRadiationCqmp}" varStatus="cqpmStatus">
-                                            <c:set var="oldPerson" value="${oldspecialServiceSectionDto.appSvcRadiationCqmp[cqpmStatus.index]}"/>
-                                            <c:set var="index" value="${cqpmStatus.index}"/>
-                                            <c:set var="cqpmDtoListLength" value="${specialServiceSectionDto.appSvcRadiationCqmp.size()}"/>
-                                            <c:set var="type" value="cqpm"/>
-                                            <c:set var="title" value="Clinically Qualified Medical Physicist ${cqpmDtoListLength > 1?index+1:''}"/>
-                                            <%@include file="viewSpecialServicesSsiPersonnel.jsp"%>
-                                        </c:forEach>
+                                        </c:forEach>--%>
 
                                         <c:set var="appSvcSuplmFormDto" value="${specialServiceSectionDto.appSvcSuplmFormDto}"/>
                                         <c:set var="oldAppSvcSuplmFormDto" value="${oldspecialServiceSectionDto.appSvcSuplmFormDto}"/>
