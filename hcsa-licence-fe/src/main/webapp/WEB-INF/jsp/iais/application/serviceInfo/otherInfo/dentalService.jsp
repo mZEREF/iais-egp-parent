@@ -14,12 +14,14 @@
             </c:if>
         </div>
     </div>
+    <input name="itSystem" value="" type="hidden">
+    <input name="paperSystem" value="" type="hidden">
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Type of medical records"/>
         <div class="form-check col-md-3">
-            <input class="form-check-input" name="${prefix}medicalTypeIt" value="1"
+            <input class="form-check-input medicalTypeIt" name="${prefix}medicalTypeIt" value="1"
                    type="checkbox" aria-invalid="false"
-                   <c:if test="${med.medicalTypeIt eq true}">checked="checked"</c:if> />
+                   <c:if test="${med.medicalTypeIt eq true}">checked="checked"</c:if> onclick="showListItSystem('${prefix}');" data-prefix="${prefix}"/>
             <label class="form-check-label">
                 <span class="check-square"></span><c:out value="IT System"/>
             </label>
@@ -33,31 +35,32 @@
             </label>
         </div>
     </iais:row>
-    <iais:row cssClass="row control control-caption-horizontal">
-        <iais:field width="5" cssClass="col-md-5" mandatory="" value=""/>
-        <iais:value width="7" cssClass="col-md-7 col-xs-12">
-            <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}medicalTypeIt"></span>
-        </iais:value>
-    </iais:row>
-    <iais:row>
-        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="List of options for IT system and paper cards / IT system only"/>
-        <iais:value width="7" cssClass="col-md-7">
-            <iais:select cssClass="systemOption" name="${prefix}systemOption" codeCategory="CATE_ID_OTHER_OPTION" value="${med.systemOption}" firstOption="Please Select" onchange="toggleOnSelect(this, 'MED06', 'otherInfo')"/>
-        </iais:value>
-    </iais:row>
-    <iais:row cssClass="row control control-caption-horizontal">
-        <iais:field width="5" cssClass="col-md-5" mandatory="" value=""/>
-        <iais:value width="7" cssClass="col-md-7 col-xs-12">
-            <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}systemOption"></span>
-        </iais:value>
-    </iais:row>
-
-    <iais:row id="otherInfo" style="${med.systemOption eq 'MED06' ?'' : ' display : none'}">
-        <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Please specify"/>
-        <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="50" type="text" cssClass="otherSystemOption" name="${prefix}otherSystemOption" value="${med.otherSystemOption}"/>
-        </iais:value>
-    </iais:row>
+    <div class="ListByItSystem <c:if test="${med.medicalTypeIt eq false}">hidden</c:if>" data-prefix="${prefix}">
+        <iais:row cssClass="row control control-caption-horizontal">
+            <iais:field width="5" cssClass="col-md-5" mandatory="" value=""/>
+            <iais:value width="7" cssClass="col-md-7 col-xs-12">
+                <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}medicalTypeIt"></span>
+            </iais:value>
+        </iais:row>
+        <iais:row>
+            <iais:field width="5" cssClass="col-md-5" mandatory="true" value="List of options for IT system and paper cards / IT system only"/>
+            <iais:value width="7" cssClass="col-md-7">
+                <iais:select cssClass="systemOption" name="${prefix}systemOption" codeCategory="CATE_ID_OTHER_OPTION" value="${med.systemOption}" firstOption="Please Select" onchange="toggleOnSelect(this, 'MED06', 'otherInfo')"/>
+            </iais:value>
+        </iais:row>
+        <iais:row cssClass="row control control-caption-horizontal">
+            <iais:field width="5" cssClass="col-md-5" mandatory="" value=""/>
+            <iais:value width="7" cssClass="col-md-7 col-xs-12">
+                <span class="error-msg" name="iaisErrorMsg" id="error_${prefix}systemOption"></span>
+            </iais:value>
+        </iais:row>
+        <iais:row id="otherInfo" style="${med.systemOption eq 'MED06' ?'' : ' display : none'}">
+            <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Please specify"/>
+            <iais:value width="7" cssClass="col-md-7">
+                <iais:input maxLength="50" type="text" cssClass="otherSystemOption" name="${prefix}otherSystemOption" value="${med.otherSystemOption}"/>
+            </iais:value>
+        </iais:row>
+    </div>
 
     <iais:row>
         <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Is clinic open to general public?"/>
@@ -103,6 +106,15 @@
         </iais:value>
     </iais:row>
 </div>
-
-
+<script>
+    function showListItSystem(prefix) {
+        let res = $('input.medicalTypeIt[data-prefix="' + prefix + '"]').prop("checked");
+        console.log("itSystemIsCheck:"+res);
+        if (res == true){
+            $('div.ListByItSystem[data-prefix="' + prefix + '"]').removeClass("hidden");
+        }else {
+            $('div.ListByItSystem[data-prefix="' + prefix + '"]').addClass("hidden");
+        }
+    }
+</script>
 
