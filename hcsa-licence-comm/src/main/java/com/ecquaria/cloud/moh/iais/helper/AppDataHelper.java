@@ -981,7 +981,7 @@ public final class AppDataHelper {
         if (appPremGroupOutsourcedDtoList.size() < 5){
             if (StringUtil.isNotEmpty(scoping) && StringUtil.isNotEmpty(startDate) && StringUtil.isNotEmpty(endDate)) {
                 try {
-                    if (Formatter.parseDate(startDate).before(Formatter.parseDate(endDate))){
+                    if (Formatter.parseDate(startDate).before(Formatter.parseDate(endDate)) || Formatter.parseDate(startDate).equals(Formatter.parseDate(endDate))){
                         appPremGroupOutsourcedDtoList.add(appPremGroupOutsourcedDto);
                     }
                 } catch (ParseException e) {
