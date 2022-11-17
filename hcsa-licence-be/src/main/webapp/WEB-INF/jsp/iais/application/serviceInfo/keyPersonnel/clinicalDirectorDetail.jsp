@@ -108,6 +108,13 @@
         </iais:row>
 
         <iais:row>
+            <iais:field width="5" cssClass="col-md-5" mandatory="" value=""/>
+            <iais:value width="7" cssClass="col-md-7 col-xs-12">
+                <span class="error-msg" name="iaisErrorMSg" id="error_${prepsn}idTypeNo${index}"></span>
+            </iais:value>
+        </iais:row>
+
+        <iais:row>
             <iais:field width="5" cssClass="col-md-5" mandatory="true" value="Designation"/>
             <iais:value width="7" cssClass="col-md-7">
                 <iais:select cssClass="designation" name="${prepsn}designation${index}" value="${person.designation}"
