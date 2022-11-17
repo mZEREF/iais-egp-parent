@@ -834,4 +834,21 @@
             $target.css('right', '');
         });
     }
+
+    // 0: hide; 1: show; 2: hide on condition
+    function checkAddPremBtn(action = 1) {
+        let $premAddBtn = $('#addPremBtn');
+        if (isEmptyNode($premAddBtn)) {
+            return;
+        }
+        if (action == 0) {
+            hideTag($premAddBtn);
+        } else if (action == 1) {
+            showTag($premAddBtn);
+        } else if (action == 2) {
+            if (isEmpty(getValue('.premTypeRadio'))) {
+                hideTag($premAddBtn);
+            }
+        }
+    }
 </script>
