@@ -3,7 +3,7 @@
         initPremiseEvent();
         premTypeChangeEvent();
         checkSelectedLicence();
-        checkAddPremBtn(2);
+        //checkAddPremBtn(2);
         $('div.premContent').each(function (k, v) {
             let $target = $(v);
             checkPremiseContent($target, k);
@@ -834,4 +834,5 @@
             $target.css('right', '');
         });
     }
+
 </script>

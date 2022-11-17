@@ -52,11 +52,7 @@ import com.ecquaria.cloud.moh.iais.helper.InspectionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.InspEmailService;
-import com.ecquaria.cloud.moh.iais.service.InspectionService;
+import com.ecquaria.cloud.moh.iais.service.*;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
@@ -124,6 +120,8 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
     ApplicationClient applicationClient;
     @Autowired
     InspectionTaskClient inspectionTaskClient;
+    @Autowired
+    ApptInspectionDateService apptInspectionDateService;
     @Value("${easmts.vehicle.sperate.flag}")
     private String vehicleOpenFlag;
     private static final String ADCHK_DTO="adchklDto";
@@ -140,6 +138,7 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
     private static final String DRA_EMA_ID="draftEmailId";
     private static final String ROLLBACK_OPTIONS="rollBackOptions";
     private static final String ROLLBACK_VALUE_MAP="rollBackValueMap";
+    private static final String LATERALLY_SELECT="lrSelect";
 
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
@@ -159,6 +158,7 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
         setCheckDataHaveFinished(request,taskDto);
         ParamUtil.setSessionAttr(request,MSG_CON, null);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, null);
+        ParamUtil.setSessionAttr(bpc.request, LATERALLY_SELECT, null);
         request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, EMAIL_VIEW);
         //get selections dd hh
         setSelectionsForDDMMAndAuditRiskSelect(request);
@@ -228,7 +228,8 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
 
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,INS_EMAIL_DTO);
         inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,SUBJECT));
-        inspectionEmailTemplateDto.setRemarks(ParamUtil.getString(request, "Remarks"));
+        String remarks = ParamUtil.getString(request, "Remarks");
+        inspectionEmailTemplateDto.setRemarks(remarks);
         inspectionEmailTemplateDto.setMessageContent(ParamUtil.getString(request,MSG_CON));
         if (inspectionEmailTemplateDto.getSubject().isEmpty()){
             Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
@@ -243,6 +244,29 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
             String rollBackTo = ParamUtil.getRequestString(request, "rollBackTo");
             inspectionService.rollBack(bpc, taskDto, applicationViewDto, rollBackValueMap.get(rollBackTo), ParamUtil.getString(request, "Remarks"));
             ParamUtil.setRequestAttr(request,"isRollBack",AppConsts.TRUE);
+            return;
+        }
+        if (ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY.equals(decision)) {
+            ParamUtil.setSessionAttr(request, "lrSelect", null);
+            String lrSelect = ParamUtil.getRequestString(request, "lrSelect");
+            ParamUtil.setSessionAttr(request, "lrSelect", lrSelect);
+            log.info(StringUtil.changeForLog("The lrSelect is -->:"+lrSelect));
+            String[] lrSelects = lrSelect.split("_");
+            String workGroupId = lrSelects[0];
+            String userId1 = lrSelects[1];
+            inspEmailService.completedTask(taskDto);
+            List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
+            taskDto.setUserId(userId1);
+            taskDto.setDateAssigned(new Date());
+            taskDto.setId(null);
+            taskDto.setWkGrpId(workGroupId);
+            taskDto.setSlaDateCompleted(null);
+            taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+            taskDtos.add(taskDto);
+            taskService.createTasks(taskDtos);
+            apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY, taskDto, userId, inspectionEmailTemplateDto.getRemarks(), HcsaConsts.ROUTING_STAGE_INS);
+            apptInspectionDateService.createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW, taskDto, userId, "", HcsaConsts.ROUTING_STAGE_INS);
+
             return;
         }
         if (decision.equals(InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW)){
@@ -443,7 +467,7 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
         }
         String appType = applicationViewDto.getApplicationDto().getApplicationType();
         if (!(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType))) {
-            appTypeOption.addAll(MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROLL_BACK}));
+            appTypeOption.addAll(MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROLL_BACK, ApplicationConsts.PROCESSING_DECISION_ROUTE_LATERALLY}));
         }
 
 

@@ -924,11 +924,13 @@ public class ServiceMenuDelegator {
                 appSvcRelatedInfoDto.setAlignLicenceNo(alignLicenceNo);
                 appSvcRelatedInfoDto.setLicPremisesId(licPremiseId);
                 appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
-                if (StringUtil.isNotEmpty(licenceId)&&(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(hcsaServiceDto.getSvcCode())
-                        ||AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(hcsaServiceDto.getSvcCode()))){
-                    AppLicBundleDto appLicBundleDto=new AppLicBundleDto();
+                if (StringUtil.isNotEmpty(licenceId)
+                        && (AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(hcsaServiceDto.getSvcCode())
+                        || AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(hcsaServiceDto.getSvcCode()))) {
+                    AppLicBundleDto appLicBundleDto = new AppLicBundleDto();
                     appLicBundleDto.setLicenceId(licenceId);
                     appLicBundleDto.setPremisesId(licPremiseId);
+                    appLicBundleDto.setLicOrApp(true);
                     appLicBundleDtoList.add(appLicBundleDto);
                 }
             }

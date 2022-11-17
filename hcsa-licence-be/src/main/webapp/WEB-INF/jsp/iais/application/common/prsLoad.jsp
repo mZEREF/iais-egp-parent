@@ -131,7 +131,7 @@
             if (!isEmpty(data.entryDateSpecialist)) {
                 specialtyGetDate = data.entryDateSpecialist[0];
             }
-            if (!isEmpty(data.registration)) {
+            if ($.isArray(data.registration) && !isEmpty(data.registration[0])) {
                 var registration = data.registration[0];
                 typeOfCurrRegi = registration['Registration Type'];
                 currRegiDate = registration['Registration Start Date'];

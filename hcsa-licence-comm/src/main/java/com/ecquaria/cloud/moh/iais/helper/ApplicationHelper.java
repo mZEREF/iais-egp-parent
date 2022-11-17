@@ -1330,8 +1330,8 @@ public final class ApplicationHelper {
 
     public static List<SelectOption> genPersonnelBoard() {
         List<SelectOption> personnelBoard = IaisCommonUtils.genNewArrayList();
-        SelectOption personnelBoard1 = new SelectOption(ApplicationConsts.PROFESSIONAL_BOARD_SMC, ApplicationConsts.PROFESSIONAL_BOARD_SMC);
-        SelectOption personnelBoard2 = new SelectOption(ApplicationConsts.PROFESSIONAL_BOARD_SNB, ApplicationConsts.PROFESSIONAL_BOARD_SNB);
+        SelectOption personnelBoard1 = new SelectOption(ApplicationConsts.PROFESSIONAL_BOARD_SMC, MasterCodeUtil.getCodeDesc(ApplicationConsts.PROFESSIONAL_BOARD_SMC));
+        SelectOption personnelBoard2 = new SelectOption(ApplicationConsts.PROFESSIONAL_BOARD_SNB, MasterCodeUtil.getCodeDesc(ApplicationConsts.PROFESSIONAL_BOARD_SNB));
         personnelBoard.add(personnelBoard1);
         personnelBoard.add(personnelBoard2);
         personnelBoard.sort(Comparator.comparing(SelectOption::getText));

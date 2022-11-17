@@ -3349,8 +3349,8 @@ public final class AppValidatorHelper {
         String name = appSvcPersonnelDto.getName();
         if (StringUtil.isEmpty(name)) {
             errorMap.put(prefix + "name" + i, signal);
-        } else if (name.length() > 66) {
-            String errorMsg = repLength("Name", "66");
+        } else if (name.length() > 100) {
+            String errorMsg = repLength("Name", "100");
             errorMap.put(prefix + "name" + i, errorMsg);
         }
         String wrkExpYear = appSvcPersonnelDto.getWrkExpYear();
