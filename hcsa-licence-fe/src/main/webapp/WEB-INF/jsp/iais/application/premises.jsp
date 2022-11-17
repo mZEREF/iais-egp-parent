@@ -120,7 +120,7 @@
         $('div.premContent').each(function () {
             let $premContent = $(this);
             disableContent($premContent.find('.premisesTypeDiv'));
-            disableContent($premContent.find('.permanentSel'));
+            disableContent($premContent.find('.premSelect'));
             checkPremDisabled($premContent, true);
         });
         </c:if>

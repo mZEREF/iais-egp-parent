@@ -1289,15 +1289,18 @@ public class InterInboxDelegator {
                     .append(MaskUtil.maskValue("DraftNumber",appNo));
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
-        }
-        else {
+        } else {
+            ParamUtil.setSessionAttr(bpc.request, HalpAssessmentGuideDelegator.APP_SVC_RELATED_INFO_LIST, null);
+            ParamUtil.setSessionAttr(bpc.request, HalpAssessmentGuideDelegator.APP_SELECT_SERVICE, null);
+            ParamUtil.setSessionAttr(bpc.request, "appLicBundleDtoList", null);
             StringBuilder url = new StringBuilder();
             url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
-                    .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohNewApplication")
+                    .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohNewApplication")
                     .append("?DraftNumber=")
-                    .append(MaskUtil.maskValue("DraftNumber",appNo));
+                    .append(MaskUtil.maskValue("DraftNumber", appNo));
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);}
+            IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
+        }
     }
 
     public void appDoDelete(BaseProcessClass bpc){

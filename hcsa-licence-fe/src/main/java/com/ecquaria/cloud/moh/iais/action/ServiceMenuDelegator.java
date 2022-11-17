@@ -95,8 +95,10 @@ public class ServiceMenuDelegator {
     private static final String BACK_ATTR = "back";
     private static final String NEXT = "next";
 
+    public static final String APP_SVC_RELATED_INFO_LIST = HcsaAppConst.APP_SVC_RELATED_INFO_LIST;
+    public static final String APP_SELECT_SERVICE = HcsaAppConst.APP_SELECT_SERVICE;
+    public static final String APP_LIC_BUNDLE_LIST = HcsaAppConst.APP_LIC_BUNDLE_LIST;
     private static final String SERVIC_STEP = "serviceStep";
-    public static final String APP_SELECT_SERVICE = "appSelectSvc";
     private static final String HAS_EXISTING_BASE = "hasExistingBase";
     private static final String URL_HTTPS = "https://";
     private static final String ONLY_BASE_SVC = "onlyBaseSvc";
@@ -110,8 +112,6 @@ public class ServiceMenuDelegator {
     private static final String NO_EXIST_BASE_APP = "noExistBaseApp";
 //    private static final String BASE_SERVICE_SORT = "baseServiceSort";
 //    private static final String SPECIFIED_SERVICE_SORT = "specifiedServiceSort";
-    public static final String APP_SVC_RELATED_INFO_LIST = "appSvcRelatedInfoList";
-    public static final String APP_LIC_BUNDLE_LIST = "appLicBundleDtoList";
     private static final String RELOAD_BASE_SVC_SELECTED = "reloadBaseSvcSelected";
     private static final String BASE_LIC_PREMISES_MAP = "baseLicPremisesMap";
     private static final String LIC_ALIGN_SEARCH_PARAM = "licAlignSearchParam";
@@ -155,7 +155,8 @@ public class ServiceMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request,RELOAD_BASE_SVC_SELECTED, null);
         ParamUtil.setSessionAttr(bpc.request,LIC_ALIGN_SEARCH_PARAM,null);
         ParamUtil.setSessionAttr(bpc.request,LIC_ALIGN_SEARCH_RESULT,null);
-        ParamUtil.setSessionAttr(bpc.request,APP_SVC_RELATED_INFO_LIST,null);
+        ParamUtil.setSessionAttr(bpc.request, APP_SVC_RELATED_INFO_LIST, null);
+        ParamUtil.setSessionAttr(bpc.request, APP_LIC_BUNDLE_LIST, null);
         ParamUtil.setSessionAttr(bpc.request,BASE_SVC_PREMISES_MAP,null);
         HcsaServiceCacheHelper.flushServiceMapping();
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW_APPLICATION, AuditTrailConsts.FUNCTION_NEW_APPLICATION);
