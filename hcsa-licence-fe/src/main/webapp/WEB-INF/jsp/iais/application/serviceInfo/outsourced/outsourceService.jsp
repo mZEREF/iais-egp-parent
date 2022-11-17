@@ -154,8 +154,8 @@
         $("[name='businessName']").val("");
         $("[name='licNo']").val("");
         $("[name='postalCode']").val("");
-        $("#outsourcedServiceSelect option:first").prop("selected", 'selected').val("");
-        $("#outsourcedServiceSelect").val("");
+        $("#serviceCode option:first").prop("selected", 'selected').val("");
+        $("#serviceCode").val("");
         $(".svcNameSel .current").text("Please Select");
     });
 
