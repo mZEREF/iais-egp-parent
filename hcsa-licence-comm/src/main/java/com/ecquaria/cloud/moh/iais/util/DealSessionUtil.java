@@ -624,15 +624,20 @@ public class DealSessionUtil {
 
         appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
         if (appSubmissionDto.getCoMap() == null) {
-            Map<String, String> coMap = ApplicationHelper.createCoMap(true);
-            if (IaisCommonUtils.isNotEmpty(hcsaServiceDtos)) {
-                StringJoiner joiner = new StringJoiner(AppConsts.DFT_DELIMITER);
-                for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
-                    joiner.add(hcsaServiceDto.getSvcCode());
+            Map<String, String> coMap;
+            if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType) && !ApplicationHelper.checkIsRfi(request)) {
+                coMap = ApplicationHelper.createCoMap(false);
+                if (IaisCommonUtils.isNotEmpty(hcsaServiceDtos)) {
+                    StringJoiner joiner = new StringJoiner(AppConsts.DFT_DELIMITER);
+                    for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
+                        joiner.add(hcsaServiceDto.getSvcCode());
+                    }
+                    String s = joiner.toString();
+                    coMap.put(HcsaAppConst.SECTION_MULTI_SS, s);
+                    coMap.put(HcsaAppConst.SECTION_MULTI_SVC, s);
                 }
-                String s = joiner.toString();
-                coMap.put(HcsaAppConst.SECTION_MULTI_SS, s);
-                coMap.put(HcsaAppConst.SECTION_MULTI_SVC, s);
+            } else {
+                coMap = ApplicationHelper.createCoMap(true);
             }
             appSubmissionDto.setCoMap(coMap);
         }

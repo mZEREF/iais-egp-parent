@@ -237,7 +237,8 @@
         refreshPremise($premContent, $('div.premContent').length - 1);
         $('div.premContent:first').find('.premHeader').html('1');
         $premContent.find('.chooseExistData').val('0');
-        $premContent.find('.retrieveflag').val('0');
+        $premContent.find('input[name="retrieveflag"]').val('0');
+        unReadlyContent($premContent.find('div.address'));
         initPremiseEvent();
         dismissWaiting();
     }
@@ -331,7 +332,8 @@
         // refer to premTypeChangeEvent method
         $premContent.find('.premTypeValue').trigger('change');
         $premContent.find('.premSelValue').val('-1');
-        $premContent.find('.chooseExistData').val('0');
+        $premContent.find('input[name="retrieveflag"]').val('0');
+        unReadlyContent($premContent.find('div.address'));
         checkPremiseContent($premContent);
     }
 
